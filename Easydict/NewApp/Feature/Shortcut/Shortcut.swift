@@ -21,6 +21,20 @@ public enum ShortcutType: String {
     case showMiniWindow = "EZShowMiniShortcutKey"
     // In App
     case clearInput = "EZClearInputShortcutKey"
+    case clearAll = "EZClearAllShortcutKey"
+    case copy = "EZCopyShortcutKey"
+    case copyFirstResult = "EZCopyFirstResultShortcutKey"
+    case focus = "EZFocusShortcutKey"
+    case play = "EZPlayShortcutKey"
+    case retry = "EZRetryShortcutKey"
+    case toggle = "EZToggleShortcutKey"
+    case pin = "EZPinShortcutKey"
+    case hide = "EZHideShortcutKey"
+    case increaseFontSize = "EZIncreaseFontSizeShortcutKey"
+    case decreaseFontSize = "EZDecreaseFontSizeShortcutKey"
+    case google = "EZGoogleShortcutKey"
+    case eudic = "EZEudicShortcutKey"
+    case appleDic = "EZAppleDicShortcutKey"
 }
 
 // Confict Message
@@ -117,61 +131,6 @@ extension Shortcut {
     }
 }
 
-extension Shortcut {
-    @objc func clearInput() {
-        print("clear")
-    }
-}
-
-// global shortcut binding func
-extension Shortcut {
-    @objc func selectTextTranslate() {
-        EZWindowManager.shared().selectTextTranslate()
-    }
-
-    @objc func snipTranslate() {
-        EZWindowManager.shared().snipTranslate()
-    }
-
-    @objc func inputTranslate() {
-        EZWindowManager.shared().inputTranslate()
-    }
-
-    @objc func showMiniFloatingWindow() {
-        EZWindowManager.shared().showMiniFloatingWindow()
-    }
-
-    @objc func screenshotOCR() {
-        EZWindowManager.shared().screenshotOCR()
-    }
-}
-
-// fetch shortcut KeyCombo
-extension Shortcut {
-    public func shortcutKeyCombo(_ type: ShortcutType) -> KeyCombo? {
-        switch type {
-        case .inputTranslate:
-            guard let keyCombo = Defaults[.inputShortcut] else { return nil }
-            return keyCombo
-        case .snipTranslate:
-            guard let keyCombo = Defaults[.snipShortcut] else { return nil }
-            return keyCombo
-        case .selectTranslate:
-            guard let keyCombo = Defaults[.selectionShortcut] else { return nil }
-            return keyCombo
-        case .silentScreenshotOcr:
-            guard let keyCombo = Defaults[.screenshotOCRShortcut] else { return nil }
-            return keyCombo
-        case .showMiniWindow:
-            guard let keyCombo = Defaults[.showMiniWindowShortcut] else { return nil }
-            return keyCombo
-        case .clearInput:
-            guard let keyCombo = Defaults[.clearInputShortcut] else { return nil }
-            return keyCombo
-        }
-    }
-}
-
 struct KeyboardShortcut: ViewModifier {
     init(type: ShortcutType) {
         let key: Defaults.Key<KeyCombo?> = switch type {
@@ -187,6 +146,34 @@ struct KeyboardShortcut: ViewModifier {
             .showMiniWindowShortcut
         case .clearInput:
             .clearInputShortcut
+        case .clearAll:
+            .clearAllShortcut
+        case .copy:
+            .copyShortcut
+        case .copyFirstResult:
+            .copyFirstResultShortcut
+        case .focus:
+            .focusShortcut
+        case .play:
+            .playShortcut
+        case .retry:
+            .retryShortcut
+        case .toggle:
+            .toggleShortcut
+        case .pin:
+            .pinShortcut
+        case .hide:
+            .hideShortcut
+        case .increaseFontSize:
+            .increaseFontSize
+        case .decreaseFontSize:
+            .decreaseFontSize
+        case .google:
+            .googleShortcut
+        case .eudic:
+            .eudicShortcut
+        case .appleDic:
+            .appleDictionaryShortcut
         }
 
         _shortcut = .init(key)

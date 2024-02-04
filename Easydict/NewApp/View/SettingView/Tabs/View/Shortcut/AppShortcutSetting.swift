@@ -29,76 +29,76 @@ extension ShortcutTab {
                     Spacer()
                     KeyHolderWrapper(shortcutType: .clearInput, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
-//                HStack {
-//                    Text("shortcut_clear_all")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .selectTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("shortcut_copy")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .selectTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("shortcut_copy_first_teanslated_text")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .showMiniWindow, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("shortcut_focus")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("shortcut_play")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("retry")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("toggle_languages")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("pin")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("hide")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("shortcut_increase_font")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("shortcut_decrease_font")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("open_in_google")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("open_in_eudic")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
-//                HStack {
-//                    Text("open_in_apple_dictionary")
-//                    Spacer()
-//                    GlobalKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-//                }
+                HStack {
+                    Text("shortcut_clear_all")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .clearAll, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("shortcut_copy")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .copy, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("shortcut_copy_first_teanslated_text")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .copyFirstResult, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("shortcut_focus")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .focus, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("shortcut_play")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .play, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("retry")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .retry, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("toggle_languages")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .toggle, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("pin")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .pin, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("hide")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .hide, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("shortcut_increase_font")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .increaseFontSize, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("shortcut_decrease_font")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .decreaseFontSize, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("open_in_google")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .google, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("open_in_eudic")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .eudic, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
+                HStack {
+                    Text("open_in_apple_dictionary")
+                    Spacer()
+                    KeyHolderWrapper(shortcutType: .appleDic, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                }
             } header: {
                 Text("app_shortcut_setting")
             }

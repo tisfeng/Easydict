@@ -1,5 +1,5 @@
 //
-//  ShortcutValidator.swift
+//  Shortcut+Validator.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/1/29.

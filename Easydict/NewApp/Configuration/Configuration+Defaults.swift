@@ -167,12 +167,26 @@ extension Defaults.Keys {
 /// shortcut
 extension Defaults.Keys {
     // Global
-    static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder", default: nil)
-    static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder", default: nil)
-    static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder", default: nil)
-    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder", default: nil)
-    static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder", default: nil)
+    static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder")
+    static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
+    static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
+    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
+    static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
 
     // App
-    static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder", default: nil)
+    static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder")
+    static let clearAllShortcut = Key<KeyCombo?>("EZClearAllShortcutKey_keyHolder")
+    static let copyShortcut = Key<KeyCombo?>("EZCopyShortcutKey_keyHolder")
+    static let copyFirstResultShortcut = Key<KeyCombo?>("EZCopyFirstResultShortcutKey_keyHolder")
+    static let focusShortcut = Key<KeyCombo?>("EZFocusShortcutKey_keyHolder")
+    static let playShortcut = Key<KeyCombo?>("EZPlayShortcutKey_keyHolder")
+    static let retryShortcut = Key<KeyCombo?>("EZRetryShortcutKey_keyHolder")
+    static let toggleShortcut = Key<KeyCombo?>("EZToggleShortcutKey_keyHolder")
+    static let pinShortcut = Key<KeyCombo?>("EZPinShortcutKey_keyHolder")
+    static let hideShortcut = Key<KeyCombo?>("EZHideShortcutKey_keyHolder")
+    static let increaseFontSize = Key<KeyCombo?>("EZIncreaseFontSizeShortcutKey_keyHolder")
+    static let decreaseFontSize = Key<KeyCombo?>("EZDecreaseFontSizeShortcutKey_keyHolder")
+    static let googleShortcut = Key<KeyCombo?>("EZGoogleShortcutKey_keyHolder")
+    static let eudicShortcut = Key<KeyCombo?>("EZEudicShortcutKey_keyHolder")
+    static let appleDictionaryShortcut = Key<KeyCombo?>("EZAppleDictionaryShortcutKey_keyHolder")
 }

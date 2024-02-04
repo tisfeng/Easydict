@@ -93,6 +93,34 @@ extension KeyHolderWrapper {
                 keyCombo = Defaults[.showMiniWindowShortcut]
             case .clearInput:
                 keyCombo = Defaults[.clearInputShortcut]
+            case .clearAll:
+                keyCombo = Defaults[.clearAllShortcut]
+            case .copy:
+                keyCombo = Defaults[.copyShortcut]
+            case .copyFirstResult:
+                keyCombo = Defaults[.copyFirstResultShortcut]
+            case .focus:
+                keyCombo = Defaults[.focusShortcut]
+            case .play:
+                keyCombo = Defaults[.playShortcut]
+            case .retry:
+                keyCombo = Defaults[.retryShortcut]
+            case .toggle:
+                keyCombo = Defaults[.toggleShortcut]
+            case .pin:
+                keyCombo = Defaults[.pinShortcut]
+            case .hide:
+                keyCombo = Defaults[.hideShortcut]
+            case .increaseFontSize:
+                keyCombo = Defaults[.increaseFontSize]
+            case .decreaseFontSize:
+                keyCombo = Defaults[.decreaseFontSize]
+            case .google:
+                keyCombo = Defaults[.googleShortcut]
+            case .eudic:
+                keyCombo = Defaults[.eudicShortcut]
+            case .appleDic:
+                keyCombo = Defaults[.appleDictionaryShortcut]
             }
             recordView.keyCombo = keyCombo
             Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
@@ -113,6 +141,34 @@ extension KeyHolderWrapper {
                 Defaults[.showMiniWindowShortcut] = keyCombo
             case .clearInput:
                 Defaults[.clearInputShortcut] = keyCombo
+            case .clearAll:
+                Defaults[.clearAllShortcut] = keyCombo
+            case .copy:
+                Defaults[.copyShortcut] = keyCombo
+            case .copyFirstResult:
+                Defaults[.copyFirstResultShortcut] = keyCombo
+            case .focus:
+                Defaults[.focusShortcut] = keyCombo
+            case .play:
+                Defaults[.playShortcut] = keyCombo
+            case .retry:
+                Defaults[.retryShortcut] = keyCombo
+            case .toggle:
+                Defaults[.toggleShortcut] = keyCombo
+            case .pin:
+                Defaults[.pinShortcut] = keyCombo
+            case .hide:
+                Defaults[.hideShortcut] = keyCombo
+            case .increaseFontSize:
+                Defaults[.increaseFontSize] = keyCombo
+            case .decreaseFontSize:
+                Defaults[.decreaseFontSize] = keyCombo
+            case .google:
+                Defaults[.googleShortcut] = keyCombo
+            case .eudic:
+                Defaults[.eudicShortcut] = keyCombo
+            case .appleDic:
+                Defaults[.appleDictionaryShortcut] = keyCombo
             }
         }
     }
