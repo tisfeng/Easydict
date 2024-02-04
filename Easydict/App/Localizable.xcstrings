@@ -169,6 +169,23 @@
         }
       }
     },
+    "app_shortcut_setting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Shortcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用内快捷键"
+          }
+        }
+      }
+    },
     "appearenceType_dark" : {
       "localizations" : {
         "en" : {
@@ -3102,6 +3119,40 @@
         }
       }
     },
+    "shortcut_clear_all" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear All"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "清空"
+          }
+        }
+      }
+    },
+    "shortcut_clear_input" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Input"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空查询内容"
+          }
+        }
+      }
+    },
     "shortcut_confict %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3172,6 +3223,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快捷键\"%@\"，无法使用"
+          }
+        }
+      }
+    },
+    "shortcut_copy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "拷贝文本"
+          }
+        }
+      }
+    },
+    "shortcut_copy_first_teanslated_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy first translated text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "自动复制第一个翻译结果"
+          }
+        }
+      }
+    },
+    "shortcut_decrease_font" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease Font"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减小字体"
+          }
+        }
+      }
+    },
+    "shortcut_focus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "聚焦"
+          }
+        }
+      }
+    },
+    "shortcut_increase_font" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase Font"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "增大字体"
+          }
+        }
+      }
+    },
+    "shortcut_play" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "播放单词发音"
           }
         }
       }
