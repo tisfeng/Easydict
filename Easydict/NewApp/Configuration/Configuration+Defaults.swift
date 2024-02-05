@@ -134,7 +134,7 @@ class DefaultsWrapper<T: Defaults.Serializable> {
 
 // Service Configuration
 extension Defaults.Keys {
-    // OPENAI
+    // OpenAI
     static let openAIAPIKey = Key<String?>("EZOpenAIAPIKey")
     static let openAITranslation = Key<String>("EZOpenAITranslationKey", default: "1")
     static let openAIDictionary = Key<String>("EZOpenAIDictionaryKey", default: "1")
