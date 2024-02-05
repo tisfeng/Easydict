@@ -2393,7 +2393,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "打开窗口时自动选中查询文本"
           }
         }
@@ -3165,8 +3165,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "清空"
+            "state" : "translated",
+            "value" : "清空所有"
           }
         }
       }
@@ -3273,7 +3273,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "拷贝文本"
           }
         }
@@ -3290,7 +3290,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "自动复制第一个翻译结果"
           }
         }
@@ -3324,7 +3324,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "聚焦"
           }
         }
@@ -3341,7 +3341,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "增大字体"
           }
         }
@@ -3358,7 +3358,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "播放单词发音"
           }
         }
