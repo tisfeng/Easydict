@@ -148,7 +148,7 @@ extension Defaults.Keys {
     static let deepLTranslation = Key<DeepLAPIUsagePriority>("EZDeepLTranslationAPIKey", default: DeepLAPIUsagePriority.webFirst)
     static let deepLTranslateEndPointKey = Key<String?>("EZDeepLTranslateEndPointKey")
 
-    // BING
+    // Bing
     static let bingCookieKey = Key<String?>("EZBingCookieKey")
 
     // niu
