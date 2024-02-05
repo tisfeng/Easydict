@@ -16,25 +16,7 @@ enum DeepLAPIUsagePriority: String, CaseIterable, Hashable {
     case authKeyOnly = "2"
 }
 
-extension DeepLAPIUsagePriority: Defaults.Serializable {
-    public static var bridge: Bridge = .init()
-
-    public struct Bridge: Defaults.Bridge {
-        public func serialize(_ value: DeepLAPIUsagePriority?) -> String? {
-            guard let value else { return DeepLAPIUsagePriority.webFirst.rawValue }
-            return "\(value.rawValue)"
-        }
-
-        public func deserialize(_ object: String?) -> DeepLAPIUsagePriority? {
-            guard let object else { return DeepLAPIUsagePriority.webFirst }
-            return DeepLAPIUsagePriority(rawValue: object) ?? DeepLAPIUsagePriority.webFirst
-        }
-
-        public typealias Value = DeepLAPIUsagePriority
-
-        public typealias Serializable = String
-    }
-}
+extension DeepLAPIUsagePriority: Defaults.Serializable {}
 
 extension DeepLAPIUsagePriority: EnumLocalizedStringConvertible {
     var title: String {
