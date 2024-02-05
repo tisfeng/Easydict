@@ -145,7 +145,7 @@ extension Defaults.Keys {
 
     // DEEPL
     static let deepLAuth = Key<String?>("EZDeepLAuthKey")
-    static let deepLTranslation = Key<String>("EZDeepLTranslationAPIKey", default: DeepLAPIUsagePriority.webFirst.rawValue)
+    static let deepLTranslation = Key<DeepLAPIUsagePriority>("EZDeepLTranslationAPIKey", default: DeepLAPIUsagePriority.webFirst)
     static let deepLTranslateEndPointKey = Key<String?>("EZDeepLTranslateEndPointKey")
 
     // BING
