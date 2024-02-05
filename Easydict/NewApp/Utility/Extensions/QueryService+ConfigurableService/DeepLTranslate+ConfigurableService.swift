@@ -10,7 +10,40 @@ import Defaults
 import Foundation
 import SwiftUI
 
-enum DeepLAPIUsagePriority: String, CaseIterable, Hashable {
+@available(macOS 13.0, *)
+extension EZDeepLTranslate: ConfigurableService {
+    func configurationListItems() -> some View {
+        EZDeepLTranslateConfigurationView(service: self)
+    }
+}
+
+@available(macOS 13.0, *)
+private struct EZDeepLTranslateConfigurationView: View {
+    let service: EZDeepLTranslate
+
+    var body: some View {
+        ServiceConfigurationSecretSectionView(service: service, observeKeys: [.deepLAuth]) {
+            ServiceConfigurationSecureInputCell(
+                textFieldTitleKey: "service.configuration.deepl.auth_key.title",
+                key: .deepLAuth
+            )
+
+            ServiceConfigurationInputCell(
+                textFieldTitleKey: "service.configuration.deepl.endpoint.title",
+                key: .deepLTranslateEndPointKey,
+                placeholder: "service.configuration.deepl.endpoint.placeholder"
+            )
+
+            ServiceConfigurationPickerCell(
+                titleKey: "service.configuration.deepl.translation.title",
+                key: .deepLTranslation,
+                values: DeepLAPIUsagePriority.allCases
+            )
+        }
+    }
+}
+
+enum DeepLAPIUsagePriority: String, CaseIterable {
     case webFirst = "0"
     case authKeyFirst = "1"
     case authKeyOnly = "2"
@@ -27,43 +60,6 @@ extension DeepLAPIUsagePriority: EnumLocalizedStringConvertible {
             return NSLocalizedString("service.configuration.deepl.authkey_first.title", bundle: .main, comment: "")
         case .authKeyOnly:
             return NSLocalizedString("service.configuration.deepl.authkey_only.title", bundle: .main, comment: "")
-        }
-    }
-}
-
-@available(macOS 13.0, *)
-extension EZDeepLTranslate: ConfigurableService {
-    func configurationListItems() -> some View {
-        EZDeepLTranslateConfigurationView(service: self)
-    }
-}
-
-@available(macOS 13.0, *)
-private struct EZDeepLTranslateConfigurationView: View {
-    let service: EZDeepLTranslate
-
-    @Default(.deepLTranslation) var apiUsagePriority
-
-    var body: some View {
-        ServiceConfigurationSecretSectionView(service: service, observeKeys: [.deepLAuth]) {
-            ServiceConfigurationSecureInputCell(
-                textFieldTitleKey: "service.configuration.deepl.auth_key.title",
-                key: .deepLAuth
-            )
-
-            ServiceConfigurationInputCell(
-                textFieldTitleKey: "service.configuration.deepl.endpoint.title",
-                key: .deepLTranslateEndPointKey,
-                placeholder: "service.configuration.deepl.endpoint.placeholder"
-            )
-
-            Picker("service.configuration.deepl.translation.title", selection: $apiUsagePriority) {
-                ForEach(DeepLAPIUsagePriority.allCases, id: \.rawValue) { value in
-                    Text(value.title)
-                        .tag(value)
-                }
-            }
-            .padding(10)
         }
     }
 }

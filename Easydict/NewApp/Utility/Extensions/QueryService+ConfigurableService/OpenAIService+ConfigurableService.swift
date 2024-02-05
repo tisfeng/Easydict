@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import SwiftUI
 
@@ -56,11 +57,7 @@ protocol EnumLocalizedStringConvertible {
     var title: String { get }
 }
 
-enum OpenAIModels: String, CaseIterable, Identifiable {
-    var id: Self {
-        self
-    }
-
+enum OpenAIModels: String, CaseIterable {
     case gpt3_5_turbo_0125 = "gpt-3.5-turbo-0125"
     case gpt4_0125_preview = "gpt-4-0125-preview"
 }
@@ -71,11 +68,9 @@ extension OpenAIModels: EnumLocalizedStringConvertible {
     }
 }
 
-enum OpenAIUsageStats: String, CaseIterable, Identifiable {
-    var id: Self {
-        self
-    }
+extension OpenAIModels: Defaults.Serializable {}
 
+enum OpenAIUsageStats: String, CaseIterable {
     case `default` = "0"
     case alwaysOff = "1"
     case alwaysOn = "2"
@@ -105,3 +100,5 @@ extension OpenAIUsageStats: EnumLocalizedStringConvertible {
         }
     }
 }
+
+extension OpenAIUsageStats: Defaults.Serializable {}
