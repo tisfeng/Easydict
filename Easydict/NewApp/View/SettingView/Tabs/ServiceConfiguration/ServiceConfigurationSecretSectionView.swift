@@ -15,7 +15,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     var service: QueryService
     let content: Content
 
-    @ObservedObject private var viewModel = ServiceValidationViewModel()
+    @StateObject private var viewModel: ServiceValidationViewModel
 
     init(
         service: QueryService,
@@ -24,8 +24,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     ) {
         self.service = service
         self.content = content()
-
-        viewModel.observeInput(for: observeKeys)
+        _viewModel = .init(wrappedValue: ServiceValidationViewModel(observing: observeKeys))
     }
 
     var header: some View {
@@ -60,18 +59,22 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } footer: {
             footer
         }
-        .alert(isPresented: $viewModel.isAlertPresented) {
-            Alert(title: Text(viewModel.alertMessage))
-        }
+        .alert(viewModel.alertMessage, isPresented: $viewModel.isAlertPresented, actions: {
+            Button("ok") {
+                viewModel.isAlertPresented = false
+            }
+        })
     }
 
     func validate() {
         viewModel.isValidating.toggle()
         service.validate { _, error in
-            viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
-            print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
-            viewModel.isValidating.toggle()
-            viewModel.isAlertPresented.toggle()
+            DispatchQueue.main.async {
+                viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+                print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
+                viewModel.isValidating.toggle()
+                viewModel.isAlertPresented.toggle()
+            }
         }
     }
 }
@@ -88,13 +91,15 @@ private class ServiceValidationViewModel: ObservableObject {
 
     var cancellables: [AnyCancellable] = []
 
-    // check secret key empty input
-    func observeInput(for keys: [Defaults.Key<String?>]) {
+    init(observing keys: [Defaults.Key<String?>]) {
         cancellables.append(
+            // check secret key empty input
             Defaults.publisher(keys: keys)
                 .sink { [weak self] _ in
                     let hasEmptyInput = keys.contains(where: { (Defaults[$0] ?? "").isEmpty })
-                    self?.isValidateBtnDisabled = hasEmptyInput
+                    DispatchQueue.main.async {
+                        self?.isValidateBtnDisabled = hasEmptyInput
+                    }
                 }
         )
     }
