@@ -143,7 +143,7 @@ extension Defaults.Keys {
     static let openAIEndPoint = Key<String?>("EZOpenAIEndPointKey")
     static let openAIModel = Key<OpenAIModels>("EZOpenAIModelKey", default: OpenAIModels.gpt3_5_turbo_0125)
 
-    // DEEPL
+    // DeepL
     static let deepLAuth = Key<String?>("EZDeepLAuthKey")
     static let deepLTranslation = Key<DeepLAPIUsagePriority>("EZDeepLTranslationAPIKey", default: DeepLAPIUsagePriority.webFirst)
     static let deepLTranslateEndPointKey = Key<String?>("EZDeepLTranslateEndPointKey")
