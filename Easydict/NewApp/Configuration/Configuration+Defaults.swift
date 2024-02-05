@@ -161,7 +161,7 @@ extension Defaults.Keys {
     static let tencentSecretId = Key<String?>("EZTencentSecretId")
     static let tencentSecretKey = Key<String?>("EZTencentSecretKey")
 
-    // ALI
+    // Ali
     static let aliAccessKeyId = Key<String?>("EZAliAccessKeyId")
     static let aliAccessKeySecret = Key<String?>("EZAliAccessKeySecret")
 
