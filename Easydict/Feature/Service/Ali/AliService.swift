@@ -37,6 +37,12 @@ class AliService: QueryService {
         NSLocalizedString("ali_translate", comment: "The name of Ali Translate")
     }
 
+    override func hasPrivateAPIKey() -> Bool {
+        let id = Defaults[.aliAccessKeyId] ?? ""
+        let secret = Defaults[.aliAccessKeySecret] ?? ""
+        return !id.isEmpty && !secret.isEmpty
+    }
+
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()

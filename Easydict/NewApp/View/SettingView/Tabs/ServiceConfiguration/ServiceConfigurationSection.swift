@@ -30,9 +30,10 @@ struct ServiceStringConfigurationSection<F: View>: View {
                 let value = Binding<String>.init {
                     value.wrappedValue ?? ""
                 } set: { newValue in
-                    value.wrappedValue = newValue
+                    value.wrappedValue = newValue.trimmingCharacters(in: .whitespaces)
                 }
                 TextField(textFieldTitleKey, text: value, prompt: Text(prompt))
+                    .lineLimit(1)
             },
             footer: footer
         )
@@ -67,7 +68,7 @@ struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: 
             HStack(alignment: .lastTextBaseline) {
                 Text(titleKey)
                 Spacer()
-                Button("service.service_configuration.reset") {
+                Button("service.configuration.reset") {
                     _value.reset()
                 }
                 .buttonStyle(.plain)

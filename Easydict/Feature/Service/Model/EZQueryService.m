@@ -13,6 +13,7 @@
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
+#import "EZEventMonitor.h"
 
 #define MethodNotImplemented()                                                                                                           \
 @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
@@ -82,6 +83,28 @@ userInfo:nil]
     _result.serviceType = self.serviceType;
     _result.queryModel = self.queryModel;
     _result.queryText = self.queryModel.queryText;
+}
+
+- (EZQueryResult *)resetServiceResult {
+    EZQueryResult *result = self.result;
+    [result reset];
+    if (!result) {
+        result = [[EZQueryResult alloc] init];
+    }
+    
+    NSArray *enabledReplaceTypes = @[
+        EZActionTypeAutoSelectQuery,
+        EZActionTypeShortcutQuery,
+        EZActionTypeInvokeQuery,
+    ];
+    if ([enabledReplaceTypes containsObject:self.queryModel.actionType]) {
+        result.showReplaceButton = EZEventMonitor.shared.isSelectedTextEditable;
+    } else {
+        result.showReplaceButton = NO;
+    }
+    
+    self.result = result;
+    return result;
 }
 
 - (MMOrderedDictionary *)langDict {
