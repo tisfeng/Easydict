@@ -25,7 +25,7 @@ extension ShortcutTab {
             KeyHolderDataItem(title: "shortcut_increase_font", type: .increaseFontSize),
             KeyHolderDataItem(title: "shortcut_decrease_font", type: .decreaseFontSize),
             KeyHolderDataItem(title: "open_in_google", type: .google),
-            KeyHolderDataItem(title: "open_in_eudic", type: .increaseFontSize),
+            KeyHolderDataItem(title: "open_in_eudic", type: .eudic),
             KeyHolderDataItem(title: "open_in_apple_dictionary", type: .increaseFontSize),
         ]
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
