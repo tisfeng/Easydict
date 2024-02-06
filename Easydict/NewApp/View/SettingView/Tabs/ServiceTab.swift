@@ -13,33 +13,20 @@ import SwiftUI
 struct ServiceTab: View {
     @StateObject private var viewModel: ServiceTabViewModel = .init()
 
-    @Environment(\.colorScheme) private var colorScheme
-
-    var bgColor: Color {
-        Color(nsColor: colorScheme == .light ? .windowBackgroundColor : .controlBackgroundColor)
-    }
-
-    var tableColor: Color {
-        Color(nsColor: colorScheme == .light ? .ez_tableRowViewBgLight() : .ez_tableRowViewBgDark())
-    }
-
     var body: some View {
         HStack {
             VStack {
                 WindowTypePicker(windowType: $viewModel.windowType)
                     .padding()
-                List {
+                List(selection: $viewModel.selectedService) {
                     ServiceItems()
                 }
-                .scrollContentBackground(.hidden)
                 .listStyle(.plain)
                 .scrollIndicators(.never)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .background(bgColor, in: RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom)
                 .padding(.horizontal)
             }
-            .background(bgColor)
             Group {
                 if let service = viewModel.selectedService {
                     // To provide configuration options for a service, follow these steps
@@ -172,18 +159,6 @@ private struct ServiceItemView: View {
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
         .padding(10)
-        .listRowBackground(viewModel.selectedService == service ? Color("service_cell_highlight_color") : tableColor)
-        .overlay {
-            TapHandler {
-                viewModel.selectedService = service
-            }
-        }
-    }
-
-    @Environment(\.colorScheme) private var colorScheme
-
-    private var tableColor: Color {
-        Color(nsColor: colorScheme == .light ? .ez_tableRowViewBgLight() : .ez_tableRowViewBgDark())
     }
 }
 
