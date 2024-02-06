@@ -10,7 +10,7 @@ import SwiftUI
 
 extension EasyDictMainMenu {
     struct MainMenuShortcutCommand: Commands {
-        @State private var appShortcutCommandList = [
+        private var appShortcutCommandList = [
             MainMenuShortcutCommandDataItem(title: "shortcut_clear_input", type: .clearInput),
             MainMenuShortcutCommandDataItem(title: "shortcut_clear_all", type: .clearAll),
             MainMenuShortcutCommandDataItem(title: "shortcut_copy", type: .copy),
