@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import GoogleGenerativeAI
 
@@ -59,7 +60,7 @@ public final class GeminiService: QueryService {
 
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {
-        let apiKey = UserDefaults.standard.string(forKey: EZGeminiAPIKey)
+        let apiKey = Defaults[.geminiAPIKey]
         if let apiKey, !apiKey.isEmpty {
             return apiKey
         } else {
@@ -107,7 +108,9 @@ public final class GeminiService: QueryService {
 
                         resultString += line
                         result.translatedResults = [resultString]
-                        completion(result, nil)
+                        await MainActor.run {
+                            completion(result, nil)
+                        }
                     }
 
                 } else {
@@ -117,7 +120,9 @@ public final class GeminiService: QueryService {
                     }
 
                     result.translatedResults = [resultString]
-                    completion(result, nil)
+                    await MainActor.run {
+                        completion(result, nil)
+                    }
                 }
             } catch {
                 /**
@@ -131,8 +136,9 @@ public final class GeminiService: QueryService {
                 let errorString = String(describing: error)
                 let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
                 ezError?.errorDataMessage = errorMessage
-
-                completion(result, ezError)
+                await MainActor.run {
+                    completion(result, ezError)
+                }
             }
         }
     }

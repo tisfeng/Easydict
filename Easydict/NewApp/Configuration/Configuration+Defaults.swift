@@ -140,21 +140,21 @@ class DefaultsWrapper<T: Defaults.Serializable> {
 
 // Service Configuration
 extension Defaults.Keys {
-    // OPENAI
+    // OpenAI
     static let openAIAPIKey = Key<String?>("EZOpenAIAPIKey")
-    static let openAITranslation = Key<String?>("EZOpenAITranslationKey")
-    static let openAIDictionary = Key<String?>("EZOpenAIDictionaryKey")
-    static let openAISentence = Key<String?>("EZOpenAISentenceKey")
-    static let openAIServiceUsageStatus = Key<String?>("EZOpenAIServiceUsageStatusKey")
-    static let openAIDomain = Key<String?>("EZOpenAIDomainKey")
+    static let openAITranslation = Key<String>("EZOpenAITranslationKey", default: "1")
+    static let openAIDictionary = Key<String>("EZOpenAIDictionaryKey", default: "1")
+    static let openAISentence = Key<String>("EZOpenAISentenceKey", default: "1")
+    static let openAIServiceUsageStatus = Key<OpenAIUsageStats>("EZOpenAIServiceUsageStatusKey", default: OpenAIUsageStats.default)
     static let openAIEndPoint = Key<String?>("EZOpenAIEndPointKey")
-    static let openAIModel = Key<String?>("EZOpenAIModelKey")
+    static let openAIModel = Key<OpenAIModels>("EZOpenAIModelKey", default: OpenAIModels.gpt3_5_turbo_0125)
 
-    // DEEPL
+    // DeepL
     static let deepLAuth = Key<String?>("EZDeepLAuthKey")
+    static let deepLTranslation = Key<DeepLAPIUsagePriority>("EZDeepLTranslationAPIKey", default: DeepLAPIUsagePriority.webFirst)
     static let deepLTranslateEndPointKey = Key<String?>("EZDeepLTranslateEndPointKey")
 
-    // BING
+    // Bing
     static let bingCookieKey = Key<String?>("EZBingCookieKey")
 
     // niu
@@ -167,9 +167,12 @@ extension Defaults.Keys {
     static let tencentSecretId = Key<String?>("EZTencentSecretId")
     static let tencentSecretKey = Key<String?>("EZTencentSecretKey")
 
-    // ALI
+    // Ali
     static let aliAccessKeyId = Key<String?>("EZAliAccessKeyId")
     static let aliAccessKeySecret = Key<String?>("EZAliAccessKeySecret")
+
+    // Gemni
+    static let geminiAPIKey = Key<String?>("EZGeminiAPIKey")
 }
 
 /// shortcut
