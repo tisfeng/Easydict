@@ -54,5 +54,9 @@ struct MainMenuShortcutCommandItem: View {
             }
         }
         .keyboardShortcut(dataItem.type)
+
+        if dataItem.type == .toggle || dataItem.type == .decreaseFontSize {
+            Divider()
+        }
     }
 }

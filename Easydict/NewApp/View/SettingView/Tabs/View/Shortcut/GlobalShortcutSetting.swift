@@ -13,11 +13,11 @@ extension ShortcutTab {
     struct GlobalShortcutSettingView: View {
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
         @State private var shortcutDataList = [
-            KeyHolderDataItem(title: "input_translate", type: .inputTranslate),
-            KeyHolderDataItem(title: "snip_translate", type: .snipTranslate),
-            KeyHolderDataItem(title: "select_translate", type: .selectTranslate),
-            KeyHolderDataItem(title: "show_mini_window", type: .showMiniWindow),
-            KeyHolderDataItem(title: "silent_screenshot_ocr", type: .silentScreenshotOcr),
+            KeyHolderDataItem(title: ShortcutType.inputTranslate.localizedStringKey(), type: .inputTranslate),
+            KeyHolderDataItem(title: ShortcutType.snipTranslate.localizedStringKey(), type: .snipTranslate),
+            KeyHolderDataItem(title: ShortcutType.selectTranslate.localizedStringKey(), type: .selectTranslate),
+            KeyHolderDataItem(title: ShortcutType.showMiniWindow.localizedStringKey(), type: .showMiniWindow),
+            KeyHolderDataItem(title: ShortcutType.silentScreenshotOcr.localizedStringKey(), type: .silentScreenshotOcr),
         ]
         var body: some View {
             let showAlter = Binding<Bool>(

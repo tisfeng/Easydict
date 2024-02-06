@@ -11,21 +11,21 @@ import SwiftUI
 extension EasyDictMainMenu {
     struct MainMenuShortcutCommand: Commands {
         @State private var appShortcutCommandList = [
-            MainMenuShortcutCommandDataItem(title: "shortcut_clear_input", type: .clearInput),
-            MainMenuShortcutCommandDataItem(title: "shortcut_clear_all", type: .clearAll),
-            MainMenuShortcutCommandDataItem(title: "shortcut_copy", type: .copy),
-            MainMenuShortcutCommandDataItem(title: "shortcut_copy_first_translated_text", type: .copyFirstResult),
-            MainMenuShortcutCommandDataItem(title: "shortcut_focus", type: .focus),
-            MainMenuShortcutCommandDataItem(title: "shortcut_play", type: .play),
-            MainMenuShortcutCommandDataItem(title: "retry", type: .retry),
-            MainMenuShortcutCommandDataItem(title: "toggle_languages", type: .toggle),
-            MainMenuShortcutCommandDataItem(title: "pin", type: .pin),
-            MainMenuShortcutCommandDataItem(title: "hide", type: .hide),
-            MainMenuShortcutCommandDataItem(title: "shortcut_increase_font", type: .increaseFontSize),
-            MainMenuShortcutCommandDataItem(title: "shortcut_decrease_font", type: .decreaseFontSize),
-            MainMenuShortcutCommandDataItem(title: "open_in_google", type: .google),
-            MainMenuShortcutCommandDataItem(title: "open_in_eudic", type: .eudic),
-            MainMenuShortcutCommandDataItem(title: "open_in_apple_dictionary", type: .appleDic),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.clearInput.localizedStringKey(), type: .clearInput),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.clearAll.localizedStringKey(), type: .clearAll),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.copy.localizedStringKey(), type: .copy),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.copyFirstResult.localizedStringKey(), type: .copyFirstResult),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.focus.localizedStringKey(), type: .focus),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.play.localizedStringKey(), type: .play),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.retry.localizedStringKey(), type: .retry),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.toggle.localizedStringKey(), type: .toggle),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.pin.localizedStringKey(), type: .pin),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.hide.localizedStringKey(), type: .hide),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.increaseFontSize.localizedStringKey(), type: .increaseFontSize),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.decreaseFontSize.localizedStringKey(), type: .decreaseFontSize),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.google.localizedStringKey(), type: .google),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.eudic.localizedStringKey(), type: .eudic),
+            MainMenuShortcutCommandDataItem(title: ShortcutType.appleDic.localizedStringKey(), type: .appleDic),
         ]
 
         var body: some Commands {
@@ -33,9 +33,6 @@ extension EasyDictMainMenu {
             CommandMenu("shortcut") {
                 ForEach(appShortcutCommandList) { item in
                     MainMenuShortcutCommandItem(dataItem: item)
-                    if item.title == "toggle_languages" || item.title == "shortcut_decrease_font" {
-                        Divider()
-                    }
                 }
             }
         }

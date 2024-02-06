@@ -12,21 +12,21 @@ import SwiftUI
 extension ShortcutTab {
     struct AppShortcutSettingView: View {
         @State private var shortcutDataList = [
-            KeyHolderDataItem(title: "shortcut_clear_input", type: .clearInput),
-            KeyHolderDataItem(title: "shortcut_clear_all", type: .clearAll),
-            KeyHolderDataItem(title: "shortcut_copy", type: .copy),
-            KeyHolderDataItem(title: "shortcut_copy_first_translated_text", type: .copyFirstResult),
-            KeyHolderDataItem(title: "shortcut_focus", type: .focus),
-            KeyHolderDataItem(title: "shortcut_play", type: .play),
-            KeyHolderDataItem(title: "retry", type: .retry),
-            KeyHolderDataItem(title: "toggle_languages", type: .toggle),
-            KeyHolderDataItem(title: "pin", type: .pin),
-            KeyHolderDataItem(title: "hide", type: .hide),
-            KeyHolderDataItem(title: "shortcut_increase_font", type: .increaseFontSize),
-            KeyHolderDataItem(title: "shortcut_decrease_font", type: .decreaseFontSize),
-            KeyHolderDataItem(title: "open_in_google", type: .google),
-            KeyHolderDataItem(title: "open_in_eudic", type: .eudic),
-            KeyHolderDataItem(title: "open_in_apple_dictionary", type: .appleDic),
+            KeyHolderDataItem(title: ShortcutType.clearInput.localizedStringKey(), type: .clearInput),
+            KeyHolderDataItem(title: ShortcutType.clearAll.localizedStringKey(), type: .clearAll),
+            KeyHolderDataItem(title: ShortcutType.copy.localizedStringKey(), type: .copy),
+            KeyHolderDataItem(title: ShortcutType.copyFirstResult.localizedStringKey(), type: .copyFirstResult),
+            KeyHolderDataItem(title: ShortcutType.focus.localizedStringKey(), type: .focus),
+            KeyHolderDataItem(title: ShortcutType.play.localizedStringKey(), type: .play),
+            KeyHolderDataItem(title: ShortcutType.retry.localizedStringKey(), type: .retry),
+            KeyHolderDataItem(title: ShortcutType.toggle.localizedStringKey(), type: .toggle),
+            KeyHolderDataItem(title: ShortcutType.pin.localizedStringKey(), type: .pin),
+            KeyHolderDataItem(title: ShortcutType.hide.localizedStringKey(), type: .hide),
+            KeyHolderDataItem(title: ShortcutType.increaseFontSize.localizedStringKey(), type: .increaseFontSize),
+            KeyHolderDataItem(title: ShortcutType.decreaseFontSize.localizedStringKey(), type: .decreaseFontSize),
+            KeyHolderDataItem(title: ShortcutType.google.localizedStringKey(), type: .google),
+            KeyHolderDataItem(title: ShortcutType.eudic.localizedStringKey(), type: .eudic),
+            KeyHolderDataItem(title: ShortcutType.appleDic.localizedStringKey(), type: .appleDic),
         ]
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
         var body: some View {

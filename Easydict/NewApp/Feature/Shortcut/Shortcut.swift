@@ -37,6 +37,53 @@ public enum ShortcutType: String {
     case appleDic = "EZAppleDicShortcutKey"
 }
 
+extension ShortcutType {
+    func localizedStringKey() -> String {
+        switch self {
+        case .inputTranslate:
+            "input_translate"
+        case .snipTranslate:
+            "snip_translate"
+        case .selectTranslate:
+            "select_translate"
+        case .silentScreenshotOcr:
+            "silent_screenshot_ocr"
+        case .showMiniWindow:
+            "show_mini_window"
+        case .clearInput:
+            "shortcut_clear_input"
+        case .clearAll:
+            "shortcut_clear_all"
+        case .copy:
+            "shortcut_copy"
+        case .copyFirstResult:
+            "shortcut_copy_first_translated_text"
+        case .focus:
+            "shortcut_focus"
+        case .play:
+            "shortcut_play"
+        case .retry:
+            "retry"
+        case .toggle:
+            "toggle_languages"
+        case .pin:
+            "pin"
+        case .hide:
+            "hide"
+        case .increaseFontSize:
+            "shortcut_increase_font"
+        case .decreaseFontSize:
+            "shortcut_decrease_font"
+        case .google:
+            "open_in_google"
+        case .eudic:
+            "open_in_eudic"
+        case .appleDic:
+            "open_in_apple_dictionary"
+        }
+    }
+}
+
 // Confict Message
 public struct ShortcutConfictAlertMessage: Identifiable {
     public var id: String { message }
