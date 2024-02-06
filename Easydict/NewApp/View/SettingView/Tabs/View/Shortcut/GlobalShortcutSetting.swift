@@ -12,43 +12,23 @@ import SwiftUI
 extension ShortcutTab {
     struct GobalShortcutSettingView: View {
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
-
+        private var shortcutDataList = [
+            KeyHolderDataItem(title: "input_translate", type: .inputTranslate),
+            KeyHolderDataItem(title: "snip_translate", type: .snipTranslate),
+            KeyHolderDataItem(title: "select_translate", type: .selectTranslate),
+            KeyHolderDataItem(title: "show_mini_window", type: .showMiniWindow),
+            KeyHolderDataItem(title: "silent_screenshot_ocr", type: .silentScreenshotOcr),
+        ]
         var body: some View {
             let showAlter = Binding<Bool>(
                 get: {
-                    if !confictAlterMessage.message.isEmpty {
-                        true
-                    } else {
-                        false
-                    }
+                    !confictAlterMessage.message.isEmpty
                 }, set: { _ in
                 }
             )
             Section {
-                HStack {
-                    Text("input_translate")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .inputTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("snip_translate")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .snipTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("select_translate")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .selectTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("show_mini_window")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .showMiniWindow, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("silent_screenshot_ocr")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                ForEach(shortcutDataList) { item in
+                    KeyHolderRowView(title: item.title, type: item.type, confictAlterMessage: $confictAlterMessage)
                 }
             } header: {
                 Text("global_shortcut_setting")

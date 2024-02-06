@@ -269,6 +269,8 @@
 		9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D93F2B6FC426000FBEA6 /* MainMenuShortcutCommand.swift */; };
 		9643D9422B6FE4AF000FBEA6 /* Shortcut+Bind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9412B6FE4AF000FBEA6 /* Shortcut+Bind.swift */; };
 		9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9432B6FEF5F000FBEA6 /* Shortcut+Default.swift */; };
+		9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */; };
+		9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */; };
 		9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */; };
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		967712EE2B5B943400105E0F /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967712ED2B5B943400105E0F /* Shortcut.swift */; };
@@ -778,6 +780,8 @@
 		9643D93F2B6FC426000FBEA6 /* MainMenuShortcutCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuShortcutCommand.swift; sourceTree = "<group>"; };
 		9643D9412B6FE4AF000FBEA6 /* Shortcut+Bind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Bind.swift"; sourceTree = "<group>"; };
 		9643D9432B6FEF5F000FBEA6 /* Shortcut+Default.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Default.swift"; sourceTree = "<group>"; };
+		9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderRowView.swift; sourceTree = "<group>"; };
+		9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderAlterView.swift; sourceTree = "<group>"; };
 		9672D7D02B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MASShortcutBinder+EZMASShortcutBinder.h"; sourceTree = "<group>"; };
 		9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MASShortcutBinder+EZMASShortcutBinder.m"; sourceTree = "<group>"; };
 		967712ED2B5B943400105E0F /* Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
@@ -2214,6 +2218,8 @@
 				9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */,
 				9627F9362B59956800B1E999 /* KeyHolderWrapper.swift */,
 				9643D9382B6F49E0000FBEA6 /* AppShortcutSetting.swift */,
+				9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */,
+				9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
@@ -2841,6 +2847,7 @@
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */,
+				9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
 				037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */,
@@ -2890,6 +2897,7 @@
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
+				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,

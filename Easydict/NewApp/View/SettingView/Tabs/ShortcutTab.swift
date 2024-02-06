@@ -6,7 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import SwiftUI
 
 @available(macOS 13, *)

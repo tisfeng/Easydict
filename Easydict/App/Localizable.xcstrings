@@ -3336,12 +3336,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Increase Font"
+            "value" : "Increase Font Size"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "增大字体"
           }
         }

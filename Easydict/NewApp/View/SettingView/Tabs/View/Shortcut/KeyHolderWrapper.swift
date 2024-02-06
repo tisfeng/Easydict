@@ -12,6 +12,12 @@ import KeyHolder
 import Magnet
 import SwiftUI
 
+public struct KeyHolderDataItem: Identifiable {
+    public var id: String { title }
+    var title: String
+    var type: ShortcutType
+}
+
 struct KeyHolderWrapper: NSViewRepresentable {
     func makeCoordinator() -> Coordinator {
         .init(shortcutType: type, confictAlterMessage: $confictAlterMessage)

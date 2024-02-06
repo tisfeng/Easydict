@@ -11,93 +11,34 @@ import SwiftUI
 @available(macOS 13, *)
 extension ShortcutTab {
     struct AppShortcutSettingView: View {
+        private var shortcutDataList = [
+            KeyHolderDataItem(title: "shortcut_clear_input", type: .clearInput),
+            KeyHolderDataItem(title: "shortcut_clear_all", type: .clearAll),
+            KeyHolderDataItem(title: "shortcut_copy", type: .copy),
+            KeyHolderDataItem(title: "shortcut_copy_first_teanslated_text", type: .copyFirstResult),
+            KeyHolderDataItem(title: "shortcut_focus", type: .focus),
+            KeyHolderDataItem(title: "shortcut_play", type: .play),
+            KeyHolderDataItem(title: "retry", type: .retry),
+            KeyHolderDataItem(title: "toggle_languages", type: .toggle),
+            KeyHolderDataItem(title: "pin", type: .pin),
+            KeyHolderDataItem(title: "hide", type: .hide),
+            KeyHolderDataItem(title: "shortcut_increase_font", type: .increaseFontSize),
+            KeyHolderDataItem(title: "shortcut_decrease_font", type: .decreaseFontSize),
+            KeyHolderDataItem(title: "open_in_google", type: .google),
+            KeyHolderDataItem(title: "open_in_eudic", type: .increaseFontSize),
+            KeyHolderDataItem(title: "open_in_apple_dictionary", type: .increaseFontSize),
+        ]
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
         var body: some View {
             let showAlter = Binding<Bool>(
                 get: {
-                    if !confictAlterMessage.message.isEmpty {
-                        true
-                    } else {
-                        false
-                    }
-                }, set: { _ in
-                }
+                    !confictAlterMessage.message.isEmpty
+                },
+                set: { _ in }
             )
             Section {
-                HStack {
-                    Text("shortcut_clear_input")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .clearInput, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_clear_all")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .clearAll, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_copy")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .copy, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_copy_first_teanslated_text")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .copyFirstResult, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_focus")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .focus, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_play")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .play, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("retry")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .retry, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("toggle_languages")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .toggle, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("pin")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .pin, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("hide")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .hide, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_increase_font")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .increaseFontSize, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("shortcut_decrease_font")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .decreaseFontSize, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("open_in_google")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .google, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("open_in_eudic")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .eudic, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
-                }
-                HStack {
-                    Text("open_in_apple_dictionary")
-                    Spacer()
-                    KeyHolderWrapper(shortcutType: .appleDic, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                ForEach(shortcutDataList) { item in
+                    KeyHolderRowView(title: item.title, type: item.type, confictAlterMessage: $confictAlterMessage)
                 }
             } header: {
                 Text("app_shortcut_setting")

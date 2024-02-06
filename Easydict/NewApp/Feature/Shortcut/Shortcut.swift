@@ -133,9 +133,7 @@ extension Shortcut {
         default: ()
         }
 
-        if hotKey != nil {
-            hotKey!.register()
-        }
+        hotKey?.register()
     }
 }
 
