@@ -10,71 +10,30 @@ import SwiftUI
 
 extension EasyDictMainMenu {
     struct MainMenuShortcutCommand: Commands {
+        @State private var appShortcutCommandList = [
+            MainMenuShortcutCommandDataItem(title: "shortcut_clear_input", type: .clearInput),
+            MainMenuShortcutCommandDataItem(title: "shortcut_clear_all", type: .clearAll),
+            MainMenuShortcutCommandDataItem(title: "shortcut_copy", type: .copy),
+            MainMenuShortcutCommandDataItem(title: "shortcut_copy_first_teanslated_text", type: .copyFirstResult),
+            MainMenuShortcutCommandDataItem(title: "shortcut_focus", type: .focus),
+            MainMenuShortcutCommandDataItem(title: "shortcut_play", type: .play),
+            MainMenuShortcutCommandDataItem(title: "retry", type: .retry),
+            MainMenuShortcutCommandDataItem(title: "toggle_languages", type: .toggle),
+            MainMenuShortcutCommandDataItem(title: "pin", type: .pin),
+            MainMenuShortcutCommandDataItem(title: "hide", type: .hide),
+            MainMenuShortcutCommandDataItem(title: "shortcut_increase_font", type: .increaseFontSize),
+            MainMenuShortcutCommandDataItem(title: "shortcut_decrease_font", type: .decreaseFontSize),
+            MainMenuShortcutCommandDataItem(title: "open_in_google", type: .google),
+            MainMenuShortcutCommandDataItem(title: "open_in_eudic", type: .eudic),
+            MainMenuShortcutCommandDataItem(title: "open_in_apple_dictionary", type: .appleDic),
+        ]
+
         var body: some Commands {
             // shortcut Commands
             CommandMenu("shortcut") {
-                Button("shortcut_clear_input") {
-                    Shortcut.shared.clearInput()
+                ForEach(appShortcutCommandList) { item in
+                    MainMenuShortcutCommandItem(dataItem: item)
                 }
-                .keyboardShortcut(.clearInput)
-                Button("shortcut_clear_all") {
-                    Shortcut.shared.clearAll()
-                }
-                .keyboardShortcut(.clearAll)
-                Button("shortcut_copy") {
-                    Shortcut.shared.shortcutCopy()
-                }
-                .keyboardShortcut(.copy)
-                Button("shortcut_copy_first_teanslated_text") {
-                    Shortcut.shared.shortcutCopyFirstResult()
-                }
-                .keyboardShortcut(.copyFirstResult)
-                Button("shortcut_focus") {
-                    Shortcut.shared.shortcutFocus()
-                }
-                .keyboardShortcut(.focus)
-                Button("shortcut_play") {
-                    Shortcut.shared.shortcutPlay()
-                }
-                .keyboardShortcut(.play)
-                Button("retry") {
-                    Shortcut.shared.shortcutRetry()
-                }
-                .keyboardShortcut(.retry)
-                Button("toggle_languages") {
-                    Shortcut.shared.shortcutToggle()
-                }
-                .keyboardShortcut(.toggle)
-                Divider()
-                Button("pin") {
-                    Shortcut.shared.shortcutPin()
-                }
-                .keyboardShortcut(.pin)
-                Button("hide") {
-                    Shortcut.shared.shortcutHide()
-                }
-                .keyboardShortcut(.hide)
-                Button("shortcut_increase_font") {
-                    Shortcut.shared.increaseFontSize()
-                }
-                .keyboardShortcut(.increaseFontSize)
-                Button("shortcut_decrease_font") {
-                    Shortcut.shared.decreaseFontSize()
-                }
-                .keyboardShortcut(.decreaseFontSize)
-                Divider()
-                Button("open_in_google") {
-                    Shortcut.shared.shortcutGoogle()
-                }
-                .keyboardShortcut(.google)
-                Button("open_in_eudic") {
-                    Shortcut.shared.shortcutEudic()
-                }
-                .keyboardShortcut(.eudic)
-                Button("open_in_apple_dictionary") {
-                    Shortcut.shared.shortcutAppleDic()
-                }
-                .keyboardShortcut(.appleDic)
             }
         }
     }
