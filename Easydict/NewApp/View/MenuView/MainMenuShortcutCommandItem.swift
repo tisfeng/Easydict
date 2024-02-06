@@ -15,7 +15,7 @@ struct MainMenuShortcutCommandDataItem: Identifiable {
 }
 
 struct MainMenuShortcutCommandItem: View {
-    @State public var dataItem: MainMenuShortcutCommandDataItem
+    public var dataItem: MainMenuShortcutCommandDataItem
 
     var body: some View {
         Button(LocalizedStringKey(dataItem.title)) {
