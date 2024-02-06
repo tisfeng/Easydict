@@ -11,7 +11,7 @@ import SwiftUI
 @available(macOS 13, *)
 extension ShortcutTab {
     struct AppShortcutSettingView: View {
-        private var shortcutDataList = [
+        @State private var shortcutDataList = [
             KeyHolderDataItem(title: "shortcut_clear_input", type: .clearInput),
             KeyHolderDataItem(title: "shortcut_clear_all", type: .clearAll),
             KeyHolderDataItem(title: "shortcut_copy", type: .copy),
