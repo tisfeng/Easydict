@@ -15,7 +15,7 @@ extension ShortcutTab {
             KeyHolderDataItem(title: "shortcut_clear_input", type: .clearInput),
             KeyHolderDataItem(title: "shortcut_clear_all", type: .clearAll),
             KeyHolderDataItem(title: "shortcut_copy", type: .copy),
-            KeyHolderDataItem(title: "shortcut_copy_first_teanslated_text", type: .copyFirstResult),
+            KeyHolderDataItem(title: "shortcut_copy_first_translated_text", type: .copyFirstResult),
             KeyHolderDataItem(title: "shortcut_focus", type: .focus),
             KeyHolderDataItem(title: "shortcut_play", type: .play),
             KeyHolderDataItem(title: "retry", type: .retry),

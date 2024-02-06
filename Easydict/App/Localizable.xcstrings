@@ -3649,7 +3649,14 @@
       }
     },
     "shortcut_confict_message (Shortcut.shared.confictMenuItem?.title ?? \"\")" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "shortcut_confict_message %@" : {
       "extractionState" : "manual",
@@ -3669,7 +3676,14 @@
       }
     },
     "shortcut_confict_title (keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "shortcut_confict_title %@" : {
       "extractionState" : "manual",
@@ -3700,12 +3714,12 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拷贝文本"
+            "value" : "复制文本"
           }
         }
       }
     },
-    "shortcut_copy_first_teanslated_text" : {
+    "shortcut_copy_first_translated_text" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -3717,7 +3731,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动复制第一个翻译结果"
+            "value" : "复制第一个翻译结果"
           }
         }
       }
@@ -3728,7 +3742,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Decrease Font"
+            "value" : "Decrease Font Size"
           }
         },
         "zh-Hans" : {
@@ -3767,7 +3781,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "增大字体"
           }
         }

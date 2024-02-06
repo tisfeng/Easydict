@@ -14,7 +14,7 @@ extension EasyDictMainMenu {
             MainMenuShortcutCommandDataItem(title: "shortcut_clear_input", type: .clearInput),
             MainMenuShortcutCommandDataItem(title: "shortcut_clear_all", type: .clearAll),
             MainMenuShortcutCommandDataItem(title: "shortcut_copy", type: .copy),
-            MainMenuShortcutCommandDataItem(title: "shortcut_copy_first_teanslated_text", type: .copyFirstResult),
+            MainMenuShortcutCommandDataItem(title: "shortcut_copy_first_translated_text", type: .copyFirstResult),
             MainMenuShortcutCommandDataItem(title: "shortcut_focus", type: .focus),
             MainMenuShortcutCommandDataItem(title: "shortcut_play", type: .play),
             MainMenuShortcutCommandDataItem(title: "retry", type: .retry),
