@@ -33,6 +33,9 @@ extension EasyDictMainMenu {
             CommandMenu("shortcut") {
                 ForEach(appShortcutCommandList) { item in
                     MainMenuShortcutCommandItem(dataItem: item)
+                    if item.title == "toggle_languages" || item.title == "shortcut_decrease_font" {
+                        Divider()
+                    }
                 }
             }
         }
