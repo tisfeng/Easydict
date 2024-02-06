@@ -18,7 +18,7 @@ struct KeyHolderRowView: View {
         HStack {
             Text(LocalizedStringKey(title))
             Spacer()
-            KeyHolderWrapper(shortcutType: type, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+            KeyHolderWrapper(shortcutType: type, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 26)
         }
     }
 }
