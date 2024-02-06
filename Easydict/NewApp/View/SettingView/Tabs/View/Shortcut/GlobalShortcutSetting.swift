@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(macOS 13, *)
 extension ShortcutTab {
-    struct GobalShortcutSettingView: View {
+    struct GlobalShortcutSettingView: View {
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
         private var shortcutDataList = [
             KeyHolderDataItem(title: "input_translate", type: .inputTranslate),

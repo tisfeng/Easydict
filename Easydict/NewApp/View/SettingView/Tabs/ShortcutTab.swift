@@ -13,7 +13,7 @@ struct ShortcutTab: View {
     var body: some View {
         Form {
             // Global shortcut
-            GobalShortcutSettingView()
+            GlobalShortcutSettingView()
             // In app shortcut
             AppShortcutSettingView()
         }
