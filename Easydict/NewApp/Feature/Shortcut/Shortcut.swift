@@ -13,11 +13,75 @@ import SwiftUI
 
 /// Shortcut Service
 public enum ShortcutType: String {
+    // Global
     case inputTranslate = "EZInputShortcutKey"
     case snipTranslate = "EZSnipShortcutKey"
     case selectTranslate = "EZSelectionShortcutKey"
     case silentScreenshotOcr = "EZScreenshotOCRShortcutKey"
     case showMiniWindow = "EZShowMiniShortcutKey"
+    // In App
+    case clearInput = "EZClearInputShortcutKey"
+    case clearAll = "EZClearAllShortcutKey"
+    case copy = "EZCopyShortcutKey"
+    case copyFirstResult = "EZCopyFirstResultShortcutKey"
+    case focus = "EZFocusShortcutKey"
+    case play = "EZPlayShortcutKey"
+    case retry = "EZRetryShortcutKey"
+    case toggle = "EZToggleShortcutKey"
+    case pin = "EZPinShortcutKey"
+    case hide = "EZHideShortcutKey"
+    case increaseFontSize = "EZIncreaseFontSizeShortcutKey"
+    case decreaseFontSize = "EZDecreaseFontSizeShortcutKey"
+    case google = "EZGoogleShortcutKey"
+    case eudic = "EZEudicShortcutKey"
+    case appleDic = "EZAppleDicShortcutKey"
+}
+
+extension ShortcutType {
+    func localizedStringKey() -> String {
+        switch self {
+        case .inputTranslate:
+            "input_translate"
+        case .snipTranslate:
+            "snip_translate"
+        case .selectTranslate:
+            "select_translate"
+        case .silentScreenshotOcr:
+            "silent_screenshot_ocr"
+        case .showMiniWindow:
+            "show_mini_window"
+        case .clearInput:
+            "shortcut_clear_input"
+        case .clearAll:
+            "shortcut_clear_all"
+        case .copy:
+            "shortcut_copy"
+        case .copyFirstResult:
+            "shortcut_copy_first_translated_text"
+        case .focus:
+            "shortcut_focus"
+        case .play:
+            "shortcut_play"
+        case .retry:
+            "retry"
+        case .toggle:
+            "toggle_languages"
+        case .pin:
+            "pin"
+        case .hide:
+            "hide"
+        case .increaseFontSize:
+            "shortcut_increase_font"
+        case .decreaseFontSize:
+            "shortcut_decrease_font"
+        case .google:
+            "open_in_google"
+        case .eudic:
+            "open_in_eudic"
+        case .appleDic:
+            "open_in_apple_dictionary"
+        }
+    }
 }
 
 // Confict Message
@@ -35,6 +99,14 @@ class Shortcut: NSObject {
     @objc static func setupShortcut() {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
+
+        if Defaults[.firstLaunch] {
+            Defaults[.firstLaunch] = false
+            // set defalut for app shortcut
+            shortcut.setDefaultForAppShortcut()
+        } else {
+            // do nothing
+        }
     }
 
     // Make sure the class has only one instance
@@ -78,7 +150,7 @@ extension Shortcut {
             HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
             return
         }
-        var hotKey: HotKey
+        var hotKey: HotKey?
         switch type {
         case .inputTranslate:
             hotKey = HotKey(identifier: type.rawValue,
@@ -105,54 +177,10 @@ extension Shortcut {
                             keyCombo: keyCombo,
                             target: Shortcut.shared,
                             action: #selector(Shortcut.showMiniFloatingWindow))
+        default: ()
         }
-        hotKey.register()
-    }
-}
 
-// shortcut binding func
-extension Shortcut {
-    @objc func selectTextTranslate() {
-        EZWindowManager.shared().selectTextTranslate()
-    }
-
-    @objc func snipTranslate() {
-        EZWindowManager.shared().snipTranslate()
-    }
-
-    @objc func inputTranslate() {
-        EZWindowManager.shared().inputTranslate()
-    }
-
-    @objc func showMiniFloatingWindow() {
-        EZWindowManager.shared().showMiniFloatingWindow()
-    }
-
-    @objc func screenshotOCR() {
-        EZWindowManager.shared().screenshotOCR()
-    }
-}
-
-// fetch shortcut KeyCombo
-extension Shortcut {
-    public func shortcutKeyCombo(_ type: ShortcutType) -> KeyCombo? {
-        switch type {
-        case .inputTranslate:
-            guard let keyCombo = Defaults[.inputShortcut] else { return nil }
-            return keyCombo
-        case .snipTranslate:
-            guard let keyCombo = Defaults[.snipShortcut] else { return nil }
-            return keyCombo
-        case .selectTranslate:
-            guard let keyCombo = Defaults[.selectionShortcut] else { return nil }
-            return keyCombo
-        case .silentScreenshotOcr:
-            guard let keyCombo = Defaults[.screenshotOCRShortcut] else { return nil }
-            return keyCombo
-        case .showMiniWindow:
-            guard let keyCombo = Defaults[.showMiniWindowShortcut] else { return nil }
-            return keyCombo
-        }
+        hotKey?.register()
     }
 }
 
@@ -169,6 +197,36 @@ struct KeyboardShortcut: ViewModifier {
             .screenshotOCRShortcut
         case .showMiniWindow:
             .showMiniWindowShortcut
+        case .clearInput:
+            .clearInputShortcut
+        case .clearAll:
+            .clearAllShortcut
+        case .copy:
+            .copyShortcut
+        case .copyFirstResult:
+            .copyFirstResultShortcut
+        case .focus:
+            .focusShortcut
+        case .play:
+            .playShortcut
+        case .retry:
+            .retryShortcut
+        case .toggle:
+            .toggleShortcut
+        case .pin:
+            .pinShortcut
+        case .hide:
+            .hideShortcut
+        case .increaseFontSize:
+            .increaseFontSize
+        case .decreaseFontSize:
+            .decreaseFontSize
+        case .google:
+            .googleShortcut
+        case .eudic:
+            .eudicShortcut
+        case .appleDic:
+            .appleDictionaryShortcut
         }
 
         _shortcut = .init(key)

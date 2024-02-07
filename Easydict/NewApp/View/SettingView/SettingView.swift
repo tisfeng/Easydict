@@ -36,13 +36,14 @@ struct SettingView: View {
             DisabledAppTab()
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
                 .tag(SettingTab.disabled)
-            AdvancedTab()
-                .tabItem { Label("advanced", systemImage: "gearshape.2") }
-                .tag(SettingTab.advanced)
 
             ShortcutTab()
                 .tabItem { Label("shortcut", systemImage: "command.square") }
                 .tag(SettingTab.shortcut)
+
+            AdvancedTab()
+                .tabItem { Label("advanced", systemImage: "gearshape.2") }
+                .tag(SettingTab.advanced)
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
@@ -65,24 +66,22 @@ struct SettingView: View {
     func resizeWindowFrame() {
         guard let window else { return }
 
-        // Disable zoom button, ref: https://stackoverflow.com/a/66039864/8378840
+        // Disable zoom button, refer: https://stackoverflow.com/a/66039864/8378840
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
         // Keep the settings page windows all the same width to avoid strange animations.
-        let maxWidth = 750
+        let maxWidth = 780
         let height = switch selection {
-        case .general:
-            maxWidth - 100
-        case .service:
-            600
-        case .disabled, .shortcut:
+        case .disabled:
             500
+        case .advanced:
+            400
         case .privacy:
             320
         case .about:
             450
         default:
-            400
+            maxWidth - 110
         }
 
         let newSize = CGSize(width: maxWidth, height: height)

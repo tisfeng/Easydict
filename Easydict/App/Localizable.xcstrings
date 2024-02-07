@@ -169,6 +169,23 @@
         }
       }
     },
+    "app_shortcut_setting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Shortcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用内快捷键"
+          }
+        }
+      }
+    },
     "appearenceType_dark" : {
       "localizations" : {
         "en" : {
@@ -2376,7 +2393,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "打开窗口时自动选中查询文本"
           }
         }
@@ -3563,6 +3580,40 @@
         }
       }
     },
+    "shortcut_clear_all" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear All"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空所有"
+          }
+        }
+      }
+    },
+    "shortcut_clear_input" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Input"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空查询内容"
+          }
+        }
+      }
+    },
     "shortcut_confict %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3598,7 +3649,14 @@
       }
     },
     "shortcut_confict_message (Shortcut.shared.confictMenuItem?.title ?? \"\")" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "shortcut_confict_message %@" : {
       "extractionState" : "manual",
@@ -3618,7 +3676,14 @@
       }
     },
     "shortcut_confict_title (keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "shortcut_confict_title %@" : {
       "extractionState" : "manual",
@@ -3633,6 +3698,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快捷键\"%@\"，无法使用"
+          }
+        }
+      }
+    },
+    "shortcut_copy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制文本"
+          }
+        }
+      }
+    },
+    "shortcut_copy_first_translated_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy first translated text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制第一个翻译结果"
+          }
+        }
+      }
+    },
+    "shortcut_decrease_font" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease Font Size"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减小字体"
+          }
+        }
+      }
+    },
+    "shortcut_focus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聚焦"
+          }
+        }
+      }
+    },
+    "shortcut_increase_font" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase Font Size"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增大字体"
+          }
+        }
+      }
+    },
+    "shortcut_play" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放单词发音"
           }
         }
       }

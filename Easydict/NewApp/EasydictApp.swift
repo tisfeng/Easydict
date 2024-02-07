@@ -52,7 +52,11 @@ struct EasydictApp: App {
                         .scaledToFit()
                 }
                 .help("Easydict 🍃")
-            }.menuBarExtraStyle(.menu)
+            }
+            .menuBarExtraStyle(.menu)
+            .commands {
+                EasyDictMainMenu() // main menu
+            }
             Settings {
                 SettingView()
             }
