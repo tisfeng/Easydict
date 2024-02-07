@@ -11,21 +11,21 @@ import SwiftUI
 extension EasyDictMainMenu {
     struct MainMenuShortcutCommand: Commands {
         @State private var appShortcutCommandList = [
-            MainMenuShortcutCommandDataItem(title: ShortcutType.clearInput.localizedStringKey(), type: .clearInput),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.clearAll.localizedStringKey(), type: .clearAll),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.copy.localizedStringKey(), type: .copy),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.copyFirstResult.localizedStringKey(), type: .copyFirstResult),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.focus.localizedStringKey(), type: .focus),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.play.localizedStringKey(), type: .play),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.retry.localizedStringKey(), type: .retry),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.toggle.localizedStringKey(), type: .toggle),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.pin.localizedStringKey(), type: .pin),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.hide.localizedStringKey(), type: .hide),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.increaseFontSize.localizedStringKey(), type: .increaseFontSize),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.decreaseFontSize.localizedStringKey(), type: .decreaseFontSize),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.google.localizedStringKey(), type: .google),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.eudic.localizedStringKey(), type: .eudic),
-            MainMenuShortcutCommandDataItem(title: ShortcutType.appleDic.localizedStringKey(), type: .appleDic),
+            MainMenuShortcutCommandDataItem(type: .clearInput),
+            MainMenuShortcutCommandDataItem(type: .clearAll),
+            MainMenuShortcutCommandDataItem(type: .copy),
+            MainMenuShortcutCommandDataItem(type: .copyFirstResult),
+            MainMenuShortcutCommandDataItem(type: .focus),
+            MainMenuShortcutCommandDataItem(type: .play),
+            MainMenuShortcutCommandDataItem(type: .retry),
+            MainMenuShortcutCommandDataItem(type: .toggle),
+            MainMenuShortcutCommandDataItem(type: .pin),
+            MainMenuShortcutCommandDataItem(type: .hide),
+            MainMenuShortcutCommandDataItem(type: .increaseFontSize),
+            MainMenuShortcutCommandDataItem(type: .decreaseFontSize),
+            MainMenuShortcutCommandDataItem(type: .google),
+            MainMenuShortcutCommandDataItem(type: .eudic),
+            MainMenuShortcutCommandDataItem(type: .appleDic),
         ]
 
         var body: some Commands {

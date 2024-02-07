@@ -9,8 +9,7 @@
 import SwiftUI
 
 struct MainMenuShortcutCommandDataItem: Identifiable {
-    public var id: String { title }
-    var title: String
+    public var id: String { type.localizedStringKey() }
     var type: ShortcutType
 }
 
@@ -18,7 +17,7 @@ struct MainMenuShortcutCommandItem: View {
     public var dataItem: MainMenuShortcutCommandDataItem
 
     var body: some View {
-        Button(LocalizedStringKey(dataItem.title)) {
+        Button(LocalizedStringKey(dataItem.type.localizedStringKey())) {
             switch dataItem.type {
             case .clearInput:
                 Shortcut.shared.clearInput()

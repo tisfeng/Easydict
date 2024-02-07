@@ -13,11 +13,11 @@ extension ShortcutTab {
     struct GlobalShortcutSettingView: View {
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
         @State private var shortcutDataList = [
-            KeyHolderDataItem(title: ShortcutType.inputTranslate.localizedStringKey(), type: .inputTranslate),
-            KeyHolderDataItem(title: ShortcutType.snipTranslate.localizedStringKey(), type: .snipTranslate),
-            KeyHolderDataItem(title: ShortcutType.selectTranslate.localizedStringKey(), type: .selectTranslate),
-            KeyHolderDataItem(title: ShortcutType.showMiniWindow.localizedStringKey(), type: .showMiniWindow),
-            KeyHolderDataItem(title: ShortcutType.silentScreenshotOcr.localizedStringKey(), type: .silentScreenshotOcr),
+            KeyHolderDataItem(type: .inputTranslate),
+            KeyHolderDataItem(type: .snipTranslate),
+            KeyHolderDataItem(type: .selectTranslate),
+            KeyHolderDataItem(type: .showMiniWindow),
+            KeyHolderDataItem(type: .silentScreenshotOcr),
         ]
         var body: some View {
             let showAlter = Binding<Bool>(
@@ -28,7 +28,7 @@ extension ShortcutTab {
             )
             Section {
                 ForEach(shortcutDataList) { item in
-                    KeyHolderRowView(title: item.title, type: item.type, confictAlterMessage: $confictAlterMessage)
+                    KeyHolderRowView(title: item.type.localizedStringKey(), type: item.type, confictAlterMessage: $confictAlterMessage)
                 }
             } header: {
                 Text("global_shortcut_setting")

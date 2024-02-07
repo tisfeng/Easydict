@@ -13,8 +13,7 @@ import Magnet
 import SwiftUI
 
 public struct KeyHolderDataItem: Identifiable {
-    public var id: String { title }
-    var title: String
+    public var id: String { type.localizedStringKey() }
     var type: ShortcutType
 }
 
