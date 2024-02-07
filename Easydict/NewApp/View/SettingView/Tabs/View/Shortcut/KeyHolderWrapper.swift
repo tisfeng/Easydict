@@ -64,6 +64,9 @@ extension KeyHolderWrapper {
         func recordViewDidEndRecording(_: RecordView) {}
 
         func recordView(_ recordView: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
+            if keyCombo == nil { // clear shortcut
+                Shortcut.shared.updateMenu(type)
+            }
             if let key = keyCombo {
                 // shortcut validate confict
                 if Shortcut.validateShortcut(key) {

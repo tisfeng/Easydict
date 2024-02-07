@@ -13,6 +13,4 @@ struct EasyDictMainMenu: Commands {
         // shortcut
         MainMenuShortcutCommand()
     }
-
-    func showAPIWebSite() {}
 }

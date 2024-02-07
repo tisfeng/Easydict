@@ -283,6 +283,8 @@
 		9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */; };
 		9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */; };
 		9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */; };
+		9643D9562B73B3CD000FBEA6 /* Shortcut+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9552B73B3CD000FBEA6 /* Shortcut+Menu.swift */; };
+		9643D9592B73BAFD000FBEA6 /* String+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9582B73BAFD000FBEA6 /* String+Localized.swift */; };
 		9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */; };
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		967712EE2B5B943400105E0F /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967712ED2B5B943400105E0F /* Shortcut.swift */; };
@@ -806,6 +808,8 @@
 		9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderRowView.swift; sourceTree = "<group>"; };
 		9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderAlterView.swift; sourceTree = "<group>"; };
 		9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuShortcutCommandItem.swift; sourceTree = "<group>"; };
+		9643D9552B73B3CD000FBEA6 /* Shortcut+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Menu.swift"; sourceTree = "<group>"; };
+		9643D9582B73BAFD000FBEA6 /* String+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Localized.swift"; sourceTree = "<group>"; };
 		9672D7D02B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MASShortcutBinder+EZMASShortcutBinder.h"; sourceTree = "<group>"; };
 		9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MASShortcutBinder+EZMASShortcutBinder.m"; sourceTree = "<group>"; };
 		967712ED2B5B943400105E0F /* Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
@@ -1262,6 +1266,7 @@
 			isa = PBXGroup;
 			children = (
 				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
+				9643D9582B73BAFD000FBEA6 /* String+Localized.swift */,
 			);
 			path = String;
 			sourceTree = "<group>";
@@ -2273,6 +2278,7 @@
 				9643D9432B6FEF5F000FBEA6 /* Shortcut+Default.swift */,
 				9643D9412B6FE4AF000FBEA6 /* Shortcut+Bind.swift */,
 				9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */,
+				9643D9552B73B3CD000FBEA6 /* Shortcut+Menu.swift */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
@@ -2927,6 +2933,7 @@
 				0AC8A8412B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
+				9643D9592B73BAFD000FBEA6 /* String+Localized.swift in Sources */,
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
@@ -3031,6 +3038,7 @@
 				03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */,
 				0AC8A83F2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift in Sources */,
 				03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */,
+				9643D9562B73B3CD000FBEA6 /* Shortcut+Menu.swift in Sources */,
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022E829231FA6001C7E63 /* entry.m in Sources */,
