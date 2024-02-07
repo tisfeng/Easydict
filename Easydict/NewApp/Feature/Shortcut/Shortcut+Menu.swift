@@ -10,7 +10,7 @@ import SwiftUI
 
 extension Shortcut {
     func updateMenu(_ type: ShortcutType) { // update shortcut menu
-        let shortcutTitle = String.localizedString(for: LocalizedStringKey(type.localizedStringKey()).stringKey ?? "")
+        let shortcutTitle = LocalizedStringKey(type.localizedStringKey()).stringValue()
         let shortcutMenu = NSApp.mainMenu?.items.first(where: { $0.title == "Shortcut" })
         let clearInput = shortcutMenu?.submenu?.items.first(where: { $0.title == shortcutTitle })
         clearInput?.keyEquivalent = ""
