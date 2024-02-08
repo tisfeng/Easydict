@@ -66,16 +66,20 @@ extension KeyHolderWrapper {
         func recordViewDidEndRecording(_: RecordView) {}
 
         func recordView(_ recordView: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
-            if keyCombo == nil { // clear shortcut
-                Shortcut.shared.updateMenu(type)
-            }
             if let key = keyCombo {
                 // shortcut validate confict
                 if Shortcut.validateShortcut(key) {
-                        confictAlterMessage = ShortcutConfictAlertMessage(title: String(localized: "shortcut_confict_title \(keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)"), message: String(localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")"))
+                    let title = String(localized: "shortcut_confict_title \(key.keyEquivalentModifierMaskString + key.characters)")
+                    let message = String(localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")")
+                    confictAlterMessage = ShortcutConfictAlertMessage(
+                        title: title,
+                        message: message
+                    )
                     recordView.clear()
                     return
                 }
+            } else { // clear shortcut
+                Shortcut.shared.updateMenu(type)
             }
             storeKeyCombo(with: keyCombo)
             Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
