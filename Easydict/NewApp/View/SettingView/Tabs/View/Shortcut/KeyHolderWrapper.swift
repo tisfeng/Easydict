@@ -17,6 +17,7 @@ public struct KeyHolderDataItem: Identifiable {
     var type: ShortcutType
 }
 
+@available(macOS 13, *)
 struct KeyHolderWrapper: NSViewRepresentable {
     func makeCoordinator() -> Coordinator {
         .init(shortcutType: type, confictAlterMessage: $confictAlterMessage)
@@ -44,6 +45,7 @@ struct KeyHolderWrapper: NSViewRepresentable {
     func updateNSView(_: NSViewType, context _: Context) {}
 }
 
+@available(macOS 13, *)
 extension KeyHolderWrapper {
     class Coordinator: NSObject, RecordViewDelegate {
         private var type: ShortcutType
@@ -70,14 +72,7 @@ extension KeyHolderWrapper {
             if let key = keyCombo {
                 // shortcut validate confict
                 if Shortcut.validateShortcut(key) {
-                    if #available(macOS 12, *) {
                         confictAlterMessage = ShortcutConfictAlertMessage(title: String(localized: "shortcut_confict_title \(keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)"), message: String(localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")"))
-                    } else {
-                        // Fallback on earlier versions
-                        let title = NSLocalizedString("shortcut_confict_title \(keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)", comment: "")
-                        let msg = NSLocalizedString("shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")", comment: "")
-                        confictAlterMessage = ShortcutConfictAlertMessage(title: title, message: msg)
-                    }
                     recordView.clear()
                     return
                 }
