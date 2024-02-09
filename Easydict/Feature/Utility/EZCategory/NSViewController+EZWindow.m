@@ -10,7 +10,7 @@
 
 @implementation NSViewController (EZWindow)
 
-- (NSWindow *)window {
+- (nullable NSWindow *)window {
     NSResponder *responder = self;
     while ((responder = [responder nextResponder])) {
         if ([responder isKindOfClass:[NSWindow class]]) {

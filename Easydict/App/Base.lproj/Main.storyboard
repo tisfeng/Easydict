@@ -716,18 +716,8 @@ DQ
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
-                    <connections>
-                        <outlet property="updaterController" destination="dTQ-Lg-1D6" id="ulf-mx-z8R"/>
-                    </connections>
-                </customObject>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
-                <customObject id="dTQ-Lg-1D6" customClass="SPUStandardUpdaterController">
-                    <connections>
-                        <outlet property="updaterDelegate" destination="Voe-Tx-rLC" id="3Ya-Y2-qiK"/>
-                        <outlet property="userDriverDelegate" destination="Voe-Tx-rLC" id="pxF-ql-RTh"/>
-                    </connections>
-                </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="qM9-fT-Fym" customClass="EZMenuItemManager">
                     <connections>
@@ -799,7 +789,7 @@ DQ
                         <menuItem title="检查更新" id="GQ2-WA-9QB">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="checkForUpdates:" target="dTQ-Lg-1D6" id="ydL-Jy-6z2"/>
+                                <action selector="checkForUpdateItem:" target="qM9-fT-Fym" id="m6i-mV-Hiy"/>
                             </connections>
                         </menuItem>
                         <menuItem title="帮助" id="ICB-w8-IqK">

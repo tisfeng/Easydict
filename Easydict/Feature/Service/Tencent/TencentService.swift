@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import Defaults
 import Foundation
 
 @objc(EZTencentService)
@@ -64,7 +65,7 @@ public final class TencentService: QueryService {
 
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
-        let secretId = UserDefaults.standard.string(forKey: EZTencentSecretId)
+        let secretId = Defaults[.tencentSecretId]
         if let secretId, !secretId.isEmpty {
             return secretId
         } else {
@@ -74,7 +75,7 @@ public final class TencentService: QueryService {
 
     // easydict://writeKeyValue?EZTencentSecretKey=xxx
     private var secretKey: String {
-        let secretKey = UserDefaults.standard.string(forKey: EZTencentSecretKey)
+        let secretKey = Defaults[.tencentSecretKey]
         if let secretKey, !secretKey.isEmpty {
             return secretKey
         } else {

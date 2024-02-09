@@ -47,7 +47,7 @@
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
     //    NSLog(@"log event: %@, %@", name, dict);
     
-    if (![EZConfiguration.shared allowAnalytics]) {
+    if (![Configuration.shared allowAnalytics]) {
         return;
     }
     

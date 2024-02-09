@@ -515,8 +515,14 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (NSString *)removeStartAndEndWith:(NSString *)start end:(NSString *)end {
-    if ([self isStartAndEndWith:start end:end]) {
-        return [self substringWithRange:NSMakeRange(start.length, self.length - start.length - end.length)];
+    /**
+     Fix crash
+     
+     SIGABRT: -[NSTaggedPointerString substringWithRange:]: Range {2, 18446744073709551614} out of bounds; string length 2
+     */
+    NSInteger substringLength = self.length - start.length - end.length;
+    if ([self isStartAndEndWith:start end:end] && substringLength > 0) {
+        return [self substringWithRange:NSMakeRange(start.length, substringLength)];
     }
     return self;
 }

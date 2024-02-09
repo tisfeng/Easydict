@@ -16,6 +16,7 @@
 #import "EZConfiguration.h"
 #import "NSImage+EZSymbolmage.h"
 #import "NSImage+EZResize.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kRowHeight = 45;
@@ -56,7 +57,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    self.appModelList = [[EZLocalStorage.shared selectTextTypeAppModelList] mutableCopy];
+    [self setupAppModelList];
     
     [self.titleTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(kMargin + 5); // ???: Why is the actual inset is 18?
@@ -75,6 +76,18 @@ static NSString *const EZColumnId = @"EZColumnId";
         make.size.mas_equalTo(CGSizeMake(80, 20));
         make.bottom.equalTo(self.view).offset(-kMargin);
     }];
+}
+
+- (void)setupAppModelList {
+    self.appModelList = [[NSMutableArray alloc] init];
+    NSArray<EZAppModel *> *allAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
+    NSWorkspace* workspace = [NSWorkspace sharedWorkspace];
+    for (EZAppModel *appModel in allAppModelList) {
+        NSURL *appURL = [workspace URLForApplicationWithBundleIdentifier:appModel.appBundleID];
+        if (appURL) {
+            [self.appModelList addObject:appModel];
+        }
+    }
 }
 
 
@@ -254,7 +267,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     [openPanel setAllowedContentTypes:allowedTypes];
     
     // ???: Since [auto select] will cause lag when dragging select apps, I don't know why 😰
-    EZConfiguration.shared.disabledAutoSelect = YES;
+    Configuration.shared.disabledAutoSelect = YES;
     
     NSModalResponse result = [openPanel runModal];
     if (result == NSModalResponseOK) {
@@ -267,7 +280,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         [self.tableView reloadData];
     }
     
-    EZConfiguration.shared.disabledAutoSelect = NO;
+    Configuration.shared.disabledAutoSelect = NO;
 }
 
 - (NSArray<EZAppModel *> *)appModelsFromBundleIDDict:(NSDictionary<NSString *, NSNumber *> *)appBundleIDDict {

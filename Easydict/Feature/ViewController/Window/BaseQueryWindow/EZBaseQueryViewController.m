@@ -192,7 +192,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *services = [NSMutableArray array];
     
     self.youdaoService = nil;
-    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     
     NSArray *allServices = [EZLocalStorage.shared allServices:self.windowType];
     for (EZQueryService *service in allServices) {
@@ -352,7 +352,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (EZQueryService *)defaultTTSService {
-    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
         _defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
     }
@@ -480,7 +480,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
             
-            if (EZConfiguration.shared.autoCopyOCRText) {
+            if (Configuration.shared.autoCopyOCRText) {
                 [inputText copyToPasteboardSafely];
             }
             
@@ -493,7 +493,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
             
-            BOOL autoSnipTranslate = EZConfiguration.shared.autoQueryOCRText;
+            BOOL autoSnipTranslate = Configuration.shared.autoQueryOCRText;
             if (autoSnipTranslate && queryModel.autoQuery) {
                 [self startQueryText];
             }
@@ -522,11 +522,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)focusInputTextView {
     // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
-    if (self.queryView.window == self.window) {
+    if (self.queryView.window == self.baseQueryWindow) {
         // Need to activate the current application first.
         [NSApp activateIgnoringOtherApps:YES];
         
-        [self.window makeFirstResponder:self.queryView.textView];
+        [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+        if (Configuration.shared.selectQueryTextWhenWindowActivate) {
+            self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
+        }
     }
 }
 
@@ -1021,32 +1024,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (NSArray<EZQueryResult *> *)resetAllResults {
     NSMutableArray *allResults = [NSMutableArray array];
     for (EZQueryService *service in self.services) {
-        EZQueryResult *result = [self resetServiceResult:service];
+        EZQueryResult *result = [service resetServiceResult];
         [allResults addObject:result];
     }
     return allResults;
-}
-
-- (EZQueryResult *)resetServiceResult:(EZQueryService *)service {
-    EZQueryResult *result = service.result;
-    [result reset];
-    if (!result) {
-        result = [[EZQueryResult alloc] init];
-    }
-    
-    NSArray *enabledReplaceTypes = @[
-        EZActionTypeAutoSelectQuery,
-        EZActionTypeShortcutQuery,
-        EZActionTypeInvokeQuery,
-    ];
-    if ([enabledReplaceTypes containsObject:self.queryModel.actionType]) {
-        result.showReplaceButton = EZEventMonitor.shared.isSelectedTextEditable;
-    } else {
-        result.showReplaceButton = NO;
-    }
-    
-    service.result = result;
-    return result;
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
@@ -1199,7 +1180,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self detectQueryText:^(NSString *_Nonnull language) {
-            if ([EZConfiguration.shared autoQueryPastedText]) {
+            if ([Configuration.shared autoQueryPastedText]) {
                 [self startQueryWithType:EZActionTypeInputQuery];
             }
         }];
@@ -1292,7 +1273,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // Make enabledQuery = YES before retry, it may be closed manually.
         service.enabledQuery = YES;
         
-        EZQueryResult *newResult = [self resetServiceResult:service];
+        EZQueryResult *newResult = [service resetServiceResult];
         [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
             [self queryWithModel:self.queryModel service:service autoPlay:NO];
         }];
@@ -1420,7 +1401,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
-    [self.window setFrame:safeFrame display:NO];
+    [self.baseQueryWindow setFrame:safeFrame display:NO];
     
     // Restore tableView height.
     self.tableView.height = tableViewHeight;
@@ -1484,7 +1465,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Auto play English word
 
 - (void)autoPlayEnglishWordAudio {
-    if (!EZConfiguration.shared.autoPlayAudio) {
+    if (!Configuration.shared.autoPlayAudio) {
         return;
     }
     
@@ -1502,7 +1483,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Auto copy translated text.
 - (void)autoCopyTranslatedTextOfService:(EZQueryService *)service {
-    if (![EZConfiguration.shared autoCopyFirstTranslatedText]) {
+    if (![Configuration.shared autoCopyFirstTranslatedText]) {
         service.autoCopyTranslatedTextBlock = nil;
         return;
     }

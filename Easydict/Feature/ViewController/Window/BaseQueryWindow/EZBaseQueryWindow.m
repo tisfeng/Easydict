@@ -70,7 +70,7 @@
 - (void)setQueryViewController:(EZBaseQueryViewController *)viewController {
     _queryViewController = viewController;
     
-    viewController.window = self;
+    viewController.baseQueryWindow = self;
     self.contentViewController = viewController;
 }
 

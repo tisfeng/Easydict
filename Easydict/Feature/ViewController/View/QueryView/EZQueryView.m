@@ -74,7 +74,7 @@
     textView.delegate = self;
     textView.textStorage.delegate = self;
     textView.textContainerInset = CGSizeMake(6, 8);
-    textView.font = [NSFont systemFontOfSize:14 * EZConfiguration.shared.fontSizeRatio];
+    textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
     
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
@@ -87,7 +87,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
         mm_strongify(self);
-        self.textView.font = [NSFont systemFontOfSize:14 * EZConfiguration.shared.fontSizeRatio];
+        self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
     }];
     
     // When programatically setting the text, like auto select text, or OCR text.

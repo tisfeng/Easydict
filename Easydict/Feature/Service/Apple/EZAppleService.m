@@ -16,6 +16,7 @@
 #import <CoreImage/CoreImage.h>
 #import "NSString+EZUtils.h"
 #import "EZAppleDictionary.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
@@ -23,7 +24,7 @@ static NSString *const kIndentationText = @"";
 
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"〔", @"〕" ];
 
-static CGFloat const kParagraphLineHeightRatio = 1.2;
+static CGFloat const kParagraphLineHeightRatio = 1.5;
 
 static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
@@ -607,7 +608,7 @@ static EZAppleService *_instance;
     NLLanguage language = NLLanguageEnglish;
     // 729
     if ([text isNumbers]) {
-        EZLanguage firstLanguage = EZConfiguration.shared.firstLanguage;
+        EZLanguage firstLanguage = Configuration.shared.firstLanguage;
         language = [self appleLanguageFromLanguageEnum:firstLanguage];
     }
     
@@ -1210,18 +1211,6 @@ static EZAppleService *_instance;
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
             CGFloat deltaX = boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width);
             
-            // Note that line spacing is inaccurate, sometimes it's too small 😢
-            BOOL isNewParagraph = NO;
-            if (deltaY > 0) {
-                // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
-                BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
-                                                            prevTextObservation:prevTextObservation
-                                                     greaterThanLineHeightRatio:kParagraphLineHeightRatio];
-                if (isBigLineSpacing) {
-                    isNewParagraph = YES;
-                }
-            }
-            
             // Note that sometimes the line frames will overlap a little, then deltaY will less then 0
             BOOL isNewLine = NO;
             if (deltaY > 0) {
@@ -1250,10 +1239,9 @@ static EZAppleService *_instance;
                 if (isNeedRemoveLastDashOfText) {
                     mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
                 }
-            } else if (isNewParagraph || isNewLine) {
+            } else if (isNewLine) {
                 joinedString = [self joinedStringOfTextObservation:textObservation
-                                               prevTextObservation:prevTextObservation
-                                                    isNewParagraph:isNewParagraph];
+                                               prevTextObservation:prevTextObservation];
             } else {
                 joinedString = @" "; // if the same line, just join two texts
             }
@@ -1488,9 +1476,10 @@ static EZAppleService *_instance;
 /// Get joined string of text, according to its last char.
 - (NSString *)joinedStringOfTextObservation:(VNRecognizedTextObservation *)textObservation
                         prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
-                             isNewParagraph:(BOOL)isNewParagraph {
+{
     NSString *joinedString = @"";
     BOOL needLineBreak = NO;
+    BOOL isNewParagraph = NO;
     
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
     CGFloat prevLineLength = prevBoundingBox.size.width;
@@ -1508,7 +1497,7 @@ static EZAppleService *_instance;
     
     BOOL hasPrevIndentation = [self hasIndentationOfTextObservation:prevTextObservation];
     BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
-    
+        
     BOOL isPrevLongText = [self isLongTextObservation:prevTextObservation isStrict:NO];
     
     BOOL isEqualChineseText = [self isEqualChineseTextObservation:textObservation prevTextObservation:prevTextObservation];
@@ -1892,6 +1881,20 @@ static EZAppleService *_instance;
     BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:self.minXLineTextObservation];
     BOOL hasIndentation = !isEqualX;
     return hasIndentation;
+}
+
+- (BOOL)hasIndentationOfTextObservation:(VNRecognizedTextObservation *)textObservation
+                    prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
+    BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
+    
+    CGFloat lineX = CGRectGetMinX(textObservation.boundingBox);
+    CGFloat prevLineX = CGRectGetMinX(prevTextObservation.boundingBox);
+    CGFloat dx = lineX - prevLineX;
+    
+    if (!isEqualX && dx < 0) {
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)isEqualTextObservation:(VNRecognizedTextObservation *)textObservation

@@ -11,6 +11,7 @@
 #import "EZConfiguration.h"
 #import "NSViewController+EZWindow.h"
 #import "NSImage+EZSymbolmage.h"
+#import "Easydict-Swift.h"
 
 @interface EZPrivacyViewController ()
 
@@ -61,7 +62,7 @@
                                                       action:@selector(analyticsButtonClicked:)];
     [self.contentView addSubview:self.analyticsButton];
     
-    EZConfiguration *configuration = [EZConfiguration shared];
+    Configuration *configuration = [Configuration shared];
     self.crashLogButton.mm_isOn = configuration.allowCrashLog;
     self.analyticsButton.mm_isOn = configuration.allowAnalytics;
 }
@@ -120,16 +121,16 @@
             } else {
                 sender.mm_isOn = YES;
             }
-            EZConfiguration.shared.allowCrashLog = sender.mm_isOn;
+            Configuration.shared.allowCrashLog = sender.mm_isOn;
         }];
     } else {
-        EZConfiguration.shared.allowCrashLog = YES;
+        Configuration.shared.allowCrashLog = YES;
     }
 }
 
 
 - (void)analyticsButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.allowAnalytics = sender.mm_isOn;
+    Configuration.shared.allowAnalytics = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController
@@ -143,12 +144,14 @@
 }
 
 - (NSImage *)toolbarItemImage {
-    //    NSImage *privacyImage = [NSImage imageWithSystemSymbolName:@"hand.raised.square.fill" accessibilityDescription:nil];
-    //    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
-    //    privacyImage = [privacyImage resizeToSize:CGSizeMake(14, 14)];
-    
     NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
-    privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+    /**
+     SF image "hand.raised.square" require macOS 12.0
+     Fix: https://github.com/tisfeng/Easydict/pull/212#discussion_r1437951644
+     */
+    if (@available(macOS 12.0, *)) {
+        privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+    }
     privacyImage = [privacyImage imageWithTintColor:[NSColor ez_imageTintBlueColor]];
     
     return privacyImage;

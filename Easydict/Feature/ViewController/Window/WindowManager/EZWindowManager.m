@@ -15,6 +15,7 @@
 #import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
+#import "Easydict-Swift.h"
 
 @interface EZWindowManager ()
 
@@ -154,7 +155,7 @@ static EZWindowManager *_instance;
     mm_weakify(self);
     
     EZButton *popButton = self.popButtonWindow.popButton;
-    EZConfiguration *config = [EZConfiguration shared];
+    Configuration *config = [Configuration shared];
     
     if (config.hideMainWindow) {
         // FIXME: Click pop button will also show preferences window.
@@ -182,7 +183,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)popButtonWindowClicked {
-    EZWindowType windowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
+    EZWindowType windowType = Configuration.shared.mouseSelectTranslateWindowType;
     self.actionType = EZActionTypeAutoSelectQuery;
     [self showFloatingWindowType:windowType queryText:self.selectedText];
     [self->_popButtonWindow close];
@@ -291,7 +292,7 @@ static EZWindowManager *_instance;
 - (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(nullable NSString *)queryText
                     actionType:(EZActionType)actionType {
-    BOOL autoQuery = [EZConfiguration.shared autoQuerySelectedText];
+    BOOL autoQuery = [Configuration.shared autoQuerySelectedText];
     [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType];
 }
 
@@ -308,7 +309,7 @@ static EZWindowManager *_instance;
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
              completionHandler:(nullable void (^)(void))completionHandler {
-    BOOL autoQuery = [EZConfiguration.shared autoQuerySelectedText];
+    BOOL autoQuery = [Configuration.shared autoQuerySelectedText];
     [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType atPoint:point completionHandler:completionHandler];
 }
 
@@ -361,7 +362,7 @@ static EZWindowManager *_instance;
         }
         
         // TODO: Maybe we should remove this option, it seems useless.
-        if ([EZConfiguration.shared autoCopySelectedText]) {
+        if ([Configuration.shared autoCopySelectedText]) {
             [queryText copyToPasteboard];
         }
         
@@ -434,11 +435,6 @@ static EZWindowManager *_instance;
     [window.queryViewController focusInputTextView];
     
     [self updateFloatingWindowType:window.windowType];
-    
-    // mainWindow has been ordered out before, so we need to order back.
-    if ([EZMainQueryWindow isAlive]) {
-        [self.mainWindow orderBack:nil];
-    }
 }
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
@@ -517,7 +513,7 @@ static EZWindowManager *_instance;
     //    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
     //    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
     
-    if (EZConfiguration.shared.adjustPopButtomOrigin) {
+    if (Configuration.shared.adjustPopButtomOrigin) {
         // Since the pop button may cover selected text, we need to move it to the left.
         CGFloat horizontalOffset = 20;
         
@@ -539,7 +535,7 @@ static EZWindowManager *_instance;
 
 - (CGPoint)getMiniWindowLocation {
     CGPoint position = [self getShowingMouseLocation];
-    if (EZConfiguration.shared.adjustPopButtomOrigin) {
+    if (Configuration.shared.adjustPopButtomOrigin) {
         position.y = position.y - 8;
     }
     
@@ -587,7 +583,7 @@ static EZWindowManager *_instance;
 /// !!!: This return value is top-left point.
 - (CGPoint)getFixedWindowLocation {
     CGPoint position = CGPointZero;
-    EZShowWindowPosition windowPosition = EZConfiguration.shared.fixedWindowPosition;
+    EZShowWindowPosition windowPosition = Configuration.shared.fixedWindowPosition;
     switch (windowPosition) {
         case EZShowWindowPositionRight: {
             position = [self getFloatingWindowInRightSideOfScreenPoint:self.fixedWindow];
@@ -651,7 +647,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)showMainWindowIfNedded {
-    BOOL showFlag = !EZConfiguration.shared.hideMainWindow;
+    BOOL showFlag = !Configuration.shared.hideMainWindow;
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
     [NSApp setActivationPolicy:activationPolicy];
     
@@ -689,13 +685,18 @@ static EZWindowManager *_instance;
         return;
     }
     
-    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     NSLog(@"selectTextTranslate windowType: %@", @(windowType));
     self.eventMonitor.actionType = EZActionTypeShortcutQuery;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
-        // If text is nil, currently, we choose to clear input.
-        self.selectedText = [text trim] ?: @"";
         self.actionType = self.eventMonitor.actionType;
+        
+        // Clear query if text is nil and user don't want to keep the last result.
+        if (!text && !Configuration.shared.keepPrevResultWhenEmpty) {
+            text = @"";
+        }
+        self.selectedText = [text trim];
+        
         [self showFloatingWindowType:windowType queryText:self.selectedText];
     }];
 }
@@ -715,7 +716,7 @@ static EZWindowManager *_instance;
     }
     
     // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
-    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     
     // Wait to close floating window if need.
@@ -755,7 +756,7 @@ static EZWindowManager *_instance;
         return;
     }
     
-    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
         [self closeFloatingWindow];
@@ -763,7 +764,7 @@ static EZWindowManager *_instance;
     }
     
     NSString *queryText = nil;
-    if ([EZConfiguration.shared clearInput]) {
+    if ([Configuration.shared clearInput]) {
         queryText = @"";
     }
     
@@ -775,7 +776,7 @@ static EZWindowManager *_instance;
 - (void)showMiniFloatingWindow {
     MMLogInfo(@"showMiniFloatingWindow");
     
-    EZWindowType windowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
+    EZWindowType windowType = Configuration.shared.mouseSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
         [self closeFloatingWindow];
