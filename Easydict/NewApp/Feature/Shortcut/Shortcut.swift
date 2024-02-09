@@ -99,14 +99,6 @@ class Shortcut: NSObject {
     @objc static func setupShortcut() {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
-
-        if Defaults[.firstLaunch] {
-            Defaults[.firstLaunch] = false
-            // set defalut for app shortcut
-            shortcut.setDefaultForAppShortcut()
-        } else {
-            // do nothing
-        }
     }
 
     // Make sure the class has only one instance

@@ -8,24 +8,3 @@
 
 import Defaults
 import Magnet
-
-extension Shortcut {
-    // set defalut for app shortcut
-    func setDefaultForAppShortcut() {
-        Defaults[.clearInputShortcut] = KeyCombo(key: .k, cocoaModifiers: .command)
-        Defaults[.clearAllShortcut] = KeyCombo(key: .k, cocoaModifiers: [.command, .shift])
-        Defaults[.copyShortcut] = KeyCombo(key: .c, cocoaModifiers: [.command, .shift])
-        Defaults[.copyFirstResultShortcut] = KeyCombo(key: .j, cocoaModifiers: [.command, .shift])
-        Defaults[.focusShortcut] = KeyCombo(key: .i, cocoaModifiers: .command)
-        Defaults[.playShortcut] = KeyCombo(key: .s, cocoaModifiers: .command)
-        Defaults[.retryShortcut] = KeyCombo(key: .r, cocoaModifiers: .command)
-        Defaults[.toggleShortcut] = KeyCombo(key: .t, cocoaModifiers: .command)
-        Defaults[.pinShortcut] = KeyCombo(key: .p, cocoaModifiers: .command)
-        Defaults[.hideShortcut] = KeyCombo(key: .y, cocoaModifiers: .command)
-        Defaults[.increaseFontSize] = KeyCombo(key: .keypadPlus, cocoaModifiers: .command)
-        Defaults[.decreaseFontSize] = KeyCombo(key: .keypadMinus, cocoaModifiers: .command)
-        Defaults[.googleShortcut] = KeyCombo(key: .return, cocoaModifiers: .command)
-        Defaults[.eudicShortcut] = KeyCombo(key: .return, cocoaModifiers: [.command, .shift])
-        Defaults[.appleDictionaryShortcut] = KeyCombo(key: .d, cocoaModifiers: [.command, .shift])
-    }
-}
