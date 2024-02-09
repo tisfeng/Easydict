@@ -61,7 +61,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         }
         .alert(viewModel.alertMessage, isPresented: $viewModel.isAlertPresented, actions: {
             Button("ok") {
-                viewModel.isAlertPresented = false
+                viewModel.reset()
             }
         })
     }
@@ -70,10 +70,11 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         viewModel.isValidating.toggle()
         service.validate { _, error in
             DispatchQueue.main.async {
+                guard viewModel.isValidating else { return }
+                viewModel.isValidating = false
                 viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
                 print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
-                viewModel.isValidating.toggle()
-                viewModel.isAlertPresented.toggle()
+                viewModel.isAlertPresented = true
             }
         }
     }
@@ -102,6 +103,12 @@ private class ServiceValidationViewModel: ObservableObject {
                     }
                 }
         )
+    }
+
+    func reset() {
+        isValidating = false
+        alertMessage = ""
+        isAlertPresented = false
     }
 }
 
