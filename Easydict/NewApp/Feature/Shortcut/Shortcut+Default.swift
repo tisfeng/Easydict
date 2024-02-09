@@ -12,6 +12,12 @@ import Magnet
 extension Shortcut {
     // set defalut for app shortcut
     func setDefaultForAppShortcut() {
+        Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
+        Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
+        Defaults[.inputShortcut] = KeyCombo(key: .a, cocoaModifiers: .option)
+        Defaults[.screenshotOCRShortcut] = KeyCombo(key: .f, cocoaModifiers: [.option, .shift])
+        Defaults[.showMiniWindowShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
+
         Defaults[.clearInputShortcut] = KeyCombo(key: .k, cocoaModifiers: .command)
         Defaults[.clearAllShortcut] = KeyCombo(key: .k, cocoaModifiers: [.command, .shift])
         Defaults[.copyShortcut] = KeyCombo(key: .c, cocoaModifiers: [.command, .shift])
