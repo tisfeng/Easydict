@@ -21,7 +21,7 @@ extension QueryService: ServiceSecretConfigreValidatable {
         resetServiceResult()
         /**
          To reduce output text, save cost, a simple translation example is enough.
-         
+
          1. use zh -> en to avoid analyze English sentence.
          2. if Chinese text length > 5, it won't query dict.
          */
