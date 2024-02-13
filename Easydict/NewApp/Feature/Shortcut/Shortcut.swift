@@ -103,7 +103,7 @@ class Shortcut: NSObject {
         if Defaults[.firstLaunch] {
             Defaults[.firstLaunch] = false
             // set defalut for app shortcut
-            shortcut.setDefaultForAppShortcut()
+            shortcut.setDefaultForShortcut()
         } else {
             // do nothing
         }
