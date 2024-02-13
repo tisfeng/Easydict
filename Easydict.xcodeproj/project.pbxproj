@@ -279,6 +279,7 @@
 		9643D93D2B6F829C000FBEA6 /* MainMenuCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D93C2B6F829C000FBEA6 /* MainMenuCommand.swift */; };
 		9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D93F2B6FC426000FBEA6 /* MainMenuShortcutCommand.swift */; };
 		9643D9422B6FE4AF000FBEA6 /* Shortcut+Bind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9412B6FE4AF000FBEA6 /* Shortcut+Bind.swift */; };
+		9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9432B6FEF5F000FBEA6 /* Shortcut+Default.swift */; };
 		9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */; };
 		9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */; };
 		9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */; };
@@ -802,6 +803,7 @@
 		9643D93C2B6F829C000FBEA6 /* MainMenuCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuCommand.swift; sourceTree = "<group>"; };
 		9643D93F2B6FC426000FBEA6 /* MainMenuShortcutCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuShortcutCommand.swift; sourceTree = "<group>"; };
 		9643D9412B6FE4AF000FBEA6 /* Shortcut+Bind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Bind.swift"; sourceTree = "<group>"; };
+		9643D9432B6FEF5F000FBEA6 /* Shortcut+Default.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Default.swift"; sourceTree = "<group>"; };
 		9643D9452B71D103000FBEA6 /* KeyHolderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderRowView.swift; sourceTree = "<group>"; };
 		9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderAlterView.swift; sourceTree = "<group>"; };
 		9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuShortcutCommandItem.swift; sourceTree = "<group>"; };
@@ -2270,6 +2272,7 @@
 			isa = PBXGroup;
 			children = (
 				967712ED2B5B943400105E0F /* Shortcut.swift */,
+				9643D9432B6FEF5F000FBEA6 /* Shortcut+Default.swift */,
 				9643D9412B6FE4AF000FBEA6 /* Shortcut+Bind.swift */,
 				9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */,
 				9643D9552B73B3CD000FBEA6 /* Shortcut+Menu.swift */,
@@ -3000,6 +3003,7 @@
 				03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */,
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
+				9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */,
 				03542A552937B7DE00C34C33 /* EZError.m in Sources */,
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
