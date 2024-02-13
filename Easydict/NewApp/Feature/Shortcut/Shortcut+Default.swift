@@ -17,11 +17,11 @@ extension Shortcut {
     }
 
     private func setDefaultForGlobalShortcut() {
-        Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
-        Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
         Defaults[.inputShortcut] = KeyCombo(key: .a, cocoaModifiers: .option)
-        Defaults[.screenshotOCRShortcut] = KeyCombo(key: .f, cocoaModifiers: [.option, .shift])
-        Defaults[.showMiniWindowShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
+        Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
+        Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
+        Defaults[.showMiniWindowShortcut] = KeyCombo(key: .f, cocoaModifiers: .option)
+        Defaults[.screenshotOCRShortcut] = KeyCombo(key: .s, cocoaModifiers: [.option, .shift])
     }
 
     private func setDefaultForAppShortcut() {
