@@ -691,9 +691,13 @@ static EZWindowManager *_instance;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
         self.actionType = self.eventMonitor.actionType;
         
-        // Clear query if text is nil and user don't want to keep the last result.
-        if (!text && !Configuration.shared.keepPrevResultWhenEmpty) {
-            text = @"";
+        /**
+         Clear query if text is nil and user don't want to keep the last result.
+         
+         !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
+         */
+        if (text.length == 0) {
+            text = Configuration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }
         self.selectedText = [text trim];
         
