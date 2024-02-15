@@ -44,12 +44,6 @@ jobs:
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
-    - name: Setup Xcode Version
-      if: matrix.language == 'swift'
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-          xcode-version: '15.2'
-
     - name: Checkout repository
       uses: actions/checkout@v4
 
