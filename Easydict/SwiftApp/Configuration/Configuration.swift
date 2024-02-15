@@ -542,7 +542,7 @@ private extension Configuration {
     }
 
     func didSetHideMenuBarIcon() {
-        if !NewAppManager.shared.enable {
+        if !SwiftUIAppManager.shared.enable {
             hideMenuBarIcon(hidden: hideMenuBarIcon)
         }
 

@@ -1,5 +1,5 @@
 //
-//  NewAppManager.swift
+//  SwiftUIAppManager.swift
 //  Easydict
 //
 //  Created by Kyle on 2023/12/28.
@@ -9,9 +9,9 @@
 import Foundation
 
 @objc(EasydictNewAppManager)
-public final class NewAppManager: NSObject {
+public final class SwiftUIAppManager: NSObject {
     @objc
-    public static let shared = NewAppManager()
+    public static let shared = SwiftUIAppManager()
 
     override private init() { super.init() }
 
