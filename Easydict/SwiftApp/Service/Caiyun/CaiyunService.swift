@@ -39,13 +39,10 @@ public final class CaiyunService: QueryService {
     }
 
     override public func hasPrivateAPIKey() -> Bool {
-        token != CaiyunService.defaultTestToken
+        token != defaultToken
     }
 
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
-
-    /// Official Test Token for Caiyun
-    private static let defaultTestToken = "5VZ61ZCRzQ2uTbp6MPaUGdoqXGklkB3WifIBPamAwLc=".decryptAES()
 
     // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
@@ -53,7 +50,7 @@ public final class CaiyunService: QueryService {
         if let token, !token.isEmpty {
             return token
         } else {
-            return CaiyunService.defaultTestToken
+            return defaultToken
         }
     }
 

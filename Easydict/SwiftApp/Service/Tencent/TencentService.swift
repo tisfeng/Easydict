@@ -53,16 +53,6 @@ public final class TencentService: QueryService {
         500 * 10000
     }
 
-    /**
-     For convenience, we provide a default key for users to try out the service.
-
-     Please do not abuse it, otherwise it may be revoked.
-
-     For better experience, please apply for your personal key at https://cloud.tencent.com
-     */
-    private let defaultSecretId = "7ZdGkHHIx4Nozm4RHib5Jjye5yCefYoxxfSWzMRbKRrHrnSEJaqpypL1yRMoN0E5".decryptAES()
-    private let defaultSecretKey = "OLvQKqJoBfrfLLg95ezIQsWymT+2irYbuMLov1cxrtc3a/M2YXCDQ2rpyy/raQ8r".decryptAES()
-
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
         let secretId = Defaults[.tencentSecretId]

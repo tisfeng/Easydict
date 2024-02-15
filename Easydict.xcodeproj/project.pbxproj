@@ -231,6 +231,8 @@
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
+		03FC57C72B7DCED300E036F3 /* EncryptedSecretKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03FC57C62B7DCED300E036F3 /* EncryptedSecretKeys.plist */; };
+		03FC57CA2B7DD05D00E036F3 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FC57C92B7DD05D00E036F3 /* APIKey.swift */; };
 		03FC699A2B39D13A0035D2DA /* EZOpenAIChatResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */; };
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
@@ -743,6 +745,8 @@
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
+		03FC57C62B7DCED300E036F3 /* EncryptedSecretKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = EncryptedSecretKeys.plist; sourceTree = "<group>"; };
+		03FC57C92B7DD05D00E036F3 /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenAIChatResponse.h; sourceTree = "<group>"; };
 		03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZOpenAIChatResponse.m; sourceTree = "<group>"; };
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
@@ -1298,8 +1302,6 @@
 		0399C6A929A8608000B4AFCC /* OpenAI */ = {
 			isa = PBXGroup;
 			children = (
-				0342801C2B41A01F002AF60D /* OpenAIService.swift */,
-				034280212B4308D2002AF60D /* Prompt.swift */,
 				0399C6AA29A860AA00B4AFCC /* EZObjcOpenAIService.h */,
 				0399C6AB29A860AA00B4AFCC /* EZObjcOpenAIService.m */,
 				03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */,
@@ -2083,10 +2085,11 @@
 		03FC57C32B7DCAE400E036F3 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				03FC57C82B7DCFBA00E036F3 /* OpenAI */,
+				C415C0AB2B450C4500A9D231 /* Gemini */,
 				62E2BF462B4082BA00E42D38 /* Ali */,
 				2746AEBF2AF95040005FE0A1 /* Caiyun */,
 				C4DD01E72B12B3B00025EE8E /* Tencent */,
-				C415C0AB2B450C4500A9D231 /* Gemini */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2098,6 +2101,24 @@
 				27FE98042B3DCB09000AD654 /* SwiftUIAppManager.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		03FC57C52B7DCE8300E036F3 /* DefaultAPIKeys */ = {
+			isa = PBXGroup;
+			children = (
+				03FC57C92B7DD05D00E036F3 /* APIKey.swift */,
+				03FC57C62B7DCED300E036F3 /* EncryptedSecretKeys.plist */,
+			);
+			path = DefaultAPIKeys;
+			sourceTree = "<group>";
+		};
+		03FC57C82B7DCFBA00E036F3 /* OpenAI */ = {
+			isa = PBXGroup;
+			children = (
+				0342801C2B41A01F002AF60D /* OpenAIService.swift */,
+				034280212B4308D2002AF60D /* Prompt.swift */,
+			);
+			path = OpenAI;
 			sourceTree = "<group>";
 		};
 		03FD68BC2B1E14B500FD388E /* String */ = {
@@ -2398,6 +2419,7 @@
 			children = (
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				DC6D9C882B3969510055EFFC /* Appearance.swift */,
+				03FC57C52B7DCE8300E036F3 /* DefaultAPIKeys */,
 				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 			);
@@ -2666,6 +2688,7 @@
 				0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */,
 				03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */,
 				031DBD792AE01E130071CF85 /* easydict in Resources */,
+				03FC57C72B7DCED300E036F3 /* EncryptedSecretKeys.plist in Resources */,
 				03BFBB7329239E9F00C48725 /* blue-white-icon@2x.png in Resources */,
 				03882F9229D95044005B5A52 /* Info.plist in Resources */,
 				03BFBB7C2923A1D900C48725 /* cyan-white-icon@3x.png in Resources */,
@@ -2916,6 +2939,7 @@
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */,
 				9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */,
+				03FC57CA2B7DD05D00E036F3 /* APIKey.swift in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
 				037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */,

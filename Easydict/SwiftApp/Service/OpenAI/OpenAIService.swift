@@ -11,22 +11,6 @@ import OpenAI
 
 @objc(EZOpenAIService)
 public class OpenAIService: QueryService {
-    private var defaultAPIKey: String {
-        /**
-         For convenience, we provide a default key for users to try out the service.
-
-         Please do not abuse it, otherwise it may be revoked.
-
-         For better experience, please apply for your personal key at https://makersuite.google.com/app/apikey
-         */
-
-        var apiKey = ("NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+" + "uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==").decryptAES()
-        #if DEBUG
-            apiKey = ("NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+" + "uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==").decryptAES()
-        #endif
-        return apiKey
-    }
-
     private var apiKey: String {
         // easydict://writeKeyValue?EZOpenAIAPIKey=
 
@@ -47,7 +31,7 @@ public class OpenAIService: QueryService {
         }
 
         if !hasPrivateAPIKey() {
-            endPoint = "gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2".decryptAES()
+            endPoint = defaultEndPoint
         }
 
         return endPoint

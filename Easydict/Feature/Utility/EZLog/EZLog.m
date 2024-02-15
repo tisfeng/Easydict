@@ -20,9 +20,11 @@
 @implementation EZLog
 
 + (void)setupCrashLogService {
+    // Enable statistics only in non-debug mode.
+    
 #if !DEBUG
     // App Center
-    [MSACAppCenter start:[@"WJFbwsYrXm9olzfwt6dgXHRh0hs8OjT8etWAuZH/nSXpXuRgQgvkh14oyHhkFkme" decryptAES] withServices:@[
+    [MSACAppCenter start:SecretKeyManager.keyValues[@"appcenterSecret"] withServices:@[
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];

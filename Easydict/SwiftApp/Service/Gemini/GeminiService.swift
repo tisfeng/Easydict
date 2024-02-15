@@ -56,8 +56,6 @@ public final class GeminiService: QueryService {
         return true
     }
 
-    private let defaultAPIKey = "" /* .decryptAES() */
-
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {
         let apiKey = Defaults[.geminiAPIKey]

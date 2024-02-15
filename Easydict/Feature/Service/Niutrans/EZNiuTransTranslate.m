@@ -12,7 +12,6 @@
 
 @interface EZNiuTransTranslate ()
 
-@property (nonatomic, copy) NSString *defaultAPIKey;
 @property (nonatomic, copy) NSString *apiKey;
 
 @end
@@ -21,8 +20,6 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        // This is a test APIKey, please do not abuse it. It is recommended to go to the official website to apply for a personal APIKey.
-        self.defaultAPIKey = [@"XOoEyjDMoM2MuMInzySOjGucFWXRj1wXQivVYDGTi6X7iDe7EkuHVVPOy2Op3RlD" decryptAES];
     }
     return self;
 }

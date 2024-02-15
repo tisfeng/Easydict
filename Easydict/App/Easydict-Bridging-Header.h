@@ -34,3 +34,4 @@
 #import "EZNiuTransTranslate.h"
 #import "EZDeepLTranslate.h"
 #import "EZBingService.h"
+#import "EZObjcOpenAIService.h"
