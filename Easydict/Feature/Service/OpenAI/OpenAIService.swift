@@ -31,7 +31,7 @@ public class OpenAIService: QueryService {
         // easydict://writeKeyValue?EZOpenAIAPIKey=
 
         var apiKey = UserDefaults.standard.string(forKey: EZOpenAIAPIKey) ?? ""
-        if apiKey.isEmpty, EZConfiguration.shared().isBeta {
+        if apiKey.isEmpty, Configuration.shared.beta {
             apiKey = defaultAPIKey
         }
 
@@ -125,7 +125,7 @@ public class OpenAIService: QueryService {
     }
 
     override public func intelligentQueryTextType() -> EZQueryTextType {
-        let type = EZConfiguration.shared().intelligentQueryTextType(forServiceType: serviceType())
+        let type = Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
         return type
     }
 
