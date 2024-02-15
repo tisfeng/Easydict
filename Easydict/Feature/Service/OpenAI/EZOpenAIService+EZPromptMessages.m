@@ -9,6 +9,7 @@
 #import "EZOpenAIService+EZPromptMessages.h"
 #import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
+#import "Easydict-Swift.h"
 
 // You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.
 
@@ -84,7 +85,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Sentence messages.
 - (NSArray<NSDictionary *> *)sentenceMessages:(NSString *)sentence from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *answerLanguage = EZConfiguration.shared.firstLanguage;
+    NSString *answerLanguage = Configuration.shared.firstLanguage;
     self.result.to = answerLanguage;
     
     NSString *prompt = @"";
@@ -274,7 +275,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     // V5. prompt
     NSString *prompt = @"";
     
-    NSString *answerLanguage = EZConfiguration.shared.firstLanguage;
+    NSString *answerLanguage = Configuration.shared.firstLanguage;
     self.result.to = answerLanguage;
     
     NSString *pronunciation = @"Pronunciation";

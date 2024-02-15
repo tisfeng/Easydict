@@ -246,6 +246,11 @@
 }
 
 - (void)setString:(NSString *)string {
+    // Fix: SIGABRT: *** -[EZTextView replaceCharactersInRange:withString:]: nil NSString given.
+    if (!string) {
+        string = @"";
+    }
+    
     [super setString:string];
     [self updatePlaceholderVisibility];
 }

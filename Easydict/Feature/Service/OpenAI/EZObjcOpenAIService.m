@@ -39,10 +39,10 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
          For better experience, please apply for your personal key at https://makersuite.google.com/app/apikey
          */
-        
+
         // Only use Google Gemini-pro channel
         self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==" decryptAES];
-        
+
 #if DEBUG
         self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==" decryptAES];
 #endif
@@ -54,7 +54,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 - (NSString *)apiKey {
     // easydict://writeKeyValue?EZOpenAIAPIKey=
-    
+
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
     if (apiKey.length == 0 && EZConfiguration.shared.isBeta) {
         apiKey = self.defaultAPIKey;
@@ -64,7 +64,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 - (NSString *)endPoint {
     // easydict://writeKeyValue?EZOpenAIEndPointKey=
-    
+
     NSString *endPoint = [NSUserDefaults mm_readString:EZOpenAIEndPointKey defaultValue:@""];
     if (endPoint.length == 0) {
         endPoint = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
@@ -77,27 +77,27 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 - (NSString *)model {
     // easydict://writeKeyValue?EZOpenAIModelKey=
-    
+
     NSString *model = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIModelKey];
-    
+
     // If there is no own key, only the default model is allowed to be used, such as gemini-pro
     if (![self hasPrivateAPIKey]) {
-    // In development mode, the default model is allowed to be modified.
+        // In development mode, the default model is allowed to be modified.
 #if !DEBUG
         model = self.defaultModel;
 #endif
     }
-    
+
     if (model.length == 0) {
         model = self.defaultModel;
     }
-    
+
     return model;
 }
 
 - (NSString *)domain {
     // easydict://writeKeyValue?EZOpenAIDomainKey=
-    
+
     NSString *defaultDomain = @"api.openai.com";
     NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:defaultDomain];
     if (domain.length == 0) {
@@ -129,7 +129,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     if (type == EZQueryTextTypeNone) {
         type = EZQueryTextTypeTranslation;
     }
-    
+
     return type;
 }
 
@@ -154,20 +154,20 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 // Supported languages, key is EZLanguage, value is the same as the key.
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
-    
+
     NSArray<EZLanguage> *allLanguages = [EZLanguageManager.shared allLanguages];
     for (EZLanguage language in allLanguages) {
         NSString *value = language;
         if ([language isEqualToString:EZLanguageClassicalChinese]) {
             value = kEZLanguageWenYanWen;
         }
-        
+
         // OpenAI does not support Burmese 🥲
         if (![language isEqualToString:EZLanguageBurmese]) {
             [orderedDict setObject:value forKey:language];
         }
     }
-    
+
     return orderedDict;
 }
 
@@ -178,18 +178,18 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 /// Use OpenAI to translate text.
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     text = [text removeInvisibleChar];
-    
+
     NSString *sourceLanguage = [self languageCodeForLanguage:from];
     NSString *targetLanguage = [self languageCodeForLanguage:to];
-    
+
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
-    
+
     if ([sourceLanguageType isEqualToString:EZLanguageAuto]) {
         // If source languaeg is auto, just ignore, OpenAI can handle it automatically.
         sourceLanguageType = @"";
     }
-    
+
     BOOL stream = YES;
     NSMutableDictionary *parameters = @{
         @"model" : self.model,
@@ -198,16 +198,17 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
         @"stream" : @(stream),
-    }.mutableCopy;
-    
+    }
+                                          .mutableCopy;
+
     EZQueryTextType queryServiceType = EZQueryTextTypeTranslation;
-    
+
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     BOOL isQueryDictionary = NO;
     if (enableDictionary) {
         isQueryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:2];
     }
-    
+
     BOOL enableSentence = self.queryTextType & EZQueryTextTypeSentence;
     BOOL isQueryEnglishSentence = NO;
     if (!isQueryDictionary && enableSentence) {
@@ -216,12 +217,12 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
             isQueryEnglishSentence = [text shouldQuerySentenceWithLanguage:from];
         }
     }
-    
+
     BOOL enableTranslation = self.queryTextType & EZQueryTextTypeTranslation;
-    
+
     self.result.from = from;
     self.result.to = to;
-    
+
     NSArray<NSDictionary *> *messages = nil;
     if (isQueryDictionary) {
         queryServiceType = EZQueryTextTypeDictionary;
@@ -234,24 +235,23 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         messages = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
     }
     parameters[@"messages"] = messages;
-    
+
     if (queryServiceType != EZQueryTextTypeNone) {
         [self startChat:parameters
-                 stream:stream
-       queryServiceType:queryServiceType
-             completion:^(NSString *_Nullable result, NSError *_Nullable error) {
-            [self handleResultText:result error:error queryServiceType:queryServiceType completion:completion];
-        }];
+                      stream:stream
+            queryServiceType:queryServiceType
+                  completion:^(NSString *_Nullable result, NSError *_Nullable error) {
+                      [self handleResultText:result error:error queryServiceType:queryServiceType completion:completion];
+                  }];
     }
 }
 
 #pragma mark - Start chat
 
 - (void)startChat:(NSDictionary *)parameters
-           stream:(BOOL)stream
- queryServiceType:(EZQueryTextType)queryServiceType
-       completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion
-{
+              stream:(BOOL)stream
+    queryServiceType:(EZQueryTextType)queryServiceType
+          completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     NSString *openaiKey = self.apiKey;
     NSDictionary *header = @{
         // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
@@ -260,7 +260,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         // support azure open ai, Ref: https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/chatgpt-quickstart?tabs=bash&pivots=rest-api
         @"api-key" : openaiKey,
     };
-    
+
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     if (stream) {
         // If stream = YES, We don't need AFJSONResponseSerializer by default, we need original AFHTTPResponseSerializer, and set text/event-stream for Content-Type manually.
@@ -268,18 +268,18 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[ @"text/event-stream" ]];
         manager.responseSerializer = responseSerializer;
     }
-    
+
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = EZNetWorkTimeoutInterval;
     [header enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [manager.requestSerializer setValue:obj forHTTPHeaderField:key];
     }];
-    
+
     BOOL shouldHandleQuote = NO;
     if (queryServiceType == EZQueryTextTypeTranslation) {
         shouldHandleQuote = YES;
     }
-    
+
     // TODO: need to optimize.
     if (stream) {
         __block NSMutableString *mutableContent = [NSMutableString string];
@@ -287,41 +287,41 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         __block BOOL isFinished = NO;
         __block NSData *lastData;
         __block NSString *appendSuffixQuote = nil;
-        
+
         [manager setDataTaskDidReceiveDataBlock:^(NSURLSession *_Nonnull session, NSURLSessionDataTask *_Nonnull dataTask, NSData *_Nonnull data) {
             if ([self.queryModel isServiceStopped:self.serviceType]) {
                 return;
             }
-            
+
             // convert data to JSON
-            
+
             NSError *error;
             NSString *content = [self parseContentFromStreamData:data
                                                         lastData:&lastData
                                                            error:&error
                                                       isFinished:&isFinished];
             self.result.isFinished = isFinished;
-            
+
             if (error && error.code != NSURLErrorCancelled) {
                 completion(nil, error);
                 return;
             }
-            
+
             //            NSLog(@"content: %@, isFinished: %d", content, isFinished);
-            
+
             NSString *appendContent = content;
-            
+
             // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
             if (shouldHandleQuote) {
                 if (isFirstContent && ![self.queryModel.queryText hasPrefixQuote]) {
                     appendContent = [content tryToRemovePrefixQuote];
-                    
+
                     // Maybe there is only one content, it is the first stream content, and then finished.
                     if (isFinished) {
                         appendContent = [appendContent tryToRemoveSuffixQuote];
                     }
                 }
-                
+
                 if (!isFinished) {
                     if (!isFirstContent) {
                         // Append last delayed suffix quote.
@@ -329,7 +329,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                             [mutableContent appendString:appendSuffixQuote];
                             appendSuffixQuote = nil;
                         }
-                        
+
                         appendSuffixQuote = [content suffixQuote];
                         // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
                         if (appendSuffixQuote) {
@@ -344,14 +344,14 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                         appendContent = [content stringByAppendingString:appendSuffixQuote];
                     }
                 }
-                
+
                 // Maybe the content is a empty text @""
                 if (content.length == 0) {
                     if (isFirstContent) {
                         // Set isFirst = YES, this is a invalid content.
                         isFirstContent = YES;
                     }
-                    
+
                     if (isFinished) {
                         // If last conent is @"", try to remove mutableContent last suffix quotes.
                         if (![self.queryModel.queryText hasSuffixQuote]) {
@@ -363,32 +363,32 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                     isFirstContent = NO;
                 }
             }
-            
+
             if (appendContent) {
                 [mutableContent appendString:appendContent];
             }
-            
+
             // Do not callback when mutableString length is 0 when isFinished is NO, to avoid auto hide reuslt view.
             if (isFinished || mutableContent.length) {
                 completion(mutableContent, nil);
             }
-            
-//              NSLog(@"mutableContent: %@", mutableContent);
+
+            //              NSLog(@"mutableContent: %@", mutableContent);
         }];
     }
-    
+
     NSURLSessionTask *task = [manager POST:self.endPoint parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
-        
+
         NSString *result = self.result.translatedText;
         if (!stream) {
             EZOpenAIChatResponse *responseModel = [EZOpenAIChatResponse mj_objectWithKeyValues:responseObject];
             EZOpenAIChoice *choice = responseModel.choices.firstObject;
             result = choice.message.content;
         }
-        
+
         if (![self.queryModel.queryText hasQuotesPair] && [result hasQuotesPair]) {
             result = [result tryToRemoveQuotes];
         }
@@ -397,11 +397,11 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         if (error.code == NSURLErrorCancelled) {
             return;
         }
-        
+
         EZError *ezError = [self getEZErrorMessageWithError:error];
         completion(nil, ezError);
     }];
-    
+
     [self.queryModel setStopBlock:^{
         [task cancel];
     } serviceType:self.serviceType];
@@ -414,49 +414,49 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                               isFinished:(BOOL *)isFinished {
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
-     
+
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"\n\n"},"index":0,"finish_reason":null}]}
-     
+
      data: {"id":"chatcmpl-6vH0XCFkVoEtnuYzrc70ZMZsD92pt","object":"chat.completion.chunk","created":1679108093,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{},"index":0,"finish_reason":"stop"}]}
-     
+
      data: [DONE]
      */
-    
+
     /**
-     
+
      Note: Sometimes the json data obtained from Azure Open AI through stream is a unterminated json.
      so join the next json data together with previous json data, then perform json serialization
-     
+
      data: {"id":"chatcmpl-7uYwHX8kYxs4UuvxpA9qGj8g0w76w","object":"chat.completion.chunk","created":1693715029,"model":"gpt-35-turbo","choices":[{"index":0,"finish_reason":null,"delta":{"content":
-     
+
      */
-    
+
     if (lastData && *lastData) {
         NSMutableData *mutableData = [NSMutableData dataWithData:*lastData];
         [mutableData appendData:data];
         data = mutableData;
     }
-    
+
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     //        NSLog(@"jsonDataString: %@", jsonDataString);
-    
+
     // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
-    
+
     // split string to array
     NSString *dataKey = @"data:";
     NSString *terminationFlag = @"[DONE]";
     NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
     //        NSLog(@"jsonArray: %@", jsonArray);
-    
+
     NSMutableString *mutableString = [NSMutableString string];
-    
+
     // iterate array
     for (NSString *jsonString in jsonArray) {
         if (isFinished) {
             *isFinished = NO;
         }
-        
+
         NSString *dataString = [jsonString trim];
         if (dataString.length) {
             if ([dataString isEqualToString:terminationFlag]) {
@@ -465,7 +465,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                 }
                 break;
             }
-            
+
             // parse string to json
             NSData *jsonData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
             NSError *jsonError;
@@ -474,7 +474,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                 // the error is a unterminated json error
                 if (jsonError.domain == NSCocoaErrorDomain && jsonError.code == 3840) {
                     //                    NSLog(@"\n\nincomplete dataString: %@\n\n", dataString);
-                    
+
                     NSString *incompleteDataString = [NSString stringWithFormat:@"%@\n%@", dataKey, dataString];
                     NSData *incompleteData = [incompleteDataString dataUsingEncoding:NSUTF8StringEncoding];
                     if (lastData) {
@@ -485,39 +485,39 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                     NSLog(@"json error: %@", *error);
                     NSLog(@"dataString: %@", dataString);
                 }
-                
+
                 break;
             } else {
                 if (lastData) {
                     *lastData = nil;
                 }
             }
-            
+
             EZOpenAIChatResponse *responseModel = [EZOpenAIChatResponse mj_objectWithKeyValues:json];
             EZOpenAIChoice *choice = responseModel.choices.firstObject;
             NSString *content = choice.delta.content;
             //  NSLog(@"delta content: %@", content);
-            
+
             /**
              SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
-             
+
              -[__NSCFString appendString:]
              -[EZOpenAIService parseContentFromStreamData:lastData:error:isFinished:] EZOpenAIService.m:536
              */
             if ([content isKindOfClass:NSString.class]) {
                 [mutableString appendString:content];
             }
-            
+
             // finish_reason is string or null
             NSString *finishReason = choice.finishReason;
-            
+
             // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
             if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
                 NSLog(@"finish reason: %@", finishReason);
-                
+
                 /**
                  The reason the model stopped generating tokens.
-                 
+
                  This will be "stop" if the model hit a natural stop point or a provided stop sequence,
                  "length" if the maximum number of tokens specified in the request was reached,
                  "content_filter" if content was omitted due to a flag from our content filters,
@@ -531,7 +531,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
             }
         }
     }
-    
+
     return mutableString;
 }
 
@@ -540,7 +540,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         queryServiceType:(EZQueryTextType)queryServiceType
               completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSArray *normalResults = [[resultText trim] toParagraphs];
-    
+
     switch (queryServiceType) {
         case EZQueryTextTypeTranslation:
         case EZQueryTextTypeSentence: {
@@ -555,7 +555,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                 completion(self.result, error);
                 return;
             }
-            
+
             self.result.translatedResults = normalResults;
             self.result.showBigWord = YES;
             self.result.queryText = self.queryModel.queryText;
@@ -574,12 +574,12 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
     EZOpenAIErrorResponse *errorResponse = [EZOpenAIErrorResponse mj_objectWithKeyValues:errorData.mj_JSONObject];
     NSString *errorMessage = errorResponse.error.message;
-    
+
     // in theory, message is a string. The code ensures its robustness here.
     if ([errorMessage isKindOfClass:NSString.class] && errorMessage.length) {
         ezError.errorDataMessage = errorMessage;
     }
-    
+
     return ezError;
 }
 

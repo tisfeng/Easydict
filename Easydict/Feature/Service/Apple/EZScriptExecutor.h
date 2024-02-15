@@ -17,17 +17,17 @@ typedef void(^AppleScriptCompletionHandler)( NSString *_Nullable result, EZError
 
 /// Run translate shortcut with parameters.
 - (NSTask *)runTranslateShortcut:(NSDictionary *)parameters
-               completionHandler:(void (^)(NSString *result, EZError *error))completionHandler;
+               completionHandler:(void (^)(NSString *result, EZError * _Nullable error))completionHandler;
 
 /// Run shortcut with parameters.
 - (NSTask *)runShortcut:(NSString *)shortcutName
              parameters:(NSDictionary *)parameters
-      completionHandler:(void (^)(NSString *result, EZError *error))completionHandler;
+      completionHandler:(void (^)(NSString *result, EZError * _Nullable error))completionHandler;
 
 /// Use NSTask to run AppleScript.
-- (NSTask *)runAppleScriptWithTask:(NSString *)script completionHandler:(void (^)(NSString *result, EZError *error))completionHandler;
+- (NSTask *)runAppleScriptWithTask:(NSString *)script completionHandler:(void (^)(NSString *result, EZError * _Nullable error))completionHandler;
 
-- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError *error))completionHandler;
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError * _Nullable error))completionHandler;
 
 @end
 

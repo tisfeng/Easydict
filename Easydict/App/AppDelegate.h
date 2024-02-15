@@ -7,10 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <Sparkle/SPUStandardUpdaterController.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-
-@property (weak) IBOutlet SPUStandardUpdaterController *updaterController;
 
 @end

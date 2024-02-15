@@ -117,7 +117,7 @@ You can install it using one of the following two methods. Support macOS 11.0+
 Thanks to [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) for the initial installation version.
 
 ```bash
-brew install easydict
+brew install --cask easydict
 ```
 
 ### Developer Build
@@ -817,6 +817,14 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-12-05 | ㅤ——  | 20 |  |
 | 2023-12-07 | 小逗。🎈 | 5 |  |
 | 2023-12-26 | ㅤ Yee  | 5 | 感谢开源 |
+| 2024-01-09 | ㅤ Jack  | 20 | 目前用过最好用的字典软件，谢谢！ |
+| 2024-01-15 | ㅤ | 20 | 感谢开源，感谢有你：） |
+| 2024-01-16 | ㅤ sd  | 5 | 大佬牛逼🐂🍺 |
+| 2024-01-23 | ㅤ | 5 | |
+| 2024-01-28 | ㅤ | 7 | |
+| 2024-01-29 | 大帅ㅤ | 5 | 还没有，但是感受到了用心。|
+| 2024-02-04 | ll | 20 | |
+| 2024-02-10 | 盒子哥 | 100 | |
 
 </p>
 

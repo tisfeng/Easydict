@@ -1,6 +1,6 @@
 name: Bug report
 description: Report an issue
-title: "🐞 Bug Report: "
+title: "🐞 Bug Report: {{Please fill in the title, don't leave it blank}} "
 labels: ["bug"]
 
 body:
@@ -27,14 +27,26 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: reproducible
+    attributes:
+      label: Is the issue consistently reproducible?
+      multiple: false
+      options:
+        - Reproducible
+        - Non-reproducible
+    validations:
+      required: true
+
   - type: textarea
     id: reproduce
     attributes:
-      label: Reproduction steps
+      label: Steps to Reproduce
       description: |
-        Please describe how to reproduce the problem. If the problem is episodic or requires specific action steps to reproduce, please describe it in as much detail as possible, otherwise the developer will not be able to locate the problem.
-        (If the problem is episodic, try restarting Easydict, restarting the device, or uninstalling and reinstalling the app to see if that solves the problem 🤔)
-      placeholder: Reproduction steps
+        If the issue is reproducible, please provide detailed steps to reproduce it. Otherwise, the developer may not be able to locate the issue.
+        If the issue is intermittent, you can try restarting Easydict, restarting your computer, or uninstalling and reinstalling the application to see if the problem can be resolved 🤔
+        Note: Given the limited resources of the developer, only issues that can be reliably reproduced will be addressed at this time. For non-reproducible issues, they will be simply recorded for future observation.
+      placeholder: Steps to Reproduce
     validations:
       required: true
 

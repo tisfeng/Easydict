@@ -8,6 +8,7 @@
 
 import Alamofire
 import CryptoKit
+import Defaults
 import Foundation
 
 @objc(EZAliService)
@@ -34,6 +35,12 @@ class AliService: QueryService {
 
     override public func name() -> String {
         NSLocalizedString("ali_translate", comment: "The name of Ali Translate")
+    }
+
+    override func hasPrivateAPIKey() -> Bool {
+        let id = Defaults[.aliAccessKeyId] ?? ""
+        let secret = Defaults[.aliAccessKeySecret] ?? ""
+        return !id.isEmpty && !secret.isEmpty
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
@@ -76,8 +83,10 @@ class AliService: QueryService {
          easydict://writeKeyValue?EZAliAccessKeyId=
          easydict://writeKeyValue?EZAliAccessKeySecret=
          */
-        if let id = UserDefaults.standard.string(forKey: EZAliAccessKeyId),
-           let secret = UserDefaults.standard.string(forKey: EZAliAccessKeySecret), !id.isEmpty, !secret.isEmpty
+        if let id = Defaults[.aliAccessKeyId],
+           let secret = Defaults[.aliAccessKeySecret],
+           !id.isEmpty,
+           !secret.isEmpty
         {
             requestByAPI(id: id, secret: secret, transType: transType, text: text, from: from, to: to, completion: completion)
         } else { // use web api

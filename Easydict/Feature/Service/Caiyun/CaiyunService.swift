@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import Defaults
 import Foundation
 
 @objc(EZCaiyunService)
@@ -37,6 +38,10 @@ public final class CaiyunService: QueryService {
         throw QueryServiceError.notSupported
     }
 
+    override public func hasPrivateAPIKey() -> Bool {
+        token != CaiyunService.defaultTestToken
+    }
+
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
 
     /// Official Test Token for Caiyun
@@ -44,7 +49,7 @@ public final class CaiyunService: QueryService {
 
     // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
-        let token = UserDefaults.standard.string(forKey: EZCaiyunToken)
+        let token = Defaults[.caiyunToken]
         if let token, !token.isEmpty {
             return token
         } else {

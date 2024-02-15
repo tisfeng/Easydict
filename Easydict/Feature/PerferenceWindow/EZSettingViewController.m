@@ -17,7 +17,7 @@
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 
-@property (nonatomic, strong) EZConfiguration *config;
+@property (nonatomic, strong) Configuration *config;
 
 @property (nonatomic, strong) NSTextField *selectLabel;
 @property (nonatomic, strong) NSTextField *inputLabel;
@@ -74,8 +74,10 @@
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSButton *autoPlayAudioButton;
 
-@property (nonatomic, strong) NSTextField *clearInputLabel;
+@property (nonatomic, strong) NSTextField *inputFieldLabel;
 @property (nonatomic, strong) NSButton *clearInputButton;
+@property (nonatomic, strong) NSButton *keepPrevResultButton;
+@property (nonatomic, strong) NSButton *selectQueryTextWhenWindowActivateButton;
 
 @property (nonatomic, strong) NSTextField *autoQueryLabel;
 @property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
@@ -153,7 +155,7 @@
     [super viewDidLoad];
     // Do view setup here.
 
-    self.config = [EZConfiguration shared];
+    self.config = [Configuration shared];
 
     [self setupUI];
 
@@ -165,7 +167,7 @@
 
     // Observe selectionShortcutView.recording status.
     [self.KVOController observe:self.selectionShortcutView keyPath:@"recording" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZSettingViewController *settingVC, MASShortcutView *selectionShortcutView, NSDictionary<NSString *, id> *_Nonnull change) {
-        EZConfiguration.shared.isRecordingSelectTextShortcutKey = [change[NSKeyValueChangeNewKey] boolValue];
+        Configuration.shared.isRecordingSelectTextShortcutKey = [change[NSKeyValueChangeNewKey] boolValue];
     }];
 }
 
@@ -395,14 +397,23 @@
     self.autoPlayAudioButton = [NSButton checkboxWithTitle:autoPlayAudioTitle target:self action:@selector(autoPlayAudioButtonClicked:)];
     [self.contentView addSubview:self.autoPlayAudioButton];
 
-    NSTextField *clearInputLabel = [NSTextField labelWithString:NSLocalizedString(@"clear_input", nil)];
-    clearInputLabel.font = font;
-    [self.contentView addSubview:clearInputLabel];
-    self.clearInputLabel = clearInputLabel;
+    NSString *inputFieldLabelTitle = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"setting.general.input.header", nil)];
+    NSTextField *inputFieldLabel = [NSTextField labelWithString:inputFieldLabelTitle];
+    inputFieldLabel.font = font;
+    [self.contentView addSubview:inputFieldLabel];
+    self.inputFieldLabel = inputFieldLabel;
 
     NSString *clearInputTitle = NSLocalizedString(@"clear_input_when_translating", nil);
     self.clearInputButton = [NSButton checkboxWithTitle:clearInputTitle target:self action:@selector(clearInputButtonClicked:)];
     [self.contentView addSubview:self.clearInputButton];
+    
+    NSString *keepPrevResultTitle = NSLocalizedString(@"keep_prev_result_when_selected_text_is_empty", nil);
+    self.keepPrevResultButton = [NSButton checkboxWithTitle:keepPrevResultTitle target:self action:@selector(keepPrevResultButtonClicked:)];
+    [self.contentView addSubview:self.keepPrevResultButton];
+    
+    NSString *selectQueryTextWhenWindowActivateTitle = NSLocalizedString(@"select_query_text_when_window_activate", nil);
+    self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
+    [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
 
     NSTextField *autoQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
     autoQueryLabel.font = font;
@@ -495,7 +506,7 @@
     self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
     [self.contentView addSubview:self.hideMenuBarIconButton];
 
-    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+    if (@available(macOS 13.0, *)) {
         NSTextField *betaNewAppLabel = [NSTextField labelWithString:NSLocalizedString(@"beta_new_app", nil)];
         betaNewAppLabel.font = font;
         [self.contentView addSubview:betaNewAppLabel];
@@ -546,6 +557,8 @@
 
     self.autoPlayAudioButton.mm_isOn = self.config.autoPlayAudio;
     self.clearInputButton.mm_isOn = self.config.clearInput;
+    self.keepPrevResultButton.mm_isOn = self.config.keepPrevResultWhenEmpty;
+    self.selectQueryTextWhenWindowActivateButton.mm_isOn = self.config.selectQueryTextWhenWindowActivate;
     self.launchAtStartupButton.mm_isOn = self.config.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = self.config.hideMainWindow;
     self.autoQueryOCRTextButton.mm_isOn = self.config.autoQueryOCRText;
@@ -558,7 +571,9 @@
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
-    self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
+    if (@available(macOS 13.0, *)) {
+        self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
+    }
 }
 
 - (void)updateViewConstraints {
@@ -745,19 +760,26 @@
     }];
 
 
-    [self.clearInputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.inputFieldLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clearInputButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.clearInputLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.clearInputLabel);
+        make.left.equalTo(self.inputFieldLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.inputFieldLabel);
     }];
-
+    [self.keepPrevResultButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
+        make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.selectQueryTextWhenWindowActivateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
+        make.top.equalTo(self.keepPrevResultButton.mas_bottom).offset(self.verticalPadding);
+    }];
 
     [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.selectQueryTextWhenWindowActivateButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoQueryLabel.mas_right).offset(self.horizontalPadding);
@@ -865,8 +887,8 @@
         make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
-
-    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+    
+    if (@available(macOS 13.0, *)) {
         [self.betaNewAppLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self.autoGetSelectedTextLabel);
             make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(self.verticalPadding);
@@ -875,14 +897,12 @@
             make.left.equalTo(self.betaNewAppLabel.mas_right).offset(self.horizontalPadding);
             make.centerY.equalTo(self.betaNewAppLabel);
         }];
-    }
-    
-    self.topmostView = self.inputLabel;
-    if (EasydictNewAppManager.shared.showEnableToggleUI) {
         self.bottommostView = self.enableBetaNewAppButton;
     } else {
         self.bottommostView = self.hideMenuBarIconButton;
     }
+
+    self.topmostView = self.inputLabel;
     
     if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
@@ -965,6 +985,14 @@
 
 - (void)clearInputButtonClicked:(NSButton *)sender {
     self.config.clearInput = sender.mm_isOn;
+}
+
+- (void)keepPrevResultButtonClicked:(NSButton *)sender {
+    self.config.keepPrevResultWhenEmpty = sender.mm_isOn;
+}
+
+- (void)selectQueryTextWhenWindowActivateButtonClicked:(NSButton *)sender {
+    self.config.selectQueryTextWhenWindowActivate = sender.mm_isOn;
 }
 
 - (void)autoCopySelectedTextButtonClicked:(NSButton *)sender {

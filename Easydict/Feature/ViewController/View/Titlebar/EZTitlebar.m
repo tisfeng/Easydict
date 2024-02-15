@@ -13,6 +13,7 @@
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @interface EZTitlebar ()
 
@@ -92,7 +93,7 @@
     // TODO: We should refactor it later.
     
     // Google
-    if (EZConfiguration.shared.showGoogleQuickLink) {
+    if (Configuration.shared.showGoogleQuickLink) {
         EZOpenLinkButton *googleButton = [[EZOpenLinkButton alloc] init];
         [self addSubview:googleButton];
         self.googleButton = googleButton;
@@ -116,7 +117,7 @@
     }
     
     // Apple Dictionary
-    if (EZConfiguration.shared.showAppleDictionaryQuickLink) {
+    if (Configuration.shared.showAppleDictionaryQuickLink) {
         EZOpenLinkButton *appleDictButton = [[EZOpenLinkButton alloc] init];
         [self addSubview:appleDictButton];
         self.appleDictionaryButton = appleDictButton;
@@ -140,7 +141,7 @@
     }
     
     // Eudic
-    if (EZConfiguration.shared.showEudicQuickLink) {
+    if (Configuration.shared.showEudicQuickLink) {
         EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
         
         // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16

@@ -55,12 +55,30 @@
       }
     },
     {
+      "identity" : "defaults",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/Defaults.git",
+      "state" : {
+        "revision" : "3efef5a28ebdbbe922d4a2049493733ed14475a6",
+        "version" : "7.3.1"
+      }
+    },
+    {
       "identity" : "firebase-ios-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
         "revision" : "c60c958e707c50a9cf8bcb7cfd7d51c566d726c5",
         "version" : "10.19.1"
+      }
+    },
+    {
+      "identity" : "generative-ai-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/generative-ai-swift",
+      "state" : {
+        "revision" : "dcbdb5e591e1aa2bb68851dc7515f6b0a59026cd",
+        "version" : "0.4.7"
       }
     },
     {
@@ -127,12 +145,30 @@
       }
     },
     {
+      "identity" : "keyholder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Clipy/KeyHolder.git",
+      "state" : {
+        "revision" : "5da0ee06fd8709f7d812504bff1555462a3f6956",
+        "version" : "4.2.0"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
       "state" : {
         "revision" : "9d108e9112aa1d65ce508facf804674546116d9c",
         "version" : "1.22.3"
+      }
+    },
+    {
+      "identity" : "magnet",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Clipy/Magnet",
+      "state" : {
+        "revision" : "26d672a031fd33eac94887b4e19aca0ab4761f45",
+        "version" : "3.4.0"
       }
     },
     {
@@ -196,6 +232,24 @@
       "state" : {
         "revision" : "569c656a8494ad03d790fd1075338c1da92d495a",
         "version" : "10.45.2"
+      }
+    },
+    {
+      "identity" : "sauce",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Clipy/Sauce",
+      "state" : {
+        "revision" : "8f8fabaa8509c1a653d6c2c3c87396a4c493d876",
+        "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "settingsaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/orchetect/SettingsAccess",
+      "state" : {
+        "revision" : "0fd73c8b5892e88acb13adb7f36a4ba9293a0061",
+        "version" : "1.4.0"
       }
     },
     {

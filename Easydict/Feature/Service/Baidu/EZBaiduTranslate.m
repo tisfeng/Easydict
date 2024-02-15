@@ -13,6 +13,7 @@
 #import "EZNetworkManager.h"
 #import "EZConfiguration.h"
 #import "NSString+EZRegex.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
@@ -124,7 +125,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (EZQueryTextType)queryTextType {
     EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
-    EZQueryTextType type = [EZConfiguration.shared queryTextTypeForServiceType:self.serviceType];
+    EZQueryTextType type = [Configuration.shared queryTextTypeForServiceType:self.serviceType];
+    
     if (type == 0) {
         type = defaultType;
     }
@@ -132,7 +134,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    EZQueryTextType type = [Configuration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
     return type;
 }
 

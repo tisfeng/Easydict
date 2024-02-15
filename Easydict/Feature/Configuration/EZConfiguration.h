@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZLayoutManager.h"
+#import <Sparkle/SPUUpdater.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,6 +23,7 @@ static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButton
 static NSString *const EZFontSizeUpdateNotification = @"EZFontSizeUpdateNotification";
 
 static NSString *const EZIntelligentQueryModeKey = @"IntelligentQueryMode";
+
 
 typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
     EZLanguageDetectOptimizeNone = 0,
@@ -71,6 +73,7 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 @property (nonatomic, assign) BOOL allowCrashLog;
 @property (nonatomic, assign) BOOL allowAnalytics;
 @property (nonatomic, assign) BOOL clearInput;
+@property (nonatomic, assign) BOOL keepPrevResult;
 
 // TODO: Need to move them. These are read/write properties only and will not be stored locally, only for external use.
 /// Only use when showing NSOpenPanel to select disabled apps.
@@ -82,6 +85,8 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 @property (nonatomic, assign) NSInteger fontSizeIndex;
 
 @property (nonatomic, assign) EZAppearenceType appearance;
+
+@property (nonatomic, strong, readonly) SPUUpdater *updater;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;

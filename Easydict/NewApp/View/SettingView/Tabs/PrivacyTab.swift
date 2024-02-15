@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Defaults
 import SwiftUI
 
 @available(macOS 13, *)
@@ -33,11 +34,8 @@ struct PrivacyTab: View {
         .formStyle(.grouped)
     }
 
-    @AppStorage("EZConfiguration_kAllowCrashLogKey")
-    private var allowCollectCrashLog = true
-
-    @AppStorage("EZConfiguration_kAllowAnalyticsKey")
-    private var allowCollectAnalytics = true
+    @Default(.allowCrashLog) private var allowCollectCrashLog
+    @Default(.allowAnalytics) private var allowCollectAnalytics
 }
 
 @available(macOS 13, *)
