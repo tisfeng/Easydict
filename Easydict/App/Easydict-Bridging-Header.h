@@ -35,3 +35,4 @@
 #import "EZDeepLTranslate.h"
 #import "EZBingService.h"
 #import "EZObjcOpenAIService.h"
+#import "NSString+EZUtils.h"

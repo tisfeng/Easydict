@@ -132,7 +132,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  eg. https://dict.youdao.com/result?word=%E4%BD%A0%E5%AF%B9%E4%B9%A0%E4%B8%BB%E5%B8%AD%E6%80%8E%E4%B9%88%E7%9C%8B%EF%BC%9F&lang=en
  */
-@property (nonatomic, copy, nullable) NSString *translatedText;
+@property (readonly, nonatomic, copy, nullable) NSString *translatedText;
 
 @property (nonatomic, strong, nullable) EZError *error;
 

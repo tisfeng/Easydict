@@ -141,7 +141,7 @@ public class OpenAIService: QueryService {
 
         openAI.chatsStream(query: query) { [weak self] res in
             guard let self else { return }
-            let result = self.result
+
             switch res {
             case let .success(chatResult):
                 if let content = chatResult.choices.first?.delta.content {
@@ -152,9 +152,17 @@ public class OpenAIService: QueryService {
             case let .failure(error):
                 completion(result, error)
             }
-        } completion: { error in
+        } completion: { [weak self] error in
+            guard let self else { return }
+
             if let error {
-                print("completion error: \(String(describing: error))")
+                print("chatsStream error: \(String(describing: error))")
+            } else {
+                // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
+                let nsText = resultText as NSString
+                resultText = nsText.tryToRemoveQuotes()
+                result.translatedResults = [resultText]
+                completion(result, nil)
             }
         }
     }
