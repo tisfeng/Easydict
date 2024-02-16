@@ -413,6 +413,14 @@ static EZWindowManager *_instance;
         [preferencesWindowController.window close];
     }
     
+    // Workaround for SwiftUI Settings window
+    // https://github.com/tisfeng/Easydict/issues/362
+    for (NSWindow *window in [NSApp windows]) {
+        if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"]) {
+            [window close];
+        }
+    }
+    
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
     [window setFrameOrigin:safeLocation];
@@ -903,11 +911,6 @@ static EZWindowManager *_instance;
     
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
-    
-    if (![EZPreferencesWindowController.shared isShowing]) {
-        // recover last app.
-        [self activeLastFrontmostApplication];
-    }
     
     if ([EZMainQueryWindow isAlive]) {
         [self.mainWindow orderBack:nil];
