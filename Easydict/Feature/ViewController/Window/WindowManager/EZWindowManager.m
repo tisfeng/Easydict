@@ -408,18 +408,7 @@ static EZWindowManager *_instance;
         return;
     }
     
-    EZPreferencesWindowController *preferencesWindowController = [EZPreferencesWindowController shared];
-    if (preferencesWindowController.isShowing) {
-        [preferencesWindowController.window close];
-    }
-    
-    // Workaround for SwiftUI Settings window
-    // https://github.com/tisfeng/Easydict/issues/362
-    for (NSWindow *window in [NSApp windows]) {
-        if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"]) {
-            [window close];
-        }
-    }
+    [[self currentShowingSettingsWindow] close];
     
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
@@ -443,6 +432,22 @@ static EZWindowManager *_instance;
     [window.queryViewController focusInputTextView];
     
     [self updateFloatingWindowType:window.windowType];
+}
+
+- (nullable NSWindow *)currentShowingSettingsWindow {
+    EZPreferencesWindowController *preferencesWindowController = [EZPreferencesWindowController shared];
+    if (preferencesWindowController.isShowing) {
+        return preferencesWindowController.window;
+    }
+    
+    // Workaround for SwiftUI Settings window, fix https://github.com/tisfeng/Easydict/issues/362
+    for (NSWindow *window in [NSApp windows]) {
+        if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"] && window.visible) {
+            return window;
+        }
+    }
+    
+    return nil;
 }
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
@@ -911,6 +916,11 @@ static EZWindowManager *_instance;
     
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
+    
+    if (![self currentShowingSettingsWindow]) {
+        // recover last app.
+        [self activeLastFrontmostApplication];
+    }
     
     if ([EZMainQueryWindow isAlive]) {
         [self.mainWindow orderBack:nil];
