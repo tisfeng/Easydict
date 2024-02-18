@@ -9,8 +9,21 @@
 import SwiftUI
 
 struct EasyDictMainMenu: Commands {
+    @Environment(\.openURL)
+    private var openURL
+
     var body: some Commands {
         // shortcut
         MainMenuShortcutCommand()
+
+        // Help
+        CommandGroup(replacing: CommandGroupPlacement.help, addition: {
+            Button(LocalizedStringKey("menu_feedback")) {
+                guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
+                    return
+                }
+                openURL(versionURL)
+            }
+        })
     }
 }

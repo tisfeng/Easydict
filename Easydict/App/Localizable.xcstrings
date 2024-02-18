@@ -1765,6 +1765,22 @@
         }
       }
     },
+    "menu_feedback" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "反馈"
+          }
+        }
+      }
+    },
     "menu_input_translate" : {
       "extractionState" : "manual",
       "localizations" : {
