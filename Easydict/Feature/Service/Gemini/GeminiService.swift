@@ -52,7 +52,7 @@ public final class GeminiService: QueryService {
     }
 
     override public func totalFreeQueryCharacterCount() -> Int {
-        100000 * 1000
+        100_000 * 1000
     }
 
     private let defaultAPIKey = "" /* .decryptAES() */

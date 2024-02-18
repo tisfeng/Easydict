@@ -156,7 +156,7 @@
     MRMediaRemoteGetNowPlayingApplicationIsPlayingFunction mrMediaRemoteGetNowPlayingApplicationIsPlaying = (MRMediaRemoteGetNowPlayingApplicationIsPlayingFunction)mrMediaRemoteGetNowPlayingApplicationIsPlayingPointer;
     
     mrMediaRemoteGetNowPlayingApplicationIsPlaying(dispatch_get_main_queue(), ^(BOOL playing) {
-//        NSLog(@"isPlaying: %d", playing);
+        NSLog(@"isPlaying: %d", playing);
         completion(playing);
     });
     
