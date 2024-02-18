@@ -18,7 +18,7 @@ struct EasyDictMainMenu: Commands {
 
         // Help
         CommandGroup(replacing: CommandGroupPlacement.help, addition: {
-            Button(LocalizedStringKey("menu_feedback")) {
+            Button("menu_feedback") {
                 guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
                     return
                 }
