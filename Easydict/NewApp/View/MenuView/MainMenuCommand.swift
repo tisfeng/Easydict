@@ -19,10 +19,7 @@ struct EasyDictMainMenu: Commands {
         // Help
         CommandGroup(replacing: CommandGroupPlacement.help, addition: {
             Button("menu_feedback") {
-                guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
-                    return
-                }
-                openURL(versionURL)
+                openURL(URL(string: "\(EZGithubRepoEasydictURL)/issues")!)
             }
         })
     }
