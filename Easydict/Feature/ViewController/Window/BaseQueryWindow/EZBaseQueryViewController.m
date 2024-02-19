@@ -31,6 +31,7 @@
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
+static NSString *const EZTableTipsCellId = @"EZTableTipsCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
