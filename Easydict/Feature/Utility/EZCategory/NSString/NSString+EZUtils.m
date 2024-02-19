@@ -20,6 +20,19 @@ static NSDictionary *const kQuotesDict = @{
     @"「" : @"」",
 };
 
+BOOL EZ_isEmptyString(id param){
+    if(!param){
+        return YES;
+    }
+    if ([param isKindOfClass:[NSString class]]){
+        NSString *str = param;
+        return (str.length == 0);
+    }
+    NSCAssert(NO, @"isEmptyString: param %@ is not NSString", param);
+    return YES;
+}
+
+
 @implementation NSString (EZUtils)
 
 /// Check if it is a single letter of the alphabet, like 'a', 'A'
