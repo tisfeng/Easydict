@@ -3373,7 +3373,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "划词内容为空时"
+            "value" : "禁用空复制提示音"
           }
         }
       }
