@@ -92,7 +92,7 @@ $ brew upgrade swiftformat
 Alternatively, you can install the tool on macOS or Linux by using [Mint](https://github.com/yonaskolb/Mint) as follows:
 
 ```bash
-$ mint install nicklockwood/SwiftFormat@main
+$ mint install nicklockwood/SwiftFormat
 ```
 
 Or if you prefer, you can check out and build SwiftFormat manually on macOS, Linux or Windows as follows:
