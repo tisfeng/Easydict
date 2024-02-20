@@ -11,6 +11,7 @@
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
+#import "EZTableTipsCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
 #import "EZWindowManager.h"
@@ -74,6 +75,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
+
+@property (nonatomic, assign, getter=isShowTipsView) BOOL showTipsView;
 
 @end
 
@@ -360,6 +363,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _defaultTTSService;
 }
 
+- (BOOL)isShowTipsView {
+    if (EZ_isEmptyString(self.queryText)) {
+        return YES;
+    }
+    return NO;
+}
 
 #pragma mark - Public Methods
 
@@ -791,6 +800,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return selectLanguageCell;
     }
     
+    // show tips view
+    if ((self.isShowTipsView && row == 2 && self.windowType != EZWindowTypeMini) || (self.isShowTipsView && row == 1)) {
+        EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
+        if (!tipsCell) {
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]];
+            tipsCell.identifier = EZTableTipsCellId;
+        }
+        tipsCell.moreBtnClick = ^{
+            
+        };
+        
+        tipsCell.solveBtnClick = ^{
+            
+        };
+        return tipsCell;
+    }
+    
     EZResultView *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
@@ -806,6 +832,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
+    } else if ((row == 2 && self.isShowTipsView && self.windowType != EZWindowTypeMini) || (row == 1 && self.isShowTipsView)) {
+        height = 110;
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {
@@ -1325,6 +1353,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         default: {
             offset = 2;
         }
+    }
+    
+    if (self.isShowTipsView) {
+        offset += 1;
     }
     
     return offset;

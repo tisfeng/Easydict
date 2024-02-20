@@ -9,11 +9,9 @@
 #import "EZTableTipsCell.h"
 #import "EZHoverButton.h"
 #import "NSImage+EZSymbolmage.h"
-static const CGFloat EZTableTipsCellTopBarViewHeight = 30;
-static const CGFloat EZTableTipsCellContentLabelHeight = 120;
 
 @interface EZTableTipsCell()
-@property (nonatomic, strong) NSView *topBarView;
+@property (nonatomic, strong) NSView *contentView;
 @property (nonatomic, strong) NSImageView *tipsIconImageView;
 @property (nonatomic, strong) NSTextField *tipsNameLabel;
 @property (nonatomic, strong) NSTextField *tipsContentLabel;
@@ -34,37 +32,35 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
 
 - (void)setupUI {
     // mas key
-    self.topBarView.mas_key = @"topBarView";
+    self.contentView.mas_key = @"topBarView";
     self.tipsIconImageView.mas_key = @"tipsIconImageView";
     self.tipsNameLabel.mas_key = @"tipsNameLabel";
     self.moreBtn.mas_key = @"moreBtn";
     self.solveBtn.mas_key = @"solveBtn";
     
-    CGSize iconSize = CGSizeMake(16, 16);
-    CGSize buttonSize = CGSizeMake(196, 49);
+    CGSize iconSize = CGSizeMake(20, 20);
+    CGSize buttonSize = CGSizeMake(94, 32);
     
     // constraints
-    [self.topBarView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self);
-        make.height.mas_equalTo(EZTableTipsCellTopBarViewHeight);
+    [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(0);
     }];
     
     [self.tipsIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(9);
-        make.centerY.mas_equalTo(0);
+        make.top.mas_equalTo(9);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.tipsNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.tipsIconImageView.mas_right).offset(18);
-        make.centerY.equalTo(self.tipsIconImageView.mas_centerY);
+        make.left.mas_equalTo(self.tipsIconImageView.mas_right).offset(6);
+        make.centerY.mas_equalTo(self.tipsIconImageView.mas_centerY).offset(1);
     }];
     
     
     [self.tipsContentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.mas_equalTo(9);
-        make.top.mas_equalTo(self.topBarView.mas_bottom).offset(12);
-        make.height.mas_equalTo(EZTableTipsCellContentLabelHeight);
+        make.left.mas_equalTo(9);
+        make.top.mas_equalTo(self.tipsNameLabel.mas_bottom).offset(12);
     }];
     
     [self.solveBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -74,20 +70,21 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
     }];
     
     [self.moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.solveBtn.mas_right).offset(32);
-        make.top.mas_equalTo(self.tipsContentLabel);
+        make.left.mas_equalTo(self.solveBtn.mas_right).offset(20);
+        make.top.mas_equalTo(self.solveBtn);
         make.size.mas_equalTo(buttonSize);
     }];
 }
 
 #pragma mark - Accesstor
-- (NSView *)topBarView {
-    if (!_topBarView) {
+- (NSView *)contentView {
+    if (!_contentView) {
         mm_weakify(self);
-        _topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
+        _contentView = [NSView mm_make:^(NSView *_Nonnull view) {
             mm_strongify(self);
             [self addSubview:view];
             view.wantsLayer = YES;
+            view.layer.cornerRadius = EZCornerRadius_8;
             [view.layer excuteLight:^(CALayer *layer) {
                 layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
             } dark:^(CALayer *layer) {
@@ -95,7 +92,7 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
             }];
         }];
     }
-    return _topBarView;
+    return _contentView;
 }
 
 - (NSImageView *)tipsIconImageView {
@@ -103,8 +100,8 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
         mm_weakify(self);
         _tipsIconImageView = [NSImageView mm_make:^(NSImageView *imageView) {
             mm_strongify(self);
-            [self.topBarView addSubview:imageView];
-            [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
+            [self.contentView addSubview:imageView];
+            [imageView setImage:[NSImage imageNamed:@"tip_Normal"]];
         }];
     }
     return _tipsIconImageView;
@@ -115,11 +112,13 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
         mm_weakify(self);
         _tipsNameLabel = [NSTextField mm_make:^(NSTextField *label) {
             mm_strongify(self);
-            [self.topBarView addSubview:label];
+            [self.contentView addSubview:label];
+            label.stringValue = NSLocalizedString(@"tips_title", nil);
             label.editable = NO;
             label.bordered = NO;
             label.backgroundColor = NSColor.clearColor;
             label.alignment = NSTextAlignmentCenter;
+            label.font = [NSFont systemFontOfSize:14];
             [label excuteLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
@@ -140,6 +139,7 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
             label.bordered = NO;
             label.backgroundColor = NSColor.clearColor;
             label.alignment = NSTextAlignmentLeft;
+            label.stringValue = @"测试";
             [label excuteLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
@@ -154,10 +154,11 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
     if (!_moreBtn) {
         _moreBtn = [[EZHoverButton alloc] init];
         [self addSubview:_moreBtn];
-        NSImage *moreBtnImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
+        NSImage *moreBtnImage = [NSImage ez_imageWithSymbolName:@"ellipsis.circle.fill"];
         _moreBtn.image = moreBtnImage;
-        _moreBtn.title = @"更多解决";
-        _moreBtn.toolTip = NSLocalizedString(@"retry", nil);
+        _moreBtn.title = NSLocalizedString(@"tips_more", nil);
+        _moreBtn.imagePosition = NSImageLeft;
+        _moreBtn.edgeInsets = NSEdgeInsetsMake(0, 3, 0, 3);
         [_moreBtn excuteLight:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
@@ -178,10 +179,11 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
     if (!_solveBtn) {
         _solveBtn = [[EZHoverButton alloc] init];
         [self addSubview:_solveBtn];
-        NSImage *moreBtnImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
-        _solveBtn.image = moreBtnImage;
-        _solveBtn.title = @"更多解决";
-        _solveBtn.toolTip = NSLocalizedString(@"retry", nil);
+        NSImage *solveBtnImage = [NSImage ez_imageWithSymbolName:@"exclamationmark.warninglight"];
+        _solveBtn.image = solveBtnImage;
+        _solveBtn.imagePosition = NSImageLeft;
+        _solveBtn.title = NSLocalizedString(@"tips_solve", nil);
+        _solveBtn.edgeInsets = NSEdgeInsetsMake(0, 3, 0, 3);
         [_solveBtn excuteLight:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
@@ -190,8 +192,8 @@ static const CGFloat EZTableTipsCellContentLabelHeight = 120;
         mm_weakify(self);
         [_solveBtn setClickBlock:^(EZButton *button) {
             mm_strongify(self);
-            if (self.moreBtnClick) {
-                self.moreBtnClick();
+            if (self.solveBtnClick) {
+                self.solveBtnClick();
             }
         }];
     }
