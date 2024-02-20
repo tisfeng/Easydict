@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
 
+@property (nonatomic, strong) EZOpenLinkButton *settingButton;
+
 @end
 
 NS_ASSUME_NONNULL_END

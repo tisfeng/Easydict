@@ -485,6 +485,38 @@
         }
       }
     },
+    "automatic_word_segmentation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic word segmentation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词自动分词"
+          }
+        }
+      }
+    },
+    "automatically_remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically remove code comment symbols."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动去除代码注释符号"
+          }
+        }
+      }
+    },
     "avoid_conflict_with_PopClip_display" : {
       "localizations" : {
         "en" : {
@@ -1362,6 +1394,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "全局快捷键"
+          }
+        }
+      }
+    },
+    "go_to_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往设置"
           }
         }
       }

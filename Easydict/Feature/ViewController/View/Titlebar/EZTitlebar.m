@@ -14,8 +14,11 @@
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
+#import "EZPreferencesWindowController.h"
 
 @interface EZTitlebar ()
+
+@property (nonatomic, strong) NSStackView *stackView;
 
 @end
 
@@ -64,7 +67,26 @@
         }
     }];
     
+    [self setupSettingButton];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+    
+}
+
+- (void)setupSettingButton {
+    EZOpenLinkButton *settingButton = [[EZOpenLinkButton alloc] init];
+    settingButton.contentTintColor = [NSColor clearColor];
+    
+    self.settingButton = settingButton;
+    settingButton.clickBlock = nil;
+    
+    mm_weakify(self);
+    [settingButton setMouseUpBlock:^(EZButton *_Nonnull button) {
+//        NSLog(@"settingButton mouse up, state: %ld", button.buttonState);
+        mm_strongify(self);
+        [self showMenu];
+        
+    }];
 }
 
 - (void)updateConstraints {
@@ -82,15 +104,26 @@
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
     
-    [self.googleButton removeFromSuperview];
-    [self.eudicButton removeFromSuperview];
-    [self.appleDictionaryButton removeFromSuperview];
+    for (NSView *view in self.stackView.arrangedSubviews) {
+        [self.stackView removeArrangedSubview:view];
+        [view removeFromSuperview];
+    }
+    [self.stackView removeFromSuperview];
     
-    NSView *lastView;
+    self.stackView = [[NSStackView alloc] init];
+    self.stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    self.stackView.spacing = kButtonPadding_4;
+    self.stackView.alignment = NSLayoutAttributeCenterY;
+    [self addSubview:self.stackView];
+    
     CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_24;
     CGFloat quickLinkButtonRightOffset = 12;
     
-    // TODO: We should refactor it later.
+    [self.stackView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(quickLinkButtonTopOffset);
+        make.height.mas_equalTo(kButtonWidth_24);
+        make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
+    }];
     
     // Google
     if (Configuration.shared.showGoogleQuickLink) {
@@ -105,15 +138,10 @@
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self).offset(quickLinkButtonTopOffset);
             make.size.mas_equalTo(buttonSize);
-            if (lastView) {
-                make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
-            } else {
-                make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
-            }
         }];
-        lastView = googleButton;
+        
+        [self.stackView addArrangedSubview:googleButton];
     }
     
     // Apple Dictionary
@@ -129,15 +157,9 @@
         appleDictButton.contentTintColor = NSColor.clearColor;
         
         [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self).offset(quickLinkButtonTopOffset);
             make.size.mas_equalTo(buttonSize);
-            if (lastView) {
-                make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
-            } else {
-                make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
-            }
         }];
-        lastView = appleDictButton;
+        [self.stackView insertArrangedSubview:appleDictButton atIndex:0];
     }
     
     // Eudic
@@ -158,17 +180,16 @@
             eudicButton.contentTintColor = NSColor.clearColor;
             
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self).offset(quickLinkButtonTopOffset);
                 make.size.mas_equalTo(buttonSize);
-                if (lastView) {
-                    make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
-                } else {
-                    make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
-                }
             }];
-            lastView = eudicButton;
+            [self.stackView insertArrangedSubview:eudicButton atIndex:0];
         }
     }
+    
+    [self.settingButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(buttonSize);
+    }];
+    [self.stackView addArrangedSubview:self.settingButton];
     
     [super updateConstraints];
 }
@@ -199,6 +220,38 @@
     }];
 }
 
+- (void)showMenu {
+    NSMenu * menu = [[NSMenu alloc]initWithTitle:@"Menu"];
+    NSMenuItem * item1 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"automatically_remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
+    item1.target = self;
+    
+    NSMenuItem * item2 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"automatic_word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
+    item2.target = self;
+    item2.state = NSControlStateValueOn;
+    
+    NSMenuItem * item3 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
+    item3.target = self;
+    
+    [menu addItem:item1];
+    [menu addItem:item2];
+    [menu addItem:item3];
+    
+    [menu popUpMenuPositioningItem:nil atLocation:[NSEvent mouseLocation] inView:nil];
+}
+
+- (void)clickAutomaticallyRemoveCodeCommentSymbols {
+    
+    NSLog(@"clickAutomaticallyRemoveCodeCommentSymbols");
+}
+
+- (void)clickAutomaticWordSegmentation {
+    
+    NSLog(@"clickAutomaticWordSegmentation");
+}
+
+- (void)goToSettings {
+    [EZPreferencesWindowController.shared show];
+}
 
 #pragma mark - Setter && Getter
 
