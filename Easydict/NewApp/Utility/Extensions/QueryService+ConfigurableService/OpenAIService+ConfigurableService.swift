@@ -80,19 +80,19 @@ extension OpenAIUsageStats: EnumLocalizedStringConvertible {
     var title: String {
         switch self {
         case .default:
-            return NSLocalizedString(
+            NSLocalizedString(
                 "service.configuration.openai.usage_status_default.title",
                 bundle: .main,
                 comment: ""
             )
         case .alwaysOff:
-            return NSLocalizedString(
+            NSLocalizedString(
                 "service.configuration.openai.usage_status_always_off.title",
                 bundle: .main,
                 comment: ""
             )
         case .alwaysOn:
-            return NSLocalizedString(
+            NSLocalizedString(
                 "service.configuration.openai.usage_status_always_on.title",
                 bundle: .main,
                 comment: ""

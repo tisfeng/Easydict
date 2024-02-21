@@ -116,7 +116,7 @@ public final class TencentService: QueryService {
             .validate()
             .responseDecodable(of: TencentResponse.self) { [weak self] response in
                 guard let self else { return }
-                let result = self.result
+                let result = result
 
                 switch response.result {
                 case let .success(value):
