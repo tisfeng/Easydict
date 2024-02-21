@@ -9,7 +9,6 @@
 import XCTest
 
 final class EasydictSwiftTests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -25,7 +24,7 @@ final class EasydictSwiftTests: XCTestCase {
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
-    
+
     func testAES() {
         let text = "123"
         let encryptedText = text.encryptAES()
@@ -39,5 +38,4 @@ final class EasydictSwiftTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

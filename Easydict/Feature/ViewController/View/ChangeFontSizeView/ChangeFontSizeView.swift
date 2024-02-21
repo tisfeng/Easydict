@@ -78,7 +78,7 @@ import Hue
             stackView.heightAnchor.constraint(equalToConstant: scaleLineHeight),
         ])
 
-        scaleLines.enumerated().forEach { _, view in
+        for (_, view) in scaleLines.enumerated() {
             view.layer?.cornerRadius = scaleLineWidth / 2
             view.layer?.backgroundColor = scaleLineColor.cgColor
 
