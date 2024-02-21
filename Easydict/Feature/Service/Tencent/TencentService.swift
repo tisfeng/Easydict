@@ -27,7 +27,7 @@ public final class TencentService: QueryService {
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        TencentTranslateType.supportLanguagesDictionary.forEach { key, value in
+        for (key, value) in TencentTranslateType.supportLanguagesDictionary {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict
@@ -116,7 +116,7 @@ public final class TencentService: QueryService {
             .validate()
             .responseDecodable(of: TencentResponse.self) { [weak self] response in
                 guard let self else { return }
-                let result = self.result
+                let result = result
 
                 switch response.result {
                 case let .success(value):

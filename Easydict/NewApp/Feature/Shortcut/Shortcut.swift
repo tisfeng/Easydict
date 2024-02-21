@@ -248,9 +248,9 @@ struct KeyboardShortcut: ViewModifier {
 
     private func fetchShortcutKeyEquivalent(_ keyCombo: KeyCombo) -> KeyEquivalent {
         if keyCombo.doubledModifiers {
-            return KeyEquivalent(Character(keyCombo.keyEquivalentModifierMaskString))
+            KeyEquivalent(Character(keyCombo.keyEquivalentModifierMaskString))
         } else {
-            return KeyEquivalent(Character(keyCombo.keyEquivalent))
+            KeyEquivalent(Character(keyCombo.keyEquivalent))
         }
     }
 

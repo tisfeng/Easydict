@@ -55,11 +55,11 @@ extension DeepLAPIUsagePriority: EnumLocalizedStringConvertible {
     var title: String {
         switch self {
         case .webFirst:
-            return NSLocalizedString("service.configuration.deepl.web_first.title", bundle: .main, comment: "")
+            NSLocalizedString("service.configuration.deepl.web_first.title", bundle: .main, comment: "")
         case .authKeyFirst:
-            return NSLocalizedString("service.configuration.deepl.authkey_first.title", bundle: .main, comment: "")
+            NSLocalizedString("service.configuration.deepl.authkey_first.title", bundle: .main, comment: "")
         case .authKeyOnly:
-            return NSLocalizedString("service.configuration.deepl.authkey_only.title", bundle: .main, comment: "")
+            NSLocalizedString("service.configuration.deepl.authkey_only.title", bundle: .main, comment: "")
         }
     }
 }
