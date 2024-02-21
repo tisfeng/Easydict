@@ -95,7 +95,7 @@
 }
 
 - (CGFloat)cellHeight {
-    CGFloat cellHeight = 9 + 20 + 12 + self.tipsContentLabel.height + 9 + 32 + 9;
+    CGFloat cellHeight = 9 + 20 + 12 + self.tipsContentLabel.height + 9 + 32 + 6;
     return cellHeight;
 }
 
@@ -164,7 +164,7 @@
             label.alignment = NSTextAlignmentLeft;
             label.stringValue = self.dataDict[@"questions"][0];
             label.usesSingleLineMode = NO;
-            label.maximumNumberOfLines = 2;
+            label.maximumNumberOfLines = 0;
             [label excuteLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
