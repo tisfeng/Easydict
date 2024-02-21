@@ -74,26 +74,15 @@
 }
 
 - (void)setupSettingButton {
-    EZOpenLinkButton *settingButton = [[EZOpenLinkButton alloc] init];
-    settingButton.contentTintColor = [NSColor clearColor];
-    NSImage *image = [NSImage imageWithSystemSymbolName:@"list.bullet" accessibilityDescription:nil];
-    self.settingButton = settingButton;
-    settingButton.clickBlock = nil;
+    EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
+    NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil]imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
     
-    NSColor *normalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
-    NSColor *normalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-    
-    [settingButton excuteLight:^(EZHoverButton *button) {
-        button.image = image;
-        button.contentTintColor = normalLightTintColor;
-    } dark:^(EZHoverButton *button) {
-        button.image = image;
-        button.contentTintColor = normalDarkTintColor;
-    }];
+    button.image = image;
+    self.settingButton = button;
+    button.clickBlock = nil;
     
     mm_weakify(self);
-    [settingButton setMouseUpBlock:^(EZButton *_Nonnull button) {
-//        NSLog(@"settingButton mouse up, state: %ld", button.buttonState);
+    [button setMouseUpBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self showMenu];
         
