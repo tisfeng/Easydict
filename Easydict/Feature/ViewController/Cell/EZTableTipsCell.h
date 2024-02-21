@@ -10,11 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^tipsButtonClick)(NSString *url);
+
 @interface EZTableTipsCell : NSTableRowView
 
-@property (nonatomic, copy) dispatch_block_t moreBtnClick;
+@property (nonatomic, copy) tipsButtonClick moreBtnClick;
 
-@property (nonatomic, copy) dispatch_block_t solveBtnClick;
+@property (nonatomic, copy) tipsButtonClick solveBtnClick;
+
+- (CGFloat)cellHeight;
 
 @end
 

@@ -371,4 +371,8 @@ static EZLanguageManager *_instance;
     return [NSString stringWithFormat:@"%@ %@", flagEmoji, languageName];
 }
 
+- (NSString *)ezCurrentLanguage {
+    return [NSLocale currentLocale].currencyCode;
+}
+
 @end

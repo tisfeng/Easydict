@@ -56,6 +56,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
+@property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, readonly) NSString *queryText;
@@ -807,13 +808,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]];
             tipsCell.identifier = EZTableTipsCellId;
         }
-        tipsCell.moreBtnClick = ^{
+        
+        tipsCell.moreBtnClick = ^(NSString * _Nonnull url) {
             
         };
         
-        tipsCell.solveBtnClick = ^{
+        tipsCell.solveBtnClick = ^(NSString * _Nonnull url) {
             
         };
+        
+        self.tipsCell = tipsCell;
         return tipsCell;
     }
     
@@ -832,8 +836,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if ((row == 2 && self.isShowTipsView && self.windowType != EZWindowTypeMini) || (row == 1 && self.isShowTipsView)) {
-        height = 110;
+    } else if ((row == 2 && self.isShowTipsView && self.windowType != EZWindowTypeMini) || 
+               (row == 1 && self.isShowTipsView)) {
+        if (!self.tipsCell) {
+            height = 100;
+        } else {
+            height = [self.tipsCell cellHeight];
+        }
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {

@@ -4054,6 +4054,57 @@
         }
       }
     },
+    "tips_beep" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why is there a beep when the selected word is empty (such as dragging in a blank area) in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用取词为空（空白处拖动等）时会出现提示音？"
+          }
+        }
+      }
+    },
+    "tips_edit_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why does the edit button in the upper right corner flicker when selecting words in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用取词时，右上角编辑按钮会出现闪烁？"
+          }
+        }
+      }
+    },
+    "tips_might_selecting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why might selecting an empty word interrupt the music currently playing?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么取词为空时可能打断当前播放的音乐？"
+          }
+        }
+      }
+    },
     "tips_more" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4071,18 +4122,86 @@
         }
       }
     },
+    "tips_mouse_hover" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why can't I use mouse hover to select words in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用中无法使用鼠标划词？"
+          }
+        }
+      }
+    },
+    "tips_select_words" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why can't I select words on some web pages in the browser?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么浏览器中某些网页无法取词？"
+          }
+        }
+      }
+    },
     "tips_solve" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solve"
+            "value" : "Solve This"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "如何解决"
+          }
+        }
+      }
+    },
+    "tips_still_pop_up" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why does macOS still pop up asking for permissions even though I have given Easydict the Accessibility/Screen Recording permissions?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经给 Easydict 辅助功能/录屏权限 macOS 仍然弹窗要求给予权限？"
+          }
+        }
+      }
+    },
+    "tips_text_empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why is the text empty when I select words in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用中取词文本为空？"
           }
         }
       }
@@ -4100,6 +4219,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提示"
+          }
+        }
+      }
+    },
+    "tips_word_selection_OCR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why do word selection and OCR need to enable system-related permissions?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么取词和 OCR 需要开启系统相关权限？"
           }
         }
       }
