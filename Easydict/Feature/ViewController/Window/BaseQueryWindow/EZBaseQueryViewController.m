@@ -365,7 +365,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (BOOL)isShowTipsView {
-    if (EZ_isEmptyString(self.queryText)) {
+    if (EZ_isEmptyString(self.queryModel.queryText)) {
         return YES;
     }
     return NO;
@@ -393,6 +393,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if ([self handleEasydictScheme:text]) {
         return;
     }
+    
+    // update tableView row
+    [self.tableView reloadData];
     
     // Before starting new query, we should stop the previous query.
     [self.queryModel stopAllService];
