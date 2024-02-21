@@ -62,11 +62,11 @@
         make.centerY.mas_equalTo(self.tipsIconImageView.mas_centerY).offset(1);
     }];
     
-    [self.tipsContentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(9);
-        make.width.mas_lessThanOrEqualTo(self.bounds.size.width - 9);
-        make.top.mas_equalTo(self.tipsNameLabel.mas_bottom).offset(12);
-    }];
+//    [self.tipsContentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(9);
+//        make.width.mas_lessThanOrEqualTo(self.bounds.size.width - 9);
+//        make.top.mas_equalTo(self.tipsNameLabel.mas_bottom).offset(12);
+//    }];
     
     [self.solveBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(9);
@@ -79,6 +79,17 @@
         make.top.mas_equalTo(self.solveBtn);
         make.size.mas_equalTo(buttonSize);
     }];
+}
+
+- (void)updateConstraints {
+    
+    [self.tipsContentLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(9);
+        make.width.mas_lessThanOrEqualTo(self.bounds.size.width - 9);
+        make.top.mas_equalTo(self.tipsNameLabel.mas_bottom).offset(12);
+    }];
+    
+    [super updateConstraints];
 }
 
 - (void)updateQuestionContent {
