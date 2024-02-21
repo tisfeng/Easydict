@@ -813,11 +813,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
         
         tipsCell.moreBtnClick = ^(NSString * _Nonnull url) {
-            
+            NSString *issueURL = [NSString stringWithFormat:@"%@", url];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
         };
         
         tipsCell.solveBtnClick = ^(NSString * _Nonnull url) {
-            
+            NSString *issueURL = [NSString stringWithFormat:@"%@", url];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
         };
         
         self.tipsCell = tipsCell;

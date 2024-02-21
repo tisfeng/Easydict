@@ -215,7 +215,7 @@
     if (!_solveBtn) {
         _solveBtn = [[EZHoverButton alloc] init];
         [self addSubview:_solveBtn];
-        NSImage *solveBtnImage = [NSImage ez_imageWithSymbolName:@"exclamationmark.warninglight"];
+        NSImage *solveBtnImage = [NSImage ez_imageWithSymbolName:@"link.circle.fill"];
         _solveBtn.image = solveBtnImage;
         _solveBtn.imagePosition = NSImageLeft;
         _solveBtn.title = NSLocalizedString(@"tips_solve", nil);
