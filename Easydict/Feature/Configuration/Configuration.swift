@@ -147,6 +147,12 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
     @DefaultsWrapper(.selectQueryTextWhenWindowActivate)
     var selectQueryTextWhenWindowActivate: Bool
 
+    @DefaultsWrapper(.automaticWordSegmentation)
+    var automaticWordSegmentation: Bool
+
+    @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols)
+    var automaticallyRemoveCodeCommentSymbols: Bool
+
     var disabledAutoSelect: Bool = false
 
     var isRecordingSelectTextShortcutKey: Bool = false

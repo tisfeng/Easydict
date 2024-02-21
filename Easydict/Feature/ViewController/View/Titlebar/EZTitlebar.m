@@ -76,9 +76,20 @@
 - (void)setupSettingButton {
     EZOpenLinkButton *settingButton = [[EZOpenLinkButton alloc] init];
     settingButton.contentTintColor = [NSColor clearColor];
-    
+    NSImage *image = [NSImage imageWithSystemSymbolName:@"list.bullet" accessibilityDescription:nil];
     self.settingButton = settingButton;
     settingButton.clickBlock = nil;
+    
+    NSColor *normalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *normalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+    
+    [settingButton excuteLight:^(EZHoverButton *button) {
+        button.image = image;
+        button.contentTintColor = normalLightTintColor;
+    } dark:^(EZHoverButton *button) {
+        button.image = image;
+        button.contentTintColor = normalDarkTintColor;
+    }];
     
     mm_weakify(self);
     [settingButton setMouseUpBlock:^(EZButton *_Nonnull button) {
@@ -121,7 +132,6 @@
     
     [self.stackView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(quickLinkButtonTopOffset);
-        make.height.mas_equalTo(kButtonWidth_24);
         make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
     }];
     
@@ -224,29 +234,33 @@
     NSMenu * menu = [[NSMenu alloc]initWithTitle:@"Menu"];
     NSMenuItem * item1 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"automatically_remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
     item1.target = self;
+    if (Configuration.shared.automaticallyRemoveCodeCommentSymbols) {
+        item1.state = NSControlStateValueOn;
+    }
     
     NSMenuItem * item2 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"automatic_word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
     item2.target = self;
-    item2.state = NSControlStateValueOn;
+    if (Configuration.shared.automaticWordSegmentation) {
+        item2.state = NSControlStateValueOn;
+    }
     
     NSMenuItem * item3 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
     item3.target = self;
     
     [menu addItem:item1];
     [menu addItem:item2];
+    [menu addItem:[NSMenuItem separatorItem]];
     [menu addItem:item3];
     
     [menu popUpMenuPositioningItem:nil atLocation:[NSEvent mouseLocation] inView:nil];
 }
 
 - (void)clickAutomaticallyRemoveCodeCommentSymbols {
-    
-    NSLog(@"clickAutomaticallyRemoveCodeCommentSymbols");
+    Configuration.shared.automaticallyRemoveCodeCommentSymbols = !Configuration.shared.automaticallyRemoveCodeCommentSymbols;
 }
 
 - (void)clickAutomaticWordSegmentation {
-    
-    NSLog(@"clickAutomaticWordSegmentation");
+    Configuration.shared.automaticWordSegmentation = !Configuration.shared.automaticWordSegmentation;
 }
 
 - (void)goToSettings {

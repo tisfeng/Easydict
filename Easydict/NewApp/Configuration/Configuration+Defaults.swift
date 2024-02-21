@@ -62,6 +62,9 @@ extension Defaults.Keys {
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
     static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
+
+    static let automaticWordSegmentation = Key<Bool>("EZConfiguration_kAutomaticWordSegmentation", default: true)
+    static let automaticallyRemoveCodeCommentSymbols = Key<Bool>("EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols", default: true)
 }
 
 extension Defaults.Keys {
