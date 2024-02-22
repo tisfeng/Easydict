@@ -496,7 +496,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "单词自动分词"
+            "value" : "英语单词自动分词"
           }
         }
       }
