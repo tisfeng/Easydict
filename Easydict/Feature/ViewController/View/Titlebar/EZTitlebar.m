@@ -266,7 +266,8 @@
 }
 
 - (void)goToSettings {
-    [EZPreferencesWindowController.shared show];
+//    [EZPreferencesWindowController.shared show];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"easydictd://settings"]];
 }
 
 #pragma mark - Setter && Getter

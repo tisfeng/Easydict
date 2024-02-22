@@ -16,11 +16,11 @@
 
 - (void)registerRouters {
     // Reigster URL Scheme handler.
-    NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
-    [appleEventManager setEventHandler:self
-                           andSelector:@selector(handleURLEvent:withReplyEvent:)
-                         forEventClass:kInternetEventClass
-                            andEventID:kAEGetURL];
+//    NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
+//    [appleEventManager setEventHandler:self
+//                           andSelector:@selector(handleURLEvent:withReplyEvent:)
+//                         forEventClass:kInternetEventClass
+//                            andEventID:kAEGetURL];
     
     JLRoutes *routes = [JLRoutes globalRoutes];
     [routes addRoute:@"/:action" handler:^BOOL(NSDictionary *parameters) {

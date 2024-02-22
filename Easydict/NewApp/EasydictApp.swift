@@ -7,6 +7,7 @@
 //
 
 import Defaults
+import SettingsAccess
 import Sparkle
 import SwiftUI
 
@@ -57,10 +58,41 @@ struct EasydictApp: App {
             .commands {
                 EasyDictMainMenu() // main menu
             }
+
+            WindowGroup {
+                FakeViewToOpenSettingsInSonoma(title: "Open Settings")
+                    .openSettingsAccess()
+            }
+            .handlesExternalEvents(matching: Set(arrayLiteral: "settings"))
+            .windowStyle(HiddenTitleBarWindowStyle())
+            .windowResizability(.contentSize)
+
             Settings {
                 SettingView()
             }
         }
+    }
+}
+
+struct FakeViewToOpenSettingsInSonoma: View {
+    @Environment(\.openSettings) private var openSettings
+    var title: String
+
+    var body: some View {
+        ZStack {}
+            .frame(width: 0, height: 0)
+            .onOpenURL(perform: { _ in
+                DispatchQueue.main
+                    /// NB: calling `openSettings` immediately doesn't work so wait a quick moment
+                    .asyncAfter(deadline: .now() + 0.05) {
+                        try? openSettings()
+                        NSApplication.shared
+                            .windows
+                            .filter(\.canBecomeKey)
+                            .filter { $0.title == title }
+                            .forEach { $0.close() }
+                    }
+            })
     }
 }
 
