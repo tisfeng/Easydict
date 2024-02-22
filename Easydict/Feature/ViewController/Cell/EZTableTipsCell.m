@@ -44,7 +44,6 @@
     self.solveBtn.mas_key = @"solveBtn";
     
     CGSize iconSize = CGSizeMake(20, 20);
-    CGSize buttonSize = CGSizeMake(94, 32);
     
     // constraints
     [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -71,13 +70,13 @@
     [self.solveBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(9);
         make.top.mas_equalTo(self.tipsContentLabel.mas_bottom).offset(9);
-        make.size.mas_equalTo(buttonSize);
+        make.size.mas_equalTo(CGSizeMake(98, 32));
     }];
     
     [self.moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.solveBtn.mas_right).offset(20);
         make.top.mas_equalTo(self.solveBtn);
-        make.size.mas_equalTo(buttonSize);
+        make.size.mas_equalTo(CGSizeMake(94, 32));
     }];
 }
 
