@@ -490,7 +490,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatic word segmentation"
+            "value" : "English word auto-splitting"
           }
         },
         "zh-Hans" : {
