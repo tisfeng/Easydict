@@ -506,7 +506,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically remove code comment symbols."
+            "value" : "Automatically remove code comment symbols"
           }
         },
         "zh-Hans" : {
