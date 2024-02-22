@@ -79,6 +79,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign, getter=isShowTipsView) BOOL showTipsView;
 
+@property (nonatomic, assign) BOOL hasShowTips;
+
 @end
 
 @implementation EZBaseQueryViewController
@@ -365,7 +367,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (BOOL)isShowTipsView {
-    if (EZ_isEmptyString(self.queryModel.queryText)) {
+    if (EZ_isEmptyString(self.queryModel.queryText) && !self.hasShowTips) {
         return YES;
     }
     return NO;
@@ -1207,6 +1209,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
         [self startQueryText:text];
+        if (self.tipsCell) {
+            self.hasShowTips = YES;
+        }
     }];
     
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
