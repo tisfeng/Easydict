@@ -1,0 +1,4 @@
+# https://github.com/nicklockwood/SwiftFormat/blob/main/Rules.md
+
+# file options
+--exclude Pods

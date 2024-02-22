@@ -17,22 +17,22 @@ import Foundation
     var title: String {
         switch self {
         case .followSystem:
-            return NSLocalizedString("appearenceType_followSystem", comment: "")
+            NSLocalizedString("appearenceType_followSystem", comment: "")
         case .light:
-            return NSLocalizedString("appearenceType_light", comment: "")
+            NSLocalizedString("appearenceType_light", comment: "")
         case .dark:
-            return NSLocalizedString("appearenceType_dark", comment: "")
+            NSLocalizedString("appearenceType_dark", comment: "")
         }
     }
 
     var appearence: NSAppearance? {
         switch self {
         case .followSystem:
-            return nil
+            nil
         case .light:
-            return NSAppearance(named: .aqua)
+            NSAppearance(named: .aqua)
         case .dark:
-            return NSAppearance(named: .darkAqua)
+            NSAppearance(named: .darkAqua)
         }
     }
 

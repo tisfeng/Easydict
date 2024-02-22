@@ -19,9 +19,9 @@ class AliService: QueryService {
 
     private var hasToken: (has: Bool, token: String, parameterName: String) {
         if let token = tokenResponse?.token, let parameterName = tokenResponse?.parameterName, !token.isEmpty, !parameterName.isEmpty {
-            return (true, token, parameterName)
+            (true, token, parameterName)
         } else {
-            return (false, "", "")
+            (false, "", "")
         }
     }
 
@@ -46,7 +46,7 @@ class AliService: QueryService {
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        AliTranslateType.supportLanguagesDictionary.forEach { key, value in
+        for (key, value) in AliTranslateType.supportLanguagesDictionary {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict
@@ -102,12 +102,12 @@ class AliService: QueryService {
                     guard let self else { return }
                     switch response.result {
                     case let .success(value):
-                        self.tokenResponse = value
+                        tokenResponse = value
                     case let .failure(error):
                         print("ali translate get token error: \(error)")
                     }
 
-                    self.requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
+                    requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
                 }
 
             queryModel.setStop({
@@ -194,7 +194,7 @@ class AliService: QueryService {
             .validate()
             .responseDecodable(of: AliAPIResponse.self) { [weak self] response in
                 guard let self else { return }
-                let result = self.result
+                let result = result
 
                 switch response.result {
                 case let .success(value):
@@ -247,7 +247,7 @@ class AliService: QueryService {
             .validate()
             .responseDecodable(of: AliWebResponse.self) { [weak self] response in
                 guard let self else { return }
-                let result = self.result
+                let result = result
 
                 switch response.result {
                 case let .success(value):
@@ -262,18 +262,18 @@ class AliService: QueryService {
                         let ezError = EZError(type: .API, description: value.code?.stringValue, errorDataMessage: value.message)
                         completion(result, ezError)
                     }
-                    self.canWebRetry = true
+                    canWebRetry = true
                 case let .failure(error):
                     // The result returned when the token expires is HTML.
                     if hasToken.has, error.isResponseSerializationError {
                         print("ali web token invaild")
-                        self.tokenResponse = nil
-                        if self.canWebRetry {
-                            self.canWebRetry = false
+                        tokenResponse = nil
+                        if canWebRetry {
+                            canWebRetry = false
                             // Request token again.
-                            self.translate(text, from: from, to: to, completion: completion)
+                            translate(text, from: from, to: to, completion: completion)
                         } else {
-                            self.requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
+                            requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
                         }
 
                     } else {

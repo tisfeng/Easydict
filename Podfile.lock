@@ -18,7 +18,7 @@ PODS:
   - MASPreferences (1.4.1)
   - MASShortcut (2.4.0)
   - ReactiveObjC (3.1.1)
-  - SwiftFormat/CLI (0.52.11)
+  - SwiftFormat/CLI (0.53.2)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.2.1)
@@ -28,7 +28,7 @@ DEPENDENCIES:
   - MASPreferences (~> 1.4.1)
   - "MASShortcut (from `git@github.com:AkaShark/MASShortcut.git`, branch `double_click_modifier`)"
   - ReactiveObjC (~> 3.1.1)
-  - SwiftFormat/CLI (~> 0.52.11)
+  - SwiftFormat/CLI (~> 0.53.2)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -58,8 +58,8 @@ SPEC CHECKSUMS:
   MASPreferences: 1ba2deb14086792857af44d22846fc4aae477fd9
   MASShortcut: d9e4909e878661cc42877cc9d6efbe638273ab57
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
+  SwiftFormat: 19cf302c4ecf4f8c64d394d57589beb145debed5
 
-PODFILE CHECKSUM: 33cdb145e7fdb7bf5895f75865a1ef7987ef9a17
+PODFILE CHECKSUM: 0cdf03ad61fa55545e09fce0ea973c8844222bf1
 
 COCOAPODS: 1.14.2

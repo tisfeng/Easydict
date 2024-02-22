@@ -40,9 +40,9 @@ import Hue
         setupUI()
 
         NotificationCenter.default.addObserver(forName: .init(Self.changeFontSizeNotificationName), object: nil, queue: .main) { [weak self] noti in
-            guard let self, let index = noti.object as? Int, index != self.selectedIndex else { return }
-            self.selectedIndex = index
-            self.updateSelectedLineFrame()
+            guard let self, let index = noti.object as? Int, index != selectedIndex else { return }
+            selectedIndex = index
+            updateSelectedLineFrame()
         }
     }
 
@@ -78,7 +78,7 @@ import Hue
             stackView.heightAnchor.constraint(equalToConstant: scaleLineHeight),
         ])
 
-        scaleLines.enumerated().forEach { _, view in
+        for (_, view) in scaleLines.enumerated() {
             view.layer?.cornerRadius = scaleLineWidth / 2
             view.layer?.backgroundColor = scaleLineColor.cgColor
 

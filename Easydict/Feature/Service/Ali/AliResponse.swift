@@ -134,9 +134,9 @@ enum AnyCodable: Codable {
     var stringValue: String? {
         switch self {
         case let .int(i):
-            return String(i)
+            String(i)
         case let .string(s):
-            return s
+            s
         }
     }
 }
