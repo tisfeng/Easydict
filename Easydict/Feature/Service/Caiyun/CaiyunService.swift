@@ -27,7 +27,7 @@ public final class CaiyunService: QueryService {
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary.
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        CaiyunTranslateType.supportLanguagesDictionary.forEach { key, value in
+        for (key, value) in CaiyunTranslateType.supportLanguagesDictionary {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict
@@ -92,7 +92,7 @@ public final class CaiyunService: QueryService {
             .validate()
             .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
                 guard let self else { return }
-                let result = self.result
+                let result = result
 
                 switch response.result {
                 case let .success(value):

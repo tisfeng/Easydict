@@ -2687,7 +2687,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT/$TARGET_NAME\" --swiftversion 5.7\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT/$TARGET_NAME\"\n";
 		};
 		124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -86,48 +86,47 @@ extension KeyHolderWrapper {
         }
 
         func restoreKeyCombo(_ recordView: RecordView) {
-            var keyCombo: KeyCombo?
-            switch type {
+            let keyCombo: KeyCombo? = switch type {
             case .inputTranslate:
-                keyCombo = Defaults[.inputShortcut]
+                Defaults[.inputShortcut]
             case .snipTranslate:
-                keyCombo = Defaults[.snipShortcut]
+                Defaults[.snipShortcut]
             case .selectTranslate:
-                keyCombo = Defaults[.selectionShortcut]
+                Defaults[.selectionShortcut]
             case .silentScreenshotOcr:
-                keyCombo = Defaults[.screenshotOCRShortcut]
+                Defaults[.screenshotOCRShortcut]
             case .showMiniWindow:
-                keyCombo = Defaults[.showMiniWindowShortcut]
+                Defaults[.showMiniWindowShortcut]
             case .clearInput:
-                keyCombo = Defaults[.clearInputShortcut]
+                Defaults[.clearInputShortcut]
             case .clearAll:
-                keyCombo = Defaults[.clearAllShortcut]
+                Defaults[.clearAllShortcut]
             case .copy:
-                keyCombo = Defaults[.copyShortcut]
+                Defaults[.copyShortcut]
             case .copyFirstResult:
-                keyCombo = Defaults[.copyFirstResultShortcut]
+                Defaults[.copyFirstResultShortcut]
             case .focus:
-                keyCombo = Defaults[.focusShortcut]
+                Defaults[.focusShortcut]
             case .play:
-                keyCombo = Defaults[.playShortcut]
+                Defaults[.playShortcut]
             case .retry:
-                keyCombo = Defaults[.retryShortcut]
+                Defaults[.retryShortcut]
             case .toggle:
-                keyCombo = Defaults[.toggleShortcut]
+                Defaults[.toggleShortcut]
             case .pin:
-                keyCombo = Defaults[.pinShortcut]
+                Defaults[.pinShortcut]
             case .hide:
-                keyCombo = Defaults[.hideShortcut]
+                Defaults[.hideShortcut]
             case .increaseFontSize:
-                keyCombo = Defaults[.increaseFontSize]
+                Defaults[.increaseFontSize]
             case .decreaseFontSize:
-                keyCombo = Defaults[.decreaseFontSize]
+                Defaults[.decreaseFontSize]
             case .google:
-                keyCombo = Defaults[.googleShortcut]
+                Defaults[.googleShortcut]
             case .eudic:
-                keyCombo = Defaults[.eudicShortcut]
+                Defaults[.eudicShortcut]
             case .appleDic:
-                keyCombo = Defaults[.appleDictionaryShortcut]
+                Defaults[.appleDictionaryShortcut]
             }
             recordView.keyCombo = keyCombo
             Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
