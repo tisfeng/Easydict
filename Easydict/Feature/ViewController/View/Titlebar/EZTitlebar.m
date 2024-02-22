@@ -81,6 +81,20 @@
     self.settingButton = button;
     button.clickBlock = nil;
     
+    NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+    CGSize imageSize = CGSizeMake(20, 20);
+    
+    [button excuteLight:^(EZButton *button) {
+        button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
+    } dark:^(EZButton *button) {
+        button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
+    }];
+    
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(24);
+    }];
+    
     mm_weakify(self);
     [button setMouseUpBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
@@ -114,6 +128,7 @@
     self.stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
     self.stackView.spacing = kButtonPadding_4;
     self.stackView.alignment = NSLayoutAttributeCenterY;
+    self.stackView.userInterfaceLayoutDirection = NSUserInterfaceLayoutDirectionRightToLeft;
     [self addSubview:self.stackView];
     
     CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_24;
@@ -123,6 +138,8 @@
         make.top.equalTo(self).offset(quickLinkButtonTopOffset);
         make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
     }];
+    
+    [self.stackView addArrangedSubview:self.settingButton];
     
     // Google
     if (Configuration.shared.showGoogleQuickLink) {
@@ -158,7 +175,8 @@
         [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(buttonSize);
         }];
-        [self.stackView insertArrangedSubview:appleDictButton atIndex:0];
+        
+        [self.stackView addArrangedSubview:appleDictButton];
     }
     
     // Eudic
@@ -181,14 +199,9 @@
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.size.mas_equalTo(buttonSize);
             }];
-            [self.stackView insertArrangedSubview:eudicButton atIndex:0];
+            [self.stackView addArrangedSubview:eudicButton];
         }
     }
-    
-    [self.settingButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(buttonSize);
-    }];
-    [self.stackView addArrangedSubview:self.settingButton];
     
     [super updateConstraints];
 }
