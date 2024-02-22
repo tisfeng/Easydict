@@ -7,7 +7,7 @@
 //
 
 #import "EZTableTipsCell.h"
-#import "EZHoverButton.h"
+#import "EZOpenLinkButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZLanguageManager.h"
 
@@ -16,8 +16,8 @@
 @property (nonatomic, strong) NSImageView *tipsIconImageView;
 @property (nonatomic, strong) NSTextField *tipsNameLabel;
 @property (nonatomic, strong) NSTextField *tipsContentLabel;
-@property (nonatomic, strong) EZHoverButton *moreBtn;
-@property (nonatomic, strong) EZHoverButton *solveBtn;
+@property (nonatomic, strong) EZOpenLinkButton *moreBtn;
+@property (nonatomic, strong) EZOpenLinkButton *solveBtn;
 @property (nonatomic, strong) NSDictionary *dataDict;
 @property (nonatomic, strong) NSString *questionSolveURL;
 @property (nonatomic, strong) NSString *seeMoreURL;
@@ -103,6 +103,7 @@
         solves = self.dataDict[@"solveEn"];
     }
     self.questionSolveURL = solves[index];
+    self.solveBtn.link = self.questionSolveURL;
 }
 
 - (CGFloat)cellHeight {
@@ -186,9 +187,9 @@
     return _tipsContentLabel;
 }
 
-- (EZHoverButton *)moreBtn {
+- (EZOpenLinkButton *)moreBtn {
     if (!_moreBtn) {
-        _moreBtn = [[EZHoverButton alloc] init];
+        _moreBtn = [[EZOpenLinkButton alloc] init];
         [self addSubview:_moreBtn];
         NSImage *moreBtnImage = [NSImage ez_imageWithSymbolName:@"ellipsis.circle.fill"];
         _moreBtn.image = moreBtnImage;
@@ -200,20 +201,14 @@
         } dark:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
         }];
-        mm_weakify(self);
-        [_moreBtn setClickBlock:^(EZButton *button) {
-            mm_strongify(self);
-            if (self.moreBtnClick) {
-                self.moreBtnClick(self.seeMoreURL);
-            }
-        }];
+        _moreBtn.link = self.seeMoreURL;
     }
     return _moreBtn;
 }
 
-- (EZHoverButton *)solveBtn {
+- (EZOpenLinkButton *)solveBtn {
     if (!_solveBtn) {
-        _solveBtn = [[EZHoverButton alloc] init];
+        _solveBtn = [[EZOpenLinkButton alloc] init];
         [self addSubview:_solveBtn];
         NSImage *solveBtnImage = [NSImage ez_imageWithSymbolName:@"link.circle.fill"];
         _solveBtn.image = solveBtnImage;
@@ -224,13 +219,6 @@
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-        }];
-        mm_weakify(self);
-        [_solveBtn setClickBlock:^(EZButton *button) {
-            mm_strongify(self);
-            if (self.solveBtnClick) {
-                self.solveBtnClick(self.questionSolveURL);
-            }
         }];
     }
     return _solveBtn;
