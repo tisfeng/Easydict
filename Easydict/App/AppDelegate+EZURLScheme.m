@@ -103,12 +103,8 @@
     if ([URL.scheme containsString:EZEasydictScheme]) {
         NSLog(@"handle URL: %@", URL);
     }
-    NSString *actionText = [self extractQueryTextFromURL:URL];
-    if ([actionText isEqualToString:@"settings"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:EZAppleEventReceivedNotification object:@{@"url": urlString}];
-    } else {
-        [JLRoutes routeURL:URL];
-    }
+    
+    [JLRoutes routeURL:URL];
 }
 
 @end

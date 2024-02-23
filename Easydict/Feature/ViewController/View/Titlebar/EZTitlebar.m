@@ -267,7 +267,7 @@
 
 - (void)goToSettings {
     if ([[Configuration shared] enableBetaNewApp]) {
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"easydictd://settings"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
     } else {
         [EZPreferencesWindowController.shared show];
     }

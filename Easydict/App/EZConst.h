@@ -54,6 +54,6 @@ static NSInteger const EZMaxFiveWordSynonymCount = 5;
 
 static CGFloat const EZGetClipboardTextDelayTime = 0.1;
 
-static NSString *const EZAppleEventReceivedNotification = @"EZAppleEventReceivedNotification";
+static NSString *const EZOpenSettingsNotification = @"EZOpenSettingsNotification";
 
 #endif /* EZConst_h */

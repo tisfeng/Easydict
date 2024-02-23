@@ -63,7 +63,6 @@ struct EasydictApp: App {
                 FakeViewToOpenSettingsInSonoma(title: "go_to_settings")
                     .openSettingsAccess()
             }
-            .handlesExternalEvents(matching: ["settings"])
             .windowStyle(HiddenTitleBarWindowStyle())
             .windowResizability(.contentSize)
 
@@ -81,7 +80,7 @@ struct FakeViewToOpenSettingsInSonoma: View {
     var body: some View {
         ZStack {}
             .frame(width: 0, height: 0)
-            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.appleEventReceived, object: nil)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.openSettings, object: nil)) { _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     // calling `openSettings` immediately doesn't work so wait a quick moment
                     try? openSettings()
