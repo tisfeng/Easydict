@@ -59,11 +59,11 @@ struct EasydictApp: App {
                 EasyDictMainMenu() // main menu
             }
 
-            WindowGroup {
-                FakeViewToOpenSettingsInSonoma(title: "Open Settings")
+            Window("go_to_settings", id: "go_to_settings") {
+                FakeViewToOpenSettingsInSonoma(title: "go_to_settings")
                     .openSettingsAccess()
             }
-            .handlesExternalEvents(matching: Set(arrayLiteral: "settings"))
+            .handlesExternalEvents(matching: ["settings"])
             .windowStyle(HiddenTitleBarWindowStyle())
             .windowResizability(.contentSize)
 
@@ -81,18 +81,17 @@ struct FakeViewToOpenSettingsInSonoma: View {
     var body: some View {
         ZStack {}
             .frame(width: 0, height: 0)
-            .onOpenURL(perform: { _ in
-                DispatchQueue.main
-                    /// NB: calling `openSettings` immediately doesn't work so wait a quick moment
-                    .asyncAfter(deadline: .now() + 0.05) {
-                        try? openSettings()
-                        NSApplication.shared
-                            .windows
-                            .filter(\.canBecomeKey)
-                            .filter { $0.title == title }
-                            .forEach { $0.close() }
-                    }
-            })
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.appleEventReceived, object: nil)) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    // calling `openSettings` immediately doesn't work so wait a quick moment
+                    try? openSettings()
+                    NSApplication.shared
+                        .windows
+                        .filter(\.canBecomeKey)
+                        .filter { $0.title == title }
+                        .forEach { $0.close() }
+                }
+            }
     }
 }
 

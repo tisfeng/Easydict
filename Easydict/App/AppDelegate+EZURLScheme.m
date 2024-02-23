@@ -16,11 +16,11 @@
 
 - (void)registerRouters {
     // Reigster URL Scheme handler.
-//    NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
-//    [appleEventManager setEventHandler:self
-//                           andSelector:@selector(handleURLEvent:withReplyEvent:)
-//                         forEventClass:kInternetEventClass
-//                            andEventID:kAEGetURL];
+    NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
+    [appleEventManager setEventHandler:self
+                           andSelector:@selector(handleURLEvent:withReplyEvent:)
+                         forEventClass:kInternetEventClass
+                            andEventID:kAEGetURL];
     
     JLRoutes *routes = [JLRoutes globalRoutes];
     [routes addRoute:@"/:action" handler:^BOOL(NSDictionary *parameters) {
@@ -103,8 +103,12 @@
     if ([URL.scheme containsString:EZEasydictScheme]) {
         NSLog(@"handle URL: %@", URL);
     }
-    
-    [JLRoutes routeURL:URL];
+    NSString *actionText = [self extractQueryTextFromURL:URL];
+    if ([actionText isEqualToString:@"settings"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:EZAppleEventReceivedNotification object:@{@"url": urlString}];
+    } else {
+        [JLRoutes routeURL:URL];
+    }
 }
 
 @end
