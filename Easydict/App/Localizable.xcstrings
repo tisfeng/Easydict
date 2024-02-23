@@ -490,13 +490,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "English word auto-splitting"
+            "value" : "English word auto-splitting「key_value --> key value」"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英语单词自动分词"
+            "value" : "英语单词自动分词「key_value --> key value」"
           }
         }
       }
@@ -506,13 +506,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically remove code comment symbols"
+            "value" : "Automatically remove code comment symbols「/*#」"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动去除代码注释符号"
+            "value" : "自动去除代码注释符号「/*#」"
           }
         }
       }
