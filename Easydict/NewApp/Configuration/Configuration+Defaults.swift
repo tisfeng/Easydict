@@ -45,6 +45,7 @@ extension Defaults.Keys {
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
     static let showAppleDictionaryQuickLink = Key<Bool>("EZConfiguration_kShowAppleDictionaryLinkKey", default: true)
+    static let showSettingQuickLink = Key<Bool>("EZConfiguration_kShowSettingQuickLink", default: true)
     static let hideMenuBarIcon = Key<Bool>("EZConfiguration_kHideMenuBarIconKey", default: false)
     static let fixedWindowPosition = Key<EZShowWindowPosition>("EZConfiguration_kShowFixedWindowPositionKey", default: .right)
     static let mouseSelectTranslateWindowType = Key<EZWindowType>("EZConfiguration_kMouseSelectTranslateWindowTypeKey", default: .mini)

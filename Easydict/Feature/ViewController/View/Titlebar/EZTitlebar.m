@@ -139,7 +139,9 @@
         make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
     }];
     
-    [self.stackView addArrangedSubview:self.settingButton];
+    if (Configuration.shared.showSettingQuickLink) {
+        [self.stackView addArrangedSubview:self.settingButton];
+    }
     
     // Google
     if (Configuration.shared.showGoogleQuickLink) {

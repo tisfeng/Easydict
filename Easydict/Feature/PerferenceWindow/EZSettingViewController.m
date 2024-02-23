@@ -93,6 +93,7 @@
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
 @property (nonatomic, strong) NSButton *showEudicQuickLinkButton;
 @property (nonatomic, strong) NSButton *showAppleDictionaryQuickLinkButton;
+@property (nonatomic, strong) NSButton *showSettingQuickLinkButton;
 
 @property (nonatomic, strong) NSView *separatorView2;
 
@@ -468,6 +469,9 @@
     self.showAppleDictionaryQuickLinkButton = [NSButton checkboxWithTitle:showAppleDictionaryQuickLink target:self action:@selector(showAppleDictionaryQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showAppleDictionaryQuickLinkButton];
 
+    NSString *showSettingQuickLink = NSLocalizedString(@"show_setting_quick_link", nil);
+    self.showSettingQuickLinkButton = [NSButton checkboxWithTitle:showSettingQuickLink target:self action:@selector(showSettingQuickLinkButtonClicked:)];
+    [self.contentView addSubview:self.showSettingQuickLinkButton];
 
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
@@ -570,6 +574,7 @@
     self.showGoogleQuickLinkButton.mm_isOn = self.config.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
+    self.showSettingQuickLinkButton.mm_isOn = self.config.showSettingQuickLink;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
     if (@available(macOS 13.0, *)) {
         self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
@@ -829,11 +834,16 @@
         make.left.equalTo(self.showEudicQuickLinkButton);
         make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
-
+    
+    [self.showSettingQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.showAppleDictionaryQuickLinkButton);
+        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
     [self.fontSizeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
-        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
+        make.top.equalTo(self.showSettingQuickLinkButton.mas_bottom).offset(20);
+        make.top.equalTo(self.showSettingQuickLinkButton.mas_bottom).offset(20);
     }];
 
     CGFloat changeFontSizeViewWidth = 220;
@@ -1019,6 +1029,9 @@
     self.config.showAppleDictionaryQuickLink = sender.mm_isOn;
 }
 
+- (void)showSettingQuickLinkButtonClicked:(NSButton *)sender {
+    self.config.showSettingQuickLink = sender.mm_isOn;
+}
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
     // !!!: EZFloatingWindowLevel shouldn't be higher than kCGModalPanelWindowLevel (8)

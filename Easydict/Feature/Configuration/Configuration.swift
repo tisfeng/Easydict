@@ -114,6 +114,9 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
     @DefaultsWrapper(.showAppleDictionaryQuickLink)
     var showAppleDictionaryQuickLink: Bool
 
+    @DefaultsWrapper(.showSettingQuickLink)
+    var showSettingQuickLink: Bool
+
     @DefaultsWrapper(.hideMenuBarIcon)
     var hideMenuBarIcon: Bool
 
@@ -338,6 +341,14 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
         )
 
         cancellables.append(
+            Defaults.publisher(.showSettingQuickLink, options: [])
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetShowSettingQuickLink()
+                }
+        )
+
+        cancellables.append(
             Defaults.publisher(.hideMenuBarIcon)
                 .removeDuplicates()
                 .sink { [weak self] _ in
@@ -545,6 +556,12 @@ private extension Configuration {
         EZMenuItemManager.shared().appleDictionaryItem?.isHidden = !showAppleDictionaryQuickLink
 
         logSettings(["show_apple_dictionary_link": showAppleDictionaryQuickLink])
+    }
+
+    func didSetShowSettingQuickLink() {
+        postUpdateQuickLinkButtonNotification()
+
+        logSettings(["showSettingQuickLink": showSettingQuickLink])
     }
 
     func didSetHideMenuBarIcon() {
