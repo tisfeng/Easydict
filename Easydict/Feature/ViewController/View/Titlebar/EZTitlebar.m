@@ -266,7 +266,11 @@
 }
 
 - (void)goToSettings {
-    [EZPreferencesWindowController.shared show];
+    if ([[Configuration shared] enableBetaNewApp]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
+    } else {
+        [EZPreferencesWindowController.shared show];
+    }
 }
 
 #pragma mark - Setter && Getter

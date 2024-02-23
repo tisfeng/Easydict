@@ -10,8 +10,12 @@ import Foundation
 
 extension Notification.Name {
     static let serviceHasUpdated = Notification.Name(EZServiceHasUpdatedNotification)
+
+    static let openSettings = Notification.Name(EZOpenSettingsNotification)
 }
 
 @objc public extension NSNotification {
     static let serviceHasUpdated = Notification.Name.serviceHasUpdated
+
+    static let openSettings = Notification.Name.openSettings
 }
