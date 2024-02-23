@@ -266,8 +266,11 @@
 }
 
 - (void)goToSettings {
-//    [EZPreferencesWindowController.shared show];
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"easydictd://settings"]];
+    if ([[Configuration shared] enableBetaNewApp]) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"easydictd://settings"]];
+    } else {
+        [EZPreferencesWindowController.shared show];
+    }
 }
 
 #pragma mark - Setter && Getter
