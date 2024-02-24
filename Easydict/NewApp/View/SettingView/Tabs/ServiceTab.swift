@@ -121,28 +121,29 @@ private struct ServiceItems: View {
     }
 }
 
+private class ServiceItemViewModel: ObservableObject {
+    @Published var isEnable = false
+
+    init(isEnable: Bool) {
+        self.isEnable = isEnable
+    }
+}
+
 @available(macOS 13.0, *)
 private struct ServiceItemView: View {
     let service: QueryService
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    private var enabled: Binding<Bool> {
-        .init {
-            service.enabled
-        } set: { newValue in
-            guard service.enabled != newValue else { return }
-            service.enabled = newValue
-            if newValue {
-                service.enabledQuery = newValue
-            }
-            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
-            viewModel.postUpdateServiceNotification()
-        }
+    @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
+
+    init(service: QueryService) {
+        self.service = service
+        serviceItemViewModel = ServiceItemViewModel(isEnable: service.enabled)
     }
 
     var body: some View {
-        Toggle(isOn: enabled) {
+        Toggle(isOn: $serviceItemViewModel.isEnable) {
             HStack {
                 Image(service.serviceType().rawValue)
                     .resizable()
@@ -152,6 +153,15 @@ private struct ServiceItemView: View {
                     .lineLimit(1)
                     .fixedSize()
             }
+        }
+        .onChange(of: serviceItemViewModel.isEnable) { newValue in
+            guard service.enabled != newValue else { return }
+            service.enabled = newValue
+            if newValue {
+                service.enabledQuery = newValue
+            }
+            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+            viewModel.postUpdateServiceNotification()
         }
         .padding(4.0)
         .toggleStyle(.switch)
