@@ -43,10 +43,10 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 |         简明英汉字典          | 中英 |       [GitHub](https://github.com/skywind3000/ECDICT)        | https://drive.google.com/file/d/1-RoulJykOmcADGRHSmUjX2SkwiyLTHP1/view?usp=sharing |
 |         有道词语辨析          | 中英 | [freemdict](https://downloads.freemdict.com/%E5%B0%9A%E6%9C%AA%E6%95%B4%E7%90%86/%E5%85%B1%E4%BA%AB2020.5.11/qwjs/39_%E6%9C%89%E9%81%93%E8%AF%8D%E8%AF%AD%E8%BE%A8%E6%9E%90/) | https://drive.google.com/file/d/1-HGanRhQDRR0OSMLb19or07lPwn_R0cn/view?usp=sharing |
 |            大辞海             | 中文 |           [mdict](https://mdict.org/post/dacihai/)           | https://drive.google.com/file/d/1-8cBLcuA_N4PAjIMn_-d03ELv4uVrmIr/view?usp=sharing |
-|     朗文当代高级英语辞典      | 中英 |            [v2ex](https://www.v2ex.com/t/907272)             | https://drive.google.com/file/d/1scunXbe2JppVuKxNvn2uOidTbAZpiktk/view?usp=drive_link |
-|      柯林斯高阶英汉双解       | 中英 | [《柯林斯双解》for macOS](https://placeless.net/blog/macos-dictionaries) | https://drive.google.com/file/d/1-KQmILchx71L2rFqhIZMtusIcemIlM01/view?usp=share_link |
-| 牛津高阶英汉双解词典（第 8 版） | 中英 |        [简书](https://www.jianshu.com/p/e279d4a979fa)        | https://drive.google.com/file/d/1-N0kiXmfTHREcBtumAmNn4sUM5poyiC7/view?usp=share_link |
-|   牛津高阶英汉双解词典（8）   | 中英 |                  来源不详，我自己修改的 css                  | https://drive.google.com/file/d/1-SigzdPPjQlycPwBHICgQSUOHpR8mMf7/view?usp=share_link |
+|     朗文当代高级英语辞典      | 中英 |            [v2ex](https://www.v2ex.com/t/907272)             | https://drive.google.com/file/d/1scunXbe2JppVuKxNvn2uOidTbAZpiktk/view?usp=sharing |
+|      柯林斯高阶英汉双解       | 中英 | [《柯林斯双解》for macOS](https://placeless.net/blog/macos-dictionaries) | https://drive.google.com/file/d/1-KQmILchx71L2rFqhIZMtusIcemIlM01/view?usp=sharing |
+| 牛津高阶英汉双解词典（第 8 版） | 中英 |        [简书](https://www.jianshu.com/p/e279d4a979fa)        | https://drive.google.com/file/d/1-N0kiXmfTHREcBtumAmNn4sUM5poyiC7/view?usp=sharing |
+|   牛津高阶英汉双解词典（8）   | 中英 |                  来源不详，我自己修改的 css                  | https://drive.google.com/file/d/1-SigzdPPjQlycPwBHICgQSUOHpR8mMf7/view?usp=sharing |
 
 ### 简明英汉字典
 
