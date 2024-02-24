@@ -154,7 +154,7 @@ private struct ServiceItemView: View {
                     .fixedSize()
             }
         }
-        .onChange(of: serviceItemViewModel.isEnable) { newValue in
+        .onReceive(serviceItemViewModel.$isEnable) { newValue in
             guard service.enabled != newValue else { return }
             service.enabled = newValue
             if newValue {
