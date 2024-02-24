@@ -372,7 +372,6 @@ static EZLanguageManager *_instance;
 }
 
 - (NSString *)ezCurrentLanguage {
-//    return [NSLocale currentLocale].currencyCode;
     return [NSLocale preferredLanguages][0];
 }
 
