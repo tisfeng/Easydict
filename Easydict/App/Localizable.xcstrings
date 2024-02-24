@@ -1775,7 +1775,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "反馈"
           }
         }
@@ -2330,6 +2330,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
+          }
+        }
+      }
+    },
+    "refuse_hide_menu_bar_icon_msg" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now Detected that there is not set input translation shortcut key or selection translation shortcut key!\n Set the shortcut key to make sure you can go Easydict and hide the menu bar icon."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到当前并没有设置输入翻译快捷键或划词翻译快捷键!  请先设置快捷键确保可以触发Easydict再隐藏菜单栏图标。"
           }
         }
       }
