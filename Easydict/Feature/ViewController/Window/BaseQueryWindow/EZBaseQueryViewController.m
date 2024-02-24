@@ -373,6 +373,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return NO;
 }
 
+- (BOOL)isTipsCellRow:(NSInteger)row {
+    return (self.isShowTipsView && row == 2 && self.windowType != EZWindowTypeMini) || (self.isShowTipsView && row == 1);
+}
+
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
@@ -807,7 +811,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // show tips view
-    if ((self.isShowTipsView && row == 2 && self.windowType != EZWindowTypeMini) || (self.isShowTipsView && row == 1)) {
+    if ([self isTipsCellRow:row]) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]];
@@ -832,8 +836,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if ((row == 2 && self.isShowTipsView && self.windowType != EZWindowTypeMini) || 
-               (row == 1 && self.isShowTipsView)) {
+    } else if ([self isTipsCellRow:row]) {
         if (!self.tipsCell) {
             height = 100;
         } else {
