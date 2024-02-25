@@ -565,7 +565,7 @@ private extension Configuration {
     }
 
     func didSetHideMenuBarIcon() {
-        if !NewAppManager.shared.enable {
+        if !Configuration.shared.enableBetaNewApp {
             hideMenuBarIcon(hidden: hideMenuBarIcon)
         }
 
