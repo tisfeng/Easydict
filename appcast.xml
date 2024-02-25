@@ -4,6 +4,16 @@
     <title>Easydict</title>
 
     <item>
+      <title>2.6.1</title>
+      <pubDate>Sun, 25 Feb 2024 23:01:00 +0800</pubDate>
+      <sparkle:version>33</sparkle:version>
+      <sparkle:shortVersionString>2.6.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.6.1</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.6.1/Easydict.zip" length="15996598" type="application/octet-stream" sparkle:edSignature="TOwd5rszym8QxvGjCvCHCNqWjq4uP+6YwEWhQ0owVHZL4n+p5fa/DZjrvxHgNw9Z+DU9P8w4GX+2UWaUnZiECQ=="/>
+    </item>
+
+    <item>
       <title>2.6.0</title>
       <pubDate>Fri, 09 Feb 2024 15:42:20 +0800</pubDate>
       <sparkle:version>32</sparkle:version>
