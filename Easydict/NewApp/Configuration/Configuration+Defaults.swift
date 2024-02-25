@@ -62,10 +62,12 @@ extension Defaults.Keys {
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
     static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
 
-    static let enableBetaNewApp = if #available(macOS 13.0, *) {
-        Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: true)
-    } else {
-        Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: false)
+    static var enableBetaNewApp: Key<Bool> {
+        if #available(macOS 13.0, *) {
+            Key("EZConfiguration_kEnableBetaNewAppKey", default: true)
+        } else {
+            Key("EZConfiguration_kEnableBetaNewAppKey", default: false)
+        }
     }
 }
 
