@@ -55,7 +55,7 @@ extension Defaults.Keys {
     static let clearInput = Key<Bool>("EZConfiguration_kClearInputKey", default: true)
     static let keepPrevResultWhenEmpty = Key<Bool>("EZConfiguration_kKeepPrevResultKey", default: true)
     static let selectQueryTextWhenWindowActivate = Key<Bool>("EZConfiguration_kSelectQueryTextWhenWindowActivate", default: false)
-    static let enableBetaNewApp = Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: false)
+    static let enableBetaNewApp = Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: true)
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
 

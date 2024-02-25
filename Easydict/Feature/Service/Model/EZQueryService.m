@@ -178,8 +178,8 @@ userInfo:nil]
         }
     }
     
-    NSString *fromLanguage = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *toLanguage = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
+    NSString *fromLanguage = [self languageCodeForLanguage:from];
+    NSString *toLanguage = [self languageCodeForLanguage:to];
     
     BOOL unsupportedLanguage = NO;
     
