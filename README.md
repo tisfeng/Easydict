@@ -64,7 +64,6 @@
   - [2. Homebrew 安装](#2-homebrew-安装)
   - [开发者构建](#开发者构建)
     - [构建环境](#构建环境)
-  - [签名问题 ⚠️](#签名问题-️)
 - [使用](#使用)
   - [鼠标划词](#鼠标划词)
   - [关于权限](#关于权限)
@@ -160,36 +159,6 @@ Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最�
 </p>
 
 </details>
-
-### 签名问题 ⚠️
-
-Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
-
-常见问题
-
-1. 如果遇到下面 [无法打开 Easydict 问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
-
-> 无法打开“Easydict.dmg”，因为它来自身份不明的开发者。
-
-<div>
-    <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png" width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png" width="30%">
-</div>
-
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
-</div>
-
-2. 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
-
-> “Easydict”已损坏，无法打开。
-
-在终端里输入以下命令，并输入密码即可。
-
-```bash
-sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
-```
 
 ---
 

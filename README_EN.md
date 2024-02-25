@@ -63,7 +63,6 @@ We plan to refactor the project with Swift. If you are interested in this open s
   - [2. Homebrew](#2-homebrew)
   - [Developer Build](#developer-build)
     - [Build Environment](#build-environment)
-  - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
   - [Select text by Mouse](#select-text-by-mouse)
   - [About Permissions](#about-permissions)
@@ -159,36 +158,6 @@ If the run encounters the following error, try updating CocoaPods and then `pod 
 </p>
 
 </details>
-
-### Signature Problem ⚠️
-
-Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
-
-FAQ:
-
-1. If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/en-us/guide/mac-help/mh40616/mac)
-
-> Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
-
-<div >
-    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/5ecb4cc7-53e7-45c6-8606-df36cf4adb73" width="30%">
-    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/7c44e542-62f3-458a-abbb-6ae555b743d7"  width="30%">
-    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/060f4927-8df5-4bfd-9283-363cc8d3fa52"  width="30%">
-</div>
-
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/eb2852c1-6ffd-4575-8bb0-5c97d451d582" width="100%" />
-</div>
-
-2. If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
-
-> "Easydict" is corrupted and cannot be opened.
-
-Just type the following command in the terminal and enter the password.
-
-```bash
-sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
-```
 
 ---
 
