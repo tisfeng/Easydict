@@ -259,16 +259,11 @@ BOOL EZ_isEmptyString(id param){
 }
 
 - (BOOL)isEnglishPhrase {
-    if (self.length > EZEnglishWordMaxLength) {
-        return NO;
-    }
-    
-    NSInteger wordCount = [self wordCount];
-    if (wordCount <= 2) {
-        return YES;
-    }
-    
-    return NO;
+    // hello word
+    NSString *text = [self stringByReplacingOccurrencesOfString:@" " withString:@""];
+    BOOL isEnglishPhraseLength = [text isEnglishWordWithMaxWordLength:EZEnglishWordMaxLength * 2];
+    BOOL isPhraseWordCount = [self wordCount] <= 2;
+    return isEnglishPhraseLength && isPhraseWordCount;
 }
 
 - (BOOL)isWord {

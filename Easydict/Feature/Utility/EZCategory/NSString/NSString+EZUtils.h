@@ -58,6 +58,7 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isEnglishWordWithLanguage:(EZLanguage)language;
 
+/// Just use regex to check English word, ^[a-zA-Z]+$
 - (BOOL)isEnglishWord;
 
 - (BOOL)isEnglishWordWithMaxWordLength:(NSUInteger)maxWordLength;
