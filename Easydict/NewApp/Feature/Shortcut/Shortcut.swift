@@ -99,6 +99,14 @@ class Shortcut: NSObject {
     @objc static func setupShortcut() {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
+
+        if Defaults[.firstLaunch] {
+            Defaults[.firstLaunch] = false
+            // set defalut for app shortcut
+            shortcut.setDefaultForShortcut()
+        } else {
+            // do nothing
+        }
     }
 
     // Make sure the class has only one instance
@@ -240,9 +248,9 @@ struct KeyboardShortcut: ViewModifier {
 
     private func fetchShortcutKeyEquivalent(_ keyCombo: KeyCombo) -> KeyEquivalent {
         if keyCombo.doubledModifiers {
-            return KeyEquivalent(Character(keyCombo.keyEquivalentModifierMaskString))
+            KeyEquivalent(Character(keyCombo.keyEquivalentModifierMaskString))
         } else {
-            return KeyEquivalent(Character(keyCombo.keyEquivalent))
+            KeyEquivalent(Character(keyCombo.keyEquivalent))
         }
     }
 

@@ -40,11 +40,6 @@ public final class GeminiService: QueryService {
         return orderedDict
     }
 
-    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        NSLog("Gemini Translate does not support OCR")
-        throw QueryServiceError.notSupported
-    }
-
     override public func needPrivateAPIKey() -> Bool {
         true
     }
@@ -54,6 +49,10 @@ public final class GeminiService: QueryService {
             return false
         }
         return true
+    }
+
+    override public func totalFreeQueryCharacterCount() -> Int {
+        100_000 * 1000
     }
 
     private let defaultAPIKey = "" /* .decryptAES() */

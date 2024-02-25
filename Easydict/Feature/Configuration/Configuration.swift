@@ -220,7 +220,7 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
         )
 
         cancellables.append(
-            Defaults.publisher(.launchAtStartup)
+            Defaults.publisher(.launchAtStartup, options: [])
                 .removeDuplicates()
                 .sink { [weak self] change in
                     self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
@@ -542,7 +542,7 @@ private extension Configuration {
     }
 
     func didSetHideMenuBarIcon() {
-        if !NewAppManager.shared.enable {
+        if !Configuration.shared.enableBetaNewApp {
             hideMenuBarIcon(hidden: hideMenuBarIcon)
         }
 

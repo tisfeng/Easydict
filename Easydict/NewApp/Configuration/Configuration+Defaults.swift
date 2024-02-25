@@ -10,6 +10,12 @@ import Defaults
 import Foundation
 import Magnet
 
+/// Utils
+extension Defaults.Keys {
+    /// is first launch
+    static let firstLaunch = Key<Bool>("EZConfiguration_kFirstLaunch", default: true)
+}
+
 // Setting
 extension Defaults.Keys {
     // rename `from`
@@ -49,13 +55,20 @@ extension Defaults.Keys {
     static let clearInput = Key<Bool>("EZConfiguration_kClearInputKey", default: true)
     static let keepPrevResultWhenEmpty = Key<Bool>("EZConfiguration_kKeepPrevResultKey", default: true)
     static let selectQueryTextWhenWindowActivate = Key<Bool>("EZConfiguration_kSelectQueryTextWhenWindowActivate", default: false)
-    static let enableBetaNewApp = Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: false)
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
 
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
     static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
+
+    static var enableBetaNewApp: Key<Bool> {
+        if #available(macOS 13.0, *) {
+            Key("EZConfiguration_kEnableBetaNewAppKey", default: true)
+        } else {
+            Key("EZConfiguration_kEnableBetaNewAppKey", default: false)
+        }
+    }
 }
 
 extension Defaults.Keys {
@@ -172,26 +185,26 @@ extension Defaults.Keys {
 /// shortcut
 extension Defaults.Keys {
     // Global
-    static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder", default: KeyCombo(key: .d, cocoaModifiers: .option))
-    static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder", default: KeyCombo(key: .s, cocoaModifiers: .option))
-    static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder", default: KeyCombo(key: .a, cocoaModifiers: .option))
-    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder", default: KeyCombo(key: .f, cocoaModifiers: [.option, .shift]))
-    static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder", default: KeyCombo(key: .s, cocoaModifiers: .option))
+    static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder")
+    static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
+    static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
+    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
+    static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
 
     // App
-    static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder", default: KeyCombo(key: .k, cocoaModifiers: .command))
-    static let clearAllShortcut = Key<KeyCombo?>("EZClearAllShortcutKey_keyHolder", default: KeyCombo(key: .k, cocoaModifiers: [.command, .shift]))
-    static let copyShortcut = Key<KeyCombo?>("EZCopyShortcutKey_keyHolder", default: KeyCombo(key: .c, cocoaModifiers: [.command, .shift]))
-    static let copyFirstResultShortcut = Key<KeyCombo?>("EZCopyFirstResultShortcutKey_keyHolder", default: KeyCombo(key: .j, cocoaModifiers: [.command, .shift]))
-    static let focusShortcut = Key<KeyCombo?>("EZFocusShortcutKey_keyHolder", default: KeyCombo(key: .i, cocoaModifiers: .command))
-    static let playShortcut = Key<KeyCombo?>("EZPlayShortcutKey_keyHolder", default: KeyCombo(key: .s, cocoaModifiers: .command))
-    static let retryShortcut = Key<KeyCombo?>("EZRetryShortcutKey_keyHolder", default: KeyCombo(key: .r, cocoaModifiers: .command))
-    static let toggleShortcut = Key<KeyCombo?>("EZToggleShortcutKey_keyHolder", default: KeyCombo(key: .t, cocoaModifiers: .command))
-    static let pinShortcut = Key<KeyCombo?>("EZPinShortcutKey_keyHolder", default: KeyCombo(key: .p, cocoaModifiers: .command))
-    static let hideShortcut = Key<KeyCombo?>("EZHideShortcutKey_keyHolder", default: KeyCombo(key: .y, cocoaModifiers: .command))
-    static let increaseFontSize = Key<KeyCombo?>("EZIncreaseFontSizeShortcutKey_keyHolder", default: KeyCombo(key: .keypadPlus, cocoaModifiers: .command))
-    static let decreaseFontSize = Key<KeyCombo?>("EZDecreaseFontSizeShortcutKey_keyHolder", default: KeyCombo(key: .keypadMinus, cocoaModifiers: .command))
-    static let googleShortcut = Key<KeyCombo?>("EZGoogleShortcutKey_keyHolder", default: KeyCombo(key: .return, cocoaModifiers: .command))
-    static let eudicShortcut = Key<KeyCombo?>("EZEudicShortcutKey_keyHolder", default: KeyCombo(key: .return, cocoaModifiers: [.command, .shift]))
-    static let appleDictionaryShortcut = Key<KeyCombo?>("EZAppleDictionaryShortcutKey_keyHolder", default: KeyCombo(key: .d, cocoaModifiers: [.command, .shift]))
+    static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder")
+    static let clearAllShortcut = Key<KeyCombo?>("EZClearAllShortcutKey_keyHolder")
+    static let copyShortcut = Key<KeyCombo?>("EZCopyShortcutKey_keyHolder")
+    static let copyFirstResultShortcut = Key<KeyCombo?>("EZCopyFirstResultShortcutKey_keyHolder")
+    static let focusShortcut = Key<KeyCombo?>("EZFocusShortcutKey_keyHolder")
+    static let playShortcut = Key<KeyCombo?>("EZPlayShortcutKey_keyHolder")
+    static let retryShortcut = Key<KeyCombo?>("EZRetryShortcutKey_keyHolder")
+    static let toggleShortcut = Key<KeyCombo?>("EZToggleShortcutKey_keyHolder")
+    static let pinShortcut = Key<KeyCombo?>("EZPinShortcutKey_keyHolder")
+    static let hideShortcut = Key<KeyCombo?>("EZHideShortcutKey_keyHolder")
+    static let increaseFontSize = Key<KeyCombo?>("EZIncreaseFontSizeShortcutKey_keyHolder")
+    static let decreaseFontSize = Key<KeyCombo?>("EZDecreaseFontSizeShortcutKey_keyHolder")
+    static let googleShortcut = Key<KeyCombo?>("EZGoogleShortcutKey_keyHolder")
+    static let eudicShortcut = Key<KeyCombo?>("EZEudicShortcutKey_keyHolder")
+    static let appleDictionaryShortcut = Key<KeyCombo?>("EZAppleDictionaryShortcutKey_keyHolder")
 }
