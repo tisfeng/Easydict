@@ -538,8 +538,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "SwiftUI App模式:"
+            "state" : "translated",
+            "value" : "SwiftUI App模式："
           }
         }
       }
@@ -1775,7 +1775,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "反馈"
           }
         }
