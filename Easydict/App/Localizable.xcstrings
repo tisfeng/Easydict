@@ -2340,7 +2340,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Now Detected that there is not set input translation shortcut key or selection translation shortcut key!\n Set the shortcut key to make sure you can go Easydict and hide the menu bar icon."
+            "value" : "Now Detected that there is not set input translation shortcut key or selection translation shortcut key!\n\nSet the shortcut key to make sure you can go Easydict and hide the menu bar icon."
           }
         },
         "zh-Hans" : {
