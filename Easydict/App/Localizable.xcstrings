@@ -1445,7 +1445,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Make sure you have set up a shortcut to trigger Easydict!\n\nIf you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option."
+            "value" : "Make sure you have set up a shortcut to trigger Easydict!\n\nIf you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`  then cancel the [Hide Status Bar Icon] option."
           }
         },
         "zh-Hans" : {

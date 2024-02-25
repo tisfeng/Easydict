@@ -139,7 +139,7 @@ struct GeneralTab: View {
                 Toggle(isOn: $hideMenuBarIcon.didSet(execute: { state in
                     if state {
                         // user is not set input shortcut and selection shortcut not allow hide menu bar
-                        if !detectSetShortcutStatus {
+                        if !shortcutsHaveSetuped {
                             Defaults[.hideMenuBarIcon] = false
                             showRefuseAlert = true
                         } else {
@@ -226,14 +226,8 @@ struct GeneralTab: View {
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
 
-    private var detectSetShortcutStatus: Bool {
-        if Defaults[.inputShortcut] == nil,
-           Defaults[.selectionShortcut] == nil
-        {
-            false
-        } else {
-            true
-        }
+    private var shortcutsHaveSetuped: Bool {
+        Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
     }
 
     @State private var showRefuseAlert: Bool = false
