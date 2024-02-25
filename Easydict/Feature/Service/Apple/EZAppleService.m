@@ -752,7 +752,7 @@ static EZAppleService *_instance;
             }
         }
     }
-    NSLog(@"Spell check failed, use Most Confident Language: %@", ezLanguage);
+    NSLog(@"No spell checking, use Most Confident Language: %@", ezLanguage);
     
     return ezLanguage;
 }
