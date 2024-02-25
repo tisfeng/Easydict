@@ -14,7 +14,7 @@ import SwiftUI
 enum EasydictCmpatibilityEntry {
     static func main() {
         parseArmguments()
-        if #available(macOS 13, *), NewAppManager.shared.enable {
+        if Configuration.shared.enableBetaNewApp {
             EasydictApp.main()
         } else {
             _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
