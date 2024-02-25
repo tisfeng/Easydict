@@ -533,13 +533,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SwiftUI App mode"
+            "value" : "SwiftUI App mode:"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "SwiftUI App模式"
+            "state" : "needs_review",
+            "value" : "SwiftUI App模式:"
           }
         }
       }
