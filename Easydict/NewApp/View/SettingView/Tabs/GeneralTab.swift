@@ -230,7 +230,7 @@ struct GeneralTab: View {
         Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
     }
 
-    @State private var showRefuseAlert: Bool = false
+    @State private var showRefuseAlert = false
     @State private var showHideMenuBarIconAlert = false
 }
 
