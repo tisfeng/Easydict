@@ -363,7 +363,7 @@ static EZConfiguration *_instance;
     
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
     
-    if (!EasydictNewAppManager.shared.enable) {
+    if (!Configuration.shared.enableBetaNewApp) {
         [self hideMenuBarIcon:hideMenuBarIcon];
     }
     
