@@ -3,7 +3,7 @@
 
 # Specify version used in a project
 
---swiftversion 5.7
+--swiftversion 5.9
 
 # Rules explicitly required by the guideline
 
