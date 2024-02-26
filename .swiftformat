@@ -1,4 +1,108 @@
-# https://github.com/nicklockwood/SwiftFormat/blob/main/Rules.md
+# SwiftFormat config compliant with Google Swift Guideline
+# https://google.github.io/swift/#control-flow-statements
 
-# file options
---exclude Pods
+# Specify version used in a project
+
+--swiftversion 5.7
+
+# Rules explicitly required by the guideline
+
+--rules                           \
+blankLinesAroundMark,             \
+blankLinesAtEndOfScope,           \
+blankLinesAtStartOfScope,         \
+blankLinesBetweenScopes,          \
+braces,                           \
+consecutiveBlankLines,            \
+consecutiveSpaces,                \
+duplicateImports,                 \
+elseOnSameLine,                   \
+emptyBraces,                      \
+enumNamespaces,                   \
+extensionAccessControl,           \
+hoistPatternLet,                  \
+indent,                           \
+leadingDelimiters,                \
+linebreakAtEndOfFile,             \
+markTypes,                        \
+organizeDeclarations,             \
+redundantInit,                    \
+redundantParens,                  \
+redundantPattern,                 \
+redundantRawValues,               \
+redundantType,                    \
+redundantVoidReturnType,          \
+semicolons,                       \
+sortImports,                      \
+sortSwitchCases,                  \
+spaceAroundBraces,                \
+spaceAroundBrackets,              \
+spaceAroundComments,              \
+spaceAroundGenerics,              \
+spaceAroundOperators,             \
+spaceAroundParens,                \
+spaceInsideBraces,                \
+spaceInsideBrackets,              \
+spaceInsideComments,              \
+spaceInsideGenerics,              \
+spaceInsideParens,                \
+todos,                            \
+trailingClosures,                 \
+trailingCommas,                   \
+trailingSpace,                    \
+typeSugar,                        \
+void,                             \
+wrap,                             \
+wrapArguments,                    \
+wrapAttributes,                   \
+#
+#
+# Additional rules not mentioned in the guideline, but helping to keep the codebase clean
+# Quoting the guideline:
+# Common themes among the rules in this section are:
+# avoid redundancy, avoid ambiguity, and prefer implicitness over explicitness
+# unless being explicit improves readability and/or reduces ambiguity.
+#
+#
+andOperator,                      \
+isEmpty,                          \
+redundantBackticks,               \
+redundantBreak,                   \
+redundantExtensionACL,            \
+redundantGet,                     \
+redundantLetError,                \
+redundantNilInit,                 \
+redundantObjc,                    \
+redundantReturn,                  \
+redundantSelf,                    \
+strongifiedSelf
+
+
+# Options for basic rules
+
+--extensionacl on-declarations
+--funcattributes prev-line
+--indent 4
+--maxwidth 120
+--typeattributes prev-line
+--varattributes same-line
+--voidtype tuple
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--wrapreturntype if-multiline
+--wrapconditions after-first
+
+# Option for additional rules
+
+--self init-only
+
+# Excluded folders
+
+--exclude Pods,**/UNTESTED_TODO,vendor,fastlane
+
+# https://github.com/NoemiRozpara/Google-SwiftFormat-Config
+
+# Following is by Lava
+
+--ifdef no-indent
