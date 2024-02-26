@@ -6,12 +6,11 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+// swiftlint:disable all
+
 import Foundation
 
 struct AliTranslateType: Equatable {
-    var sourceLanguage: String
-    var targetLanguage: String
-
     static let unsupported = AliTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
     /// https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes#h2-url-1
@@ -68,6 +67,9 @@ struct AliTranslateType: Equatable {
         .hebrew: "he",
     ]
 
+    var sourceLanguage: String
+    var targetLanguage: String
+
     static func transType(from: Language, to: Language) -> AliTranslateType {
         /**
          文本翻译除繁体中文、蒙语、粤语外，其他212种语言，可支持任意两种语言之间互译。繁体中文、蒙语、粤语仅支持与中文之间的互译。文本翻译支持源语言的自动语言检测，语言代码为auto（粤语为源语言时，不支持使用auto作为语言代码）。
@@ -101,3 +103,5 @@ struct AliTranslateType: Equatable {
         return AliTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
     }
 }
+
+// swiftlint:enable all

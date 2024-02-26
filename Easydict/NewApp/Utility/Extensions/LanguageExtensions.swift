@@ -9,7 +9,11 @@
 import Defaults
 import Foundation
 
+// MARK: - Language + Defaults.Serializable
+
 extension Language: Defaults.Serializable {}
+
+// MARK: - Language + CaseIterable
 
 extension Language: CaseIterable {
     public static let allCases: [Language] = EZLanguageModel.allLanguagesDict().sortedKeys().map { rawValue in
@@ -21,36 +25,36 @@ extension Language: CaseIterable {
     }
 }
 
-public extension Language {
-    var model: EZLanguageModel {
+extension Language {
+    public var model: EZLanguageModel {
         EZLanguageModel.allLanguagesDict().object(forKey: rawValue as NSString)
     }
 
-    var chineseName: String {
+    public var chineseName: String {
         model.chineseName
     }
 
-    var englishName: String {
+    public var englishName: String {
         model.englishName.rawValue
     }
 
-    var localName: String {
+    public var localName: String {
         model.localName
     }
 
-    var flagEmoji: String {
+    public var flagEmoji: String {
         model.flagEmoji
     }
 
-    var voiceName: String {
+    public var voiceName: String {
         model.voiceName
     }
 
-    var localeIdentifier: String {
+    public var localeIdentifier: String {
         model.localeIdentifier
     }
 
-    var localizedName: String {
+    public var localizedName: String {
         if EZLanguageManager.shared().isSystemChineseFirstLanguage() {
             chineseName
         } else {

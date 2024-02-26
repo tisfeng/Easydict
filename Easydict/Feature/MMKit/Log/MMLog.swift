@@ -13,35 +13,62 @@
 import CocoaLumberjackSwift
 
 @inlinable
-public func MMLogInfo(_ message: @autoclosure () -> String,
-                      file: StaticString = #file,
-                      function: StaticString = #function,
-                      line: UInt = #line,
-                      ddlog: DDLog = MMManagerForLog.sharedDDLog())
-{
-    DDLogInfo(message(), level: MMDefaultLogLevel, file: file, function: function, line: line, asynchronous: MMDefaultLogAsyncEnabled.boolValue, ddlog: ddlog)
+public func MMLogInfo(
+    _ message: @autoclosure () -> String,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    ddlog: DDLog = MMManagerForLog.sharedDDLog()
+) {
+    DDLogInfo(
+        message(),
+        level: MMDefaultLogLevel,
+        file: file,
+        function: function,
+        line: line,
+        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        ddlog: ddlog
+    )
 }
 
 @inlinable
-public func MMLogVerbose(_ message: @autoclosure () -> String,
-                         file: StaticString = #file,
-                         function: StaticString = #function,
-                         line: UInt = #line,
-                         ddlog: DDLog = MMManagerForLog.sharedDDLog())
-{
-    DDLogVerbose(message(), level: MMDefaultLogLevel, file: file, function: function, line: line, asynchronous: MMDefaultLogAsyncEnabled.boolValue, ddlog: ddlog)
+public func MMLogVerbose(
+    _ message: @autoclosure () -> String,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    ddlog: DDLog = MMManagerForLog.sharedDDLog()
+) {
+    DDLogVerbose(
+        message(),
+        level: MMDefaultLogLevel,
+        file: file,
+        function: function,
+        line: line,
+        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        ddlog: ddlog
+    )
 }
 
 @inlinable
-public func MMAssert(_ condition: @autoclosure () -> Bool,
-                     _ message: @autoclosure () -> String = "",
-                     file: StaticString = #file,
-                     function: StaticString = #function,
-                     line: UInt = #line,
-                     ddlog: DDLog = MMManagerForLog.sharedDDLog())
-{
+public func MMAssert(
+    _ condition: @autoclosure () -> Bool,
+    _ message: @autoclosure () -> String = "",
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    ddlog: DDLog = MMManagerForLog.sharedDDLog()
+) {
     if !condition() {
-        DDLogError(message(), level: DDLogLevel.all, file: file, function: function, line: line, asynchronous: false, ddlog: ddlog)
+        DDLogError(
+            message(),
+            level: DDLogLevel.all,
+            file: file,
+            function: function,
+            line: line,
+            asynchronous: false,
+            ddlog: ddlog
+        )
         Swift.assertionFailure(message(), file: file, line: line)
     }
 }

@@ -11,10 +11,9 @@ import Foundation
 import Hue
 import SnapKit
 
-@objc public class FontSizeHintView: NSView {
-    private lazy var minLabel: NSTextField = .init(labelWithString: NSLocalizedString("small", comment: ""))
-    private lazy var maxLabel: NSTextField = .init(labelWithString: NSLocalizedString("large", comment: ""))
-    private lazy var hintLabel: NSTextField = .init(wrappingLabelWithString: NSLocalizedString("hints_keyboard_shortcuts_font_size", comment: ""))
+@objc
+public class FontSizeHintView: NSView {
+    // MARK: Lifecycle
 
     override public init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -46,4 +45,15 @@ import SnapKit
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: Private
+
+    private lazy var minLabel: NSTextField = .init(labelWithString: NSLocalizedString("small", comment: ""))
+    // swiftlint:disable:next all
+    private lazy var maxLabel: NSTextField = .init(labelWithString: NSLocalizedString("large", comment: ""))
+    // swiftlint:disable:next all
+    private lazy var hintLabel: NSTextField = .init(wrappingLabelWithString: NSLocalizedString(
+        "hints_keyboard_shortcuts_font_size",
+        comment: ""
+    ))
 }

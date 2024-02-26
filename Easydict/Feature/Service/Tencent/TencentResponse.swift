@@ -8,6 +8,9 @@
 
 import Foundation
 
+// MARK: - TencentResponse
+
+// swiftlint:disable identifier_name
 struct TencentResponse: Codable {
     struct Response: Codable {
         var RequestId: String
@@ -19,6 +22,9 @@ struct TencentResponse: Codable {
     var Response: Response
 }
 
+// MARK: - TencentErrorResponse
+
+// swiftlint:enable identifier_name
 /**
  {
    "Response": {
@@ -31,9 +37,15 @@ struct TencentResponse: Codable {
  }
  */
 struct TencentErrorResponse: Codable {
+    // MARK: Internal
+
     struct Response: Codable {
+        // MARK: Internal
+
         var error: Error
         var requestId: String
+
+        // MARK: Private
 
         // CodingKeys 枚举用于映射字段名
         private enum CodingKeys: String, CodingKey {
@@ -43,8 +55,12 @@ struct TencentErrorResponse: Codable {
     }
 
     struct Error: Codable {
+        // MARK: Internal
+
         var code: String
         var message: String
+
+        // MARK: Private
 
         private enum CodingKeys: String, CodingKey {
             case code = "Code" // code --> Code
@@ -53,6 +69,8 @@ struct TencentErrorResponse: Codable {
     }
 
     var response: Response
+
+    // MARK: Private
 
     private enum CodingKeys: String, CodingKey {
         case response = "Response" // response --> Response

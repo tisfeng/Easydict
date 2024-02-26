@@ -11,6 +11,8 @@ import SwiftUI
 
 @available(macOS 13, *)
 struct PrivacyTab: View {
+    // MARK: Internal
+
     var body: some View {
         Form {
             Section {
@@ -33,6 +35,8 @@ struct PrivacyTab: View {
         }
         .formStyle(.grouped)
     }
+
+    // MARK: Private
 
     @Default(.allowCrashLog) private var allowCollectCrashLog
     @Default(.allowAnalytics) private var allowCollectAnalytics

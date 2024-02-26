@@ -2762,6 +2762,7 @@
 		};
 		EAA54DF92B8C74F6001C2CC6 /* Lint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

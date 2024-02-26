@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+// MARK: - SettingTab
+
 enum SettingTab: Int {
     case general
     case service
@@ -18,10 +20,11 @@ enum SettingTab: Int {
     case about
 }
 
+// MARK: - SettingView
+
 @available(macOS 13, *)
 struct SettingView: View {
-    @State private var selection = SettingTab.general
-    @State private var window: NSWindow?
+    // MARK: Internal
 
     var body: some View {
         TabView(selection: $selection) {
@@ -92,6 +95,11 @@ struct SettingView: View {
 
         window.setFrame(newRect, display: true, animate: true)
     }
+
+    // MARK: Private
+
+    @State private var selection = SettingTab.general
+    @State private var window: NSWindow?
 }
 
 @available(macOS 13, *)

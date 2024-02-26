@@ -19,16 +19,19 @@ disabled_rules:
   - nesting
   - void_return
   - shorthand_operator
+  - cyclomatic_complexity
+  - force_cast
+  - force_try
+  - large_tuple
 
 opt_in_rules:
   - convenience_type
   # - no_magic_numbers
   # - force_unwrapping
 
-force_cast: warning # implicitly
-force_try:
-  severity: warning # explicitly
-line_length: 120
+line_length:
+  warning: 120
+  ignores_comments: true
 function_body_length:
   warning: 120
   error: 400
@@ -58,19 +61,6 @@ reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, em
 trailing_comma:
   severity: warning
   mandatory_comma: true
-large_tuple:
-  - warning: 4
-  - error: 4
-# force_unwrapping:
-#   excluded:
-#     - ".*Test\\.swift"
-
-custom_rules:
-  sf_safe_symbol:
-    name: "Safe SFSymbol"
-    message: "Use `SFSafeSymbols` via `systemSymbol` parameters for type safety."
-    regex: "(Image\\(systemName:)|(NSImage\\(symbolName:)|(Label[^,]+?,\\s*systemImage:)|(UIApplicationShortcutIcon\\(systemImageName:)"
-    severity: warning
 
 excluded:
   - "Build/*"

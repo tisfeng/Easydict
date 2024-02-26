@@ -12,15 +12,20 @@ import Foundation
 
 @objc(EZBingLanguageVoice)
 class BingLanguageVoice: NSObject {
-    @objc var lang: String // BCP-47, en-US
-    @objc var voiceName: String // en-US-JennyNeural
+    // MARK: Lifecycle
 
     init(lang: String, voiceName: String) {
         self.lang = lang
         self.voiceName = voiceName
     }
 
-    @objc class func voice(withLanguage language: String, voiceName: String) -> BingLanguageVoice {
+    // MARK: Internal
+
+    @objc var lang: String // BCP-47, en-US
+    @objc var voiceName: String // en-US-JennyNeural
+
+    @objc
+    class func voice(withLanguage language: String, voiceName: String) -> BingLanguageVoice {
         BingLanguageVoice(lang: language, voiceName: voiceName)
     }
 }

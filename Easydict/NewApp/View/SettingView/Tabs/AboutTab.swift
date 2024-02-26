@@ -11,6 +11,30 @@ import SwiftUI
 
 @available(macOS 13, *)
 struct AboutTab: View {
+    // MARK: Internal
+
+    class CheckUpdaterViewModel: ObservableObject {
+        // MARK: Lifecycle
+
+        init() {
+            updater
+                .publisher(for: \.automaticallyChecksForUpdates)
+                .assign(to: &$autoChecksForUpdates)
+        }
+
+        // MARK: Internal
+
+        @Published var autoChecksForUpdates = true {
+            didSet {
+                updater.automaticallyChecksForUpdates = autoChecksForUpdates
+            }
+        }
+
+        // MARK: Private
+
+        private let updater = Configuration.shared.updater
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 15) {
@@ -46,32 +70,18 @@ struct AboutTab: View {
         }
     }
 
+    // MARK: Private
+
     @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
 
-    @State
-    private var lastestVersion: String?
+    @State private var lastestVersion: String?
+
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ""
     }
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-    }
-
-    class CheckUpdaterViewModel: ObservableObject {
-        private let updater = Configuration.shared.updater
-
-        @Published var autoChecksForUpdates = true {
-            didSet {
-                updater.automaticallyChecksForUpdates = autoChecksForUpdates
-            }
-        }
-
-        init() {
-            updater
-                .publisher(for: \.automaticallyChecksForUpdates)
-                .assign(to: &$autoChecksForUpdates)
-        }
     }
 }
 

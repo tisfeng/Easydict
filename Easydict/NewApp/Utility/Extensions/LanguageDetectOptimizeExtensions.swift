@@ -9,11 +9,17 @@
 import Defaults
 import Foundation
 
+// MARK: - LanguageDetectOptimize + Defaults.Serializable
+
 extension LanguageDetectOptimize: Defaults.Serializable {}
+
+// MARK: - LanguageDetectOptimize + CaseIterable
 
 extension LanguageDetectOptimize: CaseIterable {
     public static let allCases: [LanguageDetectOptimize] = [.none, .baidu, .google]
 }
+
+// MARK: - LanguageDetectOptimize + CustomLocalizedStringResourceConvertible
 
 @available(macOS 13, *)
 extension LanguageDetectOptimize: CustomLocalizedStringResourceConvertible {

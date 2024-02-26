@@ -6,12 +6,18 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+// swiftlint:disable all
+
 import Alamofire
 import Defaults
 import Foundation
 
+// MARK: - CaiyunService
+
 @objc(EZCaiyunService)
 public final class CaiyunService: QueryService {
+    // MARK: Public
+
     override public func serviceType() -> ServiceType {
         .caiyun
     }
@@ -42,26 +48,16 @@ public final class CaiyunService: QueryService {
         token != CaiyunService.defaultTestToken
     }
 
-    private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
-
-    /// Official Test Token for Caiyun
-    private static let defaultTestToken = "5VZ61ZCRzQ2uTbp6MPaUGdoqXGklkB3WifIBPamAwLc=".decryptAES()
-
-    // easydict://writeKeyValue?EZCaiyunToken=
-    private var token: String {
-        let token = Defaults[.caiyunToken]
-        if let token, !token.isEmpty {
-            return token
-        } else {
-            return CaiyunService.defaultTestToken
-        }
-    }
-
     override public func autoConvertTraditionalChinese() -> Bool {
         true
     }
 
-    override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+    override public func translate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZQueryResult, Error?) -> ()
+    ) {
         let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
@@ -84,35 +80,58 @@ public final class CaiyunService: QueryService {
             "x-authorization": "token " + token,
         ]
 
-        let request = AF.request(apiEndPoint,
-                                 method: .post,
-                                 parameters: parameters,
-                                 encoding: JSONEncoding.default,
-                                 headers: headers)
-            .validate()
-            .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
-                guard let self else { return }
-                let result = result
+        let request = AF.request(
+            apiEndPoint,
+            method: .post,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers
+        )
+        .validate()
+        .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
+            guard let self else { return }
+            let result = result
 
-                switch response.result {
-                case let .success(value):
-                    result.from = from
-                    result.to = to
-                    result.queryText = text
-                    result.translatedResults = value.target
-                    completion(result, nil)
-                case let .failure(error):
-                    NSLog("Caiyun lookup error \(error)")
-                    let ezError = EZError(nsError: error, errorResponseData: response.data)
-                    completion(result, ezError)
-                }
+            switch response.result {
+            case let .success(value):
+                result.from = from
+                result.to = to
+                result.queryText = text
+                result.translatedResults = value.target
+                completion(result, nil)
+            case let .failure(error):
+                NSLog("Caiyun lookup error \(error)")
+                let ezError = EZError(nsError: error, errorResponseData: response.data)
+                completion(result, ezError)
             }
+        }
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)
     }
+
+    // MARK: Private
+
+    /// Official Test Token for Caiyun
+    private static let defaultTestToken = "5VZ61ZCRzQ2uTbp6MPaUGdoqXGklkB3WifIBPamAwLc=".decryptAES()
+
+    private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
+
+    // easydict://writeKeyValue?EZCaiyunToken=
+    private var token: String {
+        let token = Defaults[.caiyunToken]
+        if let token, !token.isEmpty {
+            return token
+        } else {
+            return CaiyunService.defaultTestToken
+        }
+    }
 }
+
+// MARK: - QueryServiceError
 
 enum QueryServiceError: Error {
     case notSupported
 }
+
+// swiftlint:enable all

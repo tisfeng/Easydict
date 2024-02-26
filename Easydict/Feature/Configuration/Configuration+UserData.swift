@@ -13,7 +13,8 @@ extension Configuration {
         let userDefaults = UserDefaults.standard
 
         var userConfigDict = [String: Any]()
-        if let bundleIdentifier = Bundle.main.bundleIdentifier, let appUserDefaultsData = userDefaults.persistentDomain(forName: bundleIdentifier) {
+        if let bundleIdentifier = Bundle.main.bundleIdentifier,
+           let appUserDefaultsData = userDefaults.persistentDomain(forName: bundleIdentifier) {
             for (key, value) in appUserDefaultsData {
                 if !key.hasPrefix("MASPreferences"), !(value is Data) {
                     userConfigDict[key] = value

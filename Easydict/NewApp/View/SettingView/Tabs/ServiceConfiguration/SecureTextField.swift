@@ -8,23 +8,16 @@
 
 import SwiftUI
 
+// MARK: - SecureTextField
+
 @available(macOS 13.0, *)
 struct SecureTextField: View {
+    // MARK: Internal
+
     let title: LocalizedStringKey
     let placeholder: LocalizedStringKey
 
     @Binding var text: String?
-
-    @State private var showText: Bool = false
-
-    private enum Focus {
-        case secure, text
-    }
-
-    @FocusState private var focus: Focus?
-
-    @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.lineLimit) private var lineLimit
 
     var body: some View {
         HStack {
@@ -57,27 +50,51 @@ struct SecureTextField: View {
             }
         }
         .onChange(of: showText) { newValue in
-            if focus != nil { // Prevents stealing focus to this field if another field is focused, or nothing is focused
+            if focus !=
+                nil { // Prevents stealing focus to this field if another field is focused, or nothing is focused
                 DispatchQueue.main.async { // Needed for general iOS 16 bug with focus
                     focus = newValue ? .text : .secure
                 }
             }
         }
     }
+
+    // MARK: Private
+
+    private enum Focus {
+        case secure, text
+    }
+
+    @State private var showText: Bool = false
+
+    @FocusState private var focus: Focus?
+
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.lineLimit) private var lineLimit
 }
+
+// MARK: - SecureInput_Previews
 
 @available(macOS 13.0, *)
 struct SecureInput_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SecureTextField(title: "caiyun_translate", placeholder: "service.configuration.input.placeholder", text: .constant("1234567"))
-                .padding()
-                .previewLayout(.fixed(width: 400, height: 100))
+            SecureTextField(
+                title: "caiyun_translate",
+                placeholder: "service.configuration.input.placeholder",
+                text: .constant("1234567")
+            )
+            .padding()
+            .previewLayout(.fixed(width: 400, height: 100))
 
-            SecureTextField(title: "caiyun_translate", placeholder: "service.configuration.input.placeholder", text: .constant(""))
-                .padding()
-                .preferredColorScheme(.dark)
-                .previewLayout(.fixed(width: 400, height: 100))
+            SecureTextField(
+                title: "caiyun_translate",
+                placeholder: "service.configuration.input.placeholder",
+                text: .constant("")
+            )
+            .padding()
+            .preferredColorScheme(.dark)
+            .previewLayout(.fixed(width: 400, height: 100))
         }
     }
 }
