@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZOpenAIService (EZPromptMessages)
+@interface EZOpenAILikeService (EZPromptMessages)
 
 /// Translation messages.
 - (NSArray *)translatioMessages:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage;

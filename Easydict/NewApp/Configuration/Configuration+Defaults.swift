@@ -196,6 +196,15 @@ extension Defaults.Keys {
     static let openAIEndPoint = Key<String?>("EZOpenAIEndPointKey")
     static let openAIModel = Key<OpenAIModels>("EZOpenAIModelKey", default: OpenAIModels.gpt3_5_turbo_0125)
 
+    // OneAPI
+    static let oneAPIAPIKey = Key<String?>("EZOneAPIAPIKey")
+    static let oneAPITranslation = Key<String>("EZOneAPITranslationKey", default: "1")
+    static let oneAPIDictionary = Key<String>("EZOneAPIDictionaryKey", default: "1")
+    static let oneAPISentence = Key<String>("EZOneAPISentenceKey", default: "1")
+    static let oneAPIServiceUsageStatus = Key<OpenAIUsageStats>("EZOneAPIServiceUsageStatusKey", default: OpenAIUsageStats.default)
+    static let oneAPIEndPoint = Key<String?>("EZOneAPIEndPointKey")
+    static let oneAPIModel = Key<String?>("EZOneAPIModelKey")
+
     // DeepL
     static let deepLAuth = Key<String?>("EZDeepLAuthKey")
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(

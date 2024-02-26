@@ -1970,6 +1970,23 @@
         }
       }
     },
+    "one_api" : {
+      "comment" : "The name of One API Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One API Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One API 翻译"
+          }
+        }
+      }
+    },
     "open_in_apple_dictionary" : {
       "localizations" : {
         "en" : {
@@ -2733,6 +2750,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api.openai.com/v1/chat/completions"
+          }
+        }
+      }
+    },
+    "service.configuration.oneapi.model.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gpt-3.5-turbo/gemini-pro-vision"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gpt-3.5-turbo/gemini-pro-vision"
           }
         }
       }
