@@ -1493,13 +1493,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Make sure you have set up a shortcut to trigger Easydict!\n\nIf you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option."
+            "value" : "If you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`  then cancel the [Hide Status Bar Icon] option."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请确保已设置了触发 Easydict 的快捷！\n\n如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项。"
+            "value" : "如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项。"
           }
         }
       }
@@ -2378,6 +2378,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
+          }
+        }
+      }
+    },
+    "refuse_hide_menu_bar_icon_msg" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now Detected that there is not set input translation shortcut key or selection translation shortcut key!\n\nSet the shortcut key to make sure you can go Easydict and hide the menu bar icon."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到当前未设置输入翻译快捷键或划词翻译快捷键！\n\n请先设置快捷键确保可以触发 Easydict 再隐藏菜单栏图标。"
           }
         }
       }
