@@ -27,6 +27,7 @@ public final class TencentService: QueryService {
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+        // swiftlint:disable:next todo
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
         for (key, value) in TencentTranslateType.supportLanguagesDictionary {
