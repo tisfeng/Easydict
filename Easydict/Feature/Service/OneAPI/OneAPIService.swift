@@ -48,7 +48,7 @@ class OneAPIService: OpenAILikeService {
     }
 
     override func hasPrivateAPIKey() -> Bool {
-        apiKey == defaultAPIKey
+        apiKey != defaultAPIKey
     }
 
     override func serviceType() -> ServiceType {
@@ -63,11 +63,11 @@ class OneAPIService: OpenAILikeService {
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
         for language in EZLanguageManager.shared().allLanguages {
             var value = language.rawValue
-            if value == "Classical-Chinese" {
-                value = "文言文"
+            if language == Language.classicalChinese {
+                value = kEZLanguageWenYanWen
             }
 
-            if language.rawValue != "Burmese" {
+            if language != Language.burmese {
                 orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
             }
         }
