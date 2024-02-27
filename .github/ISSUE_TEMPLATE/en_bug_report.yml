@@ -1,6 +1,6 @@
 name: Bug report
 description: Report an issue
-title: "🐞 Bug Report: {{Please fill in the title, don't leave it blank}} "
+title: "🐞 Bug Report: Please fill in the title, don't leave it blank"
 labels: ["bug"]
 
 body:
@@ -9,6 +9,8 @@ body:
     attributes:
       label: "Please confirm the following:"
       options:
+        - label: Be sure to check out [FAQ](https://github.com/tisfeng/Easydict/wiki/FAQ)
+          required: true
         - label: I have carefully read the [README](https://github.com/tisfeng/Easydict#readme)
           required: true
         - label: I have searched through the [issues](https://github.com/tisfeng/Easydict/issues) page but couldn't find a solution.(Including issue that has been closed)

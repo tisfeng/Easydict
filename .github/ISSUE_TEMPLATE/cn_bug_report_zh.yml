@@ -1,6 +1,6 @@
 name: 反馈问题
 description: 反馈问题
-title: "🐞 反馈问题：{{请填写标题，不要留空}}"
+title: "🐞 反馈问题：请填写标题，不要留空"
 labels: ["bug"]
 
 body:
@@ -9,6 +9,8 @@ body:
     attributes:
       label: 请先确认以下事项：
       options:
+        - label: 请务必查看 [常见问题](https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
+          required: true
         - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
           required: true
         - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过问题（包括已关闭的 issue），但未能找到解决方法
