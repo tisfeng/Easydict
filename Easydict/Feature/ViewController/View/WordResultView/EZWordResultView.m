@@ -133,30 +133,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             explainTextFieldTopOffset += 5;
         }
         
-        if (result.wordResult && result.translatedResults.count) {
-            explainLabel = [[EZLabel alloc] init];
-            [self addSubview:explainLabel];
-            explainLabel.font = typeTextFont;
-            explainLabel.textForegroundColor = typeTextColor;
-            explainLabel.text = NSLocalizedString(@"explain", nil);
-            
-            CGSize labelSize = [explainLabel oneLineSize];
-            
-            [explainLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(explainTextFieldTopOffset);
-                } else {
-                    make.top.offset(explainTextFieldTopOffset);
-                }
-                make.left.mas_equalTo(kHorizontalMargin_8);
-                exceptedWidth += kHorizontalMargin_8;
-                
-                make.size.mas_equalTo(labelSize).priorityHigh();
-                exceptedWidth += ceil(labelSize.width);
-            }];
-            explainLabel.mas_key = @"explainLabel";
-        }
-        
         NSString *text = nil;
         if (result.translatedText) {
             text = result.translatedText;
@@ -367,33 +343,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         audioButton.mas_key = @"audioButton_phonetics";
     }];
     
-    EZLabel *tagLabel = nil;
     __block NSScrollView *tagScrollView = nil;
     if (wordResult.tags.count) {
-        tagLabel = [[EZLabel alloc] init];
-        [self addSubview:tagLabel];
-        tagLabel.font = typeTextFont;
-        tagLabel.textForegroundColor = typeTextColor;
-        tagLabel.text = NSLocalizedString(@"tag", nil);
-        
-        CGSize labelSize = [tagLabel oneLineSize];
-        
-        [tagLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(kHorizontalMargin_8);
-            CGFloat topOffset = kVerticalMargin_12 + 3;
-            if (lastView) {
-                make.top.equalTo(lastView.mas_bottom).offset(topOffset);
-            } else {
-                make.top.offset(topOffset);
-            }
-            height += topOffset;
-            
-            make.size.mas_equalTo(labelSize).priorityHigh();
-            height += labelSize.height;
-        }];
-        tagLabel.mas_key = @"tagLabel";
-        lastView = tagLabel;
-        
         __block NSView *tagContentView = nil;
         __block CGFloat tagContentViewWidth = 0;
         CGFloat padding = 6;
@@ -415,17 +366,24 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             }];
             
             [tagButton sizeToFit];
-            CGSize size = tagButton.size;
+            CGSize tagButtonSize = tagButton.size;
             CGFloat expandValue = 3;
-            CGSize newSize = CGSizeMake(size.width + expandValue * 2, size.height + expandValue);
+            CGSize newSize = CGSizeMake(tagButtonSize.width + expandValue * 2, tagButtonSize.height + expandValue);
             
             if (!tagScrollView) {
                 tagScrollView = [[NSScrollView alloc] init];
                 [self addSubview:tagScrollView];
                 [tagScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.left.equalTo(tagLabel.mas_right).offset(padding + 2);
+                    make.left.offset(kHorizontalMargin_8);
                     make.height.mas_equalTo(newSize.height);
-                    make.centerY.equalTo(tagLabel);
+                    CGFloat topOffset = kVerticalMargin_12 + 3;
+                    if (lastView) {
+                        make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+                    } else {
+                        make.top.offset(topOffset);
+                    }
+                    height += topOffset;
+                    height += newSize.height;
                 }];
                 
                 tagContentView = [[NSView alloc] init];
@@ -444,10 +402,10 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 tagScrollView.hasHorizontalScroller = NO;
             }
             [tagContentView addSubview:tagButton];
-            
+            lastView = tagContentView;
             [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.size.mas_equalTo(newSize);
-                make.centerY.equalTo(tagLabel);
+                make.centerY.equalTo(tagContentView);
                 if (lastTagButton) {
                     make.left.equalTo(lastTagButton.mas_right).offset(padding);
                 } else {
@@ -460,7 +418,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         tagContentView.width = tagContentViewWidth;
         
-        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + labelSize.width + padding * 2);
+        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + padding * 2);
         CGFloat tagScrollViewWidth = MIN(tagContentViewWidth, maxTagScrollViewWidth);
         [tagScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(tagScrollViewWidth);

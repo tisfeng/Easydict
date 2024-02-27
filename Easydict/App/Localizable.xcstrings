@@ -1087,22 +1087,6 @@
         }
       }
     },
-    "explain" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explanation:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "释义："
-          }
-        }
-      }
-    },
     "Export Log" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4054,22 +4038,6 @@
         }
       }
     },
-    "tag" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tag:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标签："
-          }
-        }
-      }
-    },
     "tencent_translate" : {
       "comment" : "The name of Tencent Translate",
       "localizations" : {
@@ -4118,13 +4086,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "UK:"
+            "value" : "UK"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英："
+            "value" : "英"
           }
         }
       }
@@ -4182,13 +4150,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "US:"
+            "value" : "US"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "美："
+            "value" : "美"
           }
         }
       }
