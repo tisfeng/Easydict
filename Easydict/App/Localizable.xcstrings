@@ -490,13 +490,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "English word auto-splitting「key_value --> key value」"
+            "value" : "Word auto-splitting: key_value —> key value"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英语单词自动分词「key_value --> key value」"
+            "value" : "单词自动分词 key_value —> key value"
           }
         }
       }
