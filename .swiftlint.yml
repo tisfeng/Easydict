@@ -68,3 +68,4 @@ excluded:
   - "**/UNTESTED_TODO"
   - "vendor"
   - "fastlane"
+  - ".build"
