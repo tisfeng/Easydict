@@ -22,10 +22,14 @@ static NSString *const EZOpenAISentenceKey = @"EZOpenAISentenceKey";
 
 static NSString *const EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageStatusKey";
 
-static NSString *const EZOpenAIDomainKey = @"EZOpenAIDomainKey";
-static NSString *const EZOpenAIEndPointKey = @"EZOpenAIEndPointKey";
 static NSString *const EZOpenAIModelKey = @"EZOpenAIModelKey";
 
+static NSString *const EZOneAPIEndPointKey = @"EZOneAPIEndPointKey";
+static NSString *const EZOneAPIAPIKey = @"EZOneAPIAPIKey";
+static NSString *const EZOneAPITranslationKey = @"EZOneAPITranslationKey";
+static NSString *const EZOneAPIDictionaryKey = @"EZOneAPIDictionaryKey";
+static NSString *const EZOneAPISentenceKey = @"EZOneAPISentenceKey";
+static NSString *const EZOneAPIServiceUsageStatusKey = @"EZOneAPIServiceUsageStatusKey";
 
 static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
 static NSString *const EZDeepLTranslateEndPointKey = @"EZDeepLTranslateEndPointKey";

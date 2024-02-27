@@ -21,7 +21,7 @@ extension OneAPIService: ConfigurableService {
             )
             // endpoint
             ServiceConfigurationInputCell(
-                textFieldTitleKey: "service.configuration.openai.endpoint.title",
+                textFieldTitleKey: "service.configuration.oneapi.endpoint.title",
                 key: .oneAPIEndPoint,
                 placeholder: "service.configuration.openai.endpoint.placeholder"
             )

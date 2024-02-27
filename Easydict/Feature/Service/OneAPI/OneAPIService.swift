@@ -13,6 +13,15 @@ import Foundation
 
 @objc(EZOneAPIService)
 class OneAPIService: OpenAILikeService {
+    override init() {
+        super.init()
+        #if DEBUG
+            defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==".decryptAES()
+        #else
+            defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==".decryptAES()
+        #endif
+    }
+
     override var apiKey: String {
         let key = Defaults[.oneAPIAPIKey]
         if let key, !key.isEmpty {
@@ -26,18 +35,16 @@ class OneAPIService: OpenAILikeService {
         let endPoint = Defaults[.oneAPIEndPoint]
         if let endPoint, !endPoint.isEmpty {
             return endPoint
-        } else {
-            return defaultEndPoint
         }
+        return ""
     }
 
     override var model: String {
         let model = Defaults[.oneAPIModel]
         if let model, !model.isEmpty {
             return model
-        } else {
-            return defaultModel
         }
+        return hasPrivateAPIKey() ? "gpt-3.5-turbo-1106" : "gemini-pro"
     }
 
     override func hasPrivateAPIKey() -> Bool {

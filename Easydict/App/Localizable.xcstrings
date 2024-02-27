@@ -2690,6 +2690,38 @@
         }
       }
     },
+    "service.configuration.oneapi.endpoint.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Endpoint"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整接口地址"
+          }
+        }
+      }
+    },
+    "service.configuration.oneapi.model.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gpt-3.5-turbo/gemini-pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gpt-3.5-turbo/gemini-pro"
+          }
+        }
+      }
+    },
     "service.configuration.openai.api_key.placeholder" : {
       "localizations" : {
         "en" : {
@@ -2750,38 +2782,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api.openai.com/v1/chat/completions"
-          }
-        }
-      }
-    },
-    "service.configuration.oneapi.model.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gpt-3.5-turbo/gemini-pro-vision"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gpt-3.5-turbo/gemini-pro-vision"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.endpoint.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Endpoint"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完整接口地址"
           }
         }
       }

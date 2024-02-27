@@ -13,8 +13,6 @@
 #import "EZOpenAILikeService+EZPromptMessages.h"
 #import "Easydict-Swift.h"
 
-static NSString *const kEZLanguageWenYanWen = @"文言文";
-
 @interface EZOpenAIService ()
 
 @end
@@ -24,22 +22,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 - (instancetype)init {
     if (self = [super init]) {
-        /**
-         For convenience, we provide a default key for users to try out the service.
-
-         Please do not abuse it, otherwise it may be revoked.
-
-         For better experience, please apply for your personal key at https://makersuite.google.com/app/apikey
-         */
-        
-        // Only use Google Gemini-pro channel
-        self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==" decryptAES];
-        
-#if DEBUG
-        self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==" decryptAES];
-#endif
-        self.defaultEndPoint = [@"gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2" decryptAES];
-        self.defaultModel = [self hasPrivateAPIKey] ? @"gpt-3.5-turbo-1106" : @"gemini-pro";
+        self.defaultModel = @"gpt-3.5-turbo-1106";
     }
     return self;
 }
@@ -55,16 +38,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 }
 
 - (NSString *)endPoint {
-    // easydict://writeKeyValue?EZOpenAIEndPointKey=
-    
-    NSString *endPoint = [NSUserDefaults mm_readString:EZOpenAIEndPointKey defaultValue:@""];
-    if (endPoint.length == 0) {
-        endPoint = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
-    }
-    if (![self hasPrivateAPIKey]) {
-        endPoint = self.defaultEndPoint;
-    }
-    return endPoint;
+    return @"https://api.openai.com/v1/chat/completions";
 }
 
 - (NSString *)model {
@@ -85,17 +59,6 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     }
     
     return model;
-}
-
-- (NSString *)domain {
-    // easydict://writeKeyValue?EZOpenAIDomainKey=
-    
-    NSString *defaultDomain = @"api.openai.com";
-    NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:defaultDomain];
-    if (domain.length == 0) {
-        domain = defaultDomain;
-    }
-    return domain;
 }
 
 #pragma mark - 重写父类方法

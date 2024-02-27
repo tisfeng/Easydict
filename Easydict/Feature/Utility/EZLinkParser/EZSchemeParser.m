@@ -202,9 +202,14 @@
         EZOpenAIDictionaryKey,
         EZOpenAISentenceKey,
         EZOpenAIServiceUsageStatusKey,
-        EZOpenAIDomainKey,
-        EZOpenAIEndPointKey,
         EZOpenAIModelKey,
+        
+        EZOneAPIEndPointKey,
+        EZOneAPIAPIKey,
+        EZOneAPITranslationKey,
+        EZOneAPIDictionaryKey,
+        EZOneAPISentenceKey,
+        EZOneAPIServiceUsageStatusKey,
         
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,
