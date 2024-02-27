@@ -1021,6 +1021,17 @@
 
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
+    // if user not set select shortcut and input shortcut not allow hidden menu bar icon
+    if (self.selectionShortcutView.shortcutValue == nil &&
+        self.inputShortcutView.shortcutValue == nil) {
+        sender.mm_isOn = NO;
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
+        alert.messageText = NSLocalizedString(@"hide_menu_bar_icon", nil);
+        alert.informativeText = NSLocalizedString(@"refuse_hide_menu_bar_icon_msg", nil);
+        [alert beginSheetModalForWindow:[self window] completionHandler:nil];
+        return;
+    }
     // !!!: EZFloatingWindowLevel shouldn't be higher than kCGModalPanelWindowLevel (8)
     if (sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];

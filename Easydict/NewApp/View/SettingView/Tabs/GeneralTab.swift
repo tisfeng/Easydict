@@ -12,7 +12,6 @@ import SwiftUI
 @available(macOS 13, *)
 struct GeneralTab: View {
     @Environment(\.colorScheme) var colorScheme
-
     var body: some View {
         Form {
             Section {
@@ -137,7 +136,17 @@ struct GeneralTab: View {
                 Toggle(isOn: $hideMainWindow) {
                     Text("hide_main_window")
                 }
-                Toggle(isOn: $hideMenuBarIcon) {
+                Toggle(isOn: $hideMenuBarIcon.didSet(execute: { state in
+                    if state {
+                        // user is not set input shortcut and selection shortcut not allow hide menu bar
+                        if !shortcutsHaveSetuped {
+                            Defaults[.hideMenuBarIcon] = false
+                            showRefuseAlert = true
+                        } else {
+                            showHideMenuBarIconAlert = true
+                        }
+                    }
+                })) {
                     Text("hide_menu_bar_icon")
                 }
                 Picker(
@@ -155,6 +164,25 @@ struct GeneralTab: View {
             }
         }
         .formStyle(.grouped)
+        .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
+            Button("ok") {
+                showRefuseAlert = false
+            }
+        } message: {
+            Text("refuse_hide_menu_bar_icon_msg")
+        }
+        .alert("hide_menu_bar_icon", isPresented: $showHideMenuBarIconAlert) {
+            HStack {
+                Button("ok") {
+                    showHideMenuBarIconAlert = false
+                }
+                Button("cancel") {
+                    Defaults[.hideMenuBarIcon] = false
+                }
+            }
+        } message: {
+            Text("hide_menu_bar_icon_msg")
+        }
     }
 
     @Default(.autoSelectText) private var autoSelectText
@@ -197,6 +225,13 @@ struct GeneralTab: View {
 
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
+
+    private var shortcutsHaveSetuped: Bool {
+        Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
+    }
+
+    @State private var showRefuseAlert = false
+    @State private var showHideMenuBarIconAlert = false
 }
 
 @available(macOS 13, *)
