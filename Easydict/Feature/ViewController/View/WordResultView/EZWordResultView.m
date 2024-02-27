@@ -348,6 +348,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         __block NSView *tagContentView = nil;
         __block CGFloat tagContentViewWidth = 0;
         CGFloat padding = 6;
+        CGFloat leftMargin = kHorizontalMargin_8 + 2;
         
         __block NSButton *lastTagButton = nil;
         [wordResult.tags enumerateObjectsUsingBlock:^(NSString *_Nonnull tag, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -374,7 +375,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 tagScrollView = [[NSScrollView alloc] init];
                 [self addSubview:tagScrollView];
                 [tagScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.left.offset(kHorizontalMargin_8);
+                    make.left.offset(leftMargin);
                     make.height.mas_equalTo(newSize.height);
                     CGFloat topOffset = kVerticalMargin_12 + 3;
                     if (lastView) {
@@ -418,7 +419,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         tagContentView.width = tagContentViewWidth;
         
-        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + padding * 2);
+        CGFloat maxTagScrollViewWidth = self.width - (leftMargin + padding);
         CGFloat tagScrollViewWidth = MIN(tagContentViewWidth, maxTagScrollViewWidth);
         [tagScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(tagScrollViewWidth);
