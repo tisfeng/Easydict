@@ -16,7 +16,6 @@ class GlobalContext: NSObject {
     override init() {
         self.updaterHelper = SPUUpdaterHelper()
         self.userDriverHelper = SPUUserDriverHelper()
-        // swiftlint:disable:next all
         self.updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
             updaterDelegate: updaterHelper,

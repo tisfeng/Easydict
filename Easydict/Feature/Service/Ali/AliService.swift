@@ -42,7 +42,6 @@ class AliService: QueryService {
 
     override public func autoConvertTraditionalChinese() -> Bool {
         // If translate traditionalChinese <--> simplifiedChinese, use Ali API directly.
-        // swiftlint:disable:next line_length
         if EZLanguageManager.shared().onlyContainsChineseLanguages([
             queryModel.queryFromLanguage,
             queryModel.queryTargetLanguage,
@@ -67,7 +66,6 @@ class AliService: QueryService {
         return !id.isEmpty && !secret.isEmpty
     }
 
-    // swiftlint:disable:next line_length identifier_name
     override func translate(
         _ text: String,
         from: Language,

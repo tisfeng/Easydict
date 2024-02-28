@@ -16,6 +16,7 @@ struct GeneralTab: View {
     // MARK: Internal
 
     @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         Form {
             Section {
@@ -244,12 +245,12 @@ struct GeneralTab: View {
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
 
+    @State private var showRefuseAlert = false
+    @State private var showHideMenuBarIconAlert = false
+
     private var shortcutsHaveSetuped: Bool {
         Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
     }
-
-    @State private var showRefuseAlert = false
-    @State private var showHideMenuBarIconAlert = false
 }
 
 @available(macOS 13, *)

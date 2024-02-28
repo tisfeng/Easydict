@@ -49,9 +49,7 @@ public class FontSizeHintView: NSView {
     // MARK: Private
 
     private lazy var minLabel: NSTextField = .init(labelWithString: NSLocalizedString("small", comment: ""))
-    // swiftlint:disable:next all
     private lazy var maxLabel: NSTextField = .init(labelWithString: NSLocalizedString("large", comment: ""))
-    // swiftlint:disable:next all
     private lazy var hintLabel: NSTextField = .init(wrappingLabelWithString: NSLocalizedString(
         "hints_keyboard_shortcuts_font_size",
         comment: ""
