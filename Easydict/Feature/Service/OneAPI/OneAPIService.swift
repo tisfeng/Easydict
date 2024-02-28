@@ -26,9 +26,8 @@ class OneAPIService: OpenAILikeService {
         let key = Defaults[.oneAPIAPIKey]
         if let key, !key.isEmpty {
             return key
-        } else {
-            return defaultAPIKey
         }
+        return defaultAPIKey
     }
 
     override var endPoint: String {
@@ -97,7 +96,8 @@ class OneAPIService: OpenAILikeService {
 
     override func serviceUsageStatus() -> EZServiceUsageStatus {
         let oneAPIServiceUsageStatus = Defaults[.oneAPIServiceUsageStatus]
-        return oneAPIServiceUsageStatus.ezServiceUsageStats
+        guard let value = UInt(oneAPIServiceUsageStatus.rawValue) else { return .default }
+        return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 
     override public func name() -> String {

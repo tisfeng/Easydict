@@ -83,17 +83,6 @@ enum OpenAIUsageStats: String, CaseIterable {
     case `default` = "0"
     case alwaysOff = "1"
     case alwaysOn = "2"
-
-    var ezServiceUsageStats: EZServiceUsageStatus {
-        switch self {
-        case .default:
-            .default
-        case .alwaysOn:
-            .alwaysOn
-        case .alwaysOff:
-            .alwaysOff
-        }
-    }
 }
 
 // MARK: EnumLocalizedStringConvertible
