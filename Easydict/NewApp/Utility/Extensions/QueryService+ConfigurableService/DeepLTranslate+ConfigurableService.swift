@@ -10,12 +10,16 @@ import Defaults
 import Foundation
 import SwiftUI
 
+// MARK: - EZDeepLTranslate + ConfigurableService
+
 @available(macOS 13.0, *)
 extension EZDeepLTranslate: ConfigurableService {
     func configurationListItems() -> some View {
         EZDeepLTranslateConfigurationView(service: self)
     }
 }
+
+// MARK: - EZDeepLTranslateConfigurationView
 
 @available(macOS 13.0, *)
 private struct EZDeepLTranslateConfigurationView: View {
@@ -43,13 +47,19 @@ private struct EZDeepLTranslateConfigurationView: View {
     }
 }
 
+// MARK: - DeepLAPIUsagePriority
+
 enum DeepLAPIUsagePriority: String, CaseIterable {
     case webFirst = "0"
     case authKeyFirst = "1"
     case authKeyOnly = "2"
 }
 
+// MARK: Defaults.Serializable
+
 extension DeepLAPIUsagePriority: Defaults.Serializable {}
+
+// MARK: EnumLocalizedStringConvertible
 
 extension DeepLAPIUsagePriority: EnumLocalizedStringConvertible {
     var title: String {

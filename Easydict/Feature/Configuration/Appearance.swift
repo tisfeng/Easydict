@@ -9,10 +9,15 @@
 import Defaults
 import Foundation
 
-@objc enum AppearenceType: Int, CaseIterable, Defaults.Serializable {
+// MARK: - AppearenceType
+
+@objc
+enum AppearenceType: Int, CaseIterable, Defaults.Serializable {
     case followSystem = 0
     case light
     case dark
+
+    // MARK: Internal
 
     var title: String {
         switch self {
@@ -42,7 +47,10 @@ import Foundation
     }
 }
 
-@objcMembers class AppearenceHelper: NSObject {
+// MARK: - AppearenceHelper
+
+@objcMembers
+class AppearenceHelper: NSObject {
     static let shared = AppearenceHelper()
 
     func titles() -> [String] {

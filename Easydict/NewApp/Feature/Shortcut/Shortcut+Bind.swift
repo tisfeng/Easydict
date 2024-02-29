@@ -8,65 +8,80 @@
 
 // App shortcut binding func
 extension Shortcut {
-    @objc func clearInput() {
+    @objc
+    func clearInput() {
         EZWindowManager.shared().clearInput()
     }
 
-    @objc func clearAll() {
+    @objc
+    func clearAll() {
         EZWindowManager.shared().clearAll()
     }
 
-    @objc func shortcutCopy() {
+    @objc
+    func shortcutCopy() {
         EZWindowManager.shared().copyQueryText()
     }
 
-    @objc func shortcutCopyFirstResult() {
+    @objc
+    func shortcutCopyFirstResult() {
         EZWindowManager.shared().copyFirstTranslatedText()
     }
 
-    @objc func shortcutFocus() {
+    @objc
+    func shortcutFocus() {
         EZWindowManager.shared().focusInputTextView()
     }
 
-    @objc func shortcutPlay() {
+    @objc
+    func shortcutPlay() {
         EZWindowManager.shared().playOrStopQueryTextAudio()
     }
 
-    @objc func shortcutRetry() {
+    @objc
+    func shortcutRetry() {
         EZWindowManager.shared().rerty()
     }
 
-    @objc func shortcutToggle() {
+    @objc
+    func shortcutToggle() {
         EZWindowManager.shared().toggleTranslationLanguages()
     }
 
-    @objc func shortcutPin() {
+    @objc
+    func shortcutPin() {
         EZWindowManager.shared().pin()
     }
 
-    @objc func shortcutHide() {
+    @objc
+    func shortcutHide() {
         EZWindowManager.shared().closeWindowOrExitSreenshot()
     }
 
-    @objc func increaseFontSize() {
+    @objc
+    func increaseFontSize() {
         Configuration.shared.fontSizeIndex += 1
     }
 
-    @objc func decreaseFontSize() {
+    @objc
+    func decreaseFontSize() {
         Configuration.shared.fontSizeIndex -= 1
     }
 
-    @objc func shortcutGoogle() {
+    @objc
+    func shortcutGoogle() {
         let window = EZWindowManager.shared().floatingWindow
         window?.titleBar.googleButton.openLink()
     }
 
-    @objc func shortcutEudic() {
+    @objc
+    func shortcutEudic() {
         let window = EZWindowManager.shared().floatingWindow
         window?.titleBar.eudicButton.openLink()
     }
 
-    @objc func shortcutAppleDic() {
+    @objc
+    func shortcutAppleDic() {
         let window = EZWindowManager.shared().floatingWindow
         window?.titleBar.appleDictionaryButton.openLink()
     }
@@ -74,23 +89,28 @@ extension Shortcut {
 
 // global shortcut binding func
 extension Shortcut {
-    @objc func selectTextTranslate() {
+    @objc
+    func selectTextTranslate() {
         EZWindowManager.shared().selectTextTranslate()
     }
 
-    @objc func snipTranslate() {
+    @objc
+    func snipTranslate() {
         EZWindowManager.shared().snipTranslate()
     }
 
-    @objc func inputTranslate() {
+    @objc
+    func inputTranslate() {
         EZWindowManager.shared().inputTranslate()
     }
 
-    @objc func showMiniFloatingWindow() {
+    @objc
+    func showMiniFloatingWindow() {
         EZWindowManager.shared().showMiniFloatingWindow()
     }
 
-    @objc func screenshotOCR() {
+    @objc
+    func screenshotOCR() {
         EZWindowManager.shared().screenshotOCR()
     }
 }

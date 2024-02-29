@@ -6,11 +6,11 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+// swiftlint:disable all
+
 import Foundation
 
 struct CaiyunTranslateType: RawRepresentable {
-    var rawValue: String
-
     static let unsupported = CaiyunTranslateType(rawValue: "unsupported")
 
     // Align with the web interface https://fanyi.caiyunapp.com/#/
@@ -36,6 +36,8 @@ struct CaiyunTranslateType: RawRepresentable {
         .russian: "ru",
     ]
 
+    var rawValue: String
+
     static func transType(from: Language, to: Language) -> CaiyunTranslateType {
         // Treat traditional Chinese as simplified Chinese.
         if from == .traditionalChinese {
@@ -58,3 +60,5 @@ struct CaiyunTranslateType: RawRepresentable {
         return CaiyunTranslateType(rawValue: "\(from)2\(to)")
     }
 }
+
+// swiftlint:enable all

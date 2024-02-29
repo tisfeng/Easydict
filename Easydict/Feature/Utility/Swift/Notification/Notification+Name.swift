@@ -12,6 +12,7 @@ extension Notification.Name {
     static let serviceHasUpdated = Notification.Name(EZServiceHasUpdatedNotification)
 }
 
-@objc public extension NSNotification {
-    static let serviceHasUpdated = Notification.Name.serviceHasUpdated
+@objc
+extension NSNotification {
+    public static let serviceHasUpdated = Notification.Name.serviceHasUpdated
 }

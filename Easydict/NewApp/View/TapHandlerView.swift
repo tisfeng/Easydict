@@ -8,13 +8,15 @@
 
 import SwiftUI
 
+// MARK: - TapHandlerView
+
 // Ref: https://stackoverflow.com/a/64194868/8378840
 // Fix conflicts between onTap and onMove modifier
 class TapHandlerView: NSView {
-    var tapAction: () -> Void
+    // MARK: Lifecycle
 
-    init(_ block: @escaping () -> Void) {
-        tapAction = block
+    init(_ block: @escaping () -> ()) {
+        self.tapAction = block
         super.init(frame: .zero)
     }
 
@@ -23,14 +25,20 @@ class TapHandlerView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: Internal
+
+    var tapAction: () -> ()
+
     override func mouseDown(with event: NSEvent) {
         super.mouseDown(with: event)
         tapAction()
     }
 }
 
+// MARK: - TapHandler
+
 struct TapHandler: NSViewRepresentable {
-    let tapAction: () -> Void
+    let tapAction: () -> ()
 
     func makeNSView(context _: Context) -> TapHandlerView {
         TapHandlerView(tapAction)

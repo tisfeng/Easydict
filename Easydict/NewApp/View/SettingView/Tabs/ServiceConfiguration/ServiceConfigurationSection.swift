@@ -9,6 +9,8 @@
 import Defaults
 import SwiftUI
 
+// MARK: - ServiceStringConfigurationSection
+
 @available(macOS 12.0, *)
 struct ServiceStringConfigurationSection<F: View>: View {
     /// Title of text field
@@ -40,9 +42,11 @@ struct ServiceStringConfigurationSection<F: View>: View {
     }
 }
 
+// MARK: - ServiceConfigurationSection
+
 @available(macOS 12.0, *)
 struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: View {
-    @Default var value: T
+    // MARK: Lifecycle
 
     init(
         _ titleKey: LocalizedStringKey,
@@ -55,6 +59,10 @@ struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: 
         self.footer = footer
         self.field = field
     }
+
+    // MARK: Internal
+
+    @Default var value: T
 
     let field: (Binding<T>) -> V
     let footer: (() -> F)?

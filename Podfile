@@ -16,7 +16,8 @@ target 'Easydict' do
   
   # Swift format
   pod 'SwiftFormat/CLI', '~> 0.53.2'
-  
+  pod 'SwiftLint', '~> 0.54.0'
+
 end
 
 target 'EasydictTests' do

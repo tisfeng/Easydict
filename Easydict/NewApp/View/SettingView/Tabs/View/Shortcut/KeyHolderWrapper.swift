@@ -12,22 +12,35 @@ import KeyHolder
 import Magnet
 import SwiftUI
 
+// MARK: - KeyHolderDataItem
+
 public struct KeyHolderDataItem: Identifiable {
+    // MARK: Public
+
     public var id: String { type.localizedStringKey() }
+
+    // MARK: Internal
+
     var type: ShortcutType
 }
 
+// MARK: - KeyHolderWrapper
+
 @available(macOS 13, *)
 struct KeyHolderWrapper: NSViewRepresentable {
-    func makeCoordinator() -> Coordinator {
-        .init(shortcutType: type, confictAlterMessage: $confictAlterMessage)
+    // MARK: Lifecycle
+
+    init(shortcutType: ShortcutType, confictAlterMessage: Binding<ShortcutConfictAlertMessage>) {
+        self.type = shortcutType
+        _confictAlterMessage = confictAlterMessage
     }
 
-    private var type: ShortcutType
+    // MARK: Internal
+
     @Binding var confictAlterMessage: ShortcutConfictAlertMessage
-    init(shortcutType: ShortcutType, confictAlterMessage: Binding<ShortcutConfictAlertMessage>) {
-        type = shortcutType
-        _confictAlterMessage = confictAlterMessage
+
+    func makeCoordinator() -> Coordinator {
+        .init(shortcutType: type, confictAlterMessage: $confictAlterMessage)
     }
 
     func makeNSView(context: Context) -> some NSView {
@@ -43,17 +56,27 @@ struct KeyHolderWrapper: NSViewRepresentable {
     }
 
     func updateNSView(_: NSViewType, context _: Context) {}
+
+    // MARK: Private
+
+    private var type: ShortcutType
 }
+
+// MARK: KeyHolderWrapper.Coordinator
 
 @available(macOS 13, *)
 extension KeyHolderWrapper {
     class Coordinator: NSObject, RecordViewDelegate {
-        private var type: ShortcutType
-        @Binding var confictAlterMessage: ShortcutConfictAlertMessage
+        // MARK: Lifecycle
+
         init(shortcutType: ShortcutType, confictAlterMessage: Binding<ShortcutConfictAlertMessage>) {
-            type = shortcutType
+            self.type = shortcutType
             _confictAlterMessage = confictAlterMessage
         }
+
+        // MARK: Internal
+
+        @Binding var confictAlterMessage: ShortcutConfictAlertMessage
 
         func recordViewShouldBeginRecording(_: KeyHolder.RecordView) -> Bool {
             true
@@ -69,8 +92,12 @@ extension KeyHolderWrapper {
             if let key = keyCombo {
                 // shortcut validate confict
                 if Shortcut.validateShortcut(key) {
-                    let title = String(localized: "shortcut_confict_title \(key.keyEquivalentModifierMaskString + key.characters)")
-                    let message = String(localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")")
+                    let title =
+                        String(
+                            localized: "shortcut_confict_title \(key.keyEquivalentModifierMaskString + key.characters)"
+                        )
+                    let message =
+                        String(localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")")
                     confictAlterMessage = ShortcutConfictAlertMessage(
                         title: title,
                         message: message
@@ -177,5 +204,9 @@ extension KeyHolderWrapper {
                 Defaults[.appleDictionaryShortcut] = keyCombo
             }
         }
+
+        // MARK: Private
+
+        private var type: ShortcutType
     }
 }

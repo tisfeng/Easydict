@@ -7,7 +7,6 @@
 //
 
 import Carbon
-import Carbon.HIToolbox
 import Foundation
 import KeyHolder
 import Magnet
@@ -30,18 +29,16 @@ extension Shortcut {
 
     static func systemUsedShortcut() -> [KeyCombo] {
         var shortcutsUnmanaged: Unmanaged<CFArray>?
-        guard
-            CopySymbolicHotKeys(&shortcutsUnmanaged) == noErr,
-            let shortcuts = shortcutsUnmanaged?.takeRetainedValue() as? [[String: Any]]
+        guard CopySymbolicHotKeys(&shortcutsUnmanaged) == noErr,
+              let shortcuts = shortcutsUnmanaged?.takeRetainedValue() as? [[String: Any]]
         else {
             assertionFailure("Could not get system keyboard shortcuts")
             return []
         }
         return shortcuts.compactMap {
-            guard
-                ($0[kHISymbolicHotKeyEnabled] as? Bool) == true,
-                let carbonKeyCode = $0[kHISymbolicHotKeyCode] as? Int,
-                let carbonModifiers = $0[kHISymbolicHotKeyModifiers] as? Int
+            guard ($0[kHISymbolicHotKeyEnabled] as? Bool) == true,
+                  let carbonKeyCode = $0[kHISymbolicHotKeyCode] as? Int,
+                  let carbonModifiers = $0[kHISymbolicHotKeyModifiers] as? Int
             else {
                 return nil
             }
@@ -76,13 +73,11 @@ extension Shortcut {
             let keyEquivalentModifierMask = item.keyEquivalentModifierMask
             if keyCombo.keyEquivalent == keyEquivalent,
                keyCombo.keyEquivalentModifierMask == keyEquivalentModifierMask,
-               keyCombo.keyEquivalent != ""
-            {
+               keyCombo.keyEquivalent != "" {
                 return item
             }
             if let submenu = item.submenu,
-               let menuItem = menuItemWithMatchingShortcut(in: submenu, keyCombo: keyCombo)
-            {
+               let menuItem = menuItemWithMatchingShortcut(in: submenu, keyCombo: keyCombo) {
                 return menuItem
             }
         }

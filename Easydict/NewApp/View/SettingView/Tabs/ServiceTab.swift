@@ -9,9 +9,11 @@
 import Combine
 import SwiftUI
 
+// MARK: - ServiceTab
+
 @available(macOS 13, *)
 struct ServiceTab: View {
-    @StateObject private var viewModel: ServiceTabViewModel = .init()
+    // MARK: Internal
 
     var body: some View {
         HStack {
@@ -32,7 +34,8 @@ struct ServiceTab: View {
                     // To provide configuration options for a service, follow these steps
                     // 1. If the Service is an object of Objc, expose it to Swift.
                     // 2. Create a new file in the Utility - Extensions - QueryService+ConfigurableService,
-                    // 3. referring to OpenAIService+ConfigurableService, `extension` the Service as `ConfigurableService` to provide the configuration items.
+                    // 3. referring to OpenAIService+ConfigurableService, `extension` the Service
+                    // as `ConfigurableService` to provide the configuration items.
                     if let service = service as? (any ConfigurableService) {
                         AnyView(service.configurationView())
                     } else {
@@ -55,9 +58,19 @@ struct ServiceTab: View {
         }
         .environmentObject(viewModel)
     }
+
+    // MARK: Private
+
+    @StateObject private var viewModel: ServiceTabViewModel = .init()
 }
 
+// MARK: - ServiceTabViewModel
+
 private class ServiceTabViewModel: ObservableObject {
+    @Published var selectedService: QueryService?
+
+    @Published private(set) var services: [QueryService] = EZLocalStorage.shared().allServices(.mini)
+
     @Published var windowType = EZWindowType.mini {
         didSet {
             if oldValue != windowType {
@@ -66,10 +79,6 @@ private class ServiceTabViewModel: ObservableObject {
             }
         }
     }
-
-    @Published var selectedService: QueryService?
-
-    @Published private(set) var services: [QueryService] = EZLocalStorage.shared().allServices(.mini)
 
     func updateServices() {
         services = getServices()
@@ -102,15 +111,11 @@ private class ServiceTabViewModel: ObservableObject {
     }
 }
 
+// MARK: - ServiceItems
+
 @available(macOS 13.0, *)
 private struct ServiceItems: View {
-    @EnvironmentObject private var viewModel: ServiceTabViewModel
-
-    private var servicesWithID: [(QueryService, String)] {
-        viewModel.services.map { service in
-            (service, service.name())
-        }
-    }
+    // MARK: Internal
 
     var body: some View {
         ForEach(servicesWithID, id: \.1) { service, _ in
@@ -119,28 +124,46 @@ private struct ServiceItems: View {
         }
         .onMove(perform: viewModel.onServiceItemMove)
     }
+
+    // MARK: Private
+
+    @EnvironmentObject private var viewModel: ServiceTabViewModel
+
+    private var servicesWithID: [(QueryService, String)] {
+        viewModel.services.map { service in
+            (service, service.name())
+        }
+    }
 }
 
+// MARK: - ServiceItemViewModel
+
 private class ServiceItemViewModel: ObservableObject {
-    @Published var isEnable = false
+    // MARK: Lifecycle
 
     init(isEnable: Bool) {
         self.isEnable = isEnable
     }
+
+    // MARK: Internal
+
+    @Published var isEnable = false
 }
+
+// MARK: - ServiceItemView
 
 @available(macOS 13.0, *)
 private struct ServiceItemView: View {
-    let service: QueryService
-
-    @EnvironmentObject private var viewModel: ServiceTabViewModel
-
-    @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
+    // MARK: Lifecycle
 
     init(service: QueryService) {
         self.service = service
-        serviceItemViewModel = ServiceItemViewModel(isEnable: service.enabled)
+        self.serviceItemViewModel = ServiceItemViewModel(isEnable: service.enabled)
     }
+
+    // MARK: Internal
+
+    let service: QueryService
 
     var body: some View {
         Toggle(isOn: $serviceItemViewModel.isEnable) {
@@ -170,7 +193,15 @@ private struct ServiceItemView: View {
         .listRowInsets(.init())
         .padding(10)
     }
+
+    // MARK: Private
+
+    @EnvironmentObject private var viewModel: ServiceTabViewModel
+
+    @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
 }
+
+// MARK: - WindowTypePicker
 
 @available(macOS 13, *)
 private struct WindowTypePicker: View {

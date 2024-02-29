@@ -10,6 +10,8 @@ import Defaults
 import Foundation
 import SwiftUI
 
+// MARK: - EZOpenAIService + ConfigurableService
+
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
@@ -53,14 +55,23 @@ extension EZOpenAIService: ConfigurableService {
     }
 }
 
+// MARK: - EnumLocalizedStringConvertible
+
 protocol EnumLocalizedStringConvertible {
     var title: String { get }
 }
 
+// MARK: - OpenAIModels
+
+// swiftlint:disable identifier_name
 enum OpenAIModels: String, CaseIterable {
     case gpt3_5_turbo_0125 = "gpt-3.5-turbo-0125"
     case gpt4_0125_preview = "gpt-4-0125-preview"
 }
+
+// MARK: EnumLocalizedStringConvertible
+
+// swiftlint:enable identifier_name
 
 extension OpenAIModels: EnumLocalizedStringConvertible {
     var title: String {
@@ -68,13 +79,19 @@ extension OpenAIModels: EnumLocalizedStringConvertible {
     }
 }
 
+// MARK: Defaults.Serializable
+
 extension OpenAIModels: Defaults.Serializable {}
+
+// MARK: - OpenAIUsageStats
 
 enum OpenAIUsageStats: String, CaseIterable {
     case `default` = "0"
     case alwaysOff = "1"
     case alwaysOn = "2"
 }
+
+// MARK: EnumLocalizedStringConvertible
 
 extension OpenAIUsageStats: EnumLocalizedStringConvertible {
     var title: String {
@@ -100,5 +117,7 @@ extension OpenAIUsageStats: EnumLocalizedStringConvertible {
         }
     }
 }
+
+// MARK: Defaults.Serializable
 
 extension OpenAIUsageStats: Defaults.Serializable {}
