@@ -11,14 +11,10 @@ import SwiftUI
 @available(macOS 13, *)
 extension ShortcutTab {
     struct GlobalShortcutSettingView: View {
+        // MARK: Internal
+
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
-        @State private var shortcutDataList = [
-            KeyHolderDataItem(type: .inputTranslate),
-            KeyHolderDataItem(type: .snipTranslate),
-            KeyHolderDataItem(type: .selectTranslate),
-            KeyHolderDataItem(type: .showMiniWindow),
-            KeyHolderDataItem(type: .silentScreenshotOcr),
-        ]
+
         var body: some View {
             let showAlter = Binding<Bool>(
                 get: {
@@ -28,16 +24,21 @@ extension ShortcutTab {
             )
             Section {
                 ForEach(shortcutDataList) { item in
-                    KeyHolderRowView(title: item.type.localizedStringKey(), type: item.type, confictAlterMessage: $confictAlterMessage)
+                    KeyHolderRowView(
+                        title: item.type.localizedStringKey(),
+                        type: item.type,
+                        confictAlterMessage: $confictAlterMessage
+                    )
                 }
             } header: {
                 Text("global_shortcut_setting")
             }
 
-            .alert(String(localized: "shortcut_confict \(confictAlterMessage.title)"),
-                   isPresented: showAlter,
-                   presenting: confictAlterMessage)
-            { _ in
+            .alert(
+                String(localized: "shortcut_confict \(confictAlterMessage.title)"),
+                isPresented: showAlter,
+                presenting: confictAlterMessage
+            ) { _ in
                 Button(String(localized: "shortcut_confict_confirm")) {
                     confictAlterMessage = ShortcutConfictAlertMessage(title: "", message: "")
                 }
@@ -45,5 +46,15 @@ extension ShortcutTab {
                 Text(message.message)
             }
         }
+
+        // MARK: Private
+
+        @State private var shortcutDataList = [
+            KeyHolderDataItem(type: .inputTranslate),
+            KeyHolderDataItem(type: .snipTranslate),
+            KeyHolderDataItem(type: .selectTranslate),
+            KeyHolderDataItem(type: .showMiniWindow),
+            KeyHolderDataItem(type: .silentScreenshotOcr),
+        ]
     }
 }

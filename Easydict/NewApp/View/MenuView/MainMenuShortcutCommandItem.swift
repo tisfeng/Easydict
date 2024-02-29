@@ -8,13 +8,26 @@
 
 import SwiftUI
 
+// MARK: - MainMenuShortcutCommandDataItem
+
 struct MainMenuShortcutCommandDataItem: Identifiable {
+    // MARK: Public
+
     public var id: String { type.localizedStringKey() }
+
+    // MARK: Internal
+
     var type: ShortcutType
 }
 
+// MARK: - MainMenuShortcutCommandItem
+
 struct MainMenuShortcutCommandItem: View {
+    // MARK: Public
+
     public var dataItem: MainMenuShortcutCommandDataItem
+
+    // MARK: Internal
 
     var body: some View {
         Button(LocalizedStringKey(dataItem.type.localizedStringKey())) {

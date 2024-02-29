@@ -2502,7 +2502,8 @@
 			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Easydict" */;
 			buildPhases = (
 				21D768ECC6D11E109E6EB73A /* [CP] Check Pods Manifest.lock */,
-				03B04B582B2D4B8E00E30823 /* Run Script */,
+				03B04B582B2D4B8E00E30823 /* Format */,
+				EAA54DF92B8C74F6001C2CC6 /* Lint */,
 				C99EEB142385796700FEE666 /* Sources */,
 				C99EEB152385796700FEE666 /* Frameworks */,
 				C99EEB162385796700FEE666 /* Resources */,
@@ -2667,7 +2668,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		03B04B582B2D4B8E00E30823 /* Run Script */ = {
+		03B04B582B2D4B8E00E30823 /* Format */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 12;
@@ -2677,7 +2678,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = Format;
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2763,6 +2764,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		EAA54DF92B8C74F6001C2CC6 /* Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Lint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

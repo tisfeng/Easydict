@@ -11,7 +11,7 @@ import SwiftUI
 // Ref https://stackoverflow.com/a/62871938
 // Toggle onChange not trigger issue
 extension Binding {
-    func didSet(execute: @escaping (Value) -> Void) -> Binding {
+    func didSet(execute: @escaping (Value) -> ()) -> Binding {
         Binding(
             get: { self.wrappedValue },
             set: {

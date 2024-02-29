@@ -1,3 +1,4 @@
+// swiftlint:disable all
 //
 //  CaiyunResponse.swift
 //  Easydict
@@ -13,3 +14,5 @@ struct CaiyunResponse: Codable {
     var rc: Int
     var target: [String]
 }
+
+// swiftlint:enable all

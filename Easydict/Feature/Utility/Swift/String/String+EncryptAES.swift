@@ -30,7 +30,8 @@ extension String {
     }
 }
 
-@objc extension NSString {
+@objc
+extension NSString {
     func encryptAES() -> NSString? {
         guard let str = self as String? else { return nil }
         return str.encryptAES() as NSString
@@ -42,7 +43,8 @@ extension String {
     }
 }
 
-@objc extension NSString {
+@objc
+extension NSString {
     func encryptAES(keyData: Data, ivData: Data) -> NSString {
         guard let str = self as String? else { return "" }
 

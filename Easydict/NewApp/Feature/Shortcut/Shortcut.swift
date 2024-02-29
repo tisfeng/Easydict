@@ -11,6 +11,8 @@ import KeyHolder
 import Magnet
 import SwiftUI
 
+// MARK: - ShortcutType
+
 /// Shortcut Service
 public enum ShortcutType: String {
     // Global
@@ -84,19 +86,37 @@ extension ShortcutType {
     }
 }
 
+// MARK: - ShortcutConfictAlertMessage
+
 // Confict Message
 public struct ShortcutConfictAlertMessage: Identifiable {
+    // MARK: Public
+
     public var id: String { message }
+
+    // MARK: Internal
+
     var title: String
     var message: String
 }
 
+// MARK: - Shortcut
+
 class Shortcut: NSObject {
-    var confictMenuItem: NSMenuItem?
+    // MARK: Lifecycle
+
+    // Make sure the class has only one instance
+    // Should not init or copy outside
+    override private init() {}
+
+    // MARK: Internal
 
     static let shared = Shortcut()
 
-    @objc static func setupShortcut() {
+    var confictMenuItem: NSMenuItem?
+
+    @objc
+    static func setupShortcut() {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
 
@@ -108,10 +128,6 @@ class Shortcut: NSObject {
             // do nothing
         }
     }
-
-    // Make sure the class has only one instance
-    // Should not init or copy outside
-    override private init() {}
 
     override func copy() -> Any {
         self // SingletonClass.shared
@@ -153,30 +169,40 @@ extension Shortcut {
         var hotKey: HotKey?
         switch type {
         case .inputTranslate:
-            hotKey = HotKey(identifier: type.rawValue,
-                            keyCombo: keyCombo,
-                            target: Shortcut.shared,
-                            action: #selector(Shortcut.inputTranslate))
+            hotKey = HotKey(
+                identifier: type.rawValue,
+                keyCombo: keyCombo,
+                target: Shortcut.shared,
+                action: #selector(Shortcut.inputTranslate)
+            )
         case .snipTranslate:
-            hotKey = HotKey(identifier: type.rawValue,
-                            keyCombo: keyCombo,
-                            target: Shortcut.shared,
-                            action: #selector(Shortcut.snipTranslate))
+            hotKey = HotKey(
+                identifier: type.rawValue,
+                keyCombo: keyCombo,
+                target: Shortcut.shared,
+                action: #selector(Shortcut.snipTranslate)
+            )
         case .selectTranslate:
-            hotKey = HotKey(identifier: type.rawValue,
-                            keyCombo: keyCombo,
-                            target: Shortcut.shared,
-                            action: #selector(Shortcut.selectTextTranslate))
+            hotKey = HotKey(
+                identifier: type.rawValue,
+                keyCombo: keyCombo,
+                target: Shortcut.shared,
+                action: #selector(Shortcut.selectTextTranslate)
+            )
         case .silentScreenshotOcr:
-            hotKey = HotKey(identifier: type.rawValue,
-                            keyCombo: keyCombo,
-                            target: Shortcut.shared,
-                            action: #selector(Shortcut.screenshotOCR))
+            hotKey = HotKey(
+                identifier: type.rawValue,
+                keyCombo: keyCombo,
+                target: Shortcut.shared,
+                action: #selector(Shortcut.screenshotOCR)
+            )
         case .showMiniWindow:
-            hotKey = HotKey(identifier: type.rawValue,
-                            keyCombo: keyCombo,
-                            target: Shortcut.shared,
-                            action: #selector(Shortcut.showMiniFloatingWindow))
+            hotKey = HotKey(
+                identifier: type.rawValue,
+                keyCombo: keyCombo,
+                target: Shortcut.shared,
+                action: #selector(Shortcut.showMiniFloatingWindow)
+            )
         default: ()
         }
 
@@ -184,7 +210,11 @@ extension Shortcut {
     }
 }
 
+// MARK: - KeyboardShortcut
+
 struct KeyboardShortcut: ViewModifier {
+    // MARK: Lifecycle
+
     init(type: ShortcutType) {
         let key: Defaults.Key<KeyCombo?> = switch type {
         case .inputTranslate:
@@ -232,6 +262,8 @@ struct KeyboardShortcut: ViewModifier {
         _shortcut = .init(key)
     }
 
+    // MARK: Internal
+
     @Default var shortcut: KeyCombo?
 
     func body(content: Content) -> some View {
@@ -245,6 +277,8 @@ struct KeyboardShortcut: ViewModifier {
             content
         }
     }
+
+    // MARK: Private
 
     private func fetchShortcutKeyEquivalent(_ keyCombo: KeyCombo) -> KeyEquivalent {
         if keyCombo.doubledModifiers {
@@ -279,9 +313,9 @@ struct KeyboardShortcut: ViewModifier {
 
 /// can't using keyEquivalent and EventModifiers in SwiftUI MenuItemView direct, because item
 /// keyboardShortcut not support double modifier key but can use ⌥ as character
-public extension View {
+extension View {
     @ViewBuilder
-    func keyboardShortcut(_ type: ShortcutType) -> some View {
+    public func keyboardShortcut(_ type: ShortcutType) -> some View {
         modifier(KeyboardShortcut(type: type))
     }
 }
