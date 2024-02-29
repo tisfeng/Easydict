@@ -10,6 +10,19 @@ import SwiftUI
 
 extension EasyDictMainMenu {
     struct MainMenuShortcutCommand: Commands {
+        // MARK: Internal
+
+        var body: some Commands {
+            // shortcut Commands
+            CommandMenu("shortcut") {
+                ForEach(appShortcutCommandList) { item in
+                    MainMenuShortcutCommandItem(dataItem: item)
+                }
+            }
+        }
+
+        // MARK: Private
+
         @State private var appShortcutCommandList = [
             MainMenuShortcutCommandDataItem(type: .clearInput),
             MainMenuShortcutCommandDataItem(type: .clearAll),
@@ -27,14 +40,5 @@ extension EasyDictMainMenu {
             MainMenuShortcutCommandDataItem(type: .eudic),
             MainMenuShortcutCommandDataItem(type: .appleDic),
         ]
-
-        var body: some Commands {
-            // shortcut Commands
-            CommandMenu("shortcut") {
-                ForEach(appShortcutCommandList) { item in
-                    MainMenuShortcutCommandItem(dataItem: item)
-                }
-            }
-        }
     }
 }

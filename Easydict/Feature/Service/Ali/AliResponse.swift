@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - AliWebResponse
+
 /**
  {
      "requestId": "",
@@ -46,6 +48,8 @@ struct AliWebResponse: Codable {
     var data: Data?
 }
 
+// MARK: - AliAPIResponse
+
 /**
  {
    "Code" : "200",
@@ -67,21 +71,14 @@ struct AliWebResponse: Codable {
  */
 struct AliAPIResponse: Codable {
     struct Data: Codable {
-        var translated: String?
-        var wordCount: String?
-
         enum CodingKeys: String, CodingKey {
             case translated = "Translated"
             case wordCount = "WordCount"
         }
-    }
 
-    var code: AnyCodable?
-    var data: Data?
-    var requestId: String?
-    var message: String?
-    var hostId: String?
-    var recommend: String?
+        var translated: String?
+        var wordCount: String?
+    }
 
     enum CodingKeys: String, CodingKey {
         case data = "Data"
@@ -91,7 +88,16 @@ struct AliAPIResponse: Codable {
         case hostId = "HostId"
         case recommend = "Recommend"
     }
+
+    var code: AnyCodable?
+    var data: Data?
+    var requestId: String?
+    var message: String?
+    var hostId: String?
+    var recommend: String?
 }
+
+// MARK: - AliTokenResponse
 
 /**
  {
@@ -107,9 +113,13 @@ struct AliTokenResponse: Codable {
     var headerName: String?
 }
 
+// MARK: - AnyCodable
+
 enum AnyCodable: Codable {
     case string(String)
     case int(Int)
+
+    // MARK: Lifecycle
 
     init(from decoder: Decoder) throws {
         if let intValue = try? decoder.singleValueContainer().decode(Int.self) {
@@ -117,7 +127,22 @@ enum AnyCodable: Codable {
         } else if let stringValue = try? decoder.singleValueContainer().decode(String.self) {
             self = .string(stringValue)
         } else {
-            throw try DecodingError.dataCorruptedError(in: decoder.singleValueContainer(), debugDescription: "Code is neither Int nor String")
+            throw try DecodingError.dataCorruptedError(
+                in: decoder.singleValueContainer(),
+                debugDescription: "Code is neither Int nor String"
+            )
+        }
+    }
+
+    // MARK: Internal
+
+    var stringValue: String? {
+        switch self {
+        case let .int(i):
+            String(i)
+        // swiftlint:disable:next identifier_name
+        case let .string(s):
+            s
         }
     }
 
@@ -128,15 +153,6 @@ enum AnyCodable: Codable {
             try container.encode(stringValue)
         case let .int(intValue):
             try container.encode(intValue)
-        }
-    }
-
-    var stringValue: String? {
-        switch self {
-        case let .int(i):
-            String(i)
-        case let .string(s):
-            s
         }
     }
 }

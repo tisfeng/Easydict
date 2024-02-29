@@ -9,25 +9,140 @@
 import Foundation
 
 struct TencentTranslateType: Equatable {
-    var sourceLanguage: String
-    var targetLanguage: String
-
     static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
     // https://cloud.tencent.com/document/api/551/15619
     static let supportedTypes: [Language: [Language]] = [
-        .simplifiedChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
-        .traditionalChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
-        .english: [.simplifiedChinese, .traditionalChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi],
+        .simplifiedChinese: [
+            .english,
+            .japanese,
+            .korean,
+            .french,
+            .spanish,
+            .italian,
+            .german,
+            .turkish,
+            .russian,
+            .portuguese,
+            .vietnamese,
+            .indonesian,
+            .thai,
+            .malay,
+        ],
+        .traditionalChinese: [
+            .english,
+            .japanese,
+            .korean,
+            .french,
+            .spanish,
+            .italian,
+            .german,
+            .turkish,
+            .russian,
+            .portuguese,
+            .vietnamese,
+            .indonesian,
+            .thai,
+            .malay,
+        ],
+        .english: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .japanese,
+            .korean,
+            .french,
+            .spanish,
+            .italian,
+            .german,
+            .turkish,
+            .russian,
+            .portuguese,
+            .vietnamese,
+            .indonesian,
+            .thai,
+            .malay,
+            .arabic,
+            .hindi,
+        ],
         .japanese: [.simplifiedChinese, .traditionalChinese, .english, .korean],
         .korean: [.simplifiedChinese, .traditionalChinese, .english, .japanese],
-        .french: [.simplifiedChinese, .traditionalChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese],
-        .spanish: [.simplifiedChinese, .traditionalChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese],
-        .italian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese],
-        .german: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese],
-        .turkish: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese],
-        .russian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese],
-        .portuguese: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .french: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .spanish,
+            .italian,
+            .german,
+            .turkish,
+            .russian,
+            .portuguese,
+        ],
+        .spanish: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .french,
+            .italian,
+            .german,
+            .turkish,
+            .russian,
+            .portuguese,
+        ],
+        .italian: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .french,
+            .spanish,
+            .german,
+            .turkish,
+            .russian,
+            .portuguese,
+        ],
+        .german: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .french,
+            .spanish,
+            .italian,
+            .turkish,
+            .russian,
+            .portuguese,
+        ],
+        .turkish: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .french,
+            .spanish,
+            .italian,
+            .german,
+            .russian,
+            .portuguese,
+        ],
+        .russian: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .french,
+            .spanish,
+            .italian,
+            .german,
+            .turkish,
+            .portuguese,
+        ],
+        .portuguese: [
+            .simplifiedChinese,
+            .traditionalChinese,
+            .english,
+            .french,
+            .spanish,
+            .italian,
+            .german,
+            .turkish,
+            .russian,
+        ],
         .vietnamese: [.simplifiedChinese, .traditionalChinese, .english],
         .indonesian: [.simplifiedChinese, .traditionalChinese, .english],
         .thai: [.simplifiedChinese, .traditionalChinese, .english],
@@ -58,6 +173,10 @@ struct TencentTranslateType: Equatable {
         .hindi: "hi",
     ]
 
+    var sourceLanguage: String
+    var targetLanguage: String
+
+    // swiftlint:disable:next identifier_name
     static func transType(from: Language, to: Language) -> TencentTranslateType {
         /**
          1. zh <--> zh-TW
@@ -68,7 +187,10 @@ struct TencentTranslateType: Equatable {
          In addition, it also supports one language as both source and target language if the language is supported.
          */
         guard let targetLanguages = supportedTypes[from],
-              targetLanguages.contains(to) || from == to || EZLanguageManager.shared().onlyContainsChineseLanguages([from, to])
+              targetLanguages.contains(to) || from == to || EZLanguageManager.shared().onlyContainsChineseLanguages([
+                  from,
+                  to,
+              ])
         else {
             return .unsupported
         }

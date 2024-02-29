@@ -11,25 +11,25 @@ import Sparkle
 
 @objcMembers
 class GlobalContext: NSObject {
-    static let shared = GlobalContext()
-
-    let updaterController: SPUStandardUpdaterController
-
-    private let updaterHelper: SPUUpdaterHelper
-    private let userDriverHelper: SPUUserDriverHelper
+    // MARK: Lifecycle
 
     override init() {
-        updaterHelper = SPUUpdaterHelper()
-        userDriverHelper = SPUUserDriverHelper()
-
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterHelper, userDriverDelegate: userDriverHelper)
+        self.updaterHelper = SPUUpdaterHelper()
+        self.userDriverHelper = SPUUserDriverHelper()
+        self.updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: updaterHelper,
+            userDriverDelegate: userDriverHelper
+        )
     }
+
+    // MARK: Internal
 
     class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {
         func feedURLString(for _: SPUUpdater) -> String? {
             var feedURLString = "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
             #if DEBUG
-                feedURLString = "http://localhost:8000/appcast.xml"
+            feedURLString = "http://localhost:8000/appcast.xml"
             #endif
             return feedURLString
         }
@@ -40,4 +40,13 @@ class GlobalContext: NSObject {
             true
         }
     }
+
+    static let shared = GlobalContext()
+
+    let updaterController: SPUStandardUpdaterController
+
+    // MARK: Private
+
+    private let updaterHelper: SPUUpdaterHelper
+    private let userDriverHelper: SPUUserDriverHelper
 }

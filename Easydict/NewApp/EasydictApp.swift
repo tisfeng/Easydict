@@ -10,6 +10,8 @@ import Defaults
 import Sparkle
 import SwiftUI
 
+// MARK: - EasydictCmpatibilityEntry
+
 @main
 enum EasydictCmpatibilityEntry {
     static func main() {
@@ -22,17 +24,10 @@ enum EasydictCmpatibilityEntry {
     }
 }
 
+// MARK: - EasydictApp
+
 struct EasydictApp: App {
-    @NSApplicationDelegateAdaptor
-    private var delegate: AppDelegate
-
-    // Use `@Default` will cause a purple warning and continuously call `set` of it.
-    // I'm not sure why. Just leave `AppStorage` here.
-    @AppStorage(Defaults.Key<Bool>.hideMenuBarIcon.name)
-    private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
-
-    @Default(.selectedMenuBarIcon)
-    private var menuBarIcon
+    // MARK: Internal
 
     var body: some Scene {
         if #available(macOS 13, *) {
@@ -62,6 +57,17 @@ struct EasydictApp: App {
             }
         }
     }
+
+    // MARK: Private
+
+    @NSApplicationDelegateAdaptor private var delegate: AppDelegate
+
+    // Use `@Default` will cause a purple warning and continuously call `set` of it.
+    // I'm not sure why. Just leave `AppStorage` here.
+    @AppStorage(Defaults.Key<Bool>.hideMenuBarIcon.name)
+    private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
+
+    @Default(.selectedMenuBarIcon) private var menuBarIcon
 }
 
 extension Bool {
@@ -71,9 +77,13 @@ extension Bool {
     }
 }
 
-enum MenuBarIconType: String, CaseIterable, Defaults.Serializable, Identifiable {
-    var id: Self { self }
+// MARK: - MenuBarIconType
 
+enum MenuBarIconType: String, CaseIterable, Defaults.Serializable, Identifiable {
     case square = "square_menu_bar_icon"
     case rounded = "rounded_menu_bar_icon"
+
+    // MARK: Internal
+
+    var id: Self { self }
 }

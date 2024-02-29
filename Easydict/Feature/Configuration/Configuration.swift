@@ -10,7 +10,10 @@ import Combine
 import Defaults
 import Foundation
 
-@objc enum LanguageDetectOptimize: Int {
+// MARK: - LanguageDetectOptimize
+
+@objc
+enum LanguageDetectOptimize: Int {
     case none = 0
     case baidu = 1
     case google = 2
@@ -19,8 +22,11 @@ import Foundation
 let kEnableBetaNewAppKey = "EZConfiguration_kEnableBetaNewAppKey"
 let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
 
-@objcMembers class Configuration: NSObject {
-    private(set) static var shared = Configuration()
+// MARK: - Configuration
+
+@objcMembers
+class Configuration: NSObject {
+    // MARK: Lifecycle
 
     override private init() {
         super.init()
@@ -30,34 +36,89 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
         }
     }
 
-    @DefaultsWrapper(.firstLanguage)
-    var firstLanguage: Language
+    // MARK: Internal
 
-    @DefaultsWrapper(.secondLanguage)
-    var secondLanguage: Language
+    private(set) static var shared = Configuration()
 
-    @DefaultsWrapper(.queryFromLanguage)
-    var fromLanguage: Language
+    @DefaultsWrapper(.firstLanguage) var firstLanguage: Language
 
-    @DefaultsWrapper(.queryToLanguage)
-    var toLanguage: Language
+    @DefaultsWrapper(.secondLanguage) var secondLanguage: Language
 
-    @DefaultsWrapper(.autoSelectText)
-    var autoSelectText: Bool
+    @DefaultsWrapper(.queryFromLanguage) var fromLanguage: Language
 
-    @DefaultsWrapper(.forceAutoGetSelectedText)
-    var forceAutoGetSelectedText: Bool
+    @DefaultsWrapper(.queryToLanguage) var toLanguage: Language
 
-    @DefaultsWrapper(.disableEmptyCopyBeep)
-    var disableEmptyCopyBeep: Bool // Some apps will beep when empty copy.
+    @DefaultsWrapper(.autoSelectText) var autoSelectText: Bool
 
-    @DefaultsWrapper(.clickQuery)
-    var clickQuery: Bool
+    @DefaultsWrapper(.forceAutoGetSelectedText) var forceAutoGetSelectedText: Bool
 
-    @DefaultsWrapper(.launchAtStartup)
-    var launchAtStartup: Bool
+    @DefaultsWrapper(.disableEmptyCopyBeep) var disableEmptyCopyBeep: Bool // Some apps will beep when empty copy.
+
+    @DefaultsWrapper(.clickQuery) var clickQuery: Bool
+
+    @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
 
     let updater = GlobalContext.shared.updaterController.updater
+
+    @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
+
+    @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
+
+    @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
+
+    @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
+
+    @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
+
+    @DefaultsWrapper(.autoCopySelectedText) var autoCopySelectedText: Bool
+
+    @DefaultsWrapper(.autoCopyOCRText) var autoCopyOCRText: Bool
+
+    @DefaultsWrapper(.autoCopyFirstTranslatedText) var autoCopyFirstTranslatedText: Bool
+
+    @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
+
+    @DefaultsWrapper(.showGoogleQuickLink) var showGoogleQuickLink: Bool
+
+    @DefaultsWrapper(.showEudicQuickLink) var showEudicQuickLink: Bool
+
+    @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
+
+    @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
+
+    @DefaultsWrapper(.enableBetaNewApp) var enableBetaNewApp: Bool
+
+    @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
+
+    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
+
+    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
+
+    @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
+
+    @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
+
+    @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
+
+    @DefaultsWrapper(.clearInput) var clearInput: Bool
+
+    @DefaultsWrapper(.keepPrevResultWhenEmpty) var keepPrevResultWhenEmpty: Bool
+
+    @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
+
+    var disabledAutoSelect: Bool = false
+
+    var isRecordingSelectTextShortcutKey: Bool = false
+
+    let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
+
+    @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
+
+    @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
+
+    @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
+
+    var cancellables: [AnyCancellable] = []
 
     var automaticallyChecksForUpdates: Bool {
         get {
@@ -69,33 +130,6 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
         }
     }
 
-    @DefaultsWrapper(.hideMainWindow)
-    var hideMainWindow: Bool
-
-    @DefaultsWrapper(.autoQueryOCRText)
-    var autoQueryOCRText: Bool
-
-    @DefaultsWrapper(.autoQuerySelectedText)
-    var autoQuerySelectedText: Bool
-
-    @DefaultsWrapper(.autoQueryPastedText)
-    var autoQueryPastedText: Bool
-
-    @DefaultsWrapper(.autoPlayAudio)
-    var autoPlayAudio: Bool
-
-    @DefaultsWrapper(.autoCopySelectedText)
-    var autoCopySelectedText: Bool
-
-    @DefaultsWrapper(.autoCopyOCRText)
-    var autoCopyOCRText: Bool
-
-    @DefaultsWrapper(.autoCopyFirstTranslatedText)
-    var autoCopyFirstTranslatedText: Bool
-
-    @DefaultsWrapper(.languageDetectOptimize)
-    var languageDetectOptimize: LanguageDetectOptimize
-
     var defaultTTSServiceType: ServiceType {
         get {
             ServiceType(rawValue: Defaults[.defaultTTSServiceType].rawValue)
@@ -105,71 +139,21 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
         }
     }
 
-    @DefaultsWrapper(.showGoogleQuickLink)
-    var showGoogleQuickLink: Bool
-
-    @DefaultsWrapper(.showEudicQuickLink)
-    var showEudicQuickLink: Bool
-
-    @DefaultsWrapper(.showAppleDictionaryQuickLink)
-    var showAppleDictionaryQuickLink: Bool
-
-    @DefaultsWrapper(.hideMenuBarIcon)
-    var hideMenuBarIcon: Bool
-
-    @DefaultsWrapper(.enableBetaNewApp)
-    var enableBetaNewApp: Bool
-
-    @DefaultsWrapper(.fixedWindowPosition)
-    var fixedWindowPosition: EZShowWindowPosition
-
-    @DefaultsWrapper(.mouseSelectTranslateWindowType)
-    var mouseSelectTranslateWindowType: EZWindowType
-
-    @DefaultsWrapper(.shortcutSelectTranslateWindowType)
-    var shortcutSelectTranslateWindowType: EZWindowType
-
-    @DefaultsWrapper(.adjustPopButtonOrigin)
-    var adjustPopButtomOrigin: Bool
-
-    @DefaultsWrapper(.allowCrashLog)
-    var allowCrashLog: Bool
-
-    @DefaultsWrapper(.allowAnalytics)
-    var allowAnalytics: Bool
-
-    @DefaultsWrapper(.clearInput)
-    var clearInput: Bool
-
-    @DefaultsWrapper(.keepPrevResultWhenEmpty)
-    var keepPrevResultWhenEmpty: Bool
-
-    @DefaultsWrapper(.selectQueryTextWhenWindowActivate)
-    var selectQueryTextWhenWindowActivate: Bool
-
-    var disabledAutoSelect: Bool = false
-
-    var isRecordingSelectTextShortcutKey: Bool = false
-
-    let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
-
     var fontSizeRatio: CGFloat {
         fontSizes[Int(fontSizeIndex)]
     }
-
-    @DefaultsWrapper(.fontSizeOptionIndex)
-    var fontSizeIndex: UInt
-
-    @DefaultsWrapper(.appearanceType)
-    var appearance: AppearenceType
-
-    @DefaultsWrapper(.enableBetaFeature)
-    private(set) var beta: Bool
 
     static func destroySharedInstance() {
         shared = Configuration()
     }
 
+    func enableBetaFeaturesIfNeeded() {
+        guard beta else { return }
+    }
+
+    // MARK: Private
+
+    // swiftlint:disable:next function_body_length
     private func observeKeys() {
         cancellables.append(
             Defaults.publisher(.firstLanguage)
@@ -421,44 +405,38 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
                 }
         )
     }
-
-    var cancellables: [AnyCancellable] = []
-
-    func enableBetaFeaturesIfNeeded() {
-        guard beta else { return }
-    }
 }
 
 // MARK: setter
 
-private extension Configuration {
-    func didSetFirstLanguage() {
+extension Configuration {
+    fileprivate func didSetFirstLanguage() {
         logSettings(["first_language": firstLanguage])
     }
 
-    func didSetSecondLanguage() {
+    fileprivate func didSetSecondLanguage() {
         logSettings(["second_language": secondLanguage])
     }
 
-    func didSetAutoSelectText() {
+    fileprivate func didSetAutoSelectText() {
         logSettings(["auto_select_sext": autoSelectText])
     }
 
-    func didSetForceAutoGetSelectedText() {
+    fileprivate func didSetForceAutoGetSelectedText() {
         logSettings(["force_get_selected_text": forceAutoGetSelectedText])
     }
 
-    func didSetDisableEmptyCopyBeep() {
+    fileprivate func didSetDisableEmptyCopyBeep() {
         logSettings(["disableEmptyCopyBeep": disableEmptyCopyBeep])
     }
 
-    func didSetClickQuery() {
+    fileprivate func didSetClickQuery() {
         EZWindowManager.shared().updatePopButtonQueryAction()
 
         logSettings(["click_query": clickQuery])
     }
 
-    func didSetLaunchAtStartup(_ old: Bool, new: Bool) {
+    fileprivate func didSetLaunchAtStartup(_ old: Bool, new: Bool) {
         if new != old {
             updateLoginItemWithLaunchAtStartup(new)
         }
@@ -466,11 +444,11 @@ private extension Configuration {
         logSettings(["launch_at_startup": new])
     }
 
-    func didSetAutomaticallyChecksForUpdates() {
+    fileprivate func didSetAutomaticallyChecksForUpdates() {
         logSettings(["automatically_checks_for_updates": automaticallyChecksForUpdates])
     }
 
-    func didSetHideMainWindow() {
+    fileprivate func didSetHideMainWindow() {
         let windowManger = EZWindowManager.shared()
         windowManger.updatePopButtonQueryAction()
         if hideMainWindow {
@@ -480,44 +458,44 @@ private extension Configuration {
         logSettings(["hide_main_window": hideMainWindow])
     }
 
-    func didSetAutoQueryOCRText() {
+    fileprivate func didSetAutoQueryOCRText() {
         logSettings(["auto_query_ocr_text": autoQueryOCRText])
     }
 
-    func didSetAutoQuerySelectedText() {
+    fileprivate func didSetAutoQuerySelectedText() {
         logSettings(["auto_query_selected_text": autoQuerySelectedText])
     }
 
-    func didSetAutoQueryPastedText() {
+    fileprivate func didSetAutoQueryPastedText() {
         logSettings(["auto_query_pasted_text": autoQueryPastedText])
     }
 
-    func didSetAutoPlayAudio() {
+    fileprivate func didSetAutoPlayAudio() {
         logSettings(["auto_play_word_audio": autoPlayAudio])
     }
 
-    func didSetAutoCopySelectedText() {
+    fileprivate func didSetAutoCopySelectedText() {
         logSettings(["auto_copy_selected_text": autoCopySelectedText])
     }
 
-    func didSetAutoCopyOCRText() {
+    fileprivate func didSetAutoCopyOCRText() {
         logSettings(["auto_copy_ocr_text": autoCopyOCRText])
     }
 
-    func didSetAutoCopyFirstTranslatedText() {
+    fileprivate func didSetAutoCopyFirstTranslatedText() {
         logSettings(["auto_copy_first_translated_text": autoCopyFirstTranslatedText])
     }
 
-    func didSetLanguageDetectOptimize() {
+    fileprivate func didSetLanguageDetectOptimize() {
         logSettings(["detect_optimize": languageDetectOptimize])
     }
 
-    func didSetDefaultTTSServiceType() {
+    fileprivate func didSetDefaultTTSServiceType() {
         let value = defaultTTSServiceType
         logSettings(["tts": value])
     }
 
-    func didSetShowGoogleQuickLink() {
+    fileprivate func didSetShowGoogleQuickLink() {
         postUpdateQuickLinkButtonNotification()
 
         EZMenuItemManager.shared().googleItem?.isHidden = !showGoogleQuickLink
@@ -525,7 +503,7 @@ private extension Configuration {
         logSettings(["show_google_link": showGoogleQuickLink])
     }
 
-    func didSetShowEudicQuickLink() {
+    fileprivate func didSetShowEudicQuickLink() {
         postUpdateQuickLinkButtonNotification()
 
         EZMenuItemManager.shared().eudicItem?.isHidden = !showEudicQuickLink
@@ -533,7 +511,7 @@ private extension Configuration {
         logSettings(["show_eudic_link": showEudicQuickLink])
     }
 
-    func didSetShowAppleDictionaryQuickLink() {
+    fileprivate func didSetShowAppleDictionaryQuickLink() {
         postUpdateQuickLinkButtonNotification()
 
         EZMenuItemManager.shared().appleDictionaryItem?.isHidden = !showAppleDictionaryQuickLink
@@ -541,7 +519,7 @@ private extension Configuration {
         logSettings(["show_apple_dictionary_link": showAppleDictionaryQuickLink])
     }
 
-    func didSetHideMenuBarIcon() {
+    fileprivate func didSetHideMenuBarIcon() {
         if !Configuration.shared.enableBetaNewApp {
             hideMenuBarIcon(hidden: hideMenuBarIcon)
         }
@@ -549,44 +527,44 @@ private extension Configuration {
         logSettings(["hide_menu_bar_icon": hideMenuBarIcon])
     }
 
-    func didSetEnableBetaNewApp() {
+    fileprivate func didSetEnableBetaNewApp() {
         logSettings(["enable_beta_new_app": enableBetaNewApp])
     }
 
-    func didSetFixedWindowPosition() {
+    fileprivate func didSetFixedWindowPosition() {
         logSettings(["show_fixed_window_position": fixedWindowPosition])
     }
 
-    func didSetMouseSelectTranslateWindowType() {
+    fileprivate func didSetMouseSelectTranslateWindowType() {
         logSettings(["show_mouse_window_type": mouseSelectTranslateWindowType])
     }
 
-    func didSetShortcutSelectTranslateWindowType() {
+    fileprivate func didSetShortcutSelectTranslateWindowType() {
         logSettings(["show_shortcut_window_type": shortcutSelectTranslateWindowType])
     }
 
-    func didSetAdjustPopButtomOrigin() {
+    fileprivate func didSetAdjustPopButtomOrigin() {
         logSettings(["adjust_pop_buttom_origin": adjustPopButtomOrigin])
     }
 
-    func didSetAllowCrashLog() {
+    fileprivate func didSetAllowCrashLog() {
         EZLog.setCrashEnabled(allowCrashLog)
         logSettings(["allow_crash_log": allowCrashLog])
     }
 
-    func didSetAllowAnalytics() {
+    fileprivate func didSetAllowAnalytics() {
         logSettings(["allow_analytics": allowAnalytics])
     }
 
-    func didSetClearInput() {
+    fileprivate func didSetClearInput() {
         logSettings(["clear_input": clearInput])
     }
 
-    func didSetFontSizeIndex() {
+    fileprivate func didSetFontSizeIndex() {
         NotificationCenter.default.post(name: .init(ChangeFontSizeView.changeFontSizeNotificationName), object: nil)
     }
 
-    func didSetAppearance(_ appearance: AppearenceType) {
+    fileprivate func didSetAppearance(_ appearance: AppearenceType) {
         DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
     }
 }
@@ -654,13 +632,13 @@ extension Configuration {
     }
 }
 
-private extension Configuration {
-    func postUpdateQuickLinkButtonNotification() {
+extension Configuration {
+    fileprivate func postUpdateQuickLinkButtonNotification() {
         let notification = Notification(name: .init("EZQuickLinkButtonUpdateNotification"), object: nil)
         NotificationCenter.default.post(notification)
     }
 
-    func hideMenuBarIcon(hidden: Bool) {
+    fileprivate func hideMenuBarIcon(hidden: Bool) {
         if hidden {
             EZMenuItemManager.shared().remove()
         } else {
@@ -668,7 +646,7 @@ private extension Configuration {
         }
     }
 
-    func updateLoginItemWithLaunchAtStartup(_ launchAtStartup: Bool) {
+    fileprivate func updateLoginItemWithLaunchAtStartup(_ launchAtStartup: Bool) {
         let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable") as? String
         let appBundlePath = Bundle.main.bundlePath
 
@@ -697,7 +675,7 @@ private extension Configuration {
         }
     }
 
-    func logSettings(_ parameters: [String: Any]) {
+    fileprivate func logSettings(_ parameters: [String: Any]) {
         EZLog.logEvent(withName: "settings", parameters: parameters)
     }
 }

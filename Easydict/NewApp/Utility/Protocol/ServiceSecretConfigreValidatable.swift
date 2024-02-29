@@ -8,16 +8,20 @@
 
 import Foundation
 
+// MARK: - ServiceSecretConfigreValidatable
+
 protocol ServiceSecretConfigreValidatable {
-    func validate(completion: @escaping (EZQueryResult, Error?) -> Void)
+    func validate(completion: @escaping (EZQueryResult, Error?) -> ())
 }
 
 extension ServiceSecretConfigreValidatable {
-    func validate(completion _: @escaping (EZQueryResult, Error?) -> Void) {}
+    func validate(completion _: @escaping (EZQueryResult, Error?) -> ()) {}
 }
 
+// MARK: - QueryService + ServiceSecretConfigreValidatable
+
 extension QueryService: ServiceSecretConfigreValidatable {
-    func validate(completion: @escaping (EZQueryResult, Error?) -> Void) {
+    func validate(completion: @escaping (EZQueryResult, Error?) -> ()) {
         resetServiceResult()
         /**
          To reduce output text, save cost, a simple translation example is enough.

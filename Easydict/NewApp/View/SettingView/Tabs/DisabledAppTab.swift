@@ -9,19 +9,26 @@
 import Combine
 import SwiftUI
 
+// MARK: - DisabledAppViewModel
+
 private class DisabledAppViewModel: ObservableObject {
+    // MARK: Lifecycle
+
+    init() {
+        fetchDisabledApps()
+    }
+
+    // MARK: Internal
+
     @Published var appModelList: [EZAppModel] = []
     @Published var selectedAppModels: Set<EZAppModel> = []
     @Published var isShowImportErrorAlert = false
+
     @Published var isImporting = false {
         didSet {
             // https://github.com/tisfeng/Easydict/issues/346
             Configuration.shared.disabledAutoSelect = isImporting
         }
-    }
-
-    init() {
-        fetchDisabledApps()
     }
 
     func fetchDisabledApps() {
@@ -68,9 +75,11 @@ private class DisabledAppViewModel: ObservableObject {
     }
 }
 
+// MARK: - DisabledAppTab
+
 @available(macOS 13.0, *)
 struct DisabledAppTab: View {
-    @StateObject private var disabledAppViewModel = DisabledAppViewModel()
+    // MARK: Internal
 
     var listToolbar: some View {
         ListToolbar()
@@ -88,7 +97,11 @@ struct DisabledAppTab: View {
                 }
             }
             .alert(isPresented: $disabledAppViewModel.isShowImportErrorAlert) {
-                Alert(title: Text(""), message: Text("setting.disabled.import_app_error.message"), dismissButton: .default(Text("ok")))
+                Alert(
+                    title: Text(""),
+                    message: Text("setting.disabled.import_app_error.message"),
+                    dismissButton: .default(Text("ok"))
+                )
             }
     }
 
@@ -133,11 +146,17 @@ struct DisabledAppTab: View {
         }
         .environmentObject(disabledAppViewModel)
     }
+
+    // MARK: Private
+
+    @StateObject private var disabledAppViewModel = DisabledAppViewModel()
 }
+
+// MARK: - ListToolbar
 
 @available(macOS 13.0, *)
 private struct ListToolbar: View {
-    @EnvironmentObject private var disabledAppViewModel: DisabledAppViewModel
+    // MARK: Internal
 
     var body: some View {
         VStack(spacing: 0) {
@@ -160,13 +179,19 @@ private struct ListToolbar: View {
         .frame(height: 28)
         .background(Color("add_minus_bg_color"))
     }
+
+    // MARK: Private
+
+    @EnvironmentObject private var disabledAppViewModel: DisabledAppViewModel
 }
+
+// MARK: - ListButton
 
 @available(macOS 13.0, *)
 private struct ListButton: View {
     @Environment(\.isEnabled) private var isEnabled: Bool
     var systemName: String
-    var action: () -> Void
+    var action: () -> ()
 
     var body: some View {
         Button(action: {
@@ -185,15 +210,19 @@ private struct ListButton: View {
     }
 }
 
+// MARK: - BlockAppItemView
+
 @available(macOS 13.0, *)
 private struct BlockAppItemView: View {
-    @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
-
-    @StateObject private var appItemViewModel: AppItemViewModel
+    // MARK: Lifecycle
 
     init(with appModel: EZAppModel) {
         _appItemViewModel = StateObject(wrappedValue: AppItemViewModel(appModel: appModel))
     }
+
+    // MARK: Internal
+
+    @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
     var body: some View {
         HStack(alignment: .center) {
@@ -211,20 +240,30 @@ private struct BlockAppItemView: View {
         .padding(.vertical, 4)
         .padding(.leading, 6)
     }
+
+    // MARK: Private
+
+    @StateObject private var appItemViewModel: AppItemViewModel
 }
+
+// MARK: - AppItemViewModel
 
 @available(macOS 13.0, *)
 private class AppItemViewModel: ObservableObject {
-    @Published var appIcon = NSImage()
-
-    @Published var appName = ""
-
-    var appModel: EZAppModel
+    // MARK: Lifecycle
 
     init(appModel: EZAppModel) {
         self.appModel = appModel
         getAppBundleInfo()
     }
+
+    // MARK: Internal
+
+    @Published var appIcon = NSImage()
+
+    @Published var appName = ""
+
+    var appModel: EZAppModel
 
     func getAppBundleInfo() {
         let appBundleId = appModel.appBundleID

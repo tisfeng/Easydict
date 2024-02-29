@@ -10,12 +10,11 @@ import Combine
 import Defaults
 import SwiftUI
 
+// MARK: - ServiceConfigurationSecretSectionView
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationSecretSectionView<Content: View>: View {
-    var service: QueryService
-    let content: Content
-
-    @StateObject private var viewModel: ServiceValidationViewModel
+    // MARK: Lifecycle
 
     init(
         service: QueryService,
@@ -26,6 +25,11 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         self.content = content()
         _viewModel = .init(wrappedValue: ServiceValidationViewModel(observing: observeKeys))
     }
+
+    // MARK: Internal
+
+    var service: QueryService
+    let content: Content
 
     var header: some View {
         HStack(alignment: .lastTextBaseline) {
@@ -72,25 +76,25 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
             DispatchQueue.main.async {
                 guard viewModel.isValidating else { return }
                 viewModel.isValidating = false
-                viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+                viewModel
+                    .alertMessage = error == nil ? "service.configuration.validation_success" :
+                    "service.configuration.validation_fail"
                 print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
                 viewModel.isAlertPresented = true
             }
         }
     }
+
+    // MARK: Private
+
+    @StateObject private var viewModel: ServiceValidationViewModel
 }
+
+// MARK: - ServiceValidationViewModel
 
 @MainActor
 private class ServiceValidationViewModel: ObservableObject {
-    @Published var isAlertPresented = false
-
-    @Published var isValidating = false
-
-    @Published var alertMessage: LocalizedStringKey = ""
-
-    @Published var isValidateBtnDisabled = false
-
-    var cancellables: [AnyCancellable] = []
+    // MARK: Lifecycle
 
     init(observing keys: [Defaults.Key<String?>]) {
         cancellables.append(
@@ -104,6 +108,18 @@ private class ServiceValidationViewModel: ObservableObject {
                 }
         )
     }
+
+    // MARK: Internal
+
+    @Published var isAlertPresented = false
+
+    @Published var isValidating = false
+
+    @Published var alertMessage: LocalizedStringKey = ""
+
+    @Published var isValidateBtnDisabled = false
+
+    var cancellables: [AnyCancellable] = []
 
     func reset() {
         isValidating = false

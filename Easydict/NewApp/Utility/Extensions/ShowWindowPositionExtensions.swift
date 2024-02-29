@@ -9,11 +9,17 @@
 import Defaults
 import Foundation
 
+// MARK: - EZShowWindowPosition + Defaults.Serializable
+
 extension EZShowWindowPosition: Defaults.Serializable {}
+
+// MARK: - EZShowWindowPosition + CaseIterable
 
 extension EZShowWindowPosition: CaseIterable {
     public static let allCases: [EZShowWindowPosition] = [.right, .mouse, .former, .center]
 }
+
+// MARK: - EZShowWindowPosition + CustomLocalizedStringResourceConvertible
 
 @available(macOS 13, *)
 extension EZShowWindowPosition: CustomLocalizedStringResourceConvertible {

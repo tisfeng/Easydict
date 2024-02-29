@@ -38,16 +38,21 @@ extension ShortcutTab {
             )
             Section {
                 ForEach(shortcutDataList) { item in
-                    KeyHolderRowView(title: item.type.localizedStringKey(), type: item.type, confictAlterMessage: $confictAlterMessage)
+                    KeyHolderRowView(
+                        title: item.type.localizedStringKey(),
+                        type: item.type,
+                        confictAlterMessage: $confictAlterMessage
+                    )
                 }
             } header: {
                 Text("app_shortcut_setting")
             }
 
-            .alert(String(localized: "shortcut_confict \(confictAlterMessage.title)"),
-                   isPresented: showAlter,
-                   presenting: confictAlterMessage)
-            { _ in
+            .alert(
+                String(localized: "shortcut_confict \(confictAlterMessage.title)"),
+                isPresented: showAlter,
+                presenting: confictAlterMessage
+            ) { _ in
                 Button(String(localized: "shortcut_confict_confirm")) {
                     confictAlterMessage = ShortcutConfictAlertMessage(title: "", message: "")
                 }
