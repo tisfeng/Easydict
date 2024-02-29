@@ -367,7 +367,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (BOOL)isShowTipsView {
-    if (EZ_isEmptyString(self.queryModel.queryText) && !self.hasShowTips) {
+    if (self.queryModel.actionType != EZActionTypeInputQuery
+        && EZ_isEmptyString(self.queryModel.queryText)
+        && !self.hasShowTips) {
         return YES;
     }
     return NO;
