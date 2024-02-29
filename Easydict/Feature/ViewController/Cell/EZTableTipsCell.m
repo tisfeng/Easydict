@@ -90,7 +90,7 @@
     int index = arc4random() % questions.count;
     self.tipsContentLabel.stringValue = questions[index];
     NSArray *solves;
-    if ([[EZLanguageManager shared].ezCurrentLanguage isEqualToString:@"zh-Hans"]) {
+    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
         solves = self.dataDict[@"solveZh"];
     } else {
         solves = self.dataDict[@"solveEn"];
@@ -257,8 +257,7 @@
 
 - (NSString *)seeMoreURL {
     if (!_seeMoreURL) {
-        NSString *languageCode = [[EZLanguageManager shared] ezCurrentLanguage];
-        if ([languageCode isEqualToString:@"zh-Hans"]) {
+        if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
             _seeMoreURL = @"https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98";
         } else {
             _seeMoreURL = @"https://github.com/tisfeng/Easydict/wiki/FAQ";

@@ -77,9 +77,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Get language flag image, Chinese -> 🇨🇳, English -> 🇬🇧.
 - (NSString *)languageFlagEmoji:(EZLanguage)language;
 
-/// Get current system language
-- (NSString *)ezCurrentLanguage;
-
 @end
 
 NS_ASSUME_NONNULL_END
