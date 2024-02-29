@@ -11,7 +11,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "EZLanguageManager.h"
 
-@interface EZTableTipsCell()
+@interface EZTableTipsCell ()
 @property (nonatomic, strong) NSView *contentView;
 @property (nonatomic, strong) NSImageView *tipsIconImageView;
 @property (nonatomic, strong) NSTextField *tipsNameLabel;
@@ -25,8 +25,7 @@
 
 @implementation EZTableTipsCell
 
-- (instancetype)initWithFrame:(NSRect)frame
-{
+- (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self setupUI];
@@ -75,7 +74,6 @@
 }
 
 - (void)updateConstraints {
-    
     [self.tipsContentLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(9);
         make.width.mas_lessThanOrEqualTo(self.bounds.size.width - 9);
@@ -220,7 +218,7 @@
 - (NSDictionary *)dataDict {
     if (!_dataDict) {
         _dataDict = @{
-            @"questions":@[
+            @"questions" : @[
                 NSLocalizedString(@"tips_text_empty", nil),
                 NSLocalizedString(@"tips_mouse_hover", nil),
                 NSLocalizedString(@"tips_beep", nil),
@@ -230,7 +228,7 @@
                 NSLocalizedString(@"tips_select_words", nil),
                 NSLocalizedString(@"tips_still_pop_up", nil),
             ],
-            @"solveEn":@[
+            @"solveEn" : @[
                 @"https://github.com/tisfeng/Easydict/wiki/FAQ#why-is-the-text-empty-when-i-select-words-in-some-applications",
                 @"https://github.com/tisfeng/Easydict/wiki/FAQ#why-cant-i-use-mouse-hover-to-select-words-in-some-applications",
                 @"https://github.com/tisfeng/Easydict/wiki/FAQ#why-is-there-a-beep-when-the-selected-word-is-empty-such-as-dragging-in-a-blank-area-in-some-applications",
@@ -240,7 +238,7 @@
                 @"https://github.com/tisfeng/Easydict/wiki/FAQ#why-cant-i-select-words-on-some-web-pages-in-the-browser",
                 @"https://github.com/tisfeng/Easydict/wiki/FAQ#why-does-macos-still-pop-up-asking-for-permissions-even-though-i-have-given-easydict-the-accessibilityscreen-recording-permissions"
             ],
-            @"solveZh":@[
+            @"solveZh" : @[
                 @"https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%9F%90%E4%BA%9B%E5%BA%94%E7%94%A8%E4%B8%AD%E5%8F%96%E8%AF%8D%E6%96%87%E6%9C%AC%E4%B8%BA%E7%A9%BA",
                 @"https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%9F%90%E4%BA%9B%E5%BA%94%E7%94%A8%E4%B8%AD%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E9%BC%A0%E6%A0%87%E5%88%92%E8%AF%8D",
                 @"https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%9F%90%E4%BA%9B%E5%BA%94%E7%94%A8%E5%8F%96%E8%AF%8D%E4%B8%BA%E7%A9%BA%E7%A9%BA%E7%99%BD%E5%A4%84%E6%8B%96%E5%8A%A8%E7%AD%89%E6%97%B6%E4%BC%9A%E5%87%BA%E7%8E%B0%E6%8F%90%E7%A4%BA%E9%9F%B3",

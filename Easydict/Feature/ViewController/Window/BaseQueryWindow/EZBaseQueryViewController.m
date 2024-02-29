@@ -185,7 +185,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
     
-    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
+    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
         mm_strongify(self);
         [self reloadTableViewData:^{
             [self updateAllResultCellHeight];
@@ -367,9 +367,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (BOOL)isShowTipsView {
-    if (self.queryModel.actionType != EZActionTypeInputQuery
-        && EZ_isEmptyString(self.queryModel.queryText)
-        && !self.hasShowTips) {
+    if (self.queryModel.actionType != EZActionTypeInputQuery && EZ_isEmptyString(self.queryModel.queryText) && !self.hasShowTips) {
         return YES;
     }
     return NO;
@@ -782,7 +780,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-//    NSLog(@"tableView for row: %ld", row);
+    //    NSLog(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];

@@ -20,11 +20,11 @@ static NSDictionary *const kQuotesDict = @{
     @"「" : @"」",
 };
 
-BOOL EZ_isEmptyString(id param){
-    if(!param){
+BOOL EZ_isEmptyString(id param) {
+    if (!param) {
         return YES;
     }
-    if ([param isKindOfClass:[NSString class]]){
+    if ([param isKindOfClass:[NSString class]]) {
         NSString *str = param;
         return (str.length == 0);
     }
@@ -237,7 +237,7 @@ BOOL EZ_isEmptyString(id param){
 }
 
 - (NLLanguage)detectText {
-    NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[NLTagSchemeLanguage]];
+    NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ NLTagSchemeLanguage ]];
     tagger.string = self;
     NLLanguage language = [tagger dominantLanguage];
     return language;
@@ -479,7 +479,7 @@ BOOL EZ_isEmptyString(id param){
     }
     return quotes;
 }
-    
+
 
 - (NSString *)tryToRemovePrefixQuote {
     NSString *prefixQuote = [self prefixQuote];
