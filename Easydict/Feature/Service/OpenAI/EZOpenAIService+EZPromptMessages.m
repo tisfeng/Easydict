@@ -161,12 +161,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"assistant",
             @"content" :
                 @"但是这位新任总理是否能够提供有活力的领导，而不是延续德国最近的漂泊，还很难说。\n\n"
-            @"1. 重点词汇: \n"
+            @"1. 重点词汇： \n"
             @"chancellor: n. 总理；大臣。这里指德国总理。\n"
             @"dynamic: adj. 有活力的；动态的。这里指强力的领导。\n"
             @"drift: n. 漂流；漂泊。这里是随波逐流的意思，和前面的 dynamic 做对比。\n\n"
-            @"2. 语法分析: \n该句子为一个复合句。主句为 \"But...is hard to say.\"（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。\n\n"
-            @"3. 意译:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
+            @"2. 语法分析： \n该句子为一个复合句。主句为 \"But...is hard to say.\"（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。\n\n"
+            @"3. 意译：\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
         },
 //                @{
 //                    @"role" : @"user", // The stock market has now reached a plateau.
@@ -198,11 +198,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"assistant",
             @"content" :
                 @"这本书是简单的乡土哲学。\n\n"
-            @"1. 重点词汇: \n"
+            @"1. 重点词汇： \n"
             @"homespun: adj. 简朴的；手织的。\n"
             @"philosophy: n. 哲学；哲理。\n\n"
             @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
-            @"3. 意译:\n这本书是简单朴素的哲学。\n\n"
+            @"3. 意译：\n这本书是简单朴素的哲学。\n\n"
         },
         
         @{
@@ -214,10 +214,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"assistant",
             @"content" :
                 @"你不开始理解他们的意思。\n\n"
-            @"1. 重点词汇: \n"
+            @"1. 重点词汇： \n"
             @"don't begin to: 常用搭配句式，表示一点也不，完全不\n"
             @"2. 该句为一个简单的否定句。主语为 \"You\"（你），谓语动词为 \"don't begin to\"（一点也不），宾语为 \"understand what they mean\"（理解他们的意思）。\n\n"
-            @"3. 意译:\n你根本不理解他们的意思。\n\n"
+            @"3. 意译：\n你根本不理解他们的意思。\n\n"
         },
     ];
     
@@ -418,13 +418,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"发音: / ˈælbəm / \n\n"
+            @"content" : @"发音： / ˈælbəm / \n\n"
             "n. 相册；唱片集；集邮簿 \n\n"
             "复数：albums \n\n"
             "解释：{explanation} \n\n"
             "词源学：{etymology} \n\n"
             "记忆方法：{how_to_remember} \n\n"
-            "同根词: \n"
+            "同根词： \n"
             "n. almanac 年历，历书 \n"
             "n. anthology 选集，文选 \n\n"
             "近义词：record, collection, compilation \n"
@@ -443,20 +443,20 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"发音: / ˈreɪvən / \n\n"
+            @"content" : @"发音：/ ˈreɪvən / \n\n"
             "n. 掠夺，劫掠；大乌鸦 \n"
             "adj. 乌黑的 \n"
             "vt. 掠夺；狼吞虎咽 \n"
             "vi. 掠夺；狼吞虎咽 \n\n"
-            "复数: ravens \n"
-            "第三人称单数: ravens \n"
-            "现在分词: ravening \n"
-            "过去式: ravened \n"
-            "过去分词: ravened \n\n"
+            "复数： ravens \n"
+            "第三人称单数： ravens \n"
+            "现在分词： ravening \n"
+            "过去式： ravened \n"
+            "过去分词： ravened \n\n"
             "解释：{explanation} \n\n"
             "词源学：{etymology} \n\n"
             "记忆方法：{how_to_remember} \n\n"
-            "同根词: \n"
+            "同根词： \n"
             "n. ravage 蹂躏，破坏 \n"
             "vi. ravage 毁坏；掠夺 \n"
             "vt. ravage 毁坏；破坏；掠夺 \n\n"
