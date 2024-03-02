@@ -140,7 +140,8 @@ class Configuration: NSObject {
     }
 
     var fontSizeRatio: CGFloat {
-        fontSizes[Int(fontSizeIndex)]
+        let safeIndex = max(0, min(Int(fontSizeIndex), fontSizes.count - 1))
+        return fontSizes[safeIndex]
     }
 
     static func destroySharedInstance() {
