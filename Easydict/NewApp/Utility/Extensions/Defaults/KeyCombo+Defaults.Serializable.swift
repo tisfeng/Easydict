@@ -14,6 +14,10 @@ extension KeyCombo: Defaults.Serializable {
     public static var bridge = ShortcutBridge()
 
     public struct ShortcutBridge: Defaults.Bridge {
+        public typealias Value = KeyCombo?
+
+        public typealias Serializable = Data
+
         public func serialize(_ value: Magnet.KeyCombo??) -> Data? {
             guard let value else { return nil }
             return try? JSONEncoder().encode(value)
@@ -23,9 +27,5 @@ extension KeyCombo: Defaults.Serializable {
             guard let data = object else { return nil }
             return try? JSONDecoder().decode(KeyCombo.self, from: data) as Magnet.KeyCombo?
         }
-
-        public typealias Value = KeyCombo?
-
-        public typealias Serializable = Data
     }
 }

@@ -9,9 +9,14 @@
 import Defaults
 import SwiftUI
 
+// MARK: - GeneralTab
+
 @available(macOS 13, *)
 struct GeneralTab: View {
+    // MARK: Internal
+
     @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         Form {
             Section {
@@ -40,26 +45,38 @@ struct GeneralTab: View {
                 Toggle("auto_show_query_icon", isOn: $autoSelectText)
                 Toggle("force_auto_get_selected_text", isOn: $forceAutoGetSelectedText)
                 Toggle("click_icon_query_info", isOn: $clickQuery)
-                Toggle("setting.general.mouse_query.adjust_pop_button_origin", isOn: $adjustPopButtonOrigin) // 调整查询图标位置:
+                Toggle(
+                    "setting.general.mouse_query.adjust_pop_button_origin",
+                    isOn: $adjustPopButtonOrigin
+                ) // 调整查询图标位置:
             } header: {
                 Text("setting.general.mouse_query.header")
             }
 
             Section {
-                Toggle("setting.general.voice.disable_empty_copy_beep_msg", isOn: $disableEmptyCopyBeep) // 禁用提示音：划词内容为空时生效
+                Toggle(
+                    "setting.general.voice.disable_empty_copy_beep_msg",
+                    isOn: $disableEmptyCopyBeep
+                ) // 禁用提示音：划词内容为空时生效
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio) // 查询英语单词后自动播放发音
             } header: {
                 Text("setting.general.voice.header")
             }
 
             Section {
-                Picker("setting.general.window.mouse_select_translate_window_type", selection: $mouseSelectTranslateWindowType) {
+                Picker(
+                    "setting.general.window.mouse_select_translate_window_type",
+                    selection: $mouseSelectTranslateWindowType
+                ) {
                     ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
                     }
                 }
-                Picker("setting.general.window.shortcut_select_translate_window_type", selection: $shortcutSelectTranslateWindowType) {
+                Picker(
+                    "setting.general.window.shortcut_select_translate_window_type",
+                    selection: $shortcutSelectTranslateWindowType
+                ) {
                     ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
@@ -186,6 +203,8 @@ struct GeneralTab: View {
         }
     }
 
+    // MARK: Private
+
     @Default(.autoSelectText) private var autoSelectText
     @Default(.forceAutoGetSelectedText) private var forceAutoGetSelectedText
     @Default(.clickQuery) private var clickQuery
@@ -228,12 +247,12 @@ struct GeneralTab: View {
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
 
+    @State private var showRefuseAlert = false
+    @State private var showHideMenuBarIconAlert = false
+
     private var shortcutsHaveSetuped: Bool {
         Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
     }
-
-    @State private var showRefuseAlert = false
-    @State private var showHideMenuBarIconAlert = false
 }
 
 @available(macOS 13, *)
@@ -241,8 +260,12 @@ struct GeneralTab: View {
     GeneralTab()
 }
 
+// MARK: - FirstAndSecondLanguageSettingView
+
 @available(macOS 13, *)
 private struct FirstAndSecondLanguageSettingView: View {
+    // MARK: Internal
+
     var body: some View {
         Group {
             Picker("setting.general.language.first_language", selection: $firstLanguage) {
@@ -272,30 +295,26 @@ private struct FirstAndSecondLanguageSettingView: View {
                 languageDuplicatedAlert = .init(duplicatedLanguage: newValue, setField: .first, setLanguage: oldValue)
             }
         }
-        .alert("setting.general.language.duplicated_alert.title", isPresented: showLanguageDuplicatedAlert, presenting: languageDuplicatedAlert) { _ in
+        .alert(
+            "setting.general.language.duplicated_alert.title",
+            isPresented: showLanguageDuplicatedAlert,
+            presenting: languageDuplicatedAlert
+        ) { _ in
 
         } message: { alert in
             Text(alert.description)
         }
     }
 
-    @Default(.firstLanguage) private var firstLanguage
-    @Default(.secondLanguage) private var secondLanguage
+    // MARK: Private
 
     private struct LanguageDuplicateAlert: CustomStringConvertible {
-        var description: String {
-            // First language should not be same as second language. (\(duplicatedLanguage))
-            // \(setField) is replaced with \(setLanguage).
-            String(localized: "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)")
-        }
-
-        let duplicatedLanguage: Language
-
-        let setField: Field
-
-        let setLanguage: Language
-
         enum Field: CustomLocalizedStringResourceConvertible {
+            case first
+            case second
+
+            // MARK: Internal
+
             var localizedStringResource: LocalizedStringResource {
                 switch self {
                 case .first:
@@ -304,13 +323,29 @@ private struct FirstAndSecondLanguageSettingView: View {
                     "setting.general.language.duplicated_alert.field.second"
                 }
             }
+        }
 
-            case first
-            case second
+        let duplicatedLanguage: Language
+
+        let setField: Field
+
+        let setLanguage: Language
+
+        var description: String {
+            // First language should not be same as second language. (\(duplicatedLanguage))
+            // \(setField) is replaced with \(setLanguage).
+            String(
+                // swiftlint:disable:next line_length
+                localized: "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)"
+            )
         }
     }
 
+    @Default(.firstLanguage) private var firstLanguage
+    @Default(.secondLanguage) private var secondLanguage
+
     @State private var languageDuplicatedAlert: LanguageDuplicateAlert?
+
     private var showLanguageDuplicatedAlert: Binding<Bool> {
         .init {
             languageDuplicatedAlert != nil

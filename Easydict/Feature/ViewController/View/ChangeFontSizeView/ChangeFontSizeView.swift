@@ -9,7 +9,56 @@ import AppKit
 import Foundation
 import Hue
 
-@objc public class ChangeFontSizeView: NSView {
+@objc
+public class ChangeFontSizeView: NSView {
+    // MARK: Lifecycle
+
+    @objc
+    public init(fontSizes: [CGFloat], initialIndex: Int) {
+        self.fontSizes = fontSizes
+        self.selectedIndex = initialIndex
+        super.init(frame: .zero)
+
+        setupUI()
+
+        NotificationCenter.default.addObserver(
+            forName: .init(Self.changeFontSizeNotificationName),
+            object: nil,
+            queue: .main
+        ) { [weak self] noti in
+            guard let self, let index = noti.object as? Int, index != selectedIndex else { return }
+            self.selectedIndex = index
+            updateSelectedLineFrame()
+        }
+    }
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: Public
+
+    override public func layout() {
+        super.layout()
+
+        updateSelectedLineFrame()
+    }
+
+    override public func mouseDown(with event: NSEvent) {
+        super.mouseDown(with: event)
+
+        handleEvent(event: event)
+    }
+
+    override public func mouseDragged(with event: NSEvent) {
+        super.mouseDragged(with: event)
+
+        handleEvent(event: event, animated: false)
+    }
+
+    // MARK: Internal
+
     @objc static let changeFontSizeNotificationName = "changeFontSizeNotification"
 
     let fontSizes: [CGFloat]
@@ -17,7 +66,9 @@ import Hue
 
     lazy var selectedScaleLine = createLine()
 
-    @objc var didSelectIndex: ((Int) -> Void)?
+    @objc var didSelectIndex: ((Int) -> ())?
+
+    // MARK: Private
 
     private var horizonLineHeight = 5.0
     private let horizonLineColor = NSColor(hex: "E1E1E1")
@@ -31,20 +82,6 @@ import Hue
     private let selectedScaleLineColor = NSColor(hex: "CCCCCC")
 
     private var selectedIndex = 1
-
-    @objc public init(fontSizes: [CGFloat], initialIndex: Int) {
-        self.fontSizes = fontSizes
-        selectedIndex = initialIndex
-        super.init(frame: .zero)
-
-        setupUI()
-
-        NotificationCenter.default.addObserver(forName: .init(Self.changeFontSizeNotificationName), object: nil, queue: .main) { [weak self] noti in
-            guard let self, let index = noti.object as? Int, index != selectedIndex else { return }
-            selectedIndex = index
-            updateSelectedLineFrame()
-        }
-    }
 
     private func setupUI() {
         clipsToBounds = false
@@ -78,7 +115,7 @@ import Hue
             stackView.heightAnchor.constraint(equalToConstant: scaleLineHeight),
         ])
 
-        for (_, view) in scaleLines.enumerated() {
+        for view in scaleLines {
             view.layer?.cornerRadius = scaleLineWidth / 2
             view.layer?.backgroundColor = scaleLineColor.cgColor
 
@@ -94,12 +131,6 @@ import Hue
         selectedScaleLine.layer?.borderColor = NSColor(hex: "D7D8D8").cgColor
     }
 
-    override public func layout() {
-        super.layout()
-
-        updateSelectedLineFrame()
-    }
-
     private func updateSelectedLineFrame() {
         selectedScaleLine.frame = selectedLineTargetFrame()
 
@@ -110,20 +141,13 @@ import Hue
         let y = bounds.height / 2
         let index = max(0, min(selectedIndex, scaleLines.count - 1))
         let x = index == 0 ? 0 : (bounds.width / CGFloat(scaleLines.count - 1)) * CGFloat(index)
-        let frame = NSRect(x: round(x) - selectedScaleLineWidth / 2, y: y - selectedScaleLineHeight / 2, width: selectedScaleLineWidth, height: selectedScaleLineHeight)
+        let frame = NSRect(
+            x: round(x) - selectedScaleLineWidth / 2,
+            y: y - selectedScaleLineHeight / 2,
+            width: selectedScaleLineWidth,
+            height: selectedScaleLineHeight
+        )
         return frame
-    }
-
-    override public func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
-
-        handleEvent(event: event)
-    }
-
-    override public func mouseDragged(with event: NSEvent) {
-        super.mouseDragged(with: event)
-
-        handleEvent(event: event, animated: false)
     }
 
     private func handleEvent(event: NSEvent, animated: Bool = true) {
@@ -172,10 +196,5 @@ import Hue
         view.layer?.backgroundColor = NSColor.lightGray.cgColor
 
         return view
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

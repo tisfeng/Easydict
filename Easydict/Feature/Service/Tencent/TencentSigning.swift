@@ -6,12 +6,22 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+// swiftlint:disable all
+
 import Alamofire
 import CryptoKit
 import Foundation
 
 // Tencent sigh header, Ref: https://github.com/TencentCloud/signature-process-demo/blob/main/signature-v3/swift/signv3.swift
-func tencentSignHeader(service: String, action: String, version: String, parameters: [String: Any], secretId: String, secretKey: String) -> HTTPHeaders {
+func tencentSignHeader(
+    service: String,
+    action: String,
+    version: String,
+    parameters: [String: Any],
+    secretId: String,
+    secretKey: String
+)
+    -> HTTPHeaders {
     let service = service
     let host = "\(service).tencentcloudapi.com"
     let region = "ap-guangzhou"
@@ -93,3 +103,5 @@ extension String {
         return Data(hmac)
     }
 }
+
+// swiftlint:enable all

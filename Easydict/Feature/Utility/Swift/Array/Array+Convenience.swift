@@ -17,7 +17,8 @@ extension [String] {
     }
 }
 
-@objc extension NSArray {
+@objc
+extension NSArray {
     /// Trim to max count
     func trim(toMaxCount maxCount: Int) -> NSArray {
         guard maxCount > 0, maxCount < count else { return self }

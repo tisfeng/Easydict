@@ -39,7 +39,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "调整查询图标位置:"
+            "value" : "调整查询图标位置："
           }
         }
       }
@@ -131,7 +131,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "匿名统计:"
+            "value" : "匿名统计："
           }
         }
       }
@@ -164,7 +164,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "外观:"
+            "value" : "外观："
           }
         }
       }
@@ -288,7 +288,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开发者:"
+            "value" : "开发者："
           }
         }
       }
@@ -368,7 +368,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动复制:"
+            "value" : "自动复制："
           }
         }
       }
@@ -384,7 +384,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠标自动划词:"
+            "value" : "鼠标自动划词："
           }
         }
       }
@@ -416,7 +416,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动查询:"
+            "value" : "自动查询："
           }
         }
       }
@@ -711,7 +711,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击查询:"
+            "value" : "点击查询："
           }
         }
       }
@@ -792,7 +792,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "崩溃日志:"
+            "value" : "崩溃日志："
           }
         }
       }
@@ -851,7 +851,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "默认 TTS 服务:"
+            "value" : "默认 TTS 服务："
           }
         }
       }
@@ -900,7 +900,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "禁用空复制提示音:"
+            "value" : "禁用空复制提示音："
           }
         }
       }
@@ -1114,23 +1114,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "词源:"
-          }
-        }
-      }
-    },
-    "explain" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explanation:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "释义:"
+            "value" : "词源："
           }
         }
       }
@@ -1177,7 +1161,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一语言:"
+            "value" : "第一语言："
           }
         }
       }
@@ -1209,7 +1193,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "侧悬浮窗口位置:"
+            "value" : "侧悬浮窗口位置："
           }
         }
       }
@@ -1290,7 +1274,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字体大小:"
+            "value" : "字体大小："
           }
         }
       }
@@ -1626,7 +1610,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留结果:"
+            "value" : "保留结果："
           }
         }
       }
@@ -1642,7 +1626,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "语种识别:"
+            "value" : "语种识别："
           }
         }
       }
@@ -1739,7 +1723,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启动:"
+            "value" : "启动："
           }
         }
       }
@@ -1808,7 +1792,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "菜单栏图标:"
+            "value" : "菜单栏图标："
           }
         }
       }
@@ -1955,7 +1939,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠标划词窗口类型:"
+            "value" : "鼠标划词窗口类型："
           }
         }
       }
@@ -2216,7 +2200,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "播放单词发音:"
+            "value" : "播放单词发音："
           }
         }
       }
@@ -2361,7 +2345,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷功能:"
+            "value" : "快捷功能："
           }
         }
       }
@@ -2458,7 +2442,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第二语言:"
+            "value" : "第二语言："
           }
         }
       }
@@ -3876,7 +3860,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷键划词窗口类型:"
+            "value" : "快捷键划词窗口类型："
           }
         }
       }
@@ -3956,7 +3940,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "主窗口:"
+            "value" : "主窗口："
           }
         }
       }
@@ -4118,22 +4102,6 @@
         }
       }
     },
-    "tag" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tag:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标签:"
-          }
-        }
-      }
-    },
     "tencent_translate" : {
       "comment" : "The name of Tencent Translate",
       "localizations" : {
@@ -4182,13 +4150,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "UK:"
+            "value" : "UK"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英:"
+            "value" : "英"
           }
         }
       }
@@ -4246,13 +4214,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "US:"
+            "value" : "US"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "美:"
+            "value" : "美"
           }
         }
       }

@@ -9,8 +9,11 @@
 import Foundation
 import SwiftUI
 
+// MARK: - ConfigurableService
+
 /// A service can provide configuration view in setting
 protocol ConfigurableService {
+    // swiftlint:disable:next type_name
     associatedtype T: View
 
     /// Items in Configuration Form. Use ServiceStringConfigurationSection or other customize view.

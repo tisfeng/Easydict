@@ -9,8 +9,7 @@
 import SwiftUI
 
 struct EasyDictMainMenu: Commands {
-    @Environment(\.openURL)
-    private var openURL
+    // MARK: Internal
 
     var body: some Commands {
         // shortcut
@@ -23,4 +22,8 @@ struct EasyDictMainMenu: Commands {
             }
         })
     }
+
+    // MARK: Private
+
+    @Environment(\.openURL) private var openURL
 }

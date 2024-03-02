@@ -9,11 +9,15 @@
 import Defaults
 import Foundation
 
+// MARK: - EZWindowType + Defaults.Serializable
+
 extension EZWindowType: Defaults.Serializable {}
 
-public extension EZWindowType {
-    static let availableOptions: [EZWindowType] = [.mini, .fixed]
+extension EZWindowType {
+    public static let availableOptions: [EZWindowType] = [.mini, .fixed]
 }
+
+// MARK: - EZWindowType + CustomLocalizedStringResourceConvertible
 
 @available(macOS 13, *)
 extension EZWindowType: CustomLocalizedStringResourceConvertible {

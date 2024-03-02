@@ -6,12 +6,16 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+// swiftlint:disable all
+
 import Defaults
 import Foundation
 import GoogleGenerativeAI
 
 @objc(EZGeminiService)
 public final class GeminiService: QueryService {
+    // MARK: Public
+
     override public func serviceType() -> ServiceType {
         .gemini
     }
@@ -23,9 +27,6 @@ public final class GeminiService: QueryService {
     override public func name() -> String {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
-
-    // https://ai.google.dev/available_regions
-    private static let unsupportedLanguages: [Language] = [.persian, .filipino, .khmer, .lao, .malay, .mongolian, .burmese, .telugu, .tamil, .urdu]
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary.
@@ -55,34 +56,20 @@ public final class GeminiService: QueryService {
         100_000 * 1000
     }
 
-    private let defaultAPIKey = "" /* .decryptAES() */
-
-    // easydict://writeKeyValue?EZGeminiAPIKey=xxx
-    private var apiKey: String {
-        let apiKey = Defaults[.geminiAPIKey]
-        if let apiKey, !apiKey.isEmpty {
-            return apiKey
-        } else {
-            return defaultAPIKey
-        }
-    }
-
-    // Set Gemini safety level to BLOCK_NONE
-    private static let harassmentSafety = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
-    private static let hateSpeechSafety = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
-    private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
-    private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
-
-    private static let translationPrompt = "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes."
-
     override public func autoConvertTraditionalChinese() -> Bool {
         true
     }
 
-    override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+    override public func translate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZQueryResult, Error?) -> ()
+    ) {
         Task {
             do {
-                let prompt = GeminiService.translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
+                let prompt = GeminiService
+                    .translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
                 print("gemini prompt: \(prompt)")
                 let model = GenerativeModel(
                     name: "gemini-pro",
@@ -141,4 +128,43 @@ public final class GeminiService: QueryService {
             }
         }
     }
+
+    // MARK: Private
+
+    // https://ai.google.dev/available_regions
+    private static let unsupportedLanguages: [Language] = [
+        .persian,
+        .filipino,
+        .khmer,
+        .lao,
+        .malay,
+        .mongolian,
+        .burmese,
+        .telugu,
+        .tamil,
+        .urdu,
+    ]
+
+    // Set Gemini safety level to BLOCK_NONE
+    private static let harassmentSafety = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
+    private static let hateSpeechSafety = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
+    private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
+    private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
+
+    private static let translationPrompt =
+        "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes."
+
+    private let defaultAPIKey = "" /* .decryptAES() */
+
+    // easydict://writeKeyValue?EZGeminiAPIKey=xxx
+    private var apiKey: String {
+        let apiKey = Defaults[.geminiAPIKey]
+        if let apiKey, !apiKey.isEmpty {
+            return apiKey
+        } else {
+            return defaultAPIKey
+        }
+    }
 }
+
+// swiftlint:enable all

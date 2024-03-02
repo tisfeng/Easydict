@@ -23,8 +23,14 @@ extension Defaults.Keys {
     // rename `to`
     static let queryToLanguage = Key<Language>("EZConfiguration_kToKey", default: .auto)
 
-    static let firstLanguage = Key<Language>("EZConfiguration_kFirstLanguageKey", default: EZLanguageManager.shared().systemPreferredTwoLanguages[0])
-    static let secondLanguage = Key<Language>("EZConfiguration_kSecondLanguageKey", default: EZLanguageManager.shared().systemPreferredTwoLanguages[1])
+    static let firstLanguage = Key<Language>(
+        "EZConfiguration_kFirstLanguageKey",
+        default: EZLanguageManager.shared().systemPreferredTwoLanguages[0]
+    )
+    static let secondLanguage = Key<Language>(
+        "EZConfiguration_kSecondLanguageKey",
+        default: EZLanguageManager.shared().systemPreferredTwoLanguages[1]
+    )
 
     static let autoSelectText = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
     static let forceAutoGetSelectedText = Key<Bool>("EZConfiguration_kForceAutoGetSelectedText", default: false)
@@ -39,23 +45,44 @@ extension Defaults.Keys {
     static let autoQueryPastedText = Key<Bool>("EZConfiguration_kAutoQueryPastedTextKey", default: false)
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>("EZConfiguration_kAutoCopySelectedTextKey", default: false)
-    static let autoCopyFirstTranslatedText = Key<Bool>("EZConfiguration_kAutoCopyFirstTranslatedTextKey", default: false)
-    static let languageDetectOptimize = Key<LanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: LanguageDetectOptimize.none)
-    static let defaultTTSServiceType = Key<TTSServiceType>("EZConfiguration_kDefaultTTSServiceTypeKey", default: TTSServiceType.youdao)
+    static let autoCopyFirstTranslatedText = Key<Bool>(
+        "EZConfiguration_kAutoCopyFirstTranslatedTextKey",
+        default: false
+    )
+    static let languageDetectOptimize = Key<LanguageDetectOptimize>(
+        "EZConfiguration_kLanguageDetectOptimizeTypeKey",
+        default: LanguageDetectOptimize.none
+    )
+    static let defaultTTSServiceType = Key<TTSServiceType>(
+        "EZConfiguration_kDefaultTTSServiceTypeKey",
+        default: TTSServiceType.youdao
+    )
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
     static let showAppleDictionaryQuickLink = Key<Bool>("EZConfiguration_kShowAppleDictionaryLinkKey", default: true)
     static let showSettingQuickLink = Key<Bool>("EZConfiguration_kShowSettingQuickLink", default: true)
     static let hideMenuBarIcon = Key<Bool>("EZConfiguration_kHideMenuBarIconKey", default: false)
-    static let fixedWindowPosition = Key<EZShowWindowPosition>("EZConfiguration_kShowFixedWindowPositionKey", default: .right)
-    static let mouseSelectTranslateWindowType = Key<EZWindowType>("EZConfiguration_kMouseSelectTranslateWindowTypeKey", default: .mini)
-    static let shortcutSelectTranslateWindowType = Key<EZWindowType>("EZConfiguration_kShortcutSelectTranslateWindowTypeKey", default: .fixed)
+    static let fixedWindowPosition = Key<EZShowWindowPosition>(
+        "EZConfiguration_kShowFixedWindowPositionKey",
+        default: .right
+    )
+    static let mouseSelectTranslateWindowType = Key<EZWindowType>(
+        "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
+        default: .mini
+    )
+    static let shortcutSelectTranslateWindowType = Key<EZWindowType>(
+        "EZConfiguration_kShortcutSelectTranslateWindowTypeKey",
+        default: .fixed
+    )
     static let adjustPopButtonOrigin = Key<Bool>("EZConfiguration_kAdjustPopButtomOriginKey", default: false)
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
     static let clearInput = Key<Bool>("EZConfiguration_kClearInputKey", default: true)
     static let keepPrevResultWhenEmpty = Key<Bool>("EZConfiguration_kKeepPrevResultKey", default: true)
-    static let selectQueryTextWhenWindowActivate = Key<Bool>("EZConfiguration_kSelectQueryTextWhenWindowActivate", default: false)
+    static let selectQueryTextWhenWindowActivate = Key<Bool>(
+        "EZConfiguration_kSelectQueryTextWhenWindowActivate",
+        default: false
+    )
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
 
@@ -92,10 +119,16 @@ extension Defaults.Keys {
     }
 }
 
+// MARK: - EZQueryTextType + Defaults.Serializable
+
 extension EZQueryTextType: Defaults.Serializable {
     public static var bridge: Bridge = .init()
 
     public struct Bridge: Defaults.Bridge {
+        public typealias Value = EZQueryTextType
+
+        public typealias Serializable = String
+
         public func serialize(_ value: EZQueryTextType?) -> String? {
             guard let value else { return "7" }
             return "\(value.rawValue)"
@@ -105,17 +138,19 @@ extension EZQueryTextType: Defaults.Serializable {
             guard let object else { return nil }
             return EZQueryTextType(rawValue: UInt(object) ?? 7)
         }
-
-        public typealias Value = EZQueryTextType
-
-        public typealias Serializable = String
     }
 }
+
+// MARK: - CGRect + Defaults.Serializable
 
 extension CGRect: Defaults.Serializable {
     public static var bridge: Bridge = .init()
 
     public struct Bridge: Defaults.Bridge {
+        public typealias Value = CGRect
+
+        public typealias Serializable = String
+
         public func serialize(_ value: CGRect?) -> String? {
             let value = value ?? .zero
             return NSStringFromRect(value)
@@ -125,15 +160,23 @@ extension CGRect: Defaults.Serializable {
             guard let object else { return nil }
             return NSRectFromString(object)
         }
-
-        public typealias Value = CGRect
-
-        public typealias Serializable = String
     }
 }
 
+// MARK: - DefaultsWrapper
+
 @propertyWrapper
 class DefaultsWrapper<T: Defaults.Serializable> {
+    // MARK: Lifecycle
+
+    init(_ key: Defaults.Key<T>) {
+        self.key = key
+    }
+
+    // MARK: Internal
+
+    let key: Defaults.Key<T>
+
     var wrappedValue: T {
         get {
             Defaults[key]
@@ -141,12 +184,6 @@ class DefaultsWrapper<T: Defaults.Serializable> {
             Defaults[key] = newValue
         }
     }
-
-    init(_ key: Defaults.Key<T>) {
-        self.key = key
-    }
-
-    let key: Defaults.Key<T>
 }
 
 // Service Configuration
@@ -156,13 +193,19 @@ extension Defaults.Keys {
     static let openAITranslation = Key<String>("EZOpenAITranslationKey", default: "1")
     static let openAIDictionary = Key<String>("EZOpenAIDictionaryKey", default: "1")
     static let openAISentence = Key<String>("EZOpenAISentenceKey", default: "1")
-    static let openAIServiceUsageStatus = Key<OpenAIUsageStats>("EZOpenAIServiceUsageStatusKey", default: OpenAIUsageStats.default)
+    static let openAIServiceUsageStatus = Key<OpenAIUsageStats>(
+        "EZOpenAIServiceUsageStatusKey",
+        default: OpenAIUsageStats.default
+    )
     static let openAIEndPoint = Key<String?>("EZOpenAIEndPointKey")
     static let openAIModel = Key<OpenAIModels>("EZOpenAIModelKey", default: OpenAIModels.gpt3_5_turbo_0125)
 
     // DeepL
     static let deepLAuth = Key<String?>("EZDeepLAuthKey")
-    static let deepLTranslation = Key<DeepLAPIUsagePriority>("EZDeepLTranslationAPIKey", default: DeepLAPIUsagePriority.webFirst)
+    static let deepLTranslation = Key<DeepLAPIUsagePriority>(
+        "EZDeepLTranslationAPIKey",
+        default: DeepLAPIUsagePriority.webFirst
+    )
     static let deepLTranslateEndPointKey = Key<String?>("EZDeepLTranslateEndPointKey")
 
     // Bing

@@ -11,6 +11,8 @@ import SwiftUI
 
 @available(macOS 13, *)
 struct AdvancedTab: View {
+    // MARK: Internal
+
     var body: some View {
         Form {
             Section {
@@ -30,6 +32,8 @@ struct AdvancedTab: View {
         }
         .formStyle(.grouped)
     }
+
+    // MARK: Private
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature

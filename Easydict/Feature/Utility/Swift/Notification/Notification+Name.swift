@@ -14,8 +14,9 @@ extension Notification.Name {
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
 }
 
-@objc public extension NSNotification {
-    static let serviceHasUpdated = Notification.Name.serviceHasUpdated
+@objc
+extension NSNotification {
+    public static let serviceHasUpdated = Notification.Name.serviceHasUpdated
 
-    static let openSettings = Notification.Name.openSettings
+    public static let openSettings = Notification.Name.openSettings
 }

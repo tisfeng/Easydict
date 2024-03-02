@@ -9,11 +9,11 @@
 import Defaults
 import SwiftUI
 
+// MARK: - ServiceConfigurationSecureInputCell
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationSecureInputCell: View {
-    @Default var value: String?
-    let textFieldTitleKey: LocalizedStringKey
-    let placeholder: LocalizedStringKey
+    // MARK: Lifecycle
 
     init(
         textFieldTitleKey: LocalizedStringKey,
@@ -25,16 +25,22 @@ struct ServiceConfigurationSecureInputCell: View {
         _value = .init(key)
     }
 
+    // MARK: Internal
+
+    @Default var value: String?
+    let textFieldTitleKey: LocalizedStringKey
+    let placeholder: LocalizedStringKey
+
     var body: some View {
         SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value)
     }
 }
 
+// MARK: - ServiceConfigurationInputCell
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationInputCell: View {
-    @Default var value: String?
-    let textFieldTitleKey: LocalizedStringKey
-    let placeholder: LocalizedStringKey
+    // MARK: Lifecycle
 
     init(textFieldTitleKey: LocalizedStringKey, key: Defaults.Key<String?>, placeholder: LocalizedStringKey) {
         self.textFieldTitleKey = textFieldTitleKey
@@ -42,23 +48,35 @@ struct ServiceConfigurationInputCell: View {
         _value = .init(key)
     }
 
+    // MARK: Internal
+
+    @Default var value: String?
+    let textFieldTitleKey: LocalizedStringKey
+    let placeholder: LocalizedStringKey
+
     var body: some View {
         TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
             .padding(10.0)
     }
 }
 
+// MARK: - ServiceConfigurationPickerCell
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
-    @Default var value: T
-    let titleKey: LocalizedStringKey
-    let values: [T]
+    // MARK: Lifecycle
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<T>, values: [T]) {
         self.titleKey = titleKey
         self.values = values
         _value = .init(key)
     }
+
+    // MARK: Internal
+
+    @Default var value: T
+    let titleKey: LocalizedStringKey
+    let values: [T]
 
     var body: some View {
         Picker(titleKey, selection: $value) {
@@ -70,22 +88,30 @@ struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & Enum
     }
 }
 
+// MARK: - ConfigurationToggleViewModel
+
 class ConfigurationToggleViewModel: ObservableObject {
     @Published var isOn = false
 }
 
+// MARK: - ServiceConfigurationToggleCell
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationToggleCell: View {
-    @Default var value: String
-    let titleKey: LocalizedStringKey
-
-    @ObservedObject var viewModel = ConfigurationToggleViewModel()
+    // MARK: Lifecycle
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {
         self.titleKey = titleKey
         _value = .init(key)
         viewModel.isOn = value == "1"
     }
+
+    // MARK: Internal
+
+    @Default var value: String
+    let titleKey: LocalizedStringKey
+
+    @ObservedObject var viewModel = ConfigurationToggleViewModel()
 
     var body: some View {
         Toggle(titleKey, isOn: $viewModel.isOn)
