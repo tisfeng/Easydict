@@ -70,14 +70,26 @@
     [self setupSettingButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+    
 }
 
 - (void)setupSettingButton {
     EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
-    NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
-    button.image = [[image imageWithTintColor:[NSColor ez_imageTintBlueColor]] resizeToSize:CGSizeMake(20, 20)];
+    NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil]imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
+    
+    button.image = image;
     self.settingButton = button;
     button.clickBlock = nil;
+    
+    NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+    CGSize imageSize = CGSizeMake(20, 20);
+    
+    [button excuteLight:^(EZButton *button) {
+        button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
+    } dark:^(EZButton *button) {
+        button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
+    }];
     
     [button mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(24);
@@ -87,6 +99,7 @@
     [button setMouseUpBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self showMenu];
+        
     }];
 }
 
