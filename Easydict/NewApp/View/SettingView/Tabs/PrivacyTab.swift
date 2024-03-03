@@ -16,20 +16,20 @@ struct PrivacyTab: View {
     var body: some View {
         Form {
             Section {
-                Text("privacy_statement_content")
+                Text("privacy_statement_content".localized)
                     .font(.body)
                     .multilineTextAlignment(.leading)
             } header: {
-                Text("privacy_statement")
+                Text("privacy_statement".localized)
             }
             Section {
                 HStack {
-                    Text("crash_log")
-                    Toggle("allow_collect_crash_log", isOn: $allowCollectCrashLog)
+                    Text("crash_log".localized)
+                    Toggle("allow_collect_crash_log".localized, isOn: $allowCollectCrashLog)
                 }
                 HStack {
-                    Text("analytics")
-                    Toggle("allow_collect_analytics", isOn: $allowCollectAnalytics)
+                    Text("analytics".localized)
+                    Toggle("allow_collect_analytics".localized, isOn: $allowCollectAnalytics)
                 }
             }
         }
