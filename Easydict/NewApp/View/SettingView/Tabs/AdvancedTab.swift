@@ -16,18 +16,18 @@ struct AdvancedTab: View {
     var body: some View {
         Form {
             Section {
-                Picker("setting.general.advance.default_tts_service", selection: $defaultTTSServiceType) {
+                Picker("setting.general.advance.default_tts_service".localized, selection: $defaultTTSServiceType) {
                     ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
+                        Text(option.localizedString)
                             .tag(option)
                     }
                 }
-                Toggle("setting.general.advance.enable_beta_feature", isOn: $enableBetaFeature)
+                Toggle("setting.general.advance.enable_beta_feature".localized, isOn: $enableBetaFeature)
                 Toggle(isOn: $enableBetaNewApp) {
-                    Text("enable_beta_new_app")
+                    Text("enable_beta_new_app".localized)
                 }
             } header: {
-                Text("setting.general.advance.header")
+                Text("setting.general.advance.header".localized)
             }
         }
         .formStyle(.grouped)
