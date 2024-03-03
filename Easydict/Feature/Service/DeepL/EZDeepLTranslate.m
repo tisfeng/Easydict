@@ -10,6 +10,7 @@
 #import "EZWebViewTranslator.h"
 #import "EZError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
+#import "Easydict-Swift.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
@@ -67,7 +68,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"deepL_translate", nil);
+    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"deepL_translate" value:nil table:nil];
 }
 
 - (NSString *)link {

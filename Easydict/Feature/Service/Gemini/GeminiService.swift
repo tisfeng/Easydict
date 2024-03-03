@@ -25,7 +25,7 @@ public final class GeminiService: QueryService {
     }
 
     override public func name() -> String {
-        NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
+        NSLocalizedString("gemini_translate", bundle: localizedBundle, comment: "The name of Gemini Translate")
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {

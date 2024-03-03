@@ -145,7 +145,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"openai_translate", nil);
+    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"openai_translate" value:nil table:nil];
 }
 
 - (NSString *)link {

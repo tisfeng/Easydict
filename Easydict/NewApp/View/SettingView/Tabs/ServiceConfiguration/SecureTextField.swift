@@ -22,11 +22,11 @@ struct SecureTextField: View {
     var body: some View {
         HStack {
             ZStack {
-                SecureField(title, text: $text ?? "")
+                SecureField(title.stringKeyLocalized, text: $text ?? "")
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
-                TextField(title, text: $text ?? "", prompt: Text(placeholder))
+                TextField(title.stringKeyLocalized, text: $text ?? "", prompt: Text(placeholder.stringKeyLocalized))
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .text)
                     .opacity(showText || (text?.isEmpty ?? true) ? 1 : 0)

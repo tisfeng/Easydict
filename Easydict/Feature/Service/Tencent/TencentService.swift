@@ -23,7 +23,7 @@ public final class TencentService: QueryService {
     }
 
     override public func name() -> String {
-        NSLocalizedString("tencent_translate", comment: "The name of Tencent Translate")
+        NSLocalizedString("tencent_translate", bundle: localizedBundle, comment: "The name of Tencent Translate")
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {

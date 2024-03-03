@@ -12,6 +12,7 @@
 #import "NSString+EZUtils.h"
 #import "NSString+EZHandleInputText.h"
 #import "NSString+EZChineseText.h"
+#import "Easydict-Swift.h"
 
 @implementation EZAppleDictionary
 
@@ -46,7 +47,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"apple_dictionary", nil);
+    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"apple_dictionary" value:nil table:nil];
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {

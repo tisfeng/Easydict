@@ -42,14 +42,17 @@ struct ServiceTab: View {
                         HStack {
                             Spacer()
                             // No configuration for service xxx
-                            Text("setting.service.detail.no_configuration \(service.name())")
+                            Text(String(
+                                localized: "setting.service.detail.no_configuration \(service.name())",
+                                bundle: localizedBundle
+                            ))
                             Spacer()
                         }
                     }
                 } else {
                     HStack {
                         Spacer()
-                        Text("setting.service.detail.no_selection")
+                        Text("setting.service.detail.no_selection".localized)
                         Spacer()
                     }
                 }

@@ -55,8 +55,12 @@ struct ServiceConfigurationInputCell: View {
     let placeholder: LocalizedStringKey
 
     var body: some View {
-        TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
-            .padding(10.0)
+        TextField(
+            textFieldTitleKey.stringKeyLocalized,
+            text: $value ?? "",
+            prompt: Text(placeholder.stringKeyLocalized)
+        )
+        .padding(10.0)
     }
 }
 
@@ -79,7 +83,7 @@ struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & Enum
     let values: [T]
 
     var body: some View {
-        Picker(titleKey, selection: $value) {
+        Picker(titleKey.stringKeyLocalized, selection: $value) {
             ForEach(values, id: \.self) { value in
                 Text(value.title)
             }
@@ -114,7 +118,7 @@ struct ServiceConfigurationToggleCell: View {
     @ObservedObject var viewModel = ConfigurationToggleViewModel()
 
     var body: some View {
-        Toggle(titleKey, isOn: $viewModel.isOn)
+        Toggle(titleKey.stringKeyLocalized, isOn: $viewModel.isOn)
             .padding(10.0)
             .onChange(of: viewModel.isOn) { newValue in
                 value = newValue ? "1" : "0"

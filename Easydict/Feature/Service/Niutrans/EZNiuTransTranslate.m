@@ -44,7 +44,7 @@
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"niuTrans_translate", nil);
+    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"niuTrans_translate" value:nil table:nil];
 }
 
 - (NSString *)link {

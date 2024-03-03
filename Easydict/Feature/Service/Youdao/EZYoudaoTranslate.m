@@ -179,7 +179,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"youdao_dict", nil);
+    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"youdao_dict" value:nil table:nil];
 }
 
 - (NSString *)link {

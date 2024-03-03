@@ -8,6 +8,7 @@
 
 #import "EZVolcanoTranslate.h"
 #import "EZWebViewTranslator.h"
+#import "Easydict-Swift.h"
 
 static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 
@@ -57,7 +58,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"volcano_translate", nil);
+    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"volcano_translate" value:nil table:nil];
 }
 
 - (NSString *)link {

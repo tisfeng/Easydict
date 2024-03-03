@@ -27,7 +27,7 @@ public final class CaiyunService: QueryService {
     }
 
     override public func name() -> String {
-        NSLocalizedString("caiyun_translate", comment: "The name of Caiyun Translate")
+        NSLocalizedString("caiyun_translate", bundle: localizedBundle, comment: "The name of Caiyun Translate")
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {

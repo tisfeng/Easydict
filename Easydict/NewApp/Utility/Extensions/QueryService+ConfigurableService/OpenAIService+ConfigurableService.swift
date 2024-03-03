@@ -97,23 +97,11 @@ extension OpenAIUsageStats: EnumLocalizedStringConvertible {
     var title: String {
         switch self {
         case .default:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_default.title",
-                bundle: .main,
-                comment: ""
-            )
+            "service.configuration.openai.usage_status_default.title".localized
         case .alwaysOff:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_always_off.title",
-                bundle: .main,
-                comment: ""
-            )
+            "service.configuration.openai.usage_status_always_off.title".localized
         case .alwaysOn:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_always_on.title",
-                bundle: .main,
-                comment: ""
-            )
+            "service.configuration.openai.usage_status_always_on.title".localized
         }
     }
 }

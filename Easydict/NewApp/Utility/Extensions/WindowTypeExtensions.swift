@@ -20,19 +20,19 @@ extension EZWindowType {
 // MARK: - EZWindowType + CustomLocalizedStringResourceConvertible
 
 @available(macOS 13, *)
-extension EZWindowType: CustomLocalizedStringResourceConvertible {
-    public var localizedStringResource: LocalizedStringResource {
+extension EZWindowType {
+    public var localizedStringResource: String {
         switch self {
         case .fixed:
-            "fixed_window"
+            "fixed_window".localized
         case .main:
-            "main_window"
+            "main_window".localized
         case .mini:
-            "mini_window"
+            "mini_window".localized
         case .none:
-            "none_window"
+            "none_window".localized
         @unknown default:
-            "unknown_option"
+            "unknown_option".localized
         }
     }
 }

@@ -22,7 +22,7 @@ class AliService: QueryService {
     }
 
     override public func name() -> String {
-        NSLocalizedString("ali_translate", comment: "The name of Ali Translate")
+        NSLocalizedString("ali_translate", bundle: localizedBundle, comment: "The name of Ali Translate")
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
