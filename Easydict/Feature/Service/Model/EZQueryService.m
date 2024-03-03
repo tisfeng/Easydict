@@ -196,7 +196,7 @@ userInfo:nil]
     if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared hasFreeQuotaLeft:self]) {
         EZError *error = [EZError errorWithType:EZErrorTypeInsufficientQuota
                                     description:nil
-                               errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
+                               errorDataMessage:EZLocalizedString(@"insufficient_quota_prompt")];
         
         self.result.promptURL = self.link;
         completion(self.result, error);

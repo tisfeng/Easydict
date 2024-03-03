@@ -174,28 +174,28 @@
 - (void)setupUI {
     NSFont *font = [NSFont systemFontOfSize:13];
 
-    NSTextField *inputLabel = [NSTextField labelWithString:NSLocalizedString(@"input_translate", nil)];
+    NSTextField *inputLabel = [NSTextField labelWithString:EZLocalizedString(@"input_translate")];
     inputLabel.font = font;
     [self.contentView addSubview:inputLabel];
     self.inputLabel = inputLabel;
     self.inputShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.inputShortcutView];
 
-    NSTextField *snipLabel = [NSTextField labelWithString:NSLocalizedString(@"snip_translate", nil)];
+    NSTextField *snipLabel = [NSTextField labelWithString:EZLocalizedString(@"snip_translate")];
     snipLabel.font = font;
     [self.contentView addSubview:snipLabel];
     self.snipLabel = snipLabel;
     self.snipShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.snipShortcutView];
 
-    NSTextField *selectLabel = [NSTextField labelWithString:NSLocalizedString(@"select_translate", nil)];
+    NSTextField *selectLabel = [NSTextField labelWithString:EZLocalizedString(@"select_translate")];
     selectLabel.font = font;
     [self.contentView addSubview:selectLabel];
     self.selectLabel = selectLabel;
     self.selectionShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.selectionShortcutView];
 
-    NSTextField *showMiniLabel = [NSTextField labelWithString:NSLocalizedString(@"show_mini_window", nil)];
+    NSTextField *showMiniLabel = [NSTextField labelWithString:EZLocalizedString(@"show_mini_window")];
     showMiniLabel.font = font;
     [self.contentView addSubview:showMiniLabel];
     self.showMiniLabel = showMiniLabel;
@@ -206,7 +206,7 @@
         self.leftmostView = self.showMiniLabel;
     }
 
-    NSTextField *screenshotOCRLabel = [NSTextField labelWithString:NSLocalizedString(@"silent_screenshot_ocr", nil)];
+    NSTextField *screenshotOCRLabel = [NSTextField labelWithString:EZLocalizedString(@"silent_screenshot_ocr")];
     screenshotOCRLabel.font = font;
     [self.contentView addSubview:screenshotOCRLabel];
     self.screenshotOCRLabel = screenshotOCRLabel;
@@ -234,7 +234,7 @@
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
 
-    NSTextField *firstLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"first_language", nil)];
+    NSTextField *firstLanguageLabel = [NSTextField labelWithString:EZLocalizedString(@"first_language")];
     firstLanguageLabel.font = font;
     [self.contentView addSubview:firstLanguageLabel];
     self.firstLanguageLabel = firstLanguageLabel;
@@ -245,7 +245,7 @@
     self.firstLanguagePopUpButton.target = self;
     self.firstLanguagePopUpButton.action = @selector(firstLangaugePopUpButtonClicked:);
 
-    NSTextField *apperanceLabel = [NSTextField labelWithString:NSLocalizedString(@"app_appearance", nil)];
+    NSTextField *apperanceLabel = [NSTextField labelWithString:EZLocalizedString(@"app_appearance")];
     apperanceLabel.font = font;
     [self.contentView addSubview:apperanceLabel];
     self.apperanceLabel = apperanceLabel;
@@ -257,7 +257,7 @@
     self.apperancePopUpButton.target = self;
     self.apperancePopUpButton.action = @selector(appearancePopUpButtonClicked:);
     
-    NSTextField *secondLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"second_language", nil)];
+    NSTextField *secondLanguageLabel = [NSTextField labelWithString:EZLocalizedString(@"second_language")];
     secondLanguageLabel.font = font;
     [self.contentView addSubview:secondLanguageLabel];
     self.secondLanguageLabel = secondLanguageLabel;
@@ -269,50 +269,50 @@
     self.secondLanguagePopUpButton.action = @selector(secondLangaugePopUpButtonClicked:);
 
 
-    NSTextField *showQueryIconLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_get_selected_text", nil)];
+    NSTextField *showQueryIconLabel = [NSTextField labelWithString:EZLocalizedString(@"auto_get_selected_text")];
     showQueryIconLabel.font = font;
     [self.contentView addSubview:showQueryIconLabel];
     self.autoGetSelectedTextLabel = showQueryIconLabel;
 
-    NSString *showQueryIconTitle = NSLocalizedString(@"auto_show_query_icon", nil);
+    NSString *showQueryIconTitle = EZLocalizedString(@"auto_show_query_icon");
     self.showQueryIconButton = [NSButton checkboxWithTitle:showQueryIconTitle target:self action:@selector(autoSelectTextButtonClicked:)];
     [self.contentView addSubview:self.showQueryIconButton];
 
-    NSString *forceGetSelectedText = NSLocalizedString(@"force_auto_get_selected_text", nil);
+    NSString *forceGetSelectedText = EZLocalizedString(@"force_auto_get_selected_text");
     self.forceGetSelectedTextButton = [NSButton checkboxWithTitle:forceGetSelectedText target:self action:@selector(forceGetSelectedTextButtonClicked:)];
     [self.contentView addSubview:self.forceGetSelectedTextButton];
 
 
-    NSTextField *disableEmptyCopyBeepLabel = [NSTextField labelWithString:NSLocalizedString(@"disable_empty_copy_beep", nil)];
+    NSTextField *disableEmptyCopyBeepLabel = [NSTextField labelWithString:EZLocalizedString(@"disable_empty_copy_beep")];
     disableEmptyCopyBeepLabel.font = font;
     [self.contentView addSubview:disableEmptyCopyBeepLabel];
     self.disableEmptyCopyBeepLabel = disableEmptyCopyBeepLabel;
 
-    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_msg", nil);
+    NSString *disableEmptyCopyBeepTitle = EZLocalizedString(@"disable_empty_copy_beep_msg");
     self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
     [self.contentView addSubview:self.disableEmptyCopyBeepButton];
 
-    NSTextField *clickQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"click_icon_query", nil)];
+    NSTextField *clickQueryLabel = [NSTextField labelWithString:EZLocalizedString(@"click_icon_query")];
     clickQueryLabel.font = font;
     [self.contentView addSubview:clickQueryLabel];
     self.clickQueryLabel = clickQueryLabel;
 
-    NSString *clickQueryTitle = NSLocalizedString(@"click_icon_query_info", nil);
+    NSString *clickQueryTitle = EZLocalizedString(@"click_icon_query_info");
     self.clickQueryButton = [NSButton checkboxWithTitle:clickQueryTitle target:self action:@selector(clickQueryButtonClicked:)];
     [self.contentView addSubview:self.clickQueryButton];
 
 
-    NSTextField *adjustQueryIconPostionLabel = [NSTextField labelWithString:NSLocalizedString(@"adjust_pop_button_origin", nil)];
+    NSTextField *adjustQueryIconPostionLabel = [NSTextField labelWithString:EZLocalizedString(@"adjust_pop_button_origin")];
     adjustQueryIconPostionLabel.font = font;
     [self.contentView addSubview:adjustQueryIconPostionLabel];
     self.adjustQueryIconPostionLabel = adjustQueryIconPostionLabel;
 
-    NSString *adjustQueryIconPostionTitle = NSLocalizedString(@"avoid_conflict_with_PopClip_display", nil);
+    NSString *adjustQueryIconPostionTitle = EZLocalizedString(@"avoid_conflict_with_PopClip_display");
     self.adjustQueryIconPostionButton = [NSButton checkboxWithTitle:adjustQueryIconPostionTitle target:self action:@selector(adjustQueryIconPostionButtonClicked:)];
     [self.contentView addSubview:self.adjustQueryIconPostionButton];
 
     // language detect
-    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"language_detect_optimize", nil)];
+    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:EZLocalizedString(@"language_detect_optimize")];
     usesLanguageCorrectionLabel.font = font;
     [self.contentView addSubview:usesLanguageCorrectionLabel];
     self.languageDetectLabel = usesLanguageCorrectionLabel;
@@ -320,16 +320,16 @@
     [self.contentView addSubview:self.languageDetectOptimizePopUpButton];
 
     NSArray *languageDetectOptimizeItems = @[
-        NSLocalizedString(@"language_detect_optimize_none", nil),
-        NSLocalizedString(@"language_detect_optimize_baidu", nil),
-        NSLocalizedString(@"language_detect_optimize_google", nil),
+        EZLocalizedString(@"language_detect_optimize_none"),
+        EZLocalizedString(@"language_detect_optimize_baidu"),
+        EZLocalizedString(@"language_detect_optimize_google"),
     ];
     [self.languageDetectOptimizePopUpButton addItemsWithTitles:languageDetectOptimizeItems];
     self.languageDetectOptimizePopUpButton.target = self;
     self.languageDetectOptimizePopUpButton.action = @selector(languageDetectOptimizePopUpButtonClicked:);
 
     // default tts service
-    NSTextField *defaultTTSServiceLabel = [NSTextField labelWithString:NSLocalizedString(@"default_tts_service", nil)];
+    NSTextField *defaultTTSServiceLabel = [NSTextField labelWithString:EZLocalizedString(@"default_tts_service")];
     defaultTTSServiceLabel.font = font;
     [self.contentView addSubview:defaultTTSServiceLabel];
     self.defaultTTSServiceLabel = defaultTTSServiceLabel;
@@ -339,7 +339,7 @@
 
     NSMutableArray *localizedTTSTitles = [NSMutableArray array];
     for (NSString *ttsType in self.enabledTTSServiceTypes) {
-        NSString *localizedTitle = NSLocalizedString(ttsType, nil);
+        NSString *localizedTitle = EZLocalizedString(ttsType);
         [localizedTTSTitles addObject:localizedTitle];
     }
 
@@ -347,7 +347,7 @@
     self.defaultTTSServicePopUpButton.target = self;
     self.defaultTTSServicePopUpButton.action = @selector(defaultTTSServicePopUpButtonClicked:);
 
-    NSTextField *mouseSelectTranslateWindowTypeLabel = [NSTextField labelWithString:NSLocalizedString(@"mouse_select_translate_window_type", nil)];
+    NSTextField *mouseSelectTranslateWindowTypeLabel = [NSTextField labelWithString:EZLocalizedString(@"mouse_select_translate_window_type")];
     mouseSelectTranslateWindowTypeLabel.font = font;
     [self.contentView addSubview:mouseSelectTranslateWindowTypeLabel];
     self.mouseSelectTranslateWindowTypeLabel = mouseSelectTranslateWindowTypeLabel;
@@ -360,7 +360,7 @@
     self.mouseSelectTranslateWindowTypePopUpButton.target = self;
     self.mouseSelectTranslateWindowTypePopUpButton.action = @selector(mouseSelectTranslateWindowTypePopUpButtonClicked:);
 
-    NSTextField *shortcutSelectTranslateWindowTypeLabel = [NSTextField labelWithString:NSLocalizedString(@"shortcut_select_translate_window_type", nil)];
+    NSTextField *shortcutSelectTranslateWindowTypeLabel = [NSTextField labelWithString:EZLocalizedString(@"shortcut_select_translate_window_type")];
     shortcutSelectTranslateWindowTypeLabel.font = font;
     [self.contentView addSubview:shortcutSelectTranslateWindowTypeLabel];
     self.shortcutSelectTranslateWindowTypeLabel = shortcutSelectTranslateWindowTypeLabel;
@@ -374,7 +374,7 @@
     self.shortcutSelectTranslateWindowTypePopUpButton.action = @selector(shortcutSelectTranslateWindowTypePopUpButtonClicked:);
 
 
-    NSTextField *fixedWindowPositionLabel = [NSTextField labelWithString:NSLocalizedString(@"fixed_window_position", nil)];
+    NSTextField *fixedWindowPositionLabel = [NSTextField labelWithString:EZLocalizedString(@"fixed_window_position")];
     fixedWindowPositionLabel.font = font;
     [self.contentView addSubview:fixedWindowPositionLabel];
     self.fixedWindowPositionLabel = fixedWindowPositionLabel;
@@ -388,83 +388,83 @@
     self.fixedWindowPositionPopUpButton.action = @selector(fixedWindowPositionPopUpButtonClicked:);
 
 
-    NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_word_audio", nil)];
+    NSTextField *playAudioLabel = [NSTextField labelWithString:EZLocalizedString(@"play_word_audio")];
     playAudioLabel.font = font;
     [self.contentView addSubview:playAudioLabel];
     self.playAudioLabel = playAudioLabel;
 
-    NSString *autoPlayAudioTitle = NSLocalizedString(@"auto_play_word_audio", nil);
+    NSString *autoPlayAudioTitle = EZLocalizedString(@"auto_play_word_audio");
     self.autoPlayAudioButton = [NSButton checkboxWithTitle:autoPlayAudioTitle target:self action:@selector(autoPlayAudioButtonClicked:)];
     [self.contentView addSubview:self.autoPlayAudioButton];
 
-    NSString *inputFieldLabelTitle = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"setting.general.input.header", nil)];
+    NSString *inputFieldLabelTitle = [NSString stringWithFormat:@"%@:", EZLocalizedString(@"setting.general.input.header")];
     NSTextField *inputFieldLabel = [NSTextField labelWithString:inputFieldLabelTitle];
     inputFieldLabel.font = font;
     [self.contentView addSubview:inputFieldLabel];
     self.inputFieldLabel = inputFieldLabel;
 
-    NSString *clearInputTitle = NSLocalizedString(@"clear_input_when_translating", nil);
+    NSString *clearInputTitle = EZLocalizedString(@"clear_input_when_translating");
     self.clearInputButton = [NSButton checkboxWithTitle:clearInputTitle target:self action:@selector(clearInputButtonClicked:)];
     [self.contentView addSubview:self.clearInputButton];
     
-    NSString *keepPrevResultTitle = NSLocalizedString(@"keep_prev_result_when_selected_text_is_empty", nil);
+    NSString *keepPrevResultTitle = EZLocalizedString(@"keep_prev_result_when_selected_text_is_empty");
     self.keepPrevResultButton = [NSButton checkboxWithTitle:keepPrevResultTitle target:self action:@selector(keepPrevResultButtonClicked:)];
     [self.contentView addSubview:self.keepPrevResultButton];
     
-    NSString *selectQueryTextWhenWindowActivateTitle = NSLocalizedString(@"select_query_text_when_window_activate", nil);
+    NSString *selectQueryTextWhenWindowActivateTitle = EZLocalizedString(@"select_query_text_when_window_activate");
     self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
     [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
 
-    NSTextField *autoQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
+    NSTextField *autoQueryLabel = [NSTextField labelWithString:EZLocalizedString(@"auto_query")];
     autoQueryLabel.font = font;
     [self.contentView addSubview:autoQueryLabel];
     self.autoQueryLabel = autoQueryLabel;
 
-    NSString *autoQueryOCTText = NSLocalizedString(@"auto_query_ocr_text", nil);
+    NSString *autoQueryOCTText = EZLocalizedString(@"auto_query_ocr_text");
     self.autoQueryOCRTextButton = [NSButton checkboxWithTitle:autoQueryOCTText target:self action:@selector(autoQueryOCRTextButtonClicked:)];
     [self.contentView addSubview:self.autoQueryOCRTextButton];
 
-    NSString *autoQuerySelectedText = NSLocalizedString(@"auto_query_selected_text", nil);
+    NSString *autoQuerySelectedText = EZLocalizedString(@"auto_query_selected_text");
     self.autoQuerySelectedTextButton = [NSButton checkboxWithTitle:autoQuerySelectedText target:self action:@selector(autoQuerySelectedTextButtonClicked:)];
     [self.contentView addSubview:self.autoQuerySelectedTextButton];
 
-    NSString *autoQueryPastedTextButton = NSLocalizedString(@"auto_query_pasted_text", nil);
+    NSString *autoQueryPastedTextButton = EZLocalizedString(@"auto_query_pasted_text");
     self.autoQueryPastedTextButton = [NSButton checkboxWithTitle:autoQueryPastedTextButton target:self action:@selector(autoQueryPastedTextButtonClicked:)];
     [self.contentView addSubview:self.autoQueryPastedTextButton];
 
 
-    NSTextField *autoCopyTextLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_copy_text", nil)];
+    NSTextField *autoCopyTextLabel = [NSTextField labelWithString:EZLocalizedString(@"auto_copy_text")];
     autoCopyTextLabel.font = font;
     [self.contentView addSubview:autoCopyTextLabel];
     self.autoCopyTextLabel = autoCopyTextLabel;
 
-    NSString *autoCopyOCRText = NSLocalizedString(@"auto_copy_ocr_text", nil);
+    NSString *autoCopyOCRText = EZLocalizedString(@"auto_copy_ocr_text");
     self.autoCopyOCRTextButton = [NSButton checkboxWithTitle:autoCopyOCRText target:self action:@selector(autoCopyOCRTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyOCRTextButton];
 
-    NSString *autoCopySelectedText = NSLocalizedString(@"auto_copy_selected_text", nil);
+    NSString *autoCopySelectedText = EZLocalizedString(@"auto_copy_selected_text");
     self.autoCopySelectedTextButton = [NSButton checkboxWithTitle:autoCopySelectedText target:self action:@selector(autoCopySelectedTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopySelectedTextButton];
 
-    NSString *autoCopyFirstTranslatedText = NSLocalizedString(@"auto_copy_first_translated_text", nil);
+    NSString *autoCopyFirstTranslatedText = EZLocalizedString(@"auto_copy_first_translated_text");
     self.autoCopyFirstTranslatedTextButton = [NSButton checkboxWithTitle:autoCopyFirstTranslatedText target:self action:@selector(autoCopyFirstTranslatedTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyFirstTranslatedTextButton];
 
 
-    NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
+    NSTextField *showQuickLinkLabel = [NSTextField labelWithString:EZLocalizedString(@"quick_link")];
     showQuickLinkLabel.font = font;
     [self.contentView addSubview:showQuickLinkLabel];
     self.showQuickLinkLabel = showQuickLinkLabel;
 
-    NSString *showGoogleQuickLink = NSLocalizedString(@"show_google_quick_link", nil);
+    NSString *showGoogleQuickLink = EZLocalizedString(@"show_google_quick_link");
     self.showGoogleQuickLinkButton = [NSButton checkboxWithTitle:showGoogleQuickLink target:self action:@selector(showGoogleQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showGoogleQuickLinkButton];
 
-    NSString *showEudicQuickLink = NSLocalizedString(@"show_eudic_quick_link", nil);
+    NSString *showEudicQuickLink = EZLocalizedString(@"show_eudic_quick_link");
     self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showEudicQuickLinkButton];
 
-    NSString *showAppleDictionaryQuickLink = NSLocalizedString(@"show_apple_dictionary_quick_link", nil);
+    NSString *showAppleDictionaryQuickLink = EZLocalizedString(@"show_apple_dictionary_quick_link");
     self.showAppleDictionaryQuickLinkButton = [NSButton checkboxWithTitle:showAppleDictionaryQuickLink target:self action:@selector(showAppleDictionaryQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showAppleDictionaryQuickLinkButton];
 
@@ -479,45 +479,45 @@
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
 
-    NSTextField *hideMainWindowLabel = [NSTextField labelWithString:NSLocalizedString(@"show_main_window", nil)];
+    NSTextField *hideMainWindowLabel = [NSTextField labelWithString:EZLocalizedString(@"show_main_window")];
     hideMainWindowLabel.font = font;
     [self.contentView addSubview:hideMainWindowLabel];
     self.hideMainWindowLabel = hideMainWindowLabel;
 
-    NSString *hideMainWindowTitle = NSLocalizedString(@"hide_main_window", nil);
+    NSString *hideMainWindowTitle = EZLocalizedString(@"hide_main_window");
     self.hideMainWindowButton = [NSButton checkboxWithTitle:hideMainWindowTitle target:self action:@selector(hideMainWindowButtonClicked:)];
     [self.contentView addSubview:self.hideMainWindowButton];
 
-    NSTextField *launchLabel = [NSTextField labelWithString:NSLocalizedString(@"launch", nil)];
+    NSTextField *launchLabel = [NSTextField labelWithString:EZLocalizedString(@"launch")];
     launchLabel.font = font;
     [self.contentView addSubview:launchLabel];
     self.launchLabel = launchLabel;
 
-    NSString *launchAtStartupTitle = NSLocalizedString(@"launch_at_startup", nil);
+    NSString *launchAtStartupTitle = EZLocalizedString(@"launch_at_startup");
     self.launchAtStartupButton = [NSButton checkboxWithTitle:launchAtStartupTitle target:self action:@selector(launchAtStartupButtonClicked:)];
     [self.contentView addSubview:self.launchAtStartupButton];
 
-    NSTextField *menubarIconLabel = [NSTextField labelWithString:NSLocalizedString(@"menu_bar_icon", nil)];
+    NSTextField *menubarIconLabel = [NSTextField labelWithString:EZLocalizedString(@"menu_bar_icon")];
     menubarIconLabel.font = font;
     [self.contentView addSubview:menubarIconLabel];
     self.menuBarIconLabel = menubarIconLabel;
 
-    NSString *hideMenuBarIcon = NSLocalizedString(@"hide_menu_bar_icon", nil);
+    NSString *hideMenuBarIcon = EZLocalizedString(@"hide_menu_bar_icon");
     self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
     [self.contentView addSubview:self.hideMenuBarIconButton];
 
     if (@available(macOS 13.0, *)) {
-        NSTextField *betaNewAppLabel = [NSTextField labelWithString:NSLocalizedString(@"beta_new_app", nil)];
+        NSTextField *betaNewAppLabel = [NSTextField labelWithString:EZLocalizedString(@"beta_new_app")];
         betaNewAppLabel.font = font;
         [self.contentView addSubview:betaNewAppLabel];
         self.betaNewAppLabel = betaNewAppLabel;
         
-        NSString *enableBetaNewApp = NSLocalizedString(@"enable_beta_new_app", nil);
+        NSString *enableBetaNewApp = EZLocalizedString(@"enable_beta_new_app");
         self.enableBetaNewAppButton = [NSButton checkboxWithTitle:enableBetaNewApp target:self action:@selector(enableBetaNewAppButtonClicked:)];
         [self.contentView addSubview:self.enableBetaNewAppButton];
     }
     
-    NSTextField *fontSizeLabel = [NSTextField labelWithString:NSLocalizedString(@"font_size", nil)];
+    NSTextField *fontSizeLabel = [NSTextField labelWithString:EZLocalizedString(@"font_size")];
     fontSizeLabel.font = font;
     [self.contentView addSubview:fontSizeLabel];
     self.fontSizeLabel = fontSizeLabel;
@@ -544,7 +544,7 @@
     self.clickQueryButton.mm_isOn = self.config.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = self.config.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:self.config.languageDetectOptimize];
-    [self.defaultTTSServicePopUpButton selectItemWithTitle:NSLocalizedString(self.config.defaultTTSServiceType, nil)];
+    [self.defaultTTSServicePopUpButton selectItemWithTitle:EZLocalizedString(self.config.defaultTTSServiceType)];
 
     MMOrderedDictionary *translateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
     NSString *mouseWindowTitle = [translateWindowTypeDict objectForKey:@(self.config.mouseSelectTranslateWindowType)];
@@ -937,10 +937,10 @@
 - (void)forceGetSelectedTextButtonClicked:(NSButton *)sender {
     if (sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
-        [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
-        alert.messageText = NSLocalizedString(@"force_auto_get_selected_text_title", nil);
-        alert.informativeText = NSLocalizedString(@"force_auto_get_selected_text_msg", nil);
+        [alert addButtonWithTitle:EZLocalizedString(@"ok")];
+        [alert addButtonWithTitle:EZLocalizedString(@"cancel")];
+        alert.messageText = EZLocalizedString(@"force_auto_get_selected_text_title");
+        alert.informativeText = EZLocalizedString(@"force_auto_get_selected_text_msg");
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
             if (returnCode == NSAlertFirstButtonReturn) {
                 sender.mm_isOn = YES;
@@ -1026,19 +1026,19 @@
         self.inputShortcutView.shortcutValue == nil) {
         sender.mm_isOn = NO;
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
-        alert.messageText = NSLocalizedString(@"hide_menu_bar_icon", nil);
-        alert.informativeText = NSLocalizedString(@"refuse_hide_menu_bar_icon_msg", nil);
+        [alert addButtonWithTitle:EZLocalizedString(@"ok")];
+        alert.messageText = EZLocalizedString(@"hide_menu_bar_icon");
+        alert.informativeText = EZLocalizedString(@"refuse_hide_menu_bar_icon_msg");
         [alert beginSheetModalForWindow:[self window] completionHandler:nil];
         return;
     }
     // !!!: EZFloatingWindowLevel shouldn't be higher than kCGModalPanelWindowLevel (8)
     if (sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
-        [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
-        alert.messageText = NSLocalizedString(@"hide_menu_bar_icon", nil);
-        alert.informativeText = NSLocalizedString(@"hide_menu_bar_icon_msg", nil);
+        [alert addButtonWithTitle:EZLocalizedString(@"ok")];
+        [alert addButtonWithTitle:EZLocalizedString(@"cancel")];
+        alert.messageText = EZLocalizedString(@"hide_menu_bar_icon");
+        alert.informativeText = EZLocalizedString(@"hide_menu_bar_icon_msg");
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
             // ok, hide icon
             if (returnCode == NSAlertFirstButtonReturn) {
@@ -1112,9 +1112,9 @@
 - (void)checkIfEqualFirstLanguage:(BOOL)fistLanguageFlag {
     if ([self.config.firstLanguage isEqualToString:self.config.secondLanguage]) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
+        [alert addButtonWithTitle:EZLocalizedString(@"ok")];
 
-        NSString *warningText = NSLocalizedString(@"equal_first_and_second_language", nil);
+        NSString *warningText = EZLocalizedString(@"equal_first_and_second_language");
         NSString *showingLanguage = [EZLanguageManager.shared showingLanguageName:self.config.firstLanguage];
         alert.messageText = [NSString stringWithFormat:@"%@: %@", warningText, showingLanguage];
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
@@ -1156,7 +1156,7 @@
 }
 
 - (NSString *)toolbarItemLabel {
-    return NSLocalizedString(@"setting_general", nil);
+    return EZLocalizedString(@"setting_general");
 }
 
 - (NSImage *)toolbarItemImage {

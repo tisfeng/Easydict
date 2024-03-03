@@ -139,7 +139,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         } else if (!result.wordResult && errorDescription.length) {
             text = errorDescription;
         } else if (!result.hasTranslatedResult) {
-            text = NSLocalizedString(@"no_results_found", nil);
+            text = EZLocalizedString(@"no_results_found");
         }
         
         if (text) {
@@ -201,7 +201,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         if (result.promptURL.length) {
             NSTextField *promptTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
-                textField.stringValue = NSLocalizedString(@"please_look", nil);
+                textField.stringValue = EZLocalizedString(@"please_look");
                 textField.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
                 textField.editable = NO;
                 textField.bordered = NO;
@@ -565,17 +565,17 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     // 同义词
     if (result.wordResult.synonyms.count) {
-        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"synonyms", nil) parts:result.wordResult.synonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+        lastView = [self buildSynonymsAndAntonymsView:EZLocalizedString(@"synonyms") parts:result.wordResult.synonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
     }
     
     // 反义词
     if (result.wordResult.antonyms.count) {
-        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"antonyms", nil) parts:result.wordResult.antonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+        lastView = [self buildSynonymsAndAntonymsView:EZLocalizedString(@"antonyms") parts:result.wordResult.antonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
     }
     
     // 搭配
     if (result.wordResult.collocation.count) {
-        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"collocation", nil) parts:result.wordResult.collocation textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+        lastView = [self buildSynonymsAndAntonymsView:EZLocalizedString(@"collocation") parts:result.wordResult.collocation textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
     }
     
     __block NSString *lastSimpleWordPart = nil;
@@ -708,7 +708,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         [self addSubview:etymologyLabel];
         etymologyLabel.font = typeTextFont;
         etymologyLabel.textForegroundColor = typeTextColor;
-        etymologyLabel.text = NSLocalizedString(@"etymology", nil);
+        etymologyLabel.text = EZLocalizedString(@"etymology");
         
         [etymologyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             if (lastView) {
@@ -772,7 +772,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     audioButton.audioPlayer = self.result.service.audioPlayer;
     
     [audioButton setPlayStatus:^(BOOL isPlaying, EZAudioButton *audioButton) {
-        NSString *action = isPlaying ? NSLocalizedString(@"stop_play_audio", nil) : NSLocalizedString(@"play_audio", nil);
+        NSString *action = isPlaying ? EZLocalizedString(@"stop_play_audio") : EZLocalizedString(@"play_audio");
         audioButton.toolTip = [NSString stringWithFormat:@"%@", action];
     }];
     
@@ -841,9 +841,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
     linkButton.image = linkImage;
     
-    NSString *toolTip = NSLocalizedString(@"open_web_link", nil);
+    NSString *toolTip = EZLocalizedString(@"open_web_link");
     if (result.serviceType == EZServiceTypeAppleDictionary) {
-        toolTip = NSLocalizedString(@"open_in_apple_dictionary", nil);
+        toolTip = EZLocalizedString(@"open_in_apple_dictionary");
     }
     linkButton.toolTip = toolTip;
     

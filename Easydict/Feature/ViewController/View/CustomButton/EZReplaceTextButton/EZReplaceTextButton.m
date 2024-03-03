@@ -30,7 +30,8 @@
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
     }];
     
-    NSString *action = NSLocalizedString(@"replace_text", nil);
+    
+    NSString *action = EZLocalizedString(@"replace_text");
     self.toolTip = [NSString stringWithFormat:@"%@", action];
 }
 

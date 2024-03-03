@@ -95,7 +95,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (NSTextField *)titleTextField {
     if (!_titleTextField) {
-        NSTextField *titleTextField = [NSTextField wrappingLabelWithString:NSLocalizedString(@"disabled_title", nil)];
+        NSTextField *titleTextField = [NSTextField wrappingLabelWithString:EZLocalizedString(@"disabled_title")];
         [self.view addSubview:titleTextField];
         titleTextField.font = [NSFont systemFontOfSize:14];
         _titleTextField = titleTextField;
@@ -327,7 +327,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (NSString *)toolbarItemLabel {
-    return NSLocalizedString(@"disabled_app_list", nil);
+    return EZLocalizedString(@"disabled_app_list");
 }
 
 - (NSImage *)toolbarItemImage {

@@ -179,7 +179,7 @@
 }
 
 - (NSString *)name {
-    return [EZI18nHelper ezLocalizedWithKey:@"bing_translate"];
+    return EZLocalizedString(@"bing_translate");
 }
 
 - (EZServiceType)serviceType {
@@ -253,7 +253,7 @@
         EZWordPhonetic *phonetic = [EZWordPhonetic new];
         
         EZLanguage fromLanguage = self.result.queryFromLanguage;
-        phonetic.name = [fromLanguage isEqualToString:EZLanguageEnglish] ? NSLocalizedString(@"us_phonetic", nil) : NSLocalizedString(@"chinese_phonetic", nil);
+        phonetic.name = [fromLanguage isEqualToString:EZLanguageEnglish] ? EZLocalizedString(@"us_phonetic") : EZLocalizedString(@"chinese_phonetic");
         
         // If text is too long, we don't show phonetic.
         if (![EZLanguageManager.shared isShortWordLength:text language:fromLanguage]) {
@@ -376,7 +376,7 @@ outer:
                     EZWordPhonetic *phonetic = [EZWordPhonetic new];
                     phonetic.word = word;
                     phonetic.language = EZLanguageEnglish;
-                    phonetic.name = [name isEqualToString:@"US"] ? NSLocalizedString(@"us_phonetic", nil) : NSLocalizedString(@"uk_phonetic", nil);
+                    phonetic.name = [name isEqualToString:@"US"] ? EZLocalizedString(@"us_phonetic") : EZLocalizedString(@"uk_phonetic");
                     phonetic.value = fragments.firstObject[@"text"];
                     phonetic.speakURL = [name isEqualToString:@"US"] ? usAudioUrl : [usAudioUrl stringByReplacingOccurrencesOfString:@"tom" withString:@"george"];
                     phonetic.accent = name;

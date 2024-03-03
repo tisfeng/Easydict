@@ -40,3 +40,7 @@
 #import "EZConst.h"
 #import "EZConstKey.h"
 #import "NSString+EZConvenience.h"
+
+#import "Easydict-Swift.h"
+
+#define EZLocalizedString(key) ([EZI18nHelper localizedWithKey:key])

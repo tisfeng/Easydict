@@ -62,7 +62,7 @@
     self.transformButton = transformButton;
     [languageBarView addSubview:transformButton];
     NSString *shortcut = @"⌘+T";
-    NSString *toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"toggle_languages", nil), shortcut];
+    NSString *toolTip = [NSString stringWithFormat:@"%@, %@", EZLocalizedString(@"toggle_languages"), shortcut];
     transformButton.toolTip = toolTip;
     transformButton.image = [NSImage imageNamed:@"transform"];
     

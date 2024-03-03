@@ -179,7 +179,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 - (NSString *)name {
-    return [EZI18nHelper ezLocalizedWithKey:@"youdao_dict"];
+    return EZLocalizedString(@"youdao_dict");
 }
 
 - (NSString *)link {
@@ -675,7 +675,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                         NSMutableArray *phoneticArray = [NSMutableArray array];
                         if (basic.us_phonetic && basic.us_speech) {
                             EZWordPhonetic *phonetic = [EZWordPhonetic new];
-                            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+                            phonetic.name = EZLocalizedString(@"us_phonetic");
                             phonetic.language = language;
                             phonetic.accent = @"us";
                             phonetic.value = basic.us_phonetic;
@@ -684,7 +684,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                         }
                         if (basic.uk_phonetic && basic.uk_speech) {
                             EZWordPhonetic *phonetic = [EZWordPhonetic new];
-                            phonetic.name = NSLocalizedString(@"uk_phonetic", nil);
+                            phonetic.name = EZLocalizedString(@"uk_phonetic");
                             phonetic.language = language;
                             phonetic.accent = @"uk";
                             phonetic.value = basic.uk_phonetic;

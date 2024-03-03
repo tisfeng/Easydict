@@ -66,7 +66,7 @@ class EZI18nHelper: NSObject {
         UserDefaults.standard.string(forKey: "language") ?? "zh-CN"
     }
 
-    class func ezLocalized(key: String) -> String {
+    class func localized(key: String) -> String {
         key.localized
     }
 }

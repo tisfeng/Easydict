@@ -101,7 +101,7 @@
         
         googleButton.link = EZGoogleWebSearchURL;
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
-        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"];
+        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", EZLocalizedString(@"open_in_google"), @" ⌘+⏎"];
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -125,7 +125,7 @@
         
         appleDictButton.link = EZAppleDictionaryAppURLScheme;
         appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:imageSize];
-        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), @"⌘+⇧+D"];
+        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", EZLocalizedString(@"open_in_apple_dictionary"), @"⌘+⇧+D"];
         appleDictButton.contentTintColor = NSColor.clearColor;
         
         [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -154,7 +154,7 @@
             
             eudicButton.link = EZEudicAppURLScheme;
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-            eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];
+            eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", EZLocalizedString(@"open_in_eudic"), @"⌘+⇧+⏎"];
             eudicButton.contentTintColor = NSColor.clearColor;
             
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -211,7 +211,7 @@
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     window.pin = pin;
     NSString *shortcut = @"⌘+P";
-    NSString *action = pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
+    NSString *action = pin ? EZLocalizedString(@"unpin") : EZLocalizedString(@"pin");
     self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
     
     [self updatePinButtonImage];

@@ -37,27 +37,27 @@
 }
 
 - (void)setupUI {
-    self.privacyStatementTextField = [NSTextField labelWithString:NSLocalizedString(@"privacy_statement", nil)];
+    self.privacyStatementTextField = [NSTextField labelWithString:EZLocalizedString(@"privacy_statement")];
     [self.contentView addSubview:self.privacyStatementTextField];
     self.privacyStatementTextField.font = [NSFont systemFontOfSize:14];
     
-    self.privacyStatementContentTextField = [NSTextField wrappingLabelWithString:NSLocalizedString(@"privacy_statement_content", nil)];
+    self.privacyStatementContentTextField = [NSTextField wrappingLabelWithString:EZLocalizedString(@"privacy_statement_content")];
     [self.contentView addSubview:self.privacyStatementContentTextField];
     self.privacyStatementContentTextField.preferredMaxLayoutWidth = 380;
 
 
-    self.crashLogTextField = [NSTextField labelWithString:NSLocalizedString(@"crash_log", nil)];
+    self.crashLogTextField = [NSTextField labelWithString:EZLocalizedString(@"crash_log")];
     [self.contentView addSubview:self.crashLogTextField];
 
-    self.crashLogButton = [NSButton checkboxWithTitle:NSLocalizedString(@"allow_collect_crash_log", nil)
+    self.crashLogButton = [NSButton checkboxWithTitle:EZLocalizedString(@"allow_collect_crash_log")
                                                       target:self
                                                       action:@selector(crashLogButtonClicked:)];
     [self.contentView addSubview:self.crashLogButton];
     
-    self.analyticsTextField = [NSTextField labelWithString:NSLocalizedString(@"analytics", nil)];
+    self.analyticsTextField = [NSTextField labelWithString:EZLocalizedString(@"analytics")];
     [self.contentView addSubview:self.analyticsTextField];
 
-    self.analyticsButton = [NSButton checkboxWithTitle:NSLocalizedString(@"allow_collect_analytics", nil)
+    self.analyticsButton = [NSButton checkboxWithTitle:EZLocalizedString(@"allow_collect_analytics")
                                                       target:self
                                                       action:@selector(analyticsButtonClicked:)];
     [self.contentView addSubview:self.analyticsButton];
@@ -111,9 +111,9 @@
 - (void)crashLogButtonClicked:(NSButton *)sender {    
     if (!sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
-        [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
-        alert.messageText = NSLocalizedString(@"disable_crash_log_warning", nil);
+        [alert addButtonWithTitle:EZLocalizedString(@"ok")];
+        [alert addButtonWithTitle:EZLocalizedString(@"cancel")];
+        alert.messageText = EZLocalizedString(@"disable_crash_log_warning");
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
             // ok, disable crash log
             if (returnCode == NSAlertFirstButtonReturn) {
@@ -140,7 +140,7 @@
 }
 
 - (NSString *)toolbarItemLabel {
-    return NSLocalizedString(@"privacy", nil);
+    return EZLocalizedString(@"privacy");
 }
 
 - (NSImage *)toolbarItemImage {

@@ -106,9 +106,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] init];
         [self.view addSubview:segmentedControl];
         [segmentedControl setSegmentCount:3];
-        [segmentedControl setLabel:NSLocalizedString(@"mini_window", nil) forSegment:0];
-        [segmentedControl setLabel:NSLocalizedString(@"fixed_window", nil) forSegment:1];
-        [segmentedControl setLabel:NSLocalizedString(@"main_window", nil) forSegment:2];
+        [segmentedControl setLabel:EZLocalizedString(@"mini_window") forSegment:0];
+        [segmentedControl setLabel:EZLocalizedString(@"fixed_window") forSegment:1];
+        [segmentedControl setLabel:EZLocalizedString(@"main_window") forSegment:2];
         [segmentedControl setTarget:self];
         [segmentedControl setAction:@selector(segmentedControlClicked:)];
         [segmentedControl setSelectedSegment:0];
@@ -312,7 +312,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (NSString *)toolbarItemLabel {
-    return NSLocalizedString(@"service", nil);
+    return EZLocalizedString(@"service");
 }
 
 - (NSImage *)toolbarItemImage {

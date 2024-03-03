@@ -31,7 +31,7 @@
     NSString *queryText = [self selectedText].trim;
     
     if (queryText.length > 0) {
-        NSString *title = [NSString stringWithFormat:@"%@ \"%@\"", [EZI18nHelper ezLocalizedWithKey:@"query_in_app"], queryText];
+        NSString *title = [NSString stringWithFormat:@"%@ \"%@\"", EZLocalizedString(@"query_in_app"), queryText];
         NSMenuItem *queryInAppMenuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(queryInApp:) keyEquivalent:@""];
         
         // Note that this shortcut only works when the menu is displayed.

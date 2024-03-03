@@ -79,10 +79,10 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
 
 + (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                 @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
-                                                                 @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
-                                                                 @(EZShowWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil),
-                                                                 @(EZShowWindowPositionCenter), NSLocalizedString(@"fixed_window_position_center", nil),
+                                                                 @(EZShowWindowPositionRight), EZLocalizedString(@"fixed_window_position_right"),
+                                                                 @(EZShowWindowPositionMouse), EZLocalizedString(@"fixed_window_position_mouse"),
+                                                                 @(EZShowWindowPositionFormer), EZLocalizedString(@"fixed_window_position_former"),
+                                                                 @(EZShowWindowPositionCenter), EZLocalizedString(@"fixed_window_position_center"),
                                                                  nil];
 
     return dict;
@@ -90,8 +90,8 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
 
 + (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                 @(EZWindowTypeMini), NSLocalizedString(@"mini_window", nil),
-                                                                 @(EZWindowTypeFixed), NSLocalizedString(@"fixed_window", nil),
+                                                                 @(EZWindowTypeMini), EZLocalizedString(@"mini_window"),
+                                                                 @(EZWindowTypeFixed), EZLocalizedString(@"fixed_window"),
                                                                  nil];
 
     return dict;

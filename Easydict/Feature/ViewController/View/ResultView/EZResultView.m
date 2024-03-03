@@ -164,7 +164,7 @@
     NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
     retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
-    retryButton.toolTip = NSLocalizedString(@"retry", nil);
+    retryButton.toolTip = EZLocalizedString(@"retry");
     retryButton.hidden = YES;
     [retryButton excuteLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
@@ -352,7 +352,7 @@
         arrowImage = [NSImage imageNamed:@"arrow-down"];
     }
     
-    self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
+    self.arrowButton.toolTip = self.result.isShowing ? EZLocalizedString(@"hide") : EZLocalizedString(@"show");
     
     [self.arrowButton excuteLight:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintLightColor]];

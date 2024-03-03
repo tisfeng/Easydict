@@ -27,7 +27,7 @@
         NSString *aduioURL = @"https://dict.youdao.com/dictvoice?audio=";
         if (word.usphone) {
             EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
-            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+            phonetic.name = EZLocalizedString(@"us_phonetic");
             phonetic.language = language;
             phonetic.accent = @"us";
             phonetic.word = self.queryText;
@@ -42,7 +42,7 @@
         }
         if (word.ukphone) {
             EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
-            phonetic.name = NSLocalizedString(@"uk_phonetic", nil);
+            phonetic.name = EZLocalizedString(@"uk_phonetic");
             phonetic.language = language;
             phonetic.accent = @"uk";
             phonetic.word = self.queryText;
@@ -105,7 +105,7 @@
             EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
             phonetic.word = self.queryText;
             phonetic.language = language;
-            phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
+            phonetic.name = EZLocalizedString(@"chinese_phonetic");
             phonetic.value = word.phone; // ɡʊd
             [phoneticArray addObject:phonetic];
         }

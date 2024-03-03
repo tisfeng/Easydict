@@ -110,7 +110,7 @@
     self.audioButton = audioButton;
 
     [audioButton setPlayStatus:^(BOOL isPlaying, EZAudioButton *audioButton) {
-        NSString *action = isPlaying ? NSLocalizedString(@"stop_play_audio", nil) : NSLocalizedString(@"play_audio", nil);
+        NSString *action = isPlaying ? EZLocalizedString(@"stop_play_audio") : EZLocalizedString(@"play_audio");
         NSString *shortcut = @"⌘+S";
         audioButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
     }];
@@ -127,7 +127,7 @@
     [self addSubview:textCopyButton];
     self.textCopyButton = textCopyButton;
     
-    NSString *copyAction = NSLocalizedString(@"copy_text", nil);
+    NSString *copyAction = EZLocalizedString(@"copy_text");
     NSString *copyShortcut = @"⌘+⇧+C";
     textCopyButton.toolTip = [NSString stringWithFormat:@"%@, %@",  copyAction, copyShortcut];
     
@@ -165,7 +165,7 @@
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#868686"]];
     clearButton.image = clearImage;
     
-    NSString *clearAction = NSLocalizedString(@"clear_all", nil);
+    NSString *clearAction = EZLocalizedString(@"clear_all");
     NSString *clearShortcut = @"⌘+⇧+K";
     clearButton.toolTip = [NSString stringWithFormat:@"%@, %@", clearAction, clearShortcut];
     

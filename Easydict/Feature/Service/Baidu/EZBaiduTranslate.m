@@ -139,7 +139,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (NSString *)name {
-    return [EZI18nHelper ezLocalizedWithKey:@"baidu_translate"];
+    return EZLocalizedString(@"baidu_translate");
 }
 
 - (NSString *)link {
@@ -545,7 +545,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             
                             if (symbol.ph_am.length) {
                                 [phonetics addObject:[EZWordPhonetic mm_anyMake:^(EZWordPhonetic *_Nonnull obj) {
-                                    obj.name = NSLocalizedString(@"us_phonetic", nil);
+                                    obj.name = EZLocalizedString(@"us_phonetic");
                                     obj.language = language;
                                     obj.accent = @"us";
                                     obj.word = text;
@@ -555,7 +555,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             }
                             if (symbol.ph_en.length) {
                                 [phonetics addObject:[EZWordPhonetic mm_anyMake:^(EZWordPhonetic *_Nonnull obj) {
-                                    obj.name = NSLocalizedString(@"uk_phonetic", nil);
+                                    obj.name = EZLocalizedString(@"uk_phonetic");
                                     obj.language = language;
                                     obj.accent = @"uk";
                                     obj.word = text;
@@ -587,49 +587,49 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             NSMutableArray *exchanges = [NSMutableArray array];
                             if (exchange.word_third.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"singular", nil);
+                                               obj.name = EZLocalizedString(@"singular");
                                                obj.words = exchange.word_third;
                                            }]];
                             }
                             if (exchange.word_pl.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"plural", nil);
+                                               obj.name = EZLocalizedString(@"plural");
                                                obj.words = exchange.word_pl;
                                            }]];
                             }
                             if (exchange.word_er.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"comparative", nil);
+                                               obj.name = EZLocalizedString(@"comparative");
                                                obj.words = exchange.word_er;
                                            }]];
                             }
                             if (exchange.word_est.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"superlative", nil);
+                                               obj.name = EZLocalizedString(@"superlative");
                                                obj.words = exchange.word_est;
                                            }]];
                             }
                             if (exchange.word_past.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"past", nil);
+                                               obj.name = EZLocalizedString(@"past");
                                                obj.words = exchange.word_past;
                                            }]];
                             }
                             if (exchange.word_done.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"past_participle", nil);
+                                               obj.name = EZLocalizedString(@"past_participle");
                                                obj.words = exchange.word_done;
                                            }]];
                             }
                             if (exchange.word_ing.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"present_participle", nil);
+                                               obj.name = EZLocalizedString(@"present_participle");
                                                obj.words = exchange.word_ing;
                                            }]];
                             }
                             if (exchange.word_proto.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"root", nil);
+                                               obj.name = EZLocalizedString(@"root");
                                                obj.words = exchange.word_proto;
                                            }]];
                             }

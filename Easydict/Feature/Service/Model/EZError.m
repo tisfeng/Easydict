@@ -61,30 +61,30 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
             errorString = @"None";
             break;
         case EZErrorTypeParam:
-            errorString = NSLocalizedString(@"error_parameter", nil);
+            errorString = EZLocalizedString(@"error_parameter");
             break;
         case EZErrorTypeNetwork:
-            errorString = NSLocalizedString(@"error_network", nil);
+            errorString = EZLocalizedString(@"error_network");
             break;
         case EZErrorTypeAPI:
-            errorString = NSLocalizedString(@"error_api", nil);
+            errorString = EZLocalizedString(@"error_api");
             break;
         case EZErrorTypeUnsupportedLanguage:
-            errorString = NSLocalizedString(@"error_unsupport_language", nil);
+            errorString = EZLocalizedString(@"error_unsupport_language");
             break;
         case EZErrorTypeNoResultsFound:
-            errorString = NSLocalizedString(@"no_results_found", nil);
+            errorString = EZLocalizedString(@"no_results_found");
             break;
         case EZErrorTypeInsufficientQuota:
-            errorString = NSLocalizedString(@"error_insufficient_quota", nil);
+            errorString = EZLocalizedString(@"error_insufficient_quota");
             break;
             
         default:
-            errorString = NSLocalizedString(@"error_unknown", nil);
+            errorString = EZLocalizedString(@"error_unknown");
             break;
     }
     
-    NSString *queryFailedString = NSLocalizedString(@"query_failed", nil);
+    NSString *queryFailedString = EZLocalizedString(@"query_failed");
     if (errorString.length) {
         errorString = [NSString stringWithFormat:@"%@, %@", queryFailedString, errorString];
     }

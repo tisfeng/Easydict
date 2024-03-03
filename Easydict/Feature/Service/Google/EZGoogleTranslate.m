@@ -121,7 +121,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (NSString *)name {
-    return [EZI18nHelper ezLocalizedWithKey:@"google_translate"];
+    return EZLocalizedString(@"google_translate");
 }
 
 - (NSString *)link {
@@ -363,9 +363,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         wordResult = [[EZTranslateWordResult alloc] init];
                         
                         EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
-                        phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+                        phonetic.name = EZLocalizedString(@"us_phonetic");
                         if ([EZLanguageManager.shared isChineseLanguage:from]) {
-                            phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
+                            phonetic.name = EZLocalizedString(@"chinese_phonetic");
                         }
                         
                         phonetic.value = phoneticText;

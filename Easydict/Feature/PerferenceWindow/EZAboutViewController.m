@@ -59,17 +59,17 @@
 
 
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    NSString *versionString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"current_version", nil), version];
+    NSString *versionString = [NSString stringWithFormat:@"%@ %@", EZLocalizedString(@"current_version"), version];
     NSTextField *versionValueTextField = [NSTextField labelWithString:versionString];
     versionValueTextField.font = [NSFont systemFontOfSize:14];
     [self.contentView addSubview:versionValueTextField];
     self.currentVersionTextField = versionValueTextField;
 
-    NSString *autoCheckUpdateTitle = NSLocalizedString(@"auto_check_update", nil);
+    NSString *autoCheckUpdateTitle = EZLocalizedString(@"auto_check_update");
     self.autoCheckUpdateButton = [NSButton checkboxWithTitle:autoCheckUpdateTitle target:self action:@selector(autoCheckUpdateButtonClicked:)];
     [self.contentView addSubview:self.autoCheckUpdateButton];
 
-    NSString *latestVersionString = [NSString stringWithFormat:@"(%@ %@)", NSLocalizedString(@"lastest_version", nil), version];
+    NSString *latestVersionString = [NSString stringWithFormat:@"(%@ %@)", EZLocalizedString(@"lastest_version"), version];
     NSTextField *latestVersionTextField = [NSTextField labelWithString:latestVersionString];
     [self.contentView addSubview:latestVersionTextField];
     self.latestVersionTextField = latestVersionTextField;
@@ -77,7 +77,7 @@
     self.authorView = [[NSView alloc] init];
     [self.contentView addSubview:self.authorView];
 
-    NSTextField *authorTextField = [NSTextField labelWithString:NSLocalizedString(@"author", nil)];
+    NSTextField *authorTextField = [NSTextField labelWithString:EZLocalizedString(@"author")];
     [self.authorView addSubview:authorTextField];
     self.authorTextField = authorTextField;
 
@@ -103,7 +103,7 @@
     authorLinkButton.openURL = authorURL; // https://github.com/tisfeng
     authorLinkButton.closeWindowAfterOpeningURL = YES;
 
-    NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"GitHub:", nil)];
+    NSTextField *githubTextField = [NSTextField labelWithString:EZLocalizedString(@"GitHub:")];
     [self.contentView addSubview:githubTextField];
     self.githubTextField = githubTextField;
 
@@ -183,7 +183,7 @@
 
 - (void)updateLatestVersion {
     [EZMenuItemManager.shared fetchRepoLatestVersion:EZGithubRepoEasydict completion:^(NSString *latestVersion) {
-        NSString *latestVersionString = [NSString stringWithFormat:@"(%@ %@)", NSLocalizedString(@"lastest_version", nil), latestVersion];
+        NSString *latestVersionString = [NSString stringWithFormat:@"(%@ %@)", EZLocalizedString(@"lastest_version"), latestVersion];
         self.latestVersionTextField.stringValue = latestVersionString;
     }];
 }
@@ -207,7 +207,7 @@
 }
 
 - (NSString *)toolbarItemLabel {
-    return NSLocalizedString(@"about", nil);
+    return EZLocalizedString(@"about");
 }
 
 - (NSImage *)toolbarItemImage {

@@ -68,7 +68,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (NSString *)name {
-    return [EZI18nHelper ezLocalizedWithKey:@"deepL_translate"];
+    return EZLocalizedString(@"deepL_translate");
 }
 
 - (NSString *)link {

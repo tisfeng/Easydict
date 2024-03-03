@@ -181,7 +181,7 @@ static EZAppleService *_instance;
 }
 
 - (NSString *)name {
-    return [EZI18nHelper ezLocalizedWithKey:@"apple_translate"];
+    return EZLocalizedString(@"apple_translate");
 }
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
@@ -811,7 +811,7 @@ static EZAppleService *_instance;
                     [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
                     return;
                 } else {
-                    error = [EZError errorWithType:EZErrorTypeAPI description:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                    error = [EZError errorWithType:EZErrorTypeAPI description:EZLocalizedString(@"ocr_result_is_empty")];
                     
                     // We try to use Japanese before, but failed, so need to reset to auto.
                     ocrResult.from = EZLanguageAuto;
