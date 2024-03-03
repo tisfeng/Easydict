@@ -43,13 +43,14 @@ struct AboutTab: View {
                     .frame(width: 110, height: 110)
                 Text(appName)
                     .font(.system(size: 26, weight: .semibold))
-                Text("current_version") + Text(verbatim: " \(version)")
+                Text("current_version".localized) + Text(verbatim: " \(version)")
                     .font(.system(size: 14))
-                Toggle("auto_check_update", isOn: $checkUpdaterViewModel.autoChecksForUpdates)
-                Text(verbatim: "(") + Text("lastest_version") + Text(verbatim: " \(lastestVersion ?? version))")
+                Toggle("auto_check_update".localized, isOn: $checkUpdaterViewModel.autoChecksForUpdates)
+                Text(verbatim: "(") + Text("lastest_version".localized) +
+                    Text(verbatim: " \(lastestVersion ?? version))")
 
                 HStack {
-                    Text("author")
+                    Text("author".localized)
                     Link("Tisfeng", destination: URL(string: EZGithubRepoEasydictURL)!.deletingLastPathComponent())
                 }
                 HStack {
@@ -75,6 +76,8 @@ struct AboutTab: View {
     @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
 
     @State private var lastestVersion: String?
+
+    @EnvironmentObject private var languageState: LanguageState
 
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ""
