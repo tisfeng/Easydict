@@ -20,7 +20,7 @@ struct KeyHolderRowView: View {
 
     var body: some View {
         HStack {
-            Text(LocalizedStringKey(title))
+            Text(title.localized)
             Spacer()
             KeyHolderWrapper(shortcutType: type, confictAlterMessage: $confictAlterMessage).frame(
                 width: 180,

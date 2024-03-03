@@ -94,10 +94,14 @@ extension KeyHolderWrapper {
                 if Shortcut.validateShortcut(key) {
                     let title =
                         String(
-                            localized: "shortcut_confict_title \(key.keyEquivalentModifierMaskString + key.characters)"
+                            localized: "shortcut_confict_title \(key.keyEquivalentModifierMaskString + key.characters)",
+                            bundle: localizedBundle
                         )
                     let message =
-                        String(localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")")
+                        String(
+                            localized: "shortcut_confict_message \(Shortcut.shared.confictMenuItem?.title ?? "")",
+                            bundle: localizedBundle
+                        )
                     confictAlterMessage = ShortcutConfictAlertMessage(
                         title: title,
                         message: message

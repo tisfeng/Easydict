@@ -45,15 +45,15 @@ extension ShortcutTab {
                     )
                 }
             } header: {
-                Text("app_shortcut_setting")
+                Text("app_shortcut_setting".localized)
             }
 
             .alert(
-                String(localized: "shortcut_confict \(confictAlterMessage.title)"),
+                String(localized: "shortcut_confict \(confictAlterMessage.title)", bundle: localizedBundle),
                 isPresented: showAlter,
                 presenting: confictAlterMessage
             ) { _ in
-                Button(String(localized: "shortcut_confict_confirm")) {
+                Button(String(localized: "shortcut_confict_confirm", bundle: localizedBundle)) {
                     confictAlterMessage = ShortcutConfictAlertMessage(title: "", message: "")
                 }
             } message: { message in

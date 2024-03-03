@@ -51,7 +51,7 @@ class EZI18nHelper: NSObject {
     static let shared = EZI18nHelper()
 
     var localizedBundle: Bundle {
-        let res = UserDefaults.standard.string(forKey: "language")
+        let res = localizeCode
         let path = Bundle.main.path(forResource: res, ofType: "lproj")
         let bundle: Bundle
         if let path = path {
@@ -60,5 +60,9 @@ class EZI18nHelper: NSObject {
             bundle = .main
         }
         return bundle
+    }
+
+    var localizeCode: String {
+        UserDefaults.standard.string(forKey: "language") ?? "zh-CN"
     }
 }

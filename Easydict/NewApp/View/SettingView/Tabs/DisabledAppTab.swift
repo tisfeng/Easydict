@@ -99,7 +99,7 @@ struct DisabledAppTab: View {
             .alert(isPresented: $disabledAppViewModel.isShowImportErrorAlert) {
                 Alert(
                     title: Text(""),
-                    message: Text("setting.disabled.import_app_error.message"),
+                    message: Text("setting.disabled.import_app_error.message".localized),
                     dismissButton: .default(Text("ok"))
                 )
             }
@@ -137,7 +137,7 @@ struct DisabledAppTab: View {
 
     var body: some View {
         VStack {
-            Text("disabled_title")
+            Text("disabled_title".localized)
                 .padding(.horizontal)
                 .padding(.top, 18)
                 .padding(.bottom, 8)
