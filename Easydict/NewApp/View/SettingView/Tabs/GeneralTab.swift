@@ -42,9 +42,9 @@ struct GeneralTab: View {
                 }
 
                 Picker("language_preference".localized, selection: $languageState.language) {
-                    ForEach(Array(languageState.languages.keys), id: \.self) { languageCode in
-                        Text(languageState.languages[languageCode] ?? "")
-                            .tag(languageCode)
+                    ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
+                        Text(language.name)
+                            .tag(language)
                     }
                 }
             } header: {

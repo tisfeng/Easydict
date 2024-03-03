@@ -10,13 +10,31 @@ import SwiftUI
 
 // MARK: - LanguageState
 
-final class LanguageState: ObservableObject {
-    let languages = [
-        "en": "English",
-        "zh-CN": "中文",
-    ]
+private let kEZLanguagePreferenceLocalKey = "kEZLanguagePreferenceLocalKey"
 
-    @AppStorage("language") var language = Locale.current.identifier
+// MARK: - LanguageState
+
+class LanguageState: ObservableObject {
+    enum LanguageType: String, CaseIterable {
+        case english = "en"
+        case simplifiedChinese = "zh-CN"
+
+        // MARK: Internal
+
+        var name: String {
+            switch self {
+            case .english:
+                "English"
+            case .simplifiedChinese:
+                "简体中文"
+            }
+        }
+    }
+
+    @AppStorage(kEZLanguagePreferenceLocalKey) var language: LanguageType = .init(
+        rawValue: Locale.current.identifier
+    ) ??
+        .simplifiedChinese
 }
 
 extension String {
@@ -63,7 +81,8 @@ class EZI18nHelper: NSObject {
     }
 
     var localizeCode: String {
-        UserDefaults.standard.string(forKey: "language") ?? "zh-CN"
+        UserDefaults.standard.string(forKey: kEZLanguagePreferenceLocalKey) ?? LanguageState.LanguageType
+            .simplifiedChinese.rawValue
     }
 
     class func localized(key: String) -> String {
