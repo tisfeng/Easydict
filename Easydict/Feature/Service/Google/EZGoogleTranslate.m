@@ -121,7 +121,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"google_translate" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"google_translate"];
 }
 
 - (NSString *)link {

@@ -58,7 +58,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"volcano_translate" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"volcano_translate"];
 }
 
 - (NSString *)link {

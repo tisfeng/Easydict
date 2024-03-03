@@ -9,6 +9,7 @@
 #import "EZDetectLanguageButton.h"
 #import "EZLanguageManager.h"
 #import "NSView+EZAnimatedHidden.h"
+#import "Easydict-Swift.h"
 
 @interface EZDetectLanguageButton ()
 
@@ -64,7 +65,7 @@
 
     NSString *detectLanguageTitle = [EZLanguageManager.shared showingLanguageName:detectedLanguage];
     
-    NSString *title = NSLocalizedString(@"detected", nil);
+    NSString *title = [EZI18nHelper ezLocalizedWithKey:@"detected"];
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
     [attrTitle addAttributes:@{
         NSForegroundColorAttributeName : NSColor.grayColor,

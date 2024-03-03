@@ -179,7 +179,7 @@
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"bing_translate" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"bing_translate"];
 }
 
 - (EZServiceType)serviceType {

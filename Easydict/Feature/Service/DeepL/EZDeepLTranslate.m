@@ -68,7 +68,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"deepL_translate" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"deepL_translate"];
 }
 
 - (NSString *)link {

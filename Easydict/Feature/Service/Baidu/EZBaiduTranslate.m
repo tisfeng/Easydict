@@ -139,7 +139,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"baidu_translate" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"baidu_translate"];
 }
 
 - (NSString *)link {

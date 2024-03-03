@@ -181,7 +181,7 @@ static EZAppleService *_instance;
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"apple_translate" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"apple_translate"];
 }
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {

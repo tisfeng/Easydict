@@ -1138,7 +1138,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // placeholder, just for new user.
-    NSString *placeholderText = NSLocalizedString(@"placeholder", nil);
+    
+    NSString *placeholderText = [EZI18nHelper ezLocalizedWithKey:@"placeholder"];
     if (EZLocalStorage.shared.queryCount > 100) {
         placeholderText = @"";
     }

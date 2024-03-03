@@ -47,7 +47,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (NSString *)name {
-    return [[EZI18nHelper shared].localizedBundle localizedStringForKey:@"apple_dictionary" value:nil table:nil];
+    return [EZI18nHelper ezLocalizedWithKey:@"apple_dictionary"];
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
