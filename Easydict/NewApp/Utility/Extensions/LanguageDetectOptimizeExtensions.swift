@@ -22,17 +22,17 @@ extension LanguageDetectOptimize: CaseIterable {
 // MARK: - LanguageDetectOptimize + CustomLocalizedStringResourceConvertible
 
 @available(macOS 13, *)
-extension LanguageDetectOptimize: CustomLocalizedStringResourceConvertible {
-    public var localizedStringResource: LocalizedStringResource {
+extension LanguageDetectOptimize {
+    public var localizedStringResource: String {
         switch self {
         case .none:
-            "language_detect_optimize_none"
+            "language_detect_optimize_none".localized
         case .google:
-            "language_detect_optimize_google"
+            "language_detect_optimize_google".localized
         case .baidu:
-            "language_detect_optimize_baidu"
+            "language_detect_optimize_baidu".localized
         @unknown default:
-            "unknown_option"
+            "unknown_option".localized
         }
     }
 }

@@ -1631,6 +1631,23 @@
         }
       }
     },
+    "language_preference" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "语言"
+          }
+        }
+      }
+    },
     "large" : {
       "extractionState" : "manual",
       "localizations" : {

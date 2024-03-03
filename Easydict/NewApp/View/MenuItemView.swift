@@ -101,7 +101,7 @@ struct MenuItemView: View {
     @ViewBuilder private var settingItem: some View {
         if #available(macOS 14.0, *) {
             SettingsLink {
-                Text("Settings...")
+                Text("Settings...".localized)
             } preAction: {
                 NSLog("打开设置")
                 NSApp.activate(ignoringOtherApps: true)
@@ -109,7 +109,7 @@ struct MenuItemView: View {
                 // nothing to do
             }
         } else {
-            Button("Settings...") {
+            Button("Settings...".localized) {
                 NSLog("打开设置")
                 NSApp.activate(ignoringOtherApps: true)
                 NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
@@ -126,7 +126,7 @@ struct MenuItemView: View {
         } label: {
             HStack {
                 Image(systemName: "keyboard")
-                Text("menu_input_translate")
+                Text("menu_input_translate".localized)
             }
         }
     }
@@ -138,7 +138,7 @@ struct MenuItemView: View {
         } label: {
             HStack {
                 Image(systemName: "camera.viewfinder")
-                Text("menu_screenshot_Translate")
+                Text("menu_screenshot_Translate".localized)
             }
         }
     }
@@ -150,7 +150,7 @@ struct MenuItemView: View {
         } label: {
             HStack {
                 Image(systemName: "highlighter")
-                Text("menu_selectWord_Translate")
+                Text("menu_selectWord_Translate".localized)
             }
         }
     }
@@ -162,7 +162,7 @@ struct MenuItemView: View {
         } label: {
             HStack {
                 Image(systemName: "dock.rectangle")
-                Text("menu_show_mini_window")
+                Text("menu_show_mini_window".localized)
             }
         }
     }
@@ -174,7 +174,7 @@ struct MenuItemView: View {
         } label: {
             HStack {
                 Image(systemName: "camera.metering.spot")
-                Text("menu_silent_screenshot_OCR")
+                Text("menu_silent_screenshot_OCR".localized)
             }
         }
     }
@@ -182,31 +182,31 @@ struct MenuItemView: View {
     // MARK: - Setting
 
     @ViewBuilder private var checkUpdateItem: some View {
-        Button("check_updates") {
+        Button("check_updates".localized) {
             NSLog("检查更新")
             Configuration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 
     @ViewBuilder private var quitItem: some View {
-        Button("quit") {
+        Button("quit".localized) {
             NSLog("退出应用")
             NSApplication.shared.terminate(nil)
         }
     }
 
     @ViewBuilder private var helpItem: some View {
-        Menu("Help") {
-            Button("Feedback") {
+        Menu("Help".localized) {
+            Button("Feedback".localized) {
                 guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
                     return
                 }
                 openURL(versionURL)
             }
-            Button("Export Log") {
+            Button("Export Log".localized) {
                 exportLogAction()
             }
-            Button("Log Directory") {
+            Button("Log Directory".localized) {
                 NSLog("日志目录")
                 let logPath = MMManagerForLog.rootLogDirectory() ?? ""
                 let directoryURL = URL(fileURLWithPath: logPath)

@@ -22,11 +22,11 @@ enum AppearenceType: Int, CaseIterable, Defaults.Serializable {
     var title: String {
         switch self {
         case .followSystem:
-            NSLocalizedString("appearenceType_followSystem", comment: "")
+            "appearenceType_followSystem".localized
         case .light:
-            NSLocalizedString("appearenceType_light", comment: "")
+            "appearenceType_light".localized
         case .dark:
-            NSLocalizedString("appearenceType_dark", comment: "")
+            "appearenceType_dark".localized
         }
     }
 

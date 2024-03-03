@@ -270,6 +270,7 @@
 		62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF482B4082BA00E42D38 /* AliResponse.swift */; };
 		62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */; };
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
+		6A6352282B94603A00AD9FCF /* LanguageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6352272B94603A00AD9FCF /* LanguageState.swift */; };
 		960835502B6791F200C6A931 /* Shortcut+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
 		9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */; };
@@ -792,6 +793,7 @@
 		62ED29A02B15F1F500901F51 /* EZWrapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWrapView.h; sourceTree = "<group>"; };
 		62ED29A12B15F1F500901F51 /* EZWrapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWrapView.m; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A6352272B94603A00AD9FCF /* LanguageState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageState.swift; sourceTree = "<group>"; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Validator.swift"; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
@@ -2373,6 +2375,7 @@
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
+				6A6352272B94603A00AD9FCF /* LanguageState.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -3014,6 +3017,7 @@
 				03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */,
 				C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */,
 				0AC8A83D2B6685EE006DA5CC /* SecureTextField.swift in Sources */,
+				6A6352282B94603A00AD9FCF /* LanguageState.swift in Sources */,
 				0AC8A8372B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift in Sources */,
 				03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */,
 				03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */,

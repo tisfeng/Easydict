@@ -29,30 +29,30 @@ struct SettingView: View {
     var body: some View {
         TabView(selection: $selection) {
             GeneralTab()
-                .tabItem { Label("setting_general", systemImage: "gear") }
+                .tabItem { Label("setting_general".localized, systemImage: "gear") }
                 .tag(SettingTab.general)
 
             ServiceTab()
-                .tabItem { Label("service", systemImage: "briefcase") }
+                .tabItem { Label("service".localized, systemImage: "briefcase") }
                 .tag(SettingTab.service)
 
             DisabledAppTab()
-                .tabItem { Label("disabled_app_list", systemImage: "nosign") }
+                .tabItem { Label("disabled_app_list".localized, systemImage: "nosign") }
                 .tag(SettingTab.disabled)
 
             ShortcutTab()
-                .tabItem { Label("shortcut", systemImage: "command.square") }
+                .tabItem { Label("shortcut".localized, systemImage: "command.square") }
                 .tag(SettingTab.shortcut)
 
             AdvancedTab()
-                .tabItem { Label("advanced", systemImage: "gearshape.2") }
+                .tabItem { Label("advanced".localized, systemImage: "gearshape.2") }
                 .tag(SettingTab.advanced)
             PrivacyTab()
-                .tabItem { Label("privacy", systemImage: "hand.raised.square") }
+                .tabItem { Label("privacy".localized, systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
 
             AboutTab()
-                .tabItem { Label("about", systemImage: "info.bubble") }
+                .tabItem { Label("about".localized, systemImage: "info.bubble") }
                 .tag(SettingTab.about)
         }
         .background(
