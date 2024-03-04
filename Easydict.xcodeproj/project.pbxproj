@@ -270,6 +270,7 @@
 		62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF482B4082BA00E42D38 /* AliResponse.swift */; };
 		62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */; };
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
+		6A47D40C2B9576050077B2F3 /* EZI18nHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A47D40B2B9576050077B2F3 /* EZI18nHelper.swift */; };
 		6A6352282B94603A00AD9FCF /* LanguageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6352272B94603A00AD9FCF /* LanguageState.swift */; };
 		960835502B6791F200C6A931 /* Shortcut+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
@@ -793,6 +794,7 @@
 		62ED29A02B15F1F500901F51 /* EZWrapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWrapView.h; sourceTree = "<group>"; };
 		62ED29A12B15F1F500901F51 /* EZWrapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWrapView.m; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A47D40B2B9576050077B2F3 /* EZI18nHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZI18nHelper.swift; sourceTree = "<group>"; };
 		6A6352272B94603A00AD9FCF /* LanguageState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageState.swift; sourceTree = "<group>"; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Validator.swift"; sourceTree = "<group>"; };
@@ -2219,6 +2221,15 @@
 			path = EZWrapView;
 			sourceTree = "<group>";
 		};
+		6A47D40A2B9575C00077B2F3 /* LanguagePreference */ = {
+			isa = PBXGroup;
+			children = (
+				6A6352272B94603A00AD9FCF /* LanguageState.swift */,
+				6A47D40B2B9576050077B2F3 /* EZI18nHelper.swift */,
+			);
+			path = LanguagePreference;
+			sourceTree = "<group>";
+		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -2262,6 +2273,7 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				6A47D40A2B9575C00077B2F3 /* LanguagePreference */,
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
@@ -2375,7 +2387,6 @@
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
-				6A6352272B94603A00AD9FCF /* LanguageState.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -2821,6 +2832,7 @@
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03D8A65C2A433B4100D9A968 /* EZConfiguration+EZUserData.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
+				6A47D40C2B9576050077B2F3 /* EZI18nHelper.swift in Sources */,
 				0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */,
 				03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */,
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,

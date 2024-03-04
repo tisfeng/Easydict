@@ -22,19 +22,19 @@ extension EZShowWindowPosition: CaseIterable {
 // MARK: - EZShowWindowPosition + CustomLocalizedStringResourceConvertible
 
 @available(macOS 13, *)
-extension EZShowWindowPosition: CustomLocalizedStringResourceConvertible {
-    public var localizedStringResource: LocalizedStringResource {
+extension EZShowWindowPosition {
+    public var localizedStringResource: String {
         switch self {
         case .right:
-            "fixed_window_position_right"
+            "fixed_window_position_right".localized
         case .mouse:
-            "fixed_window_position_mouse"
+            "fixed_window_position_mouse".localized
         case .former:
-            "fixed_window_position_former"
+            "fixed_window_position_former".localized
         case .center:
-            "fixed_window_position_center"
+            "fixed_window_position_center".localized
         @unknown default:
-            "unknown_option"
+            "unknown_option".localized
         }
     }
 }

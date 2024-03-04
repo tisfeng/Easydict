@@ -65,6 +65,7 @@ struct ServiceTab: View {
     // MARK: Private
 
     @StateObject private var viewModel: ServiceTabViewModel = .init()
+    @EnvironmentObject private var languageState: LanguageState
 }
 
 // MARK: - ServiceTabViewModel

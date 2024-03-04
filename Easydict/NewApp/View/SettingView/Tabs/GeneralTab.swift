@@ -40,13 +40,6 @@ struct GeneralTab: View {
                             .tag(option)
                     }
                 }
-
-                Picker("language_preference".localized, selection: $languageState.language) {
-                    ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
-                        Text(language.name)
-                            .tag(language)
-                    }
-                }
             } header: {
                 Text("setting.general.language.header".localized)
             }
@@ -184,6 +177,12 @@ struct GeneralTab: View {
                         Image(option.rawValue)
                             .renderingMode(.template)
                             .foregroundStyle(.primary)
+                    }
+                }
+                Picker("language_preference".localized, selection: $languageState.language) {
+                    ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
+                        Text(language.name)
+                            .tag(language)
                     }
                 }
             } header: {
