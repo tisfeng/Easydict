@@ -13,7 +13,10 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension OneAPIService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.oneAPIAPIKey, .oneAPIEndPoint, .oneAPIModel]) {
+        ServiceConfigurationSecretSectionView(
+            service: self,
+            observeKeys: [.oneAPIAPIKey, .oneAPIEndPoint, .oneAPIModel]
+        ) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
                 key: .oneAPIAPIKey,

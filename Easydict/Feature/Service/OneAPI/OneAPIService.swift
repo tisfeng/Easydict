@@ -13,14 +13,30 @@ import Foundation
 
 @objc(EZOneAPIService)
 class OneAPIService: OpenAILikeService {
+    // MARK: Lifecycle
+
     override init() {
         super.init()
         #if DEBUG
-            defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==".decryptAES()
+        defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ=="
+            .decryptAES()
         #else
-            defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==".decryptAES()
+        defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw=="
+            .decryptAES()
         #endif
     }
+
+    // MARK: Public
+
+    override public func name() -> String {
+        NSLocalizedString("one_api", comment: "The name of One API Translate")
+    }
+
+    override public func link() -> String? {
+        "https://chat.openai.com"
+    }
+
+    // MARK: Internal
 
     override var apiKey: String {
         let key = Defaults[.oneAPIAPIKey]
@@ -98,13 +114,5 @@ class OneAPIService: OpenAILikeService {
         let oneAPIServiceUsageStatus = Defaults[.oneAPIServiceUsageStatus]
         guard let value = UInt(oneAPIServiceUsageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
-    }
-
-    override public func name() -> String {
-        NSLocalizedString("one_api", comment: "The name of One API Translate")
-    }
-
-    override public func link() -> String? {
-        "https://chat.openai.com"
     }
 }
