@@ -117,7 +117,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         NSString *languageFlag = [languageManager languageFlagEmoji:language];
         
         if ([language isEqualToString:EZLanguageAuto]) {
-            if ([languageManager isSystemChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
+            if (EZI18nHelper.shared.isSimplifiedChineseLocalize && self.autoChineseSelectedTitle.length) {
                 languageName = self.autoChineseSelectedTitle;
             }
         }
@@ -170,7 +170,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         NSString *toolTip = nil;
         
         if ([selectedLanguage isEqualToString:EZLanguageAuto]) {
-            if ([languageManager isSystemChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
+            if (EZI18nHelper.shared.isSimplifiedChineseLocalize && self.autoChineseSelectedTitle.length) {
                 languageName = self.autoChineseSelectedTitle;
             }
             languageFlag = [languageManager languageFlagEmoji:self.autoSelectedLanguage];

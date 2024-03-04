@@ -35,6 +35,14 @@ class EZI18nHelper: NSObject {
             .simplifiedChinese.rawValue
     }
 
+    var languageType: LanguageState.LanguageType {
+        LanguageState.LanguageType(rawValue: localizeCode) ?? .simplifiedChinese
+    }
+
+    var isSimplifiedChineseLocalize: Bool {
+        localizeCode == LanguageState.LanguageType.simplifiedChinese.rawValue
+    }
+
     class func localized(key: String) -> String {
         key.localized
     }
