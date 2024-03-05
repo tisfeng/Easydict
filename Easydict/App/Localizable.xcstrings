@@ -1976,7 +1976,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One API Translate"
+            "value" : "Custom OpenAI Translate"
           }
         },
         "zh-Hans" : {
