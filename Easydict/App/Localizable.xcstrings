@@ -486,6 +486,7 @@
       }
     },
     "automatic_word_segmentation" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -502,6 +503,7 @@
       }
     },
     "automatically_remove_code_comment_symbols" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2383,6 +2385,22 @@
         }
       }
     },
+    "remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove code comment symbols「/*#」"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去除代码注释符号「/*#」"
+          }
+        }
+      }
+    },
     "replace_text" : {
       "localizations" : {
         "en" : {
@@ -4237,6 +4255,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
+          }
+        }
+      }
+    },
+    "word_segmentation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word splitting: key_value —> key value"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词分词 key_value —> key value"
           }
         }
       }

@@ -28,6 +28,7 @@
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
 #import "Easydict-Swift.h"
+#import "NSString+EZHandleInputText.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -625,6 +626,26 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)scrollToEndOfTextView {
     [self.queryView scrollToEndOfTextView];
+}
+
+- (void)receiveTitlebarAction:(EZTitlebarAction)action {
+    
+    switch (action) {
+        case EZTitlebarActionWordsSegmentation:
+        {
+            NSString *text = [[self.queryView.textView.string trim]segmentWords];
+            self.queryView.textView.string = text;
+        }
+            break;
+        case EZTitlebarActionRemoveCommentBlockSymbols:
+        {
+            NSString *text = [[self.queryView.textView.string trim]removeCommentBlockSymbols];
+            self.queryView.textView.string = text;
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma mark - Query Methods

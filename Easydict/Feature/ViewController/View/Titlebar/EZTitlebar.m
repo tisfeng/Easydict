@@ -236,17 +236,11 @@
 
 - (void)showMenu {
     NSMenu * menu = [[NSMenu alloc]initWithTitle:@"Menu"];
-    NSMenuItem * item1 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"automatically_remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
+    NSMenuItem * item1 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
     item1.target = self;
-    if (Configuration.shared.automaticallyRemoveCodeCommentSymbols) {
-        item1.state = NSControlStateValueOn;
-    }
     
-    NSMenuItem * item2 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"automatic_word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
+    NSMenuItem * item2 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
     item2.target = self;
-    if (Configuration.shared.automaticWordSegmentation) {
-        item2.state = NSControlStateValueOn;
-    }
     
     NSMenuItem * item3 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
     item3.target = self;
@@ -260,11 +254,11 @@
 }
 
 - (void)clickAutomaticallyRemoveCodeCommentSymbols {
-    Configuration.shared.automaticallyRemoveCodeCommentSymbols = !Configuration.shared.automaticallyRemoveCodeCommentSymbols;
+    _menuActionBlock(EZTitlebarActionRemoveCommentBlockSymbols);
 }
 
 - (void)clickAutomaticWordSegmentation {
-    Configuration.shared.automaticWordSegmentation = !Configuration.shared.automaticWordSegmentation;
+    _menuActionBlock(EZTitlebarActionWordsSegmentation);
 }
 
 - (void)goToSettings {

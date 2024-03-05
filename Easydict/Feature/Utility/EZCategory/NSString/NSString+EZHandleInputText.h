@@ -21,6 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Check if all line starts with a comment symbol, #,//,*
 - (BOOL)allLineStartsWithCommentSymbol;
 
+/**
+ Split camel and snake case text
+ https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
+ 
+ _anchoredDraggable_State --> anchored Draggable State
+ */
+- (NSString *)segmentWords;
 @end
 
 NS_ASSUME_NONNULL_END

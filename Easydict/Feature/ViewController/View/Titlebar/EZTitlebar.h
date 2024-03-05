@@ -12,6 +12,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSUInteger, EZTitlebarAction) {
+    EZTitlebarActionRemoveCommentBlockSymbols,
+    EZTitlebarActionWordsSegmentation,
+};
+
+typedef void(^EZTitlebarActionBlock)(EZTitlebarAction);
+
 @interface EZTitlebar : NSView
 
 @property (nonatomic, assign) BOOL pin;
@@ -25,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
 
 @property (nonatomic, strong) EZOpenLinkButton *settingButton;
+
+@property (nonatomic, copy) EZTitlebarActionBlock menuActionBlock;
 
 @end
 

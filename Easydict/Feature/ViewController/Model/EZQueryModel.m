@@ -187,18 +187,7 @@
      _anchoredDraggable_State --> anchored Draggable State
      */
     if (Configuration.shared.automaticWordSegmentation) {
-        if ([queryText isSingleWord]) {
-            // If text is an English word, like LaTeX, we don't split it.
-            BOOL isEnglishWord = [EZAppleDictionary.shared queryDictionaryForText:queryText language:EZLanguageEnglish];
-            if (!isEnglishWord) {
-                // If text has quotes, like 'UIKit', we don't split it.
-                if ([queryText hasQuotesPair]) {
-                    queryText = [queryText tryToRemoveQuotes];
-                } else {
-                    queryText = [queryText splitCodeText];
-                }
-            }
-        }
+        queryText = [queryText segmentWords];
     }
     
     if (Configuration.shared.automaticallyRemoveCodeCommentSymbols) {
