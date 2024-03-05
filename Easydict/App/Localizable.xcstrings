@@ -2535,13 +2535,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "gpt-3.5-turbo/gemini-pro"
+            "value" : "gpt-3.5-turbo"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "gpt-3.5-turbo/gemini-pro"
+            "value" : "gpt-3.5-turbo"
           }
         }
       }
