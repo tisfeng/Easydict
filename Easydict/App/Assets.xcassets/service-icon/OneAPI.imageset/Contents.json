@@ -1,11 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "customOpenAI.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "logo.png",
+      "filename" : "customOpenAI@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
