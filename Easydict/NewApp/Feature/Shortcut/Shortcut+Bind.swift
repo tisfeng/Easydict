@@ -60,12 +60,16 @@ extension Shortcut {
 
     @objc
     func increaseFontSize() {
-        Configuration.shared.fontSizeIndex += 1
+        if Configuration.shared.fontSizeIndex < Configuration.shared.fontSizes.count - 1 {
+            Configuration.shared.fontSizeIndex += 1
+        }
     }
 
     @objc
     func decreaseFontSize() {
-        Configuration.shared.fontSizeIndex -= 1
+        if Configuration.shared.fontSizeIndex > 0 {
+            Configuration.shared.fontSizeIndex -= 1
+        }
     }
 
     @objc

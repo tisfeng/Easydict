@@ -126,10 +126,6 @@ class Configuration: NSObject {
 
     var cancellables: [AnyCancellable] = []
 
-    var fontSizeRatio: CGFloat {
-        fontSizes[Int(fontSizeIndex)]
-    }
-
     var automaticallyChecksForUpdates: Bool {
         get {
             updater.automaticallyChecksForUpdates
@@ -147,6 +143,11 @@ class Configuration: NSObject {
         set {
             Defaults[.defaultTTSServiceType] = TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
         }
+    }
+
+    var fontSizeRatio: CGFloat {
+        let safeIndex = max(0, min(Int(fontSizeIndex), fontSizes.count - 1))
+        return fontSizes[safeIndex]
     }
 
     static func destroySharedInstance() {
