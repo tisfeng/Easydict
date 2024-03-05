@@ -781,6 +781,23 @@
         }
       }
     },
+    "custom_openai" : {
+      "comment" : "The name of Custom OpenAI Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom OpenAI Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义 OpenAI 翻译"
+          }
+        }
+      }
+    },
     "Decode Error" : {
       "comment" : "Error description",
       "localizations" : {
@@ -1970,23 +1987,6 @@
         }
       }
     },
-    "one_api" : {
-      "comment" : "The name of One API Translate",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom OpenAI Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自定义 OpenAI 翻译"
-          }
-        }
-      }
-    },
     "open_in_apple_dictionary" : {
       "localizations" : {
         "en" : {
@@ -2530,39 +2530,6 @@
         }
       }
     },
-    "service.configuration.custom_openai.api_key.placeholder" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        }
-      }
-    },
-    "service.configuration.custom_openai.endpoint.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Endpoint"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完整接口地址"
-          }
-        }
-      }
-    },
     "service.configuration.custom_openai.model.placeholder" : {
       "localizations" : {
         "en" : {
@@ -2740,7 +2707,20 @@
       }
     },
     "service.configuration.openai.api_key.placeholder" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxx"
+          }
+        }
+      }
     },
     "service.configuration.openai.api_key.title" : {
       "localizations" : {
@@ -2786,6 +2766,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api.openai.com/v1/chat/completions"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.endpoint.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Endpoint"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整接口地址"
           }
         }
       }

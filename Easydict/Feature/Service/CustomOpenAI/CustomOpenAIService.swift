@@ -29,7 +29,7 @@ class CustomOpenAIService: OpenAILikeService {
     // MARK: Public
 
     override public func name() -> String {
-        NSLocalizedString("one_api", comment: "The name of One API Translate")
+        NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
     }
 
     override public func link() -> String? {
@@ -47,11 +47,12 @@ class CustomOpenAIService: OpenAILikeService {
     }
 
     override var endPoint: String {
-        let endPoint = Defaults[.customOpenAIEndPoint]
-        if let endPoint, !endPoint.isEmpty {
-            return endPoint
+        if !hasPrivateAPIKey() {
+            // default endPoint
+            return "gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2".decryptAES()
         }
-        return ""
+
+        return Defaults[.customOpenAIEndPoint] ?? ""
     }
 
     override var model: String {

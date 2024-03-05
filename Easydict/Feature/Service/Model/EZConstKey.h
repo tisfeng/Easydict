@@ -16,6 +16,7 @@ static NSString *const EZBetaFeatureKey = @"EZBetaFeatureKey";
 static NSString *const EZDictionaryKey = @"Dictionary";
 
 static NSString *const EZOpenAIAPIKey = @"EZOpenAIAPIKey";
+static NSString *const EZOpenAIEndPointKey = @"EZOpenAIEndPointKey";
 static NSString *const EZOpenAITranslationKey = @"EZOpenAITranslationKey";
 static NSString *const EZOpenAIDictionaryKey = @"EZOpenAIDictionaryKey";
 static NSString *const EZOpenAISentenceKey = @"EZOpenAISentenceKey";

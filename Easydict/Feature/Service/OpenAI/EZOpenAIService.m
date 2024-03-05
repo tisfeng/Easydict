@@ -31,14 +31,15 @@
     // easydict://writeKeyValue?EZOpenAIAPIKey=
     
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
-    if (apiKey.length == 0 && Configuration.shared.beta) {
-        apiKey = self.defaultAPIKey;
-    }
     return apiKey;
 }
 
 - (NSString *)endPoint {
-    return @"https://api.openai.com/v1/chat/completions";
+    NSString *endPoint = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIEndPointKey] ?: @"";
+    if (endPoint.length == 0) {
+        endPoint = @"https://api.openai.com/v1/chat/completions";
+    }
+    return endPoint;
 }
 
 - (NSString *)model {

@@ -24,7 +24,7 @@ extension CustomOpenAIService: ConfigurableService {
             )
             // endpoint
             ServiceConfigurationInputCell(
-                textFieldTitleKey: "service.configuration.custom_openai.endpoint.title",
+                textFieldTitleKey: "service.configuration.openai.endpoint.title",
                 key: .customOpenAIEndPoint,
                 placeholder: "service.configuration.openai.endpoint.placeholder"
             )
