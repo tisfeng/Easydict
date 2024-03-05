@@ -889,6 +889,23 @@
         }
       }
     },
+    "disable_tips_view" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable Tips View"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭提示窗口"
+          }
+        }
+      }
+    },
     "disabled_app_list" : {
       "comment" : "disabled app list",
       "localizations" : {
@@ -954,23 +971,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "以 SwiftUI App模式启动，重启App生效"
-          }
-        }
-      }
-    },
-    "enable_tips_view" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable Tips View"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启提示窗口"
           }
         }
       }

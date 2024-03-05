@@ -97,7 +97,7 @@ extension Defaults.Keys {
         }
     }
 
-    static var enableTipsView = Key<Bool>("enableTipsViewKey", default: true)
+    static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
 }
 
 extension Defaults.Keys {

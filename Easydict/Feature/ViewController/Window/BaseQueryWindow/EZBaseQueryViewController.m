@@ -367,10 +367,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (BOOL)isShowTipsView {
-    if (!Configuration.shared.enableTipsView) {
+    if (Configuration.shared.disableTipsView) {
         return NO;
     }
-    if (EZ_isEmptyString(self.queryModel.queryText) && !self.hasShowTips) {
+    if (EZ_isEmptyString(self.queryModel.queryText) && 
+        !self.hasShowTips &&
+        self.queryModel.actionType != EZActionTypeInputQuery) {
         return YES;
     }
     return NO;
@@ -1492,7 +1494,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     if (!self.hasShowTips && 
         !EZ_isEmptyString(self.queryModel.queryText) &&
-        Configuration.shared.enableTipsView) {
+        !Configuration.shared.disableTipsView) {
         scrollViewContentHeight += [self.tipsCell cellHeight];
     }
     
