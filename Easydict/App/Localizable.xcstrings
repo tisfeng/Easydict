@@ -1982,7 +1982,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One API 翻译"
+            "value" : "自定义 OpenAI 翻译"
           }
         }
       }
