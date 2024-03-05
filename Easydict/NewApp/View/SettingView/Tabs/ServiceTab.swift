@@ -28,8 +28,9 @@ struct ServiceTab: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom)
                 .padding(.horizontal)
+                .frame(minWidth: 280)
             }
-            .frame(minWidth: 280)
+
             Group {
                 if let service = viewModel.selectedService {
                     // To provide configuration options for a service, follow these steps
@@ -209,17 +210,15 @@ private struct WindowTypePicker: View {
     @Binding var windowType: EZWindowType
 
     var body: some View {
-        HStack {
-            Picker(selection: $windowType) {
-                ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
-                    Text(windowType.localizedStringResource)
-                        .tag(windowType)
-                }
-            } label: {
-                EmptyView()
+        Picker(selection: $windowType) {
+            ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
+                Text(windowType.localizedStringResource)
+                    .tag(windowType)
             }
-            .labelsHidden()
-            .pickerStyle(.segmented)
+        } label: {
+            EmptyView()
         }
+        .labelsHidden()
+        .pickerStyle(.segmented)
     }
 }

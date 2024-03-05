@@ -132,7 +132,7 @@ struct ServiceConfigurationToggleCell: View {
         )
 
         ServiceConfigurationInputCell(
-            textFieldTitleKey: "service.configuration.oneapi.endpoint.title",
+            textFieldTitleKey: "service.configuration.custom_openai.endpoint.title",
             key: .openAIEndPoint,
             placeholder: "service.configuration.openai.endpoint.placeholder"
         )

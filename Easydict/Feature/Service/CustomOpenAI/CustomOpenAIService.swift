@@ -1,5 +1,5 @@
 //
-//  OneAPIService.swift
+//  CustomOpenAIService.swift
 //  Easydict
 //
 //  Created by phlpsong on 2024/2/16.
@@ -11,8 +11,8 @@ import CryptoKit
 import Defaults
 import Foundation
 
-@objc(EZOneAPIService)
-class OneAPIService: OpenAILikeService {
+@objc(EZCustomOpenAIService)
+class CustomOpenAIService: OpenAILikeService {
     // MARK: Lifecycle
 
     override init() {
@@ -39,7 +39,7 @@ class OneAPIService: OpenAILikeService {
     // MARK: Internal
 
     override var apiKey: String {
-        let key = Defaults[.oneAPIAPIKey]
+        let key = Defaults[.customOpenAIAPIKey]
         if let key, !key.isEmpty {
             return key
         }
@@ -47,7 +47,7 @@ class OneAPIService: OpenAILikeService {
     }
 
     override var endPoint: String {
-        let endPoint = Defaults[.oneAPIEndPoint]
+        let endPoint = Defaults[.customOpenAIEndPoint]
         if let endPoint, !endPoint.isEmpty {
             return endPoint
         }
@@ -55,7 +55,7 @@ class OneAPIService: OpenAILikeService {
     }
 
     override var model: String {
-        let model = Defaults[.oneAPIModel]
+        let model = Defaults[.customOpenAIModel]
         if let model, !model.isEmpty {
             return model
         }
@@ -67,7 +67,7 @@ class OneAPIService: OpenAILikeService {
     }
 
     override func serviceType() -> ServiceType {
-        .oneAPI
+        .customOpenAI
     }
 
     override func intelligentQueryTextType() -> EZQueryTextType {
@@ -92,9 +92,9 @@ class OneAPIService: OpenAILikeService {
 
     override func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
-        let isTranslationEnabled = Defaults[.oneAPITranslation] == "1"
-        let isDictionaryEnabled = Defaults[.oneAPIDictionary] == "1"
-        let isSentenceEnabled = Defaults[.oneAPISentence] == "1"
+        let isTranslationEnabled = Defaults[.customOpenAITranslation] == "1"
+        let isDictionaryEnabled = Defaults[.customOpenAIDictionary] == "1"
+        let isSentenceEnabled = Defaults[.customOpenAISentence] == "1"
         if isTranslationEnabled {
             typeOptions.insert(.translation)
         }
@@ -111,8 +111,8 @@ class OneAPIService: OpenAILikeService {
     }
 
     override func serviceUsageStatus() -> EZServiceUsageStatus {
-        let oneAPIServiceUsageStatus = Defaults[.oneAPIServiceUsageStatus]
-        guard let value = UInt(oneAPIServiceUsageStatus.rawValue) else { return .default }
+        let customOpenAIServiceUsageStatus = Defaults[.customOpenAIServiceUsageStatus]
+        guard let value = UInt(customOpenAIServiceUsageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 }

@@ -204,12 +204,12 @@
         EZOpenAIServiceUsageStatusKey,
         EZOpenAIModelKey,
         
-        EZOneAPIEndPointKey,
-        EZOneAPIAPIKey,
-        EZOneAPITranslationKey,
-        EZOneAPIDictionaryKey,
-        EZOneAPISentenceKey,
-        EZOneAPIServiceUsageStatusKey,
+        EZCustomOpenAIEndPointKey,
+        EZCustomOpenAIAPIKey,
+        EZCustomOpenAITranslationKey,
+        EZCustomOpenAIDictionaryKey,
+        EZCustomOpenAISentenceKey,
+        EZCustomOpenAIServiceUsageStatusKey,
         
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,

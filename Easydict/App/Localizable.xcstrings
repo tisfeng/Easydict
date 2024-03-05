@@ -2530,6 +2530,55 @@
         }
       }
     },
+    "service.configuration.custom_openai.api_key.placeholder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxx"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.endpoint.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Endpoint"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整接口地址"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.model.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gpt-3.5-turbo/gemini-pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gpt-3.5-turbo/gemini-pro"
+          }
+        }
+      }
+    },
     "service.configuration.deepl.auth_key.title" : {
       "localizations" : {
         "en" : {
@@ -2690,53 +2739,8 @@
         }
       }
     },
-    "service.configuration.oneapi.endpoint.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Endpoint"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完整接口地址"
-          }
-        }
-      }
-    },
-    "service.configuration.oneapi.model.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gpt-3.5-turbo/gemini-pro"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gpt-3.5-turbo/gemini-pro"
-          }
-        }
-      }
-    },
     "service.configuration.openai.api_key.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        }
-      }
+
     },
     "service.configuration.openai.api_key.title" : {
       "localizations" : {
