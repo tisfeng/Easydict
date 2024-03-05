@@ -29,6 +29,7 @@ struct ServiceTab: View {
                 .padding(.bottom)
                 .padding(.horizontal)
             }
+            .frame(minWidth: 280)
             Group {
                 if let service = viewModel.selectedService {
                     // To provide configuration options for a service, follow these steps
