@@ -106,6 +106,8 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
 
+    @DefaultsWrapper(.enableTipsView) var enableTipsView: Bool
+
     var disabledAutoSelect: Bool = false
 
     var isRecordingSelectTextShortcutKey: Bool = false

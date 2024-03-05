@@ -958,6 +958,23 @@
         }
       }
     },
+    "enable_tips_view" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Tips View"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启提示窗口"
+          }
+        }
+      }
+    },
     "equal_first_and_second_language" : {
       "localizations" : {
         "en" : {

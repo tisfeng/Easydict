@@ -367,6 +367,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (BOOL)isShowTipsView {
+    if (!Configuration.shared.enableTipsView) {
+        return NO;
+    }
     if (EZ_isEmptyString(self.queryModel.queryText) && !self.hasShowTips) {
         return YES;
     }
@@ -1238,6 +1241,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self clearAll];
+        self.hasShowTips = YES;
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage language) {
@@ -1486,8 +1490,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     //    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
-    ///TODO: 完善
-    if (!self.hasShowTips && !EZ_isEmptyString(self.queryModel.queryText)) {
+    if (!self.hasShowTips && 
+        !EZ_isEmptyString(self.queryModel.queryText) &&
+        Configuration.shared.enableTipsView) {
         scrollViewContentHeight += [self.tipsCell cellHeight];
     }
     
