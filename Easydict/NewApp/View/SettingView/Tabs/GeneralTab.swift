@@ -96,6 +96,8 @@ struct GeneralTab: View {
                 Toggle("clear_input_when_translating", isOn: $clearInput)
                 Toggle("keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty)
                 Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
+                Toggle("automatically_remove_code_comment_symbols", isOn: $automaticallyRemoveCodeCommentSymbols)
+                Toggle("automatic_word_segmentation", isOn: $automaticWordSegmentation)
             } header: {
                 Text("setting.general.input.header")
             }
@@ -213,6 +215,8 @@ struct GeneralTab: View {
     @Default(.clearInput) private var clearInput
     @Default(.keepPrevResultWhenEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
+    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
 
     @Default(.disableEmptyCopyBeep) private var disableEmptyCopyBeep
     @Default(.autoPlayAudio) private var autoPlayAudio

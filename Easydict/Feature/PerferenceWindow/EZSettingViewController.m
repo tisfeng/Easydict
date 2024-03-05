@@ -78,6 +78,8 @@
 @property (nonatomic, strong) NSButton *clearInputButton;
 @property (nonatomic, strong) NSButton *keepPrevResultButton;
 @property (nonatomic, strong) NSButton *selectQueryTextWhenWindowActivateButton;
+@property (nonatomic, strong) NSButton *automaticWordSegmentationButton;
+@property (nonatomic, strong) NSButton *automaticallyRemoveCodeCommentSymbolsButton;
 
 @property (nonatomic, strong) NSTextField *autoQueryLabel;
 @property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
@@ -415,7 +417,13 @@
     NSString *selectQueryTextWhenWindowActivateTitle = NSLocalizedString(@"select_query_text_when_window_activate", nil);
     self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
     [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
-
+    
+    self.automaticWordSegmentationButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatic_word_segmentation", nil) target:self action:@selector(automaticWordSegmentationButtonClicked:)];
+    [self.contentView addSubview:self.automaticWordSegmentationButton];
+    
+    self.automaticallyRemoveCodeCommentSymbolsButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatically_remove_code_comment_symbols", nil) target:self action:@selector(automaticallyRemoveCodeCommentSymbolsButtonClicked:)];
+    [self.contentView addSubview:self.automaticallyRemoveCodeCommentSymbolsButton];
+    
     NSTextField *autoQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
     autoQueryLabel.font = font;
     [self.contentView addSubview:autoQueryLabel];
@@ -563,6 +571,8 @@
     self.clearInputButton.mm_isOn = self.config.clearInput;
     self.keepPrevResultButton.mm_isOn = self.config.keepPrevResultWhenEmpty;
     self.selectQueryTextWhenWindowActivateButton.mm_isOn = self.config.selectQueryTextWhenWindowActivate;
+    self.automaticWordSegmentationButton.mm_isOn = self.config.automaticWordSegmentation;
+    self.automaticallyRemoveCodeCommentSymbolsButton.mm_isOn = self.config.automaticallyRemoveCodeCommentSymbols;
     self.launchAtStartupButton.mm_isOn = self.config.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = self.config.hideMainWindow;
     self.autoQueryOCRTextButton.mm_isOn = self.config.autoQueryOCRText;
@@ -781,11 +791,22 @@
         make.left.equalTo(self.clearInputButton);
         make.top.equalTo(self.keepPrevResultButton.mas_bottom).offset(self.verticalPadding);
     }];
-
-    [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.autoGetSelectedTextLabel);
+    
+    [self.automaticallyRemoveCodeCommentSymbolsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
         make.top.equalTo(self.selectQueryTextWhenWindowActivateButton.mas_bottom).offset(self.verticalPadding);
     }];
+
+    [self.automaticWordSegmentationButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
+        make.top.equalTo(self.automaticallyRemoveCodeCommentSymbolsButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
+    [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.autoGetSelectedTextLabel);
+        make.top.equalTo(self.automaticWordSegmentationButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
     [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoQueryLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.autoQueryLabel);
@@ -1003,6 +1024,14 @@
 
 - (void)selectQueryTextWhenWindowActivateButtonClicked:(NSButton *)sender {
     self.config.selectQueryTextWhenWindowActivate = sender.mm_isOn;
+}
+
+- (void)automaticWordSegmentationButtonClicked:(NSButton *)sender {
+    self.config.automaticWordSegmentation = sender.mm_isOn;
+}
+
+- (void)automaticallyRemoveCodeCommentSymbolsButtonClicked:(NSButton *)sender {
+    self.config.automaticallyRemoveCodeCommentSymbols = sender.mm_isOn;
 }
 
 - (void)autoCopySelectedTextButtonClicked:(NSButton *)sender {
