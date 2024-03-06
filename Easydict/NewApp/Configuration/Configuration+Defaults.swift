@@ -91,7 +91,10 @@ extension Defaults.Keys {
     static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
 
     static let automaticWordSegmentation = Key<Bool>("EZConfiguration_kAutomaticWordSegmentation", default: true)
-    static let automaticallyRemoveCodeCommentSymbols = Key<Bool>("EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols", default: true)
+    static let automaticallyRemoveCodeCommentSymbols = Key<Bool>(
+        "EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols",
+        default: true
+    )
 
     static var enableBetaNewApp: Key<Bool> {
         if #available(macOS 13.0, *) {

@@ -629,20 +629,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)receiveTitlebarAction:(EZTitlebarAction)action {
-    
     switch (action) {
-        case EZTitlebarActionWordsSegmentation:
-        {
-            NSString *text = [[self.queryView.textView.string trim]segmentWords];
-            self.queryView.textView.string = text;
-        }
+        case EZTitlebarActionWordsSegmentation: {
+            self.inputText = [self.inputText segmentWords];
             break;
-        case EZTitlebarActionRemoveCommentBlockSymbols:
-        {
-            NSString *text = [[self.queryView.textView.string trim]removeCommentBlockSymbols];
-            self.queryView.textView.string = text;
         }
+        case EZTitlebarActionRemoveCommentBlockSymbols: {
+            self.inputText = [self.inputText removeCommentBlockSymbols];
             break;
+        }
         default:
             break;
     }

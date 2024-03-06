@@ -111,11 +111,11 @@ class Configuration: NSObject {
     var isRecordingSelectTextShortcutKey: Bool = false
 
     let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
-    
+
     @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
-    
+
     @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
-    
+
     @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
 
     @DefaultsWrapper(.appearanceType) var appearance: AppearenceType

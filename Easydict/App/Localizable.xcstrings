@@ -486,7 +486,6 @@
       }
     },
     "automatic_word_segmentation" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -503,7 +502,6 @@
       }
     },
     "automatically_remove_code_comment_symbols" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
