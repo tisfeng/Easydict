@@ -14,12 +14,14 @@
 #import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
+#import "EZOpenAILikeService.h"
 
 @interface EZResultView ()
 
 @property (nonatomic, strong) NSView *topBarView;
 @property (nonatomic, strong) NSImageView *serviceIcon;
 @property (nonatomic, strong) NSTextField *serviceNameLabel;
+@property (nonatomic, strong) NSTextField *serviceModelLabel;
 @property (nonatomic, strong) NSImageView *errorImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
 @property (nonatomic, strong) EZHoverButton *arrowButton;
@@ -82,6 +84,21 @@
         }];
     }];
     self.serviceNameLabel.mas_key = @"typeLabel";
+    
+    self.serviceModelLabel = [NSTextField mm_make:^(NSTextField *label) {
+        mm_strongify(self);
+        [self addSubview:label];
+        label.editable = NO;
+        label.bordered = NO;
+        label.backgroundColor = NSColor.clearColor;
+        label.alignment = NSTextAlignmentCenter;
+        [label excuteLight:^(NSTextField *label) {
+            label.textColor = [NSColor ez_resultTextLightColor];
+        } dark:^(NSTextField *label) {
+            label.textColor = [NSColor ez_resultTextDarkColor];
+        }];
+    }];
+    self.serviceModelLabel.mas_key = @"modelLabel";
 
     self.errorImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
@@ -198,6 +215,11 @@
         make.left.equalTo(self.serviceIcon.mas_right).offset(4);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
+    
+    [self.serviceModelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.serviceNameLabel.mas_right).offset(2);
+        make.centerY.equalTo(self.topBarView).offset(0);
+    }];
 
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.serviceNameLabel.mas_right).offset(8);
@@ -240,8 +262,15 @@
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
 
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
+    if ([self isOpenAIService:result.service]) {
+        EZOpenAILikeService *service = (EZOpenAILikeService *)result.service;
+        self.serviceModelLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:[service model] font:[NSFont systemFontOfSize:8]];
+        [self updateServiceModelLabel];
+    } else {
+        self.serviceModelLabel.hidden = YES;
+    }
     [self.wordResultView refreshWithResult:result];
-        
+
     mm_weakify(self);
     [self.wordResultView setUpdateViewHeightBlock:^(CGFloat wordResultViewHeight) {
         mm_strongify(self);
@@ -292,6 +321,7 @@
 #pragma mark - Public Methods
 
 - (void)updateLoadingAnimation {
+    [self updateServiceModelLabel];
     [self startOrStopLoadingAnimation:self.result.isLoading];
 }
 
@@ -310,15 +340,13 @@
     [self updateRetryButton];
     [self updateStopButton];
     [self updateArrowButton];
+    [self updateServiceModelLabel];
 }
 
 - (void)updateErrorImage {
-    BOOL hideWarningImage = YES;
-    if (!self.result.hasTranslatedResult && self.result.error.type) {
-        hideWarningImage = NO;
-    }
-    self.errorImageView.hidden = hideWarningImage;
-        
+    BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
+    self.errorImageView.hidden = !showWarningImage;
+    
     NSString *errorImageName = @"disabled";
     NSString *toolTip = @"Unsupported Language";
     if (!self.result.isWarningErrorType) {
@@ -339,7 +367,7 @@
     BOOL showStopButton = NO;
     
     // Currently, only support stop OpenAI service.
-    if ([self.result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
+    if ([self isOpenAIService:self.result.service]) {
         showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
     }
 
@@ -361,6 +389,21 @@
     }];
 }
 
+- (BOOL)isOpenAIService:(EZQueryService *)service {
+    EZServiceType type = service.serviceType;
+    return type == EZServiceTypeCustomOpenAI || type == EZServiceTypeOpenAI;
+}
+
+- (void)updateServiceModelLabel {
+    if (![self isOpenAIService:self.result.service]) {
+        return;
+    }
+    BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
+    BOOL showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
+    BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
+    BOOL isLoading = self.result.isLoading;
+    self.serviceModelLabel.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
+}
 
 #pragma mark - Animation
 
