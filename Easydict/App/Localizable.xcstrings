@@ -309,6 +309,22 @@
         }
       }
     },
+    "auto_check_update (lastest_version %@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically check for application updates (Latest version %@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "自动检查应用程序更新（最新版本 %@）"
+          }
+        }
+      }
+    },
     "auto_copy_first_translated_text" : {
       "localizations" : {
         "en" : {

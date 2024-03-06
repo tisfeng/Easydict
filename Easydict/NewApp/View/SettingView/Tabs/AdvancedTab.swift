@@ -13,6 +13,28 @@ import SwiftUI
 struct AdvancedTab: View {
     // MARK: Internal
 
+    class CheckUpdaterViewModel: ObservableObject {
+        // MARK: Lifecycle
+
+        init() {
+            updater
+                .publisher(for: \.automaticallyChecksForUpdates)
+                .assign(to: &$autoChecksForUpdates)
+        }
+
+        // MARK: Internal
+
+        @Published var autoChecksForUpdates = true {
+            didSet {
+                updater.automaticallyChecksForUpdates = autoChecksForUpdates
+            }
+        }
+
+        // MARK: Private
+
+        private let updater = Configuration.shared.updater
+    }
+
     var body: some View {
         Form {
             Section {
@@ -26,11 +48,22 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableBetaNewApp) {
                     Text("enable_beta_new_app")
                 }
+
+                Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
+                    Text("auto_check_update (lastest_version \(lastestVersion ?? version))")
+                }
+
             } header: {
                 Text("setting.general.advance.header")
             }
         }
         .formStyle(.grouped)
+        .task {
+            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
+            await MainActor.run {
+                lastestVersion = version
+            }
+        }
     }
 
     // MARK: Private
@@ -38,6 +71,14 @@ struct AdvancedTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.enableBetaNewApp) private var enableBetaNewApp
+
+    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
+
+    @State private var lastestVersion: String?
+
+    private var version: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
 }
 
 @available(macOS 13, *)
