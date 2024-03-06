@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSView *topBarView;
 @property (nonatomic, strong) NSImageView *serviceIcon;
 @property (nonatomic, strong) NSTextField *serviceNameLabel;
-@property (nonatomic, strong) NSTextField *serviceModelLabel;
+@property (nonatomic, strong) EZButton *serviceModelButton;
 @property (nonatomic, strong) NSImageView *errorImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
 @property (nonatomic, strong) EZHoverButton *arrowButton;
@@ -85,20 +85,21 @@
     }];
     self.serviceNameLabel.mas_key = @"typeLabel";
     
-    self.serviceModelLabel = [NSTextField mm_make:^(NSTextField *label) {
-        mm_strongify(self);
-        [self addSubview:label];
-        label.editable = NO;
-        label.bordered = NO;
-        label.backgroundColor = NSColor.clearColor;
-        label.alignment = NSTextAlignmentCenter;
-        [label excuteLight:^(NSTextField *label) {
-            label.textColor = [NSColor ez_resultTextLightColor];
-        } dark:^(NSTextField *label) {
-            label.textColor = [NSColor ez_resultTextDarkColor];
-        }];
+    self.serviceModelButton = [[EZButton alloc] init];
+    [self addSubview:self.serviceModelButton];
+    self.serviceModelButton.bordered = NO;
+    self.serviceModelButton.cornerRadius = 3.0;
+
+    [self.serviceModelButton excuteLight:^(EZButton *button) {
+        button.backgroundColor = [NSColor mm_colorWithHexString:@"#E8E8E8"];
+        button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#DCDCDC"];
+        button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#CCCCCC"];
+    } dark:^(EZButton *button) {
+        button.backgroundColor = [NSColor mm_colorWithHexString:@"#3D3E3F"];
+        button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#47494A"];
+        button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#585A5C"];
     }];
-    self.serviceModelLabel.mas_key = @"modelLabel";
+    self.serviceModelButton.mas_key = @"modelButton";
 
     self.errorImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
@@ -216,9 +217,10 @@
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
-    [self.serviceModelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.serviceModelButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.serviceNameLabel.mas_right).offset(2);
-        make.centerY.equalTo(self.topBarView).offset(0);
+        make.top.equalTo(self.topBarView).offset(8);
+        make.bottom.equalTo(self.topBarView).offset(-8);
     }];
 
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -264,10 +266,15 @@
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     if ([self isOpenAIService:result.service]) {
         EZOpenAILikeService *service = (EZOpenAILikeService *)result.service;
-        self.serviceModelLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:[service model] font:[NSFont systemFontOfSize:8]];
+        NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:[service model]];
+        [attrTitle addAttributes:@{
+            NSForegroundColorAttributeName : NSColor.grayColor,
+            NSFontAttributeName : [NSFont systemFontOfSize:8],
+        } range:NSMakeRange(0, attrTitle.length)];
+        self.serviceModelButton.attrTitle = attrTitle;
         [self updateServiceModelLabel];
     } else {
-        self.serviceModelLabel.hidden = YES;
+        self.serviceModelButton.hidden = YES;
     }
     [self.wordResultView refreshWithResult:result];
 
@@ -402,7 +409,7 @@
     BOOL showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
     BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     BOOL isLoading = self.result.isLoading;
-    self.serviceModelLabel.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
+    self.serviceModelButton.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
 }
 
 #pragma mark - Animation
