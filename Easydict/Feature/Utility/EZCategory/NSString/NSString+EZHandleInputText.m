@@ -11,6 +11,7 @@
 #import "NSString+EZSplit.h"
 #import "EZAppleService.h"
 #import "EZAppleDictionary.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 
@@ -210,10 +211,9 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 }
 
 /**
-     Split camel and snake case text
-     https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
-     
-     _anchoredDraggable_State --> anchored Draggable State
+ Segment English text to words: key_value --> key value
+ 
+ Refer https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
  */
 - (NSString *)segmentWords {
     NSString *queryText = self;
@@ -230,6 +230,30 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
         }
     }
     return queryText;
+}
+
+#pragma mark - Handle Input text
+
+/// Handle input text, return queryText.
+- (NSString *)handleInputText {
+    NSString *queryText = self;
+    
+    /**
+     Split camel and snake case text.
+     https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
+     
+     _anchoredDraggable_State --> anchored Draggable State
+     */
+    if (Configuration.shared.automaticWordSegmentation) {
+        queryText = [queryText segmentWords];
+    }
+    
+    if (Configuration.shared.automaticallyRemoveCodeCommentSymbols) {
+        // Remove prefix [//,#,*,] and join texts.
+        queryText = [queryText removeCommentBlockSymbols];
+    }
+
+    return [queryText trim];
 }
 
 @end

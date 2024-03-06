@@ -71,12 +71,14 @@
         // TODO: need to optimize, like needDetectLanguage.
         self.audioURL = nil;
         self.needDetectLanguage = YES;
-        self.queryText = [self handleInputText:inputText];
+        
+        // TODO: we may not need to update queryText every time.
+        self.queryText = [inputText handleInputText];
     }
     
     _inputText = [inputText copy];
-
-    if (_inputText.trim.length == 0) {
+    
+    if (_queryText.length == 0) {
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
     }
@@ -172,30 +174,6 @@
     for (NSString *key in self.stopBlockDictionary.allKeys) {
         [self stopServiceRequest:key];
     }
-}
-
-
-#pragma mark - Handle Input text
-
-- (NSString *)handleInputText:(NSString *)inputText {
-    NSString *queryText = [inputText trim];
-    
-    /**
-     Split camel and snake case text
-     https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
-     
-     _anchoredDraggable_State --> anchored Draggable State
-     */
-    if (Configuration.shared.automaticWordSegmentation) {
-        queryText = [queryText segmentWords];
-    }
-    
-    if (Configuration.shared.automaticallyRemoveCodeCommentSymbols) {
-        // Remove prefix [//,#,*,] and join texts.
-        queryText = [queryText removeCommentBlockSymbols];
-    }
-
-    return [queryText trim];
 }
 
 @end

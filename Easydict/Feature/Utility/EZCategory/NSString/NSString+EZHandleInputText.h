@@ -22,12 +22,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)allLineStartsWithCommentSymbol;
 
 /**
- Split camel and snake case text
- https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
+ Segment English text to words: key_value --> key value
  
- _anchoredDraggable_State --> anchored Draggable State
+ Refer https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
  */
 - (NSString *)segmentWords;
+
+#pragma mark - Handle Input text
+
+/// Handle input text, return queryText.
+- (NSString *)handleInputText;
+
 @end
 
 NS_ASSUME_NONNULL_END
