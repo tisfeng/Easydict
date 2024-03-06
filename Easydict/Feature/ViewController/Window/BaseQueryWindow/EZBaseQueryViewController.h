@@ -61,6 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)disableReplaceTextButton;
 
+- (void)updateActionType:(EZActionType)actionType;
+
 @end
 
 NS_ASSUME_NONNULL_END
