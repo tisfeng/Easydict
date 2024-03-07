@@ -38,6 +38,8 @@ class CustomOpenAIService: OpenAILikeService {
 
     // MARK: Internal
 
+    static let defaultModels = ["gpt-3.5-turbo-0125", "gpt-4-0125-preview"]
+
     override var apiKey: String {
         let key = Defaults[.customOpenAIAPIKey]
         if let key, !key.isEmpty {
@@ -57,10 +59,7 @@ class CustomOpenAIService: OpenAILikeService {
 
     override var model: String {
         let model = Defaults[.customOpenAIModel]
-        if let model, !model.isEmpty {
-            return model
-        }
-        return hasPrivateAPIKey() ? "gpt-3.5-turbo-1106" : "gemini-pro"
+        return model
     }
 
     override func hasPrivateAPIKey() -> Bool {

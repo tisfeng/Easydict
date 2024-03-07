@@ -2530,6 +2530,22 @@
         }
       }
     },
+    "service.configuration.custom_openai.allmodels.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Models"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有模型"
+          }
+        }
+      }
+    },
     "service.configuration.custom_openai.model.placeholder" : {
       "localizations" : {
         "en" : {
