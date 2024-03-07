@@ -73,8 +73,8 @@ struct SettingView: View {
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
         // Keep the settings page windows all the same width to avoid strange animations.
-        let maxWidth = 780
-        let height = switch selection {
+        let maxWidth = 820.0
+        let height: Double = switch selection {
         case .disabled:
             500
         case .advanced:
@@ -84,7 +84,7 @@ struct SettingView: View {
         case .about:
             450
         default:
-            maxWidth - 110
+            maxWidth * 0.82
         }
 
         let newSize = CGSize(width: maxWidth, height: height)
