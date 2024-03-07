@@ -397,8 +397,7 @@
 }
 
 - (BOOL)isOpenAIService:(EZQueryService *)service {
-    EZServiceType type = service.serviceType;
-    return type == EZServiceTypeCustomOpenAI || type == EZServiceTypeOpenAI;
+    return [service isKindOfClass:EZOpenAILikeService.class];
 }
 
 - (void)updateServiceModelLabel {
