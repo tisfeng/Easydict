@@ -89,14 +89,17 @@
     [self addSubview:self.serviceModelButton];
     self.serviceModelButton.bordered = NO;
     self.serviceModelButton.cornerRadius = 3.0;
+    self.serviceModelButton.titleFont = [NSFont systemFontOfSize:10];
 
     [self.serviceModelButton excuteLight:^(EZButton *button) {
-        button.backgroundColor = [NSColor mm_colorWithHexString:@"#E8E8E8"];
-        button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#DCDCDC"];
-        button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#CCCCCC"];
+        button.titleColor = [NSColor mm_colorWithHexString:@"#666666"];
+        button.backgroundColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
+        button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#D2D2D2"];
+        button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#B4B4B4"];
     } dark:^(EZButton *button) {
-        button.backgroundColor = [NSColor mm_colorWithHexString:@"#3D3E3F"];
-        button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#47494A"];
+        button.titleColor = [NSColor mm_colorWithHexString:@"#6D6D6D"];
+        button.backgroundColor = [NSColor mm_colorWithHexString:@"#202020"];
+        button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#3D3D3D"];
         button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#585A5C"];
     }];
     self.serviceModelButton.mas_key = @"modelButton";
@@ -266,12 +269,7 @@
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     if ([self isOpenAIService:result.service]) {
         EZOpenAILikeService *service = (EZOpenAILikeService *)result.service;
-        NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:[service model]];
-        [attrTitle addAttributes:@{
-            NSForegroundColorAttributeName : NSColor.grayColor,
-            NSFontAttributeName : [NSFont systemFontOfSize:8],
-        } range:NSMakeRange(0, attrTitle.length)];
-        self.serviceModelButton.attrTitle = attrTitle;
+        self.serviceModelButton.title = service.model;
         [self updateServiceModelLabel];
     } else {
         self.serviceModelButton.hidden = YES;
