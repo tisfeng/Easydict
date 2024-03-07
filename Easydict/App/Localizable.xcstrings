@@ -298,13 +298,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically check for application updates"
+            "value" : "Automatically check for App updates"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动检查应用程序更新"
+            "value" : "自动检查应用更新"
           }
         }
       }
@@ -490,7 +490,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Word auto-splitting: key_value —> key value"
+            "value" : "Automatically splitting words: key_value —> key value"
           }
         },
         "zh-Hans" : {
@@ -2393,7 +2393,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "去除代码注释符号"
           }
         }
@@ -4262,7 +4262,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Word splitting"
+            "value" : "Splitting words"
           }
         },
         "zh-Hans" : {
