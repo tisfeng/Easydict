@@ -2388,13 +2388,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove code comment symbols「/*#」"
+            "value" : "Remove code comment symbols"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "去除代码注释符号「/*#」"
+            "state" : "needs_review",
+            "value" : "去除代码注释符号"
           }
         }
       }
@@ -4262,13 +4262,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Word splitting: key_value —> key value"
+            "value" : "Word splitting"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "单词分词 key_value —> key value"
+            "value" : "单词分词"
           }
         }
       }
