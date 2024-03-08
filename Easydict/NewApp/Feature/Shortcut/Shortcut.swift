@@ -163,9 +163,9 @@ extension Shortcut {
 extension Shortcut {
     func bindingShortcut(keyCombo: KeyCombo?, type: ShortcutType) {
         guard let keyCombo else {
-            HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
             return
         }
+        HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
         var hotKey: HotKey?
         switch type {
         case .inputTranslate:
