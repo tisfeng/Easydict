@@ -901,7 +901,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关闭提示窗口"
+            "value" : "关闭提示视图"
           }
         }
       }
