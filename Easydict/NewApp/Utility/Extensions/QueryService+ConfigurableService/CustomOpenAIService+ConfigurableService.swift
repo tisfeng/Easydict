@@ -148,8 +148,7 @@ private class CustomOpenAIViewModel: ObservableObject {
     }
 
     private func serviceConfigChanged() {
-        let userInfo: [String: Any] = [EZWindowTypeKey: service.windowType.rawValue]
-        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
+        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: nil)
         NotificationCenter.default.post(notification)
     }
 }
