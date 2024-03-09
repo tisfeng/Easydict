@@ -178,7 +178,7 @@ struct GeneralTab: View {
                     }
                 } label: {
                     Text("check_for_updates")
-                    Text("(lastest_version \(lastestVersion ?? version))")
+                    Text("lastest_version \(lastestVersion ?? version)")
                 }
                 Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
                     Text("auto_check_update ")

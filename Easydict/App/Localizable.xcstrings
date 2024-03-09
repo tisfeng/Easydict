@@ -11,16 +11,6 @@
         }
       }
     },
-    "(lastest_version %@)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "（最新版本 %@）"
-          }
-        }
-      }
-    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -321,6 +311,12 @@
     },
     "auto_check_update " : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically check for app updates"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -658,6 +654,12 @@
     },
     "check_for_updates" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -668,6 +670,12 @@
     },
     "check_now" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check Now"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1748,6 +1756,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最新版本"
+          }
+        }
+      }
+    },
+    "lastest_version %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest version %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新版本 %@"
           }
         }
       }
