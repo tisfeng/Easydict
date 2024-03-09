@@ -17,13 +17,6 @@ class CustomOpenAIService: OpenAILikeService {
 
     override init() {
         super.init()
-        #if DEBUG
-        defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ=="
-            .decryptAES()
-        #else
-        defaultAPIKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw=="
-            .decryptAES()
-        #endif
     }
 
     // MARK: Public
@@ -42,35 +35,16 @@ class CustomOpenAIService: OpenAILikeService {
 
     // MARK: Internal
 
-    static let defaultModels = ["gpt-3.5-turbo-0125", "gpt-4-0125-preview"]
-
     override var apiKey: String {
-        let key = Defaults[.customOpenAIAPIKey]
-        if let key, !key.isEmpty {
-            return key
-        }
-        return defaultAPIKey
+        Defaults[.customOpenAIAPIKey] ?? ""
     }
 
     override var endPoint: String {
-        if !hasPrivateAPIKey() {
-            // default endPoint
-            return "gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2".decryptAES()
-        }
-
-        return Defaults[.customOpenAIEndPoint] ?? ""
+        Defaults[.customOpenAIEndPoint] ?? ""
     }
 
     override var model: String {
-        let model = Defaults[.customOpenAIModel]
-        if !model.isEmpty {
-            return model
-        }
-        return hasPrivateAPIKey() ? "gpt-3.5-turbo-1106" : "gemini-pro"
-    }
-
-    override func hasPrivateAPIKey() -> Bool {
-        apiKey != defaultAPIKey
+        Defaults[.customOpenAIModel]
     }
 
     override func serviceType() -> ServiceType {

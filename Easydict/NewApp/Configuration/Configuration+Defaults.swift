@@ -208,7 +208,7 @@ extension Defaults.Keys {
         "EZCustomOpenAINameKey",
         default: NSLocalizedString("custom_openai", comment: "")
     )
-    static let customOpenAIAPIKey = Key<String?>("EZCustomOpenAIAPIKey")
+    static let customOpenAIAPIKey = Key<String?>("EZCustomOpenAIAPIKey", default: "")
     static let customOpenAITranslation = Key<String>("EZCustomOpenAITranslationKey", default: "1")
     static let customOpenAIDictionary = Key<String>("EZCustomOpenAIDictionaryKey", default: "1")
     static let customOpenAISentence = Key<String>("EZCustomOpenAISentenceKey", default: "1")
@@ -216,7 +216,7 @@ extension Defaults.Keys {
         "EZCustomOpenAIServiceUsageStatusKey",
         default: OpenAIUsageStats.default
     )
-    static let customOpenAIEndPoint = Key<String?>("EZCustomOpenAIEndPointKey")
+    static let customOpenAIEndPoint = Key<String?>("EZCustomOpenAIEndPointKey", default: "")
     static let customOpenAIModel = Key<String>("EZCustomOpenAIModelKey", default: "")
     static let customOpenAIModelsAvailable = Key<String>(
         "EZCustomOpenAIModelssAvailableKey",
