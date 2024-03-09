@@ -11,6 +11,16 @@
         }
       }
     },
+    "(lastest_version %@)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "（最新版本 %@）"
+          }
+        }
+      }
+    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -309,18 +319,12 @@
         }
       }
     },
-    "auto_check_update (lastest_version %@)" : {
+    "auto_check_update " : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatically check for application updates (Latest version %@)"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "自动检查应用程序更新（最新版本 %@）"
+            "state" : "translated",
+            "value" : "自动检查应用程序更新"
           }
         }
       }
@@ -648,6 +652,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "check_for_updates" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
+          }
+        }
+      }
+    },
+    "check_now" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即检查"
           }
         }
       }

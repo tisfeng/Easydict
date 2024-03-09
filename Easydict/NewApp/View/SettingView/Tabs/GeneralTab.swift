@@ -17,6 +17,28 @@ struct GeneralTab: View {
 
     @Environment(\.colorScheme) var colorScheme
 
+    class CheckUpdaterViewModel: ObservableObject {
+        // MARK: Lifecycle
+
+        init() {
+            updater
+                .publisher(for: \.automaticallyChecksForUpdates)
+                .assign(to: &$autoChecksForUpdates)
+        }
+
+        // MARK: Internal
+
+        @Published var autoChecksForUpdates = true {
+            didSet {
+                updater.automaticallyChecksForUpdates = autoChecksForUpdates
+            }
+        }
+
+        // MARK: Private
+
+        private let updater = Configuration.shared.updater
+    }
+
     var body: some View {
         Form {
             Section {
@@ -150,6 +172,17 @@ struct GeneralTab: View {
             }
 
             Section {
+                LabeledContent {
+                    Button("check_now") {
+                        Configuration.shared.updater.checkForUpdates()
+                    }
+                } label: {
+                    Text("check_for_updates")
+                    Text("(lastest_version \(lastestVersion ?? version))")
+                }
+                Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
+                    Text("auto_check_update ")
+                }
                 Toggle(isOn: $launchAtStartup) {
                     Text("launch_at_startup")
                 }
@@ -184,6 +217,12 @@ struct GeneralTab: View {
             }
         }
         .formStyle(.grouped)
+        .task {
+            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
+            await MainActor.run {
+                lastestVersion = version
+            }
+        }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {
                 showRefuseAlert = false
@@ -253,6 +292,14 @@ struct GeneralTab: View {
 
     @State private var showRefuseAlert = false
     @State private var showHideMenuBarIconAlert = false
+
+    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
+
+    @State private var lastestVersion: String?
+
+    private var version: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
 
     private var shortcutsHaveSetuped: Bool {
         Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
