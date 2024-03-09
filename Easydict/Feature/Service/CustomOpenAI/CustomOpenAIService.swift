@@ -29,10 +29,6 @@ class CustomOpenAIService: OpenAILikeService {
         return NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
     }
 
-    override public func link() -> String? {
-        "https://chat.openai.com"
-    }
-
     // MARK: Internal
 
     override var apiKey: String {
