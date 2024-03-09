@@ -298,7 +298,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically check for App updates"
+            "value" : "Automatically check for app updates"
           }
         },
         "zh-Hans" : {
@@ -320,7 +320,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动检查应用程序更新"
+            "value" : "自动检查应用更新"
           }
         }
       }
