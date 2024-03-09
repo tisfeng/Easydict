@@ -7,6 +7,7 @@
 //
 
 import Defaults
+import SettingsAccess
 import Sparkle
 import SwiftUI
 
@@ -52,6 +53,14 @@ struct EasydictApp: App {
             .commands {
                 EasyDictMainMenu() // main menu
             }
+
+            Window("go_to_settings", id: "go_to_settings") {
+                FakeViewToOpenSettingsInSonoma(title: "go_to_settings")
+                    .openSettingsAccess()
+            }
+            .windowStyle(HiddenTitleBarWindowStyle())
+            .windowResizability(.contentSize)
+
             Settings {
                 SettingView()
             }
@@ -68,6 +77,29 @@ struct EasydictApp: App {
     private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
+}
+
+// MARK: - FakeViewToOpenSettingsInSonoma
+
+struct FakeViewToOpenSettingsInSonoma: View {
+    @Environment(\.openSettings) private var openSettings
+    var title: String
+
+    var body: some View {
+        ZStack {}
+            .frame(width: 0, height: 0)
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.openSettings, object: nil)) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    // calling `openSettings` immediately doesn't work so wait a quick moment
+                    try? openSettings()
+                    NSApplication.shared
+                        .windows
+                        .filter(\.canBecomeKey)
+                        .filter { $0.title == title }
+                        .forEach { $0.close() }
+                }
+            }
+    }
 }
 
 extension Bool {

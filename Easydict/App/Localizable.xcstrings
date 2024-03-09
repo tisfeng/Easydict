@@ -298,13 +298,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically check for application updates"
+            "value" : "Automatically check for App updates"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动检查应用程序更新"
+            "value" : "自动检查应用更新"
           }
         }
       }
@@ -481,6 +481,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "划词后自动显示查询图标"
+          }
+        }
+      }
+    },
+    "automatic_word_segmentation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically splitting words: key_value —> key value"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词自动分词 key_value —> key value"
+          }
+        }
+      }
+    },
+    "automatically_remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically remove code comment symbols「/*#」"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动去除代码注释符号「/*#」"
           }
         }
       }
@@ -1346,6 +1378,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "全局快捷键"
+          }
+        }
+      }
+    },
+    "go_to_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往设置"
           }
         }
       }
@@ -2331,6 +2379,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "检测到当前未设置输入翻译快捷键或划词翻译快捷键！\n\n请先设置快捷键确保可以触发 Easydict 再隐藏菜单栏图标。"
+          }
+        }
+      }
+    },
+    "remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove code comment symbols"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去除代码注释符号"
           }
         }
       }
@@ -3913,6 +3977,22 @@
         }
       }
     },
+    "show_setting_quick_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Setting quick link icon"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示快捷设置图标"
+          }
+        }
+      }
+    },
     "silent_screenshot_ocr" : {
       "localizations" : {
         "en" : {
@@ -4173,6 +4253,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
+          }
+        }
+      }
+    },
+    "word_segmentation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Splitting words"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词分词"
           }
         }
       }

@@ -28,6 +28,7 @@
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
 #import "Easydict-Swift.h"
+#import "NSString+EZHandleInputText.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -625,6 +626,21 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)scrollToEndOfTextView {
     [self.queryView scrollToEndOfTextView];
+}
+
+- (void)receiveTitlebarAction:(EZTitlebarAction)action {
+    switch (action) {
+        case EZTitlebarActionWordsSegmentation: {
+            self.inputText = [self.inputText segmentWords];
+            break;
+        }
+        case EZTitlebarActionRemoveCommentBlockSymbols: {
+            self.inputText = [self.inputText removeCommentBlockSymbols];
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 #pragma mark - Query Methods
@@ -1289,7 +1305,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         service.enabledQuery = isShowing;
         
-        // If result is not empty, update cell and show.
+        // If there is no result, try to query with current servie.
         if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^(NSString *_Nonnull language) {
@@ -1299,6 +1315,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 [self queryWithModel:self.queryModel service:service autoPlay:NO];
             }
         } else {
+            // If alreay has result, just update cell.
             [self updateCellWithResult:newResult reloadData:YES];
             
             // if hide result view, we need to notify to update reused cell height.
