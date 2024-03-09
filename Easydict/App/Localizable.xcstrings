@@ -2551,13 +2551,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "gpt-3.5-turbo"
+            "value" : "Please input models, separating each one with a comma"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "gpt-3.5-turbo"
+            "value" : "请输入模型列表，模型间以逗号分隔"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.name.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Service Name"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义服务名"
           }
         }
       }

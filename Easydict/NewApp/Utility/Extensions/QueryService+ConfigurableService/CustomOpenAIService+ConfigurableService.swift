@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import Foundation
 import SwiftUI
@@ -28,11 +29,25 @@ extension CustomOpenAIService: ConfigurableService {
 
 @available(macOS 13.0, *)
 private struct CustomOpenAIServiceConfigurationView: View {
+    // MARK: Lifecycle
+
+    init(service: CustomOpenAIService) {
+        self.service = service
+        self.viewModel = CustomOpenAIViewModel(service: service)
+    }
+
     // MARK: Internal
 
     let service: CustomOpenAIService
 
     var body: some View {
+        // title
+        ServiceConfigurationInputCell(
+            textFieldTitleKey: "service.configuration.custom_openai.name.title",
+            key: .customOpenAINameKey,
+            placeholder: "custom_openai"
+        )
+
         ServiceConfigurationSecureInputCell(
             textFieldTitleKey: "service.configuration.openai.api_key.title",
             key: .customOpenAIAPIKey,
@@ -47,26 +62,20 @@ private struct CustomOpenAIServiceConfigurationView: View {
         // model
         TextField(
             "service.configuration.custom_openai.allmodels.title",
-            text: $availableModels,
+            text: viewModel.$availableModels,
             prompt: Text("service.configuration.custom_openai.model.placeholder")
         )
         .padding(10.0)
         .lineLimit(1 ... 3)
-        .onChange(of: availableModels, perform: { newValue in
-            modelsTextChanged(newValue)
-        })
         Picker(
             "service.configuration.openai.model.title",
-            selection: $model
+            selection: viewModel.$model
         ) {
-            ForEach(availableModels.components(separatedBy: ","), id: \.self) { value in
+            ForEach(viewModel.validModels, id: \.self) { value in
                 Text(value)
             }
         }
         .padding(10.0)
-        .onChange(of: model) { _ in
-            modelSelectionChanged()
-        }
 
         ServiceConfigurationToggleCell(
             titleKey: "service.configuration.openai.translation.title",
@@ -89,22 +98,58 @@ private struct CustomOpenAIServiceConfigurationView: View {
 
     // MARK: Private
 
-    @Default(.customOpenAIModel) private var model
-    @Default(.customOpenAIModelsAvailable) private var availableModels
+    @ObservedObject private var viewModel: CustomOpenAIViewModel
+}
 
-    private func modelSelectionChanged() {
+// MARK: - CustomOpenAIViewModel
+
+private class CustomOpenAIViewModel: ObservableObject {
+    // MARK: Lifecycle
+
+    init(service: CustomOpenAIService) {
+        self.service = service
+        cancellables.append(
+            Defaults.publisher(keys: [.customOpenAINameKey, .customOpenAIModel])
+                .sink { _ in
+                    self.serviceConfigChanged()
+                }
+        )
+        cancellables.append(
+            Defaults.publisher(keys: [.customOpenAIModelsAvailable])
+                .sink { _ in
+                    self.modelsTextChanged()
+                }
+        )
+    }
+
+    // MARK: Internal
+
+    let service: CustomOpenAIService
+
+    @Default(.customOpenAIModel) var model
+    @Default(.customOpenAIModelsAvailable) var availableModels
+
+    @Published var validModels: [String] = []
+
+    // MARK: Private
+
+    private var cancellables: [AnyCancellable] = []
+
+    private func modelsTextChanged() {
+        if availableModels.isEmpty {
+            model = ""
+            validModels = []
+            return
+        }
+        validModels = availableModels.components(separatedBy: ",").filter { !$0.isEmpty }
+        if validModels.count == 1 || !validModels.contains(model) {
+            model = validModels[0]
+        }
+    }
+
+    private func serviceConfigChanged() {
         let userInfo: [String: Any] = [EZWindowTypeKey: service.windowType.rawValue]
         let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
         NotificationCenter.default.post(notification)
-    }
-
-    private func modelsTextChanged(_ newValue: String) {
-        if newValue.isEmpty {
-            availableModels = CustomOpenAIService.defaultModels.joined(separator: ",")
-        }
-        let models = availableModels.components(separatedBy: ",")
-        if !models.contains(model) {
-            model = models[0]
-        }
     }
 }

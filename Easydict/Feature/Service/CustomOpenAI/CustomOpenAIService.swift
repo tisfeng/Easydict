@@ -29,7 +29,11 @@ class CustomOpenAIService: OpenAILikeService {
     // MARK: Public
 
     override public func name() -> String {
-        NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
+        let name = Defaults[.customOpenAINameKey]
+        if let name, !name.isEmpty {
+            return name
+        }
+        return NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
     }
 
     override public func link() -> String? {
@@ -59,7 +63,10 @@ class CustomOpenAIService: OpenAILikeService {
 
     override var model: String {
         let model = Defaults[.customOpenAIModel]
-        return model
+        if !model.isEmpty {
+            return model
+        }
+        return hasPrivateAPIKey() ? "gpt-3.5-turbo-1106" : "gemini-pro"
     }
 
     override func hasPrivateAPIKey() -> Bool {

@@ -197,6 +197,10 @@ extension Defaults.Keys {
     static let openAIModel = Key<OpenAIModels>("EZOpenAIModelKey", default: OpenAIModels.gpt3_5_turbo_0125)
 
     // Custom OpenAI
+    static let customOpenAINameKey = Key<String?>(
+        "EZCustomOpenAINameKey",
+        default: NSLocalizedString("custom_openai", comment: "")
+    )
     static let customOpenAIAPIKey = Key<String?>("EZCustomOpenAIAPIKey")
     static let customOpenAITranslation = Key<String>("EZCustomOpenAITranslationKey", default: "1")
     static let customOpenAIDictionary = Key<String>("EZCustomOpenAIDictionaryKey", default: "1")
@@ -206,10 +210,10 @@ extension Defaults.Keys {
         default: OpenAIUsageStats.default
     )
     static let customOpenAIEndPoint = Key<String?>("EZCustomOpenAIEndPointKey")
-    static let customOpenAIModel = Key<String>("EZCustomOpenAIModelKey", default: "gpt-3.5-turbo-0125")
+    static let customOpenAIModel = Key<String>("EZCustomOpenAIModelKey", default: "")
     static let customOpenAIModelsAvailable = Key<String>(
         "EZCustomOpenAIModelssAvailableKey",
-        default: CustomOpenAIService.defaultModels.joined(separator: ",")
+        default: ""
     )
 
     // DeepL
