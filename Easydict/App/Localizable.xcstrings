@@ -2594,34 +2594,18 @@
         }
       }
     },
-    "service.configuration.custom_openai.allmodels.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All Models"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有模型"
-          }
-        }
-      }
-    },
     "service.configuration.custom_openai.model.placeholder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please input models, separating each one with a comma"
+            "value" : "Model name, use commas (,) to separate multiple models."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "请输入模型列表，模型间以逗号分隔"
+            "state" : "needs_review",
+            "value" : "模型名字，多个模型使用逗号（,）分隔"
           }
         }
       }
@@ -2637,7 +2621,23 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自定义服务名"
+            "value" : "自定义服务名称"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.supported_models.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supported Models"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持的模型"
           }
         }
       }

@@ -61,7 +61,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
         )
         // model
         TextField(
-            "service.configuration.custom_openai.allmodels.title",
+            "service.configuration.custom_openai.supported_models.title",
             text: viewModel.$availableModels,
             prompt: Text("service.configuration.custom_openai.model.placeholder")
         )
