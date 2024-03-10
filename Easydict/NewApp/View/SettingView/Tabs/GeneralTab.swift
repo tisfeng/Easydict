@@ -17,6 +17,28 @@ struct GeneralTab: View {
 
     @Environment(\.colorScheme) var colorScheme
 
+    class CheckUpdaterViewModel: ObservableObject {
+        // MARK: Lifecycle
+
+        init() {
+            updater
+                .publisher(for: \.automaticallyChecksForUpdates)
+                .assign(to: &$autoChecksForUpdates)
+        }
+
+        // MARK: Internal
+
+        @Published var autoChecksForUpdates = true {
+            didSet {
+                updater.automaticallyChecksForUpdates = autoChecksForUpdates
+            }
+        }
+
+        // MARK: Private
+
+        private let updater = Configuration.shared.updater
+    }
+
     var body: some View {
         Form {
             Section {
@@ -96,6 +118,8 @@ struct GeneralTab: View {
                 Toggle("clear_input_when_translating", isOn: $clearInput)
                 Toggle("keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty)
                 Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
+                Toggle("automatically_remove_code_comment_symbols", isOn: $automaticallyRemoveCodeCommentSymbols)
+                Toggle("automatic_word_segmentation", isOn: $automaticWordSegmentation)
             } header: {
                 Text("setting.general.input.header")
             }
@@ -120,6 +144,7 @@ struct GeneralTab: View {
                 Toggle("show_google_quick_link", isOn: $showGoogleQuickLink)
                 Toggle("show_eudic_quick_link", isOn: $showEudicQuickLink)
                 Toggle("show_apple_dictionary_quick_link", isOn: $showAppleDictionaryQuickLink)
+                Toggle("show_setting_quick_link", isOn: $showSettingQuickLink)
             } header: {
                 Text("setting.general.quick_link.header")
             }
@@ -147,6 +172,17 @@ struct GeneralTab: View {
             }
 
             Section {
+                LabeledContent {
+                    Button("check_now") {
+                        Configuration.shared.updater.checkForUpdates()
+                    }
+                } label: {
+                    Text("check_for_updates")
+                    Text("lastest_version \(lastestVersion ?? version)")
+                }
+                Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
+                    Text("auto_check_update ")
+                }
                 Toggle(isOn: $launchAtStartup) {
                     Text("launch_at_startup")
                 }
@@ -181,6 +217,12 @@ struct GeneralTab: View {
             }
         }
         .formStyle(.grouped)
+        .task {
+            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
+            await MainActor.run {
+                lastestVersion = version
+            }
+        }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {
                 showRefuseAlert = false
@@ -212,6 +254,8 @@ struct GeneralTab: View {
     @Default(.clearInput) private var clearInput
     @Default(.keepPrevResultWhenEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
+    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
 
     @Default(.disableEmptyCopyBeep) private var disableEmptyCopyBeep
     @Default(.autoPlayAudio) private var autoPlayAudio
@@ -227,6 +271,7 @@ struct GeneralTab: View {
     @Default(.showGoogleQuickLink) private var showGoogleQuickLink
     @Default(.showEudicQuickLink) private var showEudicQuickLink
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
+    @Default(.showSettingQuickLink) private var showSettingQuickLink
 
     @Default(.hideMainWindow) private var hideMainWindow
     @Default(.launchAtStartup) private var launchAtStartup
@@ -247,6 +292,14 @@ struct GeneralTab: View {
 
     @State private var showRefuseAlert = false
     @State private var showHideMenuBarIconAlert = false
+
+    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
+
+    @State private var lastestVersion: String?
+
+    private var version: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
 
     private var shortcutsHaveSetuped: Bool {
         Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil

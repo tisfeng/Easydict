@@ -10,6 +10,7 @@
 #import "EZLayoutManager.h"
 #import "EZQueryModel.h"
 #import "EZQueryResult.h"
+#import "EZTitlebar.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -62,6 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)disableReplaceTextButton;
 
 - (void)updateActionType:(EZActionType)actionType;
+- (void)receiveTitlebarAction:(EZTitlebarAction)action;
 
 @end
 
