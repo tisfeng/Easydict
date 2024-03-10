@@ -79,14 +79,17 @@ extension KeyHolderWrapper {
         @Binding var confictAlterMessage: ShortcutConfictAlertMessage
 
         func recordViewShouldBeginRecording(_: KeyHolder.RecordView) -> Bool {
-            true
+            Configuration.shared.isRecordingSelectTextShortcutKey = true
+            return true
         }
 
         func recordView(_: KeyHolder.RecordView, canRecordKeyCombo _: Magnet.KeyCombo) -> Bool {
             true
         }
 
-        func recordViewDidEndRecording(_: RecordView) {}
+        func recordViewDidEndRecording(_: RecordView) {
+            Configuration.shared.isRecordingSelectTextShortcutKey = false
+        }
 
         func recordView(_ recordView: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
             if let key = keyCombo {
@@ -103,6 +106,7 @@ extension KeyHolderWrapper {
                         message: message
                     )
                     recordView.clear()
+                    HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
                     return
                 }
             } else { // clear shortcut
