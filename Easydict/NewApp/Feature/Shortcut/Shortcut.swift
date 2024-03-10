@@ -162,8 +162,8 @@ extension Shortcut {
 // binding shortcut
 extension Shortcut {
     func bindingShortcut(keyCombo: KeyCombo?, type: ShortcutType) {
+        HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
         guard let keyCombo else {
-            HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
             return
         }
         var hotKey: HotKey?

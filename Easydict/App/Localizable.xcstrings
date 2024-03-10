@@ -298,7 +298,23 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically check for App updates"
+            "value" : "Automatically check for app updates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动检查应用更新"
+          }
+        }
+      }
+    },
+    "auto_check_update " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically check for app updates"
           }
         },
         "zh-Hans" : {
@@ -632,6 +648,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "check_for_updates" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
+          }
+        }
+      }
+    },
+    "check_now" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check Now"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即检查"
           }
         }
       }
@@ -1708,6 +1756,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最新版本"
+          }
+        }
+      }
+    },
+    "lastest_version %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest version %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新版本 %@"
           }
         }
       }
