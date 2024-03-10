@@ -66,6 +66,12 @@ extension Defaults.Keys {
         "EZConfiguration_kShowFixedWindowPositionKey",
         default: .right
     )
+
+    static let showWindowMultiScreen = Key<EZShowWindowMultiScreen>(
+        "EZConfiguration_kShowWindowMultiScreenKey",
+        default: .fixed
+    )
+
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
         default: .mini

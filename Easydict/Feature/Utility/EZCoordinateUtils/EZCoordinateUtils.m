@@ -7,6 +7,7 @@
 //
 
 #import "EZCoordinateUtils.h"
+#import "Easydict-Swift.h"
 
 @implementation EZCoordinateUtils
 
@@ -30,7 +31,11 @@
 /// Make sure frame show in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame inScreen:(nullable NSScreen *)screen {
     if (!screen) {
-        screen = [self screenOfMousePosition];
+        if (Configuration.shared.showWindowMultiScreen == EZShowWindowMultiScreenAuto) {
+            screen = [self screenOfMousePosition];
+        } else {
+            screen = NSScreen.mainScreen; // EZShowWindowMultiScreenFixed fixed in main screen
+        }
     }
     CGRect visibleFrame = screen.visibleFrame;
     if (CGRectContainsRect(visibleFrame, frame)) {

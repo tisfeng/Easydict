@@ -110,6 +110,12 @@ struct GeneralTab: View {
                             .tag(option)
                     }
                 }
+                Picker("setting.general.window.show_window_multi_screen", selection: $showWindowMultiScreen) {
+                    ForEach(EZShowWindowMultiScreen.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
             } header: {
                 Text("setting.general.windows.header")
             }
@@ -282,6 +288,7 @@ struct GeneralTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
 
     @Default(.fixedWindowPosition) private var fixedWindowPosition
+    @Default(.showWindowMultiScreen) private var showWindowMultiScreen
     @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
     @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
     @Default(.enableBetaFeature) private var enableBetaFeature

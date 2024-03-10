@@ -3571,6 +3571,23 @@
         }
       }
     },
+    "setting.general.window.show_window_multi_screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Multi Screen Query Window Location"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多屏幕查询后窗口位置"
+          }
+        }
+      }
+    },
     "setting.general.windows.header" : {
       "localizations" : {
         "en" : {
@@ -4053,6 +4070,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示快捷设置图标"
+          }
+        }
+      }
+    },
+    "show_window_multi_screen_auto" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动"
+          }
+        }
+      }
+    },
+    "show_window_multi_screen_fixed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixed"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定"
           }
         }
       }
