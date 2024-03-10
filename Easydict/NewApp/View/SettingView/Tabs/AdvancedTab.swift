@@ -26,6 +26,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableBetaNewApp) {
                     Text("enable_beta_new_app")
                 }
+
             } header: {
                 Text("setting.general.advance.header")
             }
