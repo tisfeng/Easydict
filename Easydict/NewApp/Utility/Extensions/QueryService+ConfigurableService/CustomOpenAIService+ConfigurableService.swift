@@ -18,7 +18,7 @@ extension CustomOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
         ServiceConfigurationSecretSectionView(
             service: self,
-            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint]
+            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIModelsAvailable]
         ) {
             CustomOpenAIServiceConfigurationView(service: self)
         }
@@ -62,7 +62,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
         // model
         TextField(
             "service.configuration.custom_openai.supported_models.title",
-            text: viewModel.$availableModels,
+            text: viewModel.$availableModels ?? "",
             prompt: Text("service.configuration.custom_openai.model.placeholder")
         )
         .padding(10.0)
@@ -136,6 +136,7 @@ private class CustomOpenAIViewModel: ObservableObject {
     private var cancellables: [AnyCancellable] = []
 
     private func modelsTextChanged() {
+        guard let availableModels else { return }
         if availableModels.isEmpty {
             model = ""
             validModels = []

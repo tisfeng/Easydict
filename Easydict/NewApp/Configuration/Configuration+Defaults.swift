@@ -218,7 +218,7 @@ extension Defaults.Keys {
     )
     static let customOpenAIEndPoint = Key<String?>("EZCustomOpenAIEndPointKey", default: "")
     static let customOpenAIModel = Key<String>("EZCustomOpenAIModelKey", default: "")
-    static let customOpenAIModelsAvailable = Key<String>(
+    static let customOpenAIModelsAvailable = Key<String?>(
         "EZCustomOpenAIModelssAvailableKey",
         default: ""
     )
