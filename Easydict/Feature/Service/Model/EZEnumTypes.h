@@ -27,11 +27,6 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
     EZShowWindowPositionCenter = 3,
 };
 
-typedef NS_ENUM(NSUInteger, EZShowWindowMultiScreen) {
-    EZShowWindowMultiScreenAuto = 0,
-    EZShowWindowMultiScreenFixed = 1,
-};
-
 FOUNDATION_EXPORT NSString *const EZServiceTypeKey;
 
 typedef NSString *EZServiceType NS_STRING_ENUM NS_SWIFT_NAME(ServiceType);

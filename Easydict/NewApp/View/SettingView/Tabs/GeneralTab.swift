@@ -110,12 +110,6 @@ struct GeneralTab: View {
                             .tag(option)
                     }
                 }
-                Picker("setting.general.window.show_window_multi_screen", selection: $showWindowMultiScreen) {
-                    ForEach(EZShowWindowMultiScreen.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
             } header: {
                 Text("setting.general.windows.header")
             }
