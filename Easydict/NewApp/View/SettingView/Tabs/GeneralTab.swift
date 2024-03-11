@@ -282,7 +282,6 @@ struct GeneralTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
 
     @Default(.fixedWindowPosition) private var fixedWindowPosition
-    @Default(.showWindowMultiScreen) private var showWindowMultiScreen
     @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
     @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
     @Default(.enableBetaFeature) private var enableBetaFeature

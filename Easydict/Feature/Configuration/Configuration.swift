@@ -90,8 +90,6 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
 
-    @DefaultsWrapper(.showWindowMultiScreen) var showWindowMultiScreen: EZShowWindowMultiScreen
-
     @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
 
     @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
