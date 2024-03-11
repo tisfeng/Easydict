@@ -89,9 +89,14 @@
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
-    [EZWindowManager.shared closeMainWindowIfNeeded];
-
     return NO;
+}
+
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    // Fix https://github.com/tisfeng/Easydict/issues/447
+    [EZWindowManager.shared showMainWindowIfNedded];
+    
+    return YES;
 }
 
 @end
