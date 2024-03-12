@@ -141,6 +141,11 @@ static EZLocalStorage *_instance;
     return allServices;
 }
 
+- (EZQueryService *)service:(EZServiceType)serviceType {
+    EZQueryService *service = [EZServiceTypes.shared serviceWithType:serviceType];
+    return service;
+}
+
 - (void)setServiceInfo:(EZServiceInfo *)serviceInfo windowType:(EZWindowType)windowType {
     // ???: if save EZQueryService, mj_JSONData will dead cycle.
     NSData *data = [serviceInfo mj_JSONData];

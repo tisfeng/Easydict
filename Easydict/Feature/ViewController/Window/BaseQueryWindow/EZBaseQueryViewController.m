@@ -238,9 +238,30 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
+    NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
+    NSLog(@"handleServiceUpdate");
+    if ([serviceType length] != 0) {
+        [self updateService:serviceType];
+        return;
+    }
     if (type == self.windowType || !userInfo) {
         [self updateServices];
     }
+}
+
+- (void)updateService:(NSString *)serviceType {
+    NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
+    for (EZQueryService *service in self.services) {
+        if ([service serviceType] == serviceType) {
+            EZQueryService *item = [EZLocalStorage.shared service:serviceType];
+            [newServices addObject:item];
+        } else {
+            [newServices addObject:service];
+        }
+    }
+    self.services = newServices;
+    [self resetAllResults];
+    [self reloadTableViewData:nil];
 }
 
 - (void)updateServices {

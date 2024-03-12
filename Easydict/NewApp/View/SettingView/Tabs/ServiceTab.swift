@@ -160,7 +160,9 @@ private struct ServiceItemView: View {
 
     init(service: QueryService) {
         self.service = service
-        self.serviceItemViewModel = ServiceItemViewModel(isEnable: service.enabled)
+        self._serviceItemViewModel = .init(
+            wrappedValue: ServiceItemViewModel(isEnable: service.enabled)
+        )
     }
 
     // MARK: Internal
@@ -200,7 +202,7 @@ private struct ServiceItemView: View {
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
+    @StateObject private var serviceItemViewModel: ServiceItemViewModel
 }
 
 // MARK: - WindowTypePicker

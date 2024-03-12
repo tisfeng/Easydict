@@ -33,7 +33,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
 
     init(service: CustomOpenAIService) {
         self.service = service
-        self.viewModel = CustomOpenAIViewModel(service: service)
+        self._viewModel = .init(wrappedValue: CustomOpenAIViewModel(service: service))
     }
 
     // MARK: Internal
@@ -41,13 +41,6 @@ private struct CustomOpenAIServiceConfigurationView: View {
     let service: CustomOpenAIService
 
     var body: some View {
-        // title
-        ServiceConfigurationInputCell(
-            textFieldTitleKey: "service.configuration.custom_openai.name.title",
-            key: .customOpenAINameKey,
-            placeholder: "custom_openai"
-        )
-
         ServiceConfigurationSecureInputCell(
             textFieldTitleKey: "service.configuration.openai.api_key.title",
             key: .customOpenAIAPIKey,
@@ -98,7 +91,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
 
     // MARK: Private
 
-    @ObservedObject private var viewModel: CustomOpenAIViewModel
+    @StateObject private var viewModel: CustomOpenAIViewModel
 }
 
 // MARK: - CustomOpenAIViewModel
@@ -109,13 +102,16 @@ private class CustomOpenAIViewModel: ObservableObject {
     init(service: CustomOpenAIService) {
         self.service = service
         cancellables.append(
-            Defaults.publisher(keys: [.customOpenAINameKey, .customOpenAIModel])
-                .sink { _ in
+            Defaults.publisher(.customOpenAIModel, options: [])
+                .removeDuplicates()
+                .sink { change in
+                    print("serviceConfigChanged: \(change)")
                     self.serviceConfigChanged()
                 }
         )
         cancellables.append(
-            Defaults.publisher(keys: [.customOpenAIModelsAvailable])
+            Defaults.publisher(.customOpenAIModelsAvailable)
+                .removeDuplicates()
                 .sink { _ in
                     self.modelsTextChanged()
                 }
@@ -149,7 +145,11 @@ private class CustomOpenAIViewModel: ObservableObject {
     }
 
     private func serviceConfigChanged() {
-        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: nil)
+        let userInfo: [String: Any] = [
+            EZWindowTypeKey: service.windowType.rawValue,
+            EZServiceTypeKey: service.serviceType().rawValue,
+        ]
+        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
         NotificationCenter.default.post(notification)
     }
 }
