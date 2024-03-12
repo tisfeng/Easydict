@@ -41,7 +41,6 @@
         if ([self startQueryScreen]) {
             screen = [self startQueryScreen];
         } else {
-            
             screen = [self screenOfMousePosition];
         }
     }
