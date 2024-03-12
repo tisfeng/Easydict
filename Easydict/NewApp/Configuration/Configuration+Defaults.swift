@@ -66,8 +66,6 @@ extension Defaults.Keys {
         "EZConfiguration_kShowFixedWindowPositionKey",
         default: .right
     )
-
-
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
         default: .mini

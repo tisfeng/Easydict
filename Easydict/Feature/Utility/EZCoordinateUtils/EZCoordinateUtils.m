@@ -7,9 +7,16 @@
 //
 
 #import "EZCoordinateUtils.h"
-#import "Easydict-Swift.h"
-
 @implementation EZCoordinateUtils
+
++ (void)setStartQueryScreen:(NSScreen *)startQueryScreen {
+    objc_setAssociatedObject(self, @selector(startQueryScreen), startQueryScreen, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
++ (NSScreen *)startQueryScreen {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
 
 + (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point inScreen:(NSScreen *)screen {
     CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
@@ -31,10 +38,11 @@
 /// Make sure frame show in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame inScreen:(nullable NSScreen *)screen {
     if (!screen) {
-        if (Configuration.shared.showWindowMultiScreen == EZShowWindowMultiScreenAuto) {
-            screen = [self screenOfMousePosition];
+        if ([self startQueryScreen]) {
+            screen = [self startQueryScreen];
         } else {
-            screen = NSScreen.mainScreen; // EZShowWindowMultiScreenFixed fixed in main screen
+            
+            screen = [self screenOfMousePosition];
         }
     }
     CGRect visibleFrame = screen.visibleFrame;
