@@ -515,7 +515,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      NSArray *screens = NSScreen.screens;
      for (NSScreen *screen in screens) {
          if (NSMouseInRect(selectedTextFrame.origin, screen.frame, NO)) {
-             EZCoordinateUtils.startQueryScreen = screen;
+             if (EZCoordinateUtils.startQueryScreen == nil) {
+                 EZCoordinateUtils.startQueryScreen = screen;
+             }
          }
      }
     

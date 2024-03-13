@@ -9,7 +9,7 @@
 #import "EZAppleScriptManager.h"
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
-
+#import "EZCoordinateUtils.h"
 @interface EZAppleScriptManager ()
 
 @property (nonatomic, strong) EZScriptExecutor *scriptExecutor;
@@ -70,6 +70,7 @@ static EZAppleScriptManager *_instance = nil;
 
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
     //    NSLog(@"get Browser selected text: %@", bundleID);
+    [self recordBrowerLocaledInScreen:bundleID];
     
     if ([self isSafari:bundleID]) {
         [self getSafariSelectedText:completion];
@@ -77,6 +78,30 @@ static EZAppleScriptManager *_instance = nil;
         [self getChromeSelectedTextByAppleScript:bundleID completion:completion];
     } else {
         completion(nil, nil);
+    }
+}
+
+- (void)recordBrowerLocaledInScreen:(NSString *)bundleID {
+    NSArray *runningApplications = [NSRunningApplication runningApplicationsWithBundleIdentifier:bundleID];
+    if (runningApplications.count > 0) {
+        CGRect browerFrame = CGRectZero;
+        NSRunningApplication *brower = runningApplications.firstObject;
+        
+        NSArray *windows = (__bridge_transfer NSArray *)CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
+        for (NSDictionary *windowInfo in windows) {
+            if ([[windowInfo objectForKey:@"kCGWindowOwnerName"] isEqualToString:brower.localizedName]) {
+                CGRectMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)[windowInfo objectForKey:@"kCGWindowBounds"], &browerFrame);
+            }
+        }
+        
+        for (NSScreen *screen in NSScreen.screens) {
+            if (!CGRectEqualToRect(browerFrame, CGRectZero) &&
+                NSIntersectsRect(screen.frame, browerFrame)) {
+                if (EZCoordinateUtils.startQueryScreen == nil) {
+                    EZCoordinateUtils.startQueryScreen = screen;
+                }
+            }
+        }
     }
 }
 
