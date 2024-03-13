@@ -145,7 +145,7 @@
         EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
         
         // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
-        BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic"]];
+        BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic", @"eusoft.eudic.ip"]];
         eudicButton.hidden = !installedEudic;
         if (installedEudic) {
             [self addSubview:eudicButton];
