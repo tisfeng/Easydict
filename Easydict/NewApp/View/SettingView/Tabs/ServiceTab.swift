@@ -133,7 +133,7 @@ private struct ServiceItems: View {
 
     private var servicesWithID: [(QueryService, String)] {
         viewModel.services.map { service in
-            (service, service.name())
+            (service, service.serviceType().rawValue)
         }
     }
 }
@@ -143,13 +143,44 @@ private struct ServiceItems: View {
 private class ServiceItemViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(isEnable: Bool) {
-        self.isEnable = isEnable
+    init(_ service: QueryService) {
+        self.service = service
+        self.isEnable = service.enabled
+        self.name = service.name()
+
+        cancellables.append(
+            serviceUpdatePublisher
+                .sink { [weak self] notification in
+                    self?.didReceive(notification)
+                }
+        )
     }
 
     // MARK: Internal
 
+    let service: QueryService
+
     @Published var isEnable = false
+    @Published var name = ""
+
+    // MARK: Private
+
+    private var cancellables: [AnyCancellable] = []
+
+    private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
+        NotificationCenter.default
+            .publisher(for: .serviceHasUpdated)
+            .eraseToAnyPublisher()
+    }
+
+    private func didReceive(_ notification: Notification) {
+        guard let info = notification.userInfo as? [String: Any] else { return }
+        guard let windowType = info[EZWindowTypeKey] as? Int else { return }
+        guard let serviceType = info[EZServiceTypeKey] as? String else { return }
+        guard windowType == service.windowType.rawValue,
+              serviceType == service.serviceType().rawValue else { return }
+        name = service.name()
+    }
 }
 
 // MARK: - ServiceItemView
@@ -160,9 +191,7 @@ private struct ServiceItemView: View {
 
     init(service: QueryService) {
         self.service = service
-        self._serviceItemViewModel = .init(
-            wrappedValue: ServiceItemViewModel(isEnable: service.enabled)
-        )
+        self.serviceItemViewModel = ServiceItemViewModel(service)
     }
 
     // MARK: Internal
@@ -202,7 +231,7 @@ private struct ServiceItemView: View {
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    @StateObject private var serviceItemViewModel: ServiceItemViewModel
+    @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
 }
 
 // MARK: - WindowTypePicker

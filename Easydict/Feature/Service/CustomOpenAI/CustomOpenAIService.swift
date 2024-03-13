@@ -22,7 +22,11 @@ class CustomOpenAIService: OpenAILikeService {
     // MARK: Public
 
     override public func name() -> String {
-        NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
+        let name = Defaults[.customOpenAINameKey]
+        if let name, !name.isEmpty {
+            return name
+        }
+        return NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
     }
 
     // MARK: Internal

@@ -246,7 +246,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    NSLog(@"handleServiceUpdate");
     if ([serviceType length] != 0) {
         [self updateService:serviceType];
         return;

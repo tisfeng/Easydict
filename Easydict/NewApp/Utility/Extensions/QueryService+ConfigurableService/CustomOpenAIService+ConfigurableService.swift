@@ -16,12 +16,7 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension CustomOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(
-            service: self,
-            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIModelsAvailable]
-        ) {
-            CustomOpenAIServiceConfigurationView(service: self)
-        }
+        CustomOpenAIServiceConfigurationView(service: self)
     }
 }
 
@@ -33,7 +28,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
 
     init(service: CustomOpenAIService) {
         self.service = service
-        self._viewModel = .init(wrappedValue: CustomOpenAIViewModel(service: service))
+        self.viewModel = CustomOpenAIViewModel(service: service)
     }
 
     // MARK: Internal
@@ -41,57 +36,70 @@ private struct CustomOpenAIServiceConfigurationView: View {
     let service: CustomOpenAIService
 
     var body: some View {
-        ServiceConfigurationSecureInputCell(
-            textFieldTitleKey: "service.configuration.openai.api_key.title",
-            key: .customOpenAIAPIKey,
-            placeholder: "service.configuration.openai.api_key.placeholder"
-        )
-        // endpoint
-        ServiceConfigurationInputCell(
-            textFieldTitleKey: "service.configuration.openai.endpoint.title",
-            key: .customOpenAIEndPoint,
-            placeholder: "service.configuration.openai.endpoint.placeholder"
-        )
-        // model
-        TextField(
-            "service.configuration.custom_openai.supported_models.title",
-            text: viewModel.$availableModels ?? "",
-            prompt: Text("service.configuration.custom_openai.model.placeholder")
-        )
-        .padding(10.0)
-        .lineLimit(1 ... 3)
-        Picker(
-            "service.configuration.openai.model.title",
-            selection: viewModel.$model
+        ServiceConfigurationSecretSectionView(
+            service: service,
+            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIModelsAvailable]
         ) {
-            ForEach(viewModel.validModels, id: \.self) { value in
-                Text(value)
+            // title
+            ServiceConfigurationInputCell(
+                textFieldTitleKey: "service.configuration.custom_openai.name.title",
+                key: .customOpenAINameKey,
+                placeholder: "custom_openai"
+            )
+            ServiceConfigurationSecureInputCell(
+                textFieldTitleKey: "service.configuration.openai.api_key.title",
+                key: .customOpenAIAPIKey,
+                placeholder: "service.configuration.openai.api_key.placeholder"
+            )
+            // endpoint
+            ServiceConfigurationInputCell(
+                textFieldTitleKey: "service.configuration.openai.endpoint.title",
+                key: .customOpenAIEndPoint,
+                placeholder: "service.configuration.openai.endpoint.placeholder"
+            )
+            // model
+            TextField(
+                "service.configuration.custom_openai.supported_models.title",
+                text: viewModel.$availableModels ?? "",
+                prompt: Text("service.configuration.custom_openai.model.placeholder")
+            )
+            .padding(10.0)
+            Picker(
+                "service.configuration.openai.model.title",
+                selection: viewModel.$model
+            ) {
+                ForEach(viewModel.validModels, id: \.self) { value in
+                    Text(value)
+                }
             }
-        }
-        .padding(10.0)
+            .padding(10.0)
 
-        ServiceConfigurationToggleCell(
-            titleKey: "service.configuration.openai.translation.title",
-            key: .customOpenAITranslation
-        )
-        ServiceConfigurationToggleCell(
-            titleKey: "service.configuration.openai.sentence.title",
-            key: .customOpenAISentence
-        )
-        ServiceConfigurationToggleCell(
-            titleKey: "service.configuration.openai.dictionary.title",
-            key: .customOpenAIDictionary
-        )
-        ServiceConfigurationPickerCell(
-            titleKey: "service.configuration.openai.usage_status.title",
-            key: .customOpenAIServiceUsageStatus,
-            values: OpenAIUsageStats.allCases
-        )
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.translation.title",
+                key: .customOpenAITranslation
+            )
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.sentence.title",
+                key: .customOpenAISentence
+            )
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.dictionary.title",
+                key: .customOpenAIDictionary
+            )
+            ServiceConfigurationPickerCell(
+                titleKey: "service.configuration.openai.usage_status.title",
+                key: .customOpenAIServiceUsageStatus,
+                values: OpenAIUsageStats.allCases
+            )
+        }
+        .onDisappear {
+            viewModel.invalidate()
+        }
     }
 
     // MARK: Private
 
-    @StateObject private var viewModel: CustomOpenAIViewModel
+    @ObservedObject private var viewModel: CustomOpenAIViewModel
 }
 
 // MARK: - CustomOpenAIViewModel
@@ -104,8 +112,14 @@ private class CustomOpenAIViewModel: ObservableObject {
         cancellables.append(
             Defaults.publisher(.customOpenAIModel, options: [])
                 .removeDuplicates()
-                .sink { change in
-                    print("serviceConfigChanged: \(change)")
+                .sink { _ in
+                    self.serviceConfigChanged()
+                }
+        )
+        cancellables.append(
+            Defaults.publisher(.customOpenAINameKey, options: [])
+                .removeDuplicates()
+                .sink { _ in
                     self.serviceConfigChanged()
                 }
         )
@@ -126,6 +140,10 @@ private class CustomOpenAIViewModel: ObservableObject {
     @Default(.customOpenAIModelsAvailable) var availableModels
 
     @Published var validModels: [String] = []
+
+    func invalidate() {
+        cancellables.forEach { $0.cancel() }
+    }
 
     // MARK: Private
 
