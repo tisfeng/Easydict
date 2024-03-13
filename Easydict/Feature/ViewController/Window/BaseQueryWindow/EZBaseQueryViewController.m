@@ -399,8 +399,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // record current screen when start query
-    NSScreen *current = [EZCoordinateUtils screenForPoint: [NSEvent mouseLocation]];
-    EZCoordinateUtils.startQueryScreen = current;
+    if (EZCoordinateUtils.startQueryScreen == nil) {
+        NSScreen *current = [EZCoordinateUtils screenForPoint: [NSEvent mouseLocation]];
+        EZCoordinateUtils.startQueryScreen = current;
+    }
     
     self.inputText = text;
     self.queryModel.actionType = actionType;

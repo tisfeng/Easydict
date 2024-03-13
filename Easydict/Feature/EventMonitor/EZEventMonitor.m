@@ -511,6 +511,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     CGRect selectedTextFrame = [self getSelectedTextFrame];
     //    NSLog(@"selected text: %@", @(selectedTextFrame));
     
+    // record screen
+     NSArray *screens = NSScreen.screens;
+     for (NSScreen *screen in screens) {
+         if (NSMouseInRect(selectedTextFrame.origin, screen.frame, NO)) {
+             EZCoordinateUtils.startQueryScreen = screen;
+         }
+     }
+    
     self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
     
     if (getFocusedUIElementError == kAXErrorSuccess) {
