@@ -246,7 +246,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
     if ([serviceType length] != 0 && type == self.windowType) {
-        [self updateOneService:serviceType windowType:type];
+        [self updateSingleService:serviceType windowType:type];
         return;
     }
     if (type == self.windowType || !userInfo) {
@@ -254,7 +254,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
-- (void)updateOneService:(NSString *)serviceType windowType:(EZWindowType)windowType {
+- (void)updateSingleService:(NSString *)serviceType windowType:(EZWindowType)windowType {
     NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
     for (EZQueryService *service in self.services) {
         if ([service serviceType] == serviceType) {
