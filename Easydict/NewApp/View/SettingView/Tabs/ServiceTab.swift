@@ -175,10 +175,8 @@ private class ServiceItemViewModel: ObservableObject {
 
     private func didReceive(_ notification: Notification) {
         guard let info = notification.userInfo as? [String: Any] else { return }
-        guard let windowType = info[EZWindowTypeKey] as? Int else { return }
         guard let serviceType = info[EZServiceTypeKey] as? String else { return }
-        guard windowType == service.windowType.rawValue,
-              serviceType == service.serviceType().rawValue else { return }
+        guard serviceType == service.serviceType().rawValue else { return }
         name = service.name()
     }
 }

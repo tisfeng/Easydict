@@ -128,21 +128,18 @@ static EZLocalStorage *_instance;
 - (NSArray<EZQueryService *> *)allServices:(EZWindowType)windowType {
     NSArray *allServices = [EZServiceTypes.shared servicesFromTypes:[self allServiceTypes:windowType]];
     for (EZQueryService *service in allServices) {
-        EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
-        BOOL enabled = YES;
-        BOOL enabledQuery = YES;
-        if (serviceInfo) {
-            enabled = serviceInfo.enabled;
-            enabledQuery = serviceInfo.enabledQuery;
-        }
-        service.enabled = enabled;
-        service.enabledQuery = enabledQuery;
+        [self updateServiceInfo:service windowType:windowType];
     }
     return allServices;
 }
 
 - (EZQueryService *)service:(EZServiceType)serviceType windowType:(EZWindowType)windowType {
     EZQueryService *service = [EZServiceTypes.shared serviceWithType:serviceType];
+    [self updateServiceInfo:service windowType:windowType];
+    return service;
+}
+
+-(void)updateServiceInfo:(EZQueryService *)service windowType:(EZWindowType)windowType {
     EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
     BOOL enabled = YES;
     BOOL enabledQuery = YES;
@@ -152,7 +149,6 @@ static EZLocalStorage *_instance;
     }
     service.enabled = enabled;
     service.enabledQuery = enabledQuery;
-    return service;
 }
 
 - (void)setServiceInfo:(EZServiceInfo *)serviceInfo windowType:(EZWindowType)windowType {
