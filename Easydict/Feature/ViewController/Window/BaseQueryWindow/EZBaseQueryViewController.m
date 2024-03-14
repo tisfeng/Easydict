@@ -132,7 +132,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    [self setupServices];
+    [self setupServices:[EZLocalStorage.shared allServices:self.windowType]];
     [self resetQueryAndResults];
 }
 
@@ -195,14 +195,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 
-- (void)setupServices {
+- (void)setupServices:(NSArray *)allServices {
     NSMutableArray *serviceTypes = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
     
     self.youdaoService = nil;
     EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     
-    NSArray *allServices = [EZLocalStorage.shared allServices:self.windowType];
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
             service.queryModel = self.queryModel;
@@ -246,32 +245,30 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    if ([serviceType length] != 0) {
-        [self updateService:serviceType];
+    if ([serviceType length] != 0 && type == self.windowType) {
+        [self updateOneService:serviceType windowType:type];
         return;
     }
     if (type == self.windowType || !userInfo) {
-        [self updateServices];
+        [self updateServices:[EZLocalStorage.shared allServices:self.windowType]];
     }
 }
 
-- (void)updateService:(NSString *)serviceType {
+- (void)updateOneService:(NSString *)serviceType windowType:(EZWindowType)windowType {
     NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
     for (EZQueryService *service in self.services) {
         if ([service serviceType] == serviceType) {
-            EZQueryService *item = [EZLocalStorage.shared service:serviceType];
-            [newServices addObject:item];
+            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:windowType];
+            [newServices addObject:updatedService];
         } else {
             [newServices addObject:service];
         }
     }
-    self.services = newServices;
-    [self resetAllResults];
-    [self reloadTableViewData:nil];
+    [self updateServices:newServices];
 }
 
-- (void)updateServices {
-    [self setupServices];
+- (void)updateServices:(NSArray *)allServices {
+    [self setupServices:allServices];
     [self resetAllResults];
     
     [self reloadTableViewData:nil];

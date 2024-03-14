@@ -141,8 +141,17 @@ static EZLocalStorage *_instance;
     return allServices;
 }
 
-- (EZQueryService *)service:(EZServiceType)serviceType {
+- (EZQueryService *)service:(EZServiceType)serviceType windowType:(EZWindowType)windowType {
     EZQueryService *service = [EZServiceTypes.shared serviceWithType:serviceType];
+    EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
+    BOOL enabled = YES;
+    BOOL enabledQuery = YES;
+    if (serviceInfo) {
+        enabled = serviceInfo.enabled;
+        enabledQuery = serviceInfo.enabledQuery;
+    }
+    service.enabled = enabled;
+    service.enabledQuery = enabledQuery;
     return service;
 }
 
