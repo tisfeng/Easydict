@@ -204,8 +204,11 @@
         EZOpenAIServiceUsageStatusKey,
         EZOpenAIModelKey,
         
+        EZCustomOpenAINameKey,
         EZCustomOpenAIEndPointKey,
         EZCustomOpenAIAPIKey,
+        EZCustomOpenAIModelssAvailableKey,
+        EZCustomOpenAIModelKey,
         EZCustomOpenAITranslationKey,
         EZCustomOpenAIDictionaryKey,
         EZCustomOpenAISentenceKey,

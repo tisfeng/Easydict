@@ -136,6 +136,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     func invalidate() {
         cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 
     func reset() {

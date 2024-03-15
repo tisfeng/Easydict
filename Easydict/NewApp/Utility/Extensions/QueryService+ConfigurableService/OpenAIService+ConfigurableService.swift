@@ -44,7 +44,6 @@ private struct OpenAIServiceConfigurationView: View {
                 key: .openAIAPIKey,
                 placeholder: "service.configuration.openai.api_key.placeholder"
             )
-
             // endpoint
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.endpoint.title",
@@ -110,6 +109,7 @@ private class OpenAIServiceViewModel: ObservableObject {
 
     func invalidate() {
         cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 
     // MARK: Private

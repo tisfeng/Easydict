@@ -25,8 +25,13 @@ static NSString *const EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageSta
 
 static NSString *const EZOpenAIModelKey = @"EZOpenAIModelKey";
 
+static NSString *const EZCustomOpenAINameKey = @"EZCustomOpenAINameKey";
 static NSString *const EZCustomOpenAIEndPointKey = @"EZCustomOpenAIEndPointKey";
 static NSString *const EZCustomOpenAIAPIKey = @"EZCustomOpenAIAPIKey";
+
+static NSString *const EZCustomOpenAIModelssAvailableKey = @"EZCustomOpenAIModelssAvailableKey";
+static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
+
 static NSString *const EZCustomOpenAITranslationKey = @"EZCustomOpenAITranslationKey";
 static NSString *const EZCustomOpenAIDictionaryKey = @"EZCustomOpenAIDictionaryKey";
 static NSString *const EZCustomOpenAISentenceKey = @"EZCustomOpenAISentenceKey";

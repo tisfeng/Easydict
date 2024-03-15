@@ -143,6 +143,7 @@ private class CustomOpenAIViewModel: ObservableObject {
 
     func invalidate() {
         cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 
     // MARK: Private

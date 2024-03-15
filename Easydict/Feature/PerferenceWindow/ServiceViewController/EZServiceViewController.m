@@ -75,11 +75,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     [self updateScrollViewHeight];
 }
 
-- (void)refreshUIDataWithServiceType:(NSString *)serviceType windowType:(EZWindowType)windowType {
+- (void)refreshUIDataWithServiceType:(NSString *)serviceType {
     NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
     for (EZQueryService *service in self.services) {
         if ([service serviceType] == serviceType) {
-            EZQueryService *item = [EZLocalStorage.shared service:serviceType windowType: windowType];
+            EZQueryService *item = [EZLocalStorage.shared service:serviceType windowType: self.windowType];
             [newServices addObject:item];
         } else {
             [newServices addObject:service];
@@ -110,8 +110,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 
     EZWindowType windowType = [notification.userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo[EZServiceTypeKey] stringValue];
-    if ([serviceType length] != 0 && windowType == self.windowType) {
-        [self refreshUIDataWithServiceType:serviceType windowType:windowType];
+    if ([serviceType length] != 0) {
+        [self refreshUIDataWithServiceType:serviceType];
         return;
     }
     if (windowType == self.windowType || !userInfo) {
