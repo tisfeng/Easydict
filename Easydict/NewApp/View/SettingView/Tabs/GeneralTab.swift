@@ -225,7 +225,7 @@ struct GeneralTab: View {
                     }
                 }
             } header: {
-                Text("setting.general.other.header".localized)
+                Text("setting.general.app_setting.header".localized)
             }
         }
         .formStyle(.grouped)
