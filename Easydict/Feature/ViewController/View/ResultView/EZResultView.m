@@ -15,6 +15,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
 #import "EZOpenAILikeService.h"
+#import "EZLocalStorage.h"
 
 @interface EZResultView ()
 
@@ -270,6 +271,11 @@
     if ([self isOpenAIService:result.service]) {
         EZOpenAILikeService *service = (EZOpenAILikeService *)result.service;
         self.serviceModelButton.title = service.model;
+        mm_weakify(self);
+        [self.serviceModelButton setMouseUpBlock:^(EZButton * _Nonnull button) {
+            mm_strongify(self);
+            [self showModelSelectionMenu];
+        }];
         [self updateServiceModelLabel];
     } else {
         self.serviceModelButton.hidden = YES;
@@ -407,6 +413,30 @@
     BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     BOOL isLoading = self.result.isLoading;
     self.serviceModelButton.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
+}
+
+- (void)showModelSelectionMenu {
+    EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
+    NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
+    for (NSString *model in service.availableModels) {
+        NSMenuItem * item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
+        item.target = self;
+        [menu addItem:item];
+    }
+    [menu popUpMenuPositioningItem:nil atLocation:[NSEvent mouseLocation] inView:nil];
+}
+
+- (void)modelDidSelected:(NSMenuItem *)sender {
+    EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
+    service.model = sender.title;
+    self.serviceModelButton.title = service.model;
+    [self postServiceUpdatedNotification:service.serviceType];
+}
+
+- (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
+    NSDictionary *userInfo = @{EZServiceTypeKey : serviceType};
+    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 #pragma mark - Animation

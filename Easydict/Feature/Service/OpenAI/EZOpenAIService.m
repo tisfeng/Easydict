@@ -62,6 +62,14 @@
     return model;
 }
 
+- (void)setModel:(NSString *)model {
+    [[NSUserDefaults standardUserDefaults] setValue:model forKey:EZOpenAIModelKey];
+}
+
+- (NSArray<NSString *> *)availableModels {
+    return @[@"gpt-3.5-turbo-0125", @"gpt-4-0125-preview"];
+}
+
 #pragma mark - 重写父类方法
 
 - (EZServiceType)serviceType {

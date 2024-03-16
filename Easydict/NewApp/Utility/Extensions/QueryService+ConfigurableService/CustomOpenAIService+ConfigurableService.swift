@@ -164,6 +164,8 @@ private class CustomOpenAIViewModel: ObservableObject {
     }
 
     private func serviceConfigChanged() {
+        // looks like Defaults changed but View not update in this case
+        objectWillChange.send()
         let userInfo: [String: Any] = [
             EZServiceTypeKey: service.serviceType().rawValue,
         ]

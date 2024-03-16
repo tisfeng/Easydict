@@ -20,6 +20,8 @@ userInfo:nil]
 
 @implementation EZOpenAILikeService
 
+@synthesize model = _model;
+
 - (NSString *)apiKey {
     MethodNotImplemented();
     return nil;
@@ -31,6 +33,15 @@ userInfo:nil]
 }
 
 - (NSString *)model {
+    MethodNotImplemented();
+    return nil;
+}
+
+- (void)setModel:(NSString *)model {
+    MethodNotImplemented();
+}
+
+- (NSArray<NSString *> *)availableModels {
     MethodNotImplemented();
     return nil;
 }

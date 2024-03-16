@@ -40,7 +40,19 @@ class CustomOpenAIService: OpenAILikeService {
     }
 
     override var model: String {
-        Defaults[.customOpenAIModel]
+        get {
+            Defaults[.customOpenAIModel]
+        }
+
+        set {
+            Defaults[.customOpenAIModel] = newValue
+        }
+    }
+
+    override var availableModels: [String] {
+        let models = Defaults[.customOpenAIModelsAvailable]
+        guard let models, !models.isEmpty else { return [] }
+        return models.components(separatedBy: ",").filter { !$0.isEmpty }
     }
 
     override func serviceType() -> ServiceType {

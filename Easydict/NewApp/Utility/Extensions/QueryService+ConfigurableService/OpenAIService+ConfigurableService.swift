@@ -56,7 +56,6 @@ private struct OpenAIServiceConfigurationView: View {
                 key: .openAIModel,
                 values: OpenAIModels.allCases
             )
-
             ServiceConfigurationToggleCell(
                 titleKey: "service.configuration.openai.translation.title",
                 key: .openAITranslation
