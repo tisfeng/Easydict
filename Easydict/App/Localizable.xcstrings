@@ -324,6 +324,7 @@
       }
     },
     "auto_check_update " : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -685,6 +686,7 @@
       }
     },
     "check_for_updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -701,6 +703,7 @@
       }
     },
     "check_now" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2818,6 +2821,7 @@
       }
     },
     "service.configuration.custom_openai.model.placeholder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2850,6 +2854,7 @@
       }
     },
     "service.configuration.custom_openai.supported_models.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

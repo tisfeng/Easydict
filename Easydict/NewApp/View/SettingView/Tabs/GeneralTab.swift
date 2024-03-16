@@ -179,15 +179,15 @@ struct GeneralTab: View {
 
             Section {
                 LabeledContent {
-                    Button("check_now") {
+                    Button("check_now".localized) {
                         Configuration.shared.updater.checkForUpdates()
                     }
                 } label: {
-                    Text("check_for_updates")
-                    Text("lastest_version \(lastestVersion ?? version)")
+                    Text("check_for_updates".localized)
+                    Text(String(localized: "lastest_version \(lastestVersion ?? version)", bundle: localizedBundle))
                 }
                 Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
-                    Text("auto_check_update ")
+                    Text("auto_check_update ".localized)
                 }
                 Toggle(isOn: $launchAtStartup) {
                     Text("launch_at_startup".localized)

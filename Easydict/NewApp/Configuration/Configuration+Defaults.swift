@@ -208,7 +208,7 @@ extension Defaults.Keys {
     // Custom OpenAI
     static let customOpenAINameKey = Key<String?>(
         EZCustomOpenAINameKey,
-        default: NSLocalizedString("custom_openai", comment: "")
+        default: "custom_openai".localized
     )
     static let customOpenAIAPIKey = Key<String?>(EZCustomOpenAIAPIKey, default: "")
     static let customOpenAITranslation = Key<String>(EZCustomOpenAITranslationKey, default: "1")

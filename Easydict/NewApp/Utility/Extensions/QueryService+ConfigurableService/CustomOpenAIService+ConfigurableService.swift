@@ -59,13 +59,13 @@ private struct CustomOpenAIServiceConfigurationView: View {
             )
             // model
             TextField(
-                "service.configuration.custom_openai.supported_models.title",
+                "service.configuration.custom_openai.supported_models.title".localized,
                 text: viewModel.$availableModels ?? "",
-                prompt: Text("service.configuration.custom_openai.model.placeholder")
+                prompt: Text("service.configuration.custom_openai.model.placeholder".localized)
             )
             .padding(10.0)
             Picker(
-                "service.configuration.openai.model.title",
+                "service.configuration.openai.model.title".localized,
                 selection: viewModel.$model
             ) {
                 ForEach(viewModel.validModels, id: \.self) { value in

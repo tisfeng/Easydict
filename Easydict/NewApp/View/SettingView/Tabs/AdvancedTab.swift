@@ -27,7 +27,7 @@ struct AdvancedTab: View {
                     Text("enable_beta_new_app".localized)
                 }
                 Toggle(isOn: $disableTipsView) {
-                    Text("disable_tips_view")
+                    Text("disable_tips_view".localized)
                 }
             } header: {
                 Text("setting.general.advance.header".localized)

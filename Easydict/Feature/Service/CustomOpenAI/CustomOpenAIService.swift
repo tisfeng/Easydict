@@ -26,7 +26,7 @@ class CustomOpenAIService: OpenAILikeService {
         if let name, !name.isEmpty {
             return name
         }
-        return NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
+        return "custom_openai".localized
     }
 
     // MARK: Internal
