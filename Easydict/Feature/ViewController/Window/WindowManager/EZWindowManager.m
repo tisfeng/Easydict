@@ -84,15 +84,23 @@ static EZWindowManager *_instance;
     NSLog(@"language preference changed %@", [[EZI18nHelper shared] localizeCode]);
     
     // close all window when language preference changed
-    [self closeFloatingWindow];
+
     [self closeMainWindowIfNeeded];
     
     self.fixedWindow.titleBar.pin = NO;
     [self.fixedWindow close];
+    self.fixedWindow = nil;
     
-    self.miniWindow.titleBar.pin = NO;
+    BOOL isPinnedMini = self.miniWindow.isPin;
     [self.miniWindow close];
     self.miniWindow = nil;
+    
+    if (isPinnedMini) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self showMiniFloatingWindow];
+            self.miniWindow.titleBar.pin = YES;
+        });
+    }
     
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
 }
