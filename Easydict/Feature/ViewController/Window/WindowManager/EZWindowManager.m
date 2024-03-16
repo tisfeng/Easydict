@@ -78,37 +78,7 @@ static EZWindowManager *_instance;
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languagePreferenceChanged:) name:EZI18nHelper.languagePreferenceChangedNotification object:nil];
-    
     //    NSLog(@"%@", self.floatingWindowTypeArray);
-}
-
-- (void)languagePreferenceChanged:(NSNotification *)notification {
-    NSLog(@"language preference changed %@", [[EZI18nHelper shared] localizeCode]);
-    
-    // close all window when language preference changed
-
-    [self closeMainWindowIfNeeded];
-    
-    self.fixedWindow.titleBar.pin = NO;
-    [self.fixedWindow close];
-    self.fixedWindow = nil;
-    
-    BOOL isPinnedMini = self.miniWindow.isPin;
-    [self.miniWindow close];
-    self.miniWindow = nil;
-    
-    self.shouldCloseSettingsWhenShowingFloatingWindow = NO;
-    
-    if (isPinnedMini) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self showMiniFloatingWindow];
-            self.miniWindow.titleBar.pin = YES;
-            self.shouldCloseSettingsWhenShowingFloatingWindow = YES;
-        });
-    }
-    
-    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
 }
 
 - (void)setupEventMonitor {

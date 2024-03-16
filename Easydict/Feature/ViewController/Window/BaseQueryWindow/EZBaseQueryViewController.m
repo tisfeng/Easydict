@@ -192,6 +192,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self updateAllResultCellHeight];
         }];
     }];
+    
+    [defaultCenter addObserver:self selector:@selector(languagePreferenceChanged:) name:EZI18nHelper.languagePreferenceChangedNotification object:nil];
 }
 
 
@@ -278,6 +280,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // TODO: need to optimize. Manually update the cell height, because the reused cell will not self-adjust the height.
     //    [self updateAllResultCellHeightIfNeed];
     [self updateAllResultCellHeight];
+}
+
+- (void)languagePreferenceChanged:(NSNotification *)notification {
+    [self.tableView reloadData];
 }
 
 #pragma mark - Getter && Setter
