@@ -33,6 +33,8 @@
 
 @property (nonatomic, copy) EZActionType actionType;
 
+@property (nonatomic, assign) BOOL shouldCloseSettingsWhenShowingFloatingWindow;
+
 @end
 
 
@@ -71,6 +73,7 @@ static EZWindowManager *_instance;
     self.screen = NSScreen.mainScreen;
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
     self.actionType = EZActionTypeInvokeQuery;
+    self.shouldCloseSettingsWhenShowingFloatingWindow = YES;
     
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
@@ -95,10 +98,13 @@ static EZWindowManager *_instance;
     [self.miniWindow close];
     self.miniWindow = nil;
     
+    self.shouldCloseSettingsWhenShowingFloatingWindow = NO;
+    
     if (isPinnedMini) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self showMiniFloatingWindow];
             self.miniWindow.titleBar.pin = YES;
+            self.shouldCloseSettingsWhenShowingFloatingWindow = YES;
         });
     }
     
@@ -435,7 +441,9 @@ static EZWindowManager *_instance;
         return;
     }
     
-    [[self currentShowingSettingsWindow] close];
+    if (self.shouldCloseSettingsWhenShowingFloatingWindow) {
+        [[self currentShowingSettingsWindow] close];
+    }
     
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
