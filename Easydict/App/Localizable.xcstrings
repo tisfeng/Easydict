@@ -861,6 +861,23 @@
         }
       }
     },
+    "custom_openai" : {
+      "comment" : "The name of Custom OpenAI Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom OpenAI Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义 OpenAI 翻译"
+          }
+        }
+      }
+    },
     "Decode Error" : {
       "comment" : "Error description",
       "localizations" : {
@@ -2654,6 +2671,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Token"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.name.title" : {
+        "localizations" : {
+            "en" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "Custom Service Name"
+                }
+            },
+            "zh-Hans" : {
+                "stringUnit" : {
+                    "state" : "translated",
+                    "value" : "自定义服务名称"
+                }
+            }
+        }
+    },
+    "service.configuration.custom_openai.model.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model name, use commas (,) to separate multiple models."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "模型名字，多个模型使用逗号（,）分隔"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.supported_models.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supported Models"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持的模型"
           }
         }
       }

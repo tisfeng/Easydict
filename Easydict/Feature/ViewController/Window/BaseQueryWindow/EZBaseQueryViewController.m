@@ -132,7 +132,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    [self setupServices];
+    [self setupServices:[EZLocalStorage.shared allServices:self.windowType]];
     [self resetQueryAndResults];
 }
 
@@ -195,14 +195,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 
-- (void)setupServices {
+- (void)setupServices:(NSArray *)allServices {
     NSMutableArray *serviceTypes = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
     
     self.youdaoService = nil;
     EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     
-    NSArray *allServices = [EZLocalStorage.shared allServices:self.windowType];
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
             service.queryModel = self.queryModel;
@@ -245,13 +244,31 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
+    NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
+    if ([serviceType length] != 0) {
+        [self reloadSingleService:serviceType];
+        return;
+    }
     if (type == self.windowType || !userInfo) {
-        [self updateServices];
+        [self updateServices:[EZLocalStorage.shared allServices:self.windowType]];
     }
 }
 
-- (void)updateServices {
-    [self setupServices];
+- (void)reloadSingleService:(NSString *)serviceType {
+    NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
+    for (EZQueryService *service in self.services) {
+        if ([service serviceType] == serviceType) {
+            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+            [newServices addObject:updatedService];
+        } else {
+            [newServices addObject:service];
+        }
+    }
+    [self updateServices:newServices];
+}
+
+- (void)updateServices:(NSArray *)allServices {
+    [self setupServices:allServices];
     [self resetAllResults];
     
     [self reloadTableViewData:nil];

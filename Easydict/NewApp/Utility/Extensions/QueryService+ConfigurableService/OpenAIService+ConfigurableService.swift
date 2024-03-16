@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import Foundation
 import SwiftUI
@@ -15,7 +16,29 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.openAIAPIKey]) {
+        OpenAIServiceConfigurationView(service: self)
+    }
+}
+
+// MARK: - OpenAIServiceConfigurationView
+
+@available(macOS 13.0, *)
+private struct OpenAIServiceConfigurationView: View {
+    // MARK: Lifecycle
+
+    init(service: EZOpenAIService) {
+        self.service = service
+        self.viewModel = OpenAIServiceViewModel(service: service)
+    }
+
+    // MARK: Internal
+
+    let service: EZOpenAIService
+
+    var body: some View {
+        ServiceConfigurationSecretSectionView(
+            service: service, observeKeys: [.openAIAPIKey]
+        ) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
                 key: .openAIAPIKey,
@@ -52,6 +75,54 @@ extension EZOpenAIService: ConfigurableService {
                 values: OpenAIUsageStats.allCases
             )
         }
+        .onDisappear {
+            viewModel.invalidate()
+        }
+    }
+
+    // MARK: Private
+
+    @ObservedObject private var viewModel: OpenAIServiceViewModel
+}
+
+// MARK: - OpenAIServiceViewModel
+
+private class OpenAIServiceViewModel: ObservableObject {
+    // MARK: Lifecycle
+
+    init(service: OpenAILikeService) {
+        self.service = service
+        cancellables.append(
+            Defaults.publisher(.openAIModel, options: [])
+                .removeDuplicates()
+                .sink { _ in
+                    self.serviceConfigChanged()
+                }
+        )
+    }
+
+    // MARK: Internal
+
+    let service: OpenAILikeService
+
+    @Default(.openAIModel) var model
+
+    func invalidate() {
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+    }
+
+    // MARK: Private
+
+    private var cancellables: [AnyCancellable] = []
+
+    private func serviceConfigChanged() {
+        let userInfo: [String: Any] = [
+            EZWindowTypeKey: service.windowType.rawValue,
+            EZServiceTypeKey: service.serviceType().rawValue,
+        ]
+        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(notification)
     }
 }
 

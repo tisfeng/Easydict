@@ -68,7 +68,7 @@
 		037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B229583F5200D0E2CF /* EZServiceCell.m */; };
 		037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B529588EDE00D0E2CF /* EZCustomTableRowView.m */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
-		037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */; };
+		037E006D2B3DC098006491C6 /* EZOpenAILikeService+EZPromptMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CF27FA2B3A787900E19B57 /* EZOpenAILikeService+EZPromptMessages.m */; };
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
 		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
@@ -235,7 +235,10 @@
 		0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */; };
 		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */; };
+		0A318F392B8CBE960005EF77 /* EZOpenAILikeService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A318F382B8CBE960005EF77 /* EZOpenAILikeService.m */; };
+		0A318F3B2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A318F3A2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift */; };
 		0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8685C72B552A590022534F /* DisabledAppTab.swift */; };
+		0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9AFBAA2B7F8D7E0064C9A8 /* CustomOpenAIService.swift */; };
 		0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B212B4D16A500F07198 /* WindowAccessor.swift */; };
 		0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B232B4E46B300F07198 /* TapHandlerView.swift */; };
 		0AC8A8352B6641A7006DA5CC /* TencentService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8342B6641A7006DA5CC /* TencentService+ConfigurableService.swift */; };
@@ -686,8 +689,8 @@
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
-		03CF27F92B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZOpenAIService+EZPromptMessages.h"; sourceTree = "<group>"; };
-		03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZOpenAIService+EZPromptMessages.m"; sourceTree = "<group>"; };
+		03CF27F92B3A787900E19B57 /* EZOpenAILikeService+EZPromptMessages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZOpenAILikeService+EZPromptMessages.h"; sourceTree = "<group>"; };
+		03CF27FA2B3A787900E19B57 /* EZOpenAILikeService+EZPromptMessages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZOpenAILikeService+EZPromptMessages.m"; sourceTree = "<group>"; };
 		03CF88622B137F650030C199 /* Array+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Convenience.swift"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
@@ -746,7 +749,11 @@
 		0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AppInfo.swift"; sourceTree = "<group>"; };
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
+		0A318F372B8CBE960005EF77 /* EZOpenAILikeService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenAILikeService.h; sourceTree = "<group>"; };
+		0A318F382B8CBE960005EF77 /* EZOpenAILikeService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenAILikeService.m; sourceTree = "<group>"; };
+		0A318F3A2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomOpenAIService+ConfigurableService.swift"; sourceTree = "<group>"; };
 		0A8685C72B552A590022534F /* DisabledAppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisabledAppTab.swift; sourceTree = "<group>"; };
+		0A9AFBAA2B7F8D7E0064C9A8 /* CustomOpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOpenAIService.swift; sourceTree = "<group>"; };
 		0AC11B212B4D16A500F07198 /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		0AC11B232B4E46B300F07198 /* TapHandlerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapHandlerView.swift; sourceTree = "<group>"; };
 		0AC8A8342B6641A7006DA5CC /* TencentService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TencentService+ConfigurableService.swift"; sourceTree = "<group>"; };
@@ -1297,8 +1304,10 @@
 				0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */,
 				03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */,
 				03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */,
-				03CF27F92B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.h */,
-				03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */,
+				03CF27F92B3A787900E19B57 /* EZOpenAILikeService+EZPromptMessages.h */,
+				03CF27FA2B3A787900E19B57 /* EZOpenAILikeService+EZPromptMessages.m */,
+				0A318F372B8CBE960005EF77 /* EZOpenAILikeService.h */,
+				0A318F382B8CBE960005EF77 /* EZOpenAILikeService.m */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -1387,6 +1396,7 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
 				62E2BF462B4082BA00E42D38 /* Ali */,
 				C415C0AB2B450C4500A9D231 /* Gemini */,
 				17BCAEF22B0DFF9000A7D372 /* Niutrans */,
@@ -2114,6 +2124,14 @@
 			path = Notification;
 			sourceTree = "<group>";
 		};
+		0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */ = {
+			isa = PBXGroup;
+			children = (
+				0A9AFBAA2B7F8D7E0064C9A8 /* CustomOpenAIService.swift */,
+			);
+			path = CustomOpenAI;
+			sourceTree = "<group>";
+		};
 		17BCAEF22B0DFF9000A7D372 /* Niutrans */ = {
 			isa = PBXGroup;
 			children = (
@@ -2435,6 +2453,7 @@
 				0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */,
 				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
 				0AC8A84A2B6A629D006DA5CC /* GeminiService+ConfigurableService.swift */,
+				0A318F3A2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift */,
 			);
 			path = "QueryService+ConfigurableService";
 			sourceTree = "<group>";
@@ -3011,12 +3030,14 @@
 				EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */,
 				036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */,
 				03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */,
-				037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */,
+				037E006D2B3DC098006491C6 /* EZOpenAILikeService+EZPromptMessages.m in Sources */,
 				03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */,
+				0A318F392B8CBE960005EF77 /* EZOpenAILikeService.m in Sources */,
 				62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */,
 				03B0232729231FA6001C7E63 /* NSColor+MM.m in Sources */,
 				03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */,
 				03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */,
+				0A318F3B2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift in Sources */,
 				03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */,
 				C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */,
 				0AC8A83D2B6685EE006DA5CC /* SecureTextField.swift in Sources */,
@@ -3033,6 +3054,7 @@
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */,
+				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
