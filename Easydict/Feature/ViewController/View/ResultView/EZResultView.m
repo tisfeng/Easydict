@@ -428,9 +428,11 @@
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
     EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
-    service.model = sender.title;
-    self.serviceModelButton.title = service.model;
-    [self postServiceUpdatedNotification:service.serviceType];
+     if (![service.model isEqualToString:sender.title]) {
+        service.model = sender.title;
+        self.serviceModelButton.title = service.model;
+        [self postServiceUpdatedNotification:service.serviceType];
+    }
 }
 
 - (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
