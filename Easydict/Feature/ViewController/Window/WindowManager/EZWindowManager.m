@@ -18,7 +18,8 @@
 #import "Easydict-Swift.h"
 
 @interface EZWindowManager ()
-
+@property (nonatomic, strong) NSMutableArray *floatingWindowTypeArray;
+@property (nonatomic, strong) EZBaseQueryViewController *backgroundQueryViewController;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
@@ -74,7 +75,26 @@ static EZWindowManager *_instance;
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languagePreferenceChanged:) name:EZI18nHelper.languagePreferenceChangedNotification object:nil];
+    
     //    NSLog(@"%@", self.floatingWindowTypeArray);
+}
+
+- (void)languagePreferenceChanged:(NSNotification *)notification {
+    NSLog(@"language preference changed %@", [[EZI18nHelper shared] localizeCode]);
+    
+    // close all window when language preference changed
+    [self closeFloatingWindow];
+    [self closeMainWindowIfNeeded];
+    
+    self.fixedWindow.titleBar.pin = NO;
+    [self.fixedWindow close];
+    
+    self.miniWindow.titleBar.pin = NO;
+    [self.miniWindow close];
+    self.miniWindow = nil;
+    
+    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
 }
 
 - (void)setupEventMonitor {

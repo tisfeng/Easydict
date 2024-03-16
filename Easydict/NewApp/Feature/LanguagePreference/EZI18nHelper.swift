@@ -16,6 +16,7 @@ var localizedBundle: Bundle {
 
 @objcMembers
 class EZI18nHelper: NSObject {
+    static let languagePreferenceChangedNotification = "EZLanguagePreferenceChangedNotification"
     static let shared = EZI18nHelper()
 
     var localizedBundle: Bundle {

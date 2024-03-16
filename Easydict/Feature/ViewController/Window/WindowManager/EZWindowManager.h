@@ -22,11 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) EZFixedQueryWindow *fixedWindow;
 @property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
 
-@property (nonatomic, strong) NSMutableArray *floatingWindowTypeArray;
 @property (nonatomic, assign) EZWindowType floatingWindowType;
-@property (nonatomic, strong, nullable) EZBaseQueryWindow *floatingWindow;
-
-@property (nonatomic, strong) EZBaseQueryViewController *backgroundQueryViewController;
+@property (nonatomic, strong, nullable, readonly) EZBaseQueryWindow *floatingWindow;
 
 /// Right-bottom offset: (15, -12)
 @property (nonatomic, assign) CGPoint offsetPoint;

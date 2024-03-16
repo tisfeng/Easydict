@@ -31,8 +31,14 @@ class LanguageState: ObservableObject {
         }
     }
 
-    @AppStorage(kEZLanguagePreferenceLocalKey) var language: LanguageType = .init(
+    @AppStorage(kEZLanguagePreferenceLocalKey) var language: LanguageType = (.init(
         rawValue: Locale.current.identifier
-    ) ??
-        .simplifiedChinese
+    ) ?? .simplifiedChinese) {
+        didSet {
+            NotificationCenter.default.post(
+                name: NSNotification.Name(rawValue: EZI18nHelper.languagePreferenceChangedNotification),
+                object: nil
+            )
+        }
+    }
 }
