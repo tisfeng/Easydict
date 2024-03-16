@@ -21,6 +21,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Check if all line starts with a comment symbol, #,//,*
 - (BOOL)allLineStartsWithCommentSymbol;
 
+/**
+ Segment English text to words: key_value --> key value
+ 
+ Refer https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
+ */
+- (NSString *)segmentWords;
+
+#pragma mark - Handle Input text
+
+/// Handle input text, return queryText.
+- (NSString *)handleInputText;
+
 @end
 
 NS_ASSUME_NONNULL_END

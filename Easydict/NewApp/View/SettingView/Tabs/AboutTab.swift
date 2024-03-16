@@ -13,28 +13,6 @@ import SwiftUI
 struct AboutTab: View {
     // MARK: Internal
 
-    class CheckUpdaterViewModel: ObservableObject {
-        // MARK: Lifecycle
-
-        init() {
-            updater
-                .publisher(for: \.automaticallyChecksForUpdates)
-                .assign(to: &$autoChecksForUpdates)
-        }
-
-        // MARK: Internal
-
-        @Published var autoChecksForUpdates = true {
-            didSet {
-                updater.automaticallyChecksForUpdates = autoChecksForUpdates
-            }
-        }
-
-        // MARK: Private
-
-        private let updater = Configuration.shared.updater
-    }
-
     var body: some View {
         ScrollView {
             VStack(spacing: 15) {
@@ -45,9 +23,6 @@ struct AboutTab: View {
                     .font(.system(size: 26, weight: .semibold))
                 Text("current_version".localized) + Text(verbatim: " \(version)")
                     .font(.system(size: 14))
-                Toggle("auto_check_update".localized, isOn: $checkUpdaterViewModel.autoChecksForUpdates)
-                Text(verbatim: "(") + Text("lastest_version".localized) +
-                    Text(verbatim: " \(lastestVersion ?? version))")
 
                 HStack {
                     Text("author".localized)
@@ -63,21 +38,9 @@ struct AboutTab: View {
             .frame(maxWidth: .infinity)
         }
         .scrollIndicators(.hidden)
-        .task {
-            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-            await MainActor.run {
-                lastestVersion = version
-            }
-        }
     }
 
     // MARK: Private
-
-    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
-
-    @State private var lastestVersion: String?
-
-    @EnvironmentObject private var languageState: LanguageState
 
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ""

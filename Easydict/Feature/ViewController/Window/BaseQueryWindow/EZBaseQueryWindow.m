@@ -55,6 +55,14 @@
     [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(titleView);
     }];
+    
+    mm_weakify(self);
+    self.titleBar.menuActionBlock = ^(EZTitlebarAction action) {
+        mm_strongify(self);
+        if (self.queryViewController) {
+            [self.queryViewController receiveTitlebarAction:action];
+        }
+    };
 }
 
 

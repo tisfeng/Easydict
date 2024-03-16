@@ -78,6 +78,8 @@
 @property (nonatomic, strong) NSButton *clearInputButton;
 @property (nonatomic, strong) NSButton *keepPrevResultButton;
 @property (nonatomic, strong) NSButton *selectQueryTextWhenWindowActivateButton;
+@property (nonatomic, strong) NSButton *automaticWordSegmentationButton;
+@property (nonatomic, strong) NSButton *automaticallyRemoveCodeCommentSymbolsButton;
 
 @property (nonatomic, strong) NSTextField *autoQueryLabel;
 @property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
@@ -93,6 +95,7 @@
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
 @property (nonatomic, strong) NSButton *showEudicQuickLinkButton;
 @property (nonatomic, strong) NSButton *showAppleDictionaryQuickLinkButton;
+@property (nonatomic, strong) NSButton *showSettingQuickLinkButton;
 
 @property (nonatomic, strong) NSView *separatorView2;
 
@@ -414,7 +417,13 @@
     NSString *selectQueryTextWhenWindowActivateTitle = EZLocalizedString(@"select_query_text_when_window_activate");
     self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
     [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
-
+    
+    self.automaticWordSegmentationButton = [NSButton checkboxWithTitle:EZLocalizedString(@"automatic_word_segmentation") target:self action:@selector(automaticWordSegmentationButtonClicked:)];
+    [self.contentView addSubview:self.automaticWordSegmentationButton];
+    
+    self.automaticallyRemoveCodeCommentSymbolsButton = [NSButton checkboxWithTitle:EZLocalizedString(@"automatically_remove_code_comment_symbols") target:self action:@selector(automaticallyRemoveCodeCommentSymbolsButtonClicked:)];
+    [self.contentView addSubview:self.automaticallyRemoveCodeCommentSymbolsButton];
+    
     NSTextField *autoQueryLabel = [NSTextField labelWithString:EZLocalizedString(@"auto_query")];
     autoQueryLabel.font = font;
     [self.contentView addSubview:autoQueryLabel];
@@ -468,6 +477,9 @@
     self.showAppleDictionaryQuickLinkButton = [NSButton checkboxWithTitle:showAppleDictionaryQuickLink target:self action:@selector(showAppleDictionaryQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showAppleDictionaryQuickLinkButton];
 
+    NSString *showSettingQuickLink = NSLocalizedString(@"show_setting_quick_link", nil);
+    self.showSettingQuickLinkButton = [NSButton checkboxWithTitle:showSettingQuickLink target:self action:@selector(showSettingQuickLinkButtonClicked:)];
+    [self.contentView addSubview:self.showSettingQuickLinkButton];
 
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
@@ -559,6 +571,8 @@
     self.clearInputButton.mm_isOn = self.config.clearInput;
     self.keepPrevResultButton.mm_isOn = self.config.keepPrevResultWhenEmpty;
     self.selectQueryTextWhenWindowActivateButton.mm_isOn = self.config.selectQueryTextWhenWindowActivate;
+    self.automaticWordSegmentationButton.mm_isOn = self.config.automaticWordSegmentation;
+    self.automaticallyRemoveCodeCommentSymbolsButton.mm_isOn = self.config.automaticallyRemoveCodeCommentSymbols;
     self.launchAtStartupButton.mm_isOn = self.config.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = self.config.hideMainWindow;
     self.autoQueryOCRTextButton.mm_isOn = self.config.autoQueryOCRText;
@@ -570,6 +584,7 @@
     self.showGoogleQuickLinkButton.mm_isOn = self.config.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
+    self.showSettingQuickLinkButton.mm_isOn = self.config.showSettingQuickLink;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
     if (@available(macOS 13.0, *)) {
         self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
@@ -776,11 +791,22 @@
         make.left.equalTo(self.clearInputButton);
         make.top.equalTo(self.keepPrevResultButton.mas_bottom).offset(self.verticalPadding);
     }];
-
-    [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.autoGetSelectedTextLabel);
+    
+    [self.automaticallyRemoveCodeCommentSymbolsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
         make.top.equalTo(self.selectQueryTextWhenWindowActivateButton.mas_bottom).offset(self.verticalPadding);
     }];
+
+    [self.automaticWordSegmentationButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
+        make.top.equalTo(self.automaticallyRemoveCodeCommentSymbolsButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
+    [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.autoGetSelectedTextLabel);
+        make.top.equalTo(self.automaticWordSegmentationButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
     [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoQueryLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.autoQueryLabel);
@@ -829,11 +855,16 @@
         make.left.equalTo(self.showEudicQuickLinkButton);
         make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
-
+    
+    [self.showSettingQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.showAppleDictionaryQuickLinkButton);
+        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
     [self.fontSizeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
-        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
+        make.top.equalTo(self.showSettingQuickLinkButton.mas_bottom).offset(20);
+        make.top.equalTo(self.showSettingQuickLinkButton.mas_bottom).offset(20);
     }];
 
     CGFloat changeFontSizeViewWidth = 220;
@@ -995,6 +1026,14 @@
     self.config.selectQueryTextWhenWindowActivate = sender.mm_isOn;
 }
 
+- (void)automaticWordSegmentationButtonClicked:(NSButton *)sender {
+    self.config.automaticWordSegmentation = sender.mm_isOn;
+}
+
+- (void)automaticallyRemoveCodeCommentSymbolsButtonClicked:(NSButton *)sender {
+    self.config.automaticallyRemoveCodeCommentSymbols = sender.mm_isOn;
+}
+
 - (void)autoCopySelectedTextButtonClicked:(NSButton *)sender {
     self.config.autoCopySelectedText = sender.mm_isOn;
 }
@@ -1019,6 +1058,9 @@
     self.config.showAppleDictionaryQuickLink = sender.mm_isOn;
 }
 
+- (void)showSettingQuickLinkButtonClicked:(NSButton *)sender {
+    self.config.showSettingQuickLink = sender.mm_isOn;
+}
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
     // if user not set select shortcut and input shortcut not allow hidden menu bar icon

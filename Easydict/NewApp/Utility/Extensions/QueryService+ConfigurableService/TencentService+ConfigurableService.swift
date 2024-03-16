@@ -12,7 +12,10 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension TencentService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.tencentSecretId, .tencentSecretKey]) {
+        ServiceConfigurationSecretSectionView(
+            service: self,
+            observeKeys: [.tencentSecretId, .tencentSecretKey]
+        ) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_id.title",
                 key: .tencentSecretId

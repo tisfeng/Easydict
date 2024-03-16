@@ -106,17 +106,25 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
 
+    @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
+
     var disabledAutoSelect: Bool = false
 
     var isRecordingSelectTextShortcutKey: Bool = false
 
     let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
 
+    @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+
+    @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+
     @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
 
     @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
 
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
+
+    @DefaultsWrapper(.showSettingQuickLink) var showSettingQuickLink: Bool
 
     var cancellables: [AnyCancellable] = []
 
@@ -313,6 +321,14 @@ class Configuration: NSObject {
                 .removeDuplicates()
                 .sink { [weak self] _ in
                     self?.didSetShowAppleDictionaryQuickLink()
+                }
+        )
+
+        cancellables.append(
+            Defaults.publisher(.showSettingQuickLink, options: [])
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetShowSettingQuickLink()
                 }
         )
 
@@ -518,6 +534,12 @@ extension Configuration {
         EZMenuItemManager.shared().appleDictionaryItem?.isHidden = !showAppleDictionaryQuickLink
 
         logSettings(["show_apple_dictionary_link": showAppleDictionaryQuickLink])
+    }
+
+    func didSetShowSettingQuickLink() {
+        postUpdateQuickLinkButtonNotification()
+
+        logSettings(["showSettingQuickLink": showSettingQuickLink])
     }
 
     fileprivate func didSetHideMenuBarIcon() {
