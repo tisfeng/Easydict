@@ -11,10 +11,10 @@ import Defaults
 import Foundation
 import SwiftUI
 
-// MARK: - EZOpenAIService + ConfigurableService
+// MARK: - OpenAIService + ConfigurableService
 
 @available(macOS 13.0, *)
-extension EZOpenAIService: ConfigurableService {
+extension OpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
         OpenAIServiceConfigurationView(service: self)
     }
@@ -26,14 +26,14 @@ extension EZOpenAIService: ConfigurableService {
 private struct OpenAIServiceConfigurationView: View {
     // MARK: Lifecycle
 
-    init(service: EZOpenAIService) {
+    init(service: OpenAIService) {
         self.service = service
         self.viewModel = OpenAIServiceViewModel(service: service)
     }
 
     // MARK: Internal
 
-    let service: EZOpenAIService
+    let service: OpenAIService
 
     var body: some View {
         ServiceConfigurationSecretSectionView(
@@ -54,7 +54,7 @@ private struct OpenAIServiceConfigurationView: View {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.model.title",
                 key: .openAIModel,
-                values: OpenAIModels.allCases
+                values: OpenAIModel.allCases
             )
             ServiceConfigurationToggleCell(
                 titleKey: "service.configuration.openai.translation.title",
@@ -131,10 +131,10 @@ protocol EnumLocalizedStringConvertible {
     var title: String { get }
 }
 
-// MARK: - OpenAIModels
+// MARK: - OpenAIModel
 
 // swiftlint:disable identifier_name
-enum OpenAIModels: String, CaseIterable {
+enum OpenAIModel: String, CaseIterable {
     case gpt3_5_turbo_0125 = "gpt-3.5-turbo-0125"
     case gpt4_0125_preview = "gpt-4-0125-preview"
 }
@@ -143,7 +143,7 @@ enum OpenAIModels: String, CaseIterable {
 
 // swiftlint:enable identifier_name
 
-extension OpenAIModels: EnumLocalizedStringConvertible {
+extension OpenAIModel: EnumLocalizedStringConvertible {
     var title: String {
         rawValue
     }
@@ -151,7 +151,7 @@ extension OpenAIModels: EnumLocalizedStringConvertible {
 
 // MARK: Defaults.Serializable
 
-extension OpenAIModels: Defaults.Serializable {}
+extension OpenAIModel: Defaults.Serializable {}
 
 // MARK: - OpenAIUsageStats
 
