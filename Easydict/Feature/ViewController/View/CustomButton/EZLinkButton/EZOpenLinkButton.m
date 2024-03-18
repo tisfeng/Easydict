@@ -99,7 +99,9 @@ static NSString *const EZQueryKey = @"{Query}";
     // !!!: when using openURL, URL must has scheme, like https://
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:URL];
     if (success) {
-        if (EZWindowManager.shared.floatingWindowType != EZWindowTypeMain) {
+        EZBaseQueryWindow *window = EZWindowManager.shared.floatingWindow;
+        // When opening a link, do not automatically close main window, or a pinned window.
+        if (!(window.windowType == EZWindowTypeMain || window.isPin)) {
             [[EZWindowManager shared] closeFloatingWindow];
         }
     }
