@@ -28,7 +28,9 @@ struct ServiceTab: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom)
                 .padding(.horizontal)
+                .frame(minWidth: 280)
             }
+
             Group {
                 if let service = viewModel.selectedService {
                     // To provide configuration options for a service, follow these steps
@@ -131,7 +133,7 @@ private struct ServiceItems: View {
 
     private var servicesWithID: [(QueryService, String)] {
         viewModel.services.map { service in
-            (service, service.name())
+            (service, service.serviceType().rawValue)
         }
     }
 }
@@ -141,13 +143,42 @@ private struct ServiceItems: View {
 private class ServiceItemViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(isEnable: Bool) {
-        self.isEnable = isEnable
+    init(_ service: QueryService) {
+        self.service = service
+        self.isEnable = service.enabled
+        self.name = service.name()
+
+        cancellables.append(
+            serviceUpdatePublisher
+                .sink { [weak self] notification in
+                    self?.didReceive(notification)
+                }
+        )
     }
 
     // MARK: Internal
 
+    let service: QueryService
+
     @Published var isEnable = false
+    @Published var name = ""
+
+    // MARK: Private
+
+    private var cancellables: [AnyCancellable] = []
+
+    private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
+        NotificationCenter.default
+            .publisher(for: .serviceHasUpdated)
+            .eraseToAnyPublisher()
+    }
+
+    private func didReceive(_ notification: Notification) {
+        guard let info = notification.userInfo as? [String: Any] else { return }
+        guard let serviceType = info[EZServiceTypeKey] as? String else { return }
+        guard serviceType == service.serviceType().rawValue else { return }
+        name = service.name()
+    }
 }
 
 // MARK: - ServiceItemView
@@ -158,7 +189,7 @@ private struct ServiceItemView: View {
 
     init(service: QueryService) {
         self.service = service
-        self.serviceItemViewModel = ServiceItemViewModel(isEnable: service.enabled)
+        self.serviceItemViewModel = ServiceItemViewModel(service)
     }
 
     // MARK: Internal
@@ -208,17 +239,15 @@ private struct WindowTypePicker: View {
     @Binding var windowType: EZWindowType
 
     var body: some View {
-        HStack {
-            Picker(selection: $windowType) {
-                ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
-                    Text(windowType.localizedStringResource)
-                        .tag(windowType)
-                }
-            } label: {
-                EmptyView()
+        Picker(selection: $windowType) {
+            ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
+                Text(windowType.localizedStringResource)
+                    .tag(windowType)
             }
-            .labelsHidden()
-            .pickerStyle(.segmented)
+        } label: {
+            EmptyView()
         }
+        .labelsHidden()
+        .pickerStyle(.segmented)
     }
 }

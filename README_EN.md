@@ -810,6 +810,8 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-02-10 | 盒子哥 | 100 | |
 | 2024-02-26 | 吃核桃不吐皮儿 | 10 | 感谢解答问题 |
 | 2024-02-28 |  | 20 | 感谢你的 Easydict |
+| 2024-03-11 |  | 20 | 感谢 |
+| 2024-03-16 | 幻影 | 20 | 非常感谢 |
 
 </p>
 

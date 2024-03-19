@@ -6,11 +6,11 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZQueryService.h"
+#import "EZOpenAILikeService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZOpenAIService : EZQueryService
+@interface EZOpenAIService : EZOpenAILikeService
 
 @end
 

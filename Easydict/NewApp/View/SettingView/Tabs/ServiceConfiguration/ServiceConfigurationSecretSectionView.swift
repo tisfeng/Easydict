@@ -23,7 +23,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     ) {
         self.service = service
         self.content = content()
-        _viewModel = .init(wrappedValue: ServiceValidationViewModel(observing: observeKeys))
+        self.viewModel = ServiceValidationViewModel(service: service, observing: observeKeys)
     }
 
     // MARK: Internal
@@ -68,6 +68,9 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                 viewModel.reset()
             }
         })
+        .onDisappear {
+            viewModel.invalidate()
+        }
     }
 
     func validate() {
@@ -87,7 +90,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     // MARK: Private
 
-    @StateObject private var viewModel: ServiceValidationViewModel
+    @ObservedObject private var viewModel: ServiceValidationViewModel
 }
 
 // MARK: - ServiceValidationViewModel
@@ -96,7 +99,9 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 private class ServiceValidationViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(observing keys: [Defaults.Key<String?>]) {
+    init(service: QueryService, observing keys: [Defaults.Key<String?>]) {
+        self.service = service
+        self.name = service.name()
         cancellables.append(
             // check secret key empty input
             Defaults.publisher(keys: keys)
@@ -107,9 +112,19 @@ private class ServiceValidationViewModel: ObservableObject {
                     }
                 }
         )
+        cancellables.append(
+            serviceUpdatePublisher
+                .sink { [weak self] notification in
+                    self?.didReceive(notification)
+                }
+        )
     }
 
     // MARK: Internal
+
+    let service: QueryService
+
+    @Published var name = ""
 
     @Published var isAlertPresented = false
 
@@ -119,12 +134,32 @@ private class ServiceValidationViewModel: ObservableObject {
 
     @Published var isValidateBtnDisabled = false
 
-    var cancellables: [AnyCancellable] = []
+    func invalidate() {
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+    }
 
     func reset() {
         isValidating = false
         alertMessage = ""
         isAlertPresented = false
+    }
+
+    // MARK: Private
+
+    private var cancellables: [AnyCancellable] = []
+
+    private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
+        NotificationCenter.default
+            .publisher(for: .serviceHasUpdated)
+            .eraseToAnyPublisher()
+    }
+
+    private func didReceive(_ notification: Notification) {
+        guard let info = notification.userInfo as? [String: Any] else { return }
+        guard let serviceType = info[EZServiceTypeKey] as? String else { return }
+        guard serviceType == service.serviceType().rawValue else { return }
+        name = service.name()
     }
 }
 
