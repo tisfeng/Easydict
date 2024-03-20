@@ -64,15 +64,19 @@ extension QueryService {
         return messages
     }
 
-    func chatMessages(text: String, from: Language, to: Language) -> [Chat] {
-        var chats: [Chat] = []
+    typealias ChatCompletionMessageParam = ChatQuery.ChatCompletionMessageParam
+
+    func chatMessages(text: String, from: Language, to: Language) -> [ChatCompletionMessageParam] {
+        typealias Role = ChatCompletionMessageParam.Role
+
+        var chats: [ChatCompletionMessageParam] = []
         let messages = translatioMessages(text: text, from: from, to: to)
         for message in messages {
             if let roleRawValue = message["role"],
-               let role = Chat.Role(rawValue: roleRawValue),
+               let role = Role(rawValue: roleRawValue),
                let content = message["content"]
             {
-                let chat = Chat(role: role, content: content)
+                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
                 chats.append(chat)
             }
         }

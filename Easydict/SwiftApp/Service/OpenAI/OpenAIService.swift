@@ -136,7 +136,7 @@ public class OpenAIService: QueryService {
 
         let chats = chatMessages(text: text, from: from, to: to)
 
-        let query = ChatQuery(model: model, messages: chats)
+        let query = ChatQuery(messages: chats, model: model)
         var resultText = ""
 
         openAI.chatsStream(query: query) { [weak self] res in
