@@ -130,16 +130,16 @@ public class OpenAIService: QueryService {
     }
 
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
-        let host = URL(string: endPoint)?.host ?? host
-        let configuration = OpenAI.Configuration(token: apiKey, host: host)
-        let openAI = OpenAI(configuration: configuration)
+        let url = URL(string: endPoint)
+        guard let url else { return }
 
-        let chats = chatMessages(text: text, from: from, to: to)
-
-        let query = ChatQuery(messages: chats, model: model)
         var resultText = ""
 
-        openAI.chatsStream(query: query) { [weak self] res in
+        let chats = chatMessages(text: text, from: from, to: to)
+        let query = ChatQuery(messages: chats, model: model)
+        let openAI = OpenAI(apiToken: apiKey)
+
+        openAI.chatsStream(query: query, url: url) { [weak self] res in
             guard let self else { return }
 
             switch res {
