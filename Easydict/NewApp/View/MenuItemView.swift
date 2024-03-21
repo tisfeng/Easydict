@@ -65,6 +65,7 @@ struct MenuItemView: View {
             let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
             await MainActor.run {
                 latestVersion = version
+                latestVersion = "2.6.2"
             }
         }
     }
@@ -92,7 +93,7 @@ struct MenuItemView: View {
         let defaultLabel = "Easydict  \(currentVersion)"
         if let latestVersion,
            currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
-            return defaultLabel + "  (✨ \(latestVersion)"
+            return defaultLabel + "  (✨\(latestVersion) )"
         } else {
             return defaultLabel
         }
