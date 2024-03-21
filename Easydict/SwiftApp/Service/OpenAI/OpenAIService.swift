@@ -157,6 +157,7 @@ public class OpenAIService: QueryService {
 
             if let error {
                 print("chatsStream error: \(String(describing: error))")
+                completion(result, error)
             } else {
                 // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
                 let nsText = resultText as NSString
