@@ -41,10 +41,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (instancetype)init {
     if (self = [super init]) {
-        // When debug, we should not call this method too much.
-#if !DEBUG
-        [self updateCookieAndToken];
-#endif
+        /**
+         Previously, in order to optimize the request experience, the cookie and token would be updated when initializing the service, [self updateCookieAndToken], but this would cause them to be frequently called under certain circumstances, so I removed it.
+         
+         FIX https://github.com/tisfeng/Easydict/issues/466
+         */
     }
     return self;
 }
