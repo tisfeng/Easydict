@@ -274,7 +274,7 @@
         mm_weakify(self);
         [self.serviceModelButton setMouseUpBlock:^(EZButton * _Nonnull button) {
             mm_strongify(self);
-            [self showModelSelectionMenu];
+            [self showModelSelectionMenu:button];
         }];
         [self updateServiceModelLabel];
     } else {
@@ -415,7 +415,7 @@
     self.serviceModelButton.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
 }
 
-- (void)showModelSelectionMenu {
+- (void)showModelSelectionMenu:(EZButton *)sender {
     EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.availableModels) {
@@ -423,7 +423,8 @@
         item.target = self;
         [menu addItem:item];
     }
-    [menu popUpMenuPositioningItem:nil atLocation:[NSEvent mouseLocation] inView:nil];
+    CGPoint point = CGPointMake(0, sender.height + 6);
+    [menu popUpMenuPositioningItem:nil atLocation:point inView:sender];
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
