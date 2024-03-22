@@ -41,14 +41,6 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 - (instancetype)init {
     if (self = [super init]) {
         _canRetryFetchHost = YES;
-        
-        [self fetchBingHost:^{
-            [self fetchBingConfig:^{
-                
-            } failure:^(NSError *error) {
-                
-            }];
-        }];
     }
     return self;
 }
