@@ -26,7 +26,6 @@
     if (localizedBundle) {
         return [localizedBundle localizedStringForKey:key value:value table:tableName];
     } else {
-        NSLog(@"localizedStringForKey super");
         return [super localizedStringForKey:key value:value table:tableName];
     }
 }
