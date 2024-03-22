@@ -16,6 +16,7 @@
 #import "EZWindowManager.h"
 #import "EZOpenAILikeService.h"
 #import "EZLocalStorage.h"
+#import "Easydict-Swift.h"
 
 @interface EZResultView ()
 
@@ -423,8 +424,7 @@
         item.target = self;
         [menu addItem:item];
     }
-    CGPoint point = CGPointMake(0, sender.height + 6);
-    [menu popUpMenuPositioningItem:nil atLocation:point inView:sender];
+    [menu popUpBelowView:sender];
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {

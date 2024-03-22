@@ -7,6 +7,7 @@
 //
 
 #import "EZSelectLanguageButton.h"
+#import "Easydict-Swift.h"
 
 @interface EZSelectLanguageButton ()
 
@@ -35,8 +36,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         [self setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self)
             // 显示menu
-            [self setupMenu];
-            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
+            [self setupMenu];            
+            [self.customMenu popUpBelowView:self];
         }];
     }
     return self;

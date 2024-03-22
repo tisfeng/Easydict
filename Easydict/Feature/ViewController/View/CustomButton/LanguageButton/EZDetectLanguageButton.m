@@ -9,6 +9,7 @@
 #import "EZDetectLanguageButton.h"
 #import "EZLanguageManager.h"
 #import "NSView+EZAnimatedHidden.h"
+#import "Easydict-Swift.h"
 
 @interface EZDetectLanguageButton ()
 
@@ -47,7 +48,7 @@
         
         // 显示menu
         [self setupMenu];
-        [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
+        [self.customMenu popUpBelowView:self];
     }];
 }
 

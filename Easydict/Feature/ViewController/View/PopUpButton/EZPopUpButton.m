@@ -7,6 +7,7 @@
 //
 
 #import "EZPopUpButton.h"
+#import "Easydict-Swift.h"
 
 @interface EZPopUpButton ()
 
@@ -36,7 +37,7 @@ DefineMethodMMMake_m(EZPopUpButton);
         // 显示menu
         if (self.titles.count) {
             [self setupMenu];
-            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
+            [self.customMenu popUpBelowView:self];
         }
     }];
         

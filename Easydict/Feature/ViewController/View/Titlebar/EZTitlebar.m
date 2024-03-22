@@ -235,7 +235,7 @@
 }
 
 - (void)showMenu {
-    NSMenu * menu = [[NSMenu alloc]initWithTitle:@"Menu"];
+    NSMenu *menu = [[NSMenu alloc]initWithTitle:@"Menu"];
     NSMenuItem * item1 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
     item1.target = self;
     
@@ -249,8 +249,8 @@
     [menu addItem:item2];
     [menu addItem:[NSMenuItem separatorItem]];
     [menu addItem:item3];
-    
-    [menu popUpMenuPositioningItem:nil atLocation:[NSEvent mouseLocation] inView:nil];
+        
+    [menu popUpBelowView:self.settingButton];
 }
 
 - (void)clickAutomaticallyRemoveCodeCommentSymbols {
