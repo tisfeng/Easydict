@@ -42,8 +42,6 @@ struct AboutTab: View {
 
     // MARK: Private
 
-    @EnvironmentObject private var languageState: LanguageState
-
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ""
     }

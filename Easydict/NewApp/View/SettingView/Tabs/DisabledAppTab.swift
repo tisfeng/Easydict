@@ -150,8 +150,6 @@ struct DisabledAppTab: View {
     // MARK: Private
 
     @StateObject private var disabledAppViewModel = DisabledAppViewModel()
-
-    @EnvironmentObject private var languageState: LanguageState
 }
 
 // MARK: - ListToolbar

@@ -40,7 +40,6 @@ struct PrivacyTab: View {
 
     @Default(.allowCrashLog) private var allowCollectCrashLog
     @Default(.allowAnalytics) private var allowCollectAnalytics
-    @EnvironmentObject private var languageState: LanguageState
 }
 
 @available(macOS 13, *)

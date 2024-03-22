@@ -33,7 +33,9 @@ struct EasydictApp: App {
     var body: some Scene {
         if #available(macOS 13, *) {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
-                MenuItemView().environmentObject(languageState)
+                MenuItemView()
+                    .environmentObject(languageState)
+                    .environment(\.locale, .init(identifier: EZI18nHelper.shared.localizeCode))
             } label: {
                 Label {
                     Text("Easydict")
@@ -62,7 +64,10 @@ struct EasydictApp: App {
             .windowResizability(.contentSize)
 
             Settings {
-                SettingView().environmentObject(languageState)
+                SettingView().environmentObject(languageState).environment(
+                    \.locale,
+                    .init(identifier: EZI18nHelper.shared.localizeCode)
+                )
             }
         }
     }

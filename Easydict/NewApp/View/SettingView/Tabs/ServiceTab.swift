@@ -230,8 +230,6 @@ private struct ServiceItemView: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
     @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
-
-    @EnvironmentObject private var languageState: LanguageState
 }
 
 // MARK: - WindowTypePicker
