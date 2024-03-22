@@ -32,7 +32,7 @@ DefineMethodMMMake_m(EZPopUpButton);
     self.title = @"";
     
     mm_weakify(self)
-    [self setClickBlock:^(EZButton * _Nonnull button) {
+    [self setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self)
         // 显示menu
         if (self.titles.count) {
@@ -40,7 +40,7 @@ DefineMethodMMMake_m(EZPopUpButton);
             [self.customMenu popUpBelowView:self];
         }
     }];
-        
+    
     [NSView mm_make:^(NSView *_Nonnull titleContainerView) {
         [self addSubview:titleContainerView];
         titleContainerView.layer.backgroundColor = [NSColor redColor].CGColor;

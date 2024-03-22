@@ -36,7 +36,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         [self setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self)
             // 显示menu
-            [self setupMenu];            
+            [self setupMenu];
             [self.customMenu popUpBelowView:self];
         }];
     }
@@ -110,7 +110,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 #pragma mark -
 
 - (void)setupMenu {
-    EZLanguageManager *languageManager =  [EZLanguageManager shared];
+    EZLanguageManager *languageManager = [EZLanguageManager shared];
     NSArray *allLanguages = [languageManager allLanguages];
     self.languageDict = [[MMOrderedDictionary alloc] init];
     for (EZLanguage language in allLanguages) {
@@ -163,8 +163,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     _selectedLanguage = selectedLanguage;
     
     if ([self.languageDict.allKeys containsObject:selectedLanguage]) {
-        EZLanguageManager *languageManager =  [EZLanguageManager shared];
-
+        EZLanguageManager *languageManager = [EZLanguageManager shared];
+        
         NSString *languageName = [languageManager showingLanguageName:selectedLanguage];
         NSString *languageFlag = [languageManager languageFlagEmoji:selectedLanguage];
         

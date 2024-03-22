@@ -56,13 +56,13 @@
     EZLanguage oldDetectedLanguage = self.detectedLanguage;
     _detectedLanguage = detectedLanguage;
     
-    if (!self.showAutoLanguage && [detectedLanguage isEqualToString: EZLanguageAuto]) {
+    if (!self.showAutoLanguage && [detectedLanguage isEqualToString:EZLanguageAuto]) {
         [self setAnimatedHidden:YES];
         return;
     }
     
     [self setAnimatedHidden:NO];
-
+    
     NSString *detectLanguageTitle = [EZLanguageManager.shared showingLanguageName:detectedLanguage];
     
     NSString *title = NSLocalizedString(@"detected", nil);
@@ -114,7 +114,7 @@
         }
     }
     
-    [self.languageDict enumerateKeysAndObjectsUsingBlock:^(EZLanguage  _Nonnull key, NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.languageDict enumerateKeysAndObjectsUsingBlock:^(EZLanguage _Nonnull key, NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:obj action:@selector(clickItem:) keyEquivalent:@""];
         item.tag = idx;
         item.target = self;
