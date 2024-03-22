@@ -1761,6 +1761,23 @@
         }
       }
     },
+    "language_preference" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display Language"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示语言"
+          }
+        }
+      }
+    },
     "large" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2675,22 +2692,6 @@
         }
       }
     },
-    "service.configuration.custom_openai.name.title" : {
-        "localizations" : {
-            "en" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "Custom Service Name"
-                }
-            },
-            "zh-Hans" : {
-                "stringUnit" : {
-                    "state" : "translated",
-                    "value" : "自定义服务名称"
-                }
-            }
-        }
-    },
     "service.configuration.custom_openai.model.placeholder" : {
       "localizations" : {
         "en" : {
@@ -2703,6 +2704,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "模型名字，多个模型使用逗号（,）分隔"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.name.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Service Name"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义服务名称"
           }
         }
       }

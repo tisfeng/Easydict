@@ -100,6 +100,7 @@ struct SettingView: View {
 
     @State private var selection = SettingTab.general
     @State private var window: NSWindow?
+    @EnvironmentObject private var languageState: LanguageState
 }
 
 @available(macOS 13, *)

@@ -33,7 +33,7 @@ struct EasydictApp: App {
     var body: some Scene {
         if #available(macOS 13, *) {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
-                MenuItemView()
+                MenuItemView().environmentObject(languageState)
             } label: {
                 Label {
                     Text("Easydict")
@@ -62,7 +62,7 @@ struct EasydictApp: App {
             .windowResizability(.contentSize)
 
             Settings {
-                SettingView()
+                SettingView().environmentObject(languageState)
             }
         }
     }
@@ -77,6 +77,7 @@ struct EasydictApp: App {
     private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
+    @StateObject private var languageState = LanguageState()
 }
 
 // MARK: - FakeViewToOpenSettingsInSonoma
