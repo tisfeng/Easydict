@@ -13,7 +13,7 @@ import SwiftUI
 @objcMembers
 @objc(EZI18nHelper)
 class I18nHelper: NSObject {
-    static let languagePreferenceChangedNotification = "EZLanguagePreferenceChangedNotification"
+    static let languagePreferenceChangedNotification = "LanguagePreferenceChangedNotification"
     static let shared = I18nHelper()
 
     var localizedBundle: Bundle {
