@@ -35,10 +35,7 @@ class LanguageState: ObservableObject {
         rawValue: Locale.current.identifier
     ) ?? .simplifiedChinese) {
         didSet {
-            NotificationCenter.default.post(
-                name: NSNotification.Name(rawValue: EZI18nHelper.languagePreferenceChangedNotification),
-                object: nil
-            )
+            NotificationCenter.default.post(name: .languagePreferenceChanged, object: nil)
         }
     }
 }

@@ -8,8 +8,9 @@
 
 import Foundation
 
-class EZLocalizedBundle: Bundle {
+@objc(EZLocalizedBundle)
+class LocalizedBundle: Bundle {
     override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
-        EZI18nHelper.shared.localizedBundle.localizedString(forKey: key, value: value, table: tableName)
+        I18nHelper.shared.localizedBundle.localizedString(forKey: key, value: value, table: tableName)
     }
 }

@@ -35,7 +35,7 @@ struct EasydictApp: App {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
                 MenuItemView()
                     .environmentObject(languageState)
-                    .environment(\.locale, .init(identifier: EZI18nHelper.shared.localizeCode))
+                    .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
             } label: {
                 Label {
                     Text("Easydict")
@@ -66,7 +66,7 @@ struct EasydictApp: App {
             Settings {
                 SettingView().environmentObject(languageState).environment(
                     \.locale,
-                    .init(identifier: EZI18nHelper.shared.localizeCode)
+                    .init(identifier: I18nHelper.shared.localizeCode)
                 )
             }
         }
