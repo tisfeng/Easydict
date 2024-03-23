@@ -65,7 +65,6 @@ struct MenuItemView: View {
             let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
             await MainActor.run {
                 latestVersion = version
-                latestVersion = "2.6.2"
             }
         }
     }

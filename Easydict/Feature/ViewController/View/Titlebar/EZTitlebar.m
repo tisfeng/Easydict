@@ -70,12 +70,11 @@
     [self setupSettingButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
-    
 }
 
 - (void)setupSettingButton {
     EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
-    NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil]imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
+    NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
     
     button.image = image;
     self.settingButton = button;
@@ -99,7 +98,6 @@
     [button setMouseUpBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self showMenu];
-        
     }];
 }
 
@@ -186,7 +184,7 @@
         EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
         
         // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
-        BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic"]];
+        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic" ]];
         eudicButton.hidden = !installedEudic;
         if (installedEudic) {
             [self addSubview:eudicButton];
@@ -235,14 +233,14 @@
 }
 
 - (void)showMenu {
-    NSMenu * menu = [[NSMenu alloc]initWithTitle:@"Menu"];
-    NSMenuItem * item1 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
+    NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
+    NSMenuItem *item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
     item1.target = self;
     
-    NSMenuItem * item2 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
+    NSMenuItem *item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
     item2.target = self;
     
-    NSMenuItem * item3 = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
+    NSMenuItem *item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
     item3.target = self;
     
     [menu addItem:item1];
@@ -250,7 +248,7 @@
     [menu addItem:[NSMenuItem separatorItem]];
     [menu addItem:item3];
     
-    [menu popUpMenuPositioningItem:nil atLocation:[NSEvent mouseLocation] inView:nil];
+    [menu popUpBelowView:self.settingButton];
 }
 
 - (void)clickAutomaticallyRemoveCodeCommentSymbols {

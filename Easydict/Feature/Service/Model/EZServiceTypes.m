@@ -13,7 +13,6 @@
 #import "EZDeepLTranslate.h"
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
-#import "EZOpenAIService.h"
 #import "EZBingService.h"
 #import "EZConfiguration.h"
 #import "EZAppleDictionary.h"

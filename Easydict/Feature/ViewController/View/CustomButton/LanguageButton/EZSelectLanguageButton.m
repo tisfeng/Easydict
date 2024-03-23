@@ -7,6 +7,7 @@
 //
 
 #import "EZSelectLanguageButton.h"
+#import "Easydict-Swift.h"
 
 @interface EZSelectLanguageButton ()
 
@@ -36,7 +37,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
             mm_strongify(self)
             // 显示menu
             [self setupMenu];
-            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
+            [self.customMenu popUpBelowView:self];
         }];
     }
     return self;
@@ -109,7 +110,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 #pragma mark -
 
 - (void)setupMenu {
-    EZLanguageManager *languageManager =  [EZLanguageManager shared];
+    EZLanguageManager *languageManager = [EZLanguageManager shared];
     NSArray *allLanguages = [languageManager allLanguages];
     self.languageDict = [[MMOrderedDictionary alloc] init];
     for (EZLanguage language in allLanguages) {
@@ -162,8 +163,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     _selectedLanguage = selectedLanguage;
     
     if ([self.languageDict.allKeys containsObject:selectedLanguage]) {
-        EZLanguageManager *languageManager =  [EZLanguageManager shared];
-
+        EZLanguageManager *languageManager = [EZLanguageManager shared];
+        
         NSString *languageName = [languageManager showingLanguageName:selectedLanguage];
         NSString *languageFlag = [languageManager languageFlagEmoji:selectedLanguage];
         

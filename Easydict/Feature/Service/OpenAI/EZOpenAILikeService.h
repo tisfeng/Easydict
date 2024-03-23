@@ -18,7 +18,8 @@ NS_SWIFT_NAME(OpenAILikeService)
 
 @property (nonatomic, copy, readonly) NSString *apiKey;
 @property (nonatomic, copy, readonly) NSString *endPoint;
-@property (nonatomic, copy, readonly) NSString *model;
+@property (nonatomic, copy) NSString *model;
+@property (nonatomic, copy, readonly) NSArray<NSString *> *availableModels;
 
 @property (nonatomic, copy) NSString *defaultAPIKey;
 @property (nonatomic, copy) NSString *defaultModel;
