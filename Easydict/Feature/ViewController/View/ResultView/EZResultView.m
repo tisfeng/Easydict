@@ -15,6 +15,8 @@
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
 #import "EZOpenAILikeService.h"
+#import "EZLocalStorage.h"
+#import "Easydict-Swift.h"
 
 @interface EZResultView ()
 
@@ -48,9 +50,9 @@
     } dark:^(CALayer *layer) {
         layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
     }];
-
+    
     mm_weakify(self);
-
+    
     self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
         mm_strongify(self);
         [self addSubview:view];
@@ -62,14 +64,14 @@
         }];
     }];
     self.topBarView.mas_key = @"topBarView";
-
+    
     self.serviceIcon = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
     }];
     self.serviceIcon.mas_key = @"typeImageView";
-
+    
     self.serviceNameLabel = [NSTextField mm_make:^(NSTextField *label) {
         mm_strongify(self);
         [self addSubview:label];
@@ -90,7 +92,7 @@
     self.serviceModelButton.bordered = NO;
     self.serviceModelButton.cornerRadius = 3.0;
     self.serviceModelButton.titleFont = [NSFont systemFontOfSize:10];
-
+    
     [self.serviceModelButton excuteLight:^(EZButton *button) {
         button.titleColor = [NSColor mm_colorWithHexString:@"#666666"];
         button.backgroundColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
@@ -103,7 +105,7 @@
         button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#585A5C"];
     }];
     self.serviceModelButton.mas_key = @"modelButton";
-
+    
     self.errorImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
@@ -112,11 +114,11 @@
         [imageView setImage:image];
     }];
     self.errorImageView.mas_key = @"errorImageView";
-
+    
     EZLoadingAnimationView *loadingView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingView];
     self.loadingView = loadingView;
-
+    
     EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
@@ -125,22 +127,22 @@
         mm_strongify(self);
         [self.loadingView startLoading:NO];
     }];
-
+    
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
     NSImage *image = [NSImage imageNamed:@"arrow-down"];
     arrowButton.image = image;
     self.arrowButton.mas_key = @"arrowButton";
-
+    
     [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-
+        
         if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
             NSLog(@"query text is empty");
             return;
         }
-
+        
         BOOL oldIsShowing = self.result.isShowing;
         BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
@@ -149,15 +151,15 @@
         if (newIsShowing) {
             self.result.manulShow = YES;
         }
-
+        
         [self updateArrowButton];
-
+        
         if (self.clickArrowBlock) {
             self.clickArrowBlock(self.result);
         }
-
+        
         // TODO: add arrow roate animation.
-
+        
         //        [self rotateArrowButton];
     }];
     
@@ -165,7 +167,7 @@
     EZHoverButton *stopButton = [[EZHoverButton alloc] init];
     self.stopButton = stopButton;
     [self addSubview:stopButton];
-    NSImage *stopImage =  [NSImage ez_imageWithSymbolName:@"stop.circle"];
+    NSImage *stopImage = [NSImage ez_imageWithSymbolName:@"stop.circle"];
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     stopButton.image = stopImage;
     stopButton.mas_key = @"stopButton";
@@ -198,23 +200,23 @@
             self.retryBlock(self.result);
         }
     }];
-
-
+    
+    
     CGSize iconSize = CGSizeMake(16, 16);
-
+    
     [self updateArrowButton];
-
+    
     [self.topBarView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
         make.height.mas_equalTo(EZResultViewMiniHeight);
     }];
-
+    
     [self.serviceIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.topBarView).offset(9);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
-
+    
     [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.serviceIcon.mas_right).offset(4);
         make.centerY.equalTo(self.topBarView).offset(0);
@@ -225,20 +227,20 @@
         make.top.equalTo(self.topBarView).offset(8);
         make.bottom.equalTo(self.topBarView).offset(-8);
     }];
-
+    
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.serviceNameLabel.mas_right).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
-
+    
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.serviceNameLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
-
-
+    
+    
     [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
@@ -262,20 +264,25 @@
 
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
-
+    
     EZServiceType serviceType = result.serviceType;
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
-
+    
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     if ([self isOpenAIService:result.service]) {
         EZOpenAILikeService *service = (EZOpenAILikeService *)result.service;
         self.serviceModelButton.title = service.model;
+        mm_weakify(self);
+        [self.serviceModelButton setMouseUpBlock:^(EZButton *_Nonnull button) {
+            mm_strongify(self);
+            [self showModelSelectionMenu:button];
+        }];
         [self updateServiceModelLabel];
     } else {
         self.serviceModelButton.hidden = YES;
     }
     [self.wordResultView refreshWithResult:result];
-
+    
     mm_weakify(self);
     [self.wordResultView setUpdateViewHeightBlock:^(CGFloat wordResultViewHeight) {
         mm_strongify(self);
@@ -283,10 +290,10 @@
     }];
     
     [self updateAllButtonStatus];
-
+    
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight ?: result.webViewManager.wordResultViewHeight;
     [self updateWordResultViewHeight:wordResultViewHeight];
-
+    
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
 }
@@ -306,14 +313,14 @@
             self.result.isLoading = NO;
         }
     }
-
+    
     [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
         
         make.height.mas_equalTo(wordResultViewHeight);
     }];
-
+    
     CGFloat viewHeight = EZResultViewMiniHeight;
     if (self.result.hasShowingResult && self.result.isShowing) {
         viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
@@ -358,7 +365,7 @@
         errorImageName = @"error";
     }
     NSImage *errorImage = [NSImage imageNamed:errorImageName];
-
+    
     self.errorImageView.image = errorImage;
     self.errorImageView.toolTip = toolTip;
 }
@@ -375,7 +382,7 @@
     if ([self isOpenAIService:self.result.service]) {
         showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
     }
-
+    
     self.stopButton.hidden = !showStopButton;
 }
 
@@ -409,6 +416,32 @@
     self.serviceModelButton.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
 }
 
+- (void)showModelSelectionMenu:(EZButton *)sender {
+    EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
+    NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
+    for (NSString *model in service.availableModels) {
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
+        item.target = self;
+        [menu addItem:item];
+    }
+    [menu popUpBelowView:sender];
+}
+
+- (void)modelDidSelected:(NSMenuItem *)sender {
+    EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
+    if (![service.model isEqualToString:sender.title]) {
+        service.model = sender.title;
+        self.serviceModelButton.title = service.model;
+        [self postServiceUpdatedNotification:service.serviceType];
+    }
+}
+
+- (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
+    NSDictionary *userInfo = @{EZServiceTypeKey : serviceType};
+    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
 #pragma mark - Animation
 
 - (void)rotateArrowButton {
@@ -418,11 +451,11 @@
     animation.cumulative = YES;
     animation.repeatCount = 1;
     animation.duration = 1;
-
+    
     CGRect oldRect = self.arrowButton.layer.frame;
     self.arrowButton.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
     self.arrowButton.layer.frame = oldRect;
-
+    
     [self.arrowButton.layer addAnimation:animation forKey:@"animation"];
 }
 
@@ -463,14 +496,14 @@
     scaleAnimation.values = @[ @1.0, @1.8, @1.0 ];
     scaleAnimation.repeatCount = MAXFLOAT;
     scaleAnimation.duration = 0.6;
-
+    
     CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotationAnimation.fromValue = @(0);
     rotationAnimation.toValue = [NSNumber numberWithFloat:90 * (M_PI / 180.0f)];
     rotationAnimation.cumulative = YES;
     rotationAnimation.repeatCount = MAXFLOAT;
     rotationAnimation.duration = 1;
-
+    
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations = @[ scaleAnimation, rotationAnimation ];
     group.duration = 1;

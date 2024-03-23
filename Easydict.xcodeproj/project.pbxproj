@@ -87,6 +87,7 @@
 		038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038A723F2B62C0B9004995E3 /* String+Regex.swift */; };
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
+		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
@@ -94,7 +95,6 @@
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
 		0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */; };
 		0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */; };
-		0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */; };
 		0399C6B829A9F4B800B4AFCC /* EZSchemeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */; };
 		039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 039B694E2A9D9F370063709D /* EZWebViewManager.m */; };
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
@@ -232,6 +232,7 @@
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
+		0A0781332BA6D9280002DA09 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0781322BA6D9280002DA09 /* OpenAIService.swift */; };
 		0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */; };
 		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */; };
@@ -480,6 +481,7 @@
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
+		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -494,8 +496,6 @@
 		0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeepLTranslateResponse.m; sourceTree = "<group>"; };
 		0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZDeepLTranslateResponse.h"; sourceTree = "<group>"; };
 		0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZDeepLTranslateResponse.m"; sourceTree = "<group>"; };
-		0399C6AA29A860AA00B4AFCC /* EZOpenAIService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenAIService.h; sourceTree = "<group>"; };
-		0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenAIService.m; sourceTree = "<group>"; };
 		0399C6B629A9F4B800B4AFCC /* EZSchemeParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSchemeParser.h; sourceTree = "<group>"; };
 		0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSchemeParser.m; sourceTree = "<group>"; };
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
@@ -746,6 +746,7 @@
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		0A057D6C2B499A000025C51D /* ServiceTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTab.swift; sourceTree = "<group>"; };
+		0A0781322BA6D9280002DA09 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AppInfo.swift"; sourceTree = "<group>"; };
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
@@ -1276,6 +1277,14 @@
 			path = String;
 			sourceTree = "<group>";
 		};
+		038F1F8D2BAD835500CD2F65 /* AppKit */ = {
+			isa = PBXGroup;
+			children = (
+				038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */,
+			);
+			path = AppKit;
+			sourceTree = "<group>";
+		};
 		0396D612292CBDFD006A11D9 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
@@ -1300,8 +1309,7 @@
 		0399C6A929A8608000B4AFCC /* OpenAI */ = {
 			isa = PBXGroup;
 			children = (
-				0399C6AA29A860AA00B4AFCC /* EZOpenAIService.h */,
-				0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */,
+				0A0781322BA6D9280002DA09 /* OpenAIService.swift */,
 				03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */,
 				03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */,
 				03CF27F92B3A787900E19B57 /* EZOpenAILikeService+EZPromptMessages.h */,
@@ -2411,6 +2419,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				038F1F8D2BAD835500CD2F65 /* AppKit */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
 				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
@@ -2911,7 +2920,6 @@
 				03DC7C6A2A3CA852000BF7C9 /* EZAppCell.m in Sources */,
 				9643D9392B6F49E0000FBEA6 /* AppShortcutSetting.swift in Sources */,
 				96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */,
-				0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */,
 				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
 				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
@@ -2952,6 +2960,7 @@
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */,
+				0A0781332BA6D9280002DA09 /* OpenAIService.swift in Sources */,
 				EA3B81F92B5254AA004C0E8B /* Configuration+Defaults.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
@@ -3071,6 +3080,7 @@
 				0AC8A8452B6A4D97006DA5CC /* ServiceConfigurationCells.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
+				038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */,
 				DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
