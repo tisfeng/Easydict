@@ -17,13 +17,9 @@ class I18nHelper: NSObject {
     static let shared = I18nHelper()
 
     var localizedBundle: Bundle {
-        let res = localizeCode
-        let path = Bundle.main.path(forResource: res, ofType: "lproj")
-        let bundle: Bundle
-        if let path = path {
-            bundle = Bundle(path: path) ?? .main
-        } else {
-            bundle = .main
+        guard let path = Bundle.main.path(forResource: localizeCode, ofType: "lproj"),
+              let bundle = Bundle(path: path) else {
+            return .main
         }
         return bundle
     }
