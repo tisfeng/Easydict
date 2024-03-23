@@ -193,7 +193,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }];
     }];
     
-    [defaultCenter addObserver:self selector:@selector(modifyLanduage:) name:EZI18nHelper.languagePreferenceChangedNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(modifyLanduage:) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
 - (void)modifyLanduage:(NSNotification *)notification {
