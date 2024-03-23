@@ -8,10 +8,6 @@
 
 import SwiftUI
 
-var localizedBundle: Bundle {
-    EZI18nHelper.shared.localizedBundle
-}
-
 // MARK: - EZI18nHelper
 
 @objcMembers

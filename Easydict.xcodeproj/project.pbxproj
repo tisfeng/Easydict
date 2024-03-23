@@ -275,7 +275,8 @@
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
 		6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988C2BAC88B500DB835A /* LanguageState.swift */; };
 		6A8C988F2BAC88B500DB835A /* EZI18nHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988D2BAC88B500DB835A /* EZI18nHelper.swift */; };
-		6A8C98932BAC8C0A00DB835A /* EZLocalizedBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C98922BAC8C0A00DB835A /* EZLocalizedBundle.m */; };
+		6A8C98952BAE841600DB835A /* EZLocalizedBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C98942BAE841600DB835A /* EZLocalizedBundle.swift */; };
+		6ADED1552BAE8809004A15BE /* NSBundle+LanguagePreference.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ADED1542BAE8809004A15BE /* NSBundle+LanguagePreference.m */; };
 		960835502B6791F200C6A931 /* Shortcut+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
 		9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */; };
@@ -805,8 +806,8 @@
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A8C988C2BAC88B500DB835A /* LanguageState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageState.swift; sourceTree = "<group>"; };
 		6A8C988D2BAC88B500DB835A /* EZI18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EZI18nHelper.swift; sourceTree = "<group>"; };
-		6A8C98912BAC8C0A00DB835A /* EZLocalizedBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalizedBundle.h; sourceTree = "<group>"; };
-		6A8C98922BAC8C0A00DB835A /* EZLocalizedBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLocalizedBundle.m; sourceTree = "<group>"; };
+		6A8C98942BAE841600DB835A /* EZLocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZLocalizedBundle.swift; sourceTree = "<group>"; };
+		6ADED1542BAE8809004A15BE /* NSBundle+LanguagePreference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+LanguagePreference.m"; sourceTree = "<group>"; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Validator.swift"; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
@@ -1244,7 +1245,6 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				6A8C98902BAC8BDD00DB835A /* LanguagePreference */,
 				03CF88602B137ECB0030C199 /* Swift */,
 				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
 				030570DF2ADB916E00C9905E /* AppleScript */,
@@ -2254,15 +2254,8 @@
 			children = (
 				6A8C988D2BAC88B500DB835A /* EZI18nHelper.swift */,
 				6A8C988C2BAC88B500DB835A /* LanguageState.swift */,
-			);
-			path = LanguagePreference;
-			sourceTree = "<group>";
-		};
-		6A8C98902BAC8BDD00DB835A /* LanguagePreference */ = {
-			isa = PBXGroup;
-			children = (
-				6A8C98912BAC8C0A00DB835A /* EZLocalizedBundle.h */,
-				6A8C98922BAC8C0A00DB835A /* EZLocalizedBundle.m */,
+				6A8C98942BAE841600DB835A /* EZLocalizedBundle.swift */,
+				6ADED1542BAE8809004A15BE /* NSBundle+LanguagePreference.m */,
 			);
 			path = LanguagePreference;
 			sourceTree = "<group>";
@@ -2926,7 +2919,6 @@
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
 				EAED41EF2B54B1430005FE0A /* ConfigurableService.swift in Sources */,
-				6A8C98932BAC8C0A00DB835A /* EZLocalizedBundle.m in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
@@ -2956,6 +2948,7 @@
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
 				17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */,
+				6A8C98952BAE841600DB835A /* EZLocalizedBundle.swift in Sources */,
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */,
@@ -3033,6 +3026,7 @@
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */,
 				DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */,
+				6ADED1552BAE8809004A15BE /* NSBundle+LanguagePreference.m in Sources */,
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
