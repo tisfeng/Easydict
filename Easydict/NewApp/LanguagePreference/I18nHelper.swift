@@ -1,5 +1,5 @@
 //
-//  EZI18nHelper.swift
+//  I18nHelper.swift
 //  Easydict
 //
 //  Created by choykarl on 2024/3/4.
