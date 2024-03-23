@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - LanguageState
 
-let kEZLanguagePreferenceLocalKey = "kEZLanguagePreferenceLocalKey"
+let languagePreferenceLocalKey = "LanguagePreferenceLocalKey"
 
 // MARK: - LanguageState
 
@@ -31,7 +31,7 @@ class LanguageState: ObservableObject {
         }
     }
 
-    @AppStorage(kEZLanguagePreferenceLocalKey) var language: LanguageType = (.init(
+    @AppStorage(languagePreferenceLocalKey) var language: LanguageType = (.init(
         rawValue: Locale.current.identifier
     ) ?? .simplifiedChinese) {
         didSet {

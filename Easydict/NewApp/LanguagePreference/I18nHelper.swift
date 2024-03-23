@@ -25,7 +25,7 @@ class I18nHelper: NSObject {
     }
 
     var localizeCode: String {
-        UserDefaults.standard.string(forKey: kEZLanguagePreferenceLocalKey) ?? LanguageState.LanguageType
+        UserDefaults.standard.string(forKey: languagePreferenceLocalKey) ?? LanguageState.LanguageType
             .simplifiedChinese.rawValue
     }
 

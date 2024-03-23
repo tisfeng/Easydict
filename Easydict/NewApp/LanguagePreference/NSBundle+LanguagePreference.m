@@ -1,5 +1,5 @@
 //
-//  LanguagePreference.m
+//  NSBundle+LanguagePreference.m
 //  Easydict
 //
 //  Created by choykarl on 2024/3/23.

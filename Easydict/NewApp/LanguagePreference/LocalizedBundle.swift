@@ -1,5 +1,5 @@
 //
-//  EZLocalizedBundle.swift
+//  LocalizedBundle.swift
 //  Easydict
 //
 //  Created by choykarl on 2024/3/23.
