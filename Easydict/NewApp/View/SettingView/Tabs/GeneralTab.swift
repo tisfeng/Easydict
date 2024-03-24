@@ -212,6 +212,12 @@ struct GeneralTab: View {
                             .foregroundStyle(.primary)
                     }
                 }
+                Picker("language_preference", selection: $languageState.language) {
+                    ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
+                        Text(language.name)
+                            .tag(language)
+                    }
+                }
             } header: {
                 Text("setting.general.other.header")
             }
@@ -246,6 +252,7 @@ struct GeneralTab: View {
 
     // MARK: Private
 
+    @EnvironmentObject private var languageState: LanguageState
     @Default(.autoSelectText) private var autoSelectText
     @Default(.forceAutoGetSelectedText) private var forceAutoGetSelectedText
     @Default(.clickQuery) private var clickQuery

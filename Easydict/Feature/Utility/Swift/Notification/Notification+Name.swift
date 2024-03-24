@@ -12,6 +12,8 @@ extension Notification.Name {
     static let serviceHasUpdated = Notification.Name(EZServiceHasUpdatedNotification)
 
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
+
+    static let languagePreferenceChanged = Notification.Name(I18nHelper.languagePreferenceChangedNotification)
 }
 
 @objc
@@ -19,4 +21,6 @@ extension NSNotification {
     public static let serviceHasUpdated = Notification.Name.serviceHasUpdated
 
     public static let openSettings = Notification.Name.openSettings
+
+    public static let languagePreferenceChanged = Notification.Name.languagePreferenceChanged
 }

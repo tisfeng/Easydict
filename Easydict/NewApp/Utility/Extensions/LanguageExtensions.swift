@@ -55,7 +55,7 @@ extension Language {
     }
 
     public var localizedName: String {
-        if EZLanguageManager.shared().isSystemChineseFirstLanguage() {
+        if I18nHelper.shared.isSimplifiedChineseLocalize {
             chineseName
         } else {
             if self == .auto {
