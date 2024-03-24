@@ -34,6 +34,8 @@ struct EasydictApp: App {
         if #available(macOS 13, *) {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
                 MenuItemView()
+                    .environmentObject(languageState)
+                    .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
             } label: {
                 Label {
                     Text("Easydict")
@@ -62,7 +64,10 @@ struct EasydictApp: App {
             .windowResizability(.contentSize)
 
             Settings {
-                SettingView()
+                SettingView().environmentObject(languageState).environment(
+                    \.locale,
+                    .init(identifier: I18nHelper.shared.localizeCode)
+                )
             }
         }
     }
@@ -77,6 +82,7 @@ struct EasydictApp: App {
     private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
+    @StateObject private var languageState = LanguageState()
 }
 
 // MARK: - FakeViewToOpenSettingsInSonoma

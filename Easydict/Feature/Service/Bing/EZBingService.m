@@ -25,9 +25,16 @@
 - (instancetype)init {
     if (self = [super init]) {
         _canRetry = YES;
-        _request = [[EZBingRequest alloc] init];
+        NSLog(@"init Bing service");
     }
     return self;
+}
+
+- (EZBingRequest *)request {
+    if (!_request) {
+        _request = [[EZBingRequest alloc] init];
+    }
+    return _request;
 }
 
 #pragma mark - override

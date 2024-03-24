@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EZOpenAIService.h"
+#import "Easydict-Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
