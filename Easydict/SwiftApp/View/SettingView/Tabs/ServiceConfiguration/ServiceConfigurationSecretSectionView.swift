@@ -75,11 +75,15 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                 guard viewModel.isValidating else { return }
 
                 viewModel.isValidating = false
-                viewModel.alertMessage = "service.configuration.validation_success"
+                viewModel.alertMessage = (error == nil) ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+                viewModel.errorMessage = error?.localizedDescription ?? ""
 
-                if let error {
-                    viewModel.alertMessage = "service.configuration.validation_fail"
-                    viewModel.errorMessage = error.localizedDescription
+                if let ezError = error as? EZError, let errorDataMessage = ezError.errorDataMessage {
+                    var errorMessage = ezError.localizedDescription
+                    if !errorDataMessage.isEmpty {
+                        errorMessage += "\n\n\(errorDataMessage)"
+                    }
+                    viewModel.errorMessage = errorMessage
                 }
 
                 print("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
