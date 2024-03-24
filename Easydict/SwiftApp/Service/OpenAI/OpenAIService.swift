@@ -160,11 +160,14 @@ public class OpenAIService: QueryService {
                 print("chatsStream error: \(String(describing: error))")
                 completion(result, error)
             } else {
-                // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
-                let nsText = resultText as NSString
-                resultText = nsText.tryToRemoveQuotes()
-                result.translatedResults = [resultText]
-                completion(result, nil)
+                // If has error, we do not need to update it.
+                if result.error == nil {
+                    // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
+                    let nsText = resultText as NSString
+                    resultText = nsText.tryToRemoveQuotes()
+                    result.translatedResults = [resultText]
+                    completion(result, nil)
+                }
             }
         }
     }
