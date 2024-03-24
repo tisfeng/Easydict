@@ -59,11 +59,13 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } footer: {
             footer
         }
-        .alert(viewModel.alertMessage, isPresented: $viewModel.isAlertPresented, actions: {
+        .alert(viewModel.alertMessage, isPresented: $viewModel.isAlertPresented) {
             Button("ok") {
                 viewModel.reset()
             }
-        })
+        } message: {
+            Text(viewModel.errorMessage)
+        }
     }
 
     func validate() {
@@ -71,9 +73,16 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         service.validate { _, error in
             DispatchQueue.main.async {
                 guard viewModel.isValidating else { return }
+
                 viewModel.isValidating = false
-                viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
-                print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
+                viewModel.alertMessage = "service.configuration.validation_success"
+
+                if let error {
+                    viewModel.alertMessage = "service.configuration.validation_fail"
+                    viewModel.errorMessage = error.localizedDescription
+                }
+
+                print("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
                 viewModel.isAlertPresented = true
             }
         }
@@ -83,10 +92,9 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 @MainActor
 private class ServiceValidationViewModel: ObservableObject {
     @Published var isAlertPresented = false
-
     @Published var isValidating = false
-
     @Published var alertMessage: LocalizedStringKey = ""
+    @Published var errorMessage = ""
 
     @Published var isValidateBtnDisabled = false
 
@@ -108,6 +116,7 @@ private class ServiceValidationViewModel: ObservableObject {
     func reset() {
         isValidating = false
         alertMessage = ""
+        errorMessage = ""
         isAlertPresented = false
     }
 }
