@@ -230,6 +230,7 @@
 		03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
+		03FB20CD2BAFCE9C00789245 /* URL+IsValid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB20CC2BAFCE9C00789245 /* URL+IsValid.swift */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
 		03FC57C72B7DCED300E036F3 /* EncryptedSecretKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03FC57C62B7DCED300E036F3 /* EncryptedSecretKeys.plist */; };
 		03FC57CA2B7DD05D00E036F3 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FC57C92B7DD05D00E036F3 /* APIKey.swift */; };
@@ -744,6 +745,7 @@
 		03F25CB229327BC200E66A12 /* EZShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcut.m; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
+		03FB20CC2BAFCE9C00789245 /* URL+IsValid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+IsValid.swift"; sourceTree = "<group>"; };
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
 		03FC57C62B7DCED300E036F3 /* EncryptedSecretKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = EncryptedSecretKeys.plist; sourceTree = "<group>"; };
 		03FC57C92B7DD05D00E036F3 /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
@@ -2082,6 +2084,14 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
+		03FB20CB2BAFCE8000789245 /* URL */ = {
+			isa = PBXGroup;
+			children = (
+				03FB20CC2BAFCE9C00789245 /* URL+IsValid.swift */,
+			);
+			path = URL;
+			sourceTree = "<group>";
+		};
 		03FC57C32B7DCAE400E036F3 /* Service */ = {
 			isa = PBXGroup;
 			children = (
@@ -2437,6 +2447,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				03FB20CB2BAFCE8000789245 /* URL */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
 				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
@@ -3056,6 +3067,7 @@
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */,
 				03542A552937B7DE00C34C33 /* EZError.m in Sources */,
+				03FB20CD2BAFCE9C00789245 /* URL+IsValid.swift in Sources */,
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,

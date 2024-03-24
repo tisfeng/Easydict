@@ -131,7 +131,8 @@ public class OpenAIService: QueryService {
 
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let url = URL(string: endPoint)
-        guard let url else { return }
+        let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
+        guard let url, url.isValid else { completion(result, invalidURLError); return }
 
         var resultText = ""
 
