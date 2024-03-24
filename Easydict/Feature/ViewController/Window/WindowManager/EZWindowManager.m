@@ -930,6 +930,9 @@ static EZWindowManager *_instance;
     NSNumber *windowType = @(self.floatingWindowType);
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
+    
+    // clear start quert screen
+    EZCoordinateUtils.startQueryScreen = nil;
 }
 
 /// Close floating window, except main window.
