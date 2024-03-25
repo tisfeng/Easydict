@@ -1009,7 +1009,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
         //        NSLog(@"escape: %@", textView);
-        [[EZWindowManager shared] closeFloatingWindow];
+        [[EZWindowManager shared] closeFloatingWindowExceptMain];
         return NO;
     }
     return NO;
