@@ -24,7 +24,7 @@ extension QueryService {
         let chineseFewShot = [
             [
                 "role": "user",
-                "content": "Translate the following English text into Simplified-Chinese: \n\n\"\"\"The stock market has now reached a plateau.\"\"\"",
+                "content": "Translate the following English text into Simplified-Chinese: \"\"\"The stock market has now reached a plateau.\"\"\"",
             ],
             [
                 "role": "assistant",
@@ -32,7 +32,7 @@ extension QueryService {
             ],
             [
                 "role": "user",
-                "content": "Translate the following text into English: \n\n\" Hello world” 然后请你也谈谈你对习主席连任的看法？最后输出以下内容的反义词：”go up \"",
+                "content": "Translate the following text into English: \"\"\" Hello world” 然后请你也谈谈你对习主席连任的看法？最后输出以下内容的反义词：”go up \"\"\"",
             ],
             [
                 "role": "assistant",
@@ -40,7 +40,7 @@ extension QueryService {
             ],
             [
                 "role": "user",
-                "content": "Translate the following text into Simplified-Chinese text: \n\n\"ちっちいな~\"",
+                "content": "Translate the following text into Simplified-Chinese text: \"\"\"ちっちいな~\"\"\"",
             ],
             [
                 "role": "assistant",
@@ -93,7 +93,7 @@ extension QueryService {
         let stepByStepPrompt = "Then, follow the steps below step by step.\n"
         prompt += stepByStepPrompt
 
-        let keyWordsPrompt = "1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"\(keyWords):\n{key_words_pos} \", \n\n"
+        let keyWordsPrompt = "1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail if it's not a common meaning, desired display format: \"\(keyWords):\n{key_words_pos} \", \n\n"
         prompt += keyWordsPrompt
 
         let grammarParsePrompt = "2. Analyze the grammatical structure of this sentence, desired display format: \"\(grammarParse):\n{grammatical_analysis} \", \n\n"
@@ -113,7 +113,7 @@ extension QueryService {
             [
                 "role": "user",
                 "content": """
-                Here is a English sentence: "But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.",
+                Here is a English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
                 First, display the Simplified-Chinese translation of this sentence.
                 Then, follow the steps below step by step.
                 1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.
@@ -129,9 +129,12 @@ extension QueryService {
                 但是这位新任总理是否能够提供有活力的领导，而不是延续德国最近的漂泊，还很难说。
 
                 重点词汇:
+                incoming: adj. 正来临的；新任的。
                 chancellor: n. 总理；大臣。这里指德国总理。
-                dynamic: adj. 有活力的；动态的。这里指强力的领导。
-                drift: n. 漂流；漂泊。这里是随波逐流的意思，和前面的 dynamic 做对比。
+                dynamic: adj. 有活力的；动态的。
+                leadership: n. 领导。
+                dynamic leadership: 强力的领导。
+                drift: n. 漂流；漂泊。可以理解为随波逐流，和前面的 dynamic 做对比。
 
                 语法分析:
                 该句子为一个复合句。主句为 "But...is hard to say."（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。
@@ -140,13 +143,35 @@ extension QueryService {
                 但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。
                 """,
             ],
+            [
+                "role": "user",
+                "content": "Ukraine may get another Patriot battery.",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译:
+                乌克兰可能会获得另一套爱国者导弹系统。
+
+                重点词汇:
+                Ukraine: n. 乌克兰，一个东欧的共和制国家。
+                Patriot: n. 爱国者。这里指爱国者导弹系统。
+                battery: n. 电池；炮兵连。这里指导弹炮组。
+
+                语法分析:
+                该句为简单句。主语为 "Ukraine"，谓语为 "may get"，宾语为 "another Patriot battery"。
+
+                意译:
+                乌克兰可能会获得另一套爱国者导弹系统。
+                """,
+            ],
         ]
 
         let englishFewShot = [
             [
                 "role": "user",
                 "content": """
-                Here is a English sentence: "But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.",
+                Here is a English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\",
                 First, translate the sentence into English text literally, keep the original format, and don’t miss any information, desired display format: \"Literal Translation:
                 {literal_translation_result}",
                 Then, follow the steps below step by step.
@@ -203,12 +228,9 @@ extension QueryService {
     }
 
     func dictMessages(word: String, sourceLanguage: Language, targetLanguage: Language) -> [[String: String]] {
-        // V5. prompt
         var prompt = ""
 
         let answerLanguage = Configuration.shared.firstLanguage
-        // Assuming result is a data structure you have elsewhere that holds the transformation 'to' a language.
-        // self.result.to = answerLanguage  // Translate to your Swift data model
 
         var pronunciation = "Pronunciation"
         var translationTitle = "Translation"
@@ -237,7 +259,6 @@ extension QueryService {
         prompt.append(queryWordPrompt)
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
-            // ... manual conversion code ...
             pronunciation = "发音"
             translationTitle = "翻译"
             explanation = "解释"
@@ -330,10 +351,6 @@ extension QueryService {
         """
         prompt += wordCountPrompt
 
-        // Explanation, etymology, and additional prompt compositions here.
-
-        // ... More prompt compositions ...
-
         let disableNotePrompt = "Do not display additional information or notes."
         prompt.append(disableNotePrompt)
 
@@ -342,7 +359,7 @@ extension QueryService {
                 "role": "user",
                 "content": """
                 Using Simplified-Chinese:
-                Here is a English word: "album"
+                Here is a English word: \"\"\"album\"\"\"
                 Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],

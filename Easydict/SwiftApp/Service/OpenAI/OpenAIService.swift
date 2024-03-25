@@ -166,6 +166,9 @@ public class OpenAIService: QueryService {
 
         var resultText = ""
 
+        result.from = from
+        result.to = to
+
         let queryType = queryTextType(text: text, from: from, to: to)
         let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
         let query = ChatQuery(messages: chats, model: model, temperature: 0)
@@ -178,11 +181,10 @@ public class OpenAIService: QueryService {
             case let .success(chatResult):
                 if let content = chatResult.choices.first?.delta.content {
                     resultText += content
-                    result.translatedResults = [resultText]
-                    completion(result, nil)
+                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                 }
             case let .failure(error):
-                completion(result, error)
+                handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
             }
         } completion: { [weak self] error in
             guard let self else { return }
@@ -196,10 +198,40 @@ public class OpenAIService: QueryService {
                     // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
                     let nsText = resultText as NSString
                     resultText = nsText.tryToRemoveQuotes()
-                    result.translatedResults = [resultText]
-                    completion(result, nil)
+                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                 }
             }
+        }
+    }
+
+    private func handleResult(queryType: EZQueryTextType,
+                              resultText: String?,
+                              error: Error?,
+                              completion: @escaping (EZQueryResult, Error?) -> Void)
+    {
+        let normalResults = [resultText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""]
+
+        switch queryType {
+        case .translation, .sentence:
+            result.translatedResults = normalResults
+            completion(result, error)
+
+        case .dictionary:
+            if let error {
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
+                completion(result, error)
+                return
+            }
+
+            result.translatedResults = normalResults
+            result.showBigWord = true
+            result.queryText = queryModel.queryText
+            result.translateResultsTopInset = 6
+            completion(result, error)
+
+        default:
+            completion(result, error)
         }
     }
 }
