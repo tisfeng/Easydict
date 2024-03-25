@@ -129,6 +129,36 @@ public class OpenAIService: QueryService {
         return orderedDict
     }
 
+    private func queryTextType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+        let enableDictionary = queryTextType().contains(.dictionary)
+        var isQueryDictionary = false
+        if enableDictionary {
+            isQueryDictionary = (text as NSString).shouldQueryDictionary(withLanguage: from, maxWordCount: 2)
+            if isQueryDictionary {
+                return .dictionary
+            }
+        }
+
+        let enableSentence = queryTextType().contains(.sentence)
+        var isQueryEnglishSentence = false
+        if !isQueryDictionary, enableSentence {
+            let isEnglishText = from == .english
+            if isEnglishText {
+                isQueryEnglishSentence = (text as NSString).shouldQuerySentence(withLanguage: from)
+                if isQueryEnglishSentence {
+                    return .sentence
+                }
+            }
+        }
+
+        let enableTranslation = queryTextType().contains(.translation)
+        if enableTranslation {
+            return .translation
+        }
+
+        return []
+    }
+
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let url = URL(string: endPoint)
         let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
@@ -136,8 +166,9 @@ public class OpenAIService: QueryService {
 
         var resultText = ""
 
-        let chats = chatMessages(queryType: .translation, text: text, from: from, to: to)
-        let query = ChatQuery(messages: chats, model: model)
+        let queryType = queryTextType(text: text, from: from, to: to)
+        let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
+        let query = ChatQuery(messages: chats, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
         openAI.chatsStream(query: query, url: url) { [weak self] res in
