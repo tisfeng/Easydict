@@ -136,7 +136,7 @@ public class OpenAIService: QueryService {
 
         var resultText = ""
 
-        let chats = chatMessages(text: text, from: from, to: to)
+        let chats = chatMessages(queryType: .translation, text: text, from: from, to: to)
         let query = ChatQuery(messages: chats, model: model)
         let openAI = OpenAI(apiToken: apiKey)
 
