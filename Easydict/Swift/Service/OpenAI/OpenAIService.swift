@@ -17,13 +17,6 @@ import OpenAI
 public class OpenAIService: QueryService {
     // MARK: Public
 
-    override public func hasPrivateAPIKey() -> Bool {
-        if apiKey == defaultAPIKey {
-            return false
-        }
-        return true
-    }
-
     override public func serviceType() -> ServiceType {
         .openAI
     }
@@ -57,8 +50,7 @@ public class OpenAIService: QueryService {
     }
 
     override public func intelligentQueryTextType() -> EZQueryTextType {
-        let type = Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
-        return type
+        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
@@ -134,23 +126,15 @@ public class OpenAIService: QueryService {
 
     var model: String {
         get {
-            var model = UserDefaults.standard.string(forKey: EZOpenAIModelKey) ?? ""
-            if !hasPrivateAPIKey() {
-                // Do not allow to modify model if user has not personal key in non-debug env.
-                #if !DEBUG
-                model = defaultModel
-                #endif
-            }
-
+            var model = Defaults[.openAIModel].rawValue
             if model.isEmpty {
-                model = defaultModel
+                model = availableModels.first ?? OpenAIModel.gpt3_5_turbo_0125.rawValue
             }
             return model
         }
 
         set {
-            // easydict://writeKeyValue?EZOpenAIModelKey=
-
+            // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
             let mode = OpenAIModel(rawValue: newValue) ?? .gpt3_5_turbo_0125
             Defaults[.openAIModel] = mode
         }
@@ -182,11 +166,6 @@ public class OpenAIService: QueryService {
         return endPoint
     }
 
-    var defaultModel: String {
-        let defaultModel = hasPrivateAPIKey() ? "gpt-3.5-turbo" : "gemini-pro"
-        return defaultModel
-    }
-
     var availableModels: [String] {
         OpenAIModel.allCases.map { $0.rawValue }
     }
@@ -195,7 +174,6 @@ public class OpenAIService: QueryService {
 
     private var host: String {
         // easydict://writeKeyValue?EZOpenAIDomainKey=
-
         var host = UserDefaults.standard.string(forKey: "EZOpenAIDomainKey") ?? ""
         if host.isEmpty {
             host = "api.openai.com"

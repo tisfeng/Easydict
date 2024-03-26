@@ -203,7 +203,7 @@ extension Defaults.Keys {
         default: OpenAIUsageStats.default
     )
     static let openAIEndPoint = Key<String?>(EZOpenAIEndPointKey)
-    static let openAIModel = Key<OpenAIModel>(EZOpenAIModelKey, default: OpenAIModel.gpt3_5_turbo_0125)
+    static let openAIModel = Key<OpenAIModel>(EZOpenAIModelKey, default: .gpt3_5_turbo_0125)
 
     // Custom OpenAI
     static let customOpenAINameKey = Key<String?>(
