@@ -154,8 +154,6 @@ public final class GeminiService: QueryService {
     private static let translationPrompt =
         "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes."
 
-    private let defaultAPIKey = "" /* .decryptAES() */
-
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {
         let apiKey = Defaults[.geminiAPIKey]

@@ -14,7 +14,6 @@
 #import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "EZOpenAILikeService.h"
 #import "EZLocalStorage.h"
 #import "Easydict-Swift.h"
 
@@ -270,7 +269,7 @@
     
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     if ([self isOpenAIService:result.service]) {
-        EZOpenAILikeService *service = (EZOpenAILikeService *)result.service;
+        EZOpenAIService *service = (EZOpenAIService *)result.service;
         self.serviceModelButton.title = service.model;
         mm_weakify(self);
         [self.serviceModelButton setMouseUpBlock:^(EZButton *_Nonnull button) {
@@ -402,7 +401,7 @@
 }
 
 - (BOOL)isOpenAIService:(EZQueryService *)service {
-    return [service isKindOfClass:EZOpenAILikeService.class];
+    return [service isKindOfClass:EZOpenAIService.class];
 }
 
 - (void)updateServiceModelLabel {
@@ -417,7 +416,7 @@
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
+    EZOpenAIService *service = (EZOpenAIService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.availableModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
@@ -428,7 +427,7 @@
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
-    EZOpenAILikeService *service = (EZOpenAILikeService *)self.result.service;
+    EZOpenAIService *service = (EZOpenAIService *)self.result.service;
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;

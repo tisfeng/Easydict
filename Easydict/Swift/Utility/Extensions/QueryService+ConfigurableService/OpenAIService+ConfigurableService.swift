@@ -89,7 +89,7 @@ private struct OpenAIServiceConfigurationView: View {
 private class OpenAIServiceViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(service: OpenAILikeService) {
+    init(service: OpenAIService) {
         self.service = service
         cancellables.append(
             Defaults.publisher(.openAIModel, options: [])
@@ -102,7 +102,7 @@ private class OpenAIServiceViewModel: ObservableObject {
 
     // MARK: Internal
 
-    let service: OpenAILikeService
+    let service: OpenAIService
 
     @Default(.openAIModel) var model
 

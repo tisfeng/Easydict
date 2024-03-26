@@ -1,73 +1,62 @@
 //
-//  OpenAIService.swift
+//  CustomOpenAIService.swift
 //  Easydict
 //
-//  Created by phlpsong on 2024/3/17.
+//  Created by phlpsong on 2024/2/16.
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Alamofire
+import CryptoKit
 import Defaults
 import Foundation
 
-@objc(EZOpenAIService)
-class OpenAIService: OpenAILikeService {
+@objc(EZCustomOpenAIService)
+class CustomOpenAIService: OpenAIService {
     // MARK: Lifecycle
 
     override init() {
         super.init()
-        self.defaultModel = OpenAIModel.gpt3_5_turbo_0125.rawValue
     }
 
     // MARK: Public
 
     override public func name() -> String {
-        NSLocalizedString("openai_translate", comment: "")
+        let name = Defaults[.customOpenAINameKey]
+        if let name, !name.isEmpty {
+            return name
+        }
+        return NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
     }
 
     // MARK: Internal
 
     override var apiKey: String {
-        Defaults[.openAIAPIKey] ?? ""
+        Defaults[.customOpenAIAPIKey] ?? ""
     }
 
     override var endPoint: String {
-        let endPoint = Defaults[.openAIEndPoint] ?? ""
-        if endPoint.isEmpty {
-            return "https://api.openai.com/v1/chat/completions"
-        }
-        return endPoint
+        Defaults[.customOpenAIEndPoint] ?? ""
     }
 
     override var model: String {
         get {
-            var model = Defaults[.openAIModel].rawValue
-            if !hasPrivateAPIKey() {
-                #if DEBUG
-                model = defaultModel
-                #endif
-            }
-            if model.isEmpty {
-                model = defaultModel
-            }
-            return model
+            Defaults[.customOpenAIModel]
         }
 
         set {
-            let new = OpenAIModel(rawValue: newValue) ?? .gpt3_5_turbo_0125
-            Defaults[.openAIModel] = new
+            Defaults[.customOpenAIModel] = newValue
         }
     }
 
     override var availableModels: [String] {
-        OpenAIModel.allCases.map { $0.rawValue }
-    }
-
-    override func link() -> String? {
-        "https://chat.openai.com"
+        let models = Defaults[.customOpenAIModelsAvailable]
+        guard let models, !models.isEmpty else { return [] }
+        return models.components(separatedBy: ",").filter { !$0.isEmpty }
     }
 
     override func serviceType() -> ServiceType {
-        .openAI
+        .customOpenAI
     }
 
     override func intelligentQueryTextType() -> EZQueryTextType {
@@ -79,9 +68,9 @@ class OpenAIService: OpenAILikeService {
         for language in EZLanguageManager.shared().allLanguages {
             var value = language.rawValue
             if language == Language.classicalChinese {
-                value = kEZLanguageWenYanWen
+                value = Language.wenyanwen
             }
-            // OpenAI does not support Burmese 🥲
+
             if language != Language.burmese {
                 orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
             }
@@ -92,9 +81,9 @@ class OpenAIService: OpenAILikeService {
 
     override func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
-        let isTranslationEnabled = Defaults[.openAITranslation] == "1"
-        let isDictionaryEnabled = Defaults[.openAIDictionary] == "1"
-        let isSentenceEnabled = Defaults[.openAISentence] == "1"
+        let isTranslationEnabled = Defaults[.customOpenAITranslation] == "1"
+        let isDictionaryEnabled = Defaults[.customOpenAIDictionary] == "1"
+        let isSentenceEnabled = Defaults[.customOpenAISentence] == "1"
         if isTranslationEnabled {
             typeOptions.insert(.translation)
         }
@@ -111,12 +100,12 @@ class OpenAIService: OpenAILikeService {
     }
 
     override func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = Defaults[.openAIServiceUsageStatus]
-        guard let value = UInt(usageStatus.rawValue) else { return .default }
+        let customOpenAIServiceUsageStatus = Defaults[.customOpenAIServiceUsageStatus]
+        guard let value = UInt(customOpenAIServiceUsageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 
     override func hasPrivateAPIKey() -> Bool {
-        !apiKey.isEmpty && apiKey != defaultAPIKey
+        !apiKey.isEmpty
     }
 }
