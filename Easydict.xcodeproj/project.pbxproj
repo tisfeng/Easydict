@@ -279,7 +279,7 @@
 		6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988C2BAC88B500DB835A /* LanguageState.swift */; };
 		6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988D2BAC88B500DB835A /* I18nHelper.swift */; };
 		6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C98942BAE841600DB835A /* LocalizedBundle.swift */; };
-		6ADED1552BAE8809004A15BE /* NSBundle+LanguagePreference.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ADED1542BAE8809004A15BE /* NSBundle+LanguagePreference.m */; };
+		6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */; };
 		960835502B6791F200C6A931 /* Shortcut+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
 		9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */; };
@@ -808,7 +808,7 @@
 		6A8C988C2BAC88B500DB835A /* LanguageState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageState.swift; sourceTree = "<group>"; };
 		6A8C988D2BAC88B500DB835A /* I18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = I18nHelper.swift; sourceTree = "<group>"; };
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
-		6ADED1542BAE8809004A15BE /* NSBundle+LanguagePreference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+LanguagePreference.m"; sourceTree = "<group>"; };
+		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Validator.swift"; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
@@ -994,6 +994,14 @@
 				03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */,
 			);
 			path = LoadingAnimationView;
+			sourceTree = "<group>";
+		};
+		032A28632BB26DB600265BA4 /* Appearance */ = {
+			isa = PBXGroup;
+			children = (
+				DC6D9C882B3969510055EFFC /* Appearance.swift */,
+			);
+			path = Appearance;
 			sourceTree = "<group>";
 		};
 		033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */ = {
@@ -1429,9 +1437,6 @@
 				03542A572937CC3200C34C33 /* EZConfiguration.m */,
 				03D8A65A2A433B4100D9A968 /* EZConfiguration+EZUserData.h */,
 				03D8A65B2A433B4100D9A968 /* EZConfiguration+EZUserData.m */,
-				DC46DF7F2B4417B900DEAE3E /* Configuration.swift */,
-				DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */,
-				DC6D9C882B3969510055EFFC /* Appearance.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -2197,7 +2202,6 @@
 				967712EB2B5B93E200105E0F /* Feature */,
 				EA9943E12B534C2900EE7B97 /* Model */,
 				EA9943DD2B534BAE00EE7B97 /* Utility */,
-				EA3B81F72B52549B004C0E8B /* Configuration */,
 				27FE98062B3DD525000AD654 /* View */,
 			);
 			path = Swift;
@@ -2277,15 +2281,15 @@
 			path = EZWrapView;
 			sourceTree = "<group>";
 		};
-		6A8C988B2BAC88A600DB835A /* LanguagePreference */ = {
+		6A8C988B2BAC88A600DB835A /* Localization */ = {
 			isa = PBXGroup;
 			children = (
 				6A8C988D2BAC88B500DB835A /* I18nHelper.swift */,
 				6A8C988C2BAC88B500DB835A /* LanguageState.swift */,
 				6A8C98942BAE841600DB835A /* LocalizedBundle.swift */,
-				6ADED1542BAE8809004A15BE /* NSBundle+LanguagePreference.m */,
+				6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */,
 			);
-			path = LanguagePreference;
+			path = Localization;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -2331,8 +2335,10 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				032A28632BB26DB600265BA4 /* Appearance */,
+				EA3B81F72B52549B004C0E8B /* Configuration */,
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
-				6A8C988B2BAC88A600DB835A /* LanguagePreference */,
+				6A8C988B2BAC88A600DB835A /* Localization */,
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
@@ -2435,7 +2441,9 @@
 		EA3B81F72B52549B004C0E8B /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				DC46DF7F2B4417B900DEAE3E /* Configuration.swift */,
 				EA3B81F82B5254AA004C0E8B /* Configuration+Defaults.swift */,
+				DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -3064,7 +3072,7 @@
 				03779F0F2BB256A7008D3C42 /* Prompt.swift in Sources */,
 				DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */,
 				03779F172BB256C5008D3C42 /* URL+IsValid.swift in Sources */,
-				6ADED1552BAE8809004A15BE /* NSBundle+LanguagePreference.m in Sources */,
+				6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */,
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,

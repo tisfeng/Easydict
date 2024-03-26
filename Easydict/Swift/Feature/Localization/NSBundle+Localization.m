@@ -1,5 +1,5 @@
 //
-//  NSBundle+LanguagePreference.m
+//  NSBundle+Localization.m
 //  Easydict
 //
 //  Created by choykarl on 2024/3/23.
@@ -8,7 +8,7 @@
 
 #import <objc/runtime.h>
 
-@implementation NSBundle (LanguagePreference)
+@implementation NSBundle (Localization)
 
 + (void)load {
     static dispatch_once_t onceToken;
