@@ -8,7 +8,6 @@
 
 #import "EZNiuTransTranslate.h"
 #import "EZNiuTransTranslateResponse.h"
-#import "Easydict-Swift.h"
 
 @interface EZNiuTransTranslate ()
 

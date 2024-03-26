@@ -13,7 +13,6 @@
 #import "EZMenuItemManager.h"
 #import "EZEnumTypes.h"
 #import <KVOController/NSObject+FBKVOController.h>
-#import "Easydict-Swift.h"
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 

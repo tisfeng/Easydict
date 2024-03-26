@@ -12,7 +12,6 @@
 #import "EZBingLookupModel.h"
 #import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
-#import "Easydict-Swift.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;

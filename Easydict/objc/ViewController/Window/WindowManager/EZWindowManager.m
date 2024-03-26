@@ -15,7 +15,6 @@
 #import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
-#import "Easydict-Swift.h"
 
 @interface EZWindowManager ()
 

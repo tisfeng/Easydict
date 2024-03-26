@@ -15,7 +15,6 @@
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
 #import "EZLocalStorage.h"
-#import "Easydict-Swift.h"
 
 @interface EZResultView ()
 

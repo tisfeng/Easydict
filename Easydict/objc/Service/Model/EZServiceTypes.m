@@ -17,7 +17,6 @@
 #import "EZConfiguration.h"
 #import "EZAppleDictionary.h"
 #import "EZNiuTransTranslate.h"
-#import "Easydict-Swift.h"
 
 @interface EZServiceTypes ()
 

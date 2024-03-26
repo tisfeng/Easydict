@@ -14,7 +14,6 @@
 #import <ZipArchive.h>
 #import "EZRightClickDetector.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 #import <Sparkle/SPUStandardUpdaterController.h>
 #import <Sparkle/SPUUpdater.h>
 

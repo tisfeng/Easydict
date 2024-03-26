@@ -8,7 +8,6 @@
 
 #import "DarkModeManager.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 
 @interface DarkModeManager ()
 

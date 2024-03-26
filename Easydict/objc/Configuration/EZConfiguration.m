@@ -16,7 +16,6 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "AppDelegate.h"
-#import "Easydict-Swift.h"
 #import "DarkModeManager.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";

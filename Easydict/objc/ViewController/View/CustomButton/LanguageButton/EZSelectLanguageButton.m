@@ -7,7 +7,6 @@
 //
 
 #import "EZSelectLanguageButton.h"
-#import "Easydict-Swift.h"
 
 @interface EZSelectLanguageButton ()
 

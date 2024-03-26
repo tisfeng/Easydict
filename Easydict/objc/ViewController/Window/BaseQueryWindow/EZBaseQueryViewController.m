@@ -28,7 +28,6 @@
 #import "EZAppleDictionary.h"
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
-#import "Easydict-Swift.h"
 #import "NSString+EZHandleInputText.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";

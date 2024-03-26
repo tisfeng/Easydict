@@ -12,7 +12,6 @@
 #import "EZConfiguration.h"
 #import "EZYoudaoTranslate.h"
 #import "EZConfiguration+EZUserData.h"
-#import "Easydict-Swift.h"
 
 @interface EZDetectManager ()
 

@@ -7,7 +7,6 @@
 //
 
 #import "EZPopUpButton.h"
-#import "Easydict-Swift.h"
 
 @interface EZPopUpButton ()
 

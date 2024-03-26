@@ -8,7 +8,6 @@
 
 #import "EZAppleScriptManager.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 
 @interface EZAppleScriptManager ()
 

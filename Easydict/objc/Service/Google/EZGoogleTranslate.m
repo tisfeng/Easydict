@@ -11,7 +11,6 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 

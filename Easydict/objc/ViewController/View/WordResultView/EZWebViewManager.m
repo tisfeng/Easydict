@@ -8,7 +8,6 @@
 
 #import "EZWebViewManager.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";

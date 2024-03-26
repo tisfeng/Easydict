@@ -12,7 +12,6 @@
 #import "EZCoordinateUtils.h"
 #import "EZLog.h"
 #import "NSString+EZUtils.h"
-#import "Easydict-Swift.h"
 
 @interface EZQueryMenuTextView ()
 

@@ -9,7 +9,6 @@
 #import "EZLayoutManager.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 
 @interface EZLayoutManager ()
 

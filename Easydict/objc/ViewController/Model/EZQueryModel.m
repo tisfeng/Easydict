@@ -13,7 +13,6 @@
 #import "NSString+EZSplit.h"
 #import "EZAppleDictionary.h"
 #import "NSString+EZHandleInputText.h"
-#import "Easydict-Swift.h"
 
 @interface EZQueryModel ()
 

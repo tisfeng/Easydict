@@ -13,7 +13,6 @@
 #import "EZConfiguration+EZUserData.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
-#import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
 

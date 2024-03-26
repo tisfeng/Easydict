@@ -16,7 +16,6 @@
 #import "EZConfiguration.h"
 #import "NSImage+EZSymbolmage.h"
 #import "NSImage+EZResize.h"
-#import "Easydict-Swift.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kRowHeight = 45;

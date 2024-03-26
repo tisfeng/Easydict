@@ -11,7 +11,6 @@
 #import "EZConfiguration.h"
 #import "NSViewController+EZWindow.h"
 #import "NSImage+EZSymbolmage.h"
-#import "Easydict-Swift.h"
 
 @interface EZPrivacyViewController ()
 

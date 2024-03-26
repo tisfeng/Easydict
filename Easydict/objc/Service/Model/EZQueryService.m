@@ -12,7 +12,6 @@
 #import "NSString+EZChineseText.h"
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 #import "EZEventMonitor.h"
 
 #define MethodNotImplemented()                                                                                                           \

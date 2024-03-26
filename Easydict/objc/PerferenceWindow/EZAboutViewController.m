@@ -10,7 +10,6 @@
 #import "EZBlueTextButton.h"
 #import "EZConfiguration.h"
 #import "EZMenuItemManager.h"
-#import "Easydict-Swift.h"
 
 @interface EZAboutViewController ()
 

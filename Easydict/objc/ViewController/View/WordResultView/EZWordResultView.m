@@ -30,7 +30,6 @@
 #import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
-#import "Easydict-Swift.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;

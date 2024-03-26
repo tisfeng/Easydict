@@ -9,7 +9,6 @@
 #import "EZLanguageManager.h"
 #import "EZAppleService.h"
 #import "EZConfiguration.h"
-#import "Easydict-Swift.h"
 
 @interface EZLanguageManager ()
 
