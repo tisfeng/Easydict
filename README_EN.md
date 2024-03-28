@@ -812,6 +812,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-02-28 |  | 20 | 感谢你的 Easydict |
 | 2024-03-11 |  | 20 | 感谢 |
 | 2024-03-16 | 幻影 | 20 | 非常感谢 |
+| 2024-03-25 |  | 10 | 感谢大佬 |
 
 </p>
 
