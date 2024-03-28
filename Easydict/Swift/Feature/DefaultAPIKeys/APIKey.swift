@@ -9,7 +9,7 @@
 import Defaults
 import Foundation
 
-extension OpenAIService {
+extension BaseOpenAIService {
     var defaultAPIKey: String {
         APIKey.openAIAPIKey.stringValue
     }

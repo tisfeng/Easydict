@@ -12,7 +12,7 @@ import Defaults
 import Foundation
 
 @objc(EZCustomOpenAIService)
-class CustomOpenAIService: OpenAIService {
+class CustomOpenAIService: BaseOpenAIService {
     // MARK: Lifecycle
 
     override init() {

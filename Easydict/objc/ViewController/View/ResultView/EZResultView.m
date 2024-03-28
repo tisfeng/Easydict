@@ -400,7 +400,7 @@
 }
 
 - (BOOL)isOpenAIService:(EZQueryService *)service {
-    return [service isKindOfClass:EZOpenAIService.class];
+    return [service isKindOfClass:[EZBaseOpenAIService class]];
 }
 
 - (void)updateServiceModelLabel {
