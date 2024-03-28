@@ -130,7 +130,7 @@
 
     // Do not close main window
     if (!floatingWindow.pin && floatingWindow.isVisible) {
-        [EZWindowManager.shared closeFloatingWindowExceptMain];
+        [EZWindowManager.shared closeFloatingWindow];
     }
 }
 

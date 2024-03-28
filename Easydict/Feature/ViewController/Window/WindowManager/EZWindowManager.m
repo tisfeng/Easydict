@@ -194,6 +194,7 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
+        _mainWindow.releasedWhenClosed = NO;
     }
     return _mainWindow;
 }
@@ -727,7 +728,7 @@ static EZWindowManager *_instance;
     }
     
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
-    if (!self.floatingWindow.pin && self.floatingWindowType != EZWindowTypeMain) {
+    if (!self.floatingWindow.pin) {
         [self closeFloatingWindow];
     }
     
@@ -921,23 +922,10 @@ static EZWindowManager *_instance;
         [self activeLastFrontmostApplication];
     }
     
-    if ([EZMainQueryWindow isAlive]) {
-        [self.mainWindow orderBack:nil];
-    }
-    
     // Move floating window type to second.
-    
     NSNumber *windowType = @(self.floatingWindowType);
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
-}
-
-/// Close floating window, except main window.
-- (void)closeFloatingWindowExceptMain {
-    // Do not close main window
-    if (!self.floatingWindow.pin && self.floatingWindow.windowType != EZWindowTypeMain) {
-        [[EZWindowManager shared] closeFloatingWindow];
-    }
 }
 
 - (void)activeLastFrontmostApplication {
