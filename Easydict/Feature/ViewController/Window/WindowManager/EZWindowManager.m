@@ -133,14 +133,14 @@ static EZWindowManager *_instance;
     [self.eventMonitor setDismissMiniWindowBlock:^{
         mm_strongify(self);
         if (!self.floatingWindow.pin && self.floatingWindow.visible) {
-            [self closeFloatingWindowExceptMain];
+            [self closeFloatingWindow];
         }
     }];
     
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
         if (!self.floatingWindow.pin) {
-            [self closeFloatingWindowExceptMain];
+            [self closeFloatingWindow];
         }
     }];
     
@@ -194,6 +194,7 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
+        _mainWindow.releasedWhenClosed = NO;
     }
     return _mainWindow;
 }
@@ -728,7 +729,7 @@ static EZWindowManager *_instance;
     
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
     if (!self.floatingWindow.pin) {
-        [self closeFloatingWindowExceptMain];
+        [self closeFloatingWindow];
     }
     
     // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
@@ -775,7 +776,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
-        [self closeFloatingWindowExceptMain];
+        [self closeFloatingWindow];
         return;
     }
     
@@ -795,7 +796,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.mouseSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
-        [self closeFloatingWindowExceptMain];
+        [self closeFloatingWindow];
         return;
     }
     
@@ -881,7 +882,7 @@ static EZWindowManager *_instance;
         [Snip.shared stop];
     } else {
         if (self.floatingWindow) {
-            [EZWindowManager.shared closeFloatingWindowExceptMain];
+            [EZWindowManager.shared closeFloatingWindow];
         }
         [EZPreferencesWindowController.shared close];
     }
@@ -925,18 +926,6 @@ static EZWindowManager *_instance;
     NSNumber *windowType = @(self.floatingWindowType);
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
-}
-
-/// Close floating window, except main window.
-- (void)closeFloatingWindowExceptMain {
-    // Do not close main window
-    if (self.floatingWindow.windowType == EZWindowTypeMain) {
-        [self.floatingWindow orderBack:nil];
-        return;
-    }
-    if (!self.floatingWindow.pin) {
-        [[EZWindowManager shared] closeFloatingWindow];
-    }
 }
 
 - (void)activeLastFrontmostApplication {
