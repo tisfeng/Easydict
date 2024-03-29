@@ -776,7 +776,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
-        [self closeFloatingWindowIfNotPinned];
+        [self closeFloatingWindow];
         return;
     }
     
@@ -796,7 +796,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.mouseSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
-        [self closeFloatingWindowIfNotPinned];
+        [self closeFloatingWindow];
         return;
     }
     
