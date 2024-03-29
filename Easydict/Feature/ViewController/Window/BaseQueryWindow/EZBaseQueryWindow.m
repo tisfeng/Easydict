@@ -126,12 +126,8 @@
 - (void)windowDidResignKey:(NSNotification *)notification {
     //    NSLog(@"window Did ResignKey: %@", self);
     
-    EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
-
-    // Do not close main window
-    if (!floatingWindow.pin && floatingWindow.isVisible) {
-        [EZWindowManager.shared closeFloatingWindowExceptMain];
-    }
+    // Close floating window when losing focus if it's not pinned or main window.
+    [EZWindowManager.shared closeFloatingWindowIfNotPinnedOrMain];
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
