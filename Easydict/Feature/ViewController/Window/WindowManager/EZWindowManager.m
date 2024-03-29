@@ -425,7 +425,7 @@ static EZWindowManager *_instance;
     // !!!: Focus input textView should behind makeKeyAndOrderFront:, otherwise it will not work in the first time.
     [window.queryViewController focusInputTextView];
     
-    [self updateFloatingWindowType:window.windowType];
+    [self updateFloatingWindowType:window.windowType isShowing:YES];
 }
 
 - (nullable NSWindow *)currentShowingSettingsWindow {
@@ -442,14 +442,6 @@ static EZWindowManager *_instance;
     }
     
     return nil;
-}
-
-- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
-    NSNumber *windowType = @(floatingWindowType);
-    [self.floatingWindowTypeArray removeObject:windowType];
-    [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
-    
-    NSLog(@"updateFloatingWindowType: %@", self.floatingWindowTypeArray);
 }
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
@@ -919,8 +911,9 @@ static EZWindowManager *_instance;
     
     // stop playing audio
     [self.floatingWindow.queryViewController stopPlayingQueryText];
-    
     self.floatingWindow.titleBar.pin = NO;
+    
+    EZBaseQueryWindow *closingFloatingWindow = self.floatingWindow;
     
     /// !!!: Close window may call window delegate method `windowDidResignKey:`
     /// `windowDidResignKey:` will call `closeFloatingWindowIfNotPinnedOrMain`
@@ -931,8 +924,8 @@ static EZWindowManager *_instance;
         [self activeLastFrontmostApplication];
     }
     
-    /// !!!: Maybe floating window has closed after calling `windowDidResignKey:`, so we need to check it.
-    if (self.floatingWindow) {
+    /// !!!: Maybe floating window has closed after calling [self.floatingWindow close], so we need to check it.
+    if (self.floatingWindow == closingFloatingWindow) {
         [self updateFloatingWindowType:self.floatingWindowType isShowing:NO];
     }
 }

@@ -112,11 +112,10 @@
 #pragma mark - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-//        NSLog(@"windowDidBecomeKey: %@", self);
+//    NSLog(@"windowDidBecomeKey: %@", self);
     
     // We need to update the window type when the window becomes the key window.
-    EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager updateFloatingWindowType:self.windowType];
+    [EZWindowManager.shared updateFloatingWindowType:self.windowType isShowing:YES];
     
     if (self.didBecomeKeyWindowBlock) {
         self.didBecomeKeyWindowBlock();

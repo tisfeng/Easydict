@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updatePopButtonQueryAction;
 
-- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType;
+- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing;
 
 @end
 
