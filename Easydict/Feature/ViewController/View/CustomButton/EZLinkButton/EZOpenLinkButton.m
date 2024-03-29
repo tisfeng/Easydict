@@ -102,7 +102,7 @@ static NSString *const EZQueryKey = @"{Query}";
         EZBaseQueryWindow *window = EZWindowManager.shared.floatingWindow;
         // When opening a link, do not automatically close main window, or a pinned window.
         if (!window.isPin) {
-            [[EZWindowManager shared] closeFloatingWindow];
+            [[EZWindowManager shared] closeFloatingWindowExceptMain];
         }
     }
 }
