@@ -74,7 +74,7 @@ static EZWindowManager *_instance;
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
     
-    //    NSLog(@"%@", self.floatingWindowTypeArray);
+    //    NSLog(@"floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (void)setupEventMonitor {
@@ -448,6 +448,23 @@ static EZWindowManager *_instance;
     NSNumber *windowType = @(floatingWindowType);
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
+    
+    NSLog(@"updateFloatingWindowType: %@", self.floatingWindowTypeArray);
+}
+
+- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
+    NSNumber *windowType = @(floatingWindowType);
+
+    if (isShowing) {
+        [self.floatingWindowTypeArray removeObject:windowType];
+        [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
+    } else {
+        // close window, move it to the second place.
+        [self.floatingWindowTypeArray removeObject:windowType];
+        [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
+    }
+    
+    NSLog(@"updateFloatingWindowType: %@", self.floatingWindowTypeArray);
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -904,6 +921,9 @@ static EZWindowManager *_instance;
     [self.floatingWindow.queryViewController stopPlayingQueryText];
     
     self.floatingWindow.titleBar.pin = NO;
+    
+    /// !!!: Close window may call window delegate method `windowDidResignKey:`
+    /// `windowDidResignKey:` will call `closeFloatingWindowIfNotPinnedOrMain`
     [self.floatingWindow close];
     
     if (![self currentShowingSettingsWindow]) {
@@ -911,10 +931,10 @@ static EZWindowManager *_instance;
         [self activeLastFrontmostApplication];
     }
     
-    // Move floating window type to second.
-    NSNumber *windowType = @(self.floatingWindowType);
-    [self.floatingWindowTypeArray removeObject:windowType];
-    [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
+    /// !!!: Maybe floating window has closed after calling `windowDidResignKey:`, so we need to check it.
+    if (self.floatingWindow) {
+        [self updateFloatingWindowType:self.floatingWindowType isShowing:NO];
+    }
 }
 
 /**
