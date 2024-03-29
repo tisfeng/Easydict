@@ -128,12 +128,12 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissMiniWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinnedOrMain];
+        [self closeFloatingWindowIfNotPinned];
     }];
     
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinnedOrMain];
+        [self closeFloatingWindowIfNotPinned];
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
@@ -386,7 +386,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)detectQueryText:(NSString *)text completion:(nullable void (^)(NSString *language))completion {
-    EZBaseQueryViewController *viewController = [EZWindowManager.shared backgroundQueryViewController];
+    EZBaseQueryViewController *viewController = [self backgroundQueryViewController];
     viewController.inputText = text;
     [viewController detectQueryText:completion];
 }
@@ -653,7 +653,7 @@ static EZWindowManager *_instance;
     self.lastFrontmostApplication = frontmostApplication;
 }
 
-- (void)showMainWindowIfNedded {
+- (void)showMainWindowIfNeeded {
     BOOL showFlag = !Configuration.shared.hideMainWindow;
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
     [NSApp setActivationPolicy:activationPolicy];
@@ -661,9 +661,8 @@ static EZWindowManager *_instance;
     if (showFlag) {
         [self.floatingWindowTypeArray insertObject:@(EZWindowTypeMain) atIndex:0];
         
-        EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
-        [mainWindow center];
-        [mainWindow makeKeyAndOrderFront:nil];
+        [self.mainWindow center];
+        [self.mainWindow makeKeyAndOrderFront:nil];
     }
 }
 
@@ -768,7 +767,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
-        [self closeFloatingWindowIfNotPinnedOrMain];
+        [self closeFloatingWindowIfNotPinned];
         return;
     }
     
@@ -788,7 +787,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.mouseSelectTranslateWindowType;
     
     if (self.floatingWindowType == windowType) {
-        [self closeFloatingWindowIfNotPinnedOrMain];
+        [self closeFloatingWindowIfNotPinned];
         return;
     }
     
@@ -873,7 +872,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     } else {
-        [EZWindowManager.shared closeFloatingWindow];
+        [self closeFloatingWindow];
         [EZPreferencesWindowController.shared close];
     }
 }
@@ -923,8 +922,18 @@ static EZWindowManager *_instance;
  Main window is basically equivalent to a pinned floating window.
  */
 - (void)closeFloatingWindowIfNotPinnedOrMain {
-    if (!self.floatingWindow.isPin && self.floatingWindow.windowType != EZWindowTypeMain) {
-        [[EZWindowManager shared] closeFloatingWindow];
+    [self closeFloatingWindowIfNotPinnedAndExceptWindowType:EZWindowTypeMain];
+}
+
+- (void)closeFloatingWindowIfNotPinned {
+    [self closeFloatingWindowIfNotPinnedAndExceptWindowType:EZWindowTypeNone];
+}
+
+- (void)closeFloatingWindowIfNotPinnedAndExceptWindowType:(EZWindowType)windowType {
+    BOOL isPinned = self.floatingWindow.isPin;
+    BOOL isTypeMatch = self.floatingWindow.windowType == windowType;
+    if (!isPinned && !isTypeMatch) {
+        [self closeFloatingWindow];
     }
 }
 

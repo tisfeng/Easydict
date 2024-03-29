@@ -81,13 +81,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
 
 - (void)closeFloatingWindow;
+- (void)closeMainWindowIfNeeded;
+- (void)showMainWindowIfNeeded;
+
 ///  Close floating window if not pinned or main window.
 - (void)closeFloatingWindowIfNotPinnedOrMain;
-- (void)closeMainWindowIfNeeded;
+- (void)closeFloatingWindowIfNotPinned;
 
 - (void)activeLastFrontmostApplication;
-
-- (void)showMainWindowIfNedded;
 
 - (void)updatePopButtonQueryAction;
 
