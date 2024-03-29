@@ -447,14 +447,8 @@ static EZWindowManager *_instance;
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
 
-    if (isShowing) {
-        [self.floatingWindowTypeArray removeObject:windowType];
-        [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
-    } else {
-        // close window, move it to the second place.
-        [self.floatingWindowTypeArray removeObject:windowType];
-        [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
-    }
+    [self.floatingWindowTypeArray removeObject:windowType];
+    [self.floatingWindowTypeArray insertObject:windowType atIndex:isShowing ? 0 : 1];
     
     NSLog(@"updateFloatingWindowType: %@", self.floatingWindowTypeArray);
 }
