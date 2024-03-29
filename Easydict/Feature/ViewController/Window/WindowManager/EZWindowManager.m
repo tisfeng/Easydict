@@ -103,10 +103,6 @@ static EZWindowManager *_instance;
         [self.popButtonWindow orderFrontRegardless];
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
         self.popButtonWindow.level = kCGScreenSaverWindowLevel;
-        
-        if ([EZMainQueryWindow isAlive]) {
-            [self.mainWindow orderBack:nil];
-        }
     }];
     
     [self updatePopButtonQueryAction];
@@ -194,6 +190,7 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
+        _mainWindow.releasedWhenClosed = NO;
     }
     return _mainWindow;
 }
@@ -346,7 +343,7 @@ static EZWindowManager *_instance;
     // Log selected text when querying.
     [self logSelectedTextEvent];
     
-    void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus){
+    void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
         // Update input text and detect.
         [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
         [queryViewController detectQueryText:nil];
@@ -386,7 +383,7 @@ static EZWindowManager *_instance;
 
 - (void)orderFrontWindowAndFocusInputTextView:(EZBaseQueryWindow *)window {
     [self saveFrontmostApplication];
-
+    
     // Focus floating window.
     [window makeKeyAndOrderFront:nil];
     [window.queryViewController focusInputTextView];
@@ -414,9 +411,10 @@ static EZWindowManager *_instance;
     [window setFrameOrigin:safeLocation];
     window.level = EZFloatingWindowLevel;
     
-    // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
+    // FIXME: need to optimize. We have to remove it temporary, and `orderBack:` when closed floating window.
+    // But `orderBack:` will cause the query window to fail to display in stage manager mode (#385)
     if ([EZMainQueryWindow isAlive]) {
-        [self.mainWindow orderOut:nil];
+        [_mainWindow orderOut:nil];
     }
     
     //    NSLog(@"window frame: %@", @(window.frame));
@@ -753,7 +751,7 @@ static EZWindowManager *_instance;
             });
             [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
             [image mm_writeToFileAsPNG:_imagePath];
-            NSLog(@"已保存图片: %@", _imagePath);
+            NSLog(@"已保存图片：%@", _imagePath);
             
             // Reset window height first, avoid being affected by previous window height.
             [window.queryViewController resetTableView:^{
@@ -828,7 +826,7 @@ static EZWindowManager *_instance;
         });
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
         [image mm_writeToFileAsPNG:_imagePath];
-        NSLog(@"已保存图片: %@", _imagePath);
+        NSLog(@"已保存图片：%@", _imagePath);
         
         [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
@@ -921,6 +919,10 @@ static EZWindowManager *_instance;
         [self activeLastFrontmostApplication];
     }
     
+    if ([EZMainQueryWindow isAlive]) {
+        [self.mainWindow orderBack:nil];
+    }
+    
     // Move floating window type to second.
     NSNumber *windowType = @(self.floatingWindowType);
     [self.floatingWindowTypeArray removeObject:windowType];
@@ -929,12 +931,7 @@ static EZWindowManager *_instance;
 
 /// Close floating window, except main window.
 - (void)closeFloatingWindowExceptMain {
-    // Do not close main window
-    if (self.floatingWindow.windowType == EZWindowTypeMain) {
-        [self.floatingWindow orderBack:nil];
-        return;
-    }
-    if (!self.floatingWindow.pin) {
+    if (self.floatingWindow.windowType != EZWindowTypeMain) {
         [[EZWindowManager shared] closeFloatingWindow];
     }
 }

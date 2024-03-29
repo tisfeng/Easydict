@@ -153,11 +153,6 @@
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender {
-    if (self.windowType == EZWindowTypeMain) {
-        [self orderOut:nil];
-        return NO;
-    }
-    
     return YES;
 }
 
