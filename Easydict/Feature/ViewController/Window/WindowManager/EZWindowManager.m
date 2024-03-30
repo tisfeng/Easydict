@@ -321,14 +321,13 @@ static EZWindowManager *_instance;
     }
     
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-    EZBaseQueryViewController *queryViewController = window.queryViewController;
     
     // If text is nil, means we don't need to query anything, just show the window.
     if (!queryText) {
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
-        [queryViewController updateActionType:self.actionType];
         [self showFloatingWindow:window atPoint:newPoint];
+        
         if (completionHandler) {
             completionHandler();
         }
@@ -338,6 +337,8 @@ static EZWindowManager *_instance;
     
     // Log selected text when querying.
     [self logSelectedTextEvent];
+    
+    EZBaseQueryViewController *queryViewController = window.queryViewController;
     
     void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
         // Update input text and detect.

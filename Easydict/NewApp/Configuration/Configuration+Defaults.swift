@@ -103,8 +103,6 @@ extension Defaults.Keys {
             Key("EZConfiguration_kEnableBetaNewAppKey", default: false)
         }
     }
-
-    static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
 }
 
 extension Defaults.Keys {
