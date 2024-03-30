@@ -62,7 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)disableReplaceTextButton;
 
-- (void)updateActionType:(EZActionType)actionType;
 - (void)receiveTitlebarAction:(EZTitlebarAction)action;
 
 @end
