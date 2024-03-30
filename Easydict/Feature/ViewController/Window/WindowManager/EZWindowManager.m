@@ -446,13 +446,13 @@ static EZWindowManager *_instance;
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
-    NSLog(@"update windowType: %@, isShowing: %d", windowType, isShowing);
-    NSLog(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+//    NSLog(@"update windowType: %@, isShowing: %d", windowType, isShowing);
+//    NSLog(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:isShowing ? 0 : 1];
     
-    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+//    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -925,7 +925,7 @@ static EZWindowManager *_instance;
         [self updateFloatingWindowType:self.floatingWindowType isShowing:NO];
     } 
     
-    NSLog(@"close closeFloatingWindow: %@", self.floatingWindow);
+//    NSLog(@"close closeFloatingWindow: %@", self.floatingWindow);
 }
 
 /**
