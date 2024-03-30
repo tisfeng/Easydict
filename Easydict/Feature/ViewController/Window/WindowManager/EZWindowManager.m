@@ -214,7 +214,7 @@ static EZWindowManager *_instance;
     return _popButtonWindow;
 }
 
-- (EZBaseQueryWindow *)floatingWindow {
+- (nullable EZBaseQueryWindow *)floatingWindow {
     return [self windowWithType:self.floatingWindowType];
 }
 
@@ -446,11 +446,13 @@ static EZWindowManager *_instance;
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
+    NSLog(@"update windowType: %@, isShowing: %d", windowType, isShowing);
+    NSLog(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:isShowing ? 0 : 1];
     
-    NSLog(@"updateFloatingWindowType: %@", self.floatingWindowTypeArray);
+    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -921,7 +923,9 @@ static EZWindowManager *_instance;
     /// !!!: Maybe floating window has closed after calling [self.floatingWindow close], so we need to check it.
     if (self.floatingWindow == closingFloatingWindow) {
         [self updateFloatingWindowType:self.floatingWindowType isShowing:NO];
-    }
+    } 
+    
+    NSLog(@"close closeFloatingWindow: %@", self.floatingWindow);
 }
 
 /**
@@ -938,7 +942,7 @@ static EZWindowManager *_instance;
 
 - (void)closeFloatingWindowIfNotPinnedAndExceptWindowType:(EZWindowType)windowType {
     BOOL isPinned = self.floatingWindow.isPin;
-    BOOL isTypeMatch = self.floatingWindow.windowType == windowType;
+    BOOL isTypeMatch = self.floatingWindowType == windowType;
     if (!isPinned && !isTypeMatch) {
         [self closeFloatingWindow];
     }
