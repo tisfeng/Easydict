@@ -82,8 +82,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)closeFloatingWindow;
 - (void)closeFloatingWindow:(EZWindowType)windowType;
-- (void)closeFloatingWindowExceptMain;
-- (void)closeFloatingWindow:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType;
+- (void)closeFloatingWindowIfNotPinnedOrMain;
+- (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType;
 
 - (void)destroyMainWindow;
 - (void)showMainWindowIfNeeded;
