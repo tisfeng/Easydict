@@ -128,12 +128,12 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissMiniWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinned];
+        [self closeFloatingWindow:self.floatingWindowType exceptWindowType:EZWindowTypeNone];
     }];
     
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinned];
+        [self closeFloatingWindow:self.floatingWindowType exceptWindowType:EZWindowTypeNone];
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
@@ -726,7 +726,7 @@ static EZWindowManager *_instance;
     }
     
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
-    [self closeFloatingWindowIfNotPinnedOrMain];
+    [self closeFloatingWindowExceptMain];
     
     // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
@@ -906,29 +906,23 @@ static EZWindowManager *_instance;
  Close floating window if not pinned or main window.
  Main window is basically equivalent to a pinned floating window.
  */
-- (void)closeFloatingWindowIfNotPinnedOrMain {
-    [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeMain];
+- (void)closeFloatingWindowExceptMain {
+    [self closeFloatingWindow:self.floatingWindowType exceptWindowType:EZWindowTypeMain];
 }
 
-- (void)closeFloatingWindowIfNotPinned {
-    [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeNone];
-}
-
-- (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
-    EZBaseQueryWindow *window = [self windowWithType:windowType];
-    if (!window.isPin && windowType != exceptWindowType) {
+- (void)closeFloatingWindow:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
+    if (windowType != exceptWindowType) {
         [self closeFloatingWindow:windowType];
     }
 }
 
 - (void)closeFloatingWindow:(EZWindowType)windowType {
-    NSLog(@"close window type: %ld", windowType);
-    
     EZBaseQueryWindow *floatingWindow = [self windowWithType:windowType];
-    if (!floatingWindow) {
+    if (!floatingWindow || floatingWindow.isPin) {
+        NSLog(@"not close window type: %ld", windowType);
         return;
     }
-    
+    NSLog(@"close window type: %ld", windowType);
     // Stop playing audio
     [floatingWindow.queryViewController stopPlayingQueryText];
     floatingWindow.titleBar.pin = NO;
