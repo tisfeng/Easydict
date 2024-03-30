@@ -11,7 +11,6 @@
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
-#import "EZTableTipsCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
 #import "EZWindowManager.h"
@@ -33,7 +32,6 @@
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
-static NSString *const EZTableTipsCellId = @"EZTableTipsCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
@@ -57,7 +55,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
-@property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, readonly) NSString *queryText;
@@ -77,10 +74,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
-
-@property (nonatomic, assign, getter=isShowTipsView) BOOL showTipsView;
-
-@property (nonatomic, assign) BOOL hasShowTips;
 
 @end
 
@@ -186,7 +179,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
     
-    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
+    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
         mm_strongify(self);
         [self reloadTableViewData:^{
             [self updateAllResultCellHeight];
@@ -390,21 +383,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _defaultTTSService;
 }
 
-- (BOOL)isShowTipsView {
-    if (Configuration.shared.disableTipsView) {
-        return NO;
-    }
-    if (EZ_isEmptyString(self.queryModel.queryText) && 
-        !self.hasShowTips &&
-        self.queryModel.actionType != EZActionTypeInputQuery) {
-        return YES;
-    }
-    return NO;
-}
-
-- (BOOL)isTipsCellRow:(NSInteger)row {
-    return (self.isShowTipsView && row == 2 && self.windowType != EZWindowTypeMini) || (self.isShowTipsView && row == 1);
-}
 
 #pragma mark - Public Methods
 
@@ -428,9 +406,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if ([self handleEasydictScheme:text]) {
         return;
     }
-    
-    // update tableView row
-    [self.tableView reloadData];
     
     // Before starting new query, we should stop the previous query.
     [self.queryModel stopAllService];
@@ -672,10 +647,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.actionType = queryType;
 }
 
-- (void)updateActionType:(EZActionType)actionType {
-    self.queryModel.actionType = actionType;
-}
-
 - (void)scrollToEndOfTextView {
     [self.queryView scrollToEndOfTextView];
 }
@@ -828,7 +799,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    //    NSLog(@"tableView for row: %ld", row);
+//    NSLog(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];
@@ -858,17 +829,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return selectLanguageCell;
     }
     
-    // show tips view
-    if ([self isTipsCellRow:row]) {
-        EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
-        if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]];
-            tipsCell.identifier = EZTableTipsCellId;
-        }
-        self.tipsCell = tipsCell;
-        return tipsCell;
-    }
-    
     EZResultView *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
@@ -884,12 +844,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if ([self isTipsCellRow:row]) {
-        if (!self.tipsCell) {
-            height = 100;
-        } else {
-            height = [self.tipsCell cellHeight];
-        }
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {
@@ -1260,9 +1214,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
         [self startQueryText:text];
-        if (self.tipsCell) {
-            self.hasShowTips = YES;
-        }
     }];
     
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
@@ -1286,7 +1237,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self clearAll];
-        self.hasShowTips = YES;
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage language) {
@@ -1416,10 +1366,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     
-    if (self.isShowTipsView) {
-        offset += 1;
-    }
-    
     return offset;
 }
 
@@ -1535,12 +1481,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_7);
     }
     //    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
-    
-    if (!self.hasShowTips && 
-        !EZ_isEmptyString(self.queryModel.queryText) &&
-        !Configuration.shared.disableTipsView) {
-        scrollViewContentHeight += [self.tipsCell cellHeight];
-    }
     
     return scrollViewContentHeight;
 }

@@ -26,9 +26,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableBetaNewApp) {
                     Text("enable_beta_new_app")
                 }
-                Toggle(isOn: $disableTipsView) {
-                    Text("disable_tips_view")
-                }
+
             } header: {
                 Text("setting.general.advance.header")
             }
@@ -41,7 +39,6 @@ struct AdvancedTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.enableBetaNewApp) private var enableBetaNewApp
-    @Default(.disableTipsView) private var disableTipsView
 }
 
 @available(macOS 13, *)

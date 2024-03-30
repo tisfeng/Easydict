@@ -156,11 +156,6 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (NSString *)removeAlphabetAndNumbers;
 
-#pragma mark - Check Empty String
-#ifndef EZ_isEmptyString
-FOUNDATION_EXPORT BOOL EZ_isEmptyString(id param);
-#endif
-
 @end
 
 NS_ASSUME_NONNULL_END
