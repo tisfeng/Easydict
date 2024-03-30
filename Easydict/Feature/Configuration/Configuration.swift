@@ -469,7 +469,7 @@ extension Configuration {
         let windowManger = EZWindowManager.shared()
         windowManger.updatePopButtonQueryAction()
         if hideMainWindow {
-            windowManger.closeMainWindowIfNeeded()
+            windowManger.destroyMainWindow()
         }
 
         logSettings(["hide_main_window": hideMainWindow])

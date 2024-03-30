@@ -671,7 +671,7 @@ static EZWindowManager *_instance;
     }
 }
 
-- (void)closeMainWindowIfNeeded {
+- (void)destroyMainWindow {
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
     
     [self.floatingWindowTypeArray removeObject:@(EZWindowTypeMain)];
@@ -895,37 +895,11 @@ static EZWindowManager *_instance;
 }
 
 
-#pragma mark -
+#pragma mark - Close floating window
 
 /// Close floating window, and record last floating window type.
 - (void)closeFloatingWindow {
-    NSLog(@"close floating window: %@", self.floatingWindow);
-    
-    if (!self.floatingWindow) {
-        return;
-    }
-    
-    // stop playing audio
-    [self.floatingWindow.queryViewController stopPlayingQueryText];
-    self.floatingWindow.titleBar.pin = NO;
-    
-    EZBaseQueryWindow *closingFloatingWindow = self.floatingWindow;
-    
-    /// !!!: Close window may call window delegate method `windowDidResignKey:`
-    /// `windowDidResignKey:` will call `closeFloatingWindowIfNotPinnedOrMain`
-    [self.floatingWindow close];
-    
-    if (![self currentShowingSettingsWindow]) {
-        // recover last app.
-        [self activeLastFrontmostApplication];
-    }
-    
-    /// !!!: Maybe floating window has closed after calling [self.floatingWindow close], so we need to check it.
-    if (self.floatingWindow == closingFloatingWindow) {
-        [self updateFloatingWindowType:self.floatingWindowType isShowing:NO];
-    } 
-    
-//    NSLog(@"close closeFloatingWindow: %@", self.floatingWindow);
+    [self closeFloatingWindow:self.floatingWindowType];
 }
 
 /**
@@ -933,20 +907,45 @@ static EZWindowManager *_instance;
  Main window is basically equivalent to a pinned floating window.
  */
 - (void)closeFloatingWindowIfNotPinnedOrMain {
-    [self closeFloatingWindowIfNotPinnedAndExceptWindowType:EZWindowTypeMain];
+    [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeMain];
 }
 
 - (void)closeFloatingWindowIfNotPinned {
-    [self closeFloatingWindowIfNotPinnedAndExceptWindowType:EZWindowTypeNone];
+    [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeNone];
 }
 
-- (void)closeFloatingWindowIfNotPinnedAndExceptWindowType:(EZWindowType)windowType {
-    BOOL isPinned = self.floatingWindow.isPin;
-    BOOL isTypeMatch = self.floatingWindowType == windowType;
-    if (!isPinned && !isTypeMatch) {
-        [self closeFloatingWindow];
+- (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+    if (!window.isPin && windowType != exceptWindowType) {
+        [self closeFloatingWindow:windowType];
     }
 }
+
+- (void)closeFloatingWindow:(EZWindowType)windowType {
+    NSLog(@"close window type: %ld", windowType);
+    
+    EZBaseQueryWindow *floatingWindow = [self windowWithType:windowType];
+    if (!floatingWindow) {
+        return;
+    }
+    
+    // Stop playing audio
+    [floatingWindow.queryViewController stopPlayingQueryText];
+    floatingWindow.titleBar.pin = NO;
+        
+    /// !!!: Close window may call window delegate method `windowDidResignKey:`
+    /// And `windowDidResignKey:` will call `closeFloatingWindowIfNotPinned:`
+    [floatingWindow close];
+    
+    if (![self currentShowingSettingsWindow]) {
+        // Recover last app.
+        [self activeLastFrontmostApplication];
+    }
+    
+    [self updateFloatingWindowType:windowType isShowing:NO];
+}
+
+#pragma mark -
 
 - (void)activeLastFrontmostApplication {
     if (!self.lastFrontmostApplication.terminated) {
