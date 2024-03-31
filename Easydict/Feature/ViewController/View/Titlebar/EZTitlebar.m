@@ -123,7 +123,9 @@
     
     [self setupQuickActionButton];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(updateConstraints) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
 - (void)setupQuickActionButton {
@@ -170,11 +172,13 @@
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
     
+    // Remove and new views to refresh the UI.
     for (NSView *view in self.stackView.arrangedSubviews) {
         [self.stackView removeArrangedSubview:view];
         [view removeFromSuperview];
     }
     [self.stackView removeFromSuperview];
+    self.quickActionMenu = nil;
     
     self.stackView = [[NSStackView alloc] init];
     self.stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
