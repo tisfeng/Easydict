@@ -20,6 +20,7 @@
 @interface EZTitlebar ()
 
 @property (nonatomic, strong) NSStackView *stackView;
+@property (nonatomic, strong) NSMenu *quickActionMenu;
 
 @end
 
@@ -30,6 +31,44 @@
         [self setup];
     }
     return self;
+}
+
+- (NSMenu *)quickActionMenu {
+    if (!_quickActionMenu) {
+        NSMenu *menu = [NSMenu new];
+        NSArray *menuSections = @[
+            @[
+                @{@"title": @"remove_code_comment_symbols", @"action": NSStringFromSelector(@selector(clickAutomaticallyRemoveCodeCommentSymbols))},
+                @{@"title": @"word_segmentation", @"action": NSStringFromSelector(@selector(clickAutomaticWordSegmentation))}
+            ],
+            @[
+                @{@"title": @"go_to_settings", @"action": NSStringFromSelector(@selector(goToSettings))}
+            ]
+            /**
+             Just fix localization warning.
+             
+             NSLocalizedString(@"remove_code_comment_symbols", nil);
+             NSLocalizedString(@"word_segmentation", nil);
+             */
+        ];
+
+        for (NSArray *section in menuSections) {
+            for (NSDictionary *itemDict in section) {
+                NSString *titleKey = itemDict[@"title"];
+                NSString *title = NSLocalizedString(titleKey, nil);
+                SEL action = NSSelectorFromString(itemDict[@"action"]);
+                NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:@""];
+                menuItem.target = self;
+                [menu addItem:menuItem];
+            }
+            // Add separatorItem
+            if (section != menuSections.lastObject) {
+                [menu addItem:[NSMenuItem separatorItem]];
+            }
+        }
+        _quickActionMenu = menu;
+    }
+    return _quickActionMenu;
 }
 
 - (void)setup {
@@ -84,7 +123,7 @@
     mm_weakify(self);
     [quickActionButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-        [self showMenu];
+        [self.quickActionMenu popUpBelowView:self.quickActionButton];
     }];
     
     NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
@@ -233,31 +272,12 @@
     }];
 }
 
-- (void)showMenu {
-    NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    NSMenuItem *item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
-    item1.target = self;
-    
-    NSMenuItem *item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
-    item2.target = self;
-    
-    NSMenuItem *item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
-    item3.target = self;
-    
-    [menu addItem:item1];
-    [menu addItem:item2];
-    [menu addItem:[NSMenuItem separatorItem]];
-    [menu addItem:item3];
-    
-    [menu popUpBelowView:self.quickActionButton];
-}
-
 - (void)clickAutomaticallyRemoveCodeCommentSymbols {
-    _menuActionBlock(EZTitlebarActionRemoveCommentBlockSymbols);
+    _menuQuickActionBlock(EZTitlebarQuickActionRemoveCommentBlockSymbols);
 }
 
 - (void)clickAutomaticWordSegmentation {
-    _menuActionBlock(EZTitlebarActionWordsSegmentation);
+    _menuQuickActionBlock(EZTitlebarQuickActionWordsSegmentation);
 }
 
 - (void)goToSettings {

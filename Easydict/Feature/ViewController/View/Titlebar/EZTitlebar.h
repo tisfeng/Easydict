@@ -12,12 +12,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, EZTitlebarAction) {
-    EZTitlebarActionRemoveCommentBlockSymbols,
-    EZTitlebarActionWordsSegmentation,
+typedef NS_ENUM(NSUInteger, EZTitlebarQuickAction) {
+    EZTitlebarQuickActionRemoveCommentBlockSymbols,
+    EZTitlebarQuickActionWordsSegmentation,
 };
 
-typedef void(^EZTitlebarActionBlock)(EZTitlebarAction);
+typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 
 @interface EZTitlebar : NSView
 
@@ -33,7 +33,7 @@ typedef void(^EZTitlebarActionBlock)(EZTitlebarAction);
 
 @property (nonatomic, strong) EZOpenLinkButton *quickActionButton;
 
-@property (nonatomic, copy) EZTitlebarActionBlock menuActionBlock;
+@property (nonatomic, copy) EZTitlebarQuickActionBlock menuQuickActionBlock;
 
 @end
 

@@ -651,13 +651,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.queryView scrollToEndOfTextView];
 }
 
-- (void)receiveTitlebarAction:(EZTitlebarAction)action {
+- (void)receiveTitlebarAction:(EZTitlebarQuickAction)action {
     switch (action) {
-        case EZTitlebarActionWordsSegmentation: {
+        case EZTitlebarQuickActionWordsSegmentation: {
             self.inputText = [self.inputText segmentWords];
             break;
         }
-        case EZTitlebarActionRemoveCommentBlockSymbols: {
+        case EZTitlebarQuickActionRemoveCommentBlockSymbols: {
             self.inputText = [self.inputText removeCommentBlockSymbols];
             break;
         }
