@@ -122,7 +122,7 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
 
-    @DefaultsWrapper(.showSettingQuickLink) var showSettingQuickLink: Bool
+    @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
     var cancellables: [AnyCancellable] = []
 
@@ -323,7 +323,7 @@ class Configuration: NSObject {
         )
 
         cancellables.append(
-            Defaults.publisher(.showSettingQuickLink, options: [])
+            Defaults.publisher(.showQuickActionButton, options: [])
                 .removeDuplicates()
                 .sink { [weak self] _ in
                     self?.didSetShowSettingQuickLink()
@@ -537,7 +537,7 @@ extension Configuration {
     func didSetShowSettingQuickLink() {
         postUpdateQuickLinkButtonNotification()
 
-        logSettings(["showSettingQuickLink": showSettingQuickLink])
+        logSettings(["showSettingQuickLink": showQuickActionButton])
     }
 
     fileprivate func didSetHideMenuBarIcon() {

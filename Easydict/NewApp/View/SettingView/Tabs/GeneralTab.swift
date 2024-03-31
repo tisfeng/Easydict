@@ -278,7 +278,7 @@ struct GeneralTab: View {
     @Default(.showGoogleQuickLink) private var showGoogleQuickLink
     @Default(.showEudicQuickLink) private var showEudicQuickLink
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
-    @Default(.showSettingQuickLink) private var showSettingQuickLink
+    @Default(.showQuickActionButton) private var showSettingQuickLink
 
     @Default(.hideMainWindow) private var hideMainWindow
     @Default(.launchAtStartup) private var launchAtStartup

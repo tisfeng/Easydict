@@ -584,7 +584,7 @@
     self.showGoogleQuickLinkButton.mm_isOn = self.config.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
-    self.showSettingQuickLinkButton.mm_isOn = self.config.showSettingQuickLink;
+    self.showSettingQuickLinkButton.mm_isOn = self.config.showQuickActionButton;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
     if (@available(macOS 13.0, *)) {
         self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
@@ -1059,7 +1059,7 @@
 }
 
 - (void)showSettingQuickLinkButtonClicked:(NSButton *)sender {
-    self.config.showSettingQuickLink = sender.mm_isOn;
+    self.config.showQuickActionButton = sender.mm_isOn;
 }
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
