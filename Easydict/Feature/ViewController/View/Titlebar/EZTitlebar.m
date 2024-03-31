@@ -10,6 +10,7 @@
 #import "EZTitleBarMoveView.h"
 #import "NSObject+EZWindowType.h"
 #import "NSImage+EZResize.h"
+#import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
@@ -67,37 +68,37 @@
         }
     }];
     
-    [self setupSettingButton];
+    [self setupQuickActionButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
 }
 
-- (void)setupSettingButton {
-    EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
+- (void)setupQuickActionButton {
+    EZOpenLinkButton *quickActionButton = [[EZOpenLinkButton alloc] init];
     NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
+    image = [NSImage ez_imageWithSymbolName:@"switch.2"];
+    quickActionButton.image = image;
+    quickActionButton.toolTip = NSLocalizedString(@"quick_action", nil);
+    self.quickActionButton = quickActionButton;
     
-    button.image = image;
-    self.settingButton = button;
-    button.clickBlock = nil;
+    mm_weakify(self);
+    [quickActionButton setClickBlock:^(EZButton * _Nonnull button) {
+        mm_strongify(self);
+        [self showMenu];
+    }];
     
     NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
     NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
     CGSize imageSize = CGSizeMake(20, 20);
     
-    [button excuteLight:^(EZButton *button) {
+    [quickActionButton excuteLight:^(EZButton *button) {
         button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
     } dark:^(EZButton *button) {
         button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
     }];
     
-    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+    [quickActionButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(24);
-    }];
-    
-    mm_weakify(self);
-    [button setMouseUpBlock:^(EZButton *_Nonnull button) {
-        mm_strongify(self);
-        [self showMenu];
     }];
 }
 
@@ -138,7 +139,7 @@
     }];
     
     if (Configuration.shared.showSettingQuickLink) {
-        [self.stackView addArrangedSubview:self.settingButton];
+        [self.stackView addArrangedSubview:self.quickActionButton];
     }
     
     // Google
@@ -248,7 +249,7 @@
     [menu addItem:[NSMenuItem separatorItem]];
     [menu addItem:item3];
     
-    [menu popUpBelowView:self.settingButton];
+    [menu popUpBelowView:self.quickActionButton];
 }
 
 - (void)clickAutomaticallyRemoveCodeCommentSymbols {

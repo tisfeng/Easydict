@@ -2432,6 +2432,22 @@
         }
       }
     },
+    "quick_action" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick action"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "快捷动作"
+          }
+        }
+      }
+    },
     "quick_link" : {
       "localizations" : {
         "en" : {
@@ -2685,7 +2701,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "模型名字，多个模型使用逗号（,）分隔"
           }
         }

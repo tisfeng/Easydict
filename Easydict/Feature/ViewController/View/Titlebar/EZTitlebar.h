@@ -31,7 +31,7 @@ typedef void(^EZTitlebarActionBlock)(EZTitlebarAction);
 
 @property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
 
-@property (nonatomic, strong) EZOpenLinkButton *settingButton;
+@property (nonatomic, strong) EZOpenLinkButton *quickActionButton;
 
 @property (nonatomic, copy) EZTitlebarActionBlock menuActionBlock;
 
