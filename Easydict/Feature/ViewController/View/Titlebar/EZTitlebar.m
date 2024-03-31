@@ -38,20 +38,34 @@
         NSMenu *menu = [NSMenu new];
         NSArray *menuSections = @[
             @[
-                @{@"title": @"remove_code_comment_symbols", @"action": NSStringFromSelector(@selector(clickAutomaticallyRemoveCodeCommentSymbols))},
-                @{@"title": @"word_segmentation", @"action": NSStringFromSelector(@selector(clickAutomaticWordSegmentation))}
+                @{
+                    @"title" : @"replace_newline_with_space",
+                    @"action" : NSStringFromSelector(@selector(replaceNewlineWithSpace))
+                },
+                @{
+                    @"title" : @"remove_code_comment_symbols",
+                    @"action" : NSStringFromSelector(@selector(removeCodeCommentSymbols))
+                },
+                @{
+                    @"title" : @"split_words",
+                    @"action" : NSStringFromSelector(@selector(splitWords))
+                }
             ],
             @[
-                @{@"title": @"go_to_settings", @"action": NSStringFromSelector(@selector(goToSettings))}
+                @{
+                    @"title" : @"go_to_settings",
+                    @"action" : NSStringFromSelector(@selector(goToSettings))
+                }
             ]
             /**
              Just fix localization warning.
              
+             NSLocalizedString(@"replace_newline_with_space", nil);
              NSLocalizedString(@"remove_code_comment_symbols", nil);
-             NSLocalizedString(@"word_segmentation", nil);
+             NSLocalizedString(@"split_words", nil);
              */
         ];
-
+        
         for (NSArray *section in menuSections) {
             for (NSDictionary *itemDict in section) {
                 NSString *titleKey = itemDict[@"title"];
@@ -121,7 +135,7 @@
     self.quickActionButton = quickActionButton;
     
     mm_weakify(self);
-    [quickActionButton setClickBlock:^(EZButton * _Nonnull button) {
+    [quickActionButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self.quickActionMenu popUpBelowView:self.quickActionButton];
     }];
@@ -272,11 +286,17 @@
     }];
 }
 
-- (void)clickAutomaticallyRemoveCodeCommentSymbols {
+#pragma mark - Actions
+
+- (void)replaceNewlineWithSpace {
+    _menuQuickActionBlock(EZTitlebarQuickActionReplaceNewlineWithSpace);
+}
+
+- (void)removeCodeCommentSymbols {
     _menuQuickActionBlock(EZTitlebarQuickActionRemoveCommentBlockSymbols);
 }
 
-- (void)clickAutomaticWordSegmentation {
+- (void)splitWords {
     _menuQuickActionBlock(EZTitlebarQuickActionWordsSegmentation);
 }
 

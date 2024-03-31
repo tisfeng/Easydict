@@ -119,7 +119,7 @@ struct GeneralTab: View {
                 Toggle("keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty)
                 Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
                 Toggle("automatically_remove_code_comment_symbols", isOn: $automaticallyRemoveCodeCommentSymbols)
-                Toggle("automatic_word_segmentation", isOn: $automaticWordSegmentation)
+                Toggle("automatically_split_words", isOn: $automaticWordSegmentation)
             } header: {
                 Text("setting.general.input.header")
             }

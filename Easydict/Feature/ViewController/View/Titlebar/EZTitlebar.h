@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSUInteger, EZTitlebarQuickAction) {
     EZTitlebarQuickActionRemoveCommentBlockSymbols,
     EZTitlebarQuickActionWordsSegmentation,
+    EZTitlebarQuickActionReplaceNewlineWithSpace,
 };
 
 typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);

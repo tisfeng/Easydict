@@ -418,7 +418,7 @@
     self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
     [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
     
-    self.automaticWordSegmentationButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatic_word_segmentation", nil) target:self action:@selector(automaticWordSegmentationButtonClicked:)];
+    self.automaticWordSegmentationButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatically_split_words", nil) target:self action:@selector(automaticWordSegmentationButtonClicked:)];
     [self.contentView addSubview:self.automaticWordSegmentationButton];
     
     self.automaticallyRemoveCodeCommentSymbolsButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatically_remove_code_comment_symbols", nil) target:self action:@selector(automaticallyRemoveCodeCommentSymbolsButtonClicked:)];

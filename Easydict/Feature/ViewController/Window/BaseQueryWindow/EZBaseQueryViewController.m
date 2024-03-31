@@ -661,6 +661,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             self.inputText = [self.inputText removeCommentBlockSymbols];
             break;
         }
+        case EZTitlebarQuickActionReplaceNewlineWithSpace: {
+            self.inputText = [self.inputText stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+        }
         default:
             break;
     }
