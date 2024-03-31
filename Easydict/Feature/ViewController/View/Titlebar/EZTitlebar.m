@@ -118,15 +118,15 @@
 #pragma mark - Actions
 
 - (void)replaceNewlineWithSpace {
-    _menuQuickActionBlock(EZTitlebarQuickActionReplaceNewlineWithSpace);
+    _menuActionBlock(EZTitlebarQuickActionReplaceNewlineWithSpace);
 }
 
 - (void)removeCodeCommentSymbols {
-    _menuQuickActionBlock(EZTitlebarQuickActionRemoveCommentBlockSymbols);
+    _menuActionBlock(EZTitlebarQuickActionRemoveCommentBlockSymbols);
 }
 
 - (void)splitWords {
-    _menuQuickActionBlock(EZTitlebarQuickActionWordsSegmentation);
+    _menuActionBlock(EZTitlebarQuickActionWordsSegmentation);
 }
 
 - (void)goToSettings {

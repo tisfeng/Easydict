@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "EZHoverButton.h"
 #import "EZOpenLinkButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -32,7 +31,7 @@ typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 
 @property (nonatomic, strong) EZOpenLinkButton *quickActionButton;
 
-@property (nonatomic, copy) EZTitlebarQuickActionBlock menuQuickActionBlock;
+@property (nonatomic, copy) EZTitlebarQuickActionBlock menuActionBlock;
 
 @end
 

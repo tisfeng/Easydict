@@ -57,7 +57,7 @@
     }];
     
     mm_weakify(self);
-    self.titleBar.menuQuickActionBlock = ^(EZTitlebarQuickAction action) {
+    self.titleBar.menuActionBlock = ^(EZTitlebarQuickAction action) {
         mm_strongify(self);
         [self.queryViewController receiveTitlebarAction:action];
     };
