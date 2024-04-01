@@ -294,6 +294,7 @@
 		9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */; };
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		967712EE2B5B943400105E0F /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967712ED2B5B943400105E0F /* Shortcut.swift */; };
+		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
 		A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C415C0AC2B450D4800A9D231 /* GeminiService.swift */; };
@@ -825,6 +826,8 @@
 		9672D7D02B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MASShortcutBinder+EZMASShortcutBinder.h"; sourceTree = "<group>"; };
 		9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MASShortcutBinder+EZMASShortcutBinder.m"; sourceTree = "<group>"; };
 		967712ED2B5B943400105E0F /* Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
+		96DFEB812B82588000F5C7EF /* EZTableTipsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableTipsCell.h; sourceTree = "<group>"; };
+		96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableTipsCell.m; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		C4DD01E82B12B3C80025EE8E /* TencentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentService.swift; sourceTree = "<group>"; };
@@ -1502,6 +1505,8 @@
 			children = (
 				0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */,
 				0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */,
+				96DFEB812B82588000F5C7EF /* EZTableTipsCell.h */,
+				96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */,
 				037852B7295D49F900D0E2CF /* EZTableRowView.h */,
 				037852B8295D49F900D0E2CF /* EZTableRowView.m */,
 			);
@@ -3008,6 +3013,7 @@
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
+				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
