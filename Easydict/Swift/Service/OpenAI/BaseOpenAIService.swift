@@ -74,7 +74,10 @@ public class BaseOpenAIService: QueryService {
     ) {
         let url = URL(string: endPoint)
         let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
-        guard let url, url.isValid else { completion(result, invalidURLError); return }
+        guard let url, url.isValid else {
+            completion(result, invalidURLError)
+            return
+        }
 
         var resultText = ""
 
