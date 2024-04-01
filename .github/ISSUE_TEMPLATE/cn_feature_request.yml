@@ -1,6 +1,6 @@
 name: 功能建议
 description: 功能建议
-title: "🚀 功能建议：{{请填写标题，不要留空}}"
+title: "🚀 功能建议：请填写标题，不要留空"
 labels: ["enhancement"]
 
 body:

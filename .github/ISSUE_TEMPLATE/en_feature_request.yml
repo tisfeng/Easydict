@@ -1,6 +1,6 @@
 name: Feature request
 description: Request a new feature
-title: "🚀 Feature Request: {{Please fill in the title, don't leave it blank}}"
+title: "🚀 Feature Request: Please fill in the title, don't leave it blank"
 labels: ["enhancement"]
 
 body:
