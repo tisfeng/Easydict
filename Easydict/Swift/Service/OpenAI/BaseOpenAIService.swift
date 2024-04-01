@@ -33,21 +33,15 @@ public class BaseOpenAIService: QueryService {
 
     override public func queryTextType() -> EZQueryTextType {
         var type: EZQueryTextType = []
-        let enableTranslation = UserDefaults.standard.string(forKey: EZOpenAITranslationKey) ?? "0"
-        if enableTranslation != "0" {
+        if Defaults[.openAITranslation] != "0" {
             type.insert(.translation)
         }
-
-        let enableDictionary = UserDefaults.standard.string(forKey: EZOpenAIDictionaryKey) ?? "0"
-        if enableDictionary != "0" {
+        if Defaults[.openAIDictionary] != "0" {
             type.insert(.dictionary)
         }
-
-        let enableSentence = UserDefaults.standard.string(forKey: EZOpenAISentenceKey) ?? "0"
-        if enableSentence != "0" {
+        if Defaults[.openAISentence] != "0" {
             type.insert(.sentence)
         }
-
         return type
     }
 
@@ -99,8 +93,8 @@ public class BaseOpenAIService: QueryService {
             case let .success(chatResult):
                 if let content = chatResult.choices.first?.delta.content {
                     resultText += content
-                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                 }
+                handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
             case let .failure(error):
                 handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
             }
@@ -137,6 +131,7 @@ public class BaseOpenAIService: QueryService {
 
         set {
             // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
+
             let mode = OpenAIModel(rawValue: newValue) ?? .gpt3_5_turbo_0125
             Defaults[.openAIModel] = mode
         }
@@ -145,7 +140,7 @@ public class BaseOpenAIService: QueryService {
     var apiKey: String {
         // easydict://writeKeyValue?EZOpenAIAPIKey=
 
-        var apiKey = UserDefaults.standard.string(forKey: EZOpenAIAPIKey) ?? ""
+        var apiKey = Defaults[.openAIAPIKey] ?? ""
         if apiKey.isEmpty, Configuration.shared.beta {
             apiKey = defaultAPIKey
         }
@@ -156,7 +151,7 @@ public class BaseOpenAIService: QueryService {
     var endPoint: String {
         // easydict://writeKeyValue?EZOpenAIEndPointKey=
 
-        var endPoint = UserDefaults.standard.string(forKey: EZOpenAIEndPointKey) ?? ""
+        var endPoint = Defaults[.openAIEndPoint] ?? ""
         if endPoint.isEmpty {
             endPoint = "https://\(host)/v1/chat/completions"
         }

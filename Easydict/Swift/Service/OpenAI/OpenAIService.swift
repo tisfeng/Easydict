@@ -6,9 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
-import OpenAI
 
 // MARK: - OpenAIService
 
