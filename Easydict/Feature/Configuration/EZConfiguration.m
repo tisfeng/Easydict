@@ -247,7 +247,7 @@ static EZConfiguration *_instance;
     EZWindowManager *windowManager = EZWindowManager.shared;
     [windowManager updatePopButtonQueryAction];
     if (hideMainWindow) {
-        [windowManager closeMainWindowIfNeeded];
+        [windowManager destroyMainWindow];
     }
     
     [self logSettings:@{@"hide_main_window" : @(hideMainWindow)}];

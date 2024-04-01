@@ -112,11 +112,10 @@
 #pragma mark - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-//        NSLog(@"windowDidBecomeKey: %@", self);
+//    NSLog(@"windowDidBecomeKey: %@", self);
     
     // We need to update the window type when the window becomes the key window.
-    EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager updateFloatingWindowType:self.windowType];
+    [EZWindowManager.shared updateFloatingWindowType:self.windowType isShowing:YES];
     
     if (self.didBecomeKeyWindowBlock) {
         self.didBecomeKeyWindowBlock();
@@ -124,14 +123,10 @@
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
-    //    NSLog(@"window Did ResignKey: %@", self);
+//    NSLog(@"windowDidResignKey: %@", self);
     
-    EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
-
-    // Do not close main window
-    if (!floatingWindow.pin && floatingWindow.isVisible) {
-        [EZWindowManager.shared closeFloatingWindowExceptMain];
-    }
+    // Close floating window when losing focus if it's not pinned or main window.
+    [EZWindowManager.shared closeFloatingWindowIfNotPinned:self.windowType exceptWindowType:EZWindowTypeMain];
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
@@ -153,11 +148,6 @@
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender {
-    if (self.windowType == EZWindowTypeMain) {
-        [self orderOut:nil];
-        return NO;
-    }
-    
     return YES;
 }
 
