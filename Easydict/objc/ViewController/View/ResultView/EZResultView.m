@@ -267,8 +267,8 @@
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
     
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
-    if ([self isOpenAIService:result.service]) {
-        EZOpenAIService *service = (EZOpenAIService *)result.service;
+    if ([self isBaseOpenAIService:result.service]) {
+        EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
         self.serviceModelButton.title = service.model;
         mm_weakify(self);
         [self.serviceModelButton setMouseUpBlock:^(EZButton *_Nonnull button) {
@@ -377,7 +377,7 @@
     BOOL showStopButton = NO;
     
     // Currently, only support stop OpenAI service.
-    if ([self isOpenAIService:self.result.service]) {
+    if ([self isBaseOpenAIService:self.result.service]) {
         showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
     }
     
@@ -399,12 +399,12 @@
     }];
 }
 
-- (BOOL)isOpenAIService:(EZQueryService *)service {
+- (BOOL)isBaseOpenAIService:(EZQueryService *)service {
     return [service isKindOfClass:[EZBaseOpenAIService class]];
 }
 
 - (void)updateServiceModelLabel {
-    if (![self isOpenAIService:self.result.service]) {
+    if (![self isBaseOpenAIService:self.result.service]) {
         return;
     }
     BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
