@@ -415,7 +415,7 @@
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZOpenAIService *service = (EZOpenAIService *)self.result.service;
+    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.availableModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
