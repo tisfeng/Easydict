@@ -426,7 +426,7 @@
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
-    EZOpenAIService *service = (EZOpenAIService *)self.result.service;
+    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
