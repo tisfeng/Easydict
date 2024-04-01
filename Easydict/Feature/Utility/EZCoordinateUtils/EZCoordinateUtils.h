@@ -11,6 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZCoordinateUtils : NSObject
+// record start query screen
+@property (nonatomic, strong, class, nullable) NSScreen *startQueryScreen;
 
 /// Get safe point, bottom-left coordinate.
 + (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point inScreen:(NSScreen *)screen;
