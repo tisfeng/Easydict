@@ -386,9 +386,6 @@ A quick tip: If you only want to exclude occasional sentence analysis without tu
 Support custom domains and models
 
 ```bash
-//  xxx is the host, the default one is api.openai.com
-easydict://writeKeyValue?EZOpenAIDomainKey=xxx
-
 // xxx is the complete address of the request; for example, https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
