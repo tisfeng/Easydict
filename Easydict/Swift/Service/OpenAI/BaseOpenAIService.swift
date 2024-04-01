@@ -153,7 +153,7 @@ public class BaseOpenAIService: QueryService {
 
         var endPoint = Defaults[.openAIEndPoint] ?? ""
         if endPoint.isEmpty {
-            endPoint = "https://\(host)/v1/chat/completions"
+            endPoint = "https://api.openai.com/v1/chat/completions"
         }
 
         if !hasPrivateAPIKey() {
@@ -168,15 +168,6 @@ public class BaseOpenAIService: QueryService {
     }
 
     // MARK: Private
-
-    private var host: String {
-        // easydict://writeKeyValue?EZOpenAIDomainKey=
-        var host = UserDefaults.standard.string(forKey: "EZOpenAIDomainKey") ?? ""
-        if host.isEmpty {
-            host = "api.openai.com"
-        }
-        return host
-    }
 
     private func queryTextType(text: String, from: Language, to _: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)

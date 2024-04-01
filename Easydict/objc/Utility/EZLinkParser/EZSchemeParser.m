@@ -172,8 +172,6 @@
      
      easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
      easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
-     easydict://writeKeyValue?EZOpenAIDomainKey=api.openai.com
-     easydict://readValueOfKey?EZOpenAIDomainKey
      easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
      easydict://writeKeyValue?EZOpenAIEndPointKey=https://api.ohmygpt.com/azure/v1/chat/completions
      easydict://writeKeyValue?EZOpenAIDictionaryKey=0
