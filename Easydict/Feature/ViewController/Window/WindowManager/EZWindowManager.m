@@ -74,7 +74,7 @@ static EZWindowManager *_instance;
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
     
-    //    NSLog(@"%@", self.floatingWindowTypeArray);
+    //    NSLog(@"floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (void)setupEventMonitor {
@@ -103,10 +103,6 @@ static EZWindowManager *_instance;
         [self.popButtonWindow orderFrontRegardless];
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
         self.popButtonWindow.level = kCGScreenSaverWindowLevel;
-        
-        if ([EZMainQueryWindow isAlive]) {
-            [self.mainWindow orderBack:nil];
-        }
     }];
     
     [self updatePopButtonQueryAction];
@@ -132,16 +128,12 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissMiniWindowBlock:^{
         mm_strongify(self);
-        if (!self.floatingWindow.pin && self.floatingWindow.visible) {
-            [self closeFloatingWindow];
-        }
+        [self closeFloatingWindowIfNotPinned];
     }];
     
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
-        if (!self.floatingWindow.pin) {
-            [self closeFloatingWindow];
-        }
+        [self closeFloatingWindowIfNotPinned];
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
@@ -194,6 +186,7 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
+        _mainWindow.releasedWhenClosed = NO;
     }
     return _mainWindow;
 }
@@ -221,7 +214,7 @@ static EZWindowManager *_instance;
     return _popButtonWindow;
 }
 
-- (EZBaseQueryWindow *)floatingWindow {
+- (nullable EZBaseQueryWindow *)floatingWindow {
     return [self windowWithType:self.floatingWindowType];
 }
 
@@ -347,7 +340,7 @@ static EZWindowManager *_instance;
     
     EZBaseQueryViewController *queryViewController = window.queryViewController;
     
-    void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus){
+    void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
         // Update input text and detect.
         [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
         [queryViewController detectQueryText:nil];
@@ -387,14 +380,14 @@ static EZWindowManager *_instance;
 
 - (void)orderFrontWindowAndFocusInputTextView:(EZBaseQueryWindow *)window {
     [self saveFrontmostApplication];
-
+    
     // Focus floating window.
     [window makeKeyAndOrderFront:nil];
     [window.queryViewController focusInputTextView];
 }
 
 - (void)detectQueryText:(NSString *)text completion:(nullable void (^)(NSString *language))completion {
-    EZBaseQueryViewController *viewController = [EZWindowManager.shared backgroundQueryViewController];
+    EZBaseQueryViewController *viewController = [self backgroundQueryViewController];
     viewController.inputText = text;
     [viewController detectQueryText:completion];
 }
@@ -415,9 +408,11 @@ static EZWindowManager *_instance;
     [window setFrameOrigin:safeLocation];
     window.level = EZFloatingWindowLevel;
     
-    // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
+    // FIXME: need to optimize. We have to remove main window temporarily, and `orderBack:` when closed floating window.
+    // But `orderBack:` will cause the query window to fail to display in stage manager mode (#385)
+
     if ([EZMainQueryWindow isAlive]) {
-        [self.mainWindow orderOut:nil];
+        [_mainWindow orderOut:nil];
     }
     
     //    NSLog(@"window frame: %@", @(window.frame));
@@ -431,7 +426,7 @@ static EZWindowManager *_instance;
     // !!!: Focus input textView should behind makeKeyAndOrderFront:, otherwise it will not work in the first time.
     [window.queryViewController focusInputTextView];
     
-    [self updateFloatingWindowType:window.windowType];
+    [self updateFloatingWindowType:window.windowType isShowing:YES];
 }
 
 - (nullable NSWindow *)currentShowingSettingsWindow {
@@ -450,10 +445,15 @@ static EZWindowManager *_instance;
     return nil;
 }
 
-- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
+- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
+//    NSLog(@"update windowType: %@, isShowing: %d", windowType, isShowing);
+//    NSLog(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+
     [self.floatingWindowTypeArray removeObject:windowType];
-    [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
+    [self.floatingWindowTypeArray insertObject:windowType atIndex:isShowing ? 0 : 1];
+    
+//    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -659,7 +659,7 @@ static EZWindowManager *_instance;
     self.lastFrontmostApplication = frontmostApplication;
 }
 
-- (void)showMainWindowIfNedded {
+- (void)showMainWindowIfNeeded {
     BOOL showFlag = !Configuration.shared.hideMainWindow;
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
     [NSApp setActivationPolicy:activationPolicy];
@@ -667,13 +667,12 @@ static EZWindowManager *_instance;
     if (showFlag) {
         [self.floatingWindowTypeArray insertObject:@(EZWindowTypeMain) atIndex:0];
         
-        EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
-        [mainWindow center];
-        [mainWindow makeKeyAndOrderFront:nil];
+        [self.mainWindow center];
+        [self.mainWindow makeKeyAndOrderFront:nil];
     }
 }
 
-- (void)closeMainWindowIfNeeded {
+- (void)destroyMainWindow {
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
     
     [self.floatingWindowTypeArray removeObject:@(EZWindowTypeMain)];
@@ -728,9 +727,7 @@ static EZWindowManager *_instance;
     }
     
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
-    if (!self.floatingWindow.pin && self.floatingWindowType != EZWindowTypeMain) {
-        [self closeFloatingWindow];
-    }
+    [self closeFloatingWindowIfNotPinnedOrMain];
     
     // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
@@ -754,7 +751,7 @@ static EZWindowManager *_instance;
             });
             [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
             [image mm_writeToFileAsPNG:_imagePath];
-            NSLog(@"已保存图片: %@", _imagePath);
+            NSLog(@"已保存图片：%@", _imagePath);
             
             // Reset window height first, avoid being affected by previous window height.
             [window.queryViewController resetTableView:^{
@@ -829,7 +826,7 @@ static EZWindowManager *_instance;
         });
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
         [image mm_writeToFileAsPNG:_imagePath];
-        NSLog(@"已保存图片: %@", _imagePath);
+        NSLog(@"已保存图片：%@", _imagePath);
         
         [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
@@ -881,9 +878,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     } else {
-        if (self.floatingWindow) {
-            [EZWindowManager.shared closeFloatingWindow];
-        }
+        [self closeFloatingWindow];
         [EZPreferencesWindowController.shared close];
     }
 }
@@ -901,45 +896,57 @@ static EZWindowManager *_instance;
 }
 
 
-#pragma mark -
+#pragma mark - Close floating window
 
 /// Close floating window, and record last floating window type.
 - (void)closeFloatingWindow {
-    NSLog(@"close floating window: %@", self.floatingWindow);
+    [self closeFloatingWindow:self.floatingWindowType];
+}
+
+/**
+ Close floating window if not pinned or main window.
+ Main window is basically equivalent to a pinned floating window.
+ */
+- (void)closeFloatingWindowIfNotPinnedOrMain {
+    [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeMain];
+}
+
+- (void)closeFloatingWindowIfNotPinned {
+    [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeNone];
+}
+
+- (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+    if (!window.isPin && windowType != exceptWindowType) {
+        [self closeFloatingWindow:windowType];
+    }
+}
+
+- (void)closeFloatingWindow:(EZWindowType)windowType {
+    NSLog(@"close window type: %ld", windowType);
     
-    if (!self.floatingWindow) {
+    EZBaseQueryWindow *floatingWindow = [self windowWithType:windowType];
+    if (!floatingWindow) {
         return;
     }
     
-    // stop playing audio
-    [self.floatingWindow.queryViewController stopPlayingQueryText];
-    
-    self.floatingWindow.titleBar.pin = NO;
-    [self.floatingWindow close];
+    // Stop playing audio
+    [floatingWindow.queryViewController stopPlayingQueryText];
+    floatingWindow.titleBar.pin = NO;
+        
+    /// !!!: Close window may call window delegate method `windowDidResignKey:`
+    /// And `windowDidResignKey:` will call `closeFloatingWindowIfNotPinned:`
+    [floatingWindow close];
     
     if (![self currentShowingSettingsWindow]) {
-        // recover last app.
+        // Recover last app.
         [self activeLastFrontmostApplication];
     }
     
-    if ([EZMainQueryWindow isAlive]) {
-        [self.mainWindow orderBack:nil];
-    }
-    
-    // Move floating window type to second.
-    
-    NSNumber *windowType = @(self.floatingWindowType);
-    [self.floatingWindowTypeArray removeObject:windowType];
-    [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
+    [self updateFloatingWindowType:windowType isShowing:NO];
 }
 
-/// Close floating window, except main window.
-- (void)closeFloatingWindowExceptMain {
-    // Do not close main window
-    if (!self.floatingWindow.pin && self.floatingWindow.windowType != EZWindowTypeMain) {
-        [[EZWindowManager shared] closeFloatingWindow];
-    }
-}
+#pragma mark -
 
 - (void)activeLastFrontmostApplication {
     if (!self.lastFrontmostApplication.terminated) {
