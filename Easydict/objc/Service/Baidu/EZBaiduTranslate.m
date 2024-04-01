@@ -114,6 +114,9 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (NSString *)cookie {
     NSString *cookie = [[NSUserDefaults standardUserDefaults] stringForKey:kBaiduTranslateURL] ?: @"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;";
+    if (![cookie containsString:@"smallFlowVersion=old"]) {
+        cookie = [NSString stringWithFormat:@"%@%@", cookie, @";smallFlowVersion=old;"];
+    }
     return cookie;
 }
 
@@ -766,6 +769,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     // set headers
     for (NSString *key in headers.allKeys) {
         [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
+        [self.htmlSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
     }
     
     [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
