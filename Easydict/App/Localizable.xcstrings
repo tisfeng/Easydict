@@ -501,22 +501,6 @@
         }
       }
     },
-    "automatic_word_segmentation" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatically splitting words: key_value —> key value"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "单词自动分词 key_value —> key value"
-          }
-        }
-      }
-    },
     "automatically_remove_code_comment_symbols" : {
       "localizations" : {
         "en" : {
@@ -529,6 +513,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自动去除代码注释符号「/*#」"
+          }
+        }
+      }
+    },
+    "automatically_split_words" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically split words: key_value —> key value"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词自动分词 key_value —> key value"
           }
         }
       }
@@ -2432,6 +2432,22 @@
         }
       }
     },
+    "quick_action" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick action"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷动作"
+          }
+        }
+      }
+    },
     "quick_link" : {
       "localizations" : {
         "en" : {
@@ -2493,6 +2509,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "去除代码注释符号"
+          }
+        }
+      }
+    },
+    "replace_newline_with_space" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace newline with space"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将「换行符」替换为「空格」"
           }
         }
       }
@@ -2685,7 +2717,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "模型名字，多个模型使用逗号（,）分隔"
           }
         }
@@ -4204,6 +4236,22 @@
         }
       }
     },
+    "split_words" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Split words"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词分词"
+          }
+        }
+      }
+    },
     "stop_play_audio" : {
       "localizations" : {
         "en" : {
@@ -4399,22 +4447,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
-          }
-        }
-      }
-    },
-    "word_segmentation" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Splitting words"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "单词分词"
           }
         }
       }

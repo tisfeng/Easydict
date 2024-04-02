@@ -7,17 +7,17 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "EZHoverButton.h"
 #import "EZOpenLinkButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, EZTitlebarAction) {
-    EZTitlebarActionRemoveCommentBlockSymbols,
-    EZTitlebarActionWordsSegmentation,
+typedef NS_ENUM(NSUInteger, EZTitlebarQuickAction) {
+    EZTitlebarQuickActionRemoveCommentBlockSymbols,
+    EZTitlebarQuickActionWordsSegmentation,
+    EZTitlebarQuickActionReplaceNewlineWithSpace,
 };
 
-typedef void(^EZTitlebarActionBlock)(EZTitlebarAction);
+typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 
 @interface EZTitlebar : NSView
 
@@ -29,11 +29,9 @@ typedef void(^EZTitlebarActionBlock)(EZTitlebarAction);
 @property (nonatomic, strong) EZOpenLinkButton *googleButton;
 @property (nonatomic, strong) EZOpenLinkButton *appleDictionaryButton;
 
-@property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
+@property (nonatomic, strong) EZOpenLinkButton *quickActionButton;
 
-@property (nonatomic, strong) EZOpenLinkButton *settingButton;
-
-@property (nonatomic, copy) EZTitlebarActionBlock menuActionBlock;
+@property (nonatomic, copy) EZTitlebarQuickActionBlock menuActionBlock;
 
 @end
 
