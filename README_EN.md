@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/) and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/) and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,7 +41,7 @@
 - [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
 - [x] Support [🍎 Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
-- [x] Support Youdao Dictionary, DeepL, OpenAI (ChatGPT), Gemini, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali and Volcano Translate.
+- [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali and Volcano Translate.
 - [x] Support for 48 languages.
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
@@ -71,7 +71,7 @@ We plan to refactor the project with Swift. If you are interested in this open s
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
-  - [OpenAI (ChatGPT) Translation](#openai-chatgpt-translation)
+  - [OpenAI Translate](#openai-translate)
     - [Using the built-in APIKey](#using-the-built-in-apikey)
     - [Configure Personal APIKey](#configure-personal-apikey)
     - [OpenAI Query Mode](#openai-query-mode)
@@ -232,7 +232,7 @@ It's worth noting that, apart from the system TTS, all other TTS services are un
 
 ## Translation Services
 
-Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple System Translator, ChatGPT, DeepL, Google, Bing, Baidu and Volcano Translator.
+Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple System Translator, DeepL, Google, Bing, Baidu and Volcano Translator.
 
 > [!NOTE] 
 > Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
@@ -310,7 +310,7 @@ For detailed information, please see [How to use macOS system dictionary in Easy
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
 </table>
 
-### OpenAI (ChatGPT) Translation
+### OpenAI Translate
 
 Version 1.3.0 adds support for OpenAI translation, as well as Azure OpenAI interfaces, which require the use of OpenAI API keys.
 
@@ -318,7 +318,7 @@ If you don't have your own OpenAI APIKey, you can use some open source projects 
 
 For example, [one-api](https://github.com/songquanpeng/one-api), one-api is a good open source project for OpenAI interface management, which supports multiple LLM interfaces, including Azure, Anthropic Claude, Google PaLM 2 & Gemini, Zhupu ChatGLM, Baidu Wenxin Yiyu, Xunfei Xinghuo cognition, Ali Tongyi Qianwen, 360 Zhinao and Tencent Hunyuan, etc., which can be used for secondary distribution management key, only single executable file, Docker image has been packaged, one-click deployment, out of the box.
 
-The [2.6.0](https://github.com/tisfeng/Easydict/releases) version implements a new SwiftUI settings page (macOS 13+ support), which supports configuring the service API key in a GUI way, other system verions need to be configured using commands in Easydict's input box.
+**The [2.6.0](https://github.com/tisfeng/Easydict/releases) version implements a new SwiftUI settings page (macOS 13+ support), which supports configuring the service API key in a GUI way, other system verions need to be configured using commands in Easydict's input box.**
 
 > [!NOTE]
 > If your computer hardware supports it, it is recommended to upgrade to the latest macOS system to enjoy a better user experience.
