@@ -10,6 +10,7 @@
 #import "EZTitleBarMoveView.h"
 #import "NSObject+EZWindowType.h"
 #import "NSImage+EZResize.h"
+#import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
@@ -18,6 +19,14 @@
 @interface EZTitlebar ()
 
 @property (nonatomic, strong) NSStackView *stackView;
+@property (nonatomic, strong) NSMenu *quickActionMenu;
+
+@property (nonatomic, assign) CGSize buttonSize;
+@property (nonatomic, assign) CGFloat buttonWidth;
+@property (nonatomic, assign) CGFloat buttonPadding;
+
+@property (nonatomic, assign) CGSize imageSize;
+@property (nonatomic, assign) CGFloat imageWidth;
 
 @end
 
@@ -30,182 +39,306 @@
     return self;
 }
 
+
 - (void)setup {
-    //    EZTitleBarMoveView *moveView = [[EZTitleBarMoveView alloc] init];
-    //    moveView.wantsLayer = YES;
-    //    moveView.layer.backgroundColor = NSColor.clearColor.CGColor;
-    //    [self addSubview:moveView];
-    //    [moveView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.edges.equalTo(self);
-    //    }];
+    self.buttonWidth = 24;
+    self.imageWidth = 20;
+    self.buttonPadding = 4;
     
-    EZOpenLinkButton *pinButton = [[EZOpenLinkButton alloc] init];
-    [self addSubview:pinButton];
-    self.pinButton = pinButton;
-    pinButton.contentTintColor = [NSColor clearColor];
-    pinButton.clickBlock = nil;
-    self.pin = NO;
+    self.buttonSize = CGSizeMake(self.buttonWidth, self.buttonWidth);
+    self.imageSize = CGSizeMake(self.imageWidth, self.imageWidth);
     
-    mm_weakify(self);
-    [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
-        //  NSLog(@"pin mouse down, state: %ld", button.buttonState);
-        mm_strongify(self);
-        self.pin = !self.pin;
-    }];
-    
-    [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
-        //  NSLog(@"pin mouse up, state: %ld", button.buttonState);
-        mm_strongify(self);
-        BOOL oldPin = !self.pin;
-        
-        // This means clicked pin button.
-        if (button.state == EZButtonHoverState) {
-            self.pin = !oldPin;
-        } else if (button.buttonState == EZButtonNormalState) {
-            self.pin = oldPin;
-        }
-    }];
-    
-    [self setupSettingButton];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(updateConstraints) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
-- (void)setupSettingButton {
-    EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
-    NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
-    
-    button.image = image;
-    self.settingButton = button;
-    button.clickBlock = nil;
-    
-    NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
-    NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-    CGSize imageSize = CGSizeMake(20, 20);
-    
-    [button excuteLight:^(EZButton *button) {
-        button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
-    } dark:^(EZButton *button) {
-        button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
-    }];
-    
-    [button mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(24);
-    }];
-    
-    mm_weakify(self);
-    [button setMouseUpBlock:^(EZButton *_Nonnull button) {
-        mm_strongify(self);
-        [self showMenu];
-    }];
-}
 
 - (void)updateConstraints {
-    CGFloat kButtonWidth_24 = 24;
-    CGFloat kImagenWidth_20 = 20;
-    CGFloat kButtonPadding_4 = 4;
+    // Remove and dealloc all views to refresh UI.
+    for (NSView *subview in self.subviews) {
+        [subview removeFromSuperview];
+    }
     
-    CGSize buttonSize = CGSizeMake(kButtonWidth_24, kButtonWidth_24);
-    CGSize imageSize = CGSizeMake(kImagenWidth_20, kImagenWidth_20);
+    // Reset buttons to update toolTip.
+    _quickActionMenu = nil;
+    _quickActionButton = nil;
+    _googleButton = nil;
+    _eudicButton = nil;
+    _appleDictionaryButton = nil;
+    _stackView = nil;
+    
+    [self addSubview:self.pinButton];
+    [self updatePinButton];
+    [self quickActionMenu];
+
+    CGFloat margin = EZHorizontalCellSpacing_10;
+    CGFloat topOffset = EZTitlebarHeight_28 - self.buttonWidth;
     
     [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat pinButtonWidth = 24;
-        make.width.height.mas_equalTo(pinButtonWidth);
-        make.left.inset(11);
-        make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
+        make.width.height.mas_equalTo(self.buttonWidth);
+        make.left.inset(margin);
+        make.top.equalTo(self).offset(topOffset);
     }];
     
-    for (NSView *view in self.stackView.arrangedSubviews) {
-        [self.stackView removeArrangedSubview:view];
-        [view removeFromSuperview];
-    }
-    [self.stackView removeFromSuperview];
-    
-    self.stackView = [[NSStackView alloc] init];
-    self.stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
-    self.stackView.spacing = kButtonPadding_4;
-    self.stackView.alignment = NSLayoutAttributeCenterY;
-    self.stackView.userInterfaceLayoutDirection = NSUserInterfaceLayoutDirectionRightToLeft;
     [self addSubview:self.stackView];
-    
-    CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_24;
-    CGFloat quickLinkButtonRightOffset = 12;
-    
     [self.stackView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(quickLinkButtonTopOffset);
-        make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
+        make.top.equalTo(self).offset(topOffset);
+        make.right.equalTo(self).offset(-margin);
     }];
     
-    if (Configuration.shared.showSettingQuickLink) {
-        [self.stackView addArrangedSubview:self.settingButton];
+    if (Configuration.shared.showQuickActionButton) {
+        [self.stackView addArrangedSubview:self.quickActionButton];
     }
     
     // Google
     if (Configuration.shared.showGoogleQuickLink) {
-        EZOpenLinkButton *googleButton = [[EZOpenLinkButton alloc] init];
-        [self addSubview:googleButton];
-        self.googleButton = googleButton;
-        self.favoriteButton = googleButton;
-        
-        googleButton.link = EZGoogleWebSearchURL;
-        googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
-        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"];
-        googleButton.contentTintColor = NSColor.clearColor;
-        
-        [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(buttonSize);
-        }];
-        
-        [self.stackView addArrangedSubview:googleButton];
+        [self.stackView addArrangedSubview:self.googleButton];
     }
     
     // Apple Dictionary
     if (Configuration.shared.showAppleDictionaryQuickLink) {
-        EZOpenLinkButton *appleDictButton = [[EZOpenLinkButton alloc] init];
-        [self addSubview:appleDictButton];
-        self.appleDictionaryButton = appleDictButton;
-        self.favoriteButton = appleDictButton;
-        
-        appleDictButton.link = EZAppleDictionaryAppURLScheme;
-        appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:imageSize];
-        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), @"⌘+⇧+D"];
-        appleDictButton.contentTintColor = NSColor.clearColor;
-        
-        [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(buttonSize);
-        }];
-        
-        [self.stackView addArrangedSubview:appleDictButton];
+        [self.stackView addArrangedSubview:self.appleDictionaryButton];
     }
     
     // Eudic
     if (Configuration.shared.showEudicQuickLink) {
-        EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
-        
-        // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
+        // !!!: Note that some applications have multiple channel versions. Refer: https://github.com/tisfeng/Raycast-Easydict/issues/16
         BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic" ]];
-        eudicButton.hidden = !installedEudic;
         if (installedEudic) {
-            [self addSubview:eudicButton];
-            self.eudicButton = eudicButton;
-            self.favoriteButton = eudicButton;
-            
-            eudicButton.link = EZEudicAppURLScheme;
-            eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-            eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];
-            eudicButton.contentTintColor = NSColor.clearColor;
-            
-            [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.size.mas_equalTo(buttonSize);
-            }];
-            [self.stackView addArrangedSubview:eudicButton];
+            [self.stackView addArrangedSubview:self.eudicButton];
         }
     }
     
     [super updateConstraints];
 }
 
-- (void)updatePinButtonImage {
+
+#pragma mark - Actions
+
+- (void)replaceNewlineWithSpace {
+    _menuActionBlock(EZTitlebarQuickActionReplaceNewlineWithSpace);
+}
+
+- (void)removeCodeCommentSymbols {
+    _menuActionBlock(EZTitlebarQuickActionRemoveCommentBlockSymbols);
+}
+
+- (void)splitWords {
+    _menuActionBlock(EZTitlebarQuickActionWordsSegmentation);
+}
+
+- (void)goToSettings {
+    if ([[Configuration shared] enableBetaNewApp]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
+    } else {
+        [EZPreferencesWindowController.shared show];
+    }
+}
+
+#pragma mark - Getter && Setter
+
+- (EZOpenLinkButton *)pinButton {
+    if (!_pinButton) {
+        EZOpenLinkButton *pinButton = [[EZOpenLinkButton alloc] init];
+        _pinButton = pinButton;
+        
+        pinButton.contentTintColor = [NSColor clearColor];
+        pinButton.clickBlock = nil;
+        self.pin = NO;
+        
+        mm_weakify(self);
+        [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
+            //  NSLog(@"pin mouse down, state: %ld", button.buttonState);
+            mm_strongify(self);
+            self.pin = !self.pin;
+        }];
+        
+        [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
+            //  NSLog(@"pin mouse up, state: %ld", button.buttonState);
+            mm_strongify(self);
+            BOOL oldPin = !self.pin;
+            
+            // This means clicked pin button.
+            if (button.state == EZButtonHoverState) {
+                self.pin = !oldPin;
+            } else if (button.buttonState == EZButtonNormalState) {
+                self.pin = oldPin;
+            }
+        }];
+    }
+    return _pinButton;
+}
+
+- (NSStackView *)stackView {
+    if (!_stackView) {
+        _stackView = [[NSStackView alloc] init];
+        _stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+        _stackView.spacing = self.buttonPadding;
+        _stackView.alignment = NSLayoutAttributeCenterY;
+        _stackView.userInterfaceLayoutDirection = NSUserInterfaceLayoutDirectionRightToLeft;
+    }
+    return _stackView;
+}
+
+- (NSMenu *)quickActionMenu {
+    if (!_quickActionMenu) {
+        NSMenu *menu = [NSMenu new];
+        NSArray *menuSections = @[
+            @[
+                @{
+                    @"title" : @"replace_newline_with_space",
+                    @"action" : NSStringFromSelector(@selector(replaceNewlineWithSpace))
+                },
+                @{
+                    @"title" : @"remove_code_comment_symbols",
+                    @"action" : NSStringFromSelector(@selector(removeCodeCommentSymbols))
+                },
+                @{
+                    @"title" : @"split_words",
+                    @"action" : NSStringFromSelector(@selector(splitWords))
+                }
+            ],
+            @[
+                @{
+                    @"title" : @"go_to_settings",
+                    @"action" : NSStringFromSelector(@selector(goToSettings))
+                }
+            ]
+            /**
+             Just fix localization warning.
+             
+             NSLocalizedString(@"replace_newline_with_space", nil);
+             NSLocalizedString(@"remove_code_comment_symbols", nil);
+             NSLocalizedString(@"split_words", nil);
+             */
+        ];
+        
+        for (NSArray *section in menuSections) {
+            for (NSDictionary *itemDict in section) {
+                NSString *titleKey = itemDict[@"title"];
+                NSString *title = NSLocalizedString(titleKey, nil);
+                SEL action = NSSelectorFromString(itemDict[@"action"]);
+                NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:@""];
+                menuItem.target = self;
+                [menu addItem:menuItem];
+            }
+            // Add separatorItem
+            if (section != menuSections.lastObject) {
+                [menu addItem:[NSMenuItem separatorItem]];
+            }
+        }
+        _quickActionMenu = menu;
+    }
+    return _quickActionMenu;
+}
+
+- (EZOpenLinkButton *)quickActionButton {
+    if (!_quickActionButton) {
+        EZOpenLinkButton *quickActionButton = [[EZOpenLinkButton alloc] init];
+        _quickActionButton = quickActionButton;
+        NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
+        image = [NSImage ez_imageWithSymbolName:@"switch.2"];
+        quickActionButton.image = image;
+        quickActionButton.toolTip = NSLocalizedString(@"quick_action", nil);
+        
+        mm_weakify(self);
+        [quickActionButton setClickBlock:^(EZButton *_Nonnull button) {
+            mm_strongify(self);
+            [self.quickActionMenu popUpBelowView:self.quickActionButton];
+        }];
+        
+        NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+        NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+        CGSize imageSize = CGSizeMake(20, 20);
+        
+        [quickActionButton excuteLight:^(EZButton *button) {
+            button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
+        } dark:^(EZButton *button) {
+            button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
+        }];
+        
+        [quickActionButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(24);
+        }];
+    }
+    return _quickActionButton;
+}
+
+- (EZOpenLinkButton *)googleButton {
+    if (!_googleButton) {
+        EZOpenLinkButton *googleButton = [[EZOpenLinkButton alloc] init];
+        _googleButton = googleButton;
+        
+        googleButton.link = EZGoogleWebSearchURL;
+        googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:self.imageSize];
+        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"];
+        googleButton.contentTintColor = NSColor.clearColor;
+        
+        [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(self.buttonSize);
+        }];
+    }
+    return _googleButton;
+}
+
+- (EZOpenLinkButton *)appleDictionaryButton {
+    if (!_appleDictionaryButton) {
+        EZOpenLinkButton *appleDictButton = [[EZOpenLinkButton alloc] init];
+        _appleDictionaryButton = appleDictButton;
+        
+        appleDictButton.link = EZAppleDictionaryAppURLScheme;
+        appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:self.imageSize];
+        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), @"⌘+⇧+D"];
+        appleDictButton.contentTintColor = NSColor.clearColor;
+        
+        [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(self.buttonSize);
+        }];
+        
+    }
+    return _appleDictionaryButton;
+}
+
+- (EZOpenLinkButton *)eudicButton {
+    if (!_eudicButton) {
+        EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
+        _eudicButton = eudicButton;
+        
+        eudicButton.link = EZEudicAppURLScheme;
+        eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:self.imageSize];
+        eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];
+        eudicButton.contentTintColor = NSColor.clearColor;
+        
+        [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(self.buttonSize);
+        }];
+    }
+    return _eudicButton;
+}
+
+
+- (BOOL)pin {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    return window.pin;
+}
+
+- (void)setPin:(BOOL)pin {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    window.pin = pin;
+
+    [self updatePinButton];
+}
+
+#pragma mark -
+
+
+- (void)updatePinButton {
+    NSString *shortcut = @"⌘+P";
+    NSString *action = self.pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
+    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
+    
+    
     CGFloat imageWidth = 18;
     CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
     
@@ -229,58 +362,6 @@
         NSImage *image = self.pin ? selectedImage : normalDarkImage;
         button.image = image;
     }];
-}
-
-- (void)showMenu {
-    NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    NSMenuItem *item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_code_comment_symbols", nil) action:@selector(clickAutomaticallyRemoveCodeCommentSymbols) keyEquivalent:@""];
-    item1.target = self;
-    
-    NSMenuItem *item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"word_segmentation", nil) action:@selector(clickAutomaticWordSegmentation) keyEquivalent:@""];
-    item2.target = self;
-    
-    NSMenuItem *item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"go_to_settings", nil) action:@selector(goToSettings) keyEquivalent:@""];
-    item3.target = self;
-    
-    [menu addItem:item1];
-    [menu addItem:item2];
-    [menu addItem:[NSMenuItem separatorItem]];
-    [menu addItem:item3];
-    
-    [menu popUpBelowView:self.settingButton];
-}
-
-- (void)clickAutomaticallyRemoveCodeCommentSymbols {
-    _menuActionBlock(EZTitlebarActionRemoveCommentBlockSymbols);
-}
-
-- (void)clickAutomaticWordSegmentation {
-    _menuActionBlock(EZTitlebarActionWordsSegmentation);
-}
-
-- (void)goToSettings {
-    if ([[Configuration shared] enableBetaNewApp]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
-    } else {
-        [EZPreferencesWindowController.shared show];
-    }
-}
-
-#pragma mark - Setter && Getter
-
-- (BOOL)pin {
-    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-    return window.pin;
-}
-
-- (void)setPin:(BOOL)pin {
-    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-    window.pin = pin;
-    NSString *shortcut = @"⌘+P";
-    NSString *action = pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
-    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
-    
-    [self updatePinButtonImage];
 }
 
 /// Check if installed app according to bundle id array

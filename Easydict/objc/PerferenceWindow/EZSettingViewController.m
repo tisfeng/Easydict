@@ -417,7 +417,7 @@
     self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
     [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
     
-    self.automaticWordSegmentationButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatic_word_segmentation", nil) target:self action:@selector(automaticWordSegmentationButtonClicked:)];
+    self.automaticWordSegmentationButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatically_split_words", nil) target:self action:@selector(automaticWordSegmentationButtonClicked:)];
     [self.contentView addSubview:self.automaticWordSegmentationButton];
     
     self.automaticallyRemoveCodeCommentSymbolsButton = [NSButton checkboxWithTitle:NSLocalizedString(@"automatically_remove_code_comment_symbols", nil) target:self action:@selector(automaticallyRemoveCodeCommentSymbolsButtonClicked:)];
@@ -583,7 +583,7 @@
     self.showGoogleQuickLinkButton.mm_isOn = self.config.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
-    self.showSettingQuickLinkButton.mm_isOn = self.config.showSettingQuickLink;
+    self.showSettingQuickLinkButton.mm_isOn = self.config.showQuickActionButton;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
     if (@available(macOS 13.0, *)) {
         self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
@@ -1058,7 +1058,7 @@
 }
 
 - (void)showSettingQuickLinkButtonClicked:(NSButton *)sender {
-    self.config.showSettingQuickLink = sender.mm_isOn;
+    self.config.showQuickActionButton = sender.mm_isOn;
 }
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
