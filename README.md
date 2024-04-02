@@ -388,9 +388,6 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 支持设置自定义域名和模型
 
 ```bash
-//  xxx 是 host，默认是 api.openai.com
-easydict://writeKeyValue?EZOpenAIDomainKey=xxx
-
 // xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
