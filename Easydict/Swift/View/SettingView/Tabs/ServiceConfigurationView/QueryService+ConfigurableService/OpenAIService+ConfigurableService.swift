@@ -37,7 +37,7 @@ private struct OpenAIServiceConfigurationView: View {
 
     var body: some View {
         ServiceConfigurationSecretSectionView(
-            service: service, observeKeys: [.openAIAPIKey]
+            service: service, observeKeys: [.openAIAPIKey, .openAIEndPoint, .openAIAvailableModels]
         ) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
@@ -50,12 +50,23 @@ private struct OpenAIServiceConfigurationView: View {
                 key: .openAIEndPoint,
                 placeholder: "service.configuration.openai.endpoint.placeholder"
             )
+
             // model
-            ServiceConfigurationPickerCell(
-                titleKey: "service.configuration.openai.model.title",
-                key: .openAIModel,
-                values: OpenAIModel.allCases
+            TextField(
+                "service.configuration.custom_openai.supported_models.title",
+                text: viewModel.$availableModels ?? "",
+                prompt: Text("service.configuration.custom_openai.model.placeholder")
             )
+            .padding(10.0)
+            Picker(
+                "service.configuration.openai.model.title",
+                selection: viewModel.$model
+            ) {
+                ForEach(viewModel.validModels, id: \.self) { value in
+                    Text(value)
+                }
+            }
+            .padding(10.0)
 
             ServiceConfigurationToggleCell(
                 titleKey: "service.configuration.openai.translation.title",
@@ -99,6 +110,13 @@ private class OpenAIServiceViewModel: ObservableObject {
                     self.serviceConfigChanged()
                 }
         )
+        cancellables.append(
+            Defaults.publisher(.openAIAvailableModels)
+                .removeDuplicates()
+                .sink { _ in
+                    self.modelsTextChanged()
+                }
+        )
     }
 
     // MARK: Internal
@@ -106,6 +124,9 @@ private class OpenAIServiceViewModel: ObservableObject {
     let service: OpenAIService
 
     @Default(.openAIModel) var model
+    @Default(.openAIAvailableModels) var availableModels
+
+    @Published var validModels: [String] = []
 
     func invalidate() {
         cancellables.forEach { $0.cancel() }
@@ -116,7 +137,22 @@ private class OpenAIServiceViewModel: ObservableObject {
 
     private var cancellables: [AnyCancellable] = []
 
+    private func modelsTextChanged() {
+        guard let availableModels else { return }
+        if availableModels.isEmpty {
+            model = ""
+            validModels = []
+            return
+        }
+        validModels = availableModels.components(separatedBy: ",").filter { !$0.isEmpty }
+        if validModels.count == 1 || !validModels.contains(model) {
+            model = validModels[0]
+        }
+    }
+
     private func serviceConfigChanged() {
+        objectWillChange.send()
+
         let userInfo: [String: Any] = [
             EZWindowTypeKey: service.windowType.rawValue,
             EZServiceTypeKey: service.serviceType().rawValue,
@@ -136,10 +172,10 @@ protocol EnumLocalizedStringConvertible {
 
 // swiftlint:disable identifier_name
 enum OpenAIModel: String, CaseIterable {
-    case gpt3_5_turbo_0125 = "gpt-3.5-turbo-0125"
-    case gpt4_0125_preview = "gpt-4-0125-preview"
-    case gpt3_5_turbo = "gpt-3.5-turbo"
-    case gpt4_turbo_preview = "gpt-4-turbo-preview"
+    // Docs: https://platform.openai.com/docs/models/gpt-3-5-turbo
+
+    case gpt3_5_turbo = "gpt-3.5-turbo" // Currently points to gpt-3.5-turbo-0125.
+    case gpt4_turbo_preview = "gpt-4-turbo-preview" // Currently points to gpt-4-0125-preview.
 }
 
 // MARK: EnumLocalizedStringConvertible

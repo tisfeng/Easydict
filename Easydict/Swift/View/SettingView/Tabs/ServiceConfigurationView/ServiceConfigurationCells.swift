@@ -137,11 +137,10 @@ struct ServiceConfigurationToggleCell: View {
             placeholder: "service.configuration.openai.endpoint.placeholder"
         )
 
-        // model
         ServiceConfigurationPickerCell(
-            titleKey: "service.configuration.openai.model.title",
-            key: .openAIModel,
-            values: OpenAIModel.allCases
+            titleKey: "service.configuration.openai.usage_status.title",
+            key: .openAIServiceUsageStatus,
+            values: OpenAIUsageStats.allCases
         )
 
         ServiceConfigurationToggleCell(

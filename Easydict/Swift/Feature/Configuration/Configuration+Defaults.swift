@@ -201,7 +201,11 @@ extension Defaults.Keys {
         default: OpenAIUsageStats.default
     )
     static let openAIEndPoint = Key<String?>(EZOpenAIEndPointKey)
-    static let openAIModel = Key<OpenAIModel>(EZOpenAIModelKey, default: .gpt3_5_turbo_0125)
+    static let openAIModel = Key<String>(EZOpenAIModelKey, default: OpenAIModel.gpt3_5_turbo.rawValue)
+    static let openAIAvailableModels = Key<String?>(
+        "EZOpenAIAvailableModelsKey",
+        default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
+    )
 
     // Custom OpenAI
     static let customOpenAINameKey = Key<String?>(
@@ -218,10 +222,7 @@ extension Defaults.Keys {
     )
     static let customOpenAIEndPoint = Key<String?>(EZCustomOpenAIEndPointKey, default: "")
     static let customOpenAIModel = Key<String>(EZCustomOpenAIModelKey, default: "")
-    static let customOpenAIModelsAvailable = Key<String?>(
-        EZCustomOpenAIModelssAvailableKey,
-        default: ""
-    )
+    static let customOpenAIModelsAvailable = Key<String?>(EZCustomOpenAIModelssAvailableKey, default: "")
 
     // DeepL
     static let deepLAuth = Key<String?>(EZDeepLAuthKey)
