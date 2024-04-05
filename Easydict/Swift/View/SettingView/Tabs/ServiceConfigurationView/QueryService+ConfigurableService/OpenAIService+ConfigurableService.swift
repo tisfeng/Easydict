@@ -56,6 +56,7 @@ private struct OpenAIServiceConfigurationView: View {
                 key: .openAIModel,
                 values: OpenAIModel.allCases
             )
+
             ServiceConfigurationToggleCell(
                 titleKey: "service.configuration.openai.translation.title",
                 key: .openAITranslation
@@ -137,6 +138,8 @@ protocol EnumLocalizedStringConvertible {
 enum OpenAIModel: String, CaseIterable {
     case gpt3_5_turbo_0125 = "gpt-3.5-turbo-0125"
     case gpt4_0125_preview = "gpt-4-0125-preview"
+    case gpt3_5_turbo = "gpt-3.5-turbo"
+    case gpt4_turbo_preview = "gpt-4-turbo-preview"
 }
 
 // MARK: EnumLocalizedStringConvertible
