@@ -42,16 +42,6 @@ struct GeneralTab: View {
     var body: some View {
         Form {
             Section {
-                Picker("setting.general.appearance.light_dark_appearance", selection: $appearanceType) {
-                    ForEach(AppearenceType.allCases, id: \.rawValue) { option in
-                        Text(option.title)
-                            .tag(option)
-                    }
-                }
-            } header: {
-                Text("setting.general.appearance.header")
-            }
-            Section {
                 FirstAndSecondLanguageSettingView()
                 Picker("setting.general.language.language_detect_optimize", selection: $languageDetectOptimize) {
                     ForEach(LanguageDetectOptimize.allCases, id: \.rawValue) { option in
@@ -60,7 +50,7 @@ struct GeneralTab: View {
                     }
                 }
             } header: {
-                Text("setting.general.language.header")
+                Text("setting.general.query_language.header")
             }
 
             Section {
@@ -110,6 +100,9 @@ struct GeneralTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $hideMainWindow) {
+                    Text("hide_main_window")
+                }
             } header: {
                 Text("setting.general.windows.header")
             }
@@ -150,28 +143,18 @@ struct GeneralTab: View {
             }
 
             Section {
-                let bindingFontSize = Binding<Double>(get: {
-                    Double(fontSizeOptionIndex)
-                }, set: { newValue in
-                    fontSizeOptionIndex = UInt(newValue)
-                })
-                Slider(value: bindingFontSize, in: 0.0 ... 4.0, step: 1) {
-                    Text("setting.general.font.font_size.label")
-                } minimumValueLabel: {
-                    Text("small")
-                        .font(.system(size: 10))
-                } maximumValueLabel: {
-                    Text("large")
-                        .font(.system(size: 14))
+                Picker("setting.general.language.header", selection: $languageState.language) {
+                    ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
+                        Text(language.name)
+                            .tag(language)
+                    }
                 }
-            } header: {
-                Text("setting.general.font.header")
-            } footer: {
-                Text("hints_keyboard_shortcuts_font_size")
-                    .font(.footnote)
-            }
-
-            Section {
+                Picker("setting.general.appearance.light_dark_appearance", selection: $appearanceType) {
+                    ForEach(AppearenceType.allCases, id: \.rawValue) { option in
+                        Text(option.title)
+                            .tag(option)
+                    }
+                }
                 LabeledContent {
                     Button("check_now") {
                         Configuration.shared.updater.checkForUpdates()
@@ -186,9 +169,7 @@ struct GeneralTab: View {
                 Toggle(isOn: $launchAtStartup) {
                     Text("launch_at_startup")
                 }
-                Toggle(isOn: $hideMainWindow) {
-                    Text("hide_main_window")
-                }
+
                 Toggle(isOn: $hideMenuBarIcon.didSet(execute: { state in
                     if state {
                         // user is not set input shortcut and selection shortcut not allow hide menu bar
@@ -212,14 +193,31 @@ struct GeneralTab: View {
                             .foregroundStyle(.primary)
                     }
                 }
-                Picker("language_preference", selection: $languageState.language) {
-                    ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
-                        Text(language.name)
-                            .tag(language)
-                    }
+
+            } header: {
+                Text("setting.general.app_setting.header")
+            }
+
+            Section {
+                let bindingFontSize = Binding<Double>(get: {
+                    Double(fontSizeOptionIndex)
+                }, set: { newValue in
+                    fontSizeOptionIndex = UInt(newValue)
+                })
+                Slider(value: bindingFontSize, in: 0.0 ... 4.0, step: 1) {
+                    Text("setting.general.font.font_size.label")
+                } minimumValueLabel: {
+                    Text("small")
+                        .font(.system(size: 10))
+                } maximumValueLabel: {
+                    Text("large")
+                        .font(.system(size: 14))
                 }
             } header: {
-                Text("setting.general.other.header")
+                Text("setting.general.font.header")
+            } footer: {
+                Text("hints_keyboard_shortcuts_font_size")
+                    .font(.footnote)
             }
         }
         .formStyle(.grouped)
