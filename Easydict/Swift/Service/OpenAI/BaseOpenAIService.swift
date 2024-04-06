@@ -124,10 +124,7 @@ public class BaseOpenAIService: QueryService {
     // MARK: Internal
 
     var availableModels: [String] {
-        let models = Defaults[.openAIAvailableModels]
-        guard let models, !models.isEmpty else { return [] }
-        return models.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
+        Defaults[.openAIVaildModels]
     }
 
     var model: String {

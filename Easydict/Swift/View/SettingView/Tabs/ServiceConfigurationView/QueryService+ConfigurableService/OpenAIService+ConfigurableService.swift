@@ -149,6 +149,8 @@ private class OpenAIServiceViewModel: ObservableObject {
         if validModels.count == 1 || !validModels.contains(model) {
             model = validModels[0]
         }
+
+        Defaults[.openAIVaildModels] = validModels
     }
 
     private func serviceConfigChanged() {

@@ -206,6 +206,10 @@ extension Defaults.Keys {
         EZOpenAIAvailableModelsKey,
         default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
+    static let openAIVaildModels = Key<Array>(
+        "EZOpenAIValidModelsKey",
+        default: OpenAIModel.allCases.map { $0.rawValue }
+    )
 
     // Custom OpenAI
     static let customOpenAINameKey = Key<String?>(
@@ -223,6 +227,10 @@ extension Defaults.Keys {
     static let customOpenAIEndPoint = Key<String?>(EZCustomOpenAIEndPointKey, default: "")
     static let customOpenAIModel = Key<String>(EZCustomOpenAIModelKey, default: "")
     static let customOpenAIModelsAvailable = Key<String?>(EZCustomOpenAIModelssAvailableKey, default: "")
+    static let customOpenAIVaildModels = Key<Array>(
+        "EZCustomOpenAIValidModelsKey",
+        default: [""]
+    )
 
     // DeepL
     static let deepLAuth = Key<String?>(EZDeepLAuthKey)
