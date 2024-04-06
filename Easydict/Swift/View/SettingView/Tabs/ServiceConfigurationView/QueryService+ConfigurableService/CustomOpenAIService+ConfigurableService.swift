@@ -57,7 +57,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
                 key: .customOpenAIEndPoint,
                 placeholder: "service.configuration.openai.endpoint.placeholder"
             )
-            
+
             // supported models
             TextField(
                 "service.configuration.custom_openai.supported_models.title",

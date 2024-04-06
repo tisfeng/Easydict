@@ -3000,13 +3000,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Model"
+            "value" : "Use Model"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模型"
+            "value" : "使用模型"
           }
         }
       }
