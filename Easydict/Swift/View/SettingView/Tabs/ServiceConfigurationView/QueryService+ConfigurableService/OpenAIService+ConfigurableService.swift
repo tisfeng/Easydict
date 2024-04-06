@@ -144,7 +144,8 @@ private class OpenAIServiceViewModel: ObservableObject {
             validModels = []
             return
         }
-        validModels = availableModels.components(separatedBy: ",").filter { !$0.isEmpty }
+        validModels = availableModels.components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
         if validModels.count == 1 || !validModels.contains(model) {
             model = validModels[0]
         }
