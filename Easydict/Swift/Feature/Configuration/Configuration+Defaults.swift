@@ -203,7 +203,7 @@ extension Defaults.Keys {
     static let openAIEndPoint = Key<String?>(EZOpenAIEndPointKey)
     static let openAIModel = Key<String>(EZOpenAIModelKey, default: OpenAIModel.gpt3_5_turbo.rawValue)
     static let openAIAvailableModels = Key<String?>(
-        "EZOpenAIAvailableModelsKey",
+        EZOpenAIAvailableModelsKey,
         default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
 

@@ -20,10 +20,10 @@ static NSString *const EZOpenAIEndPointKey = @"EZOpenAIEndPointKey";
 static NSString *const EZOpenAITranslationKey = @"EZOpenAITranslationKey";
 static NSString *const EZOpenAIDictionaryKey = @"EZOpenAIDictionaryKey";
 static NSString *const EZOpenAISentenceKey = @"EZOpenAISentenceKey";
-
 static NSString *const EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageStatusKey";
-
 static NSString *const EZOpenAIModelKey = @"EZOpenAIModelKey";
+static NSString *const EZOpenAIAvailableModelsKey = @"EZOpenAIAvailableModelsKey";
+
 
 static NSString *const EZCustomOpenAINameKey = @"EZCustomOpenAINameKey";
 static NSString *const EZCustomOpenAIEndPointKey = @"EZCustomOpenAIEndPointKey";
