@@ -38,7 +38,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
     var body: some View {
         ServiceConfigurationSecretSectionView(
             service: service,
-            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIModelsAvailable]
+            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIAvailableModels]
         ) {
             // title
             ServiceConfigurationInputCell(
@@ -125,7 +125,7 @@ private class CustomOpenAIViewModel: ObservableObject {
                 }
         )
         cancellables.append(
-            Defaults.publisher(.customOpenAIModelsAvailable)
+            Defaults.publisher(.customOpenAIAvailableModels)
                 .removeDuplicates()
                 .sink { _ in
                     self.modelsTextChanged()
@@ -138,7 +138,7 @@ private class CustomOpenAIViewModel: ObservableObject {
     let service: CustomOpenAIService
 
     @Default(.customOpenAIModel) var model
-    @Default(.customOpenAIModelsAvailable) var availableModels
+    @Default(.customOpenAIAvailableModels) var availableModels
 
     @Published var validModels: [String] = []
 
@@ -169,7 +169,7 @@ private class CustomOpenAIViewModel: ObservableObject {
 
     private func serviceConfigChanged() {
         if !validModels.contains(model) {
-            Defaults[.customOpenAIModelsAvailable] = "\(model), " + (availableModels ?? "")
+            Defaults[.customOpenAIAvailableModels] = "\(model), " + (availableModels ?? "")
         }
 
         // looks like Defaults changed but View not update in this case

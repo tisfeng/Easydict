@@ -204,7 +204,7 @@
         EZCustomOpenAINameKey,
         EZCustomOpenAIEndPointKey,
         EZCustomOpenAIAPIKey,
-        EZCustomOpenAIModelssAvailableKey,
+        EZCustomOpenAIAvailableModelsKey,
         EZCustomOpenAIModelKey,
         EZCustomOpenAITranslationKey,
         EZCustomOpenAIDictionaryKey,

@@ -34,7 +34,7 @@ static NSString *const EZCustomOpenAITranslationKey = @"EZCustomOpenAITranslatio
 static NSString *const EZCustomOpenAIDictionaryKey = @"EZCustomOpenAIDictionaryKey";
 static NSString *const EZCustomOpenAISentenceKey = @"EZCustomOpenAISentenceKey";
 static NSString *const EZCustomOpenAIServiceUsageStatusKey = @"EZCustomOpenAIServiceUsageStatusKey";
-static NSString *const EZCustomOpenAIModelssAvailableKey = @"EZCustomOpenAIModelssAvailableKey";
+static NSString *const EZCustomOpenAIAvailableModelsKey = @"EZCustomOpenAIAvailableModelsKey";
 static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
 static NSString *const EZCustomOpenAIValidModelsKey = @"EZCustomOpenAIValidModelsKey";
 
