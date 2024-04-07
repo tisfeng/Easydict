@@ -154,6 +154,13 @@ private class OpenAIServiceViewModel: ObservableObject {
     }
 
     private func serviceConfigChanged() {
+        // Currently, user of low os versions may change OpenAI model using URL scheme, like easydict://writeKeyValue?EZOpenAIModelKey=gpt-4
+        // In this case, model may not be included in validModels, we need to handle it.
+
+        if !validModels.contains(model) {
+            Defaults[.openAIAvailableModels] = "\(model), " + (availableModels ?? "")
+        }
+
         objectWillChange.send()
 
         let userInfo: [String: Any] = [

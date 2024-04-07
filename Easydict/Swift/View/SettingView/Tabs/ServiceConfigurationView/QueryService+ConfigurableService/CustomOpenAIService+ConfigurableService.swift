@@ -168,6 +168,10 @@ private class CustomOpenAIViewModel: ObservableObject {
     }
 
     private func serviceConfigChanged() {
+        if !validModels.contains(model) {
+            Defaults[.customOpenAIModelsAvailable] = "\(model), " + (availableModels ?? "")
+        }
+
         // looks like Defaults changed but View not update in this case
         objectWillChange.send()
         let userInfo: [String: Any] = [
