@@ -10,9 +10,30 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, EZTipsCellType) {
+    EZTipsCellTypeNone = -1,
+    EZTipsCellTypeTextEmpty = 0,
+    EZTipsCellTypeMouseHover,
+    EZTipsCellTypeBeep,
+    EZTipsCellTypeEditButton,
+    EZTipsCellTypeMightSelecting,
+    EZTipsCellTypeWordSelectionOCR,
+    EZTipsCellTypeSelectWords,
+    EZTipsCellTypeStillPopup,
+};
+
 @interface EZTableTipsCell : NSTableRowView
 
 - (CGFloat)cellHeight;
+
+
+- (instancetype)initWithFrame:(CGRect)frame type:(EZTipsCellType)type;
+
+/// update tips cell content with type
+/// - Parameters:
+///   - content: string value for content
+///   - type: cell type default value is none
+- (void)updateTipsContent:(NSString *)content type:(EZTipsCellType)type;
 
 @end
 

@@ -21,17 +21,24 @@
 @property (nonatomic, strong) NSDictionary *dataDict;
 @property (nonatomic, strong) NSString *questionSolveURL;
 @property (nonatomic, strong) NSString *seeMoreURL;
+@property (nonatomic, assign) EZTipsCellType tipsType;
 @end
 
 @implementation EZTableTipsCell
 
-- (instancetype)initWithFrame:(NSRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame type:(EZTipsCellType)type {
     self = [super initWithFrame:frame];
     if (self) {
+        self.tipsType = type;
         [self setupUI];
         [self updateQuestionContent];
     }
     return self;
+}
+
+- (void)updateTipsContent:(NSString *)content type:(EZTipsCellType)type {
+    self.tipsContentLabel.stringValue = content;
+    self.tipsType = type;
 }
 
 - (void)setupUI {
@@ -84,17 +91,23 @@
 }
 
 - (void)updateQuestionContent {
-    NSArray *questions = self.dataDict[@"questions"];
-    int index = arc4random() % questions.count;
-    self.tipsContentLabel.stringValue = questions[index];
-    NSArray *solves;
-    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
-        solves = self.dataDict[@"solveZh"];
+    // random question and slove
+    if (self.tipsType == EZTipsCellTypeNone) {
+        NSArray *questions = self.dataDict[@"questions"];
+        int index = arc4random() % questions.count;
+        self.tipsContentLabel.stringValue = questions[index];
+        NSArray *solves;
+        if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
+            solves = self.dataDict[@"solveZh"];
+        } else {
+            solves = self.dataDict[@"solveEn"];
+        }
+        self.questionSolveURL = solves[index];
+        self.solveBtn.link = self.questionSolveURL;
     } else {
-        solves = self.dataDict[@"solveEn"];
+        
+        
     }
-    self.questionSolveURL = solves[index];
-    self.solveBtn.link = self.questionSolveURL;
 }
 
 - (CGFloat)cellHeight {
