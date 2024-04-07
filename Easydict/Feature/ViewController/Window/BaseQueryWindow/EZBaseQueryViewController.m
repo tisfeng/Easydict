@@ -78,7 +78,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
 
-@property (nonatomic, assign, getter=isShowTipsView) BOOL showTipsView;
+@property (nonatomic, assign) BOOL showTipsView;
 
 @property (nonatomic, assign) BOOL hasShowTips;
 
@@ -124,6 +124,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [super viewWillAppear];
     
     [EZLog logWindowAppear:self.windowType];
+    [self recoverStatus];
+}
+
+- (void)recoverStatus {
+    self.showTipsView = [self isShowTipsView];
+    [self.tableView reloadData];
+    [self updateWindowViewHeight];
+    self.hasShowTips = NO;
 }
 
 - (void)setupData {
@@ -374,6 +382,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryModel.inputText = _inputText;
     
+    // update showTipsView status
+    self.showTipsView = [self isShowTipsView];
+    
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
 
@@ -394,16 +405,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (Configuration.shared.disableTipsView) {
         return NO;
     }
-    if (EZ_isEmptyString(self.queryModel.queryText) && 
+    if (EZ_isEmptyString(self.queryModel.queryText) &&
         !self.hasShowTips &&
         self.queryModel.actionType != EZActionTypeInputQuery) {
         return YES;
     }
     return NO;
-}
-
-- (BOOL)isTipsCellRow:(NSInteger)row {
-    return (self.isShowTipsView && row == 2 && self.windowType != EZWindowTypeMini) || (self.isShowTipsView && row == 1);
 }
 
 #pragma mark - Public Methods
@@ -417,6 +424,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSLog(@"query actionType: %@", actionType);
     
     if (text.trim.length == 0) {
+        self.showTipsView = [self isShowTipsView];
         NSLog(@"query text is empty");
         return;
     }
@@ -526,6 +534,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
                 self.queryView.alertText = errorMsg;
+                
+                self.showTipsView = [self isShowTipsView];
+                [self.tableView reloadData];
+                [self updateWindowViewHeight];
                 return;
             }
             
@@ -859,7 +871,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // show tips view
-    if ([self isTipsCellRow:row]) {
+    if (row == 2 && self.showTipsView && !self.hasShowTips) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]];
@@ -884,9 +896,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if ([self isTipsCellRow:row]) {
+    } else if (row == 2 && self.showTipsView && !self.hasShowTips) {
         if (!self.tipsCell) {
-            height = 100;
+            height = 1;
         } else {
             height = [self.tipsCell cellHeight];
         }
@@ -1416,7 +1428,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     
-    if (self.isShowTipsView) {
+    if (self.showTipsView && !self.hasShowTips) {
         offset += 1;
     }
     
@@ -1536,11 +1548,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     //    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
-    if (!self.hasShowTips && 
-        !EZ_isEmptyString(self.queryModel.queryText) &&
-        !Configuration.shared.disableTipsView) {
-        scrollViewContentHeight += [self.tipsCell cellHeight];
-    }
     
     return scrollViewContentHeight;
 }
