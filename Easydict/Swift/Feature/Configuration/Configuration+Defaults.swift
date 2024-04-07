@@ -207,7 +207,7 @@ extension Defaults.Keys {
         default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
     static let openAIVaildModels = Key<Array>(
-        "EZOpenAIValidModelsKey",
+        EZOpenAIValidModelsKey,
         default: OpenAIModel.allCases.map { $0.rawValue }
     )
 
@@ -228,7 +228,7 @@ extension Defaults.Keys {
     static let customOpenAIModel = Key<String>(EZCustomOpenAIModelKey, default: "")
     static let customOpenAIModelsAvailable = Key<String?>(EZCustomOpenAIModelssAvailableKey, default: "")
     static let customOpenAIVaildModels = Key<Array>(
-        "EZCustomOpenAIValidModelsKey",
+        EZCustomOpenAIValidModelsKey,
         default: [""]
     )
 
