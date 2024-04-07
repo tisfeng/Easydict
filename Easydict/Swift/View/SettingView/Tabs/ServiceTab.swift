@@ -205,7 +205,7 @@ private struct ServiceItemView: View {
                     .frame(width: 20.0, height: 20.0)
                 Text(service.name())
                     .lineLimit(1)
-                    .fixedSize()
+                    .frame(maxWidth: 180, alignment: .leading)
             }
         }
         .onReceive(serviceItemViewModel.$isEnable) { newValue in
