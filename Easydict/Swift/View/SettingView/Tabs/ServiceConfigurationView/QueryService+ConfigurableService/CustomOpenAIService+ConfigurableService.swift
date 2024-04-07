@@ -114,7 +114,7 @@ private class CustomOpenAIViewModel: ObservableObject {
             Defaults.publisher(.customOpenAIModel, options: [])
                 .removeDuplicates()
                 .sink { _ in
-                    self.serviceConfigChanged()
+                    self.modelChanged()
                 }
         )
         cancellables.append(
@@ -151,16 +151,31 @@ private class CustomOpenAIViewModel: ObservableObject {
 
     private var cancellables: [AnyCancellable] = []
 
+    private func modelChanged() {
+        if !validModels.contains(model) {
+            if model.isEmpty {
+                availableModels = ""
+            } else {
+                if availableModels?.isEmpty == true {
+                    availableModels = model
+                } else {
+                    availableModels = "\(model), " + (availableModels ?? "")
+                }
+            }
+        }
+
+        serviceConfigChanged()
+    }
+
     private func modelsTextChanged() {
         guard let availableModels else { return }
-        if availableModels.isEmpty {
-            model = ""
-            validModels = []
-            return
-        }
+
         validModels = availableModels.components(separatedBy: ",")
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
-        if validModels.count == 1 || !validModels.contains(model) {
+
+        if validModels.isEmpty {
+            model = ""
+        } else if !validModels.contains(model) {
             model = validModels[0]
         }
 
@@ -168,13 +183,10 @@ private class CustomOpenAIViewModel: ObservableObject {
     }
 
     private func serviceConfigChanged() {
-        if !validModels.contains(model) {
-            Defaults[.customOpenAIAvailableModels] = "\(model), " + (availableModels ?? "")
-        }
-
-        // looks like Defaults changed but View not update in this case
         objectWillChange.send()
+
         let userInfo: [String: Any] = [
+            EZWindowTypeKey: service.windowType.rawValue,
             EZServiceTypeKey: service.serviceType().rawValue,
         ]
         let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)

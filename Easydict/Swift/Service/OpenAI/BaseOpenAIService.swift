@@ -129,11 +129,7 @@ public class BaseOpenAIService: QueryService {
 
     var model: String {
         get {
-            var model = Defaults[.openAIModel]
-            if model.isEmpty {
-                model = availableModels.first ?? OpenAIModel.gpt3_5_turbo.rawValue
-            }
-            return model
+            Defaults[.openAIModel]
         }
 
         set {
