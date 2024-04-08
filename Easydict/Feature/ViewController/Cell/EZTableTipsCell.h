@@ -35,6 +35,11 @@ typedef NS_ENUM(NSInteger, EZTipsCellType) {
 ///   - type: cell type default value is none
 - (void)updateTipsContent:(NSString *)content type:(EZTipsCellType)type;
 
+
+/// update tips cell of type
+/// - Parameter type: cell type default value is none
+- (void)updateTipsCellType:(EZTipsCellType)type;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -532,9 +532,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
             
             if (error) {
-                NSString *errorMsg = [error localizedDescription];
-                self.queryView.alertText = errorMsg;
-                
+                [self.tipsCell updateTipsCellType:EZTipsCellTypeWordSelectionOCR];
                 self.showTipsView = [self isShowTipsView];
                 [self.tableView reloadData];
                 [self updateWindowViewHeight];
@@ -631,9 +629,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
+// will close Window
 - (void)stopPlayingQueryText {
     [self togglePlayQueryText:NO];
     [self stopAllResultAudio];
+    [self.tipsCell updateTipsCellType:EZTipsCellTypeNone];
 }
 
 - (void)togglePlayQueryText {
@@ -874,7 +874,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (row == 2 && self.showTipsView && !self.hasShowTips) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]];
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeNone];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;

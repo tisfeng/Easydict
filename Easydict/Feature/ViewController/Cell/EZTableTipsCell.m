@@ -10,6 +10,7 @@
 #import "EZOpenLinkButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZLanguageManager.h"
+#import "NSString+EZUtils.h"
 
 @interface EZTableTipsCell ()
 @property (nonatomic, strong) NSView *contentView;
@@ -36,9 +37,16 @@
     return self;
 }
 
+- (void)updateTipsCellType:(EZTipsCellType)type {
+    [self updateTipsContent:@"" type:type];
+}
+
 - (void)updateTipsContent:(NSString *)content type:(EZTipsCellType)type {
-    self.tipsContentLabel.stringValue = content;
+    if (!EZ_isEmptyString(content)) {
+        self.tipsContentLabel.stringValue = content;
+    }
     self.tipsType = type;
+    [self updateQuestionContent];
 }
 
 - (void)setupUI {
@@ -91,23 +99,24 @@
 }
 
 - (void)updateQuestionContent {
-    // random question and slove
+    NSArray *questions = self.dataDict[@"questions"];
+    NSInteger index = 0;
     if (self.tipsType == EZTipsCellTypeNone) {
-        NSArray *questions = self.dataDict[@"questions"];
-        int index = arc4random() % questions.count;
-        self.tipsContentLabel.stringValue = questions[index];
-        NSArray *solves;
-        if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
-            solves = self.dataDict[@"solveZh"];
-        } else {
-            solves = self.dataDict[@"solveEn"];
-        }
-        self.questionSolveURL = solves[index];
-        self.solveBtn.link = self.questionSolveURL;
+        // random question and slove
+        index = arc4random() % questions.count;
     } else {
-        
-        
+        // show special question
+        index = self.tipsType;
     }
+    self.tipsContentLabel.stringValue = questions[index];
+    NSArray *solves;
+    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
+        solves = self.dataDict[@"solveZh"];
+    } else {
+        solves = self.dataDict[@"solveEn"];
+    }
+    self.questionSolveURL = solves[index];
+    self.solveBtn.link = self.questionSolveURL;
 }
 
 - (CGFloat)cellHeight {
