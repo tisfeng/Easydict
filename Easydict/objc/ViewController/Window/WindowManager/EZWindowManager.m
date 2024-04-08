@@ -367,6 +367,7 @@ static EZWindowManager *_instance;
         [queryViewController resetTableView:^{
             // !!!: window height has changed, so we need to update location again.
             CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
+            [queryViewController updateActionType:self.actionType];
             [self showFloatingWindow:window atPoint:newPoint];
             updateQueryTextAndStartQueryBlock(NO);
         }];
