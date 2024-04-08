@@ -28,7 +28,7 @@ struct ServiceTab: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom)
                 .padding(.horizontal)
-                .frame(minWidth: 250)
+                .frame(minWidth: 260)
             }
 
             Group {
