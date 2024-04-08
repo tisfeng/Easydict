@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,7 +42,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI (ChatGPT)，Gemini，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
+- [x] 支持有道词典，OpenAI，Gemini，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
@@ -71,8 +71,9 @@
 - [语种识别](#语种识别)
 - [TTS 服务](#tts-服务)
 - [查询服务](#查询服务)
+  - [  各个服务支持的语言 ](#--各个服务支持的语言-)
   - [🍎 苹果系统词典](#-苹果系统词典)
-  - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
+  - [OpenAI 翻译](#openai-翻译)
     - [使用内置 APIKey](#使用内置-apikey)
     - [配置个人的 APIKey](#配置个人的-apikey)
     - [OpenAI 查询模式](#openai-查询模式)
@@ -234,12 +235,12 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ## 查询服务
 
-目前支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，ChatGPT，DeepL，Google，Bing，百度和火山翻译。
+目前支持有道词典，苹果系统词典，苹果系统翻译，DeepL，Google，Bing，百度和火山翻译。
 
 > [!NOTE]
 > Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
-<details> <summary> 各个服务支持的语言 </summary>
+### <details> <summary> 各个服务支持的语言 </summary>
 
 <p>
 
@@ -312,7 +313,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
 </table>
 
-### OpenAI（ChatGPT）翻译
+### OpenAI 翻译
 
 1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，需要使用 OpenAI API key。
 
@@ -320,7 +321,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google PaLM 2 & Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
 
-[2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他则需要在 Easydict 的输入框中使用命令方式配置。
+**[2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他系统版本则需要在 Easydict 的输入框中使用命令方式配置。**
 
 > [!NOTE]
 > 如果电脑硬件支持的话，建议升级到最新的 macOS 系统，以享受更好的用户体验。
@@ -388,9 +389,6 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 支持设置自定义域名和模型
 
 ```bash
-//  xxx 是 host，默认是 api.openai.com
-easydict://writeKeyValue?EZOpenAIDomainKey=xxx
-
 // xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
@@ -816,6 +814,7 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2024-03-11 |  | 20 | 感谢 |
 | 2024-03-16 | 幻影 | 20 | 非常感谢 |
 | 2024-03-25 |  | 10 | 感谢大佬 |
+| 2024-04-04 | 至秦 | 37 | 感谢老哥 好用🙏 |
 
 </p>
 

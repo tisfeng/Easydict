@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZWindowManager.h"
-#import "Easydict-Swift.h"
 #import "XPMArguments.h"
 #include <stdio.h>
 #include <sys/ioctl.h>

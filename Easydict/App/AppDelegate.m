@@ -10,7 +10,6 @@
 #import "EZShortcut.h"
 #import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
-#import "Easydict-Swift.h"
 
 @interface AppDelegate ()
 
@@ -34,7 +33,7 @@
         [Shortcut setupShortcut];
     }
 
-    [EZWindowManager.shared showMainWindowIfNedded];
+    [EZWindowManager.shared showMainWindowIfNeeded];
     
     [self registerRouters];
     
@@ -94,7 +93,7 @@
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
     // Fix https://github.com/tisfeng/Easydict/issues/447
-    [EZWindowManager.shared showMainWindowIfNedded];
+    [EZWindowManager.shared showMainWindowIfNeeded];
     
     return YES;
 }

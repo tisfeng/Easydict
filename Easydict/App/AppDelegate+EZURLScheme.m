@@ -10,7 +10,6 @@
 #import <JLRoutes.h>
 #import "EZWindowManager.h"
 #import "EZSchemeParser.h"
-#import "Easydict-Swift.h"
 
 @implementation AppDelegate (EZURLScheme)
 
