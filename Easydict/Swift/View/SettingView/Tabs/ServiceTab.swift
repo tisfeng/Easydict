@@ -28,7 +28,7 @@ struct ServiceTab: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom)
                 .padding(.horizontal)
-                .frame(minWidth: 280)
+                .frame(minWidth: 250)
             }
 
             Group {
@@ -205,7 +205,6 @@ private struct ServiceItemView: View {
                     .frame(width: 20.0, height: 20.0)
                 Text(service.name())
                     .lineLimit(1)
-                    .frame(maxWidth: 180, alignment: .leading)
             }
         }
         .onReceive(serviceItemViewModel.$isEnable) { newValue in
@@ -217,12 +216,12 @@ private struct ServiceItemView: View {
             EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
             viewModel.postUpdateServiceNotification()
         }
-        .padding(4.0)
         .toggleStyle(.switch)
         .controlSize(.small)
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
-        .padding(10)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 12)
     }
 
     // MARK: Private
