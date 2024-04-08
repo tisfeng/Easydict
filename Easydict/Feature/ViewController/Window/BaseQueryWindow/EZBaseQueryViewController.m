@@ -532,7 +532,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
             
             if (error) {
-                [self.tipsCell updateTipsCellType:EZTipsCellTypeWordSelectionOCR];
+//                [self.tipsCell updateTipsCellType:EZTipsCellTypeWordSelectionOCR];
                 self.showTipsView = [self isShowTipsView];
                 [self.tableView reloadData];
                 [self updateWindowViewHeight];
@@ -633,7 +633,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)stopPlayingQueryText {
     [self togglePlayQueryText:NO];
     [self stopAllResultAudio];
-    [self.tipsCell updateTipsCellType:EZTipsCellTypeNone];
+    [self.tipsCell updateTipsCellType:EZTipsCellTypeTextEmpty];
 }
 
 - (void)togglePlayQueryText {
@@ -874,7 +874,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (row == 2 && self.showTipsView && !self.hasShowTips) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeNone];
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;
