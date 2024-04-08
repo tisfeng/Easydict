@@ -127,10 +127,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)recoverStatus {
+    self.hasShowTips = NO;
     self.showTipsView = [self isShowTipsView];
     [self.tableView reloadData];
     [self updateWindowViewHeight];
-    self.hasShowTips = NO;
 }
 
 - (void)setupData {
