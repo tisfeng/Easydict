@@ -531,8 +531,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
             
             if (error) {
+                // TODO: Sharker fix OCR Error in tips
 //                [self.tipsCell updateTipsCellType:EZTipsCellTypeWordSelectionOCR];
-                self.showTipsView = [self isShowTipsView];
+                self.showTipsView = NO;
                 [self.tableView reloadData];
                 [self updateWindowViewHeight];
                 return;
