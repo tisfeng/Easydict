@@ -456,7 +456,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)updateWindowsTitlebar {
-    [self.mainWindow.titleBar updateButtonsToolTip];
+    [_mainWindow.titleBar updateButtonsToolTip];
     [self.fixedWindow.titleBar updateButtonsToolTip];
     [self.miniWindow.titleBar updateButtonsToolTip];
 }
