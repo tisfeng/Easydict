@@ -428,7 +428,7 @@ class Configuration: NSObject {
             Defaults.publisher(.pinShortcut)
                 .removeDuplicates()
                 .sink { [weak self] _ in
-                    self?.didSetPinShortcut()
+                    self?.updateWindowTitlebar()
                 }
         )
 
@@ -436,7 +436,7 @@ class Configuration: NSObject {
             Defaults.publisher(.appleDictionaryShortcut)
                 .removeDuplicates()
                 .sink { [weak self] _ in
-                    self?.didSetAppleDictShortcut()
+                    self?.updateWindowTitlebar()
                 }
         )
 
@@ -444,7 +444,7 @@ class Configuration: NSObject {
             Defaults.publisher(.googleShortcut)
                 .removeDuplicates()
                 .sink { [weak self] _ in
-                    self?.didSetGoogleShortcut()
+                    self?.updateWindowTitlebar()
                 }
         )
 
@@ -452,7 +452,7 @@ class Configuration: NSObject {
             Defaults.publisher(.eudicShortcut)
                 .removeDuplicates()
                 .sink { [weak self] _ in
-                    self?.didSetEudicDictShortcut()
+                    self?.updateWindowTitlebar()
                 }
         )
     }
@@ -625,23 +625,7 @@ extension Configuration {
         DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
     }
 
-    fileprivate func didSetAppleDictShortcut() {
-        updateWindowTitlebar()
-    }
-
-    fileprivate func didSetPinShortcut() {
-        updateWindowTitlebar()
-    }
-
-    fileprivate func didSetGoogleShortcut() {
-        updateWindowTitlebar()
-    }
-
-    fileprivate func didSetEudicDictShortcut() {
-        updateWindowTitlebar()
-    }
-
-    private func updateWindowTitlebar() {
+    fileprivate func updateWindowTitlebar() {
         let windowManager = EZWindowManager.shared()
         windowManager.updateWindowsTitlebar()
     }
