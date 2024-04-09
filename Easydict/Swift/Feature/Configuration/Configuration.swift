@@ -424,6 +424,37 @@ class Configuration: NSObject {
                     self?.didSetAppearance(newValue)
                 }
         )
+        cancellables.append(
+            Defaults.publisher(.pinShortcut)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetPinShortcut()
+                }
+        )
+
+        cancellables.append(
+            Defaults.publisher(.appleDictionaryShortcut)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAppleDictShortcut()
+                }
+        )
+
+        cancellables.append(
+            Defaults.publisher(.googleShortcut)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetGoogleShortcut()
+                }
+        )
+
+        cancellables.append(
+            Defaults.publisher(.eudicShortcut)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetEudicDictShortcut()
+                }
+        )
     }
 }
 
@@ -592,6 +623,26 @@ extension Configuration {
 
     fileprivate func didSetAppearance(_ appearance: AppearenceType) {
         DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
+    }
+
+    fileprivate func didSetAppleDictShortcut() {
+        let window = EZWindowManager.shared().floatingWindow
+        window?.titleBar.updateButtonsToolTip()
+    }
+
+    fileprivate func didSetPinShortcut() {
+        let window = EZWindowManager.shared().floatingWindow
+        window?.titleBar.updateButtonsToolTip()
+    }
+
+    fileprivate func didSetGoogleShortcut() {
+        let window = EZWindowManager.shared().floatingWindow
+        window?.titleBar.updateButtonsToolTip()
+    }
+
+    fileprivate func didSetEudicDictShortcut() {
+        let window = EZWindowManager.shared().floatingWindow
+        window?.titleBar.updateButtonsToolTip()
     }
 }
 

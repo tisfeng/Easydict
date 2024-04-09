@@ -39,6 +39,9 @@
     return self;
 }
 
+- (void)updateButtonsToolTip {
+    [self updateConstraints];
+}
 
 - (void)setup {
     self.buttonWidth = 24;

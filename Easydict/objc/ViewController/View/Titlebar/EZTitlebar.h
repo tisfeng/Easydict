@@ -33,6 +33,9 @@ typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 
 @property (nonatomic, copy) EZTitlebarQuickActionBlock menuActionBlock;
 
+
+- (void)updateButtonsToolTip;
+
 @end
 
 NS_ASSUME_NONNULL_END
