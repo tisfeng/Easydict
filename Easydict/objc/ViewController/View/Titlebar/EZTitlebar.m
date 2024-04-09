@@ -272,7 +272,8 @@
         
         googleButton.link = EZGoogleWebSearchURL;
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:self.imageSize];
-        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"];
+        NSString *shortcutStr = Configuration.shared.googleShortcutString;
+        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), shortcutStr];
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -289,7 +290,8 @@
         
         appleDictButton.link = EZAppleDictionaryAppURLScheme;
         appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:self.imageSize];
-        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), @"⌘+⇧+D"];
+        NSString *shortcutStr = Configuration.shared.appleDictShortcutString;
+        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), shortcutStr];
         appleDictButton.contentTintColor = NSColor.clearColor;
         
         [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -307,7 +309,8 @@
         
         eudicButton.link = EZEudicAppURLScheme;
         eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:self.imageSize];
-        eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];
+        NSString *shortcutStr = Configuration.shared.eudicDictShortcutString;
+        eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), shortcutStr];
         eudicButton.contentTintColor = NSColor.clearColor;
         
         [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -334,9 +337,9 @@
 
 
 - (void)updatePinButton {
-    NSString *shortcut = @"⌘+P";
+    NSString *shortcutStr = Configuration.shared.pinShortcutString;
     NSString *action = self.pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
-    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
+    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcutStr];
     
     
     CGFloat imageWidth = 18;

@@ -126,6 +126,11 @@ class Configuration: NSObject {
 
     var cancellables: [AnyCancellable] = []
 
+    @ShortcutWrapper(.pinShortcut) var pinShortcutString: String
+    @ShortcutWrapper(.googleShortcut) var googleShortcutString: String
+    @ShortcutWrapper(.appleDictionaryShortcut) var appleDictShortcutString: String
+    @ShortcutWrapper(.eudicShortcut) var eudicDictShortcutString: String
+
     var automaticallyChecksForUpdates: Bool {
         get {
             updater.automaticallyChecksForUpdates

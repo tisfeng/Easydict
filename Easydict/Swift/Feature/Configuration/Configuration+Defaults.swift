@@ -189,6 +189,35 @@ class DefaultsWrapper<T: Defaults.Serializable> {
     }
 }
 
+// MARK: - ShortcutWrapper
+
+@propertyWrapper
+class ShortcutWrapper<T: KeyCombo> {
+    // MARK: Lifecycle
+
+    init(_ key: Defaults.Key<T?>) {
+        self.key = key
+    }
+
+    // MARK: Internal
+
+    let key: Defaults.Key<T?>
+
+    var wrappedValue: String {
+        let keyCombo = Defaults[key]
+        var keyEquivalent = ""
+        var modifier = ""
+        if let key = keyCombo, key.doubledModifiers {
+            modifier = keyCombo?.keyEquivalentModifierMaskString ?? ""
+            keyEquivalent = keyCombo?.keyEquivalentModifierMaskString ?? ""
+        } else {
+            modifier = keyCombo?.keyEquivalentModifierMaskString ?? ""
+            keyEquivalent = keyCombo?.keyEquivalent ?? ""
+        }
+        return modifier + keyEquivalent
+    }
+}
+
 // Service Configuration
 extension Defaults.Keys {
     // OpenAI
