@@ -205,16 +205,10 @@ class ShortcutWrapper<T: KeyCombo> {
 
     var wrappedValue: String {
         let keyCombo = Defaults[key]
-        var keyEquivalent = ""
-        var modifier = ""
-        if let key = keyCombo, key.doubledModifiers {
-            modifier = keyCombo?.keyEquivalentModifierMaskString ?? ""
-            keyEquivalent = keyCombo?.keyEquivalentModifierMaskString ?? ""
-        } else {
-            modifier = keyCombo?.keyEquivalentModifierMaskString ?? ""
-            keyEquivalent = keyCombo?.keyEquivalent ?? ""
+        if let keyCombo, keyCombo.doubledModifiers {
+            return keyCombo.keyEquivalentModifierMaskString + keyCombo.keyEquivalentModifierMaskString
         }
-        return modifier + keyEquivalent
+        return (keyCombo?.keyEquivalentModifierMaskString ?? "") + (keyCombo?.keyEquivalent ?? "")
     }
 }
 
