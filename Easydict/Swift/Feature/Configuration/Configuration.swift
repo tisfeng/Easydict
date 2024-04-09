@@ -626,21 +626,22 @@ extension Configuration {
     }
 
     fileprivate func didSetAppleDictShortcut() {
-        let windowManager = EZWindowManager.shared()
-        windowManager.updateWindowsTitlebar()
+        updateWindowTitlebar()
     }
 
     fileprivate func didSetPinShortcut() {
-        let windowManager = EZWindowManager.shared()
-        windowManager.updateWindowsTitlebar()
+        updateWindowTitlebar()
     }
 
     fileprivate func didSetGoogleShortcut() {
-        let windowManager = EZWindowManager.shared()
-        windowManager.updateWindowsTitlebar()
+        updateWindowTitlebar()
     }
 
     fileprivate func didSetEudicDictShortcut() {
+        updateWindowTitlebar()
+    }
+
+    private func updateWindowTitlebar() {
         let windowManager = EZWindowManager.shared()
         windowManager.updateWindowsTitlebar()
     }
