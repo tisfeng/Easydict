@@ -626,23 +626,23 @@ extension Configuration {
     }
 
     fileprivate func didSetAppleDictShortcut() {
-        let window = EZWindowManager.shared().floatingWindow
-        window?.titleBar.updateButtonsToolTip()
+        let windowManager = EZWindowManager.shared()
+        windowManager.updateWindowsTitlebar()
     }
 
     fileprivate func didSetPinShortcut() {
-        let window = EZWindowManager.shared().floatingWindow
-        window?.titleBar.updateButtonsToolTip()
+        let windowManager = EZWindowManager.shared()
+        windowManager.updateWindowsTitlebar()
     }
 
     fileprivate func didSetGoogleShortcut() {
-        let window = EZWindowManager.shared().floatingWindow
-        window?.titleBar.updateButtonsToolTip()
+        let windowManager = EZWindowManager.shared()
+        windowManager.updateWindowsTitlebar()
     }
 
     fileprivate func didSetEudicDictShortcut() {
-        let window = EZWindowManager.shared().floatingWindow
-        window?.titleBar.updateButtonsToolTip()
+        let windowManager = EZWindowManager.shared()
+        windowManager.updateWindowsTitlebar()
     }
 }
 

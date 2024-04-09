@@ -276,7 +276,13 @@
         googleButton.link = EZGoogleWebSearchURL;
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:self.imageSize];
         NSString *shortcutStr = Configuration.shared.googleShortcutString;
-        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), shortcutStr];
+        NSString *toolTipStr = @"";
+        if (shortcutStr.length != 0) {
+            toolTipStr = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), shortcutStr];
+        } else {
+            toolTipStr = [NSString stringWithFormat:@"%@", NSLocalizedString(@"open_in_google", nil)];
+        }
+        googleButton.toolTip = toolTipStr;
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -294,7 +300,13 @@
         appleDictButton.link = EZAppleDictionaryAppURLScheme;
         appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:self.imageSize];
         NSString *shortcutStr = Configuration.shared.appleDictShortcutString;
-        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), shortcutStr];
+        NSString *toolTipStr = @"";
+        if (shortcutStr.length != 0) {
+            toolTipStr = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), shortcutStr];
+        } else {
+            toolTipStr = [NSString stringWithFormat:@"%@", NSLocalizedString(@"open_in_apple_dictionary", nil)];
+        }
+        appleDictButton.toolTip = toolTipStr;
         appleDictButton.contentTintColor = NSColor.clearColor;
         
         [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -313,7 +325,13 @@
         eudicButton.link = EZEudicAppURLScheme;
         eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:self.imageSize];
         NSString *shortcutStr = Configuration.shared.eudicDictShortcutString;
-        eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), shortcutStr];
+        NSString *toolTipStr = @"";
+        if (shortcutStr.length != 0) {
+            toolTipStr = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), shortcutStr];
+        } else {
+            toolTipStr = [NSString stringWithFormat:@"%@", NSLocalizedString(@"open_in_eudic", nil)];
+        }
+        eudicButton.toolTip = toolTipStr;
         eudicButton.contentTintColor = NSColor.clearColor;
         
         [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -342,8 +360,13 @@
 - (void)updatePinButton {
     NSString *shortcutStr = Configuration.shared.pinShortcutString;
     NSString *action = self.pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
-    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcutStr];
-    
+    NSString *toolTipStr = @"";
+    if (shortcutStr.length != 0) {
+        toolTipStr = [NSString stringWithFormat:@"%@, %@", action, shortcutStr];
+    } else {
+        toolTipStr = [NSString stringWithFormat:@"%@", action];
+    }
+    self.pinButton.toolTip = toolTipStr;
     
     CGFloat imageWidth = 18;
     CGSize imageSize = CGSizeMake(imageWidth, imageWidth);

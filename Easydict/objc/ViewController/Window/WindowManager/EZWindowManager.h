@@ -94,6 +94,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing;
 
+- (void)updateWindowsTitlebar;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -455,6 +455,12 @@ static EZWindowManager *_instance;
 //    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
+- (void)updateWindowsTitlebar {
+    [self.mainWindow.titleBar updateButtonsToolTip];
+    [self.fixedWindow.titleBar updateButtonsToolTip];
+    [self.miniWindow.titleBar updateButtonsToolTip];
+}
+
 - (NSScreen *)getMouseLocatedScreen {
     NSPoint mouseLocation = [NSEvent mouseLocation]; // ???: self.endPoint
     
