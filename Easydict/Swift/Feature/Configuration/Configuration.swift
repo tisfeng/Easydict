@@ -124,7 +124,7 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
-    var cancellables: [AnyCancellable] = []
+    var cancellables: Set<AnyCancellable> = []
 
     @ShortcutWrapper(.pinShortcut) var pinShortcutString: String
     @ShortcutWrapper(.googleShortcut) var googleShortcutString: String
@@ -167,263 +167,231 @@ class Configuration: NSObject {
 
     // swiftlint:disable:next function_body_length
     private func observeKeys() {
-        cancellables.append(
-            Defaults.publisher(.firstLanguage)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetFirstLanguage()
-                }
-        )
+        Defaults.publisher(.firstLanguage)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetFirstLanguage()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.secondLanguage)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetSecondLanguage()
-                }
-        )
+        Defaults.publisher(.secondLanguage)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetSecondLanguage()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoSelectText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoSelectText()
-                }
-        )
+        Defaults.publisher(.autoSelectText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoSelectText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.forceAutoGetSelectedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetForceAutoGetSelectedText()
-                }
-        )
+        Defaults.publisher(.forceAutoGetSelectedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetForceAutoGetSelectedText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.disableEmptyCopyBeep)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetDisableEmptyCopyBeep()
-                }
-        )
+        Defaults.publisher(.disableEmptyCopyBeep)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetDisableEmptyCopyBeep()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.clickQuery)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetClickQuery()
-                }
-        )
+        Defaults.publisher(.clickQuery)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetClickQuery()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.launchAtStartup, options: [])
-                .removeDuplicates()
-                .sink { [weak self] change in
-                    self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
-                }
-        )
+        Defaults.publisher(.launchAtStartup, options: [])
+            .removeDuplicates()
+            .sink { [weak self] change in
+                self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.hideMainWindow)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetHideMainWindow()
-                }
-        )
+        Defaults.publisher(.hideMainWindow)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetHideMainWindow()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoQueryOCRText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoQueryOCRText()
-                }
-        )
+        Defaults.publisher(.autoQueryOCRText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoQueryOCRText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoQuerySelectedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoQuerySelectedText()
-                }
-        )
+        Defaults.publisher(.autoQuerySelectedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoQuerySelectedText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoQueryPastedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoQueryPastedText()
-                }
-        )
+        Defaults.publisher(.autoQueryPastedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoQueryPastedText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoPlayAudio)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoPlayAudio()
-                }
-        )
+        Defaults.publisher(.autoPlayAudio)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoPlayAudio()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoCopySelectedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoCopySelectedText()
-                }
-        )
+        Defaults.publisher(.autoCopySelectedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoCopySelectedText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoCopyOCRText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoCopyOCRText()
-                }
-        )
+        Defaults.publisher(.autoCopyOCRText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoCopyOCRText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.autoCopyFirstTranslatedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoCopyFirstTranslatedText()
-                }
-        )
+        Defaults.publisher(.autoCopyFirstTranslatedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoCopyFirstTranslatedText()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.languageDetectOptimize)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetLanguageDetectOptimize()
-                }
-        )
+        Defaults.publisher(.languageDetectOptimize)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetLanguageDetectOptimize()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.defaultTTSServiceType)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetDefaultTTSServiceType()
-                }
-        )
+        Defaults.publisher(.defaultTTSServiceType)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetDefaultTTSServiceType()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.showGoogleQuickLink)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowGoogleQuickLink()
-                }
-        )
+        Defaults.publisher(.showGoogleQuickLink)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowGoogleQuickLink()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.showEudicQuickLink)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowEudicQuickLink()
-                }
-        )
+        Defaults.publisher(.showEudicQuickLink)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowEudicQuickLink()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.showAppleDictionaryQuickLink)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowAppleDictionaryQuickLink()
-                }
-        )
+        Defaults.publisher(.showAppleDictionaryQuickLink)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowAppleDictionaryQuickLink()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.showQuickActionButton, options: [])
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowSettingQuickLink()
-                }
-        )
+        Defaults.publisher(.showQuickActionButton, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowSettingQuickLink()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.hideMenuBarIcon)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetHideMenuBarIcon()
-                }
-        )
+        Defaults.publisher(.hideMenuBarIcon)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetHideMenuBarIcon()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.enableBetaNewApp)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetEnableBetaNewApp()
-                }
-        )
+        Defaults.publisher(.enableBetaNewApp)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetEnableBetaNewApp()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.fixedWindowPosition)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetFixedWindowPosition()
-                }
-        )
+        Defaults.publisher(.fixedWindowPosition)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetFixedWindowPosition()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.mouseSelectTranslateWindowType)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetMouseSelectTranslateWindowType()
-                }
-        )
+        Defaults.publisher(.mouseSelectTranslateWindowType)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetMouseSelectTranslateWindowType()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.shortcutSelectTranslateWindowType)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShortcutSelectTranslateWindowType()
-                }
-        )
+        Defaults.publisher(.shortcutSelectTranslateWindowType)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShortcutSelectTranslateWindowType()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.adjustPopButtonOrigin)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAdjustPopButtomOrigin()
-                }
-        )
+        Defaults.publisher(.adjustPopButtonOrigin)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAdjustPopButtomOrigin()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.allowCrashLog)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAllowCrashLog()
-                }
-        )
+        Defaults.publisher(.allowCrashLog)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAllowCrashLog()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.allowAnalytics)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAllowAnalytics()
-                }
-        )
+        Defaults.publisher(.allowAnalytics)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAllowAnalytics()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.clearInput)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetClearInput()
-                }
-        )
+        Defaults.publisher(.clearInput)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetClearInput()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.fontSizeOptionIndex)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetFontSizeIndex()
-                }
-        )
+        Defaults.publisher(.fontSizeOptionIndex)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetFontSizeIndex()
+            }
+            .store(in: &cancellables)
 
-        cancellables.append(
-            Defaults.publisher(.appearanceType)
-                .removeDuplicates()
-                .sink { [weak self] change in
-                    let newValue = change.newValue
+        Defaults.publisher(.appearanceType)
+            .removeDuplicates()
+            .sink { [weak self] change in
+                let newValue = change.newValue
 
-                    self?.didSetAppearance(newValue)
-                }
-        )
+                self?.didSetAppearance(newValue)
+            }
+            .store(in: &cancellables)
 
         let shortcutKeys: [Defaults.Key] = [
             .pinShortcut,
@@ -431,15 +399,13 @@ class Configuration: NSObject {
             .googleShortcut,
             .eudicShortcut,
         ]
-
         for key in shortcutKeys {
-            cancellables.append(
-                Defaults.publisher(key)
-                    .removeDuplicates()
-                    .sink { [weak self] _ in
-                        self?.updateWindowTitlebar()
-                    }
-            )
+            Defaults.publisher(key)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.updateWindowTitlebar()
+                }
+                .store(in: &cancellables)
         }
     }
 }
