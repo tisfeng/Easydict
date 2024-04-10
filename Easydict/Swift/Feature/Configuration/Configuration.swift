@@ -424,37 +424,23 @@ class Configuration: NSObject {
                     self?.didSetAppearance(newValue)
                 }
         )
-        cancellables.append(
-            Defaults.publisher(.pinShortcut)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.updateWindowTitlebar()
-                }
-        )
 
-        cancellables.append(
-            Defaults.publisher(.appleDictionaryShortcut)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.updateWindowTitlebar()
-                }
-        )
+        let shortcutKeys: [Defaults.Key] = [
+            .pinShortcut,
+            .appleDictionaryShortcut,
+            .googleShortcut,
+            .eudicShortcut,
+        ]
 
-        cancellables.append(
-            Defaults.publisher(.googleShortcut)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.updateWindowTitlebar()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.eudicShortcut)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.updateWindowTitlebar()
-                }
-        )
+        for key in shortcutKeys {
+            cancellables.append(
+                Defaults.publisher(key)
+                    .removeDuplicates()
+                    .sink { [weak self] _ in
+                        self?.updateWindowTitlebar()
+                    }
+            )
+        }
     }
 }
 
