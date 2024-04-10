@@ -123,20 +123,19 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
+    var availableModels: [String] {
+        Defaults[.openAIVaildModels]
+    }
+
     var model: String {
         get {
-            var model = Defaults[.openAIModel].rawValue
-            if model.isEmpty {
-                model = availableModels.first ?? OpenAIModel.gpt3_5_turbo_0125.rawValue
-            }
-            return model
+            Defaults[.openAIModel]
         }
 
         set {
             // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
 
-            let mode = OpenAIModel(rawValue: newValue) ?? .gpt3_5_turbo_0125
-            Defaults[.openAIModel] = mode
+            Defaults[.openAIModel] = newValue
         }
     }
 
@@ -164,10 +163,6 @@ public class BaseOpenAIService: QueryService {
         }
 
         return endPoint
-    }
-
-    var availableModels: [String] {
-        OpenAIModel.allCases.map { $0.rawValue }
     }
 
     // MARK: Private

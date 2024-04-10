@@ -958,6 +958,20 @@
 			path = AppleScript;
 			sourceTree = "<group>";
 		};
+		03071E1B2BC03ADE0042CD38 /* TabView */ = {
+			isa = PBXGroup;
+			children = (
+				278540332B3DE04F004E9488 /* GeneralTab.swift */,
+				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
+				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
+				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
+				276742052B3DC230002A2C75 /* AboutTab.swift */,
+				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
+				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
+			);
+			path = TabView;
+			sourceTree = "<group>";
+		};
 		0309E1EA292B437C00AFB76A /* TextView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2229,15 +2243,9 @@
 		27FE980C2B3DD749000AD654 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
+				03071E1B2BC03ADE0042CD38 /* TabView */,
 				9627F9332B59956800B1E999 /* View */,
-				EAED41EA2B54A4900005FE0A /* ServiceConfiguration */,
-				278540332B3DE04F004E9488 /* GeneralTab.swift */,
-				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
-				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
-				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
-				276742052B3DC230002A2C75 /* AboutTab.swift */,
-				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
-				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
+				EAED41EA2B54A4900005FE0A /* ServiceConfigurationView */,
 			);
 			path = Tabs;
 			sourceTree = "<group>";
@@ -2471,7 +2479,6 @@
 				038F1F8D2BAD835500CD2F65 /* AppKit */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
-				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
 				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
 				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
 				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
@@ -2480,15 +2487,16 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		EAED41EA2B54A4900005FE0A /* ServiceConfiguration */ = {
+		EAED41EA2B54A4900005FE0A /* ServiceConfigurationView */ = {
 			isa = PBXGroup;
 			children = (
+				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
 				0AC8A83C2B6685EE006DA5CC /* SecureTextField.swift */,
 				EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */,
 				0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */,
 				0AC8A8442B6A4D97006DA5CC /* ServiceConfigurationCells.swift */,
 			);
-			path = ServiceConfiguration;
+			path = ServiceConfigurationView;
 			sourceTree = "<group>";
 		};
 		EAED41ED2B54B1390005FE0A /* Protocol */ = {
@@ -2504,6 +2512,7 @@
 			isa = PBXGroup;
 			children = (
 				EAED41F12B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift */,
+				0A318F3A2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift */,
 				0AC8A8402B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift */,
 				0AC8A8342B6641A7006DA5CC /* TencentService+ConfigurableService.swift */,
 				0AC8A8362B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift */,
@@ -2511,7 +2520,6 @@
 				0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */,
 				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
 				0AC8A84A2B6A629D006DA5CC /* GeminiService+ConfigurableService.swift */,
-				0A318F3A2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift */,
 			);
 			path = "QueryService+ConfigurableService";
 			sourceTree = "<group>";

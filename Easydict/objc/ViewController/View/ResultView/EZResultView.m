@@ -271,7 +271,7 @@
         EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
         self.serviceModelButton.title = service.model;
         mm_weakify(self);
-        [self.serviceModelButton setMouseUpBlock:^(EZButton *_Nonnull button) {
+        [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
             [self showModelSelectionMenu:button];
         }];
@@ -415,7 +415,7 @@
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
+    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;    
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.availableModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];

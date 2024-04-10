@@ -50,9 +50,7 @@ class CustomOpenAIService: BaseOpenAIService {
     }
 
     override var availableModels: [String] {
-        let models = Defaults[.customOpenAIModelsAvailable]
-        guard let models, !models.isEmpty else { return [] }
-        return models.components(separatedBy: ",").filter { !$0.isEmpty }
+        Defaults[.customOpenAIVaildModels]
     }
 
     override func serviceType() -> ServiceType {

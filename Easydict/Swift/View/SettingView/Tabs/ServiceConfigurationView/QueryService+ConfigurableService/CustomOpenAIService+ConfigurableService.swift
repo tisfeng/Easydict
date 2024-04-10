@@ -38,7 +38,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
     var body: some View {
         ServiceConfigurationSecretSectionView(
             service: service,
-            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIModelsAvailable]
+            observeKeys: [.customOpenAIAPIKey, .customOpenAIEndPoint, .customOpenAIAvailableModels]
         ) {
             // title
             ServiceConfigurationInputCell(
@@ -57,7 +57,8 @@ private struct CustomOpenAIServiceConfigurationView: View {
                 key: .customOpenAIEndPoint,
                 placeholder: "service.configuration.openai.endpoint.placeholder"
             )
-            // model
+
+            // supported models
             TextField(
                 "service.configuration.custom_openai.supported_models.title",
                 text: viewModel.$availableModels ?? "",
@@ -113,7 +114,7 @@ private class CustomOpenAIViewModel: ObservableObject {
             Defaults.publisher(.customOpenAIModel, options: [])
                 .removeDuplicates()
                 .sink { _ in
-                    self.serviceConfigChanged()
+                    self.modelChanged()
                 }
         )
         cancellables.append(
@@ -124,7 +125,7 @@ private class CustomOpenAIViewModel: ObservableObject {
                 }
         )
         cancellables.append(
-            Defaults.publisher(.customOpenAIModelsAvailable)
+            Defaults.publisher(.customOpenAIAvailableModels)
                 .removeDuplicates()
                 .sink { _ in
                     self.modelsTextChanged()
@@ -137,7 +138,7 @@ private class CustomOpenAIViewModel: ObservableObject {
     let service: CustomOpenAIService
 
     @Default(.customOpenAIModel) var model
-    @Default(.customOpenAIModelsAvailable) var availableModels
+    @Default(.customOpenAIAvailableModels) var availableModels
 
     @Published var validModels: [String] = []
 
@@ -150,23 +151,42 @@ private class CustomOpenAIViewModel: ObservableObject {
 
     private var cancellables: [AnyCancellable] = []
 
+    private func modelChanged() {
+        if !validModels.contains(model) {
+            if model.isEmpty {
+                availableModels = ""
+            } else {
+                if availableModels?.isEmpty == true {
+                    availableModels = model
+                } else {
+                    availableModels = "\(model), " + (availableModels ?? "")
+                }
+            }
+        }
+
+        serviceConfigChanged()
+    }
+
     private func modelsTextChanged() {
         guard let availableModels else { return }
-        if availableModels.isEmpty {
+
+        validModels = availableModels.components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+
+        if validModels.isEmpty {
             model = ""
-            validModels = []
-            return
-        }
-        validModels = availableModels.components(separatedBy: ",").filter { !$0.isEmpty }
-        if validModels.count == 1 || !validModels.contains(model) {
+        } else if !validModels.contains(model) {
             model = validModels[0]
         }
+
+        Defaults[.customOpenAIVaildModels] = validModels
     }
 
     private func serviceConfigChanged() {
-        // looks like Defaults changed but View not update in this case
         objectWillChange.send()
+
         let userInfo: [String: Any] = [
+            EZWindowTypeKey: service.windowType.rawValue,
             EZServiceTypeKey: service.serviceType().rawValue,
         ]
         let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
