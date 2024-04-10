@@ -15,27 +15,29 @@ static NSString *const EZBetaFeatureKey = @"EZBetaFeatureKey";
 
 static NSString *const EZDictionaryKey = @"Dictionary";
 
+// OpenAI
 static NSString *const EZOpenAIAPIKey = @"EZOpenAIAPIKey";
 static NSString *const EZOpenAIEndPointKey = @"EZOpenAIEndPointKey";
 static NSString *const EZOpenAITranslationKey = @"EZOpenAITranslationKey";
 static NSString *const EZOpenAIDictionaryKey = @"EZOpenAIDictionaryKey";
 static NSString *const EZOpenAISentenceKey = @"EZOpenAISentenceKey";
-
 static NSString *const EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageStatusKey";
-
 static NSString *const EZOpenAIModelKey = @"EZOpenAIModelKey";
+static NSString *const EZOpenAIAvailableModelsKey = @"EZOpenAIAvailableModelsKey";
+static NSString *const EZOpenAIValidModelsKey = @"EZOpenAIValidModelsKey";
 
+// Custom OpenAI
 static NSString *const EZCustomOpenAINameKey = @"EZCustomOpenAINameKey";
 static NSString *const EZCustomOpenAIEndPointKey = @"EZCustomOpenAIEndPointKey";
 static NSString *const EZCustomOpenAIAPIKey = @"EZCustomOpenAIAPIKey";
-
-static NSString *const EZCustomOpenAIModelssAvailableKey = @"EZCustomOpenAIModelssAvailableKey";
-static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
-
 static NSString *const EZCustomOpenAITranslationKey = @"EZCustomOpenAITranslationKey";
 static NSString *const EZCustomOpenAIDictionaryKey = @"EZCustomOpenAIDictionaryKey";
 static NSString *const EZCustomOpenAISentenceKey = @"EZCustomOpenAISentenceKey";
 static NSString *const EZCustomOpenAIServiceUsageStatusKey = @"EZCustomOpenAIServiceUsageStatusKey";
+static NSString *const EZCustomOpenAIAvailableModelsKey = @"EZCustomOpenAIAvailableModelsKey";
+static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
+static NSString *const EZCustomOpenAIValidModelsKey = @"EZCustomOpenAIValidModelsKey";
+
 
 static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
 static NSString *const EZDeepLTranslateEndPointKey = @"EZDeepLTranslateEndPointKey";

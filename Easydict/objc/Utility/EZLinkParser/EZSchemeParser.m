@@ -199,11 +199,12 @@
         EZOpenAISentenceKey,
         EZOpenAIServiceUsageStatusKey,
         EZOpenAIModelKey,
+        EZOpenAIAvailableModelsKey,
         
         EZCustomOpenAINameKey,
         EZCustomOpenAIEndPointKey,
         EZCustomOpenAIAPIKey,
-        EZCustomOpenAIModelssAvailableKey,
+        EZCustomOpenAIAvailableModelsKey,
         EZCustomOpenAIModelKey,
         EZCustomOpenAITranslationKey,
         EZCustomOpenAIDictionaryKey,
