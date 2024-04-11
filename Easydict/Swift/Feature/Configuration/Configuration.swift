@@ -124,7 +124,12 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
-    var cancellables: [AnyCancellable] = []
+    var cancellables: Set<AnyCancellable> = []
+
+    @ShortcutWrapper(.pinShortcut) var pinShortcutString: String
+    @ShortcutWrapper(.googleShortcut) var googleShortcutString: String
+    @ShortcutWrapper(.appleDictionaryShortcut) var appleDictShortcutString: String
+    @ShortcutWrapper(.eudicShortcut) var eudicDictShortcutString: String
 
     var automaticallyChecksForUpdates: Bool {
         get {
@@ -162,263 +167,246 @@ class Configuration: NSObject {
 
     // swiftlint:disable:next function_body_length
     private func observeKeys() {
-        cancellables.append(
-            Defaults.publisher(.firstLanguage)
+        Defaults.publisher(.firstLanguage)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetFirstLanguage()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.secondLanguage)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetSecondLanguage()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoSelectText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoSelectText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.forceAutoGetSelectedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetForceAutoGetSelectedText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.disableEmptyCopyBeep)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetDisableEmptyCopyBeep()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.clickQuery)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetClickQuery()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.launchAtStartup, options: [])
+            .removeDuplicates()
+            .sink { [weak self] change in
+                self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.hideMainWindow)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetHideMainWindow()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoQueryOCRText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoQueryOCRText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoQuerySelectedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoQuerySelectedText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoQueryPastedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoQueryPastedText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoPlayAudio)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoPlayAudio()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoCopySelectedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoCopySelectedText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoCopyOCRText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoCopyOCRText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoCopyFirstTranslatedText)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoCopyFirstTranslatedText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.languageDetectOptimize)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetLanguageDetectOptimize()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.defaultTTSServiceType)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetDefaultTTSServiceType()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.showGoogleQuickLink)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowGoogleQuickLink()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.showEudicQuickLink)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowEudicQuickLink()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.showAppleDictionaryQuickLink)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowAppleDictionaryQuickLink()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.showQuickActionButton, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowSettingQuickLink()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.hideMenuBarIcon)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetHideMenuBarIcon()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.enableBetaNewApp)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetEnableBetaNewApp()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.fixedWindowPosition)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetFixedWindowPosition()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.mouseSelectTranslateWindowType)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetMouseSelectTranslateWindowType()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.shortcutSelectTranslateWindowType)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShortcutSelectTranslateWindowType()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.adjustPopButtonOrigin)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAdjustPopButtomOrigin()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.allowCrashLog)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAllowCrashLog()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.allowAnalytics)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAllowAnalytics()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.clearInput)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetClearInput()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.fontSizeOptionIndex)
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetFontSizeIndex()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.appearanceType)
+            .removeDuplicates()
+            .sink { [weak self] change in
+                let newValue = change.newValue
+
+                self?.didSetAppearance(newValue)
+            }
+            .store(in: &cancellables)
+
+        let shortcutKeys: [Defaults.Key] = [
+            .pinShortcut,
+            .appleDictionaryShortcut,
+            .googleShortcut,
+            .eudicShortcut,
+        ]
+        for key in shortcutKeys {
+            Defaults.publisher(key)
                 .removeDuplicates()
                 .sink { [weak self] _ in
-                    self?.didSetFirstLanguage()
+                    self?.updateWindowTitlebar()
                 }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.secondLanguage)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetSecondLanguage()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoSelectText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoSelectText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.forceAutoGetSelectedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetForceAutoGetSelectedText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.disableEmptyCopyBeep)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetDisableEmptyCopyBeep()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.clickQuery)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetClickQuery()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.launchAtStartup, options: [])
-                .removeDuplicates()
-                .sink { [weak self] change in
-                    self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.hideMainWindow)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetHideMainWindow()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoQueryOCRText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoQueryOCRText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoQuerySelectedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoQuerySelectedText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoQueryPastedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoQueryPastedText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoPlayAudio)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoPlayAudio()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoCopySelectedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoCopySelectedText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoCopyOCRText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoCopyOCRText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.autoCopyFirstTranslatedText)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAutoCopyFirstTranslatedText()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.languageDetectOptimize)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetLanguageDetectOptimize()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.defaultTTSServiceType)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetDefaultTTSServiceType()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.showGoogleQuickLink)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowGoogleQuickLink()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.showEudicQuickLink)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowEudicQuickLink()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.showAppleDictionaryQuickLink)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowAppleDictionaryQuickLink()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.showQuickActionButton, options: [])
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShowSettingQuickLink()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.hideMenuBarIcon)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetHideMenuBarIcon()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.enableBetaNewApp)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetEnableBetaNewApp()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.fixedWindowPosition)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetFixedWindowPosition()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.mouseSelectTranslateWindowType)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetMouseSelectTranslateWindowType()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.shortcutSelectTranslateWindowType)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetShortcutSelectTranslateWindowType()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.adjustPopButtonOrigin)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAdjustPopButtomOrigin()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.allowCrashLog)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAllowCrashLog()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.allowAnalytics)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetAllowAnalytics()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.clearInput)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetClearInput()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.fontSizeOptionIndex)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.didSetFontSizeIndex()
-                }
-        )
-
-        cancellables.append(
-            Defaults.publisher(.appearanceType)
-                .removeDuplicates()
-                .sink { [weak self] change in
-                    let newValue = change.newValue
-
-                    self?.didSetAppearance(newValue)
-                }
-        )
+                .store(in: &cancellables)
+        }
     }
 }
 
@@ -587,6 +575,11 @@ extension Configuration {
 
     fileprivate func didSetAppearance(_ appearance: AppearenceType) {
         DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
+    }
+
+    fileprivate func updateWindowTitlebar() {
+        let windowManager = EZWindowManager.shared()
+        windowManager.updateWindowsTitlebar()
     }
 }
 
