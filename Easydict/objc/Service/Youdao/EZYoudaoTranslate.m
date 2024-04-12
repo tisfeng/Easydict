@@ -489,14 +489,11 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     
-    // Youdao dict can query word, phrase, even short text.
-    BOOL shouldQueryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:1];
-
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
     BOOL supportQueryDictionaryLanguage = foreignLangauge != nil;
     
     // If Youdao Dictionary does not support the language, try querying translate API.
-    if (!enableDictionary || !supportQueryDictionaryLanguage || !shouldQueryDictionary) {
+    if (!enableDictionary || !supportQueryDictionaryLanguage) {
         completion(self.result, [EZError errorWithType:EZErrorTypeNoResultsFound]);
         return;
     }
@@ -522,6 +519,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSString *message = nil;
+
         if (responseObject) {
             @try {
                 EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
