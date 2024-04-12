@@ -128,8 +128,8 @@
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-    //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
+//    NSLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
+
     [[EZLayoutManager shared] updateWindowFrame:self];
     
     if (self.resizeWindowBlock) {

@@ -829,19 +829,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 
 - (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {
-    EZWindowManager *windowManager = EZWindowManager.shared;
-    if (windowManager.floatingWindowType == EZWindowTypeMini) {
-        BOOL outsideMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
-        if (outsideMiniWindow && self.dismissMiniWindowBlock) {
-            self.dismissMiniWindowBlock();
-        }
-    } else {
-        if (windowManager.floatingWindowType == EZWindowTypeFixed) {
-            BOOL outsideFixedWindow = ![self checkIfMouseLocationInWindow:windowManager.fixedWindow];
-            if (outsideFixedWindow && self.dismissFixedWindowBlock) {
-                self.dismissFixedWindowBlock();
-            }
-        }
+    if (![self checkIfMouseLocationInWindow:EZWindowManager.shared.floatingWindow]) {
+        self.dismissAllNotPinndFloatingWindowBlock();
     }
 }
 

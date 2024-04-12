@@ -125,14 +125,10 @@ static EZWindowManager *_instance;
         [self.popButtonWindow close];
     }];
     
-    [self.eventMonitor setDismissMiniWindowBlock:^{
+    [self.eventMonitor setDismissAllNotPinndFloatingWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinned];
-    }];
-    
-    [self.eventMonitor setDismissFixedWindowBlock:^{
-        mm_strongify(self);
-        [self closeFloatingWindowIfNotPinned];
+        [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeMini];
+        [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeFixed];
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
@@ -777,7 +773,7 @@ static EZWindowManager *_instance;
     
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     
-    if (self.floatingWindowType == windowType) {
+    if (self.floatingWindowType == windowType && self.floatingWindow.isVisible) {
         [self closeFloatingWindow];
         return;
     }
@@ -797,7 +793,7 @@ static EZWindowManager *_instance;
     
     EZWindowType windowType = Configuration.shared.mouseSelectTranslateWindowType;
     
-    if (self.floatingWindowType == windowType) {
+    if (self.floatingWindowType == windowType && self.floatingWindow.isVisible) {
         [self closeFloatingWindow];
         return;
     }
@@ -920,6 +916,10 @@ static EZWindowManager *_instance;
     [self closeFloatingWindowIfNotPinned:self.floatingWindowType exceptWindowType:EZWindowTypeNone];
 }
 
+- (void)closeFloatingWindowIfNotPinnedOrMain:(EZWindowType)windowType {
+    [self closeFloatingWindowIfNotPinned:windowType exceptWindowType:EZWindowTypeMain];
+}
+
 - (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     if (!window.isPin && windowType != exceptWindowType) {
@@ -928,12 +928,12 @@ static EZWindowManager *_instance;
 }
 
 - (void)closeFloatingWindow:(EZWindowType)windowType {
-    NSLog(@"close window type: %ld", windowType);
-    
     EZBaseQueryWindow *floatingWindow = [self windowWithType:windowType];
-    if (!floatingWindow) {
+    if (!floatingWindow || !floatingWindow.isVisible) {
         return;
     }
+    
+    NSLog(@"close window type: %ld", windowType);
     
     // Stop playing audio
     [floatingWindow.queryViewController stopPlayingQueryText];
