@@ -619,6 +619,22 @@
         }
       }
     },
+    "built_in_ai" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built-In AI Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "内置 AI 翻译"
+          }
+        }
+      }
+    },
     "caiyun_translate" : {
       "comment" : "The name of Caiyun Translate",
       "localizations" : {

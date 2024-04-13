@@ -63,6 +63,7 @@
 		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
+		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
 		03779F0E2BB256A7008D3C42 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0B2BB256A7008D3C42 /* OpenAIService.swift */; };
 		03779F0F2BB256A7008D3C42 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0C2BB256A7008D3C42 /* Prompt.swift */; };
@@ -454,6 +455,7 @@
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
 		036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZReplaceTextButton.m; sourceTree = "<group>"; };
+		036D62802BCAB613002C95C7 /* BuiltInAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInAIService.swift; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
 		03779F0B2BB256A7008D3C42 /* OpenAIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
@@ -1162,6 +1164,14 @@
 			path = EZReplaceTextButton;
 			sourceTree = "<group>";
 		};
+		036D627F2BCAB5C6002C95C7 /* BuiltInAI */ = {
+			isa = PBXGroup;
+			children = (
+				036D62802BCAB613002C95C7 /* BuiltInAIService.swift */,
+			);
+			path = BuiltInAI;
+			sourceTree = "<group>";
+		};
 		036E7D77293F4F51002675DF /* LanguageButton */ = {
 			isa = PBXGroup;
 			children = (
@@ -1219,6 +1229,7 @@
 		03779F0A2BB25688008D3C42 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				036D627F2BCAB5C6002C95C7 /* BuiltInAI */,
 				03779F0D2BB256A7008D3C42 /* OpenAI */,
 				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
 				C4DD01E72B12B3B00025EE8E /* Tencent */,
@@ -2998,6 +3009,7 @@
 				17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */,
 				6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */,
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
+				036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */,
 				9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */,

@@ -14,8 +14,22 @@ extension BaseOpenAIService {
         APIKey.openAIAPIKey.stringValue
     }
 
-    var defaultEndPoint: String {
-        APIKey.openAIEndPoint.stringValue
+    var defaultEndpoint: String {
+        APIKey.openAIEndpoint.stringValue
+    }
+}
+
+extension BuiltInAIService {
+    override var defaultAPIKey: String {
+        APIKey.builtInAIAPIKey.stringValue
+    }
+
+    override var defaultEndpoint: String {
+        APIKey.builtInAIEndpoint.stringValue
+    }
+
+    var defaultModel: String {
+        APIKey.builtInAIModel.stringValue
     }
 }
 
@@ -56,12 +70,15 @@ enum APIKey: String {
      */
 
     case openAIAPIKey
-    case openAIEndPoint
+    case openAIEndpoint
     case geminiAPIKey
     case caiyunToken
     case tencentSecretId
     case tencentSecretKey
     case niutransAPIKey
+    case builtInAIAPIKey
+    case builtInAIEndpoint
+    case builtInAIModel
 
     // MARK: Internal
 
