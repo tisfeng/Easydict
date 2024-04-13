@@ -453,8 +453,8 @@ static EZWindowManager *_instance;
 
 - (void)updateWindowsTitlebar {
     [_mainWindow.titleBar updateButtonsToolTip];
-    [self.fixedWindow.titleBar updateButtonsToolTip];
-    [self.miniWindow.titleBar updateButtonsToolTip];
+    [_fixedWindow.titleBar updateButtonsToolTip];
+    [_miniWindow.titleBar updateButtonsToolTip];
 }
 
 - (NSScreen *)getMouseLocatedScreen {
