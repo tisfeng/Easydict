@@ -921,6 +921,9 @@ static EZWindowManager *_instance;
 }
 
 - (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
+    if (_fixedWindow == nil && _miniWindow == nil) {
+        return;
+    }
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     if (!window.isPin && windowType != exceptWindowType) {
         [self closeFloatingWindow:windowType];
