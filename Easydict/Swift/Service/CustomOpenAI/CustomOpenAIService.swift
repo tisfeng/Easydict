@@ -35,7 +35,7 @@ class CustomOpenAIService: BaseOpenAIService {
         Defaults[.customOpenAIAPIKey] ?? ""
     }
 
-    override var endPoint: String {
+    override var endpoint: String {
         Defaults[.customOpenAIEndPoint] ?? ""
     }
 
