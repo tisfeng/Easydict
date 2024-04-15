@@ -127,8 +127,12 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissAllNotPinndFloatingWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeMini];
-        [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeFixed];
+        if (self->_miniWindow) {
+            [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeMini];
+        }
+        if (self->_fixedWindow) {
+            [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeFixed];
+        }
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
