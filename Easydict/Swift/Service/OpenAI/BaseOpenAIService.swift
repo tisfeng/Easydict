@@ -72,7 +72,7 @@ public class BaseOpenAIService: QueryService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        let url = URL(string: endPoint)
+        let url = URL(string: endpoint)
         let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
         guard let url, url.isValid else {
             completion(result, invalidURLError)
@@ -150,7 +150,7 @@ public class BaseOpenAIService: QueryService {
         return apiKey
     }
 
-    var endPoint: String {
+    var endpoint: String {
         // easydict://writeKeyValue?EZOpenAIEndPointKey=
 
         var endPoint = Defaults[.openAIEndPoint] ?? ""
@@ -159,7 +159,7 @@ public class BaseOpenAIService: QueryService {
         }
 
         if !hasPrivateAPIKey() {
-            endPoint = defaultEndPoint
+            endPoint = defaultEndpoint
         }
 
         return endPoint

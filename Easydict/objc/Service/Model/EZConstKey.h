@@ -38,6 +38,9 @@ static NSString *const EZCustomOpenAIAvailableModelsKey = @"EZCustomOpenAIAvaila
 static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
 static NSString *const EZCustomOpenAIValidModelsKey = @"EZCustomOpenAIValidModelsKey";
 
+// // Built-in AI
+static NSString *const EZBuiltInAIModelKey = @"EZBuiltInAIModelKey";
+
 
 static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
 static NSString *const EZDeepLTranslateEndPointKey = @"EZDeepLTranslateEndPointKey";
