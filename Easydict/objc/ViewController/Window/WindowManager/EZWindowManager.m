@@ -451,10 +451,10 @@ static EZWindowManager *_instance;
 //    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
-- (void)updateWindowsTitlebar {
-    [_mainWindow.titleBar updateButtonsToolTip];
-    [_fixedWindow.titleBar updateButtonsToolTip];
-    [_miniWindow.titleBar updateButtonsToolTip];
+- (void)updateWindowsTitlebarButtonsToolTip {
+    [_mainWindow.titleBar updateShortcutButtonsToolTip];
+    [_miniWindow.titleBar updateShortcutButtonsToolTip];
+    [_fixedWindow.titleBar updateShortcutButtonsToolTip];
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -921,9 +921,6 @@ static EZWindowManager *_instance;
 }
 
 - (void)closeFloatingWindowIfNotPinned:(EZWindowType)windowType exceptWindowType:(EZWindowType)exceptWindowType {
-    if (_fixedWindow == nil && _miniWindow == nil) {
-        return;
-    }
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     if (!window.isPin && windowType != exceptWindowType) {
         [self closeFloatingWindow:windowType];

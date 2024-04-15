@@ -46,10 +46,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     return self;
 }
 
-- (void)updateButtonsToolTip {
-    [self updateConstraints];
-}
-
 - (void)setup {
     self.buttonWidth = 24;
     self.imageWidth = 20;
@@ -68,13 +64,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     for (NSView *subview in self.subviews) {
         [subview removeFromSuperview];
     }
-    
-    // Reset buttons to update toolTip.
-    _quickActionMenu = nil;
-    _quickActionButton = nil;
-    _googleButton = nil;
-    _eudicButton = nil;
-    _appleDictionaryButton = nil;
     _stackView = nil;
     
     [self addSubview:self.pinButton];
@@ -100,11 +89,24 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         [self.stackView addArrangedSubview:self.quickActionButton];
     }
     
-    for (NSNumber *buttonType in [self shortcutButtonTypes]) {
-        [self.stackView addArrangedSubview:[self buttonWithType:buttonType.integerValue]];
+    for (NSNumber *typeNumber in [self shortcutButtonTypes]) {
+        EZTitlebarButtonType buttonType = typeNumber.integerValue;
+        EZOpenLinkButton *button = [self buttonWithType:buttonType];
+        [self.stackView addArrangedSubview:button];
     }
+    [self updateShortcutButtonsToolTip];
     
     [super updateConstraints];
+}
+
+#pragma mark - Public Methods
+
+- (void)updateShortcutButtonsToolTip {
+    for (NSNumber *typeNumber in [self shortcutButtonTypes]) {
+        EZTitlebarButtonType buttonType = typeNumber.integerValue;
+        EZOpenLinkButton *button = [self buttonWithType:buttonType];
+        button.toolTip = [self toolTipStrWithButtonType:buttonType];
+    }
 }
 
 
@@ -299,7 +301,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [self updatePinButton];
 }
 
-- (NSArray *)shortcutButtonTypes {
+- (NSArray<NSNumber *> *)shortcutButtonTypes {
     NSMutableArray *shortcutButtonTypes = [NSMutableArray array];
     
     // Google
