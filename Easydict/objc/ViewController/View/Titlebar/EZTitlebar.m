@@ -247,8 +247,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     if (!_quickActionButton) {
         EZOpenLinkButton *quickActionButton = [[EZOpenLinkButton alloc] init];
         _quickActionButton = quickActionButton;
-        NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
-        image = [NSImage ez_imageWithSymbolName:@"switch.2"];
+        NSImage *image = [NSImage ez_imageWithSymbolName:@"switch.2"];
         quickActionButton.image = image;
         quickActionButton.toolTip = NSLocalizedString(@"quick_action", nil);
         
