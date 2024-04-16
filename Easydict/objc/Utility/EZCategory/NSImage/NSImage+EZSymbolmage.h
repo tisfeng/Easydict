@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSImage *)ez_imageWithSymbolName:(NSString *)name;
 
-+ (NSImage *)ez_imageWithSymbolName:(NSString *)name size:(CGSize)size;
++ (NSImage *)ez_imageWithSymbolName:(NSString *)name size:(CGSize)size scale:(NSImageSymbolScale)scale;
 
 @end
 

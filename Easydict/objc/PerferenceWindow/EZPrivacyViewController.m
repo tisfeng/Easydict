@@ -149,7 +149,7 @@
      Fix: https://github.com/tisfeng/Easydict/pull/212#discussion_r1437951644
      */
     if (@available(macOS 12.0, *)) {
-        privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+        privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16) scale:NSImageSymbolScaleSmall];
     }
     privacyImage = [privacyImage imageWithTintColor:[NSColor ez_imageTintBlueColor]];
     
