@@ -393,20 +393,21 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        let shortcutKeys: [Defaults.Key] = [
-            .pinShortcut,
-            .appleDictionaryShortcut,
-            .googleShortcut,
-            .eudicShortcut,
-        ]
-        for key in shortcutKeys {
-            Defaults.publisher(key)
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    self?.updateWindowTitlebar()
-                }
-                .store(in: &cancellables)
+        Defaults.publisher(
+            keys:
+            [
+                .pinShortcut,
+                .appleDictionaryShortcut,
+                .googleShortcut,
+                .eudicShortcut,
+            ],
+            options: []
+        )
+        .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
+        .sink { _ in
+            EZWindowManager.shared().updateWindowsTitlebarButtonsToolTip()
         }
+        .store(in: &cancellables)
     }
 }
 
@@ -575,11 +576,6 @@ extension Configuration {
 
     fileprivate func didSetAppearance(_ appearance: AppearenceType) {
         DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
-    }
-
-    fileprivate func updateWindowTitlebar() {
-        let windowManager = EZWindowManager.shared()
-        windowManager.updateWindowsTitlebar()
     }
 }
 

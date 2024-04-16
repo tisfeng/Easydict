@@ -127,8 +127,12 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissAllNotPinndFloatingWindowBlock:^{
         mm_strongify(self);
-        [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeMini];
-        [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeFixed];
+        if (self->_miniWindow) {
+            [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeMini];
+        }
+        if (self->_fixedWindow) {
+            [self closeFloatingWindowIfNotPinnedOrMain:EZWindowTypeFixed];
+        }
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
@@ -451,10 +455,10 @@ static EZWindowManager *_instance;
 //    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
-- (void)updateWindowsTitlebar {
-    [_mainWindow.titleBar updateButtonsToolTip];
-    [self.fixedWindow.titleBar updateButtonsToolTip];
-    [self.miniWindow.titleBar updateButtonsToolTip];
+- (void)updateWindowsTitlebarButtonsToolTip {
+    [_mainWindow.titleBar updateShortcutButtonsToolTip];
+    [_miniWindow.titleBar updateShortcutButtonsToolTip];
+    [_fixedWindow.titleBar updateShortcutButtonsToolTip];
 }
 
 - (NSScreen *)getMouseLocatedScreen {

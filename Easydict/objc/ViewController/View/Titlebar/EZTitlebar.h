@@ -33,8 +33,7 @@ typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 
 @property (nonatomic, copy) EZTitlebarQuickActionBlock menuActionBlock;
 
-
-- (void)updateButtonsToolTip;
+- (void)updateShortcutButtonsToolTip;
 
 @end
 
