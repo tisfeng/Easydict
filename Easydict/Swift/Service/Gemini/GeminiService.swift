@@ -21,7 +21,7 @@ public final class GeminiService: QueryService {
     }
 
     override public func link() -> String? {
-        "https://bard.google.com/chat"
+        "https://gemini.google.com/"
     }
 
     override public func name() -> String {
@@ -39,25 +39,6 @@ public final class GeminiService: QueryService {
         }
 
         return orderedDict
-    }
-
-    override public func needPrivateAPIKey() -> Bool {
-        true
-    }
-
-    override public func hasPrivateAPIKey() -> Bool {
-        if apiKey == defaultAPIKey {
-            return false
-        }
-        return true
-    }
-
-    override public func totalFreeQueryCharacterCount() -> Int {
-        100_000 * 1000
-    }
-
-    override public func autoConvertTraditionalChinese() -> Bool {
-        true
     }
 
     override public func translate(
@@ -156,12 +137,7 @@ public final class GeminiService: QueryService {
 
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {
-        let apiKey = Defaults[.geminiAPIKey]
-        if let apiKey, !apiKey.isEmpty {
-            return apiKey
-        } else {
-            return defaultAPIKey
-        }
+        Defaults[.geminiAPIKey] ?? ""
     }
 }
 

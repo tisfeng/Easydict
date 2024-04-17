@@ -33,12 +33,6 @@ extension BuiltInAIService {
     }
 }
 
-extension GeminiService {
-    var defaultAPIKey: String {
-        APIKey.geminiAPIKey.stringValue
-    }
-}
-
 extension CaiyunService {
     var defaultToken: String {
         APIKey.caiyunToken.stringValue
