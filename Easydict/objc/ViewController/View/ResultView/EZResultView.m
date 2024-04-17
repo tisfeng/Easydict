@@ -175,7 +175,7 @@
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self.result.queryModel stopServiceRequest:self.result.serviceType];
-        self.result.isFinished = YES;
+        self.result.isStreamFinished = YES;
         button.hidden = YES;
     }];
     
@@ -377,8 +377,8 @@
     BOOL showStopButton = NO;
     
     // Currently, only support stop OpenAI service.
-    if ([self isBaseOpenAIService:self.result.service]) {
-        showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
+    if (self.result.service.isStream) {
+        showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
     }
     
     self.stopButton.hidden = !showStopButton;
@@ -408,10 +408,9 @@
         return;
     }
     BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
-    BOOL showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
     BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     BOOL isLoading = self.result.isLoading;
-    self.serviceModelButton.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
+    self.serviceModelButton.hidden = showWarningImage || showRetryButton || isLoading;
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {

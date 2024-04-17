@@ -108,7 +108,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat viewHeight;
 
 @property (assign) BOOL isLoading;
-@property (assign) BOOL isFinished; // For OpenAI
+@property (assign) BOOL isStreamFinished; // For OpenAI
 
 
 /// 此次查询的文本

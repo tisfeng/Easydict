@@ -41,6 +41,10 @@ public final class GeminiService: QueryService {
         return orderedDict
     }
 
+    public override func isStream() -> Bool {
+        true
+    }
+
     override public func translate(
         _ text: String,
         from: Language,

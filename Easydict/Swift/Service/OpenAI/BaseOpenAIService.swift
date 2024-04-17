@@ -19,6 +19,10 @@ import OpenAI
 public class BaseOpenAIService: QueryService {
     // MARK: Public
 
+    public override func isStream() -> Bool {
+        true
+    }
+
     override public func intelligentQueryTextType() -> EZQueryTextType {
         Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
@@ -57,6 +61,7 @@ public class BaseOpenAIService: QueryService {
 
         result.from = from
         result.to = to
+        result.isStreamFinished = false
 
         let queryType = queryTextType(text: text, from: from, to: to)
         let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
@@ -66,28 +71,34 @@ public class BaseOpenAIService: QueryService {
         openAI.chatsStream(query: query, url: url) { [weak self] res in
             guard let self else { return }
 
-            switch res {
-            case let .success(chatResult):
-                if let content = chatResult.choices.first?.delta.content {
-                    resultText += content
+            if !result.isStreamFinished {
+                switch res {
+                case let .success(chatResult):
+                    if let content = chatResult.choices.first?.delta.content {
+                        resultText += content
+                    }
+                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+                case let .failure(error):
+                    handleResult(queryType: queryType, resultText: resultText, error: error, completion: completion)
                 }
-                handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
-            case let .failure(error):
-                handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
             }
+
         } completion: { [weak self] error in
             guard let self else { return }
 
-            if let error {
-                print("chatsStream error: \(String(describing: error))")
-                completion(result, error)
-            } else {
-                // If already has error, we do not need to update it.
-                if result.error == nil {
-                    // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
-                    let nsText = resultText as NSString
-                    resultText = nsText.tryToRemoveQuotes()
-                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+            if !result.isStreamFinished {
+                if let error {
+                    handleResult(queryType: queryType, resultText: resultText, error: error, completion: completion)
+
+                } else {
+                    // If already has error, we do not need to update it.
+                    if result.error == nil {
+                        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
+                        let nsText = resultText as NSString
+                        resultText = nsText.tryToRemoveQuotes()
+                        handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+                        result.isStreamFinished = true
+                    }
                 }
             }
         }
@@ -150,6 +161,8 @@ public class BaseOpenAIService: QueryService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         let normalResults = [resultText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""]
+
+        result.isStreamFinished = error != nil
 
         switch queryType {
         case .sentence, .translation:
