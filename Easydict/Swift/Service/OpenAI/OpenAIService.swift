@@ -70,12 +70,7 @@ class OpenAIService: BaseOpenAIService {
     override var apiKey: String {
         // easydict://writeKeyValue?EZOpenAIAPIKey=
 
-        var apiKey = Defaults[.openAIAPIKey] ?? ""
-        if apiKey.isEmpty, Configuration.shared.beta {
-            apiKey = defaultAPIKey
-        }
-
-        return apiKey
+        Defaults[.openAIAPIKey] ?? ""
     }
 
     override var endpoint: String {

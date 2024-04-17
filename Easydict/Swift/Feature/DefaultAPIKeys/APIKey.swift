@@ -9,22 +9,12 @@
 import Defaults
 import Foundation
 
-extension BaseOpenAIService {
-    var defaultAPIKey: String {
-        APIKey.openAIAPIKey.stringValue
-    }
-
-    var defaultEndpoint: String {
-        APIKey.openAIEndpoint.stringValue
-    }
-}
-
 extension BuiltInAIService {
-    override var defaultAPIKey: String {
+    var defaultAPIKey: String {
         APIKey.builtInAIAPIKey.stringValue
     }
 
-    override var defaultEndpoint: String {
+    var defaultEndpoint: String {
         APIKey.builtInAIEndpoint.stringValue
     }
 
