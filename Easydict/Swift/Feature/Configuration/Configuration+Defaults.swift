@@ -256,7 +256,7 @@ extension Defaults.Keys {
     )
 
     // Built-in AI
-    static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "gemini-pro")
+    static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "")
 
     // DeepL
     static let deepLAuth = Key<String?>(EZDeepLAuthKey)

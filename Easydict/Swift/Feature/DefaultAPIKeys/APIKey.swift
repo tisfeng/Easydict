@@ -17,10 +17,6 @@ extension BuiltInAIService {
     var defaultEndpoint: String {
         APIKey.builtInAIEndpoint.stringValue
     }
-
-    var defaultModel: String {
-        APIKey.builtInAIModel.stringValue
-    }
 }
 
 extension CaiyunService {

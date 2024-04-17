@@ -29,7 +29,11 @@ class BuiltInAIService: BaseOpenAIService {
 
     override var model: String {
         get {
-            Defaults[.builtInAIModel]
+            var model = Defaults[.builtInAIModel]
+            if model.isEmpty {
+                model = availableModels.first!
+            }
+            return model
         }
 
         set {
