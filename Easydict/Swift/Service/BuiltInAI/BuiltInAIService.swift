@@ -39,18 +39,18 @@ class BuiltInAIService: BaseOpenAIService {
 
     override var availableModels: [String] {
         [
-            "gemini-pro",
-
             // DashScope 限时免费开放中 https://help.aliyun.com/zh/dashscope/developer-reference/tongyi-qianwen-7b-14b-72b-metering-and-billing
             "qwen1.5-32b-chat",
-            "qwen-turbo",
-            "qwen-plus",
-            "yi-34b-chat",
+            "qwen-turbo", // free until 8.12
+            "qwen-plus", // free until 8.12
             "deepseek-7b-chat",
             "internlm-7b-chat",
 
             // Groq https://console.groq.com/docs/models
             "mixtral-8x7b-32768",
+
+            // It seems that 5.2 will start charging 😥 https://ai.google.dev/pricing?hl=zh-cn
+            "gemini-pro",
         ]
     }
 
