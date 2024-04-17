@@ -19,32 +19,6 @@ import OpenAI
 public class BaseOpenAIService: QueryService {
     // MARK: Public
 
-    override public func serviceType() -> ServiceType {
-        .openAI
-    }
-
-    override public func name() -> String {
-        NSLocalizedString("openai_translate", comment: "")
-    }
-
-    override public func link() -> String? {
-        "https://chat.openai.com"
-    }
-
-    override public func queryTextType() -> EZQueryTextType {
-        var type: EZQueryTextType = []
-        if Defaults[.openAITranslation] != "0" {
-            type.insert(.translation)
-        }
-        if Defaults[.openAIDictionary] != "0" {
-            type.insert(.dictionary)
-        }
-        if Defaults[.openAISentence] != "0" {
-            type.insert(.sentence)
-        }
-        return type
-    }
-
     override public func intelligentQueryTextType() -> EZQueryTextType {
         Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
@@ -123,42 +97,18 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
+    var model = ""
+
     var availableModels: [String] {
-        Defaults[.openAIVaildModels]
-    }
-
-    var model: String {
-        get {
-            Defaults[.openAIModel]
-        }
-
-        set {
-            // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
-
-            Defaults[.openAIModel] = newValue
-        }
+        [""]
     }
 
     var apiKey: String {
-        // easydict://writeKeyValue?EZOpenAIAPIKey=
-
-        var apiKey = Defaults[.openAIAPIKey] ?? ""
-        if apiKey.isEmpty, Configuration.shared.beta {
-            apiKey = defaultAPIKey
-        }
-
-        return apiKey
+        ""
     }
 
     var endpoint: String {
-        // easydict://writeKeyValue?EZOpenAIEndPointKey=
-
-        var endPoint = Defaults[.openAIEndPoint] ?? ""
-        if endPoint.isEmpty {
-            endPoint = "https://api.openai.com/v1/chat/completions"
-        }
-
-        return endPoint
+        ""
     }
 
     // MARK: Private
