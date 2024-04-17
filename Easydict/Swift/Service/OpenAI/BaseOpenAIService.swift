@@ -158,10 +158,6 @@ public class BaseOpenAIService: QueryService {
             endPoint = "https://api.openai.com/v1/chat/completions"
         }
 
-        if !hasPrivateAPIKey() {
-            endPoint = defaultEndpoint
-        }
-
         return endPoint
     }
 

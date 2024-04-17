@@ -102,8 +102,4 @@ class CustomOpenAIService: BaseOpenAIService {
         guard let value = UInt(customOpenAIServiceUsageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
-
-    override func hasPrivateAPIKey() -> Bool {
-        !apiKey.isEmpty
-    }
 }
