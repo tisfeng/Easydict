@@ -196,7 +196,7 @@ enum OpenAIModel: String, CaseIterable {
     // Docs: https://platform.openai.com/docs/models/gpt-3-5-turbo
 
     case gpt3_5_turbo = "gpt-3.5-turbo" // Currently points to gpt-3.5-turbo-0125.
-    case gpt4_turbo_preview = "gpt-4-turbo-preview" // Currently points to gpt-4-0125-preview.
+    case gpt4_turbo = "gpt-4-turbo" // Currently points to gpt-4-turbo-2024-04-09.
 }
 
 // MARK: EnumLocalizedStringConvertible
