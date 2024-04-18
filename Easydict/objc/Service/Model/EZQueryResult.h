@@ -177,6 +177,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL showReplaceButton;
 
+@property (readonly, nonatomic, copy, nullable) NSString *errorMessage;
+
+
 - (void)reset;
 
 - (void)convertToTraditionalChineseResult;
