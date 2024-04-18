@@ -169,7 +169,7 @@
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     stopButton.image = stopImage;
     stopButton.mas_key = @"stopButton";
-    stopButton.toolTip = @"Stop";
+    stopButton.toolTip = NSLocalizedString(@"stop", nil);
     stopButton.hidden = YES;
     
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
