@@ -237,6 +237,19 @@ NSString *getPartAbbreviation(NSString *part) {
     return self.queryModel.queryFromLanguage;
 }
 
+- (NSString *)errorMessage {
+    NSString *errorMessage = self.error.localizedDescription;
+    if ([self.error isMemberOfClass:[EZError class]]) {
+        NSString *errorDataMessage = self.error.errorDataMessage;
+        if (errorDataMessage.length) {
+            errorMessage = [NSString stringWithFormat:@"%@\n\n%@", errorMessage, errorDataMessage];
+        }
+    }
+    return errorMessage;
+}
+
+#pragma mark -
+
 - (void)reset {
     self.queryModel = [[EZQueryModel alloc] init];
     self.translatedResults = nil;
