@@ -133,11 +133,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
         
         NSString *text = nil;
-        if (result.translatedText) {
-            text = result.translatedText;
-        } else if (!result.wordResult && errorDescription.length) {
+        if (errorDescription.length) {
             text = errorDescription;
-        } else if (!result.hasTranslatedResult) {
+        } else if (result.translatedText) {
+            text = result.translatedText;
+        }  else {
             text = NSLocalizedString(@"no_results_found", nil);
         }
         
