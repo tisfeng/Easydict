@@ -629,7 +629,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "内置 AI 翻译"
           }
         }

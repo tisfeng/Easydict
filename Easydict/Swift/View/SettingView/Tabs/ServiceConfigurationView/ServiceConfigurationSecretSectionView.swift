@@ -77,26 +77,21 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     func validate() {
         viewModel.isValidating.toggle()
-        service.validate { _, error in
+        service.validate { result, error in
             DispatchQueue.main.async {
                 guard viewModel.isValidating else { return }
 
                 viewModel.isValidating = false
                 viewModel
-                    .alertTitle = (error == nil) ? "service.configuration.validation_success" :
-                    "service.configuration.validation_fail"
-                viewModel.errorMessage = error?.localizedDescription ?? ""
+                    .alertTitle = (error == nil)
+                    ? "service.configuration.validation_success"
+                    : "service.configuration.validation_fail"
 
-                if let ezError = error as? EZError, let errorDataMessage = ezError.errorDataMessage {
-                    var errorMessage = ezError.localizedDescription
-                    if !errorDataMessage.isEmpty {
-                        errorMessage += "\n\n\(errorDataMessage)"
-                    }
-                    viewModel.errorMessage = errorMessage
-                }
+                result.error = EZError(nsError: error)
+                viewModel.errorMessage = result.errorMessage ?? ""
+                viewModel.isAlertPresented = true
 
                 print("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
-                viewModel.isAlertPresented = true
             }
         }
     }
