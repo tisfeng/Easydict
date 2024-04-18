@@ -233,11 +233,10 @@
     }];
     
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(5);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
-    
     
     [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
@@ -267,21 +266,28 @@
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
     
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
+    
+    mm_weakify(self);
+
+    CGFloat modelButtonWidth = 0;
     if ([self isBaseOpenAIService:result.service]) {
         EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
         self.serviceModelButton.title = service.model;
-        mm_weakify(self);
         [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
             [self showModelSelectionMenu:button];
         }];
-        [self updateServiceModelLabel];
-    } else {
-        self.serviceModelButton.hidden = YES;
+        
+        [self.serviceModelButton sizeToFit];
+        modelButtonWidth = self.serviceModelButton.width;
     }
+    [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(modelButtonWidth);
+    }];
+    
+    
     [self.wordResultView refreshWithResult:result];
     
-    mm_weakify(self);
     [self.wordResultView setUpdateViewHeightBlock:^(CGFloat wordResultViewHeight) {
         mm_strongify(self);
         [self updateWordResultViewHeight:wordResultViewHeight];
@@ -331,7 +337,6 @@
 #pragma mark - Public Methods
 
 - (void)updateLoadingAnimation {
-    [self updateServiceModelLabel];
     [self startOrStopLoadingAnimation:self.result.isLoading];
 }
 
@@ -350,7 +355,6 @@
     [self updateRetryButton];
     [self updateStopButton];
     [self updateArrowButton];
-    [self updateServiceModelLabel];
 }
 
 - (void)updateErrorImage {
@@ -401,17 +405,6 @@
 
 - (BOOL)isBaseOpenAIService:(EZQueryService *)service {
     return [service isKindOfClass:[EZBaseOpenAIService class]];
-}
-
-- (void)updateServiceModelLabel {
-    if (![self isBaseOpenAIService:self.result.service]) {
-        return;
-    }
-    BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
-    BOOL showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
-    BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
-    BOOL isLoading = self.result.isLoading;
-    self.serviceModelButton.hidden = showWarningImage || showStopButton || showRetryButton || isLoading;
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
