@@ -629,7 +629,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "内置 AI 翻译"
           }
         }
@@ -3192,13 +3192,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validation failed!"
+            "value" : "Validation failed 💔"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "验证失败！"
+            "value" : "验证失败 💔"
           }
         }
       }
@@ -3208,13 +3208,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validation success!"
+            "value" : "Validation success 🎉"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "验证成功！"
+            "value" : "验证成功 🎉"
           }
         }
       }
@@ -4280,6 +4280,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "单词分词"
+          }
+        }
+      }
+    },
+    "stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
           }
         }
       }

@@ -63,11 +63,13 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } footer: {
             footer
         }
-        .alert(viewModel.alertMessage, isPresented: $viewModel.isAlertPresented, actions: {
+        .alert(viewModel.alertTitle, isPresented: $viewModel.isAlertPresented) {
             Button("ok") {
                 viewModel.reset()
             }
-        })
+        } message: {
+            Text(viewModel.errorMessage)
+        }
         .onDisappear {
             viewModel.invalidate()
         }
@@ -75,15 +77,21 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     func validate() {
         viewModel.isValidating.toggle()
-        service.validate { _, error in
+        service.validate { result, error in
             DispatchQueue.main.async {
                 guard viewModel.isValidating else { return }
+
                 viewModel.isValidating = false
                 viewModel
-                    .alertMessage = error == nil ? "service.configuration.validation_success" :
-                    "service.configuration.validation_fail"
-                print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
+                    .alertTitle = (error == nil)
+                    ? "service.configuration.validation_success"
+                    : "service.configuration.validation_fail"
+
+                result.error = EZError(nsError: error)
+                viewModel.errorMessage = result.errorMessage ?? ""
                 viewModel.isAlertPresented = true
+
+                print("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
             }
         }
     }
@@ -122,17 +130,17 @@ private class ServiceValidationViewModel: ObservableObject {
 
     // MARK: Internal
 
+    @Published var isAlertPresented = false
+    @Published var isValidating = false
+    @Published var alertTitle: LocalizedStringKey = ""
+    @Published var errorMessage = ""
+    @Published var isValidateBtnDisabled = false
+
+    var cancellables: [AnyCancellable] = []
+
     let service: QueryService
 
     @Published var name = ""
-
-    @Published var isAlertPresented = false
-
-    @Published var isValidating = false
-
-    @Published var alertMessage: LocalizedStringKey = ""
-
-    @Published var isValidateBtnDisabled = false
 
     func invalidate() {
         cancellables.forEach { $0.cancel() }
@@ -141,13 +149,12 @@ private class ServiceValidationViewModel: ObservableObject {
 
     func reset() {
         isValidating = false
-        alertMessage = ""
+        alertTitle = ""
+        errorMessage = ""
         isAlertPresented = false
     }
 
     // MARK: Private
-
-    private var cancellables: [AnyCancellable] = []
 
     private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
         NotificationCenter.default

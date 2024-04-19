@@ -83,15 +83,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     NSFont *typeTextFont = [NSFont systemFontOfSize:13 * self.fontSizeRatio weight:NSFontWeightMedium];
     NSFont *textFont = typeTextFont;
     
-    EZError *error = result.error;
-    NSString *errorDescription = error.localizedDescription;
-    NSString *errorDataMessage = error.errorDataMessage;
-    if (errorDataMessage.length) {
-        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", errorDataMessage];
-        if (!errorDescription && !result.hasTranslatedResult) {
-            errorDescription = errorDataMessage;
-        }
-    }
+    NSString *errorMessage = result.errorMessage;
     
     mm_weakify(self);
     
@@ -124,7 +116,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         lastView = bigWordLabel;
     }
     
-    if (result.translatedResults.count || errorDescription.length > 0) {
+    if (result.translatedResults.count || errorMessage.length > 0) {
         EZLabel *explainLabel;
         __block CGFloat exceptedWidth = 0;
         CGFloat explainTextFieldTopOffset = 9;
@@ -133,11 +125,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
         
         NSString *text = nil;
-        if (result.translatedText) {
+        if (errorMessage.length) {
+            text = errorMessage;
+        } else if (result.translatedText.length) {
             text = result.translatedText;
-        } else if (!result.wordResult && errorDescription.length) {
-            text = errorDescription;
-        } else if (!result.hasTranslatedResult) {
+        }  else {
             text = NSLocalizedString(@"no_results_found", nil);
         }
         
