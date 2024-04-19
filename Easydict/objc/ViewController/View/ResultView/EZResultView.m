@@ -10,6 +10,7 @@
 #import "EZHoverButton.h"
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZSymbolmage.h"
+#import "NSObject+EZWindowType.h"
 
 @interface EZResultView ()
 
@@ -215,8 +216,6 @@
     [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.serviceIcon.mas_right).offset(2);
         make.centerY.equalTo(self.topBarView).offset(0);
-        
-        make.width.mas_lessThanOrEqualTo(127); // the lenght of "Built-In AI Translate"
     }];
     
     [self.serviceModelButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -268,7 +267,6 @@
     
     mm_weakify(self);
     
-    CGFloat modelButtonWidth = 0;
     if ([self isBaseOpenAIService:result.service]) {
         EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
         self.serviceModelButton.title = service.model;
@@ -279,14 +277,7 @@
             mm_strongify(self);
             [self showModelSelectionMenu:button];
         }];
-        
-        [self.serviceModelButton sizeToFit];
-        modelButtonWidth = MIN(self.serviceModelButton.width, 105); // the length of "gpt-4-turbo-preview"
     }
-    [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(modelButtonWidth);
-    }];
-    
     
     [self.wordResultView refreshWithResult:result];
     
@@ -310,6 +301,46 @@
 }
 
 #pragma mark -
+
+- (void)updateConstraints {
+    [self.serviceNameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        // 127 is the lenght of "Built-In AI Translate"
+        make.width.mas_lessThanOrEqualTo(127 * [self windowWidthRatio]);
+    }];
+    
+    CGFloat modelButtonWidth = 0;
+    if ([self isBaseOpenAIService:self.result.service]) {
+        [self.serviceModelButton sizeToFit];
+        // 105 is the length of "gpt-4-turbo-preview"
+        modelButtonWidth = MIN(self.serviceModelButton.width, 105 * [self windowWidthRatio]);
+    }
+
+    [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(modelButtonWidth);
+    }];
+    
+    [super updateConstraints];
+}
+
+- (CGFloat)windowWidthRatio {
+    CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    return self.width / minimumWindowWidth;
+}
+
+#pragma mark - Public Methods
+
+- (void)updateLoadingAnimation {
+    [self startOrStopLoadingAnimation:self.result.isLoading];
+}
+
+- (void)startOrStopLoadingAnimation:(BOOL)isLoading {
+    if (isLoading) {
+        self.errorImageView.hidden = YES;
+    }
+    [self.loadingView startLoading:isLoading];
+}
+
+#pragma mark - Update UI
 
 - (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
     if (self.result.HTMLString.length) {
@@ -336,20 +367,6 @@
     //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
 }
 
-#pragma mark - Public Methods
-
-- (void)updateLoadingAnimation {
-    [self startOrStopLoadingAnimation:self.result.isLoading];
-}
-
-- (void)startOrStopLoadingAnimation:(BOOL)isLoading {
-    if (isLoading) {
-        self.errorImageView.hidden = YES;
-    }
-    [self.loadingView startLoading:isLoading];
-}
-
-#pragma mark -
 
 - (void)updateAllButtonStatus {
     [self updateErrorImage];

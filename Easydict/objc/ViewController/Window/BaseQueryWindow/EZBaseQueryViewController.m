@@ -834,6 +834,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     EZResultView *resultCell = [self resultCellAtRow:row];
+    resultCell.windowType = self.windowType;
+    
     return resultCell;
 }
 
