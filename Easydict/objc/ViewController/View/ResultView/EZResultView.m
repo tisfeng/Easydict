@@ -72,6 +72,10 @@
         label.bordered = NO;
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
+        label.maximumNumberOfLines = 1;
+        label.lineBreakMode = NSLineBreakByTruncatingTail;
+        label.cell.truncatesLastVisibleLine = YES;
+
         [label excuteLight:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextLightColor];
         } dark:^(NSTextField *label) {
@@ -205,30 +209,32 @@
     }];
 
     [self.serviceIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.topBarView).offset(9);
+        make.left.equalTo(self.topBarView).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
 
     [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceIcon.mas_right).offset(4);
+        make.left.equalTo(self.serviceIcon.mas_right).offset(2);
         make.centerY.equalTo(self.topBarView).offset(0);
+        
+        make.width.mas_lessThanOrEqualTo(127); // the lenght of "Built-In AI Translate"
     }];
 
     [self.serviceModelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(2);
+        make.left.equalTo(self.serviceNameLabel.mas_right).offset(0);
         make.top.equalTo(self.topBarView).offset(8);
         make.bottom.equalTo(self.topBarView).offset(-8);
     }];
 
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceModelButton.mas_right).offset(8);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
 
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceModelButton.mas_right).offset(5);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(3);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
@@ -246,7 +252,7 @@
     }];
 
     [self.retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowButton.mas_left).offset(-5);
+        make.right.equalTo(self.arrowButton.mas_left).offset(-2);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
@@ -277,7 +283,7 @@
         }];
 
         [self.serviceModelButton sizeToFit];
-        modelButtonWidth = self.serviceModelButton.width;
+        modelButtonWidth = MIN(self.serviceModelButton.width, 105); // the length of "gpt-4-turbo-preview"
     }
     [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(modelButtonWidth);
@@ -360,14 +366,11 @@
     self.errorImageView.hidden = !showWarningImage;
 
     NSString *errorImageName = @"disabled";
-    NSString *toolTip = @"Unsupported Language";
     if (!self.result.isWarningErrorType) {
         errorImageName = @"error";
     }
     NSImage *errorImage = [NSImage imageNamed:errorImageName];
-
     self.errorImageView.image = errorImage;
-    self.errorImageView.toolTip = toolTip;
 }
 
 - (void)updateRetryButton {
