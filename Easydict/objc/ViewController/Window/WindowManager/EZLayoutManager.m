@@ -44,7 +44,7 @@ static EZLayoutManager *_instance;
 
 - (void)commonInitialize {
     self.screen = NSScreen.mainScreen;
-    self.minimumWindowSize = CGSizeMake(350, 70);
+    self.minimumWindowSize = CGSizeMake(360, 70);
     
     Configuration *configuration = [Configuration shared];
     
