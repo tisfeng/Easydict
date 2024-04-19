@@ -7,14 +7,9 @@
 //
 
 #import "EZResultView.h"
-#import "EZServiceTypes.h"
 #import "EZHoverButton.h"
-#import "NSView+EZAnimatedHidden.h"
 #import "EZLoadingAnimationView.h"
-#import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
-#import "EZWindowManager.h"
-#import "EZLocalStorage.h"
 
 @interface EZResultView ()
 
