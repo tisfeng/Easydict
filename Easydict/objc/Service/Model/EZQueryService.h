@@ -117,6 +117,8 @@ NS_SWIFT_NAME(QueryService)
 /// Default is 100 * 10000
 - (NSInteger)totalFreeQueryCharacterCount;
 
+- (BOOL)isStream;
+
 /// 获取文本的语言
 /// @param text 文本
 /// @param completion 回调

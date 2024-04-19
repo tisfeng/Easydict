@@ -271,7 +271,7 @@ NSString *getPartAbbreviation(NSString *part) {
     self.promptURL = nil;
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
-    self.isFinished = YES;
+    self.isStreamFinished = YES;
     self.manulShow = NO;
     self.HTMLString = nil;
     self.copiedText = nil;

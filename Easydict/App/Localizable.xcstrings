@@ -4284,6 +4284,22 @@
         }
       }
     },
+    "stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
+          }
+        }
+      }
+    },
     "stop_play_audio" : {
       "localizations" : {
         "en" : {
