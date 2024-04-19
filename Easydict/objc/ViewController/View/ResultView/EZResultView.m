@@ -168,7 +168,6 @@
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     stopButton.image = stopImage;
     stopButton.mas_key = @"stopButton";
-    stopButton.toolTip = NSLocalizedString(@"stop", nil);
     stopButton.hidden = YES;
 
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
@@ -184,7 +183,6 @@
     NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
     retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
-    retryButton.toolTip = NSLocalizedString(@"retry", nil);
     retryButton.hidden = YES;
     [retryButton excuteLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
@@ -376,6 +374,7 @@
 - (void)updateRetryButton {
     BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     self.retryButton.hidden = !showRetryButton;
+    self.retryButton.toolTip = NSLocalizedString(@"retry", nil);
 }
 
 - (void)updateStopButton {
@@ -387,6 +386,7 @@
     }
 
     self.stopButton.hidden = !showStopButton;
+    self.stopButton.toolTip = NSLocalizedString(@"stop", nil);
 }
 
 - (void)updateArrowButton {
