@@ -126,7 +126,7 @@ static EZEventMonitor *_instance = nil;
     for (EZAppModel *appModel in appModelList) {
         if ([appModel.appBundleID isEqualToString:appBundleID]) {
             triggerType = appModel.triggerType;
-            NSLog(@"App bundleID: %@, %@", appBundleID, @(triggerType));
+            MMLogInfo(@"App bundleID: %@, %@", appBundleID, @(triggerType));
         }
     }
     return triggerType;
@@ -196,7 +196,7 @@ static EZEventMonitor *_instance = nil;
 - (void)startMonitor {
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == kVK_Escape) { // escape
-            NSLog(@"escape");
+            MMLogInfo(@"escape");
         }
         return event;
     }];
@@ -251,8 +251,8 @@ static EZEventMonitor *_instance = nil;
 
 CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
     if (type == kCGEventKeyDown) {
-        //        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-        //        NSLog(@"nsEvent: %@", nsEvent);
+//        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
+//        MMLogInfo(@"nsEvent: %@", nsEvent);
         
         // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
         [_instance delayDismissPopButton];
@@ -357,7 +357,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         
         if (error == kAXErrorAPIDisabled) {
-            NSLog(@"Failed to get text, kAXErrorAPIDisabled");
+            MMLogInfo(@"Failed to get text, kAXErrorAPIDisabled");
         }
         
         self.selectTextType = EZSelectTextTypeAccessibility;
@@ -395,7 +395,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     if ([self enabledAutoSelectText]) {
-//        NSLog(@"auto get selected text");
+//        MMLogInfo(@"auto get selected text");
         
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
@@ -410,7 +410,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     Configuration *config = [Configuration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
     if (!enabled) {
-        NSLog(@"disabled autoSelectText");
+        MMLogInfo(@"disabled autoSelectText");
         return enabled;
     }
     
@@ -508,7 +508,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     
     // !!!: This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
-    //    NSLog(@"selected text: %@", @(selectedTextFrame));
+//    MMLogInfo(@"selected text: %@", @(selectedTextFrame));
     
     self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
     
@@ -525,7 +525,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if (getSelectedTextError == kAXErrorNoValue) {
                 MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
             } else {
-                MMLogInfo(@"Accessibility error: %d", getSelectedTextError);
+                MMLogError(@"Accessibility error: %d", getSelectedTextError);
             }
         }
         error = getSelectedTextError;
@@ -560,9 +560,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     
     if (selectionRangeError == kAXErrorSuccess) {
         //  AXValueRef range --> CFRange
-        //        CFRange selectionRange;
-        //        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
-        //        NSLog(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
+//        CFRange selectionRange;
+//        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
+//        MMLogInfo(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
         
         // 2. get bounds from range
         AXValueRef selectionBoundsValue;
@@ -589,7 +589,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (BOOL)isAccessibilityEnabled {
     NSDictionary *options = @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @(YES)};
     BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)options);
-    NSLog(@"accessibilityEnabled: %d", accessibilityEnabled);
+    MMLogInfo(@"accessibilityEnabled: %d", accessibilityEnabled);
     return accessibilityEnabled == YES;
 }
 
@@ -618,7 +618,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         return NO;
     }
     
-    //    NSLog(@"Accessibility error: %d", error);
+//    MMLogError(@"Accessibility error: %d", error);
     
     /**
      If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
@@ -628,7 +628,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        NSLog(@"unsupport Accessibility App --> %@", bundleID);
+        MMLogInfo(@"unsupport Accessibility App --> %@", bundleID);
         return YES;
     }
     
@@ -678,7 +678,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         if ([errorCode integerValue] == error) {
             NSArray *bundleIDs = allowedAppErrorDict[errorCode];
             if ([bundleIDs containsObject:bundleID]) {
-                NSLog(@"%@, %@, %@", errorCode, bundleID, application.localizedName);
+                MMLogError(@"%@, %@, %@", errorCode, bundleID, application.localizedName);
                 return YES;
             }
         }
@@ -686,8 +686,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     
     // Fallback, If using shortcut, to make sure we can get text, we use simulation key to get selected text.
     if (self.actionType == EZActionTypeShortcutQuery) {
-        MMLogInfo(@"Fallback, need to add it to allowed app error list dict");
-        MMLogInfo(@"%d, %@, %@", error, bundleID, application.localizedName);
+        MMLogError(@"Fallback, need to add it to allowed app error list dict");
+        MMLogError(@"%d, %@, %@", error, bundleID, application.localizedName);
         
         return YES;
     }
@@ -720,7 +720,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     ];
     
     if ([unsupportEmptyCopyApps containsObject:bundleID]) {
-        NSLog(@"unsupport emtpy copy: %@, %@", bundleID, application.localizedName);
+        MMLogInfo(@"unsupport emtpy copy: %@, %@", bundleID, application.localizedName);
         return NO;
     }
     
@@ -732,7 +732,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 
 - (void)handleMonitorEvent:(NSEvent *)event {
-    //  NSLog(@"type: %ld", event.type);
+//    MMLogInfo(@"type: %ld", event.type);
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
@@ -745,7 +745,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDown: {
-//            NSLog(@"mouse down");
+//            MMLogInfo(@"mouse down");
             
             // Record some mouse event except dragged event.
             [self updateRecordedEvents:event];
@@ -756,7 +756,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         case NSEventTypeLeftMouseDragged: {
             // Record dragged event.
             [self updateRecordedEvents:event];
-            //                NSLog(@"NSEventTypeLeftMouseDragged");
+//            MMLogInfo(@"NSEventTypeLeftMouseDragged");
             break;
         }
         case NSEventTypeRightMouseDown: {
@@ -767,7 +767,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-            //            NSLog(@"key down");
+//            MMLogInfo(@"key down");
             
             [self dismissPopButton];
             break;
@@ -776,7 +776,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if (self.isPopButtonVisible) {
                 CGFloat deltaY = event.scrollingDeltaY;
                 self.movedY += deltaY;
-                //            NSLog(@"movedY: %.1f", self.movedY);
+//                MMLogInfo(@"movedY: %.1f", self.movedY);
                 
                 CGFloat maxDeltaY = 80;
                 if (fabs(self.movedY) > maxDeltaY) {
@@ -795,14 +795,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeFlagsChanged: {
-            //            NSLog(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+//            MMLogInfo(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
             
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.
-                //                NSLog(@"Shift key is typed.");
+//                MMLogInfo(@"Shift key is typed.");
             }
             
-            //            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
+//            MMLogInfo(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandKeyEvents:event];
@@ -818,7 +818,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
             
         default:
-            //            NSLog(@"default type: %ld", event.type);
+//            MMLogInfo(@"default type: %ld", event.type);
             
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];
@@ -970,7 +970,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     NSString *frontAppName = [self getFrontmostApp].localizedName;
     for (NSDictionary *dict in arr) {
         if ([dict[@"kCGWindowOwnerName"] isEqualToString:frontAppName]) {
-            NSLog(@"dict: %@", dict);
+            MMLogInfo(@"dict: %@", dict);
             completion(dict);
             return;
         }
@@ -998,7 +998,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)authorize {
-    NSLog(@"AuthorizeButton clicked");
+    MMLogInfo(@"AuthorizeButton clicked");
     
     /// Open privacy prefpane
     
@@ -1032,8 +1032,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         return YES;
     }
     
-    NSLog(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
-    NSLog(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
+    MMLogInfo(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
+    MMLogInfo(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
     
     return NO;
 }

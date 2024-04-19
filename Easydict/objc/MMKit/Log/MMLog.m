@@ -29,14 +29,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     dispatch_once(&onceToken, ^{
         // 系统日志、控制台 格式设置
         MMConsoleLogFormatter *consoleFormatter = [MMConsoleLogFormatter new];
-        if (@available(macOS 10.12, *)) {
-            [DDOSLogger sharedInstance].logFormatter = consoleFormatter;
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [DDASLLogger sharedInstance].logFormatter = consoleFormatter;
-#pragma clang diagnostic pop
-        }
+        [DDOSLogger sharedInstance].logFormatter = consoleFormatter;
     });
 }
 
@@ -44,15 +37,8 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     // https://github.com/CocoaLumberjack/CocoaLumberjack/blob/master/Documentation/GettingStarted.md
     NSCAssert(name.length, @"MMLog: 日志 name 不能为空");
 
-    // 系统日志、控制台
-    if (@available(iOS 10.0, *)) {
-        [ddlog addLogger:[DDOSLogger sharedInstance]];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        [ddlog addLogger:[DDASLLogger sharedInstance]];
-#pragma clang diagnostic pop
-    }
+    // terminal, use os_log
+    [ddlog addLogger:[DDOSLogger sharedInstance]];
 
     // 文件输出
     MMFileLogFormatter *fileFormatter = [MMFileLogFormatter new];
@@ -61,6 +47,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     fileManager.logFilesDiskQuota = 20 * 1024 * 1024;
     DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:fileManager];
     fileLogger.logFormatter = fileFormatter;
+    // file log
     [ddlog addLogger:fileLogger];
 }
 

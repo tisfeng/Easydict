@@ -41,16 +41,16 @@
             logLevel = @"❌";
             break;
         case DDLogFlagWarning:
-            logLevel = @"W";
+            logLevel = @"⚠️";
             break;
         case DDLogFlagInfo:
-            logLevel = @"I";
+            logLevel = @"ℹ️";
             break;
         case DDLogFlagDebug:
-            logLevel = @"D";
+            logLevel = @"Debug";
             break;
         default:
-            logLevel = @"V";
+            logLevel = @"Verbose";
             break;
     }
     return [NSString stringWithFormat:@"[%@ ● %@ ● %zd ● %@] %@ ● %@", [self stringFromDate:logMessage.timestamp], logMessage.fileName, logMessage.line, logLevel, logMessage.function, logMessage->_message];

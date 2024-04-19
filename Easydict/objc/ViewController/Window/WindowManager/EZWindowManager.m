@@ -72,8 +72,6 @@ static EZWindowManager *_instance;
     
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
-    
-    //    NSLog(@"floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (void)setupEventMonitor {
@@ -121,7 +119,6 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissPopButtonBlock:^{
         mm_strongify(self);
-        //        NSLog(@"dismiss pop button");
         [self.popButtonWindow close];
     }];
     
@@ -136,7 +133,7 @@ static EZWindowManager *_instance;
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
-        NSLog(@"double command block");
+        MMLogInfo(@"double command block");
     }];
 }
 
@@ -392,7 +389,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
-    //    NSLog(@"show floating window: %@, %@", window, @(point));
+    //    MMLogInfo(@"show floating window: %@, %@", window, @(point));
     
     [self saveFrontmostApplication];
     
@@ -414,7 +411,7 @@ static EZWindowManager *_instance;
         [_mainWindow orderOut:nil];
     }
     
-    //    NSLog(@"window frame: %@", @(window.frame));
+    //    MMLogInfo(@"window frame: %@", @(window.frame));
     
     // ???: This code will cause warning: [Window] Warning: Window EZFixedQueryWindow 0x107f04db0 ordered front from a non-active application and may order beneath the active application's windows.
     [window makeKeyAndOrderFront:nil];
@@ -446,13 +443,13 @@ static EZWindowManager *_instance;
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
-//    NSLog(@"update windowType: %@, isShowing: %d", windowType, isShowing);
-//    NSLog(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+//    MMLogInfo(@"update windowType: %@, isShowing: %d", windowType, isShowing);
+//    MMLogInfo(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:isShowing ? 0 : 1];
     
-//    NSLog(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+//    MMLogInfo(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (void)updateWindowsTitlebarButtonsToolTip {
@@ -482,7 +479,7 @@ static EZWindowManager *_instance;
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [NSEvent mouseLocation];
-    //    NSLog(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
+//    MMLogInfo(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
     
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
@@ -527,9 +524,9 @@ static EZWindowManager *_instance;
     //    }
     
     //    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
-    //    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
-    //    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
-    //    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
+    //    MMLogInfo(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
+    //    MMLogInfo(@"start point: %@", NSStringFromPoint(startLocation));
+    //    MMLogInfo(@"end   point: %@", NSStringFromPoint(endLocation));
     
     if (Configuration.shared.adjustPopButtomOrigin) {
         // Since the pop button may cover selected text, we need to move it to the left.
@@ -546,7 +543,7 @@ static EZWindowManager *_instance;
     }
     
     NSPoint popLocation = CGPointMake(x, y);
-    //    NSLog(@"popLocation: %@", NSStringFromPoint(popLocation));
+//    MMLogInfo(@"popLocation: %@", NSStringFromPoint(popLocation));
     
     return popLocation;
 }
@@ -693,7 +690,7 @@ static EZWindowManager *_instance;
     MMLogInfo(@"selectTextTranslate");
     
     if (![self.eventMonitor isAccessibilityEnabled]) {
-        NSLog(@"App is not trusted");
+        MMLogWarn(@"App is not trusted");
         return;
     }
     
@@ -703,7 +700,7 @@ static EZWindowManager *_instance;
     }
     
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-    NSLog(@"selectTextTranslate windowType: %@", @(windowType));
+    MMLogInfo(@"selectTextTranslate windowType: %@", @(windowType));
     self.eventMonitor.actionType = EZActionTypeShortcutQuery;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
         self.actionType = self.eventMonitor.actionType;
@@ -742,11 +739,11 @@ static EZWindowManager *_instance;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
             if (!image) {
-                NSLog(@"not get screenshot");
+                MMLogWarn(@"not get screenshot");
                 return;
             }
             
-            NSLog(@"get screenshot: %@", image);
+            MMLogInfo(@"get screenshot: %@", image);
             
             // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
             static NSString *_imagePath = nil;
@@ -756,7 +753,7 @@ static EZWindowManager *_instance;
             });
             [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
             [image mm_writeToFileAsPNG:_imagePath];
-            NSLog(@"已保存图片：%@", _imagePath);
+            MMLogInfo(@"已保存图片：%@", _imagePath);
             
             // Reset window height first, avoid being affected by previous window height.
             [window.queryViewController resetTableView:^{
@@ -817,11 +814,11 @@ static EZWindowManager *_instance;
     
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
-            NSLog(@"not get screenshot");
+            MMLogWarn(@"not get screenshot");
             return;
         }
         
-        NSLog(@"get screenshot: %@", image);
+        MMLogInfo(@"get screenshot: %@", image);
         
         // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
         static NSString *_imagePath = nil;
@@ -831,7 +828,7 @@ static EZWindowManager *_instance;
         });
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
         [image mm_writeToFileAsPNG:_imagePath];
-        NSLog(@"已保存图片：%@", _imagePath);
+        MMLogInfo(@"已保存图片：%@", _imagePath);
         
         [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
@@ -851,13 +848,13 @@ static EZWindowManager *_instance;
 }
 
 - (void)clearInput {
-    NSLog(@"Clear input");
+    MMLogInfo(@"Clear input");
     
     [self.floatingWindow.queryViewController clearInput];
 }
 
 - (void)clearAll {
-    NSLog(@"Clear All");
+    MMLogInfo(@"Clear All");
     
     [self.floatingWindow.queryViewController clearAll];
 }
@@ -871,14 +868,14 @@ static EZWindowManager *_instance;
 }
 
 - (void)pin {
-    NSLog(@"Pin");
+    MMLogInfo(@"Pin");
     
     EZBaseQueryWindow *queryWindow = EZWindowManager.shared.floatingWindow;
     queryWindow.titleBar.pin = !queryWindow.titleBar.pin;
 }
 
 - (void)closeWindowOrExitSreenshot {
-    NSLog(@"Close window, or exit screenshot");
+    MMLogInfo(@"Close window, or exit screenshot");
     
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
@@ -937,7 +934,7 @@ static EZWindowManager *_instance;
         return;
     }
     
-    NSLog(@"close window type: %ld", windowType);
+    MMLogInfo(@"close window type: %ld", windowType);
     
     // Stop playing audio
     [floatingWindow.queryViewController stopPlayingQueryText];
@@ -970,7 +967,7 @@ static EZWindowManager *_instance;
     NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
     BOOL isReleasedEasydict = [bundleId isEqualToString:EZBundleId];
     if (isDebugRunning && isReleasedEasydict) {
-        NSLog(@"Easydict is running in debug mode, so do not show release App.");
+        MMLogInfo(@"Easydict is running in debug mode, so do not show release App.");
         return YES;
     }
     return NO;

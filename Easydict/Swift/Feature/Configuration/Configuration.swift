@@ -678,9 +678,9 @@ extension Configuration {
         let exeCommand = EZScriptExecutor()
         exeCommand.runAppleScript(script) { result, error in
             if let error {
-                MMLogInfo("launchAtStartup error: error: \(error)")
+                logError("launchAtStartup error: error: \(error)")
             } else {
-                print("launchAtStartup result:", result)
+                logInfo("launchAtStartup result: \(result)")
             }
         }
     }

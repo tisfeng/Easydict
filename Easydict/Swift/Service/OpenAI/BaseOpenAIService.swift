@@ -89,7 +89,6 @@ public class BaseOpenAIService: QueryService {
             if !result.isStreamFinished {
                 if let error {
                     handleResult(queryType: queryType, resultText: resultText, error: error, completion: completion)
-
                 } else {
                     // If already has error, we do not need to update it.
                     if result.error == nil {

@@ -251,7 +251,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         NSString *host = host = task.response.URL.host ?: EZBingChinaHost;
         self.bingConfig.host = host;
         [self saveBingConfig];
-        NSLog(@"bing host: %@", host);
+        MMLogInfo(@"bing host: %@", host);
         callback();
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         self.bingConfig.host = EZBingChinaHost;
@@ -272,7 +272,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         if (![responseObject isKindOfClass:[NSData class]]) {
              error = [EZError errorWithType:EZErrorTypeAPI description: @"bing htmlSession responseObject is not NSData" request:nil];
             failure(error);
-            NSLog(@"bing html responseObject type is %@", [responseObject class]);
+            MMLogWarn(@"bing html responseObject type is %@", [responseObject class]);
             return;
         }
         
@@ -284,7 +284,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             failure(error);
             return;
         }
-        NSLog(@"bing IG: %@", IG);
+        MMLogInfo(@"bing IG: %@", IG);
         
         NSString *IID = [self getValueOfDataIidFromHTML:responseString];
         if (IID.length == 0) {
@@ -292,7 +292,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             failure(error);
             return;
         }
-        NSLog(@"bing IID: %@", IID);
+        MMLogInfo(@"bing IID: %@", IID);
         
         NSArray *arr = [self getParamsAbusePreventionHelperArrayFromHTML:responseString];
         if (arr.count != 3) {
@@ -312,8 +312,8 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             failure(error);
             return;
         }
-        NSLog(@"bing key: %@", key);
-        NSLog(@"bing token: %@", token);
+        MMLogInfo(@"bing key: %@", key);
+        MMLogInfo(@"bing token: %@", token);
         
         NSString *expirationInterval = arr[2];
         
@@ -354,7 +354,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                                progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
                     self.translateError = [EZError errorWithType:EZErrorTypeAPI description:@"bing translate responseObject is not NSData" request:nil];
-                    NSLog(@"bing translate responseObject type: %@", [responseObject class]);
+                    MMLogWarn(@"bing translate responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
                 }
@@ -383,14 +383,14 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                                progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
                     self.lookupError = [EZError errorWithType:EZErrorTypeAPI description:@"bing translate responseObject is not NSData" request:nil];
-                    NSLog(@"bing lookup responseObject type: %@", [responseObject class]);
+                    MMLogWarn(@"bing lookup responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
                 }
                 self.lookupData = responseObject;
                 [self executeCallback];
             } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-                NSLog(@"bing lookup error: %@", error);
+                MMLogError(@"bing lookup error: %@", error);
                 self.lookupError = error;
                 [self executeCallback];
             }];
@@ -418,7 +418,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                     // If host has changed, use new host to fetch again.
                     NSString *host = task.response.URL.host;
                     if (![self.bingConfig.host isEqualToString:host]) {
-                        NSLog(@"bing host changed: %@", host);
+                        MMLogInfo(@"bing host changed: %@", host);
                         self.bingConfig.host = host;
                         [self saveBingConfig];
 

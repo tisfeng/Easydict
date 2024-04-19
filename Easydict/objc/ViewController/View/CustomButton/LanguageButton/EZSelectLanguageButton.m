@@ -147,7 +147,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     self.selectedLanguage = selectedLanguage;
     
     if (self.selectedMenuItemBlock) {
-        NSLog(@"selecct: %@", selectedLanguage);
+        MMLogInfo(@"selecct: %@", selectedLanguage);
         self.selectedMenuItemBlock(selectedLanguage);
     }
     self.customMenu = nil;
@@ -206,7 +206,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 - (void)updateTextFieldLayout {
     [self.textField sizeToFit];
     CGRect frame = self.textField.frame;
-    NSLog(@"self.textField: %@, %@", @(self.textField.frame), self.textField.stringValue);
+    MMLogInfo(@"self.textField: %@, %@", @(self.textField.frame), self.textField.stringValue);
     
     [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(ceil(frame.size.width));

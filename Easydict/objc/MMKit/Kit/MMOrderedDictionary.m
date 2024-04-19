@@ -110,7 +110,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 
 - (id)copy {
     NSString *reason = [NSString stringWithFormat:@"-[%@ %@] not supported, please use mutableCopy!", NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
-    NSLog(@"%@", reason);
+    MMLogWarn(@"%@", reason);
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:reason
                                  userInfo:nil];

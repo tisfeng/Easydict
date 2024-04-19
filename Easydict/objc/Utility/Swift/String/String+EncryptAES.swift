@@ -54,7 +54,7 @@ extension NSString {
             let encryptedString = ciphertext.toBase64()
             return encryptedString as NSString
         } catch {
-            print("encryptAES error: \(error)")
+            logError("encryptAES error: \(error)")
             return ""
         }
     }
@@ -68,7 +68,7 @@ extension NSString {
             let decryptedString = String(bytes: ciphertext, encoding: .utf8)!
             return decryptedString as NSString
         } catch {
-            print("decryptAES error: \(error)")
+            logError("decryptAES error: \(error)")
             return ""
         }
     }

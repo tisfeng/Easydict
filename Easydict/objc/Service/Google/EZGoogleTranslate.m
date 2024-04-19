@@ -458,7 +458,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 }
                 
             } @catch (NSException *exception) {
-                MMLogInfo(@"谷歌翻译接口数据解析异常 %@", exception);
+                MMLogError(@"谷歌翻译接口数据解析异常 %@", exception);
                 message = @"谷歌翻译接口数据解析异常";
             }
         }
@@ -729,7 +729,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 }
                 
             } @catch (NSException *exception) {
-                MMLogInfo(@"谷歌翻译接口数据解析异常 %@", exception);
+                MMLogError(@"谷歌翻译接口数据解析异常 %@", exception);
                 message = @"谷歌翻译接口数据解析异常";
             }
         }
@@ -776,8 +776,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 }
             }
         } @catch (NSException *exception) {
-            MMLogInfo(@"谷歌翻译接口语言解析失败 %@",
-                      exception);
+            MMLogError(@"谷歌翻译接口语言解析失败 %@", exception);
         }
         [reqDict setObject:responseObject forKey:EZTranslateErrorRequestResponseKey];
         completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeAPI description: message ?: @"识别语言失败" request:reqDict]);
@@ -832,7 +831,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                             if ([languages isKindOfClass:[NSArray class]]) {
                                 NSString *language = languages.firstObject;
                                 if ([language isKindOfClass:[NSString class]]) {
-                                    NSLog(@"Google detect language: %@", language);
+                                    MMLogInfo(@"Google detect language: %@", language);
                                     EZLanguage ezlanguage = [self languageEnumFromCode:language];
                                     if (![ezlanguage isEqualToString:EZLanguageAuto]) {
                                         googleFromLanguage = ezlanguage;
@@ -847,7 +846,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 }
             }
         } @catch (NSException *exception) {
-            MMLogInfo(@"谷歌翻译接口语言解析失败 %@", exception);
+            MMLogError(@"谷歌翻译接口语言解析失败 %@", exception);
         }
         [reqDict setObject:responseObject forKey:EZTranslateErrorRequestResponseKey];
         completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeAPI description: message ?: @"识别语言失败" request:reqDict]);

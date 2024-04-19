@@ -59,7 +59,7 @@
      */
     NSTimeInterval tokenUsedTime = now - tokenStart;
     BOOL isExpired = tokenUsedTime > self.expirationInterval.doubleValue / 2;
-    NSLog(@"is Bing token expired: %@", isExpired ? @"YES" : @"NO");
+    MMLogInfo(@"is Bing token expired: %@", isExpired ? @"YES" : @"NO");
     
     return isExpired;
 }

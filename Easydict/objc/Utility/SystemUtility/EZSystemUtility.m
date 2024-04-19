@@ -88,7 +88,7 @@
                 ]];
                 if ([editableTextRoles containsObject:role]) {
                     isEditable = YES;
-                    NSLog(@"role: %@", role);
+                    MMLogInfo(@"role: %@", role);
                 }
             }
             CFRelease(roleValue);
@@ -97,7 +97,7 @@
     }
     CFRelease(systemWideElement);
     
-    NSLog(@"isEditable: %d", isEditable);
+    MMLogInfo(@"isEditable: %d", isEditable);
 
     return isEditable;
 }

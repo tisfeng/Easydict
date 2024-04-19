@@ -57,7 +57,7 @@ extension Configuration {
         formatter.timeStyle = .medium
 
         let formattedDate = formatter.string(from: currentDate)
-        print("Formatted Date: ", formattedDate)
+        logInfo("Formatted Date: \(formattedDate)")
 
         return formattedDate
     }

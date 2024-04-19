@@ -173,7 +173,7 @@
             return;
         }
         
-        NSLog(@"NiuTransTranslate error: %@", error);
+        MMLogError(@"NiuTransTranslate error: %@", error);
         
         completion(self.result, error);
     }];
