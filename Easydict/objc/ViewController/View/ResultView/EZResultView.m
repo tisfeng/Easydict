@@ -227,7 +227,7 @@
     }];
 
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(8);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
