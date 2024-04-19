@@ -273,6 +273,9 @@
     if ([self isBaseOpenAIService:result.service]) {
         EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
         self.serviceModelButton.title = service.model;
+        // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
+        self.serviceModelButton.hoverTitle = service.model;
+        
         [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
             [self showModelSelectionMenu:button];
