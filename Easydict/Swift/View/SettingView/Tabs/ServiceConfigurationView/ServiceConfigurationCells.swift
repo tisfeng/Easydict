@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import SwiftUI
 
@@ -42,10 +43,16 @@ struct ServiceConfigurationSecureInputCell: View {
 struct ServiceConfigurationInputCell: View {
     // MARK: Lifecycle
 
-    init(textFieldTitleKey: LocalizedStringKey, key: Defaults.Key<String?>, placeholder: LocalizedStringKey) {
+    init(
+        textFieldTitleKey: LocalizedStringKey,
+        key: Defaults.Key<String?>,
+        placeholder: LocalizedStringKey,
+        limitLength: Int = Int.max
+    ) {
         self.textFieldTitleKey = textFieldTitleKey
         self.placeholder = placeholder
         _value = .init(key)
+        self.limitLength = limitLength
     }
 
     // MARK: Internal
@@ -54,9 +61,22 @@ struct ServiceConfigurationInputCell: View {
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: LocalizedStringKey
 
+    var limitLength: Int
+
     var body: some View {
         TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
             .padding(10.0)
+            .onReceive(Just(value)) { _ in
+                limit(limitLength)
+            }
+    }
+
+    // MARK: Private
+
+    private func limit(_ max: Int) {
+        if let value, value.count > max {
+            self.value = String(value.prefix(max))
+        }
     }
 }
 
