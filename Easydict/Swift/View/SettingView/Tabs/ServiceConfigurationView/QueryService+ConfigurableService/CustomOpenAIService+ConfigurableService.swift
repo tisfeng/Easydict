@@ -44,7 +44,8 @@ private struct CustomOpenAIServiceConfigurationView: View {
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.custom_openai.name.title",
                 key: .customOpenAINameKey,
-                placeholder: "custom_openai"
+                placeholder: "custom_openai",
+                limitLength: 20
             )
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
