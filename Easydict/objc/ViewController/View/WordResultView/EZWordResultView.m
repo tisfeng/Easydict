@@ -127,7 +127,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = nil;
         if (errorMessage.length) {
             text = errorMessage;
-        } else if (result.translatedText.length) {
+        } else if (result.translatedText) {
+            // Note that translatedText may be returned @"" by service, like Youdao, or kimi stream when censored.
             text = result.translatedText;
         }  else {
             text = NSLocalizedString(@"no_results_found", nil);

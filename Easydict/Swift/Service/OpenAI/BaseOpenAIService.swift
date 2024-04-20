@@ -79,7 +79,7 @@ public class BaseOpenAIService: QueryService {
                     }
                     handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                 case let .failure(error):
-                    handleResult(queryType: queryType, resultText: resultText, error: error, completion: completion)
+                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
                 }
             }
 
@@ -88,7 +88,7 @@ public class BaseOpenAIService: QueryService {
 
             if !result.isStreamFinished {
                 if let error {
-                    handleResult(queryType: queryType, resultText: resultText, error: error, completion: completion)
+                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
 
                 } else {
                     // If already has error, we do not need to update it.
@@ -160,13 +160,16 @@ public class BaseOpenAIService: QueryService {
         error: Error?,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        let normalResults = [resultText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""]
+        var normalResults: [String]?
+        if let resultText {
+            normalResults = [resultText.trimmingCharacters(in: .whitespacesAndNewlines)]
+        }
 
         result.isStreamFinished = error != nil
+        result.translatedResults = normalResults
 
         switch queryType {
         case .sentence, .translation:
-            result.translatedResults = normalResults
             completion(result, error)
 
         case .dictionary:
@@ -177,7 +180,6 @@ public class BaseOpenAIService: QueryService {
                 return
             }
 
-            result.translatedResults = normalResults
             result.showBigWord = true
             result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6

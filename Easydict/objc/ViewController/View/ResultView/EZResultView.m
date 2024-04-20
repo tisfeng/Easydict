@@ -7,14 +7,10 @@
 //
 
 #import "EZResultView.h"
-#import "EZServiceTypes.h"
 #import "EZHoverButton.h"
-#import "NSView+EZAnimatedHidden.h"
 #import "EZLoadingAnimationView.h"
-#import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
-#import "EZWindowManager.h"
-#import "EZLocalStorage.h"
+#import "NSObject+EZWindowType.h"
 
 @interface EZResultView ()
 
@@ -77,6 +73,10 @@
         label.bordered = NO;
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
+        label.maximumNumberOfLines = 1;
+        label.lineBreakMode = NSLineBreakByTruncatingTail;
+        label.cell.truncatesLastVisibleLine = YES;
+        
         [label excuteLight:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextLightColor];
         } dark:^(NSTextField *label) {
@@ -169,7 +169,6 @@
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     stopButton.image = stopImage;
     stopButton.mas_key = @"stopButton";
-    stopButton.toolTip = NSLocalizedString(@"stop", nil);
     stopButton.hidden = YES;
     
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
@@ -185,7 +184,6 @@
     NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
     retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
-    retryButton.toolTip = NSLocalizedString(@"retry", nil);
     retryButton.hidden = YES;
     [retryButton excuteLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
@@ -210,34 +208,33 @@
     }];
     
     [self.serviceIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.topBarView).offset(9);
+        make.left.equalTo(self.topBarView).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceIcon.mas_right).offset(4);
+        make.left.equalTo(self.serviceIcon.mas_right).offset(2);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
     [self.serviceModelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(2);
+        make.left.equalTo(self.serviceNameLabel.mas_right).offset(0);
         make.top.equalTo(self.topBarView).offset(8);
         make.bottom.equalTo(self.topBarView).offset(-8);
     }];
     
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(8);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(5);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(3);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
-    
     
     [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
@@ -252,7 +249,7 @@
     }];
     
     [self.retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowButton.mas_left).offset(-5);
+        make.right.equalTo(self.arrowButton.mas_left).offset(-2);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
@@ -267,21 +264,25 @@
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
     
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
+    
+    mm_weakify(self);
+    
     if ([self isBaseOpenAIService:result.service]) {
         EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
-        self.serviceModelButton.title = service.model;
-        mm_weakify(self);
+        NSString *model = service.model;
+        self.serviceModelButton.title = model;
+        // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
+        self.serviceModelButton.hoverTitle = model;
+        self.serviceModelButton.highlightTitle = model;
+        
         [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
             [self showModelSelectionMenu:button];
         }];
-        [self updateServiceModelLabel];
-    } else {
-        self.serviceModelButton.hidden = YES;
     }
+    
     [self.wordResultView refreshWithResult:result];
     
-    mm_weakify(self);
     [self.wordResultView setUpdateViewHeightBlock:^(CGFloat wordResultViewHeight) {
         mm_strongify(self);
         [self updateWordResultViewHeight:wordResultViewHeight];
@@ -302,6 +303,46 @@
 }
 
 #pragma mark -
+
+- (void)updateConstraints {
+    [self.serviceNameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        // 127 is the lenght of "Built-In AI Translate"
+        make.width.mas_lessThanOrEqualTo(127 * [self windowWidthRatio]);
+    }];
+    
+    CGFloat modelButtonWidth = 0;
+    if ([self isBaseOpenAIService:self.result.service]) {
+        [self.serviceModelButton sizeToFit];
+        // 105 is the length of "gpt-4-turbo-preview"
+        modelButtonWidth = MIN(self.serviceModelButton.width, 105 * [self windowWidthRatio]);
+    }
+
+    [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(modelButtonWidth);
+    }];
+    
+    [super updateConstraints];
+}
+
+- (CGFloat)windowWidthRatio {
+    CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    return self.width / minimumWindowWidth;
+}
+
+#pragma mark - Public Methods
+
+- (void)updateLoadingAnimation {
+    [self startOrStopLoadingAnimation:self.result.isLoading];
+}
+
+- (void)startOrStopLoadingAnimation:(BOOL)isLoading {
+    if (isLoading) {
+        self.errorImageView.hidden = YES;
+    }
+    [self.loadingView startLoading:isLoading];
+}
+
+#pragma mark - Update UI
 
 - (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
     if (self.result.HTMLString.length) {
@@ -328,21 +369,6 @@
     //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
 }
 
-#pragma mark - Public Methods
-
-- (void)updateLoadingAnimation {
-    [self updateServiceModelLabel];
-    [self startOrStopLoadingAnimation:self.result.isLoading];
-}
-
-- (void)startOrStopLoadingAnimation:(BOOL)isLoading {
-    if (isLoading) {
-        self.errorImageView.hidden = YES;
-    }
-    [self.loadingView startLoading:isLoading];
-}
-
-#pragma mark -
 
 - (void)updateAllButtonStatus {
     [self updateErrorImage];
@@ -350,7 +376,6 @@
     [self updateRetryButton];
     [self updateStopButton];
     [self updateArrowButton];
-    [self updateServiceModelLabel];
 }
 
 - (void)updateErrorImage {
@@ -358,19 +383,17 @@
     self.errorImageView.hidden = !showWarningImage;
     
     NSString *errorImageName = @"disabled";
-    NSString *toolTip = @"Unsupported Language";
     if (!self.result.isWarningErrorType) {
         errorImageName = @"error";
     }
     NSImage *errorImage = [NSImage imageNamed:errorImageName];
-    
     self.errorImageView.image = errorImage;
-    self.errorImageView.toolTip = toolTip;
 }
 
 - (void)updateRetryButton {
     BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     self.retryButton.hidden = !showRetryButton;
+    self.retryButton.toolTip = NSLocalizedString(@"retry", nil);
 }
 
 - (void)updateStopButton {
@@ -382,6 +405,7 @@
     }
     
     self.stopButton.hidden = !showStopButton;
+    self.stopButton.toolTip = NSLocalizedString(@"stop", nil);
 }
 
 - (void)updateArrowButton {
@@ -403,18 +427,8 @@
     return [service isKindOfClass:[EZBaseOpenAIService class]];
 }
 
-- (void)updateServiceModelLabel {
-    if (![self isBaseOpenAIService:self.result.service]) {
-        return;
-    }
-    BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
-    BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
-    BOOL isLoading = self.result.isLoading;
-    self.serviceModelButton.hidden = showWarningImage || showRetryButton || isLoading;
-}
-
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;    
+    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.availableModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
