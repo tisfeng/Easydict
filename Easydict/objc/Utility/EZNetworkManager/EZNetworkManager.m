@@ -41,8 +41,8 @@
                 break;
             }
         }
-//        MMLogInfo(@"get cookie of URL: %@", URL);
-//        MMLogInfo(@"cookie: %@", cookieString);
+//        MMLogError(@"get cookie of URL: %@", URL);
+//        MMLogError(@"cookie: %@", cookieString);
                 
         completion(cookieString);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {

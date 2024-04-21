@@ -24,10 +24,10 @@
             logLevel = @"ℹ️";
             break;
         case DDLogFlagDebug:
-            logLevel = @"Debug";
+            logLevel = @"🔨";
             break;
         default:
-            logLevel = @"Verbose";
+            logLevel = @"⚙️";
             break;
     }
     return [NSString stringWithFormat:@"[%@ ● %zd ● %@] %@ ● %@", logMessage.fileName, logMessage.line, logLevel, logMessage.function, logMessage->_message];

@@ -126,7 +126,7 @@ static EZEventMonitor *_instance = nil;
     for (EZAppModel *appModel in appModelList) {
         if ([appModel.appBundleID isEqualToString:appBundleID]) {
             triggerType = appModel.triggerType;
-            MMLogInfo(@"App bundleID: %@, %@", appBundleID, @(triggerType));
+            MMLogVerbose(@"App bundleID: %@, %@", appBundleID, @(triggerType));
         }
     }
     return triggerType;
@@ -252,7 +252,7 @@ static EZEventMonitor *_instance = nil;
 CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
     if (type == kCGEventKeyDown) {
 //        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-//        MMLogInfo(@"nsEvent: %@", nsEvent);
+//        MMLogVerbose(@"nsEvent: %@", nsEvent);
         
         // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
         [_instance delayDismissPopButton];
@@ -357,7 +357,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         
         if (error == kAXErrorAPIDisabled) {
-            MMLogInfo(@"Failed to get text, kAXErrorAPIDisabled");
+            MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
         }
         
         self.selectTextType = EZSelectTextTypeAccessibility;
@@ -395,7 +395,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     if ([self enabledAutoSelectText]) {
-//        MMLogInfo(@"auto get selected text");
+//        MMLogVerbose(@"auto get selected text");
         
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
@@ -410,7 +410,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     Configuration *config = [Configuration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
     if (!enabled) {
-        MMLogInfo(@"disabled autoSelectText");
+        MMLogWarn(@"disabled autoSelectText");
         return enabled;
     }
     
@@ -745,7 +745,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDown: {
-//            MMLogInfo(@"mouse down");
+//            MMLogVerbose(@"mouse down");
             
             // Record some mouse event except dragged event.
             [self updateRecordedEvents:event];
@@ -756,7 +756,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         case NSEventTypeLeftMouseDragged: {
             // Record dragged event.
             [self updateRecordedEvents:event];
-//            MMLogInfo(@"NSEventTypeLeftMouseDragged");
+//            MMLogVerbose(@"NSEventTypeLeftMouseDragged");
             break;
         }
         case NSEventTypeRightMouseDown: {
@@ -767,7 +767,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-//            MMLogInfo(@"key down");
+//            MMLogVerbose(@"key down");
             
             [self dismissPopButton];
             break;
@@ -776,7 +776,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if (self.isPopButtonVisible) {
                 CGFloat deltaY = event.scrollingDeltaY;
                 self.movedY += deltaY;
-//                MMLogInfo(@"movedY: %.1f", self.movedY);
+//                MMLogVerbose(@"movedY: %.1f", self.movedY);
                 
                 CGFloat maxDeltaY = 80;
                 if (fabs(self.movedY) > maxDeltaY) {
@@ -795,14 +795,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeFlagsChanged: {
-//            MMLogInfo(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+//            MMLogVerbose(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
             
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.
-//                MMLogInfo(@"Shift key is typed.");
+//                MMLogVerbose(@"Shift key is typed.");
             }
             
-//            MMLogInfo(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
+//            MMLogVerbose(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandKeyEvents:event];
@@ -818,7 +818,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
             
         default:
-//            MMLogInfo(@"default type: %ld", event.type);
+//            MMLogVerbose(@"default type: %ld", event.type);
             
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];

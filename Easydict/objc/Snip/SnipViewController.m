@@ -188,7 +188,7 @@
 #pragma mark -
 
 - (void)mouseDown:(NSEvent *)event {
-    MMLogInfo(@"鼠标按下 %@", self.view.window);
+    MMLogVerbose(@"鼠标按下 %@", self.view.window);
     self.isStart = YES;
     self.startPoint = [NSEvent mouseLocation];
     self.startPoint = NSMakePoint(round(self.startPoint.x), round(self.startPoint.y));
@@ -198,7 +198,7 @@
 }
 
 - (void)mouseDragged:(NSEvent *)event {
-//    MMLogInfo(@"鼠标拖拽 %@", self.view.window);
+//    MMLogVerbose(@"鼠标拖拽 %@", self.view.window);
     if (!self.isStart) return;
 
     self.endPoint = [NSEvent mouseLocation];
@@ -208,7 +208,7 @@
 }
 
 - (void)mouseUp:(NSEvent *)event {
-    MMLogInfo(@"鼠标起来 %@", self.view.window);
+    MMLogVerbose(@"鼠标起来 %@", self.view.window);
     if (!self.isStart) return;
     self.isStart = NO;
     if (self.targetRect.size.width < 5 || self.targetRect.size.height < 5) {

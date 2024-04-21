@@ -2013,7 +2013,7 @@ static EZAppleService *_instance;
     
     // threshold is the actual display width.
     CGFloat threshold = alphabetCount * singleAlphabetWidth;
-//    MMLogInfo(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
+//    MMLogVerbose(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
     
     return threshold;
 }
@@ -2045,7 +2045,7 @@ static EZAppleService *_instance;
      */
     
     CGFloat fontSize = textWidth * (systemFontSize / width);
-//    MMLogInfo(@"Calculated font size is: %.1f", fontSize);
+//    MMLogVerbose(@"Calculated font size is: %.1f", fontSize);
     
     return fontSize;
 }
@@ -2124,7 +2124,7 @@ static EZAppleService *_instance;
     
     NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
     for (NSString *voice in availableVoices) {
-//        MMLogInfo(@"%@", voice);
+//        MMLogVerbose(@"%@", voice);
         NSDictionary *attributesForVoice = [NSSpeechSynthesizer attributesForVoice:voice];
         NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
         if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {
@@ -2155,7 +2155,7 @@ static EZAppleService *_instance;
     AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
     
 //    NSArray<AVSpeechSynthesisVoice *> *speechVoices = [AVSpeechSynthesisVoice speechVoices];
-//    MMLogInfo(@"speechVoices: %@", speechVoices);
+//    MMLogVerbose(@"speechVoices: %@", speechVoices);
     
     // 将语音分配给语音合成器。
     utterance.voice = voice;

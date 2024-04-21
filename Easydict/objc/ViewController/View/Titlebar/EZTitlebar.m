@@ -145,13 +145,13 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         
         mm_weakify(self);
         [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
-//            MMLogInfo(@"pin mouse down, state: %ld", button.buttonState);
+//            MMLogVerbose(@"pin mouse down, state: %ld", button.buttonState);
             mm_strongify(self);
             self.pin = !self.pin;
         }];
         
         [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
-//            MMLogInfo(@"pin mouse up, state: %ld", button.buttonState);
+//            MMLogVerbose(@"pin mouse up, state: %ld", button.buttonState);
             mm_strongify(self);
             BOOL oldPin = !self.pin;
             

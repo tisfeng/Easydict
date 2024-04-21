@@ -50,13 +50,13 @@ extern DDLogLevel MMDefaultLogLevel;
 extern BOOL MMDefaultLogAsyncEnabled;
 
 
-#define MMLogInfo(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMLogVerbose(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagVerbose, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define MMLogInfo(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMLogWarn(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagWarning, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMLogError(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
-#define MMDDLogInfo(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMDDLogVerbose(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagVerbose, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define MMDDLogInfo(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMDDLogWarn(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagWarning, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMDDLogError(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 

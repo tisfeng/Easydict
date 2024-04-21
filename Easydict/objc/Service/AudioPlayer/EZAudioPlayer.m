@@ -246,7 +246,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 
 - (void)stop {
-//    MMLogInfo(@"stop play");
+//    MMLogVerbose(@"stop play");
     
     // !!!: This method won't post play end notification.
     [_player pause];
@@ -283,7 +283,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
          serviceType:(EZServiceType)serviceType
             forceURL:(BOOL)forceURL {
     if (audioURLString.length == 0) {
-        MMLogInfo(@"play audio url is empty");
+        MMLogWarn(@"play audio url is empty");
         return;
     }
     
@@ -389,7 +389,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     if (![fileManager fileExistsAtPath:filePath]) {
         self.isPlaying = NO;
-        MMLogInfo(@"playLocalAudioFile not exist: %@", filePath);
+        MMLogWarn(@"playLocalAudioFile not exist: %@", filePath);
         return;
     }
     MMLogInfo(@"play local audio file: %@", filePath);
@@ -427,7 +427,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     if (!asset.readable || !asset.isPlayable) {
         // change go.mp3 to go.m4a will cause asset not readable
-        MMLogInfo(@"asset not readable or playable: %@", filePath);
+        MMLogWarn(@"asset not readable or playable: %@", filePath);
         return NO;
     }
     
@@ -719,26 +719,26 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         status = AudioFileGetProperty(audioFile, kAudioFilePropertyFileFormat, &size, &fileType);
         if (status == noErr) {
             if (fileType == kAudioFileAAC_ADTSType) {
-                MMLogInfo(@"Audio file is of type: AAC ADTS");
+                MMLogVerbose(@"Audio file is of type: AAC ADTS");
             } else if (fileType == kAudioFileAIFFType) {
-                MMLogInfo(@"Audio file is of type: AIFF");
+                MMLogVerbose(@"Audio file is of type: AIFF");
             } else if (fileType == kAudioFileCAFType) {
-                MMLogInfo(@"Audio file is of type: CAF");
+                MMLogVerbose(@"Audio file is of type: CAF");
             } else if (fileType == kAudioFileMP3Type) {
-                MMLogInfo(@"Audio file is of type: MP3");
+                MMLogVerbose(@"Audio file is of type: MP3");
             } else if (fileType == kAudioFileMPEG4Type) {
-                MMLogInfo(@"Audio file is of type: MP4");
+                MMLogVerbose(@"Audio file is of type: MP4");
             } else if (fileType == kAudioFileWAVEType) {
-                MMLogInfo(@"Audio file is of type: WAVE");
+                MMLogVerbose(@"Audio file is of type: WAVE");
             } else {
-                MMLogInfo(@"Audio file is of an unknown type");
+                MMLogVerbose(@"Audio file is of an unknown type");
             }
         } else {
-            MMLogInfo(@"Error getting audio file property: %d", (int)status);
+            MMLogError(@"Error getting audio file property: %d", (int)status);
             return NO;
         }
     } else {
-        MMLogInfo(@"Error opening audio file type: %d", (int)status);
+        MMLogWarn(@"Error opening audio file type: %d", (int)status);
         return NO;
     }
     return YES;
@@ -754,7 +754,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     // 获取文件属性
     NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error];
     if (error) {
-        MMLogInfo(@"Error getting file attributes: %@", error);
+        MMLogError(@"Error getting file attributes: %@", error);
         return nil;
     }
     
@@ -776,7 +776,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     id plistData = [NSPropertyListSerialization propertyListWithData:itemWhereFroms options:NSPropertyListImmutable format:&format error:&plistError];
     
     if (plistError) {
-        MMLogInfo(@"Error decoding property list: %@", plistError);
+        MMLogWarn(@"Error decoding property list: %@", plistError);
         return nil;
     }
     
@@ -811,7 +811,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         attrs[kFileExtendedAttributes] = @{kItemWhereFroms: URLsData};
         
         if (![fileManager setAttributes:attrs ofItemAtPath:filePath error:&error]) {
-            MMLogInfo(@"Error setting download source: %@", error);
+            MMLogError(@"Error setting download source: %@", error);
         }
         
         // Set the extended attribute using setxattr

@@ -188,7 +188,7 @@ static EZLocalStorage *_instance;
     NSInteger newLevel = [self queryLevel:count];
     if (count == 1 || newLevel != level) {
         NSString *levelTitle = [self queryLevelTitle:newLevel chineseFlag:YES];
-        MMLogInfo(@"new level: %@", levelTitle);
+        MMLogVerbose(@"new level: %@", levelTitle);
 
         NSDictionary *dict = @{
             @"count" : [NSString stringWithFormat:@"%ld", count],

@@ -548,7 +548,7 @@ static EZConfiguration *_instance;
 //            success = [appService unregisterAndReturnError:&error];
 //        }
 //        if (error) {
-//            MMLogInfo(@"SMAppService error: %@", error);
+//            MMLogError(@"SMAppService error: %@", error);
 //        }
 //        if (!success) {
 //            MMLogError(@"SMAppService fail");

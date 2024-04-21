@@ -91,11 +91,11 @@ static Snip *_instance;
     [NSScreen.screens enumerateObjectsUsingBlock:^(NSScreen *_Nonnull screen, NSUInteger idx, BOOL *_Nonnull stop) {
         SnipWindowController *windowController = [SnipWindowController new];
         [windowController setStartBlock:^(SnipWindowController *_Nonnull windowController) {
-            MMLogInfo(@"截图开始");
+            MMLogVerbose(@"截图开始");
         }];
         mm_weakify(self);
         [windowController setEndBlock:^(SnipWindowController *_Nonnull windowController, NSImage *_Nullable image) {
-            MMLogInfo(@"截图结束：%@", image ? @"成功" : @"失败");
+            MMLogVerbose(@"截图结束：%@", image ? @"成功" : @"失败");
             mm_strongify(self);
             [self stopWithImage:image];
         }];
@@ -173,7 +173,7 @@ static Snip *_instance;
 #pragma mark -
 
 - (void)mouseMoved:(NSEvent *)event {
-//    MMLogInfo(@"鼠标移动 %@", self.currentMainWindowController);
+//    MMLogVerbose(@"鼠标移动 %@", self.currentMainWindowController);
     
     NSPoint mouseLocation = [NSEvent mouseLocation];
     if (!self.currentMainWindowController) {
@@ -216,14 +216,14 @@ static Snip *_instance;
     
     if (!self.currentMainWindowController.window.isMainWindow ||
         !self.currentMainWindowController.window.isKeyWindow) {
-        MMLogInfo(@"设置 main window");
+        MMLogVerbose(@"设置 main window");
         [self.currentMainWindowController.window makeMainWindow];
         [self.currentMainWindowController.window makeKeyWindow];
     }
 }
 
 - (void)screenChanged:(NSNotification *)notification {
-    MMLogInfo(@"屏幕改变 %@", notification);
+    MMLogVerbose(@"屏幕改变 %@", notification);
     [self stop];
 }
 

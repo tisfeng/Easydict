@@ -54,14 +54,14 @@
     }
     
     float currentVolume = volume * 100;
-//    MMLogInfo(@"--> getSystemVolume: %1.f", currentVolume);
+//    MMLogError(@"--> getSystemVolume: %1.f", currentVolume);
     
     return currentVolume;
 }
 
 /// Set system volume, [0, 100]
 + (void)setSystemVolume:(float)volume {
-//    MMLogInfo(@"--> setSystemVolume: %1.f", volume);
+//    MMLogError(@"--> setSystemVolume: %1.f", volume);
     
     AudioDeviceID outputDeviceID = [self getDefaultOutputDeviceID];
     if (outputDeviceID == kAudioObjectUnknown) {

@@ -322,10 +322,10 @@
     CGFloat viewHeight = EZResultViewMiniHeight;
     if (self.result.hasShowingResult && self.result.isShowing) {
         viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
-//        MMLogInfo(@"show result view height: %@", @(self.height));
+//        MMLogVerbose(@"show result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
-//    MMLogInfo(@"%@, result view height: %@", result.serviceType, @(viewHeight));
+//    MMLogVerbose(@"%@, result view height: %@", result.serviceType, @(viewHeight));
 }
 
 #pragma mark - Public Methods

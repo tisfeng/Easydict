@@ -63,7 +63,7 @@
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-//    MMLogInfo(@"mouseEntered");
+//    MMLogVerbose(@"mouseEntered");
     
     if (!self.enabled) {
         return;
@@ -79,7 +79,7 @@
 }
 
 - (void)mouseExited:(NSEvent *)event {
-//    MMLogInfo(@"mouseExited");
+//    MMLogVerbose(@"mouseExited");
     
     if (!self.enabled) {
         return;
@@ -98,7 +98,7 @@
 }
 
 - (void)mouseDown:(NSEvent *)event {
-//    MMLogInfo(@"mouseDown");
+//    MMLogVerbose(@"mouseDown");
     
     if (!self.enabled) {
         return;
@@ -115,7 +115,7 @@
 }
 
 - (void)mouseUp:(NSEvent *)event {
-//    MMLogInfo(@"mouseUp");
+//    MMLogVerbose(@"mouseUp");
     
     if (!self.enabled) {
         return;
@@ -132,7 +132,7 @@
         }
         self.buttonState = EZButtonHoverState;
         
-//        MMLogInfo(@"send action");
+//        MMLogVerbose(@"send action");
         
         NSString *selString = NSStringFromSelector(self.action);
         if ([selString hasSuffix:@":"]) {
@@ -146,7 +146,7 @@
 }
 
 - (void)mouseDragged:(NSEvent *)event {
-//    MMLogInfo(@"mouseDragged");
+//    MMLogVerbose(@"mouseDragged");
     
     if (!self.enabled) {
         return;
@@ -158,7 +158,7 @@
         self.hover = YES;
         [self setButtonState:EZButtonHoverState];
     } else {
-//        MMLogInfo(@"mouse drag out");
+//        MMLogVerbose(@"mouse drag out");
         
         self.hover = NO;
         if (self.canSelected) {
@@ -228,7 +228,7 @@
 }
 
 - (void)updateButtonApperaceWithState:(EZButtonState)state {
-//    MMLogInfo(@"button state: %@", @(state));
+//    MMLogVerbose(@"button state: %@", @(state));
     
     CGFloat cornerRadius = 0.f;
     CGFloat borderWidth = 0.f;
@@ -434,7 +434,7 @@
 }
 
 - (void)setButtonState:(EZButtonState)state {
-//    MMLogInfo(@"set state: %lu", (unsigned long)state);
+//    MMLogVerbose(@"set state: %lu", (unsigned long)state);
     
     _buttonState = state;
     
@@ -478,7 +478,7 @@
 #pragma mark - Click Action
 
 - (void)click:(EZButton *)button {
-//    MMLogInfo(@"click");
+//    MMLogVerbose(@"click");
     
     if (self.clickBlock) {
         self.clickBlock(self);

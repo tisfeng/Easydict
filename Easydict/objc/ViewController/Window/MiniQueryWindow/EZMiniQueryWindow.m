@@ -30,7 +30,7 @@
 }
 
 - (void)dealloc {
-    MMLogInfo(@"mini window dealloc: %@", self);
+    MMLogVerbose(@"mini window dealloc: %@", self);
 }
 
 @end

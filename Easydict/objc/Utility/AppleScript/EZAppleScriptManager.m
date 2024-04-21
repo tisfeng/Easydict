@@ -68,7 +68,7 @@ static EZAppleScriptManager *_instance = nil;
 #pragma mark - Get Brower selected text
 
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
-//    MMLogInfo(@"get Browser selected text: %@", bundleID);
+//    MMLogError(@"get Browser selected text: %@", bundleID);
     
     if ([self isSafari:bundleID]) {
         [self getSafariSelectedText:completion];
@@ -314,7 +314,7 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell",
                         appBundleID, @(copyIndex)];
     
-//    MMLogInfo(@"checkFrontAppSupportCopyAction:\n%@", script);
+//    MMLogError(@"checkFrontAppSupportCopyAction:\n%@", script);
     
     NSDate *startTime = [NSDate date];
     

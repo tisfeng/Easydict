@@ -101,7 +101,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    MMLogInfo(@"Apple Dictionary does not support ocr");
+    MMLogWarn(@"Apple Dictionary does not support ocr");
 }
 
 - (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language {
@@ -138,7 +138,7 @@ static EZAppleDictionary *_instance;
                                       fromToLanguages:(nullable NSArray<EZLanguage> *)languages
                                        inDictionaries:(NSArray<TTTDictionary *> *)dictionaries
 {
-//    MMLogInfo(@"query dictionaries: %@", [dictionaries debugDescription]);
+//    MMLogVerbose(@"query dictionaries: %@", [dictionaries debugDescription]);
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     

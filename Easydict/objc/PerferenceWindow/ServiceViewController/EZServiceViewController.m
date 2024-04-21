@@ -253,14 +253,14 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSArray *oldEnabledServiceTypes = [self enabledServiceTypes:self.services];
     if ([self.serviceTypes containsObject:draggedServiceType]) {
         NSInteger oldIndex = [self.serviceTypes indexOfObject:draggedServiceType];
-        MMLogInfo(@"oldIndex: %ld, to row: %ld", oldIndex, row);
+        MMLogVerbose(@"oldIndex: %ld, to row: %ld", oldIndex, row);
         [self.serviceTypes insertObject:draggedServiceType atIndex:row];
 
         NSInteger removedIndex = oldIndex;
         if (row < oldIndex) {
             removedIndex = oldIndex + 1;
         }
-        MMLogInfo(@"removedIndex: %ld", removedIndex);
+        MMLogVerbose(@"removedIndex: %ld", removedIndex);
         [self.serviceTypes removeObjectAtIndex:removedIndex];
 
         EZLocalStorage *localStorage = [EZLocalStorage shared];

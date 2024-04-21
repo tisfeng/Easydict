@@ -73,7 +73,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)startLoadingAnimation {
-//    MMLogInfo(@"startLoadingAnimation");
+//    MMLogVerbose(@"startLoadingAnimation");
     
     /**
      (subviews.count - 1) * X = kAnimationDuration / 2
@@ -141,7 +141,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)dealloc {
-    MMLogInfo(@"EZResultView dealloc: %@", self);
+    MMLogVerbose(@"EZResultView dealloc: %@", self);
     [self.timer invalidate];
     self.timer = nil;
 }

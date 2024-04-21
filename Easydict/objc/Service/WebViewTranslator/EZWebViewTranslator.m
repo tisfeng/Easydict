@@ -133,7 +133,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     [self resetWebView];
     
     if (self.querySelector.length == 0) {
-        MMLogInfo(@"querySelector is empty, url: %@", URL);
+        MMLogWarn(@"querySelector is empty, url: %@", URL);
         return;
     }
     
@@ -200,7 +200,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 - (void)getTextContentOfElement:(NSString *)selector
                      completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
-//    MMLogInfo(@"get result count: %ld", self.retryCount + 1);
+//    MMLogVerbose(@"get result count: %ld", self.retryCount + 1);
     
     if (self.retryCount > self.delayRetryCount) {
         if (self.delayQuerySelector.length) {
@@ -229,7 +229,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                     [self getTextContentOfElement:selector completion:completion];
                 });
             } else {
-                MMLogInfo(@"fail, max retry count: %ld", self.retryCount);
+                MMLogWarn(@"fail, max retry count: %ld", self.retryCount);
                 if (completion) {
                     completion(nil, [EZError timeoutError]);
                 }
