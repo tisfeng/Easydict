@@ -43,7 +43,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     // 文件输出
     MMFileLogFormatter *fileFormatter = [MMFileLogFormatter new];
     DDLogFileManagerDefault *fileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:[self logDirectoryWithName:name]];
-    fileManager.maximumNumberOfLogFiles = 10;
+    fileManager.maximumNumberOfLogFiles = 100;
     fileManager.logFilesDiskQuota = 20 * 1024 * 1024;
     DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:fileManager];
     
