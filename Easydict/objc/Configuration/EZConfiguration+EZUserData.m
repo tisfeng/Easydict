@@ -17,7 +17,7 @@
     
     for (NSString *key in appUserDefaultsData) {
         id value = [appUserDefaultsData objectForKey:key];
-//        MMLogVerbose(@"Key: %@, Value: %@", key, value);
+//        MMLogInfo(@"Key: %@, Value: %@", key, value);
         
         if (![key hasPrefix:@"MASPreferences"] && ![value isKindOfClass:[NSData class]]) {
             userConfigDict[key] = value;
@@ -59,7 +59,7 @@
     BOOL success = [plistData writeToFile:plistPath atomically:YES];
     
     if (success) {
-        MMLogVerbose(@"Plist saved to download folder: %@", plistPath);
+        MMLogInfo(@"Plist saved to download folder: %@", plistPath);
     } else {
         MMLogError(@"Failed to save plist to download folder");
     }
@@ -79,7 +79,7 @@
     formatter.timeStyle = NSDateFormatterMediumStyle;
 
     NSString *formattedDate = [formatter stringFromDate:currentDate];
-    MMLogVerbose(@"Formatted Date: %@", formattedDate);
+    MMLogInfo(@"Formatted Date: %@", formattedDate);
     
     return formattedDate;
 }

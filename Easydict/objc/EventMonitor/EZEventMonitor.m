@@ -126,7 +126,7 @@ static EZEventMonitor *_instance = nil;
     for (EZAppModel *appModel in appModelList) {
         if ([appModel.appBundleID isEqualToString:appBundleID]) {
             triggerType = appModel.triggerType;
-            MMLogVerbose(@"App bundleID: %@, %@", appBundleID, @(triggerType));
+            MMLogInfo(@"App bundleID: %@, %@", appBundleID, @(triggerType));
         }
     }
     return triggerType;
@@ -252,7 +252,7 @@ static EZEventMonitor *_instance = nil;
 CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
     if (type == kCGEventKeyDown) {
 //        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-//        MMLogVerbose(@"nsEvent: %@", nsEvent);
+//        MMLogInfo(@"nsEvent: %@", nsEvent);
         
         // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
         [_instance delayDismissPopButton];
@@ -395,7 +395,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     if ([self enabledAutoSelectText]) {
-//        MMLogVerbose(@"auto get selected text");
+//        MMLogInfo(@"auto get selected text");
         
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
@@ -745,7 +745,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDown: {
-//            MMLogVerbose(@"mouse down");
+//            MMLogInfo(@"mouse down");
             
             // Record some mouse event except dragged event.
             [self updateRecordedEvents:event];
@@ -756,7 +756,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         case NSEventTypeLeftMouseDragged: {
             // Record dragged event.
             [self updateRecordedEvents:event];
-//            MMLogVerbose(@"NSEventTypeLeftMouseDragged");
+//            MMLogInfo(@"NSEventTypeLeftMouseDragged");
             break;
         }
         case NSEventTypeRightMouseDown: {
@@ -767,7 +767,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-//            MMLogVerbose(@"key down");
+//            MMLogInfo(@"key down");
             
             [self dismissPopButton];
             break;
@@ -776,7 +776,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if (self.isPopButtonVisible) {
                 CGFloat deltaY = event.scrollingDeltaY;
                 self.movedY += deltaY;
-//                MMLogVerbose(@"movedY: %.1f", self.movedY);
+//                MMLogInfo(@"movedY: %.1f", self.movedY);
                 
                 CGFloat maxDeltaY = 80;
                 if (fabs(self.movedY) > maxDeltaY) {
@@ -795,14 +795,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeFlagsChanged: {
-//            MMLogVerbose(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+//            MMLogInfo(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
             
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.
-//                MMLogVerbose(@"Shift key is typed.");
+//                MMLogInfo(@"Shift key is typed.");
             }
             
-//            MMLogVerbose(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
+//            MMLogInfo(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandKeyEvents:event];
@@ -818,7 +818,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
             
         default:
-//            MMLogVerbose(@"default type: %ld", event.type);
+//            MMLogInfo(@"default type: %ld", event.type);
             
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];

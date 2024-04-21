@@ -56,7 +56,7 @@ static BOOL _alive = NO;
 }
 
 - (void)dealloc {
-    MMLogVerbose(@"EZMainQueryWindow dealloc: %@", self);
+    MMLogInfo(@"EZMainQueryWindow dealloc: %@", self);
 }
 
 @end

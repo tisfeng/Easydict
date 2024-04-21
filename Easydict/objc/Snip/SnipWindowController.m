@@ -22,7 +22,7 @@
     }
     // https://isaacpg001.github.io/programming/2011/08/05/mac-multi-display-screen-crop/
     rect = NSMakeRect(rect.origin.x, (mainRect.size.height) - (rect.origin.y + rect.size.height), rect.size.width, rect.size.height);
-    MMLogVerbose(@"screenshot: %@", NSStringFromRect(rect));
+    MMLogInfo(@"screenshot: %@", NSStringFromRect(rect));
     
     // This method triggers a request for screen recording permission if it has not authorized.
     CGImageRef imageRef = CGWindowListCreateImageFromArray(rect, windowsRef, kCGWindowImageDefault);

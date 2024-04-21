@@ -6,7 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-//#define NSLog(frmt, ...) MMLogVerbose(frmt, ##__VA_ARGS__)
+#define NSLog(frmt, ...) MMLog(frmt, ##__VA_ARGS__)
 
 #import <Masonry/Masonry.h>
 #import <MJExtension.h>

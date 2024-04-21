@@ -104,13 +104,13 @@
 
 
 - (void)dealloc {
-    MMLogVerbose(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc: %@", self);
 }
 
 #pragma mark - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-//    MMLogVerbose(@"windowDidBecomeKey: %@", self);
+//    MMLogInfo(@"windowDidBecomeKey: %@", self);
     
     // We need to update the window type when the window becomes the key window.
     [EZWindowManager.shared updateFloatingWindowType:self.windowType isShowing:YES];
@@ -121,14 +121,14 @@
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
-//    MMLogVerbose(@"windowDidResignKey: %@", self);
+//    MMLogInfo(@"windowDidResignKey: %@", self);
     
     // Close floating window when losing focus if it's not pinned or main window.
     [EZWindowManager.shared closeFloatingWindowIfNotPinned:self.windowType exceptWindowType:EZWindowTypeMain];
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-    MMLogVerbose(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
+    MMLogInfo(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
 
     [[EZLayoutManager shared] updateWindowFrame:self];
     

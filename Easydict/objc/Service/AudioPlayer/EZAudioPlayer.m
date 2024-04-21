@@ -246,7 +246,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 
 - (void)stop {
-//    MMLogVerbose(@"stop play");
+//    MMLogInfo(@"stop play");
     
     // !!!: This method won't post play end notification.
     [_player pause];
@@ -719,19 +719,19 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         status = AudioFileGetProperty(audioFile, kAudioFilePropertyFileFormat, &size, &fileType);
         if (status == noErr) {
             if (fileType == kAudioFileAAC_ADTSType) {
-                MMLogVerbose(@"Audio file is of type: AAC ADTS");
+                MMLogInfo(@"Audio file is of type: AAC ADTS");
             } else if (fileType == kAudioFileAIFFType) {
-                MMLogVerbose(@"Audio file is of type: AIFF");
+                MMLogInfo(@"Audio file is of type: AIFF");
             } else if (fileType == kAudioFileCAFType) {
-                MMLogVerbose(@"Audio file is of type: CAF");
+                MMLogInfo(@"Audio file is of type: CAF");
             } else if (fileType == kAudioFileMP3Type) {
-                MMLogVerbose(@"Audio file is of type: MP3");
+                MMLogInfo(@"Audio file is of type: MP3");
             } else if (fileType == kAudioFileMPEG4Type) {
-                MMLogVerbose(@"Audio file is of type: MP4");
+                MMLogInfo(@"Audio file is of type: MP4");
             } else if (fileType == kAudioFileWAVEType) {
-                MMLogVerbose(@"Audio file is of type: WAVE");
+                MMLogInfo(@"Audio file is of type: WAVE");
             } else {
-                MMLogVerbose(@"Audio file is of an unknown type");
+                MMLogInfo(@"Audio file is of an unknown type");
             }
         } else {
             MMLogError(@"Error getting audio file property: %d", (int)status);

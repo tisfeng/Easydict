@@ -178,9 +178,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     //                                         loadURL:self.wordLink
     //                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
     //        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    //        MMLogVerbose(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+    //        MMLogInfo(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
     //
-    //        MMLogVerbose(@"deepL responseObject: %@", responseObject);
+    //        MMLogInfo(@"deepL responseObject: %@", responseObject);
     //    }];
 }
 
@@ -211,7 +211,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         @"id" : @(ID),
         @"params" : params
     };
-//    MMLogVerbose(@"postData: %@", postData);
+//    MMLogInfo(@"postData: %@", postData);
 
     NSString *postStr = [postData mj_JSONString];
     if ((ID + 5) % 29 == 0 || (ID + 3) % 13 == 0) {

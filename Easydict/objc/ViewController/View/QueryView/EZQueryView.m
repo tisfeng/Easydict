@@ -392,7 +392,7 @@
     
     // Escape key
     if (commandSelector == @selector(cancelOperation:)) {
-//        MMLogVerbose(@"escape: %@", textView);
+//        MMLogInfo(@"escape: %@", textView);
         [[EZWindowManager shared] closeWindowOrExitSreenshot];
         
         return YES;
@@ -433,22 +433,22 @@
     // !!!: Be careful, when user finish inputting Chinese, hasMarkedText still returns YES, so we need to set isTypingChinese to NO in `textDidChange:` method.
     self.isTypingChinese = hasMarkedText;
     //    if (self.isTypingChinese) {
-    //        MMLogVerbose(@"---> isTypingChinese");
-    //        MMLogVerbose(@"text: %@", textView.string);
-    //        MMLogVerbose(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
-    //        MMLogVerbose(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
+    //        MMLogInfo(@"---> isTypingChinese");
+    //        MMLogInfo(@"text: %@", textView.string);
+    //        MMLogInfo(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
+    //        MMLogInfo(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
     //    }
     
     return YES;
 }
 
 - (void)textStorage:(NSTextStorage *)textStorage willProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-//    MMLogVerbose(@"willProcessEditing: %@", [self copiedText]);
+//    MMLogInfo(@"willProcessEditing: %@", [self copiedText]);
 }
 
 /// !!!: set self.textView.string will invoke this method.
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-//    MMLogVerbose(@"didProcessEditing: %@", [self copiedText]);
+//    MMLogInfo(@"didProcessEditing: %@", [self copiedText]);
     
     // Handle the special case of inputting text, such as when inputting Chinese, the candidate word is being selected, at this time the textView cannot be updated, otherwise the candidate word will be cleared.
 }
@@ -459,7 +459,7 @@
 // !!!: This delegate can be only invoked by user input automatically, Or call didChangeText manually.
 - (void)textDidChange:(NSNotification *)notification {
 //    NSString *text = [self copiedText];
-//    MMLogVerbose(@"textDidChange: %@", text);
+//    MMLogInfo(@"textDidChange: %@", text);
     
     self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
@@ -493,13 +493,13 @@
 
 - (CGFloat)heightOfTextView {
     CGFloat height = [self.textView ez_getTextViewHeightDesignatedWidth:self.width];
-//    MMLogVerbose(@"text: %@, height: %@", self.textView.string, @(height));
+//    MMLogInfo(@"text: %@, height: %@", self.textView.string, @(height));
     
     height = MAX(height, self.textViewMinHeight);
     height = MIN(height, self.textViewMaxHeight);
     
     height = ceil(height);
-//    MMLogVerbose(@"final height: %.1f", height);
+//    MMLogInfo(@"final height: %.1f", height);
     
     return height;
 }
@@ -598,8 +598,8 @@
 
 - (void)tryRecordUndoText {
     if ([self isTimePassed:EZDelayDetectTextLanguageInterval]) {
-//        MMLogVerbose(@"recordText: %@", [self copiedText]);
-//        MMLogVerbose(@"lastRecordText: %@", self.lastRecordText);
+//        MMLogInfo(@"recordText: %@", [self copiedText]);
+//        MMLogInfo(@"lastRecordText: %@", self.lastRecordText);
         
         // !!!: Shouldn't use [self.textView.string copy], since it may be character when inputting Chinese.
         [self.undoManager registerUndoWithTarget:self.textView selector:@selector(setString:) object:self.lastRecordText];

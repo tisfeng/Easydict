@@ -138,7 +138,7 @@ static EZAppleDictionary *_instance;
                                       fromToLanguages:(nullable NSArray<EZLanguage> *)languages
                                        inDictionaries:(NSArray<TTTDictionary *> *)dictionaries
 {
-//    MMLogVerbose(@"query dictionaries: %@", [dictionaries debugDescription]);
+//    MMLogInfo(@"query dictionaries: %@", [dictionaries debugDescription]);
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     

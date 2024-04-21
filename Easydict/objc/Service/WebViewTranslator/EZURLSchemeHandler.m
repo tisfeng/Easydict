@@ -197,7 +197,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 - (void)dealloc {
-    MMLogVerbose(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc: %@", self);
 }
 
 - (AFURLSessionManager *)urlSession {
@@ -241,7 +241,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURLRequest *request = [urlSchemeTask request];
     NSURL *URL = request.URL;
-//    MMLogVerbose(@"url: %@", URL.absoluteString);
+//    MMLogInfo(@"url: %@", URL.absoluteString);
     
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
     [mutableRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
@@ -271,12 +271,12 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 //            NSError *error;
 //            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
 //            if (error) {
-//                MMLogVerbose(@"error: %@", error);
+//                MMLogInfo(@"error: %@", error);
 //            }
 //            if (bodyDict) {
-//                MMLogVerbose(@"HTTPBody dict: %@", bodyDict);
+//                MMLogInfo(@"HTTPBody dict: %@", bodyDict);
 //            } else {
-//                MMLogVerbose(@"HTTPBody string: %@", bodyString);
+//                MMLogInfo(@"HTTPBody string: %@", bodyString);
 //            }
 //        }
         

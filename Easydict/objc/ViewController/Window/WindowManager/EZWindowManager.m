@@ -133,7 +133,7 @@ static EZWindowManager *_instance;
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
-        MMLogVerbose(@"double command block");
+        NSLog(@"double command block");
     }];
 }
 
@@ -389,7 +389,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
-    //    MMLogVerbose(@"show floating window: %@, %@", window, @(point));
+    //    MMLogInfo(@"show floating window: %@, %@", window, @(point));
     
     [self saveFrontmostApplication];
     
@@ -411,7 +411,7 @@ static EZWindowManager *_instance;
         [_mainWindow orderOut:nil];
     }
     
-    //    MMLogVerbose(@"window frame: %@", @(window.frame));
+    //    MMLogInfo(@"window frame: %@", @(window.frame));
     
     // ???: This code will cause warning: [Window] Warning: Window EZFixedQueryWindow 0x107f04db0 ordered front from a non-active application and may order beneath the active application's windows.
     [window makeKeyAndOrderFront:nil];
@@ -443,13 +443,13 @@ static EZWindowManager *_instance;
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
-//    MMLogVerbose(@"update windowType: %@, isShowing: %d", windowType, isShowing);
-//    MMLogVerbose(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+//    MMLogInfo(@"update windowType: %@, isShowing: %d", windowType, isShowing);
+//    MMLogInfo(@"before floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:isShowing ? 0 : 1];
     
-//    MMLogVerbose(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
+//    MMLogInfo(@"after floatingWindowTypeArray: %@", self.floatingWindowTypeArray);
 }
 
 - (void)updateWindowsTitlebarButtonsToolTip {
@@ -479,7 +479,7 @@ static EZWindowManager *_instance;
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [NSEvent mouseLocation];
-//    MMLogVerbose(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
+//    MMLogInfo(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
     
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
@@ -524,9 +524,9 @@ static EZWindowManager *_instance;
     //    }
     
     //    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
-    //    MMLogVerbose(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
-    //    MMLogVerbose(@"start point: %@", NSStringFromPoint(startLocation));
-    //    MMLogVerbose(@"end   point: %@", NSStringFromPoint(endLocation));
+    //    MMLogInfo(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
+    //    MMLogInfo(@"start point: %@", NSStringFromPoint(startLocation));
+    //    MMLogInfo(@"end   point: %@", NSStringFromPoint(endLocation));
     
     if (Configuration.shared.adjustPopButtomOrigin) {
         // Since the pop button may cover selected text, we need to move it to the left.
@@ -543,7 +543,7 @@ static EZWindowManager *_instance;
     }
     
     NSPoint popLocation = CGPointMake(x, y);
-//    MMLogVerbose(@"popLocation: %@", NSStringFromPoint(popLocation));
+//    MMLogInfo(@"popLocation: %@", NSStringFromPoint(popLocation));
     
     return popLocation;
 }
@@ -700,7 +700,7 @@ static EZWindowManager *_instance;
     }
     
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-    MMLogVerbose(@"selectTextTranslate windowType: %@", @(windowType));
+    MMLogInfo(@"selectTextTranslate windowType: %@", @(windowType));
     self.eventMonitor.actionType = EZActionTypeShortcutQuery;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
         self.actionType = self.eventMonitor.actionType;
@@ -743,7 +743,7 @@ static EZWindowManager *_instance;
                 return;
             }
             
-            MMLogVerbose(@"get screenshot: %@", image);
+            MMLogInfo(@"get screenshot: %@", image);
             
             // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
             static NSString *_imagePath = nil;

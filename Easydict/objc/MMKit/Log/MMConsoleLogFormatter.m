@@ -30,6 +30,7 @@
             logLevel = @"⚙️";
             break;
     }
+
     return [NSString stringWithFormat:@"[%@ ● %zd ● %@] %@ ● %@", logMessage.fileName, logMessage.line, logLevel, logMessage.function, logMessage->_message];
 }
 

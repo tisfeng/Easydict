@@ -184,7 +184,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 }
                 
                 height += (topOffset + labelSize.height);
-//                MMLogVerbose(@"height = %1.f", height);
+//                MMLogInfo(@"height = %1.f", height);
             }];
             resultLabel.mas_key = @"resultLabel_normalResults";
             lastView = resultLabel;
@@ -493,7 +493,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += labelSize.height;
-//            MMLogVerbose(@"height = %1.f", height);
+//            MMLogInfo(@"height = %1.f", height);
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
@@ -686,7 +686,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += labelHeight + topOffset;
-//            MMLogVerbose(@"height = %1.f", height);
+//            MMLogInfo(@"height = %1.f", height);
         }];
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
@@ -749,7 +749,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += (kVerticalMargin_12 + labelSize.height);
-//            MMLogVerbose(@"height = %1.f", height);
+//            MMLogInfo(@"height = %1.f", height);
         }];
         resultLabel.mas_key = @"resultLabel_etymology";
         lastView = resultLabel;
@@ -794,7 +794,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     textCopyButton.enabled = hasTranslatedText | result.HTMLString.length;
     
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
-        MMLogVerbose(@"copyActionBlock");
+        MMLogInfo(@"copyActionBlock");
         [result.copiedText copyAndShowToast:YES];
     }];
     textCopyButton.mas_key = @"result_copyButton";
@@ -819,7 +819,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     height += self.bottomViewHeight;
     _viewHeight = height;
-//    MMLogVerbose(@"word result view height: %.1f", height);
+//    MMLogInfo(@"word result view height: %.1f", height);
     
     
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -974,11 +974,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - exceptedWidth;
-//    MMLogVerbose(@"text: %@, width: %@", label.text, @(width));
-//    MMLogVerbose(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
+//    MMLogInfo(@"text: %@, width: %@", label.text, @(width));
+//    MMLogInfo(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
     
     CGFloat height = [label ez_getTextViewHeightDesignatedWidth:width]; // 397 ?
-//    MMLogVerbose(@"height: %@", @(height));
+//    MMLogInfo(@"height: %@", @(height));
     
     return CGSizeMake(width, height);
 }
@@ -1000,7 +1000,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
-//        MMLogVerbose(@"escape: %@", textView);
+//        MMLogInfo(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         return NO;
     }
@@ -1138,7 +1138,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      */
     
 //    CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
-//    MMLogVerbose(@"Delay showing time: %.2f", delayShowingTime);
+//    MMLogInfo(@"Delay showing time: %.2f", delayShowingTime);
 
     // !!!: Must update view height, then update cell height.
     

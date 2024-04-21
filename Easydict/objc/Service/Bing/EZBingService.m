@@ -24,7 +24,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         _canRetry = YES;
-        MMLogVerbose(@"init Bing service");
+        MMLogInfo(@"init Bing service");
     }
     return self;
 }

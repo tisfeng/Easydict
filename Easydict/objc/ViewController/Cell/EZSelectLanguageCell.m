@@ -176,7 +176,7 @@
 
 // TODO: need to optimize. This should not use EZConfiguration directly.
 - (void)enterAction {
-    MMLogVerbose(@"enterAction");
+    MMLogInfo(@"enterAction");
     
     [self setNeedsUpdateConstraints:YES];
     
@@ -186,7 +186,7 @@
 }
 
 - (void)dealloc {
-//    MMLogVerbose(@"dealloc: %@", self);
+//    MMLogInfo(@"dealloc: %@", self);
 }
 
 @end

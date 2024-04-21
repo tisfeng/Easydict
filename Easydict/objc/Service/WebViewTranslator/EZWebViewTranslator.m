@@ -200,7 +200,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 - (void)getTextContentOfElement:(NSString *)selector
                      completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
-//    MMLogVerbose(@"get result count: %ld", self.retryCount + 1);
+//    MMLogInfo(@"get result count: %ld", self.retryCount + 1);
     
     if (self.retryCount > self.delayRetryCount) {
         if (self.delayQuerySelector.length) {

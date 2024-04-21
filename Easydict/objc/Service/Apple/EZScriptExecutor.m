@@ -57,7 +57,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
 //            data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             NSString *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             result = [output trim];
-//            MMLogVerbose(@"Apple translate result: %@", result);
+//            MMLogInfo(@"Apple translate result: %@", result);
         }
         
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];

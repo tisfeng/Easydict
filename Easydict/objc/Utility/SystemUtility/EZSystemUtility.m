@@ -97,7 +97,7 @@
     }
     CFRelease(systemWideElement);
     
-    MMLogVerbose(@"isEditable: %d", isEditable);
+    MMLogInfo(@"isEditable: %d", isEditable);
 
     return isEditable;
 }
