@@ -12,15 +12,16 @@
 
 import CocoaLumberjackSwift
 
+// Only log in debug mode, like MMLog.
 @inlinable
-public func logInfo(
+public func log(
     _ message: @autoclosure () -> String,
     file: StaticString = #file,
     function: StaticString = #function,
     line: UInt = #line,
     ddlog: DDLog = MMManagerForLog.sharedDDLog()
 ) {
-    DDLogInfo(
+    DDLogVerbose(
         message(),
         level: MMDefaultLogLevel,
         file: file,
@@ -32,14 +33,14 @@ public func logInfo(
 }
 
 @inlinable
-public func logVerbose(
+public func logInfo(
     _ message: @autoclosure () -> String,
     file: StaticString = #file,
     function: StaticString = #function,
     line: UInt = #line,
     ddlog: DDLog = MMManagerForLog.sharedDDLog()
 ) {
-    DDLogVerbose(
+    DDLogInfo(
         message(),
         level: MMDefaultLogLevel,
         file: file,
