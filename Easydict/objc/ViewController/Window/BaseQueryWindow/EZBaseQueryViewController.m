@@ -1516,12 +1516,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     BOOL isEnglishWord = [self.queryText isEnglishWordWithLanguage:self.queryModel.queryFromLanguage];
-    
     if (!isEnglishWord) {
-        MMLogWarn(@"Not an English Word");
         return;
     }
     
+    MMLogInfo(@"Auto play English word audio: %@", self.queryText);
     [self togglePlayQueryText:YES];
 }
 

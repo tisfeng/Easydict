@@ -128,7 +128,7 @@
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-    MMLogInfo(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
+//    MMLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
 
     [[EZLayoutManager shared] updateWindowFrame:self];
     
