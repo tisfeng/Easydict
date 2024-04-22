@@ -68,12 +68,12 @@
         // ???: Sometimes in Chrome, error is kAXErrorSuccess but replace text failed 😓
         error = AXUIElementSetAttributeValue(focusedElement, kAXSelectedTextAttribute, (__bridge CFTypeRef)(replacementString));
         if (error != kAXErrorSuccess) {
-            MMLogInfo(@"replaceSelectedText error: %d", error);
+            MMLogError(@"replaceSelectedText error: %d", error);
             [self replaceSelectedTextByKey:replacementString];
         }
         CFRelease(focusedElement);
     } else {
-        MMLogInfo(@"replaceSelectedText error: %d", error);
+        MMLogError(@"replaceSelectedText error: %d", error);
         [self replaceSelectedTextByKey:replacementString];
     }
     CFRelease(systemWideElement);

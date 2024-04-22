@@ -145,7 +145,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"deepL not support ocr");
+    MMLogWarn(@"deepL not support ocr");
 }
 
 - (BOOL)autoConvertTraditionalChinese {
@@ -178,9 +178,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     //                                         loadURL:self.wordLink
     //                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
     //        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    //        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+    //        MMLogInfo(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
     //
-    //        //        NSLog(@"deepL responseObject: %@", responseObject);
+    //        MMLogInfo(@"deepL responseObject: %@", responseObject);
     //    }];
 }
 
@@ -211,7 +211,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         @"id" : @(ID),
         @"params" : params
     };
-    //    NSLog(@"postData: %@", postData);
+//    MMLogInfo(@"postData: %@", postData);
 
     NSString *postStr = [postData mj_JSONString];
     if ((ID + 5) % 29 == 0 || (ID + 3) % 13 == 0) {
@@ -240,7 +240,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         }
         
         if (error) {
-            NSLog(@"deepLWebTranslate error: %@", error);
+            MMLogError(@"deepLWebTranslate error: %@", error);
             EZError *ezError = [EZError errorWithNSError:error];
             
             BOOL useOfficialAPI = (self.authKey.length > 0) && (self.apiType == EZDeepLTranslationAPIWebFirst);
@@ -275,7 +275,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         }
         
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"deepLWebTranslate cost: %.1f ms", (endTime - startTime) * 1000);
+        MMLogInfo(@"deepLWebTranslate cost: %.1f ms", (endTime - startTime) * 1000);
 
         EZDeepLTranslateResponse *deepLTranslateResponse = [EZDeepLTranslateResponse mj_objectWithKeyValues:responseObject];
         NSString *translatedText = [deepLTranslateResponse.result.texts.firstObject.text trim];
@@ -346,7 +346,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
     NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"deepLTranslate cost: %.1f ms", (endTime - startTime) * 1000);
+        MMLogInfo(@"deepLTranslate cost: %.1f ms", (endTime - startTime) * 1000);
         
         self.result.translatedResults = [self parseOfficialResponseObject:responseObject];
         self.result.raw = responseObject;
@@ -360,7 +360,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             return;
         }
         
-        NSLog(@"deepLTranslate error: %@", error);
+        MMLogError(@"deepLTranslate error: %@", error);
         
         if (self.apiType == EZDeepLTranslationAPIOfficialFirst) {
             [self deepLWebTranslate:text from:from to:to completion:completion];

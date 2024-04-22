@@ -951,7 +951,7 @@
 
 - (BOOL)checkAppIsTrusted {
     BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
-    NSLog(@"isTrusted: %d", isTrusted);
+    MMLogInfo(@"isTrusted: %d", isTrusted);
 
     return isTrusted == YES;
 }

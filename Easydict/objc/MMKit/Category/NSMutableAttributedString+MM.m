@@ -35,7 +35,7 @@
     NSError *error = nil;
     NSRegularExpression *regular = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
     if (error) {
-        NSLog(@"mm_updateWithFont:color:pattern: 正则匹配错误\nerror:%@", error);
+        MMLogError(@"mm_updateWithFont:color:pattern: 正则匹配错误\nerror:%@", error);
     }
     NSArray *matchResults = [regular matchesInString:self.string options:0 range:NSMakeRange(0, self.length)];
     for (NSTextCheckingResult *match in matchResults) {

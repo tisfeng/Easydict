@@ -103,14 +103,14 @@ struct MenuItemView: View {
             SettingsLink {
                 Text("Settings...")
             } preAction: {
-                NSLog("打开设置")
+                logInfo("打开设置")
                 NSApp.activate(ignoringOtherApps: true)
             } postAction: {
                 // nothing to do
             }
         } else {
             Button("Settings...") {
-                NSLog("打开设置")
+                logInfo("打开设置")
                 NSApp.activate(ignoringOtherApps: true)
                 NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
             }
@@ -121,7 +121,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var inputItem: some View {
         Button {
-            NSLog("输入翻译")
+            logInfo("输入翻译")
             EZWindowManager.shared().inputTranslate()
         } label: {
             HStack {
@@ -133,7 +133,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var screenshotItem: some View {
         Button {
-            NSLog("截图翻译")
+            logInfo("截图翻译")
             EZWindowManager.shared().snipTranslate()
         } label: {
             HStack {
@@ -145,7 +145,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var selectWordItem: some View {
         Button {
-            NSLog("划词翻译")
+            logInfo("划词翻译")
             EZWindowManager.shared().selectTextTranslate()
         } label: {
             HStack {
@@ -157,7 +157,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var miniWindowItem: some View {
         Button {
-            NSLog("显示迷你窗口")
+            logInfo("显示迷你窗口")
             EZWindowManager.shared().showMiniFloatingWindow()
         } label: {
             HStack {
@@ -169,7 +169,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var ocrItem: some View {
         Button {
-            NSLog("静默截图OCR")
+            logInfo("静默截图OCR")
             EZWindowManager.shared().screenshotOCR()
         } label: {
             HStack {
@@ -183,14 +183,14 @@ struct MenuItemView: View {
 
     @ViewBuilder private var checkUpdateItem: some View {
         Button("check_updates") {
-            NSLog("检查更新")
+            logInfo("检查更新")
             Configuration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 
     @ViewBuilder private var quitItem: some View {
         Button("quit") {
-            NSLog("退出应用")
+            logInfo("退出应用")
             NSApplication.shared.terminate(nil)
         }
     }
@@ -207,7 +207,7 @@ struct MenuItemView: View {
                 exportLogAction()
             }
             Button("Log Directory") {
-                NSLog("日志目录")
+                logInfo("日志目录")
                 let logPath = MMManagerForLog.rootLogDirectory() ?? ""
                 let directoryURL = URL(fileURLWithPath: logPath)
                 NSWorkspace.shared.open(directoryURL)
@@ -216,7 +216,7 @@ struct MenuItemView: View {
     }
 
     private func exportLogAction() {
-        NSLog("导出日志")
+        logInfo("导出日志")
         let logPath = MMManagerForLog.rootLogDirectory() ?? ""
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH-mm-ss-SSS"
@@ -232,7 +232,7 @@ struct MenuItemView: View {
         if success {
             NSWorkspace.shared.selectFile(zipPath, inFileViewerRootedAtPath: "")
         } else {
-            MMLogInfo("导出日志失败")
+            logError("导出日志失败")
         }
     }
 }

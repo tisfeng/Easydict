@@ -44,7 +44,7 @@
 /// ⚠️ Event name must contain only letters, numbers, or underscores.
 /// ⚠️ parameters dict key and value both should be NSString.
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
-    //    NSLog(@"log event: %@, %@", name, dict);
+//    MMLogError(@"log event: %@, %@", name, dict);
     
     if (![Configuration.shared allowAnalytics]) {
         return;

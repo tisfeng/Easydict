@@ -23,6 +23,14 @@
 
 @implementation MMFileLogFormatter
 
+#pragma mark - DDLogFormatter protocol
+
+- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
+    return [NSString stringWithFormat:@"[%@ ● %@ ● %zd ● %@] %@ ● %@", [self stringFromDate:logMessage.timestamp], logMessage.fileName, logMessage.line, [self logMessageEmoji:logMessage], logMessage.function, logMessage->_message];
+}
+
+#pragma mark -
+
 - (NSString *)stringFromDate:(NSDate *)date {
     // Single-threaded mode.
 
@@ -32,28 +40,6 @@
     }
 
     return [threadUnsafeDateFormatter stringFromDate:date];
-}
-
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-    NSString *logLevel;
-    switch (logMessage->_flag) {
-        case DDLogFlagError:
-            logLevel = @"❌";
-            break;
-        case DDLogFlagWarning:
-            logLevel = @"W";
-            break;
-        case DDLogFlagInfo:
-            logLevel = @"I";
-            break;
-        case DDLogFlagDebug:
-            logLevel = @"D";
-            break;
-        default:
-            logLevel = @"V";
-            break;
-    }
-    return [NSString stringWithFormat:@"[%@ ● %@ ● %zd ● %@] %@ ● %@", [self stringFromDate:logMessage.timestamp], logMessage.fileName, logMessage.line, logLevel, logMessage.function, logMessage->_message];
 }
 
 @end

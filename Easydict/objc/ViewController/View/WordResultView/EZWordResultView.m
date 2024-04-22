@@ -184,7 +184,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 }
                 
                 height += (topOffset + labelSize.height);
-                // NSLog(@"height = %1.f", height);
+//                MMLogInfo(@"height = %1.f", height);
             }];
             resultLabel.mas_key = @"resultLabel_normalResults";
             lastView = resultLabel;
@@ -493,7 +493,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += labelSize.height;
-            //            NSLog(@"height = %1.f", height);
+//            MMLogInfo(@"height = %1.f", height);
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
@@ -686,7 +686,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += labelHeight + topOffset;
-            //            NSLog(@"height = %1.f", height);
+//            MMLogInfo(@"height = %1.f", height);
         }];
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
@@ -749,7 +749,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += (kVerticalMargin_12 + labelSize.height);
-            //            NSLog(@"height = %1.f", height);
+//            MMLogInfo(@"height = %1.f", height);
         }];
         resultLabel.mas_key = @"resultLabel_etymology";
         lastView = resultLabel;
@@ -794,7 +794,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     textCopyButton.enabled = hasTranslatedText | result.HTMLString.length;
     
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
-        NSLog(@"copyActionBlock");
+        MMLogInfo(@"copyActionBlock");
         [result.copiedText copyAndShowToast:YES];
     }];
     textCopyButton.mas_key = @"result_copyButton";
@@ -819,7 +819,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     height += self.bottomViewHeight;
     _viewHeight = height;
-    //    NSLog(@"word result view height: %.1f", height);
+//    MMLogInfo(@"word result view height: %.1f", height);
     
     
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -974,11 +974,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - exceptedWidth;
-    //        NSLog(@"text: %@, width: %@", label.text, @(width));
-    //        NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
+//    MMLogInfo(@"text: %@, width: %@", label.text, @(width));
+//    MMLogInfo(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
     
     CGFloat height = [label ez_getTextViewHeightDesignatedWidth:width]; // 397 ?
-    //    NSLog(@"height: %@", @(height));
+//    MMLogInfo(@"height: %@", @(height));
     
     return CGSizeMake(width, height);
 }
@@ -1000,7 +1000,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
-        //        NSLog(@"escape: %@", textView);
+//        MMLogInfo(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         return NO;
     }
@@ -1010,30 +1010,30 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    NSLog(@"webView didFinishNavigation");
+    MMLogInfo(@"webView didFinishNavigation");
 
     [self.result.webViewManager updateAllIframe];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    NSLog(@"didFailNavigation: %@", error);
+    MMLogError(@"didFailNavigation: %@", error);
 }
 
 /** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    NSLog(@"didFailProvisionalNavigation: %@", error);
+    MMLogError(@"didFailProvisionalNavigation: %@", error);
 }
 
 // 监听 JavaScript 代码是否执行
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     // JavaScript 代码执行
-    NSLog(@"runJavaScriptAlertPanelWithMessage: %@", message);
+    MMLogInfo(@"runJavaScriptAlertPanelWithMessage: %@", message);
 }
 
 
 /** 在收到响应后，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-    //    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
+//    MMLogInfo(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
     
     // 这里可以查看页面内部的网络请求，并做出相应的处理
     // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
@@ -1048,13 +1048,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 /** 接收到服务器跳转请求即服务重定向时之后调用 */
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
-    //    NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
+//    MMLogInfo(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
 }
 
 /** 收到服务器响应后，在发送请求之前，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSURL *navigationActionURL = navigationAction.request.URL;
-    //    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
+//    MMLogInfo(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
     
     /**
      If URL has a prefix "x-dictionary", means this is a Apple Dictionary URI scheme. Docs: https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/DictionaryServicesProgGuide/schema/schema.html
@@ -1063,12 +1063,12 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      x-dictionary:r:z_DWS-004175:com.apple.dictionary.zh_CN-en.OCD
      */
     if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
-        NSLog(@"Open URI: %@", navigationActionURL);
+        MMLogInfo(@"Open URI: %@", navigationActionURL);
         
         NSString *hrefText = [navigationActionURL.absoluteString decode];
         
         [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
-            NSLog(@"URL text is: %@", text);
+            MMLogInfo(@"URL text is: %@", text);
             
             if (self.queryTextBlock) {
                 self.queryTextBlock([text trim]);
@@ -1093,7 +1093,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     // Cost ~0.15s
     //    NSString *script = @"document.documentElement.scrollHeight;";
     
-    NSLog(@"scrollHeight: %.1f", scrollHeight);
+    MMLogInfo(@"scrollHeight: %.1f", scrollHeight);
     
     CGFloat visibleFrameHeight = EZLayoutManager.shared.screen.visibleFrame.size.height;
     CGFloat maxHeight = visibleFrameHeight * 0.55;
@@ -1137,9 +1137,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      take: 1971476
      */
     
-    //            CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
-    //            NSLog(@"Delay showing time: %.2f", delayShowingTime);
-    
+//    CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+//    MMLogInfo(@"Delay showing time: %.2f", delayShowingTime);
+
     // !!!: Must update view height, then update cell height.
     
     if (self.updateViewHeightBlock) {
@@ -1223,8 +1223,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (void)evaluateJavaScript:(NSString *)jsCode completionHandler:(void (^_Nullable)(_Nullable id, NSError *_Nullable error))completionHandler {
     [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (error) {
-            NSLog(@"error: %@", error);
-            NSLog(@"jsCode: %@", jsCode);
+            MMLogError(@"error: %@", error);
+            MMLogError(@"jsCode: %@", jsCode);
         }
         
         if (completionHandler) {

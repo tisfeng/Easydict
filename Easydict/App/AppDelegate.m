@@ -42,29 +42,6 @@
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
 
-/// Auto set up app language.
-- (void)setupAppLanguage {
-    NSString *systemLanguageCode = @"en-CN";
-    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
-        systemLanguageCode = @"zh-CN";
-    }
-    
-    [self setupAppLanguage:systemLanguageCode];
-}
-
-/// Set up user app language, Chinese or English
-- (void)setupAppLanguage:(NSString *)languageCode {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *kAppleLanguagesKey = @"AppleLanguages";
-    NSMutableArray *userLanguages = [[defaults objectForKey:kAppleLanguagesKey] mutableCopy];
-    
-    // Avoid two identical languages.
-    [userLanguages removeObject:languageCode];
-    [userLanguages insertObject:languageCode atIndex:0];
-    
-    [defaults setObject:userLanguages forKey:kAppleLanguagesKey];
-}
-
 - (void)restartApplication {
     NSApplication *application = [NSApplication sharedApplication];
     [application terminate:nil];

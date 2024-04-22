@@ -94,7 +94,7 @@
 - (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     if (queryText.length == 0) {
         NSString *errorString = @"detectText cannot be nil";
-        NSLog(@"%@", errorString);
+        MMLogError(@"%@", errorString);
         completion(self.queryModel, [EZError errorWithType:EZErrorTypeParam description:errorString]);
         return;
     }
@@ -121,9 +121,9 @@
                 EZLanguage detectedLanguage = appleDetectdedLanguage;
                 if (!error) {
                     detectedLanguage = language;
-                    NSLog(@"baidu detected: %@", language);
+                    MMLogInfo(@"baidu detected: %@", language);
                 } else {
-                    MMLogInfo(@"baidu detect error: %@", error);
+                    MMLogError(@"baidu detect error: %@", error);
                 }
                 [self handleDetectedLanguage:detectedLanguage error:error completion:completion];
             }];
@@ -137,12 +137,12 @@
         if (languageDetectOptimize == EZLanguageDetectOptimizeGoogle) {
             [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
                 if (!error) {
-                    NSLog(@"google detected: %@", language);
+                    MMLogInfo(@"google detected: %@", language);
                     [self handleDetectedLanguage:language error:error completion:completion];
                     return;
                 }
                 
-                MMLogInfo(@"google detect error: %@", error);
+                MMLogError(@"google detect error: %@", error);
                 
                 // If google detect failed, use baidu detect.
                 baiduDetectBlock(queryText);
@@ -166,7 +166,7 @@
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSImage *image = self.queryModel.OCRImage;
     if (!image) {
-        NSLog(@"image cannot be nil");
+        MMLogWarn(@"image cannot be nil");
         return;
     }
     
@@ -177,7 +177,7 @@
 - (void)deepOCR:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSImage *image = self.queryModel.OCRImage;
     if (!image) {
-        NSLog(@"image cannot be nil");
+        MMLogWarn(@"image cannot be nil");
         return;
     }
     

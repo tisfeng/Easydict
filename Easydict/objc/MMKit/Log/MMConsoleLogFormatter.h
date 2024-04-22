@@ -11,8 +11,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @interface MMConsoleLogFormatter : NSObject <DDLogFormatter>
+
+- (NSString *)logMessageEmoji:(DDLogMessage *)logMessage;
 
 @end
 

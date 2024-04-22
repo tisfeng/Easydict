@@ -30,7 +30,7 @@
 }
 
 - (void)dealloc {
-    NSLog(@"mini window dealloc: %@", self);
+    MMLogInfo(@"mini window dealloc: %@", self);
 }
 
 @end
