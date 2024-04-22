@@ -384,11 +384,10 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.appearanceType)
+        Defaults.publisher(.appearanceType, options: [])
             .removeDuplicates()
             .sink { [weak self] change in
                 let newValue = change.newValue
-
                 self?.didSetAppearance(newValue)
             }
             .store(in: &cancellables)
