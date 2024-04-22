@@ -103,20 +103,19 @@ private class OpenAIServiceViewModel: ObservableObject {
 
     init(service: OpenAIService) {
         self.service = service
-        cancellables.append(
-            Defaults.publisher(.openAIModel, options: [])
-                .removeDuplicates()
-                .sink { _ in
-                    self.modelChanged()
-                }
-        )
-        cancellables.append(
-            Defaults.publisher(.openAIAvailableModels)
-                .removeDuplicates()
-                .sink { _ in
-                    self.modelsTextChanged()
-                }
-        )
+        Defaults.publisher(.openAIModel, options: [])
+            .removeDuplicates()
+            .sink { _ in
+                self.modelChanged()
+            }
+            .store(in: &cancellables)
+        Defaults.publisher(.openAIAvailableModels)
+            .removeDuplicates()
+            .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
+            .sink { _ in
+                self.modelsTextChanged()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: Internal
@@ -135,7 +134,7 @@ private class OpenAIServiceViewModel: ObservableObject {
 
     // MARK: Private
 
-    private var cancellables: [AnyCancellable] = []
+    private var cancellables: Set<AnyCancellable> = []
 
     private func modelChanged() {
         // Currently, user of low os versions can change OpenAI model using URL scheme, like easydict://writeKeyValue?EZOpenAIModelKey=gpt-4

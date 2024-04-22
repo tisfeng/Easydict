@@ -111,27 +111,26 @@ private class CustomOpenAIViewModel: ObservableObject {
 
     init(service: CustomOpenAIService) {
         self.service = service
-        cancellables.append(
-            Defaults.publisher(.customOpenAIModel, options: [])
-                .removeDuplicates()
-                .sink { _ in
-                    self.modelChanged()
-                }
-        )
-        cancellables.append(
-            Defaults.publisher(.customOpenAINameKey, options: [])
-                .removeDuplicates()
-                .sink { _ in
-                    self.serviceConfigChanged()
-                }
-        )
-        cancellables.append(
-            Defaults.publisher(.customOpenAIAvailableModels)
-                .removeDuplicates()
-                .sink { _ in
-                    self.modelsTextChanged()
-                }
-        )
+        Defaults.publisher(.customOpenAIModel, options: [])
+            .removeDuplicates()
+            .sink { _ in
+                self.modelChanged()
+            }
+            .store(in: &cancellables)
+        Defaults.publisher(.customOpenAINameKey, options: [])
+            .removeDuplicates()
+            .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
+            .sink { _ in
+                self.serviceConfigChanged()
+            }
+            .store(in: &cancellables)
+        Defaults.publisher(.customOpenAIAvailableModels)
+            .removeDuplicates()
+            .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
+            .sink { _ in
+                self.modelsTextChanged()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: Internal
@@ -150,7 +149,7 @@ private class CustomOpenAIViewModel: ObservableObject {
 
     // MARK: Private
 
-    private var cancellables: [AnyCancellable] = []
+    private var cancellables: Set<AnyCancellable> = []
 
     private func modelChanged() {
         if !validModels.contains(model) {
