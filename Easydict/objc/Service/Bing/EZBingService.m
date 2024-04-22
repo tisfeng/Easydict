@@ -24,7 +24,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         _canRetry = YES;
-        NSLog(@"init Bing service");
+        MMLogInfo(@"init Bing service");
     }
     return self;
 }
@@ -134,7 +134,7 @@
         @try {
             if (translateError) {
                 self.result.error = [EZError errorWithNSError:translateError];
-                NSLog(@"bing translate error %@", translateError);
+                MMLogError(@"bing translate error %@", translateError);
             } else {
                 BOOL needRetry;
                 NSError *error = [self processTranslateResult:translateData text:text from:from to:to needRetry:&needRetry];
@@ -151,14 +151,14 @@
                     return;
                 }
                 if (lookupError) {
-                    NSLog(@"bing lookup error %@", lookupError);
+                    MMLogError(@"bing lookup error %@", lookupError);
                 } else {
                     [self processWordSimpleWordAndPart:lookupData];
                 }
             }
             completion(self.result, translateError);
         } @catch (NSException *exception) {
-            MMLogInfo(@"微软翻译接口数据解析异常 %@", exception);
+            MMLogError(@"微软翻译接口数据解析异常 %@", exception);
             completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing translate data parse failed" request:nil]);
         }
     }];
@@ -208,7 +208,7 @@
         return;
     }
     
-    NSLog(@"Bing is fetching text audio: %@", text);
+    MMLogInfo(@"Bing is fetching text audio: %@", text);
     
     [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError *_Nullable error) {
         if (error || !audioData) {
@@ -485,7 +485,7 @@ outer:
         self.result.raw = json;
         completion(self.result, nil);
     } @catch (NSException *exception) {
-        MMLogInfo(@"微软词典接口数据解析异常 %@", exception);
+        MMLogWarn(@"微软词典接口数据解析异常 %@", exception);
         completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict translate data parse failed" request:nil]);
     }
 }

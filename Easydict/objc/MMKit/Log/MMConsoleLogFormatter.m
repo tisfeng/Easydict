@@ -8,29 +8,36 @@
 
 #import "MMConsoleLogFormatter.h"
 
-
 @implementation MMConsoleLogFormatter
 
+#pragma mark - DDLogFormatter protocol
+
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
+    return [NSString stringWithFormat:@"[%@ ● %zd ● %@] %@ ● %@", logMessage.fileName, logMessage.line, [self logMessageEmoji:logMessage], logMessage.function, logMessage->_message];
+}
+
+#pragma mark - Public
+
+- (NSString *)logMessageEmoji:(DDLogMessage *)logMessage {
     NSString *logLevel;
     switch (logMessage->_flag) {
         case DDLogFlagError:
             logLevel = @"❌";
             break;
         case DDLogFlagWarning:
-            logLevel = @"W";
+            logLevel = @"⚠️";
             break;
         case DDLogFlagInfo:
-            logLevel = @"I";
+            logLevel = @"ℹ️";
             break;
         case DDLogFlagDebug:
-            logLevel = @"D";
+            logLevel = @"🔨";
             break;
         default:
-            logLevel = @"V";
+            logLevel = @"⚙️";
             break;
     }
-    return [NSString stringWithFormat:@"[%@ ● %zd ● %@] %@ ● %@", logMessage.fileName, logMessage.line, logLevel, logMessage.function, logMessage->_message];
+    return logLevel;
 }
 
 @end

@@ -513,9 +513,9 @@ static EZConfiguration *_instance;
     EZScriptExecutor *exeCommand = [[EZScriptExecutor alloc] init];
     [exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         if (error) {
-            MMLogInfo(@"launchAtStartup error: %@", error);
+            MMLogError(@"launchAtStartup error: %@", error);
         } else {
-            NSLog(@"launchAtStartup result: %@", result);
+            MMLogInfo(@"launchAtStartup result: %@", result);
         }
     }];
 }
@@ -548,17 +548,17 @@ static EZConfiguration *_instance;
 //            success = [appService unregisterAndReturnError:&error];
 //        }
 //        if (error) {
-//            MMLogInfo(@"SMAppService error: %@", error);
+//            MMLogError(@"SMAppService error: %@", error);
 //        }
 //        if (!success) {
-//            MMLogInfo(@"SMAppService fail");
+//            MMLogError(@"SMAppService fail");
 //        }
 // #endif
 //    } else {
 //        // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
 //        BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
 //        if (!success) {
-//            MMLogInfo(@"SMLoginItemSetEnabled fail");
+//            MMLogError(@"SMLoginItemSetEnabled fail");
 //        }
 //    }
 //}

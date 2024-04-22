@@ -95,7 +95,7 @@
 		} else if ([type isEqualToString:xpmargs_barrier]) {
 			// skip the barrier
 		} else {
-			NSLog(@"Unknown type: %@", type);
+            MMLogWarn(@"Unknown type: %@", type);
 		}
 	}
 	

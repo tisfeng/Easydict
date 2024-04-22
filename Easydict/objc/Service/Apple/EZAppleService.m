@@ -322,7 +322,7 @@ static EZAppleService *_instance;
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (text.length == 0) {
-        NSLog(@"text is empty");
+        MMLogInfo(@"text is empty");
         return;
     }
     
@@ -334,7 +334,7 @@ static EZAppleService *_instance;
         @"from" : appleFromLangCode,
         @"to" : appleToLangCode,
     };
-    //    NSLog(@"Apple translate paramters: %@", paramters);
+//    MMLogInfo(@"Apple translate paramters: %@", paramters);
     
     NSTask *task = [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
@@ -409,7 +409,7 @@ static EZAppleService *_instance;
 }
 
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"Apple not support ocrAndTranslate");
+    MMLogInfo(@"Apple not support ocrAndTranslate");
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioURL, NSError *_Nullable error))completion {
@@ -434,7 +434,7 @@ static EZAppleService *_instance;
 }
 
 - (NSSpeechSynthesizer *)playTextAudio:(NSString *)text textLanguage:(EZLanguage)textLanguage {
-    NSLog(@"system speak: %@ (%@)", text, textLanguage);
+    MMLogInfo(@"system speak: %@ (%@)", text, textLanguage);
     
     // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
     NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:textLanguage];
@@ -544,7 +544,7 @@ static EZAppleService *_instance;
     // Cost about ~1ms
     if ([self.appleDictionary queryDictionaryForText:text language:designatedLanguage]) {
         *originalLanguage = designatedLanguage;
-        NSLog(@"Apple Dictionary Detect: %@ is %@", text, designatedLanguage);
+        MMLogInfo(@"Apple Dictionary Detect: %@ is %@", text, designatedLanguage);
         return YES;
     }
     return NO;
@@ -595,9 +595,9 @@ static EZAppleService *_instance;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     
     if (logFlag) {
-        NSLog(@"system probabilities: %@", languageProbabilityDict);
-        NSLog(@"dominant Language: %@", dominantLanguage);
-        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~4ms
+        MMLogInfo(@"system probabilities: %@", languageProbabilityDict);
+        MMLogInfo(@"dominant Language: %@", dominantLanguage);
+        MMLogInfo(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~4ms
     }
     
     return languageProbabilityDict;
@@ -724,9 +724,9 @@ static EZAppleService *_instance;
     EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:mostConfidentLanguage];
     
     if (logFlag) {
-        NSLog(@"user probabilities: %@", userPreferredLanguageProbabilities);
-        NSLog(@"final language probabilities: %@", languageProbabilities);
-        NSLog(@"---> Apple detect: %@", ezLanguage);
+        MMLogInfo(@"user probabilities: %@", userPreferredLanguageProbabilities);
+        MMLogInfo(@"final language probabilities: %@", languageProbabilities);
+        MMLogInfo(@"---> Apple detect: %@", ezLanguage);
     }
     
     /**
@@ -746,12 +746,12 @@ static EZAppleService *_instance;
             }
             
             if ([text isSpelledCorrectly:spellCheckerLanguage]) {
-                NSLog(@"Spell check language: %@", ezLang);
+                MMLogInfo(@"Spell check language: %@", ezLang);
                 return ezLang;
             }
         }
     }
-    NSLog(@"No spell checking, use Most Confident Language: %@", ezLanguage);
+    MMLogInfo(@"No spell checking, use Most Confident Language: %@", ezLanguage);
     
     return ezLanguage;
 }
@@ -763,7 +763,7 @@ static EZAppleService *_instance;
         language:(EZLanguage)preferredLanguage
       autoDetect:(BOOL)automaticallyDetectsLanguage
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    NSLog(@"ocr language: %@", preferredLanguage);
+    MMLogInfo(@"ocr language: %@", preferredLanguage);
     
     self.ocrImage = image;
     
@@ -783,7 +783,7 @@ static EZAppleService *_instance;
         VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
         VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
+            MMLogInfo(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
             
             EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
             ocrResult.from = preferredLanguage;
@@ -826,7 +826,7 @@ static EZAppleService *_instance;
             //            NSError *error;
             //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
             // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
-            //            NSLog(@"supported Languages: %@", supportedLanguages);
+            //            MMLogInfo(@"supported Languages: %@", supportedLanguages);
         }
         
         if (@available(macOS 13.0, *)) {
@@ -946,7 +946,7 @@ static EZAppleService *_instance;
                     [mostConfidentResults addObject:result];
                 }
                 NSString *mergedText = [ocrResult.mergedText trimToMaxLength:100];
-                NSLog(@"%@(%.2f): %@", ocrResult.from, ocrResult.confidence, mergedText);
+                MMLogInfo(@"%@(%.2f): %@", ocrResult.from, ocrResult.confidence, mergedText);
             }
             
             /**
@@ -969,7 +969,7 @@ static EZAppleService *_instance;
                     NSString *mergedText = ocrResult.mergedText;
                     EZLanguage detectedLanguage = [self detectText:mergedText];
                     if ([detectedLanguage isEqualToString:ocrResult.from]) {
-                        NSLog(@"OCR detect language: %@", detectedLanguage);
+                        MMLogInfo(@"OCR detect language: %@", detectedLanguage);
                         firstResult = result;
                         shouldBreak = YES;
                     }
@@ -987,7 +987,7 @@ static EZAppleService *_instance;
             
             NSString *mergedText = firstOCRResult.mergedText;
             NSString *logMergedText = [mergedText trimToMaxLength:100];
-            NSLog(@"Final ocr: %@(%.2f): %@", firstOCRResult.from, firstOCRResult.confidence, logMergedText);
+            MMLogInfo(@"Final ocr: %@(%.2f): %@", firstOCRResult.from, firstOCRResult.confidence, logMergedText);
             
             completion(firstOCRResult, error);
         }
@@ -995,7 +995,7 @@ static EZAppleService *_instance;
 }
 
 - (nullable NSArray<NSString *> *)detectQRCodeImage:(NSImage *)image {
-    NSLog(@"detect QRCode image");
+    MMLogInfo(@"detect QRCode image");
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
@@ -1018,10 +1018,10 @@ static EZAppleService *_instance;
     }
     
     if (result.count) {
-        NSLog(@"QR code results: %@", result);
+        MMLogInfo(@"QR code results: %@", result);
         
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~20ms
+        MMLogInfo(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~20ms
         
         return result;
     }
@@ -1075,7 +1075,7 @@ static EZAppleService *_instance;
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *textObservations = request.results;
-    NSLog(@"\n textObservations: %@", textObservations);
+    MMLogInfo(@"\n textObservations: %@", textObservations);
     
     NSInteger lineCount = textObservations.count;
     
@@ -1156,10 +1156,10 @@ static EZAppleService *_instance;
     }
     
     NSArray<NSString *> *stringArray = ocrResult.texts;
-    NSLog(@"Original ocr strings (%@): %@", ocrResult.from, stringArray);
+    MMLogInfo(@"Original ocr strings (%@): %@", ocrResult.from, stringArray);
     
     BOOL isPoetry = [self isPoetryOftextObservations:textObservations];
-    NSLog(@"isPoetry: %d", isPoetry);
+    MMLogInfo(@"isPoetry: %d", isPoetry);
     self.isPoetry = isPoetry;
     
     CGFloat confidence = 0;
@@ -1167,7 +1167,7 @@ static EZAppleService *_instance;
     
     // !!!: Need to Sort textObservations
     textObservations = [self sortedTextObservations:textObservations];
-    NSLog(@"Sorted ocr stings: %@", textObservations.recognizedTexts);
+    MMLogInfo(@"Sorted ocr stings: %@", textObservations.recognizedTexts);
     
     for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *textObservation = textObservations[i];
@@ -1177,7 +1177,7 @@ static EZAppleService *_instance;
         NSString *recognizedString = recognizedText.string;
         CGRect boundingBox = textObservation.boundingBox;
         
-        printf("%s\n", textObservation.description.UTF8String);
+        MMLogInfo(@"%s\n", textObservation.description.UTF8String);
         
         /**
          《摊破浣溪沙》  123  《浣溪沙》
@@ -1272,7 +1272,7 @@ static EZAppleService *_instance;
     
     NSString *showMergedText = [ocrResult.mergedText trimToMaxLength:100];
     
-    NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
+    MMLogInfo(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
 }
 
 /// Sort textObservations by textObservation.boundingBox.origin.y
@@ -1517,7 +1517,7 @@ static EZAppleService *_instance;
     
     BOOL isEqualFontSize = differenceFontSize <= differenceFontThreshold;
     if (!isEqualFontSize) {
-        NSLog(@"Not equal font size: difference = %.1f (%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
+        MMLogInfo(@"Not equal font size: difference = %.1f (%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
     }
     
     /**
@@ -1943,7 +1943,7 @@ static EZAppleService *_instance;
     if ((difference > 0 && difference < threshold) || fabs(difference) < (threshold / 2)) {
         return YES;
     }
-    NSLog(@"Not equalX text: %@(difference: %.1f, threshold: %.1f)", textObservation.firstText, difference, threshold);
+    MMLogInfo(@"Not equalX text: %@(difference: %.1f, threshold: %.1f)", textObservation.firstText, difference, threshold);
     
     return NO;
 }
@@ -1970,7 +1970,7 @@ static EZAppleService *_instance;
     
     BOOL isLongText = remainingAlphabetCount < threshold;
     if (!isLongText) {
-        NSLog(@"Not long text, remaining alphabet Count: %.1f (threshold: %1.f)", remainingAlphabetCount, threshold);
+        MMLogInfo(@"Not long text, remaining alphabet Count: %.1f (threshold: %1.f)", remainingAlphabetCount, threshold);
     }
     
     return isLongText;
@@ -2013,7 +2013,7 @@ static EZAppleService *_instance;
     
     // threshold is the actual display width.
     CGFloat threshold = alphabetCount * singleAlphabetWidth;
-    //    NSLog(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
+//    MMLogInfo(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
     
     return threshold;
 }
@@ -2045,7 +2045,7 @@ static EZAppleService *_instance;
      */
     
     CGFloat fontSize = textWidth * (systemFontSize / width);
-    //    NSLog(@"Calculated font size is: %.1f", fontSize);
+//    MMLogInfo(@"Calculated font size is: %.1f", fontSize);
     
     return fontSize;
 }
@@ -2124,7 +2124,7 @@ static EZAppleService *_instance;
     
     NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
     for (NSString *voice in availableVoices) {
-        //        NSLog(@"%@", voice);
+//        MMLogInfo(@"%@", voice);
         NSDictionary *attributesForVoice = [NSSpeechSynthesizer attributesForVoice:voice];
         NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
         if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {
@@ -2154,8 +2154,8 @@ static EZAppleService *_instance;
     // 检索英式英语的声音。
     AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
     
-    //    NSArray<AVSpeechSynthesisVoice *> *speechVoices = [AVSpeechSynthesisVoice speechVoices];
-    //    NSLog(@"speechVoices: %@", speechVoices);
+//    NSArray<AVSpeechSynthesisVoice *> *speechVoices = [AVSpeechSynthesisVoice speechVoices];
+//    MMLogInfo(@"speechVoices: %@", speechVoices);
     
     // 将语音分配给语音合成器。
     utterance.voice = voice;

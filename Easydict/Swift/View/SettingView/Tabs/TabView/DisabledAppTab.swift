@@ -92,7 +92,7 @@ struct DisabledAppTab: View {
                 case let .success(urls):
                     disabledAppViewModel.newAppURLsSelected(from: urls)
                 case let .failure(error):
-                    print("fileImporter error: \(error)")
+                    logError("fileImporter error: \(error)")
                     disabledAppViewModel.isShowImportErrorAlert.toggle()
                 }
             }

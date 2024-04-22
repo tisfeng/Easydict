@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-@import CocoaLumberjack;
+#import "MMConsoleLogFormatter.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-@interface MMFileLogFormatter : NSObject <DDLogFormatter>
+@interface MMFileLogFormatter : MMConsoleLogFormatter
 
 @end
 

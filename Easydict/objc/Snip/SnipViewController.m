@@ -188,7 +188,7 @@
 #pragma mark -
 
 - (void)mouseDown:(NSEvent *)event {
-    NSLog(@"鼠标按下 %@", self.view.window);
+    MMLogInfo(@"鼠标按下 %@", self.view.window);
     self.isStart = YES;
     self.startPoint = [NSEvent mouseLocation];
     self.startPoint = NSMakePoint(round(self.startPoint.x), round(self.startPoint.y));
@@ -198,7 +198,7 @@
 }
 
 - (void)mouseDragged:(NSEvent *)event {
-    // NSLog(@"鼠标拖拽 %@", self.view.window);
+//    MMLogInfo(@"鼠标拖拽 %@", self.view.window);
     if (!self.isStart) return;
 
     self.endPoint = [NSEvent mouseLocation];
@@ -208,7 +208,7 @@
 }
 
 - (void)mouseUp:(NSEvent *)event {
-    NSLog(@"鼠标起来 %@", self.view.window);
+    MMLogInfo(@"鼠标起来 %@", self.view.window);
     if (!self.isStart) return;
     self.isStart = NO;
     if (self.targetRect.size.width < 5 || self.targetRect.size.height < 5) {
@@ -230,7 +230,7 @@
                 self.endBlock(newImage);
             }
         } @catch (NSException *exception) {
-            NSLog(@"截取图片异常 %@", exception);
+            MMLogError(@"截取图片异常 %@", exception);
             if (self.endBlock) {
                 self.endBlock(nil);
             }

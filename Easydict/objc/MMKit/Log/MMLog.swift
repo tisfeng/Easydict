@@ -13,7 +13,7 @@
 import CocoaLumberjackSwift
 
 @inlinable
-public func MMLogInfo(
+public func logInfo(
     _ message: @autoclosure () -> String,
     file: StaticString = #file,
     function: StaticString = #function,
@@ -32,7 +32,7 @@ public func MMLogInfo(
 }
 
 @inlinable
-public func MMLogVerbose(
+public func logVerbose(
     _ message: @autoclosure () -> String,
     file: StaticString = #file,
     function: StaticString = #function,
@@ -40,6 +40,44 @@ public func MMLogVerbose(
     ddlog: DDLog = MMManagerForLog.sharedDDLog()
 ) {
     DDLogVerbose(
+        message(),
+        level: MMDefaultLogLevel,
+        file: file,
+        function: function,
+        line: line,
+        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        ddlog: ddlog
+    )
+}
+
+@inlinable
+public func logWarn(
+    _ message: @autoclosure () -> String,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    ddlog: DDLog = MMManagerForLog.sharedDDLog()
+) {
+    DDLogWarn(
+        message(),
+        level: MMDefaultLogLevel,
+        file: file,
+        function: function,
+        line: line,
+        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        ddlog: ddlog
+    )
+}
+
+@inlinable
+public func logError(
+    _ message: @autoclosure () -> String,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    ddlog: DDLog = MMManagerForLog.sharedDDLog()
+) {
+    DDLogError(
         message(),
         level: MMDefaultLogLevel,
         file: file,

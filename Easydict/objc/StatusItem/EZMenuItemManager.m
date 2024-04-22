@@ -105,10 +105,10 @@ static EZMenuItemManager *_instance;
     
     EZRightClickDetector *rightClickDetector = [[EZRightClickDetector alloc] initWithFrame:button.frame];
     rightClickDetector.onRightMouseClicked = ^(NSEvent *event){
-        NSLog(@"onRightMouseClicked");
-        //        [self.statusItem setMenu:self.menu];
-        
-        //        [button performClick:nil];
+        MMLogInfo(@"onRightMouseClicked");
+//        [self.statusItem setMenu:self.menu];
+//
+//        [button performClick:nil];
     };
     [button addSubview:rightClickDetector];
     
@@ -126,11 +126,11 @@ static EZMenuItemManager *_instance;
     
     // Handle your right click event here
     
-    NSLog(@"right click");
+    MMLogInfo(@"right click");
 }
 
 - (void)leftClickAction:(id)sender {
-    NSLog(@"left click");
+    MMLogInfo(@"left click");
 }
 
 
@@ -149,33 +149,33 @@ static EZMenuItemManager *_instance;
 }
 
 - (IBAction)translateAction:(NSMenuItem *)sender {
-    NSLog(@"select text translate");
+    MMLogInfo(@"select text translate");
     [EZWindowManager.shared selectTextTranslate];
 }
 
 - (IBAction)snipAction:(NSMenuItem *)sender {
-    NSLog(@"screenshot translate");
+    MMLogInfo(@"screenshot translate");
     [EZWindowManager.shared snipTranslate];
 }
 
 - (IBAction)inputTranslate:(NSMenuItem *)sender {
-    NSLog(@"input translate");
+    MMLogInfo(@"input translate");
     [EZWindowManager.shared inputTranslate];
 }
 
 - (IBAction)showMiniFloatingWindow:(NSMenuItem *)sender {
-    NSLog(@"show mini windown");
+    MMLogInfo(@"show mini windown");
     [EZWindowManager.shared showMiniFloatingWindow];
 }
 
 - (IBAction)screenshotOCRAction:(NSMenuItem *)sender {
-    NSLog(@"screenshot OCR");
+    MMLogInfo(@"screenshot OCR");
     [EZWindowManager.shared screenshotOCR];
 }
 
 
 - (IBAction)settingAction:(NSMenuItem *)sender {
-    NSLog(@"设置...");
+    MMLogInfo(@"设置...");
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     }
@@ -183,18 +183,18 @@ static EZMenuItemManager *_instance;
 }
 
 - (IBAction)checkForUpdateItem:(id)sender {
-    NSLog(@"checkForUpdate");
+    MMLogInfo(@"checkForUpdate");
     [EZConfiguration.shared.updater checkForUpdates];
 }
 
 - (IBAction)feedbackAction:(NSMenuItem *)sender {
-    NSLog(@"反馈问题");
+    MMLogInfo(@"反馈问题");
     NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZGithubRepoEasydictURL];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
 }
 
 - (IBAction)exportLogAction:(id)sender {
-    NSLog(@"导出日志");
+    MMLogInfo(@"导出日志");
     NSString *logPath = [MMManagerForLog rootLogDirectory];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH-mm-ss-SSS"];
@@ -205,7 +205,7 @@ static EZMenuItemManager *_instance;
     if (result) {
         [[NSWorkspace sharedWorkspace] selectFile:zipPath inFileViewerRootedAtPath:@""];
     } else {
-        MMLogInfo(@"导出日志失败");
+        MMLogError(@"导出日志失败");
     }
 }
 
@@ -216,7 +216,7 @@ static EZMenuItemManager *_instance;
 }
 
 - (IBAction)quitAction:(NSMenuItem *)sender {
-    NSLog(@"退出应用");
+    MMLogInfo(@"退出应用");
     [NSApplication.sharedApplication terminate:nil];
 }
 
@@ -345,7 +345,7 @@ static EZMenuItemManager *_instance;
         NSDictionary *dict = responseObject;
         completion(dict);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+        MMLogError(@"Error: %@", error);
     }];
 }
 

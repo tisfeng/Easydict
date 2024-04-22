@@ -270,7 +270,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     NSModalResponse result = [openPanel runModal];
     if (result == NSModalResponseOK) {
-        NSLog(@"selected URLs: %@", openPanel.URLs);
+        MMLogInfo(@"selected URLs: %@", openPanel.URLs);
         
         NSArray *appModels = [self appModelsFromBundleURLs:openPanel.URLs];
         [self.appModelList addObjectsFromArray:appModels];

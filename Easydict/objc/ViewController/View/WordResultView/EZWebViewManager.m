@@ -42,7 +42,7 @@ static NSString *kMethod = @"method";
     if ([message.name isEqualToString:kObjcHandler]) {
         if ([body[kMethod] isEqualToString:@"consoleLog"]) {
             NSString *message = body[@"message"];
-            NSLog(@"<javascript log>: %@", message);
+            MMLogInfo(@"<javascript log>: %@", message);
         }
         
         if ([body[kMethod] isEqualToString:@"noteToUpdateScrollHeight"]) {

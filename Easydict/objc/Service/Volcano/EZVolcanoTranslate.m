@@ -169,14 +169,14 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     //                                             loadURL:self.wordLink
     //                                   completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
     //            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    //            NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+    //            MMLogInfo(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
     //
-    //            //        NSLog(@"deepL responseObject: %@", responseObject);
+    //            MMLogInfo(@"deepL responseObject: %@", responseObject);
     //        }];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"volcano not support ocr");
+    MMLogWarn(@"volcano not support ocr");
 }
 
 @end

@@ -37,7 +37,7 @@ public final class TencentService: QueryService {
     }
 
     override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        NSLog("Tencent Translate currently does not support OCR")
+        logInfo("Tencent Translate currently does not support OCR")
         throw QueryServiceError.notSupported
     }
 
@@ -114,7 +114,7 @@ public final class TencentService: QueryService {
                 result.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
                 completion(result, nil)
             case let .failure(error):
-                NSLog("Tencent lookup error \(error)")
+                logError("Tencent lookup error \(error)")
                 let ezError = EZError(nsError: error)
 
                 if let data = response.data {
@@ -122,7 +122,7 @@ public final class TencentService: QueryService {
                         let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
                         ezError?.errorDataMessage = errorResponse.response.error.message
                     } catch {
-                        NSLog("Failed to decode error response: \(error)")
+                        logError("Failed to decode error response: \(error)")
                     }
                 }
                 completion(result, ezError)

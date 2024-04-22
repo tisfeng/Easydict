@@ -35,7 +35,7 @@ class AliService: QueryService {
     }
 
     override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        print("ali Translate does not support OCR")
+        logInfo("ali Translate does not support OCR")
         throw QueryServiceError.notSupported
     }
 
@@ -116,7 +116,7 @@ class AliService: QueryService {
                     case let .success(value):
                         tokenResponse = value
                     case let .failure(error):
-                        print("ali translate get token error: \(error)")
+                        logError("ali translate get token error: \(error)")
                     }
 
                     requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
@@ -241,7 +241,7 @@ class AliService: QueryService {
                     if let data = value.data, let translateText = data.translated {
                         result.translatedResults = [translateText]
                         completion(result, nil)
-                        print("ali api translate success")
+                        logInfo("ali api translate success")
                     } else {
                         completion(
                             result,
@@ -257,7 +257,7 @@ class AliService: QueryService {
                         msg = error.errorDescription
                     }
 
-                    print("ali api translate error: \(msg ?? "")")
+                    logError("ali api translate error: \(msg ?? "")")
                     completion(result, EZError(nsError: error, errorDataMessage: msg))
                 }
             }
@@ -305,7 +305,7 @@ class AliService: QueryService {
                 if value.success, let translateText = value.data?.translateText {
                     result.translatedResults = [translateText.unescapedXML()]
                     completion(result, nil)
-                    print("ali web translate success")
+                    logInfo("ali web translate success")
                 } else {
                     let ezError = EZError(
                         type: .API,
@@ -318,7 +318,7 @@ class AliService: QueryService {
             case let .failure(error):
                 // The result returned when the token expires is HTML.
                 if hasToken.has, error.isResponseSerializationError {
-                    print("ali web token invaild")
+                    logError("ali web token invaild")
                     tokenResponse = nil
                     if canWebRetry {
                         canWebRetry = false
@@ -337,7 +337,7 @@ class AliService: QueryService {
                         msg = error.errorDescription
                     }
 
-                    print("ali web translate error: \(msg ?? "")")
+                    logError("ali web translate error: \(msg ?? "")")
                     completion(result, EZError(nsError: error, errorDataMessage: msg))
                 }
             }

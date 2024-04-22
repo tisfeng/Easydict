@@ -44,7 +44,7 @@
     
     mm_weakify(self)
     [audioButton setClickBlock:^(EZButton * _Nonnull button) {
-        NSLog(@"audioActionBlock");
+        MMLogInfo(@"audioActionBlock");
         
         mm_strongify(self)
         if (self.playAudioBlock) {
@@ -62,7 +62,7 @@
     textCopyButton.toolTip = @"Copy";
     
     [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
-        NSLog(@"copyActionBlock");
+        MMLogInfo(@"copyActionBlock");
         
         mm_strongify(self)
         if (self.copyTextBlock) {

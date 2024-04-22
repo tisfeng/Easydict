@@ -66,7 +66,7 @@ static NSString *const EZQueryKey = @"{Query}";
 
 - (void)openURLWithQueryText:(NSString *)text {
     if (self.link.length == 0) {
-        NSLog(@"open link is empty");
+        MMLogWarn(@"open link is empty");
         return;
     }
 
@@ -94,7 +94,7 @@ static NSString *const EZQueryKey = @"{Query}";
         }
     }
     
-    NSLog(@"open url: %@", URL);
+    MMLogInfo(@"open url: %@", URL);
 
     // !!!: when using openURL, URL must has scheme, like https://
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:URL];

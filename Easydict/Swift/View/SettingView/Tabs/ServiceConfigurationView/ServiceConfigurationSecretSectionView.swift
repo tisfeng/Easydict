@@ -91,7 +91,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                 viewModel.errorMessage = result.errorMessage ?? ""
                 viewModel.isAlertPresented = true
 
-                print("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
+                logInfo("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
             }
         }
     }

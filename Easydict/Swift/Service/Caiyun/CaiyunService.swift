@@ -40,7 +40,7 @@ public final class CaiyunService: QueryService {
     }
 
     override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        NSLog("Caiyun Translate does not support OCR")
+        logInfo("Caiyun Translate does not support OCR")
         throw QueryServiceError.notSupported
     }
 
@@ -100,7 +100,7 @@ public final class CaiyunService: QueryService {
                 result.translatedResults = value.target
                 completion(result, nil)
             case let .failure(error):
-                NSLog("Caiyun lookup error \(error)")
+                logError("Caiyun lookup error \(error)")
                 let ezError = EZError(nsError: error, errorResponseData: response.data)
                 completion(result, ezError)
             }

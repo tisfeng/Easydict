@@ -17,7 +17,7 @@
     
     for (NSString *key in appUserDefaultsData) {
         id value = [appUserDefaultsData objectForKey:key];
-//        NSLog(@"Key: %@, Value: %@", key, value);
+//        MMLogInfo(@"Key: %@, Value: %@", key, value);
         
         if (![key hasPrefix:@"MASPreferences"] && ![value isKindOfClass:[NSData class]]) {
             userConfigDict[key] = value;
@@ -51,7 +51,7 @@
     NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
     
     if (error) {
-        NSLog(@"Failed to convert dictionary to plist: %@", error);
+        MMLogError(@"Failed to convert dictionary to plist: %@", error);
         return;
     }
     
@@ -59,9 +59,9 @@
     BOOL success = [plistData writeToFile:plistPath atomically:YES];
     
     if (success) {
-        NSLog(@"Plist saved to download folder: %@", plistPath);
+        MMLogInfo(@"Plist saved to download folder: %@", plistPath);
     } else {
-        NSLog(@"Failed to save plist to download folder");
+        MMLogError(@"Failed to save plist to download folder");
     }
 }
 
@@ -79,7 +79,7 @@
     formatter.timeStyle = NSDateFormatterMediumStyle;
 
     NSString *formattedDate = [formatter stringFromDate:currentDate];
-    NSLog(@"Formatted Date: %@", formattedDate);
+    MMLogInfo(@"Formatted Date: %@", formattedDate);
     
     return formattedDate;
 }

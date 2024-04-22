@@ -55,7 +55,7 @@ public final class GeminiService: QueryService {
             do {
                 let prompt = GeminiService
                     .translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
-//                print("gemini prompt: \(prompt)")
+                logInfo("gemini prompt: \(prompt)")
                 let model = GenerativeModel(
                     name: "gemini-pro",
                     apiKey: apiKey,

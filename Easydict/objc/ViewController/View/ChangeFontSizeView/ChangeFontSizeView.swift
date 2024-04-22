@@ -133,8 +133,6 @@ public class ChangeFontSizeView: NSView {
 
     private func updateSelectedLineFrame() {
         selectedScaleLine.frame = selectedLineTargetFrame()
-
-//        print("[DEBUG] selectedLine.frame: ", selectedLine.frame)
     }
 
     private func selectedLineTargetFrame() -> NSRect {

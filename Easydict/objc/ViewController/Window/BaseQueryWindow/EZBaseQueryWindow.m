@@ -104,13 +104,13 @@
 
 
 - (void)dealloc {
-    NSLog(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc: %@", self);
 }
 
 #pragma mark - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-//    NSLog(@"windowDidBecomeKey: %@", self);
+//    MMLogInfo(@"windowDidBecomeKey: %@", self);
     
     // We need to update the window type when the window becomes the key window.
     [EZWindowManager.shared updateFloatingWindowType:self.windowType isShowing:YES];
@@ -121,14 +121,14 @@
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
-//    NSLog(@"windowDidResignKey: %@", self);
+//    MMLogInfo(@"windowDidResignKey: %@", self);
     
     // Close floating window when losing focus if it's not pinned or main window.
     [EZWindowManager.shared closeFloatingWindowIfNotPinned:self.windowType exceptWindowType:EZWindowTypeMain];
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-//    NSLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
+    MMLogInfo(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
 
     [[EZLayoutManager shared] updateWindowFrame:self];
     
@@ -151,7 +151,7 @@
 
 // Window is hidden or showing.
 - (void)windowDidChangeOcclusionState:(NSNotification *)notification {
-    //    NSLog(@"window Did Change Occlusion State");
+//    MMLogInfo(@"window Did Change Occlusion State");
     
     // Window is obscured
     if (self.occlusionState != NSWindowOcclusionStateVisible) {
