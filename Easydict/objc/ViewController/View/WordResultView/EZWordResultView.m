@@ -1010,7 +1010,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    MMLogInfo(@"webView didFinishNavigation");
+//    MMLog(@"webView didFinishNavigation");
 
     [self.result.webViewManager updateAllIframe];
 }
@@ -1093,7 +1093,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     // Cost ~0.15s
     //    NSString *script = @"document.documentElement.scrollHeight;";
     
-    MMLogInfo(@"scrollHeight: %.1f", scrollHeight);
+//    MMLog(@"scrollHeight: %.1f", scrollHeight);
     
     CGFloat visibleFrameHeight = EZLayoutManager.shared.screen.visibleFrame.size.height;
     CGFloat maxHeight = visibleFrameHeight * 0.55;

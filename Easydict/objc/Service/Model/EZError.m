@@ -85,6 +85,13 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     }
     
     NSString *queryFailedString = NSLocalizedString(@"query_failed", nil);
+    /**
+     FIXME: If the first character of the text is an emoji, like "💥 失败", NSTextView will render spaces incorrectly.
+     I don't know how to fix it, so I'm inserting an invisible special character at the beginning.
+     */
+    NSString *zeroWidthSpace = @"\u200B";
+    queryFailedString = [zeroWidthSpace stringByAppendingString:queryFailedString];
+
     if (errorString.length) {
         errorString = [NSString stringWithFormat:@"%@, %@", queryFailedString, errorString];
     }

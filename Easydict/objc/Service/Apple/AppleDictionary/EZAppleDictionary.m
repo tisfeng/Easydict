@@ -254,7 +254,7 @@ static EZAppleDictionary *_instance;
 - (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word 
                                   inDictionary:(TTTDictionary *)dictionary
                                       language:(nullable EZLanguage)language {
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     NSMutableArray *entryHTMLs = [NSMutableArray array];
     
     // Cost about ~10ms
@@ -270,8 +270,8 @@ static EZAppleDictionary *_instance;
         }
     }
     
-    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    MMLogInfo(@"Query [%@] dict cost: %.1f ms", dictionary.name, (endTime - startTime) * 1000); // 13ms
+//    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+//    MMLog(@"Query [%@] dict cost: %.1f ms", dictionary.name, (endTime - startTime) * 1000); // 13ms
     
     return entryHTMLs;
 }

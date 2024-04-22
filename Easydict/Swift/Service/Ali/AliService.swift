@@ -241,7 +241,6 @@ class AliService: QueryService {
                     if let data = value.data, let translateText = data.translated {
                         result.translatedResults = [translateText]
                         completion(result, nil)
-                        logInfo("ali api translate success")
                     } else {
                         completion(
                             result,
@@ -257,7 +256,7 @@ class AliService: QueryService {
                         msg = error.errorDescription
                     }
 
-                    logError("ali api translate error: \(msg ?? "")")
+                    logError("Ali translate error: \(msg ?? "")")
                     completion(result, EZError(nsError: error, errorDataMessage: msg))
                 }
             }
