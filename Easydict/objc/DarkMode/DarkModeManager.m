@@ -50,7 +50,7 @@ singleton_m(DarkModeManager);
 
 - (void)updateDarkMode:(NSInteger)apperance {
     BOOL isDarkMode = [self isDarkMode];
-    NSLog(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
+    MMLogInfo(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
     
     AppearenceType type = apperance;
     switch (type) {

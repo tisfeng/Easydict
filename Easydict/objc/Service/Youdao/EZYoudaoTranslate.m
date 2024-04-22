@@ -383,7 +383,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                     }
                 }
             } @catch (NSException *exception) {
-                MMLogInfo(@"有道翻译OCR接口数据解析异常 %@", exception);
+                MMLogError(@"有道翻译OCR接口数据解析异常 %@", exception);
                 message = @"有道翻译OCR接口数据解析异常";
             }
         }
@@ -409,7 +409,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             if ([to isEqualToString:EZLanguageAuto] || [to isEqualToString:EZOCRResult.to]) {
                 if (!(([EZOCRResult.to isEqualToString:EZLanguageSimplifiedChinese] || [EZOCRResult.to isEqualToString:EZLanguageEnglish]) && ![EZOCRResult.mergedText containsString:@" "])) {
                     // 直接回调翻译结果
-                    NSLog(@"直接输出翻译结果");
+                    MMLogInfo(@"直接输出翻译结果");
                     ocrSuccess(EZOCRResult, NO);
                     EZQueryResult *result = [EZQueryResult new];
                     result.queryText = EZOCRResult.mergedText;
@@ -452,7 +452,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     dispatch_group_enter(group);
     [self queryYoudaoDict:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (error) {
-            NSLog(@"queryYoudaoDict error: %@", error);
+            MMLogError(@"queryYoudaoDict error: %@", error);
         }
         dispatch_group_leave(group);
     }];
@@ -463,7 +463,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         dispatch_group_enter(group);
         [self webTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
-                NSLog(@"translateYoudaoAPI error: %@", error);
+                MMLogError(@"translateYoudaoAPI error: %@", error);
                 self.result.error = [EZError errorWithNSError:error];
             }
             dispatch_group_leave(group);
@@ -489,14 +489,11 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     
-    // Youdao dict can query word, phrase, even short text.
-    BOOL shouldQueryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:1];
-
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
     BOOL supportQueryDictionaryLanguage = foreignLangauge != nil;
     
     // If Youdao Dictionary does not support the language, try querying translate API.
-    if (!enableDictionary || !supportQueryDictionaryLanguage || !shouldQueryDictionary) {
+    if (!enableDictionary || !supportQueryDictionaryLanguage) {
         completion(self.result, [EZError errorWithType:EZErrorTypeNoResultsFound]);
         return;
     }
@@ -522,6 +519,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSString *message = nil;
+
         if (responseObject) {
             @try {
                 EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
@@ -529,7 +527,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                 completion(self.result, self.result.error);
                 return;
             } @catch (NSException *exception) {
-                MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
+                MMLogError(@"有道翻译接口数据解析异常 %@", exception);
                 message = @"有道翻译接口数据解析异常";
             }
         }
@@ -716,7 +714,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                                 if ([obj isKindOfClass:NSString.class]) {
                                     if ([obj containsString:@";"]) {
                                         // 拆分成多个
-                                        NSLog(@"有道翻译手动拆词 %@", obj);
+                                        MMLogInfo(@"有道翻译手动拆词 %@", obj);
                                         NSArray<NSString *> *words = [obj componentsSeparatedByString:@";"];
                                         [words enumerateObjectsUsingBlock:^(NSString *_Nonnull subObj, NSUInteger idx, BOOL *_Nonnull stop) {
                                             EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
@@ -736,7 +734,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                                     if ([text isKindOfClass:NSString.class] && text.length) {
                                         if ([text containsString:@";"]) {
                                             // 拆分成多个 测试中
-                                            NSLog(@"有道翻译手动拆词 %@", text);
+                                            MMLogInfo(@"有道翻译手动拆词 %@", text);
                                             NSArray<NSString *> *words = [text componentsSeparatedByString:@";"];
                                             [words enumerateObjectsUsingBlock:^(NSString *_Nonnull subObj, NSUInteger idx, BOOL *_Nonnull stop) {
                                                 EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
@@ -791,7 +789,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                     message = [NSString stringWithFormat:@"错误码 %@", response.errorCode];
                 }
             } @catch (NSException *exception) {
-                MMLogInfo(@"有道翻译翻译接口数据解析异常 %@", exception);
+                MMLogError(@"有道翻译翻译接口数据解析异常 %@", exception);
                 message = @"有道翻译翻译接口数据解析异常";
             }
         }

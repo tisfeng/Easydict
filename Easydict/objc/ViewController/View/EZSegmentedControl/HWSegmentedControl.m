@@ -69,9 +69,9 @@
 {
     [self.paths removeAllObjects];
     NSString *title = self.titles[0];
-    //    NSDictionary *dict = @{NSFontAttributeName:[NSFont systemFontOfSize:13]};
-    //    NSSize size = [title boundingRectWithSize:NSMakeSize(MAXFLOAT, kPointMake(36)) options:0 attributes:dict context:nil].size;
-    //    NSLog(@"%f",13);
+//    NSDictionary *dict = @{NSFontAttributeName:[NSFont systemFontOfSize:13]};
+//    NSSize size = [title boundingRectWithSize:NSMakeSize(MAXFLOAT, kPointMake(36)) options:0 attributes:dict context:nil].size;
+//    MMLogInfo(@"%f",13);
     NSRect rect = self.frame;
     
     CGFloat widthFirst = [self getTitleSize:title].width ;
@@ -168,11 +168,8 @@
     [self.paths enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSBezierPath *path = obj;
         if ([path containsPoint:point]) {
-            NSLog(@"mouseDown  %ld",idx);
-//            if (self.index != idx) {
-//               
-//            }
-            
+            MMLogInfo(@"mouseDown  %ld",idx);
+
             self.index = idx;
             [self setNeedsDisplay:YES];
             if ([self.delegate respondsToSelector:@selector(selectTitleIndex:)]) {

@@ -35,7 +35,7 @@ class CustomOpenAIService: BaseOpenAIService {
         Defaults[.customOpenAIAPIKey] ?? ""
     }
 
-    override var endPoint: String {
+    override var endpoint: String {
         Defaults[.customOpenAIEndPoint] ?? ""
     }
 
@@ -50,9 +50,7 @@ class CustomOpenAIService: BaseOpenAIService {
     }
 
     override var availableModels: [String] {
-        let models = Defaults[.customOpenAIModelsAvailable]
-        guard let models, !models.isEmpty else { return [] }
-        return models.components(separatedBy: ",").filter { !$0.isEmpty }
+        Defaults[.customOpenAIVaildModels]
     }
 
     override func serviceType() -> ServiceType {
@@ -103,9 +101,5 @@ class CustomOpenAIService: BaseOpenAIService {
         let customOpenAIServiceUsageStatus = Defaults[.customOpenAIServiceUsageStatus]
         guard let value = UInt(customOpenAIServiceUsageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
-    }
-
-    override func hasPrivateAPIKey() -> Bool {
-        !apiKey.isEmpty
     }
 }

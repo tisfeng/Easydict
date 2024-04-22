@@ -21,7 +21,7 @@ public final class GeminiService: QueryService {
     }
 
     override public func link() -> String? {
-        "https://bard.google.com/chat"
+        "https://gemini.google.com/"
     }
 
     override public func name() -> String {
@@ -41,22 +41,7 @@ public final class GeminiService: QueryService {
         return orderedDict
     }
 
-    override public func needPrivateAPIKey() -> Bool {
-        true
-    }
-
-    override public func hasPrivateAPIKey() -> Bool {
-        if apiKey == defaultAPIKey {
-            return false
-        }
-        return true
-    }
-
-    override public func totalFreeQueryCharacterCount() -> Int {
-        100_000 * 1000
-    }
-
-    override public func autoConvertTraditionalChinese() -> Bool {
+    public override func isStream() -> Bool {
         true
     }
 
@@ -70,7 +55,7 @@ public final class GeminiService: QueryService {
             do {
                 let prompt = GeminiService
                     .translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
-                print("gemini prompt: \(prompt)")
+                logInfo("gemini prompt: \(prompt)")
                 let model = GenerativeModel(
                     name: "gemini-pro",
                     apiKey: apiKey,
@@ -82,29 +67,33 @@ public final class GeminiService: QueryService {
                     ]
                 )
 
+                // Gemini Docs: https://github.com/google/generative-ai-swift
                 if #available(macOS 12.0, *) {
+                    result.isStreamFinished = false
+
                     var resultString = ""
                     let outputContentStream = model.generateContentStream(prompt)
 
-                    // stream response
                     for try await outputContent in outputContentStream {
                         guard let line = outputContent.text else {
                             return
                         }
-
-                        resultString += line
-                        result.translatedResults = [resultString]
-                        await MainActor.run {
-                            completion(result, nil)
+                        if !result.isStreamFinished {
+                            resultString += line
+                            result.translatedResults = [resultString]
+                            await MainActor.run {
+                                completion(result, nil)
+                            }
                         }
                     }
-
+                    result.isStreamFinished = true
+                    completion(result, nil)
                 } else {
+                    // Gemini does not support stream in macOS 12.0-
                     let outputContent = try await model.generateContent(prompt)
                     guard let resultString = outputContent.text else {
                         return
                     }
-
                     result.translatedResults = [resultString]
                     await MainActor.run {
                         completion(result, nil)
@@ -118,6 +107,8 @@ public final class GeminiService: QueryService {
 
                  "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
                  */
+                result.isStreamFinished = true
+
                 let ezError = EZError(nsError: error)
                 let errorString = String(describing: error)
                 let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
@@ -156,12 +147,7 @@ public final class GeminiService: QueryService {
 
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {
-        let apiKey = Defaults[.geminiAPIKey]
-        if let apiKey, !apiKey.isEmpty {
-            return apiKey
-        } else {
-            return defaultAPIKey
-        }
+        Defaults[.geminiAPIKey] ?? ""
     }
 }
 

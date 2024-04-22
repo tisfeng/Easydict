@@ -57,7 +57,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
 //            data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             NSString *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             result = [output trim];
-//            NSLog(@"Apple translate result: %@", result);
+//            MMLogInfo(@"Apple translate result: %@", result);
         }
         
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];
@@ -83,7 +83,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
         }
         
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"run AppleScript Task cost: %.1f ms", (endTime - startTime) * 1000);
+        MMLogInfo(@"run AppleScript Task cost: %.1f ms", (endTime - startTime) * 1000);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(result, error);
@@ -116,13 +116,13 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
             }
             
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            NSLog(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
+            MMLogInfo(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(resultString, error);
             });
         } @catch (NSException *exception) {
-            MMLogInfo(@"exception: %@", exception);
+            MMLogError(@"exception: %@", exception);
             [self runAppleScriptWithTask:script completionHandler:completionHandler];
              
 #if Debug

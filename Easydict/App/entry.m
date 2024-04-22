@@ -45,19 +45,19 @@ void parseArmguments(void) {
     } else {
         NSString *query_text = [[arguments firstObjectForSignature:queryTextSig] description];
         if (query_text) {
-            NSLog(@"queryText: %@", query_text);
+            MMLogInfo(@"queryText: %@", query_text);
             queryText(query_text);
         }
         
         NSString *detect_text = [[arguments firstObjectForSignature:detectTextSig] description];
         if (detect_text) {
-            NSLog(@"detectText: %@", detect_text);
+            MMLogInfo(@"detectText: %@", detect_text);
         }
         
         if (detect_text) {
             delay_block(^{
                 [EZWindowManager.shared detectQueryText:detect_text completion:^(NSString * _Nonnull language) {
-                    printf("%s\n", [language UTF8String]);
+                    MMLogInfo(@"%s\n", [language UTF8String]);
                 }];
             });
         }
@@ -67,7 +67,7 @@ void parseArmguments(void) {
         struct winsize ws;
         ioctl(0, TIOCGWINSZ, &ws);
         
-        printf("Example program:\n");
-        printf("  %s Query text\n", [[queryTextSig descriptionForHelpWithIndent:2 terminalWidth:(NSUInteger)ws.ws_col] UTF8String]);
+        MMLogInfo(@"Example program:\n");
+        MMLogInfo(@"  %s Query text\n", [[queryTextSig descriptionForHelpWithIndent:2 terminalWidth:(NSUInteger)ws.ws_col] UTF8String]);
     }
 }

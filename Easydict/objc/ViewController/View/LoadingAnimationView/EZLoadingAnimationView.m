@@ -32,7 +32,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     
     NSView *lastView = nil;
     CGFloat width = 4;
-    CGFloat padding = 1.8 * width;
+    CGFloat padding = 1.5 * width;
     CGFloat margin = width;
     for (int i = 0; i < kAnimationDotViewCount; i++) {
         CGRect rect = CGRectMake(0, 0, width, width);
@@ -73,7 +73,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)startLoadingAnimation {
-//    NSLog(@"startLoadingAnimation");
+//    MMLogInfo(@"startLoadingAnimation");
     
     /**
      (subviews.count - 1) * X = kAnimationDuration / 2
@@ -141,7 +141,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)dealloc {
-    NSLog(@"EZResultView dealloc: %@", self);
+    MMLogInfo(@"EZResultView dealloc: %@", self);
     [self.timer invalidate];
     self.timer = nil;
 }

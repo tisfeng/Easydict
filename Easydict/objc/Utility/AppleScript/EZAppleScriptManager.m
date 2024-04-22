@@ -68,7 +68,7 @@ static EZAppleScriptManager *_instance = nil;
 #pragma mark - Get Brower selected text
 
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
-    //    NSLog(@"get Browser selected text: %@", bundleID);
+//    MMLogError(@"get Browser selected text: %@", bundleID);
     
     if ([self isSafari:bundleID]) {
         [self getSafariSelectedText:completion];
@@ -92,7 +92,7 @@ static EZAppleScriptManager *_instance = nil;
     
     // runAppleScript is faster ~0.1s than runAppleScriptWithTask
     [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
-        NSLog(@"Safari selected text: %@", result);
+        MMLogInfo(@"Safari selected text: %@", result);
         completion(result, error);
     }];
 }
@@ -108,7 +108,7 @@ static EZAppleScriptManager *_instance = nil;
                         bundleID];
     
     [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
-        NSLog(@"Chrome Browser selected text: %@", result);
+        MMLogInfo(@"Chrome Browser selected text: %@", result);
         completion(result, error);
     }];
 }
@@ -140,7 +140,7 @@ static EZAppleScriptManager *_instance = nil;
                         bundleID];
     
     [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
-        NSLog(@"Chrome current tab URL: %@", result);
+        MMLogInfo(@"Chrome current tab URL: %@", result);
         completion(result);
     }];
 }
@@ -159,7 +159,7 @@ static EZAppleScriptManager *_instance = nil;
                         bundleID];
     
     [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
-        NSLog(@"Safari current tab URL: %@", result);
+        MMLogInfo(@"Safari current tab URL: %@", result);
         completion(result);
     }];
 }
@@ -189,7 +189,7 @@ static EZAppleScriptManager *_instance = nil;
     
     [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         // If success, result is nil.
-        NSLog(@"Safari replace selected text result: %@", result);
+        MMLogInfo(@"Safari replace selected text result: %@", result);
         completion(result, error);
     }];
 }
@@ -206,7 +206,7 @@ static EZAppleScriptManager *_instance = nil;
     
     [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         // If success, result is true.
-        NSLog(@"Chrome replace selected text result: %@", result);
+        MMLogInfo(@"Chrome replace selected text result: %@", result);
         completion(result, error);
     }];
 }
@@ -232,7 +232,7 @@ static EZAppleScriptManager *_instance = nil;
         copy = @"Copy";
         edit = @"Edit";
     }
-    NSLog(@"--> App language: %@", appLanguage);
+    MMLogInfo(@"--> App language: %@", appLanguage);
     
     /**
      tell application "System Events"
@@ -314,15 +314,15 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell",
                         appBundleID, @(copyIndex)];
     
-    //    NSLog(@"checkFrontAppSupportCopyAction:\n%@", script);
+//    MMLogError(@"checkFrontAppSupportCopyAction:\n%@", script);
     
     NSDate *startTime = [NSDate date];
     
     // NSTask cost 0.18s
     [self.scriptExecutor runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
-        NSLog(@"NSTask cost: %f seconds", elapsedTime);
-        NSLog(@"--> supportCopy: %@", @([result boolValue]));
+        MMLogInfo(@"NSTask cost: %f seconds", elapsedTime);
+        MMLogInfo(@"--> supportCopy: %@", @([result boolValue]));
     }];
     
     // NSAppleScript cost 0.06 ~ 0.12s
@@ -330,8 +330,8 @@ static EZAppleScriptManager *_instance = nil;
         BOOL supportCopy = [result boolValue];
         
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
-        NSLog(@"NSAppleScript cost: %f seconds", elapsedTime);
-        NSLog(@"result: %@", result);
+        MMLogInfo(@"NSAppleScript cost: %f seconds", elapsedTime);
+        MMLogInfo(@"result: %@", result);
         
         completion(supportCopy);
     }];

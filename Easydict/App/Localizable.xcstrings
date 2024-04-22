@@ -619,6 +619,22 @@
         }
       }
     },
+    "built_in_ai" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built-In AI Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内置 AI 翻译"
+          }
+        }
+      }
+    },
     "caiyun_translate" : {
       "comment" : "The name of Caiyun Translate",
       "localizations" : {
@@ -3017,13 +3033,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Model"
+            "value" : "Use Model"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模型"
+            "value" : "使用模型"
           }
         }
       }
@@ -3193,13 +3209,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validation failed!"
+            "value" : "Validation failed 💔"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "验证失败！"
+            "value" : "验证失败 💔"
           }
         }
       }
@@ -3209,13 +3225,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validation success!"
+            "value" : "Validation success 🎉"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "验证成功！"
+            "value" : "验证成功 🎉"
           }
         }
       }
@@ -4281,6 +4297,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "单词分词"
+          }
+        }
+      }
+    },
+    "stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
           }
         }
       }

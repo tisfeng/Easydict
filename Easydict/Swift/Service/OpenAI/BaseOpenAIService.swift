@@ -19,30 +19,8 @@ import OpenAI
 public class BaseOpenAIService: QueryService {
     // MARK: Public
 
-    override public func serviceType() -> ServiceType {
-        .openAI
-    }
-
-    override public func name() -> String {
-        NSLocalizedString("openai_translate", comment: "")
-    }
-
-    override public func link() -> String? {
-        "https://chat.openai.com"
-    }
-
-    override public func queryTextType() -> EZQueryTextType {
-        var type: EZQueryTextType = []
-        if Defaults[.openAITranslation] != "0" {
-            type.insert(.translation)
-        }
-        if Defaults[.openAIDictionary] != "0" {
-            type.insert(.dictionary)
-        }
-        if Defaults[.openAISentence] != "0" {
-            type.insert(.sentence)
-        }
-        return type
+    public override func isStream() -> Bool {
+        true
     }
 
     override public func intelligentQueryTextType() -> EZQueryTextType {
@@ -72,7 +50,7 @@ public class BaseOpenAIService: QueryService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        let url = URL(string: endPoint)
+        let url = URL(string: endpoint)
         let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
         guard let url, url.isValid else {
             completion(result, invalidURLError)
@@ -83,6 +61,7 @@ public class BaseOpenAIService: QueryService {
 
         result.from = from
         result.to = to
+        result.isStreamFinished = false
 
         let queryType = queryTextType(text: text, from: from, to: to)
         let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
@@ -92,28 +71,33 @@ public class BaseOpenAIService: QueryService {
         openAI.chatsStream(query: query, url: url) { [weak self] res in
             guard let self else { return }
 
-            switch res {
-            case let .success(chatResult):
-                if let content = chatResult.choices.first?.delta.content {
-                    resultText += content
+            if !result.isStreamFinished {
+                switch res {
+                case let .success(chatResult):
+                    if let content = chatResult.choices.first?.delta.content {
+                        resultText += content
+                    }
+                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+                case let .failure(error):
+                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
                 }
-                handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
-            case let .failure(error):
-                handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
             }
+
         } completion: { [weak self] error in
             guard let self else { return }
 
-            if let error {
-                print("chatsStream error: \(String(describing: error))")
-                completion(result, error)
-            } else {
-                // If already has error, we do not need to update it.
-                if result.error == nil {
-                    // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
-                    let nsText = resultText as NSString
-                    resultText = nsText.tryToRemoveQuotes()
-                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+            if !result.isStreamFinished {
+                if let error {
+                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
+                } else {
+                    // If already has error, we do not need to update it.
+                    if result.error == nil {
+                        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
+                        let nsText = resultText as NSString
+                        resultText = nsText.tryToRemoveQuotes()
+                        handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+                        result.isStreamFinished = true
+                    }
                 }
             }
         }
@@ -123,51 +107,18 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
-    var model: String {
-        get {
-            var model = Defaults[.openAIModel].rawValue
-            if model.isEmpty {
-                model = availableModels.first ?? OpenAIModel.gpt3_5_turbo_0125.rawValue
-            }
-            return model
-        }
+    var model = ""
 
-        set {
-            // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
-
-            let mode = OpenAIModel(rawValue: newValue) ?? .gpt3_5_turbo_0125
-            Defaults[.openAIModel] = mode
-        }
+    var availableModels: [String] {
+        [""]
     }
 
     var apiKey: String {
-        // easydict://writeKeyValue?EZOpenAIAPIKey=
-
-        var apiKey = Defaults[.openAIAPIKey] ?? ""
-        if apiKey.isEmpty, Configuration.shared.beta {
-            apiKey = defaultAPIKey
-        }
-
-        return apiKey
+        ""
     }
 
-    var endPoint: String {
-        // easydict://writeKeyValue?EZOpenAIEndPointKey=
-
-        var endPoint = Defaults[.openAIEndPoint] ?? ""
-        if endPoint.isEmpty {
-            endPoint = "https://api.openai.com/v1/chat/completions"
-        }
-
-        if !hasPrivateAPIKey() {
-            endPoint = defaultEndPoint
-        }
-
-        return endPoint
-    }
-
-    var availableModels: [String] {
-        OpenAIModel.allCases.map { $0.rawValue }
+    var endpoint: String {
+        ""
     }
 
     // MARK: Private
@@ -208,11 +159,16 @@ public class BaseOpenAIService: QueryService {
         error: Error?,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        let normalResults = [resultText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""]
+        var normalResults: [String]?
+        if let resultText {
+            normalResults = [resultText.trimmingCharacters(in: .whitespacesAndNewlines)]
+        }
+
+        result.isStreamFinished = error != nil
+        result.translatedResults = normalResults
 
         switch queryType {
         case .sentence, .translation:
-            result.translatedResults = normalResults
             completion(result, error)
 
         case .dictionary:
@@ -223,7 +179,6 @@ public class BaseOpenAIService: QueryService {
                 return
             }
 
-            result.translatedResults = normalResults
             result.showBigWord = true
             result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6

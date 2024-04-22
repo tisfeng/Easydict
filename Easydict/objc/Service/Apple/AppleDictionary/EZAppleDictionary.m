@@ -101,7 +101,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"Apple Dictionary does not support ocr");
+    MMLogWarn(@"Apple Dictionary does not support ocr");
 }
 
 - (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language {
@@ -138,7 +138,7 @@ static EZAppleDictionary *_instance;
                                       fromToLanguages:(nullable NSArray<EZLanguage> *)languages
                                        inDictionaries:(NSArray<TTTDictionary *> *)dictionaries
 {
-    //    NSLog(@"query dictionaries: %@", [dictionaries debugDescription]);
+//    MMLogInfo(@"query dictionaries: %@", [dictionaries debugDescription]);
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
@@ -212,20 +212,20 @@ static EZAppleDictionary *_instance;
             if (![fileManager fileExistsAtPath:htmlDirectory]) {
                 NSError *error;
                 if (![fileManager createDirectoryAtPath:htmlDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
-                    NSLog(@"createDirectoryAtPath error: %@", error);
+                    MMLogError(@"createDirectoryAtPath error: %@", error);
                 }
             }
             
             NSString *htmlFilePath = [htmlDirectory stringByAppendingFormat:@"/%@.html", dictName];
             NSError *error;
             if (![dictHTML writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
-                NSLog(@"writeToFile error: %@", error);
+                MMLogError(@"writeToFile error: %@", error);
             }
         }
     }
     
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    NSLog(@"Query all dicts cost: %.1f ms", (endTime - startTime) * 1000);
+    MMLogInfo(@"Query all dicts cost: %.1f ms", (endTime - startTime) * 1000);
     
     NSString *htmlString = nil;
     if (iframesHtmlString.length) {
@@ -271,7 +271,7 @@ static EZAppleDictionary *_instance;
     }
     
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    NSLog(@"Query [%@] dict cost: %.1f ms", dictionary.name, (endTime - startTime) * 1000); // 13ms
+    MMLogInfo(@"Query [%@] dict cost: %.1f ms", dictionary.name, (endTime - startTime) * 1000); // 13ms
     
     return entryHTMLs;
 }
@@ -339,7 +339,7 @@ static EZAppleDictionary *_instance;
     
     NSArray<NSString *> *contents = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
     if (error) {
-        NSLog(@"Error reading directory: %@", error);
+        MMLogError(@"Error reading directory: %@", error);
         return nil;
     }
     
@@ -374,7 +374,7 @@ static EZAppleDictionary *_instance;
     
     width = [dictName mm_widthWithFont:boldPingFangFont];
     
-    NSLog(@"%@ width: %.1f", dictName, width);
+    MMLogInfo(@"%@ width: %.1f", dictName, width);
     
     return width;
 }
@@ -412,7 +412,7 @@ static EZAppleDictionary *_instance;
 
 - (NSArray<TTTDictionary *> *)getEnabledDictionariesOfLanguages:(NSArray<EZLanguage> *)languages {
     NSArray *availableDictionaries = [TTTDictionary activeDictionaries];
-    NSLog(@"availableDictionaries: %@", availableDictionaries);
+    MMLogInfo(@"availableDictionaries: %@", availableDictionaries);
     
     NSMutableArray *queryDictNames = [NSMutableArray arrayWithArray:@[
         
@@ -554,7 +554,7 @@ static EZAppleDictionary *_instance;
             [dicts addObject:dict];
         }
     }
-    NSLog(@"query dicts: %@", [dicts debugDescription]);
+    MMLogInfo(@"query dicts: %@", [dicts debugDescription]);
     
     return dicts;
 }
@@ -567,7 +567,7 @@ static EZAppleDictionary *_instance;
     if (!error) {
         [regex replaceMatchesInString:htmlString options:0 range:NSMakeRange(0, [htmlString length]) withTemplate:@""];
     } else {
-        NSLog(@"Error in creating regex: %@", [error localizedDescription]);
+        MMLogError(@"Error in creating regex: %@", [error localizedDescription]);
     }
 }
 

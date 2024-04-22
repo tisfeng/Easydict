@@ -242,11 +242,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     };
     
     if (!self.token || !self.gtk) {
-        NSLog(@"get Baidu token and gtk");
+        MMLogInfo(@"get Baidu token and gtk");
         mm_weakify(self);
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
             mm_strongify(self)
-            NSLog(@"Baidu token: %@, gtk: %@", token, gtk);
+            MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
                 error = [EZError errorWithType:EZErrorTypeAPI description:@"Get token failed."];
             }
@@ -284,7 +284,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *jsonResult = responseObject;
             NSString *from = [jsonResult objectForKey:@"lan"];
-            NSLog(@"Baidu detect language: %@", from);
+            MMLogInfo(@"Baidu detect language: %@", from);
 
             if ([from isKindOfClass:NSString.class] && from.length) {
                 completion([self languageEnumFromCode:from], nil);
@@ -428,7 +428,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                 }
             }
         } @catch (NSException *exception) {
-            MMLogInfo(@"百度翻译OCR接口数据解析异常 %@", exception);
+            MMLogError(@"百度翻译OCR接口数据解析异常 %@", exception);
             message = @"百度翻译OCR接口数据解析异常";
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
@@ -740,7 +740,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                 }
             }
         } @catch (NSException *exception) {
-            MMLogInfo(@"百度翻译接口数据解析异常 %@", exception);
+            MMLogError(@"百度翻译接口数据解析异常 %@", exception);
             message = @"百度翻译接口数据解析异常";
         }
     }
@@ -749,7 +749,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     [self updateCookieAndToken];
 
     NSError *error = [EZError errorWithType:EZErrorTypeAPI description: message request:reqDict];
-    MMLogInfo(@"baidu API error: %@", error);
+    MMLogError(@"baidu API error: %@", error);
 
     [self webViewTranslate:completion];
 
@@ -797,7 +797,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 /// Update cookie and token.
 - (void)updateCookieAndToken {
-    NSLog(@"update Baidu cookie and token.");
+    MMLogInfo(@"update Baidu cookie and token.");
     
     [self.networkManager requestCookieOfURL:kBaiduTranslateURL cookieName:@"BAIDUID" completion:^(NSString *cookie) {
         if (cookie.length) {
@@ -805,7 +805,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
         
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
-            NSLog(@"Baidu token: %@, gtk: %@", token, gtk);
+            MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
                 error = [EZError errorWithType:EZErrorTypeAPI description:@"Get token failed."];
             }

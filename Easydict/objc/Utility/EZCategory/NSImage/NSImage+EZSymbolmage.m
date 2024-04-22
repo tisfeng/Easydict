@@ -13,12 +13,12 @@
 
 + (NSImage *)ez_imageWithSymbolName:(NSString *)name {
     CGSize size = CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16);
-    NSImage *image = [self ez_imageWithSymbolName:name size:size];
+    NSImage *image = [self ez_imageWithSymbolName:name size:size scale:NSImageSymbolScaleSmall];
     return image;
 }
 
-+ (NSImage *)ez_imageWithSymbolName:(NSString *)name size:(CGSize)size {
-    NSImage *image = [NSImage imageWithSystemSymbolName:name accessibilityDescription:nil];
++ (NSImage *)ez_imageWithSymbolName:(NSString *)name size:(CGSize)size scale:(NSImageSymbolScale)scale {
+    NSImage *image = [[NSImage imageWithSystemSymbolName:name accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:scale]];
     if (!CGSizeEqualToSize(size, CGSizeZero)) {
         image = [image resizeToSize:size];
     }

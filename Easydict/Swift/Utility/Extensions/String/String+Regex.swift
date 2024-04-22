@@ -19,7 +19,7 @@ extension String {
                 }
             }
         } catch {
-            print("Invalid regex: \(error.localizedDescription)")
+            logError("Invalid regex: \(error.localizedDescription)")
         }
         return nil
     }

@@ -280,6 +280,10 @@ userInfo:nil]
     return 100 * 10000;
 }
 
+- (BOOL)isStream {
+    return NO;
+}
+
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }

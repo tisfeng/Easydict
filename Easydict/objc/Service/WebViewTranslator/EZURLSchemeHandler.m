@@ -13,7 +13,7 @@ NS_INLINE NSException * _Nullable tryBlock(void(^_Nonnull tryBlock)(void)) {
         tryBlock();
     }
     @catch (NSException *exception) {
-        NSLog(@"--> exception error: %@", exception);
+        MMLogError(@"--> exception error: %@", exception);
         return exception;
     }
     return nil;
@@ -81,7 +81,7 @@ didCompleteWithError:(NSError *)error {
     }
     
     if (self.schemeTask.request.ss_stop) {
-        NSLog(@"--> This task has already been stopped");
+        MMLogWarn(@"--> This task has already been stopped");
         return;
     }
     
@@ -101,7 +101,7 @@ didCompleteWithError:(NSError *)error {
         return;
     }
     if (self.schemeTask.request.ss_stop) {
-        NSLog(@"--> This task has already been stopped");
+        MMLogWarn(@"--> This task has already been stopped");
         return;
     }
     
@@ -118,7 +118,7 @@ didReceiveResponse:(NSURLResponse *)response
         return;
     }
     if (self.schemeTask.request.ss_stop) {
-        NSLog(@"--> This task has already been stopped");
+        MMLogWarn(@"--> This task has already been stopped");
         return;
     }
     
@@ -197,7 +197,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 - (void)dealloc {
-    NSLog(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc: %@", self);
 }
 
 - (AFURLSessionManager *)urlSession {
@@ -241,7 +241,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURLRequest *request = [urlSchemeTask request];
     NSURL *URL = request.URL;
-//        NSLog(@"url: %@", URL.absoluteString);
+//    MMLogInfo(@"url: %@", URL.absoluteString);
     
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
     [mutableRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
@@ -271,12 +271,12 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 //            NSError *error;
 //            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
 //            if (error) {
-//                NSLog(@"error: %@", error);
+//                MMLogInfo(@"error: %@", error);
 //            }
 //            if (bodyDict) {
-//                NSLog(@"HTTPBody dict: %@", bodyDict);
+//                MMLogInfo(@"HTTPBody dict: %@", bodyDict);
 //            } else {
-//                NSLog(@"HTTPBody string: %@", bodyString);
+//                MMLogInfo(@"HTTPBody string: %@", bodyString);
 //            }
 //        }
         

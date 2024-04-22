@@ -154,7 +154,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         // Avoid recycling call, resize window --> update window height --> resize window
         if (self.lockResizeWindow) {
-            //            NSLog(@"lockResizeWindow");
+//            MMLogInfo(@"lockResizeWindow");
             return;
         }
         
@@ -243,11 +243,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // 通知触发时会调用的方法
 - (void)activeDictionariesChanged:(NSNotification *)notification {
-    NSLog(@"Active dictionaries changed: %@", notification);
+    MMLogInfo(@"Active dictionaries changed: %@", notification);
 }
 
 - (void)dealloc {
-    NSLog(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc: %@", self);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -258,6 +258,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
+    MMLogInfo(@"update service: %@", serviceType);
+    
     if ([serviceType length] != 0) {
         [self reloadSingleService:serviceType];
         return;
@@ -420,11 +422,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)startQueryText:(NSString *)text actionType:(EZActionType)actionType {
-    NSLog(@"query actionType: %@", actionType);
+    MMLogInfo(@"query actionType: %@", actionType);
     
     if (text.trim.length == 0) {
         self.showTipsView = [self isShowTipsView];
-        NSLog(@"query text is empty");
+        MMLogWarn(@"query text is empty");
         return;
     }
     
@@ -487,7 +489,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
-    NSLog(@"start OCR Image");
+    MMLogInfo(@"start OCR Image");
     
     self.queryModel.OCRImage = image;
     self.queryModel.actionType = actionType;
@@ -500,7 +502,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
-        NSLog(@"ocr result: %@", inputText);
+        MMLogInfo(@"ocr result: %@", inputText);
         
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,
@@ -561,7 +563,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)retryQuery {
-    NSLog(@"retry query");
+    MMLogInfo(@"retry query");
     
     [self.audioPlayer stop];
     
@@ -728,11 +730,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 /// Directly query model.
 - (void)queryCurrentModel {
     if (self.queryText.length == 0) {
-        NSLog(@"query text is empty");
+        MMLogWarn(@"query text is empty");
         return;
     }
     
-    NSLog(@"query text: %@", self.queryText);
+    MMLogInfo(@"query text: %@", self.queryText);
     
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -747,13 +749,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
-    NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
+    MMLogInfo(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
     
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
         BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery;
         if (!enableAutoQuery) {
-            NSLog(@"service disabled: %@", service.serviceType);
+            MMLogInfo(@"service disabled: %@", service.serviceType);
             continue;
         }
         
@@ -776,7 +778,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
               autoPlay:(BOOL)autoPlay {
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (error) {
-            NSLog(@"query error: %@", error);
+            MMLogError(@"query error: %@", error);
         }
         result.error = [EZError errorWithNSError:error];
         
@@ -791,7 +793,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             result.isShowing = NO;
         }
         
-        //  NSLog(@"update service: %@, %@", service.serviceType, result);
+//        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
         
         if (service.autoCopyTranslatedTextBlock) {
@@ -805,15 +807,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                service:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!service.enabledQuery) {
-        NSLog(@"service disabled: %@", service.serviceType);
+        MMLogWarn(@"service disabled: %@", service.serviceType);
         return;
     }
     if (queryModel.queryText.length == 0) {
-        NSLog(@"queryText is empty");
+        MMLogWarn(@"queryText is empty");
         return;
     }
     
-    //    NSLog(@"query service: %@", service.serviceType);
+//    MMLogInfo(@"query service: %@", service.serviceType);
     
     EZQueryResult *result = service.result;
     
@@ -843,7 +845,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    //    NSLog(@"tableView for row: %ld", row);
+//    MMLogInfo(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];
@@ -885,6 +887,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     EZResultView *resultCell = [self resultCellAtRow:row];
+    resultCell.windowType = self.windowType;
+    
     return resultCell;
 }
 
@@ -914,7 +918,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             height = EZResultViewMiniHeight;
         }
     }
-    //        NSLog(@"row: %ld, height: %@", row, @(height));
+//    MMLogInfo(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -1005,7 +1009,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-    //    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
+//    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
     
     // !!!: Since the caller may be in non-main thread, we need to dispatch to main thread, but canont always use dispatch_async, it will cause the animation not smooth.
     dispatch_block_on_main_safely(^{
@@ -1022,11 +1026,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
             context.duration = duration;
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-            //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+//            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
             [self updateWindowViewHeight];
         } completionHandler:^{
-            //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+//            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
             if (completionHandler) {
                 completionHandler();
             }
@@ -1249,7 +1253,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
     [queryView setUpdateInputTextBlock:^(NSString *text, CGFloat queryViewHeight) {
         mm_strongify(self);
-        //        NSLog(@"UpdateQueryTextBlock");
+//        MMLogInfo(@"UpdateQueryTextBlock");
         
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
@@ -1476,11 +1480,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = YES;
     }
     
-    //    NSLog(@"updateWindowViewHeightWithLock");
+//    MMLogInfo(@"updateWindowViewHeightWithLock");
     
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
-    //            NSLog(@"getRestrainedScrollViewHeight: %@", @(height));
+//    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
     
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
     
@@ -1524,7 +1528,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = NO;
     }
     
-    //    NSLog(@"window frame: %@", @(window.frame));
+//    MMLogInfo(@"window frame: %@", @(window.frame));
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
@@ -1546,10 +1550,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSInteger rowCount = [self numberOfRowsInTableView:self.tableView];
     for (int i = 0; i < rowCount; i++) {
         CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
-        //        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
+//        MMLogInfo(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_7);
     }
-    //    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+//    MMLogInfo(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
     
     return scrollViewContentHeight;
@@ -1561,7 +1565,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.scrollView.height = 0;
     
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-    //    NSLog(@"documentView height: %@", @(documentViewHeight));
+//    MMLogInfo(@"documentView height: %@", @(documentViewHeight));
     
     return documentViewHeight;
 }
@@ -1582,7 +1586,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     BOOL isEnglishWord = [self.queryText isEnglishWordWithLanguage:self.queryModel.queryFromLanguage];
     
     if (!isEnglishWord) {
-        NSLog(@"Not an English Word");
+        MMLogWarn(@"Not an English Word");
         return;
     }
     

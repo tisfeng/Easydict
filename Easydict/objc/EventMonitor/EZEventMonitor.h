@@ -29,8 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^selectedTextBlock)(NSString *selectedText);
 @property (nonatomic, copy) void (^dismissPopButtonBlock)(void);
-@property (nonatomic, copy) void (^dismissMiniWindowBlock)(void);
-@property (nonatomic, copy) void (^dismissFixedWindowBlock)(void);
+@property (nonatomic, copy) void (^dismissAllNotPinndFloatingWindowBlock)(void);
 @property (nonatomic, copy) void (^doubleCommandBlock)(void);
 @property (nonatomic, copy) void (^leftMouseDownBlock)(CGPoint clickPoint);
 @property (nonatomic, copy) void (^rightMouseDownBlock)(CGPoint clickPoint);

@@ -9,19 +9,13 @@
 import Defaults
 import Foundation
 
-extension BaseOpenAIService {
+extension BuiltInAIService {
     var defaultAPIKey: String {
-        APIKey.openAIAPIKey.stringValue
+        APIKey.builtInAIAPIKey.stringValue
     }
 
-    var defaultEndPoint: String {
-        APIKey.openAIEndPoint.stringValue
-    }
-}
-
-extension GeminiService {
-    var defaultAPIKey: String {
-        APIKey.geminiAPIKey.stringValue
+    var defaultEndpoint: String {
+        APIKey.builtInAIEndpoint.stringValue
     }
 }
 
@@ -56,12 +50,15 @@ enum APIKey: String {
      */
 
     case openAIAPIKey
-    case openAIEndPoint
+    case openAIEndpoint
     case geminiAPIKey
     case caiyunToken
     case tencentSecretId
     case tencentSecretKey
     case niutransAPIKey
+    case builtInAIAPIKey
+    case builtInAIEndpoint
+    case builtInAIModel
 
     // MARK: Internal
 

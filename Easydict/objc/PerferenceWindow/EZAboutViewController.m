@@ -194,7 +194,7 @@
     [manager GET:url.absoluteString parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
 
     } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+        MMLogError(@"Error: %@", error);
     }];
 }
 

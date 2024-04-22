@@ -16,6 +16,13 @@
 #import "EZConfiguration.h"
 #import "EZPreferencesWindowController.h"
 
+typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
+    EZTitlebarButtonTypePin = 0,
+    EZTitlebarButtonTypeGoogle,
+    EZTitlebarButtonTypeAppleDic,
+    EZTitlebarButtonTypeEudicDic,
+};
+
 @interface EZTitlebar ()
 
 @property (nonatomic, strong) NSStackView *stackView;
@@ -39,7 +46,6 @@
     return self;
 }
 
-
 - (void)setup {
     self.buttonWidth = 24;
     self.imageWidth = 20;
@@ -53,19 +59,11 @@
     [defaultCenter addObserver:self selector:@selector(updateConstraints) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
-
 - (void)updateConstraints {
     // Remove and dealloc all views to refresh UI.
     for (NSView *subview in self.subviews) {
         [subview removeFromSuperview];
     }
-    
-    // Reset buttons to update toolTip.
-    _quickActionMenu = nil;
-    _quickActionButton = nil;
-    _googleButton = nil;
-    _eudicButton = nil;
-    _appleDictionaryButton = nil;
     _stackView = nil;
     
     [self addSubview:self.pinButton];
@@ -91,26 +89,24 @@
         [self.stackView addArrangedSubview:self.quickActionButton];
     }
     
-    // Google
-    if (Configuration.shared.showGoogleQuickLink) {
-        [self.stackView addArrangedSubview:self.googleButton];
+    for (NSNumber *typeNumber in [self shortcutButtonTypes]) {
+        EZTitlebarButtonType buttonType = typeNumber.integerValue;
+        EZOpenLinkButton *button = [self buttonWithType:buttonType];
+        [self.stackView addArrangedSubview:button];
     }
-    
-    // Apple Dictionary
-    if (Configuration.shared.showAppleDictionaryQuickLink) {
-        [self.stackView addArrangedSubview:self.appleDictionaryButton];
-    }
-    
-    // Eudic
-    if (Configuration.shared.showEudicQuickLink) {
-        // !!!: Note that some applications have multiple channel versions. Refer: https://github.com/tisfeng/Raycast-Easydict/issues/16
-        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic" ]];
-        if (installedEudic) {
-            [self.stackView addArrangedSubview:self.eudicButton];
-        }
-    }
+    [self updateShortcutButtonsToolTip];
     
     [super updateConstraints];
+}
+
+#pragma mark - Public Methods
+
+- (void)updateShortcutButtonsToolTip {
+    for (NSNumber *typeNumber in [self shortcutButtonTypes]) {
+        EZTitlebarButtonType buttonType = typeNumber.integerValue;
+        EZOpenLinkButton *button = [self buttonWithType:buttonType];
+        button.toolTip = [self toolTipStrWithButtonType:buttonType];
+    }
 }
 
 
@@ -149,13 +145,13 @@
         
         mm_weakify(self);
         [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
-            //  NSLog(@"pin mouse down, state: %ld", button.buttonState);
+//            MMLogInfo(@"pin mouse down, state: %ld", button.buttonState);
             mm_strongify(self);
             self.pin = !self.pin;
         }];
         
         [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
-            //  NSLog(@"pin mouse up, state: %ld", button.buttonState);
+//            MMLogInfo(@"pin mouse up, state: %ld", button.buttonState);
             mm_strongify(self);
             BOOL oldPin = !self.pin;
             
@@ -237,8 +233,7 @@
     if (!_quickActionButton) {
         EZOpenLinkButton *quickActionButton = [[EZOpenLinkButton alloc] init];
         _quickActionButton = quickActionButton;
-        NSImage *image = [[NSImage imageWithSystemSymbolName:@"switch.2" accessibilityDescription:nil] imageWithSymbolConfiguration:[NSImageSymbolConfiguration configurationWithScale:NSImageSymbolScaleLarge]];
-        image = [NSImage ez_imageWithSymbolName:@"switch.2"];
+        NSImage *image = [NSImage ez_imageWithSymbolName:@"switch.2"];
         quickActionButton.image = image;
         quickActionButton.toolTip = NSLocalizedString(@"quick_action", nil);
         
@@ -267,52 +262,27 @@
 
 - (EZOpenLinkButton *)googleButton {
     if (!_googleButton) {
-        EZOpenLinkButton *googleButton = [[EZOpenLinkButton alloc] init];
-        _googleButton = googleButton;
-        
-        googleButton.link = EZGoogleWebSearchURL;
-        googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:self.imageSize];
-        googleButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"];
-        googleButton.contentTintColor = NSColor.clearColor;
-        
-        [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(self.buttonSize);
-        }];
+        _googleButton = [self createButtonWithLink:EZGoogleWebSearchURL 
+                                         imageName:@"google_icon"
+                                        buttonType:EZTitlebarButtonTypeGoogle];
     }
     return _googleButton;
 }
 
 - (EZOpenLinkButton *)appleDictionaryButton {
     if (!_appleDictionaryButton) {
-        EZOpenLinkButton *appleDictButton = [[EZOpenLinkButton alloc] init];
-        _appleDictionaryButton = appleDictButton;
-        
-        appleDictButton.link = EZAppleDictionaryAppURLScheme;
-        appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:self.imageSize];
-        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), @"⌘+⇧+D"];
-        appleDictButton.contentTintColor = NSColor.clearColor;
-        
-        [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(self.buttonSize);
-        }];
-        
+        _appleDictionaryButton = [self createButtonWithLink:EZAppleDictionaryAppURLScheme 
+                                                  imageName:EZServiceTypeAppleDictionary
+                                                 buttonType:EZTitlebarButtonTypeAppleDic];
     }
     return _appleDictionaryButton;
 }
 
 - (EZOpenLinkButton *)eudicButton {
     if (!_eudicButton) {
-        EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
-        _eudicButton = eudicButton;
-        
-        eudicButton.link = EZEudicAppURLScheme;
-        eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:self.imageSize];
-        eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];
-        eudicButton.contentTintColor = NSColor.clearColor;
-        
-        [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(self.buttonSize);
-        }];
+        _eudicButton = [self createButtonWithLink:EZEudicAppURLScheme 
+                                        imageName:@"Eudic"
+                                       buttonType:EZTitlebarButtonTypeEudicDic];
     }
     return _eudicButton;
 }
@@ -330,14 +300,100 @@
     [self updatePinButton];
 }
 
+- (NSArray<NSNumber *> *)shortcutButtonTypes {
+    NSMutableArray *shortcutButtonTypes = [NSMutableArray array];
+    
+    // Google
+    if (Configuration.shared.showGoogleQuickLink) {
+        [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeGoogle)];
+    }
+    
+    // Apple Dictionary
+    if (Configuration.shared.showAppleDictionaryQuickLink) {
+        [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeAppleDic)];
+    }
+    
+    // Eudic
+    if (Configuration.shared.showEudicQuickLink) {
+        // !!!: Note that some applications have multiple channel versions. Refer: https://github.com/tisfeng/Raycast-Easydict/issues/16
+        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic" ]];
+        if (installedEudic) {
+            [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeEudicDic)];
+        }
+    }
+    
+    return shortcutButtonTypes.copy;
+}
+
 #pragma mark -
 
+- (EZOpenLinkButton *)createButtonWithLink:(NSString *)link
+                                 imageName:(NSString *)imageName
+                                buttonType:(EZTitlebarButtonType)buttonType
+{
+    EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
+    button.link = link;
+    button.image = [[NSImage imageNamed:imageName] resizeToSize:self.imageSize];
+    button.toolTip = [self toolTipStrWithButtonType:buttonType];
+    button.contentTintColor = NSColor.clearColor;
+    
+    [button mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(self.buttonSize);
+    }];
+    
+    return button;
+}
+
+- (EZOpenLinkButton *)buttonWithType:(EZTitlebarButtonType)buttonType {
+    EZOpenLinkButton *button;
+    switch (buttonType) {
+        case EZTitlebarButtonTypeGoogle: {
+            button = self.googleButton;
+            break;
+        }
+        case EZTitlebarButtonTypeAppleDic: {
+            button = self.appleDictionaryButton;
+            break;
+        }
+        case EZTitlebarButtonTypeEudicDic: {
+            button = self.eudicButton;
+            break;
+        }
+        default:
+            break;
+    }
+    
+    return button;
+}
+
+
+- (NSString *)toolTipStrWithButtonType:(EZTitlebarButtonType)type {
+    NSString *toolTipStr = @"";
+    NSString *shortcutStr = @"";
+    NSString *hint = @"";
+    if (type == EZTitlebarButtonTypePin) {
+        shortcutStr = Configuration.shared.pinShortcutString;
+        hint = self.pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
+    } else if (type == EZTitlebarButtonTypeGoogle) {
+        shortcutStr = Configuration.shared.googleShortcutString;
+        hint = NSLocalizedString(@"open_in_google", nil);
+    } else if (type == EZTitlebarButtonTypeAppleDic) {
+        shortcutStr = Configuration.shared.appleDictShortcutString;
+        hint = NSLocalizedString(@"open_in_apple_dictionary", nil);
+    } else if (type == EZTitlebarButtonTypeEudicDic) {
+        shortcutStr = Configuration.shared.eudicDictShortcutString;
+        hint = NSLocalizedString(@"open_in_eudic", nil);
+    }
+    if (shortcutStr.length != 0) {
+        toolTipStr = [NSString stringWithFormat:@"%@, %@", hint, shortcutStr];
+    } else {
+        toolTipStr = [NSString stringWithFormat:@"%@", hint];
+    }
+    return toolTipStr;
+}
 
 - (void)updatePinButton {
-    NSString *shortcut = @"⌘+P";
-    NSString *action = self.pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
-    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
-    
+    self.pinButton.toolTip = [self toolTipStrWithButtonType:EZTitlebarButtonTypePin];
     
     CGFloat imageWidth = 18;
     CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
