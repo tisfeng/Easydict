@@ -859,7 +859,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (row == 2 && self.showTipsView) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeNone];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;
@@ -885,7 +885,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = 35;
     } else if (row == 2 && self.showTipsView) {
         if (!self.tipsCell) {
-            height = 1;
+            // mini cell height
+            height = 104;
         } else {
             height = [self.tipsCell cellHeight];
         }
