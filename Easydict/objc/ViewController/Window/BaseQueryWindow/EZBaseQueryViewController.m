@@ -665,11 +665,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)showTipsView:(BOOL)show {
     // judge if show tips view
     self.showTipsView = show;
-    if (show) {
-        // update view
-        [self resetQueryAndResults];
-        [self reloadTableViewData:nil];
-    }
+    // update view
+    [self resetQueryAndResults];
+    [self reloadTableViewData:nil];
 }
 
 - (void)scrollToEndOfTextView {

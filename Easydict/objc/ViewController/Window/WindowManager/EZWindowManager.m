@@ -765,6 +765,7 @@ static EZWindowManager *_instance;
             
             // Reset window height first, avoid being affected by previous window height.
             [window.queryViewController resetTableView:^{
+                self.actionType = EZActionTypeOCRQuery;
                 [self showFloatingWindowType:windowType queryText:nil];
                 [window.queryViewController startOCRImage:image actionType:EZActionTypeOCRQuery];
             }];
