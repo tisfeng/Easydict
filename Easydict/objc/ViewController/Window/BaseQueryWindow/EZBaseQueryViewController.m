@@ -11,7 +11,6 @@
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
-#import "EZTableTipsCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
 #import "EZWindowManager.h"
@@ -79,7 +78,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign) BOOL showTipsView;
 
-@property (nonatomic, assign) BOOL hasShowTips;
 
 @end
 
@@ -123,15 +121,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [super viewWillAppear];
     
     [EZLog logWindowAppear:self.windowType];
-    [self recoverStatus];
 }
 
-- (void)recoverStatus {
-    self.hasShowTips = NO;
-    self.showTipsView = [self isShowTipsView];
-    [self.tableView reloadData];
-    [self updateWindowViewHeight];
-}
 
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
@@ -383,8 +374,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryModel.inputText = _inputText;
     
-    // update showTipsView status
-    self.showTipsView = [self isShowTipsView];
     
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
@@ -401,19 +390,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     return _defaultTTSService;
 }
-
-- (BOOL)isShowTipsView {
-    if (Configuration.shared.disableTipsView) {
-        return NO;
-    }
-    if (EZ_isEmptyString(self.queryModel.queryText) &&
-        !self.hasShowTips &&
-        self.queryModel.actionType != EZActionTypeInputQuery) {
-        return YES;
-    }
-    return NO;
-}
-
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
@@ -425,7 +401,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     MMLogInfo(@"query actionType: %@", actionType);
     
     if (text.trim.length == 0) {
-        self.showTipsView = [self isShowTipsView];
         MMLogWarn(@"query text is empty");
         return;
     }
@@ -533,11 +508,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
             
             if (error) {
-                // TODO: Sharker fix OCR Error in tips
-//                [self.tipsCell updateTipsCellType:EZTipsCellTypeWordSelectionOCR];
-                self.showTipsView = NO;
-                [self.tableView reloadData];
-                [self updateWindowViewHeight];
+                NSString *errorMsg = [error localizedDescription];
+                self.queryView.alertText = errorMsg;
                 return;
             }
             
@@ -635,7 +607,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)stopPlayingQueryText {
     [self togglePlayQueryText:NO];
     [self stopAllResultAudio];
-    [self.tipsCell updateTipsCellType:EZTipsCellTypeTextEmpty];
+    self.showTipsView = NO;
 }
 
 - (void)togglePlayQueryText {
@@ -688,6 +660,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)updateActionType:(EZActionType)actionType {
     self.queryModel.actionType = actionType;
+}
+
+- (void)showTipsView:(BOOL)show {
+    // judge if show tips view
+    self.showTipsView = show;
+    if (show) {
+        // update view
+        [self resetQueryAndResults];
+        [self reloadTableViewData:nil];
+    }
 }
 
 - (void)scrollToEndOfTextView {
@@ -876,7 +858,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // show tips view
-    if (row == 2 && self.showTipsView && !self.hasShowTips) {
+    if (row == 2 && self.showTipsView) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
@@ -903,7 +885,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if (row == 2 && self.showTipsView && !self.hasShowTips) {
+    } else if (row == 2 && self.showTipsView) {
         if (!self.tipsCell) {
             height = 1;
         } else {
@@ -1278,10 +1260,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
+        // tips view hidden once user tap entry
+        self.showTipsView = NO;
         [self startQueryText:text];
-        if (self.tipsCell) {
-            self.hasShowTips = YES;
-        }
     }];
     
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
@@ -1305,7 +1286,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self clearAll];
-        self.hasShowTips = YES;
+        // when user click clear tis view will hidden
+        self.showTipsView = NO;
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage language) {
@@ -1435,7 +1417,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     
-    if (self.showTipsView && !self.hasShowTips) {
+    if (self.showTipsView) {
         offset += 1;
     }
     

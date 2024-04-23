@@ -11,6 +11,7 @@
 #import "EZQueryModel.h"
 #import "EZQueryResult.h"
 #import "EZTitlebar.h"
+#import "EZTableTipsCell.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -66,6 +67,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateActionType:(EZActionType)actionType;
 
+/// show tips with type
+/// - Parameters:
+///   - show: whether to show
+- (void)showTipsView:(BOOL)show;
 @end
 
 NS_ASSUME_NONNULL_END

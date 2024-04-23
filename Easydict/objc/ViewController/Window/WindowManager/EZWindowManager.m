@@ -321,6 +321,14 @@ static EZWindowManager *_instance;
     // If text is nil, means we don't need to query anything, just show the window.
     if (!queryText) {
         // !!!: location is top-left point, so we need to change it to bottom-left point.
+        BOOL showTips = NO;
+        if (Configuration.shared.disableTipsView) {
+            showTips = NO;
+        } else if (actionType != EZActionTypeInputQuery) {
+            showTips = YES;
+        }
+        [queryViewController showTipsView:showTips];
+        
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [queryViewController updateActionType:self.actionType];
         [self showFloatingWindow:window atPoint:newPoint];
