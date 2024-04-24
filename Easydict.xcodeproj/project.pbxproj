@@ -2469,7 +2469,6 @@
 			isa = PBXGroup;
 			children = (
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
-				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 			);
 			path = Utility;
@@ -2502,21 +2501,14 @@
 			isa = PBXGroup;
 			children = (
 				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
+				EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */,
+				0AC8A83E2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift */,
 				0AC8A83C2B6685EE006DA5CC /* SecureTextField.swift */,
 				EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */,
 				0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */,
 				0AC8A8442B6A4D97006DA5CC /* ServiceConfigurationCells.swift */,
 			);
 			path = ServiceConfigurationView;
-			sourceTree = "<group>";
-		};
-		EAED41ED2B54B1390005FE0A /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-				EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */,
-				0AC8A83E2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift */,
-			);
-			path = Protocol;
 			sourceTree = "<group>";
 		};
 		EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */ = {
