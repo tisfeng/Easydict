@@ -295,6 +295,9 @@
     
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
+    
+    // Maybe model changed, call updateConstraints to update button size.
+    [self setNeedsUpdateConstraints:YES];
 }
 
 - (void)setQueryTextBlock:(void (^)(NSString *_Nonnull))clickTextBlock {

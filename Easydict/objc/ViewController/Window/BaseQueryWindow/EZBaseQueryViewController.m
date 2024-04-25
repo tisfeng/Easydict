@@ -171,7 +171,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:NSViewBoundsDidChangeNotification
                         object:[self.scrollView contentView]];
     
-    
     //    ???: FIX [dcs_error] kDCSActiveDictionariesChangedDistributedNotification catched, but it seems does not work.
     [defaultCenter addObserver:self
                       selector:@selector(activeDictionariesChanged:)
@@ -273,7 +272,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    MMLogInfo(@"update service: %@", serviceType);
+    MMLogInfo(@"Notify to update service: %@", serviceType);
     
     if ([serviceType length] != 0) {
         [self updateService:serviceType];
