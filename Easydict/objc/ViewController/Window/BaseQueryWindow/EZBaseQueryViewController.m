@@ -225,41 +225,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
-- (void)updateService:(NSString *)serviceType {
-    NSMutableArray *newServices = [self.services mutableCopy];
-    for (EZQueryService *service in self.services) {
-        if (service.serviceType == serviceType) {
-            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
-            NSInteger index = [self.serviceTypes indexOfObject:serviceType];
-            newServices[index] = updatedService;
-            self.services = newServices;
-            
-            [self resetService:updatedService];
-                        
-            [self updateCellWithResult:updatedService.result reloadData:YES completionHandler:^{
-                [self queryWithModel:self.queryModel service:updatedService];
-            }];
-        }
-    }
-}
-
-- (void)resetService:(EZQueryService *)service {
-    [service resetServiceResult];
-    service.queryModel = self.queryModel;
-    service.windowType = self.windowType;
-}
-
-/// Get latest services from local storage.
-- (NSArray<EZQueryService *> *)latestServices {
-    return [EZLocalStorage.shared allServices:self.windowType];
-}
-
-
-// 通知触发时会调用的方法
-- (void)activeDictionariesChanged:(NSNotification *)notification {
-    MMLogInfo(@"Active dictionaries changed: %@", notification);
-}
-
 - (void)dealloc {
     MMLogInfo(@"dealloc: %@", self);
     
@@ -268,6 +233,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 #pragma mark - NSNotificationCenter
 
+- (void)activeDictionariesChanged:(NSNotification *)notification {
+    MMLogInfo(@"Active dictionaries changed: %@", notification);
+}
+
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
@@ -275,17 +244,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     MMLogInfo(@"Notify to update service: %@", serviceType);
     
     if ([serviceType length] != 0) {
-        [self updateService:serviceType];
+        [self updateService:serviceType autoQuery:YES];
         return;
     }
     if (type == self.windowType || !userInfo) {
-        [self updateServices:[self latestServices]];
+        [self resetAllCellWithServices:[self latestServices]];
     }
-}
-
-- (void)updateServices:(NSArray *)allServices {
-    [self setupServices:allServices];
-    [self reloadTableViewData:nil];
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
@@ -1060,12 +1024,59 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// !!!: Maybe return NSNotFound
-
 - (NSUInteger)rowIndexOfResult:(EZQueryResult *)result {
     EZServiceType serviceType = result.serviceType;
     // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
     NSInteger row = [self.serviceTypes indexOfObject:serviceType];
     return row;
+}
+
+
+- (void)resetCellWithService:(EZQueryService *)service autoQuery:(BOOL)autoQuery {
+    [self resetService:service];
+    
+    EZQueryResult *newResult = [service resetServiceResult];
+    
+    [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
+        if (autoQuery) {
+            // Make enabledQuery = YES before retry, it may be closed manually.
+            service.enabledQuery = YES;
+            
+            [self queryWithModel:self.queryModel service:service];
+        }
+    }];
+}
+
+- (void)resetService:(EZQueryService *)service {
+    [service resetServiceResult];
+    service.queryModel = self.queryModel;
+    service.windowType = self.windowType;
+}
+
+- (void)updateService:(NSString *)serviceType autoQuery:(BOOL)autoQuery {
+    NSMutableArray *newServices = [self.services mutableCopy];
+    for (EZQueryService *service in self.services) {
+        if (service.serviceType == serviceType) {
+            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+            NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+            newServices[index] = updatedService;
+            self.services = newServices.copy;
+            if (autoQuery) {
+                [self resetCellWithService:updatedService autoQuery:autoQuery];
+            }
+            break;
+        }
+    }
+}
+
+- (void)resetAllCellWithServices:(NSArray *)allServices {
+    [self setupServices:allServices];
+    [self reloadTableViewData:nil];
+}
+
+/// Get latest services from local storage.
+- (NSArray<EZQueryService *> *)latestServices {
+    return [EZLocalStorage.shared allServices:self.windowType];
 }
 
 #pragma mark - Update Data.
@@ -1328,14 +1339,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [resultView setRetryBlock:^(EZQueryResult *result) {
         mm_strongify(self);
-        
-        // Make enabledQuery = YES before retry, it may be closed manually.
-        service.enabledQuery = YES;
-        
-        EZQueryResult *newResult = [service resetServiceResult];
-        [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
-            [self queryWithModel:self.queryModel service:service];
-        }];
+        [self resetCellWithService:service autoQuery:YES];
     }];
     
     // !!!: Avoid capture result, the block paramter result is different from former result.
