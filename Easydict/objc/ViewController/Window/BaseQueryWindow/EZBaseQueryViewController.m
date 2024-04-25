@@ -124,7 +124,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    [self setupServices:[EZLocalStorage.shared allServices:self.windowType]];
+    [self setupServices:[self latestServices]];
     [self resetQueryAndResults];
 }
 
@@ -202,8 +202,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
-            service.queryModel = self.queryModel;
-            service.windowType = self.windowType;
+            [self resetService:service];
+            
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
         }
@@ -226,6 +226,36 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
+- (void)updateService:(NSString *)serviceType {
+    NSMutableArray *newServices = [self.services mutableCopy];
+    for (EZQueryService *service in self.services) {
+        if (service.serviceType == serviceType) {
+            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+            NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+            newServices[index] = updatedService;
+            self.services = newServices;
+            
+            [self resetService:updatedService];
+                        
+            [self updateCellWithResult:updatedService.result reloadData:YES completionHandler:^{
+                [self queryWithModel:self.queryModel service:updatedService];
+            }];
+        }
+    }
+}
+
+- (void)resetService:(EZQueryService *)service {
+    [service resetServiceResult];
+    service.queryModel = self.queryModel;
+    service.windowType = self.windowType;
+}
+
+/// Get latest services from local storage.
+- (NSArray<EZQueryService *> *)latestServices {
+    return [EZLocalStorage.shared allServices:self.windowType];
+}
+
+
 // 通知触发时会调用的方法
 - (void)activeDictionariesChanged:(NSNotification *)notification {
     MMLogInfo(@"Active dictionaries changed: %@", notification);
@@ -246,31 +276,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     MMLogInfo(@"update service: %@", serviceType);
     
     if ([serviceType length] != 0) {
-        [self reloadSingleService:serviceType];
+        [self updateService:serviceType];
         return;
     }
     if (type == self.windowType || !userInfo) {
-        [self updateServices:[EZLocalStorage.shared allServices:self.windowType]];
+        [self updateServices:[self latestServices]];
     }
-}
-
-- (void)reloadSingleService:(NSString *)serviceType {
-    NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
-    for (EZQueryService *service in self.services) {
-        if ([service serviceType] == serviceType) {
-            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
-            [newServices addObject:updatedService];
-        } else {
-            [newServices addObject:service];
-        }
-    }
-    [self updateServices:newServices];
 }
 
 - (void)updateServices:(NSArray *)allServices {
     [self setupServices:allServices];
-    [self resetAllResults];
-    
     [self reloadTableViewData:nil];
 }
 
@@ -717,7 +732,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             continue;
         }
         
-        [self queryWithModel:queryModel service:service autoPlay:NO];
+        [self queryWithModel:queryModel service:service];
         
         if (!self.firstService) {
             self.firstService = service;
@@ -731,9 +746,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self autoPlayEnglishWordAudio];
 }
 
-- (void)queryWithModel:(EZQueryModel *)queryModel
-               service:(EZQueryService *)service
-              autoPlay:(BOOL)autoPlay {
+- (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"query error: %@", error);
@@ -1076,15 +1089,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.services indexOfObject:result.service];
-    NSInteger row = index + [self resultCellOffset];
-    
-    EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
-    
-    // ???: Why is it possible to return a EZSelectLanguageCell ?
-    if ([resultCell isKindOfClass:[EZResultView class]]) {
-        return resultCell;
+    NSInteger index = [self.serviceTypes indexOfObject:result.service.serviceType];
+    if (index != NSNotFound) {
+        NSInteger row = index + [self resultCellOffset];
+        EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
+        
+        // ???: Why is it possible to return a EZSelectLanguageCell ?
+        if ([resultCell isKindOfClass:[EZResultView class]]) {
+            return resultCell;
+        }
     }
+
     return nil;
 }
 
@@ -1320,7 +1335,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         EZQueryResult *newResult = [service resetServiceResult];
         [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
-            [self queryWithModel:self.queryModel service:service autoPlay:NO];
+            [self queryWithModel:self.queryModel service:service];
         }];
     }];
     
@@ -1338,10 +1353,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^(NSString *_Nonnull language) {
-                    [self queryWithModel:self.queryModel service:service autoPlay:NO];
+                    [self queryWithModel:self.queryModel service:service];
                 }];
             } else {
-                [self queryWithModel:self.queryModel service:service autoPlay:NO];
+                [self queryWithModel:self.queryModel service:service];
             }
         } else {
             // If alreay has result, just update cell.

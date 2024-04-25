@@ -43,6 +43,7 @@
         self.showAutoLanguage = NO;
         self.specifiedTextLanguageDict = [NSMutableDictionary dictionary];
         self.autoQuery = YES;
+        self.inputText = @"";
     }
     return self;
 }
