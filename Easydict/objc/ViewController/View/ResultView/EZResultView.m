@@ -74,8 +74,7 @@
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
         label.maximumNumberOfLines = 1;
-        label.lineBreakMode = NSLineBreakByTruncatingTail;
-        label.cell.truncatesLastVisibleLine = YES;
+        label.lineBreakMode = NSLineBreakByClipping;
         
         [label excuteLight:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextLightColor];
@@ -90,6 +89,7 @@
     self.serviceModelButton.bordered = NO;
     self.serviceModelButton.cornerRadius = 3.0;
     self.serviceModelButton.titleFont = [NSFont systemFontOfSize:10];
+    self.serviceModelButton.lineBreakMode = NSLineBreakByClipping;
     
     [self.serviceModelButton excuteLight:^(EZButton *button) {
         button.titleColor = [NSColor mm_colorWithHexString:@"#666666"];
@@ -243,13 +243,13 @@
     }];
     
     [self.stopButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowButton.mas_left).offset(-5);
+        make.right.equalTo(self.arrowButton.mas_left).offset(0);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
     [self.retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowButton.mas_left).offset(-2);
+        make.right.equalTo(self.arrowButton.mas_left).offset(0);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
@@ -309,7 +309,7 @@
 
 - (void)updateConstraints {
     [self.serviceNameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        // 127 is the lenght of "Built-In AI Translate"
+        // 127 is the lenght of "自定义 OpenAI 翻译" / "Built-In AI Translate"
         make.width.mas_lessThanOrEqualTo(127 * [self windowWidthRatio]);
     }];
     
@@ -328,8 +328,11 @@
 }
 
 - (CGFloat)windowWidthRatio {
+    // if minimumWindowWidth = 360, self.width = 340
     CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
-    return self.width / minimumWindowWidth;
+    CGFloat miniSelfWidth = minimumWindowWidth - EZHorizontalCellSpacing_10 * 2;
+    CGFloat ratio = self.width / miniSelfWidth;
+    return ratio;
 }
 
 #pragma mark - Public Methods

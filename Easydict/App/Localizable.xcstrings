@@ -883,7 +883,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom OpenAI Translate"
+            "value" : "Custom OpenAI"
           }
         },
         "zh-Hans" : {
