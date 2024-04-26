@@ -883,7 +883,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom OpenAI Translate"
+            "value" : "Custom OpenAI"
           }
         },
         "zh-Hans" : {
@@ -2096,13 +2096,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠ No results found"
+            "value" : "No results found"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠ 未查询到结果"
+            "value" : "未查询到结果"
           }
         }
       }
@@ -2438,13 +2438,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Query failed"
+            "value" : "💥 Failed"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查询失败"
+            "value" : "💥 失败"
           }
         }
       }

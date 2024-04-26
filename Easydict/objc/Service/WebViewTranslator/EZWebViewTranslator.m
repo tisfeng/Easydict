@@ -316,7 +316,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 // 监听 JavaScript 代码是否执行
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     // JavaScript 代码执行
-    MMLogError(@"runJavaScriptAlertPanelWithMessage: %@", message);
+    MMLogInfo(@"runJavaScriptAlertPanelWithMessage: %@", message);
 }
 
 

@@ -130,7 +130,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    [self setupServices:[EZLocalStorage.shared allServices:self.windowType]];
+    [self setupServices:[self latestServices]];
     [self resetQueryAndResults];
 }
 
@@ -177,7 +177,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:NSViewBoundsDidChangeNotification
                         object:[self.scrollView contentView]];
     
-    
     //    ???: FIX [dcs_error] kDCSActiveDictionariesChangedDistributedNotification catched, but it seems does not work.
     [defaultCenter addObserver:self
                       selector:@selector(activeDictionariesChanged:)
@@ -208,8 +207,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
-            service.queryModel = self.queryModel;
-            service.windowType = self.windowType;
+            [self resetService:service];
+            
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
         }
@@ -232,11 +231,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
-// 通知触发时会调用的方法
-- (void)activeDictionariesChanged:(NSNotification *)notification {
-    MMLogInfo(@"Active dictionaries changed: %@", notification);
-}
-
 - (void)dealloc {
     MMLogInfo(@"dealloc: %@", self);
     
@@ -245,39 +239,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 #pragma mark - NSNotificationCenter
 
+- (void)activeDictionariesChanged:(NSNotification *)notification {
+    MMLogInfo(@"Active dictionaries changed: %@", notification);
+}
+
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    MMLogInfo(@"update service: %@", serviceType);
+    MMLogInfo(@"Notify to update service: %@", serviceType);
     
     if ([serviceType length] != 0) {
-        [self reloadSingleService:serviceType];
+        [self updateService:serviceType autoQuery:YES];
         return;
     }
     if (type == self.windowType || !userInfo) {
-        [self updateServices:[EZLocalStorage.shared allServices:self.windowType]];
+        [self resetAllCellWithServices:[self latestServices]];
     }
-}
-
-- (void)reloadSingleService:(NSString *)serviceType {
-    NSMutableArray<EZQueryService *> *newServices = [[NSMutableArray alloc] init];
-    for (EZQueryService *service in self.services) {
-        if ([service serviceType] == serviceType) {
-            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
-            [newServices addObject:updatedService];
-        } else {
-            [newServices addObject:service];
-        }
-    }
-    [self updateServices:newServices];
-}
-
-- (void)updateServices:(NSArray *)allServices {
-    [self setupServices:allServices];
-    [self resetAllResults];
-    
-    [self reloadTableViewData:nil];
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
@@ -739,7 +717,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             continue;
         }
         
-        [self queryWithModel:queryModel service:service autoPlay:NO];
+        [self queryWithModel:queryModel service:service];
         
         if (!self.firstService) {
             self.firstService = service;
@@ -753,9 +731,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self autoPlayEnglishWordAudio];
 }
 
-- (void)queryWithModel:(EZQueryModel *)queryModel
-               service:(EZQueryService *)service
-              autoPlay:(BOOL)autoPlay {
+- (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"query error: %@", error);
@@ -1088,12 +1064,59 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// !!!: Maybe return NSNotFound
-
 - (NSUInteger)rowIndexOfResult:(EZQueryResult *)result {
     EZServiceType serviceType = result.serviceType;
     // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
     NSInteger row = [self.serviceTypes indexOfObject:serviceType];
     return row;
+}
+
+
+- (void)resetCellWithService:(EZQueryService *)service autoQuery:(BOOL)autoQuery {
+    [self resetService:service];
+    
+    EZQueryResult *newResult = [service resetServiceResult];
+    
+    [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
+        if (autoQuery) {
+            // Make enabledQuery = YES before retry, it may be closed manually.
+            service.enabledQuery = YES;
+            
+            [self queryWithModel:self.queryModel service:service];
+        }
+    }];
+}
+
+- (void)resetService:(EZQueryService *)service {
+    [service resetServiceResult];
+    service.queryModel = self.queryModel;
+    service.windowType = self.windowType;
+}
+
+- (void)updateService:(NSString *)serviceType autoQuery:(BOOL)autoQuery {
+    NSMutableArray *newServices = [self.services mutableCopy];
+    for (EZQueryService *service in self.services) {
+        if (service.serviceType == serviceType) {
+            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+            NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+            newServices[index] = updatedService;
+            self.services = newServices.copy;
+            if (autoQuery) {
+                [self resetCellWithService:updatedService autoQuery:autoQuery];
+            }
+            break;
+        }
+    }
+}
+
+- (void)resetAllCellWithServices:(NSArray *)allServices {
+    [self setupServices:allServices];
+    [self reloadTableViewData:nil];
+}
+
+/// Get latest services from local storage.
+- (NSArray<EZQueryService *> *)latestServices {
+    return [EZLocalStorage.shared allServices:self.windowType];
 }
 
 #pragma mark - Update Data.
@@ -1116,15 +1139,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.services indexOfObject:result.service];
-    NSInteger row = index + [self resultCellOffset];
-    
-    EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
-    
-    // ???: Why is it possible to return a EZSelectLanguageCell ?
-    if ([resultCell isKindOfClass:[EZResultView class]]) {
-        return resultCell;
+    NSInteger index = [self.serviceTypes indexOfObject:result.service.serviceType];
+    if (index != NSNotFound) {
+        NSInteger row = index + [self resultCellOffset];
+        EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
+        
+        // ???: Why is it possible to return a EZSelectLanguageCell ?
+        if ([resultCell isKindOfClass:[EZResultView class]]) {
+            return resultCell;
+        }
     }
+
     return nil;
 }
 
@@ -1358,14 +1383,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [resultView setRetryBlock:^(EZQueryResult *result) {
         mm_strongify(self);
-        
-        // Make enabledQuery = YES before retry, it may be closed manually.
-        service.enabledQuery = YES;
-        
-        EZQueryResult *newResult = [service resetServiceResult];
-        [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
-            [self queryWithModel:self.queryModel service:service autoPlay:NO];
-        }];
+        [self resetCellWithService:service autoQuery:YES];
     }];
     
     // !!!: Avoid capture result, the block paramter result is different from former result.
@@ -1382,10 +1400,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^(NSString *_Nonnull language) {
-                    [self queryWithModel:self.queryModel service:service autoPlay:NO];
+                    [self queryWithModel:self.queryModel service:service];
                 }];
             } else {
-                [self queryWithModel:self.queryModel service:service autoPlay:NO];
+                [self queryWithModel:self.queryModel service:service];
             }
         } else {
             // If alreay has result, just update cell.
@@ -1565,12 +1583,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     BOOL isEnglishWord = [self.queryText isEnglishWordWithLanguage:self.queryModel.queryFromLanguage];
-    
     if (!isEnglishWord) {
-        MMLogWarn(@"Not an English Word");
         return;
     }
     
+    MMLogInfo(@"Auto play English word audio: %@", self.queryText);
     [self togglePlayQueryText:YES];
 }
 
