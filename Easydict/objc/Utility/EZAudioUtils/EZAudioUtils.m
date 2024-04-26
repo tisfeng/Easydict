@@ -7,10 +7,6 @@
 //
 
 #import "EZAudioUtils.h"
-#import <CoreAudio/CoreAudio.h>
-#import <AVFoundation/AVFoundation.h>
-#import <AudioToolbox/AudioToolbox.h>
-#import <CoreAudio/CoreAudioTypes.h>
 #import <AudioToolbox/AudioServices.h>
 #include <dlfcn.h>
 
@@ -24,23 +20,14 @@
 
 /// Get system volume, [0, 100]
 + (float)getSystemVolume {
-    // 1. 获取默认输出设备（包括扬声器或者耳机）
     AudioDeviceID deviceID = [self getDefaultOutputDeviceID];
-    
-    // 2. 获取音量属性
     AudioObjectPropertyAddress volumeProperty = [self volumeProperty];
+    
     Float32 volume = 0;
-    
-    // 3. 获取音量值
-    UInt32 dataSize = sizeof(Float32);
-    OSStatus status = AudioObjectGetPropertyData(deviceID, &volumeProperty, 0, NULL, &dataSize, &volume);
+    UInt32 size = sizeof(Float32);
+    OSStatus status = AudioObjectGetPropertyData(deviceID, &volumeProperty, 0, NULL, &size, &volume);
     if (status) {
-        MMLogWarn(@"No volume returned for device 0x%0x", deviceID);
-        return 0.0;
-    }
-    
-    if (volume < 0.0 || volume > 1.0) {
-        MMLogWarn(@"Invalid volume returned for device 0x%0x", deviceID);
+        MMLogError(@"No volume returned for device 0x%0x", deviceID);
         return 0.0;
     }
     
@@ -54,24 +41,21 @@
 + (void)setSystemVolume:(float)volume {
     MMLogInfo(@"--> setSystemVolume: %1.f", volume);
 
-    // 1. 获取默认输出设备（包括扬声器或者耳机）
     AudioDeviceID deviceID = [self getDefaultOutputDeviceID];
 //    MMLogInfo(@"output deviceID: %d", deviceID);
         
-    // 2. 设置音量属性
     AudioObjectPropertyAddress volumeProperty = [self volumeProperty];
     
-    // 3. 设置音量
     UInt32 size = sizeof(volume);
     Float32 newVolume = volume / 100.0;
     OSStatus status = AudioObjectSetPropertyData(deviceID, &volumeProperty, 0, NULL, size, &newVolume);
     if (status) {
-        MMLogWarn(@"Unable to set volume for device 0x%0x", deviceID);
+        MMLogError(@"Unable to set volume for device 0x%0x", deviceID);
     }
 }
 
 + (AudioDeviceID)getDefaultOutputDeviceID {
-    AudioDeviceID outputDeviceID = kAudioObjectUnknown; // get output device
+    AudioDeviceID outputDeviceID = kAudioObjectUnknown;
     
     AudioObjectPropertyAddress address = {
         kAudioHardwarePropertyDefaultOutputDevice,
@@ -80,10 +64,7 @@
     };
     
     UInt32 dataSize = sizeof(AudioDeviceID);
-    OSStatus status = AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &dataSize, &outputDeviceID);
-    if (status != 0) {
-        MMLogWarn(@"Cannot find default output device!");
-    }
+    AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &dataSize, &outputDeviceID);
     
     return outputDeviceID;
 }
@@ -97,6 +78,7 @@
     return volumeProperty;
 }
 
+#pragma mark -
 
 /// Get playing song info, Ref: https://stackoverflow.com/questions/61003379/how-to-get-currently-playing-song-on-mac-swift
 + (void)getPlayingSongInfo {
@@ -192,6 +174,5 @@
     
     return nil;
 }
-
 
 @end
