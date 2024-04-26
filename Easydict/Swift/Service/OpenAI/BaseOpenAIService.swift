@@ -95,6 +95,7 @@ public class BaseOpenAIService: QueryService {
                         // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
                         let nsText = resultText as NSString
                         resultText = nsText.tryToRemoveQuotes()
+                        log("\(name())-(\(model)): \(resultText)")
                         handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                         result.isStreamFinished = true
                     }
