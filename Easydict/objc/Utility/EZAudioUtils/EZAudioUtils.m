@@ -7,10 +7,6 @@
 //
 
 #import "EZAudioUtils.h"
-#import <CoreAudio/CoreAudio.h>
-#import <AVFoundation/AVFoundation.h>
-#import <AudioToolbox/AudioToolbox.h>
-#import <CoreAudio/CoreAudioTypes.h>
 #import <AudioToolbox/AudioServices.h>
 #include <dlfcn.h>
 
@@ -24,85 +20,65 @@
 
 /// Get system volume, [0, 100]
 + (float)getSystemVolume {
-    AudioDeviceID outputDeviceID = [self getDefaultOutputDeviceID];
-    if (outputDeviceID == kAudioObjectUnknown) {
-        MMLogWarn(@"Unknown device");
-        return 0.0;
-    }
+    AudioDeviceID deviceID = [self getDefaultOutputDeviceID];
+    AudioObjectPropertyAddress volumeProperty = [self volumeProperty];
     
-    Float32 volume;
-    AudioObjectPropertyAddress address = {
-        kAudioDevicePropertyVolumeScalar,
-        kAudioDevicePropertyScopeOutput,
-        kAudioObjectPropertyElementMain};
-    
-    if (!AudioObjectHasProperty(outputDeviceID, &address)) {
-        MMLogWarn(@"No volume returned for device 0x%0x", outputDeviceID);
-        return 0.0;
-    }
-    
-    UInt32 dataSize = sizeof(Float32);
-    OSStatus status = AudioObjectGetPropertyData(outputDeviceID, &address, 0, NULL, &dataSize, &volume);
+    Float32 volume = 0;
+    UInt32 size = sizeof(Float32);
+    OSStatus status = AudioObjectGetPropertyData(deviceID, &volumeProperty, 0, NULL, &size, &volume);
     if (status) {
-        MMLogWarn(@"No volume returned for device 0x%0x", outputDeviceID);
-        return 0.0;
-    }
-    
-    if (volume < 0.0 || volume > 1.0) {
-        MMLogWarn(@"Invalid volume returned for device 0x%0x", outputDeviceID);
+        MMLogError(@"No volume returned for device 0x%0x", deviceID);
         return 0.0;
     }
     
     float currentVolume = volume * 100;
-//    MMLogError(@"--> getSystemVolume: %1.f", currentVolume);
+    MMLogInfo(@"--> getSystemVolume: %1.f", currentVolume);
     
     return currentVolume;
 }
 
 /// Set system volume, [0, 100]
 + (void)setSystemVolume:(float)volume {
-//    MMLogError(@"--> setSystemVolume: %1.f", volume);
+    MMLogInfo(@"--> setSystemVolume: %1.f", volume);
+
+    AudioDeviceID deviceID = [self getDefaultOutputDeviceID];
+//    MMLogInfo(@"output deviceID: %d", deviceID);
+        
+    AudioObjectPropertyAddress volumeProperty = [self volumeProperty];
     
-    AudioDeviceID outputDeviceID = [self getDefaultOutputDeviceID];
-    if (outputDeviceID == kAudioObjectUnknown) {
-        MMLogWarn(@"Unknown device");
-        return;
-    }
-    
-    AudioObjectPropertyAddress address = {
-        kAudioDevicePropertyVolumeScalar,
-        kAudioDevicePropertyScopeOutput,
-        kAudioObjectPropertyElementMain};
-    
-    if (!AudioObjectHasProperty(outputDeviceID, &address)) {
-        MMLogWarn(@"No volume returned for device 0x%0x", outputDeviceID);
-        return;
-    }
-    
+    UInt32 size = sizeof(volume);
     Float32 newVolume = volume / 100.0;
-    OSStatus status = AudioObjectSetPropertyData(outputDeviceID, &address, 0, NULL, sizeof(newVolume), &newVolume);
+    OSStatus status = AudioObjectSetPropertyData(deviceID, &volumeProperty, 0, NULL, size, &newVolume);
     if (status) {
-        MMLogWarn(@"Unable to set volume for device 0x%0x", outputDeviceID);
+        MMLogError(@"Unable to set volume for device 0x%0x", deviceID);
     }
 }
 
 + (AudioDeviceID)getDefaultOutputDeviceID {
-    AudioDeviceID outputDeviceID = kAudioObjectUnknown; // get output device
+    AudioDeviceID outputDeviceID = kAudioObjectUnknown;
     
     AudioObjectPropertyAddress address = {
         kAudioHardwarePropertyDefaultOutputDevice,
         kAudioObjectPropertyScopeGlobal,
-        kAudioObjectPropertyElementMain};
+        kAudioObjectPropertyElementMain
+    };
     
     UInt32 dataSize = sizeof(AudioDeviceID);
-    OSStatus status = AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &dataSize, &outputDeviceID);
-    if (status != 0) {
-        MMLogWarn(@"Cannot find default output device!");
-    }
+    AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &dataSize, &outputDeviceID);
     
     return outputDeviceID;
 }
 
++ (AudioObjectPropertyAddress)volumeProperty {
+    AudioObjectPropertyAddress volumeProperty = {
+        kAudioHardwareServiceDeviceProperty_VirtualMainVolume,
+        kAudioDevicePropertyScopeOutput,
+        kAudioObjectPropertyElementMain
+    };
+    return volumeProperty;
+}
+
+#pragma mark -
 
 /// Get playing song info, Ref: https://stackoverflow.com/questions/61003379/how-to-get-currently-playing-song-on-mac-swift
 + (void)getPlayingSongInfo {
@@ -198,6 +174,5 @@
     
     return nil;
 }
-
 
 @end
