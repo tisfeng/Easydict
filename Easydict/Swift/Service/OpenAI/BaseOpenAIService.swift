@@ -79,7 +79,22 @@ public class BaseOpenAIService: QueryService {
                     }
                     handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                 case let .failure(error):
-                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
+                    // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
+                    var text: String?
+                    var err: Error? = error
+                    if !resultText.isEmpty {
+                        text = resultText
+                        err = nil
+
+                        logError("\(name())-(\(model)) error: \(error.localizedDescription)")
+                        logError(String(describing: error))
+                    }
+                    handleResult(
+                        queryType: queryType,
+                        resultText: text,
+                        error: err,
+                        completion: completion
+                    )
                 }
             }
 
