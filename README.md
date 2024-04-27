@@ -427,18 +427,15 @@ easydict://writeKeyValue?EZDeepLAuthKey=xxx
 
 如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
 
-这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate ,如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
+这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate ，如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
 
 使用自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
+
+Easydict 支持 [DeepLX](https://github.com/OwO-Network/DeepLX) 接口，详情请看 [#464](https://github.com/tisfeng/Easydict/issues/464)。
 
 ```bash
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 ```
-借助下面开源项目，可以在自己的服务器或者 Cloudflare 上部署支持 DeepL 翻译的接口服务：
-
-- [deeplx-for-cloudflare](https://github.com/ifyour/deeplx-for-cloudflare)
-- [DeepLX](https://github.com/OwO-Network/DeepLX)
-
 
 #### 配置 API 调用方式
 
