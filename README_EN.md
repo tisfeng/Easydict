@@ -426,16 +426,13 @@ If you don't have your own AuthKey and need to use DeepL translation a lot, you 
 
 In this case, you need to set a custom DeepL interface address, where the value of EZDeepLTranslateEndPointKey should be the complete request URL, for example, the DeepL official interface is https://api-free.deepl.com/v2/translate. If the custom interface requires AuthKey, the configuration method is the same as before, and the interface parameters are consistent with the DeepL official.
 
-The way to customize the DeepL interface address is equivalent to the DeepL official AuthKey API form in the Easydict program.
+The way to customize the DeepL API URL is equivalent to the DeepL official AuthKey API form in Easydict.
+
+Easydict supports the [DeepLX](https://github.com/OwO-Network/DeepLX) API, see [#464](https://github.com/tisfeng/Easydict/issues/464) for details.
 
 ```bash
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 ```
-
-With the help of the following open source projects, you can deploy a DeepL translation interface service that supports DeepL translation on your own server or Cloudflare:
-
-- [deeplx-for-cloudflare](https://github.com/ifyour/deeplx-for-cloudflare)
-- [DeepLX](https://github.com/OwO-Network/DeepLX)
 
 #### Configure API call method
 
