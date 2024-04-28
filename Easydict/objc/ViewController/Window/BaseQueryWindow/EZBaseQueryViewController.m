@@ -859,7 +859,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (row == 2 && self.showTipsView) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeNone];
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;
