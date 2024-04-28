@@ -241,7 +241,7 @@ extension Defaults.Keys {
     )
     static let customOpenAIAPIKey = Key<String?>(EZCustomOpenAIAPIKey, default: "")
     static let customOpenAITranslation = Key<String>(EZCustomOpenAITranslationKey, default: "1")
-    static let customOpenAIDictionary = Key<String>(EZCustomOpenAISentenceKey, default: "1")
+    static let customOpenAIDictionary = Key<String>(EZCustomOpenAIDictionaryKey, default: "1")
     static let customOpenAISentence = Key<String>(EZCustomOpenAISentenceKey, default: "1")
     static let customOpenAIServiceUsageStatus = Key<OpenAIUsageStats>(
         EZCustomOpenAIServiceUsageStatusKey,
