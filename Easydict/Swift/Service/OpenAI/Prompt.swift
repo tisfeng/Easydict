@@ -708,14 +708,14 @@ extension QueryService {
         var messages = [[String: String]]()
 
         switch queryType {
-        case .translation:
-            messages = translatioMessages(text: text, from: from, to: to)
         case .sentence:
             messages = sentenceMessages(sentence: text, from: from, to: to)
         case .dictionary:
             messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to)
+        case .translation:
+            fallthrough
         default:
-            messages = []
+            messages = translatioMessages(text: text, from: from, to: to)
         }
 
         var chats: [ChatCompletionMessageParam] = []

@@ -95,7 +95,7 @@ public class BaseOpenAIService: QueryService {
         result.to = to
         result.isStreamFinished = false
 
-        let queryType = queryTextType(text: text, from: from, to: to)
+        let queryType = queryType(text: text, from: from, to: to)
         let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
         let query = ChatQuery(messages: chats, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
@@ -170,8 +170,8 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Private
 
-    /// Get query text type by text and from && to langauge.
-    private func queryTextType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+    /// Get query type by text and from && to langauge.
+    private func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -193,12 +193,7 @@ public class BaseOpenAIService: QueryService {
             }
         }
 
-        let enableTranslation = queryTextType().contains(.translation)
-        if enableTranslation {
-            return .translation
-        }
-
-        return []
+        return .translation
     }
 
     private func handleResult(
