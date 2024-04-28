@@ -46,13 +46,9 @@ public class BaseOpenAIService: QueryService {
     override public func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
-        let translationKey = translationStoredKey(serviceType())
-        let sentenceKey = sentenceStoredKey(serviceType())
-        let dictionaryKey = dictionaryStoredKey(serviceType())
-
-        let isTranslationEnabled = UserDefaults.standard.bool(forKey: translationKey)
-        let isSentenceEnabled = UserDefaults.standard.bool(forKey: sentenceKey)
-        let isDictionaryEnabled = UserDefaults.standard.bool(forKey: dictionaryKey)
+        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
+        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
+        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
 
         if isTranslationEnabled {
             typeOptions.insert(.translation)
@@ -68,10 +64,8 @@ public class BaseOpenAIService: QueryService {
     }
 
     override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let key = storedKey(EZServiceUsageStatusKey, serviceType: serviceType())
-        let stringValue = UserDefaults.standard.string(forKey: key) ?? ""
-        let usageStatus = OpenAIUsageStats(rawValue: stringValue) ?? .default
-        guard let value = UInt(usageStatus.rawValue) else { return .default }
+        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
+        guard let value = UInt(usageStatus) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 

@@ -30,3 +30,17 @@ func sentenceStoredKey(_ serviceType: ServiceType) -> String {
 func dictionaryStoredKey(_ serviceType: ServiceType) -> String {
     storedKey(EZDictionaryKey, serviceType: serviceType)
 }
+
+extension UserDefaults {
+    static func bool(forKey key: String, serviceType: ServiceType) -> Bool {
+        let key = storedKey(key, serviceType: serviceType)
+        let value = standard.bool(forKey: key)
+        return value
+    }
+
+    static func string(forKey key: String, serviceType: ServiceType) -> String? {
+        let key = storedKey(key, serviceType: serviceType)
+        let value = standard.string(forKey: key)
+        return value
+    }
+}
