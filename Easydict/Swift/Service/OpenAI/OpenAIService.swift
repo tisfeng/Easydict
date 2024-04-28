@@ -41,7 +41,7 @@ class OpenAIService: BaseOpenAIService {
         return type
     }
 
-    public override func serviceUsageStatus() -> EZServiceUsageStatus {
+    override public func serviceUsageStatus() -> EZServiceUsageStatus {
         // swiftlint:disable:next todo
         // TODO: Later, we need to support all services to use usage status.
         let usageStatus = Defaults[.openAIServiceUsageStatus]

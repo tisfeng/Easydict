@@ -258,6 +258,26 @@ extension Defaults.Keys {
     // Built-in AI
     static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "")
 
+    static let builtInAITranslation = Key<String>(
+        EZConstKey.constkey("Translation", serviceType: .builtInAI),
+        default: "1"
+    )
+
+    static let builtInAIDictionary = Key<String>(
+        EZConstKey.constkey("Dictionary", serviceType: .builtInAI),
+        default: "0"
+    )
+
+    static let builtInAISentence = Key<String>(
+        EZConstKey.constkey("Sentence", serviceType: .builtInAI),
+        default: "0"
+    )
+
+    static let builtInAIServiceUsageStatus = Key<OpenAIUsageStats>(
+        EZConstKey.constkey("UsageStatus", serviceType: .builtInAI),
+        default: OpenAIUsageStats.alwaysOff
+    )
+
     // DeepL
     static let deepLAuth = Key<String?>(EZDeepLAuthKey)
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(

@@ -257,6 +257,14 @@ userInfo:nil]
 }
 
 - (EZServiceUsageStatus)serviceUsageStatus {
+    /**
+     let usageStatus = Defaults[.builtInAIServiceUsageStatus]
+     guard let value = UInt(usageStatus.rawValue) else { return .default }
+     return EZServiceUsageStatus(rawValue: value) ?? .default
+     
+     EZOpenAIServiceUsageStatusKey
+     */
+    
     return EZServiceUsageStatusDefault;
 }
 

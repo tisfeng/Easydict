@@ -19,7 +19,7 @@ import OpenAI
 public class BaseOpenAIService: QueryService {
     // MARK: Public
 
-    public override func isStream() -> Bool {
+    override public func isStream() -> Bool {
         true
     }
 
