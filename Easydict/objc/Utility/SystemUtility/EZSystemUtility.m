@@ -88,7 +88,7 @@
                 ]];
                 if ([editableTextRoles containsObject:role]) {
                     isEditable = YES;
-                    MMLogInfo(@"role: %@", role);
+                    MMLogInfo(@"Editable text element role: %@", role);
                 }
             }
             CFRelease(roleValue);
@@ -97,7 +97,7 @@
     }
     CFRelease(systemWideElement);
     
-    MMLogInfo(@"isEditable: %d", isEditable);
+//    MMLogInfo(@"isEditable: %d", isEditable);
 
     return isEditable;
 }

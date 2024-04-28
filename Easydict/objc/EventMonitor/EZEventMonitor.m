@@ -126,7 +126,7 @@ static EZEventMonitor *_instance = nil;
     for (EZAppModel *appModel in appModelList) {
         if ([appModel.appBundleID isEqualToString:appBundleID]) {
             triggerType = appModel.triggerType;
-            MMLogInfo(@"App bundleID: %@, %@", appBundleID, @(triggerType));
+            MMLogInfo(@"Hit app bundleID: %@, triggerType: %@", appBundleID, @(triggerType));
         }
     }
     return triggerType;
@@ -628,7 +628,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        MMLogInfo(@"unsupport Accessibility App --> %@", bundleID);
+        MMLogInfo(@"Unsupported Accessibility App: %@", bundleID);
         return YES;
     }
     

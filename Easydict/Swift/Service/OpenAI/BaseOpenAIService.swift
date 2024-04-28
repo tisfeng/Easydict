@@ -79,7 +79,22 @@ public class BaseOpenAIService: QueryService {
                     }
                     handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                 case let .failure(error):
-                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
+                    // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
+                    var text: String?
+                    var err: Error? = error
+                    if !resultText.isEmpty {
+                        text = resultText
+                        err = nil
+
+                        logError("\(name())-(\(model)) error: \(error.localizedDescription)")
+                        logError(String(describing: error))
+                    }
+                    handleResult(
+                        queryType: queryType,
+                        resultText: text,
+                        error: err,
+                        completion: completion
+                    )
                 }
             }
 
@@ -92,9 +107,9 @@ public class BaseOpenAIService: QueryService {
                 } else {
                     // If already has error, we do not need to update it.
                     if result.error == nil {
-                        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes.
-                        let nsText = resultText as NSString
-                        resultText = nsText.tryToRemoveQuotes()
+                        resultText = getFinalResultText(text: resultText)
+
+                        log("\(name())-(\(model)): \(resultText)")
                         handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                         result.isStreamFinished = true
                     }
@@ -187,6 +202,20 @@ public class BaseOpenAIService: QueryService {
         default:
             completion(result, error)
         }
+    }
+
+    private func getFinalResultText(text: String) -> String {
+        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
+        let nsText = text as NSString
+        var resultText = nsText.tryToRemoveQuotes()
+
+        // Remove last </s>, fix Groq mixtral-8x7b-32768
+        let stopFlag = "</s>"
+        if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
+            resultText = String(resultText.dropLast(stopFlag.count))
+        }
+
+        return resultText
     }
 }
 
