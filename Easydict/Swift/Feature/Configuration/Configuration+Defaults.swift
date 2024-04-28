@@ -259,22 +259,22 @@ extension Defaults.Keys {
     static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "")
 
     static let builtInAITranslation = Key<String>(
-        EZConstKey.constkey("Translation", serviceType: .builtInAI),
+        storedKey(EZTranslationKey, serviceType: .builtInAI),
         default: "1"
     )
 
     static let builtInAIDictionary = Key<String>(
-        EZConstKey.constkey("Dictionary", serviceType: .builtInAI),
+        storedKey(EZDictionaryKey, serviceType: .builtInAI),
         default: "0"
     )
 
     static let builtInAISentence = Key<String>(
-        EZConstKey.constkey("Sentence", serviceType: .builtInAI),
+        storedKey(EZSentenceKey, serviceType: .builtInAI),
         default: "0"
     )
 
     static let builtInAIServiceUsageStatus = Key<OpenAIUsageStats>(
-        EZConstKey.constkey("UsageStatus", serviceType: .builtInAI),
+        storedKey(EZServiceUsageStatusKey, serviceType: .builtInAI),
         default: OpenAIUsageStats.alwaysOff
     )
 

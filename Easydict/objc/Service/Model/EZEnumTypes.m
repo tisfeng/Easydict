@@ -31,8 +31,6 @@ NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";
 
-NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
-
 NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPIKey";
 
 NSString *const EZActionTypeAutoSelectQuery = @"auto_select_query";
