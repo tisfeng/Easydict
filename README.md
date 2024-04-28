@@ -74,10 +74,13 @@
   - [  各个服务支持的语言 ](#--各个服务支持的语言-)
   - [🍎 苹果系统词典](#-苹果系统词典)
   - [OpenAI 翻译](#openai-翻译)
-    - [使用内置 APIKey](#使用内置-apikey)
     - [配置个人的 APIKey](#配置个人的-apikey)
     - [OpenAI 查询模式](#openai-查询模式)
     - [OpenAI 自定义参数](#openai-自定义参数)
+  - [内置 AI 翻译](#内置-ai-翻译)
+    - [DashScope](#dashscope)
+    - [Groq](#groq)
+    - [Google Gemini](#google-gemini)
   - [Gemini 翻译](#gemini-翻译)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
@@ -315,30 +318,20 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 ### OpenAI 翻译
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，需要使用 OpenAI API key。
+1.3.0 版本开始支持 OpenAI 翻译，需要使用 OpenAI API key。
 
 如果你没有自己的 OpenAI APIKey，可以借助一些开源项目将第三方的 LLM 接口转为标准的 OpenAI 接口，这样就能直接在 `Easydict` 中使用了。
 
-例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google PaLM 2 & Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
+例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑，腾讯混元，Moonshot AI，Groq，零一万物，阶跃星辰，DeepSeek，Cohere 等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
 
-**[2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他系统版本则需要在 Easydict 的输入框中使用命令方式配置。**
+> [!IMPORTANT]
+> [2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他系统版本则需要在 Easydict 的输入框中使用命令方式配置。
 
-> [!NOTE]
+> [!TIP]
 > 如果电脑硬件支持的话，建议升级到最新的 macOS 系统，以享受更好的用户体验。
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
 
-#### 使用内置 APIKey
-
-目前 Google 的 Gemini API 免费，实测下来翻译效果不错，为方便用户使用，我内置了一个 key。但请注意，这个 key 有一定使用限制且不稳定，因此如果有能力部署 one-api，建议优先使用自己的 APIKey。
-
-在 Beta 模式下，并且没有设置自己的 APIKey，这样就会自动使用内置的 Gemini key。
-
-写入以下命令可开启 Beta 模式
-
-```bash
-easydict://writeKeyValue?EZBetaFeatureKey=1
-```
 
 #### 配置个人的 APIKey
 
@@ -383,20 +376,52 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
-
 #### OpenAI 自定义参数
 
-支持设置自定义域名和模型
+设置自定义域名和模型
 
 ```bash
-// xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
+// 设置接口的请求地址，例如 https://api.openai.com/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx 默认是 gpt-3.5-turbo-1106（目前最便宜实用的模型）
+// 设置使用模型，例如 gpt-3.5-turbo
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
+
+// 设置可使用模型列表，例如 gpt-3.5-turbo, gpt-4-turbo
+easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
 ```
 
 由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
+### 内置 AI 翻译
+
+目前部分 LLM 服务厂商提供有限制的免费 AI 模型，例如 阿里的灵积模型服务 [DashScope](https://dashscope.console.aliyun.com/)，[Groq](https://console.groq.com)，[Google Gemini](https://aistudio.google.com/app/apikey) 等。
+
+![](https://cdn.jsdelivr.net/gh/tisfeng/ImageBed@main/uPic/kCByY8.png)
+
+为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务，支持以下服务模型：
+
+#### [DashScope](https://dashscope.console.aliyun.com/)
+
+> 通义千问开源系列，开通 DashScope 即获赠总计 1,000,000 tokens
+> qwen1.5-32b-chat 模型目前限时免费开放中
+
+- qwen1.5-32b-chat
+- qwen-turbo
+- baichuan2-13b-chat-v1
+- deepseek-7b-chat
+- internlm-7b-chat
+
+#### [Groq](https://console.groq.com)
+
+- llama3-70b-8192
+- mixtral-8x7b-32768
+
+#### [Google Gemini](https://aistudio.google.com/app/apikey)
+
+- gemini-pro
+
+但请注意，上面这些内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [one-api](https://github.com/songquanpeng/one-api) 搭建自己的大模型服务。
 
 ### Gemini 翻译
 
@@ -412,7 +437,7 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 
 如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理来规避 429 报错。
 
-> [!NOTE]
+> [!TIP]
 > 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
 #### 配置 AuthKey

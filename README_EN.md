@@ -72,10 +72,13 @@ We plan to refactor the project with Swift. If you are interested in this open s
 - [Translation Services](#translation-services)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI Translate](#openai-translate)
-    - [Using the built-in APIKey](#using-the-built-in-apikey)
     - [Configure Personal APIKey](#configure-personal-apikey)
     - [OpenAI Query Mode](#openai-query-mode)
     - [OpenAI Custom Settings](#openai-custom-settings)
+  - [Built-In AI Translate](#built-in-ai-translate)
+    - [DashScope](#dashscope)
+    - [Groq](#groq)
+    - [Google Gemini](#google-gemini)
   - [Gemini Translate](#gemini-translate)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
@@ -312,30 +315,19 @@ For detailed information, please see [How to use macOS system dictionary in Easy
 
 ### OpenAI Translate
 
-Version 1.3.0 adds support for OpenAI translation, as well as Azure OpenAI interfaces, which require the use of OpenAI API keys.
+Version 1.3.0 starts to support OpenAI translation, which requires an OpenAI API key.
 
-If you don't have your own OpenAI APIKey, you can use some open source projects to convert third-party LLM interfaces into standard OpenAI interfaces, so that you can use them directly in `Easydict`.
+If you don't have your own OpenAI APIKey, you can use some open source projects to convert third-party LLM interfaces to standard OpenAI interfaces, so that you can use them directly in `Easydict`.
 
-For example, [one-api](https://github.com/songquanpeng/one-api), one-api is a good open source project for OpenAI interface management, which supports multiple LLM interfaces, including Azure, Anthropic Claude, Google PaLM 2 & Gemini, Zhupu ChatGLM, Baidu Wenxin Yiyu, Xunfei Xinghuo cognition, Ali Tongyi Qianwen, 360 Zhinao and Tencent Hunyuan, etc., which can be used for secondary distribution management key, only single executable file, Docker image has been packaged, one-click deployment, out of the box.
+For example, [one-api](https://github.com/songquanpeng/one-api), one-api is a good OpenAI interface management open source project, supports many LLM interfaces, including Azure, Anthropic Claude, Google Gemini, ChatGLM, Baidu Wenwen, and so on. ChatGLM, Baidu Wenxin Yiyin, Xunfei Starfire Cognition, Ali Tongyi Thousand Questions, 360 Intelligent Brain, Tencent Mixed Meta, Moonshot AI, Groq, Zero-One Everything, Step Star, DeepSeek, Cohere , etc., can be used for the secondary distribution of the management key, only a single executable file, has been packaged with a good Docker image, one-key deployment, out-of-the-box .
 
-**The [2.6.0](https://github.com/tisfeng/Easydict/releases) version implements a new SwiftUI settings page (macOS 13+ support), which supports configuring the service API key in a GUI way, other system verions need to be configured using commands in Easydict's input box.**
+> [!IMPORTANT]
+> [2.6.0](https://github.com/tisfeng/Easydict/releases) version implements a new SwiftUI settings page (macOS 13+ support), which supports configuring the service API key in a GUI way, other system verions need to be configured using commands in Easydict's input box.
 
-> [!NOTE]
+> [!TIP]
 > If your computer hardware supports it, it is recommended to upgrade to the latest macOS system to enjoy a better user experience.
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
-
-#### Using the built-in APIKey
-
-Currently Google's Gemini API is free, the translation effect is good, in order to facilitate the use of users, I built-in a key, but please note that the use of this key has some limitations and is not stable, so if you have the ability to deploy one-api, it is recommended to prioritize the use of their own APIKey.
-
-In Beta mode, and no APIKey is set, so the built-in Gemini key will be used automatically.
-
-Write the following command to enable Beta mode
-
-```bash
-easydict://writeKeyValue?EZBetaFeatureKey=1
-```
 
 #### Configure Personal APIKey
 
@@ -386,14 +378,47 @@ A quick tip: If you only want to exclude occasional sentence analysis without tu
 Support custom domains and models
 
 ```bash
-// xxx is the complete address of the request; for example, https://api.ohmygpt.com/azure/v1/chat/completions
+// set custom API URL, https://api.openai.com/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx is set to default as gpt-3.5-turbo-1106 (currently the cheapest and most practical model)
+// set default model, gpt-3.5-turbo
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
+
+// set available modes, gpt-3.5-turbo, gpt-4-turbo
+easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
 ```
 
 Since the official OpenAI interface has restrictions on user IPs, if you need a reverse proxy, you can refer to this project [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
+### Built-In AI Translate
+
+Currently, some LLM service vendors provide free AI models with restrictions, such as Ali's Lingjian modeling service [DashScope](https://dashscope.console.aliyun.com/), [Groq](https://console.groq.com), [Google Gemini](https://aistudio.google.com/app/apikey), and so on.
+
+![](https://cdn.jsdelivr.net/gh/tisfeng/ImageBed@main/uPic/kCByY8.png)
+
+To make it easier for new users to get a taste of using these big model AI translations, we have added a built-in AI translation service that supports the following service models:
+
+#### [DashScope](https://dashscope.console.aliyun.com/)
+
+> Tongyi Thousand Questions open source series, open DashScope and get a total of 1,000,000 tokens!
+> The qwen1.5-32b-chat model is currently available for free for a limited time.
+
+- qwen1.5-32b-chat
+- qwen-turbo
+- baichuan2-13b-chat-v1
+- deepseek-7b-chat
+- internlm-7b-chat
+
+#### [Groq](https://console.groq.com)
+
+- llama3-70b-8192
+- mixtral-8x7b-32768
+
+#### [Google Gemini](https://aistudio.google.com/app/apikey)
+
+- gemini-pro
+
+However, please note that the above built-in models have some limitations (mainly on the free amount), we do not guarantee that they can be used stably all the time, and we recommend users to use [one-api](https://github.com/songquanpeng/one-api) to build their own big model service.
 
 ### Gemini Translate ##
 
