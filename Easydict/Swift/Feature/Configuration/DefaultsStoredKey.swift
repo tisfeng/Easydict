@@ -14,3 +14,19 @@ func storedKey(_ key: String, serviceType: ServiceType) -> String {
     // EZOpenAIDictionaryKey
     "EZ" + serviceType.rawValue + key + "Key"
 }
+
+func serviceUsageStatusStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZServiceUsageStatusKey, serviceType: serviceType)
+}
+
+func translationStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZTranslationKey, serviceType: serviceType)
+}
+
+func sentenceStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZSentenceKey, serviceType: serviceType)
+}
+
+func dictionaryStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZDictionaryKey, serviceType: serviceType)
+}

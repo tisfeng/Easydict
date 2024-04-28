@@ -27,28 +27,6 @@ class OpenAIService: BaseOpenAIService {
         "https://chat.openai.com"
     }
 
-    override public func queryTextType() -> EZQueryTextType {
-        var type: EZQueryTextType = []
-        if Defaults[.openAITranslation] != "0" {
-            type.insert(.translation)
-        }
-        if Defaults[.openAIDictionary] != "0" {
-            type.insert(.dictionary)
-        }
-        if Defaults[.openAISentence] != "0" {
-            type.insert(.sentence)
-        }
-        return type
-    }
-
-    override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        // swiftlint:disable:next todo
-        // TODO: Later, we need to support all services to use usage status.
-        let usageStatus = Defaults[.openAIServiceUsageStatus]
-        guard let value = UInt(usageStatus.rawValue) else { return .default }
-        return EZServiceUsageStatus(rawValue: value) ?? .default
-    }
-
     // MARK: Internal
 
     override var availableModels: [String] {

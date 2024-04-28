@@ -21,26 +21,6 @@ class BuiltInAIService: BaseOpenAIService {
         .builtInAI
     }
 
-    override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = Defaults[.builtInAIServiceUsageStatus]
-        guard let value = UInt(usageStatus.rawValue) else { return .default }
-        return EZServiceUsageStatus(rawValue: value) ?? .default
-    }
-
-    override public func queryTextType() -> EZQueryTextType {
-        var type: EZQueryTextType = []
-        if Defaults[.builtInAITranslation] != "0" {
-            type.insert(.translation)
-        }
-        if Defaults[.builtInAIDictionary] != "0" {
-            type.insert(.dictionary)
-        }
-        if Defaults[.builtInAISentence] != "0" {
-            type.insert(.sentence)
-        }
-        return type
-    }
-
     // MARK: Internal
 
     override var apiKey: String {

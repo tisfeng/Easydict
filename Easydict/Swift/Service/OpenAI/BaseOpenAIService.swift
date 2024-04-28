@@ -43,6 +43,38 @@ public class BaseOpenAIService: QueryService {
         return orderedDict
     }
 
+    override public func queryTextType() -> EZQueryTextType {
+        var typeOptions: EZQueryTextType = []
+
+        let translationKey = translationStoredKey(serviceType())
+        let sentenceKey = sentenceStoredKey(serviceType())
+        let dictionaryKey = dictionaryStoredKey(serviceType())
+
+        let isTranslationEnabled = UserDefaults.standard.bool(forKey: translationKey)
+        let isSentenceEnabled = UserDefaults.standard.bool(forKey: sentenceKey)
+        let isDictionaryEnabled = UserDefaults.standard.bool(forKey: dictionaryKey)
+
+        if isTranslationEnabled {
+            typeOptions.insert(.translation)
+        }
+        if isSentenceEnabled {
+            typeOptions.insert(.sentence)
+        }
+        if isDictionaryEnabled {
+            typeOptions.insert(.dictionary)
+        }
+
+        return typeOptions
+    }
+
+    override public func serviceUsageStatus() -> EZServiceUsageStatus {
+        let key = storedKey(EZServiceUsageStatusKey, serviceType: serviceType())
+        let stringValue = UserDefaults.standard.string(forKey: key) ?? ""
+        let usageStatus = OpenAIUsageStats(rawValue: stringValue) ?? .default
+        guard let value = UInt(usageStatus.rawValue) else { return .default }
+        return EZServiceUsageStatus(rawValue: value) ?? .default
+    }
+
     // swiftlint:disable identifier_name
     override public func translate(
         _ text: String,
@@ -138,6 +170,7 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Private
 
+    /// Get query text type by text and from && to langauge.
     private func queryTextType(text: String, from: Language, to _: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
