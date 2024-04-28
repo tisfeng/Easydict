@@ -628,7 +628,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        MMLogInfo(@"unsupport Accessibility App --> %@", bundleID);
+        MMLogInfo(@"Unsupported Accessibility App: %@", bundleID);
         return YES;
     }
     
