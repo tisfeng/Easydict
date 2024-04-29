@@ -216,12 +216,21 @@ class ShortcutWrapper<T: KeyCombo> {
 extension Defaults.Keys {
     // OpenAI
     static let openAIAPIKey = Key<String?>(EZOpenAIAPIKey)
-    static let openAITranslation = Key<String>(EZOpenAITranslationKey, default: "1")
-    static let openAIDictionary = Key<String>(EZOpenAIDictionaryKey, default: "1")
-    static let openAISentence = Key<String>(EZOpenAISentenceKey, default: "1")
+    static let openAITranslation = Key<String>(
+        translationStoredKey(.openAI),
+        default: "1"
+    )
+    static let openAIDictionary = Key<String>(
+        dictionaryStoredKey(.openAI),
+        default: "1"
+    )
+    static let openAISentence = Key<String>(
+        sentenceStoredKey(.openAI),
+        default: "1"
+    )
     static let openAIServiceUsageStatus = Key<OpenAIUsageStats>(
-        EZOpenAIServiceUsageStatusKey,
-        default: OpenAIUsageStats.default
+        serviceUsageStatusStoredKey(.openAI),
+        default: .default
     )
     static let openAIEndPoint = Key<String?>(EZOpenAIEndPointKey)
     static let openAIModel = Key<String>(EZOpenAIModelKey, default: OpenAIModel.gpt3_5_turbo.rawValue)
@@ -240,12 +249,21 @@ extension Defaults.Keys {
         default: NSLocalizedString("custom_openai", comment: "")
     )
     static let customOpenAIAPIKey = Key<String?>(EZCustomOpenAIAPIKey, default: "")
-    static let customOpenAITranslation = Key<String>(EZCustomOpenAITranslationKey, default: "1")
-    static let customOpenAIDictionary = Key<String>(EZCustomOpenAISentenceKey, default: "1")
-    static let customOpenAISentence = Key<String>(EZCustomOpenAISentenceKey, default: "1")
+    static let customOpenAITranslation = Key<String>(
+        translationStoredKey(.customOpenAI),
+        default: "1"
+    )
+    static let customOpenAIDictionary = Key<String>(
+        dictionaryStoredKey(.customOpenAI),
+        default: "0"
+    )
+    static let customOpenAISentence = Key<String>(
+        sentenceStoredKey(.customOpenAI),
+        default: "0"
+    )
     static let customOpenAIServiceUsageStatus = Key<OpenAIUsageStats>(
-        EZCustomOpenAIServiceUsageStatusKey,
-        default: OpenAIUsageStats.default
+        serviceUsageStatusStoredKey(.builtInAI),
+        default: .default
     )
     static let customOpenAIEndPoint = Key<String?>(EZCustomOpenAIEndPointKey, default: "")
     static let customOpenAIModel = Key<String>(EZCustomOpenAIModelKey, default: "")
@@ -257,6 +275,22 @@ extension Defaults.Keys {
 
     // Built-in AI
     static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "")
+    static let builtInAITranslation = Key<String>(
+        translationStoredKey(.builtInAI),
+        default: "1"
+    )
+    static let builtInAIDictionary = Key<String>(
+        dictionaryStoredKey(.builtInAI),
+        default: "0"
+    )
+    static let builtInAISentence = Key<String>(
+        sentenceStoredKey(.builtInAI),
+        default: "0"
+    )
+    static let builtInAIServiceUsageStatus = Key<OpenAIUsageStats>(
+        serviceUsageStatusStoredKey(.builtInAI),
+        default: .default
+    )
 
     // DeepL
     static let deepLAuth = Key<String?>(EZDeepLAuthKey)

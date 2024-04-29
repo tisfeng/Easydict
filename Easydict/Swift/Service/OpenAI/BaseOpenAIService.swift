@@ -19,7 +19,7 @@ import OpenAI
 public class BaseOpenAIService: QueryService {
     // MARK: Public
 
-    public override func isStream() -> Bool {
+    override public func isStream() -> Bool {
         true
     }
 
@@ -43,6 +43,32 @@ public class BaseOpenAIService: QueryService {
         return orderedDict
     }
 
+    override public func queryTextType() -> EZQueryTextType {
+        var typeOptions: EZQueryTextType = []
+
+        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
+        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
+        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
+
+        if isTranslationEnabled {
+            typeOptions.insert(.translation)
+        }
+        if isSentenceEnabled {
+            typeOptions.insert(.sentence)
+        }
+        if isDictionaryEnabled {
+            typeOptions.insert(.dictionary)
+        }
+
+        return typeOptions
+    }
+
+    override public func serviceUsageStatus() -> EZServiceUsageStatus {
+        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
+        guard let value = UInt(usageStatus) else { return .default }
+        return EZServiceUsageStatus(rawValue: value) ?? .default
+    }
+
     // swiftlint:disable identifier_name
     override public func translate(
         _ text: String,
@@ -63,7 +89,7 @@ public class BaseOpenAIService: QueryService {
         result.to = to
         result.isStreamFinished = false
 
-        let queryType = queryTextType(text: text, from: from, to: to)
+        let queryType = queryType(text: text, from: from, to: to)
         let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
         let query = ChatQuery(messages: chats, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
@@ -138,7 +164,8 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Private
 
-    private func queryTextType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+    /// Get query type by text and from && to langauge.
+    private func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -160,12 +187,7 @@ public class BaseOpenAIService: QueryService {
             }
         }
 
-        let enableTranslation = queryTextType().contains(.translation)
-        if enableTranslation {
-            return .translation
-        }
-
-        return []
+        return .translation
     }
 
     private func handleResult(

@@ -58,7 +58,6 @@ typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
 };
 
 
-FOUNDATION_EXPORT NSString *const EZServiceUsageStatusKey;
 typedef NS_ENUM(NSUInteger, EZServiceUsageStatus) {
     EZServiceUsageStatusDefault = 0,
     EZServiceUsageStatusAlwaysOff = 1,

@@ -13,7 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZBetaFeatureKey = @"EZBetaFeatureKey";
 
+static NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
+static NSString *const EZTranslationKey = @"Translation";
 static NSString *const EZDictionaryKey = @"Dictionary";
+static NSString *const EZSentenceKey = @"Sentence";
 
 // OpenAI
 static NSString *const EZOpenAIAPIKey = @"EZOpenAIAPIKey";
