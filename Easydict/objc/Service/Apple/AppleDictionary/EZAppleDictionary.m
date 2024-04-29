@@ -101,7 +101,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    MMLogWarn(@"Apple Dictionary does not support ocr");
+    MMLogError(@"Apple Dictionary does not support ocr");
 }
 
 - (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language {
