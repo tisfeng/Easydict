@@ -137,7 +137,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         return;
     }
     
-    MMLogInfo(@"queryTranslateURL: %@", URL);
+//    MMLog(@"queryTranslateURL: %@", URL);
 
     [self loadURL:URL];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
@@ -153,7 +153,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 completionHandler(texts, nil);
                 CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-                MMLogInfo(@"webView cost: %.1f ms, URL: %@", (endTime - startTime) * 1000, URL); // cost ~2s
+//                MMLog(@"webView cost: %.1f ms, URL: %@", (endTime - startTime) * 1000, URL); // cost ~2s
             }
             [self resetWebView];
         };

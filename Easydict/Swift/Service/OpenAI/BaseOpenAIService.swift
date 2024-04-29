@@ -135,7 +135,7 @@ public class BaseOpenAIService: QueryService {
                     if result.error == nil {
                         resultText = getFinalResultText(text: resultText)
 
-                        log("\(name())-(\(model)): \(resultText)")
+//                        log("\(name())-(\(model)): \(resultText)")
                         handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                         result.isStreamFinished = true
                     }

@@ -670,7 +670,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
-    MMLogInfo(@"query text: %@", self.queryText);
+    MMLogInfo(@"query text: %@", self.queryText.truncated);
     
     // !!!: Reset all result before new query.
     [self resetAllResults];

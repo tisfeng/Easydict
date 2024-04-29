@@ -465,7 +465,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             
             NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
             self.selectedText = selectedText;
-            MMLogInfo(@"--> Key getText: %@", selectedText);
+            MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
             
             [lastText copyToPasteboard];
             
@@ -520,7 +520,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             selectedText = (__bridge NSString *)(selectedTextValue);
             selectedText = [selectedText removeInvisibleChar];
             self.selectedText = selectedText;
-            MMLogInfo(@"--> Accessibility success, getText: %@", selectedText);
+            MMLogInfo(@"--> Accessibility getText success: %@", selectedText.truncated);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
                 MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
