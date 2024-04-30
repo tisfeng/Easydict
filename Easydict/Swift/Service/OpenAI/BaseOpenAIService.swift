@@ -28,18 +28,15 @@ public class BaseOpenAIService: QueryService {
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for language in EZLanguageManager.shared().allLanguages {
-            var value = language.rawValue
-            if language == .classicalChinese {
-                value = Language.wenyanwen
-            }
-
-            if language != .burmese {
-                orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
-            }
+        let allLangauges = EZLanguageManager.shared().allLanguages
+        let supportedLanguages = allLangauges.filter { language in
+            !unsupportedLanguages.contains(language)
         }
 
+        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+        for language in supportedLanguages {
+            orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
+        }
         return orderedDict
     }
 
@@ -150,6 +147,8 @@ public class BaseOpenAIService: QueryService {
 
     var model = ""
 
+    var unsupportedLanguages: [Language] = []
+
     var availableModels: [String] {
         [""]
     }
@@ -239,8 +238,4 @@ public class BaseOpenAIService: QueryService {
 
         return resultText
     }
-}
-
-extension Language {
-    static var wenyanwen = "文言文"
 }
