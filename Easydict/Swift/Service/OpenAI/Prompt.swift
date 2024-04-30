@@ -131,12 +131,12 @@ extension QueryService {
             ],
         ]
 
-        let classicalChinseseFewShot = [
+        let fromClassicalChinseseFewShot = [
             // wyw --> zh
             [
                 "role": "user",
                 "content": """
-                Translate the following 中文文言文 text into 简体中文白话文 text:
+                Translate the following 简体中文文言文 text into 简体中文白话文 text:
                 \"\"\"曾经沧海难为水，除却巫山不是云。\"\"\"
                 """,
             ],
@@ -204,6 +204,40 @@ extension QueryService {
             ],
         ]
 
+        let toClassicalChinseseFewShot = [
+            //  --> wyw
+            [
+                "role": "user",
+                "content": """
+                Translate the following 简体中文白话文 text into 简体中文文言文 text:
+                \"\"\"不要忽视梦想。不要工作过久。说出想法。交朋友。要开心。\"\"\"
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                勿轻梦想，勿久劳形，宜言志，善交友，当乐也。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": """
+                Translate the following Eglish text into 简体中文文言文 text:
+                Don't ignore your dreams;
+                don't work too much;
+                say what you think;
+                cultivate friendships;
+                be happy.
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                勿轻梦想，勿久劳形，宜言志，善交友，当乐也。
+                """,
+            ],
+        ]
+
         let systemMessages = [
             [
                 "role": "system",
@@ -215,7 +249,10 @@ extension QueryService {
         messages.append(contentsOf: chineseFewShot)
 
         if from == .classicalChinese {
-            messages.append(contentsOf: classicalChinseseFewShot)
+            messages.append(contentsOf: fromClassicalChinseseFewShot)
+        }
+        if to == .classicalChinese {
+            messages.append(contentsOf: toClassicalChinseseFewShot)
         }
 
         let userMessages = [
@@ -813,7 +850,7 @@ extension Language {
     var queryLangaugeName: String {
         let languageName = switch self {
         case .classicalChinese:
-            "中文文言文"
+            "简体中文文言文"
         case .simplifiedChinese:
             "简体中文白话文"
         case .traditionalChinese:
