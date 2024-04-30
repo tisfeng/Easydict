@@ -667,10 +667,15 @@ static EZWindowManager *_instance;
     [NSApp setActivationPolicy:activationPolicy];
     
     if (showFlag) {
+        // If the main window does not exist, create it first, and show it center.
+        if (!_mainWindow) {
+            [self.mainWindow center];
+        }
+        [self.mainWindow makeKeyAndOrderFront:nil];
         [self.floatingWindowTypeArray insertObject:@(EZWindowTypeMain) atIndex:0];
         
-        [self.mainWindow center];
-        [self.mainWindow makeKeyAndOrderFront:nil];
+        // TODO: We should record main window showing position, like mini window.
+//        [self showFloatingWindowType:EZWindowTypeMain queryText:nil];
     }
 }
 
