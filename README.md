@@ -77,6 +77,7 @@
     - [配置个人的 APIKey](#配置个人的-apikey)
     - [OpenAI 查询模式](#openai-查询模式)
     - [OpenAI 自定义参数](#openai-自定义参数)
+  - [自定义 OpenAI 翻译](#自定义-openai-翻译)
   - [内置 AI 翻译](#内置-ai-翻译)
     - [DashScope](#dashscope)
     - [Groq](#groq)
@@ -328,7 +329,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 > [2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他系统版本则需要在 Easydict 的输入框中使用命令方式配置。
 
 > [!TIP]
-> 如果电脑硬件支持的话，建议升级到最新的 macOS 系统，以享受更好的用户体验。
+> 如果电脑硬件支持，建议升级 macOS 系统，以享受更好的用户体验。
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
 
@@ -392,6 +393,24 @@ easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
 ```
 
 由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
+### 自定义 OpenAI 翻译
+
+支持的配置项和 OpenAI 一样，只要将 OpenA 换成 CustomOpenAI 即可。
+
+```bash
+// 设置 API key
+easydict://writeKeyValue?EZCustomOpenAIAPIKey=sk-xxx
+
+// 设置接口的请求地址，例如 https://api.openai.com/v1/chat/completions
+easydict://writeKeyValue?EZCustomOpenAIEndPointKey=xxx
+
+// 设置使用模型，例如 gpt-3.5-turbo
+easydict://writeKeyValue?EZCustomOpenAIModelKey=xxx
+
+// 设置服务查询模式，0 默认，1 总是关闭，2 总是开启
+easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
+```
 
 ### 内置 AI 翻译
 

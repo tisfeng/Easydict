@@ -75,6 +75,7 @@ We plan to refactor the project with Swift. If you are interested in this open s
     - [Configure Personal APIKey](#configure-personal-apikey)
     - [OpenAI Query Mode](#openai-query-mode)
     - [OpenAI Custom Settings](#openai-custom-settings)
+  - [Custom OpenAI Translate](#custom-openai-translate)
   - [Built-In AI Translate](#built-in-ai-translate)
     - [DashScope](#dashscope)
     - [Groq](#groq)
@@ -389,6 +390,20 @@ easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
 ```
 
 Since the official OpenAI interface has restrictions on user IPs, if you need a reverse proxy, you can refer to this project [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
+### Custom OpenAI Translate
+
+The supported configuration items are the same as OpenAI, just replace OpenA with CustomOpenAI.
+
+```bash
+easydict://writeKeyValue?EZCustomOpenAIAPIKey=sk-xxx
+
+easydict://writeKeyValue?EZCustomOpenAIEndPointKey=xxx
+
+easydict://writeKeyValue?EZCustomOpenAIModelKey=xxx
+
+easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
+```
 
 ### Built-In AI Translate
 
