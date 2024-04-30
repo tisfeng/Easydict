@@ -408,15 +408,13 @@ easydict://writeKeyValue?EZCustomOpenAIEndPointKey=xxx
 // 设置使用模型，例如 gpt-3.5-turbo
 easydict://writeKeyValue?EZCustomOpenAIModelKey=xxx
 
-// 设置服务查询模式，0 默认，1 总是关闭，2 总是开启
+// 设置服务查询模式，0 默认，1 始终关闭，2 始终开启
 easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
 ```
 
 ### 内置 AI 翻译
 
 目前部分 LLM 服务厂商提供有限制的免费 AI 模型，例如 阿里的灵积模型服务 [DashScope](https://dashscope.console.aliyun.com/)，[Groq](https://console.groq.com)，[Google Gemini](https://aistudio.google.com/app/apikey) 等。
-
-![](https://cdn.jsdelivr.net/gh/tisfeng/ImageBed@main/uPic/kCByY8.png)
 
 为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务，支持以下服务模型：
 
@@ -441,6 +439,8 @@ easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
 - gemini-pro
 
 但请注意，上面这些内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [one-api](https://github.com/songquanpeng/one-api) 搭建自己的大模型服务。
+
+![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
 
 ### Gemini 翻译
 

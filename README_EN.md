@@ -409,8 +409,6 @@ easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
 
 Currently, some LLM service vendors provide free AI models with restrictions, such as Ali's Lingjian modeling service [DashScope](https://dashscope.console.aliyun.com/), [Groq](https://console.groq.com), [Google Gemini](https://aistudio.google.com/app/apikey), and so on.
 
-![](https://cdn.jsdelivr.net/gh/tisfeng/ImageBed@main/uPic/kCByY8.png)
-
 To make it easier for new users to get a taste of using these big model AI translations, we have added a built-in AI translation service that supports the following service models:
 
 #### [DashScope](https://dashscope.console.aliyun.com/)
@@ -434,6 +432,8 @@ To make it easier for new users to get a taste of using these big model AI trans
 - gemini-pro
 
 However, please note that the above built-in models have some limitations (mainly on the free amount), we do not guarantee that they can be used stably all the time, and we recommend users to use [one-api](https://github.com/songquanpeng/one-api) to build their own big model service.
+
+![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
 
 ### Gemini Translate ##
 
