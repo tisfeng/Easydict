@@ -10,7 +10,6 @@
 #import "EZShortcut.h"
 #import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
-#import "Easydict-Swift.h"
 
 @interface AppDelegate ()
 
@@ -34,36 +33,13 @@
         [Shortcut setupShortcut];
     }
 
-    [EZWindowManager.shared showMainWindowIfNedded];
+    [EZWindowManager.shared showMainWindowIfNeeded];
     
     [self registerRouters];
     
     [[DarkModeManager manager] updateDarkMode:Configuration.shared.appearance];
     // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
-}
-
-/// Auto set up app language.
-- (void)setupAppLanguage {
-    NSString *systemLanguageCode = @"en-CN";
-    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
-        systemLanguageCode = @"zh-CN";
-    }
-    
-    [self setupAppLanguage:systemLanguageCode];
-}
-
-/// Set up user app language, Chinese or English
-- (void)setupAppLanguage:(NSString *)languageCode {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *kAppleLanguagesKey = @"AppleLanguages";
-    NSMutableArray *userLanguages = [[defaults objectForKey:kAppleLanguagesKey] mutableCopy];
-    
-    // Avoid two identical languages.
-    [userLanguages removeObject:languageCode];
-    [userLanguages insertObject:languageCode atIndex:0];
-    
-    [defaults setObject:userLanguages forKey:kAppleLanguagesKey];
 }
 
 - (void)restartApplication {
@@ -89,9 +65,14 @@
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
-    [EZWindowManager.shared closeMainWindowIfNeeded];
-
     return NO;
+}
+
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    // Fix https://github.com/tisfeng/Easydict/issues/447
+    [EZWindowManager.shared showMainWindowIfNeeded];
+    
+    return YES;
 }
 
 @end

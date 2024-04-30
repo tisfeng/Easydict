@@ -39,7 +39,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "调整查询图标位置:"
+            "value" : "调整查询图标位置："
           }
         }
       }
@@ -131,7 +131,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "匿名统计:"
+            "value" : "匿名统计："
           }
         }
       }
@@ -164,7 +164,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "外观:"
+            "value" : "外观："
           }
         }
       }
@@ -288,7 +288,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开发者:"
+            "value" : "开发者："
           }
         }
       }
@@ -298,13 +298,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically check for application updates"
+            "value" : "Automatically check for app updates"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动检查应用程序更新"
+            "value" : "自动检查应用更新"
+          }
+        }
+      }
+    },
+    "auto_check_update " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically check for app updates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动检查应用更新"
           }
         }
       }
@@ -368,7 +384,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动复制:"
+            "value" : "自动复制："
           }
         }
       }
@@ -384,7 +400,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠标自动划词:"
+            "value" : "鼠标自动划词："
           }
         }
       }
@@ -416,7 +432,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动查询:"
+            "value" : "自动查询："
           }
         }
       }
@@ -481,6 +497,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "划词后自动显示查询图标"
+          }
+        }
+      }
+    },
+    "automatically_remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically remove code comment symbols「/*#」"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动去除代码注释符号「/*#」"
+          }
+        }
+      }
+    },
+    "automatically_split_words" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically split words: key_value —> key value"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词自动分词 key_value —> key value"
           }
         }
       }
@@ -571,6 +619,22 @@
         }
       }
     },
+    "built_in_ai" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built-In AI Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内置 AI 翻译"
+          }
+        }
+      }
+    },
     "caiyun_translate" : {
       "comment" : "The name of Caiyun Translate",
       "localizations" : {
@@ -600,6 +664,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "check_for_updates" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
+          }
+        }
+      }
+    },
+    "check_now" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check Now"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即检查"
           }
         }
       }
@@ -679,7 +775,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击查询:"
+            "value" : "点击查询："
           }
         }
       }
@@ -760,7 +856,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "崩溃日志:"
+            "value" : "崩溃日志："
           }
         }
       }
@@ -777,6 +873,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本"
+          }
+        }
+      }
+    },
+    "custom_openai" : {
+      "comment" : "The name of Custom OpenAI Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom OpenAI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义 OpenAI 翻译"
           }
         }
       }
@@ -819,7 +932,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "默认 TTS 服务:"
+            "value" : "默认 TTS 服务："
           }
         }
       }
@@ -868,7 +981,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "禁用空复制提示音:"
+            "value" : "禁用空复制提示音："
           }
         }
       }
@@ -1082,23 +1195,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "词源:"
-          }
-        }
-      }
-    },
-    "explain" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explanation:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "释义:"
+            "value" : "词源："
           }
         }
       }
@@ -1145,7 +1242,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一语言:"
+            "value" : "第一语言："
           }
         }
       }
@@ -1155,7 +1252,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fixed float window"
+            "value" : "Fixed window"
           }
         },
         "zh-Hans" : {
@@ -1177,7 +1274,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "侧悬浮窗口位置:"
+            "value" : "侧悬浮窗口位置："
           }
         }
       }
@@ -1258,7 +1355,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字体大小:"
+            "value" : "字体大小："
           }
         }
       }
@@ -1366,6 +1463,22 @@
         }
       }
     },
+    "go_to_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往设置"
+          }
+        }
+      }
+    },
     "google_translate" : {
       "localizations" : {
         "en" : {
@@ -1445,13 +1558,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Make sure you have set up a shortcut to trigger Easydict!\n\nIf you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option."
+            "value" : "If you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`  then cancel the [Hide Status Bar Icon] option."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请确保已设置了触发 Easydict 的快捷！\n\n如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项。"
+            "value" : "如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项。"
           }
         }
       }
@@ -1578,7 +1691,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留结果:"
+            "value" : "保留结果："
           }
         }
       }
@@ -1594,7 +1707,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "语种识别:"
+            "value" : "语种识别："
           }
         }
       }
@@ -1647,6 +1760,23 @@
         }
       }
     },
+    "language_preference" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display Language"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示语言"
+          }
+        }
+      }
+    },
     "large" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1680,6 +1810,22 @@
         }
       }
     },
+    "lastest_version %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest version %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新版本 %@"
+          }
+        }
+      }
+    },
     "launch" : {
       "localizations" : {
         "en" : {
@@ -1691,7 +1837,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启动:"
+            "value" : "启动："
           }
         }
       }
@@ -1760,7 +1906,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "菜单栏图标:"
+            "value" : "菜单栏图标："
           }
         }
       }
@@ -1907,7 +2053,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠标划词窗口类型:"
+            "value" : "鼠标划词窗口类型："
           }
         }
       }
@@ -1933,13 +2079,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠ No results found"
+            "value" : "No results found"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠ 未查询到结果"
+            "value" : "未查询到结果"
           }
         }
       }
@@ -2168,7 +2314,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "播放单词发音:"
+            "value" : "播放单词发音："
           }
         }
       }
@@ -2275,13 +2421,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Query failed"
+            "value" : "💥 Failed"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查询失败"
+            "value" : "💥 失败"
           }
         }
       }
@@ -2302,6 +2448,22 @@
         }
       }
     },
+    "quick_action" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick action"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷动作"
+          }
+        }
+      }
+    },
     "quick_link" : {
       "localizations" : {
         "en" : {
@@ -2313,7 +2475,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷功能:"
+            "value" : "快捷功能："
           }
         }
       }
@@ -2330,6 +2492,55 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
+          }
+        }
+      }
+    },
+    "refuse_hide_menu_bar_icon_msg" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now Detected that there is not set input translation shortcut key or selection translation shortcut key!\n\nSet the shortcut key to make sure you can go Easydict and hide the menu bar icon."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到当前未设置输入翻译快捷键或划词翻译快捷键！\n\n请先设置快捷键确保可以触发 Easydict 再隐藏菜单栏图标。"
+          }
+        }
+      }
+    },
+    "remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove code comment symbols"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去除代码注释符号"
+          }
+        }
+      }
+    },
+    "replace_newline_with_space" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace newline with space"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将「换行符」替换为「空格」"
           }
         }
       }
@@ -2393,7 +2604,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第二语言:"
+            "value" : "第二语言："
           }
         }
       }
@@ -2508,6 +2719,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Token"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.model.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model name, use commas (,) to separate multiple models."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型名字，多个模型使用逗号（,）分隔"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.name.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Service Name"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义服务名称"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.supported_models.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supported Models"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持的模型"
           }
         }
       }
@@ -2757,13 +3016,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Model"
+            "value" : "Use Model"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模型"
+            "value" : "使用模型"
           }
         }
       }
@@ -2933,13 +3192,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validation failed!"
+            "value" : "Validation failed 💔"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "验证失败！"
+            "value" : "验证失败 💔"
           }
         }
       }
@@ -2949,13 +3208,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validation success!"
+            "value" : "Validation success 🎉"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "验证成功！"
+            "value" : "验证成功 🎉"
           }
         }
       }
@@ -3041,18 +3300,18 @@
         }
       }
     },
-    "setting.general.appearance.header" : {
+    "setting.general.app_setting.header" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appearance"
+            "value" : "App Setting"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "外观"
+            "value" : "应用设置"
           }
         }
       }
@@ -3326,6 +3585,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "其他"
+          }
+        }
+      }
+    },
+    "setting.general.query_language.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Query Langauge"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查询语言"
           }
         }
       }
@@ -3811,7 +4086,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷键划词窗口类型:"
+            "value" : "快捷键划词窗口类型："
           }
         }
       }
@@ -3891,7 +4166,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "主窗口:"
+            "value" : "主窗口："
           }
         }
       }
@@ -3908,6 +4183,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示迷你窗口"
+          }
+        }
+      }
+    },
+    "show_setting_quick_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Setting quick link icon"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示快捷设置图标"
           }
         }
       }
@@ -3977,6 +4268,38 @@
         }
       }
     },
+    "split_words" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Split words"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词分词"
+          }
+        }
+      }
+    },
+    "stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
+          }
+        }
+      }
+    },
     "stop_play_audio" : {
       "localizations" : {
         "en" : {
@@ -4037,22 +4360,6 @@
         }
       }
     },
-    "tag" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tag:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标签:"
-          }
-        }
-      }
-    },
     "tencent_translate" : {
       "comment" : "The name of Tencent Translate",
       "localizations" : {
@@ -4101,13 +4408,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "UK:"
+            "value" : "UK"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英:"
+            "value" : "英"
           }
         }
       }
@@ -4165,13 +4472,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "US:"
+            "value" : "US"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "美:"
+            "value" : "美"
           }
         }
       }

@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,7 +42,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI (ChatGPT)，Gemini，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
+- [x] 支持有道词典，OpenAI，Gemini，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
@@ -71,12 +71,16 @@
 - [语种识别](#语种识别)
 - [TTS 服务](#tts-服务)
 - [查询服务](#查询服务)
+  - [  各个服务支持的语言 ](#--各个服务支持的语言-)
   - [🍎 苹果系统词典](#-苹果系统词典)
-  - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
-    - [使用内置 APIKey](#使用内置-apikey)
+  - [OpenAI 翻译](#openai-翻译)
     - [配置个人的 APIKey](#配置个人的-apikey)
     - [OpenAI 查询模式](#openai-查询模式)
     - [OpenAI 自定义参数](#openai-自定义参数)
+  - [内置 AI 翻译](#内置-ai-翻译)
+    - [DashScope](#dashscope)
+    - [Groq](#groq)
+    - [Google Gemini](#google-gemini)
   - [Gemini 翻译](#gemini-翻译)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
@@ -234,12 +238,12 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ## 查询服务
 
-目前支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，ChatGPT，DeepL，Google，Bing，百度和火山翻译。
+目前支持有道词典，苹果系统词典，苹果系统翻译，DeepL，Google，Bing，百度和火山翻译。
 
 > [!NOTE]
 > Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
-<details> <summary> 各个服务支持的语言 </summary>
+### <details> <summary> 各个服务支持的语言 </summary>
 
 <p>
 
@@ -312,32 +316,22 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
 </table>
 
-### OpenAI（ChatGPT）翻译
+### OpenAI 翻译
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，需要使用 OpenAI API key。
+1.3.0 版本开始支持 OpenAI 翻译，需要使用 OpenAI API key。
 
 如果你没有自己的 OpenAI APIKey，可以借助一些开源项目将第三方的 LLM 接口转为标准的 OpenAI 接口，这样就能直接在 `Easydict` 中使用了。
 
-例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google PaLM 2 & Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
+例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑，腾讯混元，Moonshot AI，Groq，零一万物，阶跃星辰，DeepSeek，Cohere 等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
 
-[2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他则需要在 Easydict 的输入框中使用命令方式配置。
+> [!IMPORTANT]
+> [2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他系统版本则需要在 Easydict 的输入框中使用命令方式配置。
 
-> [!NOTE]
+> [!TIP]
 > 如果电脑硬件支持的话，建议升级到最新的 macOS 系统，以享受更好的用户体验。
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
 
-#### 使用内置 APIKey
-
-目前 Google 的 Gemini API 免费，实测下来翻译效果不错，为方便用户使用，我内置了一个 key。但请注意，这个 key 有一定使用限制且不稳定，因此如果有能力部署 one-api，建议优先使用自己的 APIKey。
-
-在 Beta 模式下，并且没有设置自己的 APIKey，这样就会自动使用内置的 Gemini key。
-
-写入以下命令可开启 Beta 模式
-
-```bash
-easydict://writeKeyValue?EZBetaFeatureKey=1
-```
 
 #### 配置个人的 APIKey
 
@@ -382,23 +376,52 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
-
 #### OpenAI 自定义参数
 
-支持设置自定义域名和模型
+设置自定义域名和模型
 
 ```bash
-//  xxx 是 host，默认是 api.openai.com
-easydict://writeKeyValue?EZOpenAIDomainKey=xxx
-
-// xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
+// 设置接口的请求地址，例如 https://api.openai.com/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx 默认是 gpt-3.5-turbo-1106（目前最便宜实用的模型）
+// 设置使用模型，例如 gpt-3.5-turbo
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
+
+// 设置可使用模型列表，例如 gpt-3.5-turbo, gpt-4-turbo
+easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
 ```
 
 由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
+### 内置 AI 翻译
+
+目前部分 LLM 服务厂商提供有限制的免费 AI 模型，例如 阿里的灵积模型服务 [DashScope](https://dashscope.console.aliyun.com/)，[Groq](https://console.groq.com)，[Google Gemini](https://aistudio.google.com/app/apikey) 等。
+
+![](https://cdn.jsdelivr.net/gh/tisfeng/ImageBed@main/uPic/kCByY8.png)
+
+为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务，支持以下服务模型：
+
+#### [DashScope](https://dashscope.console.aliyun.com/)
+
+> 通义千问开源系列，开通 DashScope 即获赠总计 1,000,000 tokens
+> qwen1.5-32b-chat 模型目前限时免费开放中
+
+- qwen1.5-32b-chat
+- qwen-turbo
+- baichuan2-13b-chat-v1
+- deepseek-7b-chat
+- internlm-7b-chat
+
+#### [Groq](https://console.groq.com)
+
+- llama3-70b-8192
+- mixtral-8x7b-32768
+
+#### [Google Gemini](https://aistudio.google.com/app/apikey)
+
+- gemini-pro
+
+但请注意，上面这些内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [one-api](https://github.com/songquanpeng/one-api) 搭建自己的大模型服务。
 
 ### Gemini 翻译
 
@@ -414,7 +437,7 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 
 如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理来规避 429 报错。
 
-> [!NOTE]
+> [!TIP]
 > 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
 #### 配置 AuthKey
@@ -429,18 +452,15 @@ easydict://writeKeyValue?EZDeepLAuthKey=xxx
 
 如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
 
-这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate ,如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
+这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 `https://api-free.deepl.com/v2/translate`，如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
 
 使用自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
+
+Easydict 支持 [DeepLX](https://github.com/OwO-Network/DeepLX) 接口，详情请看 [#464](https://github.com/tisfeng/Easydict/issues/464)。
 
 ```bash
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 ```
-借助下面开源项目，可以在自己的服务器或者 Cloudflare 上部署支持 DeepL 翻译的接口服务：
-
-- [deeplx-for-cloudflare](https://github.com/ifyour/deeplx-for-cloudflare)
-- [DeepLX](https://github.com/OwO-Network/DeepLX)
-
 
 #### 配置 API 调用方式
 
@@ -811,6 +831,14 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2024-01-29 | 大帅ㅤ | 5 | 还没有，但是感受到了用心。|
 | 2024-02-04 | ll | 20 | |
 | 2024-02-10 | 盒子哥 | 100 | |
+| 2024-02-26 | 吃核桃不吐皮儿 | 10 | 感谢解答问题 |
+| 2024-02-28 |  | 20 | 感谢你的 Easydict |
+| 2024-03-11 |  | 20 | 感谢 |
+| 2024-03-16 | 幻影 | 20 | 非常感谢 |
+| 2024-03-25 |  | 10 | 感谢大佬 |
+| 2024-04-04 | 至秦 | 37 | 感谢老哥 好用🙏 |
+| 2024-04-12 | 奥雷里亚诺 | 50 | 界面精致，而且帮我节约了不少时间 |
+| 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
 
 </p>
 

@@ -10,7 +10,6 @@
 #import <JLRoutes.h>
 #import "EZWindowManager.h"
 #import "EZSchemeParser.h"
-#import "Easydict-Swift.h"
 
 @implementation AppDelegate (EZURLScheme)
 
@@ -54,10 +53,10 @@
     
     // good / girl
     [routes addRoute:@"*" handler:^BOOL(NSDictionary *parameters) {
-        NSLog(@"parameters: %@", parameters);
+        MMLogInfo(@"parameters: %@", parameters);
         
         NSURL *URL = parameters[JLRouteURLKey];
-        NSLog(@"URL: %@", URL);
+        MMLogInfo(@"URL: %@", URL);
         
         NSString *queryText = [self extractQueryTextFromURL:URL];
         [self showFloatingWindowAndAutoQueryText:queryText];
@@ -101,7 +100,7 @@
     
     // easydict://query?text=good, easydict://query?text=你好
     if ([URL.scheme containsString:EZEasydictScheme]) {
-        NSLog(@"handle URL: %@", URL);
+        MMLogInfo(@"handle URL: %@", URL);
     }
     
     [JLRoutes routeURL:URL];
