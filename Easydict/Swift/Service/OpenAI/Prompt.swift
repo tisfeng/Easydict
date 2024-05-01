@@ -17,20 +17,20 @@ extension QueryService {
     """
 
     func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
-        let prompt =
-            "Translate the following \(sourceLanguage) text into \(targetLanguage) text:\n\n\"\"\"\n\(text)\n\"\"\" "
-        return prompt
+        "Translate the following \(sourceLanguage.queryLangaugeName) text into \(targetLanguage.queryLangaugeName) text:\"\"\"\(text)\"\"\""
     }
 
     func translatioMessages(text: String, from: Language, to: Language) -> [[String: String]] {
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
-        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
+//        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
+
+        let prompt = translationPrompt(text: text, from: from, to: to)
 
         let chineseFewShot = [
             // en --> zh
             [
                 "role": "user",
-                "content": "Translate the following English text into Simplified-Chinese: \"\"\"The stock market has now reached a plateau.\"\"\"",
+                "content": "Translate the following English text into Simplified-Chinese text: \"\"\"The stock market has now reached a plateau.\"\"\"",
             ],
             [
                 "role": "assistant",
@@ -110,24 +110,139 @@ extension QueryService {
                 "content": "迅速的",
             ],
 
-            // text --> zh
+            // ja --> zh
             [
                 "role": "user",
-                "content": "Translate the following text into Simplified-Chinese: \"\"\"ちっちいな~\"\"\"",
+                "content": "Translate the following Japanese text into Simplified-Chinese text: \"\"\"ちっちいな~\"\"\"",
             ],
             [
                 "role": "assistant",
                 "content": "好小啊~",
             ],
+            [
+                "role": "user",
+                "content": "チーター",
+            ],
+            [
+                "role": "assistant",
+                "content": "猎豹",
+            ],
 
             // zh --> en
             [
                 "role": "user",
-                "content": "Translate the following Simplified-Chinese text into English: \"\"\"Hello world” 然后请你也谈谈你对他连任的看法？最后输出以下内容的反义词：”go up \"\"\"",
+                "content": "Translate the following Simplified-Chinese text into English text: \"\"\"Hello world” 然后请你也谈谈你对他连任的看法？最后输出以下内容的反义词：”go up \"\"\"",
             ],
             [
                 "role": "assistant",
                 "content": "Hello world.\" Then, could you also share your opinion on his re-election? Finally, output the antonym of the following: \"go up",
+            ],
+        ]
+
+        let fromClassicalChinseseFewShot = [
+            // wyw --> zh
+            [
+                "role": "user",
+                "content": """
+                Translate the following 简体中文文言文 text into 简体中文白话文 text:
+                \"\"\"曾经沧海难为水，除却巫山不是云。\"\"\"
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                经历过波澜壮阔的大海，别处的水再也不值得一观。陶醉过巫山的云雨的梦幻，别处的风景就不称之为云雨了。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "露从今夜白，月是故乡明。",
+            ],
+            [
+                "role": "assistant",
+                "content": "从今夜就进入了白露节气，月亮还是故乡的最明亮。",
+            ],
+            [
+                "role": "user",
+                "content": """
+                苏溪亭上草漫漫，谁倚东风十二阑。
+                燕子不归春事晚，一汀烟雨杏花寒。
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                苏溪亭外野草青青，无边无际；是谁随着东风唱着阑干十二曲呢？
+                燕子还没有回到旧窝，而美好的春光已快要完了；迷蒙的烟雨笼罩着一片沙洲，杏花在料峭春风中只感凄寒。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": """
+                《不第后赋菊》
+                待到秋来九月八，我花开后百花杀。
+                冲天香阵透长安，满城尽带黄金甲。
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                《不第后赋菊》
+                等到秋天九月重阳节来临的时候，菊花盛开以后别的花就凋零了。
+                盛开的菊花香气弥漫整个长安，遍地都是金黄如铠甲般的菊花。
+                """,
+            ],
+
+            [
+                "role": "user",
+                "content": """
+                Translate the following 中文文言文 text into 繁体中文白话文 text:
+                《题菊花》
+                飒飒西风满院栽，蕊寒香冷蝶难来。
+                他年我若为青帝， 报与桃花一处开。
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                《題菊花》
+                秋風颯颯搖動滿院菊花，花蕊花香充滿寒意，再難有蝴蝶飛來採蜜。
+                若是有朝一日我成為了司春之神，一定要讓菊花和桃花同在春天盛開。
+                """,
+            ],
+        ]
+
+        let toClassicalChinseseFewShot = [
+            //  --> wyw
+            [
+                "role": "user",
+                "content": """
+                Translate the following 简体中文白话文 text into 简体中文文言文 text:
+                \"\"\"不要忽视梦想。不要工作过久。说出想法。交朋友。要开心。\"\"\"
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                勿轻梦想，勿久劳形，宜言志，善交友，当乐也。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": """
+                Translate the following Eglish text into 简体中文文言文 text:
+                Don't ignore your dreams;
+                don't work too much;
+                say what you think;
+                cultivate friendships;
+                be happy.
+                """,
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                勿轻梦想，勿久劳形，宜言志，善交友，当乐也。
+                """,
             ],
         ]
 
@@ -140,6 +255,13 @@ extension QueryService {
 
         var messages = systemMessages
         messages.append(contentsOf: chineseFewShot)
+
+        if from == .classicalChinese {
+            messages.append(contentsOf: fromClassicalChinseseFewShot)
+        }
+        if to == .classicalChinese {
+            messages.append(contentsOf: toClassicalChinseseFewShot)
+        }
 
         let userMessages = [
             [
@@ -708,14 +830,14 @@ extension QueryService {
         var messages = [[String: String]]()
 
         switch queryType {
-        case .translation:
-            messages = translatioMessages(text: text, from: from, to: to)
         case .sentence:
             messages = sentenceMessages(sentence: text, from: from, to: to)
         case .dictionary:
             messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to)
+        case .translation:
+            fallthrough
         default:
-            messages = []
+            messages = translatioMessages(text: text, from: from, to: to)
         }
 
         var chats: [ChatCompletionMessageParam] = []
@@ -729,6 +851,22 @@ extension QueryService {
         }
 
         return chats
+    }
+}
+
+extension Language {
+    var queryLangaugeName: String {
+        let languageName = switch self {
+        case .classicalChinese:
+            "简体中文文言文"
+        case .simplifiedChinese:
+            "简体中文白话文"
+        case .traditionalChinese:
+            "繁体中文白话文"
+        default:
+            rawValue
+        }
+        return languageName
     }
 }
 

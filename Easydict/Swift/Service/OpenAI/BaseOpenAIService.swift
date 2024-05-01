@@ -19,7 +19,7 @@ import OpenAI
 public class BaseOpenAIService: QueryService {
     // MARK: Public
 
-    public override func isStream() -> Bool {
+    override public func isStream() -> Bool {
         true
     }
 
@@ -28,19 +28,42 @@ public class BaseOpenAIService: QueryService {
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for language in EZLanguageManager.shared().allLanguages {
-            var value = language.rawValue
-            if language == .classicalChinese {
-                value = Language.wenyanwen
-            }
-
-            if language != .burmese {
-                orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
-            }
+        let allLangauges = EZLanguageManager.shared().allLanguages
+        let supportedLanguages = allLangauges.filter { language in
+            !unsupportedLanguages.contains(language)
         }
 
+        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+        for language in supportedLanguages {
+            orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
+        }
         return orderedDict
+    }
+
+    override public func queryTextType() -> EZQueryTextType {
+        var typeOptions: EZQueryTextType = []
+
+        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
+        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
+        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
+
+        if isTranslationEnabled {
+            typeOptions.insert(.translation)
+        }
+        if isSentenceEnabled {
+            typeOptions.insert(.sentence)
+        }
+        if isDictionaryEnabled {
+            typeOptions.insert(.dictionary)
+        }
+
+        return typeOptions
+    }
+
+    override public func serviceUsageStatus() -> EZServiceUsageStatus {
+        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
+        guard let value = UInt(usageStatus) else { return .default }
+        return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 
     // swiftlint:disable identifier_name
@@ -63,7 +86,7 @@ public class BaseOpenAIService: QueryService {
         result.to = to
         result.isStreamFinished = false
 
-        let queryType = queryTextType(text: text, from: from, to: to)
+        let queryType = queryType(text: text, from: from, to: to)
         let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
         let query = ChatQuery(messages: chats, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
@@ -109,7 +132,7 @@ public class BaseOpenAIService: QueryService {
                     if result.error == nil {
                         resultText = getFinalResultText(text: resultText)
 
-                        log("\(name())-(\(model)): \(resultText)")
+//                        log("\(name())-(\(model)): \(resultText)")
                         handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                         result.isStreamFinished = true
                     }
@@ -123,6 +146,8 @@ public class BaseOpenAIService: QueryService {
     // MARK: Internal
 
     var model = ""
+
+    var unsupportedLanguages: [Language] = []
 
     var availableModels: [String] {
         [""]
@@ -138,7 +163,8 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Private
 
-    private func queryTextType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+    /// Get query type by text and from && to langauge.
+    private func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -160,12 +186,7 @@ public class BaseOpenAIService: QueryService {
             }
         }
 
-        let enableTranslation = queryTextType().contains(.translation)
-        if enableTranslation {
-            return .translation
-        }
-
-        return []
+        return .translation
     }
 
     private func handleResult(
@@ -217,8 +238,4 @@ public class BaseOpenAIService: QueryService {
 
         return resultText
     }
-}
-
-extension Language {
-    static var wenyanwen = "文言文"
 }

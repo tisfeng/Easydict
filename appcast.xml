@@ -2,6 +2,15 @@
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
   <channel>
     <title>Easydict</title>
+    <item>
+      <title>2.7.0</title>
+      <pubDate>Wed, 01 May 2024 00:38:04 +0800</pubDate>
+      <sparkle:version>34</sparkle:version>
+      <sparkle:shortVersionString>2.7.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.7.0</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.7.0/Easydict.zip" length="15767423" type="application/octet-stream" sparkle:edSignature="RZCVmmVefaDIq+3J0yY5PkdTiSuAhRrQIL/GpOKZfZViOS6aLrFmGhDfhQhAgVUir4AdpPH2n5LmpzTZqoVDCw=="/>
+    </item>
 
     <item>
       <title>2.6.1</title>

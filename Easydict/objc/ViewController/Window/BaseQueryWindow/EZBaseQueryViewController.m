@@ -692,7 +692,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
-    MMLogInfo(@"query text: %@", self.queryText);
+    MMLogInfo(@"query text: %@", self.queryText.truncated);
     
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -711,7 +711,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
-        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery;
+        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.queryTextType != EZQueryTextTypeNone;
         if (!enableAutoQuery) {
             MMLogInfo(@"service disabled: %@", service.serviceType);
             continue;

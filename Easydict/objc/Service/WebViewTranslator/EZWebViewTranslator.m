@@ -137,10 +137,10 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         return;
     }
     
-    MMLogInfo(@"queryTranslateURL: %@", URL);
+//    MMLog(@"queryTranslateURL: %@", URL);
 
     [self loadURL:URL];
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     if (URL.length && completionHandler) {
         mm_weakify(self);
@@ -152,8 +152,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                 completionHandler(nil, error);
             } else {
                 completionHandler(texts, nil);
-                CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-                MMLogInfo(@"webView cost: %.1f ms, URL: %@", (endTime - startTime) * 1000, URL); // cost ~2s
+//                CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+//                MMLog(@"webView cost: %.1f ms, URL: %@", (endTime - startTime) * 1000, URL); // cost ~2s
             }
             [self resetWebView];
         };
@@ -229,7 +229,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                     [self getTextContentOfElement:selector completion:completion];
                 });
             } else {
-                MMLogWarn(@"fail, max retry count: %ld", self.retryCount);
+                MMLogError(@"fail, max retry count: %ld", self.retryCount);
                 if (completion) {
                     completion(nil, [EZError timeoutError]);
                 }

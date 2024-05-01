@@ -427,7 +427,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     if (!asset.readable || !asset.isPlayable) {
         // change go.mp3 to go.m4a will cause asset not readable
-        MMLogWarn(@"asset not readable or playable: %@", filePath);
+        MMLogError(@"asset not readable or playable: %@", filePath);
         return NO;
     }
     
@@ -697,7 +697,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
             MMLogInfo(@"rename successful: %@", newFilePath);
             return newFilePath;
         } else {
-            MMLogWarn(@"rename failed: %@", [error localizedDescription]);
+            MMLogError(@"rename failed: %@", [error localizedDescription]);
             return nil;
         }
     }
@@ -738,7 +738,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
             return NO;
         }
     } else {
-        MMLogWarn(@"Error opening audio file type: %d", (int)status);
+        MMLogError(@"Error opening audio file type: %d", (int)status);
         return NO;
     }
     return YES;
@@ -776,7 +776,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     id plistData = [NSPropertyListSerialization propertyListWithData:itemWhereFroms options:NSPropertyListImmutable format:&format error:&plistError];
     
     if (plistError) {
-        MMLogWarn(@"Error decoding property list: %@", plistError);
+        MMLogError(@"Error decoding property list: %@", plistError);
         return nil;
     }
     

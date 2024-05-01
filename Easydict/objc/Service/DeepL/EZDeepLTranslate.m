@@ -145,7 +145,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    MMLogWarn(@"deepL not support ocr");
+    MMLogError(@"deepL not support ocr");
 }
 
 - (BOOL)autoConvertTraditionalChinese {

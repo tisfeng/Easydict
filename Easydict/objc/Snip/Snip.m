@@ -70,7 +70,7 @@ static Snip *_instance;
 - (void)startWithCompletion:(void (^)(NSImage *_Nullable))completion {
     BOOL enableRecord = [self checkRecordPermission];
     if (!enableRecord) {
-        MMLogWarn(@"disabled record permission");
+        MMLogError(@"disabled record permission");
         completion(nil);
         return;
     }

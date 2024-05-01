@@ -87,7 +87,7 @@
     // Get a C function pointer for MRMediaRemoteGetNowPlayingInfo
     void *mrMediaRemoteGetNowPlayingInfoPointer = CFBundleGetFunctionPointerForName(mediaRemoteBundle, CFSTR("MRMediaRemoteGetNowPlayingInfo"));
     if (!mrMediaRemoteGetNowPlayingInfoPointer) {
-        MMLogWarn(@"Failed to get MRMediaRemoteGetNowPlayingInfo function pointer");
+        MMLogError(@"Failed to get MRMediaRemoteGetNowPlayingInfo function pointer");
         CFRelease(mediaRemoteBundle);
     }
     typedef void (*MRMediaRemoteGetNowPlayingInfoFunction)(dispatch_queue_t queue, void (^completionHandler)(NSDictionary *information));
@@ -96,7 +96,7 @@
     // Get a C function pointer for MRNowPlayingClientGetBundleIdentifier
     void *mrNowPlayingClientGetBundleIdentifierPointer = CFBundleGetFunctionPointerForName(mediaRemoteBundle, CFSTR("MRNowPlayingClientGetBundleIdentifier"));
     if (!mrNowPlayingClientGetBundleIdentifierPointer) {
-        MMLogWarn(@"Failed to get MRNowPlayingClientGetBundleIdentifier function pointer");
+        MMLogError(@"Failed to get MRNowPlayingClientGetBundleIdentifier function pointer");
         CFRelease(mediaRemoteBundle);
     }
     
