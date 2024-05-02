@@ -25,12 +25,20 @@ class I18nHelper: NSObject {
     }
 
     var localizeCode: String {
-        UserDefaults.standard.string(forKey: languagePreferenceLocalKey) ?? LanguageState.LanguageType
-            .simplifiedChinese.rawValue
+        guard let code = UserDefaults.standard.string(forKey: languagePreferenceLocalKey) else {
+            guard let localLanguageType = LanguageState.LanguageType(rawValue: Locale.current.identifier) else {
+                if Locale.current.identifier == "zh_CN" {
+                    return LanguageState.LanguageType.simplifiedChinese.rawValue
+                }
+                return LanguageState.LanguageType.english.rawValue
+            }
+            return localLanguageType.rawValue
+        }
+        return code
     }
 
     var languageType: LanguageState.LanguageType {
-        LanguageState.LanguageType(rawValue: localizeCode) ?? .simplifiedChinese
+        LanguageState.LanguageType(rawValue: localizeCode) ?? .english
     }
 
     var isSimplifiedChineseLocalize: Bool {
