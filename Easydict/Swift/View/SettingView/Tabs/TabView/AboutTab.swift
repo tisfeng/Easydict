@@ -6,7 +6,6 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-import Defaults
 import SwiftUI
 
 @available(macOS 13, *)
@@ -14,30 +13,52 @@ struct AboutTab: View {
     // MARK: Internal
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 15) {
-                Image(.logo)
-                    .resizable()
-                    .frame(width: 110, height: 110)
-                Text(appName)
-                    .font(.system(size: 26, weight: .semibold))
-                Text("current_version") + Text(verbatim: " \(version)")
-                    .font(.system(size: 14))
+        HStack(alignment: .center, spacing: 20) {
+            Image(.logo)
+                .resizable()
+                .frame(width: 110, height: 110)
+                .padding()
+
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading) {
+                    Text(appName)
+                        .font(.system(size: 26, weight: .semibold))
+
+                    Spacer()
+                        .frame(height: 3)
+
+                    Text("current_version \(version)")
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+
+                    Spacer()
+                        .frame(height: 20)
+
+                    Text(copyrightInfo)
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+                .padding(.vertical, 3)
 
                 HStack {
-                    Text("author")
-                    Link("Tisfeng", destination: URL(string: EZGithubRepoEasydictURL)!.deletingLastPathComponent())
-                }
-                HStack {
-                    Text("GitHub:")
-                    Link("Easydict", destination: URL(string: EZGithubRepoEasydictURL)!)
+                    Button {
+                        NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
+                    } label: {
+                        Label("github_link", systemImage: "star.fill")
+                            .frame(width: 120)
+                    }
+
+                    Button {
+                        NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
+                    } label: {
+                        Label("contributor_link", systemImage: "person.3.sequence.fill")
+                            .frame(width: 120)
+                    }
                 }
             }
-            .padding(.horizontal, 50)
-            .padding(.vertical, 30)
-            .frame(maxWidth: .infinity)
         }
-        .scrollIndicators(.hidden)
+        .padding()
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: Private
@@ -48,6 +69,10 @@ struct AboutTab: View {
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+
+    private var copyrightInfo: String {
+        Bundle.main.infoDictionary?["NSHumanReadableCopyright"] as? String ?? ""
     }
 }
 
