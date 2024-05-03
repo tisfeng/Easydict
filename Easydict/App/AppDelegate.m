@@ -13,8 +13,6 @@
 
 @interface AppDelegate ()
 
-@property (strong) NSWindowController *aboutWindowController;
-
 @end
 
 @implementation AppDelegate
