@@ -15,7 +15,7 @@ import SwiftUI
 @objcMembers
 class AboutTabWrapper: NSObject {
     func makeNSView() -> NSView {
-        NSHostingView(rootView: AboutTab().frame(width: 500, height: 190))
+        NSHostingView(rootView: AboutTab().frame(width: 500, height: 250))
     }
 }
 
@@ -38,7 +38,7 @@ struct AboutTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack(alignment: .center, spacing: 20) {
+        HStack(alignment: .center, spacing: 30) {
             Image(.logo)
                 .resizable()
                 .frame(width: 100, height: 100)
@@ -48,29 +48,27 @@ struct AboutTab: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
                     Text(appName)
-                        .font(.system(size: 26, weight: .semibold))
-                    Spacer()
-                        .frame(height: 3)
+                        .font(.system(size: 35, weight: .medium))
+                        .padding(.top, 25)
+                        .padding(.bottom, 3)
 
                     Text("current_version \(version)")
-                        .font(.system(size: 14))
+                        .font(.system(size: 13))
                         .foregroundColor(.gray)
 
-                    Spacer()
-
-                        .frame(height: 20)
                     Text(copyrightInfo)
                         .font(.system(size: 11))
                         .foregroundColor(.gray)
+                        .padding(.top, 25)
+                        .padding(.bottom, 20)
                 }
-                .padding(.vertical, 3)
 
-                HStack {
+                HStack(spacing: 15) {
                     Button {
                         NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
                     } label: {
                         Label("github_link", systemImage: "star.fill")
-                            .frame(width: 120)
+                            .frame(width: 120, height: 20)
                     }
 
                     Button {
@@ -78,12 +76,11 @@ struct AboutTab: View {
                             .open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
                     } label: {
                         Label("contributor_link", systemImage: "person.3.sequence.fill")
-                            .frame(width: 120)
+                            .frame(width: 120, height: 20)
                     }
                 }
             }
         }
-        .padding(.top, 20)
         .frame(maxWidth: .infinity)
     }
 
