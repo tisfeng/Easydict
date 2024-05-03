@@ -10,4 +10,6 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
+- (void)showAboutPanel;
+
 @end

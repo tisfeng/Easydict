@@ -30,6 +30,8 @@ enum EasydictCmpatibilityEntry {
 struct EasydictApp: App {
     // MARK: Internal
 
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
         if #available(macOS 13, *) {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
@@ -54,6 +56,14 @@ struct EasydictApp: App {
             .menuBarExtraStyle(.menu)
             .commands {
                 EasyDictMainMenu() // main menu
+                // Override About button
+                CommandGroup(replacing: .appInfo) {
+                    Button {
+                        appDelegate.showAboutPanel()
+                    } label: {
+                        Text("menubar.about")
+                    }
+                }
             }
 
             Window("go_to_settings", id: "go_to_settings") {

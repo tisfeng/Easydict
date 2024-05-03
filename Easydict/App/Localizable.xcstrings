@@ -839,7 +839,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "贡献者"
           }
         }
@@ -903,7 +903,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "版本 %@"
           }
         }
@@ -2053,6 +2053,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "静默截图 OCR"
+          }
+        }
+      }
+    },
+    "menubar.about" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Easydict"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于 Easydict"
           }
         }
       }

@@ -59,12 +59,23 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [defaultCenter addObserver:self selector:@selector(updateConstraints) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
+//- (void)update
+
 - (void)updateConstraints {
+    /**
+     Fix appcenter issue, seems cannot remove self.subviews 🤔
+     
+     -[EZTitlebar updateConstraints]
+     EZTitlebar.m, line 64
+     SIGABRT: *** Collection <__NSArrayM: 0x6000036e45d0> was mutated while being enumerated.
+     */
+    
     // Remove and dealloc all views to refresh UI.
-    for (NSView *subview in self.subviews) {
-        [subview removeFromSuperview];
-    }
+
+    [_pinButton removeFromSuperview];
+    [_stackView removeFromSuperview];
     _stackView = nil;
+    _quickActionButton = nil;
     
     [self addSubview:self.pinButton];
     [self updatePinButton];
