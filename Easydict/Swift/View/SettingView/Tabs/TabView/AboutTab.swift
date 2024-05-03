@@ -8,17 +8,6 @@
 
 import SwiftUI
 
-// MARK: - AboutTabWrapper
-
-// About Tab wrapper for AboutViewController
-@available(macOS 13, *)
-@objcMembers
-class AboutTabWrapper: NSObject {
-    func makeNSView() -> NSView {
-        NSHostingView(rootView: AboutTab().frame(width: 500, height: 250))
-    }
-}
-
 // MARK: - SettingsAboutTab
 
 // Use ScrollView to enable resize animation for Settings
@@ -102,4 +91,18 @@ struct AboutTab: View {
 @available(macOS 13, *)
 #Preview {
     AboutTab()
+}
+
+@available(macOS 13, *)
+func showAboutWindow() {
+    let aboutWindow = NSWindow(
+        contentRect: NSRect(x: 0, y: 0, width: 500, height: 220),
+        styleMask: [.titled, .closable],
+        backing: .buffered, defer: false
+    )
+    aboutWindow.titleVisibility = .hidden
+    aboutWindow.titlebarAppearsTransparent = true
+    aboutWindow.center()
+    aboutWindow.contentView = NSHostingView(rootView: SettingsAboutTab())
+    aboutWindow.makeKeyAndOrderFront(nil)
 }
