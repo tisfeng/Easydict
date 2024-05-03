@@ -15,7 +15,7 @@ import SwiftUI
 @objcMembers
 class AboutTabWrapper: NSObject {
     func makeNSView() -> NSView {
-        NSHostingView(rootView: AboutTab())
+        NSHostingView(rootView: AboutTab().frame(width: 500, height: 190))
     }
 }
 
