@@ -10,8 +10,11 @@
 #import "EZShortcut.h"
 #import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
+#import "EZAboutViewController.h"
 
 @interface AppDelegate ()
+
+@property (strong) NSWindowController *aboutWindowController;
 
 @end
 
@@ -57,6 +60,28 @@
     [task launch];
 }
 
+- (void)showAboutPanel {
+    if (self.aboutWindowController == nil) {
+        NSWindowStyleMask styleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable;
+
+        NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                                                       styleMask:styleMask
+                                                         backing:NSBackingStoreBuffered
+                                                           defer:NO];
+
+        // Hide title text && set transparent title bar
+        [window setTitleVisibility:NSWindowTitleHidden];
+        [window setTitlebarAppearsTransparent:YES];
+        
+        AboutViewController *aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+        [window setContentViewController:aboutViewController];
+        
+        self.aboutWindowController = [[NSWindowController alloc] initWithWindow:window];
+    }
+    
+    [self.aboutWindowController.window center];
+    [self.aboutWindowController showWindow:nil];
+}
 
 #pragma mark - NSApplicationDelegate
 

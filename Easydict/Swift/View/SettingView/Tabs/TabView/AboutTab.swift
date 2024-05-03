@@ -8,6 +8,18 @@
 
 import SwiftUI
 
+// MARK: - AboutTabWrapper
+
+@available(macOS 13, *)
+@objcMembers
+class AboutTabWrapper: NSObject {
+    func makeNSView() -> NSView {
+        NSHostingView(rootView: AboutTab())
+    }
+}
+
+// MARK: - AboutTab
+
 @available(macOS 13, *)
 struct AboutTab: View {
     // MARK: Internal
@@ -16,7 +28,7 @@ struct AboutTab: View {
         HStack(alignment: .center, spacing: 20) {
             Image(.logo)
                 .resizable()
-                .frame(width: 110, height: 110)
+                .frame(width: 100, height: 100)
                 .padding()
 
             VStack(alignment: .leading) {
@@ -35,7 +47,7 @@ struct AboutTab: View {
                         .frame(height: 20)
 
                     Text(copyrightInfo)
-                        .font(.system(size: 12))
+                        .font(.system(size: 11))
                         .foregroundColor(.gray)
                 }
                 .padding(.vertical, 3)
