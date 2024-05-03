@@ -30,6 +30,7 @@ struct AboutTab: View {
                 .resizable()
                 .frame(width: 100, height: 100)
                 .padding()
+                .shadow(color: .gray, radius: 1, x: 0, y: 0.8)
 
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
