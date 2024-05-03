@@ -82,7 +82,7 @@ struct SettingView: View {
         case .privacy:
             320
         case .about:
-            450
+            250
         default:
             maxWidth * 0.82
         }

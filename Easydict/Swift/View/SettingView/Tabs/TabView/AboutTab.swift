@@ -13,52 +13,56 @@ struct AboutTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack(alignment: .center, spacing: 20) {
-            Image(.logo)
-                .resizable()
-                .frame(width: 110, height: 110)
-                .padding()
+        ScrollView {
+            HStack(alignment: .center, spacing: 20) {
+                Image(.logo)
+                    .resizable()
+                    .frame(width: 110, height: 110)
+                    .padding()
 
-            VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
-                    Text(appName)
-                        .font(.system(size: 26, weight: .semibold))
+                    VStack(alignment: .leading) {
+                        Text(appName)
+                            .font(.system(size: 26, weight: .semibold))
 
-                    Spacer()
-                        .frame(height: 3)
+                        Spacer()
+                            .frame(height: 3)
 
-                    Text("current_version \(version)")
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        Text("current_version \(version)")
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
 
-                    Spacer()
-                        .frame(height: 20)
+                        Spacer()
+                            .frame(height: 20)
 
-                    Text(copyrightInfo)
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
-                }
-                .padding(.vertical, 3)
-
-                HStack {
-                    Button {
-                        NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
-                    } label: {
-                        Label("github_link", systemImage: "star.fill")
-                            .frame(width: 120)
+                        Text(copyrightInfo)
+                            .font(.system(size: 12))
+                            .foregroundColor(.gray)
                     }
+                    .padding(.vertical, 3)
 
-                    Button {
-                        NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
-                    } label: {
-                        Label("contributor_link", systemImage: "person.3.sequence.fill")
-                            .frame(width: 120)
+                    HStack {
+                        Button {
+                            NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
+                        } label: {
+                            Label("github_link", systemImage: "star.fill")
+                                .frame(width: 120)
+                        }
+
+                        Button {
+                            NSWorkspace.shared
+                                .open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
+                        } label: {
+                            Label("contributor_link", systemImage: "person.3.sequence.fill")
+                                .frame(width: 120)
+                        }
                     }
                 }
             }
+            .padding(.top, 20)
+            .frame(maxWidth: .infinity)
         }
-        .padding()
-        .frame(maxWidth: .infinity)
+        .scrollIndicators(.hidden)
     }
 
     // MARK: Private
