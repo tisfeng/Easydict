@@ -104,5 +104,6 @@ func showAboutWindow() {
     aboutWindow.titlebarAppearsTransparent = true
     aboutWindow.center()
     aboutWindow.contentView = NSHostingView(rootView: SettingsAboutTab())
+    aboutWindow.isReleasedWhenClosed = false
     aboutWindow.makeKeyAndOrderFront(nil)
 }
