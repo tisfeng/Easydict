@@ -28,50 +28,78 @@ struct AboutTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack(alignment: .center, spacing: 30) {
-            Image(.logo)
-                .resizable()
-                .frame(width: 100, height: 100)
-                .padding()
-                .shadow(color: .gray, radius: 1, x: 0, y: 0.8)
+        VortexViewReader { proxy in
+            GeometryReader { geometry in
+                ZStack {
+                    VortexView(.confetti) {
+                        Rectangle()
+                            .fill(.white)
+                            .frame(width: 16, height: 16)
+                            .tag("square")
 
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Text(appName)
-                        .font(.system(size: 35, weight: .medium))
-                        .padding(.top, 25)
-                        .padding(.bottom, 3)
-
-                    Text("current_version \(version)")
-                        .font(.system(size: 13))
-                        .foregroundColor(.gray)
-
-                    Text(copyrightInfo)
-                        .font(.system(size: 11))
-                        .foregroundColor(.gray)
-                        .padding(.top, 25)
-                        .padding(.bottom, 20)
-                }
-
-                HStack(spacing: 15) {
-                    Button {
-                        NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
-                    } label: {
-                        Label("github_link", systemImage: "star.fill")
-                            .frame(width: 120, height: 20)
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 16)
+                            .tag("circle")
                     }
+                    .frame(height: 220)
 
-                    Button {
-                        NSWorkspace.shared
-                            .open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
-                    } label: {
-                        Label("contributor_link", systemImage: "person.3.sequence.fill")
-                            .frame(width: 120, height: 20)
+                    HStack(alignment: .center, spacing: 30) {
+                        Image("logo") // Make sure to use the correct image name as a string
+                            .resizable()
+                            .renderingMode(.original)
+                            .frame(width: 100, height: 100)
+                            .shadow(color: .gray, radius: 1, x: 0, y: 0.8)
+                            .onTapGesture {
+                                proxy.move(
+                                    to: CGPoint(
+                                        // Unify x-point for Settings and Menubar About view
+                                        x: (geometry.size.width / 2) - 159.5,
+                                        y: 70
+                                    )
+                                )
+                                proxy.burst()
+                            }
+                        VStack(alignment: .leading) {
+                            VStack(alignment: .leading) {
+                                Text(appName)
+                                    .font(.system(size: 35, weight: .medium))
+                                    .padding(.top, 25)
+                                    .padding(.bottom, 3)
+
+                                Text("current_version \(version)")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.gray)
+
+                                Text(copyrightInfo)
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.gray)
+                                    .padding(.top, 25)
+                                    .padding(.bottom, 20)
+                            }
+
+                            HStack(spacing: 15) {
+                                Button {
+                                    NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
+                                } label: {
+                                    Label("github_link", systemImage: "star.fill")
+                                        .frame(width: 120, height: 20)
+                                }
+
+                                Button {
+                                    NSWorkspace.shared
+                                        .open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
+                                } label: {
+                                    Label("contributor_link", systemImage: "person.3.sequence.fill")
+                                        .frame(width: 120, height: 20)
+                                }
+                            }
+                        }
                     }
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
-        .frame(maxWidth: .infinity)
     }
 
     // MARK: Private
