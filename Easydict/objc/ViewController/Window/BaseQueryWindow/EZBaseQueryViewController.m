@@ -442,7 +442,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
-    MMLogInfo(@"start OCR Image");
+    MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     
     self.queryModel.OCRImage = image;
     self.queryModel.actionType = actionType;

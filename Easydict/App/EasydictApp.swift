@@ -54,6 +54,14 @@ struct EasydictApp: App {
             .menuBarExtraStyle(.menu)
             .commands {
                 EasyDictMainMenu() // main menu
+                // Override About button
+                CommandGroup(replacing: .appInfo) {
+                    Button {
+                        showAboutWindow()
+                    } label: {
+                        Text("menubar.about")
+                    }
+                }
             }
 
             Window("go_to_settings", id: "go_to_settings") {
@@ -83,6 +91,28 @@ struct EasydictApp: App {
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
     @StateObject private var languageState = LanguageState()
+
+    @State var aboutWindow: NSWindow?
+
+    private func showAboutWindow() {
+        if let aboutWindow = aboutWindow {
+            aboutWindow.makeKeyAndOrderFront(nil)
+        } else {
+            aboutWindow = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 500, height: 220),
+                styleMask: [.titled, .closable],
+                backing: .buffered, defer: false
+            )
+            aboutWindow?.titleVisibility = .hidden
+            aboutWindow?.titlebarAppearsTransparent = true
+            aboutWindow?.isReleasedWhenClosed = false
+            aboutWindow?.center()
+            if #available(macOS 13, *) {
+                aboutWindow?.contentView = NSHostingView(rootView: SettingsAboutTab())
+            }
+            aboutWindow?.makeKeyAndOrderFront(nil)
+        }
+    }
 }
 
 // MARK: - FakeViewToOpenSettingsInSonoma

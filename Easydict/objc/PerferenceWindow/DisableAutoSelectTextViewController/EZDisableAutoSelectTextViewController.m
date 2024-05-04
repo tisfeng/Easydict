@@ -82,9 +82,18 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSArray<EZAppModel *> *allAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
     NSWorkspace* workspace = [NSWorkspace sharedWorkspace];
     for (EZAppModel *appModel in allAppModelList) {
-        NSURL *appURL = [workspace URLForApplicationWithBundleIdentifier:appModel.appBundleID];
-        if (appURL) {
-            [self.appModelList addObject:appModel];
+        /**
+         Fix appcenter issue
+         
+         -[EZDisableAutoSelectTextViewController setupAppModelList]
+         EZDisableAutoSelectTextViewController.m, line 85
+         SIGABRT: Invalid parameter not satisfying: bundleIdentifier != nil
+         */
+        if (appModel.appBundleID) {
+            NSURL *appURL = [workspace URLForApplicationWithBundleIdentifier:appModel.appBundleID];
+            if (appURL) {
+                [self.appModelList addObject:appModel];
+            }
         }
     }
 }

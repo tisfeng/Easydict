@@ -311,6 +311,8 @@ static EZWindowManager *_instance;
     self.selectedText = queryText;
     self.actionType = actionType;
     
+    MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText, autoQuery, actionType, @(point));
+    
     // Update isTextEditable value when using invoke query, such as open URL Scheme by PopClip.
     if (actionType == EZActionTypeInvokeQuery) {
         [self.eventMonitor updateSelectedTextEditableState];
@@ -778,7 +780,7 @@ static EZWindowManager *_instance;
             [window.queryViewController resetTableView:^{
                 self.actionType = EZActionTypeOCRQuery;
                 [self showFloatingWindowType:windowType queryText:nil];
-                [window.queryViewController startOCRImage:image actionType:EZActionTypeOCRQuery];
+                [window.queryViewController startOCRImage:image actionType:self.actionType];
             }];
         }];
     });

@@ -32,7 +32,7 @@ class LanguageState: ObservableObject {
     }
 
     @AppStorage(languagePreferenceLocalKey) var language: LanguageType = (.init(
-        rawValue: Locale.current.identifier
+        rawValue: I18nHelper.shared.localizeCode
     ) ?? .simplifiedChinese) {
         didSet {
             NotificationCenter.default.post(name: .languagePreferenceChanged, object: nil)

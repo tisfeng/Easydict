@@ -57,7 +57,6 @@
     [task launch];
 }
 
-
 #pragma mark - NSApplicationDelegate
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
