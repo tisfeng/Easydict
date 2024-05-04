@@ -598,10 +598,10 @@ easydict://writeKeyValue?Google-IntelligentQueryTextType=5
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
-默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
+默认情况下，所有窗口都未开启智能查询模式，用户可手动启用此功能：
 
 ```bash
-easydict://writeKeyValue?IntelligentQueryMode-window2=1
+easydict://writeKeyValue?IntelligentQueryMode-window1=1
 ```
 window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关闭，1 表示开启。
 
