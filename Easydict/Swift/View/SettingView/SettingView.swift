@@ -51,7 +51,7 @@ struct SettingView: View {
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
 
-            AboutTab()
+            SettingsAboutTab()
                 .tabItem { Label("about", systemImage: "info.bubble") }
                 .tag(SettingTab.about)
         }
@@ -82,7 +82,7 @@ struct SettingView: View {
         case .privacy:
             320
         case .about:
-            450
+            300
         default:
             maxWidth * 0.82
         }
