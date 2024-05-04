@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Vortex
 
 // MARK: - SettingsAboutTab
 

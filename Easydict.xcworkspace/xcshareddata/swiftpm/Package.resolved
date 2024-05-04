@@ -1,5 +1,5 @@
 {
-  "originHash" : "ca4d31aa1a70fb6a354fe9e139a2e74a189e4fcff55ed959a3adc71522905fc4",
+  "originHash" : "3fbe4aaa777ce32c89a8c0750e2e78cb417a4bf7e5ece00eb7338b15ca5d7f65",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -299,6 +299,15 @@
       }
     },
     {
+      "identity" : "vortex",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/twostraws/Vortex",
+      "state" : {
+        "revision" : "bb48b128d3c13c68c68e83833c622eec9f6c701f",
+        "version" : "1.0.1"
+      }
+    },
+    {
       "identity" : "ziparchive",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ZipArchive/ZipArchive.git",
@@ -308,5 +317,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
