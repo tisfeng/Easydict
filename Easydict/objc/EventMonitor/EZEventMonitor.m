@@ -11,7 +11,6 @@
 #import "EZConfiguration.h"
 #import "EZPreferencesWindowController.h"
 #import "EZScriptExecutor.h"
-#import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 #import "EZLocalStorage.h"
@@ -56,7 +55,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, assign) CGFloat movedY;
 
 // We need to store the current volume, because the volume will be set to 0 when empty copy.
-@property (nonatomic, assign) float currentVolume;
+@property (nonatomic, assign) float currentAlertVolume;
 // When isMuting, we should not read system volume.
 @property (nonatomic, assign) BOOL isMuting;
 
@@ -430,48 +429,48 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Get selected text by simulated key: Cmd + C
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"--> start Key getText");
+    
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
     
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
     
-    // If playing audio, we do not silence system volume.
-    [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
-        BOOL shouldTurnOffSoundTemporarily = Configuration.shared.disableEmptyCopyBeep && !isPlaying;
-        
-        // Set volume to 0 to avoid system alert.
-        if (shouldTurnOffSoundTemporarily) {
-            if (!self.isMuting) {
-                self.currentVolume = [EZAudioUtils getSystemVolume];
-            }
-            [EZAudioUtils setSystemVolume:0];
-            self.isMuting = YES;
+    BOOL shouldTurnOffSoundTemporarily = Configuration.shared.disableEmptyCopyBeep;
+    
+    // Set volume to 0 to avoid system alert.
+    if (shouldTurnOffSoundTemporarily) {
+        if (!self.isMuting) {
+            self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
+            MMLogInfo(@"alertVolume: %.1f", self.currentAlertVolume);
+        }
+        [AppleScriptUtils setAlertVolume:0];
+        self.isMuting = YES;
+    }
+    
+    [EZSystemUtility postCopyEvent];
+    
+    if (shouldTurnOffSoundTemporarily) {
+        [self cancelDelayRecoverVolume];
+        [self delayRecoverVolume];
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSInteger newChangeCount = [pasteboard changeCount];
+        // If changeCount is equal to newChangeCount, it means that the copy value is nil.
+        if (changeCount == newChangeCount) {
+            completion(nil);
+            return;
         }
         
-        [EZSystemUtility postCopyEvent];
+        NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
+        self.selectedText = selectedText;
+        MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
         
-        if (shouldTurnOffSoundTemporarily) {
-            [self cancelDelayRecoverVolume];
-            [self delayRecoverVolume];
-        }
+        [lastText copyToPasteboard];
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSInteger newChangeCount = [pasteboard changeCount];
-            // If changeCount is equal to newChangeCount, it means that the copy value is nil.
-            if (changeCount == newChangeCount) {
-                completion(nil);
-                return;
-            }
-            
-            NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
-            self.selectedText = selectedText;
-            MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
-            
-            [lastText copyToPasteboard];
-            
-            completion(selectedText);
-        });
-    }];
+        completion(selectedText);
+    });
 }
 
 #pragma mark - Delay to recover volume
@@ -485,7 +484,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)recoverVolume {
-    [EZAudioUtils setSystemVolume:self.currentVolume];
+    [AppleScriptUtils setAlertVolume:self.currentAlertVolume];
     self.isMuting = NO;
 }
 
