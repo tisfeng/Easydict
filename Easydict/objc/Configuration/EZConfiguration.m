@@ -625,14 +625,7 @@ static EZConfiguration *_instance;
 }
 - (BOOL)intelligentQueryModeForWindowType:(EZWindowType)windowType {
     NSString *key = [EZConstKey constkey:EZIntelligentQueryModeKey windowType:windowType];
-    
-    NSString *defaultValue = @"0";
-    // Turn on intelligent query mode by default in mini window.
-    if (windowType == EZWindowTypeMini) {
-        defaultValue = @"1";
-    }
-    
-    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:defaultValue];
+    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:@"0"];
     return [stringValue boolValue];
 }
 

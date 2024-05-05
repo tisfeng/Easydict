@@ -632,12 +632,7 @@ extension Configuration {
 
     func intelligentQueryModeForWindowType(_ windowType: EZWindowType) -> Bool {
         let key = EZConstKey.constkey("IntelligentQueryMode", windowType: windowType)
-        let defaultValue = "0"
-        // Turn on intelligent query mode by default in mini window.
-        if windowType == .mini {
-            return true
-        }
-        return UserDefaults.standard.string(forKey: key) ?? defaultValue == "1"
+        return UserDefaults.standard.bool(forKey: key)
     }
 }
 
