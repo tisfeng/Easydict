@@ -215,12 +215,6 @@ private struct ServiceItemView: View {
             }
             EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
             viewModel.postUpdateServiceNotification()
-            // check enable state in case of state not changed while saving
-            service.enabled = EZLocalStorage.shared().service(
-                service.serviceType(),
-                windowType: viewModel.windowType
-            ).enabled
-            serviceItemViewModel.isEnable = service.enabled
         }
         .toggleStyle(.switch)
         .controlSize(.small)
