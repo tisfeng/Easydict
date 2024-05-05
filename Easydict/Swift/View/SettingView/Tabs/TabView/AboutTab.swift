@@ -53,12 +53,12 @@ struct AboutTab: View {
                             .padding(.bottom, 2)
                             .padding(.leading, 16)
                             .padding(.trailing, 16)
-                            .onTapGesture {
+                            .onTapGesture { location in
                                 proxy.move(
-                                    to: CGPoint(
-                                        // Unify x-point for Settings and Menubar About view
-                                        x: (geometry.size.width / 2) - 159.5,
-                                        y: 70
+                                    to:
+                                    CGPoint(
+                                        x: location.x + ((geometry.size.width / 2) - 222),
+                                        y: location.y + 58
                                     )
                                 )
                                 proxy.burst()
