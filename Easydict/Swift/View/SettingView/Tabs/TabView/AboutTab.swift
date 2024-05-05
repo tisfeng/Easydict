@@ -50,7 +50,7 @@ struct AboutTab: View {
                             .renderingMode(.original)
                             .frame(width: 100, height: 100)
                             .shadow(color: .gray, radius: 1, x: 0, y: 0.8)
-                            .padding(.bottom, 33)
+                            .padding(.bottom, 2)
                             .padding(.leading, 16)
                             .padding(.trailing, 16)
                             .onTapGesture {
