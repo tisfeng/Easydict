@@ -50,6 +50,9 @@ struct AboutTab: View {
                             .renderingMode(.original)
                             .frame(width: 100, height: 100)
                             .shadow(color: .gray, radius: 1, x: 0, y: 0.8)
+                            .padding(.bottom, 33)
+                            .padding(.leading, 16)
+                            .padding(.trailing, 16)
                             .onTapGesture {
                                 proxy.move(
                                     to: CGPoint(
@@ -64,17 +67,16 @@ struct AboutTab: View {
                             VStack(alignment: .leading) {
                                 Text(appName)
                                     .font(.system(size: 35, weight: .medium))
-                                    .padding(.top, 25)
                                     .padding(.bottom, 3)
 
                                 Text("current_version \(version)")
                                     .font(.system(size: 13))
                                     .foregroundColor(.gray)
+                                    .padding(.bottom, 29)
 
                                 Text(copyrightInfo)
                                     .font(.system(size: 11))
                                     .foregroundColor(.gray)
-                                    .padding(.top, 25)
                                     .padding(.bottom, 20)
                             }
 
@@ -94,6 +96,7 @@ struct AboutTab: View {
                                         .frame(width: 120, height: 20)
                                 }
                             }
+                            .padding(.bottom, 10)
                         }
                     }
                     .frame(maxWidth: .infinity)
