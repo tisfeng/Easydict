@@ -394,14 +394,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     if ([self enabledAutoSelectText]) {
-//        MMLogInfo(@"auto get selected text");
-        
+        MMLogInfo(@"auto get selected text");
+
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
+
         [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
+            self.isPopButtonVisible = YES;
+
             [self handleSelectedText:text];
         }];
-        self.isPopButtonVisible = YES;
     }
 }
 
@@ -417,12 +419,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)handleSelectedText:(NSString *)text {
-    [self cancelDismissPop];
-    
     NSString *trimText = [text trim];
     if (trimText.length > 0 && self.selectedTextBlock) {
+        [self cancelDismissPopButton];
         self.selectedTextBlock(trimText);
-        [self cancelDismissPop];
     }
 }
 
@@ -759,9 +759,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-//            MMLogInfo(@"key down");
+//            MMLogInfo(@"key down: %@, modifierFlags: %ld", event.characters, event.modifierFlags);
             
-            [self dismissPopButton];
+            if (self.isPopButtonVisible) {
+                [self dismissPopButton];
+            }
             break;
         }
         case NSEventTypeScrollWheel: {
@@ -924,7 +926,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self performSelector:@selector(dismissPopButton) withObject:nil afterDelay:delayTime];
 }
 
-- (void)cancelDismissPop {
+- (void)cancelDismissPopButton {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dismissPopButton) object:nil];
 }
 
@@ -932,6 +934,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (self.dismissPopButtonBlock) {
         self.dismissPopButtonBlock();
     }
+    
     self.isPopButtonVisible = NO;
     
     [self stopCGEventTap];
