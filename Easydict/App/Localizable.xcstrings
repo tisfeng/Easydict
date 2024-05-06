@@ -1108,7 +1108,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Changes will take effect upon restarting the app."
+            "value" : "Changes will take effect upon restarting the app"
           }
         },
         "zh-Hans" : {
