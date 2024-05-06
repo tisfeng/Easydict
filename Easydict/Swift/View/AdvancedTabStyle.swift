@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-/// Takes in a Color, String, and LocalizedStringKey to create a toggle for Advanced Tab in Settings.
+/// Takes in a Color, String, and LocalizedStringKey to quickly create a toggle or picker style for Advanced Tab in Settings.
 struct AdvancedTabStyle: View {
     var color: Color
     var systemImage: String
@@ -22,7 +22,7 @@ struct AdvancedTabStyle: View {
                 .clipShape(RoundedRectangle(cornerRadius: 3))
                 .overlay(
                     Image(systemName: systemImage)
-                        .font(.system(size: 10))
+                        .font(.system(size: 12))
                         .foregroundColor(.white)
                 )
             Text(labelText)
