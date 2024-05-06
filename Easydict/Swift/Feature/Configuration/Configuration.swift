@@ -52,8 +52,6 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.forceAutoGetSelectedText) var forceAutoGetSelectedText: Bool
 
-    @DefaultsWrapper(.disableEmptyCopyBeep) var disableEmptyCopyBeep: Bool // Some apps will beep when empty copy.
-
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
 
     @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
@@ -192,13 +190,6 @@ class Configuration: NSObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetForceAutoGetSelectedText()
-            }
-            .store(in: &cancellables)
-
-        Defaults.publisher(.disableEmptyCopyBeep)
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.didSetDisableEmptyCopyBeep()
             }
             .store(in: &cancellables)
 
@@ -427,10 +418,6 @@ extension Configuration {
 
     fileprivate func didSetForceAutoGetSelectedText() {
         logSettings(["force_get_selected_text": forceAutoGetSelectedText])
-    }
-
-    fileprivate func didSetDisableEmptyCopyBeep() {
-        logSettings(["disableEmptyCopyBeep": disableEmptyCopyBeep])
     }
 
     fileprivate func didSetClickQuery() {

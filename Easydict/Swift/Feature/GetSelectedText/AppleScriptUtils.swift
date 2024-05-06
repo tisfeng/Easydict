@@ -1,5 +1,5 @@
 //
-//  GetSelectedText.swift
+//  AppleScriptUtils.swift
 //  Easydict
 //
 //  Created by tisfeng on 2024/5/5.

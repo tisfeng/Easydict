@@ -429,36 +429,29 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Get selected text by simulated key: Cmd + C
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
-    MMLogInfo(@"--> start Key getText");
-    
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
-    
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
-    
-    BOOL shouldTurnOffSoundTemporarily = Configuration.shared.disableEmptyCopyBeep;
-    
-    // Set volume to 0 to avoid system alert.
-    if (shouldTurnOffSoundTemporarily) {
-        if (!self.isMuting) {
-            self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
-            MMLogInfo(@"alertVolume: %.1f", self.currentAlertVolume);
-        }
-        [AppleScriptUtils setAlertVolume:0];
-        self.isMuting = YES;
+        
+    // Set volume to 0 to avoid alert.
+    if (!self.isMuting) {
+        self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
     }
+    [AppleScriptUtils setAlertVolume:0];
+    self.isMuting = YES;
     
     [EZSystemUtility postCopyEvent];
     
-    if (shouldTurnOffSoundTemporarily) {
-        [self cancelDelayRecoverVolume];
-        [self delayRecoverVolume];
-    }
+    [self cancelDelayRecoverVolume];
+    [self delayRecoverVolume];
     
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSInteger newChangeCount = [pasteboard changeCount];
         // If changeCount is equal to newChangeCount, it means that the copy value is nil.
         if (changeCount == newChangeCount) {
+            MMLogInfo(@"Key getText is nil");
             completion(nil);
             return;
         }
@@ -466,6 +459,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
         self.selectedText = selectedText;
         MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
+        
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        MMLogInfo(@"Key getText cost: %.1f ms", (endTime - startTime) * 1000); // cost ~110ms
         
         [lastText copyToPasteboard];
         
@@ -522,7 +518,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             MMLogInfo(@"--> Accessibility getText success: %@", selectedText.truncated);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
+                MMLogInfo(@"Unsupported Accessibility error: %d (kAXErrorNoValue)", getSelectedTextError);
             } else {
                 MMLogError(@"Accessibility error: %d", getSelectedTextError);
             }
@@ -616,9 +612,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (isAutoSelectQuery && !allowedForceAutoGetSelectedText) {
         return NO;
     }
-    
-//    MMLogError(@"Accessibility error: %d", error);
-    
+        
     /**
      If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
@@ -627,10 +621,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        MMLogInfo(@"Unsupported Accessibility App: %@", bundleID);
+        MMLogInfo(@"Unsupported Accessibility App: %@ (%@)", application.localizedName, bundleID);
         return YES;
     }
-    
     
     NSDictionary *allowedAppErrorDict = @{
         /**
