@@ -3348,22 +3348,6 @@
         }
       }
     },
-    "setting.general.advance.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Advance"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "高级"
-          }
-        }
-      }
-    },
     "setting.general.app_setting.header" : {
       "localizations" : {
         "en" : {
