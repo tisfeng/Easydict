@@ -66,14 +66,6 @@ userInfo:nil]
     return YES;
 }
 
-- (BOOL)enabled {
-    if (self.queryTextType == EZQueryTextTypeNone) {
-        return NO;
-    }
-    
-    return _enabled;
-}
-
 // TODO: need to optimize, each service should have its own model, can stop requests individually.
 - (void)setResult:(EZQueryResult *)translateResult {
     _result = translateResult;
