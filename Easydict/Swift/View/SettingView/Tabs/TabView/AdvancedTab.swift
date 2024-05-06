@@ -27,8 +27,6 @@ struct AdvancedTab: View {
                     Text("enable_beta_new_app")
                 }
 
-            } header: {
-                Text("setting.general.advance.header")
             }
         }
         .formStyle(.grouped)
