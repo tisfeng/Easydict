@@ -2246,6 +2246,7 @@
 				27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */,
 				0AC11B212B4D16A500F07198 /* WindowAccessor.swift */,
 				0AC11B232B4E46B300F07198 /* TapHandlerView.swift */,
+				C490BF712BE910B70021E40A /* AdvancedTabToggle.swift */,
 				27FE98072B3DD52B000AD654 /* SettingView */,
 			);
 			path = View;
@@ -2354,7 +2355,6 @@
 				9643D93C2B6F829C000FBEA6 /* MainMenuCommand.swift */,
 				9643D93F2B6FC426000FBEA6 /* MainMenuShortcutCommand.swift */,
 				9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */,
-				C490BF712BE910B70021E40A /* AdvancedTabToggle.swift */,
 			);
 			path = MenuView;
 			sourceTree = "<group>";
