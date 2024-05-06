@@ -42,7 +42,8 @@ struct AdvancedTab: View {
                     AdvancedTabStyle(
                         color: swiftColor,
                         systemImage: "swift",
-                        labelText: "enable_beta_new_app"
+                        labelText: "enable_beta_new_app",
+                        subtitleText: "enable_beta_new_app_info"
                     )
                 }
             }

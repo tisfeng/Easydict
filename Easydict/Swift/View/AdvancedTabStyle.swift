@@ -8,11 +8,12 @@
 
 import SwiftUI
 
-/// Takes in a Color, a systemImage, and a text label to quickly create a toggle or picker style for Advanced Tab in Settings.
+/// Takes in a Color, a systemImage, a text label, and an optional subtitle to quickly create a toggle or picker style for Advanced Tab in Settings.
 struct AdvancedTabStyle: View {
     var color: Color
     var systemImage: String
     var labelText: LocalizedStringKey
+    var subtitleText: LocalizedStringKey?
 
     var body: some View {
         HStack(spacing: 8) {
@@ -25,7 +26,14 @@ struct AdvancedTabStyle: View {
                         .font(.system(size: 12))
                         .foregroundColor(.white)
                 )
-            Text(labelText)
+            VStack(alignment: .leading) {
+                Text(labelText)
+                if let subtitle = subtitleText {
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
         }
     }
 }
