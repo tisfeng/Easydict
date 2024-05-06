@@ -54,10 +54,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, assign) CGFloat movedY;
 
-// We need to store the current volume, because the volume will be set to 0 when empty copy.
-@property (nonatomic, assign) float currentAlertVolume;
-// When isMuting, we should not read system volume.
-@property (nonatomic, assign) BOOL isMuting;
+// We need to store the alert volume, because the volume will be set to 0 when using Cmd+C to get selected text.
+@property (nonatomic, assign) NSInteger currentAlertVolume;
+// When isMuting, we should not read alert volume, avoid reading this value incorrectly.
+@property (nonatomic, assign) BOOL isMutingAlertVolume;
 
 @property (nonatomic, strong) EZScriptExecutor *exeCommand;
 
@@ -434,11 +434,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
         
     // Set volume to 0 to avoid alert.
-    if (!self.isMuting) {
+    if (!self.isMutingAlertVolume) {
         self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
     }
     [AppleScriptUtils setAlertVolume:0];
-    self.isMuting = YES;
+    self.isMutingAlertVolume = YES;
     
     [EZSystemUtility postCopyEvent];
     
@@ -481,7 +481,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)recoverVolume {
     [AppleScriptUtils setAlertVolume:self.currentAlertVolume];
-    self.isMuting = NO;
+    self.isMutingAlertVolume = NO;
 }
 
 
