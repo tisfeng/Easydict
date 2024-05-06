@@ -1,5 +1,5 @@
 //
-//  AdvancedTabToggle.swift
+//  AdvancedTabStyle.swift
 //  Easydict
 //
 //  Created by Jerry on 2024-05-06.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// Takes in a Color, String, and LocalizedStringKey to create a toggle for Advanced Tab in Settings.
-struct AdvancedTabToggle: View {
+struct AdvancedTabStyle: View {
     var color: Color
     var systemImage: String
     var labelText: LocalizedStringKey
