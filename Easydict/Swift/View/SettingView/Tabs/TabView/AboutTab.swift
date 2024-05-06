@@ -58,7 +58,7 @@ struct AboutTab: View {
                                     to:
                                     CGPoint(
                                         x: location.x + ((geometry.size.width / 2) - 222),
-                                        y: location.y + 58
+                                        y: location.y + 60
                                     )
                                 )
                                 proxy.burst()
