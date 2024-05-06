@@ -19,7 +19,7 @@ struct AdvancedTabStyle: View {
             Rectangle()
                 .fill(color)
                 .frame(width: 20, height: 20, alignment: .center)
-                .clipShape(RoundedRectangle(cornerRadius: 3))
+                .clipShape(RoundedRectangle(cornerRadius: 4))
                 .overlay(
                     Image(systemName: systemImage)
                         .font(.system(size: 12))
