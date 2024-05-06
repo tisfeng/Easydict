@@ -45,7 +45,7 @@ struct AboutTab: View {
                     .frame(height: 220)
 
                     HStack(alignment: .center, spacing: 30) {
-                        Image("logo") // Make sure to use the correct image name as a string
+                        Image(.logo)
                             .resizable()
                             .renderingMode(.original)
                             .frame(width: 100, height: 100)
