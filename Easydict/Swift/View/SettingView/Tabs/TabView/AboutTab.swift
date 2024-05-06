@@ -84,7 +84,7 @@ struct AboutTab: View {
                                 Button {
                                     NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
                                 } label: {
-                                    Label("github_link", systemImage: "star.fill")
+                                    Label("setting.about.github_link", systemImage: "star.fill")
                                         .frame(width: 120, height: 20)
                                 }
 
@@ -92,7 +92,7 @@ struct AboutTab: View {
                                     NSWorkspace.shared
                                         .open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
                                 } label: {
-                                    Label("contributor_link", systemImage: "person.3.sequence.fill")
+                                    Label("setting.about.contributor_link", systemImage: "person.3.sequence.fill")
                                         .frame(width: 120, height: 20)
                                 }
                             }
