@@ -46,9 +46,6 @@
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 @property (nonatomic, strong) NSButton *forceGetSelectedTextButton;
 
-@property (nonatomic, strong) NSTextField *disableEmptyCopyBeepLabel;
-@property (nonatomic, strong) NSButton *disableEmptyCopyBeepButton;
-
 @property (nonatomic, strong) NSTextField *clickQueryLabel;
 @property (nonatomic, strong) NSButton *clickQueryButton;
 
@@ -283,16 +280,6 @@
     NSString *forceGetSelectedText = NSLocalizedString(@"force_auto_get_selected_text", nil);
     self.forceGetSelectedTextButton = [NSButton checkboxWithTitle:forceGetSelectedText target:self action:@selector(forceGetSelectedTextButtonClicked:)];
     [self.contentView addSubview:self.forceGetSelectedTextButton];
-
-
-    NSTextField *disableEmptyCopyBeepLabel = [NSTextField labelWithString:NSLocalizedString(@"disable_empty_copy_beep", nil)];
-    disableEmptyCopyBeepLabel.font = font;
-    [self.contentView addSubview:disableEmptyCopyBeepLabel];
-    self.disableEmptyCopyBeepLabel = disableEmptyCopyBeepLabel;
-
-    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_msg", nil);
-    self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
-    [self.contentView addSubview:self.disableEmptyCopyBeepButton];
 
     NSTextField *clickQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"click_icon_query", nil)];
     clickQueryLabel.font = font;
@@ -551,7 +538,6 @@
 
     self.showQueryIconButton.mm_isOn = self.config.autoSelectText;
     self.forceGetSelectedTextButton.mm_isOn = self.config.forceAutoGetSelectedText;
-    self.disableEmptyCopyBeepButton.mm_isOn = self.config.disableEmptyCopyBeep;
     self.clickQueryButton.mm_isOn = self.config.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = self.config.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:self.config.languageDetectOptimize];
@@ -690,18 +676,10 @@
         make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
     }];
 
-    [self.disableEmptyCopyBeepLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.forceGetSelectedTextButton.mas_bottom).offset(self.verticalPadding);
-    }];
-    [self.disableEmptyCopyBeepButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.disableEmptyCopyBeepLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.disableEmptyCopyBeepLabel);
-    }];
 
     [self.clickQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.disableEmptyCopyBeepButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.forceGetSelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clickQueryButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.clickQueryLabel.mas_right).offset(self.horizontalPadding);
@@ -1127,10 +1105,6 @@
 
 - (void)adjustQueryIconPostionButtonClicked:(NSButton *)sender {
     self.config.adjustPopButtomOrigin = sender.mm_isOn;
-}
-
-- (void)disableEmptyCopyBeepButtonClicked:(NSButton *)sender {
-    self.config.disableEmptyCopyBeep = sender.mm_isOn;
 }
 
 #pragma mark - Preferred Languages

@@ -986,38 +986,6 @@
         }
       }
     },
-    "disable_empty_copy_beep" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable Empty Copy Beep:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用空复制提示音："
-          }
-        }
-      }
-    },
-    "disable_empty_copy_beep_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activated when selected text is empty"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "划词内容为空时禁用复制提示音"
-          }
-        }
-      }
-    },
     "disabled_app_list" : {
       "comment" : "disabled app list",
       "localizations" : {
@@ -1076,13 +1044,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Launching in SwiftUI App mode, changes take effect upon restarting the app."
+            "value" : "Launch in SwiftUI App mode"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以 SwiftUI App模式启动，重启App生效"
+            "value" : "以 SwiftUI App 模式启动"
+          }
+        }
+      }
+    },
+    "enable_beta_new_app_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes will take effect upon restarting the app"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启 App 以生效"
           }
         }
       }
@@ -3348,22 +3332,6 @@
         }
       }
     },
-    "setting.general.advance.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Advance"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "高级"
-          }
-        }
-      }
-    },
     "setting.general.app_setting.header" : {
       "localizations" : {
         "en" : {
@@ -3697,38 +3665,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查询英语单词后自动播放发音"
-          }
-        }
-      }
-    },
-    "setting.general.voice.disable_empty_copy_beep_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable 'beep' when selected text is empty"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用空复制提示音"
-          }
-        }
-      }
-    },
-    "setting.general.voice.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sound"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声音"
           }
         }
       }
