@@ -1060,13 +1060,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Launching in SwiftUI App mode, changes take effect upon restarting the app."
+            "value" : "Launch in SwiftUI App mode"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以 SwiftUI App模式启动，重启App生效"
+            "value" : "以 SwiftUI App 模式启动"
+          }
+        }
+      }
+    },
+    "enable_beta_new_app_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes will take effect upon restarting the app"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启 App 以生效"
           }
         }
       }
@@ -3312,22 +3328,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用 Beta 特性"
-          }
-        }
-      }
-    },
-    "setting.general.advance.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Advance"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "高级"
           }
         }
       }
