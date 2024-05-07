@@ -95,8 +95,10 @@ struct SettingView: View {
 
         window.setFrame(newRect, display: true, animate: true)
 
-        // Disable user to resize window.
-        window.styleMask.remove(.resizable)
+        // Disable user to resize window, wait for the animation to finish.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            window.styleMask.remove(.resizable)
+        }
     }
 
     // MARK: Private
