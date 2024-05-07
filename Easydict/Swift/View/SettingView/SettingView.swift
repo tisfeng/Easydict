@@ -94,6 +94,9 @@ struct SettingView: View {
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
         window.setFrame(newRect, display: true, animate: true)
+
+        // Disable user to resize window.
+        window.styleMask.remove(.resizable)
     }
 
     // MARK: Private
