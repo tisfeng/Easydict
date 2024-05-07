@@ -28,8 +28,8 @@ struct AdvancedTabItemView: View {
                 )
             VStack(alignment: .leading) {
                 Text(labelText)
-                if let subtitle = subtitleText {
-                    Text(subtitle)
+                if let subtitleText {
+                    Text(subtitleText)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
