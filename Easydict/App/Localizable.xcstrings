@@ -1060,7 +1060,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Launching in SwiftUI App mode"
+            "value" : "Launch in SwiftUI App mode"
           }
         },
         "zh-Hans" : {
