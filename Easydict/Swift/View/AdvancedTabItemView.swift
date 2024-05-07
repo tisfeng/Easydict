@@ -1,5 +1,5 @@
 //
-//  AdvancedTabStyle.swift
+//  AdvancedTabItemView.swift
 //  Easydict
 //
 //  Created by Jerry on 2024-05-06.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// Takes in a Color, a systemImage, a text label, and an optional subtitle to quickly create a toggle or picker style for Advanced Tab in Settings.
-struct AdvancedTabStyle: View {
+struct AdvancedTabItemView: View {
     var color: Color
     var systemImage: String
     var labelText: LocalizedStringKey

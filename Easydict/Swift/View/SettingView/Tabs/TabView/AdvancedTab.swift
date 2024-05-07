@@ -18,7 +18,7 @@ struct AdvancedTab: View {
             Section {
                 Picker(
                     selection: $defaultTTSServiceType,
-                    label: AdvancedTabStyle(
+                    label: AdvancedTabItemView(
                         color: Color.orange,
                         systemImage: "ellipsis.bubble.fill",
                         labelText: "setting.general.advance.default_tts_service"
@@ -32,14 +32,14 @@ struct AdvancedTab: View {
             }
             Section {
                 Toggle(isOn: $enableBetaFeature) {
-                    AdvancedTabStyle(
+                    AdvancedTabItemView(
                         color: Color.blue,
                         systemImage: "hammer.fill",
                         labelText: "setting.general.advance.enable_beta_feature"
                     )
                 }
                 Toggle(isOn: $enableBetaNewApp) {
-                    AdvancedTabStyle(
+                    AdvancedTabItemView(
                         color: swiftColor,
                         systemImage: "swift",
                         labelText: "enable_beta_new_app",
