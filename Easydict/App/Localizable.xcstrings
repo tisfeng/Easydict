@@ -1002,38 +1002,6 @@
         }
       }
     },
-    "disable_empty_copy_beep" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable Empty Copy Beep:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用空复制提示音："
-          }
-        }
-      }
-    },
-    "disable_empty_copy_beep_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activated when selected text is empty"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "划词内容为空时禁用复制提示音"
-          }
-        }
-      }
-    },
     "disabled_app_list" : {
       "comment" : "disabled app list",
       "localizations" : {
@@ -3697,38 +3665,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查询英语单词后自动播放发音"
-          }
-        }
-      }
-    },
-    "setting.general.voice.disable_empty_copy_beep_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable 'beep' when selected text is empty"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用空复制提示音"
-          }
-        }
-      }
-    },
-    "setting.general.voice.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sound"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声音"
           }
         }
       }
