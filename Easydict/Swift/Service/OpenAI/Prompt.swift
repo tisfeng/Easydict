@@ -653,7 +653,7 @@ extension QueryService {
                 "role": "user",
                 "content": """
                 Using Simplified-Chinese:
-                Here is a English word: \"\"\"album\"\"\"
+                Here is a English word: \"\"\"album\"\"\",
                 Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
@@ -668,7 +668,7 @@ extension QueryService {
 
                 解释：{explanation}
 
-                词源学：{etymology}
+                词源学：早期17世纪：源自拉丁语“albus”（意即“白色”）的中性单词“album”，原意为“白板”。该词是从拉丁语短语“album amicorum”（意即“好友相册”，一种可收集亲笔签名、素描、诗句等内容的空白书籍）中借来的，最初被有意作为拉丁语词汇使用。
 
                 记忆方法：{how_to_remember}
 
@@ -767,7 +767,7 @@ extension QueryService {
                 "role": "user",
                 "content": """
                 Using English:
-                Here is a English word: "raven"
+                Here is a English word: "raven",
                 Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
