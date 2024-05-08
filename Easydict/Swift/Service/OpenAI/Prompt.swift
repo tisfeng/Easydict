@@ -280,6 +280,7 @@ extension QueryService {
         to targetLanguage: Language
     ) -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
+
         var prompt = ""
         var keyWords = "Key Words"
         var grammarParse = "Grammar Parsing"
@@ -292,6 +293,9 @@ extension QueryService {
             literalTranslation = "直译"
             freeTranslation = "意译"
         }
+
+        let sourceLanguage = sourceLanguage.rawValue
+        let targetLanguage = targetLanguage.rawValue
 
         let sentencePrompt = "Here is a \(sourceLanguage) sentence: \"\"\"\(sentence)\"\"\".\n"
         prompt += sentencePrompt
@@ -315,7 +319,7 @@ extension QueryService {
             "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged, desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
         prompt += freeTranslationPrompt
 
-        let answerLanguagePrompt = "Answer in \(answerLanguage). \n"
+        let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue). \n"
         prompt += answerLanguagePrompt
 
         let disableNotePrompt = "Do not display additional information or notes."
@@ -386,7 +390,7 @@ extension QueryService {
                 "role": "assistant",
                 "content": """
                 直译：
-                迟做总比不做好
+                迟到总比不到好
 
                 重点词汇:
                 better: adj. 较好的；更好的。
@@ -394,7 +398,7 @@ extension QueryService {
                 never: adv. 从来不；从不。
 
                 语法分析:
-                这是一个固定短语，不可分割。
+                这是一个固定短语，一句常见的英语谚语。
 
                 意译:
                 迟做总比不做好
@@ -415,11 +419,11 @@ extension QueryService {
                 Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
 
                 语法分析:
-                这是一个简单名词短语，一个源自古希腊的典故。
+                这是一个简单名词短语。
 
                 意译:
                 达摩克利斯之剑
-                （这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
+                （这是一个源自古希腊的典故，这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
                 """,
             ],
         ]
@@ -507,13 +511,15 @@ extension QueryService {
 
         let isWord = isEnglishWord || isChineseWord
 
+        let sourceLanguageString = sourceLanguage.rawValue
+
         let dictSystemPrompt =
             "You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. Priority is given to queries from authoritative dictionary databases, such as Oxford Dictionary, Cambridge Dictionary, etc., as well as Wikipedia, and Chinese words are preferentially queried from Baidu Baike. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n"
 
-        let answerLanguagePrompt = "Using \(answerLanguage): \n"
+        let answerLanguagePrompt = "Using \(answerLanguage.rawValue): \n"
         prompt.append(answerLanguagePrompt)
 
-        let queryWordPrompt = "Here is a \(sourceLanguage.rawValue) word: \"\"\"\(word)\"\"\", "
+        let queryWordPrompt = "Here is a \(sourceLanguageString) word: \"\"\"\(word)\"\"\", "
         prompt.append(queryWordPrompt)
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
@@ -549,7 +555,10 @@ extension QueryService {
         }
 
         let explanationPrompt = """
-        \nLook up its brief <\(answerLanguage)> explanation in clear and understandable way, desired display format: "\(
+        \nLook up its brief <\(
+            answerLanguage
+                .rawValue
+        )> explanation in clear and understandable way, desired display format: "\(
             explanation
         ): {brief_explanation} "
 
@@ -576,7 +585,7 @@ extension QueryService {
             prompt += rememberWordPrompt
 
             let cognatesPrompt = """
-            \nLook up main <\(sourceLanguage)> words with the same root word as "\(
+            \nLook up main <\(sourceLanguageString)> words with the same root word as "\(
                 word
             )", no more than 4, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: "\(
                 cognate
@@ -588,14 +597,18 @@ extension QueryService {
 
         if isWord || isEnglishPhrase {
             let synonymsPrompt = """
-            \nLook up its main <\(sourceLanguage)> near synonyms, no more than 3, If it has synonyms, show format: "\(
+            \nLook up its main <\(
+                sourceLanguageString
+            )> near synonyms, no more than 3, If it has synonyms, show format: "\(
                 synonym
             ): {synonyms} "
             """
             prompt += synonymsPrompt
 
             let antonymsPrompt = """
-            \nLook up its main <\(sourceLanguage)> near antonyms, no more than 3, If it has antonyms, show format: "\(
+            \nLook up its main <\(
+                sourceLanguageString
+            )> near antonyms, no more than 3, If it has antonyms, show format: "\(
                 antonym
             ): {antonyms} "
 
@@ -603,7 +616,7 @@ extension QueryService {
             prompt += antonymsPrompt
 
             let phrasePrompt = """
-            \nLook up its main <\(sourceLanguage)> phrases, no more than 3, If it has phrases, show format: "\(
+            \nLook up its main <\(sourceLanguageString)> phrases, no more than 3, If it has phrases, show format: "\(
                 commonPhrases
             ): {phrases} "
 
@@ -613,7 +626,7 @@ extension QueryService {
 
         let exampleSentencePrompt = """
         \nLook up its main <\(
-            sourceLanguage
+            sourceLanguageString
         )> example sentences and translation, no more than 2, If it has example sentences, use * to mark its specific meaning in the translated sentence of the example sentence, show format: "\(
             exampleSentence
         ):\n{example_sentences} "
