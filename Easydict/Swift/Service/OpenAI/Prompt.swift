@@ -293,11 +293,11 @@ extension QueryService {
             freeTranslation = "意译"
         }
 
-        let sentencePrompt = "Here is a \(sourceLanguage) sentence: ```\(sentence)```.\n"
+        let sentencePrompt = "Here is a \(sourceLanguage) sentence: \"\"\"\(sentence)\"\"\".\n"
         prompt += sentencePrompt
 
         let directTranslationPrompt =
-            "First, translate the sentence into \(targetLanguage) text literally, keep the original format, and don’t miss any information, desired display format: \"\(literalTranslation):\n{literal_translation_result} \",\n\n"
+            "First, translate the sentence into \(targetLanguage) text literally, keep the original format, and don’t miss any information, desired display format: \"\(literalTranslation):\n{literal_translation} \",\n\n"
         prompt += directTranslationPrompt
 
         let stepByStepPrompt = "Then, follow the steps below step by step.\n"
@@ -312,7 +312,7 @@ extension QueryService {
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged, desired display format: \"\(freeTranslation):\n{free_translation_result} \", \n\n"
+            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged, desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
         prompt += freeTranslationPrompt
 
         let answerLanguagePrompt = "Answer in \(answerLanguage). \n"
@@ -376,6 +376,50 @@ extension QueryService {
 
                 意译:
                 乌克兰可能会获得另一套爱国者导弹系统。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "better late than never",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译：
+                迟做总比不做好
+
+                重点词汇:
+                better: adj. 较好的；更好的。
+                late: adj. 迟到的；晚的。
+                never: adv. 从来不；从不。
+
+                语法分析:
+                这是一个固定短语，不可分割。
+
+                意译:
+                迟做总比不做好
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "The Sword of Damocles",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译:
+                达摩克利斯之剑
+
+                重点词汇:
+                Sword: n. 剑。
+                Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
+
+                语法分析:
+                这是一个简单名词短语，一个源自古希腊的典故。
+
+                意译:
+                达摩克利斯之剑
+                （这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
                 """,
             ],
         ]
