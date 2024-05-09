@@ -73,7 +73,7 @@ struct EasydictApp: App {
                     }
                 }
             }
-            
+
             Settings {
                 SettingView().environmentObject(languageState).environment(
                     \.locale,
