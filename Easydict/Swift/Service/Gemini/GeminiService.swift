@@ -12,6 +12,7 @@ import Defaults
 import Foundation
 import GoogleGenerativeAI
 
+// TODO: add a LLM stream service base class, make both OpenAI and Gemini inherit from it.
 @objc(EZGeminiService)
 public final class GeminiService: QueryService {
     // MARK: Public

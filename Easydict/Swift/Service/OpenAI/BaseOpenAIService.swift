@@ -197,7 +197,7 @@ public class BaseOpenAIService: QueryService {
     ) {
         var normalResults: [String]?
         if let resultText {
-            normalResults = [resultText.trimmingCharacters(in: .whitespacesAndNewlines)]
+            normalResults = [resultText.trim()]
         }
 
         result.isStreamFinished = error != nil
@@ -226,15 +226,17 @@ public class BaseOpenAIService: QueryService {
     }
 
     private func getFinalResultText(text: String) -> String {
-        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = text as NSString
-        var resultText = nsText.tryToRemoveQuotes()
+        var resultText = text
 
-        // Remove last </s>, fix Groq mixtral-8x7b-32768
+        // Remove last </s>, fix Groq model mixtral-8x7b-32768
         let stopFlag = "</s>"
         if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
-            resultText = String(resultText.dropLast(stopFlag.count))
+            resultText = String(resultText.dropLast(stopFlag.count)).trim()
         }
+
+        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
+        let nsText = resultText as NSString
+        resultText = nsText.tryToRemoveQuotes()
 
         return resultText
     }

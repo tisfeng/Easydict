@@ -12,6 +12,10 @@ extension String {
     func truncated(_ maxLength: Int = 200) -> String {
         String(prefix(maxLength))
     }
+
+    func trim() -> String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }
 
 @objc
