@@ -223,6 +223,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
              NSLocalizedString(@"replace_newline_with_space", nil);
              NSLocalizedString(@"remove_code_comment_symbols", nil);
              NSLocalizedString(@"split_words", nil);
+             NSLocalizedString(@"go_to_settings", nil);
              */
         ];
         
