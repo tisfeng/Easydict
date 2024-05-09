@@ -67,18 +67,9 @@ struct MenuItemView: View {
                 latestVersion = version
             }
         }
-        .openSettingsAccess()
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.openSettings, object: nil)) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                // calling `openSettings` immediately doesn't work so wait a quick moment
-                try? openSettings()
-            }
-        }
     }
 
     // MARK: Private
-
-    @Environment(\.openSettings) private var openSettings
 
     @ObservedObject private var store = MenuItemStore()
 

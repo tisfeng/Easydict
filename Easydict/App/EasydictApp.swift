@@ -39,6 +39,16 @@ struct EasydictApp: App {
             } label: {
                 Label {
                     Text("Easydict")
+                        .openSettingsAccess() // trick way for open setting
+                        .onReceive(NotificationCenter.default.publisher(
+                            for: Notification.Name.openSettings,
+                            object: nil
+                        )) { _ in
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                                // calling `openSettings` immediately doesn't work so wait a quick moment
+                                try? openSettings()
+                            }
+                        }
                 } icon: {
                     Image(menuBarIcon.rawValue)
                         .resizable()
@@ -74,6 +84,8 @@ struct EasydictApp: App {
     }
 
     // MARK: Private
+
+    @Environment(\.openSettings) private var openSettings
 
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
 
