@@ -316,8 +316,15 @@ extension QueryService {
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged, desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
+            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged. If this sentence contains proverbs, historical allusions, or comes from famous works, please append its introduction after the translation. Desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
         prompt += freeTranslationPrompt
+
+//        let derivedMeaningPrompt = """
+//        4. Check whether there are proverbs or historical allusions in this sentence.
+//        If not, just ignore it.
+//        If so, point it out and explain it in detail, desired display format: "({proverb_or_allusion})".
+//        """
+//        prompt += derivedMeaningPrompt
 
         let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue). \n"
         prompt += answerLanguagePrompt
@@ -349,7 +356,6 @@ extension QueryService {
                 incoming: adj. 正来临的；新任的。
                 chancellor: n. 总理；大臣。这里指德国总理。
                 dynamic: adj. 有活力的；动态的。
-                leadership: n. 领导。
                 dynamic leadership: 强力的领导。
                 drift: n. 漂流；漂泊。可以理解为随波逐流，和前面的 dynamic 做对比。
 
@@ -358,6 +364,53 @@ extension QueryService {
 
                 意译:
                 但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "The Sword of Damocles",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译:
+                达摩克利斯之剑
+
+                重点词汇:
+                Sword: n. 剑。
+                Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
+
+                语法分析:
+                这是一个简单名词短语。
+
+                意译:
+                达摩克利斯之剑
+
+                （达摩克利斯之剑，又称为“悬顶之剑”，源自古希腊的一个寓言故事。这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "better late than never",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译：
+                迟到总比不到好
+
+                重点词汇:
+                better: adj. 较好的；更好的。
+                late: adj. 迟到的；晚的。
+                never: adv. 从来不；从不。
+
+                语法分析:
+                这是一个固定短语。
+
+                意译:
+                迟做总比不做好
+
+                （这是一句广为人知的英语谚语，传达了一个乐观且鼓励的态度，即在面对任务、决定或目标时，即使开始得较晚或者错过了最初的机会，采取行动并最终完成仍然比完全放弃要好。它强调了坚持与努力的价值，即便成果来得晚些，也不失为一种成功。）
                 """,
             ],
             [
@@ -380,50 +433,6 @@ extension QueryService {
 
                 意译:
                 乌克兰可能会获得另一套爱国者导弹系统。
-                """,
-            ],
-            [
-                "role": "user",
-                "content": "better late than never",
-            ],
-            [
-                "role": "assistant",
-                "content": """
-                直译：
-                迟到总比不到好
-
-                重点词汇:
-                better: adj. 较好的；更好的。
-                late: adj. 迟到的；晚的。
-                never: adv. 从来不；从不。
-
-                语法分析:
-                这是一个固定短语，一句常见的英语谚语。
-
-                意译:
-                迟做总比不做好
-                """,
-            ],
-            [
-                "role": "user",
-                "content": "The Sword of Damocles",
-            ],
-            [
-                "role": "assistant",
-                "content": """
-                直译:
-                达摩克利斯之剑
-
-                重点词汇:
-                Sword: n. 剑。
-                Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
-
-                语法分析:
-                这是一个简单名词短语。
-
-                意译:
-                达摩克利斯之剑
-                （这是一个源自古希腊的典故，这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
                 """,
             ],
         ]
