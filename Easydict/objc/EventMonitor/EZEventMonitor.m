@@ -703,6 +703,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         
         @"com.eusoft.freeeudic", // Eudic
         @"com.eusoft.eudic",
+        @"eusoft.eudic.ip",
         @"com.reederapp.5.macOS",   // Reeder
         @"com.apple.ScriptEditor2", // 脚本编辑器
         @"abnerworks.Typora",       // Typora
