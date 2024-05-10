@@ -84,7 +84,9 @@ public final class GeminiService: QueryService {
                             resultString += line
                             result.translatedResults = [resultString]
                             await MainActor.run {
-                                completion(result, nil)
+                                throttler.throttle { [unowned self] in
+                                    completion(result, nil)
+                                }
                             }
                         }
                     }
@@ -121,6 +123,10 @@ public final class GeminiService: QueryService {
             }
         }
     }
+
+    // MARK: Internal
+
+    let throttler = Throttler(maxInterval: 0.1)
 
     // MARK: Private
 
