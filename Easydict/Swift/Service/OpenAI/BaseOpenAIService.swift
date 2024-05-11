@@ -237,7 +237,7 @@ public class BaseOpenAIService: QueryService {
     }
 
     private func getFinalResultText(text: String) -> String {
-        var resultText = text
+        var resultText = text.trim()
 
         // Remove last </s>, fix Groq model mixtral-8x7b-32768
         let stopFlag = "</s>"
@@ -247,7 +247,7 @@ public class BaseOpenAIService: QueryService {
 
         // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
         let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes()
+        resultText = nsText.tryToRemoveQuotes().trim()
 
         return resultText
     }
