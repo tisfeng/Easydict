@@ -80,6 +80,8 @@ public class BaseOpenAIService: QueryService {
             return
         }
 
+        updateCompletion = completion
+
         var resultText = ""
 
         result.from = from
@@ -145,6 +147,9 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
+    let throttler = Throttler(maxInterval: 0.1)
+    var updateCompletion: ((EZQueryResult, Error?) -> ())?
+
     var model = ""
 
     var unsupportedLanguages: [Language] = []
@@ -203,25 +208,31 @@ public class BaseOpenAIService: QueryService {
         result.isStreamFinished = error != nil
         result.translatedResults = normalResults
 
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                self.updateCompletion?(result, error)
+            }
+        }
+
         switch queryType {
         case .sentence, .translation:
-            completion(result, error)
+            updateCompletion()
 
         case .dictionary:
-            if let error {
+            if error != nil {
                 result.showBigWord = false
                 result.translateResultsTopInset = 0
-                completion(result, error)
+                updateCompletion()
                 return
             }
 
             result.showBigWord = true
             result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6
-            completion(result, error)
+            updateCompletion()
 
         default:
-            completion(result, error)
+            updateCompletion()
         }
     }
 
