@@ -411,7 +411,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     Configuration *config = [Configuration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
     if (!enabled) {
-        MMLogWarn(@"disabled autoSelectText");
+        MMLog(@"disabled autoSelectText");
         return enabled;
     }
     
