@@ -316,7 +316,7 @@ extension QueryService {
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged. If this sentence contains proverbs, metaphors, historical allusions, or comes from famous works, please append its introduction after the translation. Desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
+            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged. If this sentence contains proverbs, metaphors, historical allusions, or comes from famous works, please break the line after the translation and attach its detailed introduction. Desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
         prompt += freeTranslationPrompt
 
         let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue). \n"
