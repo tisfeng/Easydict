@@ -590,10 +590,10 @@ Similarly, for some services that support looking up vocabulary and translating 
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
-By default, only [Mini Window] is enabled for Smart Query Mode, users can also enable Smart Query Mode manually for [Hover Window]:
+By default, all Windows are not enabled for smart query mode, users can enable this feature manually:
 
 ```bash
-easydict://writeKeyValue?IntelligentQueryMode-window2=1
+easydict://writeKeyValue?IntelligentQueryMode-window1=1
 ```
 window1 represents the mini window, while window2 represents hover window, value 0 represents disabled, while 1 represents enabled.
 
@@ -850,6 +850,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-04-04 | 至秦 | 37 | 感谢老哥 好用🙏 |
 | 2024-04-12 | 奥雷里亚诺 | 50 | 界面精致，而且帮我节约了不少时间 |
 | 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
+| 2024-05-11 |  | 35 | 感谢开源和持续更新！ |
 
 </p>
 

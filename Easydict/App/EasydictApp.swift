@@ -39,6 +39,16 @@ struct EasydictApp: App {
             } label: {
                 Label {
                     Text("Easydict")
+                        .openSettingsAccess() // trick way for open setting
+                        .onReceive(NotificationCenter.default.publisher(
+                            for: Notification.Name.openSettings,
+                            object: nil
+                        )) { _ in
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                                // calling `openSettings` immediately doesn't work so wait a quick moment
+                                try? openSettings()
+                            }
+                        }
                 } icon: {
                     Image(menuBarIcon.rawValue)
                         .resizable()
@@ -54,14 +64,15 @@ struct EasydictApp: App {
             .menuBarExtraStyle(.menu)
             .commands {
                 EasyDictMainMenu() // main menu
+                // Override About button
+                CommandGroup(replacing: .appInfo) {
+                    Button {
+                        showAboutWindow()
+                    } label: {
+                        Text("menubar.about")
+                    }
+                }
             }
-
-            Window("go_to_settings", id: "go_to_settings") {
-                FakeViewToOpenSettingsInSonoma(title: "go_to_settings")
-                    .openSettingsAccess()
-            }
-            .windowStyle(HiddenTitleBarWindowStyle())
-            .windowResizability(.contentSize)
 
             Settings {
                 SettingView().environmentObject(languageState).environment(
@@ -74,6 +85,8 @@ struct EasydictApp: App {
 
     // MARK: Private
 
+    @Environment(\.openSettings) private var openSettings
+
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
 
     // Use `@Default` will cause a purple warning and continuously call `set` of it.
@@ -83,28 +96,27 @@ struct EasydictApp: App {
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
     @StateObject private var languageState = LanguageState()
-}
 
-// MARK: - FakeViewToOpenSettingsInSonoma
+    @State var aboutWindow: NSWindow?
 
-struct FakeViewToOpenSettingsInSonoma: View {
-    @Environment(\.openSettings) private var openSettings
-    var title: String
-
-    var body: some View {
-        ZStack {}
-            .frame(width: 0, height: 0)
-            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.openSettings, object: nil)) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                    // calling `openSettings` immediately doesn't work so wait a quick moment
-                    try? openSettings()
-                    NSApplication.shared
-                        .windows
-                        .filter(\.canBecomeKey)
-                        .filter { $0.title == title }
-                        .forEach { $0.close() }
-                }
+    private func showAboutWindow() {
+        if let aboutWindow = aboutWindow {
+            aboutWindow.makeKeyAndOrderFront(nil)
+        } else {
+            aboutWindow = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 500, height: 220),
+                styleMask: [.titled, .closable],
+                backing: .buffered, defer: false
+            )
+            aboutWindow?.titleVisibility = .hidden
+            aboutWindow?.titlebarAppearsTransparent = true
+            aboutWindow?.isReleasedWhenClosed = false
+            aboutWindow?.center()
+            if #available(macOS 13, *) {
+                aboutWindow?.contentView = NSHostingView(rootView: SettingsAboutTab())
             }
+            aboutWindow?.makeKeyAndOrderFront(nil)
+        }
     }
 }
 

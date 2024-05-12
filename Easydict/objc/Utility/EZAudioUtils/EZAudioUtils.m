@@ -18,6 +18,8 @@
 
 @implementation EZAudioUtils
 
+#pragma mark - System Volume
+
 /// Get system volume, [0, 100]
 + (float)getSystemVolume {
     AudioDeviceID deviceID = [self getDefaultOutputDeviceID];

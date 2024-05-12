@@ -829,6 +829,22 @@
         }
       }
     },
+    "contributor_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contributors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贡献者"
+          }
+        }
+      }
+    },
     "copy_text" : {
       "localizations" : {
         "en" : {
@@ -873,6 +889,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本"
+          }
+        }
+      }
+    },
+    "current_version %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 %@"
           }
         }
       }
@@ -970,38 +1002,6 @@
         }
       }
     },
-    "disable_empty_copy_beep" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable Empty Copy Beep:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用空复制提示音："
-          }
-        }
-      }
-    },
-    "disable_empty_copy_beep_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activated when selected text is empty"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "划词内容为空时禁用复制提示音"
-          }
-        }
-      }
-    },
     "disabled_app_list" : {
       "comment" : "disabled app list",
       "localizations" : {
@@ -1060,13 +1060,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Launching in SwiftUI App mode, changes take effect upon restarting the app."
+            "value" : "Launch in SwiftUI App mode"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以 SwiftUI App模式启动，重启App生效"
+            "value" : "以 SwiftUI App 模式启动"
+          }
+        }
+      }
+    },
+    "enable_beta_new_app_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes will take effect upon restarting the app"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启 App 以生效"
           }
         }
       }
@@ -1432,6 +1448,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gemini 翻译"
+          }
+        }
+      }
+    },
+    "github_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
           }
         }
       }
@@ -2005,6 +2037,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "静默截图 OCR"
+          }
+        }
+      }
+    },
+    "menubar.about" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Easydict"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于 Easydict"
           }
         }
       }
@@ -3284,22 +3332,6 @@
         }
       }
     },
-    "setting.general.advance.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Advance"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "高级"
-          }
-        }
-      }
-    },
     "setting.general.app_setting.header" : {
       "localizations" : {
         "en" : {
@@ -3633,38 +3665,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查询英语单词后自动播放发音"
-          }
-        }
-      }
-    },
-    "setting.general.voice.disable_empty_copy_beep_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable 'beep' when selected text is empty"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用空复制提示音"
-          }
-        }
-      }
-    },
-    "setting.general.voice.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sound"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声音"
           }
         }
       }
@@ -4373,16 +4373,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "腾讯翻译君"
-          }
-        }
-      }
-    },
-    "Tisfeng" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
           }
         }
       }

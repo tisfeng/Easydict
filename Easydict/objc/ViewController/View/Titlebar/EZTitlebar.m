@@ -54,14 +54,15 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     self.buttonSize = CGSizeMake(self.buttonWidth, self.buttonWidth);
     self.imageSize = CGSizeMake(self.imageWidth, self.imageWidth);
     
+    [self addSubview:self.pinButton];
+    [self addSubview:self.stackView];
+
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
-    [defaultCenter addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
-    [defaultCenter addObserver:self selector:@selector(updateConstraints) name:NSNotification.languagePreferenceChanged object:nil];
+    [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:EZQuickLinkButtonUpdateNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
-//- (void)update
-
-- (void)updateConstraints {
+- (void)updateTitlebar {
     /**
      Fix appcenter issue, seems cannot remove self.subviews 🤔
      
@@ -71,16 +72,21 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
      */
     
     // Remove and dealloc all views to refresh UI.
-
+    
     [_pinButton removeFromSuperview];
     [_stackView removeFromSuperview];
     _stackView = nil;
     _quickActionButton = nil;
     
-    [self addSubview:self.pinButton];
     [self updatePinButton];
-    [self quickActionMenu];
+    
+    [self addSubview:self.pinButton];
+    [self addSubview:self.stackView];
+    
+    [self setNeedsUpdateConstraints:YES];
+}
 
+- (void)updateConstraints {
     CGFloat margin = EZHorizontalCellSpacing_10;
     CGFloat topOffset = EZTitlebarHeight_28 - self.buttonWidth;
     
@@ -90,7 +96,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         make.top.equalTo(self).offset(topOffset);
     }];
     
-    [self addSubview:self.stackView];
     [self.stackView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(topOffset);
         make.right.equalTo(self).offset(-margin);
@@ -218,6 +223,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
              NSLocalizedString(@"replace_newline_with_space", nil);
              NSLocalizedString(@"remove_code_comment_symbols", nil);
              NSLocalizedString(@"split_words", nil);
+             NSLocalizedString(@"go_to_settings", nil);
              */
         ];
         
@@ -327,7 +333,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     // Eudic
     if (Configuration.shared.showEudicQuickLink) {
         // !!!: Note that some applications have multiple channel versions. Refer: https://github.com/tisfeng/Raycast-Easydict/issues/16
-        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic" ]];
+        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic", @"eusoft.eudic.ip" ]];
         if (installedEudic) {
             [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeEudicDic)];
         }

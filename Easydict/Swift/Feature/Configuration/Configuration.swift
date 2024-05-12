@@ -52,8 +52,6 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.forceAutoGetSelectedText) var forceAutoGetSelectedText: Bool
 
-    @DefaultsWrapper(.disableEmptyCopyBeep) var disableEmptyCopyBeep: Bool // Some apps will beep when empty copy.
-
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
 
     @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
@@ -167,42 +165,35 @@ class Configuration: NSObject {
 
     // swiftlint:disable:next function_body_length
     private func observeKeys() {
-        Defaults.publisher(.firstLanguage)
+        Defaults.publisher(.firstLanguage, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetFirstLanguage()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.secondLanguage)
+        Defaults.publisher(.secondLanguage, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetSecondLanguage()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoSelectText)
+        Defaults.publisher(.autoSelectText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoSelectText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.forceAutoGetSelectedText)
+        Defaults.publisher(.forceAutoGetSelectedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetForceAutoGetSelectedText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.disableEmptyCopyBeep)
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.didSetDisableEmptyCopyBeep()
-            }
-            .store(in: &cancellables)
-
-        Defaults.publisher(.clickQuery)
+        Defaults.publisher(.clickQuery, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetClickQuery()
@@ -216,91 +207,91 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.hideMainWindow)
+        Defaults.publisher(.hideMainWindow, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetHideMainWindow()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoQueryOCRText)
+        Defaults.publisher(.autoQueryOCRText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoQueryOCRText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoQuerySelectedText)
+        Defaults.publisher(.autoQuerySelectedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoQuerySelectedText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoQueryPastedText)
+        Defaults.publisher(.autoQueryPastedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoQueryPastedText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoPlayAudio)
+        Defaults.publisher(.autoPlayAudio, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoPlayAudio()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoCopySelectedText)
+        Defaults.publisher(.autoCopySelectedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoCopySelectedText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoCopyOCRText)
+        Defaults.publisher(.autoCopyOCRText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoCopyOCRText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoCopyFirstTranslatedText)
+        Defaults.publisher(.autoCopyFirstTranslatedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoCopyFirstTranslatedText()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.languageDetectOptimize)
+        Defaults.publisher(.languageDetectOptimize, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetLanguageDetectOptimize()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.defaultTTSServiceType)
+        Defaults.publisher(.defaultTTSServiceType, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetDefaultTTSServiceType()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.showGoogleQuickLink)
+        Defaults.publisher(.showGoogleQuickLink, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetShowGoogleQuickLink()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.showEudicQuickLink)
+        Defaults.publisher(.showEudicQuickLink, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetShowEudicQuickLink()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.showAppleDictionaryQuickLink)
+        Defaults.publisher(.showAppleDictionaryQuickLink, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetShowAppleDictionaryQuickLink()
@@ -314,70 +305,70 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.hideMenuBarIcon)
+        Defaults.publisher(.hideMenuBarIcon, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetHideMenuBarIcon()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.enableBetaNewApp)
+        Defaults.publisher(.enableBetaNewApp, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetEnableBetaNewApp()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.fixedWindowPosition)
+        Defaults.publisher(.fixedWindowPosition, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetFixedWindowPosition()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.mouseSelectTranslateWindowType)
+        Defaults.publisher(.mouseSelectTranslateWindowType, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetMouseSelectTranslateWindowType()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.shortcutSelectTranslateWindowType)
+        Defaults.publisher(.shortcutSelectTranslateWindowType, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetShortcutSelectTranslateWindowType()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.adjustPopButtonOrigin)
+        Defaults.publisher(.adjustPopButtonOrigin, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAdjustPopButtomOrigin()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.allowCrashLog)
+        Defaults.publisher(.allowCrashLog, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAllowCrashLog()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.allowAnalytics)
+        Defaults.publisher(.allowAnalytics, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAllowAnalytics()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.clearInput)
+        Defaults.publisher(.clearInput, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetClearInput()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.fontSizeOptionIndex)
+        Defaults.publisher(.fontSizeOptionIndex, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetFontSizeIndex()
@@ -427,10 +418,6 @@ extension Configuration {
 
     fileprivate func didSetForceAutoGetSelectedText() {
         logSettings(["force_get_selected_text": forceAutoGetSelectedText])
-    }
-
-    fileprivate func didSetDisableEmptyCopyBeep() {
-        logSettings(["disableEmptyCopyBeep": disableEmptyCopyBeep])
     }
 
     fileprivate func didSetClickQuery() {
@@ -632,12 +619,7 @@ extension Configuration {
 
     func intelligentQueryModeForWindowType(_ windowType: EZWindowType) -> Bool {
         let key = EZConstKey.constkey("IntelligentQueryMode", windowType: windowType)
-        let defaultValue = "0"
-        // Turn on intelligent query mode by default in mini window.
-        if windowType == .mini {
-            return true
-        }
-        return UserDefaults.standard.string(forKey: key) ?? defaultValue == "1"
+        return UserDefaults.standard.bool(forKey: key)
     }
 }
 

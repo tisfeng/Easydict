@@ -66,16 +66,6 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle(
-                    "setting.general.voice.disable_empty_copy_beep_msg",
-                    isOn: $disableEmptyCopyBeep
-                ) // 禁用提示音：划词内容为空时生效
-                Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio) // 查询英语单词后自动播放发音
-            } header: {
-                Text("setting.general.voice.header")
-            }
-
-            Section {
                 Picker(
                     "setting.general.window.mouse_select_translate_window_type",
                     selection: $mouseSelectTranslateWindowType
@@ -121,6 +111,7 @@ struct GeneralTab: View {
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
+                Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio) // 查询英语单词后自动播放发音
             } header: {
                 Text("setting.general.auto_query.header")
             }
@@ -262,7 +253,6 @@ struct GeneralTab: View {
     @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
     @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
 
-    @Default(.disableEmptyCopyBeep) private var disableEmptyCopyBeep
     @Default(.autoPlayAudio) private var autoPlayAudio
 
     @Default(.autoQueryOCRText) private var autoQueryOCRText

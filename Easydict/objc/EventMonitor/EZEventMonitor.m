@@ -11,7 +11,6 @@
 #import "EZConfiguration.h"
 #import "EZPreferencesWindowController.h"
 #import "EZScriptExecutor.h"
-#import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 #import "EZLocalStorage.h"
@@ -55,10 +54,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, assign) CGFloat movedY;
 
-// We need to store the current volume, because the volume will be set to 0 when empty copy.
-@property (nonatomic, assign) float currentVolume;
-// When isMuting, we should not read system volume.
-@property (nonatomic, assign) BOOL isMuting;
+// We need to store the alert volume, because the volume will be set to 0 when using Cmd+C to get selected text.
+@property (nonatomic, assign) NSInteger currentAlertVolume;
+// When isMuting, we should not read alert volume, avoid reading this value incorrectly.
+@property (nonatomic, assign) BOOL isMutingAlertVolume;
 
 @property (nonatomic, strong) EZScriptExecutor *exeCommand;
 
@@ -395,14 +394,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     if ([self enabledAutoSelectText]) {
-//        MMLogInfo(@"auto get selected text");
-        
+        MMLogInfo(@"auto get selected text");
+
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
+
         [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
+            self.isPopButtonVisible = YES;
+
             [self handleSelectedText:text];
         }];
-        self.isPopButtonVisible = YES;
     }
 }
 
@@ -410,7 +411,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     Configuration *config = [Configuration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
     if (!enabled) {
-        MMLogWarn(@"disabled autoSelectText");
+        MMLog(@"disabled autoSelectText");
         return enabled;
     }
     
@@ -418,12 +419,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)handleSelectedText:(NSString *)text {
-    [self cancelDismissPop];
-    
     NSString *trimText = [text trim];
     if (trimText.length > 0 && self.selectedTextBlock) {
+        [self cancelDismissPopButton];
         self.selectedTextBlock(trimText);
-        [self cancelDismissPop];
     }
 }
 
@@ -432,46 +431,42 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
-    
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
+        
+    // Set volume to 0 to avoid alert.
+    if (!self.isMutingAlertVolume) {
+        self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
+    }
+    [AppleScriptUtils setAlertVolume:0];
+    self.isMutingAlertVolume = YES;
     
-    // If playing audio, we do not silence system volume.
-    [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
-        BOOL shouldTurnOffSoundTemporarily = Configuration.shared.disableEmptyCopyBeep && !isPlaying;
-        
-        // Set volume to 0 to avoid system alert.
-        if (shouldTurnOffSoundTemporarily) {
-            if (!self.isMuting) {
-                self.currentVolume = [EZAudioUtils getSystemVolume];
-            }
-            [EZAudioUtils setSystemVolume:0];
-            self.isMuting = YES;
+    [EZSystemUtility postCopyEvent];
+    
+    [self cancelDelayRecoverVolume];
+    [self delayRecoverVolume];
+    
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSInteger newChangeCount = [pasteboard changeCount];
+        // If changeCount is equal to newChangeCount, it means that the copy value is nil.
+        if (changeCount == newChangeCount) {
+            MMLogInfo(@"Key getText is nil");
+            completion(nil);
+            return;
         }
         
-        [EZSystemUtility postCopyEvent];
+        NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
+        self.selectedText = selectedText;
+        MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
         
-        if (shouldTurnOffSoundTemporarily) {
-            [self cancelDelayRecoverVolume];
-            [self delayRecoverVolume];
-        }
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        MMLogInfo(@"Key getText cost: %.1f ms", (endTime - startTime) * 1000); // cost ~110ms
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSInteger newChangeCount = [pasteboard changeCount];
-            // If changeCount is equal to newChangeCount, it means that the copy value is nil.
-            if (changeCount == newChangeCount) {
-                completion(nil);
-                return;
-            }
-            
-            NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
-            self.selectedText = selectedText;
-            MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
-            
-            [lastText copyToPasteboard];
-            
-            completion(selectedText);
-        });
-    }];
+        [lastText copyToPasteboard];
+        
+        completion(selectedText);
+    });
 }
 
 #pragma mark - Delay to recover volume
@@ -485,8 +480,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)recoverVolume {
-    [EZAudioUtils setSystemVolume:self.currentVolume];
-    self.isMuting = NO;
+    [AppleScriptUtils setAlertVolume:self.currentAlertVolume];
+    self.isMutingAlertVolume = NO;
 }
 
 
@@ -523,7 +518,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             MMLogInfo(@"--> Accessibility getText success: %@", selectedText.truncated);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
+                MMLogInfo(@"Unsupported Accessibility error: %d (kAXErrorNoValue)", getSelectedTextError);
             } else {
                 MMLogError(@"Accessibility error: %d", getSelectedTextError);
             }
@@ -617,9 +612,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (isAutoSelectQuery && !allowedForceAutoGetSelectedText) {
         return NO;
     }
-    
-//    MMLogError(@"Accessibility error: %d", error);
-    
+        
     /**
      If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
@@ -628,10 +621,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        MMLogInfo(@"Unsupported Accessibility App: %@", bundleID);
+        MMLogInfo(@"Unsupported Accessibility App: %@ (%@)", application.localizedName, bundleID);
         return YES;
     }
-    
     
     NSDictionary *allowedAppErrorDict = @{
         /**
@@ -711,6 +703,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         
         @"com.eusoft.freeeudic", // Eudic
         @"com.eusoft.eudic",
+        @"eusoft.eudic.ip",
         @"com.reederapp.5.macOS",   // Reeder
         @"com.apple.ScriptEditor2", // 脚本编辑器
         @"abnerworks.Typora",       // Typora
@@ -767,9 +760,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-//            MMLogInfo(@"key down");
+//            MMLogInfo(@"key down: %@, modifierFlags: %ld", event.characters, event.modifierFlags);
             
-            [self dismissPopButton];
+            if (self.isPopButtonVisible) {
+                [self dismissPopButton];
+            }
             break;
         }
         case NSEventTypeScrollWheel: {
@@ -932,7 +927,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self performSelector:@selector(dismissPopButton) withObject:nil afterDelay:delayTime];
 }
 
-- (void)cancelDismissPop {
+- (void)cancelDismissPopButton {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dismissPopButton) object:nil];
 }
 
@@ -940,6 +935,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (self.dismissPopButtonBlock) {
         self.dismissPopButtonBlock();
     }
+    
     self.isPopButtonVisible = NO;
     
     [self stopCGEventTap];

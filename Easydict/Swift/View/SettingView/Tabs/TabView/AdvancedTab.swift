@@ -16,25 +16,44 @@ struct AdvancedTab: View {
     var body: some View {
         Form {
             Section {
-                Picker("setting.general.advance.default_tts_service", selection: $defaultTTSServiceType) {
+                Picker(
+                    selection: $defaultTTSServiceType,
+                    label: AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: "ellipsis.bubble.fill",
+                        labelText: "setting.general.advance.default_tts_service"
+                    )
+                ) {
                     ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
                     }
                 }
-                Toggle("setting.general.advance.enable_beta_feature", isOn: $enableBetaFeature)
-                Toggle(isOn: $enableBetaNewApp) {
-                    Text("enable_beta_new_app")
+            }
+            Section {
+                Toggle(isOn: $enableBetaFeature) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: "hammer.fill",
+                        labelText: "setting.general.advance.enable_beta_feature"
+                    )
                 }
-
-            } header: {
-                Text("setting.general.advance.header")
+                Toggle(isOn: $enableBetaNewApp) {
+                    AdvancedTabItemView(
+                        color: swiftColor,
+                        systemImage: "swift",
+                        labelText: "enable_beta_new_app",
+                        subtitleText: "enable_beta_new_app_info"
+                    )
+                }
             }
         }
         .formStyle(.grouped)
     }
 
     // MARK: Private
+
+    private let swiftColor = Color(red: 240 / 255, green: 81 / 255, blue: 56 / 255)
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature

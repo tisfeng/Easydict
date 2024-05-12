@@ -171,7 +171,7 @@ private class CustomOpenAIViewModel: ObservableObject {
         guard let availableModels else { return }
 
         validModels = availableModels.components(separatedBy: ",")
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+            .map { $0.trim() }.filter { !$0.isEmpty }
 
         if validModels.isEmpty {
             model = ""
