@@ -81,6 +81,13 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
             DispatchQueue.main.async {
                 guard viewModel.isValidating else { return }
 
+                var error = error
+
+                // If error is nil but result text is also empty, we should report error.
+                if error == nil, (result.translatedText?.isEmpty) == nil {
+                    error = EZError(type: .API)
+                }
+
                 viewModel.isValidating = false
                 viewModel
                     .alertTitle = (error == nil)
