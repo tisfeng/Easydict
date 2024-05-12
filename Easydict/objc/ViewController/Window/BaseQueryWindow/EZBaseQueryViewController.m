@@ -1048,8 +1048,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)resetService:(EZQueryService *)service {
-    [service resetServiceResult];
+    // We need to set service.queryModel first, otherwise result.queryModel will be nil.
     service.queryModel = self.queryModel;
+    [service resetServiceResult];
     service.windowType = self.windowType;
 }
 
