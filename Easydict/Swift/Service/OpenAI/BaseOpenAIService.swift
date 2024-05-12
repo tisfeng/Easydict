@@ -147,7 +147,7 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
-    let throttler = Throttler(maxInterval: 0.1)
+    let throttler = Throttler()
     var updateCompletion: ((EZQueryResult, Error?) -> ())?
 
     var model = ""

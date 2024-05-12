@@ -11,7 +11,7 @@ import Foundation
 class Throttler {
     // MARK: Lifecycle
 
-    init(maxInterval: TimeInterval, queue: DispatchQueue = DispatchQueue.main) {
+    init(maxInterval: TimeInterval = 0.2, queue: DispatchQueue = DispatchQueue.main) {
         self.maxInterval = maxInterval
         self.queue = queue
     }

@@ -126,7 +126,7 @@ public final class GeminiService: QueryService {
 
     // MARK: Internal
 
-    let throttler = Throttler(maxInterval: 0.1)
+    let throttler = Throttler()
 
     // MARK: Private
 
