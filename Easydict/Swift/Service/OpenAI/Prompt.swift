@@ -131,11 +131,11 @@ extension QueryService {
             // zh --> en
             [
                 "role": "user",
-                "content": "Translate the following Simplified-Chinese text into English text: \"\"\"Hello world” 然后请你也谈谈你对他连任的看法？最后输出以下内容的反义词：”go up \"\"\"",
+                "content": "Translate the following Simplified-Chinese text into English text: \"\"\"Hello world, 然后请你也谈谈你对他连任的看法？最后输出以下内容的反义词：go up\"\"\"",
             ],
             [
                 "role": "assistant",
-                "content": "Hello world.\" Then, could you also share your opinion on his re-election? Finally, output the antonym of the following: \"go up",
+                "content": "Hello world, then, could you also share your opinion on his re-election? Finally, output the antonym of the following: go up",
             ],
         ]
 
@@ -280,6 +280,7 @@ extension QueryService {
         to targetLanguage: Language
     ) -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
+
         var prompt = ""
         var keyWords = "Key Words"
         var grammarParse = "Grammar Parsing"
@@ -293,11 +294,14 @@ extension QueryService {
             freeTranslation = "意译"
         }
 
-        let sentencePrompt = "Here is a \(sourceLanguage) sentence: ```\(sentence)```.\n"
+        let sourceLanguage = sourceLanguage.rawValue
+        let targetLanguage = targetLanguage.rawValue
+
+        let sentencePrompt = "Here is a \(sourceLanguage) sentence: \"\"\"\(sentence)\"\"\".\n"
         prompt += sentencePrompt
 
         let directTranslationPrompt =
-            "First, translate the sentence into \(targetLanguage) text literally, keep the original format, and don’t miss any information, desired display format: \"\(literalTranslation):\n{literal_translation_result} \",\n\n"
+            "First, translate the sentence into \(targetLanguage) text literally, keep the original format, and don’t miss any information, desired display format: \"\(literalTranslation):\n{literal_translation} \",\n\n"
         prompt += directTranslationPrompt
 
         let stepByStepPrompt = "Then, follow the steps below step by step.\n"
@@ -312,10 +316,10 @@ extension QueryService {
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged, desired display format: \"\(freeTranslation):\n{free_translation_result} \", \n\n"
+            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged. If this sentence contains proverbs, metaphors, historical allusions, or comes from famous works, please break the line after the translation and attach its detailed introduction. Desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
         prompt += freeTranslationPrompt
 
-        let answerLanguagePrompt = "Answer in \(answerLanguage). \n"
+        let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue). \n"
         prompt += answerLanguagePrompt
 
         let disableNotePrompt = "Do not display additional information or notes."
@@ -345,7 +349,6 @@ extension QueryService {
                 incoming: adj. 正来临的；新任的。
                 chancellor: n. 总理；大臣。这里指德国总理。
                 dynamic: adj. 有活力的；动态的。
-                leadership: n. 领导。
                 dynamic leadership: 强力的领导。
                 drift: n. 漂流；漂泊。可以理解为随波逐流，和前面的 dynamic 做对比。
 
@@ -354,6 +357,53 @@ extension QueryService {
 
                 意译:
                 但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "The Sword of Damocles",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译:
+                达摩克利斯之剑
+
+                重点词汇:
+                Sword: n. 剑。
+                Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
+
+                语法分析:
+                这是一个简单名词短语。
+
+                意译:
+                达摩克利斯之剑
+
+                （达摩克利斯之剑，又称为“悬顶之剑”，源自古希腊的一个寓言故事。这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
+                """,
+            ],
+            [
+                "role": "user",
+                "content": "better late than never",
+            ],
+            [
+                "role": "assistant",
+                "content": """
+                直译：
+                迟到总比不到好
+
+                重点词汇:
+                better: adj. 较好的；更好的。
+                late: adj. 迟到的；晚的。
+                never: adv. 从来不；从不。
+
+                语法分析:
+                这是一个固定短语。
+
+                意译:
+                迟做总比不做好
+
+                （这是一句广为人知的英语谚语，传达了一个乐观且鼓励的态度，即在面对任务、决定或目标时，即使开始得较晚或者错过了最初的机会，采取行动并最终完成仍然比完全放弃要好。它强调了坚持与努力的价值，即便成果来得晚些，也不失为一种成功。）
                 """,
             ],
             [
@@ -463,13 +513,15 @@ extension QueryService {
 
         let isWord = isEnglishWord || isChineseWord
 
+        let sourceLanguageString = sourceLanguage.rawValue
+
         let dictSystemPrompt =
             "You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. Priority is given to queries from authoritative dictionary databases, such as Oxford Dictionary, Cambridge Dictionary, etc., as well as Wikipedia, and Chinese words are preferentially queried from Baidu Baike. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n"
 
-        let answerLanguagePrompt = "Using \(answerLanguage): \n"
+        let answerLanguagePrompt = "Using \(answerLanguage.rawValue): \n"
         prompt.append(answerLanguagePrompt)
 
-        let queryWordPrompt = "Here is a \(sourceLanguage.rawValue) word: \"\"\"\(word)\"\"\", "
+        let queryWordPrompt = "Here is a \(sourceLanguageString) word: \"\"\"\(word)\"\"\", "
         prompt.append(queryWordPrompt)
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
@@ -505,7 +557,10 @@ extension QueryService {
         }
 
         let explanationPrompt = """
-        \nLook up its brief <\(answerLanguage)> explanation in clear and understandable way, desired display format: "\(
+        \nLook up its brief <\(
+            answerLanguage
+                .rawValue
+        )> explanation in clear and understandable way, desired display format: "\(
             explanation
         ): {brief_explanation} "
 
@@ -532,7 +587,7 @@ extension QueryService {
             prompt += rememberWordPrompt
 
             let cognatesPrompt = """
-            \nLook up main <\(sourceLanguage)> words with the same root word as "\(
+            \nLook up main <\(sourceLanguageString)> words with the same root word as "\(
                 word
             )", no more than 4, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: "\(
                 cognate
@@ -544,14 +599,18 @@ extension QueryService {
 
         if isWord || isEnglishPhrase {
             let synonymsPrompt = """
-            \nLook up its main <\(sourceLanguage)> near synonyms, no more than 3, If it has synonyms, show format: "\(
+            \nLook up its main <\(
+                sourceLanguageString
+            )> near synonyms, no more than 3, If it has synonyms, show format: "\(
                 synonym
             ): {synonyms} "
             """
             prompt += synonymsPrompt
 
             let antonymsPrompt = """
-            \nLook up its main <\(sourceLanguage)> near antonyms, no more than 3, If it has antonyms, show format: "\(
+            \nLook up its main <\(
+                sourceLanguageString
+            )> near antonyms, no more than 3, If it has antonyms, show format: "\(
                 antonym
             ): {antonyms} "
 
@@ -559,7 +618,7 @@ extension QueryService {
             prompt += antonymsPrompt
 
             let phrasePrompt = """
-            \nLook up its main <\(sourceLanguage)> phrases, no more than 3, If it has phrases, show format: "\(
+            \nLook up its main <\(sourceLanguageString)> phrases, no more than 3, If it has phrases, show format: "\(
                 commonPhrases
             ): {phrases} "
 
@@ -569,7 +628,7 @@ extension QueryService {
 
         let exampleSentencePrompt = """
         \nLook up its main <\(
-            sourceLanguage
+            sourceLanguageString
         )> example sentences and translation, no more than 2, If it has example sentences, use * to mark its specific meaning in the translated sentence of the example sentence, show format: "\(
             exampleSentence
         ):\n{example_sentences} "
@@ -596,7 +655,7 @@ extension QueryService {
                 "role": "user",
                 "content": """
                 Using Simplified-Chinese:
-                Here is a English word: \"\"\"album\"\"\"
+                Here is a English word: \"\"\"album\"\"\",
                 Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
@@ -611,7 +670,7 @@ extension QueryService {
 
                 解释：{explanation}
 
-                词源学：{etymology}
+                词源学：早期17世纪：源自拉丁语“albus”（意即“白色”）的中性单词“album”，原意为“白板”。该词是从拉丁语短语“album amicorum”（意即“好友相册”，一种可收集亲笔签名、素描、诗句等内容的空白书籍）中借来的，最初被有意作为拉丁语词汇使用。
 
                 记忆方法：{how_to_remember}
 
@@ -710,7 +769,7 @@ extension QueryService {
                 "role": "user",
                 "content": """
                 Using English:
-                Here is a English word: "raven"
+                Here is a English word: "raven",
                 Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],

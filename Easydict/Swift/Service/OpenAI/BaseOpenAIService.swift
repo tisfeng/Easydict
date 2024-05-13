@@ -80,6 +80,8 @@ public class BaseOpenAIService: QueryService {
             return
         }
 
+        updateCompletion = completion
+
         var resultText = ""
 
         result.from = from
@@ -145,6 +147,9 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
+    let throttler = Throttler()
+    var updateCompletion: ((EZQueryResult, Error?) -> ())?
+
     var model = ""
 
     var unsupportedLanguages: [Language] = []
@@ -203,30 +208,36 @@ public class BaseOpenAIService: QueryService {
         result.isStreamFinished = error != nil
         result.translatedResults = normalResults
 
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                self.updateCompletion?(result, error)
+            }
+        }
+
         switch queryType {
         case .sentence, .translation:
-            completion(result, error)
+            updateCompletion()
 
         case .dictionary:
-            if let error {
+            if error != nil {
                 result.showBigWord = false
                 result.translateResultsTopInset = 0
-                completion(result, error)
+                updateCompletion()
                 return
             }
 
             result.showBigWord = true
             result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6
-            completion(result, error)
+            updateCompletion()
 
         default:
-            completion(result, error)
+            updateCompletion()
         }
     }
 
     private func getFinalResultText(text: String) -> String {
-        var resultText = text
+        var resultText = text.trim()
 
         // Remove last </s>, fix Groq model mixtral-8x7b-32768
         let stopFlag = "</s>"
@@ -236,7 +247,7 @@ public class BaseOpenAIService: QueryService {
 
         // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
         let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes()
+        resultText = nsText.tryToRemoveQuotes().trim()
 
         return resultText
     }

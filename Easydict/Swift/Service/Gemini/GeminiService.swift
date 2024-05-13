@@ -54,8 +54,9 @@ public final class GeminiService: QueryService {
     ) {
         Task {
             do {
-                let prompt = GeminiService
-                    .translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
+                let translationPrompt = translationPrompt(text: text, from: from, to: to)
+                let prompt = QueryService.translationSystemPrompt +
+                    "\n" + translationPrompt
 //                logInfo("gemini prompt: \(prompt)")
                 let model = GenerativeModel(
                     name: "gemini-pro",
@@ -83,7 +84,9 @@ public final class GeminiService: QueryService {
                             resultString += line
                             result.translatedResults = [resultString]
                             await MainActor.run {
-                                completion(result, nil)
+                                throttler.throttle { [unowned self] in
+                                    completion(result, nil)
+                                }
                             }
                         }
                     }
@@ -121,6 +124,10 @@ public final class GeminiService: QueryService {
         }
     }
 
+    // MARK: Internal
+
+    let throttler = Throttler()
+
     // MARK: Private
 
     // https://ai.google.dev/available_regions
@@ -142,9 +149,6 @@ public final class GeminiService: QueryService {
     private static let hateSpeechSafety = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
     private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
-
-    private static let translationPrompt =
-        "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes."
 
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {

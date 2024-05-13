@@ -223,6 +223,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
              NSLocalizedString(@"replace_newline_with_space", nil);
              NSLocalizedString(@"remove_code_comment_symbols", nil);
              NSLocalizedString(@"split_words", nil);
+             NSLocalizedString(@"go_to_settings", nil);
              */
         ];
         
@@ -332,7 +333,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     // Eudic
     if (Configuration.shared.showEudicQuickLink) {
         // !!!: Note that some applications have multiple channel versions. Refer: https://github.com/tisfeng/Raycast-Easydict/issues/16
-        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic" ]];
+        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic", @"eusoft.eudic.ip" ]];
         if (installedEudic) {
             [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeEudicDic)];
         }
