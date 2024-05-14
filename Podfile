@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :osx, '11.0'
+platform :osx, '13.0'
 
 inhibit_all_warnings!
 
@@ -36,7 +36,7 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '11.0'
+      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
       
       xcconfig_path = config.base_configuration_reference.real_path
       xcconfig = File.read(xcconfig_path)
