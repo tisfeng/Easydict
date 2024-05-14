@@ -35,7 +35,6 @@ extension Defaults.Keys {
     static let autoSelectText = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
     static let forceAutoGetSelectedText = Key<Bool>("EZConfiguration_kForceAutoGetSelectedText", default: false)
 
-    static let disableEmptyCopyBeep = Key<Bool>("EZConfiguration_kDisableEmptyCopyBeepKey", default: true)
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
     static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: true)
     static let launchAtStartup = Key<Bool>("EZConfiguration_kLaunchAtStartupKey", default: false)

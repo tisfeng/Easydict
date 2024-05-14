@@ -1,5 +1,5 @@
 {
-  "originHash" : "ca4d31aa1a70fb6a354fe9e139a2e74a189e4fcff55ed959a3adc71522905fc4",
+  "originHash" : "3fbe4aaa777ce32c89a8c0750e2e78cb417a4bf7e5ece00eb7338b15ca5d7f65",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -196,7 +196,7 @@
       "location" : "https://github.com/tisfeng/OpenAI",
       "state" : {
         "branch" : "dev",
-        "revision" : "9490fa07602cef2979715dc0ee80877e78dc3872"
+        "revision" : "ae7242e06730608caa79dfffd599ba91640f0f10"
       }
     },
     {
@@ -296,6 +296,15 @@
       "state" : {
         "revision" : "99680b2efc7c7dbcace1da0b3979d266f02e213c",
         "version" : "5.1.0"
+      }
+    },
+    {
+      "identity" : "vortex",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/twostraws/Vortex",
+      "state" : {
+        "revision" : "bb48b128d3c13c68c68e83833c622eec9f6c701f",
+        "version" : "1.0.1"
       }
     },
     {

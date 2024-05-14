@@ -81,9 +81,7 @@ static EZWindowManager *_instance;
     [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
         mm_strongify(self);
         
-        //        if ([self hasEasydictRunningInDebugMode]) {
-        //            return;
-        //        }
+//        MMLogInfo(@"auto get selected text successfully: %@", selectedText.truncated);
         
         self.selectedText = selectedText ?: @"";
         self.actionType = self.eventMonitor.actionType;

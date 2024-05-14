@@ -80,6 +80,8 @@ public class BaseOpenAIService: QueryService {
             return
         }
 
+        updateCompletion = completion
+
         var resultText = ""
 
         result.from = from
@@ -145,6 +147,9 @@ public class BaseOpenAIService: QueryService {
 
     // MARK: Internal
 
+    let throttler = Throttler()
+    var updateCompletion: ((EZQueryResult, Error?) -> ())?
+
     var model = ""
 
     var unsupportedLanguages: [Language] = []
@@ -197,44 +202,52 @@ public class BaseOpenAIService: QueryService {
     ) {
         var normalResults: [String]?
         if let resultText {
-            normalResults = [resultText.trimmingCharacters(in: .whitespacesAndNewlines)]
+            normalResults = [resultText.trim()]
         }
 
         result.isStreamFinished = error != nil
         result.translatedResults = normalResults
 
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                self.updateCompletion?(result, error)
+            }
+        }
+
         switch queryType {
         case .sentence, .translation:
-            completion(result, error)
+            updateCompletion()
 
         case .dictionary:
-            if let error {
+            if error != nil {
                 result.showBigWord = false
                 result.translateResultsTopInset = 0
-                completion(result, error)
+                updateCompletion()
                 return
             }
 
             result.showBigWord = true
             result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6
-            completion(result, error)
+            updateCompletion()
 
         default:
-            completion(result, error)
+            updateCompletion()
         }
     }
 
     private func getFinalResultText(text: String) -> String {
-        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = text as NSString
-        var resultText = nsText.tryToRemoveQuotes()
+        var resultText = text.trim()
 
-        // Remove last </s>, fix Groq mixtral-8x7b-32768
+        // Remove last </s>, fix Groq model mixtral-8x7b-32768
         let stopFlag = "</s>"
         if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
-            resultText = String(resultText.dropLast(stopFlag.count))
+            resultText = String(resultText.dropLast(stopFlag.count)).trim()
         }
+
+        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
+        let nsText = resultText as NSString
+        resultText = nsText.tryToRemoveQuotes().trim()
 
         return resultText
     }

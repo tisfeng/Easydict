@@ -598,10 +598,10 @@ easydict://writeKeyValue?Google-IntelligentQueryTextType=5
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
-默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
+默认情况下，所有窗口都未开启智能查询模式，用户可手动启用此功能：
 
 ```bash
-easydict://writeKeyValue?IntelligentQueryMode-window2=1
+easydict://writeKeyValue?IntelligentQueryMode-window1=1
 ```
 window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关闭，1 表示开启。
 
@@ -858,6 +858,7 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2024-04-04 | 至秦 | 37 | 感谢老哥 好用🙏 |
 | 2024-04-12 | 奥雷里亚诺 | 50 | 界面精致，而且帮我节约了不少时间 |
 | 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
+| 2024-05-11 |  | 35 | 感谢开源和持续更新！ |
 
 </p>
 
