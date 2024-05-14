@@ -829,22 +829,6 @@
         }
       }
     },
-    "contributor_link" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contributors"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "贡献者"
-          }
-        }
-      }
-    },
     "copy_text" : {
       "localizations" : {
         "en" : {
@@ -1448,22 +1432,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gemini 翻译"
-          }
-        }
-      }
-    },
-    "github_link" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
           }
         }
       }
@@ -3279,6 +3247,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        }
+      }
+    },
+    "setting.about.contributor_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contributors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贡献者"
+          }
+        }
+      }
+    },
+    "setting.about.github_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
           }
         }
       }
