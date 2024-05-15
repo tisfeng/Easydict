@@ -9,7 +9,6 @@
 import SwiftUI
 
 extension Shortcut {
-    @available(macOS 13, *)
     func updateMenu(_ type: ShortcutType) { // update shortcut menu
         let shortcutTitle = String(localized: LocalizedStringResource(stringLiteral: type.localizedStringKey()))
         let menuTitle = String(localized: LocalizedStringResource(stringLiteral: "shortcut"))

@@ -572,7 +572,7 @@
     self.showSettingQuickLinkButton.mm_isOn = self.config.showQuickActionButton;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
     if (@available(macOS 13.0, *)) {
-        self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
+//        self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
     }
 }
 
@@ -1073,7 +1073,7 @@
 }
 
 - (void)enableBetaNewAppButtonClicked:(NSButton *)sender {
-    self.config.enableBetaNewApp = sender.mm_isOn;
+//    self.config.enableBetaNewApp = sender.mm_isOn;
 }
 
 - (void)mouseSelectTranslateWindowTypePopUpButtonClicked:(NSPopUpButton *)button {

@@ -38,14 +38,6 @@ struct AdvancedTab: View {
                         labelText: "setting.general.advance.enable_beta_feature"
                     )
                 }
-                Toggle(isOn: $enableBetaNewApp) {
-                    AdvancedTabItemView(
-                        color: swiftColor,
-                        systemImage: "swift",
-                        labelText: "enable_beta_new_app",
-                        subtitleText: "enable_beta_new_app_info"
-                    )
-                }
             }
         }
         .formStyle(.grouped)
@@ -57,7 +49,6 @@ struct AdvancedTab: View {
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
-    @Default(.enableBetaNewApp) private var enableBetaNewApp
 }
 
 @available(macOS 13, *)

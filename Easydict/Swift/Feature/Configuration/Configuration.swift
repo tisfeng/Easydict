@@ -84,8 +84,6 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
 
-    @DefaultsWrapper(.enableBetaNewApp) var enableBetaNewApp: Bool
-
     @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
 
     @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
@@ -312,13 +310,6 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.enableBetaNewApp, options: [])
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.didSetEnableBetaNewApp()
-            }
-            .store(in: &cancellables)
-
         Defaults.publisher(.fixedWindowPosition, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
@@ -516,15 +507,7 @@ extension Configuration {
     }
 
     fileprivate func didSetHideMenuBarIcon() {
-        if !Configuration.shared.enableBetaNewApp {
-            hideMenuBarIcon(hidden: hideMenuBarIcon)
-        }
-
         logSettings(["hide_menu_bar_icon": hideMenuBarIcon])
-    }
-
-    fileprivate func didSetEnableBetaNewApp() {
-        logSettings(["enable_beta_new_app": enableBetaNewApp])
     }
 
     fileprivate func didSetFixedWindowPosition() {
@@ -627,14 +610,6 @@ extension Configuration {
     fileprivate func postUpdateQuickLinkButtonNotification() {
         let notification = Notification(name: .init("EZQuickLinkButtonUpdateNotification"), object: nil)
         NotificationCenter.default.post(notification)
-    }
-
-    fileprivate func hideMenuBarIcon(hidden: Bool) {
-        if hidden {
-            EZMenuItemManager.shared().remove()
-        } else {
-            EZMenuItemManager.shared().setup()
-        }
     }
 
     fileprivate func updateLoginItemWithLaunchAtStartup(_ launchAtStartup: Bool) {

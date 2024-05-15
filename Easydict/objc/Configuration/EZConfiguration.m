@@ -362,17 +362,7 @@ static EZConfiguration *_instance;
     
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
     
-    if (!Configuration.shared.enableBetaNewApp) {
-        [self hideMenuBarIcon:hideMenuBarIcon];
-    }
-    
     [self logSettings:@{@"hide_menu_bar_icon" : @(hideMenuBarIcon)}];
-}
-
-- (void)setEnableBetaNewApp:(BOOL)enableBetaNewApp {
-    _enableBetaNewApp = enableBetaNewApp;
-    [NSUserDefaults mm_write:@(enableBetaNewApp) forKey:kEnableBetaNewAppKey];
-    [self logSettings:@{@"enable_beta_new_app" : @(enableBetaNewApp)}];
 }
 
 - (void)setFixedWindowPosition:(EZShowWindowPosition)showFixedWindowPosition {
@@ -598,16 +588,6 @@ static EZConfiguration *_instance;
 }
 
 #pragma mark -
-
-// hide menu bar icon
-- (void)hideMenuBarIcon:(BOOL)hidden {
-    EZMenuItemManager *statusItem = [EZMenuItemManager shared];
-    if (self.hideMenuBarIcon) {
-        [statusItem remove];
-    } else {
-        [statusItem setup];
-    }
-}
 
 
 #pragma mark - Intelligent Query Mode

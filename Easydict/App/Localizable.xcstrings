@@ -1055,22 +1055,6 @@
         }
       }
     },
-    "enable_beta_new_app_info" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changes will take effect upon restarting the app"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重启 App 以生效"
-          }
-        }
-      }
-    },
     "equal_first_and_second_language" : {
       "localizations" : {
         "en" : {

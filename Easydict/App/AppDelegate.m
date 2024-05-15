@@ -26,12 +26,7 @@
     [EZLog setupCrashLogService];
     [EZLog logAppInfo];
 
-    if (!Configuration.shared.enableBetaNewApp) {
-        [EZMenuItemManager.shared setup];
-        [EZShortcut setup];
-    } else {
-        [Shortcut setupShortcut];
-    }
+    [Shortcut setupShortcut];
 
     [EZWindowManager.shared showMainWindowIfNeeded];
     

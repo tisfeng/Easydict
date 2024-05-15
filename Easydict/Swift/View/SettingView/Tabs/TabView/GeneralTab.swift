@@ -271,7 +271,6 @@ struct GeneralTab: View {
     @Default(.hideMainWindow) private var hideMainWindow
     @Default(.launchAtStartup) private var launchAtStartup
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
-    @Default(.enableBetaNewApp) private var enableBetaNewApp
 
     @Default(.languageDetectOptimize) private var languageDetectOptimize
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType

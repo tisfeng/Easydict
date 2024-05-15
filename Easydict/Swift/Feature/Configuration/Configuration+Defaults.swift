@@ -94,14 +94,6 @@ extension Defaults.Keys {
         "EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols",
         default: true
     )
-
-    static var enableBetaNewApp: Key<Bool> {
-        if #available(macOS 13.0, *) {
-            Key("EZConfiguration_kEnableBetaNewAppKey", default: true)
-        } else {
-            Key("EZConfiguration_kEnableBetaNewAppKey", default: false)
-        }
-    }
 }
 
 extension Defaults.Keys {
