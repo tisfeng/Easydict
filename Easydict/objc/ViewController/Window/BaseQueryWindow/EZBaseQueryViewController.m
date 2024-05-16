@@ -640,9 +640,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.actionType = actionType;
 }
 
-- (void)showTipsView:(BOOL)show {
-    // judge if show tips view
-    self.showTipsView = show;
+- (void)displayTipsView {
+    self.showTipsView = YES;
     // update view
     [self resetQueryAndResults];
     [self reloadTableViewData:nil];

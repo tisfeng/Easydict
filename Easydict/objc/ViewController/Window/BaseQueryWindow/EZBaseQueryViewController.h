@@ -67,10 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateActionType:(EZActionType)actionType;
 
-/// show tips with type
-/// - Parameters:
-///   - show: whether to show
-- (void)showTipsView:(BOOL)show;
+/// show tips
+- (void)displayTipsView;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -332,7 +332,11 @@ static EZWindowManager *_instance;
                 showTips = NO;
             }
         }
-        [queryViewController showTipsView:showTips];
+        
+        // called showTipsView when showTips == true
+        if (showTips) {
+            [queryViewController displayTipsView];
+        }
         
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
