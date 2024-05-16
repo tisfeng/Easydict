@@ -641,10 +641,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)displayTipsView {
-    self.showTipsView = YES;
-    // update view
-    [self resetQueryAndResults];
-    [self reloadTableViewData:nil];
+    // when queryModel.queryText is Empty show tips 
+    if (EZ_isEmptyString(self.queryModel.queryText)) {
+        self.showTipsView = YES;
+        // update view
+        [self resetQueryAndResults];
+        [self reloadTableViewData:nil];
+    }
 }
 
 - (void)scrollToEndOfTextView {
