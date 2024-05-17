@@ -391,9 +391,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
-    // update tableView row
-    [self.tableView reloadData];
-    
     // Before starting new query, we should stop the previous query.
     [self.queryModel stopAllService];
     
