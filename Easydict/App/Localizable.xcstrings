@@ -4546,16 +4546,6 @@
         }
       }
     },
-    "Tisfeng" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        }
-      }
-    },
     "toggle_languages" : {
       "localizations" : {
         "en" : {
