@@ -327,7 +327,7 @@ static EZWindowManager *_instance;
          https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%9F%90%E4%BA%9B%E5%BA%94%E7%94%A8%E4%B8%AD%E5%8F%96%E8%AF%8D%E6%96%87%E6%9C%AC%E4%B8%BA%E7%A9%BA
          */
         if (!Configuration.shared.disableTipsView && actionType == EZActionTypeShortcutQuery) {
-            [queryViewController displayTipsView];
+            [queryViewController showTipsView:YES];
         }
         
         // !!!: location is top-left point, so we need to change it to bottom-left point.

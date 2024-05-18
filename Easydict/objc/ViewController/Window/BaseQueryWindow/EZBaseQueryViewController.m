@@ -76,7 +76,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
 
-@property (nonatomic, assign) BOOL showTipsView;
+@property (nonatomic, assign) BOOL isTipsViewVisible;
 
 
 @end
@@ -447,6 +447,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
     
+    // Hide previous tips view first.
+    [self showTipsView:NO completion:nil];
+    
     mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
@@ -630,9 +633,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.actionType = queryType;
     
     if (text) {
-        // If use disabled auto query when getting selected text, we need to close tips view after updating query text.
-        self.showTipsView = NO;
-        [self reloadTableViewData:^{
+        /**
+         If user disabled auto query when getting selected text, we should close tips view after updating query text.
+         But reloadTableViewData will lost focus, we need to recover input focus.
+         */
+        [self showTipsView:NO completion:^{
             [self focusInputTextView];
         }];
     }
@@ -642,14 +647,27 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.actionType = actionType;
 }
 
-- (void)displayTipsView {
-    // when queryModel.queryText is Empty show tips 
-    if (EZ_isEmptyString(self.queryModel.queryText)) {
-        self.showTipsView = YES;
-        // update view
-        [self resetQueryAndResults];
-        [self reloadTableViewData:nil];
+- (void)showTipsView:(BOOL)isVisible {
+    [self showTipsView:isVisible completion:nil];
+}
+
+- (void)showTipsView:(BOOL)isVisible completion:(void (^)(void))completion {
+    // when queryModel.queryText is Empty show tips
+    
+    if (!isVisible && !self.isTipsViewVisible) {
+        if (completion) {
+            completion();
+        }
+        return;
     }
+    
+    self.isTipsViewVisible = isVisible;
+    
+    if (isVisible) {
+        [self resetQueryAndResults];
+    }
+    
+    [self reloadTableViewData:completion];
 }
 
 - (void)scrollToEndOfTextView {
@@ -836,7 +854,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // show tips view
-    if (row == 2 && self.showTipsView) {
+    if (row == 2 && self.isTipsViewVisible) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
@@ -863,7 +881,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if (row == 2 && self.showTipsView) {
+    } else if (row == 2 && self.isTipsViewVisible) {
         if (!self.tipsCell) {
             // mini cell height
             height = 104;
@@ -1290,7 +1308,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
         // tips view hidden once user tap entry
-        self.showTipsView = NO;
+        self.isTipsViewVisible = NO;
         [self startQueryText:text];
     }];
     
@@ -1316,7 +1334,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         
         // Close tips view  when user clicking clear button.
-        self.showTipsView = NO;
+        self.isTipsViewVisible = NO;
         
         [self clearAll];
     }];
@@ -1441,7 +1459,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     
-    if (self.showTipsView) {
+    if (self.isTipsViewVisible) {
         offset += 1;
     }
     

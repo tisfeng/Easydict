@@ -67,8 +67,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateActionType:(EZActionType)actionType;
 
-/// show tips
-- (void)displayTipsView;
+/// show tips view
+- (void)showTipsView:(BOOL)isVisible;
+
 @end
 
 NS_ASSUME_NONNULL_END
