@@ -548,7 +548,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.queryView setAlertTextHidden:YES];
     
     [self.audioPlayer stop];
-    ;
 }
 
 - (void)clearAll {
@@ -578,11 +577,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
-// will close Window
 - (void)stopPlayingQueryText {
     [self togglePlayQueryText:NO];
     [self stopAllResultAudio];
-    self.showTipsView = NO;
 }
 
 - (void)togglePlayQueryText {
@@ -631,6 +628,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
     [self.queryView.textView updateTextAndParagraphStyle:text];
     self.queryModel.actionType = queryType;
+    
+    if (text) {
+        // If use disabled auto query when getting selected text, we need to close tips view after updating query text.
+        self.showTipsView = NO;
+        [self reloadTableViewData:^{
+            [self focusInputTextView];
+        }];
+    }
 }
 
 - (void)updateActionType:(EZActionType)actionType {
@@ -1309,9 +1314,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
-        [self clearAll];
-        // when user click clear tis view will hidden
+        
+        // Close tips view  when user clicking clear button.
         self.showTipsView = NO;
+        
+        [self clearAll];
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage language) {
