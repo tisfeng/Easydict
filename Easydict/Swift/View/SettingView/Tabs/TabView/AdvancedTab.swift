@@ -29,6 +29,13 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $disableTipsView) {
+                    AdvancedTabItemView(
+                        color: .yellow,
+                        systemImage: "lightbulb.fill",
+                        labelText: "disable_tips_view"
+                    )
+                }
             }
             Section {
                 Toggle(isOn: $enableBetaFeature) {
@@ -58,6 +65,7 @@ struct AdvancedTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.enableBetaNewApp) private var enableBetaNewApp
+    @Default(.disableTipsView) private var disableTipsView
 }
 
 @available(macOS 13, *)

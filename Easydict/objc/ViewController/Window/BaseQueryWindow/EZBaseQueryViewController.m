@@ -31,6 +31,7 @@
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
+static NSString *const EZTableTipsCellId = @"EZTableTipsCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
@@ -54,6 +55,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
+@property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, readonly) NSString *queryText;
@@ -73,6 +75,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
+
+@property (nonatomic, assign) BOOL isTipsViewVisible;
+
 
 @end
 
@@ -117,6 +122,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [EZLog logWindowAppear:self.windowType];
 }
+
 
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
@@ -177,7 +183,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
     
-    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
+    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
         mm_strongify(self);
         [self reloadTableViewData:^{
             [self updateAllResultCellHeight];
@@ -346,6 +352,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryModel.inputText = _inputText;
     
+    
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
 
@@ -361,8 +368,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     return _defaultTTSService;
 }
-
-
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
@@ -441,6 +446,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
+    
+    // Hide previous tips view first.
+    [self showTipsView:NO completion:nil];
     
     mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
@@ -543,7 +551,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.queryView setAlertTextHidden:YES];
     
     [self.audioPlayer stop];
-    ;
 }
 
 - (void)clearAll {
@@ -624,6 +631,43 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
     [self.queryView.textView updateTextAndParagraphStyle:text];
     self.queryModel.actionType = queryType;
+    
+    if (text) {
+        /**
+         If user disabled auto query when getting selected text, we should close tips view after updating query text.
+         But reloadTableViewData will lost focus, we need to recover input focus.
+         */
+        [self showTipsView:NO completion:^{
+            [self focusInputTextView];
+        }];
+    }
+}
+
+- (void)updateActionType:(EZActionType)actionType {
+    self.queryModel.actionType = actionType;
+}
+
+- (void)showTipsView:(BOOL)isVisible {
+    [self showTipsView:isVisible completion:nil];
+}
+
+- (void)showTipsView:(BOOL)isVisible completion:(void (^)(void))completion {
+    // when queryModel.queryText is Empty show tips
+    
+    if (!isVisible && !self.isTipsViewVisible) {
+        if (completion) {
+            completion();
+        }
+        return;
+    }
+    
+    self.isTipsViewVisible = isVisible;
+    
+    if (isVisible) {
+        [self resetQueryAndResults];
+    }
+    
+    [self reloadTableViewData:completion];
 }
 
 - (void)scrollToEndOfTextView {
@@ -809,6 +853,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return selectLanguageCell;
     }
     
+    // show tips view
+    if (row == 2 && self.isTipsViewVisible) {
+        EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
+        if (!tipsCell) {
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
+            tipsCell.identifier = EZTableTipsCellId;
+        }
+        self.tipsCell = tipsCell;
+        return tipsCell;
+    }
+    
     EZResultView *resultCell = [self resultCellAtRow:row];
     resultCell.windowType = self.windowType;
     
@@ -826,6 +881,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
+    } else if (row == 2 && self.isTipsViewVisible) {
+        if (!self.tipsCell) {
+            // mini cell height
+            height = 104;
+        } else {
+            height = [self.tipsCell cellHeight];
+        }
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {
@@ -1245,6 +1307,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
+        // tips view hidden once user tap entry
+        self.isTipsViewVisible = NO;
         [self startQueryText:text];
     }];
     
@@ -1268,6 +1332,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
+        
+        // Close tips view  when user clicking clear button.
+        self.isTipsViewVisible = NO;
+        
         [self clearAll];
     }];
     
@@ -1391,6 +1459,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     
+    if (self.isTipsViewVisible) {
+        offset += 1;
+    }
+    
     return offset;
 }
 
@@ -1506,6 +1578,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_7);
     }
 //    MMLogInfo(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+    
     
     return scrollViewContentHeight;
 }
