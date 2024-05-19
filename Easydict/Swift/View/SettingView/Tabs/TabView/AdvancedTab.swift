@@ -29,6 +29,13 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $disableTipsView) {
+                    AdvancedTabItemView(
+                        color: .yellow,
+                        systemImage: "lightbulb.fill",
+                        labelText: "disable_tips_view"
+                    )
+                }
             }
             Section {
                 Toggle(isOn: $enableBetaFeature) {
@@ -45,9 +52,6 @@ struct AdvancedTab: View {
                         labelText: "enable_beta_new_app",
                         subtitleText: "enable_beta_new_app_info"
                     )
-                }
-                Toggle(isOn: $disableTipsView) {
-                    Text("disable_tips_view")
                 }
             }
         }
