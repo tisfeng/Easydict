@@ -12,7 +12,6 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "EZCoordinateUtils.h"
-#import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
 
@@ -397,7 +396,7 @@ static EZWindowManager *_instance;
         return;
     }
     
-    [[self currentShowingSettingsWindow] close];
+//    [[self currentShowingSettingsWindow] close];
     
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
@@ -425,21 +424,21 @@ static EZWindowManager *_instance;
     [self updateFloatingWindowType:window.windowType isShowing:YES];
 }
 
-- (nullable NSWindow *)currentShowingSettingsWindow {
-    EZPreferencesWindowController *preferencesWindowController = [EZPreferencesWindowController shared];
-    if (preferencesWindowController.isShowing) {
-        return preferencesWindowController.window;
-    }
-    
-    // Workaround for SwiftUI Settings window, fix https://github.com/tisfeng/Easydict/issues/362
-    for (NSWindow *window in [NSApp windows]) {
-        if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"] && window.visible) {
-            return window;
-        }
-    }
-    
-    return nil;
-}
+//- (nullable NSWindow *)currentShowingSettingsWindow {
+//    EZPreferencesWindowController *preferencesWindowController = [EZPreferencesWindowController shared];
+//    if (preferencesWindowController.isShowing) {
+//        return preferencesWindowController.window;
+//    }
+//    
+//    // Workaround for SwiftUI Settings window, fix https://github.com/tisfeng/Easydict/issues/362
+//    for (NSWindow *window in [NSApp windows]) {
+//        if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"] && window.visible) {
+//            return window;
+//        }
+//    }
+//    
+//    return nil;
+//}
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType isShowing:(BOOL)isShowing {
     NSNumber *windowType = @(floatingWindowType);
@@ -887,7 +886,7 @@ static EZWindowManager *_instance;
         [Snip.shared stop];
     } else {
         [self closeFloatingWindow];
-        [EZPreferencesWindowController.shared close];
+//        [EZPreferencesWindowController.shared close];
     }
 }
 
@@ -950,10 +949,11 @@ static EZWindowManager *_instance;
     /// And `windowDidResignKey:` will call `closeFloatingWindowIfNotPinned:`
     [floatingWindow close];
     
-    if (![self currentShowingSettingsWindow]) {
-        // Recover last app.
-        [self activeLastFrontmostApplication];
-    }
+    // TODO: Sharker remove EZPreferencesWindowController close setting
+//    if (![self currentShowingSettingsWindow]) {
+//        // Recover last app.
+//        [self activeLastFrontmostApplication];
+//    }
     
     [self updateFloatingWindowType:windowType isShowing:NO];
 }

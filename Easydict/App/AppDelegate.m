@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "EZShortcut.h"
 #import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
 

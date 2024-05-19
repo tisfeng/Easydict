@@ -278,7 +278,8 @@ extension QueryService {
         sentence: String,
         from sourceLanguage: Language,
         to targetLanguage: Language
-    ) -> [[String: String]] {
+    )
+        -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
 
         var prompt = ""
@@ -883,7 +884,8 @@ extension QueryService {
         text: String,
         from: Language,
         to: Language
-    ) -> [ChatCompletionMessageParam] {
+    )
+        -> [ChatCompletionMessageParam] {
         typealias Role = ChatCompletionMessageParam.Role
 
         var messages = [[String: String]]()

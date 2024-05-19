@@ -7,10 +7,8 @@
 //
 
 #import "EZMenuItemManager.h"
-#import "EZPreferencesWindowController.h"
 #import "EZWindowManager.h"
 #import "Snip.h"
-#import "EZShortcut.h"
 #import <ZipArchive.h>
 #import "EZRightClickDetector.h"
 #import "EZConfiguration.h"
@@ -179,7 +177,8 @@ static EZMenuItemManager *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     }
-    [EZPreferencesWindowController.shared show];
+    // TODO: Sharker remove EZPreferencesWindowController
+//    [EZPreferencesWindowController.shared show];
 }
 
 - (IBAction)checkForUpdateItem:(id)sender {
@@ -286,35 +285,6 @@ static EZMenuItemManager *_instance;
 - (IBAction)decreaseFontSizeAction:(NSMenuItem *)sender {
     Configuration.shared.fontSizeIndex -= 1;
     
-}
-
-#pragma mark - NSMenuDelegate
-
-- (void)menuWillOpen:(NSMenu *)menu {
-    [self updateVersionItem];
-
-    void (^configItemShortcut)(NSMenuItem *item, NSString *key) = ^(NSMenuItem *item, NSString *key) {
-        @try {
-            [EZShortcut readShortcutForKey:key completion:^(MASShortcut *_Nullable shorcut) {
-                if (shorcut) {
-                    item.keyEquivalent = shorcut.keyCodeStringForKeyEquivalent;
-                    item.keyEquivalentModifierMask = shorcut.modifierFlags;
-                } else {
-                    item.keyEquivalent = @"";
-                    item.keyEquivalentModifierMask = 0;
-                }
-            }];
-        } @catch (NSException *exception) {
-            item.keyEquivalent = @"";
-            item.keyEquivalentModifierMask = 0;
-        }
-    };
-    
-    configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
-    configItemShortcut(self.snipItem, EZSnipShortcutKey);
-    configItemShortcut(self.inputItem, EZInputShortcutKey);
-    configItemShortcut(self.showMiniItem, EZShowMiniShortcutKey);
-    configItemShortcut(self.screenshotOCRItem, EZScreenshotOCRShortcutKey);
 }
 
 #pragma mark - Fetch Github Repo Info
