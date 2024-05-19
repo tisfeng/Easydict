@@ -76,6 +76,7 @@ private class DisabledAppViewModel: ObservableObject {
 }
 
 // MARK: - DisabledAppTab
+
 struct DisabledAppTab: View {
     // MARK: Internal
 
@@ -151,6 +152,7 @@ struct DisabledAppTab: View {
 }
 
 // MARK: - ListToolbar
+
 private struct ListToolbar: View {
     // MARK: Internal
 
@@ -182,6 +184,7 @@ private struct ListToolbar: View {
 }
 
 // MARK: - ListButton
+
 private struct ListButton: View {
     @Environment(\.isEnabled) private var isEnabled: Bool
     var systemName: String
@@ -205,6 +208,7 @@ private struct ListButton: View {
 }
 
 // MARK: - BlockAppItemView
+
 private struct BlockAppItemView: View {
     // MARK: Lifecycle
 
@@ -239,6 +243,7 @@ private struct BlockAppItemView: View {
 }
 
 // MARK: - AppItemViewModel
+
 private class AppItemViewModel: ObservableObject {
     // MARK: Lifecycle
 

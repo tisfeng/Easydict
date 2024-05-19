@@ -12,6 +12,7 @@ import SwiftUI
 import ZipArchive
 
 // MARK: - MenuItemStore
+
 final class MenuItemStore: ObservableObject {
     // MARK: Lifecycle
 
@@ -27,6 +28,7 @@ final class MenuItemStore: ObservableObject {
 }
 
 // MARK: - MenuItemView
+
 struct MenuItemView: View {
     // MARK: Internal
 

@@ -18,6 +18,7 @@ extension EZWindowType {
 }
 
 // MARK: - EZWindowType + CustomLocalizedStringResourceConvertible
+
 extension EZWindowType: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {

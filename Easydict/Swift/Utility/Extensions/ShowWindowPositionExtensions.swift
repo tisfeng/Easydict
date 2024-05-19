@@ -20,6 +20,7 @@ extension EZShowWindowPosition: CaseIterable {
 }
 
 // MARK: - EZShowWindowPosition + CustomLocalizedStringResourceConvertible
+
 extension EZShowWindowPosition: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {

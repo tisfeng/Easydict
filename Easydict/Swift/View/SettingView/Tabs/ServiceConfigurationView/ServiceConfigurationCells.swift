@@ -11,6 +11,7 @@ import Defaults
 import SwiftUI
 
 // MARK: - ServiceConfigurationSecureInputCell
+
 struct ServiceConfigurationSecureInputCell: View {
     // MARK: Lifecycle
 
@@ -36,6 +37,7 @@ struct ServiceConfigurationSecureInputCell: View {
 }
 
 // MARK: - ServiceConfigurationInputCell
+
 struct ServiceConfigurationInputCell: View {
     // MARK: Lifecycle
 
@@ -77,6 +79,7 @@ struct ServiceConfigurationInputCell: View {
 }
 
 // MARK: - ServiceConfigurationPickerCell
+
 struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
     // MARK: Lifecycle
 
@@ -109,6 +112,7 @@ class ConfigurationToggleViewModel: ObservableObject {
 }
 
 // MARK: - ServiceConfigurationToggleCell
+
 struct ServiceConfigurationToggleCell: View {
     // MARK: Lifecycle
 

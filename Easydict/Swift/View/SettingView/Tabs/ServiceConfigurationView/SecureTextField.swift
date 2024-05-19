@@ -73,6 +73,7 @@ struct SecureTextField: View {
 }
 
 // MARK: - SecureInput_Previews
+
 struct SecureInput_Previews: PreviewProvider {
     static var previews: some View {
         Group {

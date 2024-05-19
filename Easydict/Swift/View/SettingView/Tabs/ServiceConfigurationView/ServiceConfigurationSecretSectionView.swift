@@ -11,6 +11,7 @@ import Defaults
 import SwiftUI
 
 // MARK: - ServiceConfigurationSecretSectionView
+
 struct ServiceConfigurationSecretSectionView<Content: View>: View {
     // MARK: Lifecycle
 

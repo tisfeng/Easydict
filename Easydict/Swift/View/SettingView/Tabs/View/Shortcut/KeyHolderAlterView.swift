@@ -9,6 +9,7 @@
 import SwiftUI
 
 // MARK: - KeyHolderAlterView
+
 struct KeyHolderAlterView: ViewModifier {
     // MARK: Lifecycle
 
@@ -40,6 +41,7 @@ struct KeyHolderAlterView: ViewModifier {
             }
     }
 }
+
 extension View {
     @ViewBuilder
     public func keyHolderConfictAlter(

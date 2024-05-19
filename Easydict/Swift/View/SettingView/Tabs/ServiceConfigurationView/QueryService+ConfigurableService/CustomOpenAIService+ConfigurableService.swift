@@ -12,6 +12,7 @@ import Foundation
 import SwiftUI
 
 // MARK: - CustomOpenAIService + ConfigurableService
+
 extension CustomOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
         CustomOpenAIServiceConfigurationView(service: self)
@@ -19,6 +20,7 @@ extension CustomOpenAIService: ConfigurableService {
 }
 
 // MARK: - CustomOpenAIServiceConfigurationView
+
 private struct CustomOpenAIServiceConfigurationView: View {
     // MARK: Lifecycle
 

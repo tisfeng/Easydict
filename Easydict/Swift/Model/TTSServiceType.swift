@@ -20,6 +20,7 @@ enum TTSServiceType: String, CaseIterable {
 }
 
 // MARK: CustomLocalizedStringResourceConvertible
+
 extension TTSServiceType: CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {

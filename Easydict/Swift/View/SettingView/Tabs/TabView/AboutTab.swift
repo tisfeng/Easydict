@@ -21,6 +21,7 @@ struct SettingsAboutTab: View {
 }
 
 // MARK: - AboutTab
+
 struct AboutTab: View {
     // MARK: Internal
 
@@ -116,6 +117,7 @@ struct AboutTab: View {
         Bundle.main.infoDictionary?["NSHumanReadableCopyright"] as? String ?? ""
     }
 }
+
 #Preview {
     AboutTab()
 }

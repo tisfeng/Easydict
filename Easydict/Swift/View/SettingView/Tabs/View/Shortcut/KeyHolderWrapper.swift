@@ -25,6 +25,7 @@ public struct KeyHolderDataItem: Identifiable {
 }
 
 // MARK: - KeyHolderWrapper
+
 struct KeyHolderWrapper: NSViewRepresentable {
     // MARK: Lifecycle
 
@@ -61,6 +62,7 @@ struct KeyHolderWrapper: NSViewRepresentable {
 }
 
 // MARK: KeyHolderWrapper.Coordinator
+
 extension KeyHolderWrapper {
     class Coordinator: NSObject, RecordViewDelegate {
         // MARK: Lifecycle

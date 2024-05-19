@@ -10,6 +10,7 @@ import Combine
 import SwiftUI
 
 // MARK: - ServiceTab
+
 struct ServiceTab: View {
     // MARK: Internal
 
@@ -112,6 +113,7 @@ private class ServiceTabViewModel: ObservableObject {
 }
 
 // MARK: - ServiceItems
+
 private struct ServiceItems: View {
     // MARK: Internal
 
@@ -178,6 +180,7 @@ private class ServiceItemViewModel: ObservableObject {
 }
 
 // MARK: - ServiceItemView
+
 private struct ServiceItemView: View {
     // MARK: Lifecycle
 
@@ -226,6 +229,7 @@ private struct ServiceItemView: View {
 }
 
 // MARK: - WindowTypePicker
+
 private struct WindowTypePicker: View {
     @Binding var windowType: EZWindowType
 

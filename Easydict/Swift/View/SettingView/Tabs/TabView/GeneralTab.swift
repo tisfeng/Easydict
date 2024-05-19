@@ -10,6 +10,7 @@ import Defaults
 import SwiftUI
 
 // MARK: - GeneralTab
+
 struct GeneralTab: View {
     // MARK: Internal
 
@@ -303,6 +304,7 @@ struct GeneralTab: View {
 }
 
 // MARK: - FirstAndSecondLanguageSettingView
+
 private struct FirstAndSecondLanguageSettingView: View {
     // MARK: Internal
 

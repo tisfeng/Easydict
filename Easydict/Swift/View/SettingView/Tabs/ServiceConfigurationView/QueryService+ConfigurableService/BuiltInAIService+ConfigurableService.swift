@@ -10,6 +10,7 @@ import Defaults
 import SwiftUI
 
 // MARK: - BuiltInAIService + ConfigurableService
+
 extension BuiltInAIService: ConfigurableService {
     func configurationListItems() -> some View {
         ServiceConfigurationSecretSectionView(
