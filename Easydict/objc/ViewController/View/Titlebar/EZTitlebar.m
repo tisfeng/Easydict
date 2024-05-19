@@ -14,7 +14,6 @@
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
-#import "EZPreferencesWindowController.h"
 
 typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZTitlebarButtonTypePin = 0,
