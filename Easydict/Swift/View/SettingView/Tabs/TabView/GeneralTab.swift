@@ -10,8 +10,6 @@ import Defaults
 import SwiftUI
 
 // MARK: - GeneralTab
-
-@available(macOS 13, *)
 struct GeneralTab: View {
     // MARK: Internal
 
@@ -300,14 +298,11 @@ struct GeneralTab: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     GeneralTab()
 }
 
 // MARK: - FirstAndSecondLanguageSettingView
-
-@available(macOS 13, *)
 private struct FirstAndSecondLanguageSettingView: View {
     // MARK: Internal
 

@@ -20,8 +20,6 @@ extension LanguageDetectOptimize: CaseIterable {
 }
 
 // MARK: - LanguageDetectOptimize + CustomLocalizedStringResourceConvertible
-
-@available(macOS 13, *)
 extension LanguageDetectOptimize: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {

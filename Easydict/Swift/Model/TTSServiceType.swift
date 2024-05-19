@@ -20,8 +20,6 @@ enum TTSServiceType: String, CaseIterable {
 }
 
 // MARK: CustomLocalizedStringResourceConvertible
-
-@available(macOS 13, *)
 extension TTSServiceType: CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {

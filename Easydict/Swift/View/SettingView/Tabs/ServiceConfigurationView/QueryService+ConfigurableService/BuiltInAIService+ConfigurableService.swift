@@ -10,8 +10,6 @@ import Defaults
 import SwiftUI
 
 // MARK: - BuiltInAIService + ConfigurableService
-
-@available(macOS 13.0, *)
 extension BuiltInAIService: ConfigurableService {
     func configurationListItems() -> some View {
         ServiceConfigurationSecretSectionView(

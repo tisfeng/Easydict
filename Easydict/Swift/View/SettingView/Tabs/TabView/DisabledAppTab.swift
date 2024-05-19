@@ -76,8 +76,6 @@ private class DisabledAppViewModel: ObservableObject {
 }
 
 // MARK: - DisabledAppTab
-
-@available(macOS 13.0, *)
 struct DisabledAppTab: View {
     // MARK: Internal
 
@@ -153,8 +151,6 @@ struct DisabledAppTab: View {
 }
 
 // MARK: - ListToolbar
-
-@available(macOS 13.0, *)
 private struct ListToolbar: View {
     // MARK: Internal
 
@@ -186,8 +182,6 @@ private struct ListToolbar: View {
 }
 
 // MARK: - ListButton
-
-@available(macOS 13.0, *)
 private struct ListButton: View {
     @Environment(\.isEnabled) private var isEnabled: Bool
     var systemName: String
@@ -211,8 +205,6 @@ private struct ListButton: View {
 }
 
 // MARK: - BlockAppItemView
-
-@available(macOS 13.0, *)
 private struct BlockAppItemView: View {
     // MARK: Lifecycle
 
@@ -247,8 +239,6 @@ private struct BlockAppItemView: View {
 }
 
 // MARK: - AppItemViewModel
-
-@available(macOS 13.0, *)
 private class AppItemViewModel: ObservableObject {
     // MARK: Lifecycle
 
@@ -280,7 +270,6 @@ private class AppItemViewModel: ObservableObject {
     }
 }
 
-@available(macOS 13.0, *)
 #Preview {
     DisabledAppTab()
 }

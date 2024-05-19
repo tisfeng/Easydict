@@ -8,8 +8,6 @@
 
 import Defaults
 import SwiftUI
-
-@available(macOS 13, *)
 struct AdvancedTab: View {
     // MARK: Internal
 
@@ -51,7 +49,6 @@ struct AdvancedTab: View {
     @Default(.enableBetaFeature) private var enableBetaFeature
 }
 
-@available(macOS 13, *)
 #Preview {
     AdvancedTab()
 }

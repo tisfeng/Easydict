@@ -11,8 +11,6 @@ import Defaults
 import SwiftUI
 
 // MARK: - ServiceConfigurationSecretSectionView
-
-@available(macOS 13.0, *)
 struct ServiceConfigurationSecretSectionView<Content: View>: View {
     // MARK: Lifecycle
 
@@ -177,7 +175,6 @@ private class ServiceValidationViewModel: ObservableObject {
     }
 }
 
-@available(macOS 13.0, *)
 #Preview {
     ServiceConfigurationSecretSectionView(service: EZBingService(), observeKeys: [.bingCookieKey]) {
         ServiceConfigurationSecureInputCell(

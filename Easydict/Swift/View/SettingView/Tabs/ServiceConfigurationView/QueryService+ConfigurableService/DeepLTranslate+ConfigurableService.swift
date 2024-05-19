@@ -11,8 +11,6 @@ import Foundation
 import SwiftUI
 
 // MARK: - EZDeepLTranslate + ConfigurableService
-
-@available(macOS 13.0, *)
 extension EZDeepLTranslate: ConfigurableService {
     func configurationListItems() -> some View {
         EZDeepLTranslateConfigurationView(service: self)
@@ -20,8 +18,6 @@ extension EZDeepLTranslate: ConfigurableService {
 }
 
 // MARK: - EZDeepLTranslateConfigurationView
-
-@available(macOS 13.0, *)
 private struct EZDeepLTranslateConfigurationView: View {
     let service: EZDeepLTranslate
 

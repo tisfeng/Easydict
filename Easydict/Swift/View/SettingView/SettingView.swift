@@ -21,8 +21,6 @@ enum SettingTab: Int {
 }
 
 // MARK: - SettingView
-
-@available(macOS 13, *)
 struct SettingView: View {
     // MARK: Internal
 
@@ -106,8 +104,6 @@ struct SettingView: View {
     @State private var selection = SettingTab.general
     @State private var window: NSWindow?
 }
-
-@available(macOS 13, *)
 #Preview {
     SettingView()
 }

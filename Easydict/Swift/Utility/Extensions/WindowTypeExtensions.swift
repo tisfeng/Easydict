@@ -18,8 +18,6 @@ extension EZWindowType {
 }
 
 // MARK: - EZWindowType + CustomLocalizedStringResourceConvertible
-
-@available(macOS 13, *)
 extension EZWindowType: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {

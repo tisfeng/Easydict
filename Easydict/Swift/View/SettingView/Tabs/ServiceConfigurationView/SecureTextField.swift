@@ -10,7 +10,6 @@ import SwiftUI
 
 // MARK: - SecureTextField
 
-@available(macOS 13.0, *)
 struct SecureTextField: View {
     // MARK: Internal
 
@@ -74,8 +73,6 @@ struct SecureTextField: View {
 }
 
 // MARK: - SecureInput_Previews
-
-@available(macOS 13.0, *)
 struct SecureInput_Previews: PreviewProvider {
     static var previews: some View {
         Group {
