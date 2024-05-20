@@ -952,8 +952,6 @@ static EZWindowManager *_instance;
     
     MMLogInfo(@"close window type: %ld", windowType);
     
-    // Stop playing audio
-    [floatingWindow.queryViewController stopPlayingQueryText];
     floatingWindow.titleBar.pin = NO;
         
     /// !!!: Close window may call window delegate method `windowDidResignKey:`
