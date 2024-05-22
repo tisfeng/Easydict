@@ -14,7 +14,7 @@ import GoogleGenerativeAI
 
 // TODO: add a LLM stream service base class, make both OpenAI and Gemini inherit from it.
 @objc(EZGeminiService)
-public final class GeminiService: QueryService {
+public final class GeminiService: LLMStreamService {
     // MARK: Public
 
     override public func serviceType() -> ServiceType {
@@ -29,21 +29,8 @@ public final class GeminiService: QueryService {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        // TODO: Replace MMOrderedDictionary.
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for language in EZLanguageManager.shared().allLanguages {
-            let value = language.rawValue
-            if !GeminiService.unsupportedLanguages.contains(language) {
-                orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
-            }
-        }
-
-        return orderedDict
-    }
-
-    public override func isStream() -> Bool {
-        true
+    public override func queryTextType() -> EZQueryTextType {
+        [.translation]
     }
 
     override public func translate(
@@ -57,7 +44,6 @@ public final class GeminiService: QueryService {
                 let translationPrompt = translationPrompt(text: text, from: from, to: to)
                 let prompt = QueryService.translationSystemPrompt +
                     "\n" + translationPrompt
-//                logInfo("gemini prompt: \(prompt)")
                 let model = GenerativeModel(
                     name: "gemini-pro",
                     apiKey: apiKey,
@@ -82,6 +68,7 @@ public final class GeminiService: QueryService {
                         }
                         if !result.isStreamFinished {
                             resultString += line
+
                             result.translatedResults = [resultString]
                             await MainActor.run {
                                 throttler.throttle { [unowned self] in
@@ -90,7 +77,9 @@ public final class GeminiService: QueryService {
                             }
                         }
                     }
+
                     result.isStreamFinished = true
+                    result.translatedResults = [getFinalResultText(text: resultString)]
                     completion(result, nil)
                 } else {
                     // Gemini does not support stream in macOS 12.0-
@@ -126,34 +115,34 @@ public final class GeminiService: QueryService {
 
     // MARK: Internal
 
-    let throttler = Throttler()
+    // https://ai.google.dev/available_regions
+    override var unsupportedLanguages: [Language] {
+        [
+            .persian,
+            .filipino,
+            .khmer,
+            .lao,
+            .malay,
+            .mongolian,
+            .burmese,
+            .telugu,
+            .tamil,
+            .urdu,
+        ]
+    }
+
+    // easydict://writeKeyValue?EZGeminiAPIKey=xxx
+    override var apiKey: String {
+        Defaults[.geminiAPIKey] ?? ""
+    }
 
     // MARK: Private
-
-    // https://ai.google.dev/available_regions
-    private static let unsupportedLanguages: [Language] = [
-        .persian,
-        .filipino,
-        .khmer,
-        .lao,
-        .malay,
-        .mongolian,
-        .burmese,
-        .telugu,
-        .tamil,
-        .urdu,
-    ]
 
     // Set Gemini safety level to BLOCK_NONE
     private static let harassmentSafety = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
     private static let hateSpeechSafety = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
     private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
-
-    // easydict://writeKeyValue?EZGeminiAPIKey=xxx
-    private var apiKey: String {
-        Defaults[.geminiAPIKey] ?? ""
-    }
 }
 
 // swiftlint:enable all

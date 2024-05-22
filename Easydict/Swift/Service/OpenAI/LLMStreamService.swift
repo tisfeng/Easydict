@@ -71,7 +71,9 @@ public class LLMStreamService: QueryService {
 
     var model = ""
 
-    var unsupportedLanguages: [Language] = []
+    var unsupportedLanguages: [Language] {
+        []
+    }
 
     var availableModels: [String] {
         [""]
