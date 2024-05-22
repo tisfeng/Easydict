@@ -29,7 +29,7 @@ public final class GeminiService: LLMStreamService {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
-    public override func queryTextType() -> EZQueryTextType {
+    override public func queryTextType() -> EZQueryTextType {
         [.translation]
     }
 
@@ -55,43 +55,32 @@ public final class GeminiService: LLMStreamService {
                     ]
                 )
 
+                result.isStreamFinished = false
+
+                var resultString = ""
+
                 // Gemini Docs: https://github.com/google/generative-ai-swift
-                if #available(macOS 12.0, *) {
-                    result.isStreamFinished = false
 
-                    var resultString = ""
-                    let outputContentStream = model.generateContentStream(prompt)
+                let outputContentStream = model.generateContentStream(prompt)
+                for try await outputContent in outputContentStream {
+                    guard let line = outputContent.text else {
+                        return
+                    }
+                    if !result.isStreamFinished {
+                        resultString += line
 
-                    for try await outputContent in outputContentStream {
-                        guard let line = outputContent.text else {
-                            return
-                        }
-                        if !result.isStreamFinished {
-                            resultString += line
-
-                            result.translatedResults = [resultString]
-                            await MainActor.run {
-                                throttler.throttle { [unowned self] in
-                                    completion(result, nil)
-                                }
+                        result.translatedResults = [resultString]
+                        await MainActor.run {
+                            throttler.throttle { [unowned self] in
+                                completion(result, nil)
                             }
                         }
                     }
-
-                    result.isStreamFinished = true
-                    result.translatedResults = [getFinalResultText(text: resultString)]
-                    completion(result, nil)
-                } else {
-                    // Gemini does not support stream in macOS 12.0-
-                    let outputContent = try await model.generateContent(prompt)
-                    guard let resultString = outputContent.text else {
-                        return
-                    }
-                    result.translatedResults = [resultString]
-                    await MainActor.run {
-                        completion(result, nil)
-                    }
                 }
+
+                result.isStreamFinished = true
+                result.translatedResults = [getFinalResultText(text: resultString)]
+                completion(result, nil)
             } catch {
                 /**
                  https://github.com/google/generative-ai-swift/issues/89
