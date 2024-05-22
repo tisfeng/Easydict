@@ -40,16 +40,16 @@ public final class GeminiService: LLMStreamService {
         Task {
             do {
                 let translationPrompt = translationPrompt(text: text, from: from, to: to)
-                let prompt = QueryService.translationSystemPrompt +
+                let prompt = LLMStreamService.translationSystemPrompt +
                     "\n" + translationPrompt
                 let model = GenerativeModel(
                     name: "gemini-pro",
                     apiKey: apiKey,
                     safetySettings: [
-                        GeminiService.harassmentSafety,
-                        GeminiService.hateSpeechSafety,
-                        GeminiService.sexuallyExplicitSafety,
-                        GeminiService.dangerousContentSafety,
+                        harassmentBlockNone,
+                        hateSpeechBlockNone,
+                        sexuallyExplicitBlockNone,
+                        dangerousContentBlockNone,
                     ]
                 )
 
@@ -126,8 +126,8 @@ public final class GeminiService: LLMStreamService {
     // MARK: Private
 
     // Set Gemini safety level to BLOCK_NONE
-    private static let harassmentSafety = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
-    private static let hateSpeechSafety = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
-    private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
-    private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
+    private let harassmentBlockNone = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
+    private let hateSpeechBlockNone = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
+    private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
+    private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
 }

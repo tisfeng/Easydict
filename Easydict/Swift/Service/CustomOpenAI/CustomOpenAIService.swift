@@ -6,8 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Alamofire
-import CryptoKit
 import Defaults
 import Foundation
 

@@ -6,7 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
 import OpenAI
 
@@ -85,7 +84,6 @@ public class BaseOpenAIService: LLMStreamService {
                     // If already has error, we do not need to update it.
                     if result.error == nil {
                         resultText = getFinalResultText(text: resultText)
-
 //                        log("\(name())-(\(model)): \(resultText)")
                         handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                         result.isStreamFinished = true
@@ -137,5 +135,62 @@ public class BaseOpenAIService: LLMStreamService {
         default:
             updateCompletion()
         }
+    }
+}
+
+// MARK: OpenAI chat messages
+
+extension BaseOpenAIService {
+    typealias ChatCompletionMessageParam = ChatQuery.ChatCompletionMessageParam
+
+    func chatMessages(text: String, from: Language, to: Language) -> [ChatCompletionMessageParam] {
+        typealias Role = ChatCompletionMessageParam.Role
+
+        var chats: [ChatCompletionMessageParam] = []
+        let messages = translatioMessages(text: text, from: from, to: to)
+        for message in messages {
+            if let roleRawValue = message["role"],
+               let role = Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
+                chats.append(chat)
+            }
+        }
+
+        return chats
+    }
+
+    func chatMessages(
+        queryType: EZQueryTextType,
+        text: String,
+        from: Language,
+        to: Language
+    ) -> [ChatCompletionMessageParam] {
+        typealias Role = ChatCompletionMessageParam.Role
+
+        var messages = [[String: String]]()
+
+        switch queryType {
+        case .sentence:
+            messages = sentenceMessages(sentence: text, from: from, to: to)
+        case .dictionary:
+            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to)
+        case .translation:
+            fallthrough
+        default:
+            messages = translatioMessages(text: text, from: from, to: to)
+        }
+
+        var chats: [ChatCompletionMessageParam] = []
+        for message in messages {
+            if let roleRawValue = message["role"],
+               let role = Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
+                chats.append(chat)
+            }
+        }
+
+        return chats
     }
 }
