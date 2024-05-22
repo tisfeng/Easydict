@@ -19,7 +19,6 @@ import OpenAI
 public class BaseOpenAIService: LLMStreamService {
     // MARK: Public
 
-    // swiftlint:disable identifier_name
     override public func translate(
         _ text: String,
         from: Language,
@@ -97,8 +96,6 @@ public class BaseOpenAIService: LLMStreamService {
     }
 
     // MARK: Private
-
-    // swiftlint:enable identifier_name
 
     private func handleResult(
         queryType: EZQueryTextType,

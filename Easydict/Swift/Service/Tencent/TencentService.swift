@@ -54,7 +54,6 @@ public final class TencentService: QueryService {
         500 * 10000
     }
 
-    // swiftlint:disable identifier_name
     override public func translate(
         _ text: String,
         from: Language,
@@ -130,8 +129,6 @@ public final class TencentService: QueryService {
             request.cancel()
         }, serviceType: serviceType().rawValue)
     }
-
-    // swiftlint:enable identifier_name
 
     // MARK: Private
 

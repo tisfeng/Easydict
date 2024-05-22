@@ -381,7 +381,6 @@ private struct FirstAndSecondLanguageSettingView: View {
             // First language should not be same as second language. (\(duplicatedLanguage))
             // \(setField) is replaced with \(setLanguage).
             String(
-                // swiftlint:disable:next line_length
                 localized: "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)"
             )
         }

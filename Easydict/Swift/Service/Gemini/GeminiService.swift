@@ -6,8 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import Defaults
 import Foundation
 import GoogleGenerativeAI
@@ -133,5 +131,3 @@ public final class GeminiService: LLMStreamService {
     private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
 }
-
-// swiftlint:enable all

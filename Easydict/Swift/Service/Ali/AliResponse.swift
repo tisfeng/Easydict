@@ -140,9 +140,8 @@ enum AnyCodable: Codable {
         switch self {
         case let .int(i):
             String(i)
-        // swiftlint:disable:next identifier_name
-        case let .string(s):
-            s
+        case let .string(str):
+            str
         }
     }
 
