@@ -954,7 +954,7 @@ static EZWindowManager *_instance;
     [floatingWindow close];
     
     if (![self currentShowingSettingsWindow]) {
-//        // Recover last app.
+       // Recover last app.
         [self activeLastFrontmostApplication];
     }
     
