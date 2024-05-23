@@ -19,9 +19,6 @@ enum LanguageDetectOptimize: Int {
     case google = 2
 }
 
-let kEnableBetaNewAppKey = "EZConfiguration_kEnableBetaNewAppKey"
-let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
-
 // MARK: - Configuration
 
 @objcMembers
