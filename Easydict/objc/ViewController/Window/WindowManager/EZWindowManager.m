@@ -893,7 +893,6 @@ static EZWindowManager *_instance;
         [Snip.shared stop];
     } else {
         [self closeFloatingWindow];
-//        [EZPreferencesWindowController.shared close];
     }
 }
 
