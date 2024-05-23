@@ -65,6 +65,15 @@ class BuiltInAIService: BaseOpenAIService {
             "baichuan2-13b-chat-v1", // free until 8.12, total 1,000,000 tokens
             "deepseek-7b-chat", // 开通DashScope即获赠总计 1,000,000 tokens 限时免费使用额度，有效期180天。
             "internlm-7b-chat", // 开通DashScope即获赠总计 1,000,000 tokens 限时免费使用额度，有效期180天。
+            
+            /**
+             5月21日起，百度智能云千帆大模型平台ModelBuilder中ERNIE-Speed、ERNIE-Lite、ERNIE-Tiny系列模型Tokens后付费的服务对客户免费开放使用，具体包括ERNIE-Speed-8K、ERNIE-Speed-128K、ERNIE-Speed-AppBuilder专用版、ERNIE-Lite-8K、ERNIE-Lite-8K-0922、ERNIE-Lite-128K（即将上线）、ERNIE-Tiny共计7款模型的预置服务
+             
+             https://cloud.baidu.com/doc/WENXINWORKSHOP/s/wlwg8f1i3
+             */
+            
+            "ernie_speed", // ERNIE-Speed-8K, it has a higher RPM(300) than ERNIE-Speed-128K(RPM=60)
+            "ernie-lite-8k",
         ]
     }
 }
