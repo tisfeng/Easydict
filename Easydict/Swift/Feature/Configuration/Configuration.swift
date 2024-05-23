@@ -478,25 +478,16 @@ extension Configuration {
 
     fileprivate func didSetShowGoogleQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().googleItem?.isHidden = !showGoogleQuickLink
-
         logSettings(["show_google_link": showGoogleQuickLink])
     }
 
     fileprivate func didSetShowEudicQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().eudicItem?.isHidden = !showEudicQuickLink
-
         logSettings(["show_eudic_link": showEudicQuickLink])
     }
 
     fileprivate func didSetShowAppleDictionaryQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().appleDictionaryItem?.isHidden = !showAppleDictionaryQuickLink
-
         logSettings(["show_apple_dictionary_link": showAppleDictionaryQuickLink])
     }
 

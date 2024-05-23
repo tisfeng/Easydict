@@ -177,7 +177,6 @@ static EZMenuItemManager *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     }
-    // TODO: Sharker remove EZPreferencesWindowController
 //    [EZPreferencesWindowController.shared show];
 }
 

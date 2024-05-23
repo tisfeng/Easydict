@@ -426,6 +426,7 @@ static EZWindowManager *_instance;
 
 - (nullable NSWindow *)currentShowingSettingsWindow {
     // Previous has EZPreferencesWindowController but in new version only has SwiftUI Setting Window
+    
     // Workaround for SwiftUI Settings window, fix https://github.com/tisfeng/Easydict/issues/362
     for (NSWindow *window in [NSApp windows]) {
         if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"] && window.visible) {
@@ -945,7 +946,6 @@ static EZWindowManager *_instance;
     /// And `windowDidResignKey:` will call `closeFloatingWindowIfNotPinned:`
     [floatingWindow close];
     
-    // TODO: Sharker remove EZPreferencesWindowController close setting
     if (![self currentShowingSettingsWindow]) {
 //        // Recover last app.
         [self activeLastFrontmostApplication];
