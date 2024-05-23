@@ -94,6 +94,8 @@ extension Defaults.Keys {
         "EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols",
         default: true
     )
+    
+    static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
 }
 
 extension Defaults.Keys {

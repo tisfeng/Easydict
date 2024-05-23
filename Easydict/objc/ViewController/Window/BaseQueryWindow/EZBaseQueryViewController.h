@@ -11,6 +11,7 @@
 #import "EZQueryModel.h"
 #import "EZQueryResult.h"
 #import "EZTitlebar.h"
+#import "EZTableTipsCell.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -63,6 +64,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)disableReplaceTextButton;
 
 - (void)receiveTitlebarAction:(EZTitlebarQuickAction)action;
+
+- (void)updateActionType:(EZActionType)actionType;
+
+/// show tips view
+- (void)showTipsView:(BOOL)isVisible;
 
 @end
 
