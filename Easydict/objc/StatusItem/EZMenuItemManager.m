@@ -177,7 +177,6 @@ static EZMenuItemManager *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     }
-//    [EZPreferencesWindowController.shared show];
 }
 
 - (IBAction)checkForUpdateItem:(id)sender {
