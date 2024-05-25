@@ -12,11 +12,11 @@ import Foundation
 
 extension LLMStreamService {
     static let translationSystemPrompt = """
-    You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show redundant quotes and additional notes in translation.
+    You are a translation expert proficient in various languages, focusing solely on translating text without interpretation. You accurately understand the meanings of proper nouns, idioms, metaphors, allusions, and other obscure words in sentences, translating them appropriately based on the context and language environment. The translation should be natural and fluent. Only return the translated text, without including redundant quotes or additional notes.
     """
 
     func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
-        "Translate the following \(sourceLanguage.queryLangaugeName) text into \(targetLanguage.queryLangaugeName) text:\"\"\"\(text)\"\"\""
+        "Translate the following \(sourceLanguage.queryLangaugeName) text into \(targetLanguage.queryLangaugeName) text: \"\"\"\(text)\"\"\""
     }
 
     func translatioMessages(text: String, from: Language, to: Language) -> [[String: String]] {
