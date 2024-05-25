@@ -1290,23 +1290,6 @@
         }
       }
     },
-    "input_translate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Input Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "输入翻译"
-          }
-        }
-      }
-    },
     "Insufficient buffer provided for specified operation" : {
       "comment" : "Error reason",
       "localizations" : {
@@ -2182,23 +2165,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开窗口时自动选中查询文本"
-          }
-        }
-      }
-    },
-    "select_translate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select Text Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "划词翻译"
           }
         }
       }
@@ -3684,23 +3650,6 @@
         }
       }
     },
-    "show_mini_window" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Mini Window"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "展示迷你窗口"
-          }
-        }
-      }
-    },
     "show_setting_quick_link" : {
       "localizations" : {
         "en" : {
@@ -3713,23 +3662,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示快捷设置图标"
-          }
-        }
-      }
-    },
-    "silent_screenshot_ocr" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silent Screenshot OCR"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静默截图OCR"
           }
         }
       }
@@ -3763,23 +3695,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "小"
-          }
-        }
-      }
-    },
-    "snip_translate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snip Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "截图翻译"
           }
         }
       }
