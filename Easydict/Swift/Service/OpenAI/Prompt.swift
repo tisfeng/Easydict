@@ -300,28 +300,28 @@ extension LLMStreamService {
         prompt += sentencePrompt
 
         let directTranslationPrompt =
-            "First, translate the sentence into \(targetLanguage) text literally, keep the original format, and don’t miss any information, desired display format: \"\(literalTranslation):\n{literal_translation} \",\n\n"
+            "First, translate the sentence into \(targetLanguage) literally, keeping the original format and including all information. Use the format: \"\(literalTranslation):\n{literal_translation}\".\n\n"
         prompt += directTranslationPrompt
 
-        let stepByStepPrompt = "Then, follow the steps below step by step.\n"
+        let stepByStepPrompt = "Then, follow these steps:\n"
         prompt += stepByStepPrompt
 
         let keyWordsPrompt =
-            "1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail if it's not a common meaning, desired display format: \"\(keyWords):\n{key_words_pos} \", \n\n"
+            "1. List up to 5 key words, phrases, or collocations from the sentence. For each, include all parts of speech and meanings, and specify its meaning in this context if it differs from the common meaning. Use the format: \"\(keyWords):\n{key_words_pos}\".\n\n"
         prompt += keyWordsPrompt
 
         let grammarParsePrompt =
-            "2. Analyze the grammatical structure of this sentence, desired display format: \"\(grammarParse):\n{grammatical_analysis} \", \n\n"
+            "2. Analyze the grammatical structure of the sentence. Use the format: \"\(grammarParse):\n{grammatical_analysis}\".\n\n"
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged. If this sentence contains proverbs, metaphors, historical allusions, or comes from famous works, please break the line after the translation and attach its detailed introduction. Desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
+            "3. Identify any issues in the literal translation, such as non-standard \(targetLanguage) expressions, awkwardness, or ambiguity. Provide a free translation that maintains the original meaning but is clearer and more natural in \(targetLanguage). If the sentence includes idioms, metaphors, historical references, or famous works, provide a detailed introduction after the translation. Use the format: \"\(freeTranslation):\n{free_translation}\".\n\n"
         prompt += freeTranslationPrompt
 
-        let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue). \n"
+        let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue).\n"
         prompt += answerLanguagePrompt
 
-        let disableNotePrompt = "Do not display additional information or notes."
+        let disableNotePrompt = "Do not include additional information or notes."
         prompt += disableNotePrompt
 
         // Add few-shot examples or other messages as needed
@@ -329,13 +329,13 @@ extension LLMStreamService {
             [
                 "role": "user",
                 "content": """
-                Here is a English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
-                First, display the Simplified-Chinese translation of this sentence.
-                Then, follow the steps below step by step.
-                1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.
-                2. Analyze the grammatical structure of this sentence.
-                3. Show Simplified-Chinese inferred translation.
-                Answer in Simplified-Chinese.
+                Here is an English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
+                First, provide the Simplified Chinese translation of this sentence.
+                Then, follow these steps:
+                1. List the key vocabulary and phrases in the sentence. Include all parts of speech and meanings, and explain their specific meanings in this context.
+                2. Analyze the grammatical structure of the sentence.
+                3. Provide the inferred translation in Simplified Chinese.
+                Answer in Simplified Chinese.
                 """,
             ],
             [
