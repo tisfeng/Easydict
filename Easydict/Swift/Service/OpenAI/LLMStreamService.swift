@@ -69,20 +69,22 @@ public class LLMStreamService: QueryService {
 
     var model = ""
 
+    let mustOverride = "This property must be overridden by a subclass"
+
     var unsupportedLanguages: [Language] {
         []
     }
 
     var availableModels: [String] {
-        [""]
+        fatalError(mustOverride)
     }
 
     var apiKey: String {
-        ""
+        fatalError(mustOverride)
     }
 
     var endpoint: String {
-        ""
+        fatalError(mustOverride)
     }
 
     func getFinalResultText(text: String) -> String {

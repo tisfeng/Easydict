@@ -39,7 +39,6 @@ class CustomOpenAIService: BaseOpenAIService {
         get {
             Defaults[.customOpenAIModel]
         }
-
         set {
             Defaults[.customOpenAIModel] = newValue
         }

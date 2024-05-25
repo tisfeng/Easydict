@@ -37,23 +37,19 @@ class OpenAIService: BaseOpenAIService {
         get {
             Defaults[.openAIModel]
         }
-
         set {
             // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
-
             Defaults[.openAIModel] = newValue
         }
     }
 
     override var apiKey: String {
         // easydict://writeKeyValue?EZOpenAIAPIKey=
-
         Defaults[.openAIAPIKey] ?? ""
     }
 
     override var endpoint: String {
         // easydict://writeKeyValue?EZOpenAIEndPointKey=
-
         var endPoint = Defaults[.openAIEndPoint] ?? ""
         if endPoint.isEmpty {
             endPoint = "https://api.openai.com/v1/chat/completions"
