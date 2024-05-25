@@ -685,7 +685,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             break;
         }
         case EZTitlebarQuickActionReplaceNewlineWithSpace: {
-            self.inputText = [self.inputText stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+            self.inputText = [self.inputText replacingNewlinesWithWhitespace];
         }
         default:
             break;
