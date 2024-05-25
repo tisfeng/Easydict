@@ -93,6 +93,10 @@ public class BaseOpenAIService: LLMStreamService {
         }
     }
 
+    // MARK: Internal
+
+    var updateCompletion: ((EZQueryResult, Error?) -> ())?
+
     // MARK: Private
 
     private func handleResult(

@@ -39,7 +39,6 @@ class BuiltInAIService: BaseOpenAIService {
             }
             return model
         }
-
         set {
             Defaults[.builtInAIModel] = newValue
         }

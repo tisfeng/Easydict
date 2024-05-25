@@ -65,14 +65,16 @@ public class LLMStreamService: QueryService {
     // MARK: Internal
 
     let throttler = Throttler()
-    var updateCompletion: ((EZQueryResult, Error?) -> ())?
-
-    var model = ""
 
     let mustOverride = "This property must be overridden by a subclass"
 
     var unsupportedLanguages: [Language] {
         []
+    }
+
+    var model: String {
+        get { fatalError(mustOverride) }
+        set { _ = newValue; fatalError(mustOverride) }
     }
 
     var availableModels: [String] {
