@@ -8,17 +8,12 @@
 #import "NSString+EZChineseText.h"
 #import "EZError.h"
 #import "EZConst.h"
-
 #import "EZMenuItemManager.h"
 #import "NSImage+MM.h"
 #import "NSColor+MyColors.h"
-
 #import "entry.h"
 #import "AppDelegate.h"
-
-//#import "EZAppModel.h"
 #import "EZLocalStorage.h"
-
 #import "NSString+EZConvenience.h"
 #import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
@@ -30,4 +25,3 @@
 #import "EZDeepLTranslate.h"
 #import "EZBingService.h"
 #import "NSString+EZUtils.h"
-
