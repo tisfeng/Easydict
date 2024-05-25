@@ -9,10 +9,12 @@
 import Foundation
 
 extension String {
+    /// Truncate string max lenght to 200.
     func truncated(_ maxLength: Int = 200) -> String {
         String(prefix(maxLength))
     }
 
+    /// Trim whitespaces and newlines.
     func trim() -> String {
         trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -29,5 +31,16 @@ extension NSString {
             return substring(to: maxLength) as NSString
         }
         return self
+    }
+
+    /// Replace all newlines with whitespaces.
+    /// For line breaks, currently macOS is `\n`, previously used `\n`, Windows is `\r\n`.
+    func replacingNewlinesWithWhitespace() -> NSString {
+        let newlines = ["\r\n", "\n", "\r"]
+        var newString = self
+        for newline in newlines {
+            newString = replacingOccurrences(of: newline, with: " ") as NSString
+        }
+        return newString
     }
 }
