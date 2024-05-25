@@ -18,6 +18,12 @@ extension String {
     func trim() -> String {
         trimmingCharacters(in: .whitespacesAndNewlines)
     }
+    
+    /// Replace all newlines with whitespaces.
+    /// For line breaks, currently macOS is `\n`, previously used `\r`, Windows is `\r\n`.
+    func replacingNewlinesWithWhitespace() -> String {
+        (self as NSString).replacingNewlinesWithWhitespace() as String
+    }
 }
 
 @objc
@@ -33,8 +39,6 @@ extension NSString {
         return self
     }
 
-    /// Replace all newlines with whitespaces.
-    /// For line breaks, currently macOS is `\n`, previously used `\n`, Windows is `\r\n`.
     func replacingNewlinesWithWhitespace() -> NSString {
         let newlines = ["\r\n", "\n", "\r"]
         var newString = self
