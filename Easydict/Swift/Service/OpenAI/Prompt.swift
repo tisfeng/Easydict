@@ -433,30 +433,36 @@ extension LLMStreamService {
             [
                 "role": "user",
                 "content": """
-                Here is a English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\",
-                First, translate the sentence into English text literally, keep the original format, and don’t miss any information, desired display format: \"Literal Translation:
-                {literal_translation_result}",
-                Then, follow the steps below step by step.
-                1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"Key Words:
-                {key_words}",
-                2. Analyze the grammatical structure of this sentence, desired display format: \"Grammar Parsing:
-                {grammatical_analysis}",
-                3. Re-translate the sentence freely, based on ensuring the original meaning of the content, make it easier to understand, more in line with the English expression habits, while keeping the original format unchanged, desired display format: \"Free Translation:
-                {free_translation_result}",
+                Here is an English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
+
+                First, translate the sentence into English literally, keeping the original format and including all information. Use the following format: \"Literal Translation:\n{literal_translation_result}\".
+
+                Then, follow these steps:
+
+                1. List up to 5 key words, common phrases, or collocations in the sentence. For each, include all parts of speech and meanings, and explain its specific meaning in this context. Use the format: \"Key Words:\n{key_words}\".
+
+                2. Analyze the grammatical structure of the sentence. Use the format: \"Grammar Parsing:\n{grammatical_analysis}\".
+
+                3. Provide a free translation of the sentence, ensuring it retains the original meaning but is easier to understand and more natural in English. Keep the original format unchanged. Use the format: \"Free Translation:\n{free_translation_result}\".
+
                 Answer in English.
                 """,
             ],
             [
                 "role": "assistant",
                 "content": """
+                Literal Translation:
                 But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is difficult to say.
-                1. Key Words:
+
+                Key Words:
                 chancellor: n. Chancellor; minister. Here it refers to the German chancellor.
                 dynamic: adj. energetic; dynamic. Here it refers to strong leadership.
                 drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic.
-                2. Grammar Parsing:
+
+                Grammar Parsing:
                 The sentence is a complex sentence. The main clause is "But .... is hard to say" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause.
-                3. Free Translation:
+
+                Free Translation:
                 It's hard to say whether the incoming chancellor will offer dynamic leadership, or just prolong Germany's recent drift.
                 """,
             ],
