@@ -7,11 +7,10 @@
 //
 
 import Foundation
-import OpenAI
 
 // swiftlint:disable all
 
-extension QueryService {
+extension LLMStreamService {
     static let translationSystemPrompt = """
     You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show redundant quotes and additional notes in translation.
     """
@@ -249,7 +248,7 @@ extension QueryService {
         let systemMessages = [
             [
                 "role": "system",
-                "content": QueryService.translationSystemPrompt,
+                "content": LLMStreamService.translationSystemPrompt,
             ],
         ]
 
@@ -467,7 +466,7 @@ extension QueryService {
         let systemMessages = [
             [
                 "role": "system",
-                "content": QueryService.translationSystemPrompt,
+                "content": LLMStreamService.translationSystemPrompt,
             ],
         ]
 
@@ -856,62 +855,6 @@ extension QueryService {
         messages.append(contentsOf: userMessages)
 
         return messages
-    }
-}
-
-extension QueryService {
-    typealias ChatCompletionMessageParam = ChatQuery.ChatCompletionMessageParam
-
-    func chatMessages(text: String, from: Language, to: Language) -> [ChatCompletionMessageParam] {
-        typealias Role = ChatCompletionMessageParam.Role
-
-        var chats: [ChatCompletionMessageParam] = []
-        let messages = translatioMessages(text: text, from: from, to: to)
-        for message in messages {
-            if let roleRawValue = message["role"],
-               let role = Role(rawValue: roleRawValue),
-               let content = message["content"] {
-                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
-                chats.append(chat)
-            }
-        }
-
-        return chats
-    }
-
-    func chatMessages(
-        queryType: EZQueryTextType,
-        text: String,
-        from: Language,
-        to: Language
-    )
-        -> [ChatCompletionMessageParam] {
-        typealias Role = ChatCompletionMessageParam.Role
-
-        var messages = [[String: String]]()
-
-        switch queryType {
-        case .sentence:
-            messages = sentenceMessages(sentence: text, from: from, to: to)
-        case .dictionary:
-            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to)
-        case .translation:
-            fallthrough
-        default:
-            messages = translatioMessages(text: text, from: from, to: to)
-        }
-
-        var chats: [ChatCompletionMessageParam] = []
-        for message in messages {
-            if let roleRawValue = message["role"],
-               let role = Role(rawValue: roleRawValue),
-               let content = message["content"] {
-                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
-                chats.append(chat)
-            }
-        }
-
-        return chats
     }
 }
 

@@ -82,6 +82,7 @@
 		0383914F292FBE120009828C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03839145292FBE120009828C /* Main.storyboard */; };
 		03839150292FBE120009828C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839147292FBE120009828C /* main.m */; };
 		03839151292FBE120009828C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839148292FBE120009828C /* AppDelegate.m */; };
+		0387FB7A2BFBA990000A7A82 /* LLMStreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0387FB792BFBA990000A7A82 /* LLMStreamService.swift */; };
 		03882F8D29D95044005B5A52 /* CTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8429D95044005B5A52 /* CTView.m */; };
 		03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8629D95044005B5A52 /* ToastWindowController.m */; };
 		03882F8F29D95044005B5A52 /* CTScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8729D95044005B5A52 /* CTScreen.m */; };
@@ -472,6 +473,7 @@
 		03839149292FBE120009828C /* EasydictHelper.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = EasydictHelper.entitlements; sourceTree = "<group>"; };
 		0383914A292FBE120009828C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0383914B292FBE120009828C /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		0387FB792BFBA990000A7A82 /* LLMStreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMStreamService.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
 		03882F8329D95044005B5A52 /* ToastWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToastWindowController.h; sourceTree = "<group>"; };
 		03882F8429D95044005B5A52 /* CTView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTView.m; sourceTree = "<group>"; };
@@ -1234,6 +1236,7 @@
 		03779F0D2BB256A7008D3C42 /* OpenAI */ = {
 			isa = PBXGroup;
 			children = (
+				0387FB792BFBA990000A7A82 /* LLMStreamService.swift */,
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
 				03779F0B2BB256A7008D3C42 /* OpenAIService.swift */,
 				03779F0C2BB256A7008D3C42 /* Prompt.swift */,
@@ -3097,6 +3100,7 @@
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022E829231FA6001C7E63 /* entry.m in Sources */,
+				0387FB7A2BFBA990000A7A82 /* LLMStreamService.swift in Sources */,
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,

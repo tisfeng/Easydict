@@ -6,7 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
 import OpenAI
 
@@ -16,57 +15,9 @@ import OpenAI
 
 @objcMembers
 @objc(EZBaseOpenAIService)
-public class BaseOpenAIService: QueryService {
+public class BaseOpenAIService: LLMStreamService {
     // MARK: Public
 
-    override public func isStream() -> Bool {
-        true
-    }
-
-    override public func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
-    }
-
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let allLangauges = EZLanguageManager.shared().allLanguages
-        let supportedLanguages = allLangauges.filter { language in
-            !unsupportedLanguages.contains(language)
-        }
-
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for language in supportedLanguages {
-            orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
-        }
-        return orderedDict
-    }
-
-    override public func queryTextType() -> EZQueryTextType {
-        var typeOptions: EZQueryTextType = []
-
-        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
-        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
-        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
-
-        if isTranslationEnabled {
-            typeOptions.insert(.translation)
-        }
-        if isSentenceEnabled {
-            typeOptions.insert(.sentence)
-        }
-        if isDictionaryEnabled {
-            typeOptions.insert(.dictionary)
-        }
-
-        return typeOptions
-    }
-
-    override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
-        guard let value = UInt(usageStatus) else { return .default }
-        return EZServiceUsageStatus(rawValue: value) ?? .default
-    }
-
-    // swiftlint:disable identifier_name
     override public func translate(
         _ text: String,
         from: Language,
@@ -133,7 +84,6 @@ public class BaseOpenAIService: QueryService {
                     // If already has error, we do not need to update it.
                     if result.error == nil {
                         resultText = getFinalResultText(text: resultText)
-
 //                        log("\(name())-(\(model)): \(resultText)")
                         handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
                         result.isStreamFinished = true
@@ -143,56 +93,11 @@ public class BaseOpenAIService: QueryService {
         }
     }
 
-    // swiftlint:enable identifier_name
-
     // MARK: Internal
 
-    let throttler = Throttler()
     var updateCompletion: ((EZQueryResult, Error?) -> ())?
 
-    var model = ""
-
-    var unsupportedLanguages: [Language] = []
-
-    var availableModels: [String] {
-        [""]
-    }
-
-    var apiKey: String {
-        ""
-    }
-
-    var endpoint: String {
-        ""
-    }
-
     // MARK: Private
-
-    /// Get query type by text and from && to langauge.
-    private func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
-        let enableDictionary = queryTextType().contains(.dictionary)
-        var isQueryDictionary = false
-        if enableDictionary {
-            isQueryDictionary = (text as NSString).shouldQueryDictionary(withLanguage: from, maxWordCount: 2)
-            if isQueryDictionary {
-                return .dictionary
-            }
-        }
-
-        let enableSentence = queryTextType().contains(.sentence)
-        var isQueryEnglishSentence = false
-        if !isQueryDictionary, enableSentence {
-            let isEnglishText = from == .english
-            if isEnglishText {
-                isQueryEnglishSentence = (text as NSString).shouldQuerySentence(withLanguage: from)
-                if isQueryEnglishSentence {
-                    return .sentence
-                }
-            }
-        }
-
-        return .translation
-    }
 
     private func handleResult(
         queryType: EZQueryTextType,
@@ -235,20 +140,61 @@ public class BaseOpenAIService: QueryService {
             updateCompletion()
         }
     }
+}
 
-    private func getFinalResultText(text: String) -> String {
-        var resultText = text.trim()
+// MARK: OpenAI chat messages
 
-        // Remove last </s>, fix Groq model mixtral-8x7b-32768
-        let stopFlag = "</s>"
-        if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
-            resultText = String(resultText.dropLast(stopFlag.count)).trim()
+extension BaseOpenAIService {
+    typealias ChatCompletionMessageParam = ChatQuery.ChatCompletionMessageParam
+
+    func chatMessages(text: String, from: Language, to: Language) -> [ChatCompletionMessageParam] {
+        typealias Role = ChatCompletionMessageParam.Role
+
+        var chats: [ChatCompletionMessageParam] = []
+        let messages = translatioMessages(text: text, from: from, to: to)
+        for message in messages {
+            if let roleRawValue = message["role"],
+               let role = Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
+                chats.append(chat)
+            }
         }
 
-        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes().trim()
+        return chats
+    }
 
-        return resultText
+    func chatMessages(
+        queryType: EZQueryTextType,
+        text: String,
+        from: Language,
+        to: Language
+    ) -> [ChatCompletionMessageParam] {
+        typealias Role = ChatCompletionMessageParam.Role
+
+        var messages = [[String: String]]()
+
+        switch queryType {
+        case .sentence:
+            messages = sentenceMessages(sentence: text, from: from, to: to)
+        case .dictionary:
+            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to)
+        case .translation:
+            fallthrough
+        default:
+            messages = translatioMessages(text: text, from: from, to: to)
+        }
+
+        var chats: [ChatCompletionMessageParam] = []
+        for message in messages {
+            if let roleRawValue = message["role"],
+               let role = Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
+                chats.append(chat)
+            }
+        }
+
+        return chats
     }
 }

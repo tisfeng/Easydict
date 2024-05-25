@@ -6,8 +6,6 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import Alamofire
 import Defaults
 import Foundation
@@ -130,5 +128,3 @@ public final class CaiyunService: QueryService {
 enum QueryServiceError: Error {
     case notSupported
 }
-
-// swiftlint:enable all

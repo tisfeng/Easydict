@@ -6,8 +6,6 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import Foundation
 
 struct CaiyunTranslateType: RawRepresentable {
@@ -60,5 +58,3 @@ struct CaiyunTranslateType: RawRepresentable {
         return CaiyunTranslateType(rawValue: "\(from)2\(to)")
     }
 }
-
-// swiftlint:enable all
