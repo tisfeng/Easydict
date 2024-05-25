@@ -6,8 +6,6 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import Alamofire
 import CryptoKit
 import Defaults
@@ -140,6 +138,7 @@ class AliService: QueryService {
         }
     }
 
+    // swiftlint:disable:next function_parameter_count
     private func requestByAPI(
         id: String,
         secret: String,
@@ -346,5 +345,3 @@ class AliService: QueryService {
         }, serviceType: serviceType().rawValue)
     }
 }
-
-// swiftlint:enable all
