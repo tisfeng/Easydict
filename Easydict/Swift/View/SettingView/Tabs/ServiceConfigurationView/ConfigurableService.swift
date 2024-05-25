@@ -21,7 +21,6 @@ protocol ConfigurableService {
     func configurationListItems() -> T
 }
 
-@available(macOS 13.0, *)
 extension ConfigurableService {
     func configurationView() -> some View {
         Form {

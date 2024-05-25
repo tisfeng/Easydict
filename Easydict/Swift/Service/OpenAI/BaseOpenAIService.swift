@@ -169,7 +169,8 @@ extension BaseOpenAIService {
         text: String,
         from: Language,
         to: Language
-    ) -> [ChatCompletionMessageParam] {
+    )
+        -> [ChatCompletionMessageParam] {
         typealias Role = ChatCompletionMessageParam.Role
 
         var messages = [[String: String]]()

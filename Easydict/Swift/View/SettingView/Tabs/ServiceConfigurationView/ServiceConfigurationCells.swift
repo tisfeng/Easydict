@@ -12,7 +12,6 @@ import SwiftUI
 
 // MARK: - ServiceConfigurationSecureInputCell
 
-@available(macOS 13.0, *)
 struct ServiceConfigurationSecureInputCell: View {
     // MARK: Lifecycle
 
@@ -39,7 +38,6 @@ struct ServiceConfigurationSecureInputCell: View {
 
 // MARK: - ServiceConfigurationInputCell
 
-@available(macOS 13.0, *)
 struct ServiceConfigurationInputCell: View {
     // MARK: Lifecycle
 
@@ -82,7 +80,6 @@ struct ServiceConfigurationInputCell: View {
 
 // MARK: - ServiceConfigurationPickerCell
 
-@available(macOS 13.0, *)
 struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
     // MARK: Lifecycle
 
@@ -116,7 +113,6 @@ class ConfigurationToggleViewModel: ObservableObject {
 
 // MARK: - ServiceConfigurationToggleCell
 
-@available(macOS 13.0, *)
 struct ServiceConfigurationToggleCell: View {
     // MARK: Lifecycle
 
@@ -142,7 +138,6 @@ struct ServiceConfigurationToggleCell: View {
     }
 }
 
-@available(macOS 13.0, *)
 #Preview {
     Group {
         ServiceConfigurationSecureInputCell(

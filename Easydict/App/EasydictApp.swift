@@ -17,11 +17,8 @@ import SwiftUI
 enum EasydictCmpatibilityEntry {
     static func main() {
         parseArmguments()
-        if Configuration.shared.enableBetaNewApp {
-            EasydictApp.main()
-        } else {
-            _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
-        }
+        // app launch
+        EasydictApp.main()
     }
 }
 
@@ -31,55 +28,53 @@ struct EasydictApp: App {
     // MARK: Internal
 
     var body: some Scene {
-        if #available(macOS 13, *) {
-            MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
-                MenuItemView()
-                    .environmentObject(languageState)
-                    .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
-            } label: {
-                Label {
-                    Text("Easydict")
-                        .openSettingsAccess() // trick way for open setting
-                        .onReceive(NotificationCenter.default.publisher(
-                            for: Notification.Name.openSettings,
-                            object: nil
-                        )) { _ in
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                // calling `openSettings` immediately doesn't work so wait a quick moment
-                                try? openSettings()
-                            }
+        MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
+            MenuItemView()
+                .environmentObject(languageState)
+                .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
+        } label: {
+            Label {
+                Text("Easydict")
+                    .openSettingsAccess() // trick way for open setting
+                    .onReceive(NotificationCenter.default.publisher(
+                        for: Notification.Name.openSettings,
+                        object: nil
+                    )) { _ in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                            // calling `openSettings` immediately doesn't work so wait a quick moment
+                            try? openSettings()
                         }
-                } icon: {
-                    Image(menuBarIcon.rawValue)
-                        .resizable()
-                    #if DEBUG
-                        .renderingMode(.original)
-                    #else
-                        .renderingMode(.template)
-                    #endif
-                        .scaledToFit()
-                }
-                .help("Easydict 🍃")
-            }
-            .menuBarExtraStyle(.menu)
-            .commands {
-                EasyDictMainMenu() // main menu
-                // Override About button
-                CommandGroup(replacing: .appInfo) {
-                    Button {
-                        showAboutWindow()
-                    } label: {
-                        Text("menubar.about")
                     }
+            } icon: {
+                Image(menuBarIcon.rawValue)
+                    .resizable()
+                #if DEBUG
+                    .renderingMode(.original)
+                #else
+                    .renderingMode(.template)
+                #endif
+                    .scaledToFit()
+            }
+            .help("Easydict 🍃")
+        }
+        .menuBarExtraStyle(.menu)
+        .commands {
+            EasyDictMainMenu() // main menu
+            // Override About button
+            CommandGroup(replacing: .appInfo) {
+                Button {
+                    showAboutWindow()
+                } label: {
+                    Text("menubar.about")
                 }
             }
+        }
 
-            Settings {
-                SettingView().environmentObject(languageState).environment(
-                    \.locale,
-                    .init(identifier: I18nHelper.shared.localizeCode)
-                )
-            }
+        Settings {
+            SettingView().environmentObject(languageState).environment(
+                \.locale,
+                .init(identifier: I18nHelper.shared.localizeCode)
+            )
         }
     }
 
@@ -112,9 +107,7 @@ struct EasydictApp: App {
             aboutWindow?.titlebarAppearsTransparent = true
             aboutWindow?.isReleasedWhenClosed = false
             aboutWindow?.center()
-            if #available(macOS 13, *) {
-                aboutWindow?.contentView = NSHostingView(rootView: SettingsAboutTab())
-            }
+            aboutWindow?.contentView = NSHostingView(rootView: SettingsAboutTab())
             aboutWindow?.makeKeyAndOrderFront(nil)
         }
     }

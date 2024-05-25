@@ -65,7 +65,6 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL showAppleDictionaryQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
-@property (nonatomic, assign) BOOL enableBetaNewApp;
 @property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
 @property (nonatomic, assign) EZWindowType mouseSelectTranslateWindowType;
 @property (nonatomic, assign) EZWindowType shortcutSelectTranslateWindowType;

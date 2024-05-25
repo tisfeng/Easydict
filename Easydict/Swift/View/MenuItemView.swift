@@ -13,7 +13,6 @@ import ZipArchive
 
 // MARK: - MenuItemStore
 
-@available(macOS 13, *)
 final class MenuItemStore: ObservableObject {
     // MARK: Lifecycle
 
@@ -30,7 +29,6 @@ final class MenuItemStore: ObservableObject {
 
 // MARK: - MenuItemView
 
-@available(macOS 13, *)
 struct MenuItemView: View {
     // MARK: Internal
 
@@ -237,7 +235,6 @@ struct MenuItemView: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     MenuItemView()
 }

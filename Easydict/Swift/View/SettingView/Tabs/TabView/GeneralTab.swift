@@ -11,7 +11,6 @@ import SwiftUI
 
 // MARK: - GeneralTab
 
-@available(macOS 13, *)
 struct GeneralTab: View {
     // MARK: Internal
 
@@ -271,7 +270,6 @@ struct GeneralTab: View {
     @Default(.hideMainWindow) private var hideMainWindow
     @Default(.launchAtStartup) private var launchAtStartup
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
-    @Default(.enableBetaNewApp) private var enableBetaNewApp
 
     @Default(.languageDetectOptimize) private var languageDetectOptimize
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
@@ -301,14 +299,12 @@ struct GeneralTab: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     GeneralTab()
 }
 
 // MARK: - FirstAndSecondLanguageSettingView
 
-@available(macOS 13, *)
 private struct FirstAndSecondLanguageSettingView: View {
     // MARK: Internal
 

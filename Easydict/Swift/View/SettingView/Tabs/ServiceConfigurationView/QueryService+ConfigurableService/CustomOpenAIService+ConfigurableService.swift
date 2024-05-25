@@ -13,7 +13,6 @@ import SwiftUI
 
 // MARK: - CustomOpenAIService + ConfigurableService
 
-@available(macOS 13.0, *)
 extension CustomOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
         CustomOpenAIServiceConfigurationView(service: self)
@@ -22,7 +21,6 @@ extension CustomOpenAIService: ConfigurableService {
 
 // MARK: - CustomOpenAIServiceConfigurationView
 
-@available(macOS 13.0, *)
 private struct CustomOpenAIServiceConfigurationView: View {
     // MARK: Lifecycle
 
