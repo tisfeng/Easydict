@@ -40,7 +40,6 @@
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
-		034749772B37279200FF679C /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -1021,6 +1020,17 @@
 			path = EasydictTests;
 			sourceTree = "<group>";
 		};
+		0317516C2C018A8800EFB343 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
+				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
+				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
+				EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */,
+			);
+			path = Others;
+			sourceTree = "<group>";
+		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1340,7 +1350,6 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				03CF88602B137ECB0030C199 /* Swift */,
 				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
 				030570DF2ADB916E00C9905E /* AppleScript */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
@@ -1374,8 +1383,9 @@
 		038A723E2B62C07B004995E3 /* String */ = {
 			isa = PBXGroup;
 			children = (
-				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
 				033A8EAD2BDFE09B00030C08 /* String+Extension.swift */,
+				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
+				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
 			);
 			path = String;
 			sourceTree = "<group>";
@@ -2012,18 +2022,6 @@
 			path = SystemUtility;
 			sourceTree = "<group>";
 		};
-		03CF88602B137ECB0030C199 /* Swift */ = {
-			isa = PBXGroup;
-			children = (
-				0A2A05A42B59755F00EEA142 /* Bundle */,
-				0A2BA9622B4A3CBB002872A4 /* Notification */,
-				0A2BA95E2B49A967002872A4 /* Binding */,
-				03FD68BC2B1E14B500FD388E /* String */,
-				03CF88612B137ED60030C199 /* Array */,
-			);
-			path = Swift;
-			sourceTree = "<group>";
-		};
 		03CF88612B137ED60030C199 /* Array */ = {
 			isa = PBXGroup;
 			children = (
@@ -2186,14 +2184,6 @@
 				03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */,
 			);
 			path = Volcano;
-			sourceTree = "<group>";
-		};
-		03FD68BC2B1E14B500FD388E /* String */ = {
-			isa = PBXGroup;
-			children = (
-				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
-			);
-			path = String;
 			sourceTree = "<group>";
 		};
 		0A2A05A42B59755F00EEA142 /* Bundle */ = {
@@ -2520,14 +2510,15 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0317516C2C018A8800EFB343 /* Others */,
+				0A2A05A42B59755F00EEA142 /* Bundle */,
+				0A2BA9622B4A3CBB002872A4 /* Notification */,
+				0A2BA95E2B49A967002872A4 /* Binding */,
+				03CF88612B137ED60030C199 /* Array */,
 				03779F162BB256C5008D3C42 /* URL */,
 				038F1F8D2BAD835500CD2F65 /* AppKit */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
-				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
-				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
-				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
-				EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2920,7 +2911,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				034749772B37279200FF679C /* String+EncryptAES.swift in Sources */,
 				03022F312B370B7100B63209 /* EasydictSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
