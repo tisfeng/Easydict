@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
+// will deprecation in next release now this class only used to fetch Repo last version in SwiftUI version. In this case it should be removed and move the fetch func to a new class
 @interface EZMenuItemManager : NSObject
 
 @property (nonatomic, strong, nullable) NSStatusItem *statusItem;

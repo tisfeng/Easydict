@@ -9,7 +9,6 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 13.0, *)
 extension CaiyunService: ConfigurableService {
     func configurationListItems() -> some View {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.caiyunToken]) {

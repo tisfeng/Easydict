@@ -14,7 +14,6 @@
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
-#import "EZPreferencesWindowController.h"
 
 typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZTitlebarButtonTypePin = 0,
@@ -141,11 +140,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)goToSettings {
-    if ([[Configuration shared] enableBetaNewApp]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
-    } else {
-        [EZPreferencesWindowController.shared show];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
 }
 
 #pragma mark - Getter && Setter

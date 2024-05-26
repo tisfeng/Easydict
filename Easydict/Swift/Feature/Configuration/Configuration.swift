@@ -19,9 +19,6 @@ enum LanguageDetectOptimize: Int {
     case google = 2
 }
 
-let kEnableBetaNewAppKey = "EZConfiguration_kEnableBetaNewAppKey"
-let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
-
 // MARK: - Configuration
 
 @objcMembers
@@ -83,8 +80,6 @@ class Configuration: NSObject {
     @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
 
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
-
-    @DefaultsWrapper(.enableBetaNewApp) var enableBetaNewApp: Bool
 
     @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
 
@@ -314,13 +309,6 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.enableBetaNewApp, options: [])
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.didSetEnableBetaNewApp()
-            }
-            .store(in: &cancellables)
-
         Defaults.publisher(.fixedWindowPosition, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
@@ -489,25 +477,16 @@ extension Configuration {
 
     fileprivate func didSetShowGoogleQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().googleItem?.isHidden = !showGoogleQuickLink
-
         logSettings(["show_google_link": showGoogleQuickLink])
     }
 
     fileprivate func didSetShowEudicQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().eudicItem?.isHidden = !showEudicQuickLink
-
         logSettings(["show_eudic_link": showEudicQuickLink])
     }
 
     fileprivate func didSetShowAppleDictionaryQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().appleDictionaryItem?.isHidden = !showAppleDictionaryQuickLink
-
         logSettings(["show_apple_dictionary_link": showAppleDictionaryQuickLink])
     }
 
@@ -518,15 +497,7 @@ extension Configuration {
     }
 
     fileprivate func didSetHideMenuBarIcon() {
-        if !Configuration.shared.enableBetaNewApp {
-            hideMenuBarIcon(hidden: hideMenuBarIcon)
-        }
-
         logSettings(["hide_menu_bar_icon": hideMenuBarIcon])
-    }
-
-    fileprivate func didSetEnableBetaNewApp() {
-        logSettings(["enable_beta_new_app": enableBetaNewApp])
     }
 
     fileprivate func didSetFixedWindowPosition() {
@@ -629,14 +600,6 @@ extension Configuration {
     fileprivate func postUpdateQuickLinkButtonNotification() {
         let notification = Notification(name: .init("EZQuickLinkButtonUpdateNotification"), object: nil)
         NotificationCenter.default.post(notification)
-    }
-
-    fileprivate func hideMenuBarIcon(hidden: Bool) {
-        if hidden {
-            EZMenuItemManager.shared().remove()
-        } else {
-            EZMenuItemManager.shared().setup()
-        }
     }
 
     fileprivate func updateLoginItemWithLaunchAtStartup(_ launchAtStartup: Bool) {

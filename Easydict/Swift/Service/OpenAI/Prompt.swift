@@ -277,7 +277,8 @@ extension LLMStreamService {
         sentence: String,
         from sourceLanguage: Language,
         to targetLanguage: Language
-    ) -> [[String: String]] {
+    )
+        -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
 
         var prompt = ""

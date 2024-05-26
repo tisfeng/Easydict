@@ -829,9 +829,7 @@ static EZAppleService *_instance;
             //            MMLogInfo(@"supported Languages: %@", supportedLanguages);
         }
         
-        if (@available(macOS 13.0, *)) {
-            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
-        }
+        request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
         
         if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
             // If has designated ocr language, move it to first priority.

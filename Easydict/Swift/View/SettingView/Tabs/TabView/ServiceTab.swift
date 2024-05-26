@@ -11,7 +11,6 @@ import SwiftUI
 
 // MARK: - ServiceTab
 
-@available(macOS 13, *)
 struct ServiceTab: View {
     // MARK: Internal
 
@@ -115,7 +114,6 @@ private class ServiceTabViewModel: ObservableObject {
 
 // MARK: - ServiceItems
 
-@available(macOS 13.0, *)
 private struct ServiceItems: View {
     // MARK: Internal
 
@@ -183,7 +181,6 @@ private class ServiceItemViewModel: ObservableObject {
 
 // MARK: - ServiceItemView
 
-@available(macOS 13.0, *)
 private struct ServiceItemView: View {
     // MARK: Lifecycle
 
@@ -233,7 +230,6 @@ private struct ServiceItemView: View {
 
 // MARK: - WindowTypePicker
 
-@available(macOS 13, *)
 private struct WindowTypePicker: View {
     @Binding var windowType: EZWindowType
 
