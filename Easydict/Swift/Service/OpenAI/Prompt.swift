@@ -12,11 +12,11 @@ import Foundation
 
 extension LLMStreamService {
     static let translationSystemPrompt = """
-    You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show redundant quotes and additional notes in translation.
+    You are a translation expert proficient in various languages, focusing solely on translating text without interpretation. You accurately understand the meanings of proper nouns, idioms, metaphors, allusions, and other obscure words in sentences, translating them appropriately based on the context and language environment. The translation should be natural and fluent. Only return the translated text, without including redundant quotes or additional notes.
     """
 
     func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
-        "Translate the following \(sourceLanguage.queryLangaugeName) text into \(targetLanguage.queryLangaugeName) text:\"\"\"\(text)\"\"\""
+        "Translate the following \(sourceLanguage.queryLangaugeName) text into \(targetLanguage.queryLangaugeName) text: \"\"\"\(text)\"\"\""
     }
 
     func translatioMessages(text: String, from: Language, to: Language) -> [[String: String]] {
@@ -301,28 +301,28 @@ extension LLMStreamService {
         prompt += sentencePrompt
 
         let directTranslationPrompt =
-            "First, translate the sentence into \(targetLanguage) text literally, keep the original format, and don’t miss any information, desired display format: \"\(literalTranslation):\n{literal_translation} \",\n\n"
+            "First, translate the sentence into \(targetLanguage) literally, keeping the original format and including all information. Use the format: \"\(literalTranslation):\n{literal_translation}\".\n\n"
         prompt += directTranslationPrompt
 
-        let stepByStepPrompt = "Then, follow the steps below step by step.\n"
+        let stepByStepPrompt = "Then, follow these steps:\n"
         prompt += stepByStepPrompt
 
         let keyWordsPrompt =
-            "1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail if it's not a common meaning, desired display format: \"\(keyWords):\n{key_words_pos} \", \n\n"
+            "1. List up to 5 key words, phrases, or collocations from the sentence. For each, include all parts of speech and meanings, and specify its meaning in this context if it differs from the common meaning. Use the format: \"\(keyWords):\n{key_words_pos}\".\n\n"
         prompt += keyWordsPrompt
 
         let grammarParsePrompt =
-            "2. Analyze the grammatical structure of this sentence, desired display format: \"\(grammarParse):\n{grammatical_analysis} \", \n\n"
+            "2. Analyze the grammatical structure of the sentence. Use the format: \"\(grammarParse):\n{grammatical_analysis}\".\n\n"
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with \(targetLanguage) expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the \(targetLanguage) expression habits, while keeping the original format unchanged. If this sentence contains proverbs, metaphors, historical allusions, or comes from famous works, please break the line after the translation and attach its detailed introduction. Desired display format: \"\(freeTranslation):\n{free_translation} \", \n\n"
+            "3. Identify any issues in the literal translation, such as non-standard \(targetLanguage) expressions, awkwardness, or ambiguity. Provide a free translation that maintains the original meaning but is clearer and more natural in \(targetLanguage). If the sentence includes idioms, metaphors, historical references, or famous works, provide a detailed introduction after the translation. Use the format: \"\(freeTranslation):\n{free_translation}\".\n\n"
         prompt += freeTranslationPrompt
 
-        let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue). \n"
+        let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue).\n"
         prompt += answerLanguagePrompt
 
-        let disableNotePrompt = "Do not display additional information or notes."
+        let disableNotePrompt = "Do not include additional information or notes."
         prompt += disableNotePrompt
 
         // Add few-shot examples or other messages as needed
@@ -330,13 +330,13 @@ extension LLMStreamService {
             [
                 "role": "user",
                 "content": """
-                Here is a English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
-                First, display the Simplified-Chinese translation of this sentence.
-                Then, follow the steps below step by step.
-                1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.
-                2. Analyze the grammatical structure of this sentence.
-                3. Show Simplified-Chinese inferred translation.
-                Answer in Simplified-Chinese.
+                Here is an English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
+                First, provide the Simplified Chinese translation of this sentence.
+                Then, follow these steps:
+                1. List the key vocabulary and phrases in the sentence. Include all parts of speech and meanings, and explain their specific meanings in this context.
+                2. Analyze the grammatical structure of the sentence.
+                3. Provide the inferred translation in Simplified Chinese.
+                Answer in Simplified Chinese.
                 """,
             ],
             [
@@ -434,30 +434,36 @@ extension LLMStreamService {
             [
                 "role": "user",
                 "content": """
-                Here is a English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\",
-                First, translate the sentence into English text literally, keep the original format, and don’t miss any information, desired display format: \"Literal Translation:
-                {literal_translation_result}",
-                Then, follow the steps below step by step.
-                1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"Key Words:
-                {key_words}",
-                2. Analyze the grammatical structure of this sentence, desired display format: \"Grammar Parsing:
-                {grammatical_analysis}",
-                3. Re-translate the sentence freely, based on ensuring the original meaning of the content, make it easier to understand, more in line with the English expression habits, while keeping the original format unchanged, desired display format: \"Free Translation:
-                {free_translation_result}",
+                Here is an English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
+
+                First, translate the sentence into English literally, keeping the original format and including all information. Use the following format: \"Literal Translation:\n{literal_translation_result}\".
+
+                Then, follow these steps:
+
+                1. List up to 5 key words, common phrases, or collocations in the sentence. For each, include all parts of speech and meanings, and explain its specific meaning in this context. Use the format: \"Key Words:\n{key_words}\".
+
+                2. Analyze the grammatical structure of the sentence. Use the format: \"Grammar Parsing:\n{grammatical_analysis}\".
+
+                3. Provide a free translation of the sentence, ensuring it retains the original meaning but is easier to understand and more natural in English. Keep the original format unchanged. Use the format: \"Free Translation:\n{free_translation_result}\".
+
                 Answer in English.
                 """,
             ],
             [
                 "role": "assistant",
                 "content": """
+                Literal Translation:
                 But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is difficult to say.
-                1. Key Words:
+
+                Key Words:
                 chancellor: n. Chancellor; minister. Here it refers to the German chancellor.
                 dynamic: adj. energetic; dynamic. Here it refers to strong leadership.
                 drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic.
-                2. Grammar Parsing:
+
+                Grammar Parsing:
                 The sentence is a complex sentence. The main clause is "But .... is hard to say" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause.
-                3. Free Translation:
+
+                Free Translation:
                 It's hard to say whether the incoming chancellor will offer dynamic leadership, or just prolong Germany's recent drift.
                 """,
             ],
@@ -496,6 +502,7 @@ extension LLMStreamService {
         let answerLanguage = Configuration.shared.firstLanguage
 
         var pronunciation = "Pronunciation"
+        var tense = "Tense"
         var translationTitle = "Translation"
         var explanation = "Explanation"
         var etymology = "Etymology"
@@ -515,8 +522,9 @@ extension LLMStreamService {
 
         let sourceLanguageString = sourceLanguage.rawValue
 
-        let dictSystemPrompt =
-            "You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. Priority is given to queries from authoritative dictionary databases, such as Oxford Dictionary, Cambridge Dictionary, etc., as well as Wikipedia, and Chinese words are preferentially queried from Baidu Baike. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n"
+        let dictSystemPrompt = """
+        You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. For Chinese words, use Baidu Baike. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
+        """
 
         let answerLanguagePrompt = "Using \(answerLanguage.rawValue): \n"
         prompt.append(answerLanguagePrompt)
@@ -526,6 +534,7 @@ extension LLMStreamService {
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             pronunciation = "发音"
+            tense = "时态"
             translationTitle = "翻译"
             explanation = "解释"
             etymology = "词源学"
@@ -538,114 +547,95 @@ extension LLMStreamService {
         }
 
         let pronunciationPrompt =
-            "Look up its pronunciation, desired display format: \"\(pronunciation): / {pronunciation} /\" \n"
+            "Look up its pronunciation, use the format: \"\(pronunciation): /{pronunciation}/\" \n"
         prompt.append(pronunciationPrompt)
 
         if isEnglishWord {
             let partOfSpeechAndMeaningPrompt = """
-            Look up its all parts of speech and meanings, pos always displays its English abbreviation, each line only shows one abbreviation of pos and meaning: " {pos} " .
+            Look up all parts of speech and meanings. Use the format: "{pos}. {meaning}", with one part of speech and meaning per line.
             """
-            prompt += partOfSpeechAndMeaningPrompt
+            prompt.append(partOfSpeechAndMeaningPrompt)
 
             let tensePrompt = """
-            Look up its all tenses and forms, each line only display one tense or form, if has, show desired format: " {tenses_and_forms} " .
+            Look up all tenses of the word based on its part of speech. If the word is a noun, provide only its plural form. If the word is a verb, provide its third person singular, present participle, past tense, and past participle forms. Show only one tense per line, use the format: "\(
+                tense
+            ):\n{tenses}".
             """
-            prompt += tensePrompt
+            prompt.append(tensePrompt)
         } else {
             let translationPrompt = translationPrompt(text: word, from: sourceLanguage, to: targetLanguage)
-            prompt += "\(translationPrompt), desired display format: \"\(translationTitle): {translation} \" "
+            prompt.append("\(translationPrompt), use the format: \"\(translationTitle): {translation}\" ")
         }
 
         let explanationPrompt = """
-        \nLook up its brief <\(
+        Look up its brief explanation in \(
             answerLanguage
                 .rawValue
-        )> explanation in clear and understandable way, desired display format: "\(
-            explanation
-        ): {brief_explanation} "
-
+        ) in a clear and understandable way. Use the format: "\(explanation): {brief_explanation}"
         """
-        prompt += explanationPrompt
+        prompt.append(explanationPrompt)
 
         let etymologyPrompt = """
-        Look up its detailed \(
+        Look up its detailed etymology, including the original origin, changes in meaning, and current common meaning. Use the format: "\(
             etymology
-        ), including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. desired display format: "\(
-            etymology
-        ): {detailed_etymology} " .
-
+        ): {detailed_etymology}".
         """
-        prompt += etymologyPrompt
+        prompt.append(etymologyPrompt)
 
         if isEnglishWord {
             let rememberWordPrompt = """
-            Look up disassembly and association methods to remember it, desired display format: "\(
+            Look up methods for disassembling and associating it for better memory. Use the format: "\(
                 howToRemember
-            ): {how_to_remember} "
-
+            ): {how_to_remember}".
             """
-            prompt += rememberWordPrompt
+            prompt.append(rememberWordPrompt)
 
             let cognatesPrompt = """
-            \nLook up main <\(sourceLanguageString)> words with the same root word as "\(
-                word
-            )", no more than 4, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: "\(
+            Look up main \(
+                sourceLanguageString
+            ) words with the same root. List no more than 4, excluding phrases. Display all parts of speech and meanings. If there are words with the same root, use the format: "\(
                 cognate
-            ): {cognates} ", otherwise don't display it.
-
+            ): {cognates}", otherwise don't display it.
             """
-            prompt += cognatesPrompt
+            prompt.append(cognatesPrompt)
         }
 
         if isWord || isEnglishPhrase {
             let synonymsPrompt = """
-            \nLook up its main <\(
-                sourceLanguageString
-            )> near synonyms, no more than 3, If it has synonyms, show format: "\(
+            Look up main \(sourceLanguageString) synonyms, no more than 3. If there are synonyms, use the format: "\(
                 synonym
-            ): {synonyms} "
+            ): {synonyms}".
             """
-            prompt += synonymsPrompt
+            prompt.append(synonymsPrompt)
 
             let antonymsPrompt = """
-            \nLook up its main <\(
-                sourceLanguageString
-            )> near antonyms, no more than 3, If it has antonyms, show format: "\(
+            Look up main \(sourceLanguageString) antonyms, no more than 3. If there are antonyms, use the format: "\(
                 antonym
-            ): {antonyms} "
-
+            ): {antonyms}".
             """
-            prompt += antonymsPrompt
+            prompt.append(antonymsPrompt)
 
             let phrasePrompt = """
-            \nLook up its main <\(sourceLanguageString)> phrases, no more than 3, If it has phrases, show format: "\(
+            Look up main \(sourceLanguageString) phrases, no more than 3. If there are phrases, use the format: "\(
                 commonPhrases
-            ): {phrases} "
-
+            ): {phrases}".
             """
-            prompt += phrasePrompt
+            prompt.append(phrasePrompt)
         }
 
         let exampleSentencePrompt = """
-        \nLook up its main <\(
+        Look up main \(
             sourceLanguageString
-        )> example sentences and translation, no more than 2, If it has example sentences, use * to mark its specific meaning in the translated sentence of the example sentence, show format: "\(
+        ) example sentences and their translations, no more than 2. Mark the specific meaning in the translated sentence with *. Use the format: "\(
             exampleSentence
-        ):\n{example_sentences} "
-
+        ):\n{example_sentences}".
         """
-        prompt += exampleSentencePrompt
-
-        let bracketsPrompt = """
-        Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain.
-
-        """
-        prompt += bracketsPrompt
+        prompt.append(exampleSentencePrompt)
 
         let wordCountPrompt = """
-        Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.
+        Ensure the explanation is around 50 words and the etymology is between 100 and 400 words. Word count does not need to be displayed.
         """
-        prompt += wordCountPrompt
+        prompt.append(wordCountPrompt)
 
         let disableNotePrompt = "Do not display additional information or notes."
         prompt.append(disableNotePrompt)
@@ -656,7 +646,7 @@ extension LLMStreamService {
                 "content": """
                 Using Simplified-Chinese:
                 Here is a English word: \"\"\"album\"\"\",
-                Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                Look up its pronunciation, part of speech and meanings, tenses, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
             [
@@ -666,6 +656,7 @@ extension LLMStreamService {
 
                 n. 相册；唱片集；集邮簿
 
+                时态：
                 复数：albums
 
                 解释：{explanation}
@@ -707,6 +698,7 @@ extension LLMStreamService {
                 vt. 掠夺；狼吞虎咽
                 vi. 掠夺；狼吞虎咽
 
+                时态：
                 复数: ravens
                 第三人称单数: ravens
                 现在分词: ravening
@@ -723,8 +715,8 @@ extension LLMStreamService {
                 n. ravage 蹂躏，破坏
                 vi. ravage 毁坏；掠夺
                 vt. ravage 毁坏；破坏；掠夺
-
                 adj. ravenous 贪婪的；渴望的；狼吞虎咽的
+
                 近义词: seize, blackbird
                 反义词：protect, guard, defend
 
@@ -770,7 +762,7 @@ extension LLMStreamService {
                 "content": """
                 Using English:
                 Here is a English word: "raven",
-                Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                Look up its pronunciation, part of speech and meanings, tenses, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
             [
@@ -781,6 +773,7 @@ extension LLMStreamService {
                 n. A large, black bird with a deep croak
                 v. To seize or devour greedily
 
+                Tense:
                 Plural: ravens
                 Present participle: ravening
                 Past tense: ravened
