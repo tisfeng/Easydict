@@ -501,6 +501,7 @@ extension LLMStreamService {
         let answerLanguage = Configuration.shared.firstLanguage
 
         var pronunciation = "Pronunciation"
+        var tense = "Tense"
         var translationTitle = "Translation"
         var explanation = "Explanation"
         var etymology = "Etymology"
@@ -532,6 +533,7 @@ extension LLMStreamService {
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             pronunciation = "发音"
+            tense = "时态"
             translationTitle = "翻译"
             explanation = "解释"
             etymology = "词源学"
@@ -554,7 +556,9 @@ extension LLMStreamService {
             prompt.append(partOfSpeechAndMeaningPrompt)
 
             let tensePrompt = """
-            Look up all tenses and forms. Use the format: "{tenses_and_forms}", with one tense or form per line.
+            Look up all tenses of the word based on its part of speech. If the word is a noun, provide only its plural form. If the word is a verb, provide its third person singular, present participle, past tense, and past participle forms. Show only one tense per line, use the format: "\(
+                tense
+            ):\n{tenses}".
             """
             prompt.append(tensePrompt)
         } else {
@@ -641,7 +645,7 @@ extension LLMStreamService {
                 "content": """
                 Using Simplified-Chinese:
                 Here is a English word: \"\"\"album\"\"\",
-                Look up its pronunciation, part of speech and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                Look up its pronunciation, part of speech and meanings, tenses, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
             [
@@ -651,6 +655,7 @@ extension LLMStreamService {
 
                 n. 相册；唱片集；集邮簿
 
+                时态：
                 复数：albums
 
                 解释：{explanation}
@@ -692,6 +697,7 @@ extension LLMStreamService {
                 vt. 掠夺；狼吞虎咽
                 vi. 掠夺；狼吞虎咽
 
+                时态：
                 复数: ravens
                 第三人称单数: ravens
                 现在分词: ravening
@@ -709,7 +715,7 @@ extension LLMStreamService {
                 vi. ravage 毁坏；掠夺
                 vt. ravage 毁坏；破坏；掠夺
                 adj. ravenous 贪婪的；渴望的；狼吞虎咽的
-                
+
                 近义词: seize, blackbird
                 反义词：protect, guard, defend
 
@@ -755,7 +761,7 @@ extension LLMStreamService {
                 "content": """
                 Using English:
                 Here is a English word: "raven",
-                Look up its pronunciation, part of speech and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                Look up its pronunciation, part of speech and meanings, tenses, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
             [
@@ -766,6 +772,7 @@ extension LLMStreamService {
                 n. A large, black bird with a deep croak
                 v. To seize or devour greedily
 
+                Tense:
                 Plural: ravens
                 Present participle: ravening
                 Past tense: ravened
