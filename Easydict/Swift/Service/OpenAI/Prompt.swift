@@ -520,8 +520,9 @@ extension LLMStreamService {
 
         let sourceLanguageString = sourceLanguage.rawValue
 
-        let dictSystemPrompt =
-            "You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. Priority is given to queries from authoritative dictionary databases, such as Oxford Dictionary, Cambridge Dictionary, etc., as well as Wikipedia, and Chinese words are preferentially queried from Baidu Baike. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n"
+        let dictSystemPrompt = """
+        You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. For Chinese words, use Baidu Baike. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
+        """
 
         let answerLanguagePrompt = "Using \(answerLanguage.rawValue): \n"
         prompt.append(answerLanguagePrompt)
@@ -543,114 +544,93 @@ extension LLMStreamService {
         }
 
         let pronunciationPrompt =
-            "Look up its pronunciation, desired display format: \"\(pronunciation): / {pronunciation} /\" \n"
+            "Look up its pronunciation, use the format: \"\(pronunciation): /{pronunciation}/\" \n"
         prompt.append(pronunciationPrompt)
 
         if isEnglishWord {
             let partOfSpeechAndMeaningPrompt = """
-            Look up its all parts of speech and meanings, pos always displays its English abbreviation, each line only shows one abbreviation of pos and meaning: " {pos} " .
+            Look up all parts of speech and meanings. Use the format: "{pos}. {meaning}", with one part of speech and meaning per line.
             """
-            prompt += partOfSpeechAndMeaningPrompt
+            prompt.append(partOfSpeechAndMeaningPrompt)
 
             let tensePrompt = """
-            Look up its all tenses and forms, each line only display one tense or form, if has, show desired format: " {tenses_and_forms} " .
+            Look up all tenses and forms. Use the format: "{tenses_and_forms}", with one tense or form per line.
             """
-            prompt += tensePrompt
+            prompt.append(tensePrompt)
         } else {
             let translationPrompt = translationPrompt(text: word, from: sourceLanguage, to: targetLanguage)
-            prompt += "\(translationPrompt), desired display format: \"\(translationTitle): {translation} \" "
+            prompt.append("\(translationPrompt), use the format: \"\(translationTitle): {translation}\" ")
         }
 
         let explanationPrompt = """
-        \nLook up its brief <\(
+        Look up its brief explanation in \(
             answerLanguage
                 .rawValue
-        )> explanation in clear and understandable way, desired display format: "\(
-            explanation
-        ): {brief_explanation} "
-
+        ) in a clear and understandable way. Use the format: "\(explanation): {brief_explanation}"
         """
-        prompt += explanationPrompt
+        prompt.append(explanationPrompt)
 
         let etymologyPrompt = """
-        Look up its detailed \(
+        Look up its detailed etymology, including the original origin, changes in meaning, and current common meaning. Use the format: "\(
             etymology
-        ), including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. desired display format: "\(
-            etymology
-        ): {detailed_etymology} " .
-
+        ): {detailed_etymology}".
         """
-        prompt += etymologyPrompt
+        prompt.append(etymologyPrompt)
 
         if isEnglishWord {
             let rememberWordPrompt = """
-            Look up disassembly and association methods to remember it, desired display format: "\(
+            Look up methods for disassembling and associating it for better memory. Use the format: "\(
                 howToRemember
-            ): {how_to_remember} "
-
+            ): {how_to_remember}".
             """
-            prompt += rememberWordPrompt
+            prompt.append(rememberWordPrompt)
 
             let cognatesPrompt = """
-            \nLook up main <\(sourceLanguageString)> words with the same root word as "\(
-                word
-            )", no more than 4, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: "\(
+            Look up main \(
+                sourceLanguageString
+            ) words with the same root. List no more than 4, excluding phrases. Display all parts of speech and meanings. If there are words with the same root, use the format: "\(
                 cognate
-            ): {cognates} ", otherwise don't display it.
-
+            ): {cognates}", otherwise don't display it.
             """
-            prompt += cognatesPrompt
+            prompt.append(cognatesPrompt)
         }
 
         if isWord || isEnglishPhrase {
             let synonymsPrompt = """
-            \nLook up its main <\(
-                sourceLanguageString
-            )> near synonyms, no more than 3, If it has synonyms, show format: "\(
+            Look up main \(sourceLanguageString) synonyms, no more than 3. If there are synonyms, use the format: "\(
                 synonym
-            ): {synonyms} "
+            ): {synonyms}".
             """
-            prompt += synonymsPrompt
+            prompt.append(synonymsPrompt)
 
             let antonymsPrompt = """
-            \nLook up its main <\(
-                sourceLanguageString
-            )> near antonyms, no more than 3, If it has antonyms, show format: "\(
+            Look up main \(sourceLanguageString) antonyms, no more than 3. If there are antonyms, use the format: "\(
                 antonym
-            ): {antonyms} "
-
+            ): {antonyms}".
             """
-            prompt += antonymsPrompt
+            prompt.append(antonymsPrompt)
 
             let phrasePrompt = """
-            \nLook up its main <\(sourceLanguageString)> phrases, no more than 3, If it has phrases, show format: "\(
+            Look up main \(sourceLanguageString) phrases, no more than 3. If there are phrases, use the format: "\(
                 commonPhrases
-            ): {phrases} "
-
+            ): {phrases}".
             """
-            prompt += phrasePrompt
+            prompt.append(phrasePrompt)
         }
 
         let exampleSentencePrompt = """
-        \nLook up its main <\(
+        Look up main \(
             sourceLanguageString
-        )> example sentences and translation, no more than 2, If it has example sentences, use * to mark its specific meaning in the translated sentence of the example sentence, show format: "\(
+        ) example sentences and their translations, no more than 2. Mark the specific meaning in the translated sentence with *. Use the format: "\(
             exampleSentence
-        ):\n{example_sentences} "
-
+        ):\n{example_sentences}".
         """
-        prompt += exampleSentencePrompt
-
-        let bracketsPrompt = """
-        Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain.
-
-        """
-        prompt += bracketsPrompt
+        prompt.append(exampleSentencePrompt)
 
         let wordCountPrompt = """
-        Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.
+        Ensure the explanation is around 50 words and the etymology is between 100 and 400 words. Word count does not need to be displayed.
         """
-        prompt += wordCountPrompt
+        prompt.append(wordCountPrompt)
 
         let disableNotePrompt = "Do not display additional information or notes."
         prompt.append(disableNotePrompt)
@@ -661,7 +641,7 @@ extension LLMStreamService {
                 "content": """
                 Using Simplified-Chinese:
                 Here is a English word: \"\"\"album\"\"\",
-                Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                Look up its pronunciation, part of speech and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
             [
@@ -728,8 +708,8 @@ extension LLMStreamService {
                 n. ravage 蹂躏，破坏
                 vi. ravage 毁坏；掠夺
                 vt. ravage 毁坏；破坏；掠夺
-
                 adj. ravenous 贪婪的；渴望的；狼吞虎咽的
+                
                 近义词: seize, blackbird
                 反义词：protect, guard, defend
 
@@ -775,7 +755,7 @@ extension LLMStreamService {
                 "content": """
                 Using English:
                 Here is a English word: "raven",
-                Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                Look up its pronunciation, part of speech and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
                 """,
             ],
             [
