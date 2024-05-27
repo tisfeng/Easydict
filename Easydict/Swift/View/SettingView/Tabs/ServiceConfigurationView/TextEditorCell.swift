@@ -20,9 +20,11 @@ struct TextEditorCell: View {
     var body: some View {
         HStack(alignment: .center, spacing: 20) {
             Text(title)
+
             TextEditorWithPlaceholder(text: $text, placeholder: placeholder, alignment: .topTrailing)
                 .padding(.horizontal, 3)
-                .padding(.vertical, 5)
+                .padding(.top, 5)
+                .padding(.bottom, 7)
                 .font(.body)
                 .lineSpacing(5)
                 .scrollContentBackground(.hidden) // Refer https://stackoverflow.com/a/62848618/8378840
@@ -50,16 +52,14 @@ struct TextEditorWithPlaceholder: View {
     var alignment: Alignment = .leading
 
     var body: some View {
-        HStack {
-            ZStack(alignment: alignment) {
-                if let placeholder = placeholder, text.isEmpty {
-                    Text(placeholder)
-                        .foregroundColor(Color(NSColor.placeholderTextColor))
-                        .padding(3)
-                }
-
-                TextEditor(text: $text)
+        ZStack(alignment: alignment) {
+            if let placeholder = placeholder, text.isEmpty {
+                Text(placeholder)
+                    .foregroundColor(Color(NSColor.placeholderTextColor))
+                    .padding(3)
             }
+
+            TextEditor(text: $text)
         }
     }
 }
