@@ -60,7 +60,8 @@ private struct CustomOpenAIServiceConfigurationView: View {
             // models
             TextEditorCell(
                 title: "service.configuration.custom_openai.supported_models.title",
-                text: viewModel.$availableModels ?? ""
+                text: viewModel.$availableModels ?? "",
+                placeholder: "service.configuration.custom_openai.model.placeholder"
             )
 
             Picker(

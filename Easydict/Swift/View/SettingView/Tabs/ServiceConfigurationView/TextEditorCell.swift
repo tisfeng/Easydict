@@ -11,20 +11,21 @@ import SwiftUI
 // MARK: - TextEditorCell
 
 struct TextEditorCell: View {
+    // MARK: Internal
+
     let title: LocalizedStringKey
     @Binding var text: String
-
-    let corner = RoundedRectangle(cornerRadius: 5)
+    let placeholder: LocalizedStringKey
 
     var body: some View {
         HStack(alignment: .center, spacing: 20) {
             Text(title)
-            TextEditor(text: $text)
+            TextEditorWithPlaceholder(text: $text, placeholder: placeholder, alignment: .topTrailing)
                 .padding(.horizontal, 3)
                 .padding(.vertical, 5)
                 .font(.body)
                 .lineSpacing(5)
-                .scrollContentBackground(.hidden)
+                .scrollContentBackground(.hidden) // Refer https://stackoverflow.com/a/62848618/8378840
                 .scrollIndicators(.hidden)
                 .background(Color.clear)
                 .clipShape(corner)
@@ -34,5 +35,31 @@ struct TextEditorCell: View {
                 .frame(minHeight: 50, maxHeight: 200)
         }
         .padding(10)
+    }
+
+    // MARK: Private
+
+    private let corner = RoundedRectangle(cornerRadius: 5)
+}
+
+// MARK: - TextEditorWithPlaceholder
+
+struct TextEditorWithPlaceholder: View {
+    @Binding var text: String
+    let placeholder: LocalizedStringKey?
+    var alignment: Alignment = .leading
+
+    var body: some View {
+        HStack {
+            ZStack(alignment: alignment) {
+                if let placeholder = placeholder, text.isEmpty {
+                    Text(placeholder)
+                        .foregroundColor(Color(NSColor.placeholderTextColor))
+                        .padding(3)
+                }
+
+                TextEditor(text: $text)
+            }
+        }
     }
 }
