@@ -2410,18 +2410,18 @@
         }
       }
     },
-    "service.configuration.gemini.api_key.title" : {
+    "service.configuration.gemini.api_key.placeholder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API Key"
+            "value" : "xxxxxxxxxxxxx"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Key"
+            "state" : "needs_review",
+            "value" : "xxxxxxxxxxxxx"
           }
         }
       }

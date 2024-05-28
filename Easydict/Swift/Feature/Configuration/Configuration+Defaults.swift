@@ -312,6 +312,31 @@ extension Defaults.Keys {
 
     // Gemni
     static let geminiAPIKey = Key<String?>(EZGeminiAPIKey)
+    static let geminiTranslation = Key<String>(
+        translationStoredKey(.gemini),
+        default: "1"
+    )
+    static let geminiDictionary = Key<String>(
+        dictionaryStoredKey(.gemini),
+        default: "1"
+    )
+    static let geminiSentence = Key<String>(
+        sentenceStoredKey(.gemini),
+        default: "1"
+    )
+    static let geminiServiceUsageStatus = Key<GeminiUsageStatus>(
+        serviceUsageStatusStoredKey(.gemini),
+        default: .default
+    )
+    static let geminiModel = Key<String>(EZGeminiModelKey, default: GeminiModel.gemini1_5_flash.rawValue)
+    static let geminiAvailableModels = Key<String?>(
+        EZGeminiAvailableModelsKey,
+        default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
+    )
+    static let geminiVaildModels = Key<Array>(
+        EZGeminiValidModelsKey,
+        default: GeminiModel.allCases.map { $0.rawValue }
+    )
 }
 
 /// shortcut

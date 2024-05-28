@@ -211,6 +211,15 @@
         EZCustomOpenAISentenceKey,
         EZCustomOpenAIServiceUsageStatusKey,
         
+        EZGeminiAPIKey,
+        EZGeminiTranslationKey,
+        EZGeminiDictionaryKey,
+        EZGeminiSentenceKey,
+        EZGeminiServiceUsageStatusKey,
+        EZGeminiModelKey,
+        EZGeminiAvailableModelsKey,
+        EZGeminiValidModelsKey,
+        
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,
         
@@ -225,7 +234,6 @@
         
         EZAliAccessKeyId,
         EZAliAccessKeySecret,
-        EZGeminiAPIKey,
 
         EZIntelligentQueryModeKey,
     ];

@@ -10,7 +10,6 @@ import Defaults
 import Foundation
 import GoogleGenerativeAI
 
-// TODO: add a LLM stream service base class, make both OpenAI and Gemini inherit from it.
 @objc(EZGeminiService)
 public final class GeminiService: LLMStreamService {
     // MARK: Public
@@ -28,7 +27,7 @@ public final class GeminiService: LLMStreamService {
     }
 
     override public func queryTextType() -> EZQueryTextType {
-        [.translation]
+        [.translation, .dictionary, .sentence]
     }
 
     override public func translate(
@@ -39,11 +38,14 @@ public final class GeminiService: LLMStreamService {
     ) {
         Task {
             do {
+                result.from = from
+                result.to = to
+                result.isStreamFinished = false
                 let translationPrompt = translationPrompt(text: text, from: from, to: to)
                 let prompt = LLMStreamService.translationSystemPrompt +
                     "\n" + translationPrompt
                 let model = GenerativeModel(
-                    name: "gemini-pro",
+                    name: model,
                     apiKey: apiKey,
                     safetySettings: [
                         harassmentBlockNone,
@@ -52,8 +54,6 @@ public final class GeminiService: LLMStreamService {
                         dangerousContentBlockNone,
                     ]
                 )
-
-                result.isStreamFinished = false
 
                 var resultString = ""
 
@@ -121,6 +121,20 @@ public final class GeminiService: LLMStreamService {
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     override var apiKey: String {
         Defaults[.geminiAPIKey] ?? ""
+    }
+
+    override var availableModels: [String] {
+        Defaults[.geminiVaildModels]
+    }
+
+    override var model: String {
+        get {
+            Defaults[.geminiModel]
+        }
+        set {
+            // easydict://writeKeyValue?EZGeminiModelKey=gemini-1.5-flash
+            Defaults[.geminiModel] = newValue
+        }
     }
 
     // MARK: Private
