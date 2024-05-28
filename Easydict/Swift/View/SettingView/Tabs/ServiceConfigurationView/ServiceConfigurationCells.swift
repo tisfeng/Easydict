@@ -155,7 +155,7 @@ struct ServiceConfigurationToggleCell: View {
         ServiceConfigurationPickerCell(
             titleKey: "service.configuration.openai.usage_status.title",
             key: .openAIServiceUsageStatus,
-            values: OpenAIUsageStats.allCases
+            values: OpenAIUsageStatus.allCases
         )
 
         ServiceConfigurationToggleCell(
