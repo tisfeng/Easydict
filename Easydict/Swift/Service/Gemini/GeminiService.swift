@@ -26,10 +26,6 @@ public final class GeminiService: LLMStreamService {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
-    override public func queryTextType() -> EZQueryTextType {
-        [.translation, .dictionary, .sentence]
-    }
-
     override public func translate(
         _ text: String,
         from: Language,
