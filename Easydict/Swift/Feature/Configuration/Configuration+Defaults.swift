@@ -221,7 +221,7 @@ extension Defaults.Keys {
         sentenceStoredKey(.openAI),
         default: "1"
     )
-    static let openAIServiceUsageStatus = Key<OpenAIUsageStatus>(
+    static let openAIServiceUsageStatus = Key<ServiceUsageStatus>(
         serviceUsageStatusStoredKey(.openAI),
         default: .default
     )
@@ -254,7 +254,7 @@ extension Defaults.Keys {
         sentenceStoredKey(.customOpenAI),
         default: "0"
     )
-    static let customOpenAIServiceUsageStatus = Key<OpenAIUsageStatus>(
+    static let customOpenAIServiceUsageStatus = Key<ServiceUsageStatus>(
         serviceUsageStatusStoredKey(.builtInAI),
         default: .default
     )
@@ -280,7 +280,7 @@ extension Defaults.Keys {
         sentenceStoredKey(.builtInAI),
         default: "0"
     )
-    static let builtInAIServiceUsageStatus = Key<OpenAIUsageStatus>(
+    static let builtInAIServiceUsageStatus = Key<ServiceUsageStatus>(
         serviceUsageStatusStoredKey(.builtInAI),
         default: .default
     )
@@ -324,7 +324,7 @@ extension Defaults.Keys {
         sentenceStoredKey(.gemini),
         default: "1"
     )
-    static let geminiServiceUsageStatus = Key<GeminiUsageStatus>(
+    static let geminiServiceUsageStatus = Key<ServiceUsageStatus>(
         serviceUsageStatusStoredKey(.gemini),
         default: .default
     )

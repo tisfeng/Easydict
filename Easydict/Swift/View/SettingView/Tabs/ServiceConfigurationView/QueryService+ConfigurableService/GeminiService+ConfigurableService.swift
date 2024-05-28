@@ -75,7 +75,7 @@ private struct GeminiServiceConfigurationView: View {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.usage_status.title",
                 key: .geminiServiceUsageStatus,
-                values: GeminiUsageStatus.allCases
+                values: ServiceUsageStatus.allCases
             )
         }
         .onDisappear {
@@ -196,42 +196,3 @@ extension GeminiModel: EnumLocalizedStringConvertible {
 // MARK: Defaults.Serializable
 
 extension GeminiModel: Defaults.Serializable {}
-
-// MARK: - GeminiUsageStatus
-
-enum GeminiUsageStatus: String, CaseIterable {
-    case `default` = "0"
-    case alwaysOff = "1"
-    case alwaysOn = "2"
-}
-
-// MARK: EnumLocalizedStringConvertible
-
-extension GeminiUsageStatus: EnumLocalizedStringConvertible {
-    var title: String { // Use same xcstring with openai for title
-        switch self {
-        case .default:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_default.title",
-                bundle: .main,
-                comment: ""
-            )
-        case .alwaysOff:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_always_off.title",
-                bundle: .main,
-                comment: ""
-            )
-        case .alwaysOn:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_always_on.title",
-                bundle: .main,
-                comment: ""
-            )
-        }
-    }
-}
-
-// MARK: Defaults.Serializable
-
-extension GeminiUsageStatus: Defaults.Serializable {}

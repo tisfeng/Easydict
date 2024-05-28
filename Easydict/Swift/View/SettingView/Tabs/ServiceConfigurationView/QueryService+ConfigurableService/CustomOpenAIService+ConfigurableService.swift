@@ -89,7 +89,7 @@ private struct CustomOpenAIServiceConfigurationView: View {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.usage_status.title",
                 key: .customOpenAIServiceUsageStatus,
-                values: OpenAIUsageStatus.allCases
+                values: ServiceUsageStatus.allCases
             )
         }
         .onDisappear {
