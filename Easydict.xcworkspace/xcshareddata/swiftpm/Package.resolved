@@ -1,4 +1,5 @@
 {
+  "originHash" : "1cdad83f58bb3467937e3ac7250e920b2a1fea08918ee2d945f05853d37eb573",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -77,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/generative-ai-swift",
       "state" : {
-        "revision" : "dcbdb5e591e1aa2bb68851dc7515f6b0a59026cd",
-        "version" : "0.4.7"
+        "revision" : "5d750b80651da9721c37c5eb1fc0b6750d1884d3",
+        "version" : "0.5.3"
       }
     },
     {
@@ -316,5 +317,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
