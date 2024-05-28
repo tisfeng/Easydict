@@ -56,7 +56,7 @@ struct TextEditorWithPlaceholder: View {
             if let placeholder = placeholder, text.isEmpty {
                 Text(placeholder)
                     .foregroundColor(Color(NSColor.placeholderTextColor))
-                    .padding(3)
+        .padding(.horizontal, 5)
             }
 
             TextEditor(text: $text)
