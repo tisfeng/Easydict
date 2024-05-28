@@ -21,7 +21,7 @@ struct TextEditorCell: View {
         HStack(alignment: .center, spacing: 20) {
             Text(title)
 
-            TextEditorWithPlaceholder(text: $text, placeholder: placeholder, oneLineAlignment: .topTrailing)
+            TrailingTextEditorWithPlaceholder(text: $text, placeholder: placeholder)
                 .padding(.horizontal, 3)
                 .padding(.top, 5)
                 .padding(.bottom, 7)
@@ -44,12 +44,12 @@ struct TextEditorCell: View {
     private let corner = RoundedRectangle(cornerRadius: 5)
 }
 
-// MARK: - TextEditorWithPlaceholder
+// MARK: - TrailingTextEditorWithPlaceholder
 
-struct TextEditorWithPlaceholder: View {
+struct TrailingTextEditorWithPlaceholder: View {
     @Binding var text: String
     let placeholder: LocalizedStringKey?
-    @State var oneLineAlignment: Alignment = .leading
+    @State var oneLineAlignment: Alignment = .topTrailing
 
     var body: some View {
         ZStack(alignment: oneLineAlignment) {
@@ -62,13 +62,14 @@ struct TextEditorWithPlaceholder: View {
                         Color.clear.onAppear {
                             // 22 is one line height, if placeholder is more than one line, alway set alignment to .leading
                             if geometry.size.height > 22 {
-                                oneLineAlignment = .leading
+                                oneLineAlignment = .topLeading
                             }
                         }
                     })
             }
 
             TextEditor(text: $text)
+                .multilineTextAlignment(.trailing)
         }
     }
 }
