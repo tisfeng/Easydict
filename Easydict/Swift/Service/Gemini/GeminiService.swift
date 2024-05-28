@@ -120,7 +120,7 @@ public final class GeminiService: LLMStreamService {
     }
 
     override var availableModels: [String] {
-        Defaults[.geminiVaildModels]
+        Defaults[.geminiValidModels]
     }
 
     override var model: String {

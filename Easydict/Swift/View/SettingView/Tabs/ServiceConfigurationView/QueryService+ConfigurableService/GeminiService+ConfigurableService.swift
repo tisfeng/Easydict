@@ -155,7 +155,7 @@ private class GeminiViewModel: ObservableObject {
             model = validModels[0]
         }
 
-        Defaults[.geminiVaildModels] = validModels
+        Defaults[.geminiValidModels] = validModels
     }
 
     private func serviceConfigChanged() {

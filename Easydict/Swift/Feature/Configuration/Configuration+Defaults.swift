@@ -333,8 +333,8 @@ extension Defaults.Keys {
         "geminiAvailableModels",
         default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
-    static let geminiVaildModels = Key<Array>(
-        "geminiVaildModels",
+    static let geminiValidModels = Key<Array>(
+        "geminiValidModels",
         default: GeminiModel.allCases.map { $0.rawValue }
     )
 }
