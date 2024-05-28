@@ -68,7 +68,12 @@ public final class GeminiService: LLMStreamService {
                         result.translatedResults = [resultString]
                         await MainActor.run {
                             throttler.throttle { [unowned self] in
-                                completion(result, nil)
+                                handleResult(
+                                    queryType: queryType,
+                                    resultString: concatenateStrings(from: result.translatedResults ?? []),
+                                    error: nil,
+                                    completion: completion
+                                )
                             }
                         }
                     }
@@ -99,6 +104,8 @@ public final class GeminiService: LLMStreamService {
     }
 
     // MARK: Internal
+
+    var updateCompletion: ((EZQueryResult, Error?) -> ())?
 
     // https://ai.google.dev/available_regions
     override var unsupportedLanguages: [Language] {
@@ -169,5 +176,51 @@ public final class GeminiService: LLMStreamService {
 
     private func messagesToString(_ messages: [[String: String]]) -> String {
         messages.compactMap { $0["content"] }.joined(separator: "\n")
+    }
+
+    private func handleResult(
+        queryType: EZQueryTextType,
+        resultString: String?,
+        error: Error?,
+        completion: @escaping (EZQueryResult, Error?) -> ()
+    ) {
+        var normalResults: [String]?
+        if let resultString {
+            normalResults = [resultString.trim()]
+        }
+
+        result.isStreamFinished = error != nil
+        result.translatedResults = normalResults
+
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                self.updateCompletion?(result, error)
+            }
+        }
+
+        switch queryType {
+        case .sentence, .translation:
+            updateCompletion()
+
+        case .dictionary:
+            if error != nil {
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
+                updateCompletion()
+                return
+            }
+
+            result.showBigWord = true
+            result.queryText = queryModel.queryText
+            result.translateResultsTopInset = 6
+            updateCompletion()
+
+        default:
+            updateCompletion()
+        }
+    }
+
+    private func concatenateStrings(from array: [String]) -> String {
+        array.joined()
     }
 }
