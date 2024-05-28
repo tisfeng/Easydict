@@ -37,7 +37,9 @@ public final class GeminiService: LLMStreamService {
                 result.from = from
                 result.to = to
                 result.isStreamFinished = false
-                let translationPrompt = translationPrompt(text: text, from: from, to: to)
+
+                let queryType = queryType(text: text, from: from, to: to)
+                let translationPrompt = promptMessage(queryType: queryType, text: text, from: from, to: to)
                 let prompt = LLMStreamService.translationSystemPrompt +
                     "\n" + translationPrompt
                 let model = GenerativeModel(
@@ -140,4 +142,32 @@ public final class GeminiService: LLMStreamService {
     private let hateSpeechBlockNone = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
+
+    private func promptMessage(
+        queryType: EZQueryTextType,
+        text: String,
+        from sourceLanguage: Language,
+        to targetLanguage: Language
+    )
+        -> String {
+        var prompt = [[String: String]]()
+
+        switch queryType {
+        case .dictionary:
+            prompt = dictMessages(word: text, sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
+        case .sentence:
+            prompt = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage)
+        case .translation:
+            fallthrough
+        default:
+            prompt = translationMessages(text: text, from: sourceLanguage, to: targetLanguage)
+        }
+
+        let finalPrompt = messagesToString(prompt)
+        return finalPrompt
+    }
+
+    private func messagesToString(_ messages: [[String: String]]) -> String {
+        messages.compactMap { $0["content"] }.joined(separator: "\n")
+    }
 }
