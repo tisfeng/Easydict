@@ -44,16 +44,6 @@ static NSString *const EZCustomOpenAIValidModelsKey = @"EZCustomOpenAIValidModel
 // // Built-in AI
 static NSString *const EZBuiltInAIModelKey = @"EZBuiltInAIModelKey";
 
-// Gemini
-static NSString *const EZGeminiAPIKey = @"EZGeminiAPIKey";
-static NSString *const EZGeminiTranslationKey = @"EZGeminiTranslationKey";
-static NSString *const EZGeminiDictionaryKey = @"EZGeminiDictionaryKey";
-static NSString *const EZGeminiSentenceKey = @"EZGeminiSentenceKey";
-static NSString *const EZGeminiServiceUsageStatusKey = @"EZGeminiServiceUsageStatusKey";
-static NSString *const EZGeminiModelKey = @"EZGeminiModelKey";
-static NSString *const EZGeminiAvailableModelsKey = @"EZGeminiAvailableModelsKey";
-static NSString *const EZGeminiValidModelsKey = @"EZGeminiValidModelsKey";
-
 static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
 static NSString *const EZDeepLTranslateEndPointKey = @"EZDeepLTranslateEndPointKey";
 
@@ -62,6 +52,7 @@ static NSString *const EZNiuTransAPIKey = @"EZNiuTransAPIKey";
 static NSString *const EZCaiyunToken = @"EZCaiyunToken";
 static NSString *const EZTencentSecretId = @"EZTencentSecretId";
 static NSString *const EZTencentSecretKey = @"EZTencentSecretKey";
+static NSString *const EZGeminiAPIKey = @"EZGeminiAPIKey";
 
 
 static NSString *const EZAliAccessKeyId = @"EZAliAccessKeyId";

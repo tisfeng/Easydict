@@ -311,7 +311,7 @@ extension Defaults.Keys {
     static let aliAccessKeySecret = Key<String?>(EZAliAccessKeySecret)
 
     // Gemni
-    static let geminiAPIKey = Key<String?>(EZGeminiAPIKey)
+    static let geminiAPIKey = Key<String?>("EZGeminiAPIKey")
     static let geminiTranslation = Key<String>(
         translationStoredKey(.gemini),
         default: "1"
@@ -328,13 +328,13 @@ extension Defaults.Keys {
         serviceUsageStatusStoredKey(.gemini),
         default: .default
     )
-    static let geminiModel = Key<String>(EZGeminiModelKey, default: GeminiModel.gemini1_5_flash.rawValue)
+    static let geminiModel = Key<String>("geminiModel", default: GeminiModel.gemini1_5_flash.rawValue)
     static let geminiAvailableModels = Key<String?>(
-        EZGeminiAvailableModelsKey,
+        "geminiAvailableModels",
         default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
     static let geminiVaildModels = Key<Array>(
-        EZGeminiValidModelsKey,
+        "geminiVaildModels",
         default: GeminiModel.allCases.map { $0.rawValue }
     )
 }
