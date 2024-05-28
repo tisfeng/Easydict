@@ -21,7 +21,7 @@ struct TextEditorCell: View {
         HStack(alignment: .center, spacing: 20) {
             Text(title)
 
-            TextEditorWithPlaceholder(text: $text, placeholder: placeholder, alignment: .topTrailing)
+            TextEditorWithPlaceholder(text: $text, placeholder: placeholder, oneLineAlignment: .topTrailing)
                 .padding(.horizontal, 3)
                 .padding(.top, 5)
                 .padding(.bottom, 7)
@@ -34,7 +34,7 @@ struct TextEditorCell: View {
                 .overlay(alignment: .center, content: {
                     corner.stroke(Color(NSColor.separatorColor), lineWidth: 1)
                 })
-                .frame(minHeight: 50, maxHeight: 200)
+                .frame(minHeight: 55, maxHeight: 200) // min height is two lines, for English placeholder.
         }
         .padding(10)
     }
@@ -49,14 +49,23 @@ struct TextEditorCell: View {
 struct TextEditorWithPlaceholder: View {
     @Binding var text: String
     let placeholder: LocalizedStringKey?
-    var alignment: Alignment = .leading
+    @State var oneLineAlignment: Alignment = .leading
 
     var body: some View {
-        ZStack(alignment: alignment) {
+        ZStack(alignment: oneLineAlignment) {
             if let placeholder = placeholder, text.isEmpty {
                 Text(placeholder)
-                    .foregroundColor(Color(NSColor.placeholderTextColor))
-        .padding(.horizontal, 5)
+                    .font(.body)
+                    .foregroundStyle(Color(NSColor.placeholderTextColor))
+                    .padding(.horizontal, 5)
+                    .background(GeometryReader { geometry in
+                        Color.clear.onAppear {
+                            // 22 is one line height, if placeholder is more than one line, alway set alignment to .leading
+                            if geometry.size.height > 22 {
+                                oneLineAlignment = .leading
+                            }
+                        }
+                    })
             }
 
             TextEditor(text: $text)
