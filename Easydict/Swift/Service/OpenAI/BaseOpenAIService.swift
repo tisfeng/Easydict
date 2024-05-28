@@ -151,7 +151,7 @@ extension BaseOpenAIService {
         typealias Role = ChatCompletionMessageParam.Role
 
         var chats: [ChatCompletionMessageParam] = []
-        let messages = translatioMessages(text: text, from: from, to: to)
+        let messages = translationMessages(text: text, from: from, to: to)
         for message in messages {
             if let roleRawValue = message["role"],
                let role = Role(rawValue: roleRawValue),
@@ -183,7 +183,7 @@ extension BaseOpenAIService {
         case .translation:
             fallthrough
         default:
-            messages = translatioMessages(text: text, from: from, to: to)
+            messages = translationMessages(text: text, from: from, to: to)
         }
 
         var chats: [ChatCompletionMessageParam] = []
