@@ -212,9 +212,7 @@ struct GeneralTab: View {
         }
         .formStyle(.grouped)
         .task {
-            // TODO: Sharker fetch the latest version
-//            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-            await MainActor.run {
+            RepoInfoHelper.shared.fetchLatestVersion(repoPath: EZGithubRepoEasydict) { version in
                 lastestVersion = version
             }
         }
