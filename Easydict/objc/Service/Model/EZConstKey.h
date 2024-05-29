@@ -41,7 +41,7 @@ static NSString *const EZCustomOpenAIAvailableModelsKey = @"EZCustomOpenAIAvaila
 static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
 static NSString *const EZCustomOpenAIValidModelsKey = @"EZCustomOpenAIValidModelsKey";
 
-// // Built-in AI
+// Built-in AI
 static NSString *const EZBuiltInAIModelKey = @"EZBuiltInAIModelKey";
 
 

@@ -81,7 +81,7 @@ private struct OpenAIServiceConfigurationView: View {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.usage_status.title",
                 key: .openAIServiceUsageStatus,
-                values: OpenAIUsageStats.allCases
+                values: OpenAIUsageStatus.allCases
             )
         }
         .onDisappear {
@@ -211,9 +211,9 @@ extension OpenAIModel: EnumLocalizedStringConvertible {
 
 extension OpenAIModel: Defaults.Serializable {}
 
-// MARK: - OpenAIUsageStats
+// MARK: - OpenAIUsageStatus
 
-enum OpenAIUsageStats: String, CaseIterable {
+enum OpenAIUsageStatus: String, CaseIterable {
     case `default` = "0"
     case alwaysOff = "1"
     case alwaysOn = "2"
@@ -221,7 +221,7 @@ enum OpenAIUsageStats: String, CaseIterable {
 
 // MARK: EnumLocalizedStringConvertible
 
-extension OpenAIUsageStats: EnumLocalizedStringConvertible {
+extension OpenAIUsageStatus: EnumLocalizedStringConvertible {
     var title: String {
         switch self {
         case .default:
@@ -248,4 +248,4 @@ extension OpenAIUsageStats: EnumLocalizedStringConvertible {
 
 // MARK: Defaults.Serializable
 
-extension OpenAIUsageStats: Defaults.Serializable {}
+extension OpenAIUsageStatus: Defaults.Serializable {}
