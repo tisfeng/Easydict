@@ -57,13 +57,13 @@ private struct CustomOpenAIServiceConfigurationView: View {
                 placeholder: "service.configuration.openai.endpoint.placeholder"
             )
 
-            // supported models
-            TextField(
-                "service.configuration.custom_openai.supported_models.title",
+            // models
+            TextEditorCell(
+                title: "service.configuration.custom_openai.supported_models.title",
                 text: viewModel.$availableModels ?? "",
-                prompt: Text("service.configuration.custom_openai.model.placeholder")
+                placeholder: "service.configuration.custom_openai.model.placeholder"
             )
-            .padding(10.0)
+
             Picker(
                 "service.configuration.openai.model.title",
                 selection: viewModel.$model
