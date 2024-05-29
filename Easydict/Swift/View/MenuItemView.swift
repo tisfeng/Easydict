@@ -60,6 +60,7 @@ struct MenuItemView: View {
                 .keyboardShortcut(.init("q"))
         }
         .task {
+        // TODO: Sharker fetch the latest version
 //            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
 //            await MainActor.run {
 //                latestVersion = version
