@@ -136,7 +136,7 @@ private class GeminiViewModel: ObservableObject {
                 if availableModels?.isEmpty == true {
                     availableModels = model
                 } else {
-                    availableModels = /* "\(model), "  + */ availableModels ?? ""
+                    availableModels = availableModels ?? ""
                 }
             }
         }
