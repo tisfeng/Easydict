@@ -7,7 +7,6 @@
 //
 
 #import "EZWebViewManager.h"
-#import "EZConfiguration.h"
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";

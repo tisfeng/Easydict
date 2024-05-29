@@ -17,7 +17,6 @@
 #import "EZServiceTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
-#import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"

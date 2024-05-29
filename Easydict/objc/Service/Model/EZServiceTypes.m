@@ -14,7 +14,6 @@
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZBingService.h"
-#import "EZConfiguration.h"
 #import "EZAppleDictionary.h"
 #import "EZNiuTransTranslate.h"
 

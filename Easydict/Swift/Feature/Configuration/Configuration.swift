@@ -598,7 +598,7 @@ extension Configuration {
 
 extension Configuration {
     fileprivate func postUpdateQuickLinkButtonNotification() {
-        let notification = Notification(name: .init("EZQuickLinkButtonUpdateNotification"), object: nil)
+        let notification = Notification(name: Notification.Name.linkButtonUpdated, object: nil)
         NotificationCenter.default.post(notification)
     }
 

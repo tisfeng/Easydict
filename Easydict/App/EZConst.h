@@ -56,4 +56,6 @@ static CGFloat const EZGetClipboardTextDelayTime = 0.1;
 
 static NSString *const EZOpenSettingsNotification = @"EZOpenSettingsNotification";
 
+static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
+
 #endif /* EZConst_h */

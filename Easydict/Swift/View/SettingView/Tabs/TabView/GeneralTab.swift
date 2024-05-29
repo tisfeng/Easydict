@@ -212,7 +212,7 @@ struct GeneralTab: View {
         }
         .formStyle(.grouped)
         .task {
-            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
+//            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
             await MainActor.run {
                 lastestVersion = version
             }

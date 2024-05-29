@@ -7,7 +7,6 @@
 //
 
 #import "EZLog.h"
-#import "EZConfiguration.h"
 #import "EZDeviceSystemInfo.h"
 
 @import FirebaseCore;

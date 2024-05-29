@@ -10,7 +10,6 @@
 #import "EZYoudaoTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+EZUtils.h"
-#import "EZConfiguration.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 

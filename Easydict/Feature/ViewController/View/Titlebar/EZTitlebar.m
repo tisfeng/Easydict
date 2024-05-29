@@ -12,7 +12,7 @@
 #import "NSImage+EZResize.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
-#import "EZConfiguration.h"
+
 #import "Easydict-Swift.h"
 
 @interface EZTitlebar ()
