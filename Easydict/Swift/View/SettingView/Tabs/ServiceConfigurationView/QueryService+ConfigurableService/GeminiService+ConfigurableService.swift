@@ -183,16 +183,4 @@ enum GeminiModel: String, CaseIterable {
     case gemini1_5_pro = "gemini-1.5-pro" // Free 2 RPM/32,000 TPM, 50 RPD/46,080,000 TPD (1048k context length)
 }
 
-// MARK: EnumLocalizedStringConvertible
-
 // swiftlint:enable identifier_name
-
-extension GeminiModel: EnumLocalizedStringConvertible {
-    var title: String {
-        rawValue
-    }
-}
-
-// MARK: Defaults.Serializable
-
-extension GeminiModel: Defaults.Serializable {}
