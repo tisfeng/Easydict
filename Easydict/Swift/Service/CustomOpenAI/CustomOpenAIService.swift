@@ -6,8 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Alamofire
-import CryptoKit
 import Defaults
 import Foundation
 
@@ -41,7 +39,6 @@ class CustomOpenAIService: BaseOpenAIService {
         get {
             Defaults[.customOpenAIModel]
         }
-
         set {
             Defaults[.customOpenAIModel] = newValue
         }

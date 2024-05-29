@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-
-@available(macOS 13, *)
 struct KeyHolderRowView: View {
     // MARK: Public
 

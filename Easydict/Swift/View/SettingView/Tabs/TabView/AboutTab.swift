@@ -12,7 +12,6 @@ import Vortex
 // MARK: - SettingsAboutTab
 
 // Use ScrollView to enable resize animation for Settings
-@available(macOS 13, *)
 struct SettingsAboutTab: View {
     var body: some View {
         ScrollView {
@@ -23,7 +22,6 @@ struct SettingsAboutTab: View {
 
 // MARK: - AboutTab
 
-@available(macOS 13, *)
 struct AboutTab: View {
     // MARK: Internal
 
@@ -120,7 +118,6 @@ struct AboutTab: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     AboutTab()
 }

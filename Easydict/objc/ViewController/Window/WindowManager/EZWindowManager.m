@@ -12,7 +12,6 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "EZCoordinateUtils.h"
-#import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
 
@@ -436,11 +435,6 @@ static EZWindowManager *_instance;
 }
 
 - (nullable NSWindow *)currentShowingSettingsWindow {
-    EZPreferencesWindowController *preferencesWindowController = [EZPreferencesWindowController shared];
-    if (preferencesWindowController.isShowing) {
-        return preferencesWindowController.window;
-    }
-    
     // Workaround for SwiftUI Settings window, fix https://github.com/tisfeng/Easydict/issues/362
     for (NSWindow *window in [NSApp windows]) {
         if ([window.identifier isEqualToString:@"com_apple_SwiftUI_Settings_window"] && window.visible) {
@@ -897,7 +891,6 @@ static EZWindowManager *_instance;
         [Snip.shared stop];
     } else {
         [self closeFloatingWindow];
-        [EZPreferencesWindowController.shared close];
     }
 }
 
@@ -959,7 +952,7 @@ static EZWindowManager *_instance;
     [floatingWindow close];
     
     if (![self currentShowingSettingsWindow]) {
-        // Recover last app.
+       // Recover last app.
         [self activeLastFrontmostApplication];
     }
     

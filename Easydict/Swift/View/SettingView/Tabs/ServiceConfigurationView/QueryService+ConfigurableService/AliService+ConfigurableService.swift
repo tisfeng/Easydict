@@ -9,7 +9,6 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 13.0, *)
 extension AliService: ConfigurableService {
     func configurationListItems() -> some View {
         ServiceConfigurationSecretSectionView(

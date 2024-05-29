@@ -6,8 +6,6 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import XCTest
 
 final class EasydictSwiftTests: XCTestCase {
@@ -41,5 +39,3 @@ final class EasydictSwiftTests: XCTestCase {
         }
     }
 }
-
-// swiftlint:enable all
