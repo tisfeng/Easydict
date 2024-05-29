@@ -16,10 +16,10 @@ extension LLMStreamService {
     """
 
     func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
-        "Translate the following \(sourceLanguage.queryLangaugeName) text into \(targetLanguage.queryLangaugeName) text: \"\"\"\(text)\"\"\""
+        "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    func translatioMessages(text: String, from: Language, to: Language) -> [[String: String]] {
+    func translationMessages(text: String, from: Language, to: Language) -> [[String: String]] {
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
 //        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
 
@@ -138,7 +138,7 @@ extension LLMStreamService {
             ],
         ]
 
-        let fromClassicalChinseseFewShot = [
+        let fromClassicalChineseFewShot = [
             // wyw --> zh
             [
                 "role": "user",
@@ -211,7 +211,7 @@ extension LLMStreamService {
             ],
         ]
 
-        let toClassicalChinseseFewShot = [
+        let toClassicalChineseFewShot = [
             //  --> wyw
             [
                 "role": "user",
@@ -256,10 +256,10 @@ extension LLMStreamService {
         messages.append(contentsOf: chineseFewShot)
 
         if from == .classicalChinese {
-            messages.append(contentsOf: fromClassicalChinseseFewShot)
+            messages.append(contentsOf: fromClassicalChineseFewShot)
         }
         if to == .classicalChinese {
-            messages.append(contentsOf: toClassicalChinseseFewShot)
+            messages.append(contentsOf: toClassicalChineseFewShot)
         }
 
         let userMessages = [
@@ -852,7 +852,7 @@ extension LLMStreamService {
 }
 
 extension Language {
-    var queryLangaugeName: String {
+    var queryLanguageName: String {
         let languageName = switch self {
         case .classicalChinese:
             "简体中文文言文"
