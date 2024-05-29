@@ -24,8 +24,8 @@ public class LLMStreamService: QueryService {
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let allLangauges = EZLanguageManager.shared().allLanguages
-        let supportedLanguages = allLangauges.filter { language in
+        let allLanguages = EZLanguageManager.shared().allLanguages
+        let supportedLanguages = allLanguages.filter { language in
             !unsupportedLanguages.contains(language)
         }
 
@@ -105,7 +105,7 @@ public class LLMStreamService: QueryService {
         return resultText
     }
 
-    /// Get query type by text and from && to langauge.
+    /// Get query type by text and from && to language.
     func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
