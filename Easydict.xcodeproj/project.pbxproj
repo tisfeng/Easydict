@@ -54,6 +54,7 @@
 		03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A572937CC3200C34C33 /* EZConfiguration.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
+		0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357B9592C04387D00A48CB0 /* TextEditorCell.swift */; };
 		035E37E72A0953120061DFAF /* EZToast.m in Sources */ = {isa = PBXBuildFile; fileRef = 035E37E62A0953120061DFAF /* EZToast.m */; };
 		0361965529FFECFC00806370 /* youdao-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 0361965429FFECFC00806370 /* youdao-sign.js */; };
 		036196752A000F5900806370 /* FWEncryptorAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196702A000F5800806370 /* FWEncryptorAES.m */; };
@@ -435,6 +436,7 @@
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
 		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
+		0357B9592C04387D00A48CB0 /* TextEditorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorCell.swift; sourceTree = "<group>"; };
 		035E37E52A0953120061DFAF /* EZToast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZToast.h; sourceTree = "<group>"; };
 		035E37E62A0953120061DFAF /* EZToast.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZToast.m; sourceTree = "<group>"; };
 		0361965429FFECFC00806370 /* youdao-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "youdao-sign.js"; sourceTree = "<group>"; };
@@ -2449,6 +2451,7 @@
 				EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */,
 				0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */,
 				0AC8A8442B6A4D97006DA5CC /* ServiceConfigurationCells.swift */,
+				0357B9592C04387D00A48CB0 /* TextEditorCell.swift */,
 			);
 			path = ServiceConfigurationView;
 			sourceTree = "<group>";
@@ -3104,6 +3107,7 @@
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
+				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
 				EAED41F22B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift in Sources */,
 				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
