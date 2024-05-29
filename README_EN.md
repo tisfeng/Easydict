@@ -851,6 +851,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-04-12 | 奥雷里亚诺 | 50 | 界面精致，而且帮我节约了不少时间 |
 | 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
 | 2024-05-11 |  | 35 | 感谢开源和持续更新！ |
+| 2024-05-29 | 天色晚晚 | 10 | 项目很用心！感谢！！！ |
 
 </p>
 
