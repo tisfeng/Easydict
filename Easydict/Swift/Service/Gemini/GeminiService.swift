@@ -34,8 +34,6 @@ public final class GeminiService: LLMStreamService {
     ) {
         Task {
             do {
-                result.from = from
-                result.to = to
                 result.isStreamFinished = false
 
                 let queryType = queryType(text: text, from: from, to: to)
@@ -194,10 +192,6 @@ public final class GeminiService: LLMStreamService {
         } else {
             roleRaw
         }
-    }
-
-    private func messagesToString(_ messages: [[String: String]]) -> String {
-        messages.compactMap { $0["content"] }.joined(separator: "\n")
     }
 
     private func handleResult(
