@@ -65,14 +65,12 @@ public final class GeminiService: LLMStreamService {
 
                         result.translatedResults = [resultString]
                         await MainActor.run {
-                            throttler.throttle { [unowned self] in
-                                handleResult(
-                                    queryType: queryType,
-                                    resultString: concatenateStrings(from: result.translatedResults ?? []),
-                                    error: nil,
-                                    completion: completion
-                                )
-                            }
+                            handleResult(
+                                queryType: queryType,
+                                resultString: concatenateStrings(from: result.translatedResults ?? []),
+                                error: nil,
+                                completion: completion
+                            )
                         }
                     }
                 }
@@ -102,8 +100,6 @@ public final class GeminiService: LLMStreamService {
     }
 
     // MARK: Internal
-
-    var updateCompletion: ((EZQueryResult, Error?) -> ())?
 
     // https://ai.google.dev/available_regions
     override var unsupportedLanguages: [Language] {
@@ -207,10 +203,9 @@ public final class GeminiService: LLMStreamService {
 
         result.isStreamFinished = error != nil
         result.translatedResults = normalResults
-
         let updateCompletion = {
             self.throttler.throttle { [unowned self] in
-                self.updateCompletion?(result, error)
+                completion(result, error)
             }
         }
 
