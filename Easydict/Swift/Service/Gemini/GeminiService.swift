@@ -39,9 +39,8 @@ public final class GeminiService: LLMStreamService {
                 result.isStreamFinished = false
 
                 let queryType = queryType(text: text, from: from, to: to)
-                let translationPrompt = promptMessage(queryType: queryType, text: text, from: from, to: to)
-                let prompt = LLMStreamService.translationSystemPrompt +
-                    "\n" + translationPrompt
+                let translationPrompt = promptContent(queryType: queryType, text: text, from: from, to: to)
+                let systemInstruction = LLMStreamService.translationSystemPrompt
                 let model = GenerativeModel(
                     name: model,
                     apiKey: apiKey,
@@ -50,14 +49,15 @@ public final class GeminiService: LLMStreamService {
                         hateSpeechBlockNone,
                         sexuallyExplicitBlockNone,
                         dangerousContentBlockNone,
-                    ]
+                    ],
+                    systemInstruction: systemInstruction
                 )
 
                 var resultString = ""
 
                 // Gemini Docs: https://github.com/google/generative-ai-swift
 
-                let outputContentStream = model.generateContentStream(prompt)
+                let outputContentStream = model.generateContentStream(translationPrompt)
                 for try await outputContent in outputContentStream {
                     guard let line = outputContent.text else {
                         return
@@ -150,28 +150,50 @@ public final class GeminiService: LLMStreamService {
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
 
-    private func promptMessage(
+    private func promptContent(
         queryType: EZQueryTextType,
         text: String,
         from sourceLanguage: Language,
         to targetLanguage: Language
     )
-        -> String {
-        var prompt = [[String: String]]()
+        -> [ModelContent] {
+        var prompts = [[String: String]]()
 
         switch queryType {
         case .dictionary:
-            prompt = dictMessages(word: text, sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
+            prompts = dictMessages(word: text, sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
         case .sentence:
-            prompt = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage)
+            prompts = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage)
         case .translation:
             fallthrough
         default:
-            prompt = translationMessages(text: text, from: sourceLanguage, to: targetLanguage)
+            prompts = translationMessages(text: text, from: sourceLanguage, to: targetLanguage)
         }
 
-        let finalPrompt = messagesToString(prompt)
-        return finalPrompt
+        var chats: [ModelContent] = []
+        for prompt in prompts {
+            if let roleRaw = prompt["role"],
+               let parts = prompt["content"] {
+                let role = getCorrectParts(from: roleRaw)
+                let chat = ModelContent(role: role, parts: parts)
+                chats.append(chat)
+            }
+        }
+        guard !chats.isEmpty else {
+            return chats
+        }
+        // removing first element in [ModelContent] since it's system instruction
+        chats.removeFirst()
+        return chats
+    }
+
+    /// Given a roleRaw, replace "assistant" with "model"
+    private func getCorrectParts(from roleRaw: String) -> String {
+        if roleRaw.lowercased() == "assistant" {
+            "model"
+        } else {
+            roleRaw
+        }
     }
 
     private func messagesToString(_ messages: [[String: String]]) -> String {
