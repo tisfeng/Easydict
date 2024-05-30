@@ -176,43 +176,16 @@ struct RepoInfoResponseAuthor: Codable {
     var url: String?
 }
 
-// MARK: - RepoInfoHelper
+/// Get repo lastest version
+/// - Parameter repo: repo name, eg. tisfeng/easydict
+/// - Returns: repo version, eg. 2.7.2
+func fetchRepoLatestVersion(_ repo: String) async -> String? {
+    let repoInfo = try? await fetchRepoInfo(repo)
+    return repoInfo?.tagName
+}
 
-class RepoInfoHelper {
-    // MARK: Lifecycle
-
-    private init() {
-        //
-    }
-
-    // MARK: Public
-
-    public func fetchLatestVersion(repoPath: String, completion: @escaping (String) -> ()) {
-        fetchRepoInfo(repoPath: repoPath) { response in
-            switch response {
-            case let .success(resp):
-                completion(resp.tagName ?? "")
-            case let .failure(err):
-                print(err)
-            }
-        }
-    }
-
-    // MARK: Internal
-
-    static let shared = RepoInfoHelper()
-
-    // MARK: Private
-
-    private func fetchRepoInfo(repoPath: String, completion: @escaping (Result<RepoInfoResponse, Error>) -> ()) {
-        let url = "https://api.github.com/repos/\(repoPath)/releases/latest"
-        AF.request(url).responseDecodable(of: RepoInfoResponse.self) { response in
-            switch response.result {
-            case let .success(res):
-                completion(.success(res))
-            case let .failure(err):
-                completion(.failure(err))
-            }
-        }
-    }
+func fetchRepoInfo(_ repo: String) async throws -> RepoInfoResponse {
+    let url = "https://api.github.com/repos/\(repo)/releases/latest"
+    let dataTask = AF.request(url).serializingDecodable(RepoInfoResponse.self)
+    return try await dataTask.value
 }

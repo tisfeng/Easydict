@@ -29,7 +29,7 @@ static CGFloat const EZAudioButtonRightPadding_1 = 1;
 static NSString *const EZBundleId = @"com.izual.Easydict";
 static NSString *const EZDebugBundleId = @"com.izual.Easydict-debug";
 
-
+/// tisfeng/Easydict
 static NSString *const EZGithubRepoEasydict = @"tisfeng/Easydict";
 static NSString *const EZGithubRepoEasydictURL = @"https://github.com/tisfeng/Easydict";
 

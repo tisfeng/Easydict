@@ -60,9 +60,7 @@ struct MenuItemView: View {
                 .keyboardShortcut(.init("q"))
         }
         .task {
-            RepoInfoHelper.shared.fetchLatestVersion(repoPath: EZGithubRepoEasydict) { version in
-                latestVersion = version
-            }
+            latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
         }
     }
 

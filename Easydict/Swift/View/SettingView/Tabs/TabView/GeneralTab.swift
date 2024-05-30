@@ -212,9 +212,7 @@ struct GeneralTab: View {
         }
         .formStyle(.grouped)
         .task {
-            RepoInfoHelper.shared.fetchLatestVersion(repoPath: EZGithubRepoEasydict) { version in
-                lastestVersion = version
-            }
+            lastestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
         }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {
