@@ -11,7 +11,6 @@
 #import "EZAudioPlayer.h"
 #import "NSString+EZChineseText.h"
 #import "NSString+EZUtils.h"
-#import "EZConfiguration.h"
 #import "EZEventMonitor.h"
 
 #define MethodNotImplemented()                                                                                                           \

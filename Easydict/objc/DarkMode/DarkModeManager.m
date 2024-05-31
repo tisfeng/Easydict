@@ -7,7 +7,6 @@
 //
 
 #import "DarkModeManager.h"
-#import "EZConfiguration.h"
 
 @interface DarkModeManager ()
 

@@ -12,7 +12,6 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "EZCoordinateUtils.h"
-#import "EZConfiguration.h"
 #import "EZLog.h"
 
 @interface EZWindowManager ()

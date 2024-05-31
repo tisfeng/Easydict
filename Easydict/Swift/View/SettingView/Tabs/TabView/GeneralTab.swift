@@ -212,10 +212,7 @@ struct GeneralTab: View {
         }
         .formStyle(.grouped)
         .task {
-            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-            await MainActor.run {
-                lastestVersion = version
-            }
+            lastestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
         }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {

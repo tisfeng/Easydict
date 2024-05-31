@@ -19,7 +19,6 @@
 #import "FWEncryptorAES.h"
 #import "NSData+EZMD5.h"
 #import "EZNetworkManager.h"
-#import "EZConfiguration.h"
 
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
 static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";

@@ -14,6 +14,8 @@ extension Notification.Name {
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
 
     static let languagePreferenceChanged = Notification.Name(I18nHelper.languagePreferenceChangedNotification)
+
+    static let linkButtonUpdated = Notification.Name(EZQuickLinkButtonUpdateNotification)
 }
 
 @objc
@@ -23,4 +25,6 @@ extension NSNotification {
     public static let openSettings = Notification.Name.openSettings
 
     public static let languagePreferenceChanged = Notification.Name.languagePreferenceChanged
+
+    public static let linkButtonUpdated = Notification.Name.linkButtonUpdated
 }

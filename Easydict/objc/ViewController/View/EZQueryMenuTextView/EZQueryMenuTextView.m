@@ -7,7 +7,6 @@
 //
 
 #import "EZQueryMenuTextView.h"
-#import "EZConfiguration.h"
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
 #import "EZLog.h"

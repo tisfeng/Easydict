@@ -9,9 +9,8 @@
 #import "EZDetectManager.h"
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
-#import "EZConfiguration.h"
 #import "EZYoudaoTranslate.h"
-#import "EZConfiguration+EZUserData.h"
+//#import "EZConfiguration+EZUserData.h"
 
 @interface EZDetectManager ()
 
@@ -129,12 +128,12 @@
             }];
         };
         
-        if (languageDetectOptimize == EZLanguageDetectOptimizeBaidu) {
+        if (languageDetectOptimize == LanguageDetectOptimizeBaidu) {
             baiduDetectBlock(queryText);
             return;
         }
         
-        if (languageDetectOptimize == EZLanguageDetectOptimizeGoogle) {
+        if (languageDetectOptimize == LanguageDetectOptimizeGoogle) {
             [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
                 if (!error) {
                     MMLogInfo(@"google detected: %@", language);

@@ -8,7 +8,6 @@
 
 #import "EZLayoutManager.h"
 #import "EZBaseQueryWindow.h"
-#import "EZConfiguration.h"
 
 @interface EZLayoutManager ()
 

@@ -7,7 +7,6 @@
 //
 
 #import "EZQueryModel.h"
-#import "EZConfiguration.h"
 #import <KVOController/NSObject+FBKVOController.h>
 #import "NSString+EZUtils.h"
 #import "NSString+EZSplit.h"
