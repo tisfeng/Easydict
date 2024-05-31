@@ -11,7 +11,6 @@
 #import "EZBaiduTranslateResponse.h"
 #import "EZWebViewTranslator.h"
 #import "EZNetworkManager.h"
-#import "EZConfiguration.h"
 #import "NSString+EZRegex.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";

@@ -16,7 +16,6 @@
 #import "EZDetectLanguageButton.h"
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
-#import "EZConfiguration.h"
 #import "NSImage+EZSymbolmage.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>

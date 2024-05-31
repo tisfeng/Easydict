@@ -8,7 +8,6 @@
 
 #import "EZLanguageManager.h"
 #import "EZAppleService.h"
-#import "EZConfiguration.h"
 
 @interface EZLanguageManager ()
 

@@ -60,10 +60,7 @@ struct MenuItemView: View {
                 .keyboardShortcut(.init("q"))
         }
         .task {
-            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-            await MainActor.run {
-                latestVersion = version
-            }
+            latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
         }
     }
 
