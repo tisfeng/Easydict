@@ -54,17 +54,8 @@ class BuiltInAIService: BaseOpenAIService {
             // It seems that 5.2 will start charging 😥 https://ai.google.dev/pricing?hl=zh-cn
             "gemini-pro",
 
-            /**
-                阿里通义千问 DashScope 限时免费开放中 https://help.aliyun.com/zh/dashscope/developer-reference/tongyi-qianwen-7b-14b-72b-metering-and-billing
-
-                通义千问开源系列，开通DashScope即获赠总计 1,000,000 tokens 限时免费使用额度，有效期30天。(qwen1.5-32b-chat模型目前限时免费开放中)
-                */
-            "qwen1.5-110b-chat", // 限时免费开放中
-            "qwen1.5-32b-chat", // 限时免费开放中
-            "qwen-turbo", // free total 2,000,000 tokens, until 8.12
-            "baichuan2-13b-chat-v1", // free until 8.12, total 1,000,000 tokens
-            "deepseek-7b-chat", // 开通DashScope即获赠总计 1,000,000 tokens 限时免费使用额度，有效期180天。
-            "internlm-7b-chat", // 开通DashScope即获赠总计 1,000,000 tokens 限时免费使用额度，有效期180天。
+            "ernie_speed",
+            "ernie-lite-8k"
         ]
     }
 }
