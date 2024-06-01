@@ -7,7 +7,6 @@
 //
 
 #import "EZAppleDictionary.h"
-#import "EZConfiguration.h"
 #import "EZWindowManager.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZHandleInputText.h"

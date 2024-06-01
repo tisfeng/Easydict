@@ -10,7 +10,6 @@
 #import "EZBingRequest.h"
 #import "EZBingTranslateModel.h"
 #import "EZBingLookupModel.h"
-#import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
 
 @interface EZBingService ()

@@ -10,7 +10,6 @@
 #import <Vision/Vision.h>
 #import <AVFoundation/AVFoundation.h>
 #import "EZScriptExecutor.h"
-#import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZChineseText.h"
 #import <CoreImage/CoreImage.h>

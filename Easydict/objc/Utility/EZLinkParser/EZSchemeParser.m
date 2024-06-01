@@ -10,8 +10,6 @@
 #import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
-#import "EZConfiguration+EZUserData.h"
-#import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 
 @implementation EZSchemeParser

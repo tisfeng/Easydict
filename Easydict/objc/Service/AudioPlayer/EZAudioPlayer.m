@@ -15,7 +15,6 @@
 #import "EZGoogleTranslate.h"
 #import "NSString+EZUtils.h"
 #import "EZServiceTypes.h"
-#import "EZConfiguration.h"
 #import <sys/xattr.h>
 
 static NSString *const kFileExtendedAttributes = @"NSFileExtendedAttributes";

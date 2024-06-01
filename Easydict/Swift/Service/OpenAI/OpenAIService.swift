@@ -24,7 +24,7 @@ class OpenAIService: BaseOpenAIService {
     }
 
     override public func link() -> String? {
-        "https://chat.openai.com"
+        "https://chatgpt.com"
     }
 
     // MARK: Internal

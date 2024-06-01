@@ -41,7 +41,7 @@ static NSString *const EZCustomOpenAIAvailableModelsKey = @"EZCustomOpenAIAvaila
 static NSString *const EZCustomOpenAIModelKey = @"EZCustomOpenAIModelKey";
 static NSString *const EZCustomOpenAIValidModelsKey = @"EZCustomOpenAIValidModelsKey";
 
-// // Built-in AI
+// Built-in AI
 static NSString *const EZBuiltInAIModelKey = @"EZBuiltInAIModelKey";
 
 
@@ -54,7 +54,7 @@ static NSString *const EZCaiyunToken = @"EZCaiyunToken";
 static NSString *const EZTencentSecretId = @"EZTencentSecretId";
 static NSString *const EZTencentSecretKey = @"EZTencentSecretKey";
 static NSString *const EZGeminiAPIKey = @"EZGeminiAPIKey";
-
+static NSString *const EZIntelligentQueryModeKey = @"IntelligentQueryMode";
 static NSString *const EZAliAccessKeyId = @"EZAliAccessKeyId";
 static NSString *const EZAliAccessKeySecret = @"EZAliAccessKeySecret";
 

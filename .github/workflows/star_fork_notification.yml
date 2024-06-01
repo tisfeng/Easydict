@@ -55,8 +55,8 @@ jobs:
           echo "commit_count=$commit_count" >> $GITHUB_ENV
           echo "follower_count=$follower_count" >> $GITHUB_ENV
 
-          if [[ $commit_count -ge 0 ]]; then
-            echo "user_conditions_met=true" >> $GITHUB_ENV
+          if [[ $earn_star_count -ge 10 || $commit_count -gt 1000 ]]; then
+          echo "user_conditions_met=true" >> $GITHUB_ENV
           else
             echo "user_conditions_met=false" >> $GITHUB_ENV
           fi
