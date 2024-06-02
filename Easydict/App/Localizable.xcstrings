@@ -2464,6 +2464,9 @@
         }
       }
     },
+    "Query" : {
+
+    },
     "query_failed" : {
       "localizations" : {
         "en" : {
@@ -4376,6 +4379,9 @@
           }
         }
       }
+    },
+    "Text to Translate" : {
+
     },
     "toggle_languages" : {
       "localizations" : {
