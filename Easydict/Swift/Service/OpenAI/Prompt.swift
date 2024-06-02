@@ -19,7 +19,7 @@ extension LLMStreamService {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    func translationMessages(text: String, from: Language, to: Language) -> [[String: String]] {
+    func translationMessages(text: String, from: Language, to: Language, systemPrompt: Bool) -> [[String: String]] {
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
 //        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
 
@@ -245,12 +245,16 @@ extension LLMStreamService {
             ],
         ]
 
-        let systemMessages = [
-            [
-                "role": "system",
-                "content": LLMStreamService.translationSystemPrompt,
-            ],
-        ]
+        let systemMessages: [[String: String]] = {
+            if systemPrompt {
+                [[
+                    "role": "system",
+                    "content": LLMStreamService.translationSystemPrompt,
+                ]]
+            } else {
+                []
+            }
+        }()
 
         var messages = systemMessages
         messages.append(contentsOf: chineseFewShot)
@@ -276,7 +280,8 @@ extension LLMStreamService {
     func sentenceMessages(
         sentence: String,
         from sourceLanguage: Language,
-        to targetLanguage: Language
+        to targetLanguage: Language,
+        systemPrompt: Bool
     )
         -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
@@ -469,12 +474,16 @@ extension LLMStreamService {
             ],
         ]
 
-        let systemMessages = [
-            [
-                "role": "system",
-                "content": LLMStreamService.translationSystemPrompt,
-            ],
-        ]
+        let systemMessages: [[String: String]] = {
+            if systemPrompt {
+                [[
+                    "role": "system",
+                    "content": LLMStreamService.translationSystemPrompt,
+                ]]
+            } else {
+                []
+            }
+        }()
 
         var messages = systemMessages
 
@@ -496,7 +505,13 @@ extension LLMStreamService {
         return messages
     }
 
-    func dictMessages(word: String, sourceLanguage: Language, targetLanguage: Language) -> [[String: String]] {
+    func dictMessages(
+        word: String,
+        sourceLanguage: Language,
+        targetLanguage: Language,
+        systemPrompt: Bool
+    )
+        -> [[String: String]] {
         var prompt = ""
 
         let answerLanguage = Configuration.shared.firstLanguage
@@ -823,12 +838,16 @@ extension LLMStreamService {
             ],
         ]
 
-        let systemMessages = [
-            [
-                "role": "system",
-                "content": dictSystemPrompt,
-            ],
-        ]
+        let systemMessages: [[String: String]] = {
+            if systemPrompt {
+                [[
+                    "role": "system",
+                    "content": LLMStreamService.translationSystemPrompt,
+                ]]
+            } else {
+                []
+            }
+        }()
 
         var messages = systemMessages
 

@@ -172,13 +172,18 @@ extension GeminiService {
 
         switch queryType {
         case .dictionary:
-            prompts = dictMessages(word: text, sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
+            prompts = dictMessages(
+                word: text,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
+                systemPrompt: false
+            )
         case .sentence:
-            prompts = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage)
+            prompts = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage, systemPrompt: false)
         case .translation:
             fallthrough
         default:
-            prompts = translationMessages(text: text, from: sourceLanguage, to: targetLanguage)
+            prompts = translationMessages(text: text, from: sourceLanguage, to: targetLanguage, systemPrompt: false)
         }
 
         var chats: [ModelContent] = []
@@ -193,8 +198,6 @@ extension GeminiService {
         guard !chats.isEmpty else {
             return chats
         }
-        // removing first element in [ModelContent] since it's system instruction
-        chats.removeFirst()
         return chats
     }
 }
