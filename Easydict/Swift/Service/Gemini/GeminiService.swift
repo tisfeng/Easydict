@@ -69,7 +69,7 @@ public final class GeminiService: LLMStreamService {
                         await MainActor.run {
                             handleResult(
                                 queryType: queryType,
-                                resultString: concatenateStrings(from: result.translatedResults ?? []),
+                                resultText: concatenateStrings(from: result.translatedResults ?? []),
                                 error: nil,
                                 completion: completion
                             )
@@ -152,47 +152,6 @@ public final class GeminiService: LLMStreamService {
             "model"
         } else {
             roleRaw
-        }
-    }
-
-    private func handleResult(
-        queryType: EZQueryTextType,
-        resultString: String?,
-        error: Error?,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        var normalResults: [String]?
-        if let resultString {
-            normalResults = [resultString.trim()]
-        }
-
-        result.isStreamFinished = error != nil
-        result.translatedResults = normalResults
-        let updateCompletion = {
-            self.throttler.throttle { [unowned self] in
-                completion(result, error)
-            }
-        }
-
-        switch queryType {
-        case .sentence, .translation:
-            updateCompletion()
-
-        case .dictionary:
-            if error != nil {
-                result.showBigWord = false
-                result.translateResultsTopInset = 0
-                updateCompletion()
-                return
-            }
-
-            result.showBigWord = true
-            result.queryText = queryModel.queryText
-            result.translateResultsTopInset = 6
-            updateCompletion()
-
-        default:
-            updateCompletion()
         }
     }
 

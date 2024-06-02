@@ -171,3 +171,47 @@ extension ServiceUsageStatus: EnumLocalizedStringConvertible {
 // MARK: Defaults.Serializable
 
 extension ServiceUsageStatus: Defaults.Serializable {}
+
+extension LLMStreamService {
+    func handleResult(
+        queryType: EZQueryTextType,
+        resultText: String?,
+        error: Error?,
+        completion: @escaping (EZQueryResult, Error?) -> ()
+    ) {
+        var normalResults: [String]?
+        if let resultText {
+            normalResults = [resultText.trim()]
+        }
+
+        result.isStreamFinished = error != nil
+        result.translatedResults = normalResults
+
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                completion(result, error)
+            }
+        }
+
+        switch queryType {
+        case .sentence, .translation:
+            updateCompletion()
+
+        case .dictionary:
+            if error != nil {
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
+                updateCompletion()
+                return
+            }
+
+            result.showBigWord = true
+            result.queryText = queryModel.queryText
+            result.translateResultsTopInset = 6
+            updateCompletion()
+
+        default:
+            updateCompletion()
+        }
+    }
+}
