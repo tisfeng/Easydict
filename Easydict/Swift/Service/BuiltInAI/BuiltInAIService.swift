@@ -51,16 +51,16 @@ class BuiltInAIService: BaseOpenAIService {
             "mixtral-8x7b-32768",
 
             // Google Gemini https://ai.google.dev/pricing?hl=zh-cn
-            "gemini-pro",
-            "gemini-1.5-flash-latest", // free 15 RPM
+            "gemini-1.0-pro", // free 15 RPM
+            "gemini-1.5-flash", // free 15 RPM
+            "gemini-1.5-pro", // free 15 RPM
 
             /**
                 阿里通义千问 DashScope
 
                 https://help.aliyun.com/zh/dashscope/developer-reference/tongyi-qianwen-7b-14b-72b-metering-and-billing
                 */
-            "qwen1.5-110b-chat", // 有效期：2024-05-28
-            "qwen1.5-32b-chat", // 有效期：2024-06-19
+            "qwen1.5-32b-chat", // 有效期：2024-06-19，1,000,000 tokens 免费额度
             "qwen-turbo", // free total 2,000,000 tokens, until 8.12
             "baichuan2-13b-chat-v1", // free until 8.12, total 1,000,000 tokens
             "deepseek-7b-chat", // 开通DashScope即获赠总计 1,000,000 tokens 限时免费使用额度，有效期180天。
