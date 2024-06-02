@@ -10,6 +10,8 @@ import Defaults
 import Foundation
 import GoogleGenerativeAI
 
+// MARK: - GeminiService
+
 @objc(EZGeminiService)
 public final class GeminiService: LLMStreamService {
     // MARK: Public
@@ -144,43 +146,6 @@ public final class GeminiService: LLMStreamService {
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
 
-    private func promptContent(
-        queryType: EZQueryTextType,
-        text: String,
-        from sourceLanguage: Language,
-        to targetLanguage: Language
-    )
-        -> [ModelContent] {
-        var prompts = [[String: String]]()
-
-        switch queryType {
-        case .dictionary:
-            prompts = dictMessages(word: text, sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
-        case .sentence:
-            prompts = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage)
-        case .translation:
-            fallthrough
-        default:
-            prompts = translationMessages(text: text, from: sourceLanguage, to: targetLanguage)
-        }
-
-        var chats: [ModelContent] = []
-        for prompt in prompts {
-            if let roleRaw = prompt["role"],
-               let parts = prompt["content"] {
-                let role = getCorrectParts(from: roleRaw)
-                let chat = ModelContent(role: role, parts: parts)
-                chats.append(chat)
-            }
-        }
-        guard !chats.isEmpty else {
-            return chats
-        }
-        // removing first element in [ModelContent] since it's system instruction
-        chats.removeFirst()
-        return chats
-    }
-
     /// Given a roleRaw, replace "assistant" with "model"
     private func getCorrectParts(from roleRaw: String) -> String {
         if roleRaw.lowercased() == "assistant" {
@@ -233,5 +198,44 @@ public final class GeminiService: LLMStreamService {
 
     private func concatenateStrings(from array: [String]) -> String {
         array.joined()
+    }
+}
+
+extension GeminiService {
+    func promptContent(
+        queryType: EZQueryTextType,
+        text: String,
+        from sourceLanguage: Language,
+        to targetLanguage: Language
+    )
+        -> [ModelContent] {
+        var prompts = [[String: String]]()
+
+        switch queryType {
+        case .dictionary:
+            prompts = dictMessages(word: text, sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
+        case .sentence:
+            prompts = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage)
+        case .translation:
+            fallthrough
+        default:
+            prompts = translationMessages(text: text, from: sourceLanguage, to: targetLanguage)
+        }
+
+        var chats: [ModelContent] = []
+        for prompt in prompts {
+            if let roleRaw = prompt["role"],
+               let parts = prompt["content"] {
+                let role = getCorrectParts(from: roleRaw)
+                let chat = ModelContent(role: role, parts: parts)
+                chats.append(chat)
+            }
+        }
+        guard !chats.isEmpty else {
+            return chats
+        }
+        // removing first element in [ModelContent] since it's system instruction
+        chats.removeFirst()
+        return chats
     }
 }
