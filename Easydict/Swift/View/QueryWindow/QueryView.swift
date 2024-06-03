@@ -96,19 +96,11 @@ class QueryViewModel: ObservableObject {
 
     var callbacks: [() -> ()] = []
 
+    let doTranslateSignal: PassthroughSubject<(), Never> = .init()
+
     func doTranslate() {
-        callbacks.forEach { callback in
-            callback()
-        }
+        doTranslateSignal.send(())
     }
-
-    func registerDoTranslateCallback(_ callback: @escaping () -> ()) {
-        callbacks.append(callback)
-    }
-
-    // MARK: Private
-
-    private let doTranslateSignal: PassthroughSubject<(), Never> = .init()
 }
 
 // MARK: - QueryResultView
@@ -128,7 +120,7 @@ private struct QueryResultView: View {
                 if queryResult.isLoading {
                     ProgressView()
                 } else {
-                    Text(queryResult.translatedText ?? "")
+                    Text(queryResult.translatedText ?? "🌐")
                 }
             case let .failure(error):
                 Text(error.localizedDescription)
@@ -136,15 +128,15 @@ private struct QueryResultView: View {
                 EmptyView()
             }
         }
-        .onAppear {
-            queryViewModel.registerDoTranslateCallback(doTranslate)
-        }
+        .onReceive(queryViewModel.doTranslateSignal, perform: { _ in
+            doTranslate()
+        })
     }
 
     func doTranslate() {
         Task {
             do {
-                self.result = .success(try await service.translate(
+                result = .success(try await service.translate(
                     queryViewModel.textToTranslate,
                     from: queryViewModel.fromLanguage,
                     to: queryViewModel.toLanguage
