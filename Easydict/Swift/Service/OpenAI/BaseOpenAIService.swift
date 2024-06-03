@@ -44,34 +44,40 @@ public class BaseOpenAIService: LLMStreamService {
         let query = ChatQuery(messages: chats, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
-        openAI.chatsStream(query: query, url: url) { [weak self] res in
+        let control = StreamControl()
+
+        // TODO: refactor chatsStream with await
+        openAI.chatsStream(query: query, url: url, control: control) { [weak self] res in
             guard let self else { return }
 
-            if !result.isStreamFinished {
-                switch res {
-                case let .success(chatResult):
-                    if let content = chatResult.choices.first?.delta.content {
-                        resultText += content
-                    }
-                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
-                case let .failure(error):
-                    // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
-                    var text: String?
-                    var err: Error? = error
-                    if !resultText.isEmpty {
-                        text = resultText
-                        err = nil
+            if result.isStreamFinished {
+                control.cancel()
+                return
+            }
 
-                        logError("\(name())-(\(model)) error: \(error.localizedDescription)")
-                        logError(String(describing: error))
-                    }
-                    handleResult(
-                        queryType: queryType,
-                        resultText: text,
-                        error: err,
-                        completion: completion
-                    )
+            switch res {
+            case let .success(chatResult):
+                if let content = chatResult.choices.first?.delta.content {
+                    resultText += content
                 }
+                handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
+            case let .failure(error):
+                // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
+                var text: String?
+                var err: Error? = error
+                if !resultText.isEmpty {
+                    text = resultText
+                    err = nil
+
+                    logError("\(name())-(\(model)) error: \(error.localizedDescription)")
+                    logError(String(describing: error))
+                }
+                handleResult(
+                    queryType: queryType,
+                    resultText: text,
+                    error: err,
+                    completion: completion
+                )
             }
 
         } completion: { [weak self] error in
