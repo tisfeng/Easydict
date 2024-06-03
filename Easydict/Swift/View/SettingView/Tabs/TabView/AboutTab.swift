@@ -114,9 +114,11 @@ struct AboutTab: View {
     }
 
     private var copyrightInfo: String {
-        Bundle.main.localizedString(forKey: "NSHumanReadableCopyright",
-                                    value: "Copyright © 2023-2024 tisfeng. All rights reserved.",
-                                    table: "InfoPlist")
+        Bundle.main.localizedString(
+            forKey: "NSHumanReadableCopyright",
+            value: "Copyright © 2023-2024 tisfeng. All rights reserved.",
+            table: "InfoPlist"
+        )
     }
 }
 
