@@ -40,7 +40,8 @@ public final class GeminiService: LLMStreamService {
 
                 let queryType = queryType(text: text, from: from, to: to)
                 let translationPrompt = promptContent(queryType: queryType, text: text, from: from, to: to)
-                let systemInstruction = LLMStreamService.translationSystemPrompt
+                let systemInstruction = queryType == .dictionary ? LLMStreamService.dictSystemPrompt : LLMStreamService
+                    .translationSystemPrompt
                 let model = GenerativeModel(
                     name: model,
                     apiKey: apiKey,

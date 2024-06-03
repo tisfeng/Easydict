@@ -15,6 +15,10 @@ extension LLMStreamService {
     You are a translation expert proficient in various languages, focusing solely on translating text without interpretation. You accurately understand the meanings of proper nouns, idioms, metaphors, allusions, and other obscure words in sentences, translating them appropriately based on the context and language environment. The translation should be natural and fluent. Only return the translated text, without including redundant quotes or additional notes.
     """
 
+    static let dictSystemPrompt = """
+    You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
+    """
+
     func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
@@ -537,10 +541,6 @@ extension LLMStreamService {
 
         let sourceLanguageString = sourceLanguage.rawValue
 
-        let dictSystemPrompt = """
-        You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. For Chinese words, use Baidu Baike. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
-        """
-
         let answerLanguagePrompt = "Using \(answerLanguage.rawValue): \n"
         prompt.append(answerLanguagePrompt)
 
@@ -842,7 +842,7 @@ extension LLMStreamService {
             if systemPrompt {
                 [[
                     "role": "system",
-                    "content": LLMStreamService.translationSystemPrompt,
+                    "content": LLMStreamService.dictSystemPrompt,
                 ]]
             } else {
                 []
