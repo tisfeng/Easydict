@@ -31,6 +31,10 @@ func dictionaryStoredKey(_ serviceType: ServiceType) -> String {
     storedKey(EZDictionaryKey, serviceType: serviceType)
 }
 
+func availableModelStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZAvailableModelKey, serviceType: serviceType)
+}
+
 extension UserDefaults {
     static func bool(forKey key: String, serviceType: ServiceType) -> Bool {
         let key = storedKey(key, serviceType: serviceType)

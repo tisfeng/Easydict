@@ -17,6 +17,7 @@ static NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
 static NSString *const EZTranslationKey = @"Translation";
 static NSString *const EZDictionaryKey = @"Dictionary";
 static NSString *const EZSentenceKey = @"Sentence";
+static NSString *const EZAvailableModelKey = @"AvailableModel";
 
 // OpenAI
 static NSString *const EZOpenAIAPIKey = @"EZOpenAIAPIKey";

@@ -328,9 +328,11 @@ extension Defaults.Keys {
         serviceUsageStatusStoredKey(.gemini),
         default: .default
     )
-    static let geminiModel = Key<String>("geminiModel", default: GeminiModel.gemini1_5_flash.rawValue)
+    static let geminiModel = Key<String>(
+        "geminiModel", default: GeminiModel.gemini1_5_flash.rawValue
+    )
     static let geminiAvailableModels = Key<String?>(
-        "geminiAvailableModels",
+        availableModelStoredKey(.gemini),
         default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
     static let geminiValidModels = Key<Array>(
