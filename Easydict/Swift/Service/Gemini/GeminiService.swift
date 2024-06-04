@@ -39,17 +39,26 @@ public final class GeminiService: LLMStreamService {
                 result.isStreamFinished = false
 
                 let queryType = queryType(text: text, from: from, to: to)
-                let chatHistory = promptContent(queryType: queryType, text: text, from: from, to: to)
                 let systemPrompt = queryType == .dictionary ? LLMStreamService
                     .dictSystemPrompt : LLMStreamService
                     .translationSystemPrompt
 
+                var enableSystemPromptInChats = false
                 var systemInstruction: ModelContent? = try ModelContent(role: "system", systemPrompt)
 
                 // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
                 if model == GeminiModel.gemini1_0_pro.rawValue {
                     systemInstruction = nil
+                    enableSystemPromptInChats = true
                 }
+
+                let chatHistory = promptContent(
+                    queryType: queryType,
+                    text: text,
+                    from: from,
+                    to: to,
+                    systemPrompt: enableSystemPromptInChats
+                )
 
                 let model = GenerativeModel(
                     name: model,
@@ -156,10 +165,12 @@ public final class GeminiService: LLMStreamService {
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
 
-    /// Given a roleRaw, replace "assistant" with "model"
+    /// Given a roleRaw, currently only support "user" and "model", "model" is equal to "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
     private func getCorrectParts(from roleRaw: String) -> String {
-        if roleRaw.lowercased() == "assistant" {
+        if roleRaw == "assistant" {
             "model"
+        } else if roleRaw == "system" {
+            "user"
         } else {
             roleRaw
         }
@@ -175,7 +186,8 @@ extension GeminiService {
         queryType: EZQueryTextType,
         text: String,
         from sourceLanguage: Language,
-        to targetLanguage: Language
+        to targetLanguage: Language,
+        systemPrompt: Bool
     )
         -> [ModelContent] {
         var prompts = [[String: String]]()
@@ -186,14 +198,24 @@ extension GeminiService {
                 word: text,
                 sourceLanguage: sourceLanguage,
                 targetLanguage: targetLanguage,
-                systemPrompt: false
+                systemPrompt: systemPrompt
             )
         case .sentence:
-            prompts = sentenceMessages(sentence: text, from: sourceLanguage, to: targetLanguage, systemPrompt: false)
+            prompts = sentenceMessages(
+                sentence: text,
+                from: sourceLanguage,
+                to: targetLanguage,
+                systemPrompt: systemPrompt
+            )
         case .translation:
             fallthrough
         default:
-            prompts = translationMessages(text: text, from: sourceLanguage, to: targetLanguage, systemPrompt: false)
+            prompts = translationMessages(
+                text: text,
+                from: sourceLanguage,
+                to: targetLanguage,
+                systemPrompt: systemPrompt
+            )
         }
 
         var chats: [ModelContent] = []
