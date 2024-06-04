@@ -39,9 +39,18 @@ public final class GeminiService: LLMStreamService {
                 result.isStreamFinished = false
 
                 let queryType = queryType(text: text, from: from, to: to)
-                let translationPrompt = promptContent(queryType: queryType, text: text, from: from, to: to)
-                let systemInstruction = queryType == .dictionary ? LLMStreamService.dictSystemPrompt : LLMStreamService
+                let chatHistory = promptContent(queryType: queryType, text: text, from: from, to: to)
+                let systemPrompt = queryType == .dictionary ? LLMStreamService
+                    .dictSystemPrompt : LLMStreamService
                     .translationSystemPrompt
+
+                var systemInstruction: ModelContent? = try ModelContent(role: "system", systemPrompt)
+
+                // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
+                if model == GeminiModel.gemini1_0_pro.rawValue {
+                    systemInstruction = nil
+                }
+
                 let model = GenerativeModel(
                     name: model,
                     apiKey: apiKey,
@@ -58,7 +67,7 @@ public final class GeminiService: LLMStreamService {
 
                 // Gemini Docs: https://github.com/google/generative-ai-swift
 
-                let outputContentStream = model.generateContentStream(translationPrompt)
+                let outputContentStream = model.generateContentStream(chatHistory)
                 for try await outputContent in outputContentStream {
                     guard let line = outputContent.text else {
                         return
@@ -196,9 +205,7 @@ extension GeminiService {
                 chats.append(chat)
             }
         }
-        guard !chats.isEmpty else {
-            return chats
-        }
+
         return chats
     }
 }
