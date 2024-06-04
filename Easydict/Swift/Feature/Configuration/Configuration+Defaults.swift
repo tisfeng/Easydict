@@ -208,7 +208,7 @@ class ShortcutWrapper<T: KeyCombo> {
 // Service Configuration
 extension Defaults.Keys {
     // OpenAI
-    static let openAIAPIKey = Key<String?>(EZOpenAIAPIKey)
+    static let openAIAPIKey = Key<String?>(apiStoredKey(.openAI)) // EZOpenAIAPIKey
     static let openAITranslation = Key<String>(
         translationStoredKey(.openAI),
         default: "1"
@@ -225,23 +225,26 @@ extension Defaults.Keys {
         serviceUsageStatusStoredKey(.openAI),
         default: .default
     )
-    static let openAIEndPoint = Key<String?>(EZOpenAIEndPointKey)
-    static let openAIModel = Key<String>(EZOpenAIModelKey, default: OpenAIModel.gpt3_5_turbo.rawValue)
+    static let openAIEndPoint = Key<String?>(endpointStoredKey(.openAI))
+    static let openAIModel = Key<String>(
+        modelStoredKey(.openAI),
+        default: OpenAIModel.gpt3_5_turbo.rawValue
+    )
     static let openAIAvailableModels = Key<String?>(
-        EZOpenAIAvailableModelsKey,
+        availableModelsStoredKey(.openAI),
         default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
     static let openAIVaildModels = Key<Array>(
-        EZOpenAIValidModelsKey,
+        validModelsStoredKey(.openAI),
         default: OpenAIModel.allCases.map { $0.rawValue }
     )
 
     // Custom OpenAI
     static let customOpenAINameKey = Key<String?>(
-        EZCustomOpenAINameKey,
+        nameStoredKey(.customOpenAI),
         default: NSLocalizedString("custom_openai", comment: "")
     )
-    static let customOpenAIAPIKey = Key<String?>(EZCustomOpenAIAPIKey, default: "")
+    static let customOpenAIAPIKey = Key<String?>(apiStoredKey(.customOpenAI))
     static let customOpenAITranslation = Key<String>(
         translationStoredKey(.customOpenAI),
         default: "1"
@@ -258,16 +261,25 @@ extension Defaults.Keys {
         serviceUsageStatusStoredKey(.builtInAI),
         default: .default
     )
-    static let customOpenAIEndPoint = Key<String?>(EZCustomOpenAIEndPointKey, default: "")
-    static let customOpenAIModel = Key<String>(EZCustomOpenAIModelKey, default: "")
-    static let customOpenAIAvailableModels = Key<String?>(EZCustomOpenAIAvailableModelsKey, default: "")
+    static let customOpenAIEndPoint = Key<String?>(endpointStoredKey(.customOpenAI))
+    static let customOpenAIModel = Key<String>(
+        modelStoredKey(.customOpenAI),
+        default: ""
+    )
+    static let customOpenAIAvailableModels = Key<String?>(
+        availableModelsStoredKey(.customOpenAI),
+        default: ""
+    )
     static let customOpenAIVaildModels = Key<Array>(
-        EZCustomOpenAIValidModelsKey,
+        validModelsStoredKey(.customOpenAI),
         default: [""]
     )
 
     // Built-in AI
-    static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "")
+    static let builtInAIModel = Key<String>(
+        modelStoredKey(.builtInAI),
+        default: ""
+    ) // EZBuiltInAIModelKey
     static let builtInAITranslation = Key<String>(
         translationStoredKey(.builtInAI),
         default: "1"
@@ -283,6 +295,37 @@ extension Defaults.Keys {
     static let builtInAIServiceUsageStatus = Key<ServiceUsageStatus>(
         serviceUsageStatusStoredKey(.builtInAI),
         default: .default
+    )
+
+    // Gemni
+    static let geminiAPIKey = Key<String?>(apiStoredKey(.gemini)) // EZGeminiAPIKey
+    static let geminiTranslation = Key<String>(
+        translationStoredKey(.gemini),
+        default: "1"
+    )
+    static let geminiDictionary = Key<String>(
+        dictionaryStoredKey(.gemini),
+        default: "1"
+    )
+    static let geminiSentence = Key<String>(
+        sentenceStoredKey(.gemini),
+        default: "1"
+    )
+    static let geminiServiceUsageStatus = Key<ServiceUsageStatus>(
+        serviceUsageStatusStoredKey(.gemini),
+        default: .default
+    )
+    static let geminiModel = Key<String>(
+        modelStoredKey(.gemini),
+        default: GeminiModel.gemini1_5_flash.rawValue
+    )
+    static let geminiAvailableModels = Key<String?>(
+        availableModelsStoredKey(.gemini),
+        default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
+    )
+    static let geminiValidModels = Key<Array>(
+        validModelsStoredKey(.gemini),
+        default: GeminiModel.allCases.map { $0.rawValue }
     )
 
     // DeepL
@@ -309,36 +352,6 @@ extension Defaults.Keys {
     // Ali
     static let aliAccessKeyId = Key<String?>(EZAliAccessKeyId)
     static let aliAccessKeySecret = Key<String?>(EZAliAccessKeySecret)
-
-    // Gemni
-    static let geminiAPIKey = Key<String?>("EZGeminiAPIKey")
-    static let geminiTranslation = Key<String>(
-        translationStoredKey(.gemini),
-        default: "1"
-    )
-    static let geminiDictionary = Key<String>(
-        dictionaryStoredKey(.gemini),
-        default: "1"
-    )
-    static let geminiSentence = Key<String>(
-        sentenceStoredKey(.gemini),
-        default: "1"
-    )
-    static let geminiServiceUsageStatus = Key<ServiceUsageStatus>(
-        serviceUsageStatusStoredKey(.gemini),
-        default: .default
-    )
-    static let geminiModel = Key<String>(
-        "geminiModel", default: GeminiModel.gemini1_5_flash.rawValue
-    )
-    static let geminiAvailableModels = Key<String?>(
-        availableModelStoredKey(.gemini),
-        default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
-    )
-    static let geminiValidModels = Key<Array>(
-        "geminiValidModels",
-        default: GeminiModel.allCases.map { $0.rawValue }
-    )
 }
 
 /// shortcut
