@@ -180,12 +180,6 @@ private class OpenAIServiceViewModel: ObservableObject {
     }
 }
 
-// MARK: - EnumLocalizedStringConvertible
-
-protocol EnumLocalizedStringConvertible {
-    var title: LocalizedStringKey { get }
-}
-
 // MARK: - OpenAIModel
 
 // swiftlint:disable identifier_name
@@ -197,31 +191,4 @@ enum OpenAIModel: String, CaseIterable {
     case gpt4o = "gpt-4o" // Currently points to gpt-4o-2024-05-13. Input: $5 | Output: $15  (128k context length)
 }
 
-// MARK: - ServiceUsageStatus
-
 // swiftlint:enable identifier_name
-
-enum ServiceUsageStatus: String, CaseIterable {
-    case `default` = "0"
-    case alwaysOff = "1"
-    case alwaysOn = "2"
-}
-
-// MARK: EnumLocalizedStringConvertible
-
-extension ServiceUsageStatus: EnumLocalizedStringConvertible {
-    var title: LocalizedStringKey {
-        switch self {
-        case .default:
-            "service.configuration.openai.usage_status_default.title"
-        case .alwaysOff:
-            "service.configuration.openai.usage_status_always_off.title"
-        case .alwaysOn:
-            "service.configuration.openai.usage_status_always_on.title"
-        }
-    }
-}
-
-// MARK: Defaults.Serializable
-
-extension ServiceUsageStatus: Defaults.Serializable {}
