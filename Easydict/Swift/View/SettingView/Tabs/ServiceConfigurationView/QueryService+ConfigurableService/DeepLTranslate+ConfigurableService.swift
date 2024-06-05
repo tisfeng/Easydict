@@ -60,26 +60,14 @@ extension DeepLAPIUsagePriority: Defaults.Serializable {}
 // MARK: EnumLocalizedStringConvertible
 
 extension DeepLAPIUsagePriority: EnumLocalizedStringConvertible {
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .webFirst:
-            NSLocalizedString(
-                "service.configuration.deepl.web_first.title",
-                bundle: .main,
-                comment: ""
-            )
+            "service.configuration.deepl.web_first.title"
         case .authKeyFirst:
-            NSLocalizedString(
-                "service.configuration.deepl.authkey_first.title",
-                bundle: .main,
-                comment: ""
-            )
+            "service.configuration.deepl.authkey_first.title"
         case .authKeyOnly:
-            NSLocalizedString(
-                "service.configuration.deepl.authkey_only.title",
-                bundle: .main,
-                comment: ""
-            )
+            "service.configuration.deepl.authkey_only.title"
         }
     }
 }

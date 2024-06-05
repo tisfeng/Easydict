@@ -23,7 +23,13 @@ extension LLMStreamService {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    func translationMessages(text: String, from: Language, to: Language, systemPrompt: Bool) -> [[String: String]] {
+    func translationMessages(
+        text: String,
+        from: Language,
+        to: Language,
+        enableSystemPrompt: Bool
+    )
+        -> [[String: String]] {
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
 //        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
 
@@ -250,7 +256,7 @@ extension LLMStreamService {
         ]
 
         let systemMessages: [[String: String]] = {
-            if systemPrompt {
+            if enableSystemPrompt {
                 [[
                     "role": "system",
                     "content": LLMStreamService.translationSystemPrompt,
@@ -285,7 +291,7 @@ extension LLMStreamService {
         sentence: String,
         from sourceLanguage: Language,
         to targetLanguage: Language,
-        systemPrompt: Bool
+        enableSystemPrompt: Bool
     )
         -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
@@ -479,7 +485,7 @@ extension LLMStreamService {
         ]
 
         let systemMessages: [[String: String]] = {
-            if systemPrompt {
+            if enableSystemPrompt {
                 [[
                     "role": "system",
                     "content": LLMStreamService.translationSystemPrompt,
@@ -513,7 +519,7 @@ extension LLMStreamService {
         word: String,
         sourceLanguage: Language,
         targetLanguage: Language,
-        systemPrompt: Bool
+        enableSystemPrompt: Bool
     )
         -> [[String: String]] {
         var prompt = ""
@@ -839,7 +845,7 @@ extension LLMStreamService {
         ]
 
         let systemMessages: [[String: String]] = {
-            if systemPrompt {
+            if enableSystemPrompt {
                 [[
                     "role": "system",
                     "content": LLMStreamService.dictSystemPrompt,

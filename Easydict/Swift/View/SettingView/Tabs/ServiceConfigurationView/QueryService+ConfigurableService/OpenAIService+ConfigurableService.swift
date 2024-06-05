@@ -180,12 +180,6 @@ private class OpenAIServiceViewModel: ObservableObject {
     }
 }
 
-// MARK: - EnumLocalizedStringConvertible
-
-protocol EnumLocalizedStringConvertible {
-    var title: String { get }
-}
-
 // MARK: - OpenAIModel
 
 // swiftlint:disable identifier_name
@@ -197,16 +191,4 @@ enum OpenAIModel: String, CaseIterable {
     case gpt4o = "gpt-4o" // Currently points to gpt-4o-2024-05-13. Input: $5 | Output: $15  (128k context length)
 }
 
-// MARK: EnumLocalizedStringConvertible
-
 // swiftlint:enable identifier_name
-
-extension OpenAIModel: EnumLocalizedStringConvertible {
-    var title: String {
-        rawValue
-    }
-}
-
-// MARK: Defaults.Serializable
-
-extension OpenAIModel: Defaults.Serializable {}
