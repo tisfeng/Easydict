@@ -16,8 +16,6 @@ import OpenAI
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: LLMStreamService {
-    // MARK: Public
-
     override public func translate(
         _ text: String,
         from: Language,
@@ -30,8 +28,6 @@ public class BaseOpenAIService: LLMStreamService {
             completion(result, invalidURLError)
             return
         }
-
-        updateCompletion = completion
 
         var resultText = ""
 
@@ -98,54 +94,6 @@ public class BaseOpenAIService: LLMStreamService {
             }
         }
     }
-
-    // MARK: Internal
-
-    var updateCompletion: ((EZQueryResult, Error?) -> ())?
-
-    // MARK: Private
-
-    private func handleResult(
-        queryType: EZQueryTextType,
-        resultText: String?,
-        error: Error?,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        var normalResults: [String]?
-        if let resultText {
-            normalResults = [resultText.trim()]
-        }
-
-        result.isStreamFinished = error != nil
-        result.translatedResults = normalResults
-
-        let updateCompletion = {
-            self.throttler.throttle { [unowned self] in
-                self.updateCompletion?(result, error)
-            }
-        }
-
-        switch queryType {
-        case .sentence, .translation:
-            updateCompletion()
-
-        case .dictionary:
-            if error != nil {
-                result.showBigWord = false
-                result.translateResultsTopInset = 0
-                updateCompletion()
-                return
-            }
-
-            result.showBigWord = true
-            result.queryText = queryModel.queryText
-            result.translateResultsTopInset = 6
-            updateCompletion()
-
-        default:
-            updateCompletion()
-        }
-    }
 }
 
 // MARK: OpenAI chat messages
@@ -157,7 +105,7 @@ extension BaseOpenAIService {
         typealias Role = ChatCompletionMessageParam.Role
 
         var chats: [ChatCompletionMessageParam] = []
-        let messages = translationMessages(text: text, from: from, to: to)
+        let messages = translationMessages(text: text, from: from, to: to, systemPrompt: false)
         for message in messages {
             if let roleRawValue = message["role"],
                let role = Role(rawValue: roleRawValue),
@@ -183,13 +131,13 @@ extension BaseOpenAIService {
 
         switch queryType {
         case .sentence:
-            messages = sentenceMessages(sentence: text, from: from, to: to)
+            messages = sentenceMessages(sentence: text, from: from, to: to, systemPrompt: true)
         case .dictionary:
-            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to)
+            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to, systemPrompt: true)
         case .translation:
             fallthrough
         default:
-            messages = translationMessages(text: text, from: from, to: to)
+            messages = translationMessages(text: text, from: from, to: to, systemPrompt: true)
         }
 
         var chats: [ChatCompletionMessageParam] = []
