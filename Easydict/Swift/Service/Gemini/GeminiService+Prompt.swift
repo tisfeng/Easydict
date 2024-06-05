@@ -26,14 +26,14 @@ extension GeminiService {
                 word: text,
                 sourceLanguage: sourceLanguage,
                 targetLanguage: targetLanguage,
-                systemPrompt: systemPrompt
+                enableSystemPrompt: systemPrompt
             )
         case .sentence:
             prompts = sentenceMessages(
                 sentence: text,
                 from: sourceLanguage,
                 to: targetLanguage,
-                systemPrompt: systemPrompt
+                enableSystemPrompt: systemPrompt
             )
         case .translation:
             fallthrough
@@ -42,15 +42,15 @@ extension GeminiService {
                 text: text,
                 from: sourceLanguage,
                 to: targetLanguage,
-                systemPrompt: systemPrompt
+                enableSystemPrompt: systemPrompt
             )
         }
 
         var chats: [ModelContent] = []
         for prompt in prompts {
-            if let roleRaw = prompt["role"],
+            if let openAIRole = prompt["role"],
                let parts = prompt["content"] {
-                let role = getCorrectParts(from: roleRaw)
+                let role = getGeminiRole(from: openAIRole)
                 let chat = ModelContent(role: role, parts: parts)
                 chats.append(chat)
             }
@@ -60,13 +60,13 @@ extension GeminiService {
     }
 
     /// Given a roleRaw, currently only support "user" and "model", "model" is equal to "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
-    private func getCorrectParts(from roleRaw: String) -> String {
-        if roleRaw == "assistant" {
+    private func getGeminiRole(from openAIRole: String) -> String {
+        if openAIRole == "assistant" {
             "model"
-        } else if roleRaw == "system" {
+        } else if openAIRole == "system" {
             "user"
         } else {
-            roleRaw
+            openAIRole
         }
     }
 }

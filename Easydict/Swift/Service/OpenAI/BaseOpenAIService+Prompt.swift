@@ -18,7 +18,7 @@ extension BaseOpenAIService {
         typealias Role = ChatCompletionMessageParam.Role
 
         var chats: [ChatCompletionMessageParam] = []
-        let messages = translationMessages(text: text, from: from, to: to, systemPrompt: false)
+        let messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: false)
         for message in messages {
             if let roleRawValue = message["role"],
                let role = Role(rawValue: roleRawValue),
@@ -44,11 +44,11 @@ extension BaseOpenAIService {
 
         switch queryType {
         case .sentence:
-            messages = sentenceMessages(sentence: text, from: from, to: to, systemPrompt: true)
+            messages = sentenceMessages(sentence: text, from: from, to: to, enableSystemPrompt: true)
         case .dictionary:
-            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to, systemPrompt: true)
+            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to, enableSystemPrompt: true)
         default:
-            messages = translationMessages(text: text, from: from, to: to, systemPrompt: true)
+            messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: true)
         }
 
         var chats: [ChatCompletionMessageParam] = []
