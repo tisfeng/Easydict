@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - LLMStreamService
@@ -129,5 +130,88 @@ public class LLMStreamService: QueryService {
         }
 
         return .translation
+    }
+}
+
+// MARK: - ServiceUsageStatus
+
+enum ServiceUsageStatus: String, CaseIterable {
+    case `default` = "0"
+    case alwaysOff = "1"
+    case alwaysOn = "2"
+}
+
+// MARK: EnumLocalizedStringConvertible
+
+extension ServiceUsageStatus: EnumLocalizedStringConvertible {
+    var title: String {
+        switch self {
+        case .default:
+            NSLocalizedString(
+                "service.configuration.openai.usage_status_default.title",
+                bundle: .main,
+                comment: ""
+            )
+        case .alwaysOff:
+            NSLocalizedString(
+                "service.configuration.openai.usage_status_always_off.title",
+                bundle: .main,
+                comment: ""
+            )
+        case .alwaysOn:
+            NSLocalizedString(
+                "service.configuration.openai.usage_status_always_on.title",
+                bundle: .main,
+                comment: ""
+            )
+        }
+    }
+}
+
+// MARK: Defaults.Serializable
+
+extension ServiceUsageStatus: Defaults.Serializable {}
+
+extension LLMStreamService {
+    func handleResult(
+        queryType: EZQueryTextType,
+        resultText: String?,
+        error: Error?,
+        completion: @escaping (EZQueryResult, Error?) -> ()
+    ) {
+        var normalResults: [String]?
+        if let resultText {
+            normalResults = [resultText.trim()]
+        }
+
+        result.isStreamFinished = error != nil
+        result.translatedResults = normalResults
+
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                completion(result, error)
+            }
+        }
+
+        switch queryType {
+        case .sentence, .translation:
+            updateCompletion()
+
+        case .dictionary:
+            if error != nil {
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
+                updateCompletion()
+                return
+            }
+
+            result.showBigWord = true
+            result.queryText = queryModel.queryText
+            result.translateResultsTopInset = 6
+            updateCompletion()
+
+        default:
+            updateCompletion()
+        }
     }
 }

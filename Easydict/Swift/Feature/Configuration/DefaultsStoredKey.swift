@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: refactor key with enum key type.
 func storedKey(_ key: String, serviceType: ServiceType) -> String {
     // This key should be compatible with existing OpenAI config keys
     // EZOpenAIServiceUsageStatusKey
@@ -29,6 +30,30 @@ func sentenceStoredKey(_ serviceType: ServiceType) -> String {
 
 func dictionaryStoredKey(_ serviceType: ServiceType) -> String {
     storedKey(EZDictionaryKey, serviceType: serviceType)
+}
+
+func availableModelsStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZAvailableModelsKey, serviceType: serviceType)
+}
+
+func validModelsStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZValidModelsKey, serviceType: serviceType)
+}
+
+func modelStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZModelKey, serviceType: serviceType)
+}
+
+func apiStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZAPIKey, serviceType: serviceType)
+}
+
+func endpointStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZEndpointKey, serviceType: serviceType)
+}
+
+func nameStoredKey(_ serviceType: ServiceType) -> String {
+    storedKey(EZNameKey, serviceType: serviceType)
 }
 
 extension UserDefaults {
