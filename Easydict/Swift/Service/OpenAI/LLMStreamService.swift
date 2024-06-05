@@ -134,19 +134,19 @@ public class LLMStreamService: QueryService {
 }
 
 extension LLMStreamService {
-    func handleResult(
+    func updateResultText(
+        _ resultText: String?,
         queryType: EZQueryTextType,
-        resultText: String?,
         error: Error?,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        var normalResults: [String]?
+        var translatedTexts: [String]?
         if let resultText {
-            normalResults = [resultText.trim()]
+            translatedTexts = [resultText.trim()]
         }
 
         result.isStreamFinished = error != nil
-        result.translatedResults = normalResults
+        result.translatedResults = translatedTexts
 
         let updateCompletion = {
             self.throttler.throttle { [unowned self] in
@@ -155,9 +155,6 @@ extension LLMStreamService {
         }
 
         switch queryType {
-        case .sentence, .translation:
-            updateCompletion()
-
         case .dictionary:
             if error != nil {
                 result.showBigWord = false

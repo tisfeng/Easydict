@@ -72,7 +72,7 @@ public final class GeminiService: LLMStreamService {
                     systemInstruction: systemInstruction
                 )
 
-                var resultString = ""
+                var resultText = ""
 
                 // Gemini Docs: https://github.com/google/generative-ai-swift
 
@@ -82,23 +82,17 @@ public final class GeminiService: LLMStreamService {
                         return
                     }
                     if !result.isStreamFinished {
-                        resultString += line
-
-                        result.translatedResults = [resultString]
-                        await MainActor.run {
-                            handleResult(
-                                queryType: queryType,
-                                resultText: concatenateStrings(from: result.translatedResults ?? []),
-                                error: nil,
-                                completion: completion
-                            )
-                        }
+                        resultText += line
+                        updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                     }
                 }
 
-                result.isStreamFinished = true
-                result.translatedResults = [getFinalResultText(text: resultString)]
-                completion(result, nil)
+                if !result.isStreamFinished {
+                    result.isStreamFinished = true
+                    resultText = getFinalResultText(text: resultText)
+                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                }
+
             } catch {
                 /**
                  https://github.com/google/generative-ai-swift/issues/89
@@ -164,70 +158,4 @@ public final class GeminiService: LLMStreamService {
     private let hateSpeechBlockNone = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
-
-    /// Given a roleRaw, currently only support "user" and "model", "model" is equal to "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
-    private func getCorrectParts(from roleRaw: String) -> String {
-        if roleRaw == "assistant" {
-            "model"
-        } else if roleRaw == "system" {
-            "user"
-        } else {
-            roleRaw
-        }
-    }
-
-    private func concatenateStrings(from array: [String]) -> String {
-        array.joined()
-    }
-}
-
-extension GeminiService {
-    func promptContent(
-        queryType: EZQueryTextType,
-        text: String,
-        from sourceLanguage: Language,
-        to targetLanguage: Language,
-        systemPrompt: Bool
-    )
-        -> [ModelContent] {
-        var prompts = [[String: String]]()
-
-        switch queryType {
-        case .dictionary:
-            prompts = dictMessages(
-                word: text,
-                sourceLanguage: sourceLanguage,
-                targetLanguage: targetLanguage,
-                systemPrompt: systemPrompt
-            )
-        case .sentence:
-            prompts = sentenceMessages(
-                sentence: text,
-                from: sourceLanguage,
-                to: targetLanguage,
-                systemPrompt: systemPrompt
-            )
-        case .translation:
-            fallthrough
-        default:
-            prompts = translationMessages(
-                text: text,
-                from: sourceLanguage,
-                to: targetLanguage,
-                systemPrompt: systemPrompt
-            )
-        }
-
-        var chats: [ModelContent] = []
-        for prompt in prompts {
-            if let roleRaw = prompt["role"],
-               let parts = prompt["content"] {
-                let role = getCorrectParts(from: roleRaw)
-                let chat = ModelContent(role: role, parts: parts)
-                chats.append(chat)
-            }
-        }
-
-        return chats
-    }
 }
