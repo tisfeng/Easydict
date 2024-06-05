@@ -14,23 +14,6 @@ import OpenAI
 extension BaseOpenAIService {
     typealias ChatCompletionMessageParam = ChatQuery.ChatCompletionMessageParam
 
-    func chatMessages(text: String, from: Language, to: Language) -> [ChatCompletionMessageParam] {
-        typealias Role = ChatCompletionMessageParam.Role
-
-        var chats: [ChatCompletionMessageParam] = []
-        let messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: false)
-        for message in messages {
-            if let roleRawValue = message["role"],
-               let role = Role(rawValue: roleRawValue),
-               let content = message["content"] {
-                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
-                chats.append(chat)
-            }
-        }
-
-        return chats
-    }
-
     func chatMessages(
         queryType: EZQueryTextType,
         text: String,
