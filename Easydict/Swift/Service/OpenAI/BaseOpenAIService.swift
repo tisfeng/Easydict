@@ -43,43 +43,40 @@ public class BaseOpenAIService: LLMStreamService {
         openAI.chatsStream(query: query, url: url) { [weak self] res in
             guard let self else { return }
 
-            if !result.isStreamFinished {
-                switch res {
-                case let .success(chatResult):
-                    if let content = chatResult.choices.first?.delta.content {
-                        resultText += content
-                    }
-                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-                case let .failure(error):
-                    // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
-                    var text: String?
-                    var err: Error? = error
-                    if !resultText.isEmpty {
-                        text = resultText
-                        err = nil
-
-                        logError("\(name())-(\(model)) error: \(error.localizedDescription)")
-                        logError(String(describing: error))
-                    }
-                    updateResultText(text, queryType: queryType, error: err, completion: completion)
+            switch res {
+            case let .success(chatResult):
+                if let content = chatResult.choices.first?.delta.content {
+                    resultText += content
                 }
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+            case let .failure(error):
+                // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
+                var text: String?
+                var err: Error? = error
+                if !resultText.isEmpty {
+                    text = resultText
+                    err = nil
+
+                    logError("\(name())-(\(model)) error: \(error.localizedDescription)")
+                    logError(String(describing: error))
+                }
+                updateResultText(text, queryType: queryType, error: err, completion: completion)
             }
 
         } completion: { [weak self] error in
             guard let self else { return }
 
-            if !result.isStreamFinished {
-                if let error {
-                    updateResultText(nil, queryType: queryType, error: error, completion: completion)
-                } else {
-                    // If already has error, we do not need to update it.
-                    if result.error == nil {
-                        resultText = getFinalResultText(text: resultText)
-//                        log("\(name())-(\(model)): \(resultText)")
-                        updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-                        result.isStreamFinished = true
-                    }
-                }
+            if let error {
+                updateResultText(nil, queryType: queryType, error: error, completion: completion)
+                return
+            }
+
+            // If already has error, we do not need to update it.
+            if result.error == nil {
+                resultText = getFinalResultText(resultText)
+//              log("\(name())-(\(model)): \(resultText)")
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                result.isStreamFinished = true
             }
         }
     }

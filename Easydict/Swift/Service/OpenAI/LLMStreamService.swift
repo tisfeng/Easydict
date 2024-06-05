@@ -90,7 +90,7 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
-    func getFinalResultText(text: String) -> String {
+    func getFinalResultText(_ text: String) -> String {
         var resultText = text.trim()
 
         // Remove last </s>, fix Groq model mixtral-8x7b-32768
@@ -140,6 +140,10 @@ extension LLMStreamService {
         error: Error?,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        if result.isStreamFinished {
+            return
+        }
+
         var translatedTexts: [String]?
         if let resultText {
             translatedTexts = [resultText.trim()]

@@ -34,11 +34,12 @@ public final class GeminiService: LLMStreamService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        let queryType = queryType(text: text, from: from, to: to)
+
         Task {
             do {
                 result.isStreamFinished = false
 
-                let queryType = queryType(text: text, from: from, to: to)
                 let systemPrompt = queryType == .dictionary ? LLMStreamService
                     .dictSystemPrompt : LLMStreamService
                     .translationSystemPrompt
@@ -81,17 +82,13 @@ public final class GeminiService: LLMStreamService {
                     guard let line = outputContent.text else {
                         return
                     }
-                    if !result.isStreamFinished {
-                        resultText += line
-                        updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-                    }
-                }
-
-                if !result.isStreamFinished {
-                    result.isStreamFinished = true
-                    resultText = getFinalResultText(text: resultText)
+                    resultText += line
                     updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 }
+
+                resultText = getFinalResultText(resultText)
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                result.isStreamFinished = true
 
             } catch {
                 /**
@@ -101,15 +98,13 @@ public final class GeminiService: LLMStreamService {
 
                  "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
                  */
-                result.isStreamFinished = true
 
                 let ezError = EZError(nsError: error)
                 let errorString = String(describing: error)
                 let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
                 ezError?.errorDataMessage = errorMessage
-                await MainActor.run {
-                    completion(result, ezError)
-                }
+
+                updateResultText(nil, queryType: queryType, error: ezError, completion: completion)
             }
         }
     }
