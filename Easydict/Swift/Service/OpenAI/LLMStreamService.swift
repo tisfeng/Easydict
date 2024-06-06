@@ -67,7 +67,7 @@ public class LLMStreamService: QueryService {
 
     let throttler = Throttler()
 
-    let mustOverride = "This property must be overridden by a subclass"
+    let mustOverride = "This property or method must be overridden by a subclass"
 
     var unsupportedLanguages: [Language] {
         []
@@ -87,6 +87,18 @@ public class LLMStreamService: QueryService {
     }
 
     var endpoint: String {
+        fatalError(mustOverride)
+    }
+
+    /// Convert dict prompt to LLM service model prompt.
+    func chatMessages(
+        text: String,
+        from: Language,
+        to: Language,
+        queryType: EZQueryTextType,
+        enableSystemPrompt: Bool
+    )
+        -> [Any] {
         fatalError(mustOverride)
     }
 
@@ -176,4 +188,18 @@ extension LLMStreamService {
             updateCompletion()
         }
     }
+}
+
+// MARK: - ChatMessage
+
+protocol ChatMessage {
+    associatedtype MessageType
+
+    func chatMessages(
+        queryType: EZQueryTextType,
+        text: String,
+        from: Language,
+        to: Language,
+        enableSystemPrompt: Bool
+    ) -> [MessageType]
 }

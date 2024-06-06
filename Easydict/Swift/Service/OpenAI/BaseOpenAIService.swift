@@ -16,6 +16,8 @@ import OpenAI
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: LLMStreamService {
+    // MARK: Public
+
     override public func translate(
         _ text: String,
         from: Language,
@@ -36,8 +38,17 @@ public class BaseOpenAIService: LLMStreamService {
         result.isStreamFinished = false
 
         let queryType = queryType(text: text, from: from, to: to)
-        let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
-        let query = ChatQuery(messages: chats, model: model, temperature: 0)
+        let chatHistory = chatMessages(
+            text: text,
+            from: from,
+            to: to,
+            queryType: queryType,
+            enableSystemPrompt: true
+        )
+
+        guard let chatHistory = chatHistory as? [ChatMessage] else { return }
+
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
         openAI.chatsStream(query: query, url: url) { [weak self] res in
@@ -80,4 +91,81 @@ public class BaseOpenAIService: LLMStreamService {
             }
         }
     }
+
+    // MARK: Internal
+
+    typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
+
+    override func chatMessages(
+        text: String,
+        from: Language,
+        to: Language,
+        queryType: EZQueryTextType,
+        enableSystemPrompt: Bool
+    )
+        -> [Any] {
+        typealias Role = ChatMessage.Role
+
+        var messages = [[String: String]]()
+
+        switch queryType {
+        case .sentence:
+            messages = sentenceMessages(sentence: text, from: from, to: to, enableSystemPrompt: true)
+        case .dictionary:
+            messages = dictMessages(
+                word: text,
+                sourceLanguage: from,
+                targetLanguage: to,
+                enableSystemPrompt: true
+            )
+        default:
+            messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: true)
+        }
+
+        var chats: [ChatMessage] = []
+        for message in messages {
+            if let roleRawValue = message["role"],
+               let role = Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                guard let chat = ChatMessage(role: role, content: content) else { return [] }
+                chats.append(chat)
+            }
+        }
+
+        return chats
+    }
+
+//    override func chatMessages(
+//        queryType: EZQueryTextType,
+//        text: String,
+//        from: Language,
+//        to: Language,
+//        enableSystemPrompt: Bool
+//    )
+//        -> [ChatCompletionMessageParam] {
+//        typealias Role = ChatCompletionMessageParam.Role
+//
+//        var messages = [[String: String]]()
+//
+//        switch queryType {
+//        case .sentence:
+//            messages = sentenceMessages(sentence: text, from: from, to: to, enableSystemPrompt: true)
+//        case .dictionary:
+//            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to, enableSystemPrompt: true)
+//        default:
+//            messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: true)
+//        }
+//
+//        var chats: [ChatCompletionMessageParam] = []
+//        for message in messages {
+//            if let roleRawValue = message["role"],
+//               let role = Role(rawValue: roleRawValue),
+//               let content = message["content"] {
+//                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
+//                chats.append(chat)
+//            }
+//        }
+//
+//        return chats
+//    }
 }

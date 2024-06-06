@@ -53,13 +53,15 @@ public final class GeminiService: LLMStreamService {
                     enableSystemPromptInChats = true
                 }
 
-                let chatHistory = promptContent(
-                    queryType: queryType,
+                let chatHistory = chatMessages(
                     text: text,
                     from: from,
                     to: to,
-                    systemPrompt: enableSystemPromptInChats
+                    queryType: queryType,
+                    enableSystemPrompt: enableSystemPromptInChats
                 )
+
+                guard let chatHistory = chatHistory as? [ModelContent] else { return }
 
                 let model = GenerativeModel(
                     name: model,
@@ -146,6 +148,53 @@ public final class GeminiService: LLMStreamService {
         }
     }
 
+    override func chatMessages(
+        text: String,
+        from: Language,
+        to: Language,
+        queryType: EZQueryTextType,
+        enableSystemPrompt: Bool
+    )
+        -> [Any] {
+        var prompts = [[String: String]]()
+
+        switch queryType {
+        case .dictionary:
+            prompts = dictMessages(
+                word: text,
+                sourceLanguage: from,
+                targetLanguage: to,
+                enableSystemPrompt: enableSystemPrompt
+            )
+        case .sentence:
+            prompts = sentenceMessages(
+                sentence: text,
+                from: from,
+                to: to,
+                enableSystemPrompt: enableSystemPrompt
+            )
+        default:
+            prompts = translationMessages(
+                text: text,
+                from: from,
+                to: to,
+                enableSystemPrompt: enableSystemPrompt
+            )
+        }
+
+        var chats: [ModelContent] = []
+        for prompt in prompts {
+            if let openAIRole = prompt["role"],
+               let parts = prompt["content"] {
+                let role = getGeminiRole(from: openAIRole)
+                let chat = ModelContent(role: role, parts: parts)
+                chats.append(chat)
+            }
+        }
+
+        return chats
+    }
+
     // MARK: Private
 
     // Set Gemini safety level to BLOCK_NONE
@@ -153,4 +202,15 @@ public final class GeminiService: LLMStreamService {
     private let hateSpeechBlockNone = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
+
+    /// Given a roleRaw, currently only support "user" and "model", "model" is equal to "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
+    private func getGeminiRole(from openAIRole: String) -> String {
+        if openAIRole == "assistant" {
+            "model"
+        } else if openAIRole == "system" {
+            "user"
+        } else {
+            openAIRole
+        }
+    }
 }
