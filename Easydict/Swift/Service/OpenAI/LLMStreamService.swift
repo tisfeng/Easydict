@@ -67,7 +67,7 @@ public class LLMStreamService: QueryService {
 
     let throttler = Throttler()
 
-    let mustOverride = "This property must be overridden by a subclass"
+    let mustOverride = "This property or method must be overridden by a subclass"
 
     var unsupportedLanguages: [Language] {
         []
@@ -131,6 +131,9 @@ public class LLMStreamService: QueryService {
 
         return .translation
     }
+
+    /// Cancel stream request manually.
+    func cancelStream() {}
 }
 
 extension LLMStreamService {
@@ -141,6 +144,7 @@ extension LLMStreamService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         if result.isStreamFinished {
+            cancelStream()
             return
         }
 
