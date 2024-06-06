@@ -852,6 +852,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
 | 2024-05-11 |  | 35 | 感谢开源和持续更新！ |
 | 2024-05-29 | 天色晚晚 | 10 | 项目很用心！感谢！！！ |
+| 2024-06-06 | 天不发火的老虎 | 5 | 很赞，继续加油 |
 
 </p>
 

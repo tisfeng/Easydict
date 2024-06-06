@@ -15,11 +15,21 @@ extension LLMStreamService {
     You are a translation expert proficient in various languages, focusing solely on translating text without interpretation. You accurately understand the meanings of proper nouns, idioms, metaphors, allusions, and other obscure words in sentences, translating them appropriately based on the context and language environment. The translation should be natural and fluent. Only return the translated text, without including redundant quotes or additional notes.
     """
 
+    static let dictSystemPrompt = """
+    You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
+    """
+
     func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    func translationMessages(text: String, from: Language, to: Language) -> [[String: String]] {
+    func translationMessages(
+        text: String,
+        from: Language,
+        to: Language,
+        enableSystemPrompt: Bool
+    )
+        -> [[String: String]] {
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
 //        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
 
@@ -245,12 +255,16 @@ extension LLMStreamService {
             ],
         ]
 
-        let systemMessages = [
-            [
-                "role": "system",
-                "content": LLMStreamService.translationSystemPrompt,
-            ],
-        ]
+        let systemMessages: [[String: String]] = {
+            if enableSystemPrompt {
+                [[
+                    "role": "system",
+                    "content": LLMStreamService.translationSystemPrompt,
+                ]]
+            } else {
+                []
+            }
+        }()
 
         var messages = systemMessages
         messages.append(contentsOf: chineseFewShot)
@@ -276,7 +290,8 @@ extension LLMStreamService {
     func sentenceMessages(
         sentence: String,
         from sourceLanguage: Language,
-        to targetLanguage: Language
+        to targetLanguage: Language,
+        enableSystemPrompt: Bool
     )
         -> [[String: String]] {
         let answerLanguage = Configuration.shared.firstLanguage
@@ -469,12 +484,16 @@ extension LLMStreamService {
             ],
         ]
 
-        let systemMessages = [
-            [
-                "role": "system",
-                "content": LLMStreamService.translationSystemPrompt,
-            ],
-        ]
+        let systemMessages: [[String: String]] = {
+            if enableSystemPrompt {
+                [[
+                    "role": "system",
+                    "content": LLMStreamService.translationSystemPrompt,
+                ]]
+            } else {
+                []
+            }
+        }()
 
         var messages = systemMessages
 
@@ -496,7 +515,13 @@ extension LLMStreamService {
         return messages
     }
 
-    func dictMessages(word: String, sourceLanguage: Language, targetLanguage: Language) -> [[String: String]] {
+    func dictMessages(
+        word: String,
+        sourceLanguage: Language,
+        targetLanguage: Language,
+        enableSystemPrompt: Bool
+    )
+        -> [[String: String]] {
         var prompt = ""
 
         let answerLanguage = Configuration.shared.firstLanguage
@@ -521,10 +546,6 @@ extension LLMStreamService {
         let isWord = isEnglishWord || isChineseWord
 
         let sourceLanguageString = sourceLanguage.rawValue
-
-        let dictSystemPrompt = """
-        You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. For Chinese words, use Baidu Baike. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
-        """
 
         let answerLanguagePrompt = "Using \(answerLanguage.rawValue): \n"
         prompt.append(answerLanguagePrompt)
@@ -823,12 +844,16 @@ extension LLMStreamService {
             ],
         ]
 
-        let systemMessages = [
-            [
-                "role": "system",
-                "content": dictSystemPrompt,
-            ],
-        ]
+        let systemMessages: [[String: String]] = {
+            if enableSystemPrompt {
+                [[
+                    "role": "system",
+                    "content": LLMStreamService.dictSystemPrompt,
+                ]]
+            } else {
+                []
+            }
+        }()
 
         var messages = systemMessages
 

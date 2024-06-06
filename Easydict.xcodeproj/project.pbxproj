@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -34,6 +34,9 @@
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
 		0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */; };
 		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
+		0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */; };
+		0337D00B2C109F6F002ACE72 /* BaseOpenAIService+Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D00A2C109F6F002ACE72 /* BaseOpenAIService+Prompt.swift */; };
+		0337D00D2C10A088002ACE72 /* GeminiService+Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D00C2C10A088002ACE72 /* GeminiService+Prompt.swift */; };
 		033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033A8EAD2BDFE09B00030C08 /* String+Extension.swift */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
@@ -76,12 +79,6 @@
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
 		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
-		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
-		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
-		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
-		0383914F292FBE120009828C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03839145292FBE120009828C /* Main.storyboard */; };
-		03839150292FBE120009828C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839147292FBE120009828C /* main.m */; };
-		03839151292FBE120009828C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839148292FBE120009828C /* AppDelegate.m */; };
 		0387FB7A2BFBA990000A7A82 /* LLMStreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0387FB792BFBA990000A7A82 /* LLMStreamService.swift */; };
 		03882F8D29D95044005B5A52 /* CTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8429D95044005B5A52 /* CTView.m */; };
 		03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8629D95044005B5A52 /* ToastWindowController.m */; };
@@ -114,7 +111,6 @@
 		03A830922B4073E700112834 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 03A830912B4073E700112834 /* AppCenterCrashes */; };
 		03A830952B4076FC00112834 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03A830942B4076FC00112834 /* FirebaseAnalyticsSwift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
-		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
 		03B022E829231FA6001C7E63 /* entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* entry.m */; };
 		03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222329231FA6001C7E63 /* AppDelegate.m */; };
 		03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */; };
@@ -210,7 +206,6 @@
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
 		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
-		03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
@@ -300,7 +295,6 @@
 		C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */; };
 		C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */; };
 		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
-		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3C643E2B187119008EEDD8 /* ChangeFontSizeView.swift */; };
 		DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* Configuration.swift */; };
 		DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */; };
@@ -344,7 +338,6 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +387,9 @@
 		0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+EZChineseText.m"; sourceTree = "<group>"; };
 		0333FDA42A035D5700891515 /* NSString+EZChineseText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZChineseText.h"; sourceTree = "<group>"; };
 		0333FDA52A035D5700891515 /* NSString+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZChineseText.m"; sourceTree = "<group>"; };
+		0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceUsageStatus.swift; sourceTree = "<group>"; };
+		0337D00A2C109F6F002ACE72 /* BaseOpenAIService+Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseOpenAIService+Prompt.swift"; sourceTree = "<group>"; };
+		0337D00C2C10A088002ACE72 /* GeminiService+Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeminiService+Prompt.swift"; sourceTree = "<group>"; };
 		033A8EAD2BDFE09B00030C08 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		033B7132293CE2430096E2DF /* EZWebViewTranslator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewTranslator.h; sourceTree = "<group>"; };
 		033B7133293CE2430096E2DF /* EZWebViewTranslator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewTranslator.m; sourceTree = "<group>"; };
@@ -461,16 +457,6 @@
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
-		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
-		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		03839144292FBE120009828C /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		03839146292FBE120009828C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		03839147292FBE120009828C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		03839148292FBE120009828C /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		03839149292FBE120009828C /* EasydictHelper.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = EasydictHelper.entitlements; sourceTree = "<group>"; };
-		0383914A292FBE120009828C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0383914B292FBE120009828C /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		0387FB792BFBA990000A7A82 /* LLMStreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMStreamService.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
 		03882F8329D95044005B5A52 /* ToastWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToastWindowController.h; sourceTree = "<group>"; };
@@ -518,7 +504,6 @@
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03B0221D29231FA6001C7E63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		03B0221E29231FA6001C7E63 /* Easydict.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Easydict.entitlements; sourceTree = "<group>"; };
-		03B0222029231FA6001C7E63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		03B0222129231FA6001C7E63 /* entry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = entry.m; sourceTree = "<group>"; };
 		03B0222229231FA6001C7E63 /* EZConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZConst.h; sourceTree = "<group>"; };
 		03B0222329231FA6001C7E63 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -811,8 +796,6 @@
 		C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentResponse.swift; sourceTree = "<group>"; };
 		C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentTranslateType.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
-		C4DE3D6E2AC00EB500C2B85D /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
-		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C99EEB182385796700FEE666 /* Easydict-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC3C643E2B187119008EEDD8 /* ChangeFontSizeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeFontSizeView.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -845,13 +828,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C90BE306239F38EB00ADE88B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1195,7 +1171,6 @@
 				03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */,
 				C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */,
 				03BFBB5429235C9400C48725 /* Icons */,
-				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
 				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
 				27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */,
@@ -1233,6 +1208,7 @@
 			children = (
 				0387FB792BFBA990000A7A82 /* LLMStreamService.swift */,
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
+				0337D00A2C109F6F002ACE72 /* BaseOpenAIService+Prompt.swift */,
 				03779F0B2BB256A7008D3C42 /* OpenAIService.swift */,
 				03779F0C2BB256A7008D3C42 /* Prompt.swift */,
 			);
@@ -1254,23 +1230,6 @@
 				03779F152BB256C5008D3C42 /* URL+IsValid.swift */,
 			);
 			path = URL;
-			sourceTree = "<group>";
-		};
-		0383913F292FBE120009828C /* EasydictHelper */ = {
-			isa = PBXGroup;
-			children = (
-				03839142292FBE120009828C /* AppDelegate.h */,
-				03839148292FBE120009828C /* AppDelegate.m */,
-				0383914B292FBE120009828C /* ViewController.h */,
-				03839144292FBE120009828C /* ViewController.m */,
-				03839143292FBE120009828C /* Assets.xcassets */,
-				03839145292FBE120009828C /* Main.storyboard */,
-				03839147292FBE120009828C /* main.m */,
-				03839149292FBE120009828C /* EasydictHelper.entitlements */,
-				03839140292FBE120009828C /* Main.strings */,
-				0383914A292FBE120009828C /* Info.plist */,
-			);
-			path = EasydictHelper;
 			sourceTree = "<group>";
 		};
 		03882F8129D95044005B5A52 /* CoolToast */ = {
@@ -2308,6 +2267,7 @@
 			isa = PBXGroup;
 			children = (
 				C415C0AC2B450D4800A9D231 /* GeminiService.swift */,
+				0337D00C2C10A088002ACE72 /* GeminiService+Prompt.swift */,
 			);
 			path = Gemini;
 			sourceTree = "<group>";
@@ -2336,7 +2296,6 @@
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,
-				0383913F292FBE120009828C /* EasydictHelper */,
 				0313F86E2AD5577400A5CFB0 /* EasydictTests */,
 				03022F2F2B370B7100B63209 /* EasydictSwiftTests */,
 				C99EEB192385796700FEE666 /* Products */,
@@ -2351,7 +2310,6 @@
 			isa = PBXGroup;
 			children = (
 				C99EEB182385796700FEE666 /* Easydict-debug.app */,
-				C90BE309239F38EB00ADE88B /* EasydictHelper.app */,
 				0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */,
 				03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */,
 			);
@@ -2401,6 +2359,7 @@
 			isa = PBXGroup;
 			children = (
 				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
+				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2494,23 +2453,6 @@
 			productReference = 0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C90BE308239F38EB00ADE88B /* EasydictHelper */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "EasydictHelper" */;
-			buildPhases = (
-				C90BE305239F38EB00ADE88B /* Sources */,
-				C90BE306239F38EB00ADE88B /* Frameworks */,
-				C90BE307239F38EB00ADE88B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = EasydictHelper;
-			productName = BobHelper;
-			productReference = C90BE309239F38EB00ADE88B /* EasydictHelper.app */;
-			productType = "com.apple.product-type.application";
-		};
 		C99EEB172385796700FEE666 /* Easydict */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Easydict" */;
@@ -2577,9 +2519,6 @@
 						CreatedOnToolsVersion = 15.0;
 						TestTargetID = C99EEB172385796700FEE666;
 					};
-					C90BE308239F38EB00ADE88B = {
-						CreatedOnToolsVersion = 11.2.1;
-					};
 					C99EEB172385796700FEE666 = {
 						CreatedOnToolsVersion = 11.2.1;
 						LastSwiftMigration = 1120;
@@ -2621,7 +2560,6 @@
 			projectRoot = "";
 			targets = (
 				C99EEB172385796700FEE666 /* Easydict */,
-				C90BE308239F38EB00ADE88B /* EasydictHelper */,
 				0313F86C2AD5577400A5CFB0 /* EasydictTests */,
 				03022F2D2B370B7100B63209 /* EasydictSwiftTests */,
 			);
@@ -2643,17 +2581,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C90BE307239F38EB00ADE88B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0383914F292FBE120009828C /* Main.storyboard in Resources */,
-				03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
-				0383914D292FBE120009828C /* Assets.xcassets in Resources */,
-				0383914C292FBE120009828C /* Main.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C99EEB162385796700FEE666 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2668,7 +2595,6 @@
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
-				03B022E729231FA6001C7E63 /* Main.storyboard in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
@@ -2822,16 +2748,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C90BE305239F38EB00ADE88B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				03839150292FBE120009828C /* main.m in Sources */,
-				0383914E292FBE120009828C /* ViewController.m in Sources */,
-				03839151292FBE120009828C /* AppDelegate.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C99EEB142385796700FEE666 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2966,6 +2882,7 @@
 				9643D93D2B6F829C000FBEA6 /* MainMenuCommand.swift in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */,
+				0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */,
 				0AC8A8412B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
@@ -2977,6 +2894,7 @@
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
 				C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */,
 				038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */,
+				0337D00B2C109F6F002ACE72 /* BaseOpenAIService+Prompt.swift in Sources */,
 				03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
@@ -3002,6 +2920,7 @@
 				EA9943F22B5358BF00EE7B97 /* LanguageExtensions.swift in Sources */,
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */,
+				0337D00D2C10A088002ACE72 /* GeminiService+Prompt.swift in Sources */,
 				03779F0F2BB256A7008D3C42 /* Prompt.swift in Sources */,
 				DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */,
 				03779F172BB256C5008D3C42 /* URL+IsValid.swift in Sources */,
@@ -3108,34 +3027,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		03839140292FBE120009828C /* Main.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				03839141292FBE120009828C /* zh-Hans */,
-			);
-			name = Main.strings;
-			sourceTree = "<group>";
-		};
-		03839145292FBE120009828C /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				03839146292FBE120009828C /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		03B0221F29231FA6001C7E63 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				03B0222029231FA6001C7E63 /* Base */,
-				C4DE3D6E2AC00EB500C2B85D /* mul */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		03022F342B370B7100B63209 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3238,59 +3129,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Easydict-debug.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Easydict-debug";
-			};
-			name = Release;
-		};
-		C90BE31B239F38EC00ADE88B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
-				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]" = "white-black-icon";
-				CODE_SIGN_ENTITLEMENTS = EasydictHelper/EasydictHelper.entitlements;
-				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
-				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 36;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
-				ENABLE_HARDENED_RUNTIME = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				INFOPLIST_FILE = EasydictHelper/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.EasydictHelper-debug";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		C90BE31C239F38EC00ADE88B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
-				CODE_SIGN_ENTITLEMENTS = EasydictHelper/EasydictHelper.entitlements;
-				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
-				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 36;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
-				ENABLE_HARDENED_RUNTIME = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				INFOPLIST_FILE = EasydictHelper/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.izual.EasydictHelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -3520,15 +3358,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "EasydictHelper" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C90BE31B239F38EC00ADE88B /* Debug */,
-				C90BE31C239F38EC00ADE88B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		C99EEB132385796700FEE666 /* Build configuration list for PBXProject "Easydict" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3555,7 +3384,7 @@
 			repositoryURL = "https://github.com/google/generative-ai-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.4;
+				minimumVersion = 0.5.3;
 			};
 		};
 		03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */ = {

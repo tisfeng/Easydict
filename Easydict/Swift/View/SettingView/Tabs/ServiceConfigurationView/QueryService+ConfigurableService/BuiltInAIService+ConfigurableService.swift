@@ -31,7 +31,7 @@ extension BuiltInAIService: ConfigurableService {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.usage_status.title",
                 key: .builtInAIServiceUsageStatus,
-                values: OpenAIUsageStatus.allCases
+                values: ServiceUsageStatus.allCases
             )
         }
     }

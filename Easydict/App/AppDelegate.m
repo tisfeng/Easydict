@@ -18,12 +18,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
-    
-    // Capturing crash logs must be placed first.
-    [MMCrash registerHandler];
-    
-    [EZLog setupCrashLogService];
-    [EZLog logAppInfo];
 
     [Shortcut setupShortcut];
 

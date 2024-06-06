@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - LLMStreamService
@@ -89,7 +90,7 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
-    func getFinalResultText(text: String) -> String {
+    func getFinalResultText(_ text: String) -> String {
         var resultText = text.trim()
 
         // Remove last </s>, fix Groq model mixtral-8x7b-32768
@@ -129,5 +130,50 @@ public class LLMStreamService: QueryService {
         }
 
         return .translation
+    }
+}
+
+extension LLMStreamService {
+    func updateResultText(
+        _ resultText: String?,
+        queryType: EZQueryTextType,
+        error: Error?,
+        completion: @escaping (EZQueryResult, Error?) -> ()
+    ) {
+        if result.isStreamFinished {
+            return
+        }
+
+        var translatedTexts: [String]?
+        if let resultText {
+            translatedTexts = [resultText.trim()]
+        }
+
+        result.isStreamFinished = error != nil
+        result.translatedResults = translatedTexts
+
+        let updateCompletion = {
+            self.throttler.throttle { [unowned self] in
+                completion(result, error)
+            }
+        }
+
+        switch queryType {
+        case .dictionary:
+            if error != nil {
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
+                updateCompletion()
+                return
+            }
+
+            result.showBigWord = true
+            result.queryText = queryModel.queryText
+            result.translateResultsTopInset = 6
+            updateCompletion()
+
+        default:
+            updateCompletion()
+        }
     }
 }

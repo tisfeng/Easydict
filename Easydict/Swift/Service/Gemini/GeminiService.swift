@@ -10,7 +10,8 @@ import Defaults
 import Foundation
 import GoogleGenerativeAI
 
-// TODO: add a LLM stream service base class, make both OpenAI and Gemini inherit from it.
+// MARK: - GeminiService
+
 @objc(EZGeminiService)
 public final class GeminiService: LLMStreamService {
     // MARK: Public
@@ -27,58 +28,68 @@ public final class GeminiService: LLMStreamService {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
-    override public func queryTextType() -> EZQueryTextType {
-        [.translation]
-    }
-
     override public func translate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        let queryType = queryType(text: text, from: from, to: to)
+
         Task {
             do {
-                let translationPrompt = translationPrompt(text: text, from: from, to: to)
-                let prompt = LLMStreamService.translationSystemPrompt +
-                    "\n" + translationPrompt
+                result.isStreamFinished = false
+
+                let systemPrompt = queryType == .dictionary ? LLMStreamService
+                    .dictSystemPrompt : LLMStreamService
+                    .translationSystemPrompt
+
+                var enableSystemPromptInChats = false
+                var systemInstruction: ModelContent? = try ModelContent(role: "system", systemPrompt)
+
+                // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
+                if model == GeminiModel.gemini1_0_pro.rawValue {
+                    systemInstruction = nil
+                    enableSystemPromptInChats = true
+                }
+
+                let chatHistory = promptContent(
+                    queryType: queryType,
+                    text: text,
+                    from: from,
+                    to: to,
+                    systemPrompt: enableSystemPromptInChats
+                )
+
                 let model = GenerativeModel(
-                    name: "gemini-pro",
+                    name: model,
                     apiKey: apiKey,
                     safetySettings: [
                         harassmentBlockNone,
                         hateSpeechBlockNone,
                         sexuallyExplicitBlockNone,
                         dangerousContentBlockNone,
-                    ]
+                    ],
+                    systemInstruction: systemInstruction
                 )
 
-                result.isStreamFinished = false
-
-                var resultString = ""
+                var resultText = ""
 
                 // Gemini Docs: https://github.com/google/generative-ai-swift
 
-                let outputContentStream = model.generateContentStream(prompt)
+                let outputContentStream = model.generateContentStream(chatHistory)
                 for try await outputContent in outputContentStream {
                     guard let line = outputContent.text else {
                         return
                     }
-                    if !result.isStreamFinished {
-                        resultString += line
-
-                        result.translatedResults = [resultString]
-                        await MainActor.run {
-                            throttler.throttle { [unowned self] in
-                                completion(result, nil)
-                            }
-                        }
-                    }
+                    resultText += line
+                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 }
 
+                resultText = getFinalResultText(resultText)
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 result.isStreamFinished = true
-                result.translatedResults = [getFinalResultText(text: resultString)]
-                completion(result, nil)
+
             } catch {
                 /**
                  https://github.com/google/generative-ai-swift/issues/89
@@ -87,15 +98,13 @@ public final class GeminiService: LLMStreamService {
 
                  "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
                  */
-                result.isStreamFinished = true
 
                 let ezError = EZError(nsError: error)
                 let errorString = String(describing: error)
                 let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
                 ezError?.errorDataMessage = errorMessage
-                await MainActor.run {
-                    completion(result, ezError)
-                }
+
+                updateResultText(nil, queryType: queryType, error: ezError, completion: completion)
             }
         }
     }
@@ -121,6 +130,20 @@ public final class GeminiService: LLMStreamService {
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     override var apiKey: String {
         Defaults[.geminiAPIKey] ?? ""
+    }
+
+    override var availableModels: [String] {
+        Defaults[.geminiValidModels]
+    }
+
+    override var model: String {
+        get {
+            Defaults[.geminiModel]
+        }
+        set {
+            // easydict://writeKeyValue?EZGeminiModelKey=gemini-1.5-flash
+            Defaults[.geminiModel] = newValue
+        }
     }
 
     // MARK: Private

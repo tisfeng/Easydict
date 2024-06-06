@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/generative-ai-swift",
       "state" : {
-        "revision" : "dcbdb5e591e1aa2bb68851dc7515f6b0a59026cd",
-        "version" : "0.4.7"
+        "revision" : "5d750b80651da9721c37c5eb1fc0b6750d1884d3",
+        "version" : "0.5.3"
       }
     },
     {

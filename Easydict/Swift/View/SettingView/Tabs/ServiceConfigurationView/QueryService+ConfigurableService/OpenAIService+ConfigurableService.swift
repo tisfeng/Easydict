@@ -81,7 +81,7 @@ private struct OpenAIServiceConfigurationView: View {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.usage_status.title",
                 key: .openAIServiceUsageStatus,
-                values: OpenAIUsageStatus.allCases
+                values: ServiceUsageStatus.allCases
             )
         }
         .onDisappear {
@@ -180,12 +180,6 @@ private class OpenAIServiceViewModel: ObservableObject {
     }
 }
 
-// MARK: - EnumLocalizedStringConvertible
-
-protocol EnumLocalizedStringConvertible {
-    var title: String { get }
-}
-
 // MARK: - OpenAIModel
 
 // swiftlint:disable identifier_name
@@ -197,55 +191,4 @@ enum OpenAIModel: String, CaseIterable {
     case gpt4o = "gpt-4o" // Currently points to gpt-4o-2024-05-13. Input: $5 | Output: $15  (128k context length)
 }
 
-// MARK: EnumLocalizedStringConvertible
-
 // swiftlint:enable identifier_name
-
-extension OpenAIModel: EnumLocalizedStringConvertible {
-    var title: String {
-        rawValue
-    }
-}
-
-// MARK: Defaults.Serializable
-
-extension OpenAIModel: Defaults.Serializable {}
-
-// MARK: - OpenAIUsageStatus
-
-enum OpenAIUsageStatus: String, CaseIterable {
-    case `default` = "0"
-    case alwaysOff = "1"
-    case alwaysOn = "2"
-}
-
-// MARK: EnumLocalizedStringConvertible
-
-extension OpenAIUsageStatus: EnumLocalizedStringConvertible {
-    var title: String {
-        switch self {
-        case .default:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_default.title",
-                bundle: .main,
-                comment: ""
-            )
-        case .alwaysOff:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_always_off.title",
-                bundle: .main,
-                comment: ""
-            )
-        case .alwaysOn:
-            NSLocalizedString(
-                "service.configuration.openai.usage_status_always_on.title",
-                bundle: .main,
-                comment: ""
-            )
-        }
-    }
-}
-
-// MARK: Defaults.Serializable
-
-extension OpenAIUsageStatus: Defaults.Serializable {}

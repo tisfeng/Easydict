@@ -43,7 +43,7 @@ extension NSString {
         let newlines = ["\r\n", "\n", "\r"]
         var newString = self
         for newline in newlines {
-            newString = replacingOccurrences(of: newline, with: " ") as NSString
+            newString = newString.replacingOccurrences(of: newline, with: " ") as NSString
         }
         return newString
     }

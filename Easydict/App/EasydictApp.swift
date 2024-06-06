@@ -17,6 +17,12 @@ import SwiftUI
 enum EasydictCmpatibilityEntry {
     static func main() {
         parseArmguments()
+
+        // Capturing crash logs must be placed first.
+        MMCrash.registerHandler()
+        EZLog.setupCrashService()
+        EZLog.logAppInfo()
+
         // app launch
         EasydictApp.main()
     }
