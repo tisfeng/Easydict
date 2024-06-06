@@ -118,6 +118,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
 
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
+    
+    @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
 
     var cancellables: Set<AnyCancellable> = []
 
