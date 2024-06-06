@@ -16,6 +16,8 @@ import OpenAI
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: LLMStreamService {
+    // MARK: Public
+
     override public func translate(
         _ text: String,
         from: Language,
@@ -40,7 +42,8 @@ public class BaseOpenAIService: LLMStreamService {
         let query = ChatQuery(messages: chats, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
-        openAI.chatsStream(query: query, url: url) { [weak self] res in
+        // TODO: refactor chatsStream with await
+        openAI.chatsStream(query: query, url: url, control: control) { [weak self] res in
             guard let self else { return }
 
             switch res {
@@ -79,5 +82,13 @@ public class BaseOpenAIService: LLMStreamService {
                 result.isStreamFinished = true
             }
         }
+    }
+
+    // MARK: Internal
+
+    let control = StreamControl()
+
+    override func cancelStream() {
+        control.cancel()
     }
 }
