@@ -53,13 +53,15 @@ public final class GeminiService: LLMStreamService {
                     enableSystemPromptInChats = true
                 }
 
-                let chatHistory = chatMessages(
+                let chatQueryParam = ChatQueryParam(
                     text: text,
-                    from: from,
-                    to: to,
+                    sourceLanguage: from,
+                    targetLanguage: to,
                     queryType: queryType,
                     enableSystemPrompt: enableSystemPromptInChats
                 )
+
+                let chatHistory = serviceChatModels(chatQueryParam)
 
                 guard let chatHistory = chatHistory as? [ModelContent] else { return }
 
@@ -148,42 +150,11 @@ public final class GeminiService: LLMStreamService {
         }
     }
 
-    override func chatMessages(
-        text: String,
-        from: Language,
-        to: Language,
-        queryType: EZQueryTextType,
-        enableSystemPrompt: Bool
-    )
-        -> [Any] {
-        var prompts = [[String: String]]()
-
-        switch queryType {
-        case .dictionary:
-            prompts = dictMessages(
-                word: text,
-                sourceLanguage: from,
-                targetLanguage: to,
-                enableSystemPrompt: enableSystemPrompt
-            )
-        case .sentence:
-            prompts = sentenceMessages(
-                sentence: text,
-                from: from,
-                to: to,
-                enableSystemPrompt: enableSystemPrompt
-            )
-        default:
-            prompts = translationMessages(
-                text: text,
-                from: from,
-                to: to,
-                enableSystemPrompt: enableSystemPrompt
-            )
-        }
+    override func serviceChatModels(_ chatQuery: ChatQueryParam) -> [Any] {
+        let chatMessageDicts = chatMessageDicts(chatQuery)
 
         var chats: [ModelContent] = []
-        for prompt in prompts {
+        for prompt in chatMessageDicts {
             if let openAIRole = prompt["role"],
                let parts = prompt["content"] {
                 let role = getGeminiRole(from: openAIRole)

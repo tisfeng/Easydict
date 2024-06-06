@@ -19,21 +19,29 @@ extension LLMStreamService {
     You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
     """
 
-    func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
+    func chatMessageDicts(_ chatQuery: ChatQueryParam)
+        -> [[String: String]] {
+        switch chatQuery.queryType {
+        case .dictionary:
+            dictMessages(chatQuery)
+        case .sentence:
+            sentenceMessages(chatQuery)
+        default:
+            translationMessages(chatQuery)
+        }
+    }
+
+    private func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    func translationMessages(
-        text: String,
-        from: Language,
-        to: Language,
-        enableSystemPrompt: Bool
-    )
-        -> [[String: String]] {
+    private func translationMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+        let (text, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
+
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
         //        let prompt = "Translate the following \(from.rawValue) text into \(to.rawValue) text: \"\"\"\(text)\"\"\""
 
-        let prompt = translationPrompt(text: text, from: from, to: to)
+        let prompt = translationPrompt(text: text, from: sourceLanguage, to: targetLanguage)
 
         let chineseFewShot = [
             // en --> zh
@@ -132,10 +140,10 @@ extension LLMStreamService {
         var messages = systemMessages
         messages.append(contentsOf: chineseFewShot)
 
-        if from == .classicalChinese {
+        if sourceLanguage == .classicalChinese {
             messages.append(contentsOf: fromClassicalChineseFewShot)
         }
-        if to == .classicalChinese {
+        if targetLanguage == .classicalChinese {
             messages.append(contentsOf: toClassicalChineseFewShot)
         }
 
@@ -150,13 +158,9 @@ extension LLMStreamService {
         return messages
     }
 
-    func sentenceMessages(
-        sentence: String,
-        from sourceLanguage: Language,
-        to targetLanguage: Language,
-        enableSystemPrompt: Bool
-    )
-        -> [[String: String]] {
+    private func sentenceMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+        let (sentence, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
+
         let answerLanguage = Configuration.shared.firstLanguage
 
         var prompt = ""
@@ -172,14 +176,14 @@ extension LLMStreamService {
             freeTranslation = "意译"
         }
 
-        let sourceLanguage = sourceLanguage.rawValue
-        let targetLanguage = targetLanguage.rawValue
+        let sourceLanguageString = sourceLanguage.rawValue
+        let targetLanguageString = targetLanguage.rawValue
 
-        let sentencePrompt = "Here is a \(sourceLanguage) sentence: \"\"\"\(sentence)\"\"\".\n"
+        let sentencePrompt = "Here is a \(sourceLanguageString) sentence: \"\"\"\(sentence)\"\"\".\n"
         prompt += sentencePrompt
 
         let directTranslationPrompt =
-            "First, translate the sentence into \(targetLanguage) literally, keeping the original format and including all information. Use the format: \"\(literalTranslation):\n{literal_translation}\".\n\n"
+            "First, translate the sentence into \(targetLanguageString) literally, keeping the original format and including all information. Use the format: \"\(literalTranslation):\n{literal_translation}\".\n\n"
         prompt += directTranslationPrompt
 
         let stepByStepPrompt = "Then, follow these steps:\n"
@@ -194,7 +198,7 @@ extension LLMStreamService {
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
-            "3. Identify any issues in the literal translation, such as non-standard \(targetLanguage) expressions, awkwardness, or ambiguity. Provide a free translation that maintains the original meaning but is clearer and more natural in \(targetLanguage). If the sentence includes idioms, metaphors, historical references, or famous works, provide a detailed introduction after the translation. Use the format: \"\(freeTranslation):\n{free_translation}\".\n\n"
+            "3. Identify any issues in the literal translation, such as non-standard \(targetLanguageString) expressions, awkwardness, or ambiguity. Provide a free translation that maintains the original meaning but is clearer and more natural in \(targetLanguageString). If the sentence includes idioms, metaphors, historical references, or famous works, provide a detailed introduction after the translation. Use the format: \"\(freeTranslation):\n{free_translation}\".\n\n"
         prompt += freeTranslationPrompt
 
         let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue).\n"
@@ -336,13 +340,9 @@ extension LLMStreamService {
         return messages
     }
 
-    func dictMessages(
-        word: String,
-        sourceLanguage: Language,
-        targetLanguage: Language,
-        enableSystemPrompt: Bool
-    )
-        -> [[String: String]] {
+    private func dictMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+        let (word, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
+
         var prompt = ""
 
         let answerLanguage = Configuration.shared.firstLanguage
@@ -654,7 +654,7 @@ extension LLMStreamService {
         return messages
     }
 
-    func systemMessage(queryType: EZQueryTextType) -> [String: String] {
+    private func systemMessage(queryType: EZQueryTextType) -> [String: String] {
         switch queryType {
         case .dictionary:
             chatMessage(role: .system, content: LLMStreamService.dictSystemPrompt)
@@ -663,14 +663,14 @@ extension LLMStreamService {
         }
     }
 
-    func chatMessage(role: ChatRole, content: String) -> [String: String] {
+    private func chatMessage(role: ChatRole, content: String) -> [String: String] {
         [
             "role": role.rawValue,
             "content": content,
         ]
     }
 
-    func chatMessagePair(userContent: String, assistantContent: String) -> [[String: String]] {
+    private func chatMessagePair(userContent: String, assistantContent: String) -> [[String: String]] {
         [
             chatMessage(role: .user, content: userContent),
             chatMessage(role: .assistant, content: assistantContent),

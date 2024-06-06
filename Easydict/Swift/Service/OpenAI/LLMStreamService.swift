@@ -90,14 +90,8 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
-    /// Convert dict prompt to LLM service model prompt.
-    func chatMessages(
-        text: String,
-        from: Language,
-        to: Language,
-        queryType: EZQueryTextType,
-        enableSystemPrompt: Bool
-    )
+    /// Base on chat query, convert prompt dict to LLM service prompt model.
+    func serviceChatModels(_ chatQuery: ChatQueryParam)
         -> [Any] {
         fatalError(mustOverride)
     }
@@ -119,7 +113,7 @@ public class LLMStreamService: QueryService {
     }
 
     /// Get query type by text and from && to language.
-    func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+    func queryType(text: String, from: Language, to: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -190,16 +184,16 @@ extension LLMStreamService {
     }
 }
 
-// MARK: - ChatMessage
+// MARK: - ChatQueryParam
 
-protocol ChatMessage {
-    associatedtype MessageType
+struct ChatQueryParam {
+    let text: String
+    let sourceLanguage: Language
+    let targetLanguage: Language
+    let queryType: EZQueryTextType
+    let enableSystemPrompt: Bool
 
-    func chatMessages(
-        queryType: EZQueryTextType,
-        text: String,
-        from: Language,
-        to: Language,
-        enableSystemPrompt: Bool
-    ) -> [MessageType]
+    func unpack() -> (String, Language, Language, EZQueryTextType, Bool) {
+        (text, sourceLanguage, targetLanguage, queryType, enableSystemPrompt)
+    }
 }

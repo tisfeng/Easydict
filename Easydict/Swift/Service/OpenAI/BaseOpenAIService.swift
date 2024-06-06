@@ -38,13 +38,15 @@ public class BaseOpenAIService: LLMStreamService {
         result.isStreamFinished = false
 
         let queryType = queryType(text: text, from: from, to: to)
-        let chatHistory = chatMessages(
+        let chatQueryParam = ChatQueryParam(
             text: text,
-            from: from,
-            to: to,
+            sourceLanguage: from,
+            targetLanguage: to,
             queryType: queryType,
             enableSystemPrompt: true
         )
+
+        let chatHistory = serviceChatModels(chatQueryParam)
 
         guard let chatHistory = chatHistory as? [ChatMessage] else { return }
 
@@ -96,34 +98,13 @@ public class BaseOpenAIService: LLMStreamService {
 
     typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
 
-    override func chatMessages(
-        text: String,
-        from: Language,
-        to: Language,
-        queryType: EZQueryTextType,
-        enableSystemPrompt: Bool
-    )
-        -> [Any] {
+    override func serviceChatModels(_ chatQuery: ChatQueryParam) -> [Any] {
         typealias Role = ChatMessage.Role
 
-        var messages = [[String: String]]()
-
-        switch queryType {
-        case .sentence:
-            messages = sentenceMessages(sentence: text, from: from, to: to, enableSystemPrompt: true)
-        case .dictionary:
-            messages = dictMessages(
-                word: text,
-                sourceLanguage: from,
-                targetLanguage: to,
-                enableSystemPrompt: true
-            )
-        default:
-            messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: true)
-        }
+        let chatMessageDicts = chatMessageDicts(chatQuery)
 
         var chats: [ChatMessage] = []
-        for message in messages {
+        for message in chatMessageDicts {
             if let roleRawValue = message["role"],
                let role = Role(rawValue: roleRawValue),
                let content = message["content"] {
@@ -134,38 +115,4 @@ public class BaseOpenAIService: LLMStreamService {
 
         return chats
     }
-
-//    override func chatMessages(
-//        queryType: EZQueryTextType,
-//        text: String,
-//        from: Language,
-//        to: Language,
-//        enableSystemPrompt: Bool
-//    )
-//        -> [ChatCompletionMessageParam] {
-//        typealias Role = ChatCompletionMessageParam.Role
-//
-//        var messages = [[String: String]]()
-//
-//        switch queryType {
-//        case .sentence:
-//            messages = sentenceMessages(sentence: text, from: from, to: to, enableSystemPrompt: true)
-//        case .dictionary:
-//            messages = dictMessages(word: text, sourceLanguage: from, targetLanguage: to, enableSystemPrompt: true)
-//        default:
-//            messages = translationMessages(text: text, from: from, to: to, enableSystemPrompt: true)
-//        }
-//
-//        var chats: [ChatCompletionMessageParam] = []
-//        for message in messages {
-//            if let roleRawValue = message["role"],
-//               let role = Role(rawValue: roleRawValue),
-//               let content = message["content"] {
-//                guard let chat = ChatCompletionMessageParam(role: role, content: content) else { return [] }
-//                chats.append(chat)
-//            }
-//        }
-//
-//        return chats
-//    }
 }
