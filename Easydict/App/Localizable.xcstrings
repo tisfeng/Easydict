@@ -832,38 +832,6 @@
         }
       }
     },
-    "enable_beta_new_app" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Launch in SwiftUI App mode"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "以 SwiftUI App 模式启动"
-          }
-        }
-      }
-    },
-    "enable_beta_new_app_info" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changes will take effect upon restarting the app"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重启 App 以生效"
-          }
-        }
-      }
-    },
     "enable_youdao_ocr" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -887,29 +855,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use a Youdao OCR for identification after a default OCR failure"
+            "value" : "Use the Youdao OCR for identification after a default OCR failure"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "在默认OCR识别失败后使用有道OCR进行识别"
-          }
-        }
-      }
-    },
-    "equal_first_and_second_language" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "First and second languages cannot be the same"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "第一语言和第二语言不能相同"
           }
         }
       }

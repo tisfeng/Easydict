@@ -20,6 +20,9 @@ typedef NS_ENUM(NSInteger, EZTipsCellType) {
     EZTipsCellTypeWordSelectionOCR,
     EZTipsCellTypeSelectWords,
     EZTipsCellTypeStillPopup,
+    EZTipsCellTypeErrorTips,
+    EZTipsCellTypeWarnTips,
+    EZTipsCellTypeInfoTips,
 };
 
 @interface EZTableTipsCell : NSTableRowView
@@ -28,6 +31,9 @@ typedef NS_ENUM(NSInteger, EZTipsCellType) {
 
 
 - (instancetype)initWithFrame:(CGRect)frame type:(EZTipsCellType)type;
+- (instancetype)initWithFrame:(NSRect)frame
+                         type:(EZTipsCellType)type
+                      content:(NSString *)content;
 
 /// update tips cell content with type
 /// - Parameters:
