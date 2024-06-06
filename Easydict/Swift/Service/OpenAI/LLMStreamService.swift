@@ -91,7 +91,7 @@ public class LLMStreamService: QueryService {
     }
 
     /// Base on chat query, convert prompt dict to LLM service prompt model.
-    func serviceChatModels(_ chatQuery: ChatQueryParam)
+    func serviceChatMessageModels(_ chatQuery: ChatQueryParam)
         -> [Any] {
         fatalError(mustOverride)
     }

@@ -46,8 +46,7 @@ public class BaseOpenAIService: LLMStreamService {
             enableSystemPrompt: true
         )
 
-        let chatHistory = serviceChatModels(chatQueryParam)
-
+        let chatHistory = serviceChatMessageModels(chatQueryParam)
         guard let chatHistory = chatHistory as? [ChatMessage] else { return }
 
         let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
@@ -98,21 +97,17 @@ public class BaseOpenAIService: LLMStreamService {
 
     typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
 
-    override func serviceChatModels(_ chatQuery: ChatQueryParam) -> [Any] {
-        typealias Role = ChatMessage.Role
-
-        let chatMessageDicts = chatMessageDicts(chatQuery)
-
-        var chats: [ChatMessage] = []
-        for message in chatMessageDicts {
+    override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
+        var chatModels: [ChatMessage] = []
+        for message in chatMessageDicts(chatQuery) {
             if let roleRawValue = message["role"],
-               let role = Role(rawValue: roleRawValue),
+               let role = ChatMessage.Role(rawValue: roleRawValue),
                let content = message["content"] {
-                guard let chat = ChatMessage(role: role, content: content) else { return [] }
-                chats.append(chat)
+                if let chat = ChatMessage(role: role, content: content) {
+                    chatModels.append(chat)
+                }
             }
         }
-
-        return chats
+        return chatModels
     }
 }

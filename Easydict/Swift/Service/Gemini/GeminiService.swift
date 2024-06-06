@@ -61,19 +61,13 @@ public final class GeminiService: LLMStreamService {
                     enableSystemPrompt: enableSystemPromptInChats
                 )
 
-                let chatHistory = serviceChatModels(chatQueryParam)
-
+                let chatHistory = serviceChatMessageModels(chatQueryParam)
                 guard let chatHistory = chatHistory as? [ModelContent] else { return }
 
                 let model = GenerativeModel(
                     name: model,
                     apiKey: apiKey,
-                    safetySettings: [
-                        harassmentBlockNone,
-                        hateSpeechBlockNone,
-                        sexuallyExplicitBlockNone,
-                        dangerousContentBlockNone,
-                    ],
+                    safetySettings: blockNoneSettings,
                     systemInstruction: systemInstruction
                 )
 
@@ -150,29 +144,28 @@ public final class GeminiService: LLMStreamService {
         }
     }
 
-    override func serviceChatModels(_ chatQuery: ChatQueryParam) -> [Any] {
-        let chatMessageDicts = chatMessageDicts(chatQuery)
-
-        var chats: [ModelContent] = []
-        for prompt in chatMessageDicts {
+    override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
+        var chatModels: [ModelContent] = []
+        for prompt in chatMessageDicts(chatQuery) {
             if let openAIRole = prompt["role"],
                let parts = prompt["content"] {
                 let role = getGeminiRole(from: openAIRole)
                 let chat = ModelContent(role: role, parts: parts)
-                chats.append(chat)
+                chatModels.append(chat)
             }
         }
-
-        return chats
+        return chatModels
     }
 
     // MARK: Private
 
     // Set Gemini safety level to BLOCK_NONE
-    private let harassmentBlockNone = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
-    private let hateSpeechBlockNone = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
-    private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
-    private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
+    private let blockNoneSettings = [
+        SafetySetting(harmCategory: .harassment, threshold: .blockNone),
+        SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone),
+        SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone),
+        SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone),
+    ]
 
     /// Given a roleRaw, currently only support "user" and "model", "model" is equal to "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
     private func getGeminiRole(from openAIRole: String) -> String {
