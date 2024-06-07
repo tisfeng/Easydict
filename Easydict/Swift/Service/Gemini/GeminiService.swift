@@ -167,7 +167,7 @@ public final class GeminiService: LLMStreamService {
         SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone),
     ]
 
-    /// Given a roleRaw, currently only support "user" and "model", "model" is equal to "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
+    /// Get gemini role, currently only support "user" and "model", "model" is equal to OpenAI "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
     private func getGeminiRole(from openAIRole: String) -> String {
         if openAIRole == "assistant" {
             "model"
