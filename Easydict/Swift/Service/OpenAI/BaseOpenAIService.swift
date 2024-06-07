@@ -52,7 +52,8 @@ public class BaseOpenAIService: LLMStreamService {
         let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
-        openAI.chatsStream(query: query, url: url) { [weak self] res in
+        // TODO: refactor chatsStream with await
+        openAI.chatsStream(query: query, url: url, control: control) { [weak self] res in
             guard let self else { return }
 
             switch res {
@@ -97,6 +98,8 @@ public class BaseOpenAIService: LLMStreamService {
 
     typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
 
+    let control = StreamControl()
+
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
         var chatModels: [ChatMessage] = []
         for message in chatMessageDicts(chatQuery) {
@@ -109,5 +112,9 @@ public class BaseOpenAIService: LLMStreamService {
             }
         }
         return chatModels
+    }
+
+    override func cancelStream() {
+        control.cancel()
     }
 }

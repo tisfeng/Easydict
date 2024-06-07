@@ -137,6 +137,9 @@ public class LLMStreamService: QueryService {
 
         return .translation
     }
+
+    /// Cancel stream request manually.
+    func cancelStream() {}
 }
 
 extension LLMStreamService {
@@ -147,6 +150,7 @@ extension LLMStreamService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         if result.isStreamFinished {
+            cancelStream()
             return
         }
 
