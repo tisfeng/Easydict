@@ -40,9 +40,9 @@ public class LLMStreamService: QueryService {
     override public func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
-        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
-        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
-        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
+        let isTranslationEnabled = UserDefaults.bool(forKey: .dictionary, serviceType: serviceType())
+        let isSentenceEnabled = UserDefaults.bool(forKey: .sentence, serviceType: serviceType())
+        let isDictionaryEnabled = UserDefaults.bool(forKey: .dictionary, serviceType: serviceType())
 
         if isTranslationEnabled {
             typeOptions.insert(.translation)
@@ -58,7 +58,7 @@ public class LLMStreamService: QueryService {
     }
 
     override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
+        let usageStatus = UserDefaults.string(forKey: .serviceUsageStatus, serviceType: serviceType()) ?? ""
         guard let value = UInt(usageStatus) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }

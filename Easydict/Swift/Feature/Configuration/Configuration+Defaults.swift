@@ -208,123 +208,123 @@ class ShortcutWrapper<T: KeyCombo> {
 // Service Configuration
 extension Defaults.Keys {
     // OpenAI
-    static let openAIAPIKey = Key<String?>(apiStoredKey(.openAI)) // EZOpenAIAPIKey
+    static let openAIAPIKey = Key<String?>(storedKey(.api, serviceType: .openAI)) // EZOpenAIAPIKey
     static let openAITranslation = Key<String>(
-        translationStoredKey(.openAI),
+        storedKey(.translation, serviceType: .openAI),
         default: "1"
     )
     static let openAIDictionary = Key<String>(
-        dictionaryStoredKey(.openAI),
+        storedKey(.dictionary, serviceType: .openAI),
         default: "1"
     )
     static let openAISentence = Key<String>(
-        sentenceStoredKey(.openAI),
+        storedKey(.sentence, serviceType: .openAI),
         default: "1"
     )
     static let openAIServiceUsageStatus = Key<ServiceUsageStatus>(
-        serviceUsageStatusStoredKey(.openAI),
+        storedKey(.serviceUsageStatus, serviceType: .openAI),
         default: .default
     )
-    static let openAIEndPoint = Key<String?>(endpointStoredKey(.openAI))
+    static let openAIEndPoint = Key<String?>(storedKey(.endpoint, serviceType: .openAI))
     static let openAIModel = Key<String>(
-        modelStoredKey(.openAI),
+        storedKey(.model, serviceType: .openAI),
         default: OpenAIModel.gpt3_5_turbo.rawValue
     )
     static let openAIAvailableModels = Key<String?>(
-        availableModelsStoredKey(.openAI),
+        storedKey(.availableModels, serviceType: .openAI),
         default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
     static let openAIVaildModels = Key<Array>(
-        validModelsStoredKey(.openAI),
+        storedKey(.validModels, serviceType: .openAI),
         default: OpenAIModel.allCases.map { $0.rawValue }
     )
 
     // Custom OpenAI
     static let customOpenAINameKey = Key<String?>(
-        nameStoredKey(.customOpenAI),
+        storedKey(.name, serviceType: .customOpenAI),
         default: NSLocalizedString("custom_openai", comment: "")
     )
-    static let customOpenAIAPIKey = Key<String?>(apiStoredKey(.customOpenAI))
+    static let customOpenAIAPIKey = Key<String?>(storedKey(.api, serviceType: .customOpenAI))
     static let customOpenAITranslation = Key<String>(
-        translationStoredKey(.customOpenAI),
+        storedKey(.translation, serviceType: .customOpenAI),
         default: "1"
     )
     static let customOpenAIDictionary = Key<String>(
-        dictionaryStoredKey(.customOpenAI),
+        storedKey(.dictionary, serviceType: .customOpenAI),
         default: "0"
     )
     static let customOpenAISentence = Key<String>(
-        sentenceStoredKey(.customOpenAI),
+        storedKey(.sentence, serviceType: .customOpenAI),
         default: "0"
     )
     static let customOpenAIServiceUsageStatus = Key<ServiceUsageStatus>(
-        serviceUsageStatusStoredKey(.builtInAI),
+        storedKey(.serviceUsageStatus, serviceType: .customOpenAI),
         default: .default
     )
-    static let customOpenAIEndPoint = Key<String?>(endpointStoredKey(.customOpenAI))
+    static let customOpenAIEndPoint = Key<String?>(storedKey(.endpoint, serviceType: .customOpenAI))
     static let customOpenAIModel = Key<String>(
-        modelStoredKey(.customOpenAI),
+        storedKey(.model, serviceType: .customOpenAI),
         default: ""
     )
     static let customOpenAIAvailableModels = Key<String?>(
-        availableModelsStoredKey(.customOpenAI),
+        storedKey(.availableModels, serviceType: .customOpenAI),
         default: ""
     )
     static let customOpenAIVaildModels = Key<Array>(
-        validModelsStoredKey(.customOpenAI),
+        storedKey(.validModels, serviceType: .customOpenAI),
         default: [""]
     )
 
     // Built-in AI
     static let builtInAIModel = Key<String>(
-        modelStoredKey(.builtInAI),
+        storedKey(.model, serviceType: .builtInAI),
         default: ""
     ) // EZBuiltInAIModelKey
     static let builtInAITranslation = Key<String>(
-        translationStoredKey(.builtInAI),
+        storedKey(.translation, serviceType: .builtInAI),
         default: "1"
     )
     static let builtInAIDictionary = Key<String>(
-        dictionaryStoredKey(.builtInAI),
+        storedKey(.dictionary, serviceType: .builtInAI),
         default: "0"
     )
     static let builtInAISentence = Key<String>(
-        sentenceStoredKey(.builtInAI),
+        storedKey(.sentence, serviceType: .builtInAI),
         default: "0"
     )
     static let builtInAIServiceUsageStatus = Key<ServiceUsageStatus>(
-        serviceUsageStatusStoredKey(.builtInAI),
+        storedKey(.serviceUsageStatus, serviceType: .builtInAI),
         default: .default
     )
 
     // Gemni
-    static let geminiAPIKey = Key<String?>(apiStoredKey(.gemini)) // EZGeminiAPIKey
+    static let geminiAPIKey = Key<String?>(storedKey(.api, serviceType: .gemini))
     static let geminiTranslation = Key<String>(
-        translationStoredKey(.gemini),
+        storedKey(.translation, serviceType: .gemini),
         default: "1"
     )
     static let geminiDictionary = Key<String>(
-        dictionaryStoredKey(.gemini),
+        storedKey(.dictionary, serviceType: .gemini),
         default: "1"
     )
     static let geminiSentence = Key<String>(
-        sentenceStoredKey(.gemini),
+        storedKey(.sentence, serviceType: .gemini),
         default: "1"
     )
     static let geminiServiceUsageStatus = Key<ServiceUsageStatus>(
-        serviceUsageStatusStoredKey(.gemini),
+        storedKey(.serviceUsageStatus, serviceType: .gemini),
         default: .default
     )
     static let geminiModel = Key<String>(
-        modelStoredKey(.gemini),
+        storedKey(.model, serviceType: .gemini),
         default: GeminiModel.gemini1_5_flash.rawValue
     )
     static let geminiAvailableModels = Key<String?>(
-        availableModelsStoredKey(.gemini),
+        storedKey(.availableModels, serviceType: .gemini),
         default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
     )
     static let geminiValidModels = Key<Array>(
-        validModelsStoredKey(.gemini),
+        storedKey(.validModels, serviceType: .gemini),
         default: GeminiModel.allCases.map { $0.rawValue }
     )
 
