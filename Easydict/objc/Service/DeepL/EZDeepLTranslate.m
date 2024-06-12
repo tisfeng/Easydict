@@ -110,6 +110,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
                                                                         EZLanguageFrench, @"fr",
                                                                         EZLanguageSpanish, @"es",
                                                                         EZLanguagePortuguese, @"pt",
+                                                                        EZLanguageBrazilianPortuguese, @"pt-BR",
                                                                         EZLanguageItalian, @"it",
                                                                         EZLanguageGerman, @"de",
                                                                         EZLanguageRussian, @"ru",
