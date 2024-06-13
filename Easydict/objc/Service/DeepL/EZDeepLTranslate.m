@@ -190,7 +190,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 /// DeepL web translate. Ref: https://github.com/akl7777777/bob-plugin-akl-deepl-free-translate/blob/9d194783b3eb8b3a82f21bcfbbaf29d6b28c2761/src/main.js
 - (void)deepLWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *souceLangCode = [self languageCodeForLanguage:from];
-    NSString *targetLangCode = [self languageCodeForLanguage:to];
+    NSString *regionalVariant = [self languageCodeForLanguage:to];
+    NSString *targetLangCode = [regionalVariant componentsSeparatedByString:@"-"].firstObject; // pt-PT, pt-BR
 
     NSString *url = @"https://"
                     @"www2."
@@ -200,12 +201,24 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSInteger ID = [self getRandomNumber];
     NSInteger iCount = [self getICount:text];
     NSTimeInterval ts = [self getTimeStampWithIcount:iCount];
-    NSDictionary *params = @{
+
+    NSMutableDictionary *params = @{
         @"texts" : @[ @{@"text" : text, @"requestAlternatives" : @(3)} ],
         @"splitting" : @"newlines",
         @"lang" : @{@"source_lang_user_selected" : souceLangCode, @"target_lang" : targetLangCode},
-        @"timestamp" : @(ts)
-    };
+        @"timestamp" : @(ts),
+    }.mutableCopy;
+
+    if (![regionalVariant isEqualToString:targetLangCode]) {
+        NSDictionary *commonJobParams = @{
+            @"regionalVariant" : regionalVariant,
+            @"mode" : @"translate",
+            @"browserType" : @(1),
+            @"textType" : @"plaintext",
+        };
+        params[@"commonJobParams"] = commonJobParams;
+    }
+
     NSDictionary *postData = @{
         @"jsonrpc" : @"2.0",
         @"method" : @"LMT_handle_texts",
