@@ -68,7 +68,7 @@ static Snip *_instance;
 #pragma mark -
 
 - (void)startWithCompletion:(void (^)(NSImage *_Nullable))completion {
-    BOOL enableRecord = [self checkRecordPermission];
+    BOOL enableRecord = CGRequestScreenCaptureAccess();
     if (!enableRecord) {
         MMLogError(@"disabled record permission");
         completion(nil);
@@ -110,32 +110,6 @@ static Snip *_instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenChanged:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
     
     [self mouseMoved:nil];
-}
-
-- (BOOL)checkRecordPermission {
-    /**
-     This method triggers a request for screen recording permission if it has not authorized, and return nil.
-     
-     If has authorized, return non-nil.
-     
-     If you trigger the prompt and the user `denies` it, you cannot bring up the prompt again - the user must manually enable it in System Preferences.
-     
-     Ref: https://stackoverflow.com/questions/57957198/how-to-trigger-screen-recording-permission-system-modal-dialog-on-macos-catalina
-     
-     ⚠️ TODO: CG_AVAILABLE_BUT_DEPRECATED(13.0, 14.0, "Please use ScreenCaptureKit API's initWithFilter:configuration:delegate: instead");
-     */
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-    CGDisplayStreamRef stream = CGDisplayStreamCreate(CGMainDisplayID(), 1, 1, kCVPixelFormatType_32BGRA, nil, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
-    });
-#pragma clang diagnostic pop
-    
-    if (stream) {
-        CFRelease(stream);
-        return YES;
-    }
-    return NO;
 }
 
 - (void)stopWithImage:(NSImage *)image {
