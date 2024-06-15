@@ -70,7 +70,8 @@ static Snip *_instance;
 #pragma mark -
 
 - (void)startWithCompletion:(void (^)(NSImage *_Nullable))completion {
-    BOOL hasScreenAccess = CGRequestScreenCaptureAccess();
+    // Refer https://stackoverflow.com/a/58142253/8378840
+    BOOL hasScreenAccess = CGPreflightScreenCaptureAccess();
     if (!hasScreenAccess) {
         MMLogError(@"has no screen access");
 
