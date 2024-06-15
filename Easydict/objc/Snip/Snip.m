@@ -8,6 +8,8 @@
 
 #import "Snip.h"
 
+static NSString *const EZRequestScreenCaptureAccess = @"EZRequestScreenCaptureAccess";
+
 @interface Snip ()
 
 @property (nonatomic, strong) NSMutableArray<SnipWindowController *> *windowControllers;
@@ -68,26 +70,38 @@ static Snip *_instance;
 #pragma mark -
 
 - (void)startWithCompletion:(void (^)(NSImage *_Nullable))completion {
-    BOOL enableRecord = CGRequestScreenCaptureAccess();
-    if (!enableRecord) {
-        MMLogError(@"disabled record permission");
+    BOOL hasScreenAccess = CGRequestScreenCaptureAccess();
+    if (!hasScreenAccess) {
+        MMLogError(@"has no screen access");
+
+        if (![self hasRequestedScreenCaptureAccess]) {
+            /**
+             This method will prompt to get screen capture access if not already granted only once.
+
+             If you trigger the prompt and the user `denies` it, you cannot bring up the prompt again - the user must manually enable it in System Preferences.
+             */
+            CGRequestScreenCaptureAccess();
+        } else {
+            [self showScreenCaptureAccessAlert];
+        }
+
         completion(nil);
         return;
     }
-    
+
     if (self.isSnapshotting) {
         if (completion) {
             self.completion = completion;
         }
         return;
     }
-    
+
     self.isSnapshotting = YES;
     self.completion = completion;
-    
+
     [self.windowControllers makeObjectsPerformSelector:@selector(close)];
     [self.windowControllers removeAllObjects];
-    
+
     [NSScreen.screens enumerateObjectsUsingBlock:^(NSScreen *_Nonnull screen, NSUInteger idx, BOOL *_Nonnull stop) {
         SnipWindowController *windowController = [SnipWindowController new];
         [windowController setStartBlock:^(SnipWindowController *_Nonnull windowController) {
@@ -102,34 +116,62 @@ static Snip *_instance;
         [windowController captureWithScreen:screen];
         [self.windowControllers addObject:windowController];
     }];
-    
+
     [self.mouseMoveMonitor start];
     [self.rightMouseDownMonitor start];
-    
+
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(screenChanged:) name:NSWorkspaceActiveSpaceDidChangeNotification object:[NSWorkspace sharedWorkspace]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenChanged:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
-    
+
     [self mouseMoved:nil];
+}
+
+- (BOOL)hasRequestedScreenCaptureAccess {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    BOOL hasRequestScreenCaptureAccess = [userDefaults boolForKey:EZRequestScreenCaptureAccess];
+    if (!hasRequestScreenCaptureAccess) {
+        [userDefaults setBool:YES forKey:EZRequestScreenCaptureAccess];
+        return NO;
+    }
+    return YES;
+}
+
+- (void)showScreenCaptureAccessAlert {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = NSLocalizedString(@"no_screenshot_permission", nil);
+    alert.informativeText =  NSLocalizedString(@"request_screen_capture_access_description", nil);;
+    [alert addButtonWithTitle:NSLocalizedString(@"go_to_settings", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
+
+    NSModalResponse response = [alert runModal];
+    if (response == NSAlertFirstButtonReturn) {
+        [self openPrivacySettings];
+    }
+}
+
+- (void)openPrivacySettings {
+    NSURL *url = [NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"];
+    [[NSWorkspace sharedWorkspace] openURL:url];
 }
 
 - (void)stopWithImage:(NSImage *)image {
     self.isSnapshotting = NO;
-    
+
     [self.mouseMoveMonitor stop];
     [self.rightMouseDownMonitor stop];
     self.mouseMoveMonitor = nil;
     self.rightMouseDownMonitor = nil;
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
-    
+
     [self.windowControllers makeObjectsPerformSelector:@selector(close)];
     [self.windowControllers removeAllObjects];
-    
+
     self.currentMainWindowController = nil;
-    
+
     [CATransaction flush];
-    
+
     // 回调，中断也要回调
     if (self.completion) {
         self.completion(image);
@@ -147,8 +189,8 @@ static Snip *_instance;
 #pragma mark -
 
 - (void)mouseMoved:(NSEvent *)event {
-//    MMLogInfo(@"鼠标移动 %@", self.currentMainWindowController);
-    
+    //    MMLogInfo(@"鼠标移动 %@", self.currentMainWindowController);
+
     NSPoint mouseLocation = [NSEvent mouseLocation];
     if (!self.currentMainWindowController) {
         [self.windowControllers enumerateObjectsUsingBlock:^(SnipWindowController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -162,7 +204,7 @@ static Snip *_instance;
         }];
         return;
     }
-    
+
     if (NSPointInRect(mouseLocation, self.currentMainWindowController.window.frame)) {
         // 在当前的 main window
         [self.currentMainWindowController.snipViewController showAndUpdateFocusView];
@@ -187,7 +229,7 @@ static Snip *_instance;
             }
         }
     }
-    
+
     if (!self.currentMainWindowController.window.isMainWindow ||
         !self.currentMainWindowController.window.isKeyWindow) {
         MMLogInfo(@"设置 main window");
