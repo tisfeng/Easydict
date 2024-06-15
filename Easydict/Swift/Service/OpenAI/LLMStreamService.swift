@@ -163,7 +163,9 @@ extension LLMStreamService {
         result.translatedResults = translatedTexts
 
         let updateCompletion = {
-            self.throttler.throttle { [unowned self] in
+            self.throttler.throttle { [weak self] in
+                guard let self else { return }
+
                 completion(result, error)
             }
         }
