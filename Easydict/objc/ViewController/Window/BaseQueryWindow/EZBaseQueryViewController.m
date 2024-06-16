@@ -182,7 +182,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
     
-    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
+    [defaultCenter addObserverForName:NotificationName.didChangeFontSize object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
         mm_strongify(self);
         [self reloadTableViewData:^{
             [self updateAllResultCellHeight];
