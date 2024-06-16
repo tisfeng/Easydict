@@ -1681,6 +1681,22 @@
         }
       }
     },
+    "no_screenshot_permission" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Screenshot Permission"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有截图权限"
+          }
+        }
+      }
+    },
     "none_window" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2116,6 +2132,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用译文替换"
+          }
+        }
+      }
+    },
+    "request_screen_capture_access_description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please go to System Settings - Privacy & Security - Screen Recording & System Audio page to enable permissions for Easydict."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请前往 \"系统设置-隐私和安全-录屏与系统录音\" 页面，为 Easydict 启用权限。"
           }
         }
       }
