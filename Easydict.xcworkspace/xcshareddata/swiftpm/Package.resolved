@@ -1,5 +1,5 @@
 {
-  "originHash" : "9f7b5365fe9e6cded143d3c56754d92570fa15c596f57079f4e54e1ce5db484f",
+  "originHash" : "7ec61cc8c0ffc99d533d209ed8dd5c63dc918d25ea4172d03761bf84e053e81b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "1120c26835925f8314d035127c580bc71689c620",
         "version" : "5.0.4"
+      }
+    },
+    {
+      "identity" : "axswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tmandry/AXSwift",
+      "state" : {
+        "revision" : "81dcc36aced905d6464cc25e35f8d13184bbf21c",
+        "version" : "0.3.2"
       }
     },
     {
