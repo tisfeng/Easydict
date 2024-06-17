@@ -1,5 +1,5 @@
 {
-  "originHash" : "1cdad83f58bb3467937e3ac7250e920b2a1fea08918ee2d945f05853d37eb573",
+  "originHash" : "9f7b5365fe9e6cded143d3c56754d92570fa15c596f57079f4e54e1ce5db484f",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -152,6 +152,15 @@
       "state" : {
         "revision" : "5da0ee06fd8709f7d812504bff1555462a3f6956",
         "version" : "4.2.0"
+      }
+    },
+    {
+      "identity" : "keysender",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jordanbaird/KeySender",
+      "state" : {
+        "revision" : "99584bf1a03ab600cc44be89a2dcd98b2dbeb9de",
+        "version" : "0.0.5"
       }
     },
     {
