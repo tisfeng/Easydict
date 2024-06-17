@@ -18,14 +18,14 @@ import OpenAI
 public class BaseOpenAIService: LLMStreamService {
     // MARK: Public
 
-    override public func translate(
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         let url = URL(string: endpoint)
-        let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
+        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
         guard let url, url.isValid else {
             completion(result, invalidURLError)
             return

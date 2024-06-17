@@ -29,32 +29,39 @@ class OpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
-    override var availableModels: [String] {
-        Defaults[.openAIVaildModels]
-    }
-
-    override var model: String {
+    override var validModels: [String] {
         get {
-            Defaults[.openAIModel]
+            Defaults[serviceDefaultsKey(
+                .availableModels,
+                defaultValue: OpenAIModel.allCases.map { $0.rawValue }
+            )]
         }
         set {
-            // easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
-            Defaults[.openAIModel] = newValue
+            Defaults[serviceDefaultsKey(
+                .availableModels,
+                defaultValue: OpenAIModel.allCases.map { $0.rawValue }
+            )] = newValue
         }
-    }
-
-    override var apiKey: String {
-        // easydict://writeKeyValue?EZOpenAIAPIKey=
-        Defaults[.openAIAPIKey] ?? ""
     }
 
     override var endpoint: String {
-        // easydict://writeKeyValue?EZOpenAIEndPointKey=
-        var endPoint = Defaults[.openAIEndPoint] ?? ""
-        if endPoint.isEmpty {
-            endPoint = "https://api.openai.com/v1/chat/completions"
-        }
+        super.endpoint.isEmpty ? "https://api.openai.com/v1/chat/completions" : super.endpoint
+    }
 
-        return endPoint
+    override func configurationListItems() -> Any {
+        StreamConfigurationView(service: self, viewModel: viewModel)
     }
 }
+
+// MARK: - OpenAIModel
+
+// swiftlint:disable identifier_name
+enum OpenAIModel: String, CaseIterable {
+    // Docs: https://platform.openai.com/docs/models
+
+    case gpt3_5_turbo = "gpt-3.5-turbo" // Currently points to gpt-3.5-turbo-0125. Input: $0.50 | Output: $1.50  (16k)
+    case gpt4_turbo = "gpt-4-turbo" // Currently points to gpt-4-turbo-2024-04-09. Input: $10 | Output: $30  (128k)
+    case gpt4o = "gpt-4o" // Currently points to gpt-4o-2024-05-13. Input: $5 | Output: $15  (128k context length)
+}
+
+// swiftlint:enable identifier_name

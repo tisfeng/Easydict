@@ -2411,6 +2411,7 @@
       }
     },
     "service.configuration.gemini.api_key.placeholder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

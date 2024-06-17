@@ -16,19 +16,19 @@ struct SecureTextField: View {
     let title: LocalizedStringKey
     let placeholder: LocalizedStringKey
 
-    @Binding var text: String?
+    @Binding var text: String
 
     var body: some View {
         HStack {
             ZStack {
-                SecureField(title, text: $text ?? "")
+                SecureField(title, text: $text)
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
-                TextField(title, text: $text ?? "", prompt: Text(placeholder))
+                TextField(title, text: $text, prompt: Text(placeholder))
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .text)
-                    .opacity(showText || (text?.isEmpty ?? true) ? 1 : 0)
+                    .opacity(showText || (text.isEmpty) ? 1 : 0)
             }
 
             Button(action: {

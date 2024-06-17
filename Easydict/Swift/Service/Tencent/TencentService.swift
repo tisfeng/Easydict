@@ -135,7 +135,7 @@ public final class TencentService: QueryService {
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
         let secretId = Defaults[.tencentSecretId]
-        if let secretId, !secretId.isEmpty {
+        if !secretId.isEmpty {
             return secretId
         } else {
             return defaultSecretId
@@ -145,7 +145,7 @@ public final class TencentService: QueryService {
     // easydict://writeKeyValue?EZTencentSecretKey=xxx
     private var secretKey: String {
         let secretKey = Defaults[.tencentSecretKey]
-        if let secretKey, !secretKey.isEmpty {
+        if !secretKey.isEmpty {
             return secretKey
         } else {
             return defaultSecretKey

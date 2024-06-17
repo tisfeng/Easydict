@@ -13,12 +13,9 @@ import Foundation
 class CustomOpenAIService: BaseOpenAIService {
     // MARK: Public
 
-    override public func name() -> String {
-        let name = Defaults[.customOpenAINameKey]
-        if let name, !name.isEmpty {
-            return name
-        }
-        return NSLocalizedString("custom_openai", comment: "The name of Custom OpenAI Translate")
+    public override func name() -> String {
+        let serviceName = Defaults[stringDefaultsKey(.name)]
+        return serviceName.isEmpty ? NSLocalizedString("custom_openai", comment: "") : serviceName
     }
 
     override public func serviceType() -> ServiceType {
@@ -27,24 +24,11 @@ class CustomOpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
-    override var apiKey: String {
-        Defaults[.customOpenAIAPIKey] ?? ""
-    }
-
-    override var endpoint: String {
-        Defaults[.customOpenAIEndPoint] ?? ""
-    }
-
-    override var model: String {
-        get {
-            Defaults[.customOpenAIModel]
-        }
-        set {
-            Defaults[.customOpenAIModel] = newValue
-        }
-    }
-
-    override var availableModels: [String] {
-        Defaults[.customOpenAIVaildModels]
+    override func configurationListItems() -> Any {
+        StreamConfigurationView(
+            service: self,
+            viewModel: viewModel,
+            showNameSection: true
+        )
     }
 }

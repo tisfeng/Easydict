@@ -17,7 +17,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     init(
         service: QueryService,
-        observeKeys: [Defaults.Key<String?>],
+        observeKeys: [Defaults.Key<String>],
         @ViewBuilder content: () -> Content
     ) {
         self.service = service
@@ -113,14 +113,14 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 private class ServiceValidationViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(service: QueryService, observing keys: [Defaults.Key<String?>]) {
+    init(service: QueryService, observing keys: [Defaults.Key<String>]) {
         self.service = service
         self.name = service.name()
         cancellables.append(
             // check secret key empty input
             Defaults.publisher(keys: keys)
                 .sink { [weak self] _ in
-                    let hasEmptyInput = keys.contains(where: { (Defaults[$0] ?? "").isEmpty })
+                    let hasEmptyInput = keys.contains(where: { Defaults[$0].isEmpty })
                     DispatchQueue.main.async {
                         self?.isValidateBtnDisabled = hasEmptyInput
                     }

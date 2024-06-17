@@ -9,8 +9,10 @@
 import Foundation
 import SwiftUI
 
-extension CaiyunService: ConfigurableService {
-    func configurationListItems() -> some View {
+// MARK: - CaiyunService + ConfigurableService
+
+extension CaiyunService {
+    public override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.caiyunToken]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.caiyun.token.title",

@@ -436,7 +436,7 @@
 - (void)showModelSelectionMenu:(EZButton *)sender {
     EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    for (NSString *model in service.availableModels) {
+    for (NSString *model in service.validModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
         item.target = self;
         [menu addItem:item];

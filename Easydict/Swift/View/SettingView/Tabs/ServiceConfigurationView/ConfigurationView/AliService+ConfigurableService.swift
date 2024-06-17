@@ -6,15 +6,11 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 
-extension AliService: ConfigurableService {
-    func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(
-            service: self,
-            observeKeys: [.aliAccessKeyId, .aliAccessKeySecret]
-        ) {
+extension AliService {
+    override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.aliAccessKeyId, .aliAccessKeySecret]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_id.title",
                 key: .aliAccessKeyId

@@ -70,6 +70,10 @@ struct TrailingTextEditorWithPlaceholder: View {
 
             TextEditor(text: $text)
                 .multilineTextAlignment(.trailing)
+                .onChange(of: text) { newValue in
+                    print("TextEditor onChange: \(text)")
+                    print("newValue: \(newValue)")
+                }
         }
     }
 }

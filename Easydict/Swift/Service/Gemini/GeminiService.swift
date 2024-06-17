@@ -109,6 +109,14 @@ public final class GeminiService: LLMStreamService {
         }
     }
 
+    public override func configurationListItems() -> Any {
+        StreamConfigurationView(
+            service: self,
+            viewModel: viewModel,
+            showNameSection: false
+        )
+    }
+
     // MARK: Internal
 
     // https://ai.google.dev/available_regions
@@ -127,25 +135,6 @@ public final class GeminiService: LLMStreamService {
         ]
     }
 
-    // easydict://writeKeyValue?EZGeminiAPIKey=xxx
-    override var apiKey: String {
-        Defaults[.geminiAPIKey] ?? ""
-    }
-
-    override var availableModels: [String] {
-        Defaults[.geminiValidModels]
-    }
-
-    override var model: String {
-        get {
-            Defaults[.geminiModel]
-        }
-        set {
-            // easydict://writeKeyValue?EZGeminiModelKey=gemini-1.5-flash
-            Defaults[.geminiModel] = newValue
-        }
-    }
-
     // MARK: Private
 
     // Set Gemini safety level to BLOCK_NONE
@@ -154,3 +143,18 @@ public final class GeminiService: LLMStreamService {
     private let sexuallyExplicitBlockNone = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
     private let dangerousContentBlockNone = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
 }
+
+// MARK: - GeminiModel
+
+// swiftlint:disable identifier_name
+enum GeminiModel: String, CaseIterable {
+    // Docs: https://ai.google.dev/gemini-api/docs/models/gemini
+
+    // RPM: Requests per minute, TPM: Tokens per minute
+    // RPD: Requests per day, TPD: Tokens per day
+    case gemini1_0_pro = "gemini-1.0-pro" // Free 15 RPM/32,000 TPM, 1,500 RPD/46,080,000 TPD (n/a context length)
+    case gemini1_5_flash = "gemini-1.5-flash" // Free 15 RPM/100million TPM, 1500 RPD/ n/a TPD  (1048k context length)
+    case gemini1_5_pro = "gemini-1.5-pro" // Free 2 RPM/32,000 TPM, 50 RPD/46,080,000 TPD (1048k context length)
+}
+
+// swiftlint:enable identifier_name

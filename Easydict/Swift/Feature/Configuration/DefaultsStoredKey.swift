@@ -36,10 +36,10 @@ enum StoredKey: String {
     case translation
     case dictionary
     case sentence
-    case availableModels
-    case validModels
+    case availableModels // save in String
+    case validModels // save in [String]
     case model
-    case api = "API"
+    case apiKey = "API"
     case endpoint = "EndPoint"
     case name
 }

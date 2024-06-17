@@ -205,153 +205,44 @@ class ShortcutWrapper<T: KeyCombo> {
     }
 }
 
+func defaultsKey<T>(_ key: StoredKey, serviceType: ServiceType) -> Defaults.Key<T?> {
+    defaultsKey(key, serviceType: serviceType, defaultValue: nil)
+}
+
+func defaultsKey<T: _DefaultsSerializable>(_ key: StoredKey, serviceType: ServiceType, defaultValue: T) -> Defaults
+    .Key<T> {
+    Defaults.Key<T>(
+        storedKey(key, serviceType: serviceType),
+        default: defaultValue
+    )
+}
+
 // Service Configuration
 extension Defaults.Keys {
-    // OpenAI
-    static let openAIAPIKey = Key<String?>(storedKey(.api, serviceType: .openAI)) // EZOpenAIAPIKey
-    static let openAITranslation = Key<String>(
-        storedKey(.translation, serviceType: .openAI),
-        default: "1"
-    )
-    static let openAIDictionary = Key<String>(
-        storedKey(.dictionary, serviceType: .openAI),
-        default: "1"
-    )
-    static let openAISentence = Key<String>(
-        storedKey(.sentence, serviceType: .openAI),
-        default: "1"
-    )
-    static let openAIServiceUsageStatus = Key<ServiceUsageStatus>(
-        storedKey(.serviceUsageStatus, serviceType: .openAI),
-        default: .default
-    )
-    static let openAIEndPoint = Key<String?>(storedKey(.endpoint, serviceType: .openAI))
-    static let openAIModel = Key<String>(
-        storedKey(.model, serviceType: .openAI),
-        default: OpenAIModel.gpt3_5_turbo.rawValue
-    )
-    static let openAIAvailableModels = Key<String?>(
-        storedKey(.availableModels, serviceType: .openAI),
-        default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
-    )
-    static let openAIVaildModels = Key<Array>(
-        storedKey(.validModels, serviceType: .openAI),
-        default: OpenAIModel.allCases.map { $0.rawValue }
-    )
-
-    // Custom OpenAI
-    static let customOpenAINameKey = Key<String?>(
-        storedKey(.name, serviceType: .customOpenAI),
-        default: NSLocalizedString("custom_openai", comment: "")
-    )
-    static let customOpenAIAPIKey = Key<String?>(storedKey(.api, serviceType: .customOpenAI))
-    static let customOpenAITranslation = Key<String>(
-        storedKey(.translation, serviceType: .customOpenAI),
-        default: "1"
-    )
-    static let customOpenAIDictionary = Key<String>(
-        storedKey(.dictionary, serviceType: .customOpenAI),
-        default: "0"
-    )
-    static let customOpenAISentence = Key<String>(
-        storedKey(.sentence, serviceType: .customOpenAI),
-        default: "0"
-    )
-    static let customOpenAIServiceUsageStatus = Key<ServiceUsageStatus>(
-        storedKey(.serviceUsageStatus, serviceType: .customOpenAI),
-        default: .default
-    )
-    static let customOpenAIEndPoint = Key<String?>(storedKey(.endpoint, serviceType: .customOpenAI))
-    static let customOpenAIModel = Key<String>(
-        storedKey(.model, serviceType: .customOpenAI),
-        default: ""
-    )
-    static let customOpenAIAvailableModels = Key<String?>(
-        storedKey(.availableModels, serviceType: .customOpenAI),
-        default: ""
-    )
-    static let customOpenAIVaildModels = Key<Array>(
-        storedKey(.validModels, serviceType: .customOpenAI),
-        default: [""]
-    )
-
-    // Built-in AI
-    static let builtInAIModel = Key<String>(
-        storedKey(.model, serviceType: .builtInAI),
-        default: ""
-    ) // EZBuiltInAIModelKey
-    static let builtInAITranslation = Key<String>(
-        storedKey(.translation, serviceType: .builtInAI),
-        default: "1"
-    )
-    static let builtInAIDictionary = Key<String>(
-        storedKey(.dictionary, serviceType: .builtInAI),
-        default: "0"
-    )
-    static let builtInAISentence = Key<String>(
-        storedKey(.sentence, serviceType: .builtInAI),
-        default: "0"
-    )
-    static let builtInAIServiceUsageStatus = Key<ServiceUsageStatus>(
-        storedKey(.serviceUsageStatus, serviceType: .builtInAI),
-        default: .default
-    )
-
-    // Gemni
-    static let geminiAPIKey = Key<String?>(storedKey(.api, serviceType: .gemini))
-    static let geminiTranslation = Key<String>(
-        storedKey(.translation, serviceType: .gemini),
-        default: "1"
-    )
-    static let geminiDictionary = Key<String>(
-        storedKey(.dictionary, serviceType: .gemini),
-        default: "1"
-    )
-    static let geminiSentence = Key<String>(
-        storedKey(.sentence, serviceType: .gemini),
-        default: "1"
-    )
-    static let geminiServiceUsageStatus = Key<ServiceUsageStatus>(
-        storedKey(.serviceUsageStatus, serviceType: .gemini),
-        default: .default
-    )
-    static let geminiModel = Key<String>(
-        storedKey(.model, serviceType: .gemini),
-        default: GeminiModel.gemini1_5_flash.rawValue
-    )
-    static let geminiAvailableModels = Key<String?>(
-        storedKey(.availableModels, serviceType: .gemini),
-        default: GeminiModel.allCases.map { $0.rawValue }.joined(separator: ",")
-    )
-    static let geminiValidModels = Key<Array>(
-        storedKey(.validModels, serviceType: .gemini),
-        default: GeminiModel.allCases.map { $0.rawValue }
-    )
-
     // DeepL
-    static let deepLAuth = Key<String?>(EZDeepLAuthKey)
+    static let deepLAuth = Key<String>(EZDeepLAuthKey, default: "")
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(
         EZDeepLTranslationAPIKey,
         default: DeepLAPIUsagePriority.webFirst
     )
-    static let deepLTranslateEndPointKey = Key<String?>(EZDeepLTranslateEndPointKey)
+    static let deepLTranslateEndPointKey = Key<String>(EZDeepLTranslateEndPointKey, default: "")
 
     // Bing
-    static let bingCookieKey = Key<String?>(EZBingCookieKey)
+    static let bingCookieKey = Key<String>(EZBingCookieKey, default: "")
 
     // niu
-    static let niuTransAPIKey = Key<String?>(EZNiuTransAPIKey)
+    static let niuTransAPIKey = Key<String>(EZNiuTransAPIKey, default: "")
 
     // Caiyun
-    static let caiyunToken = Key<String?>(EZCaiyunToken)
+    static let caiyunToken = Key<String>(EZCaiyunToken, default: "")
 
     // tencent
-    static let tencentSecretId = Key<String?>(EZTencentSecretId)
-    static let tencentSecretKey = Key<String?>(EZTencentSecretKey)
+    static let tencentSecretId = Key<String>(EZTencentSecretId, default: "")
+    static let tencentSecretKey = Key<String>(EZTencentSecretKey, default: "")
 
     // Ali
-    static let aliAccessKeyId = Key<String?>(EZAliAccessKeyId)
-    static let aliAccessKeySecret = Key<String?>(EZAliAccessKeySecret)
+    static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")
+    static let aliAccessKeySecret = Key<String>(EZAliAccessKeySecret, default: "")
 }
 
 /// shortcut

@@ -57,9 +57,7 @@ class AliService: QueryService {
     }
 
     override func hasPrivateAPIKey() -> Bool {
-        let id = Defaults[.aliAccessKeyId] ?? ""
-        let secret = Defaults[.aliAccessKeySecret] ?? ""
-        return !id.isEmpty && !secret.isEmpty
+        !aliAccessKeyId.isEmpty && !aliAccessKeySecret.isEmpty
     }
 
     override func translate(
@@ -85,13 +83,11 @@ class AliService: QueryService {
          easydict://writeKeyValue?EZAliAccessKeyId=
          easydict://writeKeyValue?EZAliAccessKeySecret=
          */
-        if let id = Defaults[.aliAccessKeyId],
-           let secret = Defaults[.aliAccessKeySecret],
-           !id.isEmpty,
-           !secret.isEmpty {
+        if !aliAccessKeyId.isEmpty,
+           !aliAccessKeySecret.isEmpty {
             requestByAPI(
-                id: id,
-                secret: secret,
+                id: aliAccessKeyId,
+                secret: aliAccessKeySecret,
                 transType: transType,
                 text: text,
                 from: from,
@@ -136,6 +132,14 @@ class AliService: QueryService {
         } else {
             (false, "", "")
         }
+    }
+
+    private var aliAccessKeyId: String {
+        Defaults[.aliAccessKeyId]
+    }
+
+    private var aliAccessKeySecret: String {
+        Defaults[.aliAccessKeySecret]
     }
 
     // swiftlint:disable:next function_parameter_count

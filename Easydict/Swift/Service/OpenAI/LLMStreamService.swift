@@ -6,25 +6,28 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import Foundation
 
 // MARK: - LLMStreamService
 
+// import SwiftUI
+
 @objcMembers
 @objc(EZLLMStreamService)
-public class LLMStreamService: QueryService {
+public class LLMStreamService: QueryService, ObservableObject {
     // MARK: Public
 
-    override public func isStream() -> Bool {
+    public override func isStream() -> Bool {
         true
     }
 
-    override public func intelligentQueryTextType() -> EZQueryTextType {
+    public override func intelligentQueryTextType() -> EZQueryTextType {
         Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         let allLanguages = EZLanguageManager.shared().allLanguages
         let supportedLanguages = allLanguages.filter { language in
             !unsupportedLanguages.contains(language)
@@ -37,12 +40,12 @@ public class LLMStreamService: QueryService {
         return orderedDict
     }
 
-    override public func queryTextType() -> EZQueryTextType {
+    public override func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
-        let isTranslationEnabled = UserDefaults.bool(forKey: .dictionary, serviceType: serviceType())
-        let isSentenceEnabled = UserDefaults.bool(forKey: .sentence, serviceType: serviceType())
-        let isDictionaryEnabled = UserDefaults.bool(forKey: .dictionary, serviceType: serviceType())
+        let isTranslationEnabled = Defaults[stringDefaultsKey(.translation)].boolValue
+        let isSentenceEnabled = Defaults[stringDefaultsKey(.sentence)].boolValue
+        let isDictionaryEnabled = Defaults[stringDefaultsKey(.dictionary)].boolValue
 
         if isTranslationEnabled {
             typeOptions.insert(.translation)
@@ -57,8 +60,8 @@ public class LLMStreamService: QueryService {
         return typeOptions
     }
 
-    override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = UserDefaults.string(forKey: .serviceUsageStatus, serviceType: serviceType()) ?? ""
+    public override func serviceUsageStatus() -> EZServiceUsageStatus {
+        let usageStatus = Defaults[stringDefaultsKey(.serviceUsageStatus)]
         guard let value = UInt(usageStatus) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
@@ -69,25 +72,45 @@ public class LLMStreamService: QueryService {
 
     let mustOverride = "This property or method must be overridden by a subclass"
 
+    var viewModel: LLMStreamViewModel {
+        _viewModel
+    }
+
     var unsupportedLanguages: [Language] {
         []
     }
 
     var model: String {
-        get { fatalError(mustOverride) }
-        set { _ = newValue; fatalError(mustOverride) }
+        get {
+            Defaults[stringDefaultsKey(.model)]
+        }
+        set {
+            if model != newValue {
+                Defaults[stringDefaultsKey(.model)] = newValue
+            }
+        }
     }
 
-    var availableModels: [String] {
-        fatalError(mustOverride)
+    var availableModels: String {
+        get { Defaults[stringDefaultsKey(.availableModels)] }
+        set {
+            Defaults[stringDefaultsKey(.availableModels)] = newValue
+        }
     }
 
+    var validModels: [String] {
+        get { Defaults[serviceDefaultsKey(.validModels, defaultValue: [""])] }
+        set { Defaults[serviceDefaultsKey(.validModels, defaultValue: [""])] = newValue }
+    }
+
+    // apiKey
     var apiKey: String {
-        fatalError(mustOverride)
+        Defaults[stringDefaultsKey(.apiKey)]
     }
 
+    // endpoint
     var endpoint: String {
-        fatalError(mustOverride)
+        Defaults[stringDefaultsKey(.endpoint)]
     }
 
     func getFinalResultText(_ text: String) -> String {
@@ -134,6 +157,23 @@ public class LLMStreamService: QueryService {
 
     /// Cancel stream request manually.
     func cancelStream() {}
+
+    func invalidate() {
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+    }
+
+    // MARK: Private
+
+    private lazy var _viewModel: LLMStreamViewModel = {
+        LLMStreamViewModel(
+            service: self
+//            model: model,
+//            availableModels: availableModels
+        )
+    }()
+
+    private var cancellables: Set<AnyCancellable> = []
 }
 
 extension LLMStreamService {
@@ -179,5 +219,28 @@ extension LLMStreamService {
         default:
             updateCompletion()
         }
+    }
+}
+
+// MARK: - DefaultsKey
+
+protocol DefaultsKey {
+    func stringDefaultsKey(_ key: StoredKey) -> Defaults.Key<String>
+    func serviceDefaultsKey<T: _DefaultsSerializable>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T>
+}
+
+// MARK: - QueryService + DefaultsKey
+
+extension QueryService: DefaultsKey {
+    func stringDefaultsKey(_ key: StoredKey) -> Defaults.Key<String> {
+        defaultsKey(key, serviceType: serviceType(), defaultValue: "")
+    }
+
+    func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {
+        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
+    }
+
+    func serviceDefaultsKey<T>(_ key: StoredKey) -> Defaults.Key<T?> {
+        defaultsKey(key, serviceType: serviceType())
     }
 }

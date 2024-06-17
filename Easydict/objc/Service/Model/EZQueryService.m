@@ -212,6 +212,10 @@ userInfo:nil]
     [self translate:queryText from:from to:to completion:completion];
 }
 
+- (nullable id)configurationListItems {
+    return nil;
+}
+
 #pragma mark - 必须重写的子类方法
 
 - (EZServiceType)serviceType {

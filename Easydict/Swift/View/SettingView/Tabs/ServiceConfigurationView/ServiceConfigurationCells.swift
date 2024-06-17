@@ -17,7 +17,7 @@ struct ServiceConfigurationSecureInputCell: View {
 
     init(
         textFieldTitleKey: LocalizedStringKey,
-        key: Defaults.Key<String?>,
+        key: Defaults.Key<String>,
         placeholder: LocalizedStringKey = "service.configuration.input.placeholder"
     ) {
         self.textFieldTitleKey = textFieldTitleKey
@@ -27,7 +27,7 @@ struct ServiceConfigurationSecureInputCell: View {
 
     // MARK: Internal
 
-    @Default var value: String?
+    @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: LocalizedStringKey
 
@@ -43,7 +43,7 @@ struct ServiceConfigurationInputCell: View {
 
     init(
         textFieldTitleKey: LocalizedStringKey,
-        key: Defaults.Key<String?>,
+        key: Defaults.Key<String>,
         placeholder: LocalizedStringKey,
         limitLength: Int = Int.max
     ) {
@@ -55,14 +55,14 @@ struct ServiceConfigurationInputCell: View {
 
     // MARK: Internal
 
-    @Default var value: String?
+    @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: LocalizedStringKey
 
     var limitLength: Int
 
     var body: some View {
-        TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
+        TextField(textFieldTitleKey, text: $value, prompt: Text(placeholder))
             .padding(10.0)
             .onReceive(Just(value)) { _ in
                 limit(limitLength)
@@ -72,8 +72,8 @@ struct ServiceConfigurationInputCell: View {
     // MARK: Private
 
     private func limit(_ max: Int) {
-        if let value, value.count > max {
-            self.value = String(value.prefix(max))
+        if value.count > max {
+            value = String(value.prefix(max))
         }
     }
 }
@@ -105,10 +105,31 @@ struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & Enum
     }
 }
 
-// MARK: - ConfigurationToggleViewModel
+// MARK: - ToggleViewModel
 
-class ConfigurationToggleViewModel: ObservableObject {
-    @Published var isOn = false
+class ToggleViewModel: ObservableObject {
+    // MARK: Lifecycle
+
+    init(key: Defaults.Key<String>) {
+        self.key = key
+        self._value = .init(key)
+        self.isOn = Defaults[key] == "1"
+    }
+
+    // MARK: Internal
+
+    @Default var value: String
+
+    @Published var isOn: Bool {
+        didSet {
+            value = isOn ? "1" : "0"
+        }
+    }
+
+    // MARK: Private
+
+    private var key: Defaults.Key<String>
+    private var cancellable: AnyCancellable?
 }
 
 // MARK: - ServiceConfigurationToggleCell
@@ -118,49 +139,18 @@ struct ServiceConfigurationToggleCell: View {
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {
         self.titleKey = titleKey
-        _value = .init(key)
-        viewModel.isOn = value == "1"
+        self.viewModel = ToggleViewModel(key: key)
     }
 
     // MARK: Internal
 
-    @Default var value: String
+//    @Default var value: String
     let titleKey: LocalizedStringKey
 
-    @ObservedObject var viewModel = ConfigurationToggleViewModel()
+    @ObservedObject var viewModel: ToggleViewModel
 
     var body: some View {
         Toggle(titleKey, isOn: $viewModel.isOn)
             .padding(10.0)
-            .onChange(of: viewModel.isOn) { newValue in
-                value = newValue ? "1" : "0"
-            }
-    }
-}
-
-#Preview {
-    Group {
-        ServiceConfigurationSecureInputCell(
-            textFieldTitleKey: "service.configuration.openai.api_key.title",
-            key: .openAIAPIKey,
-            placeholder: "service.configuration.openai.api_key.placeholder"
-        )
-
-        ServiceConfigurationInputCell(
-            textFieldTitleKey: "service.configuration.openai.endpoint.title",
-            key: .openAIEndPoint,
-            placeholder: "service.configuration.openai.endpoint.placeholder"
-        )
-
-        ServiceConfigurationPickerCell(
-            titleKey: "service.configuration.openai.usage_status.title",
-            key: .openAIServiceUsageStatus,
-            values: ServiceUsageStatus.allCases
-        )
-
-        ServiceConfigurationToggleCell(
-            titleKey: "service.configuration.openai.translation.title",
-            key: .openAITranslation
-        )
     }
 }
