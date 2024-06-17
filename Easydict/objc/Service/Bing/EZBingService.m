@@ -114,7 +114,7 @@
     if (useDictQuery) {
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
             [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError * _Nullable dictError) {
-                if (error) {
+                if (error || dictError) {
                     [self bingTranslate:text useDictQuery:NO from:from to:to completion:completion];
                 } else {
                     self.isDictQueryResult = YES;
@@ -345,6 +345,17 @@ outer:
 - (void)parseBingDictTranslate:(NSDictionary *)json word:(NSString *)word completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     @try {
         NSArray *value = json[@"value"];
+        /**
+         It is strange, for some polluted ip, it will return emtpy value ☹️
+
+         See in https://github.com/tisfeng/Easydict/pull/243#issuecomment-1828133561
+
+         {
+           "_type" : "DictionaryWords",
+           "value" : [
+           ]
+         }
+         */
         if (value.count == 0) {
             completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict value is empty" request:nil]);
             return;
