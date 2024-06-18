@@ -61,6 +61,8 @@
 		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
 		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
 		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
+		0364EC8A2C208EB50036B61B /* KeySender in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC892C208EB50036B61B /* KeySender */; };
+		0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC8C2C208FB70036B61B /* AXSwift */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
 		036BCD482BDE5D0D009C893F /* BuiltInAIService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD472BDE5D0D009C893F /* BuiltInAIService+ConfigurableService.swift */; };
@@ -842,6 +844,7 @@
 				03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
 				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
+				0364EC8A2C208EB50036B61B /* KeySender in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				03A830922B4073E700112834 /* AppCenterCrashes in Frameworks */,
 				03779F1A2BB25797008D3C42 /* OpenAI in Frameworks */,
@@ -854,6 +857,7 @@
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
+				0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2487,6 +2491,8 @@
 				0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */,
 				03779F192BB25797008D3C42 /* OpenAI */,
 				C4BFDD792BE61F550094026B /* Vortex */,
+				0364EC892C208EB50036B61B /* KeySender */,
+				0364EC8C2C208FB70036B61B /* AXSwift */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2548,6 +2554,8 @@
 				0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */,
 				03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */,
 				C4BFDD782BE61F550094026B /* XCRemoteSwiftPackageReference "Vortex" */,
+				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
+				0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3403,6 +3411,22 @@
 				minimumVersion = 5.6.0;
 			};
 		};
+		0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jordanbaird/KeySender";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.5;
+			};
+		};
+		0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tmandry/AXSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.2;
+			};
+		};
 		03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tisfeng/OpenAI";
@@ -3537,6 +3561,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		0364EC892C208EB50036B61B /* KeySender */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */;
+			productName = KeySender;
+		};
+		0364EC8C2C208FB70036B61B /* AXSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */;
+			productName = AXSwift;
 		};
 		03779F192BB25797008D3C42 /* OpenAI */ = {
 			isa = XCSwiftPackageProductDependency;
