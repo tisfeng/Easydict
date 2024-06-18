@@ -58,8 +58,16 @@ body:
       label: Screenshot
       description: |
         Please provide a screenshot of the problem. If the screenshot is not convenient to describe the problem, please provide a screen recording for the developer to troubleshoot.
-        If it is a crash problem, please provide the crash log, menu icon -> Help -> Export log. (Log directory: `~/Library/Caches/com.izual.Easydict/MMLogs`)
       placeholder: Please provide a screenshot
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Runtime log
+      description: "Please provide the runtime log for the developer to troubleshoot: menu icon -> Help -> Export log. (Log directory: `~/Library/Caches/com.izual.Easydict/MMLogs`)"
+      placeholder: Runtime log
     validations:
       required: true
 
@@ -94,4 +102,4 @@ body:
       label: Are you willing to submit a PR to fix this issue?
       description: We welcome you to submit a PR to fix this issue. When the developer is short of manpower, submitting a PR is the fastest way to solve the problem. If you are not familiar with objc or Swift you can try ChatGPT, maybe it can help you.
       options:
-        - label: I'm willing to submit a PR
+        - label: I'm willing to submit a PR to fix this issue
