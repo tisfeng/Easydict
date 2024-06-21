@@ -67,7 +67,7 @@ body:
     attributes:
       label: Runtime log
       description: "Please provide the runtime log for the developer to troubleshoot: menu icon -> Help -> Export log. (Log directory: `~/Library/Caches/com.izual.Easydict/MMLogs`)"
-      placeholder: Runtime log
+      placeholder: Upload runtime log
     validations:
       required: true
 
@@ -76,7 +76,7 @@ body:
     attributes:
       label: Expected result
       description: Please describe the result you expect.
-      placeholder: Expected result
+      placeholder: Your expected result
     validations:
       required: true
 
@@ -85,7 +85,7 @@ body:
     attributes:
       label: Proposed solution (optional)
       description: Do you have any proposed solutions or suggestions for this issue?
-      placeholder: Proposed solution
+      placeholder: Your proposed solution
 
   - type: input
     id: device

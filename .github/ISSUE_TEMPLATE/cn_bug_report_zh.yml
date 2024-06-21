@@ -58,7 +58,7 @@ body:
       label: 截图
       description: |
         请提供问题截图。若截图不便于描述问题，请提供录屏，方便开发者排查。
-      placeholder: 请提供问题相关的截图
+      placeholder: 请提供问题相关截图
     validations:
       required: true
 
@@ -67,7 +67,7 @@ body:
     attributes:
       label: 运行日志
       description: "请提供运行日志，方便开发者排查：菜单图标 -> 帮助 -> 导出日志。（日志目录：`~/Library/Caches/com.izual.Easydict/MMLogs`）"
-      placeholder: 运行日志
+      placeholder: 请上传运行日志
     validations:
       required: true
 
@@ -76,7 +76,7 @@ body:
     attributes:
       label: 期望结果
       description: 请描述您期望的结果。
-      placeholder: 期望结果
+      placeholder: 你期望的结果
     validations:
       required: true
 
@@ -85,7 +85,7 @@ body:
     attributes:
       label: 解决方案（可选）
       description: 对于该问题，您有什么预想的解决方案，或者建议？
-      placeholder: 解决方案
+      placeholder: 你的解决方案
 
   - type: input
     id: device
@@ -102,4 +102,4 @@ body:
       label: 是否愿意提交 PR 解决该问题？
       description: 我们非常欢迎您提交 PR，当开发者人力不足时，提交 PR 是解决该问题最快的方式。如果对 objc 或 Swift 语言不熟悉，可以尝试使用 ChatGPT，也许它能帮到你。
       options:
-        - label: 我愿意提交 PR 解决该问题
+        - label: 我愿意提交 PR 来解决该问题
