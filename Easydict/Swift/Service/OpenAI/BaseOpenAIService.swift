@@ -38,8 +38,18 @@ public class BaseOpenAIService: LLMStreamService {
         result.isStreamFinished = false
 
         let queryType = queryType(text: text, from: from, to: to)
-        let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
-        let query = ChatQuery(messages: chats, model: model, temperature: 0)
+        let chatQueryParam = ChatQueryParam(
+            text: text,
+            sourceLanguage: from,
+            targetLanguage: to,
+            queryType: queryType,
+            enableSystemPrompt: true
+        )
+
+        let chatHistory = serviceChatMessageModels(chatQueryParam)
+        guard let chatHistory = chatHistory as? [ChatMessage] else { return }
+
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
         // TODO: refactor chatsStream with await
@@ -86,7 +96,23 @@ public class BaseOpenAIService: LLMStreamService {
 
     // MARK: Internal
 
+    typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
+
     let control = StreamControl()
+
+    override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
+        var chatModels: [ChatMessage] = []
+        for message in chatMessageDicts(chatQuery) {
+            if let roleRawValue = message["role"],
+               let role = ChatMessage.Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                if let chat = ChatMessage(role: role, content: content) {
+                    chatModels.append(chat)
+                }
+            }
+        }
+        return chatModels
+    }
 
     override func cancelStream() {
         control.cancel()

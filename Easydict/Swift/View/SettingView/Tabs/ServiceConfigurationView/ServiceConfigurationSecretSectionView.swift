@@ -22,7 +22,10 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     ) {
         self.service = service
         self.content = content()
-        self.viewModel = ServiceValidationViewModel(service: service, observing: observeKeys)
+        self._viewModel = StateObject(wrappedValue: ServiceValidationViewModel(
+            service: service,
+            observing: observeKeys
+        ))
     }
 
     // MARK: Internal
@@ -104,7 +107,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     // MARK: Private
 
-    @ObservedObject private var viewModel: ServiceValidationViewModel
+    @StateObject private var viewModel: ServiceValidationViewModel
 }
 
 // MARK: - ServiceValidationViewModel
@@ -116,22 +119,22 @@ private class ServiceValidationViewModel: ObservableObject {
     init(service: QueryService, observing keys: [Defaults.Key<String>]) {
         self.service = service
         self.name = service.name()
-        cancellables.append(
-            // check secret key empty input
-            Defaults.publisher(keys: keys)
-                .sink { [weak self] _ in
-                    let hasEmptyInput = keys.contains(where: { Defaults[$0].isEmpty })
-                    DispatchQueue.main.async {
-                        self?.isValidateBtnDisabled = hasEmptyInput
-                    }
-                }
-        )
-        cancellables.append(
-            serviceUpdatePublisher
-                .sink { [weak self] notification in
-                    self?.didReceive(notification)
-                }
-        )
+        // check secret key empty input
+        Defaults.publisher(keys: keys)
+            .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                let hasEmptyInput = keys.contains(where: { Defaults[$0].isEmpty })
+                guard isValidateBtnDisabled != hasEmptyInput else { return }
+                self.isValidateBtnDisabled = hasEmptyInput
+            }
+            .store(in: &cancellables)
+        serviceUpdatePublisher
+            .sink { [weak self] notification in
+                self?.didReceive(notification)
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: Internal
@@ -142,7 +145,7 @@ private class ServiceValidationViewModel: ObservableObject {
     @Published var errorMessage = ""
     @Published var isValidateBtnDisabled = false
 
-    var cancellables: [AnyCancellable] = []
+    var cancellables: Set<AnyCancellable> = []
 
     let service: QueryService
 

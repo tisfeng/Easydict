@@ -113,6 +113,12 @@ public class LLMStreamService: QueryService, ObservableObject {
         Defaults[stringDefaultsKey(.endpoint)]
     }
 
+    /// Base on chat query, convert prompt dict to LLM service prompt model.
+    func serviceChatMessageModels(_ chatQuery: ChatQueryParam)
+        -> [Any] {
+        fatalError(mustOverride)
+    }
+
     func getFinalResultText(_ text: String) -> String {
         var resultText = text.trim()
 
@@ -130,7 +136,7 @@ public class LLMStreamService: QueryService, ObservableObject {
     }
 
     /// Get query type by text and from && to language.
-    func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+    func queryType(text: String, from: Language, to: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -197,7 +203,9 @@ extension LLMStreamService {
         result.translatedResults = translatedTexts
 
         let updateCompletion = {
-            self.throttler.throttle { [unowned self] in
+            self.throttler.throttle { [weak self] in
+                guard let self else { return }
+
                 completion(result, error)
             }
         }
@@ -242,5 +250,19 @@ extension QueryService: DefaultsKey {
 
     func serviceDefaultsKey<T>(_ key: StoredKey) -> Defaults.Key<T?> {
         defaultsKey(key, serviceType: serviceType())
+    }
+}
+
+// MARK: - ChatQueryParam
+
+struct ChatQueryParam {
+    let text: String
+    let sourceLanguage: Language
+    let targetLanguage: Language
+    let queryType: EZQueryTextType
+    let enableSystemPrompt: Bool
+
+    func unpack() -> (String, Language, Language, EZQueryTextType, Bool) {
+        (text, sourceLanguage, targetLanguage, queryType, enableSystemPrompt)
     }
 }
