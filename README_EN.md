@@ -70,6 +70,7 @@ We plan to refactor the project with Swift. If you are interested in this open s
 - [Language Recognition](#language-recognition)
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
+  - [Supported languages](#supported-languages)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI Translate](#openai-translate)
     - [Configure Personal APIKey](#configure-personal-apikey)
@@ -241,7 +242,12 @@ Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple S
 > [!NOTE] 
 > Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
-<details> <summary> Supported languages: </summary>
+<details>
+<summary> 
+
+### Supported languages
+
+</summary>
 
 <p>
 
