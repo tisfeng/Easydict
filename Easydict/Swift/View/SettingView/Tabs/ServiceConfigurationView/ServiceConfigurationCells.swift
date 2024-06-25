@@ -118,6 +118,7 @@ class ToggleViewModel: ObservableObject {
 
     // MARK: Internal
 
+    let key: Defaults.Key<String>
     @Default var value: String
 
     @Published var isOn: Bool {
@@ -125,11 +126,6 @@ class ToggleViewModel: ObservableObject {
             value = isOn ? "1" : "0"
         }
     }
-
-    // MARK: Private
-
-    private var key: Defaults.Key<String>
-    private var cancellable: AnyCancellable?
 }
 
 // MARK: - ServiceConfigurationToggleCell
@@ -144,9 +140,9 @@ struct ServiceConfigurationToggleCell: View {
 
     // MARK: Internal
 
-//    @Default var value: String
     let titleKey: LocalizedStringKey
 
+    // Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
     @ObservedObject var viewModel: ToggleViewModel
 
     var body: some View {

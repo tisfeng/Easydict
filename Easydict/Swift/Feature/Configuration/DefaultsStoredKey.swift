@@ -36,7 +36,7 @@ enum StoredKey: String {
     case translation
     case dictionary
     case sentence
-    case availableModels // save in String
+    case supportedModels = "AvailableModels" // save in String: "gpt-3.5, gpt-4"
     case validModels // save in [String]
     case model
     case apiKey = "API"

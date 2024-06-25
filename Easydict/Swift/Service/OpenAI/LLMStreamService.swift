@@ -12,8 +12,6 @@ import Foundation
 
 // MARK: - LLMStreamService
 
-// import SwiftUI
-
 @objcMembers
 @objc(EZLLMStreamService)
 public class LLMStreamService: QueryService, ObservableObject {
@@ -72,9 +70,13 @@ public class LLMStreamService: QueryService, ObservableObject {
 
     let mustOverride = "This property or method must be overridden by a subclass"
 
-    var viewModel: LLMStreamViewModel {
-        _viewModel
-    }
+    lazy var viewModel: LLMStreamViewModel = {
+        LLMStreamViewModel(
+            service: self,
+            model: model,
+            supportedModels: supportedModels
+        )
+    }()
 
     var unsupportedLanguages: [Language] {
         []
@@ -91,16 +93,16 @@ public class LLMStreamService: QueryService, ObservableObject {
         }
     }
 
-    var availableModels: String {
-        get { Defaults[stringDefaultsKey(.availableModels)] }
+    var supportedModels: String {
+        get { Defaults[stringDefaultsKey(.supportedModels)] }
         set {
-            Defaults[stringDefaultsKey(.availableModels)] = newValue
+            Defaults[stringDefaultsKey(.supportedModels)] = newValue
         }
     }
 
     var validModels: [String] {
-        get { Defaults[serviceDefaultsKey(.validModels, defaultValue: [""])] }
-        set { Defaults[serviceDefaultsKey(.validModels, defaultValue: [""])] = newValue }
+        supportedModels.components(separatedBy: ",")
+            .map { $0.trim() }.filter { !$0.isEmpty }
     }
 
     // apiKey
@@ -170,14 +172,6 @@ public class LLMStreamService: QueryService, ObservableObject {
     }
 
     // MARK: Private
-
-    private lazy var _viewModel: LLMStreamViewModel = {
-        LLMStreamViewModel(
-            service: self
-//            model: model,
-//            availableModels: availableModels
-        )
-    }()
 
     private var cancellables: Set<AnyCancellable> = []
 }

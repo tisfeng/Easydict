@@ -64,7 +64,7 @@ struct StreamConfigurationView: View, DefaultsKey {
             observeKeys: [
                 stringDefaultsKey(.apiKey),
                 stringDefaultsKey(.endpoint),
-                stringDefaultsKey(.availableModels),
+                stringDefaultsKey(.supportedModels),
             ]
         ) {
             if showNameSection {
@@ -94,27 +94,18 @@ struct StreamConfigurationView: View, DefaultsKey {
 
             if showSupportedModelsSection {
                 TextEditorCell(
-                    title: "service.configuration.custom_openai.supported_models.title",
-                    text: $viewModel.availableModels,
+                    titleKey: "service.configuration.custom_openai.supported_models.title",
+                    storedValueKey: stringDefaultsKey(.supportedModels),
                     placeholder: "service.configuration.custom_openai.model.placeholder"
-                ).onChange(of: viewModel.availableModels) {
-                    print("onChange availableModels: \($0)")
-                }
+                )
             }
 
             if showUsedModelSection {
-                Picker(
-                    "service.configuration.openai.model.title",
-                    selection: $viewModel.model
-                ) {
-                    ForEach(viewModel.validModels, id: \.self) { value in
-                        Text(value)
-                    }
-                }
-                .padding(10.0)
-                .onChange(of: viewModel.model) {
-                    print("onChange model: \($0)")
-                }
+                ServiceConfigurationPickerCell(
+                    titleKey: "service.configuration.openai.model.title",
+                    key: stringDefaultsKey(.model),
+                    values: viewModel.validModels
+                )
             }
 
             if showTranslationToggle {
@@ -164,20 +155,15 @@ class LLMStreamViewModel: ObservableObject, DefaultsKey {
     // MARK: Lifecycle
 
     init(
-        service: LLMStreamService
-//        model: String,
-//        availableModels: String
+        service: LLMStreamService,
+        model: String,
+        supportedModels: String
     ) {
         self.service = service
-//        self.model = model
-//        self.availableModels = availableModels
-
-        self.model = Defaults[service.stringDefaultsKey(.model)]
-        self.availableModels = Defaults[service.stringDefaultsKey(.availableModels)]
+        self.model = model
+        self.supportedModels = supportedModels
 
         setupSubscribers()
-
-        availableModelsTextDidChanged(availableModels)
     }
 
     // MARK: Internal
@@ -194,28 +180,36 @@ class LLMStreamViewModel: ObservableObject, DefaultsKey {
         }
     }
 
-    @Published var availableModels: String {
+    @Published var supportedModels: String {
         didSet {
-            if availableModels != oldValue {
-                availableModelsTextDidChanged(availableModels)
+            if supportedModels != oldValue {
+                supportedModelsTextDidChanged(supportedModels)
             }
         }
     }
 
     func setupSubscribers() {
-        Defaults.publisher(stringDefaultsKey(.model))
+        Defaults.publisher(stringDefaultsKey(.name), options: [])
             .removeDuplicates()
             .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
-            .sink { [weak self] in
-                self?.model = $0.newValue
+            .sink { [weak self] _ in
+                self?.notifyServiceConfigurationChanged()
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(stringDefaultsKey(.availableModels))
+        Defaults.publisher(stringDefaultsKey(.model), options: [])
             .removeDuplicates()
             .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] in
-                self?.availableModels = $0.newValue
+                self?.modelDidChanged($0.newValue)
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(stringDefaultsKey(.supportedModels))
+            .removeDuplicates()
+            .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
+            .sink { [weak self] in
+                self?.supportedModelsTextDidChanged($0.newValue)
             }
             .store(in: &cancellables)
     }
@@ -237,27 +231,28 @@ class LLMStreamViewModel: ObservableObject, DefaultsKey {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    private func modelDidChanged(_ model: String) {
-        Defaults[stringDefaultsKey(.model)] = model
+    private func modelDidChanged(_ newModel: String) {
+        Defaults[stringDefaultsKey(.model)] = newModel
 
-        if !validModels.contains(model) {
-            if model.isEmpty {
-                availableModels = ""
+        // Handle some special cases
+        if !validModels.contains(newModel) {
+            if newModel.isEmpty {
+                supportedModels = ""
             } else {
-                if availableModels.isEmpty {
-                    availableModels = model
+                if supportedModels.isEmpty {
+                    supportedModels = newModel
                 } else {
-                    availableModels = "\(model), " + availableModels
+                    supportedModels = "\(newModel), " + supportedModels
                 }
             }
         }
         notifyServiceConfigurationChanged()
     }
 
-    private func availableModelsTextDidChanged(_ availableModels: String) {
-        Defaults[stringDefaultsKey(.availableModels)] = availableModels
+    private func supportedModelsTextDidChanged(_ newSupportedModels: String) {
+        Defaults[stringDefaultsKey(.supportedModels)] = newSupportedModels
 
-        validModels = availableModels.components(separatedBy: ",")
+        validModels = newSupportedModels.components(separatedBy: ",")
             .map { $0.trim() }.filter { !$0.isEmpty }
 
         if validModels.isEmpty {
@@ -265,7 +260,6 @@ class LLMStreamViewModel: ObservableObject, DefaultsKey {
         } else if !validModels.contains(model) {
             model = validModels[0]
         }
-        Defaults[serviceDefaultsKey(.validModels, defaultValue: [""])] = validModels
     }
 
     private func notifyServiceConfigurationChanged() {
