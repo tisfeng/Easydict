@@ -41,6 +41,13 @@ struct StreamConfigurationView: View, DefaultsKey {
         self.showSentenceToggle = showSentenceToggle
         self.showDictionaryToggle = showDictionaryToggle
         self.showUsageStatusPicker = showUsageStatusPicker
+
+        // Disable user to edit built-in supported models.
+        self.isEditable = service.serviceType() != .builtInAI
+
+        #if DEBUG
+        self.isEditable = isEditable || Defaults[.enableBetaFeature]
+        #endif
     }
 
     // MARK: Internal
@@ -57,6 +64,8 @@ struct StreamConfigurationView: View, DefaultsKey {
     let showSentenceToggle: Bool
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
+
+    var isEditable = true
 
     var body: some View {
         ServiceConfigurationSecretSectionView(
@@ -97,7 +106,7 @@ struct StreamConfigurationView: View, DefaultsKey {
                     titleKey: "service.configuration.custom_openai.supported_models.title",
                     storedValueKey: stringDefaultsKey(.supportedModels),
                     placeholder: "service.configuration.custom_openai.model.placeholder"
-                )
+                ).disabled(!isEditable)
             }
 
             if showUsedModelSection {

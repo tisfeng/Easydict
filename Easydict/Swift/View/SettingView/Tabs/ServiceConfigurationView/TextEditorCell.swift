@@ -73,7 +73,7 @@ struct TrailingTextEditorWithPlaceholder: View {
                     .padding(.horizontal, 5)
                     .background(GeometryReader { geometry in
                         Color.clear.onAppear {
-                            // 22 is one line height, if placeholder is more than one line, alway set alignment to .leading
+                            // 22 is one line height, if placeholder is more than one line, always set alignment to .leading
                             if geometry.size.height > 22 {
                                 oneLineAlignment = .topLeading
                             }
