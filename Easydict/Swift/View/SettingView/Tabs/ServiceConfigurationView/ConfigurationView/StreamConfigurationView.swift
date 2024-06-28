@@ -47,6 +47,7 @@ struct StreamConfigurationView: View {
         self.isEditable = isEditable || Defaults[.enableBetaFeature]
         #endif
 
+        service.invalidate()
         service.setupSubscribers()
     }
 

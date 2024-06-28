@@ -449,14 +449,7 @@
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
-//        [self postServiceUpdatedNotification:service.serviceType];
     }
-}
-
-- (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
-    NSDictionary *userInfo = @{EZServiceTypeKey : serviceType};
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 #pragma mark - Animation
