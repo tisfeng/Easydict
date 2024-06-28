@@ -36,7 +36,7 @@ class OpenAIService: BaseOpenAIService {
     }
 
     override func configurationListItems() -> Any {
-        StreamConfigurationView(service: self, viewModel: viewModel)
+        StreamConfigurationView(service: self)
     }
 }
 

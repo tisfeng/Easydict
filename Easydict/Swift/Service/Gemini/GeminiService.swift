@@ -110,8 +110,7 @@ public final class GeminiService: LLMStreamService {
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
-            viewModel: viewModel,
-            showNameSection: false
+            showEndpointSection: false
         )
     }
 

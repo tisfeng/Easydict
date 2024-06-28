@@ -24,7 +24,7 @@ class BuiltInAIService: BaseOpenAIService {
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
-            viewModel: viewModel,
+//            viewModel: viewModel,
             showNameSection: false,
             showAPIKeySection: false,
             showEndpointSection: false

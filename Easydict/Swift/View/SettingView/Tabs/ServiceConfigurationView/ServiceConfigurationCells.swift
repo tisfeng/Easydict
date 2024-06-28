@@ -105,6 +105,34 @@ struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & Enum
     }
 }
 
+// MARK: - PickerCell
+
+struct PickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
+    // MARK: Lifecycle
+
+    init(titleKey: LocalizedStringKey, selectionKey: Defaults.Key<T>, valuesKey: Defaults.Key<[T]>) {
+        self.titleKey = titleKey
+        _selection = .init(selectionKey)
+        _values = .init(valuesKey)
+    }
+
+    // MARK: Internal
+
+    let titleKey: LocalizedStringKey
+
+    @Default var selection: T
+    @Default var values: [T]
+
+    var body: some View {
+        Picker(titleKey, selection: $selection) {
+            ForEach(values, id: \.self) { value in
+                Text(value.title)
+            }
+        }
+        .padding(10.0)
+    }
+}
+
 // MARK: - ToggleViewModel
 
 class ToggleViewModel: ObservableObject {

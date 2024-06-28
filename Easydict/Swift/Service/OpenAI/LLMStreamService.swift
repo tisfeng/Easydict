@@ -41,9 +41,9 @@ public class LLMStreamService: QueryService, ObservableObject {
     public override func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
-        let isTranslationEnabled = Defaults[stringDefaultsKey(.translation)].boolValue
-        let isSentenceEnabled = Defaults[stringDefaultsKey(.sentence)].boolValue
-        let isDictionaryEnabled = Defaults[stringDefaultsKey(.dictionary)].boolValue
+        let isTranslationEnabled = Defaults[translationKey].boolValue
+        let isSentenceEnabled = Defaults[sentenceKey].boolValue
+        let isDictionaryEnabled = Defaults[dictionaryKey].boolValue
 
         if isTranslationEnabled {
             typeOptions.insert(.translation)
@@ -59,8 +59,8 @@ public class LLMStreamService: QueryService, ObservableObject {
     }
 
     public override func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = Defaults[stringDefaultsKey(.serviceUsageStatus)]
-        guard let value = UInt(usageStatus) else { return .default }
+        let usageStatus = Defaults[serviceUsageStatusKey]
+        guard let value = UInt(usageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 
@@ -70,34 +70,36 @@ public class LLMStreamService: QueryService, ObservableObject {
 
     let mustOverride = "This property or method must be overridden by a subclass"
 
-    lazy var viewModel: LLMStreamViewModel = {
-        LLMStreamViewModel(
-            service: self,
-            model: model,
-            supportedModels: supportedModels
-        )
-    }()
+    var cancellables: Set<AnyCancellable> = []
 
     var unsupportedLanguages: [Language] {
         []
     }
 
     var model: String {
-        get {
-            Defaults[stringDefaultsKey(.model)]
-        }
+        get { Defaults[modelKey] }
         set {
             if model != newValue {
-                Defaults[stringDefaultsKey(.model)] = newValue
+                Defaults[modelKey] = newValue
             }
         }
     }
 
+    var modelKey: Defaults.Key<String> {
+        stringDefaultsKey(.model)
+    }
+
     var supportedModels: String {
-        get { Defaults[stringDefaultsKey(.supportedModels)] }
+        get { Defaults[supportedModelsKey] }
         set {
-            Defaults[stringDefaultsKey(.supportedModels)] = newValue
+            if supportedModels != newValue {
+                Defaults[supportedModelsKey] = newValue
+            }
         }
+    }
+
+    var supportedModelsKey: Defaults.Key<String> {
+        stringDefaultsKey(.supportedModels)
     }
 
     var validModels: [String] {
@@ -105,14 +107,44 @@ public class LLMStreamService: QueryService, ObservableObject {
             .map { $0.trim() }.filter { !$0.isEmpty }
     }
 
-    // apiKey
-    var apiKey: String {
-        Defaults[stringDefaultsKey(.apiKey)]
+    var validModelsKey: Defaults.Key<[String]> {
+        serviceDefaultsKey(.validModels, defaultValue: [""])
     }
 
-    // endpoint
+    var apiKey: String {
+        Defaults[apiKeyKey]
+    }
+
+    var apiKeyKey: Defaults.Key<String> {
+        stringDefaultsKey(.apiKey)
+    }
+
     var endpoint: String {
-        Defaults[stringDefaultsKey(.endpoint)]
+        Defaults[endpointKey]
+    }
+
+    var endpointKey: Defaults.Key<String> {
+        stringDefaultsKey(.endpoint)
+    }
+
+    var nameKey: Defaults.Key<String> {
+        stringDefaultsKey(.name)
+    }
+
+    var translationKey: Defaults.Key<String> {
+        stringDefaultsKey(.translation)
+    }
+
+    var sentenceKey: Defaults.Key<String> {
+        stringDefaultsKey(.sentence)
+    }
+
+    var dictionaryKey: Defaults.Key<String> {
+        stringDefaultsKey(.dictionary)
+    }
+
+    var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
+        serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
     }
 
     /// Base on chat query, convert prompt dict to LLM service prompt model.
@@ -165,15 +197,6 @@ public class LLMStreamService: QueryService, ObservableObject {
 
     /// Cancel stream request manually.
     func cancelStream() {}
-
-    func invalidate() {
-        cancellables.forEach { $0.cancel() }
-        cancellables.removeAll()
-    }
-
-    // MARK: Private
-
-    private var cancellables: Set<AnyCancellable> = []
 }
 
 extension LLMStreamService {
@@ -221,29 +244,6 @@ extension LLMStreamService {
         default:
             updateCompletion()
         }
-    }
-}
-
-// MARK: - DefaultsKey
-
-protocol DefaultsKey {
-    func stringDefaultsKey(_ key: StoredKey) -> Defaults.Key<String>
-    func serviceDefaultsKey<T: _DefaultsSerializable>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T>
-}
-
-// MARK: - QueryService + DefaultsKey
-
-extension QueryService: DefaultsKey {
-    func stringDefaultsKey(_ key: StoredKey) -> Defaults.Key<String> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: "")
-    }
-
-    func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
-    }
-
-    func serviceDefaultsKey<T>(_ key: StoredKey) -> Defaults.Key<T?> {
-        defaultsKey(key, serviceType: serviceType())
     }
 }
 

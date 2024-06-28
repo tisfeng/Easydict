@@ -449,7 +449,7 @@
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
-        [self postServiceUpdatedNotification:service.serviceType];
+//        [self postServiceUpdatedNotification:service.serviceType];
     }
 }
 

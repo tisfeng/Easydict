@@ -14,7 +14,7 @@ class CustomOpenAIService: BaseOpenAIService {
     // MARK: Public
 
     public override func name() -> String {
-        let serviceName = Defaults[stringDefaultsKey(.name)]
+        let serviceName = Defaults[super.nameKey]
         return serviceName.isEmpty ? NSLocalizedString("custom_openai", comment: "") : serviceName
     }
 
@@ -27,7 +27,7 @@ class CustomOpenAIService: BaseOpenAIService {
     override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
-            viewModel: viewModel,
+//            viewModel: viewModel,
             showNameSection: true
         )
     }
