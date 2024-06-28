@@ -139,6 +139,12 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     if (!cookie) {
         cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
         [NSUserDefaults mm_write:cookie forKey:kYoudaoTranslatetURL];
+        
+        /**
+         Youdao's cookie seems to have a long expiration date, so we don't need to update them frequently.
+         
+         So we only request the cookie the first time we use it, or webTranslate() fails.
+         */
         [self requestYoudaoCookie];
     }
     return cookie;
@@ -512,7 +518,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSString *message = nil;
-
+        
         if (responseObject) {
             @try {
                 EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
@@ -929,7 +935,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     NSData *keyDataMD5Data = [keyData md5];
     NSData *ivDataMD5Data = [ivData md5];
     
-//    NSString *decryptedText = [FWEncryptorAES decryptStrFromBase64:encryptedText Key:keyDataMD5Data IV:ivDataMD5Data];
+    //    NSString *decryptedText = [FWEncryptorAES decryptStrFromBase64:encryptedText Key:keyDataMD5Data IV:ivDataMD5Data];
     NSString *decryptedText = [encryptedText decryptAESWithKeyData:keyDataMD5Data ivData:ivDataMD5Data];
     
     return decryptedText;
