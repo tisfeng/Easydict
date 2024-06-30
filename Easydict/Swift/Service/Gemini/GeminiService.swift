@@ -116,6 +116,10 @@ public final class GeminiService: LLMStreamService {
 
     // MARK: Internal
 
+    override var defaultModels: [String] {
+        GeminiModel.allCases.map(\.rawValue)
+    }
+
     // https://ai.google.dev/available_regions
     override var unsupportedLanguages: [Language] {
         [
@@ -175,9 +179,9 @@ enum GeminiModel: String, CaseIterable {
 
     // RPM: Requests per minute, TPM: Tokens per minute
     // RPD: Requests per day, TPD: Tokens per day
-    case gemini1_0_pro = "gemini-1.0-pro" // Free 15 RPM/32,000 TPM, 1,500 RPD/46,080,000 TPD (n/a context length)
     case gemini1_5_flash = "gemini-1.5-flash" // Free 15 RPM/100million TPM, 1500 RPD/ n/a TPD  (1048k context length)
     case gemini1_5_pro = "gemini-1.5-pro" // Free 2 RPM/32,000 TPM, 50 RPD/46,080,000 TPD (1048k context length)
+    case gemini1_0_pro = "gemini-1.0-pro" // Free 15 RPM/32,000 TPM, 1,500 RPD/46,080,000 TPD (n/a context length)
 }
 
 // swiftlint:enable identifier_name

@@ -79,39 +79,47 @@ public class LLMStreamService: QueryService, ObservableObject {
 
     var cancellables: Set<AnyCancellable> = []
 
+    var defaultModels: [String] {
+        [""]
+    }
+
     var unsupportedLanguages: [Language] {
         []
     }
 
     var model: String {
-        get { Defaults[modelKey] }
-        set {
-            if model != newValue {
-                Defaults[modelKey] = newValue
+        get {
+            var model = Defaults[modelKey]
+            if !validModels.contains(model) || model.isEmpty {
+                model = validModels.first ?? ""
+                Defaults[modelKey] = model
             }
+            return model
+        }
+        set {
+            Defaults[modelKey] = newValue
         }
     }
 
     var modelKey: Defaults.Key<String> {
-        stringDefaultsKey(.model)
+        stringDefaultsKey(.model, defaultValue: defaultModels.first ?? "")
     }
 
     var supportedModels: String {
         get { Defaults[supportedModelsKey] }
         set {
-            if supportedModels != newValue {
-                Defaults[supportedModelsKey] = newValue
-            }
+            Defaults[supportedModelsKey] = newValue
+            Defaults[validModelsKey] = validModels(from: newValue)
         }
     }
 
     var supportedModelsKey: Defaults.Key<String> {
-        stringDefaultsKey(.supportedModels)
+        stringDefaultsKey(.supportedModels, defaultValue: supportedModels(from: defaultModels))
     }
 
+    /// Just getter, we should set supportedModels and get validModels.
     var validModels: [String] {
-        supportedModels.components(separatedBy: ",")
-            .map { $0.trim() }.filter { !$0.isEmpty }
+        Defaults[validModelsKey]
     }
 
     var validModelsKey: Defaults.Key<[String]> {
@@ -152,6 +160,15 @@ public class LLMStreamService: QueryService, ObservableObject {
 
     var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
         serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
+    }
+
+    func validModels(from supportedModels: String) -> [String] {
+        supportedModels.components(separatedBy: ",")
+            .map { $0.trim() }.filter { !$0.isEmpty }
+    }
+
+    func supportedModels(from validModels: [String]) -> String {
+        validModels.joined(separator: ", ")
     }
 
     /// Base on chat query, convert prompt dict to LLM service prompt model.

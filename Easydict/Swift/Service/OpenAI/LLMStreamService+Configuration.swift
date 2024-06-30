@@ -67,8 +67,6 @@ extension LLMStreamService {
         } else if !validModels.contains(model) {
             model = validModels[0]
         }
-
-        Defaults[validModelsKey] = validModels
     }
 
     func notifyServiceConfigurationChanged() {
@@ -85,7 +83,11 @@ extension LLMStreamService {
     }
 
     func stringDefaultsKey(_ key: StoredKey) -> Defaults.Key<String> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: "")
+        stringDefaultsKey(key, defaultValue: "")
+    }
+
+    func stringDefaultsKey(_ key: StoredKey, defaultValue: String) -> Defaults.Key<String> {
+        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
     }
 
     func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {

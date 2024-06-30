@@ -29,7 +29,9 @@ class OpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
-    // TODO: We need to set default supportedModels for OpenAI
+    override var defaultModels: [String] {
+        OpenAIModel.allCases.map(\.rawValue)
+    }
 
     override var endpoint: String {
         super.endpoint.isEmpty ? "https://api.openai.com/v1/chat/completions" : super.endpoint
