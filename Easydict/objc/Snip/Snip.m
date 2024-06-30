@@ -7,6 +7,7 @@
 //
 
 #import "Snip.h"
+#import <ScreenCaptureKit/ScreenCaptureKit.h>
 
 static NSString *const EZRequestScreenCaptureAccess = @"EZRequestScreenCaptureAccess";
 
@@ -76,12 +77,7 @@ static Snip *_instance;
         MMLogError(@"has no screen access");
 
         if (![self hasRequestedScreenCaptureAccess]) {
-            /**
-             This method will prompt to get screen capture access if not already granted only once.
-
-             If you trigger the prompt and the user `denies` it, you cannot bring up the prompt again - the user must manually enable it in System Preferences.
-             */
-            CGRequestScreenCaptureAccess();
+            [self requestScreenCaptureAccess];
         } else {
             [self showScreenCaptureAccessAlert];
         }
@@ -127,7 +123,39 @@ static Snip *_instance;
     [self mouseMoved:nil];
 }
 
+- (void)requestScreenCaptureAccess {
+    /**
+     This method will prompt to get screen capture access if not already granted only once.
+
+     If you trigger the prompt and the user `denies` it, you cannot bring up the prompt again - the user must manually enable it in System Preferences.
+     */
+
+//    CGRequestScreenCaptureAccess();
+
+    [SCShareableContent getShareableContentExcludingDesktopWindows:NO onScreenWindowsOnly:NO completionHandler:^(SCShareableContent * _Nullable shareableContent, NSError * _Nullable error) {
+
+        if (error) {
+            switch (error.code) {
+                case SCStreamErrorUserDeclined:
+                    MMLogError(@"Error: SCStreamErrorUserDeclined");
+                    break;
+                default:
+                    MMLogError(@"Error: failed to fetch available content: %@", error.localizedDescription);
+                    break;
+            }
+            return;
+        }
+
+        MMLogInfo(@"shareableContent: %@", shareableContent);
+    }];
+}
+
 - (BOOL)hasRequestedScreenCaptureAccess {
+    // TODO: just debug, remove it later.
+#if DEBUG
+    return NO;
+#endif
+
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     BOOL hasRequestScreenCaptureAccess = [userDefaults boolForKey:EZRequestScreenCaptureAccess];
     if (!hasRequestScreenCaptureAccess) {
