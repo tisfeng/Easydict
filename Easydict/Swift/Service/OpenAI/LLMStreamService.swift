@@ -15,13 +15,6 @@ import Foundation
 @objcMembers
 @objc(EZLLMStreamService)
 public class LLMStreamService: QueryService, ObservableObject {
-    // MARK: Lifecycle
-
-    public override init() {
-        super.init()
-        setupSubscribers()
-    }
-
     // MARK: Public
 
     public override func isStream() -> Bool {

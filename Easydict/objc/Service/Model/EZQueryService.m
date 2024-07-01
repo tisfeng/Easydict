@@ -35,6 +35,10 @@ userInfo:nil]
     return self;
 }
 
+- (void)dealloc {
+    MMLogInfo(@"dealloc service: %@", self);
+}
+
 - (EZAudioPlayer *)audioPlayer {
     if (!_audioPlayer) {
         _audioPlayer = [[EZAudioPlayer alloc] init];

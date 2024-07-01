@@ -46,9 +46,6 @@ struct StreamConfigurationView: View {
         #if DEBUG
         self.isEditable = isEditable || Defaults[.enableBetaFeature]
         #endif
-
-        service.invalidate()
-        service.setupSubscribers()
     }
 
     // MARK: Internal
@@ -143,9 +140,6 @@ struct StreamConfigurationView: View {
                     values: ServiceUsageStatus.allCases
                 )
             }
-        }
-        .onDisappear {
-            service.invalidate()
         }
     }
 }

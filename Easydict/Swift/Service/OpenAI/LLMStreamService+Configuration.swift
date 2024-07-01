@@ -11,6 +11,8 @@ import Foundation
 
 extension LLMStreamService {
     func setupSubscribers() {
+        logInfo("setup subscribers")
+
         Defaults.publisher(nameKey, options: [])
             .removeDuplicates()
             .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
@@ -37,6 +39,7 @@ extension LLMStreamService {
     }
 
     func invalidate() {
+        logInfo("invalidate subscribers")
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
     }
