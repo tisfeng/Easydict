@@ -104,7 +104,14 @@
 
 
 - (void)dealloc {
-    MMLogInfo(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc query window: %@", self);
+
+    // We should reset subscribeWindowType when query window dealloc.
+    if (GlobalContext.shared.subscribeWindowType == self.windowType) {
+        GlobalContext.shared.subscribeWindowType = EZWindowTypeNone;
+        
+        [NSNotificationCenter.defaultCenter postServiceUpdateNotification];
+    }
 }
 
 #pragma mark - NSWindowDelegate, NSNotification

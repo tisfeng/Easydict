@@ -28,3 +28,24 @@ extension NSNotification {
 
     public static let linkButtonUpdated = Notification.Name.linkButtonUpdated
 }
+
+@objc
+extension NotificationCenter {
+    func postServiceUpdateNotification(
+        serviceType: ServiceType = .init(rawValue: ""),
+        windowType: EZWindowType = .none,
+        autoQuery: Bool = false
+    ) {
+        let userInfo: [String: Any] = [
+            EZServiceTypeKey: serviceType.rawValue,
+            EZWindowTypeKey: windowType.rawValue,
+            EZAutoQueryKey: autoQuery,
+        ]
+        let notification = Notification(name: .serviceHasUpdated, userInfo: userInfo)
+        post(notification)
+    }
+
+    func postServiceUpdateNotification() {
+        postServiceUpdateNotification(autoQuery: false)
+    }
+}

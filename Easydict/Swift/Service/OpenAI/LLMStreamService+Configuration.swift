@@ -38,8 +38,8 @@ extension LLMStreamService {
             .store(in: &cancellables)
     }
 
-    func invalidate() {
-        logInfo("invalidate subscribers")
+    func cancelSubscribers() {
+        logInfo("cancel subscribers")
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
     }
@@ -59,7 +59,7 @@ extension LLMStreamService {
                 }
             }
         }
-        notifyServiceConfigurationChanged()
+        notifyServiceConfigurationChanged(autoQuery: true)
     }
 
     func supportedModelsTextDidChanged(_ newSupportedModels: String) {
@@ -72,17 +72,16 @@ extension LLMStreamService {
         }
     }
 
-    func notifyServiceConfigurationChanged() {
+    func notifyServiceConfigurationChanged(autoQuery: Bool = false) {
         objectWillChange.send()
 
-        logInfo("service config changed: \(serviceType().rawValue)")
+        logInfo("service config changed: \(serviceType().rawValue), windowType: \(windowType.rawValue)")
 
-        let userInfo: [String: Any] = [
-            EZWindowTypeKey: windowType.rawValue,
-            EZServiceTypeKey: serviceType().rawValue,
-        ]
-        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
-        NotificationCenter.default.post(notification)
+        NotificationCenter.default.postServiceUpdateNotification(
+            serviceType: serviceType(),
+            windowType: windowType,
+            autoQuery: autoQuery
+        )
     }
 
     func stringDefaultsKey(_ key: StoredKey) -> Defaults.Key<String> {

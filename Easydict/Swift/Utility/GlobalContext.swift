@@ -45,6 +45,8 @@ class GlobalContext: NSObject {
 
     let updaterController: SPUStandardUpdaterController
 
+    var subscribeWindowType: EZWindowType = .none
+
     // MARK: Private
 
     private let updaterHelper: SPUUpdaterHelper

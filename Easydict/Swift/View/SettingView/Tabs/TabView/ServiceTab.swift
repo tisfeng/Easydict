@@ -104,9 +104,7 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func postUpdateServiceNotification() {
-        let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
-        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
-        NotificationCenter.default.post(notification)
+        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
     }
 }
 

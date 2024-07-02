@@ -689,6 +689,7 @@ static EZWindowManager *_instance;
     
     if ([EZMainQueryWindow isAlive]) {
         [EZMainQueryWindow destroySharedInstance];
+        _mainWindow = nil;
     }
 }
 

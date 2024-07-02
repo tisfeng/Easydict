@@ -119,6 +119,7 @@ private class ServiceValidationViewModel: ObservableObject {
     init(service: QueryService, observing keys: [Defaults.Key<String>]) {
         self.service = service
         self.name = service.name()
+
         // check secret key empty input
         Defaults.publisher(keys: keys)
             .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
@@ -130,6 +131,7 @@ private class ServiceValidationViewModel: ObservableObject {
                 self.isValidateBtnDisabled = hasEmptyInput
             }
             .store(in: &cancellables)
+
         serviceUpdatePublisher
             .sink { [weak self] notification in
                 self?.didReceive(notification)
