@@ -56,6 +56,10 @@ public final class GeminiService: LLMStreamService {
         GeminiModel.allCases.map(\.rawValue)
     }
 
+    override var observeKeys: [Defaults.Key<String>] {
+        [apiKeyKey, supportedModelsKey]
+    }
+
     // https://ai.google.dev/available_regions
     override var unsupportedLanguages: [Language] {
         [

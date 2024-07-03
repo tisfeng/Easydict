@@ -151,6 +151,15 @@ public class LLMStreamService: QueryService, ObservableObject {
         stringDefaultsKey(.dictionary)
     }
 
+    // In general, LLM services need to observe these keys to enable validation button.
+    var observeKeys: [Defaults.Key<String>] {
+        [
+            apiKeyKey,
+            endpointKey,
+            supportedModelsKey,
+        ]
+    }
+
     var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
         serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
     }

@@ -67,11 +67,7 @@ struct StreamConfigurationView: View {
     var body: some View {
         ServiceConfigurationSecretSectionView(
             service: service,
-            observeKeys: [
-                service.apiKeyKey,
-                service.endpointKey,
-                service.supportedModelsKey,
-            ]
+            observeKeys: service.observeKeys
         ) {
             if showNameSection {
                 ServiceConfigurationInputCell(

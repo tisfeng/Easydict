@@ -72,4 +72,8 @@ class BuiltInAIService: BaseOpenAIService {
     override var endpoint: String {
         defaultEndpoint
     }
+
+    override var observeKeys: [Defaults.Key<String>] {
+        [supportedModelsKey]
+    }
 }
