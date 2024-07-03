@@ -34,6 +34,12 @@ public final class GeminiService: LLMStreamService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        if model.isEmpty {
+            let emptyModelError = EZError(type: .param, description: "model is empty")
+            completion(result, emptyModelError)
+            return
+        }
+
         let queryType = queryType(text: text, from: from, to: to)
 
         Task {
