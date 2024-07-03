@@ -22,10 +22,10 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     ) {
         self.service = service
         self.content = content()
-        self._viewModel = StateObject(wrappedValue: ServiceValidationViewModel(
+        self.viewModel = ServiceValidationViewModel(
             service: service,
             observing: observeKeys
-        ))
+        )
     }
 
     // MARK: Internal
@@ -107,7 +107,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     // MARK: Private
 
-    @StateObject private var viewModel: ServiceValidationViewModel
+    @ObservedObject private var viewModel: ServiceValidationViewModel
 }
 
 // MARK: - ServiceValidationViewModel
