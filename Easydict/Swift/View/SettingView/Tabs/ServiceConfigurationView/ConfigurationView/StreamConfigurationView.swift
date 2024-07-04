@@ -82,7 +82,7 @@ struct StreamConfigurationView: View {
                 ServiceConfigurationSecureInputCell(
                     textFieldTitleKey: "service.configuration.openai.api_key.title",
                     key: service.apiKeyKey,
-                    placeholder: "service.configuration.openai.api_key.placeholder"
+                    placeholder: service.apiKeyPlaceholder
                 )
             }
 

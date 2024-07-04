@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ API Key" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ API Key"
+          }
+        }
+      }
+    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -2405,7 +2415,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整接口地址"
+            "value" : "API 请求地址"
           }
         }
       }
@@ -2438,23 +2448,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "优先使用 Web API"
-          }
-        }
-      }
-    },
-    "service.configuration.gemini.api_key.placeholder" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxx"
           }
         }
       }
@@ -2544,13 +2537,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.openai.com/v1/chat/completions"
+            "value" : "The full request URL, for example https://api.openai.com/v1/chat/completions"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.openai.com/v1/chat/completions"
+            "value" : "完整请求 URL，例如 https://api.openai.com/v1/chat/completions"
           }
         }
       }
@@ -2566,7 +2559,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整接口地址"
+            "value" : "API 请求地址"
           }
         }
       }

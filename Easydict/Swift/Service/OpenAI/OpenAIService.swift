@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - OpenAIService
 
@@ -35,6 +36,10 @@ class OpenAIService: BaseOpenAIService {
 
     override var endpoint: String {
         super.endpoint.isEmpty ? "https://api.openai.com/v1/chat/completions" : super.endpoint
+    }
+
+    override var apiKeyPlaceholder: LocalizedStringKey {
+        "service.configuration.openai.api_key.placeholder"
     }
 
     override func configurationListItems() -> Any {

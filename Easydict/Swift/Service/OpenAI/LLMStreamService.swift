@@ -9,6 +9,7 @@
 import Combine
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - LLMStreamService
 
@@ -151,6 +152,10 @@ public class LLMStreamService: QueryService, ObservableObject {
         stringDefaultsKey(.dictionary)
     }
 
+    var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
+        serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
+    }
+
     // In general, LLM services need to observe these keys to enable validation button.
     var observeKeys: [Defaults.Key<String>] {
         [
@@ -160,8 +165,8 @@ public class LLMStreamService: QueryService, ObservableObject {
         ]
     }
 
-    var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
-        serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
+    var apiKeyPlaceholder: LocalizedStringKey {
+        "\(serviceType().rawValue) API Key"
     }
 
     func validModels(from supportedModels: String) -> [String] {
