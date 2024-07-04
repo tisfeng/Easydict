@@ -252,7 +252,7 @@ let package = Package(
     name: "BuildTools",
     platforms: [.macOS(.v10_11)],
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.9"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
     ],
     targets: [.target(name: "BuildTools", path: "")]
 )
@@ -286,7 +286,7 @@ You can also use `swift run -c release --package-path BuildTools swiftformat "$S
 1. Add the `swiftformat` binary to your project directory via [CocoaPods](https://cocoapods.org/), by adding the following line to your Podfile then running `pod install`:
 
     ```ruby
-    pod 'SwiftFormat/CLI', '~> 0.49'
+    pod 'SwiftFormat/CLI', '~> 0.54'
     ```
 
 **NOTE:** This will only install the pre-built command-line app, not the source code for the SwiftFormat framework.
@@ -354,7 +354,7 @@ You can use `SwiftFormat` as a SwiftPM command plugin.
 ```swift
 dependencies: [
     // ...
-    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.9"),
+    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
 ]
 ```
 
@@ -826,6 +826,8 @@ It is common practice to include the file name, creation date and/or the current
 * `{file}` - the name of the file
 * `{year}` - the current year
 * `{created}` - the date on which the file was created
+* `{created.name}` - the name of the user who first committed the file
+* `{created.email}` - the email of the user who first committed the file 
 * `{created.year}` - the year in which the file was created
 
 For example, a header template of:
@@ -842,7 +844,7 @@ Will be formatted as:
 // Created by John Smith on 01/02/2016.
 ```
 
-**NOTE:** the `{year}` value and `{created}` date format are determined from the current locale and timezone of the machine running the script.
+**NOTE:** the `{year}` value and `{created}` date format are determined from the current locale and timezone of the machine running the script. `{created.name}` and `{created.email}` requires the project to be version controlled by git.
 
 
 FAQ
@@ -963,6 +965,7 @@ SwiftFormat is not a commercially-funded product, it's a labor of love given fre
 Credits
 ------------
 
+* [Cal Stephens](https://github.com/calda) - Numerous new formatting rules, options and bug fixes
 * [Tony Arnold](https://github.com/tonyarnold) - SwiftFormat for Xcode
 * [Vincent Bernier](https://github.com/vinceburn) - SwiftFormat for Xcode settings UI
 * [Vikram Kriplaney](https://github.com/markiv) - SwiftFormat for Xcode icon and search feature
@@ -970,7 +973,6 @@ Credits
 * [Maxime Marinel](https://github.com/bourvill) - Git pre-commit hook script
 * [Romain Pouclet](https://github.com/palleas) - Homebrew formula
 * [Aerobounce](https://github.com/aerobounce) - Homebrew cask and Sublime Text plugin
-* [Cal Stephens](https://github.com/calda) - Several new formatting rules and options
 * [Facundo Menzella](https://github.com/facumenzella) - Several new formatting rules and options
 * [Ali Akhtarzada](https://github.com/aliak00) - Several path-related CLI enhancements
 * [Yonas Kolb](https://github.com/yonaskolb) - Swift Package Manager integration
@@ -987,6 +989,7 @@ Credits
 * [Saleem Abdulrasool](https://github.com/compnerd) - Windows build workflow
 * [Arthur Semenyutin](https://github.com/vox-humana) - Docker image
 * [Marco Eidinger](https://github.com/MarcoEidinger) - Swift Package Manager plugin
+* [Hampus Tågerud](https://github.com/hampustagerud) - Git integration for fileHeader rule
 * [Nick Lockwood](https://github.com/nicklockwood) - Everything else
 
 ([Full list of contributors](https://github.com/nicklockwood/SwiftFormat/graphs/contributors))
