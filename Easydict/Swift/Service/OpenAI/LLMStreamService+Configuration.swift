@@ -73,8 +73,6 @@ extension LLMStreamService {
     }
 
     func notifyServiceConfigurationChanged(autoQuery: Bool = false) {
-        objectWillChange.send()
-
         logInfo("service config changed: \(serviceType().rawValue), windowType: \(windowType.rawValue)")
 
         NotificationCenter.default.postServiceUpdateNotification(

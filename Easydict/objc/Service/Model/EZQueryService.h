@@ -40,8 +40,6 @@ NS_SWIFT_NAME(QueryService)
 
 @property (nonatomic, copy, nullable) void (^autoCopyTranslatedTextBlock)(EZQueryResult *result, NSError *_Nullable error);
 
-//@property (nonatomic, strong) id viewModel;
-
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;
 

@@ -13,9 +13,11 @@ import SwiftUI
 
 // MARK: - LLMStreamService
 
+// import SwiftUI
+
 @objcMembers
 @objc(EZLLMStreamService)
-public class LLMStreamService: QueryService, ObservableObject {
+public class LLMStreamService: QueryService {
     // MARK: Public
 
     public override func isStream() -> Bool {
