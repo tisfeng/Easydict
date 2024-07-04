@@ -13,7 +13,7 @@ public class QueryServiceRecord: NSObject {
     // MARK: Lifecycle
 
     @objc
-    override public init() {}
+    public override init() {}
 
     @objc
     init(serviceType: ServiceType = .apple, queryCount: Int = 0, queryCharacterCount: Int = 0) {

@@ -16,15 +16,15 @@ import SwiftUI
 class OpenAIService: BaseOpenAIService {
     // MARK: Public
 
-    override public func serviceType() -> ServiceType {
+    public override func serviceType() -> ServiceType {
         .openAI
     }
 
-    override public func name() -> String {
+    public override func name() -> String {
         NSLocalizedString("openai_translate", comment: "")
     }
 
-    override public func link() -> String? {
+    public override func link() -> String? {
         "https://chatgpt.com"
     }
 

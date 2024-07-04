@@ -16,19 +16,19 @@ import GoogleGenerativeAI
 public final class GeminiService: LLMStreamService {
     // MARK: Public
 
-    override public func serviceType() -> ServiceType {
+    public override func serviceType() -> ServiceType {
         .gemini
     }
 
-    override public func link() -> String? {
+    public override func link() -> String? {
         "https://gemini.google.com/"
     }
 
-    override public func name() -> String {
+    public override func name() -> String {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
-    override public func translate(
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,

@@ -16,19 +16,19 @@ import Foundation
 public final class CaiyunService: QueryService {
     // MARK: Public
 
-    override public func serviceType() -> ServiceType {
+    public override func serviceType() -> ServiceType {
         .caiyun
     }
 
-    override public func link() -> String? {
+    public override func link() -> String? {
         "https://fanyi.caiyunapp.com"
     }
 
-    override public func name() -> String {
+    public override func name() -> String {
         NSLocalizedString("caiyun_translate", comment: "The name of Caiyun Translate")
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary.
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
         for (key, value) in CaiyunTranslateType.supportLanguagesDictionary {
@@ -37,20 +37,20 @@ public final class CaiyunService: QueryService {
         return orderedDict
     }
 
-    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
+    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
         logInfo("Caiyun Translate does not support OCR")
         throw QueryServiceError.notSupported
     }
 
-    override public func hasPrivateAPIKey() -> Bool {
+    public override func hasPrivateAPIKey() -> Bool {
         token != defaultToken
     }
 
-    override public func autoConvertTraditionalChinese() -> Bool {
+    public override func autoConvertTraditionalChinese() -> Bool {
         true
     }
 
-    override public func translate(
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,

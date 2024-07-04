@@ -18,7 +18,7 @@ class CustomOpenAIService: BaseOpenAIService {
         return serviceName.isEmpty ? NSLocalizedString("custom_openai", comment: "") : serviceName
     }
 
-    override public func serviceType() -> ServiceType {
+    public override func serviceType() -> ServiceType {
         .customOpenAI
     }
 

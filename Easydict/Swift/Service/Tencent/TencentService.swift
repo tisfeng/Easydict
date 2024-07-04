@@ -14,19 +14,19 @@ import Foundation
 public final class TencentService: QueryService {
     // MARK: Public
 
-    override public func serviceType() -> ServiceType {
+    public override func serviceType() -> ServiceType {
         .tencent
     }
 
-    override public func link() -> String? {
+    public override func link() -> String? {
         "https://fanyi.qq.com"
     }
 
-    override public func name() -> String {
+    public override func name() -> String {
         NSLocalizedString("tencent_translate", comment: "The name of Tencent Translate")
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
         for (key, value) in TencentTranslateType.supportLanguagesDictionary {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
@@ -34,27 +34,27 @@ public final class TencentService: QueryService {
         return orderedDict
     }
 
-    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
+    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
         logInfo("Tencent Translate currently does not support OCR")
         throw QueryServiceError.notSupported
     }
 
-    override public func needPrivateAPIKey() -> Bool {
+    public override func needPrivateAPIKey() -> Bool {
         true
     }
 
-    override public func hasPrivateAPIKey() -> Bool {
+    public override func hasPrivateAPIKey() -> Bool {
         if secretId == defaultSecretId, secretKey == defaultSecretKey {
             return false
         }
         return true
     }
 
-    override public func totalFreeQueryCharacterCount() -> Int {
+    public override func totalFreeQueryCharacterCount() -> Int {
         500 * 10000
     }
 
-    override public func translate(
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,
