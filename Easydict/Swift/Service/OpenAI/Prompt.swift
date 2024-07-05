@@ -426,7 +426,7 @@ extension LLMStreamService {
 
         if isEnglishWord {
             let rememberWordPrompt = """
-            Look up methods for disassembling and associating it for better memory. Use the format: "\(
+            Provide some efficient memory techniques and tips to better remember this word, such as association and decomposition, etc. Use the format: "\(
                 howToRemember
             ): {how_to_remember}".
             """
