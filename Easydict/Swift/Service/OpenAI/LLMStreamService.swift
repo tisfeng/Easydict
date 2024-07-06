@@ -119,7 +119,7 @@ public class LLMStreamService: QueryService {
     }
 
     var validModelsKey: Defaults.Key<[String]> {
-        serviceDefaultsKey(.validModels, defaultValue: [""])
+        serviceDefaultsKey(.validModels, defaultValue: defaultModels)
     }
 
     var apiKey: String {
