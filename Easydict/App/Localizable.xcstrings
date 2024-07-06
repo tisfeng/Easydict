@@ -244,7 +244,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Translation"
+            "value" : "Apple Translate"
           }
         },
         "zh-Hans" : {
@@ -1745,6 +1745,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定"
+          }
+        }
+      }
+    },
+    "ollama_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama 翻译"
           }
         }
       }

@@ -34,12 +34,16 @@ class OpenAIService: BaseOpenAIService {
         OpenAIModel.allCases.map(\.rawValue)
     }
 
-    override var endpoint: String {
-        super.endpoint.isEmpty ? "https://api.openai.com/v1/chat/completions" : super.endpoint
+    override var defaultEndpoint: String {
+        "https://api.openai.com/v1/chat/completions"
     }
 
     override var apiKeyPlaceholder: LocalizedStringKey {
         "service.configuration.openai.api_key.placeholder"
+    }
+
+    override var observeKeys: [Defaults.Key<String>] {
+        [apiKeyKey, supportedModelsKey]
     }
 
     override func configurationListItems() -> Any {

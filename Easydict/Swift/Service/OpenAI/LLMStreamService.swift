@@ -67,6 +67,15 @@ public class LLMStreamService: QueryService {
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 
+    public override func translate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+    ) {
+        fatalError(mustOverride)
+    }
+
     // MARK: Internal
 
     let throttler = Throttler()
@@ -131,11 +140,20 @@ public class LLMStreamService: QueryService {
     }
 
     var endpoint: String {
-        Defaults[endpointKey]
+        Defaults[endpointKey].isEmpty ? defaultEndpoint : Defaults[endpointKey]
     }
 
     var endpointKey: Defaults.Key<String> {
-        stringDefaultsKey(.endpoint)
+        stringDefaultsKey(.endpoint, defaultValue: defaultEndpoint)
+    }
+
+    var endpointPlaceholder: LocalizedStringKey {
+        defaultEndpoint
+            .isEmpty ? "service.configuration.openai.endpoint.placeholder" : LocalizedStringKey(defaultEndpoint)
+    }
+
+    var defaultEndpoint: String {
+        ""
     }
 
     var nameKey: Defaults.Key<String> {
@@ -143,15 +161,23 @@ public class LLMStreamService: QueryService {
     }
 
     var translationKey: Defaults.Key<String> {
-        stringDefaultsKey(.translation)
+        stringDefaultsKey(.translation, defaultValue: "1")
     }
 
     var sentenceKey: Defaults.Key<String> {
-        stringDefaultsKey(.sentence)
+        stringDefaultsKey(.sentence, defaultValue: isSentenceEnabledByDefault ? "1" : "0")
+    }
+
+    var isSentenceEnabledByDefault: Bool {
+        true
     }
 
     var dictionaryKey: Defaults.Key<String> {
-        stringDefaultsKey(.dictionary)
+        stringDefaultsKey(.dictionary, defaultValue: isDictionaryEnabledByDefault ? "1" : "0")
+    }
+
+    var isDictionaryEnabledByDefault: Bool {
+        true
     }
 
     var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
