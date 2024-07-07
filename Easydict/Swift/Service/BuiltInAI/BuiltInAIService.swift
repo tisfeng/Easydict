@@ -73,14 +73,6 @@ class BuiltInAIService: BaseOpenAIService {
         builtInAIEndpoint
     }
 
-    override var isSentenceEnabledByDefault: Bool {
-        false
-    }
-
-    override var isDictionaryEnabledByDefault: Bool {
-        false
-    }
-
     override var observeKeys: [Defaults.Key<String>] {
         [supportedModelsKey]
     }
