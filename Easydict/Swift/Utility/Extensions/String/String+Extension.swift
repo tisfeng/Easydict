@@ -9,6 +9,10 @@
 import Foundation
 
 extension String {
+    var boolValue: Bool {
+        (self as NSString).boolValue
+    }
+
     /// Truncate string max lenght to 200.
     func truncated(_ maxLength: Int = 200) -> String {
         String(prefix(maxLength))

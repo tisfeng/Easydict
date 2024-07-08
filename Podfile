@@ -13,7 +13,7 @@ target 'Easydict' do
   pod 'JLRoutes', '~> 2.1'
   
   # Swift format
-  pod 'SwiftFormat/CLI', '~> 0.53.2'
+  pod 'SwiftFormat/CLI', '~> 0.54'
   pod 'SwiftLint', '~> 0.54.0'
 
 end

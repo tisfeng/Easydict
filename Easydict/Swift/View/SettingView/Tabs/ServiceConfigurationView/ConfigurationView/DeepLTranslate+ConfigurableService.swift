@@ -10,21 +10,9 @@ import Defaults
 import Foundation
 import SwiftUI
 
-// MARK: - EZDeepLTranslate + ConfigurableService
-
-extension EZDeepLTranslate: ConfigurableService {
-    func configurationListItems() -> some View {
-        EZDeepLTranslateConfigurationView(service: self)
-    }
-}
-
-// MARK: - EZDeepLTranslateConfigurationView
-
-private struct EZDeepLTranslateConfigurationView: View {
-    let service: EZDeepLTranslate
-
-    var body: some View {
-        ServiceConfigurationSecretSectionView(service: service, observeKeys: [.deepLAuth]) {
+extension EZDeepLTranslate {
+    open override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.deepLAuth]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.deepl.auth_key.title",
                 key: .deepLAuth

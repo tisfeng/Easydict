@@ -17,15 +17,15 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     init(
         service: QueryService,
-        observeKeys: [Defaults.Key<String?>],
+        observeKeys: [Defaults.Key<String>],
         @ViewBuilder content: () -> Content
     ) {
         self.service = service
         self.content = content()
-        self._viewModel = StateObject(wrappedValue: ServiceValidationViewModel(
+        self.viewModel = ServiceValidationViewModel(
             service: service,
             observing: observeKeys
-        ))
+        )
     }
 
     // MARK: Internal
@@ -107,7 +107,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     // MARK: Private
 
-    @StateObject private var viewModel: ServiceValidationViewModel
+    @ObservedObject private var viewModel: ServiceValidationViewModel
 }
 
 // MARK: - ServiceValidationViewModel
@@ -116,20 +116,22 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 private class ServiceValidationViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(service: QueryService, observing keys: [Defaults.Key<String?>]) {
+    init(service: QueryService, observing keys: [Defaults.Key<String>]) {
         self.service = service
         self.name = service.name()
+
         // check secret key empty input
         Defaults.publisher(keys: keys)
             .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                let hasEmptyInput = keys.contains(where: { (Defaults[$0] ?? "").isEmpty })
+                let hasEmptyInput = keys.contains(where: { Defaults[$0].isEmpty })
                 guard isValidateBtnDisabled != hasEmptyInput else { return }
                 self.isValidateBtnDisabled = hasEmptyInput
             }
             .store(in: &cancellables)
+
         serviceUpdatePublisher
             .sink { [weak self] notification in
                 self?.didReceive(notification)

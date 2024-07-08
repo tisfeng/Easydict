@@ -18,14 +18,14 @@ import OpenAI
 public class BaseOpenAIService: LLMStreamService {
     // MARK: Public
 
-    override public func translate(
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         let url = URL(string: endpoint)
-        let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
+        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
         guard let url, url.isValid else {
             completion(result, invalidURLError)
             return
@@ -52,8 +52,11 @@ public class BaseOpenAIService: LLMStreamService {
         let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
+        // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
+        unowned let unownedControl = control
+
         // TODO: refactor chatsStream with await
-        openAI.chatsStream(query: query, url: url, control: control) { [weak self] res in
+        openAI.chatsStream(query: query, url: url, control: unownedControl) { [weak self] res in
             guard let self else { return }
 
             switch res {

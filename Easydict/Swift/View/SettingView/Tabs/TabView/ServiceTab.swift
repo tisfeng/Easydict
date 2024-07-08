@@ -32,17 +32,15 @@ struct ServiceTab: View {
 
             Group {
                 if let service = viewModel.selectedService {
-                    // To provide configuration options for a service, follow these steps
-                    // 1. If the Service is an object of Objc, expose it to Swift.
-                    // 2. Create a new file in the Utility - Extensions - QueryService+ConfigurableService,
-                    // 3. referring to OpenAIService+ConfigurableService, `extension` the Service
-                    // as `ConfigurableService` to provide the configuration items.
-                    if let service = service as? (any ConfigurableService) {
-                        AnyView(service.configurationView())
+                    if let view = service.configurationListItems() as? (any View) {
+                        Form {
+                            AnyView(view)
+                        }
+                        .formStyle(.grouped)
+
                     } else {
                         HStack {
                             Spacer()
-                            // No configuration for service xxx
                             Text("setting.service.detail.no_configuration \(service.name())")
                             Spacer()
                         }
@@ -106,9 +104,7 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func postUpdateServiceNotification() {
-        let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
-        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
-        NotificationCenter.default.post(notification)
+        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
     }
 }
 

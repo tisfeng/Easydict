@@ -39,6 +39,14 @@ extension ServiceUsageStatus: EnumLocalizedStringConvertible {
     }
 }
 
-// MARK: Defaults.Serializable
+// MARK: - String + EnumLocalizedStringConvertible
+
+extension String: EnumLocalizedStringConvertible {
+    var title: LocalizedStringKey {
+        LocalizedStringKey(self)
+    }
+}
+
+// MARK: - ServiceUsageStatus + Defaults.Serializable
 
 extension ServiceUsageStatus: Defaults.Serializable {}

@@ -13,38 +13,25 @@ import Foundation
 class BuiltInAIService: BaseOpenAIService {
     // MARK: Public
 
-    override public func name() -> String {
+    public override func name() -> String {
         NSLocalizedString("built_in_ai", comment: "")
     }
 
-    override public func serviceType() -> ServiceType {
+    public override func serviceType() -> ServiceType {
         .builtInAI
+    }
+
+    public override func configurationListItems() -> Any {
+        StreamConfigurationView(
+            service: self,
+            showAPIKeySection: false,
+            showEndpointSection: false
+        )
     }
 
     // MARK: Internal
 
-    override var apiKey: String {
-        defaultAPIKey
-    }
-
-    override var endpoint: String {
-        defaultEndpoint
-    }
-
-    override var model: String {
-        get {
-            var model = Defaults[.builtInAIModel]
-            if model.isEmpty {
-                model = availableModels.first!
-            }
-            return model
-        }
-        set {
-            Defaults[.builtInAIModel] = newValue
-        }
-    }
-
-    override var availableModels: [String] {
+    override var defaultModels: [String] {
         [
             // Groq free models https://console.groq.com/docs/models
             "llama3-70b-8192", // 30 RPM
@@ -76,5 +63,17 @@ class BuiltInAIService: BaseOpenAIService {
             "ernie_speed", // ERNIE-Speed-8K, it has a higher RPM(300) than ERNIE-Speed-128K(RPM=60)
             "ernie-lite-8k",
         ]
+    }
+
+    override var apiKey: String {
+        defaultAPIKey
+    }
+
+    override var endpoint: String {
+        defaultEndpoint
+    }
+
+    override var observeKeys: [Defaults.Key<String>] {
+        [supportedModelsKey]
     }
 }

@@ -6,11 +6,10 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 
-extension EZBingService: ConfigurableService {
-    func configurationListItems() -> some View {
+extension EZBingService {
+    open override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.bing.cookie.title",

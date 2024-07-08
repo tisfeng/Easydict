@@ -436,7 +436,7 @@
 - (void)showModelSelectionMenu:(EZButton *)sender {
     EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    for (NSString *model in service.availableModels) {
+    for (NSString *model in service.validModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
         item.target = self;
         [menu addItem:item];
@@ -449,14 +449,7 @@
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
-        [self postServiceUpdatedNotification:service.serviceType];
     }
-}
-
-- (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
-    NSDictionary *userInfo = @{EZServiceTypeKey : serviceType};
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 #pragma mark - Animation

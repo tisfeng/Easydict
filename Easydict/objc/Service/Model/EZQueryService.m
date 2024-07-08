@@ -35,6 +35,10 @@ userInfo:nil]
     return self;
 }
 
+- (void)dealloc {
+    MMLogInfo(@"dealloc service: %@", self);
+}
+
 - (EZAudioPlayer *)audioPlayer {
     if (!_audioPlayer) {
         _audioPlayer = [[EZAudioPlayer alloc] init];
@@ -210,6 +214,10 @@ userInfo:nil]
     }
     
     [self translate:queryText from:from to:to completion:completion];
+}
+
+- (nullable id)configurationListItems {
+    return nil;
 }
 
 #pragma mark - 必须重写的子类方法

@@ -144,7 +144,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         // Avoid recycling call, resize window --> update window height --> resize window
         if (self.lockResizeWindow) {
-//            MMLogInfo(@"lockResizeWindow");
+            //            MMLogInfo(@"lockResizeWindow");
             return;
         }
         
@@ -210,6 +210,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
+            
+            [self trySetupSubscribersForService:service oldService:nil];
         }
         
         EZServiceType serviceType = service.serviceType;
@@ -233,7 +235,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)dealloc {
     MMLogInfo(@"dealloc: %@", self);
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:NotificationName.didChangeFontSize object:nil];
 }
 
 #pragma mark - NSNotificationCenter
@@ -244,16 +247,28 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
-    NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    MMLogInfo(@"Notify to update service: %@", serviceType);
+    EZWindowType windowType = [userInfo[EZWindowTypeKey] integerValue];
+    NSString *serviceType = userInfo[EZServiceTypeKey];
+    BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
     
-    if ([serviceType length] != 0) {
-        [self updateService:serviceType autoQuery:YES];
+    MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
+    
+    // If window is deallocing, we should not continue to update.
+    if (GlobalContext.shared.subscribeWindowType == EZWindowTypeNone && self.windowType == EZWindowTypeMain) {
         return;
     }
-    if (type == self.windowType || !userInfo) {
-        [self resetAllCellWithServices:[self latestServices]];
+    
+    if ([serviceType length] != 0) {
+        [self updateService:serviceType autoQuery:autoQuery];
+        return;
+    }
+    
+    if (!userInfo || windowType == self.windowType || windowType == EZWindowTypeNone) {
+        [self resetAllCellWithServices:[self latestServices] completion:^{
+            if (autoQuery) {
+                [self queryCurrentModel];
+            }
+        }];
     }
 }
 
@@ -424,17 +439,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // If write, need to update.
         if (actionKey && [self.schemeParser isWriteActionKey:actionKey]) {
             // Besides current window, other pages need to be notified, such as the settings service page.
-            [self postUpdateServiceNotification];
+            [NSNotificationCenter.defaultCenter postServiceUpdateNotification];
         }
     }];
     
     return YES;
-}
-
-- (void)postUpdateServiceNotification {
-    // Need to update all types window.
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
@@ -770,7 +779,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             result.isShowing = NO;
         }
         
-//        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
+        //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
         
         if (service.autoCopyTranslatedTextBlock) {
@@ -792,7 +801,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
-//    MMLogInfo(@"query service: %@", service.serviceType);
+    //    MMLogInfo(@"query service: %@", service.serviceType);
     
     EZQueryResult *result = service.result;
     
@@ -822,7 +831,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-//    MMLogInfo(@"tableView for row: %ld", row);
+    //    MMLogInfo(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];
@@ -896,7 +905,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             height = EZResultViewMiniHeight;
         }
     }
-//    MMLogInfo(@"row: %ld, height: %@", row, @(height));
+    //    MMLogInfo(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -987,7 +996,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-//    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
+    //    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
     
     // !!!: Since the caller may be in non-main thread, we need to dispatch to main thread, but canont always use dispatch_async, it will cause the animation not smooth.
     dispatch_block_on_main_safely(^{
@@ -1004,11 +1013,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
             context.duration = duration;
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-//            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+            //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
             [self updateWindowViewHeight];
         } completionHandler:^{
-//            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+            //            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
             if (completionHandler) {
                 completionHandler();
             }
@@ -1119,27 +1128,56 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *newServices = [self.services mutableCopy];
     for (EZQueryService *service in self.services) {
         if (service.serviceType == serviceType) {
+            if (!autoQuery) {
+                [self updateCellWithResult:service.result reloadData:YES completionHandler:nil];
+                return;
+            }
+            
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+            [self trySetupSubscribersForService:updatedService oldService:service];
             NSInteger index = [self.serviceTypes indexOfObject:serviceType];
             newServices[index] = updatedService;
             self.services = newServices.copy;
-            if (autoQuery) {
-                [self resetCellWithService:updatedService autoQuery:autoQuery];
-            }
-            break;
+            
+            [self resetCellWithService:updatedService autoQuery:autoQuery];
+            
+            return;
         }
     }
 }
 
-- (void)resetAllCellWithServices:(NSArray *)allServices {
+- (void)resetAllCellWithServices:(NSArray *)allServices completion:(void (^)(void))completion {
     [self setupServices:allServices];
-    [self reloadTableViewData:nil];
+    [self reloadTableViewData:completion];
 }
 
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
     return [EZLocalStorage.shared allServices:self.windowType];
 }
+
+- (void)trySetupSubscribersForService:(EZQueryService *)service oldService:(nullable EZQueryService *)oldService {
+    // TODO: We should set subscribers when init EZLLMStreamService.
+    
+    /**
+     We only setup subscribers in `one` query window, we do not need extra notification in other place when init(), like settings.
+     
+     When notify a service configuration changed, it will init a new service, this is bad.
+     But for some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+     
+     This code is so ugly, we should fix it later.
+     */
+    
+    BOOL enableSubscribe = GlobalContext.shared.subscribeWindowType == EZWindowTypeNone || GlobalContext.shared.subscribeWindowType == self.windowType;
+    
+    if ([service isKindOfClass:EZLLMStreamService.class] && enableSubscribe) {
+        [((EZLLMStreamService *)service) setupSubscribers];
+        [((EZLLMStreamService *)oldService) cancelSubscribers];
+        
+        GlobalContext.shared.subscribeWindowType = self.windowType;
+    }
+}
+
 
 #pragma mark - Update Data.
 
@@ -1171,7 +1209,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             return resultCell;
         }
     }
-
+    
     return nil;
 }
 
@@ -1281,7 +1319,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
     [queryView setUpdateInputTextBlock:^(NSString *text, CGFloat queryViewHeight) {
         mm_strongify(self);
-//        MMLogInfo(@"UpdateQueryTextBlock");
+        //        MMLogInfo(@"UpdateQueryTextBlock");
         
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
@@ -1503,11 +1541,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = YES;
     }
     
-//    MMLogInfo(@"updateWindowViewHeightWithLock");
+    //    MMLogInfo(@"updateWindowViewHeightWithLock");
     
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
-//    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
+    //    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
     
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
     
@@ -1551,7 +1589,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = NO;
     }
     
-//    MMLogInfo(@"window frame: %@", @(window.frame));
+    //    MMLogInfo(@"window frame: %@", @(window.frame));
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
@@ -1573,10 +1611,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSInteger rowCount = [self numberOfRowsInTableView:self.tableView];
     for (int i = 0; i < rowCount; i++) {
         CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
-//        MMLogInfo(@"row: %d, Height: %.1f", i, rowHeight);
+        //        MMLogInfo(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_7);
     }
-//    MMLogInfo(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+    //    MMLogInfo(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
     
     return scrollViewContentHeight;
@@ -1588,7 +1626,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.scrollView.height = 0;
     
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-//    MMLogInfo(@"documentView height: %@", @(documentViewHeight));
+    //    MMLogInfo(@"documentView height: %@", @(documentViewHeight));
     
     return documentViewHeight;
 }
