@@ -30,6 +30,7 @@
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
 		03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */; };
+		03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */; };
 		0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0329CD6E29EE924500963F78 /* EZRightClickDetector.m */; };
 		033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */; };
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
