@@ -11,7 +11,6 @@
 
 @interface EZNiuTransTranslate ()
 
-//@property (nonatomic, copy) NSString *defaultAPIKey;
 @property (nonatomic, copy) NSString *apiKey;
 
 @end

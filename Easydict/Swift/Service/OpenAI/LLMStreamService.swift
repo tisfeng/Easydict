@@ -13,8 +13,6 @@ import SwiftUI
 
 // MARK: - LLMStreamService
 
-// import SwiftUI
-
 @objcMembers
 @objc(EZLLMStreamService)
 public class LLMStreamService: QueryService {
