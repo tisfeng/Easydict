@@ -11,8 +11,6 @@ import OpenAI
 
 // MARK: - BaseOpenAIService
 
-// In order to solve the problems caused by inheriting the OpenAI service for custom OpenAI services, we had to add a new base class. FIX https://github.com/tisfeng/Easydict/pull/473#issuecomment-2022587699
-
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: LLMStreamService {

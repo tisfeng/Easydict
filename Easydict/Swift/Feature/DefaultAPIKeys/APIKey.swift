@@ -9,34 +9,36 @@
 import Defaults
 import Foundation
 
+// MARK: - APIKey
+
 extension BuiltInAIService {
-    var defaultAPIKey: String {
+    var builtInAIAPIKey: String {
         APIKey.builtInAIAPIKey.stringValue
     }
 
-    var defaultEndpoint: String {
+    var builtInAIEndpoint: String {
         APIKey.builtInAIEndpoint.stringValue
     }
 }
 
 extension CaiyunService {
-    var defaultToken: String {
+    var caiyunToken: String {
         APIKey.caiyunToken.stringValue
     }
 }
 
 extension TencentService {
-    var defaultSecretId: String {
+    var tencentSecretId: String {
         APIKey.tencentSecretId.stringValue
     }
 
-    var defaultSecretKey: String {
+    var tencentSecretKey: String {
         APIKey.tencentSecretKey.stringValue
     }
 }
 
 extension EZNiuTransTranslate {
-    @objc var defaultAPIKey: String {
+    @objc var niutransAPIKey: String {
         APIKey.niutransAPIKey.stringValue
     }
 }

@@ -90,7 +90,7 @@ struct StreamConfigurationView: View {
                 ServiceConfigurationInputCell(
                     textFieldTitleKey: "service.configuration.openai.endpoint.title",
                     key: service.endpointKey,
-                    placeholder: "service.configuration.openai.endpoint.placeholder"
+                    placeholder: service.endpointPlaceholder
                 )
             }
 

@@ -74,9 +74,10 @@
 		03779F0F2BB256A7008D3C42 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0C2BB256A7008D3C42 /* Prompt.swift */; };
 		03779F132BB256B5008D3C42 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F102BB256B5008D3C42 /* APIKey.swift */; };
 		03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03779F112BB256B5008D3C42 /* EncryptedSecretKeys.plist */; };
-		03779F172BB256C5008D3C42 /* URL+IsValid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F152BB256C5008D3C42 /* URL+IsValid.swift */; };
+		03779F172BB256C5008D3C42 /* URL+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F152BB256C5008D3C42 /* URL+Extension.swift */; };
 		03779F1A2BB25797008D3C42 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03779F192BB25797008D3C42 /* OpenAI */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
+		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
 		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
@@ -201,6 +202,7 @@
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
 		03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 03CF27FD2B3DA7D500E19B57 /* Realm */; };
 		03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03CF27FF2B3DA7D500E19B57 /* RealmSwift */; };
+		03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF5E632C39B2310058F9DB /* OllamaModel.swift */; };
 		03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+Convenience.swift */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
@@ -449,9 +451,10 @@
 		03779F0C2BB256A7008D3C42 /* Prompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
 		03779F102BB256B5008D3C42 /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		03779F112BB256B5008D3C42 /* EncryptedSecretKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EncryptedSecretKeys.plist; sourceTree = "<group>"; };
-		03779F152BB256C5008D3C42 /* URL+IsValid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+IsValid.swift"; sourceTree = "<group>"; };
+		03779F152BB256C5008D3C42 /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
+		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
 		0387FB792BFBA990000A7A82 /* LLMStreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMStreamService.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
@@ -668,6 +671,7 @@
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
+		03CF5E632C39B2310058F9DB /* OllamaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaModel.swift; sourceTree = "<group>"; };
 		03CF88622B137F650030C199 /* Array+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Convenience.swift"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
@@ -1199,6 +1203,7 @@
 				036D627F2BCAB5C6002C95C7 /* BuiltInAI */,
 				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
 				C415C0AB2B450C4500A9D231 /* Gemini */,
+				03792EA02C3830E60074A145 /* Ollama */,
 				C4DD01E72B12B3B00025EE8E /* Tencent */,
 				2746AEBF2AF95040005FE0A1 /* Caiyun */,
 				62E2BF462B4082BA00E42D38 /* Ali */,
@@ -1230,9 +1235,18 @@
 		03779F162BB256C5008D3C42 /* URL */ = {
 			isa = PBXGroup;
 			children = (
-				03779F152BB256C5008D3C42 /* URL+IsValid.swift */,
+				03779F152BB256C5008D3C42 /* URL+Extension.swift */,
 			);
 			path = URL;
+			sourceTree = "<group>";
+		};
+		03792EA02C3830E60074A145 /* Ollama */ = {
+			isa = PBXGroup;
+			children = (
+				03792EA12C3831040074A145 /* OllamaService.swift */,
+				03CF5E632C39B2310058F9DB /* OllamaModel.swift */,
+			);
+			path = Ollama;
 			sourceTree = "<group>";
 		};
 		03882F8129D95044005B5A52 /* CoolToast */ = {
@@ -2771,6 +2785,7 @@
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				27FE98092B3DD536000AD654 /* SettingView.swift in Sources */,
+				03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
@@ -2913,7 +2928,7 @@
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */,
 				03779F0F2BB256A7008D3C42 /* Prompt.swift in Sources */,
-				03779F172BB256C5008D3C42 /* URL+IsValid.swift in Sources */,
+				03779F172BB256C5008D3C42 /* URL+Extension.swift in Sources */,
 				6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */,
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
@@ -2983,6 +2998,7 @@
 				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
 				EA9943E82B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift in Sources */,
 				03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */,
+				03792EA22C3831040074A145 /* OllamaService.swift in Sources */,
 				0AC8A83F2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift in Sources */,
 				03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */,
 				9643D9562B73B3CD000FBEA6 /* Shortcut+Menu.swift in Sources */,
