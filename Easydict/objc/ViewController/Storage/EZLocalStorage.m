@@ -138,7 +138,7 @@ static EZLocalStorage *_instance;
     return service;
 }
 
--(void)updateServiceInfo:(EZQueryService *)service windowType:(EZWindowType)windowType {
+- (void)updateServiceInfo:(EZQueryService *)service windowType:(EZWindowType)windowType {
     EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
     BOOL enabled = YES;
     BOOL enabledQuery = YES;
@@ -148,6 +148,7 @@ static EZLocalStorage *_instance;
     }
     service.enabled = enabled;
     service.enabledQuery = enabledQuery;
+    service.windowType = windowType;
 }
 
 - (void)setServiceInfo:(EZServiceInfo *)serviceInfo windowType:(EZWindowType)windowType {

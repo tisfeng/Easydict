@@ -70,6 +70,8 @@ static EZWindowManager *_instance;
     
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
+
+    [self fixedWindow];
 }
 
 - (void)setupEventMonitor {

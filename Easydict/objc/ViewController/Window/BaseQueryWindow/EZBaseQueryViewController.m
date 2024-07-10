@@ -210,8 +210,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
-            
-            [self trySetupSubscribersForService:service oldService:nil];
         }
         
         EZServiceType serviceType = service.serviceType;
@@ -252,11 +250,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
     
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
-    
-    // If window is deallocing, we should not continue to update.
-    if (GlobalContext.shared.subscribeWindowType == EZWindowTypeNone && self.windowType == EZWindowTypeMain) {
-        return;
-    }
     
     if ([serviceType length] != 0) {
         [self updateService:serviceType autoQuery:autoQuery];
@@ -1134,7 +1127,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
             
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
-            [self trySetupSubscribersForService:updatedService oldService:service];
+
+            // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+            if ([service isKindOfClass:EZLLMStreamService.class]) {
+                [((EZLLMStreamService *)service) cancelSubscribers];
+            }
+
             NSInteger index = [self.serviceTypes indexOfObject:serviceType];
             newServices[index] = updatedService;
             self.services = newServices.copy;
@@ -1154,28 +1152,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
     return [EZLocalStorage.shared allServices:self.windowType];
-}
-
-- (void)trySetupSubscribersForService:(EZQueryService *)service oldService:(nullable EZQueryService *)oldService {
-    // TODO: We should set subscribers when init EZLLMStreamService.
-    
-    /**
-     We only setup subscribers in `one` query window, we do not need extra notification in other place when init(), like settings.
-     
-     When notify a service configuration changed, it will init a new service, this is bad.
-     But for some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
-     
-     This code is so ugly, we should fix it later.
-     */
-    
-    BOOL enableSubscribe = GlobalContext.shared.subscribeWindowType == EZWindowTypeNone || GlobalContext.shared.subscribeWindowType == self.windowType;
-    
-    if ([service isKindOfClass:EZLLMStreamService.class] && enableSubscribe) {
-        [((EZLLMStreamService *)service) setupSubscribers];
-        [((EZLLMStreamService *)oldService) cancelSubscribers];
-        
-        GlobalContext.shared.subscribeWindowType = self.windowType;
-    }
 }
 
 

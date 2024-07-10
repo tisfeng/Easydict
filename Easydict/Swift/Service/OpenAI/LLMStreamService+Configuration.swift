@@ -11,7 +11,7 @@ import Foundation
 
 extension LLMStreamService {
     func setupSubscribers() {
-        logInfo("setup subscribers")
+        logInfo("setup subscribers: \(self), windowType: \(windowType.rawValue)")
 
         Defaults.publisher(nameKey, options: [])
             .removeDuplicates()
@@ -39,7 +39,7 @@ extension LLMStreamService {
     }
 
     func cancelSubscribers() {
-        logInfo("cancel subscribers")
+        logInfo("cancel subscribers: \(self), windowType: \(windowType.rawValue)")
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
     }
@@ -92,9 +92,5 @@ extension LLMStreamService {
 
     func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {
         defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
-    }
-
-    func serviceDefaultsKey<T>(_ key: StoredKey) -> Defaults.Key<T?> {
-        defaultsKey(key, serviceType: serviceType())
     }
 }
