@@ -51,6 +51,8 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeYoudao, [EZYoudaoTranslate class],
                                            EZServiceTypeOpenAI, [EZOpenAIService class],
                                            EZServiceTypeBuiltInAI, [EZBuiltInAIService class],
+                                           EZServiceTypeGemini, [EZGeminiService class],
+                                           EZServiceTypeOllama, [EZOllamaService class],
                                            EZServiceTypeCustomOpenAI, [EZCustomOpenAIService class],
                                            EZServiceTypeDeepL, [EZDeepLTranslate class],
                                            EZServiceTypeGoogle, [EZGoogleTranslate class],
@@ -62,7 +64,6 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeCaiyun, [EZCaiyunService class],
                                            EZServiceTypeTencent, [EZTencentService class],
                                            EZServiceTypeAli, [EZAliService class],
-                                           EZServiceTypeGemini, [EZGeminiService class],
                                            nil];
     return allServiceDict;
 }

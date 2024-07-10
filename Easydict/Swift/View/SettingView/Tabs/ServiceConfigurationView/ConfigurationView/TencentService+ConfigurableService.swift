@@ -9,17 +9,13 @@
 import Foundation
 import SwiftUI
 
-extension TencentService: ConfigurableService {
-    func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(
-            service: self,
-            observeKeys: [.tencentSecretId, .tencentSecretKey]
-        ) {
+extension TencentService {
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.tencentSecretId, .tencentSecretKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_id.title",
                 key: .tencentSecretId
             )
-
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_key.title",
                 key: .tencentSecretKey

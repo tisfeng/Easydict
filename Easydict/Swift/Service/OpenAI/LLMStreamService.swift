@@ -6,8 +6,10 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - LLMStreamService
 
@@ -16,15 +18,15 @@ import Foundation
 public class LLMStreamService: QueryService {
     // MARK: Public
 
-    override public func isStream() -> Bool {
+    public override func isStream() -> Bool {
         true
     }
 
-    override public func intelligentQueryTextType() -> EZQueryTextType {
+    public override func intelligentQueryTextType() -> EZQueryTextType {
         Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         let allLanguages = EZLanguageManager.shared().allLanguages
         let supportedLanguages = allLanguages.filter { language in
             !unsupportedLanguages.contains(language)
@@ -37,12 +39,12 @@ public class LLMStreamService: QueryService {
         return orderedDict
     }
 
-    override public func queryTextType() -> EZQueryTextType {
+    public override func queryTextType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
-        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
-        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
-        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
+        let isTranslationEnabled = Defaults[translationKey].boolValue
+        let isSentenceEnabled = Defaults[sentenceKey].boolValue
+        let isDictionaryEnabled = Defaults[dictionaryKey].boolValue
 
         if isTranslationEnabled {
             typeOptions.insert(.translation)
@@ -57,36 +59,154 @@ public class LLMStreamService: QueryService {
         return typeOptions
     }
 
-    override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
-        guard let value = UInt(usageStatus) else { return .default }
+    public override func serviceUsageStatus() -> EZServiceUsageStatus {
+        let usageStatus = Defaults[serviceUsageStatusKey]
+        guard let value = UInt(usageStatus.rawValue) else { return .default }
         return EZServiceUsageStatus(rawValue: value) ?? .default
+    }
+
+    public override func translate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+    ) {
+        fatalError(mustOverride)
     }
 
     // MARK: Internal
 
     let throttler = Throttler()
 
-    let mustOverride = "This property must be overridden by a subclass"
+    let mustOverride = "This property or method must be overridden by a subclass"
+
+    var cancellables: Set<AnyCancellable> = []
+
+    var defaultModels: [String] {
+        [""]
+    }
 
     var unsupportedLanguages: [Language] {
         []
     }
 
     var model: String {
-        get { fatalError(mustOverride) }
-        set { _ = newValue; fatalError(mustOverride) }
+        get {
+            var model = Defaults[modelKey]
+            if !validModels.contains(model) || model.isEmpty {
+                model = validModels.first ?? ""
+                Defaults[modelKey] = model
+            }
+            return model
+        }
+        set {
+            Defaults[modelKey] = newValue
+        }
     }
 
-    var availableModels: [String] {
-        fatalError(mustOverride)
+    var modelKey: Defaults.Key<String> {
+        stringDefaultsKey(.model, defaultValue: defaultModels.first ?? "")
+    }
+
+    var supportedModels: String {
+        get { Defaults[supportedModelsKey] }
+        set {
+            Defaults[supportedModelsKey] = newValue
+            Defaults[validModelsKey] = validModels(from: newValue)
+        }
+    }
+
+    var supportedModelsKey: Defaults.Key<String> {
+        stringDefaultsKey(.supportedModels, defaultValue: supportedModels(from: defaultModels))
+    }
+
+    /// Just getter, we should set supportedModels and get validModels.
+    var validModels: [String] {
+        Defaults[validModelsKey]
+    }
+
+    var validModelsKey: Defaults.Key<[String]> {
+        serviceDefaultsKey(.validModels, defaultValue: defaultModels)
     }
 
     var apiKey: String {
-        fatalError(mustOverride)
+        Defaults[apiKeyKey]
+    }
+
+    var apiKeyKey: Defaults.Key<String> {
+        stringDefaultsKey(.apiKey)
     }
 
     var endpoint: String {
+        Defaults[endpointKey].isEmpty ? defaultEndpoint : Defaults[endpointKey]
+    }
+
+    var endpointKey: Defaults.Key<String> {
+        stringDefaultsKey(.endpoint, defaultValue: defaultEndpoint)
+    }
+
+    var endpointPlaceholder: LocalizedStringKey {
+        defaultEndpoint
+            .isEmpty ? "service.configuration.openai.endpoint.placeholder" : LocalizedStringKey(defaultEndpoint)
+    }
+
+    var defaultEndpoint: String {
+        ""
+    }
+
+    var nameKey: Defaults.Key<String> {
+        stringDefaultsKey(.name)
+    }
+
+    var translationKey: Defaults.Key<String> {
+        stringDefaultsKey(.translation, defaultValue: "1")
+    }
+
+    var sentenceKey: Defaults.Key<String> {
+        stringDefaultsKey(.sentence, defaultValue: isSentenceEnabledByDefault ? "1" : "0")
+    }
+
+    var isSentenceEnabledByDefault: Bool {
+        true
+    }
+
+    var dictionaryKey: Defaults.Key<String> {
+        stringDefaultsKey(.dictionary, defaultValue: isDictionaryEnabledByDefault ? "1" : "0")
+    }
+
+    var isDictionaryEnabledByDefault: Bool {
+        true
+    }
+
+    var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
+        serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
+    }
+
+    // In general, LLM services need to observe these keys to enable validation button.
+    var observeKeys: [Defaults.Key<String>] {
+        [
+            apiKeyKey,
+            endpointKey,
+            supportedModelsKey,
+        ]
+    }
+
+    var apiKeyPlaceholder: LocalizedStringKey {
+        "\(serviceType().rawValue) API Key"
+    }
+
+    func validModels(from supportedModels: String) -> [String] {
+        supportedModels.components(separatedBy: ",")
+            .map { $0.trim() }.filter { !$0.isEmpty }
+    }
+
+    func supportedModels(from validModels: [String]) -> String {
+        validModels.joined(separator: ", ")
+    }
+
+    /// Base on chat query, convert prompt dict to LLM service prompt model.
+    func serviceChatMessageModels(_ chatQuery: ChatQueryParam)
+        -> [Any] {
         fatalError(mustOverride)
     }
 
@@ -107,7 +227,7 @@ public class LLMStreamService: QueryService {
     }
 
     /// Get query type by text and from && to language.
-    func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
+    func queryType(text: String, from: Language, to: Language) -> EZQueryTextType {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -131,6 +251,9 @@ public class LLMStreamService: QueryService {
 
         return .translation
     }
+
+    /// Cancel stream request manually.
+    func cancelStream() {}
 }
 
 extension LLMStreamService {
@@ -141,6 +264,7 @@ extension LLMStreamService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         if result.isStreamFinished {
+            cancelStream()
             return
         }
 
@@ -153,7 +277,9 @@ extension LLMStreamService {
         result.translatedResults = translatedTexts
 
         let updateCompletion = {
-            self.throttler.throttle { [unowned self] in
+            self.throttler.throttle { [weak self] in
+                guard let self else { return }
+
                 completion(result, error)
             }
         }
@@ -175,5 +301,19 @@ extension LLMStreamService {
         default:
             updateCompletion()
         }
+    }
+}
+
+// MARK: - ChatQueryParam
+
+struct ChatQueryParam {
+    let text: String
+    let sourceLanguage: Language
+    let targetLanguage: Language
+    let queryType: EZQueryTextType
+    let enableSystemPrompt: Bool
+
+    func unpack() -> (String, Language, Language, EZQueryTextType, Bool) {
+        (text, sourceLanguage, targetLanguage, queryType, enableSystemPrompt)
     }
 }

@@ -15,15 +15,15 @@ import Foundation
 class AliService: QueryService {
     // MARK: Public
 
-    override public func link() -> String? {
+    public override func link() -> String? {
         "https://translate.alibaba.com/"
     }
 
-    override public func name() -> String {
+    public override func name() -> String {
         NSLocalizedString("ali_translate", comment: "The name of Ali Translate")
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
         for (key, value) in AliTranslateType.supportLanguagesDictionary {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
@@ -31,12 +31,12 @@ class AliService: QueryService {
         return orderedDict
     }
 
-    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
+    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
         logInfo("ali Translate does not support OCR")
         throw QueryServiceError.notSupported
     }
 
-    override public func autoConvertTraditionalChinese() -> Bool {
+    public override func autoConvertTraditionalChinese() -> Bool {
         // If translate traditionalChinese <--> simplifiedChinese, use Ali API directly.
         if EZLanguageManager.shared().onlyContainsChineseLanguages([
             queryModel.queryFromLanguage,
@@ -57,9 +57,7 @@ class AliService: QueryService {
     }
 
     override func hasPrivateAPIKey() -> Bool {
-        let id = Defaults[.aliAccessKeyId] ?? ""
-        let secret = Defaults[.aliAccessKeySecret] ?? ""
-        return !id.isEmpty && !secret.isEmpty
+        !aliAccessKeyId.isEmpty && !aliAccessKeySecret.isEmpty
     }
 
     override func translate(
@@ -85,13 +83,11 @@ class AliService: QueryService {
          easydict://writeKeyValue?EZAliAccessKeyId=
          easydict://writeKeyValue?EZAliAccessKeySecret=
          */
-        if let id = Defaults[.aliAccessKeyId],
-           let secret = Defaults[.aliAccessKeySecret],
-           !id.isEmpty,
-           !secret.isEmpty {
+        if !aliAccessKeyId.isEmpty,
+           !aliAccessKeySecret.isEmpty {
             requestByAPI(
-                id: id,
-                secret: secret,
+                id: aliAccessKeyId,
+                secret: aliAccessKeySecret,
                 transType: transType,
                 text: text,
                 from: from,
@@ -136,6 +132,14 @@ class AliService: QueryService {
         } else {
             (false, "", "")
         }
+    }
+
+    private var aliAccessKeyId: String {
+        Defaults[.aliAccessKeyId]
+    }
+
+    private var aliAccessKeySecret: String {
+        Defaults[.aliAccessKeySecret]
     }
 
     // swiftlint:disable:next function_parameter_count

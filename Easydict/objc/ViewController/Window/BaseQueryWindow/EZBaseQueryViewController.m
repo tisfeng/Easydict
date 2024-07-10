@@ -186,7 +186,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
     
-    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
+    [defaultCenter addObserverForName:NotificationName.didChangeFontSize object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
         mm_strongify(self);
         [self reloadTableViewData:^{
             [self updateAllResultCellHeight];
@@ -214,6 +214,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
+            
+            [self trySetupSubscribersForService:service oldService:nil];
         }
         
         EZServiceType serviceType = service.serviceType;
@@ -237,7 +239,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)dealloc {
     MMLogInfo(@"dealloc: %@", self);
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:NotificationName.didChangeFontSize object:nil];
 }
 
 #pragma mark - NSNotificationCenter
@@ -248,16 +251,28 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
-    NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    MMLogInfo(@"Notify to update service: %@", serviceType);
+    EZWindowType windowType = [userInfo[EZWindowTypeKey] integerValue];
+    NSString *serviceType = userInfo[EZServiceTypeKey];
+    BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
     
-    if ([serviceType length] != 0) {
-        [self updateService:serviceType autoQuery:YES];
+    MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
+    
+    // If window is deallocing, we should not continue to update.
+    if (GlobalContext.shared.subscribeWindowType == EZWindowTypeNone && self.windowType == EZWindowTypeMain) {
         return;
     }
-    if (type == self.windowType || !userInfo) {
-        [self resetAllCellWithServices:[self latestServices]];
+    
+    if ([serviceType length] != 0) {
+        [self updateService:serviceType autoQuery:autoQuery];
+        return;
+    }
+    
+    if (!userInfo || windowType == self.windowType || windowType == EZWindowTypeNone) {
+        [self resetAllCellWithServices:[self latestServices] completion:^{
+            if (autoQuery) {
+                [self queryCurrentModel];
+            }
+        }];
     }
 }
 
@@ -428,17 +443,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // If write, need to update.
         if (actionKey && [self.schemeParser isWriteActionKey:actionKey]) {
             // Besides current window, other pages need to be notified, such as the settings service page.
-            [self postUpdateServiceNotification];
+            [NSNotificationCenter.defaultCenter postServiceUpdateNotification];
         }
     }];
     
     return YES;
-}
-
-- (void)postUpdateServiceNotification {
-    // Need to update all types window.
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
@@ -1137,27 +1146,56 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *newServices = [self.services mutableCopy];
     for (EZQueryService *service in self.services) {
         if (service.serviceType == serviceType) {
+            if (!autoQuery) {
+                [self updateCellWithResult:service.result reloadData:YES completionHandler:nil];
+                return;
+            }
+            
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+            [self trySetupSubscribersForService:updatedService oldService:service];
             NSInteger index = [self.serviceTypes indexOfObject:serviceType];
             newServices[index] = updatedService;
             self.services = newServices.copy;
-            if (autoQuery) {
-                [self resetCellWithService:updatedService autoQuery:autoQuery];
-            }
-            break;
+            
+            [self resetCellWithService:updatedService autoQuery:autoQuery];
+            
+            return;
         }
     }
 }
 
-- (void)resetAllCellWithServices:(NSArray *)allServices {
+- (void)resetAllCellWithServices:(NSArray *)allServices completion:(void (^)(void))completion {
     [self setupServices:allServices];
-    [self reloadTableViewData:nil];
+    [self reloadTableViewData:completion];
 }
 
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
     return [EZLocalStorage.shared allServices:self.windowType];
 }
+
+- (void)trySetupSubscribersForService:(EZQueryService *)service oldService:(nullable EZQueryService *)oldService {
+    // TODO: We should set subscribers when init EZLLMStreamService.
+    
+    /**
+     We only setup subscribers in `one` query window, we do not need extra notification in other place when init(), like settings.
+     
+     When notify a service configuration changed, it will init a new service, this is bad.
+     But for some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+     
+     This code is so ugly, we should fix it later.
+     */
+    
+    BOOL enableSubscribe = GlobalContext.shared.subscribeWindowType == EZWindowTypeNone || GlobalContext.shared.subscribeWindowType == self.windowType;
+    
+    if ([service isKindOfClass:EZLLMStreamService.class] && enableSubscribe) {
+        [((EZLLMStreamService *)service) setupSubscribers];
+        [((EZLLMStreamService *)oldService) cancelSubscribers];
+        
+        GlobalContext.shared.subscribeWindowType = self.windowType;
+    }
+}
+
 
 #pragma mark - Update Data.
 

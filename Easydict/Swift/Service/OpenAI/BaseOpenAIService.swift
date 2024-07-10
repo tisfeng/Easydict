@@ -11,19 +11,19 @@ import OpenAI
 
 // MARK: - BaseOpenAIService
 
-// In order to solve the problems caused by inheriting the OpenAI service for custom OpenAI services, we had to add a new base class. FIX https://github.com/tisfeng/Easydict/pull/473#issuecomment-2022587699
-
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: LLMStreamService {
-    override public func translate(
+    // MARK: Public
+
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         let url = URL(string: endpoint)
-        let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
+        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
         guard let url, url.isValid else {
             completion(result, invalidURLError)
             return
@@ -36,11 +36,25 @@ public class BaseOpenAIService: LLMStreamService {
         result.isStreamFinished = false
 
         let queryType = queryType(text: text, from: from, to: to)
-        let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
-        let query = ChatQuery(messages: chats, model: model, temperature: 0)
+        let chatQueryParam = ChatQueryParam(
+            text: text,
+            sourceLanguage: from,
+            targetLanguage: to,
+            queryType: queryType,
+            enableSystemPrompt: true
+        )
+
+        let chatHistory = serviceChatMessageModels(chatQueryParam)
+        guard let chatHistory = chatHistory as? [ChatMessage] else { return }
+
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
-        openAI.chatsStream(query: query, url: url) { [weak self] res in
+        // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
+        unowned let unownedControl = control
+
+        // TODO: refactor chatsStream with await
+        openAI.chatsStream(query: query, url: url, control: unownedControl) { [weak self] res in
             guard let self else { return }
 
             switch res {
@@ -79,5 +93,29 @@ public class BaseOpenAIService: LLMStreamService {
                 result.isStreamFinished = true
             }
         }
+    }
+
+    // MARK: Internal
+
+    typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
+
+    let control = StreamControl()
+
+    override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
+        var chatModels: [ChatMessage] = []
+        for message in chatMessageDicts(chatQuery) {
+            if let roleRawValue = message["role"],
+               let role = ChatMessage.Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                if let chat = ChatMessage(role: role, content: content) {
+                    chatModels.append(chat)
+                }
+            }
+        }
+        return chatModels
+    }
+
+    override func cancelStream() {
+        control.cancel()
     }
 }

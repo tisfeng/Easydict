@@ -532,7 +532,7 @@ extension Configuration {
     }
 
     fileprivate func didSetFontSizeIndex() {
-        NotificationCenter.default.post(name: .init(ChangeFontSizeView.changeFontSizeNotificationName), object: nil)
+        NotificationCenter.default.post(name: .didChangeFontSize, object: nil)
     }
 
     fileprivate func didSetAppearance(_ appearance: AppearenceType) {

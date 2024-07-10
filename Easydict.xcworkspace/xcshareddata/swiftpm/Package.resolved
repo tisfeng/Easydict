@@ -1,4 +1,5 @@
 {
+  "originHash" : "7ec61cc8c0ffc99d533d209ed8dd5c63dc918d25ea4172d03761bf84e053e81b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -34,6 +35,15 @@
       "state" : {
         "revision" : "1120c26835925f8314d035127c580bc71689c620",
         "version" : "5.0.4"
+      }
+    },
+    {
+      "identity" : "axswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tmandry/AXSwift",
+      "state" : {
+        "revision" : "81dcc36aced905d6464cc25e35f8d13184bbf21c",
+        "version" : "0.3.2"
       }
     },
     {
@@ -154,6 +164,15 @@
       }
     },
     {
+      "identity" : "keysender",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jordanbaird/KeySender",
+      "state" : {
+        "revision" : "99584bf1a03ab600cc44be89a2dcd98b2dbeb9de",
+        "version" : "0.0.5"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
@@ -195,7 +214,7 @@
       "location" : "https://github.com/tisfeng/OpenAI",
       "state" : {
         "branch" : "dev",
-        "revision" : "ae7242e06730608caa79dfffd599ba91640f0f10"
+        "revision" : "97a67f5c7099996a772c3085dd1b29673a470e57"
       }
     },
     {

@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ API Key" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ API Key"
+          }
+        }
+      }
+    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -234,7 +244,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Translation"
+            "value" : "Apple Translate"
           }
         },
         "zh-Hans" : {
@@ -1715,6 +1725,22 @@
         }
       }
     },
+    "no_screenshot_permission" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Screenshot Permission"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有截图权限"
+          }
+        }
+      }
+    },
     "none_window" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1753,6 +1779,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定"
+          }
+        }
+      }
+    },
+    "ollama_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama 翻译"
           }
         }
       }
@@ -2154,6 +2196,22 @@
         }
       }
     },
+    "request_screen_capture_access_description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please go to System Settings - Privacy & Security - Screen Recording & System Audio page to enable permissions for Easydict."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请前往 \"系统设置-隐私和安全-录屏与系统录音\" 页面，为 Easydict 启用权限。"
+          }
+        }
+      }
+    },
     "retry" : {
       "localizations" : {
         "en" : {
@@ -2407,7 +2465,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整接口地址"
+            "value" : "API 请求地址"
           }
         }
       }
@@ -2440,22 +2498,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "优先使用 Web API"
-          }
-        }
-      }
-    },
-    "service.configuration.gemini.api_key.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxx"
           }
         }
       }
@@ -2545,13 +2587,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.openai.com/v1/chat/completions"
+            "value" : "The full request URL, for example https://api.openai.com/v1/chat/completions"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.openai.com/v1/chat/completions"
+            "value" : "完整请求 URL，例如 https://api.openai.com/v1/chat/completions"
           }
         }
       }
@@ -2567,7 +2609,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整接口地址"
+            "value" : "API 请求地址"
           }
         }
       }
