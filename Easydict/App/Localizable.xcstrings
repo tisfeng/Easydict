@@ -1176,6 +1176,22 @@
         }
       }
     },
+    "grammar_service" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grammar Correction"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语法纠错"
+          }
+        }
+      }
+    },
     "Help" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1964,6 +1980,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "复数"
+          }
+        }
+      }
+    },
+    "polishing_service" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polishing"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "润色"
           }
         }
       }
