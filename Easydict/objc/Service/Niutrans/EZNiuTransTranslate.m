@@ -11,7 +11,6 @@
 
 @interface EZNiuTransTranslate ()
 
-@property (nonatomic, copy) NSString *defaultAPIKey;
 @property (nonatomic, copy) NSString *apiKey;
 
 @end
@@ -28,7 +27,7 @@
     // easydict://writeKeyValue?EZNiuTransAPIKey=
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAPIKey];
     if (apiKey.length == 0) {
-        apiKey = self.defaultAPIKey;
+        apiKey = self.niutransAPIKey;
     }
     return apiKey;
 }
@@ -114,7 +113,7 @@
 }
 
 - (BOOL)hasPrivateAPIKey {
-    return ![self.apiKey isEqualToString:self.defaultAPIKey];
+    return ![self.apiKey isEqualToString:self.niutransAPIKey];
 }
 
 - (NSInteger)totalFreeQueryCharacterCount {

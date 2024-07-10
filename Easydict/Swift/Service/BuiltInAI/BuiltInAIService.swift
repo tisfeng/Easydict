@@ -44,11 +44,11 @@ class BuiltInAIService: BaseOpenAIService {
     }
 
     override var apiKey: String {
-        defaultAPIKey
+        builtInAIAPIKey
     }
 
     override var endpoint: String {
-        defaultEndpoint
+        builtInAIEndpoint
     }
 
     override var observeKeys: [Defaults.Key<String>] {

@@ -43,7 +43,7 @@ public final class CaiyunService: QueryService {
     }
 
     public override func hasPrivateAPIKey() -> Bool {
-        token != defaultToken
+        token != caiyunToken
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
@@ -118,7 +118,7 @@ public final class CaiyunService: QueryService {
         if !token.isEmpty {
             return token
         } else {
-            return defaultToken
+            return caiyunToken
         }
     }
 }

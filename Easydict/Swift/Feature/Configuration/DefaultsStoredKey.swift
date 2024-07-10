@@ -8,11 +8,17 @@
 
 import Foundation
 
-func storedKey(_ key: StoredKey, serviceType: ServiceType) -> String {
+func storedKey(_ key: StoredKey, serviceType: ServiceType, id: String? = nil) -> String {
     // This key should be compatible with existing OpenAI config keys
     // EZOpenAIServiceUsageStatusKey
     // EZOpenAIDictionaryKey
-    "EZ" + serviceType.rawValue + key.rawValue.capitalizeFirstLetter() + "Key"
+    // EZOpenAIDictionary_ID_Key
+
+    var identifier = ""
+    if let id, !id.isEmpty {
+        identifier = "_\(id)_"
+    }
+    return "EZ" + serviceType.rawValue + key.rawValue.capitalizeFirstLetter() + identifier + "Key"
 }
 
 extension UserDefaults {
