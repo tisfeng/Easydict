@@ -96,7 +96,7 @@ extension Defaults.Keys {
     )
 
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
-    static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: true)
+    static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
 }
 
 extension Defaults.Keys {
