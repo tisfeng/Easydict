@@ -77,6 +77,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign) BOOL isTipsViewVisible;
 
+@property (nonatomic, assign) EZTipsCellType tipsCellType;
+
+@property (nonatomic, copy) NSString *tipsCellContent;
+
 
 @end
 
@@ -495,7 +499,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
-                self.queryView.alertText = errorMsg;
+                [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
                 return;
             }
             
@@ -656,6 +660,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)showTipsView:(BOOL)isVisible {
+    [self showTipsView:isVisible content:@"" type:EZTipsCellTypeTextEmpty];
+}
+
+- (void)showTipsView:(BOOL)isVisible
+             content:(NSString *)content
+                type:(EZTipsCellType)type {
+    self.tipsCellType = type;
+    self.tipsCellContent = content;
+    [self.tipsCell updateTipsContent:content type:type];
     [self showTipsView:isVisible completion:nil];
 }
 
@@ -865,7 +878,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (row == 2 && self.isTipsViewVisible) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
+                                                         type:self.tipsCellType content:self.tipsCellContent];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;
@@ -892,7 +906,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     } else if (row == 2 && self.isTipsViewVisible) {
         if (!self.tipsCell) {
             // mini cell height
-            height = 104;
+            if ([self isCustomTipsType]) {
+                height = 80;
+            } else {
+                height = 104;
+            }
         } else {
             height = [self.tipsCell cellHeight];
         }
@@ -1674,6 +1692,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [result.copiedText copyToPasteboard];
         }];
     }];
+}
+
+- (BOOL)isCustomTipsType {
+    return self.tipsCellType == EZTipsCellTypeErrorTips ||
+    self.tipsCellType == EZTipsCellTypeInfoTips  ||
+    self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
 @end

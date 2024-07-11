@@ -23,14 +23,23 @@
 @property (nonatomic, strong) NSString *questionSolveURL;
 @property (nonatomic, strong) NSString *seeMoreURL;
 @property (nonatomic, assign) EZTipsCellType tipsType;
+@property (nonatomic, assign) BOOL showResloveBtnFlag;
+@property (nonatomic, copy) NSString *contentStr;
 @end
 
 @implementation EZTableTipsCell
 
 - (instancetype)initWithFrame:(CGRect)frame type:(EZTipsCellType)type {
+    return [self initWithFrame:frame type:type content:@""];
+}
+
+- (instancetype)initWithFrame:(NSRect)frame 
+                         type:(EZTipsCellType)type
+                      content:(NSString *)content {
     self = [super initWithFrame:frame];
     if (self) {
         self.tipsType = type;
+        self.contentStr = content;
         [self setupUI];
         [self updateQuestionContent];
     }
@@ -43,6 +52,7 @@
 
 - (void)updateTipsContent:(NSString *)content type:(EZTipsCellType)type {
     if (!EZ_isEmptyString(content)) {
+        self.contentStr = content;
         self.tipsContentLabel.stringValue = content;
     }
     self.tipsType = type;
@@ -99,28 +109,41 @@
 }
 
 - (void)updateQuestionContent {
-    NSArray *questions = self.dataDict[@"questions"];
-    NSInteger index = 0;
-    if (self.tipsType == EZTipsCellTypeNone) {
-        // random question and slove
-        index = arc4random() % questions.count;
+    if (self.tipsType == EZTipsCellTypeErrorTips ||
+        self.tipsType == EZTipsCellTypeWarnTips  ||
+        self.tipsType == EZTipsCellTypeInfoTips) {
+        self.showResloveBtnFlag = NO;
+        self.solveBtn.hidden = YES;
+        self.moreBtn.hidden = YES;
+        self.tipsContentLabel.stringValue = self.contentStr;
     } else {
-        // show special question
-        index = self.tipsType;
+        self.showResloveBtnFlag = YES;
+        NSArray *questions = self.dataDict[@"questions"];
+        NSInteger index = 0;
+        if (self.tipsType == EZTipsCellTypeNone) {
+            // random question and slove
+            index = arc4random() % questions.count;
+        } else {
+            // show special question
+            index = self.tipsType;
+        }
+        self.contentStr = questions[index];
+        self.tipsContentLabel.stringValue = self.contentStr;
+        NSArray *solves;
+        if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
+            solves = self.dataDict[@"solveZh"];
+        } else {
+            solves = self.dataDict[@"solveEn"];
+        }
+        self.questionSolveURL = solves[index];
+        self.solveBtn.link = self.questionSolveURL;
+        self.solveBtn.hidden = NO;
+        self.moreBtn.hidden = NO;
     }
-    self.tipsContentLabel.stringValue = questions[index];
-    NSArray *solves;
-    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
-        solves = self.dataDict[@"solveZh"];
-    } else {
-        solves = self.dataDict[@"solveEn"];
-    }
-    self.questionSolveURL = solves[index];
-    self.solveBtn.link = self.questionSolveURL;
 }
 
 - (CGFloat)cellHeight {
-    CGFloat cellHeight = 9 + 20 + 12 + self.tipsContentLabel.height + 9 + 32 + 6;
+    CGFloat cellHeight = 9 + 20 + 12 + self.tipsContentLabel.height + 9 + (self.showResloveBtnFlag? 32: 0) + 6;
     return cellHeight;
 }
 

@@ -34,6 +34,15 @@ struct AdvancedTab: View {
                         labelText: "disable_tips_view"
                     )
                 }
+
+                Toggle(isOn: $enableYoudaoOCR) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: "circle.rectangle.filled.pattern.diagonalline",
+                        labelText: "enable_youdao_ocr",
+                        subtitleText: "enable_youdao_ocr_desc"
+                    )
+                }
             }
             Section {
                 Toggle(isOn: $enableBetaFeature) {
@@ -55,6 +64,7 @@ struct AdvancedTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.disableTipsView) private var disableTipsView
+    @Default(.enableYoudaoOCR) private var enableYoudaoOCR
 }
 
 #Preview {
