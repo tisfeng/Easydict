@@ -27,7 +27,7 @@ NSString *const EZServiceTypeAli = @"Alibaba";
 NSString *const EZServiceTypeGemini = @"Gemini";
 NSString *const EZServiceTypeOllama = @"Ollama";
 NSString *const EZServiceTypePolishing = @"Polishing";
-NSString *const EZServiceTypeGrammar = @"Grammar";
+NSString *const EZServiceTypeSummary = @"Summary";
 
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 

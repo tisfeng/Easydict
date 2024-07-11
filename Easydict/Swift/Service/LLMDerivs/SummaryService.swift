@@ -1,5 +1,5 @@
 //
-//  GrammarService.swift
+//  SummaryService.swift
 //  Easydict
 //
 //  Created by Jerry on 2024-07-11.
@@ -7,17 +7,18 @@
 //
 
 import Foundation
+import OpenAI
 
-@objc(EZGrammarService)
-class GrammarService: BuiltInAIService {
+@objc(EZSummaryService)
+class SummaryService: BuiltInAIService {
     // MARK: Public
 
     public override func name() -> String {
-        NSLocalizedString("grammar_service", comment: "")
+        NSLocalizedString("summary_service", comment: "")
     }
 
     public override func serviceType() -> ServiceType {
-        .grammar
+        .summary
     }
 
     public override func configurationListItems() -> Any {
