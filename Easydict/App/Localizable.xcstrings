@@ -842,6 +842,40 @@
         }
       }
     },
+    "enable_youdao_ocr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Youdao OCR "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启有道 OCR 识别"
+          }
+        }
+      }
+    },
+    "enable_youdao_ocr_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the Youdao OCR for identification after a default OCR failure"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在默认OCR识别失败后使用有道OCR进行识别"
+          }
+        }
+      }
+    },
     "error_api" : {
       "localizations" : {
         "en" : {
@@ -1722,13 +1756,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ OCR result is empty.\n⚠️ Please manually select language and try again."
+            "value" : "OCR result is empty.\n⚠️ Please manually select language and try again."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。"
+            "value" : "OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。"
           }
         }
       }

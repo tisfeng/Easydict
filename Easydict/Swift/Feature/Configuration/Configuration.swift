@@ -119,6 +119,8 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
+    @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
+
     var cancellables: Set<AnyCancellable> = []
 
     @ShortcutWrapper(.pinShortcut) var pinShortcutString: String
