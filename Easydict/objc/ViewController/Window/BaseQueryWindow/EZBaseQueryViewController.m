@@ -77,6 +77,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign) BOOL isTipsViewVisible;
 
+@property (nonatomic, assign) EZTipsCellType tipsCellType;
+
+@property (nonatomic, copy) NSString *tipsCellContent;
+
 
 @end
 
@@ -210,8 +214,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
-            
-            [self trySetupSubscribersForService:service oldService:nil];
         }
         
         EZServiceType serviceType = service.serviceType;
@@ -252,11 +254,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
     
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
-    
-    // If window is deallocing, we should not continue to update.
-    if (GlobalContext.shared.subscribeWindowType == EZWindowTypeNone && self.windowType == EZWindowTypeMain) {
-        return;
-    }
     
     if ([serviceType length] != 0) {
         [self updateService:serviceType autoQuery:autoQuery];
@@ -495,7 +492,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
-                self.queryView.alertText = errorMsg;
+                [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
                 return;
             }
             
@@ -656,6 +653,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)showTipsView:(BOOL)isVisible {
+    [self showTipsView:isVisible content:@"" type:EZTipsCellTypeTextEmpty];
+}
+
+- (void)showTipsView:(BOOL)isVisible
+             content:(NSString *)content
+                type:(EZTipsCellType)type {
+    self.tipsCellType = type;
+    self.tipsCellContent = content;
+    [self.tipsCell updateTipsContent:content type:type];
     [self showTipsView:isVisible completion:nil];
 }
 
@@ -865,7 +871,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (row == 2 && self.isTipsViewVisible) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds] type:EZTipsCellTypeTextEmpty];
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
+                                                         type:self.tipsCellType content:self.tipsCellContent];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;
@@ -892,7 +899,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     } else if (row == 2 && self.isTipsViewVisible) {
         if (!self.tipsCell) {
             // mini cell height
-            height = 104;
+            if ([self isCustomTipsType]) {
+                height = 80;
+            } else {
+                height = 104;
+            }
         } else {
             height = [self.tipsCell cellHeight];
         }
@@ -1134,7 +1145,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
             
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
-            [self trySetupSubscribersForService:updatedService oldService:service];
+
+            // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+            if ([service isKindOfClass:EZLLMStreamService.class]) {
+                [((EZLLMStreamService *)service) cancelSubscribers];
+            }
+
             NSInteger index = [self.serviceTypes indexOfObject:serviceType];
             newServices[index] = updatedService;
             self.services = newServices.copy;
@@ -1154,28 +1170,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
     return [EZLocalStorage.shared allServices:self.windowType];
-}
-
-- (void)trySetupSubscribersForService:(EZQueryService *)service oldService:(nullable EZQueryService *)oldService {
-    // TODO: We should set subscribers when init EZLLMStreamService.
-    
-    /**
-     We only setup subscribers in `one` query window, we do not need extra notification in other place when init(), like settings.
-     
-     When notify a service configuration changed, it will init a new service, this is bad.
-     But for some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
-     
-     This code is so ugly, we should fix it later.
-     */
-    
-    BOOL enableSubscribe = GlobalContext.shared.subscribeWindowType == EZWindowTypeNone || GlobalContext.shared.subscribeWindowType == self.windowType;
-    
-    if ([service isKindOfClass:EZLLMStreamService.class] && enableSubscribe) {
-        [((EZLLMStreamService *)service) setupSubscribers];
-        [((EZLLMStreamService *)oldService) cancelSubscribers];
-        
-        GlobalContext.shared.subscribeWindowType = self.windowType;
-    }
 }
 
 
@@ -1674,6 +1668,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [result.copiedText copyToPasteboard];
         }];
     }];
+}
+
+- (BOOL)isCustomTipsType {
+    return self.tipsCellType == EZTipsCellTypeErrorTips ||
+    self.tipsCellType == EZTipsCellTypeInfoTips  ||
+    self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
 @end
