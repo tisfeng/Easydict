@@ -210,6 +210,18 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
+    func chatMessageDicts(_ chatQuery: ChatQueryParam)
+        -> [[String: String]] {
+        switch chatQuery.queryType {
+        case .dictionary:
+            dictMessages(chatQuery)
+        case .sentence:
+            sentenceMessages(chatQuery)
+        default:
+            translationMessages(chatQuery)
+        }
+    }
+
     func getFinalResultText(_ text: String) -> String {
         var resultText = text.trim()
 

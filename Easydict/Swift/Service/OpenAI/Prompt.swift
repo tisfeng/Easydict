@@ -27,17 +27,6 @@ extension LLMStreamService {
     You are a text summarization expert proficient in condensing lengthy documents, articles, and other text formats into concise and coherent summaries. Your summaries should capture the main points, key details, and overall essence of the original text while maintaining clarity and accuracy. Avoid adding personal opinions or interpretations. Only return the summary, without including redundant quotes or additional notes.
     """
 
-    // MARK: LLM Derivatives Messages
-
-    func llmDerivMessageDicts(_ chatQuery: LLMDerivParam) -> [[String: String]] {
-        switch chatQuery.serviceType {
-        case .polishing:
-            polishingMessages(chatQuery)
-        case .summary:
-            summaryMessages(chatQuery)
-        }
-    }
-
     private func polishingPrompt(text: String, in sourceLanguage: Language) -> String {
         "Polish the following \(sourceLanguage.queryLanguageName) text to improve its clarity, coherence, grammar, and overall quality while maintaining the original meaning and intent: \"\"\"\(text)\"\"\""
     }
@@ -46,8 +35,8 @@ extension LLMStreamService {
         "Summarize the following \(sourceLanguage.queryLanguageName) text, capturing the main points, key details, and overall essence while maintaining clarity and accuracy: \"\"\"\(text)\"\"\""
     }
 
-    private func polishingMessages(_ derivParam: LLMDerivParam) -> [[String: String]] {
-        let (text, sourceLanguage, _) = derivParam.unpack()
+    func polishingMessages(_ derivParam: ChatQueryParam) -> [[String: String]] {
+        let (text, sourceLanguage, _, _, _) = derivParam.unpack()
 
         let prompt = polishingPrompt(text: text, in: sourceLanguage)
 
@@ -85,8 +74,8 @@ extension LLMStreamService {
         return messages
     }
 
-    private func summaryMessages(_ derivParam: LLMDerivParam) -> [[String: String]] {
-        let (text, sourceLanguage, _) = derivParam.unpack()
+    func summaryMessages(_ derivParam: ChatQueryParam) -> [[String: String]] {
+        let (text, sourceLanguage, _, _, _) = derivParam.unpack()
 
         let prompt = summaryPrompt(text: text, in: sourceLanguage)
 
@@ -126,23 +115,11 @@ extension LLMStreamService {
 
     // MARK: Translation Messages
 
-    func chatMessageDicts(_ chatQuery: ChatQueryParam)
-        -> [[String: String]] {
-        switch chatQuery.queryType {
-        case .dictionary:
-            dictMessages(chatQuery)
-        case .sentence:
-            sentenceMessages(chatQuery)
-        default:
-            translationMessages(chatQuery)
-        }
-    }
-
     private func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    private func translationMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    func translationMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
         let (text, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
@@ -265,7 +242,7 @@ extension LLMStreamService {
         return messages
     }
 
-    private func sentenceMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    func sentenceMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
         let (sentence, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
         let answerLanguage = Configuration.shared.firstLanguage
@@ -447,7 +424,7 @@ extension LLMStreamService {
         return messages
     }
 
-    private func dictMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    func dictMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
         let (word, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
         var prompt = ""
