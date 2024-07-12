@@ -1,5 +1,5 @@
 //
-//  LLMDerivService.swift
+//  AIToolService.swift
 //  Easydict
 //
 //  Created by Jerry on 2024-07-12.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// A class used for LLM derivatives such as summary and polishing
+/// A class used for AI Tools such as summary and polishing
 /// Based on `BuiltInAIService` and takes `llama3-70b-8192` as the LLM
 class AIToolService: BuiltInAIService {
     public override func configurationListItems() -> Any {

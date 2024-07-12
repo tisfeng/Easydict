@@ -330,14 +330,14 @@ struct ChatQueryParam {
     }
 }
 
-// MARK: - LLMDerivParam
+// MARK: - AIToolParam
 
-struct LLMDerivParam {
+struct AIToolParam {
     let text: String
     let sourceLanguage: Language
-    let serviceType: LLMDerivType
+    let serviceType: AIToolType
 
-    func unpack() -> (String, Language, LLMDerivType) {
+    func unpack() -> (String, Language, AIToolype) {
         (text, sourceLanguage, serviceType)
     }
 }

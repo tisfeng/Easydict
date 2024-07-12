@@ -788,9 +788,9 @@ enum ChatRole: String, Codable, Equatable, CaseIterable {
     case model // Gemini role, equal to OpenAI assistant role.
 }
 
-// MARK: - LLMDerivType
+// MARK: - AIToolType
 
-enum LLMDerivType {
+enum AIToolType {
     case polishing
     case summary
 }
