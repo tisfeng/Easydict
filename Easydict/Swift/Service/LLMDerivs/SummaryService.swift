@@ -10,35 +10,12 @@ import Foundation
 import OpenAI
 
 @objc(EZSummaryService)
-class SummaryService: BuiltInAIService {
-    // MARK: Public
-
+class SummaryService: LLMDerivService {
     public override func name() -> String {
         NSLocalizedString("summary_service", comment: "")
     }
 
     public override func serviceType() -> ServiceType {
         .summary
-    }
-
-    public override func configurationListItems() -> Any {
-        StreamConfigurationView(
-            service: self,
-            showNameSection: false,
-            showAPIKeySection: false,
-            showEndpointSection: false,
-            showSupportedModelsSection: false,
-            showUsedModelSection: false,
-            showTranslationToggle: false,
-            showSentenceToggle: false,
-            showDictionaryToggle: false,
-            showUsageStatusPicker: true
-        )
-    }
-
-    // MARK: Internal
-
-    override var defaultModels: [String] {
-        ["llama3-70b-8192"]
     }
 }
