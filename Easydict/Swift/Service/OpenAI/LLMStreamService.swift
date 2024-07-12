@@ -317,3 +317,15 @@ struct ChatQueryParam {
         (text, sourceLanguage, targetLanguage, queryType, enableSystemPrompt)
     }
 }
+
+// MARK: - LLMDerivParam
+
+struct LLMDerivParam {
+    let text: String
+    let sourceLanguage: Language
+    let serviceType: LLMDerivType
+
+    func unpack() -> (String, Language, LLMDerivType) {
+        (text, sourceLanguage, serviceType)
+    }
+}

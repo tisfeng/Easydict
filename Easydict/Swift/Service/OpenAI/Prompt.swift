@@ -19,6 +19,113 @@ extension LLMStreamService {
     You are a word search assistant skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slang, abbreviations, and other information. Prioritize queries from authoritative dictionary databases, such as the Oxford Dictionary, Cambridge Dictionary, and Wikipedia. If a word or abbreviation has multiple meanings, look up the most commonly used ones.
     """
 
+    static let polishingSystemPrompt = """
+    You are a text polishing expert skilled in refining and enhancing written content. Your task is to improve the clarity, coherence, grammar, and overall quality of the text while maintaining the original meaning and intent. Focus on correcting grammatical errors, improving sentence structure, and enhancing readability. Ensure the polished text is natural and fluent. Only return the polished text, without including redundant quotes or additional notes.
+    """
+
+    static let summarySystemPrompt = """
+    You are a text summarization expert proficient in condensing lengthy documents, articles, and other text formats into concise and coherent summaries. Your summaries should capture the main points, key details, and overall essence of the original text while maintaining clarity and accuracy. Avoid adding personal opinions or interpretations. Only return the summary, without including redundant quotes or additional notes.
+    """
+
+    // MARK: LLM Derivatives Messages
+
+    func llmDerivMessageDicts(_ chatQuery: LLMDerivParam) -> [[String: String]] {
+        switch chatQuery.serviceType {
+        case .polishing:
+            polishingMessages(chatQuery)
+        case .summary:
+            summaryMessages(chatQuery)
+        }
+    }
+
+    private func polishingPrompt(text: String, in sourceLanguage: Language) -> String {
+        "Polish the following \(sourceLanguage.queryLanguageName) text to improve its clarity, coherence, grammar, and overall quality while maintaining the original meaning and intent: \"\"\"\(text)\"\"\""
+    }
+
+    private func summaryPrompt(text: String, in sourceLanguage: Language) -> String {
+        "Summarize the following \(sourceLanguage.queryLanguageName) text, capturing the main points, key details, and overall essence while maintaining clarity and accuracy: \"\"\"\(text)\"\"\""
+    }
+
+    private func polishingMessages(_ derivParam: LLMDerivParam) -> [[String: String]] {
+        let (text, sourceLanguage, _) = derivParam.unpack()
+
+        let prompt = polishingPrompt(text: text, in: sourceLanguage)
+
+        let englishFewShot = [
+            chatMessagePair(
+                userContent: "Polish the following English text to improve its clarity and coherence: \"\"\"The book was wrote by an unknown author but it was very popular among readers.\"\"\"",
+                assistantContent: "The book was written by an unknown author, but it was very popular among readers."
+            ),
+            chatMessagePair(
+                userContent: "Polish the following English text to improve its grammar and readability: \"\"\"She don’t like the weather today, it makes her feel bad.\"\"\"",
+                assistantContent: "She doesn't like the weather today; it makes her feel bad."
+            ),
+            chatMessagePair(
+                userContent: "Polish the following English text to enhance its overall quality: \"\"\"The project was successful although we faced many problems in the beginning.\"\"\"",
+                assistantContent: "The project was successful despite facing many problems in the beginning."
+            ),
+        ].flatMap { $0 }
+
+        let systemMessages = [chatMessage(
+            role: .system,
+            content: LLMStreamService.polishingSystemPrompt
+        )]
+
+        var messages = systemMessages
+        messages.append(contentsOf: englishFewShot)
+
+        let userMessages = [
+            [
+                "role": "user",
+                "content": prompt,
+            ],
+        ]
+
+        messages.append(contentsOf: userMessages)
+        return messages
+    }
+
+    private func summaryMessages(_ derivParam: LLMDerivParam) -> [[String: String]] {
+        let (text, sourceLanguage, _) = derivParam.unpack()
+
+        let prompt = summaryPrompt(text: text, in: sourceLanguage)
+
+        let englishFewShot = [
+            chatMessagePair(
+                userContent: "Summarize the following English text: \"\"\"The quick brown fox jumps over the lazy dog. The fox is very quick and agile, making it difficult for the dog to catch up. Despite several attempts, the dog remains lazy and doesn't put in much effort to chase the fox.\"\"\"",
+                assistantContent: "The quick and agile fox jumps over the lazy dog, who remains lazy and doesn't put in much effort to chase the fox."
+            ),
+            chatMessagePair(
+                userContent: "Summarize the following English text: \"\"\"In a faraway land, there was a kingdom ruled by a wise king. The king was known for his fairness and kindness. He ensured that all his subjects were treated equally and that justice was served. Under his rule, the kingdom prospered and the people lived in peace and harmony.\"\"\"",
+                assistantContent: "A wise and fair king ruled a prosperous kingdom where justice was served and people lived in peace and harmony."
+            ),
+            chatMessagePair(
+                userContent: "Summarize the following English text: \"\"\"The new restaurant in town has become very popular due to its delicious food and excellent service. Many people visit the restaurant every day to enjoy the meals and the pleasant atmosphere. The chef is renowned for his culinary skills and the staff are very friendly.\"\"\"",
+                assistantContent: "The new restaurant is popular for its delicious food, excellent service, renowned chef, and friendly staff."
+            ),
+        ].flatMap { $0 }
+
+        let systemMessages = [chatMessage(
+            role: .system,
+            content: LLMStreamService.summarySystemPrompt
+        )]
+
+        var messages = systemMessages
+        messages.append(contentsOf: englishFewShot)
+
+        let userMessages = [
+            [
+                "role": "user",
+                "content": prompt,
+            ],
+        ]
+
+        messages.append(contentsOf: userMessages)
+        return messages
+    }
+
+    // MARK: Translation Messages
+
     func chatMessageDicts(_ chatQuery: ChatQueryParam)
         -> [[String: String]] {
         switch chatQuery.queryType {
@@ -702,6 +809,13 @@ enum ChatRole: String, Codable, Equatable, CaseIterable {
     case assistant
     case tool
     case model // Gemini role, equal to OpenAI assistant role.
+}
+
+// MARK: - LLMDerivType
+
+enum LLMDerivType {
+    case polishing
+    case summary
 }
 
 // swiftlint:enable all
