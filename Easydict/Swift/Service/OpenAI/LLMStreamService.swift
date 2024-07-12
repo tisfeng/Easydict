@@ -329,15 +329,3 @@ struct ChatQueryParam {
         (text, sourceLanguage, targetLanguage, queryType, enableSystemPrompt)
     }
 }
-
-// MARK: - AIToolParam
-
-struct AIToolParam {
-    let text: String
-    let sourceLanguage: Language
-    let serviceType: AIToolType
-
-    func unpack() -> (String, Language, AIToolype) {
-        (text, sourceLanguage, serviceType)
-    }
-}
