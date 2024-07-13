@@ -31,8 +31,13 @@ extension LLMStreamService {
         "Polish the following \(sourceLanguage.queryLanguageName) text to improve its clarity, coherence, grammar, and overall quality while maintaining the original meaning and intent: \"\"\"\(text)\"\"\""
     }
 
-    private func summaryPrompt(text: String, in sourceLanguage: Language) -> String {
-        "Summarize the following \(sourceLanguage.queryLanguageName) text, capturing the main points, key details, and overall essence while maintaining clarity and accuracy: \"\"\"\(text)\"\"\" Your summary should also be in \(sourceLanguage.queryLanguageName)."
+    private func summaryPrompt(
+        text: String,
+        sourceLanguage: Language,
+        answerLanguage: Language
+    )
+        -> String {
+        "Using \(answerLanguage.rawValue) to summarize the following \(sourceLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\"."
     }
 
     func polishingMessages(_ derivParam: ChatQueryParam) -> [[String: String]] {
@@ -76,34 +81,19 @@ extension LLMStreamService {
 
     func summaryMessages(_ derivParam: ChatQueryParam) -> [[String: String]] {
         let (text, sourceLanguage, _, _, _) = derivParam.unpack()
+        let answerLanguage = Configuration.shared.firstLanguage
+        let prompt = summaryPrompt(text: text, sourceLanguage: sourceLanguage, answerLanguage: answerLanguage)
 
-        let prompt = summaryPrompt(text: text, in: sourceLanguage)
-
-        let englishFewShot = [
+        let fewShot = [
             chatMessagePair(
-                userContent: "Summarize the following English text: \"\"\"The quick brown fox jumps over the lazy dog. The fox is very quick and agile, making it difficult for the dog to catch up. Despite several attempts, the dog remains lazy and doesn't put in much effort to chase the fox.\"\"\" Your summary should also be in English.",
+                userContent: "Using English to summarize the following English text: \"\"\"The quick brown fox jumps over the lazy dog. The fox is very quick and agile, making it difficult for the dog to catch up. Despite several attempts, the dog remains lazy and doesn't put in much effort to chase the fox.\"\"\" Your summary should also be in English.",
                 assistantContent: "The quick and agile fox jumps over the lazy dog, who remains lazy and doesn't put in much effort to chase the fox."
             ),
             chatMessagePair(
-                userContent: "Summarize the following English text: \"\"\"In a faraway land, there was a kingdom ruled by a wise king. The king was known for his fairness and kindness. He ensured that all his subjects were treated equally and that justice was served. Under his rule, the kingdom prospered and the people lived in peace and harmony.\"\"\" Your summary should also be in English.",
-                assistantContent: "A wise and fair king ruled a prosperous kingdom where justice was served and people lived in peace and harmony."
-            ),
-            chatMessagePair(
-                userContent: "Summarize the following English text: \"\"\"The new restaurant in town has become very popular due to its delicious food and excellent service. Many people visit the restaurant every day to enjoy the meals and the pleasant atmosphere. The chef is renowned for his culinary skills and the staff are very friendly.\"\"\" Your summary should also be in English.",
-                assistantContent: "The new restaurant is popular for its delicious food, excellent service, renowned chef, and friendly staff."
-            ),
-            chatMessagePair(
-                userContent: "Summarize the following 简体中文 text: \"\"\"联合国在西非地区的最高官员周五表示，马里、布基纳法索和尼日尔决定退出西非国家经济共同体，将全面破坏地区关系，而此时恐怖主义和跨国有组织犯罪仍然对该地区构成普遍威胁。联合国西非和萨赫勒办事处负责人莱昂纳多•桑托斯•西芒向安理会表示，放弃西非经共体 将使三个军方领导的政府放弃关键利益，包括地区一体化、行动自由、安全合作和一体化的地区经济，这既伤害了他们自己，也伤害了西非经共体的其他成员。在高级军官分别于 2021 年、2022 年和 2023 年发动军事接管后，这三个过渡政府断绝了与西非经共体的关系。西芒说，军事领导人因此推迟了恢复宪政的时间，并引发了对长期不确定性的恐惧，因为公民空间继续缩小。\"\"\" Your summary should also be in 简体中文.",
+                userContent: "Using Simplified-Chinese to summarize the following text: \"\"\"联合国在西非地区的最高官员周五表示，马里、布基纳法索和尼日尔决定退出西非国家经济共同体，将全面破坏地区关系，而此时恐怖主义和跨国有组织犯罪仍然对该地区构成普遍威胁。联合国西非和萨赫勒办事处负责人莱昂纳多•桑托斯•西芒向安理会表示，放弃西非经共体 将使三个军方领导的政府放弃关键利益，包括地区一体化、行动自由、安全合作和一体化的地区经济，这既伤害了他们自己，也伤害了西非经共体的其他成员。在高级军官分别于 2021 年、2022 年和 2023 年发动军事接管后，这三个过渡政府断绝了与西非经共体的关系。西芒说，军事领导人因此推迟了恢复宪政的时间，并引发了对长期不确定性的恐惧，因为公民空间继续缩小。",
                 assistantContent: "马里、布基纳法索和尼日尔退出西非国家经济共同体，将严重破坏地区关系，尤其是在恐怖主义和跨国有组织犯罪仍威胁该地区的情况下。联合国官员西芒指出，这一决定将使这三个国家失去地区一体化、安全合作和经济利益，推迟恢复宪政，并加剧长期不确定性。"
             ),
-            chatMessagePair(
-                userContent: "Summarize the following 简体中文 text: \"\"\"联合国秘书长古特雷斯在为世界人口日的致辞中表示，为了实现社会边缘人群的权利和选择，我们必须将他们算在内——因为每个人都很重要。他说：“我们丰富多彩的人类织锦的强度取决于它最薄弱的丝线。当数据和其他系统为边缘人群服务时，它们就为所有人服务了。这就是我们加速所有人进步的方式。” 为了更深入研究这些人口数据，自1951年起，联合国经济和社会事务部已经出版了28版《世界人口展望》报告，该报告提供了237个国家从1950年至2024年的最新人口数据，以及直至2100年的预测数据。《世界人口展望》对监测可持续发展目标至关重要，大约四分之一的指标依赖于其数据。报告指出，世界总体生育率正在下降，妇女平均生育子女数比1990年左右减少了一个。超过半数的国家和地区，女性平均生育子女数低于2.1个，这是维持人口稳定的水平。 与此同时，将近五分之一的国家和地区，包括中国、意大利、韩国和西班牙，现在面临“超低生育率”，女性一生平均生育子女数少于1.4个。\"\"\" Your summary should also be in 简体中文.",
-                assistantContent: "联合国秘书长古特雷斯在世界人口日致辞中强调，包容社会边缘人群至关重要。自1951年以来，联合国经济和社会事务部发布了28版《世界人口展望》，提供237个国家从1950年至2024年的数据及至2100年的预测。报告显示，全球生育率下降，女性平均生育子女数比1990年减少一个。超过半数国家和地区生育率低于2.1，近五分之一（如中国、意大利、韩国、西班牙）面临“超低生育率”，生育率低于1.4。"
-            ),
-            chatMessagePair(
-                userContent: "Summarize the following 简体中文 text: \"\"\"新数据显示，全球近三分之一(31%)的成年人(约18亿人)在2022年未达到所建议的身体活动水平。研究结果指出，成年人缺乏身体活动的趋势令人担忧。2010年至2022年期间，成年人缺乏身体活动百分比增加了大约5个百分点。如果这一趋势继续下去，预计到2030年，缺乏身体活动百分比将进一步上升到35%。目前全世界距离实现到2030年减少缺乏身体活动率的全球目标还有很大差距。世界卫生组织（世卫组织）建议成年人每周进行150分钟的中等强度身体活动或75分钟的高强度身体活动。缺乏身体活动会加剧成年人患心血管疾病（如心脏病和中风）、2型糖尿病、痴呆症以及乳腺癌和结肠癌的风险。这项研究由世卫组织研究人员与学术界同事共同开展，研究结果发表在《柳叶刀全球健康》杂志上。世卫组织总干事谭德塞博士说，“这些新研究成果显示，由于未能增加身体活动，人们未能抓住机会减少癌症和心脏病以及改善精神健康和福祉。我们必须重申承诺，努力提高身体活动水平，大力采取果断行动，包括加强政策和增加资金，以扭转这一令人担忧的趋势”。高收入亚太地区(48%)和南亚(45%)缺乏身体活动率最高。其他地区的缺乏身体活动水平从高收入西方国家的28%到大洋洲的14%不等。令人关切的是，在不同性别之间和不同年龄之间仍然存在差距。与男性相比，全球女性缺乏身体活动情况仍较普遍，缺乏活动率为34%，男性为29%。在一些国家，这一差距达20个百分点。此外，与其他成年人群相比，60岁以上的人身体活动较少，因此，我们需要促进老年人开展更多身体活动。\"\"\" Your summary should also be in 简体中文.",
-                assistantContent: "2022年，全球31%（约18亿人）的成年人未达到建议的身体活动水平，2010年至2022年间增加了5个百分点。如果持续下去，2030年将升至35%。世卫组织建议每周150分钟中等强度或75分钟高强度活动，缺乏活动增加多种疾病风险。世卫组织总干事谭德塞博士呼吁加强政策和资金投入以提高身体活动水平。高收入亚太地区（48%）和南亚（45%）的缺乏活动率最高，其他地区从高收入西方国家的28%到大洋洲的14%不等。女性（34%）和老年人缺乏活动较多，男性为29%。性别差距在一些国家达20个百分点，60岁以上人群活动较少。"
-            ),
+
         ].flatMap { $0 }
 
         let systemMessages = [chatMessage(
@@ -112,7 +102,7 @@ extension LLMStreamService {
         )]
 
         var messages = systemMessages
-        messages.append(contentsOf: englishFewShot)
+        messages.append(contentsOf: fewShot)
 
         let userMessages = [
             [
