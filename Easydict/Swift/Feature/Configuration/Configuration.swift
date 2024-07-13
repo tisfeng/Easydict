@@ -88,6 +88,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
 
     @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
+    @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
 

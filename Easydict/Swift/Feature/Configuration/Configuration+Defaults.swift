@@ -73,6 +73,8 @@ extension Defaults.Keys {
         "EZConfiguration_kShortcutSelectTranslateWindowTypeKey",
         default: .fixed
     )
+    static let pinWindowWhenDisplayed = Key<Bool>("EZConfiguration_kPinWindowWhenDisplayed", default: false)
+
     static let adjustPopButtonOrigin = Key<Bool>("EZConfiguration_kAdjustPopButtomOriginKey", default: false)
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
