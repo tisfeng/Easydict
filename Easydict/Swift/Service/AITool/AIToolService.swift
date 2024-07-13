@@ -6,11 +6,13 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 /// A class used for AI Tools such as summary and polishing
-/// Based on `BuiltInAIService` and takes `llama3-70b-8192` as the LLM
 class AIToolService: BuiltInAIService {
+    // MARK: Public
+
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
@@ -24,5 +26,11 @@ class AIToolService: BuiltInAIService {
             showDictionaryToggle: false,
             showUsageStatusPicker: true
         )
+    }
+
+    // MARK: Internal
+
+    override var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
+        serviceDefaultsKey(.serviceUsageStatus, defaultValue: .alwaysOff)
     }
 }
