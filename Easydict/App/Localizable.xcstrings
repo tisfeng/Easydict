@@ -3852,6 +3852,12 @@
     },
     "summary_service" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
