@@ -315,10 +315,8 @@ static EZWindowManager *_instance;
     }
     
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-    window.titleBar.pin = Configuration.shared.pinWindowWhenDisplayed;
-
     EZBaseQueryViewController *queryViewController = window.queryViewController;
-
+    
     // If text is nil, means we don't need to query anything, just show the window.
     if (!queryText) {
         /**
