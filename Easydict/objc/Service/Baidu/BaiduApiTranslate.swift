@@ -36,17 +36,17 @@ class BaiduApiTranslate: NSObject {
         }
 
         guard let utf8Data = text.data(using: .utf8),
-              let q = String(data: utf8Data, encoding: .utf8) else {
+              let utf8String = String(data: utf8Data, encoding: .utf8) else {
             logError("Failed to convert text to UTF8")
             completion(result, EZError(type: EZErrorType.API, description: "Failed to convert text to UTF8"))
             return
         }
         let salt = UUID().uuidString
-        let sign = appId + q + salt + secretKey
+        let sign = appId + utf8String + salt + secretKey
         let signMd5 = sign.md5()
 
         let param: [String: Any] = [
-            "q": q,
+            "q": utf8String,
             "from": from.rawValue,
             "to": to.rawValue,
             "appid": appId,
