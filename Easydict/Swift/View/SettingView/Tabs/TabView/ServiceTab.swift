@@ -66,11 +66,20 @@ struct ServiceTab: View {
 // MARK: - ServiceTabViewModel
 
 private class ServiceTabViewModel: ObservableObject {
+    // MARK: Lifecycle
+
+    init(windowType: EZWindowType = .fixed) {
+        self.windowType = windowType
+        self.services = EZLocalStorage.shared().allServices(windowType)
+    }
+
+    // MARK: Internal
+
     @Published var selectedService: QueryService?
 
-    @Published private(set) var services: [QueryService] = EZLocalStorage.shared().allServices(.mini)
+    private(set) var services: [QueryService]
 
-    @Published var windowType = EZWindowType.mini {
+    @Published var windowType: EZWindowType {
         didSet {
             if oldValue != windowType {
                 updateServices()
@@ -231,7 +240,7 @@ private struct WindowTypePicker: View {
 
     var body: some View {
         Picker(selection: $windowType) {
-            ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
+            ForEach([EZWindowType]([.fixed, .mini, .main]), id: \.rawValue) { windowType in
                 Text(windowType.localizedStringResource)
                     .tag(windowType)
             }

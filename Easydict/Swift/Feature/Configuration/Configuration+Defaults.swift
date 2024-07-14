@@ -67,7 +67,7 @@ extension Defaults.Keys {
     )
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
-        default: .mini
+        default: .fixed
     )
     static let shortcutSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kShortcutSelectTranslateWindowTypeKey",
