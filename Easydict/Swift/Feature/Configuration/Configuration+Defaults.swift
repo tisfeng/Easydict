@@ -318,6 +318,10 @@ extension Defaults.Keys {
 
     // Gemni
     static let geminiAPIKey = Key<String?>(EZGeminiAPIKey)
+
+    // baidu
+    static let baiduAppId = Key<String?>(EZBaiduAppId)
+    static let baiduSecretKey = Key<String?>(EZBaiduSecretKey)
 }
 
 /// shortcut

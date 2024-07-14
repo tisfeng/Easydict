@@ -35,4 +35,5 @@
 #import "EZDeepLTranslate.h"
 #import "EZBingService.h"
 #import "NSString+EZUtils.h"
+#import "EZBaiduTranslate.h"
 

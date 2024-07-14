@@ -58,6 +58,9 @@ static NSString *const EZGeminiAPIKey = @"EZGeminiAPIKey";
 static NSString *const EZAliAccessKeyId = @"EZAliAccessKeyId";
 static NSString *const EZAliAccessKeySecret = @"EZAliAccessKeySecret";
 
+static NSString *const EZBaiduAppId = @"EZBaiduAppId";
+static NSString *const EZBaiduSecretKey = @"EZBaiduSecretKey";
+
 @interface EZConstKey : NSObject
 
 + (NSString *)constkey:(NSString *)key windowType:(EZWindowType)windowType;

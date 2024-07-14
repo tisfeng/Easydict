@@ -22,6 +22,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 @property (nonatomic, strong) JSValue *jsFunction;
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) AFHTTPSessionManager *jsonSession;
+@property (nonatomic, strong) EZBaiduApiTranslate *apiTranslate;
 
 @property (nonatomic, copy) NSString *token;
 @property (nonatomic, copy) NSString *gtk;
@@ -45,6 +46,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
          
          FIX https://github.com/tisfeng/Easydict/issues/466
          */
+        
+        self.apiTranslate = [[EZBaiduApiTranslate alloc] initWithQueryModel:self.queryModel];
     }
     return self;
 }
@@ -121,6 +124,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 #pragma mark - 重写父类方法
+
+- (void)setResult:(EZQueryResult *)result {
+    [super setResult:result];
+    self.apiTranslate.result = result;
+}
 
 - (EZServiceType)serviceType {
     return EZServiceTypeBaidu;
@@ -222,6 +230,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
     
     text = [text trimToMaxLength:5000];
+    
+    if (self.apiTranslate.isEnable) {
+        [self.apiTranslate translate:text from:[self languageCodeForLanguage:from] to:[self languageCodeForLanguage:to] completion:completion];
+        return;
+    }
     
     void (^request)(void) = ^(void) {
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
