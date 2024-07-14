@@ -81,10 +81,15 @@
 }
 
 - (void)setPin:(BOOL)pin {
+    [self updateWindowLevel:pin];
+    self.titleBar.pin = pin;
+}
+
+- (void)updateWindowLevel:(BOOL)pin {
     _pin = pin;
-    
+
     // !!!: Do not use kCGMaximumWindowLevel, otherwise it will obscure the tooltip.
-    NSWindowLevel level = self.pin ? kCGUtilityWindowLevel : kCGNormalWindowLevel;
+    NSWindowLevel level = pin ? kCGUtilityWindowLevel : kCGNormalWindowLevel;
     self.level = level;
 }
 
