@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 extension EZBaiduTranslate {
-    func configurationListItems() -> some View {
+    open override func configurationListItems() -> Any {
         ServiceConfigurationSecretSectionView(
             service: self,
             observeKeys: [.baiduAppId, .baiduSecretKey]
