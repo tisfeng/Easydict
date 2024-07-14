@@ -89,7 +89,7 @@ struct GeneralTab: View {
                             .tag(option)
                     }
                 }
-                Toggle(isOn: $pinWindowWhenShowing) {
+                Toggle(isOn: $pinWindowWhenDisplayed) {
                     Text("setting.general.pin_window_when_showing")
                 }
                 Toggle(isOn: $hideMainWindow) {
@@ -277,7 +277,7 @@ struct GeneralTab: View {
     @Default(.fixedWindowPosition) private var fixedWindowPosition
     @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
     @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
-    @Default(.pinWindowWhenDisplayed) private var pinWindowWhenShowing
+    @Default(.pinWindowWhenDisplayed) private var pinWindowWhenDisplayed
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.appearanceType) private var appearanceType
 
