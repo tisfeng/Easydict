@@ -312,6 +312,9 @@
 		C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */; };
 		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CB46AD812C43E8E5002472B4 /* BaiduApiTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB46AD7F2C43E8E4002472B4 /* BaiduApiTranslate.swift */; };
+		CB46AD822C43E8E5002472B4 /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB46AD802C43E8E4002472B4 /* BaiduApiResponse.swift */; };
+		CB46AD842C43E925002472B4 /* BaiduTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB46AD832C43E925002472B4 /* BaiduTranslate+ConfigurableService.swift */; };
 		DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3C643E2B187119008EEDD8 /* ChangeFontSizeView.swift */; };
 		DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* Configuration.swift */; };
 		DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */; };
@@ -850,6 +853,9 @@
 		C4DE3D6E2AC00EB500C2B85D /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C99EEB182385796700FEE666 /* Easydict-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB46AD7F2C43E8E4002472B4 /* BaiduApiTranslate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiTranslate.swift; sourceTree = "<group>"; };
+		CB46AD802C43E8E4002472B4 /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
+		CB46AD832C43E925002472B4 /* BaiduTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BaiduTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
 		DC3C643E2B187119008EEDD8 /* ChangeFontSizeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeFontSizeView.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSizeHintView.swift; sourceTree = "<group>"; };
@@ -1509,6 +1515,8 @@
 		03B0222C29231FA6001C7E63 /* Baidu */ = {
 			isa = PBXGroup;
 			children = (
+				CB46AD802C43E8E4002472B4 /* BaiduApiResponse.swift */,
+				CB46AD7F2C43E8E4002472B4 /* BaiduApiTranslate.swift */,
 				03542A412937B45E00C34C33 /* EZBaiduTranslate.h */,
 				03542A422937B45E00C34C33 /* EZBaiduTranslate.m */,
 				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
@@ -2549,6 +2557,7 @@
 				0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */,
 				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
 				0AC8A84A2B6A629D006DA5CC /* GeminiService+ConfigurableService.swift */,
+				CB46AD832C43E925002472B4 /* BaiduTranslate+ConfigurableService.swift */,
 			);
 			path = "QueryService+ConfigurableService";
 			sourceTree = "<group>";
@@ -3005,6 +3014,7 @@
 				27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
 				276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */,
+				CB46AD822C43E8E5002472B4 /* BaiduApiResponse.swift in Sources */,
 				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				0AC8A8392B666F07006DA5CC /* CaiyunService+ConfigurableService.swift in Sources */,
@@ -3078,6 +3088,7 @@
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
+				CB46AD812C43E8E5002472B4 /* BaiduApiTranslate.swift in Sources */,
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
@@ -3144,6 +3155,7 @@
 				03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */,
 				62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */,
 				03B0232729231FA6001C7E63 /* NSColor+MM.m in Sources */,
+				CB46AD842C43E925002472B4 /* BaiduTranslate+ConfigurableService.swift in Sources */,
 				03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */,
 				03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */,
 				0A318F3B2B8CCCCD0005EF77 /* CustomOpenAIService+ConfigurableService.swift in Sources */,
