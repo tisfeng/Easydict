@@ -28,6 +28,7 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageKorean;
 FOUNDATION_EXPORT EZLanguage const EZLanguageFrench;
 FOUNDATION_EXPORT EZLanguage const EZLanguageSpanish;
 FOUNDATION_EXPORT EZLanguage const EZLanguagePortuguese;
+FOUNDATION_EXPORT EZLanguage const EZLanguageBrazilianPortuguese;
 FOUNDATION_EXPORT EZLanguage const EZLanguageItalian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageGerman;
 FOUNDATION_EXPORT EZLanguage const EZLanguageRussian;

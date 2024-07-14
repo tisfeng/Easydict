@@ -22,7 +22,6 @@ enum SettingTab: Int {
 
 // MARK: - SettingView
 
-@available(macOS 13, *)
 struct SettingView: View {
     // MARK: Internal
 
@@ -78,7 +77,7 @@ struct SettingView: View {
         case .disabled:
             500
         case .advanced:
-            400
+            350
         case .privacy:
             320
         case .about:
@@ -94,6 +93,11 @@ struct SettingView: View {
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
         window.setFrame(newRect, display: true, animate: true)
+
+        // Disable user to resize window, wait for the animation to finish.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            window.styleMask.remove(.resizable)
+        }
     }
 
     // MARK: Private
@@ -102,7 +106,6 @@ struct SettingView: View {
     @State private var window: NSWindow?
 }
 
-@available(macOS 13, *)
 #Preview {
     SettingView()
 }

@@ -21,6 +21,12 @@ class GlobalContext: NSObject {
             updaterDelegate: updaterHelper,
             userDriverDelegate: userDriverHelper
         )
+
+        for service in services {
+            if let llmService = service as? LLMStreamService {
+                llmService.setupSubscribers()
+            }
+        }
     }
 
     // MARK: Internal
@@ -49,4 +55,15 @@ class GlobalContext: NSObject {
 
     private let updaterHelper: SPUUpdaterHelper
     private let userDriverHelper: SPUUserDriverHelper
+
+    // TODO: This code is not good, we should improve it later.
+
+    /**
+     We need all services to observe llm serivce subscribers for query windows and settings, `services` should keep a strong reference and do not deallocate during the app lifecycle.
+
+     When notify a service configuration changed, it will init a new service, this is bad.
+
+     For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+     */
+    private let services = EZLocalStorage.shared().allServices(.none)
 }

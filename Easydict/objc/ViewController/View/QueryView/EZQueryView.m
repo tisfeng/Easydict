@@ -16,7 +16,6 @@
 #import "EZDetectLanguageButton.h"
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
-#import "EZConfiguration.h"
 #import "NSImage+EZSymbolmage.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
@@ -83,9 +82,8 @@
             self.pasteTextBlock(text);
         }
     }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
-        mm_strongify(self);
+
+    [[NSNotificationCenter defaultCenter] addObserverForName:NotificationName.didChangeFontSize object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
         self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
     }];
     

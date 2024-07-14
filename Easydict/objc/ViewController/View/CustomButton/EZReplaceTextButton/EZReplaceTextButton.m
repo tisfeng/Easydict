@@ -86,10 +86,12 @@
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
     [replacementString copyToPasteboard];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    CGFloat delayTime = 2 * EZGetClipboardTextDelayTime;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [EZSystemUtility postPasteEvent];
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [lastText copyToPasteboard];
         });
     });

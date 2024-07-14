@@ -8,8 +8,6 @@
 
 import Defaults
 import SwiftUI
-
-@available(macOS 13, *)
 struct AdvancedTab: View {
     // MARK: Internal
 
@@ -29,6 +27,22 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $disableTipsView) {
+                    AdvancedTabItemView(
+                        color: .yellow,
+                        systemImage: "lightbulb.fill",
+                        labelText: "disable_tips_view"
+                    )
+                }
+
+                Toggle(isOn: $enableYoudaoOCR) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: "circle.rectangle.filled.pattern.diagonalline",
+                        labelText: "enable_youdao_ocr",
+                        subtitleText: "enable_youdao_ocr_desc"
+                    )
+                }
             }
             Section {
                 Toggle(isOn: $enableBetaFeature) {
@@ -36,14 +50,6 @@ struct AdvancedTab: View {
                         color: .blue,
                         systemImage: "hammer.fill",
                         labelText: "setting.general.advance.enable_beta_feature"
-                    )
-                }
-                Toggle(isOn: $enableBetaNewApp) {
-                    AdvancedTabItemView(
-                        color: swiftColor,
-                        systemImage: "swift",
-                        labelText: "enable_beta_new_app",
-                        subtitleText: "enable_beta_new_app_info"
                     )
                 }
             }
@@ -57,10 +63,10 @@ struct AdvancedTab: View {
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
-    @Default(.enableBetaNewApp) private var enableBetaNewApp
+    @Default(.disableTipsView) private var disableTipsView
+    @Default(.enableYoudaoOCR) private var enableYoudaoOCR
 }
 
-@available(macOS 13, *)
 #Preview {
     AdvancedTab()
 }

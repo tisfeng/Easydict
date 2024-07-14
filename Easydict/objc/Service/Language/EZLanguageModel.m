@@ -18,6 +18,7 @@ NSString *const EZLanguageKorean = @"Korean";
 NSString *const EZLanguageFrench = @"French";
 NSString *const EZLanguageSpanish = @"Spanish";
 NSString *const EZLanguagePortuguese = @"Portuguese";
+NSString *const EZLanguageBrazilianPortuguese = @"Brazilian-Portuguese";
 NSString *const EZLanguageItalian = @"Italian";
 NSString *const EZLanguageGerman = @"German";
 NSString *const EZLanguageRussian = @"Russian";
@@ -156,8 +157,17 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         portuguese.localName = @"Português";
         portuguese.flagEmoji = @"🇵🇹";
         portuguese.localeIdentifier = @"pt_PT";
-        portuguese.voiceName = @"Luciana";
+        portuguese.voiceName = @"Joana";
         [allLanguages setObject:portuguese forKey:EZLanguagePortuguese];
+        
+        EZLanguageModel *brazilianPortuguese = [[EZLanguageModel alloc] init];
+        brazilianPortuguese.chineseName = @"葡萄牙语（巴西）";
+        brazilianPortuguese.englishName = EZLanguageBrazilianPortuguese;
+        brazilianPortuguese.localName = @"Português (Brasil)";
+        brazilianPortuguese.flagEmoji = @"🇧🇷";
+        brazilianPortuguese.localeIdentifier = @"pt_BR";
+        brazilianPortuguese.voiceName = @"Luciana";
+        [allLanguages setObject:brazilianPortuguese forKey:EZLanguageBrazilianPortuguese];
         
         EZLanguageModel *italianLang = [[EZLanguageModel alloc] init];
         italianLang.chineseName = @"意大利语";

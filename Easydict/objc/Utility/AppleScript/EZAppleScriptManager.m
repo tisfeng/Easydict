@@ -7,7 +7,6 @@
 //
 
 #import "EZAppleScriptManager.h"
-#import "EZConfiguration.h"
 
 @interface EZAppleScriptManager ()
 

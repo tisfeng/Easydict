@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "EZShortcut.h"
 #import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
 
@@ -19,19 +18,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
-    
-    // Capturing crash logs must be placed first.
-    [MMCrash registerHandler];
-    
-    [EZLog setupCrashLogService];
-    [EZLog logAppInfo];
 
-    if (!Configuration.shared.enableBetaNewApp) {
-        [EZMenuItemManager.shared setup];
-        [EZShortcut setup];
-    } else {
-        [Shortcut setupShortcut];
-    }
+    [Shortcut setupShortcut];
 
     [EZWindowManager.shared showMainWindowIfNeeded];
     
@@ -60,7 +48,7 @@
 #pragma mark - NSApplicationDelegate
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [[EZMenuItemManager shared] remove];
+    
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {

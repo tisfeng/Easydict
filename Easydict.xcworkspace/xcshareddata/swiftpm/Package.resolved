@@ -1,5 +1,5 @@
 {
-  "originHash" : "a995ca1e217de6a305cfafa6275749b61cb5fb17e18c35671935a1737e5aa34b",
+  "originHash" : "c08faef207d4abe4942f46cbbff9587355018cfffbc88badfc29bcb2100a7649",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "1120c26835925f8314d035127c580bc71689c620",
         "version" : "5.0.4"
+      }
+    },
+    {
+      "identity" : "axswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tmandry/AXSwift",
+      "state" : {
+        "revision" : "81dcc36aced905d6464cc25e35f8d13184bbf21c",
+        "version" : "0.3.2"
       }
     },
     {
@@ -78,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/generative-ai-swift",
       "state" : {
-        "revision" : "dcbdb5e591e1aa2bb68851dc7515f6b0a59026cd",
-        "version" : "0.4.7"
+        "revision" : "54784005b57c2235a7669e0c12e8dafa68f0ca5f",
+        "version" : "0.5.4"
       }
     },
     {
@@ -155,6 +164,15 @@
       }
     },
     {
+      "identity" : "keysender",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jordanbaird/KeySender",
+      "state" : {
+        "revision" : "99584bf1a03ab600cc44be89a2dcd98b2dbeb9de",
+        "version" : "0.0.5"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
@@ -196,7 +214,7 @@
       "location" : "https://github.com/tisfeng/OpenAI",
       "state" : {
         "branch" : "dev",
-        "revision" : "ae7242e06730608caa79dfffd599ba91640f0f10"
+        "revision" : "97a67f5c7099996a772c3085dd1b29673a470e57"
       }
     },
     {
@@ -299,6 +317,15 @@
       }
     },
     {
+      "identity" : "vortex",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/twostraws/Vortex",
+      "state" : {
+        "revision" : "bb48b128d3c13c68c68e83833c622eec9f6c701f",
+        "version" : "1.0.1"
+      }
+    },
+    {
       "identity" : "ziparchive",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ZipArchive/ZipArchive.git",
@@ -308,5 +335,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

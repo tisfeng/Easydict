@@ -6,81 +6,28 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
 import OpenAI
 
 // MARK: - BaseOpenAIService
 
-// In order to solve the problems caused by inheriting the OpenAI service for custom OpenAI services, we had to add a new base class. FIX https://github.com/tisfeng/Easydict/pull/473#issuecomment-2022587699
-
 @objcMembers
 @objc(EZBaseOpenAIService)
-public class BaseOpenAIService: QueryService {
+public class BaseOpenAIService: LLMStreamService {
     // MARK: Public
 
-    override public func isStream() -> Bool {
-        true
-    }
-
-    override public func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
-    }
-
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let allLangauges = EZLanguageManager.shared().allLanguages
-        let supportedLanguages = allLangauges.filter { language in
-            !unsupportedLanguages.contains(language)
-        }
-
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for language in supportedLanguages {
-            orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
-        }
-        return orderedDict
-    }
-
-    override public func queryTextType() -> EZQueryTextType {
-        var typeOptions: EZQueryTextType = []
-
-        let isTranslationEnabled = UserDefaults.bool(forKey: EZTranslationKey, serviceType: serviceType())
-        let isSentenceEnabled = UserDefaults.bool(forKey: EZSentenceKey, serviceType: serviceType())
-        let isDictionaryEnabled = UserDefaults.bool(forKey: EZDictionaryKey, serviceType: serviceType())
-
-        if isTranslationEnabled {
-            typeOptions.insert(.translation)
-        }
-        if isSentenceEnabled {
-            typeOptions.insert(.sentence)
-        }
-        if isDictionaryEnabled {
-            typeOptions.insert(.dictionary)
-        }
-
-        return typeOptions
-    }
-
-    override public func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = UserDefaults.string(forKey: EZServiceUsageStatusKey, serviceType: serviceType()) ?? ""
-        guard let value = UInt(usageStatus) else { return .default }
-        return EZServiceUsageStatus(rawValue: value) ?? .default
-    }
-
-    // swiftlint:disable identifier_name
-    override public func translate(
+    public override func translate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         let url = URL(string: endpoint)
-        let invalidURLError = EZError(type: .param, description: "\(serviceType().rawValue) URL is invalid")
+        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
         guard let url, url.isValid else {
             completion(result, invalidURLError)
             return
         }
-
-        updateCompletion = completion
 
         var resultText = ""
 
@@ -89,166 +36,86 @@ public class BaseOpenAIService: QueryService {
         result.isStreamFinished = false
 
         let queryType = queryType(text: text, from: from, to: to)
-        let chats = chatMessages(queryType: queryType, text: text, from: from, to: to)
-        let query = ChatQuery(messages: chats, model: model, temperature: 0)
+        let chatQueryParam = ChatQueryParam(
+            text: text,
+            sourceLanguage: from,
+            targetLanguage: to,
+            queryType: queryType,
+            enableSystemPrompt: true
+        )
+
+        let chatHistory = serviceChatMessageModels(chatQueryParam)
+        guard let chatHistory = chatHistory as? [ChatMessage] else { return }
+
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
         let openAI = OpenAI(apiToken: apiKey)
 
-        openAI.chatsStream(query: query, url: url) { [weak self] res in
+        // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
+        unowned let unownedControl = control
+
+        // TODO: refactor chatsStream with await
+        openAI.chatsStream(query: query, url: url, control: unownedControl) { [weak self] res in
             guard let self else { return }
 
-            if !result.isStreamFinished {
-                switch res {
-                case let .success(chatResult):
-                    if let content = chatResult.choices.first?.delta.content {
-                        resultText += content
-                    }
-                    handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
-                case let .failure(error):
-                    // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
-                    var text: String?
-                    var err: Error? = error
-                    if !resultText.isEmpty {
-                        text = resultText
-                        err = nil
-
-                        logError("\(name())-(\(model)) error: \(error.localizedDescription)")
-                        logError(String(describing: error))
-                    }
-                    handleResult(
-                        queryType: queryType,
-                        resultText: text,
-                        error: err,
-                        completion: completion
-                    )
+            switch res {
+            case let .success(chatResult):
+                if let content = chatResult.choices.first?.delta.content {
+                    resultText += content
                 }
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+            case let .failure(error):
+                // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
+                var text: String?
+                var err: Error? = error
+                if !resultText.isEmpty {
+                    text = resultText
+                    err = nil
+
+                    logError("\(name())-(\(model)) error: \(error.localizedDescription)")
+                    logError(String(describing: error))
+                }
+                updateResultText(text, queryType: queryType, error: err, completion: completion)
             }
 
         } completion: { [weak self] error in
             guard let self else { return }
 
-            if !result.isStreamFinished {
-                if let error {
-                    handleResult(queryType: queryType, resultText: nil, error: error, completion: completion)
-                } else {
-                    // If already has error, we do not need to update it.
-                    if result.error == nil {
-                        resultText = getFinalResultText(text: resultText)
-
-//                        log("\(name())-(\(model)): \(resultText)")
-                        handleResult(queryType: queryType, resultText: resultText, error: nil, completion: completion)
-                        result.isStreamFinished = true
-                    }
-                }
-            }
-        }
-    }
-
-    // swiftlint:enable identifier_name
-
-    // MARK: Internal
-
-    let throttler = Throttler()
-    var updateCompletion: ((EZQueryResult, Error?) -> ())?
-
-    var model = ""
-
-    var unsupportedLanguages: [Language] = []
-
-    var availableModels: [String] {
-        [""]
-    }
-
-    var apiKey: String {
-        ""
-    }
-
-    var endpoint: String {
-        ""
-    }
-
-    // MARK: Private
-
-    /// Get query type by text and from && to langauge.
-    private func queryType(text: String, from: Language, to _: Language) -> EZQueryTextType {
-        let enableDictionary = queryTextType().contains(.dictionary)
-        var isQueryDictionary = false
-        if enableDictionary {
-            isQueryDictionary = (text as NSString).shouldQueryDictionary(withLanguage: from, maxWordCount: 2)
-            if isQueryDictionary {
-                return .dictionary
-            }
-        }
-
-        let enableSentence = queryTextType().contains(.sentence)
-        var isQueryEnglishSentence = false
-        if !isQueryDictionary, enableSentence {
-            let isEnglishText = from == .english
-            if isEnglishText {
-                isQueryEnglishSentence = (text as NSString).shouldQuerySentence(withLanguage: from)
-                if isQueryEnglishSentence {
-                    return .sentence
-                }
-            }
-        }
-
-        return .translation
-    }
-
-    private func handleResult(
-        queryType: EZQueryTextType,
-        resultText: String?,
-        error: Error?,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        var normalResults: [String]?
-        if let resultText {
-            normalResults = [resultText.trim()]
-        }
-
-        result.isStreamFinished = error != nil
-        result.translatedResults = normalResults
-
-        let updateCompletion = {
-            self.throttler.throttle { [unowned self] in
-                self.updateCompletion?(result, error)
-            }
-        }
-
-        switch queryType {
-        case .sentence, .translation:
-            updateCompletion()
-
-        case .dictionary:
-            if error != nil {
-                result.showBigWord = false
-                result.translateResultsTopInset = 0
-                updateCompletion()
+            if let error {
+                updateResultText(nil, queryType: queryType, error: error, completion: completion)
                 return
             }
 
-            result.showBigWord = true
-            result.queryText = queryModel.queryText
-            result.translateResultsTopInset = 6
-            updateCompletion()
-
-        default:
-            updateCompletion()
+            // If already has error, we do not need to update it.
+            if result.error == nil {
+                resultText = getFinalResultText(resultText)
+//              log("\(name())-(\(model)): \(resultText)")
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                result.isStreamFinished = true
+            }
         }
     }
 
-    private func getFinalResultText(text: String) -> String {
-        var resultText = text.trim()
+    // MARK: Internal
 
-        // Remove last </s>, fix Groq model mixtral-8x7b-32768
-        let stopFlag = "</s>"
-        if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
-            resultText = String(resultText.dropLast(stopFlag.count)).trim()
+    typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
+
+    let control = StreamControl()
+
+    override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
+        var chatModels: [ChatMessage] = []
+        for message in chatMessageDicts(chatQuery) {
+            if let roleRawValue = message["role"],
+               let role = ChatMessage.Role(rawValue: roleRawValue),
+               let content = message["content"] {
+                if let chat = ChatMessage(role: role, content: content) {
+                    chatModels.append(chat)
+                }
+            }
         }
+        return chatModels
+    }
 
-        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes().trim()
-
-        return resultText
+    override func cancelStream() {
+        control.cancel()
     }
 }

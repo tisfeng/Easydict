@@ -10,7 +10,6 @@
 #import <Vision/Vision.h>
 #import <AVFoundation/AVFoundation.h>
 #import "EZScriptExecutor.h"
-#import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZChineseText.h"
 #import <CoreImage/CoreImage.h>
@@ -829,9 +828,7 @@ static EZAppleService *_instance;
             //            MMLogInfo(@"supported Languages: %@", supportedLanguages);
         }
         
-        if (@available(macOS 13.0, *)) {
-            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
-        }
+        request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
         
         if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
             // If has designated ocr language, move it to first priority.

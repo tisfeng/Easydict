@@ -36,7 +36,7 @@ extension Defaults.Keys {
     static let forceAutoGetSelectedText = Key<Bool>("EZConfiguration_kForceAutoGetSelectedText", default: false)
 
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
-    static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: true)
+    static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
     static let launchAtStartup = Key<Bool>("EZConfiguration_kLaunchAtStartupKey", default: false)
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
@@ -67,7 +67,7 @@ extension Defaults.Keys {
     )
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
-        default: .mini
+        default: .fixed
     )
     static let shortcutSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kShortcutSelectTranslateWindowTypeKey",
@@ -95,13 +95,8 @@ extension Defaults.Keys {
         default: true
     )
 
-    static var enableBetaNewApp: Key<Bool> {
-        if #available(macOS 13.0, *) {
-            Key("EZConfiguration_kEnableBetaNewAppKey", default: true)
-        } else {
-            Key("EZConfiguration_kEnableBetaNewAppKey", default: false)
-        }
-    }
+    static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
+    static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
 }
 
 extension Defaults.Keys {
@@ -211,117 +206,48 @@ class ShortcutWrapper<T: KeyCombo> {
     }
 }
 
+func defaultsKey<T>(_ key: StoredKey, serviceType: ServiceType) -> Defaults.Key<T?> {
+    defaultsKey(key, serviceType: serviceType, defaultValue: nil)
+}
+
+func defaultsKey<T: _DefaultsSerializable>(_ key: StoredKey, serviceType: ServiceType, defaultValue: T) -> Defaults
+    .Key<T> {
+    Defaults.Key<T>(
+        storedKey(key, serviceType: serviceType),
+        default: defaultValue
+    )
+}
+
 // Service Configuration
 extension Defaults.Keys {
-    // OpenAI
-    static let openAIAPIKey = Key<String?>(EZOpenAIAPIKey)
-    static let openAITranslation = Key<String>(
-        translationStoredKey(.openAI),
-        default: "1"
-    )
-    static let openAIDictionary = Key<String>(
-        dictionaryStoredKey(.openAI),
-        default: "1"
-    )
-    static let openAISentence = Key<String>(
-        sentenceStoredKey(.openAI),
-        default: "1"
-    )
-    static let openAIServiceUsageStatus = Key<OpenAIUsageStats>(
-        serviceUsageStatusStoredKey(.openAI),
-        default: .default
-    )
-    static let openAIEndPoint = Key<String?>(EZOpenAIEndPointKey)
-    static let openAIModel = Key<String>(EZOpenAIModelKey, default: OpenAIModel.gpt3_5_turbo.rawValue)
-    static let openAIAvailableModels = Key<String?>(
-        EZOpenAIAvailableModelsKey,
-        default: OpenAIModel.allCases.map { $0.rawValue }.joined(separator: ",")
-    )
-    static let openAIVaildModels = Key<Array>(
-        EZOpenAIValidModelsKey,
-        default: OpenAIModel.allCases.map { $0.rawValue }
-    )
-
-    // Custom OpenAI
-    static let customOpenAINameKey = Key<String?>(
-        EZCustomOpenAINameKey,
-        default: NSLocalizedString("custom_openai", comment: "")
-    )
-    static let customOpenAIAPIKey = Key<String?>(EZCustomOpenAIAPIKey, default: "")
-    static let customOpenAITranslation = Key<String>(
-        translationStoredKey(.customOpenAI),
-        default: "1"
-    )
-    static let customOpenAIDictionary = Key<String>(
-        dictionaryStoredKey(.customOpenAI),
-        default: "0"
-    )
-    static let customOpenAISentence = Key<String>(
-        sentenceStoredKey(.customOpenAI),
-        default: "0"
-    )
-    static let customOpenAIServiceUsageStatus = Key<OpenAIUsageStats>(
-        serviceUsageStatusStoredKey(.builtInAI),
-        default: .default
-    )
-    static let customOpenAIEndPoint = Key<String?>(EZCustomOpenAIEndPointKey, default: "")
-    static let customOpenAIModel = Key<String>(EZCustomOpenAIModelKey, default: "")
-    static let customOpenAIAvailableModels = Key<String?>(EZCustomOpenAIAvailableModelsKey, default: "")
-    static let customOpenAIVaildModels = Key<Array>(
-        EZCustomOpenAIValidModelsKey,
-        default: [""]
-    )
-
-    // Built-in AI
-    static let builtInAIModel = Key<String>(EZBuiltInAIModelKey, default: "")
-    static let builtInAITranslation = Key<String>(
-        translationStoredKey(.builtInAI),
-        default: "1"
-    )
-    static let builtInAIDictionary = Key<String>(
-        dictionaryStoredKey(.builtInAI),
-        default: "0"
-    )
-    static let builtInAISentence = Key<String>(
-        sentenceStoredKey(.builtInAI),
-        default: "0"
-    )
-    static let builtInAIServiceUsageStatus = Key<OpenAIUsageStats>(
-        serviceUsageStatusStoredKey(.builtInAI),
-        default: .default
-    )
-
     // DeepL
-    static let deepLAuth = Key<String?>(EZDeepLAuthKey)
+    static let deepLAuth = Key<String>(EZDeepLAuthKey, default: "")
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(
         EZDeepLTranslationAPIKey,
         default: DeepLAPIUsagePriority.webFirst
     )
-    static let deepLTranslateEndPointKey = Key<String?>(EZDeepLTranslateEndPointKey)
+    static let deepLTranslateEndPointKey = Key<String>(EZDeepLTranslateEndPointKey, default: "")
 
     // Bing
-    static let bingCookieKey = Key<String?>(EZBingCookieKey)
+    static let bingCookieKey = Key<String>(EZBingCookieKey, default: "")
 
     // niu
-    static let niuTransAPIKey = Key<String?>(EZNiuTransAPIKey)
+    static let niuTransAPIKey = Key<String>(EZNiuTransAPIKey, default: "")
 
     // Caiyun
-    static let caiyunToken = Key<String?>(EZCaiyunToken)
+    static let caiyunToken = Key<String>(EZCaiyunToken, default: "")
 
     // tencent
-    static let tencentSecretId = Key<String?>(EZTencentSecretId)
-    static let tencentSecretKey = Key<String?>(EZTencentSecretKey)
+    static let tencentSecretId = Key<String>(EZTencentSecretId, default: "")
+    static let tencentSecretKey = Key<String>(EZTencentSecretKey, default: "")
 
     // Ali
-    static let aliAccessKeyId = Key<String?>(EZAliAccessKeyId)
-    static let aliAccessKeySecret = Key<String?>(EZAliAccessKeySecret)
-
-    // Gemni
-    static let geminiAPIKey = Key<String?>(EZGeminiAPIKey)
+    static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")
+    static let aliAccessKeySecret = Key<String>(EZAliAccessKeySecret, default: "")
 
     // baidu
-    static let baiduAppId = Key<String?>(EZBaiduAppId)
-    static let baiduSecretKey = Key<String?>(EZBaiduSecretKey)
+    static let baiduAppId = Key<String>(EZBaiduAppId, default: "")
+    static let baiduSecretKey = Key<String>(EZBaiduSecretKey, default: "")
 }
 
 /// shortcut

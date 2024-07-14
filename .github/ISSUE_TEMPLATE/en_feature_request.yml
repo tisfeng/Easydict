@@ -51,4 +51,4 @@ body:
       label: Are you willing to submit a PR to implement this feature
       description: We welcome you to submit PR. When the developer is short of manpower, submitting PR is the fastest way to implement the feature. If you are not familiar with objc or Swift, you can try ChatGPT, maybe it can help you.
       options:
-        - label: I'm willing to submit PR
+        - label: I'm willing to submit PR to implement this feature

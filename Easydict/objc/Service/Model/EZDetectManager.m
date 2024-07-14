@@ -9,9 +9,8 @@
 #import "EZDetectManager.h"
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
-#import "EZConfiguration.h"
 #import "EZYoudaoTranslate.h"
-#import "EZConfiguration+EZUserData.h"
+//#import "EZConfiguration+EZUserData.h"
 
 @interface EZDetectManager ()
 
@@ -129,12 +128,12 @@
             }];
         };
         
-        if (languageDetectOptimize == EZLanguageDetectOptimizeBaidu) {
+        if (languageDetectOptimize == LanguageDetectOptimizeBaidu) {
             baiduDetectBlock(queryText);
             return;
         }
         
-        if (languageDetectOptimize == EZLanguageDetectOptimizeGoogle) {
+        if (languageDetectOptimize == LanguageDetectOptimizeGoogle) {
             [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
                 if (!error) {
                     MMLogInfo(@"google detected: %@", language);
@@ -237,7 +236,7 @@
      Sometimes Apple OCR may fail, like Japanese text, but we have set Japanese as preferred language and OCR again when OCR result is empty, currently it seems work, but we do not guarantee it is always work in other languages.
      */
     
-    if (Configuration.shared.beta) {
+    if (Configuration.shared.enableYoudaoOCR) {
         [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
             if (!youdaoOCRError) {
                 completion(youdaoOCRResult, nil);

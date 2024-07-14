@@ -85,7 +85,7 @@ strongifiedSelf
 --indent 4
 --maxwidth 120
 --typeattributes prev-line
---varattributes same-line
+--storedvarattrs same-line
 --voidtype tuple
 --wraparguments before-first
 --wrapparameters before-first
@@ -106,3 +106,6 @@ strongifiedSelf
 # Following is by Lava
 
 --ifdef no-indent
+
+# Why doesn't this work?
+--modifierorder public,override,

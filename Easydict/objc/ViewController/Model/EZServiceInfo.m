@@ -15,7 +15,8 @@
     serviceInfo.type = service.serviceType;
     serviceInfo.enabled = service.enabled;
     serviceInfo.enabledQuery = service.enabledQuery;
-    
+    serviceInfo.windowType = service.windowType;
+
     return serviceInfo;
 }
 

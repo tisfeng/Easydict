@@ -82,7 +82,7 @@
 
 - (void)setPin:(BOOL)pin {
     _pin = pin;
-     
+    
     // !!!: Do not use kCGMaximumWindowLevel, otherwise it will obscure the tooltip.
     NSWindowLevel level = self.pin ? kCGUtilityWindowLevel : kCGNormalWindowLevel;
     self.level = level;
@@ -104,13 +104,13 @@
 
 
 - (void)dealloc {
-    MMLogInfo(@"dealloc: %@", self);
+    MMLogInfo(@"dealloc query window: %@", self);
 }
 
 #pragma mark - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-//    MMLogInfo(@"windowDidBecomeKey: %@", self);
+    //    MMLogInfo(@"windowDidBecomeKey: %@", self);
     
     // We need to update the window type when the window becomes the key window.
     [EZWindowManager.shared updateFloatingWindowType:self.windowType isShowing:YES];
@@ -121,15 +121,15 @@
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
-//    MMLogInfo(@"windowDidResignKey: %@", self);
+    //    MMLogInfo(@"windowDidResignKey: %@", self);
     
     // Close floating window when losing focus if it's not pinned or main window.
     [EZWindowManager.shared closeFloatingWindowIfNotPinned:self.windowType exceptWindowType:EZWindowTypeMain];
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-//    MMLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
-
+    //    MMLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
+    
     [[EZLayoutManager shared] updateWindowFrame:self];
     
     if (self.resizeWindowBlock) {
@@ -151,7 +151,7 @@
 
 // Window is hidden or showing.
 - (void)windowDidChangeOcclusionState:(NSNotification *)notification {
-//    MMLogInfo(@"window Did Change Occlusion State");
+    //    MMLogInfo(@"window Did Change Occlusion State");
     
     // Window is obscured
     if (self.occlusionState != NSWindowOcclusionStateVisible) {

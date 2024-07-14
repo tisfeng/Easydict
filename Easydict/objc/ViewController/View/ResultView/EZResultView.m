@@ -267,8 +267,8 @@
     
     mm_weakify(self);
     
-    if ([self isBaseOpenAIService:result.service]) {
-        EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
+    if ([self isLLLStreamService:result.service]) {
+        EZLLMStreamService *service = (EZLLMStreamService *)result.service;
         NSString *model = service.model;
         self.serviceModelButton.title = model;
         // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
@@ -314,7 +314,7 @@
     }];
     
     CGFloat modelButtonWidth = 0;
-    if ([self isBaseOpenAIService:self.result.service]) {
+    if ([self isLLLStreamService:self.result.service]) {
         [self.serviceModelButton sizeToFit];
         // 105 is the length of "gpt-4-turbo-preview"
         modelButtonWidth = MIN(self.serviceModelButton.width, 105 * [self windowWidthRatio]);
@@ -429,14 +429,14 @@
     }];
 }
 
-- (BOOL)isBaseOpenAIService:(EZQueryService *)service {
-    return [service isKindOfClass:[EZBaseOpenAIService class]];
+- (BOOL)isLLLStreamService:(EZQueryService *)service {
+    return [service isKindOfClass:[EZLLMStreamService class]];
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
+    EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    for (NSString *model in service.availableModels) {
+    for (NSString *model in service.validModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
         item.target = self;
         [menu addItem:item];
@@ -445,18 +445,11 @@
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
-    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
+    EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
-        [self postServiceUpdatedNotification:service.serviceType];
     }
-}
-
-- (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
-    NSDictionary *userInfo = @{EZServiceTypeKey : serviceType};
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 #pragma mark - Animation

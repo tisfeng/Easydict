@@ -176,7 +176,6 @@ struct TencentTranslateType: Equatable {
     var sourceLanguage: String
     var targetLanguage: String
 
-    // swiftlint:disable:next identifier_name
     static func transType(from: Language, to: Language) -> TencentTranslateType {
         /**
          1. zh <--> zh-TW

@@ -8,8 +8,6 @@
 
 #import "EZEventMonitor.h"
 #import "EZWindowManager.h"
-#import "EZConfiguration.h"
-#import "EZPreferencesWindowController.h"
 #import "EZScriptExecutor.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"

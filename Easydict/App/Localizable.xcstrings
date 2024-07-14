@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ API Key" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ API Key"
+          }
+        }
+      }
+    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -24,22 +34,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关于"
-          }
-        }
-      }
-    },
-    "adjust_pop_button_origin" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adjust Query Icon Position:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "调整查询图标位置："
           }
         }
       }
@@ -153,22 +147,6 @@
         }
       }
     },
-    "app_appearance" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appearance:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "外观："
-          }
-        }
-      }
-    },
     "app_shortcut_setting" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -266,45 +244,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Translation"
+            "value" : "Apple Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "苹果翻译"
-          }
-        }
-      }
-    },
-    "author" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Developer:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开发者："
-          }
-        }
-      }
-    },
-    "auto_check_update" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatically check for app updates"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动检查应用更新"
           }
         }
       }
@@ -369,70 +315,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自动复制划词文本"
-          }
-        }
-      }
-    },
-    "auto_copy_text" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto Copy:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动复制："
-          }
-        }
-      }
-    },
-    "auto_get_selected_text" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto Get Selected Text:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鼠标自动划词："
-          }
-        }
-      }
-    },
-    "auto_play_word_audio" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto play pronunciation after querying English words"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查询英语单词后自动播放发音"
-          }
-        }
-      }
-    },
-    "auto_query" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto Query:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动查询："
           }
         }
       }
@@ -533,22 +415,6 @@
         }
       }
     },
-    "avoid_conflict_with_PopClip_display" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avoid conflict with PopClip"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "避免和 PopClip 显示冲突"
-          }
-        }
-      }
-    },
     "Baidu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -572,22 +438,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "百度翻译"
-          }
-        }
-      }
-    },
-    "beta_new_app" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SwiftUI App mode:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SwiftUI App模式："
           }
         }
       }
@@ -764,22 +614,6 @@
         }
       }
     },
-    "click_icon_query" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Click to Query:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "点击查询："
-          }
-        }
-      }
-    },
     "click_icon_query_info" : {
       "localizations" : {
         "en" : {
@@ -829,22 +663,6 @@
         }
       }
     },
-    "contributor_link" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contributors"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "贡献者"
-          }
-        }
-      }
-    },
     "copy_text" : {
       "localizations" : {
         "en" : {
@@ -873,22 +691,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "崩溃日志："
-          }
-        }
-      }
-    },
-    "current_version" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "版本"
           }
         }
       }
@@ -953,22 +755,6 @@
         }
       }
     },
-    "default_tts_service" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default TTS Service:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "默认 TTS 服务："
-          }
-        }
-      }
-    },
     "detected" : {
       "comment" : "query window",
       "localizations" : {
@@ -986,18 +772,19 @@
         }
       }
     },
-    "disable_crash_log_warning" : {
+    "disable_tips_view" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ Note: If you disable this option, Easydict will not be able to get the crash logs of the application, which may cause the bugs of the application to be unable to be fixed in time."
+            "value" : "Disable Tips View"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ 注意：如果关闭该选项，Easydict 将不能获取应用崩溃日志，这可能会导致应用的 bug 无法即时修复。"
+            "value" : "关闭提示视图"
           }
         }
       }
@@ -1055,50 +842,36 @@
         }
       }
     },
-    "enable_beta_new_app" : {
+    "enable_youdao_ocr" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Launch in SwiftUI App mode"
+            "value" : "Enable Youdao OCR "
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以 SwiftUI App 模式启动"
+            "value" : "开启有道 OCR 识别"
           }
         }
       }
     },
-    "enable_beta_new_app_info" : {
+    "enable_youdao_ocr_desc" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Changes will take effect upon restarting the app"
+            "value" : "Use the Youdao OCR for identification after a default OCR failure"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重启 App 以生效"
-          }
-        }
-      }
-    },
-    "equal_first_and_second_language" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "First and second languages cannot be the same"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "第一语言和第二语言不能相同"
+            "value" : "在默认OCR识别失败后使用有道OCR进行识别"
           }
         }
       }
@@ -1247,22 +1020,6 @@
         }
       }
     },
-    "first_language" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "First Language:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "第一语言："
-          }
-        }
-      }
-    },
     "fixed_window" : {
       "localizations" : {
         "en" : {
@@ -1275,22 +1032,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "侧悬浮窗口"
-          }
-        }
-      }
-    },
-    "fixed_window_position" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Floating Window Position:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "侧悬浮窗口位置："
           }
         }
       }
@@ -1392,38 +1133,6 @@
         }
       }
     },
-    "force_auto_get_selected_text_msg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note: In some applications, forced word retrieval may cause empty copy prompt tones, abnormal clipboard content, etc."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "注意：在某些应用中，强制划词可能会导致空复制提示音，影响剪贴板内容等异常情况。"
-          }
-        }
-      }
-    },
-    "force_auto_get_selected_text_title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Force Auto Get Selected Text"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "强制划词"
-          }
-        }
-      }
-    },
     "Function not implemented for the current algorithm" : {
       "comment" : "Error reason",
       "localizations" : {
@@ -1448,32 +1157,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gemini 翻译"
-          }
-        }
-      }
-    },
-    "github_link" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        }
-      }
-    },
-    "GitHub:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub:"
           }
         }
       }
@@ -1651,22 +1334,6 @@
         }
       }
     },
-    "input_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Input Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "输入翻译"
-          }
-        }
-      }
-    },
     "Insufficient buffer provided for specified operation" : {
       "comment" : "Error reason",
       "localizations" : {
@@ -1724,22 +1391,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保留结果："
-          }
-        }
-      }
-    },
-    "language_detect_optimize" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Language Detection:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "语种识别："
           }
         }
       }
@@ -1826,22 +1477,6 @@
         }
       }
     },
-    "lastest_version" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Latest version"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最新版本"
-          }
-        }
-      }
-    },
     "lastest_version %@" : {
       "localizations" : {
         "en" : {
@@ -1854,22 +1489,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最新版本 %@"
-          }
-        }
-      }
-    },
-    "launch" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Launch:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启动："
           }
         }
       }
@@ -1923,22 +1542,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : ""
-          }
-        }
-      }
-    },
-    "menu_bar_icon" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu bar icon:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏图标："
           }
         }
       }
@@ -2090,22 +1693,6 @@
         }
       }
     },
-    "mouse_select_translate_window_type" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mouse  Window Type:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鼠标划词窗口类型："
-          }
-        }
-      }
-    },
     "niuTrans_translate" : {
       "localizations" : {
         "en" : {
@@ -2138,6 +1725,22 @@
         }
       }
     },
+    "no_screenshot_permission" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Screenshot Permission"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有截图权限"
+          }
+        }
+      }
+    },
     "none_window" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2153,13 +1756,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ OCR result is empty.\n⚠️ Please manually select language and try again."
+            "value" : "OCR result is empty.\n⚠️ Please manually select language and try again."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。"
+            "value" : "OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。"
           }
         }
       }
@@ -2176,6 +1779,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定"
+          }
+        }
+      }
+    },
+    "ollama_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama 翻译"
           }
         }
       }
@@ -2351,22 +1970,6 @@
         }
       }
     },
-    "play_word_audio" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Play Word Pronunciation:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "播放单词发音："
-          }
-        }
-      }
-    },
     "please_look" : {
       "localizations" : {
         "en" : {
@@ -2512,22 +2115,6 @@
         }
       }
     },
-    "quick_link" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quick Link:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快捷功能："
-          }
-        }
-      }
-    },
     "quit" : {
       "localizations" : {
         "en" : {
@@ -2609,6 +2196,22 @@
         }
       }
     },
+    "request_screen_capture_access_description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please go to System Settings - Privacy & Security - Screen Recording & System Audio page to enable permissions for Easydict."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请前往 \"系统设置-隐私和安全-录屏与系统录音\" 页面，为 Easydict 启用权限。"
+          }
+        }
+      }
+    },
     "retry" : {
       "localizations" : {
         "en" : {
@@ -2641,22 +2244,6 @@
         }
       }
     },
-    "second_language" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Second Language:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "第二语言："
-          }
-        }
-      }
-    },
     "select_query_text_when_window_activate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2670,22 +2257,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开窗口时自动选中查询文本"
-          }
-        }
-      }
-    },
-    "select_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select Text Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "划词翻译"
           }
         }
       }
@@ -2928,7 +2499,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整接口地址"
+            "value" : "API 请求地址"
           }
         }
       }
@@ -2961,22 +2532,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "优先使用 Web API"
-          }
-        }
-      }
-    },
-    "service.configuration.gemini.api_key.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Key"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Key"
           }
         }
       }
@@ -3066,13 +2621,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.openai.com/v1/chat/completions"
+            "value" : "The full request URL, for example https://api.openai.com/v1/chat/completions"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.openai.com/v1/chat/completions"
+            "value" : "完整请求 URL，例如 https://api.openai.com/v1/chat/completions"
           }
         }
       }
@@ -3088,7 +2643,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整接口地址"
+            "value" : "API 请求地址"
           }
         }
       }
@@ -3313,6 +2868,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        }
+      }
+    },
+    "setting.about.contributor_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contributors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贡献者"
+          }
+        }
+      }
+    },
+    "setting.about.github_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
           }
         }
       }
@@ -4109,22 +3696,6 @@
         }
       }
     },
-    "shortcut_select_translate_window_type" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shortcut Window Type:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快捷键划词窗口类型："
-          }
-        }
-      }
-    },
     "show" : {
       "localizations" : {
         "en" : {
@@ -4189,38 +3760,6 @@
         }
       }
     },
-    "show_main_window" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Main Window:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主窗口："
-          }
-        }
-      }
-    },
-    "show_mini_window" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Mini Window"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示迷你窗口"
-          }
-        }
-      }
-    },
     "show_setting_quick_link" : {
       "localizations" : {
         "en" : {
@@ -4233,22 +3772,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示快捷设置图标"
-          }
-        }
-      }
-    },
-    "silent_screenshot_ocr" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silent Screenshot OCR"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静默截图 OCR"
           }
         }
       }
@@ -4282,22 +3805,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "小"
-          }
-        }
-      }
-    },
-    "snip_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snip Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "截图翻译"
           }
         }
       }
@@ -4407,6 +3914,158 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "腾讯翻译君"
+          }
+        }
+      }
+    },
+    "tips_edit_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why does the edit button in the upper right corner flicker when selecting words in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用取词时，右上角编辑按钮会出现闪烁？"
+          }
+        }
+      }
+    },
+    "tips_more" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See More"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看更多"
+          }
+        }
+      }
+    },
+    "tips_mouse_hover" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why can't I use mouse hover to select words in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用中无法使用鼠标划词？"
+          }
+        }
+      }
+    },
+    "tips_select_words" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why can't I select words on some web pages in the browser?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么浏览器中某些网页无法取词？"
+          }
+        }
+      }
+    },
+    "tips_solve" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solve This"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何解决"
+          }
+        }
+      }
+    },
+    "tips_still_pop_up" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why does macOS still pop up asking for permissions even though I have given Easydict the Accessibility/Screen Recording permissions?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经给 Easydict 辅助功能/录屏权限 macOS 仍然弹窗要求给予权限？"
+          }
+        }
+      }
+    },
+    "tips_text_empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why is the text empty when I select words in some applications?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么在某些应用中取词文本为空？"
+          }
+        }
+      }
+    },
+    "tips_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tips"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示"
+          }
+        }
+      }
+    },
+    "tips_word_selection_OCR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Why do word selection and OCR need to enable system-related permissions?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么取词和 OCR 需要开启系统相关权限？"
           }
         }
       }

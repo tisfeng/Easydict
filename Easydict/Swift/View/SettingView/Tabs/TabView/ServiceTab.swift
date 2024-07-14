@@ -11,7 +11,6 @@ import SwiftUI
 
 // MARK: - ServiceTab
 
-@available(macOS 13, *)
 struct ServiceTab: View {
     // MARK: Internal
 
@@ -33,17 +32,15 @@ struct ServiceTab: View {
 
             Group {
                 if let service = viewModel.selectedService {
-                    // To provide configuration options for a service, follow these steps
-                    // 1. If the Service is an object of Objc, expose it to Swift.
-                    // 2. Create a new file in the Utility - Extensions - QueryService+ConfigurableService,
-                    // 3. referring to OpenAIService+ConfigurableService, `extension` the Service
-                    // as `ConfigurableService` to provide the configuration items.
-                    if let service = service as? (any ConfigurableService) {
-                        AnyView(service.configurationView())
+                    if let view = service.configurationListItems() as? (any View) {
+                        Form {
+                            AnyView(view)
+                        }
+                        .formStyle(.grouped)
+
                     } else {
                         HStack {
                             Spacer()
-                            // No configuration for service xxx
                             Text("setting.service.detail.no_configuration \(service.name())")
                             Spacer()
                         }
@@ -69,11 +66,20 @@ struct ServiceTab: View {
 // MARK: - ServiceTabViewModel
 
 private class ServiceTabViewModel: ObservableObject {
+    // MARK: Lifecycle
+
+    init(windowType: EZWindowType = .fixed) {
+        self.windowType = windowType
+        self.services = EZLocalStorage.shared().allServices(windowType)
+    }
+
+    // MARK: Internal
+
     @Published var selectedService: QueryService?
 
-    @Published private(set) var services: [QueryService] = EZLocalStorage.shared().allServices(.mini)
+    private(set) var services: [QueryService]
 
-    @Published var windowType = EZWindowType.mini {
+    @Published var windowType: EZWindowType {
         didSet {
             if oldValue != windowType {
                 updateServices()
@@ -107,15 +113,12 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func postUpdateServiceNotification() {
-        let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
-        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
-        NotificationCenter.default.post(notification)
+        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
     }
 }
 
 // MARK: - ServiceItems
 
-@available(macOS 13.0, *)
 private struct ServiceItems: View {
     // MARK: Internal
 
@@ -183,7 +186,6 @@ private class ServiceItemViewModel: ObservableObject {
 
 // MARK: - ServiceItemView
 
-@available(macOS 13.0, *)
 private struct ServiceItemView: View {
     // MARK: Lifecycle
 
@@ -233,13 +235,12 @@ private struct ServiceItemView: View {
 
 // MARK: - WindowTypePicker
 
-@available(macOS 13, *)
 private struct WindowTypePicker: View {
     @Binding var windowType: EZWindowType
 
     var body: some View {
         Picker(selection: $windowType) {
-            ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
+            ForEach([EZWindowType]([.fixed, .mini, .main]), id: \.rawValue) { windowType in
                 Text(windowType.localizedStringResource)
                     .tag(windowType)
             }

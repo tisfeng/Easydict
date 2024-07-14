@@ -65,6 +65,8 @@ NS_SWIFT_NAME(QueryService)
 
 - (void)startQuery:(EZQueryModel *)queryModel completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
+- (nullable id)configurationListItems;
+
 @end
 
 

@@ -11,7 +11,6 @@ import SwiftUI
 
 // MARK: - GeneralTab
 
-@available(macOS 13, *)
 struct GeneralTab: View {
     // MARK: Internal
 
@@ -213,10 +212,7 @@ struct GeneralTab: View {
         }
         .formStyle(.grouped)
         .task {
-            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-            await MainActor.run {
-                lastestVersion = version
-            }
+            lastestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
         }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {
@@ -271,7 +267,6 @@ struct GeneralTab: View {
     @Default(.hideMainWindow) private var hideMainWindow
     @Default(.launchAtStartup) private var launchAtStartup
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
-    @Default(.enableBetaNewApp) private var enableBetaNewApp
 
     @Default(.languageDetectOptimize) private var languageDetectOptimize
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
@@ -301,14 +296,12 @@ struct GeneralTab: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     GeneralTab()
 }
 
 // MARK: - FirstAndSecondLanguageSettingView
 
-@available(macOS 13, *)
 private struct FirstAndSecondLanguageSettingView: View {
     // MARK: Internal
 
@@ -381,7 +374,6 @@ private struct FirstAndSecondLanguageSettingView: View {
             // First language should not be same as second language. (\(duplicatedLanguage))
             // \(setField) is replaced with \(setLanguage).
             String(
-                // swiftlint:disable:next line_length
                 localized: "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)"
             )
         }

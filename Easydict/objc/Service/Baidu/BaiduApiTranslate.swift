@@ -25,13 +25,13 @@ class BaiduApiTranslate: NSObject {
     var result: EZQueryResult?
 
     var isEnable: Bool {
-        appId != nil && secretKey != nil
+        !appId.isEmpty && !secretKey.isEmpty
     }
 
     func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult?, Error?) -> ()) {
-        guard let appId = appId, let secretKey = secretKey else {
-            assert(false, "API key is not available")
-            completion(result, EZError(type: EZErrorType.API, description: "API key is not available"))
+        if !isEnable {
+            assert(false, "API key is not enable")
+            completion(result, EZError(type: EZErrorType.API, description: "API key is not enable"))
             return
         }
 
@@ -97,19 +97,14 @@ class BaiduApiTranslate: NSObject {
 
     private let queryModel: EZQueryModel
 
-    private var appId: String? {
+    private var appId: String {
         let appId = Defaults[.baiduAppId]
-        if let appId, !appId.isEmpty {
-            return appId
-        }
-        return nil
+
+        return appId
     }
 
-    private var secretKey: String? {
+    private var secretKey: String {
         let secretKey = Defaults[.baiduSecretKey]
-        if let secretKey, !secretKey.isEmpty {
-            return secretKey
-        }
-        return nil
+        return secretKey
     }
 }

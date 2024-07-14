@@ -11,7 +11,6 @@
 #import "EZAudioPlayer.h"
 #import "NSString+EZChineseText.h"
 #import "NSString+EZUtils.h"
-#import "EZConfiguration.h"
 #import "EZEventMonitor.h"
 
 #define MethodNotImplemented()                                                                                                           \
@@ -34,6 +33,10 @@ userInfo:nil]
     if (self = [super init]) {
     }
     return self;
+}
+
+- (void)dealloc {
+    MMLogInfo(@"dealloc service: %@", self);
 }
 
 - (EZAudioPlayer *)audioPlayer {
@@ -211,6 +214,10 @@ userInfo:nil]
     }
     
     [self translate:queryText from:from to:to completion:completion];
+}
+
+- (nullable id)configurationListItems {
+    return nil;
 }
 
 #pragma mark - 必须重写的子类方法

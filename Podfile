@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :osx, '11.0'
+platform :osx, '13.0'
 
 inhibit_all_warnings!
 
@@ -9,13 +9,11 @@ target 'Easydict' do
   pod 'AFNetworking', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
-  pod 'MASShortcut', :git => 'git@github.com:AkaShark/MASShortcut.git', :branch => 'double_click_modifier'
-  pod 'MASPreferences', '~> 1.4.1'
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
   # Swift format
-  pod 'SwiftFormat/CLI', '~> 0.53.2'
+  pod 'SwiftFormat/CLI', '~> 0.54'
   pod 'SwiftLint', '~> 0.54.0'
 
 end
@@ -26,8 +24,6 @@ target 'EasydictTests' do
   pod 'AFNetworking', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
-  pod 'MASShortcut', :git => 'git@github.com:AkaShark/MASShortcut.git', :branch => 'double_click_modifier'
-  pod 'MASPreferences', '~> 1.4.1'
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
@@ -36,7 +32,7 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '11.0'
+      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
       
       xcconfig_path = config.base_configuration_reference.real_path
       xcconfig = File.read(xcconfig_path)

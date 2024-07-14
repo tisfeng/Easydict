@@ -17,7 +17,6 @@
 #import "EZServiceTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
-#import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"
@@ -31,6 +30,7 @@
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
+static NSString *const EZTableTipsCellId = @"EZTableTipsCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
@@ -54,6 +54,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
+@property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, readonly) NSString *queryText;
@@ -73,6 +74,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
+
+@property (nonatomic, assign) BOOL isTipsViewVisible;
+
+@property (nonatomic, assign) EZTipsCellType tipsCellType;
+
+@property (nonatomic, copy) NSString *tipsCellContent;
+
 
 @end
 
@@ -118,6 +126,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [EZLog logWindowAppear:self.windowType];
 }
 
+
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
     self.queryModel.queryViewHeight = [self miniQueryViewHeight];
@@ -139,7 +148,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         // Avoid recycling call, resize window --> update window height --> resize window
         if (self.lockResizeWindow) {
-//            MMLogInfo(@"lockResizeWindow");
+            //            MMLogInfo(@"lockResizeWindow");
             return;
         }
         
@@ -177,7 +186,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
     
-    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
+    [defaultCenter addObserverForName:NotificationName.didChangeFontSize object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *_Nonnull notification) {
         mm_strongify(self);
         [self reloadTableViewData:^{
             [self updateAllResultCellHeight];
@@ -228,7 +237,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)dealloc {
     MMLogInfo(@"dealloc: %@", self);
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:NotificationName.didChangeFontSize object:nil];
 }
 
 #pragma mark - NSNotificationCenter
@@ -239,16 +249,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
-    NSString *serviceType = [notification.userInfo objectForKey:EZServiceTypeKey];
-    MMLogInfo(@"Notify to update service: %@", serviceType);
+    EZWindowType windowType = [userInfo[EZWindowTypeKey] integerValue];
+    NSString *serviceType = userInfo[EZServiceTypeKey];
+    BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
+    
+    MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
     
     if ([serviceType length] != 0) {
-        [self updateService:serviceType autoQuery:YES];
+        [self updateService:serviceType autoQuery:autoQuery];
         return;
     }
-    if (type == self.windowType || !userInfo) {
-        [self resetAllCellWithServices:[self latestServices]];
+    
+    if (!userInfo || windowType == self.windowType || windowType == EZWindowTypeNone) {
+        [self resetAllCellWithServices:[self latestServices] completion:^{
+            if (autoQuery) {
+                [self queryCurrentModel];
+            }
+        }];
     }
 }
 
@@ -346,6 +363,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryModel.inputText = _inputText;
     
+    
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
 
@@ -361,8 +379,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     return _defaultTTSService;
 }
-
-
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
@@ -420,17 +436,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // If write, need to update.
         if (actionKey && [self.schemeParser isWriteActionKey:actionKey]) {
             // Besides current window, other pages need to be notified, such as the settings service page.
-            [self postUpdateServiceNotification];
+            [NSNotificationCenter.defaultCenter postServiceUpdateNotification];
         }
     }];
     
     return YES;
-}
-
-- (void)postUpdateServiceNotification {
-    // Need to update all types window.
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
@@ -441,6 +451,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
+    
+    // Hide previous tips view first.
+    [self showTipsView:NO completion:nil];
     
     mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
@@ -479,7 +492,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
-                self.queryView.alertText = errorMsg;
+                [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
                 return;
             }
             
@@ -543,7 +556,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.queryView setAlertTextHidden:YES];
     
     [self.audioPlayer stop];
-    ;
 }
 
 - (void)clearAll {
@@ -624,6 +636,52 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
     [self.queryView.textView updateTextAndParagraphStyle:text];
     self.queryModel.actionType = queryType;
+    
+    if (text) {
+        /**
+         If user disabled auto query when getting selected text, we should close tips view after updating query text.
+         But reloadTableViewData will lost focus, we need to recover input focus.
+         */
+        [self showTipsView:NO completion:^{
+            [self focusInputTextView];
+        }];
+    }
+}
+
+- (void)updateActionType:(EZActionType)actionType {
+    self.queryModel.actionType = actionType;
+}
+
+- (void)showTipsView:(BOOL)isVisible {
+    [self showTipsView:isVisible content:@"" type:EZTipsCellTypeTextEmpty];
+}
+
+- (void)showTipsView:(BOOL)isVisible
+             content:(NSString *)content
+                type:(EZTipsCellType)type {
+    self.tipsCellType = type;
+    self.tipsCellContent = content;
+    [self.tipsCell updateTipsContent:content type:type];
+    [self showTipsView:isVisible completion:nil];
+}
+
+- (void)showTipsView:(BOOL)isVisible completion:(void (^)(void))completion {
+    // when queryModel.queryText is Empty show tips
+    
+    if (!isVisible && !self.isTipsViewVisible) {
+        if (completion) {
+            completion();
+        }
+        return;
+    }
+    
+    self.isTipsViewVisible = isVisible;
+    
+    if (isVisible) {
+        [self resetQueryAndResults];
+    }
+    
+    [self reloadTableViewData:completion];
 }
 
 - (void)scrollToEndOfTextView {
@@ -641,7 +699,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             break;
         }
         case EZTitlebarQuickActionReplaceNewlineWithSpace: {
-            self.inputText = [self.inputText stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+            self.inputText = [self.inputText replacingNewlinesWithWhitespace];
         }
         default:
             break;
@@ -727,7 +785,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             result.isShowing = NO;
         }
         
-//        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
+        //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
         
         if (service.autoCopyTranslatedTextBlock) {
@@ -749,7 +807,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
-//    MMLogInfo(@"query service: %@", service.serviceType);
+    //    MMLogInfo(@"query service: %@", service.serviceType);
     
     EZQueryResult *result = service.result;
     
@@ -779,7 +837,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-//    MMLogInfo(@"tableView for row: %ld", row);
+    //    MMLogInfo(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];
@@ -809,6 +867,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return selectLanguageCell;
     }
     
+    // show tips view
+    if (row == 2 && self.isTipsViewVisible) {
+        EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
+        if (!tipsCell) {
+            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
+                                                         type:self.tipsCellType content:self.tipsCellContent];
+            tipsCell.identifier = EZTableTipsCellId;
+        }
+        self.tipsCell = tipsCell;
+        return tipsCell;
+    }
+    
     EZResultView *resultCell = [self resultCellAtRow:row];
     resultCell.windowType = self.windowType;
     
@@ -826,6 +896,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
+    } else if (row == 2 && self.isTipsViewVisible) {
+        if (!self.tipsCell) {
+            // mini cell height
+            if ([self isCustomTipsType]) {
+                height = 80;
+            } else {
+                height = 104;
+            }
+        } else {
+            height = [self.tipsCell cellHeight];
+        }
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {
@@ -835,7 +916,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             height = EZResultViewMiniHeight;
         }
     }
-//    MMLogInfo(@"row: %ld, height: %@", row, @(height));
+    //    MMLogInfo(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -926,7 +1007,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-//    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
+    //    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
     
     // !!!: Since the caller may be in non-main thread, we need to dispatch to main thread, but canont always use dispatch_async, it will cause the animation not smooth.
     dispatch_block_on_main_safely(^{
@@ -943,11 +1024,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
             context.duration = duration;
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-//            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+            //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
             [self updateWindowViewHeight];
         } completionHandler:^{
-//            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+            //            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
             if (completionHandler) {
                 completionHandler();
             }
@@ -1058,27 +1139,39 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *newServices = [self.services mutableCopy];
     for (EZQueryService *service in self.services) {
         if (service.serviceType == serviceType) {
+            if (!autoQuery) {
+                [self updateCellWithResult:service.result reloadData:YES completionHandler:nil];
+                return;
+            }
+            
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
+
+            // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+            if ([service isKindOfClass:EZLLMStreamService.class]) {
+                [((EZLLMStreamService *)service) cancelSubscribers];
+            }
+
             NSInteger index = [self.serviceTypes indexOfObject:serviceType];
             newServices[index] = updatedService;
             self.services = newServices.copy;
-            if (autoQuery) {
-                [self resetCellWithService:updatedService autoQuery:autoQuery];
-            }
-            break;
+            
+            [self resetCellWithService:updatedService autoQuery:autoQuery];
+            
+            return;
         }
     }
 }
 
-- (void)resetAllCellWithServices:(NSArray *)allServices {
+- (void)resetAllCellWithServices:(NSArray *)allServices completion:(void (^)(void))completion {
     [self setupServices:allServices];
-    [self reloadTableViewData:nil];
+    [self reloadTableViewData:completion];
 }
 
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
     return [EZLocalStorage.shared allServices:self.windowType];
 }
+
 
 #pragma mark - Update Data.
 
@@ -1110,7 +1203,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             return resultCell;
         }
     }
-
+    
     return nil;
 }
 
@@ -1220,7 +1313,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
     [queryView setUpdateInputTextBlock:^(NSString *text, CGFloat queryViewHeight) {
         mm_strongify(self);
-//        MMLogInfo(@"UpdateQueryTextBlock");
+        //        MMLogInfo(@"UpdateQueryTextBlock");
         
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
@@ -1245,6 +1338,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
+        // tips view hidden once user tap entry
+        self.isTipsViewVisible = NO;
         [self startQueryText:text];
     }];
     
@@ -1268,6 +1363,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
+        
+        // Close tips view  when user clicking clear button.
+        self.isTipsViewVisible = NO;
+        
         [self clearAll];
     }];
     
@@ -1391,6 +1490,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     
+    if (self.isTipsViewVisible) {
+        offset += 1;
+    }
+    
     return offset;
 }
 
@@ -1432,11 +1535,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = YES;
     }
     
-//    MMLogInfo(@"updateWindowViewHeightWithLock");
+    //    MMLogInfo(@"updateWindowViewHeightWithLock");
     
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
-//    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
+    //    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
     
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
     
@@ -1480,7 +1583,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = NO;
     }
     
-//    MMLogInfo(@"window frame: %@", @(window.frame));
+    //    MMLogInfo(@"window frame: %@", @(window.frame));
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
@@ -1502,10 +1605,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSInteger rowCount = [self numberOfRowsInTableView:self.tableView];
     for (int i = 0; i < rowCount; i++) {
         CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
-//        MMLogInfo(@"row: %d, Height: %.1f", i, rowHeight);
+        //        MMLogInfo(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_7);
     }
-//    MMLogInfo(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+    //    MMLogInfo(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+    
     
     return scrollViewContentHeight;
 }
@@ -1516,7 +1620,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.scrollView.height = 0;
     
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-//    MMLogInfo(@"documentView height: %@", @(documentViewHeight));
+    //    MMLogInfo(@"documentView height: %@", @(documentViewHeight));
     
     return documentViewHeight;
 }
@@ -1564,6 +1668,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [result.copiedText copyToPasteboard];
         }];
     }];
+}
+
+- (BOOL)isCustomTipsType {
+    return self.tipsCellType == EZTipsCellTypeErrorTips ||
+    self.tipsCellType == EZTipsCellTypeInfoTips  ||
+    self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
 @end

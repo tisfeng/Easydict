@@ -65,6 +65,8 @@ typedef NS_ENUM(NSUInteger, EZButtonState) {
 
 @property (nonatomic, copy) NSAttributedString *attrTitle;
 
+@property (nonatomic, assign) NSEdgeInsets edgeInsets; // setting button padding
+
 @property (nonatomic, copy, nullable) void (^clickBlock)(EZButton *button);
 
 @property (nonatomic, copy, nullable) void (^mouseEnterBlock)(EZButton *button);
