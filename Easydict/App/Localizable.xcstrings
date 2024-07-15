@@ -3224,6 +3224,22 @@
         }
       }
     },
+    "setting.general.pin_window_when_showing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically pin when the window is displayed."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当窗口显示时自动钉住"
+          }
+        }
+      }
+    },
     "setting.general.query_language.header" : {
       "localizations" : {
         "en" : {
@@ -3852,6 +3868,12 @@
     },
     "summary_service" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

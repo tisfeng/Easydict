@@ -67,12 +67,14 @@ extension Defaults.Keys {
     )
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
-        default: .mini
+        default: .fixed
     )
     static let shortcutSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kShortcutSelectTranslateWindowTypeKey",
         default: .fixed
     )
+    static let pinWindowWhenDisplayed = Key<Bool>("EZConfiguration_kPinWindowWhenDisplayed", default: false)
+
     static let adjustPopButtonOrigin = Key<Bool>("EZConfiguration_kAdjustPopButtomOriginKey", default: false)
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
