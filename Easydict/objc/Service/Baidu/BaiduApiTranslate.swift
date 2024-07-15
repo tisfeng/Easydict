@@ -102,7 +102,6 @@ class BaiduApiTranslate: NSObject {
     }
 
     private var secretKey: String {
-        let secretKey = Defaults[.baiduSecretKey]
-        return secretKey
+        Defaults[.baiduSecretKey]
     }
 }
