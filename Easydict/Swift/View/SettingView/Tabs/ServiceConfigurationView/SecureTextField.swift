@@ -15,8 +15,8 @@ struct SecureTextField: View {
 
     let title: LocalizedStringKey
     let placeholder: LocalizedStringKey
-
     @Binding var text: String
+    @State var showText: Bool = false
 
     var body: some View {
         HStack {
@@ -63,8 +63,6 @@ struct SecureTextField: View {
     private enum Focus {
         case secure, text
     }
-
-    @State private var showText: Bool = false
 
     @FocusState private var focus: Focus?
 
