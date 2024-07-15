@@ -62,8 +62,8 @@
     if (anotherWindowType != floatingWindowType) {
         // Note that floating window will be closed if not pinned when losing focus.
         EZBaseQueryWindow *floatingWindow = windowManager.floatingWindow;
-        floatingWindow.titleBar.pin = YES;
-        
+        floatingWindow.pin = YES;
+
         EZBaseQueryWindow *anotherFloatingWindow = [windowManager windowWithType:anotherWindowType];
         if (anotherFloatingWindow.isPin) {
             // Focus query view controller, make sure floating window type is current query window.

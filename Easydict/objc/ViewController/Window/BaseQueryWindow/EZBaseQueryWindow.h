@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
+- (void)updateWindowLevel:(BOOL)pin;
+
 @end
 
 NS_ASSUME_NONNULL_END

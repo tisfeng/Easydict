@@ -38,96 +38,70 @@ class Configuration: NSObject {
     private(set) static var shared = Configuration()
 
     @DefaultsWrapper(.firstLanguage) var firstLanguage: Language
-
     @DefaultsWrapper(.secondLanguage) var secondLanguage: Language
-
     @DefaultsWrapper(.queryFromLanguage) var fromLanguage: Language
-
     @DefaultsWrapper(.queryToLanguage) var toLanguage: Language
+    @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
 
     @DefaultsWrapper(.autoSelectText) var autoSelectText: Bool
-
     @DefaultsWrapper(.forceAutoGetSelectedText) var forceAutoGetSelectedText: Bool
-
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
+    @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
 
-    @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
-
-    let updater = GlobalContext.shared.updaterController.updater
-
+    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
+    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
+    @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
+    @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
     @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
 
+    @DefaultsWrapper(.clearInput) var clearInput: Bool
+    @DefaultsWrapper(.keepPrevResultWhenEmpty) var keepPrevResultWhenEmpty: Bool
+    @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
+    @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
-
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
-
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
-
     @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
 
     @DefaultsWrapper(.autoCopySelectedText) var autoCopySelectedText: Bool
-
     @DefaultsWrapper(.autoCopyOCRText) var autoCopyOCRText: Bool
-
     @DefaultsWrapper(.autoCopyFirstTranslatedText) var autoCopyFirstTranslatedText: Bool
 
-    @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
-
     @DefaultsWrapper(.showGoogleQuickLink) var showGoogleQuickLink: Bool
-
     @DefaultsWrapper(.showEudicQuickLink) var showEudicQuickLink: Bool
-
     @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
-
-    @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
-
-    @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
-
-    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
-
-    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
-
-    @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
-    @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
-
-    @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
-
-    @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
-
-    @DefaultsWrapper(.clearInput) var clearInput: Bool
-
-    @DefaultsWrapper(.keepPrevResultWhenEmpty) var keepPrevResultWhenEmpty: Bool
-
-    @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
-
-    @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
-
-    var disabledAutoSelect: Bool = false
-
-    var isRecordingSelectTextShortcutKey: Bool = false
-
-    let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
-
-    @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
-
-    @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
-
-    @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
-
-    @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
-
-    @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
-
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
+    @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
+    @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
+    @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
+    @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
+
+    // Advanced Tab
+    @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
+    @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
 
-    var cancellables: Set<AnyCancellable> = []
+    @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
+    @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
 
     @ShortcutWrapper(.pinShortcut) var pinShortcutString: String
     @ShortcutWrapper(.googleShortcut) var googleShortcutString: String
     @ShortcutWrapper(.appleDictionaryShortcut) var appleDictShortcutString: String
     @ShortcutWrapper(.eudicShortcut) var eudicDictShortcutString: String
+
+    let updater = GlobalContext.shared.updaterController.updater
+    let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
+    var disabledAutoSelect: Bool = false
+    var isRecordingSelectTextShortcutKey: Bool = false
+    var cancellables: Set<AnyCancellable> = []
+
+    var fontSizeRatio: CGFloat {
+        let safeIndex = max(0, min(Int(fontSizeIndex), fontSizes.count - 1))
+        return fontSizes[safeIndex]
+    }
 
     var automaticallyChecksForUpdates: Bool {
         get {
@@ -146,11 +120,6 @@ class Configuration: NSObject {
         set {
             Defaults[.defaultTTSServiceType] = TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
         }
-    }
-
-    var fontSizeRatio: CGFloat {
-        let safeIndex = max(0, min(Int(fontSizeIndex), fontSizes.count - 1))
-        return fontSizes[safeIndex]
     }
 
     static func destroySharedInstance() {

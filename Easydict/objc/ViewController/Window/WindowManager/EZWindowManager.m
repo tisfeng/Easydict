@@ -315,7 +315,7 @@ static EZWindowManager *_instance;
     }
     
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-    window.titleBar.pin = Configuration.shared.pinWindowWhenDisplayed;
+    window.pin = Configuration.shared.pinWindowWhenDisplayed;
 
     EZBaseQueryViewController *queryViewController = window.queryViewController;
 
@@ -883,7 +883,7 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Pin");
     
     EZBaseQueryWindow *queryWindow = EZWindowManager.shared.floatingWindow;
-    queryWindow.titleBar.pin = !queryWindow.titleBar.pin;
+    queryWindow.pin = !queryWindow.pin;
 }
 
 - (void)closeWindowOrExitSreenshot {
@@ -947,7 +947,7 @@ static EZWindowManager *_instance;
     
     MMLogInfo(@"close window type: %ld", windowType);
     
-    floatingWindow.titleBar.pin = NO;
+    floatingWindow.pin = NO;
         
     /// !!!: Close window may call window delegate method `windowDidResignKey:`
     /// And `windowDidResignKey:` will call `closeFloatingWindowIfNotPinned:`
