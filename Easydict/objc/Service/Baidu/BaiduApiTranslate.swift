@@ -98,9 +98,7 @@ class BaiduApiTranslate: NSObject {
     private let queryModel: EZQueryModel
 
     private var appId: String {
-        let appId = Defaults[.baiduAppId]
-
-        return appId
+        Defaults[.baiduAppId]
     }
 
     private var secretKey: String {
