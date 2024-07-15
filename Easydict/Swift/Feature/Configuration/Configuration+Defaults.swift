@@ -99,6 +99,8 @@ extension Defaults.Keys {
 
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
     static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
+    static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
+    static var httpPort = Key<String>("httpPort", default: "8080")
 }
 
 extension Defaults.Keys {

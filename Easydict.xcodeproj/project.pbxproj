@@ -31,6 +31,12 @@
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
 		03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */; };
 		0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0329CD6E29EE924500963F78 /* EZRightClickDetector.m */; };
+		032AAA4F2C456CC1007996A1 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 032AAA4E2C456CC1007996A1 /* Vapor */; };
+		032AAA582C456F04007996A1 /* entrypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA532C456F03007996A1 /* entrypoint.swift */; };
+		032AAA592C456F04007996A1 /* configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA542C456F03007996A1 /* configure.swift */; };
+		032AAA5A2C456F04007996A1 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 032AAA552C456F03007996A1 /* .gitkeep */; };
+		032AAA5B2C456F04007996A1 /* routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA572C456F03007996A1 /* routes.swift */; };
+		032AAA5D2C45744E007996A1 /* VaporServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA5C2C45744E007996A1 /* VaporServer.swift */; };
 		033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */; };
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
 		0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */; };
@@ -379,6 +385,11 @@
 		03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamConfigurationView.swift; sourceTree = "<group>"; };
 		0329CD6D29EE924500963F78 /* EZRightClickDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZRightClickDetector.h; sourceTree = "<group>"; };
 		0329CD6E29EE924500963F78 /* EZRightClickDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZRightClickDetector.m; sourceTree = "<group>"; };
+		032AAA532C456F03007996A1 /* entrypoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = entrypoint.swift; sourceTree = "<group>"; };
+		032AAA542C456F03007996A1 /* configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = configure.swift; sourceTree = "<group>"; };
+		032AAA552C456F03007996A1 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		032AAA572C456F03007996A1 /* routes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = routes.swift; sourceTree = "<group>"; };
+		032AAA5C2C45744E007996A1 /* VaporServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaporServer.swift; sourceTree = "<group>"; };
 		0333639E293A05D200FED9C8 /* EZSelectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageButton.h; sourceTree = "<group>"; };
 		0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageButton.m; sourceTree = "<group>"; };
 		033363A4293C4AFA00FED9C8 /* PrintBeautifulLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintBeautifulLog.h; sourceTree = "<group>"; };
@@ -844,6 +855,7 @@
 				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
 				0364EC8A2C208EB50036B61B /* KeySender in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
+				032AAA4F2C456CC1007996A1 /* Vapor in Frameworks */,
 				03A830922B4073E700112834 /* AppCenterCrashes in Frameworks */,
 				03779F1A2BB25797008D3C42 /* OpenAI in Frameworks */,
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
@@ -979,6 +991,26 @@
 				DC6D9C882B3969510055EFFC /* Appearance.swift */,
 			);
 			path = Appearance;
+			sourceTree = "<group>";
+		};
+		032AAA502C456D96007996A1 /* Vapor */ = {
+			isa = PBXGroup;
+			children = (
+				032AAA562C456F03007996A1 /* Controllers */,
+				032AAA532C456F03007996A1 /* entrypoint.swift */,
+				032AAA542C456F03007996A1 /* configure.swift */,
+				032AAA572C456F03007996A1 /* routes.swift */,
+				032AAA5C2C45744E007996A1 /* VaporServer.swift */,
+			);
+			path = Vapor;
+			sourceTree = "<group>";
+		};
+		032AAA562C456F03007996A1 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				032AAA552C456F03007996A1 /* .gitkeep */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */ = {
@@ -2246,6 +2278,7 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				032AAA502C456D96007996A1 /* Vapor */,
 				03714B8E2C17FCAD00BB4459 /* Constants */,
 				039459F32BE7D1D100FD70F9 /* GetSelectedText */,
 				032A28632BB26DB600265BA4 /* Appearance */,
@@ -2498,6 +2531,7 @@
 				C4BFDD792BE61F550094026B /* Vortex */,
 				0364EC892C208EB50036B61B /* KeySender */,
 				0364EC8C2C208FB70036B61B /* AXSwift */,
+				032AAA4E2C456CC1007996A1 /* Vapor */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2561,6 +2595,7 @@
 				C4BFDD782BE61F550094026B /* XCRemoteSwiftPackageReference "Vortex" */,
 				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
 				0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */,
+				032AAA4D2C456CC1007996A1 /* XCRemoteSwiftPackageReference "vapor" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -2607,6 +2642,7 @@
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
+				032AAA5A2C456F04007996A1 /* .gitkeep in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
 				03D2A3DF29F42B290035CED4 /* bd.js in Resources */,
@@ -2804,6 +2840,7 @@
 				960835502B6791F200C6A931 /* Shortcut+Validator.swift in Sources */,
 				03542A522937B69200C34C33 /* EZYoudaoTranslateResponse.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
+				032AAA592C456F04007996A1 /* configure.swift in Sources */,
 				6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
@@ -2824,6 +2861,7 @@
 				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
 				27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
+				032AAA5D2C45744E007996A1 /* VaporServer.swift in Sources */,
 				276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */,
 				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
@@ -2881,6 +2919,7 @@
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */,
 				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
+				032AAA582C456F04007996A1 /* entrypoint.swift in Sources */,
 				967712EE2B5B943400105E0F /* Shortcut.swift in Sources */,
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
@@ -2936,6 +2975,7 @@
 				6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
+				032AAA5B2C456F04007996A1 /* routes.swift in Sources */,
 				0AC8A8432B6957B0006DA5CC /* BingService+ConfigurableService.swift in Sources */,
 				03542A30293645DF00C34C33 /* EZAppleService.m in Sources */,
 				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
@@ -3415,6 +3455,14 @@
 				minimumVersion = 5.6.0;
 			};
 		};
+		032AAA4D2C456CC1007996A1 /* XCRemoteSwiftPackageReference "vapor" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vapor/vapor.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.102.1;
+			};
+		};
 		0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jordanbaird/KeySender";
@@ -3565,6 +3613,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		032AAA4E2C456CC1007996A1 /* Vapor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 032AAA4D2C456CC1007996A1 /* XCRemoteSwiftPackageReference "vapor" */;
+			productName = Vapor;
 		};
 		0364EC892C208EB50036B61B /* KeySender */ = {
 			isa = XCSwiftPackageProductDependency;
