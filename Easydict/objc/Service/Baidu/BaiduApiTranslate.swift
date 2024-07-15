@@ -75,7 +75,7 @@ class BaiduApiTranslate: NSObject {
                 result.translatedResults = value.transResult.map { $0.dst }
                 completion(result, nil)
             case let .failure(error):
-                logError("Tencent lookup error \(error)")
+                logError("Baidu official API error \(error)")
                 let ezError = EZError(nsError: error)
                 if let data = response.data {
                     do {
