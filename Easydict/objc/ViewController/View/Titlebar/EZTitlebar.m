@@ -305,8 +305,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)setPin:(BOOL)pin {
-    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-    window.pin = pin;
+    [(EZBaseQueryWindow *)self.window updateWindowLevel:pin];
 
     [self updatePinButton];
 }
@@ -439,13 +438,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         }
     }
     return NO;
-}
-
-
-- (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
-    
-    // Drawing code here.
 }
 
 @end

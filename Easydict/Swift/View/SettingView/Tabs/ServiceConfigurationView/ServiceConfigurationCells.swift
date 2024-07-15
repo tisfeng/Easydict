@@ -18,11 +18,13 @@ struct ServiceConfigurationSecureInputCell: View {
     init(
         textFieldTitleKey: LocalizedStringKey,
         key: Defaults.Key<String>,
-        placeholder: LocalizedStringKey = "service.configuration.input.placeholder"
+        placeholder: LocalizedStringKey = "service.configuration.input.placeholder",
+        showText: Bool = false
     ) {
         self.textFieldTitleKey = textFieldTitleKey
         self.placeholder = placeholder
         _value = .init(key)
+        self.showText = showText
     }
 
     // MARK: Internal
@@ -30,9 +32,10 @@ struct ServiceConfigurationSecureInputCell: View {
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: LocalizedStringKey
+    @State var showText: Bool
 
     var body: some View {
-        SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value)
+        SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)
     }
 }
 

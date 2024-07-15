@@ -87,10 +87,11 @@ struct StreamConfigurationView: View {
             }
 
             if showEndpointSection {
-                ServiceConfigurationInputCell(
+                ServiceConfigurationSecureInputCell(
                     textFieldTitleKey: "service.configuration.openai.endpoint.title",
                     key: service.endpointKey,
-                    placeholder: service.endpointPlaceholder
+                    placeholder: service.endpointPlaceholder,
+                    showText: true
                 )
             }
 
