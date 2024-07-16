@@ -47,6 +47,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeTencent;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAli;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGemini;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOllama;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypePolishing;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeSummary;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
