@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "Grammar.png",
+      "filename" : "Summary.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Grammar@2x.png",
+      "filename" : "Summary@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
