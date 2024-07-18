@@ -53,6 +53,8 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeBuiltInAI, [EZBuiltInAIService class],
                                            EZServiceTypeGemini, [EZGeminiService class],
                                            EZServiceTypeOllama, [EZOllamaService class],
+                                           EZServiceTypePolishing, [EZPolishingService class],
+                                           EZServiceTypeSummary, [EZSummaryService class],
                                            EZServiceTypeCustomOpenAI, [EZCustomOpenAIService class],
                                            EZServiceTypeDeepL, [EZDeepLTranslate class],
                                            EZServiceTypeGoogle, [EZGoogleTranslate class],
