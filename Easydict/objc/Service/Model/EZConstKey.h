@@ -28,6 +28,7 @@ static NSString *const EZAliAccessKeySecret = @"EZAliAccessKeySecret";
 
 static NSString *const EZBaiduAppId = @"EZBaiduAppId";
 static NSString *const EZBaiduSecretKey = @"EZBaiduSecretKey";
+static NSString *const EZBaiduServiceApiTypeKey = @"EZBaiduServiceApiTypeKey";
 
 @interface EZConstKey : NSObject
 

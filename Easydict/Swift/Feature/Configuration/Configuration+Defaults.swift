@@ -250,6 +250,7 @@ extension Defaults.Keys {
     // baidu
     static let baiduAppId = Key<String>(EZBaiduAppId, default: "")
     static let baiduSecretKey = Key<String>(EZBaiduSecretKey, default: "")
+    static let baiduServiceApiTypeKey = Key<BaiduServiceApiTypePicker.ApiType?>(EZBaiduServiceApiTypeKey)
 }
 
 /// shortcut

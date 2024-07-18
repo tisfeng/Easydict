@@ -2310,6 +2310,40 @@
         }
       }
     },
+    "service.configuration.baidu.api_disable.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This option is not available, please check if the App ID and Secret Key are set."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该选项不可用，请检查App ID和Secret Key是否已设置。"
+          }
+        }
+      }
+    },
+    "service.configuration.baidu.api_picker.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Type"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 类型"
+          }
+        }
+      }
+    },
     "service.configuration.baidu.app_id.title" : {
       "extractionState" : "manual",
       "localizations" : {
