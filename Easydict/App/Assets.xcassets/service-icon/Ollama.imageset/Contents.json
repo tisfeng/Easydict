@@ -1,11 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "Ollama.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Ollama.png",
+      "filename" : "Ollama@x2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
