@@ -31,6 +31,8 @@ userInfo:nil]
 
 - (instancetype)init {
     if (self = [super init]) {
+        // TODO: result should be created when init, but currently it will cause dead cycle.
+//        self.result = [[EZQueryResult alloc] init];
     }
     return self;
 }
@@ -49,7 +51,7 @@ userInfo:nil]
 
 - (void)setEnabledQuery:(BOOL)enabledQuery {
     _enabledQuery = enabledQuery;
-    
+
     [[EZLocalStorage shared] setEnabledQuery:enabledQuery serviceType:self.serviceType windowType:self.windowType];
 }
 
@@ -57,7 +59,7 @@ userInfo:nil]
     if (self.serviceUsageStatus == EZServiceUsageStatusAlwaysOff) {
         return NO;
     }
-    
+
     if ([Configuration.shared intelligentQueryModeForWindowType:self.windowType]) {
         // We usually don't want to lookup dictionary if text word > 1.
         EZQueryTextType queryType = [self.queryModel.queryText queryTypeWithLanguage:self.queryModel.queryFromLanguage maxWordCount:1];
@@ -72,7 +74,7 @@ userInfo:nil]
 // TODO: need to optimize, each service should have its own model, can stop requests individually.
 - (void)setResult:(EZQueryResult *)translateResult {
     _result = translateResult;
-    
+
     _result.service = self;
     _result.serviceType = self.serviceType;
     _result.queryModel = self.queryModel;
@@ -85,7 +87,7 @@ userInfo:nil]
     if (!result) {
         result = [[EZQueryResult alloc] init];
     }
-    
+
     NSArray *enabledReplaceTypes = @[
         EZActionTypeAutoSelectQuery,
         EZActionTypeShortcutQuery,
@@ -96,7 +98,7 @@ userInfo:nil]
     } else {
         result.showReplaceButton = NO;
     }
-    
+
     self.result = result;
     return result;
 }
@@ -171,32 +173,32 @@ userInfo:nil]
             return YES;
         }
     }
-    
+
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
-    
+
     BOOL unsupportedLanguage = NO;
-    
+
     if (!fromLanguage || !toLanguage) {
         unsupportedLanguage = YES;
     }
-    
+
     if (unsupportedLanguage) {
         completion(self.result, EZQueryUnsupportedLanguageError(self));
         return YES;
     }
-    
+
     // Some services need API Key, the built-in API key free quota may not be enough for all users to use, so it is provided to new users first.
     if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared hasFreeQuotaLeft:self]) {
         EZError *error = [EZError errorWithType:EZErrorTypeInsufficientQuota
                                     description:nil
                                errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
-        
+
         self.result.promptURL = self.link;
         completion(self.result, error);
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -205,14 +207,30 @@ userInfo:nil]
     NSString *queryText = queryModel.queryText;
     EZLanguage from = queryModel.queryFromLanguage;
     EZLanguage to = queryModel.queryTargetLanguage;
-    
+
     if ([self prehandleQueryTextLanguage:queryText
                                     from:from
                                       to:to
                               completion:completion]) {
         return;
     }
-    
+
+    [self translate:queryText from:from to:to completion:completion];
+}
+
+- (void)translate:(EZQueryModel *)queryModel
+        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+    NSString *queryText = queryModel.queryText;
+    EZLanguage from = queryModel.queryFromLanguage;
+    EZLanguage to = queryModel.queryTargetLanguage;
+
+    if ([self prehandleQueryTextLanguage:queryText
+                                    from:from
+                                      to:to
+                              completion:completion]) {
+        return;
+    }
+
     [self translate:queryText from:from to:to completion:completion];
 }
 
@@ -295,9 +313,9 @@ userInfo:nil]
     if ([language isEqualToString:EZLanguageClassicalChinese]) {
         language = EZLanguageSimplifiedChinese;
     }
-    
+
     NSString *languageCode = [self languageCodeForLanguage:language];
-    
+
     // Youdao web TTS,
     if (self.serviceType == EZServiceTypeYoudao) {
         if ([EZLanguageManager.shared isChineseLanguage:language]) {
@@ -313,6 +331,13 @@ userInfo:nil]
 
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull ocrResult, BOOL success))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable ocrResult, EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     MethodNotImplemented();
+}
+
+#pragma mark - MJExtension
+
+// Avoid MJExtension retain cycle.
++ (NSArray *)mj_ignoredPropertyNames {
+    return @[ @"result" ];
 }
 
 @end

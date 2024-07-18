@@ -94,8 +94,10 @@ class VaporServer {
             try? await app.asyncShutdown()
             throw error
         }
+
+        // This code looks strange, from Vapor template https://github.com/vapor/template-bare/blob/main/Sources/App/entrypoint.swift
         try await app.execute()
-//        try await app.asyncShutdown()
+        try await app.asyncShutdown()
     }
 
     private func stop() async {

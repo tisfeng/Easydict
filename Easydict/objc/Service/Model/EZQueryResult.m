@@ -284,4 +284,10 @@ NSString *getPartAbbreviation(NSString *part) {
     self.translatedResults = [self.translatedResults toTraditionalChineseTexts];
 }
 
+#pragma mark - MJExtension
+
++ (NSArray *)mj_ignoredPropertyNames {
+    return @[ @"service" ];
+}
+
 @end

@@ -71,4 +71,10 @@ static NSString *kMethod = @"method";
     self.didFinishUpdatingIframeHeightBlock = nil;
 }
 
+#pragma mark - MJExtension
+
++ (NSArray *)mj_ignoredPropertyNames {
+    return @[ @"webView" ];
+}
+
 @end

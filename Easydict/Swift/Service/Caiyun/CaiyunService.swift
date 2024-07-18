@@ -65,7 +65,7 @@ public final class CaiyunService: QueryService {
             return
         }
 
-        // Docs: https://docs.caiyunapp.com/blog/
+        // Docs: https://docs.caiyunapp.com/lingocloud-api/
         let parameters: [String: Any] = [
             "source": text.split(separator: "\n", omittingEmptySubsequences: false),
             "trans_type": transType.rawValue,
