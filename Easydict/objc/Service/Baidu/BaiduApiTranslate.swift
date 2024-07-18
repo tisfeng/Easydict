@@ -25,7 +25,9 @@ class BaiduApiTranslate: NSObject {
     var result: EZQueryResult?
 
     var isEnable: Bool {
-        !appId.isEmpty && !secretKey.isEmpty
+        Defaults[.baiduServiceApiTypeKey] == BaiduServiceApiTypePickerObserver.ApiType.secretKey && !appId
+            .isEmpty && !secretKey
+            .isEmpty
     }
 
     func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult?, Error?) -> ()) {
