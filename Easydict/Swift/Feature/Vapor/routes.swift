@@ -25,12 +25,6 @@ struct TranslationResponse: Content {
     var translation: String
 }
 
-// MARK: - Hello
-
-struct Hello: Content {
-    var message = "Hello!"
-}
-
 func routes(_ app: Application) throws {
     app.get { _ async in
         "Easydict"
@@ -38,10 +32,6 @@ func routes(_ app: Application) throws {
 
     app.get("hello") { _ async -> String in
         "Hello, Welcome to Easydict!"
-    }
-
-    app.get("greeting") { _ in
-        Hello() // {"message":"Hello!"}
     }
 
     app.post("translate") { req -> EventLoopFuture<Response> in

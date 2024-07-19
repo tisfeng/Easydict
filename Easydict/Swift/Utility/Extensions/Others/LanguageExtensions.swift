@@ -39,7 +39,7 @@ extension Language {
     }
 
     public var localName: String {
-        model.localName
+        model.nativeName
     }
 
     public var flagEmoji: String {
@@ -51,7 +51,7 @@ extension Language {
     }
 
     public var localeIdentifier: String {
-        model.localeIdentifier
+        model.voiceLocaleIdentifier
     }
 
     public var localizedName: String {

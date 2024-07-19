@@ -75,6 +75,25 @@ class VaporServer {
         }
     }
 
+    func testLanguageCode() {
+        let availableLocales = Locale.availableIdentifiers
+        for localeIdentifier in availableLocales {
+            let locale = Locale(identifier: localeIdentifier)
+            let language = locale.language
+            if let languageCode = language.languageCode,
+               let script = language.script,
+               let region = language.region {
+                print(
+                    "Locale Identifier: \(localeIdentifier), Language Code: \(languageCode), Script: \(script), Region: \(region)"
+                )
+            }
+
+            if localeIdentifier.hasPrefix("zh") {
+                print("Chinese: \(localeIdentifier)")
+            }
+        }
+    }
+
     // MARK: Private
 
     private func start() async throws {
@@ -97,7 +116,6 @@ class VaporServer {
 
         // This code looks strange, from Vapor template https://github.com/vapor/template-bare/blob/main/Sources/App/entrypoint.swift
         try await app.execute()
-        try await app.asyncShutdown()
     }
 
     private func stop() async {
