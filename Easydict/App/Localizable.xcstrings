@@ -908,6 +908,23 @@
         }
       }
     },
+    "error_missing_api_key" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少 API Key"
+          }
+        }
+      }
+    },
     "error_network" : {
       "localizations" : {
         "en" : {
@@ -2326,19 +2343,19 @@
         }
       }
     },
-    "service.configuration.baidu.api_disable.title" : {
+    "service.configuration.baidu.api_missing.tips" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This option is not available, please check if the App ID and Secret Key are set."
+            "value" : "The Secret Key API is currently in use, but either the App ID or Secret Key is empty. Please go to Settings > Service > Baidu Translate, fill in the required configuration information, or switch API types."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "该选项不可用，请检查App ID和Secret Key是否已设置。"
+            "value" : "当前正使用 Secret Key API，但是 App ID 或者 Secret Key 为空，请前往设置-服务-百度翻译，填写相关配置信息，或切换 API 类型"
           }
         }
       }
@@ -2377,6 +2394,23 @@
         }
       }
     },
+    "service.configuration.baidu.secret_key_api_type.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Key API"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Key API"
+          }
+        }
+      }
+    },
     "service.configuration.baidu.secret_key.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2390,6 +2424,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
+          }
+        }
+      }
+    },
+    "service.configuration.baidu.web_api_type.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API"
           }
         }
       }
