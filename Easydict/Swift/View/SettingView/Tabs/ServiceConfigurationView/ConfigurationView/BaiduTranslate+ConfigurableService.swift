@@ -20,7 +20,7 @@ extension EZBaiduTranslate {
             ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.baidu.api_picker.title",
                 key: .baiduServiceApiTypeKey,
-                values: BaiduServiceApiType.allCases
+                values: ServiceAPIType.allCases
             )
 
             ServiceConfigurationSecureInputCell(
@@ -36,22 +36,15 @@ extension EZBaiduTranslate {
     }
 }
 
-// MARK: - BaiduServiceApiType
+// MARK: - ServiceAPIType
 
-enum BaiduServiceApiType: String, CaseIterable, Defaults.Serializable {
-    case web = "0"
-    case secretKey = "1"
-}
+enum ServiceAPIType: String, CaseIterable, Defaults.Serializable, EnumLocalizedStringConvertible {
+    case web = "Web API"
+    case secretKey = "Secret Key API"
 
-// MARK: EnumLocalizedStringConvertible
+    // MARK: Internal
 
-extension BaiduServiceApiType: EnumLocalizedStringConvertible {
     var title: LocalizedStringKey {
-        switch self {
-        case .web:
-            "service.configuration.baidu.web_api_type.title"
-        case .secretKey:
-            "service.configuration.baidu.secret_key_api_type.title"
-        }
+        LocalizedStringKey(rawValue)
     }
 }

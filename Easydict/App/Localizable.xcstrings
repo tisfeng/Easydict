@@ -2394,23 +2394,6 @@
         }
       }
     },
-    "service.configuration.baidu.secret_key_api_type.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secret Key API"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secret Key API"
-          }
-        }
-      }
-    },
     "service.configuration.baidu.secret_key.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2424,23 +2407,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
-          }
-        }
-      }
-    },
-    "service.configuration.baidu.web_api_type.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Web API"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Web API"
           }
         }
       }
