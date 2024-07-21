@@ -71,32 +71,32 @@ NSString *const EZLanguageUnsupported = @"unsupported";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         allLanguages = [[MMOrderedDictionary alloc] init];
-        
+
         EZLanguageModel *autoLang = [[EZLanguageModel alloc] init];
         autoLang.chineseName = @"自动检测";
         autoLang.englishName = EZLanguageAuto;
         autoLang.nativeName = @"auto";
         autoLang.flagEmoji = @"🌐";
         [allLanguages setObject:autoLang forKey:EZLanguageAuto];
-        
+
         EZLanguageModel *chineseSimplifiedLang = [[EZLanguageModel alloc] init];
         chineseSimplifiedLang.chineseName = @"简体中文";
         chineseSimplifiedLang.englishName = EZLanguageSimplifiedChinese;
         chineseSimplifiedLang.nativeName = @"简体中文";
         chineseSimplifiedLang.flagEmoji = @"🇨🇳";
         chineseSimplifiedLang.voiceLocaleIdentifier = @"zh_CN";
-        chineseSimplifiedLang.code = @"zh_Hans"; // BCP-47 code
+        chineseSimplifiedLang.code = @"zh-Hans"; // BCP-47 code
         [allLanguages setObject:chineseSimplifiedLang forKey:EZLanguageSimplifiedChinese];
-        
+
         EZLanguageModel *chineseTraditionalLang = [[EZLanguageModel alloc] init];
         chineseTraditionalLang.chineseName = @"繁体中文";
         chineseTraditionalLang.englishName = EZLanguageTraditionalChinese;
         chineseTraditionalLang.nativeName = @"繁體中文";
         chineseTraditionalLang.flagEmoji = @"🇭🇰";
         chineseTraditionalLang.voiceLocaleIdentifier = @"zh_TW";
-        chineseTraditionalLang.code = @"zh_Hant";
+        chineseTraditionalLang.code = @"zh-Hant";
         [allLanguages setObject:chineseTraditionalLang forKey:EZLanguageTraditionalChinese];
-        
+
         EZLanguageModel *chineseClassicalLang = [[EZLanguageModel alloc] init];
         chineseClassicalLang.chineseName = @"文言文";
         chineseClassicalLang.englishName = EZLanguageClassicalChinese;
@@ -105,7 +105,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         chineseClassicalLang.voiceLocaleIdentifier = @"zh_CN";
         chineseClassicalLang.code = @"lzh";
         [allLanguages setObject:chineseClassicalLang forKey:EZLanguageClassicalChinese];
-        
+
         EZLanguageModel *englishLang = [[EZLanguageModel alloc] init];
         englishLang.chineseName = @"英语";
         englishLang.englishName = EZLanguageEnglish;
@@ -114,7 +114,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         englishLang.voiceLocaleIdentifier = @"en_US";
         englishLang.code = @"en";
         [allLanguages setObject:englishLang forKey:EZLanguageEnglish];
-        
+
         EZLanguageModel *japaneseLang = [[EZLanguageModel alloc] init];
         japaneseLang.chineseName = @"日语";
         japaneseLang.englishName = EZLanguageJapanese;
@@ -123,7 +123,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         japaneseLang.voiceLocaleIdentifier = @"ja_JP";
         japaneseLang.code = @"ja";
         [allLanguages setObject:japaneseLang forKey:EZLanguageJapanese];
-        
+
         EZLanguageModel *koreanLang = [[EZLanguageModel alloc] init];
         koreanLang.chineseName = @"韩语";
         koreanLang.englishName = EZLanguageKorean;
@@ -132,7 +132,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         koreanLang.voiceLocaleIdentifier = @"ko_KR";
         koreanLang.code = @"ko";
         [allLanguages setObject:koreanLang forKey:EZLanguageKorean];
-        
+
         EZLanguageModel *frenchLang = [[EZLanguageModel alloc] init];
         frenchLang.chineseName = @"法语";
         frenchLang.englishName = EZLanguageFrench;
@@ -141,7 +141,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         frenchLang.voiceLocaleIdentifier = @"fr_FR";
         frenchLang.code = @"fr";
         [allLanguages setObject:frenchLang forKey:EZLanguageFrench];
-        
+
         EZLanguageModel *spanishLang = [[EZLanguageModel alloc] init];
         spanishLang.chineseName = @"西班牙语";
         spanishLang.englishName = EZLanguageSpanish;
@@ -150,7 +150,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         spanishLang.voiceLocaleIdentifier = @"es_ES";
         spanishLang.code = @"es";
         [allLanguages setObject:spanishLang forKey:EZLanguageSpanish];
-        
+
         EZLanguageModel *portuguese = [[EZLanguageModel alloc] init];
         portuguese.chineseName = @"葡萄牙语";
         portuguese.englishName = EZLanguagePortuguese;
@@ -159,7 +159,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         portuguese.voiceLocaleIdentifier = @"pt_PT";
         portuguese.code = @"pt";
         [allLanguages setObject:portuguese forKey:EZLanguagePortuguese];
-        
+
         EZLanguageModel *brazilianPortuguese = [[EZLanguageModel alloc] init];
         brazilianPortuguese.chineseName = @"葡萄牙语（巴西）";
         brazilianPortuguese.englishName = EZLanguageBrazilianPortuguese;
@@ -168,7 +168,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         brazilianPortuguese.voiceLocaleIdentifier = @"pt_BR";
         brazilianPortuguese.code = @"pt-BR";
         [allLanguages setObject:brazilianPortuguese forKey:EZLanguageBrazilianPortuguese];
-        
+
         EZLanguageModel *italianLang = [[EZLanguageModel alloc] init];
         italianLang.chineseName = @"意大利语";
         italianLang.englishName = EZLanguageItalian;
@@ -177,7 +177,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         italianLang.voiceLocaleIdentifier = @"it_IT";
         italianLang.code = @"it";
         [allLanguages setObject:italianLang forKey:EZLanguageItalian];
-        
+
         EZLanguageModel *germanLang = [[EZLanguageModel alloc] init];
         germanLang.chineseName = @"德语";
         germanLang.englishName = EZLanguageGerman;
@@ -186,7 +186,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         germanLang.voiceLocaleIdentifier = @"de_DE";
         germanLang.code = @"de";
         [allLanguages setObject:germanLang forKey:EZLanguageGerman];
-        
+
         EZLanguageModel *russianLang = [[EZLanguageModel alloc] init];
         russianLang.chineseName = @"俄语";
         russianLang.englishName = EZLanguageRussian;
@@ -195,7 +195,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         russianLang.voiceLocaleIdentifier = @"ru_RU";
         russianLang.code = @"ru";
         [allLanguages setObject:russianLang forKey:EZLanguageRussian];
-        
+
         EZLanguageModel *arabicLang = [[EZLanguageModel alloc] init];
         arabicLang.chineseName = @"阿拉伯语";
         arabicLang.englishName = EZLanguageArabic;
@@ -204,7 +204,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         arabicLang.voiceLocaleIdentifier = @"ar_AE";
         arabicLang.code = @"ar";
         [allLanguages setObject:arabicLang forKey:EZLanguageArabic];
-        
+
         EZLanguageModel *swedishLang = [[EZLanguageModel alloc] init];
         swedishLang.chineseName = @"瑞典语";
         swedishLang.englishName = EZLanguageSwedish;
@@ -213,7 +213,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         swedishLang.voiceLocaleIdentifier = @"sv_SE";
         swedishLang.code = @"sv";
         [allLanguages setObject:swedishLang forKey:EZLanguageSwedish];
-        
+
         EZLanguageModel *romanianLang = [[EZLanguageModel alloc] init];
         romanianLang.chineseName = @"罗马尼亚语";
         romanianLang.englishName = EZLanguageRomanian;
@@ -222,7 +222,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         romanianLang.voiceLocaleIdentifier = @"ro_RO";
         romanianLang.code = @"ro";
         [allLanguages setObject:romanianLang forKey:EZLanguageRomanian];
-        
+
         EZLanguageModel *thaLang = [[EZLanguageModel alloc] init];
         thaLang.chineseName = @"泰语";
         thaLang.englishName = EZLanguageThai;
@@ -231,7 +231,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         thaLang.voiceLocaleIdentifier = @"th_TH";
         thaLang.code = @"th";
         [allLanguages setObject:thaLang forKey:EZLanguageThai];
-        
+
         EZLanguageModel *slovakLang = [[EZLanguageModel alloc] init];
         slovakLang.chineseName = @"斯洛伐克语";
         slovakLang.englishName = EZLanguageSlovak;
@@ -240,7 +240,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         slovakLang.voiceLocaleIdentifier = @"sk_SK";
         slovakLang.code = @"sk";
         [allLanguages setObject:slovakLang forKey:EZLanguageSlovak];
-        
+
         EZLanguageModel *dutchLang = [[EZLanguageModel alloc] init];
         dutchLang.chineseName = @"荷兰语";
         dutchLang.englishName = EZLanguageDutch;
@@ -249,7 +249,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         dutchLang.voiceLocaleIdentifier = @"nl_NL";
         dutchLang.code = @"nl";
         [allLanguages setObject:dutchLang forKey:EZLanguageDutch];
-        
+
         EZLanguageModel *hungarianLang = [[EZLanguageModel alloc] init];
         hungarianLang.chineseName = @"匈牙利语";
         hungarianLang.englishName = EZLanguageHungarian;
@@ -258,7 +258,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         hungarianLang.voiceLocaleIdentifier = @"hu_HU";
         hungarianLang.code = @"hu";
         [allLanguages setObject:hungarianLang forKey:EZLanguageHungarian];
-        
+
         EZLanguageModel *greekLang = [[EZLanguageModel alloc] init];
         greekLang.chineseName = @"希腊语";
         greekLang.englishName = EZLanguageGreek;
@@ -267,7 +267,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         greekLang.voiceLocaleIdentifier = @"el_GR";
         greekLang.code = @"el";
         [allLanguages setObject:greekLang forKey:EZLanguageGreek];
-        
+
         EZLanguageModel *danishLang = [[EZLanguageModel alloc] init];
         danishLang.chineseName = @"丹麦语";
         danishLang.englishName = EZLanguageDanish;
@@ -276,7 +276,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         danishLang.voiceLocaleIdentifier = @"da_DK";
         danishLang.code = @"da";
         [allLanguages setObject:danishLang forKey:EZLanguageDanish];
-        
+
         EZLanguageModel *finnishLang = [[EZLanguageModel alloc] init];
         finnishLang.chineseName = @"芬兰语";
         finnishLang.englishName = EZLanguageFinnish;
@@ -285,7 +285,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         finnishLang.voiceLocaleIdentifier = @"fi_FI";
         finnishLang.code = @"fi";
         [allLanguages setObject:finnishLang forKey:EZLanguageFinnish];
-        
+
         EZLanguageModel *polishLang = [[EZLanguageModel alloc] init];
         polishLang.chineseName = @"波兰语";
         polishLang.englishName = EZLanguagePolish;
@@ -294,7 +294,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         polishLang.voiceLocaleIdentifier = @"pl_PL";
         polishLang.code = @"pl";
         [allLanguages setObject:polishLang forKey:EZLanguagePolish];
-        
+
         EZLanguageModel *czechLang = [[EZLanguageModel alloc] init];
         czechLang.chineseName = @"捷克语";
         czechLang.englishName = EZLanguageCzech;
@@ -303,7 +303,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         czechLang.voiceLocaleIdentifier = @"cs_CZ";
         czechLang.code = @"cs";
         [allLanguages setObject:czechLang forKey:EZLanguageCzech];
-        
+
         EZLanguageModel *turkishLang = [[EZLanguageModel alloc] init];
         turkishLang.chineseName = @"土耳其语";
         turkishLang.englishName = EZLanguageTurkish;
@@ -312,7 +312,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         turkishLang.voiceLocaleIdentifier = @"tr_TR";
         turkishLang.code = @"tr";
         [allLanguages setObject:turkishLang forKey:EZLanguageTurkish];
-        
+
         EZLanguageModel *lituanianLang = [[EZLanguageModel alloc] init];
         lituanianLang.chineseName = @"立陶宛语";
         lituanianLang.englishName = EZLanguageLithuanian;
@@ -321,7 +321,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         lituanianLang.voiceLocaleIdentifier = @"lt_LT";
         lituanianLang.code = @"lt";
         [allLanguages setObject:lituanianLang forKey:EZLanguageLithuanian];
-        
+
         EZLanguageModel *latvianLang = [[EZLanguageModel alloc] init];
         latvianLang.chineseName = @"拉脱维亚语";
         latvianLang.englishName = EZLanguageLatvian;
@@ -330,7 +330,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         latvianLang.voiceLocaleIdentifier = @"lv_LV";
         latvianLang.code = @"lv";
         [allLanguages setObject:latvianLang forKey:EZLanguageLatvian];
-        
+
         EZLanguageModel *ukrainianLang = [[EZLanguageModel alloc] init];
         ukrainianLang.chineseName = @"乌克兰语";
         ukrainianLang.englishName = EZLanguageUkrainian;
@@ -339,7 +339,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         ukrainianLang.voiceLocaleIdentifier = @"uk_UA";
         ukrainianLang.code = @"uk";
         [allLanguages setObject:ukrainianLang forKey:EZLanguageUkrainian];
-        
+
         EZLanguageModel *bulgarianLang = [[EZLanguageModel alloc] init];
         bulgarianLang.chineseName = @"保加利亚语";
         bulgarianLang.englishName = EZLanguageBulgarian;
@@ -348,7 +348,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         bulgarianLang.voiceLocaleIdentifier = @"bg_BG";
         bulgarianLang.code = @"bg";
         [allLanguages setObject:bulgarianLang forKey:EZLanguageBulgarian];
-        
+
         EZLanguageModel *indonesianLang = [[EZLanguageModel alloc] init];
         indonesianLang.chineseName = @"印尼语";
         indonesianLang.englishName = EZLanguageIndonesian;
@@ -357,7 +357,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         indonesianLang.voiceLocaleIdentifier = @"id_ID";
         indonesianLang.code = @"id";
         [allLanguages setObject:indonesianLang forKey:EZLanguageIndonesian];
-        
+
         EZLanguageModel *malayLang = [[EZLanguageModel alloc] init];
         malayLang.chineseName = @"马来语";
         malayLang.englishName = EZLanguageMalay;
@@ -366,7 +366,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         malayLang.voiceLocaleIdentifier = @"ms_MY";
         malayLang.code = @"ms";
         [allLanguages setObject:malayLang forKey:EZLanguageMalay];
-        
+
         EZLanguageModel *slovenian = [[EZLanguageModel alloc] init];
         slovenian.chineseName = @"斯洛文尼亚语";
         slovenian.englishName = EZLanguageSlovenian;
@@ -375,7 +375,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         slovenian.voiceLocaleIdentifier = @"sl_SI";
         slovenian.code = @"sl";
         [allLanguages setObject:slovenian forKey:EZLanguageSlovenian];
-        
+
         EZLanguageModel *estonianLang = [[EZLanguageModel alloc] init];
         estonianLang.chineseName = @"爱沙尼亚语";
         estonianLang.englishName = EZLanguageEstonian;
@@ -384,7 +384,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         estonianLang.voiceLocaleIdentifier = @"et_EE";
         estonianLang.code = @"et";
         [allLanguages setObject:estonianLang forKey:EZLanguageEstonian];
-        
+
         EZLanguageModel *vietnameseLang = [[EZLanguageModel alloc] init];
         vietnameseLang.chineseName = @"越南语";
         vietnameseLang.englishName = EZLanguageVietnamese;
@@ -393,7 +393,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         vietnameseLang.voiceLocaleIdentifier = @"vi_VN";
         vietnameseLang.code = @"vi";
         [allLanguages setObject:vietnameseLang forKey:EZLanguageVietnamese];
-        
+
         EZLanguageModel *persianLang = [[EZLanguageModel alloc] init];
         persianLang.chineseName = @"波斯语";
         persianLang.englishName = EZLanguagePersian;
@@ -402,7 +402,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         persianLang.voiceLocaleIdentifier = @"fa_IR";
         persianLang.code = @"fa";
         [allLanguages setObject:persianLang forKey:EZLanguagePersian];
-        
+
         EZLanguageModel *hindiLang = [[EZLanguageModel alloc] init];
         hindiLang.chineseName = @"印地语";
         hindiLang.englishName = EZLanguageHindi;
@@ -411,7 +411,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         hindiLang.voiceLocaleIdentifier = @"hi_IN";
         hindiLang.code = @"hi";
         [allLanguages setObject:hindiLang forKey:EZLanguageHindi];
-        
+
         EZLanguageModel *teluguLang = [[EZLanguageModel alloc] init];
         teluguLang.chineseName = @"泰卢固语";
         teluguLang.englishName = EZLanguageTelugu;
@@ -420,7 +420,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         teluguLang.voiceLocaleIdentifier = @"te_IN";
         teluguLang.code = @"te";
         [allLanguages setObject:teluguLang forKey:EZLanguageTelugu];
-        
+
         EZLanguageModel *tamilLang = [[EZLanguageModel alloc] init];
         tamilLang.chineseName = @"泰米尔语";
         tamilLang.englishName = EZLanguageTamil;
@@ -429,7 +429,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         tamilLang.voiceLocaleIdentifier = @"ta_IN";
         tamilLang.code = @"ta";
         [allLanguages setObject:tamilLang forKey:EZLanguageTamil];
-        
+
         EZLanguageModel *urduLang = [[EZLanguageModel alloc] init];
         urduLang.chineseName = @"乌尔都语";
         urduLang.englishName = EZLanguageUrdu;
@@ -438,7 +438,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         urduLang.voiceLocaleIdentifier = @"ur_PK";
         urduLang.code = @"ur";
         [allLanguages setObject:urduLang forKey:EZLanguageUrdu];
-        
+
         EZLanguageModel *filipinoLang = [[EZLanguageModel alloc] init];
         filipinoLang.chineseName = @"菲律宾语";
         filipinoLang.englishName = EZLanguageFilipino;
@@ -447,7 +447,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         filipinoLang.voiceLocaleIdentifier = @"fil_PH";
         filipinoLang.code = @"fil";
         [allLanguages setObject:filipinoLang forKey:EZLanguageFilipino];
-        
+
         EZLanguageModel *khmerLang = [[EZLanguageModel alloc] init];
         khmerLang.chineseName = @"高棉语";
         khmerLang.englishName = EZLanguageKhmer;
@@ -456,7 +456,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         khmerLang.voiceLocaleIdentifier = @"km_KH";
         khmerLang.code = @"km";
         [allLanguages setObject:khmerLang forKey:EZLanguageKhmer];
-        
+
         EZLanguageModel *laoLang = [[EZLanguageModel alloc] init];
         laoLang.chineseName = @"老挝语";
         laoLang.englishName = EZLanguageLao;
@@ -465,7 +465,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         laoLang.voiceLocaleIdentifier = @"lo_LA";
         laoLang.code = @"lo";
         [allLanguages setObject:laoLang forKey:EZLanguageLao];
-        
+
         EZLanguageModel *bengaliLang = [[EZLanguageModel alloc] init];
         bengaliLang.chineseName = @"孟加拉语";
         bengaliLang.englishName = EZLanguageBengali;
@@ -474,7 +474,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         bengaliLang.voiceLocaleIdentifier = @"bn_BD";
         bengaliLang.code = @"bn";
         [allLanguages setObject:bengaliLang forKey:EZLanguageBengali];
-        
+
         EZLanguageModel *burmeseLang = [[EZLanguageModel alloc] init];
         burmeseLang.chineseName = @"缅甸语";
         burmeseLang.englishName = EZLanguageBurmese;
@@ -483,7 +483,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         burmeseLang.voiceLocaleIdentifier = @"my_MM";
         burmeseLang.code = @"my";
         [allLanguages setObject:burmeseLang forKey:EZLanguageBurmese];
-        
+
         EZLanguageModel *norwegianLang = [[EZLanguageModel alloc] init];
         norwegianLang.chineseName = @"挪威语";
         norwegianLang.englishName = EZLanguageNorwegian;
@@ -492,7 +492,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         norwegianLang.voiceLocaleIdentifier = @"nb_NO";
         norwegianLang.code = @"nb";
         [allLanguages setObject:norwegianLang forKey:EZLanguageNorwegian];
-        
+
         EZLanguageModel *serbianLang = [[EZLanguageModel alloc] init];
         serbianLang.chineseName = @"塞尔维亚语";
         serbianLang.englishName = EZLanguageSerbian;
@@ -501,7 +501,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         serbianLang.voiceLocaleIdentifier = @"sr_Cyrl";
         serbianLang.code = @"sr-Cyrl";
         [allLanguages setObject:serbianLang forKey:EZLanguageSerbian];
-        
+
         EZLanguageModel *croatianLang = [[EZLanguageModel alloc] init];
         croatianLang.chineseName = @"克罗地亚语";
         croatianLang.englishName = EZLanguageCroatian;
@@ -510,7 +510,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         croatianLang.voiceLocaleIdentifier = @"hr_HR";
         croatianLang.code = @"hr";
         [allLanguages setObject:croatianLang forKey:EZLanguageCroatian];
-        
+
         EZLanguageModel *mongolianLang = [[EZLanguageModel alloc] init];
         mongolianLang.chineseName = @"蒙古语";
         mongolianLang.englishName = EZLanguageMongolian;
@@ -519,7 +519,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         mongolianLang.voiceLocaleIdentifier = @"mn_MN";
         mongolianLang.code = @"mn-Mong";
         [allLanguages setObject:mongolianLang forKey:EZLanguageMongolian];
-        
+
         EZLanguageModel *hebrewLang = [[EZLanguageModel alloc] init];
         hebrewLang.chineseName = @"希伯来语";
         hebrewLang.englishName = EZLanguageHebrew;
@@ -529,7 +529,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         hebrewLang.code = @"he";
         [allLanguages setObject:hebrewLang forKey:EZLanguageHebrew];
     });
-    
+
     return allLanguages;
 }
 

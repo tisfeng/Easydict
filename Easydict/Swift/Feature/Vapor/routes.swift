@@ -76,8 +76,8 @@ func routes(_ app: Application) throws {
 extension QueryService {
     func translate(request: TranslationRequest, completion: @escaping (EZQueryResult, Error?) -> ()) {
         let text = request.text
-        let from = Language(rawValue: request.sourceLanguage ?? "auto")
-        let to = Language(rawValue: request.targetLanguage)
+        let from = Language.language(fromCode: request.sourceLanguage ?? "auto")
+        let to = Language.language(fromCode: request.targetLanguage)
 
         if prehandleQueryTextLanguage(
             text,
