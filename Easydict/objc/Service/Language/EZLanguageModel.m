@@ -85,7 +85,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         chineseSimplifiedLang.nativeName = @"简体中文";
         chineseSimplifiedLang.flagEmoji = @"🇨🇳";
         chineseSimplifiedLang.voiceLocaleIdentifier = @"zh_CN";
-        chineseSimplifiedLang.voiceName = @"Tingting";
         chineseSimplifiedLang.code = @"zh_Hans"; // BCP-47 code
         [allLanguages setObject:chineseSimplifiedLang forKey:EZLanguageSimplifiedChinese];
         
@@ -95,7 +94,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         chineseTraditionalLang.nativeName = @"繁體中文";
         chineseTraditionalLang.flagEmoji = @"🇭🇰";
         chineseTraditionalLang.voiceLocaleIdentifier = @"zh_TW";
-        chineseTraditionalLang.voiceName = @"Tingting";
         chineseTraditionalLang.code = @"zh_Hant";
         [allLanguages setObject:chineseTraditionalLang forKey:EZLanguageTraditionalChinese];
         
@@ -105,7 +103,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         chineseClassicalLang.nativeName = @"文言文";
         chineseClassicalLang.flagEmoji = @"📜";
         chineseClassicalLang.voiceLocaleIdentifier = @"zh_CN";
-        chineseClassicalLang.voiceName = @"Tingting";
         chineseClassicalLang.code = @"lzh";
         [allLanguages setObject:chineseClassicalLang forKey:EZLanguageClassicalChinese];
         
@@ -115,7 +112,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         englishLang.nativeName = @"English";
         englishLang.flagEmoji = @"🇬🇧";
         englishLang.voiceLocaleIdentifier = @"en_US";
-        englishLang.voiceName = @"Samantha";
         englishLang.code = @"en";
         [allLanguages setObject:englishLang forKey:EZLanguageEnglish];
         
@@ -125,7 +121,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         japaneseLang.nativeName = @"日本語";
         japaneseLang.flagEmoji = @"🇯🇵";
         japaneseLang.voiceLocaleIdentifier = @"ja_JP";
-        japaneseLang.voiceName = @"Kyoko";
         japaneseLang.code = @"ja";
         [allLanguages setObject:japaneseLang forKey:EZLanguageJapanese];
         
@@ -135,7 +130,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         koreanLang.nativeName = @"한국어";
         koreanLang.flagEmoji = @"🇰🇷";
         koreanLang.voiceLocaleIdentifier = @"ko_KR";
-        koreanLang.voiceName = @"Yuna";
         koreanLang.code = @"ko";
         [allLanguages setObject:koreanLang forKey:EZLanguageKorean];
         
@@ -145,7 +139,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         frenchLang.nativeName = @"Français";
         frenchLang.flagEmoji = @"🇫🇷";
         frenchLang.voiceLocaleIdentifier = @"fr_FR";
-        frenchLang.voiceName = @"Amelie";
         frenchLang.code = @"fr";
         [allLanguages setObject:frenchLang forKey:EZLanguageFrench];
         
@@ -155,7 +148,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         spanishLang.nativeName = @"Español";
         spanishLang.flagEmoji = @"🇪🇸";
         spanishLang.voiceLocaleIdentifier = @"es_ES";
-        spanishLang.voiceName = @"Penelope";
         spanishLang.code = @"es";
         [allLanguages setObject:spanishLang forKey:EZLanguageSpanish];
         
@@ -165,7 +157,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         portuguese.nativeName = @"Português";
         portuguese.flagEmoji = @"🇵🇹";
         portuguese.voiceLocaleIdentifier = @"pt_PT";
-        portuguese.voiceName = @"Joana";
         portuguese.code = @"pt";
         [allLanguages setObject:portuguese forKey:EZLanguagePortuguese];
         
@@ -175,7 +166,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         brazilianPortuguese.nativeName = @"Português (Brasil)";
         brazilianPortuguese.flagEmoji = @"🇧🇷";
         brazilianPortuguese.voiceLocaleIdentifier = @"pt_BR";
-        brazilianPortuguese.voiceName = @"Luciana";
         brazilianPortuguese.code = @"pt-BR";
         [allLanguages setObject:brazilianPortuguese forKey:EZLanguageBrazilianPortuguese];
         
@@ -185,7 +175,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         italianLang.nativeName = @"Italiano";
         italianLang.flagEmoji = @"🇮🇹";
         italianLang.voiceLocaleIdentifier = @"it_IT";
-        italianLang.voiceName = @"Alice";
         italianLang.code = @"it";
         [allLanguages setObject:italianLang forKey:EZLanguageItalian];
         
@@ -195,7 +184,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         germanLang.nativeName = @"Deutsch";
         germanLang.flagEmoji = @"🇩🇪";
         germanLang.voiceLocaleIdentifier = @"de_DE";
-        germanLang.voiceName = @"Anna";
         germanLang.code = @"de";
         [allLanguages setObject:germanLang forKey:EZLanguageGerman];
         
@@ -205,7 +193,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         russianLang.nativeName = @"Русский";
         russianLang.flagEmoji = @"🇷🇺";
         russianLang.voiceLocaleIdentifier = @"ru_RU";
-        russianLang.voiceName = @"Milena";
         russianLang.code = @"ru";
         [allLanguages setObject:russianLang forKey:EZLanguageRussian];
         
@@ -215,7 +202,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         arabicLang.nativeName = @"العربية";
         arabicLang.flagEmoji = @"🇸🇦";
         arabicLang.voiceLocaleIdentifier = @"ar_AE";
-        arabicLang.voiceName = @"Zuzana";
         arabicLang.code = @"ar";
         [allLanguages setObject:arabicLang forKey:EZLanguageArabic];
         
@@ -225,7 +211,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         swedishLang.nativeName = @"Svenska";
         swedishLang.flagEmoji = @"🇸🇪";
         swedishLang.voiceLocaleIdentifier = @"sv_SE";
-        swedishLang.voiceName = @"Alva";
         swedishLang.code = @"sv";
         [allLanguages setObject:swedishLang forKey:EZLanguageSwedish];
         
@@ -235,7 +220,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         romanianLang.nativeName = @"Română";
         romanianLang.flagEmoji = @"🇷🇴";
         romanianLang.voiceLocaleIdentifier = @"ro_RO";
-        romanianLang.voiceName = @"Ioana";
         romanianLang.code = @"ro";
         [allLanguages setObject:romanianLang forKey:EZLanguageRomanian];
         
@@ -245,7 +229,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         thaLang.nativeName = @"ไทย";
         thaLang.flagEmoji = @"🇹🇭";
         thaLang.voiceLocaleIdentifier = @"th_TH";
-        thaLang.voiceName = @"Kanya";
         thaLang.code = @"th";
         [allLanguages setObject:thaLang forKey:EZLanguageThai];
         
@@ -255,7 +238,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         slovakLang.nativeName = @"Slovenčina";
         slovakLang.flagEmoji = @"🇸🇰";
         slovakLang.voiceLocaleIdentifier = @"sk_SK";
-        slovakLang.voiceName = @"Laura";
         slovakLang.code = @"sk";
         [allLanguages setObject:slovakLang forKey:EZLanguageSlovak];
         
@@ -265,7 +247,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         dutchLang.nativeName = @"Nederlands";
         dutchLang.flagEmoji = @"🇳🇱";
         dutchLang.voiceLocaleIdentifier = @"nl_NL";
-        dutchLang.voiceName = @"Xander";
         dutchLang.code = @"nl";
         [allLanguages setObject:dutchLang forKey:EZLanguageDutch];
         
@@ -275,7 +256,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         hungarianLang.nativeName = @"Magyar";
         hungarianLang.flagEmoji = @"🇭🇺";
         hungarianLang.voiceLocaleIdentifier = @"hu_HU";
-        hungarianLang.voiceName = @"Ellen";
         hungarianLang.code = @"hu";
         [allLanguages setObject:hungarianLang forKey:EZLanguageHungarian];
         
@@ -285,7 +265,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         greekLang.nativeName = @"Ελληνικά";
         greekLang.flagEmoji = @"🇬🇷";
         greekLang.voiceLocaleIdentifier = @"el_GR";
-        greekLang.voiceName = @"Melina";
         greekLang.code = @"el";
         [allLanguages setObject:greekLang forKey:EZLanguageGreek];
         
@@ -295,7 +274,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         danishLang.nativeName = @"Dansk";
         danishLang.flagEmoji = @"🇩🇰";
         danishLang.voiceLocaleIdentifier = @"da_DK";
-        danishLang.voiceName = @"Naja";
         danishLang.code = @"da";
         [allLanguages setObject:danishLang forKey:EZLanguageDanish];
         
@@ -305,7 +283,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         finnishLang.nativeName = @"Suomi";
         finnishLang.flagEmoji = @"🇫🇮";
         finnishLang.voiceLocaleIdentifier = @"fi_FI";
-        finnishLang.voiceName = @"Satu";
         finnishLang.code = @"fi";
         [allLanguages setObject:finnishLang forKey:EZLanguageFinnish];
         
@@ -315,7 +292,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         polishLang.nativeName = @"Polski";
         polishLang.flagEmoji = @"🇵🇱";
         polishLang.voiceLocaleIdentifier = @"pl_PL";
-        polishLang.voiceName = @"Ewa";
         polishLang.code = @"pl";
         [allLanguages setObject:polishLang forKey:EZLanguagePolish];
         
@@ -325,7 +301,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         czechLang.nativeName = @"Čeština";
         czechLang.flagEmoji = @"🇨🇿";
         czechLang.voiceLocaleIdentifier = @"cs_CZ";
-        czechLang.voiceName = @"Zuzana";
         czechLang.code = @"cs";
         [allLanguages setObject:czechLang forKey:EZLanguageCzech];
         
@@ -335,7 +310,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         turkishLang.nativeName = @"Türkçe";
         turkishLang.flagEmoji = @"🇹🇷";
         turkishLang.voiceLocaleIdentifier = @"tr_TR";
-        turkishLang.voiceName = @"Filiz";
         turkishLang.code = @"tr";
         [allLanguages setObject:turkishLang forKey:EZLanguageTurkish];
         
@@ -345,7 +319,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         lituanianLang.nativeName = @"Lietuvių";
         lituanianLang.flagEmoji = @"🇱🇹";
         lituanianLang.voiceLocaleIdentifier = @"lt_LT";
-        lituanianLang.voiceName = @"Rasa";
         lituanianLang.code = @"lt";
         [allLanguages setObject:lituanianLang forKey:EZLanguageLithuanian];
         
@@ -355,7 +328,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         latvianLang.nativeName = @"Latviešu";
         latvianLang.flagEmoji = @"🇱🇻";
         latvianLang.voiceLocaleIdentifier = @"lv_LV";
-        latvianLang.voiceName = @"Liga";
         latvianLang.code = @"lv";
         [allLanguages setObject:latvianLang forKey:EZLanguageLatvian];
         
@@ -365,7 +337,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         ukrainianLang.nativeName = @"Українська";
         ukrainianLang.flagEmoji = @"🇺🇦";
         ukrainianLang.voiceLocaleIdentifier = @"uk_UA";
-        ukrainianLang.voiceName = @"Oksana";
         ukrainianLang.code = @"uk";
         [allLanguages setObject:ukrainianLang forKey:EZLanguageUkrainian];
         
@@ -375,7 +346,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         bulgarianLang.nativeName = @"Български";
         bulgarianLang.flagEmoji = @"🇧🇬";
         bulgarianLang.voiceLocaleIdentifier = @"bg_BG";
-        bulgarianLang.voiceName = @"Tanya";
         bulgarianLang.code = @"bg";
         [allLanguages setObject:bulgarianLang forKey:EZLanguageBulgarian];
         
@@ -385,7 +355,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         indonesianLang.nativeName = @"Bahasa Indonesia";
         indonesianLang.flagEmoji = @"🇮🇩";
         indonesianLang.voiceLocaleIdentifier = @"id_ID";
-        indonesianLang.voiceName = @"Damayanti";
         indonesianLang.code = @"id";
         [allLanguages setObject:indonesianLang forKey:EZLanguageIndonesian];
         
@@ -395,7 +364,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         malayLang.nativeName = @"Bahasa Melayu";
         malayLang.flagEmoji = @"🇲🇾";
         malayLang.voiceLocaleIdentifier = @"ms_MY";
-        malayLang.voiceName = @"Zhiyu";
         malayLang.code = @"ms";
         [allLanguages setObject:malayLang forKey:EZLanguageMalay];
         
@@ -405,7 +373,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         slovenian.nativeName = @"Slovenščina";
         slovenian.flagEmoji = @"🇸🇮";
         slovenian.voiceLocaleIdentifier = @"sl_SI";
-        slovenian.voiceName = @"Lado";
         slovenian.code = @"sl";
         [allLanguages setObject:slovenian forKey:EZLanguageSlovenian];
         
@@ -415,7 +382,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         estonianLang.nativeName = @"Eesti";
         estonianLang.flagEmoji = @"🇪🇪";
         estonianLang.voiceLocaleIdentifier = @"et_EE";
-        estonianLang.voiceName = @"Karl";
         estonianLang.code = @"et";
         [allLanguages setObject:estonianLang forKey:EZLanguageEstonian];
         
@@ -425,7 +391,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         vietnameseLang.nativeName = @"Tiếng Việt";
         vietnameseLang.flagEmoji = @"🇻🇳";
         vietnameseLang.voiceLocaleIdentifier = @"vi_VN";
-        vietnameseLang.voiceName = @"An";
         vietnameseLang.code = @"vi";
         [allLanguages setObject:vietnameseLang forKey:EZLanguageVietnamese];
         
@@ -435,7 +400,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         persianLang.nativeName = @"فارسی";
         persianLang.flagEmoji = @"🇮🇷";
         persianLang.voiceLocaleIdentifier = @"fa_IR";
-        persianLang.voiceName = @"Zahra";
         persianLang.code = @"fa";
         [allLanguages setObject:persianLang forKey:EZLanguagePersian];
         
@@ -445,7 +409,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         hindiLang.nativeName = @"हिन्दी";
         hindiLang.flagEmoji = @"🇮🇳";
         hindiLang.voiceLocaleIdentifier = @"hi_IN";
-        hindiLang.voiceName = @"Lekha";
         hindiLang.code = @"hi";
         [allLanguages setObject:hindiLang forKey:EZLanguageHindi];
         
@@ -455,7 +418,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         teluguLang.nativeName = @"తెలుగు";
         teluguLang.flagEmoji = @"🇮🇳";
         teluguLang.voiceLocaleIdentifier = @"te_IN";
-        teluguLang.voiceName = @"Chitra";
         teluguLang.code = @"te";
         [allLanguages setObject:teluguLang forKey:EZLanguageTelugu];
         
@@ -465,7 +427,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         tamilLang.nativeName = @"தமிழ்";
         tamilLang.flagEmoji = @"🇮🇳";
         tamilLang.voiceLocaleIdentifier = @"ta_IN";
-        tamilLang.voiceName = @"Kanya";
         tamilLang.code = @"ta";
         [allLanguages setObject:tamilLang forKey:EZLanguageTamil];
         
@@ -475,7 +436,6 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         urduLang.nativeName = @"اردو";
         urduLang.flagEmoji = @"🇮🇳";
         urduLang.voiceLocaleIdentifier = @"ur_PK";
-        urduLang.voiceName = @"Zaira";
         urduLang.code = @"ur";
         [allLanguages setObject:urduLang forKey:EZLanguageUrdu];
         

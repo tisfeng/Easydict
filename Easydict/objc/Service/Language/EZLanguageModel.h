@@ -78,7 +78,6 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageUnsupported;
 @property (nonatomic, copy) EZLanguage englishName;
 @property (nonatomic, copy) NSString *nativeName;
 @property (nonatomic, copy) NSString *flagEmoji;
-@property (nonatomic, copy) NSString *voiceName; // Chinese: Tingting, English: Samantha
 @property (nonatomic, copy) NSString *voiceLocaleIdentifier; // Used for Apple system TTS, value is ISO 639-1 and ISO 3166-1, such as en_US, zh_CN
 
 /**

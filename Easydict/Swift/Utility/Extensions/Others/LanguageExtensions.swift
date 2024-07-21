@@ -46,10 +46,6 @@ extension Language {
         model.flagEmoji
     }
 
-    public var voiceName: String {
-        model.voiceName
-    }
-
     public var localeIdentifier: String {
         model.voiceLocaleIdentifier
     }
