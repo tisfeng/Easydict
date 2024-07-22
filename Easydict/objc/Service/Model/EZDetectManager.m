@@ -10,7 +10,6 @@
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
 #import "EZYoudaoTranslate.h"
-//#import "EZConfiguration+EZUserData.h"
 
 @interface EZDetectManager ()
 
@@ -23,14 +22,21 @@
 @implementation EZDetectManager
 
 + (instancetype)managerWithModel:(EZQueryModel *)model {
-    EZDetectManager *manager = [[EZDetectManager alloc] init];
-    manager.queryModel = model;
-    
-    return manager;
+    return [[EZDetectManager alloc] initWithModel:model];
 }
 
 - (instancetype)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
+        self.queryModel = [[EZQueryModel alloc] init];
+    }
+    return self;
+}
+
+- (instancetype)initWithModel:(EZQueryModel *)model {
+    self = [super init];
+    if (self) {
+        self.queryModel = model;
     }
     return self;
 }
@@ -84,7 +90,7 @@
         if (![ocrLanguage isEqualToString:EZLanguageAuto]) {
             self.queryModel.detectedLanguage = ocrLanguage;
         }
-
+        
         completion(self.queryModel, error);
     }];
 }
@@ -195,17 +201,17 @@
             [self handleOCRResult:ocrResult error:ocrError completion:completion];
             return;
         }
-                
+        
         // If user has specified ocr language, we don't need to detect and ocr again.
         if (self.queryModel.hasQueryFromLanguage) {
             [self handleOCRResult:ocrResult error:ocrError completion:completion];
             return;
         }
-                
+        
         /**
          !!!: Even confidence is high, such as confidence is 1.0, that just means the ocr result text is accurate, but the ocr result from langauge may be not accurate, such as 'heel', it may be detected as 'Dutch'. So we need to detect text language again.
          */
-                
+        
         NSString *ocrText = ocrResult.mergedText;
         [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable detectError) {
             if (detectError) {

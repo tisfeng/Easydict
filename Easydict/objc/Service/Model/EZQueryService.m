@@ -152,10 +152,19 @@ userInfo:nil]
 }
 
 
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text
-                              from:(EZLanguage)from
-                                to:(EZLanguage)to
-                        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+- (BOOL)prehandleQueryText:(NSString *)text
+                      from:(EZLanguage)from
+                        to:(EZLanguage)to
+                completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion
+{
+    if (!self.result) {
+        self.result = [[EZQueryResult alloc] init];
+    }
+
+    self.result.queryText = text;
+    self.result.from = from;
+    self.result.to = to;
+
     // If translated language is Chinese, use Chinese text convert directly.
     NSArray *languages = @[ from, to ];
     if ([self autoConvertTraditionalChinese] &&
@@ -208,26 +217,10 @@ userInfo:nil]
     EZLanguage from = queryModel.queryFromLanguage;
     EZLanguage to = queryModel.queryTargetLanguage;
 
-    if ([self prehandleQueryTextLanguage:queryText
-                                    from:from
-                                      to:to
-                              completion:completion]) {
-        return;
-    }
-
-    [self translate:queryText from:from to:to completion:completion];
-}
-
-- (void)translate:(EZQueryModel *)queryModel
-        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
-    NSString *queryText = queryModel.queryText;
-    EZLanguage from = queryModel.queryFromLanguage;
-    EZLanguage to = queryModel.queryTargetLanguage;
-
-    if ([self prehandleQueryTextLanguage:queryText
-                                    from:from
-                                      to:to
-                              completion:completion]) {
+    if ([self prehandleQueryText:queryText
+                            from:from
+                              to:to
+                      completion:completion]) {
         return;
     }
 

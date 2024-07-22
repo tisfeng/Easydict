@@ -45,7 +45,7 @@ extension Language {
         model.englishName.rawValue
     }
 
-    public var localName: String {
+    public var nativeName: String {
         model.nativeName
     }
 
@@ -53,7 +53,7 @@ extension Language {
         model.flagEmoji
     }
 
-    public var localeIdentifier: String {
+    public var voiceLocaleIdentifier: String {
         model.voiceLocaleIdentifier
     }
 
@@ -67,6 +67,11 @@ extension Language {
                 englishName
             }
         }
+    }
+
+    /// BCP-47 language code
+    public var code: String {
+        model.code
     }
 }
 

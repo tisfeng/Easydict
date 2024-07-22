@@ -25,3 +25,4 @@
 #import "EZBingService.h"
 #import "NSString+EZUtils.h"
 #import "MMCrash.h"
+#import "EZDetectManager.h"

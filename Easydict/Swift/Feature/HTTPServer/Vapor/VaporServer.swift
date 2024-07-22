@@ -20,6 +20,8 @@ class VaporServer {
 
     init() {
         do {
+            // Vapor template code https://github.com/vapor/template-bare/blob/main/Sources/App/entrypoint.swift
+
             self.env = try Environment.detect()
             guard var env else {
                 return
@@ -75,25 +77,6 @@ class VaporServer {
         }
     }
 
-    func testLanguageCode() {
-        let availableLocales = Locale.availableIdentifiers
-        for localeIdentifier in availableLocales {
-            let locale = Locale(identifier: localeIdentifier)
-            let language = locale.language
-            if let languageCode = language.languageCode,
-               let script = language.script,
-               let region = language.region {
-                print(
-                    "Locale Identifier: \(localeIdentifier), Language Code: \(languageCode), Script: \(script), Region: \(region)"
-                )
-            }
-
-            if localeIdentifier.hasPrefix("zh") {
-                print("Chinese: \(localeIdentifier)")
-            }
-        }
-    }
-
     // MARK: Private
 
     private func start() async throws {
@@ -114,7 +97,6 @@ class VaporServer {
             throw error
         }
 
-        // This code looks strange, from Vapor template https://github.com/vapor/template-bare/blob/main/Sources/App/entrypoint.swift
         try await app.execute()
     }
 
