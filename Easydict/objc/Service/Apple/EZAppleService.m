@@ -278,6 +278,8 @@ static EZAppleService *_instance;
                                         EZLanguageGerman, @"de-DE",
                                         EZLanguageRussian, @"ru-RU",
                                         EZLanguageUkrainian, @"uk-UA",
+                                        EZLanguageThai, @"th-TH", // macOS 14.5
+                                        EZLanguageVietnamese, @"vi-VT", // macOS 14.5
                                         nil];
     return orderedDict;
 }
@@ -824,13 +826,15 @@ static EZAppleService *_instance;
             return;
         }];
         
-        if (@available(macOS 12.0, *)) {
-            //            NSError *error;
-            //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
-            // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
-            //            MMLogInfo(@"supported Languages: %@", supportedLanguages);
-        }
-        
+        /**
+         NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:nil];
+
+         "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+
+         New supported OCR language in macOS 14.5 ?
+         "th-TH", "vi-VT"
+         */
+
         request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
         
         if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
