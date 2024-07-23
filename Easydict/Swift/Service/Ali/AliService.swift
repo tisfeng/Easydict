@@ -19,8 +19,16 @@ class AliService: QueryService {
         "https://translate.alibaba.com/"
     }
 
+    public override func serviceType() -> ServiceType {
+        .alibaba
+    }
+
     public override func name() -> String {
         NSLocalizedString("ali_translate", comment: "The name of Ali Translate")
+    }
+
+    public override func hasPrivateAPIKey() -> Bool {
+        !aliAccessKeyId.isEmpty && !aliAccessKeySecret.isEmpty
     }
 
     public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
@@ -29,11 +37,6 @@ class AliService: QueryService {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict
-    }
-
-    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        logInfo("ali Translate does not support OCR")
-        throw QueryServiceError.notSupported
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
@@ -51,14 +54,6 @@ class AliService: QueryService {
 
     private(set) var tokenResponse: AliTokenResponse?
     private(set) var canWebRetry = true
-
-    override func serviceType() -> ServiceType {
-        .ali
-    }
-
-    override func hasPrivateAPIKey() -> Bool {
-        !aliAccessKeyId.isEmpty && !aliAccessKeySecret.isEmpty
-    }
 
     override func translate(
         _ text: String,
@@ -237,9 +232,6 @@ class AliService: QueryService {
 
                 switch response.result {
                 case let .success(value):
-                    result.from = from
-                    result.to = to
-                    result.queryText = text
                     if let data = value.data, let translateText = data.translated {
                         result.translatedResults = [translateText]
                         completion(result, nil)
@@ -300,9 +292,6 @@ class AliService: QueryService {
 
             switch response.result {
             case let .success(value):
-                result.from = from
-                result.to = to
-                result.queryText = text
                 if value.success, let translateText = value.data?.translateText {
                     result.translatedResults = [translateText.unescapedXML()]
                     completion(result, nil)

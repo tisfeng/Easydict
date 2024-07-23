@@ -105,9 +105,6 @@ public final class TencentService: QueryService {
 
             switch response.result {
             case let .success(value):
-                result.from = from
-                result.to = to
-                result.queryText = text
                 result.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
                 completion(result, nil)
             case let .failure(error):

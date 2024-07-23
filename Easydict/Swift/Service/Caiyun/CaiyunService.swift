@@ -92,9 +92,6 @@ public final class CaiyunService: QueryService {
 
             switch response.result {
             case let .success(value):
-                result.from = from
-                result.to = to
-                result.queryText = text
                 result.translatedResults = value.target
                 completion(result, nil)
             case let .failure(error):

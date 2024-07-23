@@ -306,7 +306,6 @@ extension LLMStreamService {
             }
 
             result.showBigWord = true
-            result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6
             updateCompletion()
 

@@ -30,9 +30,6 @@ public class BaseOpenAIService: LLMStreamService {
         }
 
         var resultText = ""
-
-        result.from = from
-        result.to = to
         result.isStreamFinished = false
 
         let queryType = queryType(text: text, from: from, to: to)

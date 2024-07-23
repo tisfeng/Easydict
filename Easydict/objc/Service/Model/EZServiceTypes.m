@@ -65,7 +65,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeNiuTrans, [EZNiuTransTranslate class],
                                            EZServiceTypeCaiyun, [EZCaiyunService class],
                                            EZServiceTypeTencent, [EZTencentService class],
-                                           EZServiceTypeAli, [EZAliService class],
+                                           EZServiceTypeAlibaba, [EZAliService class],
                                            nil];
     return allServiceDict;
 }
