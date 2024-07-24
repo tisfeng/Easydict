@@ -25,6 +25,8 @@ userInfo:nil]
 @property (nonatomic, strong) NSDictionary<NSString *, EZLanguage> *langEnumFromStringDict;
 @property (nonatomic, strong) NSDictionary<EZLanguage, NSNumber *> *langIndexDict;
 
+@property (nonatomic, strong) EZDetectManager *detectManager;
+
 @end
 
 @implementation EZQueryService
@@ -47,6 +49,17 @@ userInfo:nil]
         _audioPlayer.service = self;
     }
     return _audioPlayer;
+}
+
+- (EZDetectManager *)detectManager {
+    if (!_detectManager) {
+        _detectManager = [[EZDetectManager alloc] init];
+
+        if (self.queryModel) {
+            _detectManager.queryModel = self.queryModel;
+        }
+    }
+    return _detectManager;
 }
 
 - (void)setEnabledQuery:(BOOL)enabledQuery {
@@ -78,7 +91,6 @@ userInfo:nil]
     _result.service = self;
     _result.serviceType = self.serviceType;
     _result.queryModel = self.queryModel;
-    _result.queryText = self.queryModel.queryText;
 }
 
 - (EZQueryResult *)resetServiceResult {
@@ -157,6 +169,13 @@ userInfo:nil]
                         to:(EZLanguage)to
                 completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion
 {
+    if (!self.queryModel) {
+        self.queryModel = [[EZQueryModel alloc] init];
+        self.queryModel.userSourceLanguage = from;
+        self.queryModel.userTargetLanguage = to;
+    }
+    self.queryModel.inputText = text;
+
     if (!self.result) {
         self.result = [[EZQueryResult alloc] init];
     }
@@ -169,15 +188,15 @@ userInfo:nil]
     NSArray *languages = @[ from, to ];
     if ([self autoConvertTraditionalChinese] &&
         [EZLanguageManager.shared onlyContainsChineseLanguages:languages]) {
-        NSString *result;
+        NSString *translatedText;
         if ([to isEqualToString:EZLanguageSimplifiedChinese]) {
-            result = [text toSimplifiedChineseText];
+            translatedText = [text toSimplifiedChineseText];
         }
         if ([to isEqualToString:EZLanguageTraditionalChinese]) {
-            result = [text toTraditionalChineseText];
+            translatedText = [text toTraditionalChineseText];
         }
-        if (result) {
-            self.result.translatedResults = @[ result ];
+        if (translatedText) {
+            self.result.translatedResults = @[ translatedText ];
             completion(self.result, nil);
             return YES;
         }
