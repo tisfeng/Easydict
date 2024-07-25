@@ -246,6 +246,12 @@ extension Defaults.Keys {
     // Ali
     static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")
     static let aliAccessKeySecret = Key<String>(EZAliAccessKeySecret, default: "")
+    static let aliServiceApiTypeKey = Key<ServiceAPIType>(EZAliServiceApiTypeKey, default: .secretKey)
+
+    // baidu
+    static let baiduAppId = Key<String>(EZBaiduAppId, default: "")
+    static let baiduSecretKey = Key<String>(EZBaiduSecretKey, default: "")
+    static let baiduServiceApiTypeKey = Key<ServiceAPIType>(EZBaiduServiceApiTypeKey, default: .secretKey)
 }
 
 /// shortcut

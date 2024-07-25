@@ -25,6 +25,11 @@ static NSString *const EZGeminiAPIKey = @"EZGeminiAPIKey";
 static NSString *const EZIntelligentQueryModeKey = @"IntelligentQueryMode";
 static NSString *const EZAliAccessKeyId = @"EZAliAccessKeyId";
 static NSString *const EZAliAccessKeySecret = @"EZAliAccessKeySecret";
+static NSString *const EZAliServiceApiTypeKey = @"EZAliServiceApiTypeKey";
+
+static NSString *const EZBaiduAppId = @"EZBaiduAppId";
+static NSString *const EZBaiduSecretKey = @"EZBaiduSecretKey";
+static NSString *const EZBaiduServiceApiTypeKey = @"EZBaiduServiceApiTypeKey";
 
 @interface EZConstKey : NSObject
 

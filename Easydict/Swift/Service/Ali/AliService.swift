@@ -56,10 +56,6 @@ class AliService: QueryService {
         .ali
     }
 
-    override func hasPrivateAPIKey() -> Bool {
-        !aliAccessKeyId.isEmpty && !aliAccessKeySecret.isEmpty
-    }
-
     override func translate(
         _ text: String,
         from: Language,
@@ -78,13 +74,7 @@ class AliService: QueryService {
             return
         }
 
-        /**
-         use user's access key id and secret
-         easydict://writeKeyValue?EZAliAccessKeyId=
-         easydict://writeKeyValue?EZAliAccessKeySecret=
-         */
-        if !aliAccessKeyId.isEmpty,
-           !aliAccessKeySecret.isEmpty {
+        if Defaults[.aliServiceApiTypeKey] == .secretKey {
             requestByAPI(
                 id: aliAccessKeyId,
                 secret: aliAccessKeySecret,
@@ -152,6 +142,20 @@ class AliService: QueryService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        if id.isEmpty || secret.isEmpty {
+            completion(
+                result,
+                EZError(
+                    type: EZErrorType.missingAPIKey,
+                    description: String.localizedStringWithFormat(
+                        NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
+                        name()
+                    )
+                )
+            )
+            return
+        }
+
         func hmacSha1(key: String, params: String) -> String? {
             guard let secret = key.data(using: .utf8),
                   let what = params.data(using: .utf8)
