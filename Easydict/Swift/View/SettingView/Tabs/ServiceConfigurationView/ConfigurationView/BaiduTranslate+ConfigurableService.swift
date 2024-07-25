@@ -17,7 +17,7 @@ extension EZBaiduTranslate {
             observeKeys: [.baiduAppId, .baiduSecretKey]
         ) {
             ServiceConfigurationPickerCell(
-                titleKey: "service.configuration.baidu.api_picker.title",
+                titleKey: "service.configuration.api_picker.title",
                 key: .baiduServiceApiTypeKey,
                 values: ServiceAPIType.allCases
             )

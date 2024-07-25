@@ -2361,7 +2361,7 @@
         }
       }
     },
-    "service.configuration.baidu.api_picker.title" : {
+    "service.configuration.api_picker.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
