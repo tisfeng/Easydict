@@ -17,8 +17,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//@class EZAudioPlayer;
-
 NS_SWIFT_NAME(QueryService)
 @interface EZQueryService : NSObject
 

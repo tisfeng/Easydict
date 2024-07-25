@@ -12,6 +12,12 @@
 #import "NSString+EZHandleInputText.h"
 #import "NSString+EZChineseText.h"
 
+@interface EZAppleDictionary ()
+
+@property (nonatomic, strong) WKWebView *webView;
+
+@end
+
 @implementation EZAppleDictionary
 
 static EZAppleDictionary *_instance;
@@ -24,6 +30,20 @@ static EZAppleDictionary *_instance;
         });
     }
     return _instance;
+}
+
+- (WKWebView *)webView {
+    if (!_webView) {
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+        WKPreferences *preferences = [[WKPreferences alloc] init];
+        preferences.javaScriptCanOpenWindowsAutomatically = NO;
+        configuration.preferences = preferences;
+
+        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+        _webView = webView;
+        webView.navigationDelegate = self;
+    }
+    return _webView;
 }
 
 #pragma mark - 重写父类方法
@@ -76,12 +96,24 @@ static EZAppleDictionary *_instance;
                                                     fromToLanguages:@[ from, to ]
                                                      inDictionaries:dictionaries];
         self.result.HTMLString = htmlString;
-        
+
         EZError *error = nil;
         if (htmlString.length == 0) {
             error = noResultError;
         }
-        
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Cost 0.1~1s
+            CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+            [self loadHtmlAndGetBodyTextWithHtml:htmlString from:self.webView completionHandler:^(NSString *text) {
+                if (text) {
+                    self.result.translatedResults = @[ text ];
+                    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+                    MMLogInfo(@"Apple dict getBodyInnerText cost: %.1f ms", (endTime - startTime) * 1000);
+                }
+            }];
+        });
+
         completion(self.result, error);
     });
 }

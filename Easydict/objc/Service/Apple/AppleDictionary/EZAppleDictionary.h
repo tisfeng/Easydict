@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 static NSString *EZAppleDictionaryHTMLDirectory = @"Dict HTML";
 static NSString *EZAppleDictionaryHTMLDictFilePath = @"all_dict.html";
 
+NS_SWIFT_NAME(AppleDictionary)
 @interface EZAppleDictionary : EZQueryService
 
 @property (nonatomic, copy) NSString *htmlFilePath;

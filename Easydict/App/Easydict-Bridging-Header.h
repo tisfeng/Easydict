@@ -26,3 +26,4 @@
 #import "NSString+EZUtils.h"
 #import "MMCrash.h"
 #import "EZDetectManager.h"
+#import "EZAppleDictionary.h"

@@ -1151,7 +1151,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     [self fetchWebViewAllIframeText:^(NSString *text) {
         self.result.copiedText = text;
-        
+        self.result.translatedResults = @[ text ];
+
         if (self.didFinishLoadingHTMLBlock) {
             self.didFinishLoadingHTMLBlock();
         }

@@ -22,10 +22,17 @@ func routes(_ app: Application) throws {
         }
 
         let result = try await service.translate(request: request)
-        return TranslationResponse(
+
+        var response = TranslationResponse(
             translatedText: result.translatedText ?? "",
             sourceLanguage: result.from.code
         )
+
+        if let appleDictioanry = service as? AppleDictionary {
+            response.html = result.htmlString
+        }
+
+        return response
     }
 }
 
@@ -43,6 +50,7 @@ struct TranslationRequest: Content {
 struct TranslationResponse: Content {
     var translatedText: String
     var sourceLanguage: String
+    var html: String?
 }
 
 // MARK: - TranslationError
