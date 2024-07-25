@@ -149,7 +149,7 @@ class AliService: QueryService {
                     type: EZErrorType.missingAPIKey,
                     description: String.localizedStringWithFormat(
                         NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
-                        NSLocalizedString("ali_translate", comment: "Ali Translate")
+                        name()
                     )
                 )
             )
