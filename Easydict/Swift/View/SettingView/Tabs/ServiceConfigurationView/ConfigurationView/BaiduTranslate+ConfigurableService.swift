@@ -7,7 +7,6 @@
 //
 
 import Combine
-import Defaults
 import Foundation
 import SwiftUI
 
@@ -33,18 +32,5 @@ extension EZBaiduTranslate {
                 key: .baiduSecretKey
             )
         }
-    }
-}
-
-// MARK: - ServiceAPIType
-
-enum ServiceAPIType: String, CaseIterable, Defaults.Serializable, EnumLocalizedStringConvertible {
-    case web = "Web API"
-    case secretKey = "Secret Key API"
-
-    // MARK: Internal
-
-    var title: LocalizedStringKey {
-        LocalizedStringKey(rawValue)
     }
 }

@@ -34,7 +34,10 @@ class BaiduApiTranslate: NSObject {
                 result,
                 EZError(
                     type: EZErrorType.missingAPIKey,
-                    description: NSLocalizedString("service.configuration.baidu.api_missing.tips", comment: "")
+                    description: String.localizedStringWithFormat(
+                        NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
+                        NSLocalizedString("baidu_translate", comment: "Baidu Translate")
+                    )
                 )
             )
             return
