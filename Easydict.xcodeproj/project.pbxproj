@@ -62,6 +62,7 @@
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357B9592C04387D00A48CB0 /* TextEditorCell.swift */; };
 		035E37E72A0953120061DFAF /* EZToast.m in Sources */ = {isa = PBXBuildFile; fileRef = 035E37E62A0953120061DFAF /* EZToast.m */; };
+		035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */; };
 		0361965529FFECFC00806370 /* youdao-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 0361965429FFECFC00806370 /* youdao-sign.js */; };
 		036196752A000F5900806370 /* FWEncryptorAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196702A000F5800806370 /* FWEncryptorAES.m */; };
 		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
@@ -308,6 +309,9 @@
 		C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */; };
 		C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */; };
 		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
+		CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */; };
+		CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */; };
+		CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */; };
 		DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* Configuration.swift */; };
 		DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C882B3969510055EFFC /* Appearance.swift */; };
 		DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */; };
@@ -443,6 +447,7 @@
 		0357B9592C04387D00A48CB0 /* TextEditorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorCell.swift; sourceTree = "<group>"; };
 		035E37E52A0953120061DFAF /* EZToast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZToast.h; sourceTree = "<group>"; };
 		035E37E62A0953120061DFAF /* EZToast.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZToast.m; sourceTree = "<group>"; };
+		035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServiceAPIType.swift; path = Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/ServiceAPIType.swift; sourceTree = SOURCE_ROOT; };
 		0361965429FFECFC00806370 /* youdao-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "youdao-sign.js"; sourceTree = "<group>"; };
 		0361966F2A000F5800806370 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		036196702A000F5800806370 /* FWEncryptorAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWEncryptorAES.m; sourceTree = "<group>"; };
@@ -816,6 +821,9 @@
 		C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentTranslateType.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
 		C99EEB182385796700FEE666 /* Easydict-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BaiduTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
+		CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiTranslate.swift; sourceTree = "<group>"; };
+		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		DC6D9C882B3969510055EFFC /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
@@ -1481,6 +1489,8 @@
 		03B0222C29231FA6001C7E63 /* Baidu */ = {
 			isa = PBXGroup;
 			children = (
+				CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */,
+				CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */,
 				03542A412937B45E00C34C33 /* EZBaiduTranslate.h */,
 				03542A422937B45E00C34C33 /* EZBaiduTranslate.m */,
 				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
@@ -2474,6 +2484,7 @@
 				0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */,
 				0AC8A8442B6A4D97006DA5CC /* ServiceConfigurationCells.swift */,
 				0357B9592C04387D00A48CB0 /* TextEditorCell.swift */,
+				035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */,
 			);
 			path = ServiceConfigurationView;
 			sourceTree = "<group>";
@@ -2488,6 +2499,7 @@
 				0AC8A8382B666F07006DA5CC /* CaiyunService+ConfigurableService.swift */,
 				0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */,
 				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
+				CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */,
 			);
 			path = ConfigurationView;
 			sourceTree = "<group>";
@@ -2954,6 +2966,7 @@
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
 				03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */,
 				03B0232929231FA6001C7E63 /* NSDictionary+MM.m in Sources */,
+				035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */,
 				03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */,
 				0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
@@ -2968,6 +2981,7 @@
 				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
 				967712EE2B5B943400105E0F /* Shortcut.swift in Sources */,
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
+				CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */,
@@ -2996,6 +3010,7 @@
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
+				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
@@ -3036,6 +3051,7 @@
 				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,
 				EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */,
 				96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */,
+				CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
