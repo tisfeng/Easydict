@@ -18,7 +18,7 @@ func routes(_ app: Application) throws {
         let serviceType = ServiceType(rawValue: request.serviceType)
         let appleDictionaryNames = request.appleDictionaryNames
 
-        guard let service = GlobalContext.shared.getService(ofType: serviceType) else {
+        guard let service = ServiceTypes.shared().service(withType: serviceType) else {
             throw TranslationError.unsupportedServiceType(serviceType.rawValue)
         }
 
