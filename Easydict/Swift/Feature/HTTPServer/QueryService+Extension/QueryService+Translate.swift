@@ -32,13 +32,13 @@ extension QueryService {
         if from == .auto {
             let queryModel = try await EZDetectManager().detectText(text)
             sourceLanguage = queryModel.detectedLanguage
+        }
 
-            if enablePrehandle {
-                let (prehandled, result) = try await prehandleQueryText(text: text, from: sourceLanguage, to: to)
-                if prehandled {
-                    logInfo("prehandled query text: \(text.truncated())")
-                    return result
-                }
+        if enablePrehandle {
+            let (prehandled, result) = try await prehandleQueryText(text: text, from: sourceLanguage, to: to)
+            if prehandled {
+                logInfo("prehandled query text: \(text.truncated())")
+                return result
             }
         }
 
