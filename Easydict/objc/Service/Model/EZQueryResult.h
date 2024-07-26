@@ -127,9 +127,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  This is normalResults joined by @"\n"
- 
+
  Note that translatedText may be returned @"" by service, like Youdao when censored.
- 
+
  eg. https://dict.youdao.com/result?word=%E4%BD%A0%E5%AF%B9%E4%B9%A0%E4%B8%BB%E5%B8%AD%E6%80%8E%E4%B9%88%E7%9C%8B%EF%BC%9F&lang=en
  */
 @property (readonly, nonatomic, copy, nullable) NSString *translatedText;
@@ -160,7 +160,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL showBigWord;
 @property (nonatomic, assign) CGFloat translateResultsTopInset;
 
+/// A combined html string of htmls, can be rendered in webView like Apple Dictionary App.
 @property (nonatomic, copy, nullable) NSString *HTMLString;
+
+/// Original htmls queried from Apple dicts
+@property (nonatomic, copy, nullable) NSArray<NSString *> *HTMLStrings;
+/// Original texts queried from Apple dicts
+@property (nonatomic, copy, nullable) NSArray<NSString *> *innerTexts;
 
 /// 未查询到结果，如系统词典查单词时，查询了句子
 //@property (nonatomic, assign) BOOL noResultsFound;

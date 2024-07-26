@@ -19,7 +19,11 @@ NS_SWIFT_NAME(AppleDictionary)
 
 @property (nonatomic, copy) NSString *htmlFilePath;
 
+@property (nonatomic, copy) NSArray<NSString *> *appleDictionaryNames;
+
 + (instancetype)shared;
+
+- (instancetype)initWithDictionaryNames:(NSArray<NSString *> *)names;
 
 - (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language;
 

@@ -16,9 +16,14 @@ func routes(_ app: Application) throws {
     app.post("translate") { req async throws -> TranslationResponse in
         let request = try req.content.decode(TranslationRequest.self)
         let serviceType = ServiceType(rawValue: request.serviceType)
+        let appleDictionaryNames = request.appleDictionaryNames
 
         guard let service = GlobalContext.shared.getService(ofType: serviceType) else {
             throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+        }
+
+        if let appleDictionary = service as? AppleDictionary, let appleDictionaryNames {
+            appleDictionary.appleDictionaryNames = appleDictionaryNames
         }
 
         let result = try await service.translate(request: request)
@@ -28,8 +33,8 @@ func routes(_ app: Application) throws {
             sourceLanguage: result.from.code
         )
 
-        if let appleDictioanry = service as? AppleDictionary {
-            response.html = result.htmlString
+        if service is AppleDictionary {
+            response.HTMLStrings = result.htmlStrings
         }
 
         return response
@@ -43,6 +48,7 @@ struct TranslationRequest: Content {
     var sourceLanguage: String? // BCP-47 language code. If sourceLanguage is nil, it will be auto detected.
     var targetLanguage: String
     var serviceType: String
+    var appleDictionaryNames: [String]?
 }
 
 // MARK: - TranslationResponse
@@ -50,7 +56,7 @@ struct TranslationRequest: Content {
 struct TranslationResponse: Content {
     var translatedText: String
     var sourceLanguage: String
-    var html: String?
+    var HTMLStrings: [String]?
 }
 
 // MARK: - TranslationError
