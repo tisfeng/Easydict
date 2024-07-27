@@ -9,58 +9,43 @@
 import Foundation
 import Vapor
 
-// MARK: - TranslationStream
-
-class TranslationStream: AsyncSequence {
-    // MARK: Lifecycle
-
-    init(request: TranslationRequest) {
-        self.request = request
-    }
-
-    // MARK: Internal
-
-    typealias Element = TranslationResponse
-
-    func makeAsyncIterator() -> TranslationStreamIterator {
-        TranslationStreamIterator(request: request)
-    }
-
-    // MARK: Private
-
-    private let request: TranslationRequest
-}
-
-// MARK: - TranslationStreamIterator
-
-struct TranslationStreamIterator: AsyncIteratorProtocol {
-    // MARK: Lifecycle
-
-    init(request: TranslationRequest) {
-        self.request = request
-    }
-
-    // MARK: Internal
-
-    typealias Element = TranslationResponse
-
-    mutating func next() async throws -> TranslationResponse? {
-        let serviceType = ServiceType(rawValue: request.serviceType)
-
-        guard let service = ServiceTypes.shared().service(withType: serviceType) else {
-            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+extension QueryService {
+    func streamTranslateText(request: TranslationRequest) async throws -> AsyncThrowingStream<String, Error> {
+        let streamResults = try await streamTranslate(request: request)
+        return AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    for try await result in streamResults {
+                        if result.isStreamFinished {
+                            continuation.finish()
+                            break
+                        }
+                        continuation.yield(result.translatedText ?? "")
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
         }
-
-        guard service is LLMStreamService else {
-            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
-        }
-
-        let result = try await service.translate(request: request)
-
-        return TranslationResponse(translatedText: result.translatedText ?? "", sourceLanguage: result.from.code)
     }
 
-    // MARK: Private
-
-    private let request: TranslationRequest
+    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<EZQueryResult, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    while true {
+                        let result = try await translate(request: request)
+                        continuation.yield(result)
+                        if result.isStreamFinished {
+                            break
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
 }

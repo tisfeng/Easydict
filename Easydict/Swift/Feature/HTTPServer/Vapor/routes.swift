@@ -54,33 +54,17 @@ func routes(_ app: Application) throws {
 
         return Response(body: .init(stream: { writer in
             Task {
+                var lastTranslatedText = ""
+
                 do {
-                    // 使用 AsyncThrowingStream 来处理多次返回的结果
-                    let stream = AsyncThrowingStream<EZQueryResult, Error> { continuation in
-                        Task {
-                            do {
-                                while true {
-                                    let result = try await service.translate(request: request)
-                                    continuation.yield(result)
-                                    if result.isStreamFinished {
-                                        break
-                                    }
-                                }
-                                continuation.finish()
-                            } catch {
-                                continuation.finish(throwing: error)
-                            }
-                        }
-                    }
+                    let translatedTexts = try await service.streamTranslateText(request: request)
+                    for try await translatedText in translatedTexts {
+                        let newTranslatedText = translatedText.removePrefix(lastTranslatedText)
+                        logInfo("new text: \(newTranslatedText)")
+                        _ = writer.write(.buffer(.init(string: newTranslatedText)))
 
-                    for try await chunk in stream {
-                        if let translatedText = chunk.translatedText {
-                            logInfo(translatedText)
-                            _ = writer.write(.buffer(.init(string: translatedText)))
-                        }
+                        lastTranslatedText = translatedText
                     }
-
-                    _ = writer.write(.buffer(ByteBuffer(string: "DONE")))
                     _ = writer.write(.end)
 
                 } catch {

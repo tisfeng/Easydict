@@ -28,6 +28,12 @@ extension String {
     func replacingNewlinesWithWhitespace() -> String {
         (self as NSString).replacingNewlinesWithWhitespace() as String
     }
+
+    /// Remove prefix string
+    func removePrefix(_ prefix: String) -> String {
+        guard hasPrefix(prefix) else { return self }
+        return String(dropFirst(prefix.count))
+    }
 }
 
 @objc
