@@ -39,6 +39,57 @@ func routes(_ app: Application) throws {
 
         return response
     }
+
+    app.post("streamTranslate") { req async throws -> Response in
+        let request = try req.content.decode(TranslationRequest.self)
+        let serviceType = ServiceType(rawValue: request.serviceType)
+
+        guard let service = ServiceTypes.shared().service(withType: serviceType) else {
+            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+        }
+
+        guard service is LLMStreamService else {
+            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+        }
+
+        return Response(body: .init(stream: { writer in
+            Task {
+                do {
+                    // 使用 AsyncThrowingStream 来处理多次返回的结果
+                    let stream = AsyncThrowingStream<EZQueryResult, Error> { continuation in
+                        Task {
+                            do {
+                                while true {
+                                    let result = try await service.translate(request: request)
+                                    continuation.yield(result)
+                                    if result.isStreamFinished {
+                                        break
+                                    }
+                                }
+                                continuation.finish()
+                            } catch {
+                                continuation.finish(throwing: error)
+                            }
+                        }
+                    }
+
+                    for try await chunk in stream {
+                        if let translatedText = chunk.translatedText {
+                            logInfo(translatedText)
+                            _ = writer.write(.buffer(.init(string: translatedText)))
+                        }
+                    }
+
+                    _ = writer.write(.buffer(ByteBuffer(string: "DONE")))
+                    _ = writer.write(.end)
+
+                } catch {
+                    _ = writer.write(.error(error))
+                    _ = writer.write(.end)
+                }
+            }
+        }))
+    }
 }
 
 // MARK: - TranslationRequest
