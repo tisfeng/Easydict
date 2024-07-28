@@ -48,31 +48,31 @@ func routes(_ app: Application) throws {
             throw TranslationError.unsupportedServiceType(serviceType.rawValue)
         }
 
-        guard service is LLMStreamService else {
+        guard let streamService = service as? LLMStreamService else {
             throw TranslationError.unsupportedServiceType(serviceType.rawValue)
         }
 
-        return Response(body: .init(stream: { writer in
-            Task {
-                var lastTranslatedText = ""
+        let headers = HTTPHeaders([
+            ("Content-Type", "text/event-stream"),
+            ("Cache-Control", "no-cache"),
+            ("Connection", "keep-alive"),
+        ])
 
+        return Response(
+            headers: headers,
+            body: .init(asyncStream: { writer in
                 do {
-                    let translatedTexts = try await service.streamTranslateText(request: request)
-                    for try await translatedText in translatedTexts {
-                        let newTranslatedText = translatedText.removePrefix(lastTranslatedText)
-                        logInfo("new text: \(newTranslatedText)")
-                        _ = writer.write(.buffer(.init(string: newTranslatedText)))
-
-                        lastTranslatedText = translatedText
+                    let translatedTexts = try await streamService.streamTranslateText(request: request)
+                    for try await content in translatedTexts {
+                        let event = "data: \(content)\n\n"
+                        try await writer.write(.buffer(.init(string: event)))
                     }
-                    _ = writer.write(.end)
-
                 } catch {
-                    _ = writer.write(.error(error))
-                    _ = writer.write(.end)
+                    try? await writer.write(.error(error))
                 }
-            }
-        }))
+                try? await writer.write(.end)
+            })
+        )
     }
 }
 

@@ -9,6 +9,7 @@
 import Combine
 import Defaults
 import Foundation
+import OpenAI
 import SwiftUI
 
 // MARK: - LLMStreamService
@@ -207,6 +208,10 @@ public class LLMStreamService: QueryService {
     /// Base on chat query, convert prompt dict to LLM service prompt model.
     func serviceChatMessageModels(_ chatQuery: ChatQueryParam)
         -> [Any] {
+        fatalError(mustOverride)
+    }
+
+    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<ChatStreamResult, Error> {
         fatalError(mustOverride)
     }
 

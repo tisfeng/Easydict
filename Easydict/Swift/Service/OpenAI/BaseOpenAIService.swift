@@ -115,4 +115,46 @@ public class BaseOpenAIService: LLMStreamService {
     override func cancelStream() {
         control.cancel()
     }
+
+    // TODO: Need to improve this code.
+    override func streamTranslate(request: TranslationRequest) async throws
+        -> AsyncThrowingStream<ChatStreamResult, Error> {
+        let url = URL(string: endpoint)
+        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
+        guard let url, url.isValid else {
+            return AsyncThrowingStream { continuation in
+                continuation.finish(throwing: invalidURLError)
+            }
+        }
+
+        result.isStreamFinished = false
+
+        let text = request.text
+        let from = Language(rawValue: request.sourceLanguage ?? "auto")
+        let to = Language(rawValue: request.targetLanguage)
+
+        let queryType = queryType(text: text, from: from, to: to)
+        let chatQueryParam = ChatQueryParam(
+            text: text,
+            sourceLanguage: from,
+            targetLanguage: to,
+            queryType: queryType,
+            enableSystemPrompt: true
+        )
+
+        let chatHistory = serviceChatMessageModels(chatQueryParam)
+        guard let chatHistory = chatHistory as? [ChatMessage] else {
+            return AsyncThrowingStream { continuation in
+                continuation.finish(throwing: invalidURLError)
+            }
+        }
+
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
+        let openAI = OpenAI(apiToken: apiKey)
+
+        // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
+        unowned let unownedControl = control
+
+        return openAI.chatsStream(query: query, url: url, control: unownedControl)
+    }
 }
