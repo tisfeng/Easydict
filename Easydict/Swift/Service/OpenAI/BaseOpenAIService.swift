@@ -116,8 +116,37 @@ public class BaseOpenAIService: LLMStreamService {
         control.cancel()
     }
 
-    // TODO: Need to improve this code.
     override func streamTranslate(request: TranslationRequest) async throws
+        -> AsyncThrowingStream<ChatStreamResult, Error> {
+        let text = request.text
+        var from = Language.auto
+        let to = Language.language(fromCode: request.targetLanguage)
+
+        if let sourceLanguage = request.sourceLanguage {
+            from = Language.language(fromCode: sourceLanguage)
+        }
+
+        if from == .auto {
+            let queryModel = try await EZDetectManager().detectText(text)
+            from = queryModel.detectedLanguage
+        }
+
+        let (prehandled, result) = try await prehandleQueryText(text: text, from: from, to: to)
+        if prehandled {
+            logInfo("prehandled query text: \(text.truncated())")
+            if let error = result.error {
+                throw error
+            }
+        }
+
+        return try await streamTranslate(text, from: from, to: to)
+    }
+
+    func streamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    ) async throws
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         let url = URL(string: endpoint)
         let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
@@ -128,10 +157,6 @@ public class BaseOpenAIService: LLMStreamService {
         }
 
         result.isStreamFinished = false
-
-        let text = request.text
-        let from = Language(rawValue: request.sourceLanguage ?? "auto")
-        let to = Language(rawValue: request.targetLanguage)
 
         let queryType = queryType(text: text, from: from, to: to)
         let chatQueryParam = ChatQueryParam(

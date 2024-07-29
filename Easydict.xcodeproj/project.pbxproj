@@ -26,7 +26,7 @@
 		0315D3E02C4E64A500AC0442 /* QueryService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
-		0320DFF72C54A11300C516A7 /* QueryService+Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* QueryService+Stream.swift */; };
+		0320DFF72C54A11300C516A7 /* LLMStreamService+Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* LLMStreamService+Stream.swift */; };
 		03247E362968158B00AFCD67 /* EZScriptExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZScriptExecutor.m */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
@@ -87,7 +87,7 @@
 		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
-		0380484B2C4975BD006C6210 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0380484A2C4975BD006C6210 /* Dictionary+Extension.swift */; };
+		0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0380484A2C4975BD006C6210 /* Encodable+JSON.swift */; };
 		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
 		0387FB7A2BFBA990000A7A82 /* LLMStreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0387FB792BFBA990000A7A82 /* LLMStreamService.swift */; };
 		03882F8D29D95044005B5A52 /* CTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8429D95044005B5A52 /* CTView.m */; };
@@ -384,7 +384,7 @@
 		0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Translate.swift"; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
-		0320DFF62C54A11300C516A7 /* QueryService+Stream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Stream.swift"; sourceTree = "<group>"; };
+		0320DFF62C54A11300C516A7 /* LLMStreamService+Stream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LLMStreamService+Stream.swift"; sourceTree = "<group>"; };
 		03247E342968158B00AFCD67 /* EZScriptExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScriptExecutor.h; sourceTree = "<group>"; };
 		03247E352968158B00AFCD67 /* EZScriptExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScriptExecutor.m; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
@@ -476,7 +476,7 @@
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
-		0380484A2C4975BD006C6210 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
+		0380484A2C4975BD006C6210 /* Encodable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+JSON.swift"; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
 		0387FB792BFBA990000A7A82 /* LLMStreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMStreamService.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
@@ -1307,12 +1307,12 @@
 			path = Ollama;
 			sourceTree = "<group>";
 		};
-		038048492C4975AA006C6210 /* Dictionary */ = {
+		038048492C4975AA006C6210 /* Encodable */ = {
 			isa = PBXGroup;
 			children = (
-				0380484A2C4975BD006C6210 /* Dictionary+Extension.swift */,
+				0380484A2C4975BD006C6210 /* Encodable+JSON.swift */,
 			);
-			path = Dictionary;
+			path = Encodable;
 			sourceTree = "<group>";
 		};
 		03882F8129D95044005B5A52 /* CoolToast */ = {
@@ -1800,7 +1800,7 @@
 			isa = PBXGroup;
 			children = (
 				0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */,
-				0320DFF62C54A11300C516A7 /* QueryService+Stream.swift */,
+				0320DFF62C54A11300C516A7 /* LLMStreamService+Stream.swift */,
 				03BA35C32C520058007BF100 /* AppleDictionary+Translate.swift */,
 			);
 			path = "QueryService+Extension";
@@ -2463,7 +2463,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				038048492C4975AA006C6210 /* Dictionary */,
+				038048492C4975AA006C6210 /* Encodable */,
 				0317516C2C018A8800EFB343 /* Others */,
 				0A2A05A42B59755F00EEA142 /* Bundle */,
 				0A2BA9622B4A3CBB002872A4 /* Notification */,
@@ -2866,7 +2866,7 @@
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
-				0320DFF72C54A11300C516A7 /* QueryService+Stream.swift in Sources */,
+				0320DFF72C54A11300C516A7 /* LLMStreamService+Stream.swift in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */,
 				962B9ACE2BFA03270080F4D4 /* EZAppModel.m in Sources */,
@@ -2946,7 +2946,7 @@
 				17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */,
 				6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */,
 				036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */,
-				0380484B2C4975BD006C6210 /* Dictionary+Extension.swift in Sources */,
+				0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */,
 				9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */,

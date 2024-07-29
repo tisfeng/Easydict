@@ -62,10 +62,12 @@ func routes(_ app: Application) throws {
             headers: headers,
             body: .init(asyncStream: { writer in
                 do {
-                    let translatedTexts = try await streamService.streamTranslateText(request: request)
-                    for try await content in translatedTexts {
-                        let event = "data: \(content)\n\n"
-                        try await writer.write(.buffer(.init(string: event)))
+                    let chatStreamResults = try await streamService.streamTranslate(request: request)
+                    for try await streamResult in chatStreamResults {
+                        if let json = streamResult.jsonString {
+                            let event = "data: \(json)\n\n"
+                            try await writer.write(.buffer(.init(string: event)))
+                        }
                     }
                 } catch {
                     try? await writer.write(.error(error))
