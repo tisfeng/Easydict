@@ -405,7 +405,6 @@
 - (void)updateStopButton {
     BOOL showStopButton = NO;
     
-    // Currently, only support stop OpenAI service.
     if (self.result.service.isStream) {
         showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
     }
