@@ -51,6 +51,7 @@ type_name:
     error: 50
 identifier_name:
   min_length: 2
+  max_length: 50
   excluded: # excluded via string array
     - id
     - URL

@@ -52,12 +52,12 @@ struct AdvancedTab: View {
                         subtitleText: "enable_youdao_ocr_desc"
                     )
                 }
-                Toggle(isOn: $replaceTranslationWithCompatibilityMode) {
+                Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
                         color: .teal,
                         systemImage: "arrow.forward.square",
-                        labelText: "setting.general.advance.replace_translation",
-                        subtitleText: "setting.general.advance.replace_translation_desc"
+                        labelText: "setting.general.advance.replace_with_translation",
+                        subtitleText: "setting.general.advance.replace_with_translation_desc"
                     )
                 }
             }
@@ -73,7 +73,7 @@ struct AdvancedTab: View {
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
-    @Default(.replaceTranslationWithCompatibilityMode) private var replaceTranslationWithCompatibilityMode
+    @Default(.replaceWithTranslationInCompatibilityMode) private var replaceWithTranslationInCompatibilityMode
 }
 
 #Preview {

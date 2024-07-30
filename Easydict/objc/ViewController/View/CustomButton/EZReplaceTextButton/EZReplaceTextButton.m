@@ -40,7 +40,7 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
     NSString *textLengthRange = [EZLog textLengthRange:replacementString];
-    BOOL useCompatibilityMode = Configuration.shared.replaceTranslationWithCompatibilityMode;
+    BOOL useCompatibilityMode = Configuration.shared.replaceWithTranslationInCompatibilityMode;
 
     NSDictionary *parameters = @{
         @"floating_window_type" : @(EZWindowManager.shared.floatingWindowType),

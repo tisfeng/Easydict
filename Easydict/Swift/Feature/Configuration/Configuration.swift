@@ -83,7 +83,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
-    @DefaultsWrapper(.replaceTranslationWithCompatibilityMode) var replaceTranslationWithCompatibilityMode: Bool
+    @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool

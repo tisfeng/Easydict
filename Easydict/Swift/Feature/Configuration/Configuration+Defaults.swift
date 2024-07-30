@@ -98,8 +98,8 @@ extension Defaults.Keys {
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
     static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
-    static var replaceTranslationWithCompatibilityMode = Key<Bool>(
-        "replaceTranslationWithCompatibilityMode",
+    static var replaceWithTranslationInCompatibilityMode = Key<Bool>(
+        "replaceWithTranslationInCompatibilityMode",
         default: false
     )
 }
