@@ -3021,6 +3021,38 @@
         }
       }
     },
+    "setting.general.advance.replace_translation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace translation with compatibility mode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用兼容模式替换译文"
+          }
+        }
+      }
+    },
+    "setting.general.advance.replace_translation_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you encounter a failure in replacing translations for certain applications, please try to turn on compatibility mode, which will use the copy and paste action to replace the text, ensuring success."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果遇到某些应用替换译文失败，请尝试开启兼容模式，它将会使用复制+粘贴方式替换文本，确保成功"
+          }
+        }
+      }
+    },
     "setting.general.app_setting.header" : {
       "localizations" : {
         "en" : {

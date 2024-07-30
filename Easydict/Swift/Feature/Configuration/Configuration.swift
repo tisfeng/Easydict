@@ -83,6 +83,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
+    @DefaultsWrapper(.replaceTranslationWithCompatibilityMode) var replaceTranslationWithCompatibilityMode: Bool
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
@@ -514,11 +515,11 @@ extension Configuration {
 
 extension Configuration {
     func windowFrameWithType(_ windowType: EZWindowType) -> CGRect {
-        Defaults[.windorFrame(for: windowType)]
+        Defaults[.windowFrame(for: windowType)]
     }
 
     func setWindowFrame(_ frame: CGRect, windowType: EZWindowType) {
-        Defaults[.windorFrame(for: windowType)] = frame
+        Defaults[.windowFrame(for: windowType)] = frame
     }
 }
 
