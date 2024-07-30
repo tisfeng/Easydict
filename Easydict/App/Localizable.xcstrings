@@ -2219,7 +2219,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Replace With Translation"
+            "value" : "Replace with Translation"
           }
         },
         "zh-Hans" : {
@@ -3026,7 +3026,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Replace translation with compatibility mode"
+            "value" : "Use Replace with Translation in compatibility mode"
           }
         },
         "zh-Hans" : {
@@ -3042,7 +3042,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "If using `Repalce with Translation` fails in some applications, try turning on compatibility mode, which will use Copy + Paste to ensure successful replacement."
+            "value" : "If using Repalce with Translation fails in some applications, try turning on compatibility mode, which will use Copy + Paste to ensure successful replacement."
           }
         },
         "zh-Hans" : {
