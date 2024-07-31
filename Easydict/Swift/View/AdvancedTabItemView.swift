@@ -16,7 +16,7 @@ struct AdvancedTabItemView: View {
     var subtitleText: LocalizedStringKey?
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(alignment: .center, spacing: 8) {
             Rectangle()
                 .fill(color)
                 .frame(width: 20, height: 20, alignment: .center)
@@ -26,14 +26,22 @@ struct AdvancedTabItemView: View {
                         .font(.system(size: 12))
                         .foregroundColor(.white)
                 )
-            VStack(alignment: .leading) {
+
+            VStack(alignment: .leading, spacing: 8) {
                 Text(labelText)
                 if let subtitleText {
-                    Spacer()
                     Text(subtitleText)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
+            }
+        }
+        // FIXME: It seems that Toggle does not align with the AdvancedTabItemView. We need to fix this.
+        .alignmentGuide(.firstTextBaseline) { context in
+            if subtitleText != nil {
+                context[VerticalAlignment.center]
+            } else {
+                context[.firstTextBaseline]
             }
         }
     }
