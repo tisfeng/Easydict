@@ -148,14 +148,21 @@ struct GeneralTab: View {
                             .tag(option)
                     }
                 }
-                LabeledContent {
+
+                // Check for updates
+                HStack {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("check_for_updates")
+                        Text("lastest_version \(lastestVersion ?? version)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
                     Button("check_now") {
                         Configuration.shared.updater.checkForUpdates()
                     }
-                } label: {
-                    Text("check_for_updates")
-                    Text("lastest_version \(lastestVersion ?? version)")
                 }
+
                 Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
                     Text("auto_check_update ")
                 }
