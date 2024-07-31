@@ -3032,7 +3032,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用兼容模式替换译文"
+            "value" : "使用兼容模式进行译文替换"
           }
         }
       }

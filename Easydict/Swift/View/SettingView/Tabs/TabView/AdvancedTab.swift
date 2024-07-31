@@ -54,7 +54,7 @@ struct AdvancedTab: View {
                 }
                 Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
-                        color: .teal,
+                        color: .mint,
                         systemImage: "arrow.forward.square",
                         labelText: "setting.general.advance.replace_with_translation",
                         subtitleText: "setting.general.advance.replace_with_translation_desc"
