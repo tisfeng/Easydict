@@ -14,6 +14,15 @@ struct AdvancedTab: View {
     var body: some View {
         Form {
             Section {
+                Toggle(isOn: $enableBetaFeature) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: "hammer.fill",
+                        labelText: "setting.general.advance.enable_beta_feature"
+                    )
+                }
+            }
+            Section {
                 Picker(
                     selection: $defaultTTSServiceType,
                     label: AdvancedTabItemView(
@@ -43,13 +52,12 @@ struct AdvancedTab: View {
                         subtitleText: "enable_youdao_ocr_desc"
                     )
                 }
-            }
-            Section {
-                Toggle(isOn: $enableBetaFeature) {
+                Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
-                        color: .blue,
-                        systemImage: "hammer.fill",
-                        labelText: "setting.general.advance.enable_beta_feature"
+                        color: .mint,
+                        systemImage: "arrow.forward.square",
+                        labelText: "setting.general.advance.replace_with_translation",
+                        subtitleText: "setting.general.advance.replace_with_translation_desc"
                     )
                 }
             }
@@ -85,6 +93,7 @@ struct AdvancedTab: View {
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
+    @Default(.replaceWithTranslationInCompatibilityMode) private var replaceWithTranslationInCompatibilityMode
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
 }
