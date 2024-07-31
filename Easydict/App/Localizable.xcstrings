@@ -2219,7 +2219,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Replace With Translation"
+            "value" : "Replace with Translation"
           }
         },
         "zh-Hans" : {
@@ -2350,13 +2350,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Currently using the Secret Key API type, but a certain API Key is empty. Please go to Settings > Service > %@, fill in the required configuration information, or switch API types."
+            "value" : "Currently using the Secret Key API type, but a certain Secret Key is empty. Please go to Settings > Service > %@, fill in the required configuration information, or switch API types."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当前正使用 Secret Key API 类型，但是某个 API Key 为空，请前往设置-服务-%@，填写相关配置信息，或切换 API 类型"
+            "value" : "当前正使用 Secret Key API 类型，但是某个 Secret Key 为空，请前往设置-服务-%@，填写相关配置信息，或切换 API 类型"
           }
         }
       }
@@ -3017,6 +3017,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用 Beta 特性"
+          }
+        }
+      }
+    },
+    "setting.general.advance.replace_with_translation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Replace with Translation in compatibility mode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用兼容模式替换译文"
+          }
+        }
+      }
+    },
+    "setting.general.advance.replace_with_translation_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If using Repalce with Translation fails in some applications, try turning on compatibility mode, which will use Copy + Paste to ensure successful replacement."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果在某些应用中使用译文替换失败，请尝试开启兼容模式，它将会使用复制+粘贴方式确保替换成功。"
           }
         }
       }

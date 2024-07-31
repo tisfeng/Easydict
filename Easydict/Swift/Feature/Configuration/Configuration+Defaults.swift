@@ -85,8 +85,6 @@ extension Defaults.Keys {
         default: false
     )
 
-    static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
-
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
     static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
@@ -97,8 +95,13 @@ extension Defaults.Keys {
         default: true
     )
 
+    static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
     static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
+    static var replaceWithTranslationInCompatibilityMode = Key<Bool>(
+        "replaceWithTranslationInCompatibilityMode",
+        default: false
+    )
 }
 
 extension Defaults.Keys {
@@ -112,7 +115,7 @@ extension Defaults.Keys {
         return .init(key, default: EZQueryTextType(rawValue: 0))
     }
 
-    static func windorFrame(for windowType: EZWindowType) -> Key<CGRect> {
+    static func windowFrame(for windowType: EZWindowType) -> Key<CGRect> {
         let key = "EZConfiguration_kWindowFrameKey_\(windowType)"
         return .init(key, default: .zero)
     }
