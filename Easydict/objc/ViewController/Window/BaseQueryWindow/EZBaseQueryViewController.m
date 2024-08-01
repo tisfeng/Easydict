@@ -1466,11 +1466,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         } else {
             // If alreay has result, just update cell.
             [self updateCellWithResult:newResult reloadData:YES];
-            
-            // if hide result view, we need to notify to update reused cell height.
-            if (!isShowing) {
-                [self.tableView reloadData];
-            }
         }
     }];
 }
