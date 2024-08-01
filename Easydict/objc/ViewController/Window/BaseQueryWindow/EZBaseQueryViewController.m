@@ -1023,6 +1023,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
             context.duration = duration;
+            context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
             //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
