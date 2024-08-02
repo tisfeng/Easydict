@@ -26,6 +26,13 @@ func routes(_ app: Application) throws {
             appleDictionary.appleDictionaryNames = appleDictionaryNames
         }
 
+        if service.isStream() {
+            throw TranslationError
+                .invalidParameter(
+                    "\(serviceType.rawValue) is stream service, which does not support 'translate' API. Please use 'streamTranslate."
+                )
+        }
+
         let result = try await service.translate(request: request)
 
         var response = TranslationResponse(
@@ -40,6 +47,8 @@ func routes(_ app: Application) throws {
         return response
     }
 
+    #if DEBUG
+    // Currently, streamTranslate only supports base OpenAI services for test.
     app.post("streamTranslate") { req async throws -> Response in
         let request = try req.content.decode(TranslationRequest.self)
         let serviceType = ServiceType(rawValue: request.serviceType)
@@ -49,7 +58,10 @@ func routes(_ app: Application) throws {
         }
 
         guard let streamService = service as? LLMStreamService else {
-            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+            throw TranslationError
+                .invalidParameter(
+                    "\(serviceType.rawValue) isn't stream service, which does not support 'streamTranslate' API. Please use 'translate."
+                )
         }
 
         let headers = HTTPHeaders([
@@ -76,44 +88,5 @@ func routes(_ app: Application) throws {
             })
         )
     }
-}
-
-// MARK: - TranslationRequest
-
-struct TranslationRequest: Content {
-    var text: String
-    var sourceLanguage: String? // BCP-47 language code. If sourceLanguage is nil, it will be auto detected.
-    var targetLanguage: String
-    var serviceType: String
-    var appleDictionaryNames: [String]?
-}
-
-// MARK: - TranslationResponse
-
-struct TranslationResponse: Content {
-    var translatedText: String
-    var sourceLanguage: String
-    var HTMLStrings: [String]?
-}
-
-// MARK: - TranslationError
-
-enum TranslationError: Error, AbortError {
-    case unsupportedServiceType(String)
-
-    // MARK: Internal
-
-    var status: HTTPResponseStatus {
-        switch self {
-        case .unsupportedServiceType:
-            .badRequest
-        }
-    }
-
-    var reason: String {
-        switch self {
-        case let .unsupportedServiceType(serviceType):
-            "Unsupported service type: \(serviceType)"
-        }
-    }
+    #endif
 }
