@@ -28,6 +28,8 @@ extension AppleDictionary: WKNavigationDelegate {
         }
     }
 
+    // Currently this method isn't used.
+
     @MainActor
     @objc
     func loadHtmlAndGetBodyText(html: String, from webView: WKWebView) async -> String? {

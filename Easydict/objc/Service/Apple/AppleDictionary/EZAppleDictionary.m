@@ -141,18 +141,6 @@ static EZAppleDictionary *_instance;
             error = noResultError;
         }
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            // Cost 0.1~1s
-            CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-            [self loadHtmlAndGetBodyTextWithHtml:htmlString from:self.webView completionHandler:^(NSString *text) {
-                if (text) {
-                    self.result.translatedResults = @[ text ];
-                    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-                    MMLogInfo(@"Apple dict getBodyInnerText cost: %.1f ms", (endTime - startTime) * 1000);
-                }
-            }];
-        });
-
         completion(self.result, error);
     });
 }
