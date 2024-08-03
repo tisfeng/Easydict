@@ -34,7 +34,7 @@ userInfo:nil]
 - (instancetype)init {
     if (self = [super init]) {
         // TODO: result should be created when init, but currently it will cause dead cycle.
-//        self.result = [[EZQueryResult alloc] init];
+        //  self.result = [[EZQueryResult alloc] init];
     }
     return self;
 }

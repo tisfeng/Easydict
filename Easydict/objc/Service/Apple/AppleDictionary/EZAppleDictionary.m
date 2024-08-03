@@ -706,7 +706,7 @@ static EZAppleDictionary *_instance;
         if ([normalizedWord caseInsensitiveCompare:normalizedHeadword] == NSOrderedSame) {
             return YES;
         }
-
+        
         /**
          We need to filter it.
 

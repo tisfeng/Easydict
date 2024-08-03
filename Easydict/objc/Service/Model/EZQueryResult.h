@@ -113,13 +113,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *queryText;
-
-// TODO: Need to make sure the from and to language is correct, not from API.
-
-/// 由翻译接口提供的源语种，可能会与查询对象的 from 不同
 @property (nonatomic, copy) EZLanguage from;
-/// 由翻译接口提供的目标语种，注意可能会与查询对象的 to 不同
 @property (nonatomic, copy) EZLanguage to;
+
 /// 中文查词或英文查词的情况下，翻译接口会返回这个单词（词组）的详细释义
 @property (nonatomic, strong, nullable) EZTranslateWordResult *wordResult;
 /// 普通翻译结果，可以有多条（一个段落对应一个翻译结果）
