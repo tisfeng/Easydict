@@ -21,22 +21,6 @@
         }
       }
     },
-    "8080" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "8080"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "8080"
-          }
-        }
-      }
-    },
     "about" : {
       "comment" : "about",
       "localizations" : {

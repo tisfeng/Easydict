@@ -69,7 +69,7 @@ struct AdvancedTab: View {
                         labelText: "setting.general.advance.enable_http_server"
                     )
                 }
-                TextField(text: $httpPort, prompt: Text("8080")) {
+                TextField(text: $httpPort, prompt: Text(verbatim: "8080")) {
                     AdvancedTabItemView(
                         color: .red,
                         systemImage: "externaldrive.connected.to.line.below",
