@@ -61,6 +61,26 @@ struct AdvancedTab: View {
                     )
                 }
             }
+            Section {
+                Toggle(isOn: $enableHTTPServer) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        systemImage: "network",
+                        labelText: "setting.general.advance.enable_http_server"
+                    )
+                }
+                TextField(text: $httpPort, prompt: Text(verbatim: "8080")) {
+                    AdvancedTabItemView(
+                        color: .red,
+                        systemImage: "externaldrive.connected.to.line.below",
+                        labelText: "setting.general.advance.http_port",
+                        subtitleText: "setting.general.advance.http_port_desc"
+                    )
+                }
+
+            } header: {
+                Text("setting.general.advance.header.http_server")
+            }
         }
         .formStyle(.grouped)
     }
@@ -74,6 +94,8 @@ struct AdvancedTab: View {
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.replaceWithTranslationInCompatibilityMode) private var replaceWithTranslationInCompatibilityMode
+    @Default(.enableHTTPServer) private var enableHTTPServer
+    @Default(.httpPort) private var httpPort
 }
 
 #Preview {

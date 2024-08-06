@@ -210,6 +210,9 @@ static EZAppleService *_instance;
     return orderedDict;
 }
 
+/**
+ An NLLanguage is a BCP-47 language tag, such as "en" for English, "fr" for French, etc. Constants are provided for a set of languages, but this list is by no means exhaustive; clients may specify their own values using any language tag
+ */
 - (MMOrderedDictionary<EZLanguage, NLLanguage> *)appleLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, NLLanguageUndetermined,                     // uud
@@ -2121,7 +2124,7 @@ static EZAppleService *_instance;
 - (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
     NSString *voiceIdentifier = nil;
     EZLanguageModel *languageModel = [self.languageManager languageModelFromLanguage:language];
-    NSString *localeIdentifier = languageModel.localeIdentifier;
+    NSString *localeIdentifier = languageModel.voiceLocaleIdentifier;
     
     NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
     for (NSString *voice in availableVoices) {
@@ -2130,7 +2133,7 @@ static EZAppleService *_instance;
         NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
         if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {
             voiceIdentifier = attributesForVoice[NSVoiceIdentifier];
-            // a language has multiple voice, we use compact type.
+            // A language may has multiple voices, we prefer to use compact type.
             if ([voiceIdentifier containsString:@"compact"]) {
                 return voiceIdentifier;
             }

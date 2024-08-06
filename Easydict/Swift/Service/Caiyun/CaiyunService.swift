@@ -65,7 +65,7 @@ public final class CaiyunService: QueryService {
             return
         }
 
-        // Docs: https://docs.caiyunapp.com/blog/
+        // Docs: https://docs.caiyunapp.com/lingocloud-api/
         let parameters: [String: Any] = [
             "source": text.split(separator: "\n", omittingEmptySubsequences: false),
             "trans_type": transType.rawValue,
@@ -92,9 +92,6 @@ public final class CaiyunService: QueryService {
 
             switch response.result {
             case let .success(value):
-                result.from = from
-                result.to = to
-                result.queryText = text
                 result.translatedResults = value.target
                 completion(result, nil)
             case let .failure(error):

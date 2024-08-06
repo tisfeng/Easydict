@@ -361,6 +361,16 @@ class Configuration: NSObject {
             EZWindowManager.shared().updateWindowsTitlebarButtonsToolTip()
         }
         .store(in: &cancellables)
+
+        Defaults.publisher(.enableHTTPServer)
+            .removeDuplicates()
+            .sink { change in
+                let isOn = change.newValue
+                Task {
+                    await VaporServer.shared.startServer(isOn: isOn)
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 

@@ -23,6 +23,13 @@ extension Language: CaseIterable {
     public static let allAvailableOptions: [Language] = allCases.filter { language in
         language != .auto && language != .classicalChinese
     }
+
+    /// // Get language from code.
+    /// - Parameter code: BCP-47 code, such as en, zh-Hans, zh-Hant
+    /// - Returns: Language
+    public static func language(fromCode code: String) -> Language {
+        allCases.first { $0.model.code == code } ?? .auto
+    }
 }
 
 extension Language {
@@ -38,20 +45,16 @@ extension Language {
         model.englishName.rawValue
     }
 
-    public var localName: String {
-        model.localName
+    public var nativeName: String {
+        model.nativeName
     }
 
     public var flagEmoji: String {
         model.flagEmoji
     }
 
-    public var voiceName: String {
-        model.voiceName
-    }
-
-    public var localeIdentifier: String {
-        model.localeIdentifier
+    public var voiceLocaleIdentifier: String {
+        model.voiceLocaleIdentifier
     }
 
     public var localizedName: String {
@@ -64,6 +67,11 @@ extension Language {
                 englishName
             }
         }
+    }
+
+    /// BCP-47 language code
+    public var code: String {
+        model.code
     }
 }
 

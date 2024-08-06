@@ -250,8 +250,6 @@
         return [EZError errorWithType:EZErrorTypeAPI description:msg request:nil];
     }
     EZBingTranslateModel *translateModel = [EZBingTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
-    self.result.from = translateModel.detectedLanguage.language ? [self languageEnumFromCode:translateModel.detectedLanguage.language] : from;
-    self.result.to = translateModel.translations.firstObject.to ? [self languageEnumFromCode:translateModel.translations.firstObject.to] : to;
     
     // phonetic
     if (json.count >= 2 && [json[1] isKindOfClass:[NSDictionary class]]) {
@@ -485,9 +483,7 @@ outer:
         if (collocation.count) {
             wordResult.collocation = collocation;
         }
-        self.result.from = EZLanguageEnglish;
-        self.result.to = EZLanguageSimplifiedChinese;
-        
+
         // 接口没有字段表示翻译结果，从parts里去一个当作结果。
         NSString *translateResult = wordResult.parts.firstObject.means.firstObject;
         if (translateResult.length) {

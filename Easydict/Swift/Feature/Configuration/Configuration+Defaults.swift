@@ -102,6 +102,8 @@ extension Defaults.Keys {
         "replaceWithTranslationInCompatibilityMode",
         default: false
     )
+    static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
+    static var httpPort = Key<String>("httpPort", default: "8080")
 }
 
 extension Defaults.Keys {

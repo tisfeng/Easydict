@@ -768,7 +768,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
-    [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+    [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"query error: %@", error);
         }

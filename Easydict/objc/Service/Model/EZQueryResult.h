@@ -113,13 +113,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *queryText;
-
-// TODO: Need to make sure the from and to language is correct, not from API.
-
-/// 由翻译接口提供的源语种，可能会与查询对象的 from 不同
 @property (nonatomic, copy) EZLanguage from;
-/// 由翻译接口提供的目标语种，注意可能会与查询对象的 to 不同
 @property (nonatomic, copy) EZLanguage to;
+
 /// 中文查词或英文查词的情况下，翻译接口会返回这个单词（词组）的详细释义
 @property (nonatomic, strong, nullable) EZTranslateWordResult *wordResult;
 /// 普通翻译结果，可以有多条（一个段落对应一个翻译结果）
@@ -127,9 +123,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  This is normalResults joined by @"\n"
- 
+
  Note that translatedText may be returned @"" by service, like Youdao when censored.
- 
+
  eg. https://dict.youdao.com/result?word=%E4%BD%A0%E5%AF%B9%E4%B9%A0%E4%B8%BB%E5%B8%AD%E6%80%8E%E4%B9%88%E7%9C%8B%EF%BC%9F&lang=en
  */
 @property (readonly, nonatomic, copy, nullable) NSString *translatedText;
@@ -160,7 +156,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL showBigWord;
 @property (nonatomic, assign) CGFloat translateResultsTopInset;
 
+/// A combined html string of htmls, can be rendered in webView like Apple Dictionary App.
 @property (nonatomic, copy, nullable) NSString *HTMLString;
+
+/// Original htmls queried from Apple dicts
+@property (nonatomic, copy, nullable) NSArray<NSString *> *HTMLStrings;
+/// Original texts queried from Apple dicts
+@property (nonatomic, copy, nullable) NSArray<NSString *> *innerTexts;
 
 /// 未查询到结果，如系统词典查单词时，查询了句子
 //@property (nonatomic, assign) BOOL noResultsFound;

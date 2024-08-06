@@ -132,7 +132,9 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    [self webViewTranslate:completion];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self webViewTranslate:completion];
+    });
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {

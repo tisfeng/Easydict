@@ -3021,6 +3021,70 @@
         }
       }
     },
+    "setting.general.advance.enable_http_server" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable HTTP Server"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启 HTTP 服务器"
+          }
+        }
+      }
+    },
+    "setting.general.advance.header.http_server" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Server"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP 服务器"
+          }
+        }
+      }
+    },
+    "setting.general.advance.http_port" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Port"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP 端口"
+          }
+        }
+      }
+    },
+    "setting.general.advance.http_port_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After modifying the port, you need to restart the server"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修改端口后需要重新开启服务器"
+          }
+        }
+      }
+    },
     "setting.general.advance.replace_with_translation" : {
       "localizations" : {
         "en" : {
@@ -3937,6 +4001,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "单词分词"
+          }
+        }
+      }
+    },
+    "start_server_error %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Failed to start local server, port: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥开启本地服务器失败，port: %@"
           }
         }
       }

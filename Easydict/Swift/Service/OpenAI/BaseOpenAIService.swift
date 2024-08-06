@@ -22,48 +22,24 @@ public class BaseOpenAIService: LLMStreamService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        let url = URL(string: endpoint)
-        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
-        guard let url, url.isValid else {
-            completion(result, invalidURLError)
-            return
-        }
+        Task {
+            var resultText = ""
+            let queryType = self.queryType(text: text, from: from, to: to)
 
-        var resultText = ""
-
-        result.from = from
-        result.to = to
-        result.isStreamFinished = false
-
-        let queryType = queryType(text: text, from: from, to: to)
-        let chatQueryParam = ChatQueryParam(
-            text: text,
-            sourceLanguage: from,
-            targetLanguage: to,
-            queryType: queryType,
-            enableSystemPrompt: true
-        )
-
-        let chatHistory = serviceChatMessageModels(chatQueryParam)
-        guard let chatHistory = chatHistory as? [ChatMessage] else { return }
-
-        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
-        let openAI = OpenAI(apiToken: apiKey)
-
-        // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
-        unowned let unownedControl = control
-
-        // TODO: refactor chatsStream with await
-        openAI.chatsStream(query: query, url: url, control: unownedControl) { [weak self] res in
-            guard let self else { return }
-
-            switch res {
-            case let .success(chatResult):
-                if let content = chatResult.choices.first?.delta.content {
-                    resultText += content
+            do {
+                let chatStreamResults = try await self.streamTranslate(text, from: from, to: to)
+                for try await streamResult in chatStreamResults {
+                    if let content = streamResult.choices.first?.delta.content {
+                        resultText += content
+                    }
+                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 }
+
+                // Get final result text
+                resultText = getFinalResultText(resultText)
                 updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-            case let .failure(error):
+                result.isStreamFinished = true
+            } catch {
                 // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
                 var text: String?
                 var err: Error? = error
@@ -75,21 +51,6 @@ public class BaseOpenAIService: LLMStreamService {
                     logError(String(describing: error))
                 }
                 updateResultText(text, queryType: queryType, error: err, completion: completion)
-            }
-
-        } completion: { [weak self] error in
-            guard let self else { return }
-
-            if let error {
-                updateResultText(nil, queryType: queryType, error: error, completion: completion)
-                return
-            }
-
-            // If already has error, we do not need to update it.
-            if result.error == nil {
-                resultText = getFinalResultText(resultText)
-//              log("\(name())-(\(model)): \(resultText)")
-                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 result.isStreamFinished = true
             }
         }
@@ -117,5 +78,46 @@ public class BaseOpenAIService: LLMStreamService {
 
     override func cancelStream() {
         control.cancel()
+    }
+
+    override func streamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    ) async throws
+        -> AsyncThrowingStream<ChatStreamResult, Error> {
+        let url = URL(string: endpoint)
+        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
+        guard let url, url.isValid else {
+            return AsyncThrowingStream { continuation in
+                continuation.finish(throwing: invalidURLError)
+            }
+        }
+
+        result.isStreamFinished = false
+
+        let queryType = queryType(text: text, from: from, to: to)
+        let chatQueryParam = ChatQueryParam(
+            text: text,
+            sourceLanguage: from,
+            targetLanguage: to,
+            queryType: queryType,
+            enableSystemPrompt: true
+        )
+
+        let chatHistory = serviceChatMessageModels(chatQueryParam)
+        guard let chatHistory = chatHistory as? [ChatMessage] else {
+            return AsyncThrowingStream { continuation in
+                continuation.finish(throwing: invalidURLError)
+            }
+        }
+
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
+        let openAI = OpenAI(apiToken: apiKey)
+
+        // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
+        unowned let unownedControl = control
+
+        return openAI.chatsStream(query: query, url: url, control: unownedControl)
     }
 }

@@ -539,10 +539,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                 if (response.error == 0) {
                     self.error997Count = 0;
 
-                    result.queryText = text;
-                    result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
-                    result.to = [self languageEnumFromCode:response.trans_result.to] ?: to;
-
                     // 解析单词释义
                     [response.dict_result.simple_means mm_anyPut:^(EZBaiduTranslateResponseSimpleMean *_Nonnull simple_means) {
                         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];

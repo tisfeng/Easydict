@@ -29,6 +29,16 @@ class GlobalContext: NSObject {
         }
     }
 
+    // MARK: Public
+
+    /// Retrieves the service of the specified type.
+    ///
+    /// - Parameter type: The type of service to retrieve.
+    /// - Returns: The service of the specified type.
+    public func getService(ofType type: ServiceType) -> QueryService? {
+        services.first(where: { $0.serviceType().rawValue.caseInsensitiveCompare(type.rawValue) == .orderedSame })
+    }
+
     // MARK: Internal
 
     class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {

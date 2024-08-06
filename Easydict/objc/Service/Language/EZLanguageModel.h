@@ -76,11 +76,21 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageUnsupported;
 
 @property (nonatomic, copy) NSString *chineseName;
 @property (nonatomic, copy) EZLanguage englishName;
-@property (nonatomic, copy) NSString *localName;
+@property (nonatomic, copy) NSString *nativeName;
 @property (nonatomic, copy) NSString *flagEmoji;
-@property (nonatomic, copy) NSString *voiceName; // Chinese: Tingting, English: Samantha
-@property (nonatomic, copy) NSString *localeIdentifier; //  ISO 639-1 and ISO 3166-1, such as en_US, zh_CN
+@property (nonatomic, copy) NSString *voiceLocaleIdentifier; // Used for Apple system TTS, value is ISO 639-1 and ISO 3166-1, such as en_US, zh_CN
 
+/**
+ BCP-47 language code https://en.wikipedia.org/wiki/IETF_language_tag
+
+ IANA language subtag https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+
+ microsoft translate languages
+ https://learn.microsoft.com/zh-cn/azure/ai-services/translator/reference/v3-0-languages
+
+ microsoft online API https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation
+ */
+@property (nonatomic, copy) NSString *code;
 
 + (MMOrderedDictionary<EZLanguage, EZLanguageModel *> *)allLanguagesDict;
 

@@ -9,6 +9,7 @@
 import Combine
 import Defaults
 import Foundation
+import OpenAI
 import SwiftUI
 
 // MARK: - LLMStreamService
@@ -210,6 +211,47 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
+    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<ChatStreamResult, Error> {
+        let text = request.text
+        var from = Language.auto
+        let to = Language.language(fromCode: request.targetLanguage)
+
+        if let sourceLanguage = request.sourceLanguage {
+            from = Language.language(fromCode: sourceLanguage)
+        }
+
+        if from == .auto {
+            let queryModel = try await EZDetectManager().detectText(text)
+            from = queryModel.detectedLanguage
+        }
+
+        let (prehandled, result) = try await prehandleQueryText(text: text, from: from, to: to)
+        if prehandled {
+            logInfo("prehandled query text: \(text.truncated())")
+            if let error = result.error {
+                throw error
+            }
+        }
+
+        return try await streamTranslate(text, from: from, to: to)
+    }
+
+    func streamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    ) async throws
+        -> AsyncThrowingStream<ChatStreamResult, Error> {
+        // Default is not implemented.
+        let unimplementedError = EZError(
+            type: .API,
+            description: "`\(serviceType().rawValue)` streamTranslate is not implemented"
+        )
+        return AsyncThrowingStream { continuation in
+            continuation.finish(throwing: unimplementedError)
+        }
+    }
+
     func chatMessageDicts(_ chatQuery: ChatQueryParam)
         -> [[String: String]] {
         switch chatQuery.queryType {
@@ -306,7 +348,6 @@ extension LLMStreamService {
             }
 
             result.showBigWord = true
-            result.queryText = queryModel.queryText
             result.translateResultsTopInset = 6
             updateCompletion()
 

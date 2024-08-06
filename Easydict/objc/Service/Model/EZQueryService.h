@@ -17,8 +17,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//@class EZAudioPlayer;
-
 NS_SWIFT_NAME(QueryService)
 @interface EZQueryService : NSObject
 
@@ -52,11 +50,13 @@ NS_SWIFT_NAME(QueryService)
 /// 语言在支持的语言数组中的位置，不包含则返回0
 - (NSInteger)indexForLanguage:(EZLanguage)lang;
 
-/// 预处理查询，如遇到不支持的语言，直接报错提示。
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text
-                              from:(EZLanguage)from
-                                to:(EZLanguage)to
-                        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
+/// 预处理查询，如遇到不支持的语言，直接报错，或是需要自动转换简体<-->繁体，则提前处理。
+/// 
+/// 返回 YES 表示已预处理过了，则后续无需再进行请求查询。
+- (BOOL)prehandleQueryText:(NSString *)text
+                      from:(EZLanguage)from
+                        to:(EZLanguage)to
+                completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
 /// Get TTS langauge code.
 - (NSString *)getTTSLanguageCode:(EZLanguage)language;

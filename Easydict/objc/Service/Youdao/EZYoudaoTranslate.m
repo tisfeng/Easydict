@@ -648,18 +648,8 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             @try {
                 EZYoudaoTranslateResponse *response = [EZYoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
-                    result.queryText = text;
                     result.fromSpeakURL = response.speakUrl;
                     result.toSpeakURL = response.tSpeakUrl;
-                    
-                    // 解析语言
-                    NSArray *languageComponents = [response.l componentsSeparatedByString:@"2"];
-                    if (languageComponents.count == 2) {
-                        result.from = [self languageEnumFromCode:languageComponents.firstObject];
-                        result.to = [self languageEnumFromCode:languageComponents.lastObject];
-                    } else {
-                        MMAssert(0, @"有道翻译语种解析失败 %@", responseObject);
-                    }
                     
                     // 中文查词 英文查词
                     EZYoudaoTranslateResponseBasic *basic = response.basic;
