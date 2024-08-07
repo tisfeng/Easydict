@@ -315,7 +315,11 @@ static EZWindowManager *_instance;
     }
     
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-    window.pin = Configuration.shared.pinWindowWhenDisplayed;
+
+    // If window is pinned now, we don't need to change it
+    if (!window.pin) {
+        window.pin = Configuration.shared.pinWindowWhenDisplayed;
+    }
 
     EZBaseQueryViewController *queryViewController = window.queryViewController;
 
