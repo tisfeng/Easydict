@@ -133,6 +133,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
                                                                         EZLanguageSlovenian, @"sl",
                                                                         EZLanguageEstonian, @"et",
                                                                         EZLanguageNorwegian, @"nb",
+                                                                        EZLanguageArabic, @"ar",
                                                                         nil];
     return orderedDict;
 }
