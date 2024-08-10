@@ -54,7 +54,7 @@ struct GeneralTab: View {
 
             Section {
                 Toggle("auto_show_query_icon", isOn: $autoSelectText)
-                Toggle("force_auto_get_selected_text", isOn: $enableForceGetSelectedText)
+                Toggle("force_get_selected_text", isOn: $enableForceGetSelectedText)
                 Toggle("click_icon_query_info", isOn: $clickQuery)
                 Toggle(
                     "setting.general.mouse_query.adjust_pop_button_origin",

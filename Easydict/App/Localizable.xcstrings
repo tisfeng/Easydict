@@ -1135,18 +1135,18 @@
         }
       }
     },
-    "force_auto_get_selected_text" : {
+    "force_get_selected_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allow to use Cmd + C to force to get selected text when regular method fails (experimental feature)"
+            "value" : "Allow to use force to get selected text (experimental feature)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "当常规方法取词失败时，允许使用 Cmd + C 强制取词（实验功能）"
+            "state" : "needs_review",
+            "value" : "允许使用强制取词（实验功能）"
           }
         }
       }
