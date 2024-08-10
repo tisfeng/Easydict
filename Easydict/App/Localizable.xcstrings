@@ -1140,13 +1140,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allow to use force to get selected text (experimental feature)"
+            "value" : "Allow to use force to get selected text (note that it may affect clipboard copying)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "允许使用强制取词（实验功能）"
+            "value" : "允许使用强制取词（注意，它可能会影响剪贴板复制）"
           }
         }
       }
