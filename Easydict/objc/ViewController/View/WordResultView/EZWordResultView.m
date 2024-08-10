@@ -547,7 +547,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 if (self.queryTextBlock) {
                     self.queryTextBlock(word);
                 }
-                [word copyToPasteboard];
             }];
             wordButton.mas_key = @"wordButton_words";
             lastWordButton = wordButton;
@@ -647,7 +646,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             if (self.queryTextBlock) {
                 self.queryTextBlock(obj.word);
             }
-            [obj.word copyToPasteboard];
         }];
         wordButton.mas_key = @"wordButton_simpleWords";
         
@@ -931,7 +929,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 if (self.queryTextBlock) {
                     self.queryTextBlock(mean);
                 }
-                [mean copyToPasteboard];
             }];
         }];
         

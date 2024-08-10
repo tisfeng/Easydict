@@ -620,7 +620,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Query only when clicking query icon (When main window hidden)"
+            "value" : "Query only when clicking query icon (when main window hidden)"
           }
         },
         "zh-Hans" : {
@@ -1135,18 +1135,18 @@
         }
       }
     },
-    "force_auto_get_selected_text" : {
+    "force_get_selected_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Force get selected text when auto get selected text failed (Experimental)"
+            "value" : "Allow forced text selection (note that it may affect clipboard copying)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动划词失败时，强制划词（实验功能）"
+            "state" : "needs_review",
+            "value" : "允许强制取词（注意，它可能会影响剪贴板复制）"
           }
         }
       }
