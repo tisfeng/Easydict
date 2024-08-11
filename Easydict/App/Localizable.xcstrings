@@ -4379,6 +4379,7 @@
       }
     },
     "volcano_translate" : {
+      "comment" : "The name of Volcano Translate",
       "localizations" : {
         "en" : {
           "stringUnit" : {

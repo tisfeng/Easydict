@@ -43,6 +43,19 @@ extension EZNiuTransTranslate {
     }
 }
 
+extension VolcanoService {
+    var volcanoAccessKeyID: String {
+        if APIKey.volcanoAccessKeyID.stringValue.isEmpty {
+            fatalError()
+        }
+        return APIKey.volcanoAccessKeyID.stringValue
+    }
+
+    var volcanoSecretAccessKey: String {
+        APIKey.volcanoSecretAccessKey.stringValue
+    }
+}
+
 // MARK: - APIKey
 
 enum APIKey: String {
@@ -61,6 +74,8 @@ enum APIKey: String {
     case builtInAIAPIKey
     case builtInAIEndpoint
     case builtInAIModel
+    case volcanoAccessKeyID
+    case volcanoSecretAccessKey
 
     // MARK: Internal
 
