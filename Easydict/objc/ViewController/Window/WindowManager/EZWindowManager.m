@@ -330,7 +330,9 @@ static EZWindowManager *_instance;
          
          https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%9F%90%E4%BA%9B%E5%BA%94%E7%94%A8%E4%B8%AD%E5%8F%96%E8%AF%8D%E6%96%87%E6%9C%AC%E4%B8%BA%E7%A9%BA
          */
-        if (!Configuration.shared.disableTipsView && actionType == EZActionTypeShortcutQuery) {
+        if (!Configuration.shared.disableTipsView
+            && !Configuration.shared.keepPrevResultWhenEmpty
+            && actionType == EZActionTypeShortcutQuery) {
             [queryViewController showTipsView:YES];
         }
         
@@ -725,8 +727,8 @@ static EZWindowManager *_instance;
          
          !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
          */
-        if (text.length == 0) {
-            text = Configuration.shared.keepPrevResultWhenEmpty ? nil : @"";
+        if (text.length == 0 && Configuration.shared.keepPrevResultWhenEmpty) {
+            text = nil;
         }
         self.selectedText = [text trim];
         
