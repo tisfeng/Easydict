@@ -588,9 +588,15 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Check if should use simulation key to get selected text.
 - (BOOL)shouldUseSimulatedKey:(NSString *)text error:(AXError)error {
-    BOOL isAutoSelectQuery = self.actionType == EZActionTypeAutoSelectQuery;
-    BOOL allowedForceAutoGetSelectedText = [Configuration.shared forceAutoGetSelectedText];
-    
+    /**
+     Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
+
+     Fix https://github.com/tisfeng/Easydict/issues/608#issuecomment-2262951479
+     */
+    if (!Configuration.shared.forceAutoGetSelectedText) {
+        return NO;
+    }
+
     NSString *easydictBundleID = [[NSBundle mainBundle] bundleIdentifier];
 
     NSRunningApplication *application = [self getFrontmostApp];
@@ -604,10 +610,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
      */
     if (isInEasydict && Configuration.shared.isRecordingSelectTextShortcutKey) {
-        return NO;
-    }
-    
-    if (isAutoSelectQuery && !allowedForceAutoGetSelectedText) {
         return NO;
     }
         

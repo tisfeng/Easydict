@@ -44,7 +44,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
 
     @DefaultsWrapper(.autoSelectText) var autoSelectText: Bool
-    @DefaultsWrapper(.forceAutoGetSelectedText) var forceAutoGetSelectedText: Bool
+    @DefaultsWrapper(.enableForceGetSelectedText) var forceAutoGetSelectedText: Bool
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
     @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
 
@@ -156,7 +156,7 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.forceAutoGetSelectedText, options: [])
+        Defaults.publisher(.enableForceGetSelectedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetForceAutoGetSelectedText()

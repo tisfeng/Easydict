@@ -872,7 +872,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
-                                                         type:self.tipsCellType content:self.tipsCellContent];
+                                                         type:self.tipsCellType 
+                                                      content:self.tipsCellContent];
             tipsCell.identifier = EZTableTipsCellId;
         }
         self.tipsCell = tipsCell;
