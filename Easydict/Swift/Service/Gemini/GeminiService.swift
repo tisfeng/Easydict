@@ -205,6 +205,7 @@ enum GeminiModel: String, CaseIterable {
     case gemini_1_0_pro = "gemini-1.0-pro" // Free 15 RPM/32,000 TPM, 1,500 RPD/46,080,000 TPD (n/a context length)
     case gemini_1_5_flash = "gemini-1.5-flash" // Free 15 RPM/100million TPM, 1500 RPD/ n/a TPD  (1048k context length)
     case gemini_1_5_pro = "gemini-1.5-pro" // Free 2 RPM/32,000 TPM, 50 RPD/46,080,000 TPD (1048k context length)
+    case gemini_1_5_pro_exp_0801 = "gemini-1.5-pro-exp-0801" // Experimental
 }
 
 // swiftlint:enable identifier_name
