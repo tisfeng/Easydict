@@ -1145,7 +1145,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "允许强制取词（注意，它可能会影响剪贴板复制）"
           }
         }
