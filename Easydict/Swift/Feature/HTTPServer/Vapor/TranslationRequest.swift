@@ -50,3 +50,17 @@ enum TranslationError: Error, AbortError {
         }
     }
 }
+
+// MARK: - OCRRequest
+
+struct OCRRequest: Content {
+    var imageData: Data
+    var sourceLanguage: String?
+}
+
+// MARK: - OCRResponse
+
+struct OCRResponse: Content {
+    var ocrText: String
+    var sourceLanguage: String
+}
