@@ -87,6 +87,10 @@ public class LLMStreamService: QueryService {
         [""]
     }
 
+    var defaultModel: String {
+        defaultModels.first ?? ""
+    }
+
     var unsupportedLanguages: [Language] {
         []
     }
@@ -106,7 +110,7 @@ public class LLMStreamService: QueryService {
     }
 
     var modelKey: Defaults.Key<String> {
-        stringDefaultsKey(.model, defaultValue: defaultModels.first ?? "")
+        stringDefaultsKey(.model, defaultValue: defaultModel)
     }
 
     var supportedModels: String {
