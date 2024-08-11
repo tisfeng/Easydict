@@ -34,9 +34,10 @@ class BuiltInAIService: BaseOpenAIService {
     override var defaultModels: [String] {
         [
             // Groq free models https://console.groq.com/docs/models
+            "llama-3.1-70b-versatile", // Context Window: 131,072 tokens
             "llama3-70b-8192", // 30 RPM
             "gemma2-9b-it",
-            "mixtral-8x7b-32768",
+            "mixtral-8x7b-32768", // Context Window: 8,192 tokens
 
             // Google Gemini https://ai.google.dev/pricing?hl=zh-cn
             "gemini-1.5-flash", // free 15 RPM
