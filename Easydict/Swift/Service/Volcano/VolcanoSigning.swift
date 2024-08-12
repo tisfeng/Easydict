@@ -33,7 +33,7 @@ func volcanoSigning(
 
     // Step 1: Create a canonical request
     let canonicalHeaders = "host:\(host.replacingOccurrences(of: "https://", with: ""))\nx-date:\(requestDate8601)\n"
-    let signedHeaders = "content-type;host;x-content-sha256;x-date"
+    let signedHeaders = "host;x-date"
     let payloadHash = Data().sha256().hexEncodedString()
 
     let canonicalRequest = [
@@ -59,7 +59,7 @@ func volcanoSigning(
         try! HMAC(key: key, variant: .sha2(.sha256)).authenticate(data.bytes)
     }
 
-    var signingKey = Array("AWS4\(secretAccessKey)".utf8)
+    var signingKey = Array(secretAccessKey.utf8)
     signingKey = hmac(signingKey, requestDate)
     signingKey = hmac(signingKey, region)
     signingKey = hmac(signingKey, service)
