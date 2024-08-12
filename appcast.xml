@@ -5,12 +5,12 @@
 
     <item>
       <title>2.8.0</title>
-      <pubDate>Mon, 12 Aug 2024 00:39:22 +0800</pubDate>
+      <pubDate>Mon, 12 Aug 2024 23:32:49 +0800</pubDate>
       <sparkle:version>37</sparkle:version>
       <sparkle:shortVersionString>2.8.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.8.0</sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.8.0/Easydict.zip" length="26265140" type="application/octet-stream" sparkle:edSignature="Ud6xQpBFgTX3B2rc9HuMKscI7nv0BPgf45vpHvzoAeq9OG9dpQiVKW4JZyo2jKjNhIhfa2Ri4gNPANgP6bxzCQ=="/>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.8.0/Easydict.zip" length="26265007" type="application/octet-stream" sparkle:edSignature="jlQ8csbpUcgfyo0U7dVjNOQFQFLl20tgqh6TOxoHNspBshV7DWBbP83E+WWwhcS1Ku+TQ+gIrKzeeCLJfaCkBg=="/>
     </item>
 
     <item>
