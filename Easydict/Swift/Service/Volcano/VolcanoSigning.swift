@@ -25,13 +25,14 @@ func volcanoSigning(
     let httpMethod = "POST"
     let algorithm = "HMAC-SHA256"
     let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyyMMdd"
+    dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
     dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+    let requestDate8601 = dateFormatter.string(from: Date())
+    dateFormatter.dateFormat = "yyyyMMdd"
     let requestDate = dateFormatter.string(from: Date())
-    let dateStamp = String(requestDate)
 
     // Step 1: Create a canonical request
-    let canonicalHeaders = "host:\(host.replacingOccurrences(of: "https://", with: ""))\nx-date:\(requestDate)\n"
+    let canonicalHeaders = "host:\(host.replacingOccurrences(of: "https://", with: ""))\nx-date:\(requestDate8601)\n"
     let signedHeaders = "content-type;host;x-content-sha256;x-date"
     let payloadHash = Data().sha256().hexEncodedString()
 
@@ -45,10 +46,10 @@ func volcanoSigning(
     ].joined(separator: "\n")
 
     // Step 2: Create string to sign
-    let credentialScope = "\(dateStamp)/\(region)/\(service)/request"
+    let credentialScope = "\(requestDate)/\(region)/\(service)/request"
     let stringToSign = [
         algorithm,
-        requestDate,
+        requestDate8601,
         credentialScope,
         canonicalRequest.data(using: .utf8)!.sha256().hexEncodedString(),
     ].joined(separator: "\n")
@@ -59,7 +60,7 @@ func volcanoSigning(
     }
 
     var signingKey = Array("AWS4\(secretAccessKey)".utf8)
-    signingKey = hmac(signingKey, dateStamp)
+    signingKey = hmac(signingKey, requestDate)
     signingKey = hmac(signingKey, region)
     signingKey = hmac(signingKey, service)
     signingKey = hmac(signingKey, "request")
@@ -73,7 +74,7 @@ func volcanoSigning(
     // Create and return HTTPHeaders
     return [
         "Authorization": authorizationHeader,
-        "X-Date": requestDate,
+        "X-Date": requestDate8601,
         "Host": host.replacingOccurrences(of: "https://", with: ""),
     ]
 }
