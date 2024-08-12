@@ -304,6 +304,7 @@
 		C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */; };
 		C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B566F2C693FE000EF26FD /* VolcanoResponse.swift */; };
 		C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B56712C693FFB00EF26FD /* VolcanoSigning.swift */; };
+		C466CB662C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */; };
 		C477BF912C0E2C61006A3F27 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */; };
 		C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */; };
 		C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A512BD2C414A2400F00F33 /* AIToolService.swift */; };
@@ -820,6 +821,7 @@
 		C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoTranslateType.swift; sourceTree = "<group>"; };
 		C43B566F2C693FE000EF26FD /* VolcanoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoResponse.swift; sourceTree = "<group>"; };
 		C43B56712C693FFB00EF26FD /* VolcanoSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoSigning.swift; sourceTree = "<group>"; };
+		C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VolcanoService+ConfigurableService.swift"; sourceTree = "<group>"; };
 		C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AdvancedTabItemView.swift; path = Easydict/Swift/View/AdvancedTabItemView.swift; sourceTree = SOURCE_ROOT; };
 		C4A512BD2C414A2400F00F33 /* AIToolService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToolService.swift; sourceTree = "<group>"; };
@@ -2513,6 +2515,7 @@
 				0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */,
 				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
 				CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */,
+				C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */,
 			);
 			path = ConfigurationView;
 			sourceTree = "<group>";
@@ -3091,6 +3094,7 @@
 				03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */,
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
+				C466CB662C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift in Sources */,
 				9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */,
 				03542A552937B7DE00C34C33 /* EZError.m in Sources */,
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
