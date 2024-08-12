@@ -68,7 +68,7 @@ func volcanoSigning(
 
     // Step 4: Add the signature to the request
     let authorizationHeader =
-        "\(algorithm) Credential=\(accessKeyId), SignedHeaders=\(signedHeaders), Signature=\(signature)"
+        "\(algorithm) Credential=\(accessKeyId)/\(credentialScope),  SignedHeaders=\(signedHeaders), Signature=\(signature)"
 
     // Create and return HTTPHeaders
     return [
