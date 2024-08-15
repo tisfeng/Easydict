@@ -77,7 +77,7 @@ private class ServiceTabViewModel: ObservableObject {
 
     @Published var selectedService: QueryService?
 
-    private(set) var services: [QueryService]
+    @Published private(set) var services: [QueryService]
 
     @Published var windowType: EZWindowType {
         didSet {
