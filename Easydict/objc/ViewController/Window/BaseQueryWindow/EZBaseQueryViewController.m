@@ -868,7 +868,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // show tips view
-    if (row == 2 && self.isTipsViewVisible) {
+    if ([self isTipsCell:row] && self.isTipsViewVisible) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
@@ -897,7 +897,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         height = self.queryModel.queryViewHeight;
     } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
-    } else if (row == 2 && self.isTipsViewVisible) {
+    } else if ([self isTipsCell:row] && self.isTipsViewVisible) {
         if (!self.tipsCell) {
             // mini cell height
             if ([self isCustomTipsType]) {
@@ -1497,9 +1497,20 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (EZQueryService *)serviceAtRow:(NSInteger)row {
     NSInteger index = row - [self resultCellOffset];
+    if (index < 0 && index >= self.services.count) {
+        MMLogError(@"error row: %ld, windowType: %ld", row, self.windowType);
+        return nil;
+    }
+
     EZQueryService *service = self.services[index];
     return service;
 }
+
+- (BOOL)isTipsCell:(NSInteger)row {
+    // TODO: 1 is query view, can be hidde later.
+    return row == [self resultCellOffset] - 1;
+}
+
 
 - (nullable EZQueryService *)serviceWithType:(EZServiceType)serviceType {
     NSInteger index = [self.serviceTypes indexOfObject:serviceType];
