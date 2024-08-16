@@ -67,7 +67,7 @@ body:
   - type: textarea
     id: log
     attributes:
-      label: 运行日志
+      label: 运行日志（zip 文件）
       description: "请提供运行日志，方便开发者排查：菜单图标 -> 帮助 -> 导出日志。（日志目录：`~/Library/Caches/com.izual.Easydict/MMLogs`）"
       placeholder: 请上传运行日志 zip 文件
     validations:

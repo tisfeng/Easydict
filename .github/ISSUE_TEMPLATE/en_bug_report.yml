@@ -67,7 +67,7 @@ body:
   - type: textarea
     id: log
     attributes:
-      label: Runtime log
+      label: Runtime log(zip file)
       description: "Please provide the runtime log for the developer to troubleshoot: menu icon -> Help -> Export log. (Log directory: `~/Library/Caches/com.izual.Easydict/MMLogs`)"
       placeholder: Upload runtime log zip file
     validations:
