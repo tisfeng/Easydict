@@ -101,23 +101,29 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
         @try {
             EZError *error = nil;
             NSDictionary *errorInfo = nil;
-            // ???: Sometimes it will crash in this line
-            NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
-            NSString *resultString = [result stringValue];
-            resultString = [resultString trim];
-            if (errorInfo) {
-                MMLogInfo(@"runAppleScript errorInfo: %@", errorInfo);
-                NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
-                EZErrorType type = EZErrorTypeAPI;
-                if ([errorString containsString:kEasydictTranslatShortcutName]) {
-                    type = EZErrorTypeParam;
+            NSString *resultString = nil;
+
+            if (![appleScript compileAndReturnError:&errorInfo]) {
+                MMLogError(@"AppleScript compilation error: %@", errorInfo);
+                error = [EZError errorWithType:EZErrorTypeAPI description:errorInfo[NSAppleScriptErrorMessage]];
+            } else {
+                // ???: Sometimes it will crash in this line
+                NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
+                resultString = [result stringValue].trim;
+                if (errorInfo) {
+                    MMLogInfo(@"runAppleScript errorInfo: %@", errorInfo);
+                    NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
+                    EZErrorType type = EZErrorTypeAPI;
+                    if ([errorString containsString:kEasydictTranslatShortcutName]) {
+                        type = EZErrorTypeParam;
+                    }
+                    error = [EZError errorWithType:type description:errorString];
                 }
-                error = [EZError errorWithType:type description:errorString];
+
+                CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+                MMLogInfo(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
             }
-            
-            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            MMLogInfo(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(resultString, error);
             });
