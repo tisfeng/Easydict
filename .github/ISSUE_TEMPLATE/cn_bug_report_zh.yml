@@ -24,7 +24,9 @@ body:
     id: description
     attributes:
       label: 问题描述
-      description: 请详细描述你所遇到的问题，确保开发者能够理解、重现该问题。如果上下文信息不足，导致开发者无法定位，问题会被降低优先级或忽略。
+      description: |
+        请详细描述你所遇到的问题，确保开发者能够理解、重现该问题。如果上下文信息不足，导致开发者无法定位，问题会被降低优先级或忽略。
+        一个 issue 只描述一个问题，如果有多个问题，请分开提交。
       placeholder: 问题描述
     validations:
       required: true
@@ -65,9 +67,9 @@ body:
   - type: textarea
     id: log
     attributes:
-      label: 运行日志
+      label: 运行日志（zip 文件）
       description: "请提供运行日志，方便开发者排查：菜单图标 -> 帮助 -> 导出日志。（日志目录：`~/Library/Caches/com.izual.Easydict/MMLogs`）"
-      placeholder: 请上传运行日志
+      placeholder: 请上传运行日志 zip 文件
     validations:
       required: true
 
