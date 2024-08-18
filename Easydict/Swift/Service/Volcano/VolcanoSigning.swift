@@ -7,7 +7,7 @@
 //
 
 import Alamofire
-import CryptoSwift
+import CryptoKit
 import Foundation
 
 // https://www.volcengine.com/docs/6369/67269#构建-authorization
@@ -19,70 +19,114 @@ func volcanoSigning(
     uri: String,
     queryString: String,
     region: String,
-    service: String
+    service: String,
+    parameters: [String: Any]
 )
     -> HTTPHeaders {
     let httpMethod = "POST"
     let algorithm = "HMAC-SHA256"
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
-    dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-    let requestDate8601 = dateFormatter.string(from: Date())
-    dateFormatter.dateFormat = "yyyyMMdd"
-    let requestDate = dateFormatter.string(from: Date())
+    let date = getXDate()
+    let contentHashed = hashSha256(content: String(
+        data: try! JSONSerialization.data(
+            withJSONObject: parameters,
+            options: []
+        ),
+        encoding: .utf8
+    )!)
+    var headers = [
+        "Content-Type": "application/json",
+        "Host": host.replacingOccurrences(of: "https://", with: ""),
+        "X-Date": date,
+    ]
 
     // Step 1: Create a canonical request
-    let canonicalHeaders = "host:\(host.replacingOccurrences(of: "https://", with: ""))\nx-date:\(requestDate8601)\n"
-    let signedHeaders = "host;x-date"
-    let payloadHash = Data().sha256().hexEncodedString()
-
-    let canonicalRequest = [
+    let canonicalHeaders = getCanonicalHeaders(headers: headers)
+    let signedHeaders = getSignedHeaders(headers: headers)
+    let canoicalRequest = [
         httpMethod,
         uri,
         queryString,
         canonicalHeaders,
         signedHeaders,
-        payloadHash,
+        contentHashed,
     ].joined(separator: "\n")
 
     // Step 2: Create string to sign
-    let credentialScope = "\(requestDate)/\(region)/\(service)/request"
-    let stringToSign = [
-        algorithm,
-        requestDate8601,
-        credentialScope,
-        canonicalRequest.data(using: .utf8)!.sha256().hexEncodedString(),
-    ].joined(separator: "\n")
+    let xDate = headers["X-Date"]!
+    let shortDate = String(xDate.prefix(8))
+    let credentialScope = [
+        shortDate,
+        region,
+        service,
+        "request",
+    ].joined(separator: "/")
+    let canonicalRequestHashed = hashSha256(content: canoicalRequest)
+    let stringToSign = [algorithm, xDate, credentialScope, canonicalRequestHashed].joined(separator: "\n")
 
     // Step 3: Calculate the signature
-    func hmac(_ key: [UInt8], _ data: String) -> [UInt8] {
-        try! HMAC(key: key, variant: .sha2(.sha256)).authenticate(data.bytes)
-    }
-
-    var signingKey = Array(secretAccessKey.utf8)
-    signingKey = hmac(signingKey, requestDate)
-    signingKey = hmac(signingKey, region)
-    signingKey = hmac(signingKey, service)
-    signingKey = hmac(signingKey, "request")
-
-    let signature = Data(hmac(signingKey, stringToSign)).hexEncodedString()
+    let kDate = hmacSha256(secretAccessKey.data(using: .utf8)!, shortDate)
+    let kRegion = hmacSha256(kDate, region)
+    let kService = hmacSha256(kRegion, service)
+    let kSigning = hmacSha256(kService, "request")
+    let signature = data2str(hmacSha256(kSigning, stringToSign))
 
     // Step 4: Add the signature to the request
     let authorizationHeader =
         "\(algorithm) Credential=\(accessKeyId)/\(credentialScope),  SignedHeaders=\(signedHeaders), Signature=\(signature)"
 
     // Create and return HTTPHeaders
-    return [
-        "Authorization": authorizationHeader,
-        "X-Date": requestDate8601,
-        "Host": host.replacingOccurrences(of: "https://", with: ""),
-    ]
+    headers.updateValue(authorizationHeader, forKey: "Authorization")
+    return dict2headers(headers)
+
+    // Helpers
+    func getSignedHeaders(headers: [String: String]) -> String {
+        var result: [String] = []
+        for (key, _) in headers {
+            result.append(key.lowercased())
+        }
+        result = result.sorted { $0 < $1 }
+        return result.joined(separator: ";")
+    }
+
+    func getCanonicalHeaders(headers: [String: String]) -> String {
+        var result: [String] = []
+        for (key, value) in headers {
+            result.append("\(key.lowercased()):\(value.trimmingCharacters(in: .whitespaces))")
+        }
+        result = result.sorted { $0 < $1 }
+        return result.joined(separator: "\n") + "\n"
+    }
+
+    func getXDate() -> String {
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        let xDate = dateFormatter.string(from: date)
+        return xDate
+    }
+
+    func hmacSha256(_ key: Data, _ content: String) -> Data {
+        let hmac = HMAC<SHA256>.authenticationCode(for: content.data(using: .utf8)!, using: SymmetricKey(data: key))
+        return Data(hmac)
+    }
+
+    func hashSha256(content: String) -> String {
+        let digest = SHA256.hash(data: content.data(using: .utf8)!)
+        return digest.compactMap { String(format: "%02x", $0) }.joined()
+    }
+
+    func data2str(_ data: Data) -> String {
+        data.map { String(format: "%02hhx", $0) }.joined()
+    }
+
+    func dict2headers(_ dict: [String: String]) -> HTTPHeaders {
+        var httpHeaders = HTTPHeaders()
+        for (key, value) in dict {
+            httpHeaders.add(name: key, value: value)
+        }
+        return httpHeaders
+    }
 }
 
 // swiftlint:enable function_parameter_count
-
-extension Data {
-    func hexEncodedString() -> String {
-        map { String(format: "%02hhx", $0) }.joined()
-    }
-}

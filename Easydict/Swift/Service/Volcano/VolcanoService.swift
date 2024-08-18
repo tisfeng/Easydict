@@ -89,7 +89,8 @@ public final class VolcanoService: QueryService {
             uri: uri,
             queryString: queryString,
             region: region,
-            service: service
+            service: service,
+            parameters: parameters
         )
 
         let afHost = host + uri + "?" + queryString
