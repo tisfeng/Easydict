@@ -44,7 +44,7 @@ public final class VolcanoService: QueryService {
     }
 
     override public func hasPrivateAPIKey() -> Bool {
-        if accessKeyID == volcanoAccessKeyID, secretAccessKey == volcanoSecretAccessKey {
+        if accessKeyID.isEmpty, secretAccessKey.isEmpty {
             return false
         }
         return true
@@ -61,6 +61,24 @@ public final class VolcanoService: QueryService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        // swiftlint:disable line_length
+        guard !accessKeyID.isEmpty else {
+            let noAccessKeyIDError = EZError(
+                type: .missingAPIKey,
+                description: "Missing Volcano AccessKeyID. Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
+            )
+            completion(result, noAccessKeyIDError)
+            return
+        }
+        guard !secretAccessKey.isEmpty else {
+            let noSecretAccessKey = EZError(
+                type: .missingAPIKey,
+                description: "Missing Volcano SecretAccessKey. Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
+            )
+            completion(result, noSecretAccessKey)
+            return
+        }
+        // swiftlint:enable line_length
         let transType = VolcanoTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
@@ -149,22 +167,8 @@ public final class VolcanoService: QueryService {
     // MARK: Private
 
     // easydict://writeKeyValue?EZVolcanoAccessKeyID=xxx
-    private var accessKeyID: String {
-        let accessKeyID = Defaults[.volcanoAccessKeyID]
-        if !accessKeyID.isEmpty {
-            return accessKeyID
-        } else {
-            return volcanoAccessKeyID
-        }
-    }
+    private var accessKeyID = Defaults[.volcanoAccessKeyID]
 
     // easydict://writeKeyValue?EZVolcanoSecretAccessKey=xxx
-    private var secretAccessKey: String {
-        let secretAccessKey = Defaults[.volcanoSecretAccessKey]
-        if !secretAccessKey.isEmpty {
-            return secretAccessKey
-        } else {
-            return volcanoSecretAccessKey
-        }
-    }
+    private var secretAccessKey = Defaults[.volcanoSecretAccessKey]
 }
