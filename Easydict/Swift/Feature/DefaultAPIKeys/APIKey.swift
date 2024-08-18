@@ -45,10 +45,7 @@ extension EZNiuTransTranslate {
 
 extension VolcanoService {
     var volcanoAccessKeyID: String {
-        if APIKey.volcanoAccessKeyID.stringValue.isEmpty {
-            fatalError()
-        }
-        return APIKey.volcanoAccessKeyID.stringValue
+        APIKey.volcanoAccessKeyID.stringValue
     }
 
     var volcanoSecretAccessKey: String {
