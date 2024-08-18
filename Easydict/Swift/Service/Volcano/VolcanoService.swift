@@ -61,6 +61,7 @@ public final class VolcanoService: QueryService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        let result = result
         // swiftlint:disable line_length
         guard !accessKeyID.isEmpty else {
             let noAccessKeyIDError = EZError(
@@ -123,24 +124,21 @@ public final class VolcanoService: QueryService {
         .validate()
         .responseDecodable(of: VolcanoResponse.self) { [weak self] response in
             guard self != nil else { return }
-            let result = EZQueryResult()
 
             switch response.result {
             case let .success(volcanoResponse):
-                if volcanoResponse.error == nil {
-                    result.from = from
-                    result.to = to
-                    result.queryText = text
-
-                    if let translationList = volcanoResponse.translationList {
-                        result.translatedResults = translationList.map { $0.translation }
-                    }
-
+                if let error = volcanoResponse.responseMetadata.error {
+                    let errorMessage = error.message
+                    logError("Volcano lookup error: \(errorMessage)")
+                    let ezError = EZError(type: .API, description: errorMessage)
+                    completion(result, ezError)
+                } else if let translationList = volcanoResponse.translationList {
+                    result.translatedResults = translationList.map { $0.translation }
                     completion(result, nil)
                 } else {
-                    let errorMessage = volcanoResponse.error?.message ?? "Unknown error occurred"
+                    let errorMessage = "Unexpected response format"
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = EZError(nsError: errorMessage as? Error)
+                    let ezError = EZError(type: .none, description: errorMessage)
                     completion(result, ezError)
                 }
 
@@ -151,7 +149,9 @@ public final class VolcanoService: QueryService {
                 if let data = response.data {
                     do {
                         let errorResponse = try JSONDecoder().decode(VolcanoResponse.self, from: data)
-                        ezError?.errorDataMessage = errorResponse.error?.message
+                        if let volcanoError = errorResponse.responseMetadata.error {
+                            ezError?.errorDataMessage = volcanoError.message
+                        }
                     } catch {
                         logError("Failed to decode error response: \(error)")
                     }

@@ -10,21 +10,35 @@ import Foundation
 
 // MARK: - VolcanoResponse
 
-struct VolcanoResponse: Codable {
+struct VolcanoResponse: Decodable {
     // MARK: Internal
 
-    let translationList: [VolcanoTranslationList]?
-    let requestId: String
-    let action: String
-    let version: String
-    let service: String
-    let region: String
-    let error: VolcanoErrorResponse?
+    let translationList: [VolcanoTranslation]?
+    let responseMetadata: VolcanoResponseMetadata
 
     // MARK: Private
 
     private enum CodingKeys: String, CodingKey {
         case translationList = "TranslationList"
+        case responseMetadata = "ResponseMetadata"
+    }
+}
+
+// MARK: - VolcanoResponseMetadata
+
+struct VolcanoResponseMetadata: Decodable {
+    // MARK: Internal
+
+    let requestId: String
+    let action: String
+    let version: String
+    let service: String
+    let region: String
+    let error: VolcanoError?
+
+    // MARK: Private
+
+    private enum CodingKeys: String, CodingKey {
         case requestId = "RequestId"
         case action = "Action"
         case version = "Version"
@@ -34,52 +48,35 @@ struct VolcanoResponse: Codable {
     }
 }
 
-// MARK: - VolcanoTranslationList
+// MARK: - VolcanoTranslation
 
-struct VolcanoTranslationList: Codable {
+struct VolcanoTranslation: Decodable {
     // MARK: Internal
 
     let translation: String
     let detectedSourceLanguage: String
+    let extra: String?
 
     // MARK: Private
 
     private enum CodingKeys: String, CodingKey {
         case translation = "Translation"
         case detectedSourceLanguage = "DetectedSourceLanguage"
+        case extra = "Extra"
     }
 }
 
-// MARK: - VolcanoErrorResponse
+// MARK: - VolcanoError
 
-/**
- {
-   "ResponseMetadata": {
-     "RequestId": "293517830492649F4BF5C3D8A1E0D9G2F",
-     "Action": "TranslateText",
-     "Version": "2020-06-01",
-     "Service": "translate",
-     "Region": "cn-north-1",
-     "Error": {
-       "CodeN": 100010,
-       "Code": "SignatureDoesNotMatch",
-       "Message": "The request signature we calculated does not match the signature you provided. Check your Secret Access Key and signing method. Consult the service documentation for details."
-     }
-   }
- }
- */
-
-struct VolcanoErrorResponse: Codable {
+struct VolcanoError: Decodable {
     // MARK: Internal
 
-    let codeN: Int
     let code: String
     let message: String
 
     // MARK: Private
 
     private enum CodingKeys: String, CodingKey {
-        case codeN = "CodeN"
         case code = "Code"
         case message = "Message"
     }
