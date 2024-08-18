@@ -40,7 +40,7 @@ userInfo:nil]
 }
 
 - (void)dealloc {
-    MMLogInfo(@"dealloc service: %@", self);
+    MMLog(@"dealloc service: %@", self);
 }
 
 - (EZAudioPlayer *)audioPlayer {

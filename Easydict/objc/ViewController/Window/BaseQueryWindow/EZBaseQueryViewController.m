@@ -1497,7 +1497,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (EZQueryService *)serviceAtRow:(NSInteger)row {
     NSInteger index = row - [self resultCellOffset];
-    if (index < 0 && index >= self.services.count) {
+    if (index < 0 || index >= self.services.count) {
         MMLogError(@"error row: %ld, windowType: %ld", row, self.windowType);
         return nil;
     }
