@@ -61,8 +61,6 @@ enum APIKey: String {
     case builtInAIAPIKey
     case builtInAIEndpoint
     case builtInAIModel
-    case volcanoAccessKeyID
-    case volcanoSecretAccessKey
 
     // MARK: Internal
 
