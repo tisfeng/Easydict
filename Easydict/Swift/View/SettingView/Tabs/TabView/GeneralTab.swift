@@ -7,6 +7,7 @@
 //
 
 import Defaults
+import LaunchAtLogin
 import SwiftUI
 
 // MARK: - GeneralTab
@@ -166,8 +167,12 @@ struct GeneralTab: View {
                 Toggle(isOn: $checkUpdaterViewModel.autoChecksForUpdates) {
                     Text("auto_check_update ")
                 }
-                Toggle(isOn: $launchAtStartup) {
+
+                LaunchAtLogin.Toggle {
                     Text("launch_at_startup")
+                }
+                .onChange(of: LaunchAtLogin.isEnabled) { newValue in
+                    logSettings(["launch_at_startup": newValue])
                 }
 
                 Toggle(isOn: $hideMenuBarIcon.didSet(execute: { state in
@@ -275,7 +280,6 @@ struct GeneralTab: View {
     @Default(.showQuickActionButton) private var showQuickActionButton
 
     @Default(.hideMainWindow) private var hideMainWindow
-    @Default(.launchAtStartup) private var launchAtStartup
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
 
     @Default(.languageDetectOptimize) private var languageDetectOptimize
@@ -304,6 +308,10 @@ struct GeneralTab: View {
 
     private var shortcutsHaveSetuped: Bool {
         Defaults[.inputShortcut] != nil || Defaults[.selectionShortcut] != nil
+    }
+
+    private func logSettings(_ parameters: [String: Any]) {
+        EZLog.logEvent(withName: "settings", parameters: parameters)
     }
 }
 
