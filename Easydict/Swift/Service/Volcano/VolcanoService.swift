@@ -167,8 +167,12 @@ public final class VolcanoService: QueryService {
     // MARK: Private
 
     // easydict://writeKeyValue?EZVolcanoAccessKeyID=xxx
-    private var accessKeyID = Defaults[.volcanoAccessKeyID]
+    private var accessKeyID: String {
+        Defaults[.volcanoAccessKeyID]
+    }
 
     // easydict://writeKeyValue?EZVolcanoSecretAccessKey=xxx
-    private var secretAccessKey = Defaults[.volcanoSecretAccessKey]
+    private var secretAccessKey: String {
+        Defaults[.volcanoSecretAccessKey]
+    }
 }
