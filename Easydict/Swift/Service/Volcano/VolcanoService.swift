@@ -39,17 +39,6 @@ public final class VolcanoService: QueryService {
         throw QueryServiceError.notSupported
     }
 
-    override public func needPrivateAPIKey() -> Bool {
-        true
-    }
-
-    override public func hasPrivateAPIKey() -> Bool {
-        if accessKeyID.isEmpty, secretAccessKey.isEmpty {
-            return false
-        }
-        return true
-    }
-
     // https://www.volcengine.com/docs/4640/68515
     override public func totalFreeQueryCharacterCount() -> Int {
         200 * 10000
