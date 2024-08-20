@@ -34,11 +34,6 @@ public final class VolcanoService: QueryService {
         return orderedDict
     }
 
-    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        logInfo("Volcano Translate currently does not support OCR")
-        throw QueryServiceError.notSupported
-    }
-
     override public func translate(
         _ text: String,
         from: Language,
