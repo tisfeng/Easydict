@@ -39,11 +39,6 @@ public final class VolcanoService: QueryService {
         throw QueryServiceError.notSupported
     }
 
-    // https://www.volcengine.com/docs/4640/68515
-    override public func totalFreeQueryCharacterCount() -> Int {
-        200 * 10000
-    }
-
     override public func translate(
         _ text: String,
         from: Language,
