@@ -167,7 +167,8 @@
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSImage *image = self.queryModel.OCRImage;
     if (!image) {
-        MMLogWarn(@"image cannot be nil");
+        EZError *error = [EZError errorWithType:EZErrorTypeParam description: @"ocr image cannot be nil"];
+        completion(nil, error);
         return;
     }
 
@@ -176,12 +177,6 @@
 
 /// If not designated ocr language, after ocr, we use detected language to ocr again.
 - (void)deepOCR:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSImage *image = self.queryModel.OCRImage;
-    if (!image) {
-        MMLogWarn(@"image cannot be nil");
-        return;
-    }
-
     /**
      System OCR result may be inaccurate when use auto detect language, such as:
 
