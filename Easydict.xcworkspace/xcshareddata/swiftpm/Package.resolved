@@ -1,5 +1,5 @@
 {
-  "originHash" : "70dce39d6e1129b0286d90fc96999d5afb06dc02df0865a72c5c7a0f1397e928",
+  "originHash" : "3588f15a7107655d055f18ab4819f4a9b5df055318a1ee6c8df5418f5b6ab025",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -197,6 +197,15 @@
       "state" : {
         "revision" : "99584bf1a03ab600cc44be89a2dcd98b2dbeb9de",
         "version" : "0.0.5"
+      }
+    },
+    {
+      "identity" : "launchatlogin-modern",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/LaunchAtLogin-Modern",
+      "state" : {
+        "revision" : "a04ec1c363be3627734f6dad757d82f5d4fa8fcc",
+        "version" : "1.1.0"
       }
     },
     {
