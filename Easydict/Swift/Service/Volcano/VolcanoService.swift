@@ -47,24 +47,16 @@ public final class VolcanoService: QueryService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         let result = result
-        // swiftlint:disable line_length
-        guard !accessKeyID.isEmpty else {
-            let noAccessKeyIDError = EZError(
-                type: .missingAPIKey,
-                description: "Missing Volcano AccessKeyID. Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
-            )
-            completion(result, noAccessKeyIDError)
+        if let error = validateAPIKey(accessKeyID, keyType: "AccessKeyID") {
+            completion(result, error)
             return
         }
-        guard !secretAccessKey.isEmpty else {
-            let noSecretAccessKey = EZError(
-                type: .missingAPIKey,
-                description: "Missing Volcano SecretAccessKey. Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
-            )
-            completion(result, noSecretAccessKey)
+
+        if let error = validateAPIKey(secretAccessKey, keyType: "SecretAccessKey") {
+            completion(result, error)
             return
         }
-        // swiftlint:enable line_length
+
         let transType = VolcanoTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
@@ -159,5 +151,18 @@ public final class VolcanoService: QueryService {
     // easydict://writeKeyValue?EZVolcanoSecretAccessKey=xxx
     private var secretAccessKey: String {
         Defaults[.volcanoSecretAccessKey]
+    }
+
+    /// Validates the provided API key, returns an EZError of type `.missingAPIKey`
+    /// with a description indicating a missing Volcano `keyType` and instructions
+    /// to get one if `key` is empty,  returns nil otherwise
+    private func validateAPIKey(_ key: String, keyType: String) -> EZError? {
+        if key.isEmpty {
+            return EZError(
+                type: .missingAPIKey,
+                description: "Missing Volcano \(keyType). Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
+            )
+        }
+        return nil
     }
 }
