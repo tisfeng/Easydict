@@ -75,7 +75,6 @@ class Configuration: NSObject {
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
     @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
-    @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
     @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
 
@@ -167,13 +166,6 @@ class Configuration: NSObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetClickQuery()
-            }
-            .store(in: &cancellables)
-
-        Defaults.publisher(.launchAtStartup, options: [])
-            .removeDuplicates()
-            .sink { [weak self] change in
-                self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
             }
             .store(in: &cancellables)
 
@@ -399,14 +391,6 @@ extension Configuration {
         logSettings(["click_query": clickQuery])
     }
 
-    fileprivate func didSetLaunchAtStartup(_ old: Bool, new: Bool) {
-        if new != old {
-            updateLoginItemWithLaunchAtStartup(new)
-        }
-
-        logSettings(["launch_at_startup": new])
-    }
-
     fileprivate func didSetAutomaticallyChecksForUpdates() {
         logSettings(["automatically_checks_for_updates": automaticallyChecksForUpdates])
     }
@@ -583,35 +567,6 @@ extension Configuration {
     fileprivate func postUpdateQuickLinkButtonNotification() {
         let notification = Notification(name: Notification.Name.linkButtonUpdated, object: nil)
         NotificationCenter.default.post(notification)
-    }
-
-    fileprivate func updateLoginItemWithLaunchAtStartup(_ launchAtStartup: Bool) {
-        let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable") as? String
-        let appBundlePath = Bundle.main.bundlePath
-
-        let script = """
-            tell application "System Events" to get the name of every login item
-            tell application "System Events"
-                set loginItems to every login item
-                repeat with aLoginItem in loginItems
-                    if (aLoginItem's name is "\(appName ?? "")") then
-                        delete aLoginItem
-                    end if
-                end repeat
-                if \(launchAtStartup) then
-                    make login item at end with properties {path:"\(appBundlePath)", hidden:false}
-                end if
-            end tell
-        """
-
-        let exeCommand = EZScriptExecutor()
-        exeCommand.runAppleScript(script) { result, error in
-            if let error {
-                logError("launchAtStartup error: error: \(error)")
-            } else {
-                logInfo("launchAtStartup result: \(result)")
-            }
-        }
     }
 
     fileprivate func logSettings(_ parameters: [String: Any]) {
