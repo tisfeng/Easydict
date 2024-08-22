@@ -19,6 +19,10 @@ public final class VolcanoService: QueryService {
     }
 
     override public func link() -> String? {
+        "https://translate.volcengine.com"
+    }
+
+    override public func wordLink(_ queryModel: EZQueryModel) -> String? {
         guard let from = languageCode(forLanguage: queryModel.queryFromLanguage),
               let to = languageCode(forLanguage: queryModel.queryTargetLanguage),
               let queryText = queryModel.queryText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
