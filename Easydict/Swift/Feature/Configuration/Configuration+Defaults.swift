@@ -256,6 +256,10 @@ extension Defaults.Keys {
     static let baiduAppId = Key<String>(EZBaiduAppId, default: "")
     static let baiduSecretKey = Key<String>(EZBaiduSecretKey, default: "")
     static let baiduServiceApiTypeKey = Key<ServiceAPIType>(EZBaiduServiceApiTypeKey, default: .secretKey)
+
+    // Volcano
+    static let volcanoAccessKeyID = Key<String>(EZVolcanoAccessKeyID, default: "")
+    static let volcanoSecretAccessKey = Key<String>(EZVolcanoSecretAccessKey, default: "")
 }
 
 /// shortcut

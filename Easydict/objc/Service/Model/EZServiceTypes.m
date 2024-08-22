@@ -11,7 +11,6 @@
 #import "EZBaiduTranslate.h"
 #import "EZYoudaoTranslate.h"
 #import "EZDeepLTranslate.h"
-#import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZBingService.h"
 #import "EZAppleDictionary.h"
@@ -61,7 +60,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeApple, [EZAppleService class],
                                            EZServiceTypeBaidu, [EZBaiduTranslate class],
                                            EZServiceTypeBing, [EZBingService class],
-                                           EZServiceTypeVolcano, [EZVolcanoTranslate class],
+                                           EZServiceTypeVolcano, [EZVolcanoService class],
                                            EZServiceTypeNiuTrans, [EZNiuTransTranslate class],
                                            EZServiceTypeCaiyun, [EZCaiyunService class],
                                            EZServiceTypeTencent, [EZTencentService class],
