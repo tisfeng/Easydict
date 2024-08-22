@@ -206,6 +206,9 @@
         
         EZAliAccessKeyId,
         EZAliAccessKeySecret,
+        
+        EZVolcanoAccessKeyID,
+        EZVolcanoSecretAccessKey,
 
         EZIntelligentQueryModeKey,
     ];

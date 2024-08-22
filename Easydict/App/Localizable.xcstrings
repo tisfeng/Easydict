@@ -2924,6 +2924,38 @@
         }
       }
     },
+    "service.configuration.volcano.access_id.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access Key ID"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access Key ID"
+          }
+        }
+      }
+    },
+    "service.configuration.volcano.secret_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Access Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Access Key"
+          }
+        }
+      }
+    },
     "setting_general" : {
       "localizations" : {
         "en" : {
@@ -4379,6 +4411,7 @@
       }
     },
     "volcano_translate" : {
+      "comment" : "The name of Volcano Translate",
       "localizations" : {
         "en" : {
           "stringUnit" : {
