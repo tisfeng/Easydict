@@ -18,6 +18,7 @@ class LanguageState: ObservableObject {
     enum LanguageType: String, CaseIterable {
         case english = "en"
         case simplifiedChinese = "zh-Hans"
+        case traditionalChinese = "zh-Hant"
 
         // MARK: Internal
 
@@ -27,6 +28,8 @@ class LanguageState: ObservableObject {
                 "English"
             case .simplifiedChinese:
                 "简体中文"
+            case .traditionalChinese:
+                "繁體中文"
             }
         }
     }
