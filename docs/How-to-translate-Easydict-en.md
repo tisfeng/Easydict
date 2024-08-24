@@ -21,10 +21,12 @@ After you are done with your translations, it's nice to run the app and go over 
 ### Pushing your changes to GitHub
 After you finish checking your localization, it's time to push the changes to GitHub and start a pull request.
 - [Start a Pull Request](https://docs.github.com/en/pull-requests).
-- Remember to set the merge target to the `localization` branch
+- Remember to set the merge target to the `dev` branch
+
 Now you can wait for a maintainer's review and get your translations adopted in the next release version.
 ### Additional Resources
 - [Localization - Apple Developer](https://developer.apple.com/documentation/Xcode/localization)
 - [Localizing and varying text with a string catalog - Apple Developer](https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog)
 - [Discover String Catalogs - WWDC23 Videos](https://developer.apple.com/videos/play/wwdc2023/10155)
 - [Apple Localization Glossaries](https://applelocalization.com)
+- [Sample Pull Request for Easydict](https://github.com/tisfeng/Easydict/pull/656)

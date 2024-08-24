@@ -21,10 +21,12 @@ Easydict 的翻译是通过 Xcode 中的 String Catalog 管理的，下面是翻
 ### 将更改 push 到 GitHub
 在完成本地化检查后就可以将更改 push 到 GitHub 并发起拉取请求了。
 - [发起拉取请求](https://docs.github.com/zh/pull-requests)。
-- 记得将合并目标设置为`localization`分支
-最后等待 review 完成就可以合并到主仓库啦，下一次发版的时候就能看到最新的翻译啦！
+- 记得将合并目标设置为`dev`分支
+
+最后等待 review 完成就可以合并到主仓库，并在下一次发版看到最新的翻译啦！
 ### 其他资源
 - [Localization - Apple Developer](https://developer.apple.com/documentation/Xcode/localization)
 - [Localizing and varying text with a string catalog - Apple Developer](https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog)
 - [Discover String Catalogs - WWDC23 Videos](https://developer.apple.com/videos/play/wwdc2023/10155)
 - [Apple 本地化术语表](https://applelocalization.com)
+- [Easydict 本地化示例 PR](https://github.com/tisfeng/Easydict/pull/656)
