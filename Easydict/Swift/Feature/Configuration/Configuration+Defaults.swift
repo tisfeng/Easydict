@@ -77,7 +77,8 @@ extension Defaults.Keys {
     static let adjustPopButtonOrigin = Key<Bool>("EZConfiguration_kAdjustPopButtomOriginKey", default: false)
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
-    static let clearQueryWhenInputTranslate = Key<Bool>("EZConfiguration_kClearInputKey", default: true)
+
+    static let clearQueryWhenInputTranslate = Key<Bool>("EZConfiguration_kClearInputKey", default: false)
     static let keepPrevResultWhenSelectTranslateTextIsEmpty = Key<Bool>("EZConfiguration_kKeepPrevResultKey", default: true)
     static let selectQueryTextWhenWindowActivate = Key<Bool>(
         "EZConfiguration_kSelectQueryTextWhenWindowActivate",
