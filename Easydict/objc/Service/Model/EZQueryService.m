@@ -65,7 +65,7 @@ userInfo:nil]
 - (void)setEnabledQuery:(BOOL)enabledQuery {
     _enabledQuery = enabledQuery;
 
-    [[EZLocalStorage shared] setEnabledQuery:enabledQuery serviceType:self.serviceType windowType:self.windowType];
+    [[EZLocalStorage shared] setEnabledQuery:enabledQuery serviceType:self.serviceType serviceId:self.uuid windowType:self.windowType];
 }
 
 - (BOOL)enabledAutoQuery {
@@ -311,6 +311,14 @@ userInfo:nil]
 
 - (BOOL)isStream {
     return NO;
+}
+
+- (BOOL)isDuplicatable {
+    return NO;
+}
+
+- (BOOL)isRemovable:(EZWindowType)type {
+    return YES;
 }
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {

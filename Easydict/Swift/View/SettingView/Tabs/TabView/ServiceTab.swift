@@ -28,6 +28,9 @@ struct ServiceTab: View {
                 .padding(.bottom)
                 .padding(.horizontal)
                 .frame(minWidth: 260)
+                .onReceive(serviceHasUpdatedPub) { _ in
+                    viewModel.updateServices()
+                }
             }
 
             Group {
@@ -60,6 +63,9 @@ struct ServiceTab: View {
 
     // MARK: Private
 
+    private let serviceHasUpdatedPub = NotificationCenter.default
+        .publisher(for: .serviceHasUpdated)
+
     @StateObject private var viewModel: ServiceTabViewModel = .init()
 }
 
@@ -89,26 +95,25 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func updateServices() {
-        services = getServices()
-    }
+        services = EZLocalStorage.shared().allServices(windowType)
 
-    func getServices() -> [QueryService] {
-        EZLocalStorage.shared().allServices(windowType)
+        let isSelectedExist = services
+            .contains { $0.serviceType() == selectedService?.serviceType() && $0.uuid == selectedService?.uuid }
+        if !isSelectedExist {
+            selectedService = nil
+        }
     }
 
     func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
         var services = services
-
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
         let serviceTypes = services.map { service in
-            service.serviceType()
+            "\(service.serviceType())#\(service.uuid)"
         }
-
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
-
         updateServices()
     }
 
@@ -134,9 +139,9 @@ private struct ServiceItems: View {
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    private var servicesWithID: [(QueryService, String)] {
-        viewModel.services.map { service in
-            (service, service.serviceType().rawValue)
+    private var servicesWithID: [(QueryService, Int)] {
+        viewModel.services.enumerated().map { index, service in
+            (service, index)
         }
     }
 }

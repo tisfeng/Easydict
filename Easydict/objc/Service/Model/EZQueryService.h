@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 NS_SWIFT_NAME(QueryService)
 @interface EZQueryService : NSObject
 
+@property (nonatomic, strong) NSString *uuid;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
 /// 翻译结果
@@ -120,6 +121,10 @@ NS_SWIFT_NAME(QueryService)
 - (NSInteger)totalFreeQueryCharacterCount;
 
 - (BOOL)isStream;
+
+- (BOOL)isDuplicatable;
+
+- (BOOL)isRemovable:(EZWindowType)type;
 
 /// 获取文本的语言
 /// @param text 文本

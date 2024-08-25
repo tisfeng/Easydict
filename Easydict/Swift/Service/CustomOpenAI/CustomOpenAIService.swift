@@ -24,6 +24,14 @@ class CustomOpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
+    override func isDuplicatable() -> Bool {
+        true
+    }
+
+    override func isRemovable(_ type: EZWindowType) -> Bool {
+        !uuid.isEmpty
+    }
+
     override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,

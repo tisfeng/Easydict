@@ -32,3 +32,39 @@ extension QueryService: ServiceSecretConfigreValidatable {
         translate("曾经沧海难为水", from: .simplifiedChinese, to: .english, completion: completion)
     }
 }
+
+// MARK: - ServiceSecretConfigreDuplicatable
+
+protocol ServiceSecretConfigreDuplicatable {
+    func duplicate()
+    func remove()
+}
+
+extension ServiceSecretConfigreDuplicatable {
+    func duplicate() {}
+    func remove() {}
+}
+
+// MARK: - QueryService + ServiceSecretConfigreDuplicatable
+
+extension QueryService: ServiceSecretConfigreDuplicatable {
+    func duplicate() {
+        var allServiceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
+        let uuid = UUID().uuidString
+        let newServiceType = "\(serviceType().rawValue)#\(uuid)"
+        allServiceTypes.append(newServiceType)
+        let newService = self
+        newService.uuid = uuid
+        EZLocalStorage.shared().setService(newService, windowType: windowType)
+        EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: windowType)
+        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
+    }
+
+    func remove() {
+        let allServiceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
+            .filter { $0 != "\(serviceType().rawValue)#\(uuid)" }
+
+        EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: windowType)
+        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
+    }
+}

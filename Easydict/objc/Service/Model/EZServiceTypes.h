@@ -16,6 +16,7 @@ NS_SWIFT_NAME(ServiceTypes)
 @interface EZServiceTypes : NSObject
 
 @property (nonatomic, copy, readonly) NSArray<EZServiceType> *allServiceTypes;
+@property (nonatomic, copy, readonly) NSArray<NSString *> *allServiceTypeIDs;
 
 + (instancetype)shared;
 

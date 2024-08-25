@@ -74,10 +74,18 @@ static EZServiceTypes *_instance;
     return [Cls new];
 }
 
-- (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<EZServiceType> *)types {
+- (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<NSString *> *)types {
     NSMutableArray *services = [NSMutableArray array];
-    for (EZServiceType type in types) {
+    for (NSString *serviceType in types) {
+        NSString *type = serviceType;
+        NSString *uuid = @"";
+        if ([serviceType containsString:@"#"]) {
+            NSArray *serivceTypeId = [serviceType componentsSeparatedByString:@"#"];
+            type = serivceTypeId[0];
+            uuid = serivceTypeId[1];
+        }
         EZQueryService *service = [self serviceWithType:type];
+        service.uuid = uuid;
         // Maybe OpenAI has been disabled.
         if (service) {
             [services addObject:service];

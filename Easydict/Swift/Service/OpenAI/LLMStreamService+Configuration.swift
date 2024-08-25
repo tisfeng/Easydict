@@ -87,10 +87,10 @@ extension LLMStreamService {
     }
 
     func stringDefaultsKey(_ key: StoredKey, defaultValue: String) -> Defaults.Key<String> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
+        defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
     }
 
     func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
+        defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
     }
 }
