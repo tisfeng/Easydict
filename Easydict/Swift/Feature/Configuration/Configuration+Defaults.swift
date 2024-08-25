@@ -37,7 +37,6 @@ extension Defaults.Keys {
 
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
     static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
-    static let launchAtStartup = Key<Bool>("EZConfiguration_kLaunchAtStartupKey", default: false)
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
     static let autoQuerySelectedText = Key<Bool>("EZConfiguration_kAutoQuerySelectedTextKey", default: true)
@@ -257,6 +256,10 @@ extension Defaults.Keys {
     static let baiduAppId = Key<String>(EZBaiduAppId, default: "")
     static let baiduSecretKey = Key<String>(EZBaiduSecretKey, default: "")
     static let baiduServiceApiTypeKey = Key<ServiceAPIType>(EZBaiduServiceApiTypeKey, default: .secretKey)
+
+    // Volcano
+    static let volcanoAccessKeyID = Key<String>(EZVolcanoAccessKeyID, default: "")
+    static let volcanoSecretAccessKey = Key<String>(EZVolcanoSecretAccessKey, default: "")
 }
 
 /// shortcut

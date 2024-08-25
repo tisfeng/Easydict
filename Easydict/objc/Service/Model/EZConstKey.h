@@ -31,6 +31,9 @@ static NSString *const EZBaiduAppId = @"EZBaiduAppId";
 static NSString *const EZBaiduSecretKey = @"EZBaiduSecretKey";
 static NSString *const EZBaiduServiceApiTypeKey = @"EZBaiduServiceApiTypeKey";
 
+static NSString *const EZVolcanoAccessKeyID = @"EZVolcanoAccessKeyID";
+static NSString *const EZVolcanoSecretAccessKey = @"EZVolcanoSecretAccessKey";
+
 @interface EZConstKey : NSObject
 
 + (NSString *)constkey:(NSString *)key windowType:(EZWindowType)windowType;
