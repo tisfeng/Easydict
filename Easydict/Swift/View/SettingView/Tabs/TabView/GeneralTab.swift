@@ -258,8 +258,8 @@ struct GeneralTab: View {
     @Default(.clickQuery) private var clickQuery
     @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
 
-    @Default(.clearInput) private var clearInput
-    @Default(.keepPrevResultWhenEmpty) private var keepPrevResultWhenEmpty
+    @Default(.clearQueryWhenInputTranslate) private var clearInput
+    @Default(.keepPrevResultWhenSelectTranslateTextIsEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
     @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
     @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
