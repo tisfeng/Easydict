@@ -22,21 +22,19 @@ class GlobalContext: NSObject {
             userDriverDelegate: userDriverHelper
         )
 
+        let windowTypes: [EZWindowType] = [.main, .fixed, .mini]
+
+        var serviceTypes: Set<String> = []
+        for windowType in windowTypes {
+            let windowAllServiceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
+            windowAllServiceTypes.forEach { serviceTypes.insert($0) }
+        }
+        self.services = ServiceTypes.shared().services(fromTypes: Array(serviceTypes))
         for service in services {
             if let llmService = service as? LLMStreamService {
                 llmService.setupSubscribers()
             }
         }
-    }
-
-    // MARK: Public
-
-    /// Retrieves the service of the specified type.
-    ///
-    /// - Parameter type: The type of service to retrieve.
-    /// - Returns: The service of the specified type.
-    public func getService(ofType type: ServiceType) -> QueryService? {
-        services.first(where: { $0.serviceType().rawValue.caseInsensitiveCompare(type.rawValue) == .orderedSame })
     }
 
     // MARK: Internal
@@ -75,5 +73,5 @@ class GlobalContext: NSObject {
 
      For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
      */
-    private let services = EZLocalStorage.shared().allServices(.none)
+    private var services: [QueryService] = []
 }

@@ -139,9 +139,9 @@ private struct ServiceItems: View {
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    private var servicesWithID: [(QueryService, Int)] {
-        viewModel.services.enumerated().map { index, service in
-            (service, index)
+    private var servicesWithID: [(QueryService, String)] {
+        viewModel.services.map { service in
+            (service, service.uuid.isEmpty ? "\(service.serviceType())" : "\(service.serviceType())#\(service.uuid)")
         }
     }
 }

@@ -22,7 +22,7 @@ NS_SWIFT_NAME(ServiceTypes)
 
 - (nullable EZQueryService *)serviceWithType:(EZServiceType)type;
 
-- (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<EZServiceType> *)types;
+- (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<NSString *> *)types;
 
 @end
 

@@ -362,7 +362,7 @@ query count  | level | title
 #pragma mark - Service type key
 
 - (NSString *)keyForServiceType:(EZServiceType)serviceType serviceId: (NSString *)serviceId windowType:(EZWindowType)windowType {
-    if ([serviceId isEqual:@""]) {
+    if (!serviceId || [serviceId isEqual:@""]) {
         return [NSString stringWithFormat:@"%@-%@-%ld", kServiceInfoStorageKey, serviceType, windowType];
     }
     return [NSString stringWithFormat:@"%@-%@-%@-%ld", kServiceInfoStorageKey, serviceType, serviceId, windowType];
