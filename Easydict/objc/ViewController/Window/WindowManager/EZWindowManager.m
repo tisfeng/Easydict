@@ -727,8 +727,8 @@ static EZWindowManager *_instance;
          
          !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
          */
-        if (text.length == 0 && Configuration.shared.keepPrevResultWhenEmpty) {
-            text = nil;
+        if (text.length == 0) {
+            text = Configuration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }
         self.selectedText = [text trim];
         

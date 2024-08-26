@@ -54,8 +54,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
     @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
 
-    @DefaultsWrapper(.clearInput) var clearInput: Bool
-    @DefaultsWrapper(.keepPrevResultWhenEmpty) var keepPrevResultWhenEmpty: Bool
+    @DefaultsWrapper(.clearQueryWhenInputTranslate) var clearInput: Bool
+    @DefaultsWrapper(.keepPrevResultWhenSelectTranslateTextIsEmpty) var keepPrevResultWhenEmpty: Bool
     @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
     @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
     @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
@@ -316,7 +316,7 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.clearInput, options: [])
+        Defaults.publisher(.clearQueryWhenInputTranslate, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetClearInput()
