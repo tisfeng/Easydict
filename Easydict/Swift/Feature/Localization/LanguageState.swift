@@ -45,3 +45,28 @@ class LanguageState: ObservableObject {
         }
     }
 }
+
+// https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPInternational/LanguageandLocaleIDs/LanguageandLocaleIDs.html
+extension Locale {
+    var languageType: LanguageState.LanguageType? {
+        let languageCode = Locale.current.language.languageCode?.identifier
+        let script = Locale.current.language.script?.identifier
+
+        var type: LanguageState.LanguageType?
+        switch languageCode {
+        case "zh":
+            type = .simplifiedChinese
+        case "en":
+            type = .english
+        default:
+            break
+        }
+
+        if let languageCode, let script,
+           let tmpType = LanguageState.LanguageType(rawValue: "\(languageCode)-\(script)") {
+            type = tmpType
+        }
+
+        return type
+    }
+}
