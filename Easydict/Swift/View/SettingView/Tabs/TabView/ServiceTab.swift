@@ -98,7 +98,7 @@ private class ServiceTabViewModel: ObservableObject {
         services = EZLocalStorage.shared().allServices(windowType)
 
         let isSelectedExist = services
-            .contains { $0.serviceType() == selectedService?.serviceType() && $0.uuid == selectedService?.uuid }
+            .contains { $0.serviceTypeWithIdIfHave() == selectedService?.serviceTypeWithIdIfHave() }
         if !isSelectedExist {
             selectedService = nil
         }
@@ -108,9 +108,7 @@ private class ServiceTabViewModel: ObservableObject {
         var services = services
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
-        let serviceTypes = services.map { service in
-            "\(service.serviceType())#\(service.uuid)"
-        }
+        let serviceTypes = services.map { $0.serviceTypeWithIdIfHave() }
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
@@ -141,7 +139,7 @@ private struct ServiceItems: View {
 
     private var servicesWithID: [(QueryService, String)] {
         viewModel.services.map { service in
-            (service, service.uuid.isEmpty ? "\(service.serviceType())" : "\(service.serviceType())#\(service.uuid)")
+            (service, service.serviceTypeWithIdIfHave())
         }
     }
 }
