@@ -255,7 +255,7 @@ NSString *getPartAbbreviation(NSString *part) {
     self.translatedResults = nil;
     self.wordResult = nil;
     self.error = nil;
-    self.serviceType = EZServiceTypeYoudao;
+    self.serviceTypeWithIdIfHave = EZServiceTypeYoudao;
     [self.service.audioPlayer stop];
     self.service = nil;
     self.isShowing = NO;

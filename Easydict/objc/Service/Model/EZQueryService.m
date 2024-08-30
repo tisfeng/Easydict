@@ -89,7 +89,7 @@ userInfo:nil]
     _result = translateResult;
 
     _result.service = self;
-    _result.serviceType = self.serviceType;
+    _result.serviceTypeWithIdIfHave = self.serviceTypeWithIdIfHave;
     _result.queryModel = self.queryModel;
 }
 
@@ -255,6 +255,10 @@ userInfo:nil]
 - (EZServiceType)serviceType {
     MethodNotImplemented();
     return nil;
+}
+
+- (NSString *)serviceTypeWithIdIfHave {
+    return [self serviceType];
 }
 
 - (NSString *)name {

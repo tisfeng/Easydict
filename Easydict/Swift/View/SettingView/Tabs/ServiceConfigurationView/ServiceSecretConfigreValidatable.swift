@@ -49,22 +49,29 @@ extension ServiceSecretConfigreDuplicatable {
 
 extension QueryService: ServiceSecretConfigreDuplicatable {
     func duplicate() {
-        var allServiceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
         let uuid = UUID().uuidString
-        let newServiceType = "\(serviceType().rawValue)#\(uuid)"
-        allServiceTypes.append(newServiceType)
-        let newService = self
-        newService.uuid = uuid
-        EZLocalStorage.shared().setService(newService, windowType: windowType)
-        EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: windowType)
-        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
+        for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
+            var allServiceTypes = EZLocalStorage.shared().allServiceTypes(winType)
+            let newServiceType = "\(serviceType().rawValue)#\(uuid)"
+            allServiceTypes.append(newServiceType)
+            let newService = self
+            newService.enabled = false
+            newService.uuid = uuid
+            newService.windowType = winType
+            newService.resetServiceResult()
+            EZLocalStorage.shared().setService(newService, windowType: winType)
+            EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
+            NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
+        }
     }
 
     func remove() {
-        let allServiceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
-            .filter { $0 != "\(serviceType().rawValue)#\(uuid)" }
+        for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
+            let allServiceTypes = EZLocalStorage.shared().allServiceTypes(winType)
+                .filter { $0 != serviceTypeWithIdIfHave() }
 
-        EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: windowType)
-        NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
+            EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
+            NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
+        }
     }
 }

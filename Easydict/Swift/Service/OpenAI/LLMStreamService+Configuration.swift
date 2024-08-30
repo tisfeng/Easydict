@@ -76,7 +76,7 @@ extension LLMStreamService {
         logInfo("service config changed: \(serviceType().rawValue), windowType: \(windowType.rawValue)")
 
         NotificationCenter.default.postServiceUpdateNotification(
-            serviceType: serviceType(),
+            serviceType: serviceTypeWithIdIfHave(),
             windowType: windowType,
             autoQuery: autoQuery
         )

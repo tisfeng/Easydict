@@ -78,6 +78,9 @@ NS_SWIFT_NAME(QueryService)
 /// 服务类型
 - (EZServiceType)serviceType;
 
+/// 服务类型
+- (NSString *)serviceTypeWithIdIfHave;
+
 /// 服务名字
 - (NSString *)name;
 

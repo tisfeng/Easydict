@@ -173,7 +173,7 @@
     
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-        [self.result.queryModel stopServiceRequest:self.result.serviceType];
+        [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithIdIfHave];
         self.result.isStreamFinished = YES;
         button.hidden = YES;
     }];
@@ -260,7 +260,7 @@
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
     
-    EZServiceType serviceType = result.serviceType;
+    EZServiceType serviceType = result.service.serviceType;
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
     
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
