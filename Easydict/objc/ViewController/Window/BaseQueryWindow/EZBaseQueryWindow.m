@@ -42,6 +42,12 @@
                                                  selector:@selector(windowDidResize:)
                                                      name:NSWindowDidResizeNotification
                                                    object:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didChangeSettingReplaceNewlineWithSpaceToggleValue:)
+                                                     name:NotificationName.didChangeSettingReplaceNewlineWithSpaceToggleValue
+                                                   object:nil
+        ];
     }
     return self;
 }
@@ -161,6 +167,14 @@
     // Window is obscured
     if (self.occlusionState != NSWindowOcclusionStateVisible) {
         
+    }
+}
+
+- (void)didChangeSettingReplaceNewlineWithSpaceToggleValue:(NSNotification *)notification {
+    NSNumber *value = notification.object;
+    BOOL replaceNewlineWithSpace = value.boolValue;
+    if (replaceNewlineWithSpace) {
+        [self.queryViewController replacingNewlinesWithWhitespace];
     }
 }
 

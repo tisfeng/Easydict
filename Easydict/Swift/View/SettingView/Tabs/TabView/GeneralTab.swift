@@ -106,6 +106,13 @@ struct GeneralTab: View {
                 Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
                 Toggle("automatically_remove_code_comment_symbols", isOn: $automaticallyRemoveCodeCommentSymbols)
                 Toggle("automatically_split_words", isOn: $automaticWordSegmentation)
+                Toggle("replace_newline_with_space", isOn: $replaceNewlineWithSpace)
+                    .onChange(of: replaceNewlineWithSpace) { newValue in
+                        NotificationCenter.default.post(
+                            name: .didChangeSettingReplaceNewlineWithSpaceToggleValue,
+                            object: newValue
+                        )
+                    }
             } header: {
                 Text("setting.general.input.header")
             }
@@ -263,6 +270,7 @@ struct GeneralTab: View {
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
     @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
     @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
 
     @Default(.autoPlayAudio) private var autoPlayAudio
 

@@ -59,6 +59,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
     @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
     @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+    @DefaultsWrapper(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
 
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
