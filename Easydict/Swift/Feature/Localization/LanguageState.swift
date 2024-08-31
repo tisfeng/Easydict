@@ -49,24 +49,24 @@ class LanguageState: ObservableObject {
 // https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPInternational/LanguageandLocaleIDs/LanguageandLocaleIDs.html
 extension Locale {
     var languageType: LanguageState.LanguageType? {
-        let languageCode = Locale.current.language.languageCode?.identifier
-        let script = Locale.current.language.script?.identifier
+        let languageCode = language.languageCode?.identifier
+        let script = language.script?.identifier
+        let region = language.region?.identifier
 
-        var type: LanguageState.LanguageType?
-        switch languageCode {
-        case "zh":
-            type = .simplifiedChinese
-        case "en":
-            type = .english
-        default:
-            break
+        let languageCodeScriptRegion = [languageCode, script, region].compactMap { $0 }.joined(separator: "-")
+        let languageCodeScript = [languageCode, script].compactMap { $0 }.joined(separator: "-")
+        let languageCodeRegion = [languageCode, region].compactMap { $0 }.joined(separator: "-")
+
+        if let languageCode, let type = LanguageState.LanguageType(rawValue: languageCode) {
+            return type
+        } else if let type = LanguageState.LanguageType(rawValue: languageCodeScriptRegion) {
+            return type
+        } else if let type = LanguageState.LanguageType(rawValue: languageCodeScript) {
+            return type
+        } else if let type = LanguageState.LanguageType(rawValue: languageCodeRegion) {
+            return type
         }
 
-        if let languageCode, let script,
-           let tmpType = LanguageState.LanguageType(rawValue: "\(languageCode)-\(script)") {
-            type = tmpType
-        }
-
-        return type
+        return nil
     }
 }
