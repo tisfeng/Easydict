@@ -235,6 +235,10 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 
 /// Handle input text, return queryText.
 - (NSString *)handleInputText {
+    if (self.length == 0) {
+        return self;
+    }
+
     NSString *queryText = self;
     
     /**
