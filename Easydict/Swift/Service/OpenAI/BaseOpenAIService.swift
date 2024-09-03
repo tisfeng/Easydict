@@ -23,6 +23,8 @@ public class BaseOpenAIService: LLMStreamService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         Task {
+            result.isStreamFinished = false
+
             var resultText = ""
             let queryType = self.queryType(text: text, from: from, to: to)
 

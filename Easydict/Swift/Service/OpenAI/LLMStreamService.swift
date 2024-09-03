@@ -323,7 +323,6 @@ extension LLMStreamService {
     ) {
         if result.isStreamFinished {
             cancelStream()
-            completion(result, error)
             return
         }
 
