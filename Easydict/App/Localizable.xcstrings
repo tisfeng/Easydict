@@ -9,6 +9,12 @@
             "value" : ""
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1647,6 +1653,12 @@
             "value" : "Detected "
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zistené"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1834,6 +1846,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enable Youdao OCR "
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť Youdao OCR"
           }
         },
         "zh-Hans" : {
@@ -6304,6 +6322,12 @@
             "value" : "Access Key ID"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access Key ID"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6327,6 +6351,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Access Key"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Access Key"
