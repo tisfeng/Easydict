@@ -11,6 +11,12 @@
             "value" : "Easydict"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32,6 +38,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Easydict"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Easydict"
           }
         },
@@ -57,6 +69,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Copyright © 2023-2024 tisfeng. All rights reserved."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorské práva © 2023-2024 tisfeng. Všetky práva vyhradené."
           }
         },
         "zh-Hans" : {
