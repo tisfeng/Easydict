@@ -20,7 +20,7 @@ NS_SWIFT_NAME(ServiceTypes)
 
 + (instancetype)shared;
 
-- (nullable EZQueryService *)serviceWithType:(EZServiceType)type;
+- (nullable EZQueryService *)serviceWithType:(NSString *)typeIdIfHave;
 
 - (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<NSString *> *)types;
 

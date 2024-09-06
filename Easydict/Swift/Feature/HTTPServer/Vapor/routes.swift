@@ -15,11 +15,10 @@ func routes(_ app: Application) throws {
 
     app.post("translate") { req async throws -> TranslationResponse in
         let request = try req.content.decode(TranslationRequest.self)
-        let serviceType = ServiceType(rawValue: request.serviceType)
         let appleDictionaryNames = request.appleDictionaryNames
 
-        guard let service = ServiceTypes.shared().service(withType: serviceType) else {
-            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+        guard let service = ServiceTypes.shared().service(withType: request.serviceType) else {
+            throw TranslationError.unsupportedServiceType(request.serviceType)
         }
 
         if let appleDictionary = service as? AppleDictionary, let appleDictionaryNames {
@@ -29,7 +28,7 @@ func routes(_ app: Application) throws {
         if service.isStream() {
             throw TranslationError
                 .invalidParameter(
-                    "\(serviceType.rawValue) is stream service, which does not support 'translate' API. Please use 'streamTranslate."
+                    "\(request.serviceType) is stream service, which does not support 'translate' API. Please use 'streamTranslate."
                 )
         }
 
@@ -53,8 +52,8 @@ func routes(_ app: Application) throws {
         let request = try req.content.decode(TranslationRequest.self)
         let serviceType = ServiceType(rawValue: request.serviceType)
 
-        guard let service = ServiceTypes.shared().service(withType: serviceType) else {
-            throw TranslationError.unsupportedServiceType(serviceType.rawValue)
+        guard let service = ServiceTypes.shared().service(withType: request.serviceType) else {
+            throw TranslationError.unsupportedServiceType(request.serviceType)
         }
 
         guard let streamService = service as? LLMStreamService else {

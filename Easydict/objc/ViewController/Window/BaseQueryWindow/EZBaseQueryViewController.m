@@ -1147,7 +1147,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
             
-            EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceType windowType:self.windowType];
+            EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceTypeWithIdIfHave windowType:self.windowType];
 
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZLLMStreamService.class]) {
@@ -1504,7 +1504,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     EZQueryService *service = self.services[index];
     return service;
-}
+ }
 
 - (BOOL)isTipsCell:(NSInteger)row {
     // TODO: 1 is query view, can be hidde later.
