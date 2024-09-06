@@ -70,7 +70,7 @@ static EZServiceTypes *_instance;
 }
 
 // pass service type with id format like `EZServiceTypeCustomOpenAI#UUID` to support multi instances
-- (nullable EZQueryService *)serviceWithType:(NSString *)typeIdIfHave {
+- (nullable EZQueryService *)serviceWithTypeId:(NSString *)typeIdIfHave {
     NSString *type = typeIdIfHave;
     NSString *uuid = @"";
     if ([typeIdIfHave containsString:@"#"]) {
@@ -88,7 +88,7 @@ static EZServiceTypes *_instance;
 - (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<NSString *> *)types {
     NSMutableArray *services = [NSMutableArray array];
     for (NSString *serviceType in types) {
-        EZQueryService *service = [self serviceWithType:serviceType];
+        EZQueryService *service = [self serviceWithTypeId:serviceType];
         // Maybe OpenAI has been disabled.
         if (service) {
             [services addObject:service];

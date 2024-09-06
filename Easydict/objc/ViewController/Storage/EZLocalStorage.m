@@ -144,7 +144,7 @@ static EZLocalStorage *_instance;
 }
 
 - (EZQueryService *)service:(NSString *)serviceTypeId windowType:(EZWindowType)windowType {
-    EZQueryService *service = [EZServiceTypes.shared serviceWithType:serviceTypeId];
+    EZQueryService *service = [EZServiceTypes.shared serviceWithTypeId:serviceTypeId];
     [self updateServiceInfo:service windowType:windowType];
     return service;
 }

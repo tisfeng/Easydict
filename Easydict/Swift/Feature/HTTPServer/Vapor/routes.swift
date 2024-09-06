@@ -17,7 +17,7 @@ func routes(_ app: Application) throws {
         let request = try req.content.decode(TranslationRequest.self)
         let appleDictionaryNames = request.appleDictionaryNames
 
-        guard let service = ServiceTypes.shared().service(withType: request.serviceType) else {
+        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
             throw TranslationError.unsupportedServiceType(request.serviceType)
         }
 
@@ -52,7 +52,7 @@ func routes(_ app: Application) throws {
         let request = try req.content.decode(TranslationRequest.self)
         let serviceType = ServiceType(rawValue: request.serviceType)
 
-        guard let service = ServiceTypes.shared().service(withType: request.serviceType) else {
+        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
             throw TranslationError.unsupportedServiceType(request.serviceType)
         }
 

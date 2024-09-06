@@ -58,6 +58,9 @@ struct ServiceTab: View {
             }
             .layoutPriority(1)
         }
+        .onAppear {
+            GlobalContext.shared.updateSubscribers()
+        }
         .environmentObject(viewModel)
     }
 

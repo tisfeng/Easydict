@@ -53,14 +53,15 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
             var allServiceTypes = EZLocalStorage.shared().allServiceTypes(winType)
             let newServiceType = "\(serviceType().rawValue)#\(uuid)"
+            guard let newService = ServiceTypes.shared().service(withTypeId: newServiceType) else {
+                return
+            }
             allServiceTypes.append(newServiceType)
-            let newService = self
             newService.enabled = false
-            newService.uuid = uuid
             newService.windowType = winType
-            newService.resetServiceResult()
             EZLocalStorage.shared().setService(newService, windowType: winType)
             EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
+            GlobalContext.shared.updateSubscribers()
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
     }

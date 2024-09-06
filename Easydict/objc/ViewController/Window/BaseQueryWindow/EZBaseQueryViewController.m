@@ -375,7 +375,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (EZQueryService *)defaultTTSService {
     EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
-        _defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        _defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
     }
     return _defaultTTSService;
 }

@@ -775,7 +775,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
         
         EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
-        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
         
         [result.service.audioPlayer playTextAudio:text
                                          language:language

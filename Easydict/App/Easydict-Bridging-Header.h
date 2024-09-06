@@ -28,3 +28,4 @@
 #import "MMCrash.h"
 #import "EZDetectManager.h"
 #import "EZAppleDictionary.h"
+#import "EZServiceTypes.h"

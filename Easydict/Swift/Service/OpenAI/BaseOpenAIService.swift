@@ -24,6 +24,7 @@ public class BaseOpenAIService: LLMStreamService {
     ) {
         Task {
             result.isStreamFinished = false
+            result.isLoading = true
 
             var resultText = ""
             let queryType = self.queryType(text: text, from: from, to: to)
@@ -40,6 +41,7 @@ public class BaseOpenAIService: LLMStreamService {
                 // Get final result text
                 resultText = getFinalResultText(resultText)
                 updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                result.isLoading = false
                 result.isStreamFinished = true
             } catch {
                 // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
@@ -53,6 +55,7 @@ public class BaseOpenAIService: LLMStreamService {
                     logError(String(describing: error))
                 }
                 updateResultText(text, queryType: queryType, error: err, completion: completion)
+                result.isLoading = false
                 result.isStreamFinished = true
             }
         }

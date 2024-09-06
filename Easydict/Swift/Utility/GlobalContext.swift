@@ -21,20 +21,6 @@ class GlobalContext: NSObject {
             updaterDelegate: updaterHelper,
             userDriverDelegate: userDriverHelper
         )
-
-        let windowTypes: [EZWindowType] = [.main, .fixed, .mini]
-
-        var serviceTypes: Set<String> = []
-        for windowType in windowTypes {
-            let windowAllServiceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
-            windowAllServiceTypes.forEach { serviceTypes.insert($0) }
-        }
-        self.services = ServiceTypes.shared().services(fromTypes: Array(serviceTypes))
-        for service in services {
-            if let llmService = service as? LLMStreamService {
-                llmService.setupSubscribers()
-            }
-        }
     }
 
     // MARK: Internal
@@ -58,6 +44,22 @@ class GlobalContext: NSObject {
     static let shared = GlobalContext()
 
     let updaterController: SPUStandardUpdaterController
+
+    // refresh subscribed services after duplicate service
+    func updateSubscribers() {
+        for service in services {
+            if let llmService = service as? LLMStreamService {
+                llmService.cancelSubscribers()
+            }
+        }
+        let allServiceTypes = EZLocalStorage.shared().allServiceTypes(EZWindowType.main)
+        services = ServiceTypes.shared().services(fromTypes: allServiceTypes)
+        for service in services {
+            if let llmService = service as? LLMStreamService {
+                llmService.setupSubscribers()
+            }
+        }
+    }
 
     // MARK: Private
 
