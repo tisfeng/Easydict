@@ -61,7 +61,7 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
             newService.windowType = winType
             EZLocalStorage.shared().setService(newService, windowType: winType)
             EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
-            GlobalContext.shared.updateSubscribers()
+            GlobalContext.shared.reloadLLMServicesSubscribers()
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
     }
@@ -72,6 +72,7 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
                 .filter { $0 != serviceTypeWithIdIfHave() }
 
             EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
+            GlobalContext.shared.reloadLLMServicesSubscribers()
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
     }

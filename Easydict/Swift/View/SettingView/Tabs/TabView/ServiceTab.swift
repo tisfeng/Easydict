@@ -59,7 +59,7 @@ struct ServiceTab: View {
             .layoutPriority(1)
         }
         .onAppear {
-            GlobalContext.shared.updateSubscribers()
+            GlobalContext.shared.reloadLLMServicesSubscribers()
         }
         .environmentObject(viewModel)
     }

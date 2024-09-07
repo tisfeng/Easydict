@@ -46,7 +46,7 @@ class GlobalContext: NSObject {
     let updaterController: SPUStandardUpdaterController
 
     // refresh subscribed services after duplicate service
-    func updateSubscribers() {
+    func reloadLLMServicesSubscribers() {
         for service in services {
             if let llmService = service as? LLMStreamService {
                 llmService.cancelSubscribers()
