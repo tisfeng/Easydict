@@ -563,7 +563,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)checkAndUseSimulatedKeyWithAXError:(AXError)error completion:(void (^)(NSString *))completion {
-    if ([self shouldUseSimulatedKeyWithError:error]) {
+    if ([self shouldUseSimulatedKeyWithAXError:error]) {
         [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
             self.selectTextType = EZSelectTextTypeSimulatedKey;
             completion(text);
@@ -574,7 +574,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Check if should use simulation key to get selected text.
-- (BOOL)shouldUseSimulatedKeyWithError:(AXError)error {
+- (BOOL)shouldUseSimulatedKeyWithAXError:(AXError)error {
     /**
      Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
 
