@@ -89,6 +89,12 @@
             "value" : "Easydict requires permission to execute AppleScript."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict zahteva dovoljenje za izvajanje AppleScripta."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
