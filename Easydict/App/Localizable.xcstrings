@@ -1644,13 +1644,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detected "
+            "value" : "Detected"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detected "
+            "value" : "Detected"
           }
         },
         "sk" : {
@@ -1662,7 +1662,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "识别为 "
+            "value" : "识别为"
           }
         },
         "zh-Hant" : {
