@@ -275,90 +275,66 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self getSelectedText:NO completion:completion];
 }
 
-/// Use Accessibility to get selected text first, if failed, use Cmd+C.
+/// Use Accessibility to get selected text first, if failed, use AppleScript and Cmd+C.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
-    
+
     self.selectedTextEditable = NO;
-        
+
     // Use Accessibility first
-    [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError error) {
-        // If selected text frame is valid, maybe just dragging, then ignore it.
+    [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError axError) {
+        self.selectTextType = EZSelectTextTypeAccessibility;
+
+        // If selected text frame is invalid, ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
-            self.selectTextType = EZSelectTextTypeAccessibility;
             completion(nil);
             return;
         }
-        
-        
-        // 1. If use Accessibility to get selected text success.
+
+        // 1. If successfully use Accessibility to get selected text.
         if (text.length > 0) {
-            self.selectTextType = EZSelectTextTypeAccessibility;
-            
-            // Monitor CGEventTap must be required after using Accessibility successfully.
+            // Monitor CGEventTap after successfully using Accessibility.
             if (Configuration.shared.autoSelectText) {
                 [self monitorCGEventTap];
             }
-            
-            self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
 
+            self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
             completion(text);
             return;
         }
-        
-        // If use Accessibility for the first time, we need to request Accessibility permission.
-        BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && error == kAXErrorAPIDisabled;
+
+        // If this is the first time using Accessibility, request Accessibility permission.
+        BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && axError == kAXErrorAPIDisabled;
         if (needRequestAccessibility) {
             [self isAccessibilityEnabled];
-            self.selectTextType = EZSelectTextTypeAccessibility;
             completion(nil);
             return;
         }
-        
-        void (^getSelectedTextByKeyBlock)(void) = ^{
-            [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
-                self.selectTextType = EZSelectTextTypeSimulatedKey;
-                completion(text);
-            }];
-        };
-        
+
         NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-        
         EZAppleScriptManager *appleScriptManager = [EZAppleScriptManager shared];
 
-        // 2. Use AppleScript to get Browser selected text.
+        // 2. Use AppleScript to get selected text from the browser.
         if ([appleScriptManager isKnownBrowser:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
-            [appleScriptManager getBrowserSelectedText:bundleID completion:^(NSString *_Nonnull selectedText, NSError *_Nonnull error) {
-                /**
-                 ???: Why the first time to get text may be nil
-                 
-                 error: {
-                 "NSAppleScriptErrorNumber" : -1751
-                 }
-                 */
+            [appleScriptManager getBrowserSelectedText:bundleID completion:^(NSString *selectedText, NSError *error) {
                 if (error) {
-                    getSelectedTextByKeyBlock();
+                    [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
                 } else {
                     completion(selectedText);
                 }
             }];
             return;
         }
-        
-        // 3. Try to use simulate key to get selected text.
-        if ([self shouldUseSimulatedKey:text error:error]) {
-            getSelectedTextByKeyBlock();
-            return;
-        }
-        
-        if (error == kAXErrorAPIDisabled) {
+
+        if (axError == kAXErrorAPIDisabled) {
             MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
         }
-        
-        self.selectTextType = EZSelectTextTypeAccessibility;
-        
+
+        // 3. Try to use simulated key to get selected text.
+        [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
+
         completion(nil);
     }];
 }
@@ -586,8 +562,19 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     return accessibilityEnabled == YES;
 }
 
+- (void)checkAndUseSimulatedKeyWithAXError:(AXError)error completion:(void (^)(NSString *))completion {
+    if ([self shouldUseSimulatedKeyWithError:error]) {
+        [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
+            self.selectTextType = EZSelectTextTypeSimulatedKey;
+            completion(text);
+        }];
+        return;
+    }
+    completion(nil);
+}
+
 /// Check if should use simulation key to get selected text.
-- (BOOL)shouldUseSimulatedKey:(NSString *)text error:(AXError)error {
+- (BOOL)shouldUseSimulatedKeyWithError:(AXError)error {
     /**
      Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
 
