@@ -1196,7 +1196,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceType];
+    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceTypeWithIdIfHave];
     if (index != NSNotFound) {
         NSInteger row = index + [self resultCellOffset];
         EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
@@ -1512,8 +1512,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 
-- (nullable EZQueryService *)serviceWithType:(EZServiceType)serviceType {
-    NSInteger index = [self.serviceTypeIds indexOfObject:serviceType];
+- (nullable EZQueryService *)serviceWithType:(NSString *)serviceTypeId {
+    NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeId];
     if (index != NSNotFound) {
         return self.services[index];
     }

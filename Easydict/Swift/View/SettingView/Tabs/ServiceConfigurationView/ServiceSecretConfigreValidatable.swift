@@ -50,30 +50,30 @@ extension ServiceSecretConfigreDuplicatable {
 extension QueryService: ServiceSecretConfigreDuplicatable {
     func duplicate() {
         let uuid = UUID().uuidString
+        let newServiceType = "\(serviceType().rawValue)#\(uuid)"
+        guard let newService = ServiceTypes.shared().service(withTypeId: newServiceType) else {
+            return
+        }
+        newService.enabled = false
+        newService.resetServiceResult()
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
             var allServiceTypes = EZLocalStorage.shared().allServiceTypes(winType)
-            let newServiceType = "\(serviceType().rawValue)#\(uuid)"
-            guard let newService = ServiceTypes.shared().service(withTypeId: newServiceType) else {
-                return
-            }
             allServiceTypes.append(newServiceType)
-            newService.enabled = false
             newService.windowType = winType
             EZLocalStorage.shared().setService(newService, windowType: winType)
             EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
-            GlobalContext.shared.reloadLLMServicesSubscribers()
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
+        GlobalContext.shared.reloadLLMServicesSubscribers()
     }
 
     func remove() {
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
             let allServiceTypes = EZLocalStorage.shared().allServiceTypes(winType)
                 .filter { $0 != serviceTypeWithIdIfHave() }
-
             EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
-            GlobalContext.shared.reloadLLMServicesSubscribers()
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
+        GlobalContext.shared.reloadLLMServicesSubscribers()
     }
 }
