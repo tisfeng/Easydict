@@ -17,6 +17,12 @@
             "value" : "Easydict"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42,6 +48,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict"
@@ -77,6 +89,12 @@
             "value" : "Easydict requires permission to execute AppleScript."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict zahteva dovoljenje za izvajanje AppleScripta."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -105,6 +123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copyright © 2023-2024 tisfeng. All rights reserved."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorské práva © 2023-2024 tisfeng. Všetky práva vyhradené."
           }
         },
         "zh-Hans" : {
