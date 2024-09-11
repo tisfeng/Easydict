@@ -316,13 +316,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         // 2. Use AppleScriptTask to get selected text from the browser.
         if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
-
             [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
-                if (error) {
-                    [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
-                } else {
-                    completion(selectedText);
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
+                    } else {
+                        completion(selectedText);
+                    }
+                });
             }];
             return;
         }

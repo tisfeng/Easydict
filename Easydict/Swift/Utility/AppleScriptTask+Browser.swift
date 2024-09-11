@@ -55,7 +55,7 @@ extension AppleScriptTask {
         """
 
         let result = try await runAppleScript(script)
-        print("Chrome Browser selected text: \(result ?? "")")
+        logInfo("Chrome Browser selected text: \(result ?? "")")
         return result
     }
 
@@ -77,7 +77,7 @@ extension AppleScriptTask {
         """
 
         let result = try await runAppleScript(script)
-        print("Chrome current tab URL: \(result ?? "")")
+        logInfo("Chrome current tab URL: \(result ?? "")")
         return result
     }
 
@@ -89,7 +89,7 @@ extension AppleScriptTask {
         """
 
         let result = try await runAppleScript(script)
-        print("Safari current tab URL: \(result ?? "")")
+        logInfo("Safari current tab URL: \(result ?? "")")
         return result
     }
 
@@ -111,7 +111,7 @@ extension AppleScriptTask {
         """
 
         let result = try await runAppleScript(script)
-        print("Safari replace selected text result: \(result ?? "")")
+        logInfo("Safari replace selected text result: \(result ?? "")")
         return result
     }
 
@@ -125,7 +125,7 @@ extension AppleScriptTask {
         """
 
         let result = try await runAppleScript(script)
-        print("Chrome replace selected text result: \(result ?? "")")
+        logInfo("Chrome replace selected text result: \(result ?? "")")
         return result
     }
 
