@@ -16,7 +16,6 @@
 		03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1E2B36CF3100B63209 /* SwiftShell */; };
 		03022F222B36D1A400B63209 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F212B36D1A400B63209 /* SnapKit */; };
 		03022F312B370B7100B63209 /* EasydictSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03022F302B370B7100B63209 /* EasydictSwiftTests.swift */; };
-		030570E22ADB919900C9905E /* EZAppleScriptManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 030570E12ADB919900C9905E /* EZAppleScriptManager.m */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
@@ -49,6 +48,7 @@
 		0340D38E2C8EEEA2004C9910 /* AppleScriptTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */; };
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
 		0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */; };
+		0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
@@ -378,8 +378,6 @@
 		03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		03022F302B370B7100B63209 /* EasydictSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasydictSwiftTests.swift; sourceTree = "<group>"; };
 		03022F372B370BE300B63209 /* EasydictSwiftTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EasydictSwiftTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		030570E02ADB919900C9905E /* EZAppleScriptManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleScriptManager.h; sourceTree = "<group>"; };
-		030570E12ADB919900C9905E /* EZAppleScriptManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleScriptManager.m; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
@@ -428,6 +426,7 @@
 		0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleScriptTask.swift; sourceTree = "<group>"; };
 		0340D3902C8EEEE3004C9910 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
+		0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleScriptTask+Browser.swift"; sourceTree = "<group>"; };
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
@@ -949,15 +948,6 @@
 			path = EasydictSwiftTests;
 			sourceTree = "<group>";
 		};
-		030570DF2ADB916E00C9905E /* AppleScript */ = {
-			isa = PBXGroup;
-			children = (
-				030570E02ADB919900C9905E /* EZAppleScriptManager.h */,
-				030570E12ADB919900C9905E /* EZAppleScriptManager.m */,
-			);
-			path = AppleScript;
-			sourceTree = "<group>";
-		};
 		03071E1B2BC03ADE0042CD38 /* TabView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1374,7 +1364,6 @@
 			isa = PBXGroup;
 			children = (
 				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
-				030570DF2ADB916E00C9905E /* AppleScript */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */,
 				03F0DB352953424F00EBF9C1 /* EZLog */,
@@ -2479,6 +2468,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */,
 				0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
@@ -2899,7 +2889,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */,
-				030570E22ADB919900C9905E /* EZAppleScriptManager.m in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
 				0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */,
@@ -3095,6 +3084,7 @@
 				03542A30293645DF00C34C33 /* EZAppleService.m in Sources */,
 				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,
+				0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */,
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,

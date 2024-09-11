@@ -12,7 +12,6 @@
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 #import "EZLocalStorage.h"
-#import "EZAppleScriptManager.h"
 #import "EZSystemUtility.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
@@ -72,7 +71,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 static EZEventMonitor *_instance = nil;
 
 + (instancetype)shared {
-    @synchronized (self) {
+    @synchronized(self) {
         if (!_instance) {
             _instance = [[super allocWithZone:NULL] init];
             [_instance setup];
@@ -84,7 +83,7 @@ static EZEventMonitor *_instance = nil;
 - (void)setup {
     _recordEvents = [NSMutableArray array];
     _commandKeyEvents = [NSMutableArray array];
-    
+
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
@@ -101,18 +100,18 @@ static EZEventMonitor *_instance = nil;
 - (EZTriggerType)frontmostAppTriggerType {
     NSArray<EZAppModel *> *defaultAppModelList = [self defaultAppModelList];
     NSArray<EZAppModel *> *userAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
-    
+
     self.frontmostApplication = [self getFrontmostApp];
     NSString *appBundleID = self.frontmostApplication.bundleIdentifier;
-    
+
     EZTriggerType defaultType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick | EZTriggerTypeDragged | EZTriggerTypeShift;
-    
+
     EZTriggerType type = [self getAppSelectTextActionType:appBundleID
                                              appModelList:defaultAppModelList
                                               defaultType:defaultType];
-    
+
     type = [self getAppSelectTextActionType:appBundleID appModelList:userAppModelList defaultType:type];
-    
+
     return type;
 }
 
@@ -132,17 +131,17 @@ static EZEventMonitor *_instance = nil;
 - (NSArray<EZAppModel *> *)defaultAppModelList {
     /**
      FIX https://github.com/tisfeng/Easydict/issues/123
-     
+
      And WeChat does not support Shift select text, so please use shortcut key to instead.
      */
     EZAppModel *wechat = [[EZAppModel alloc] init];
     wechat.appBundleID = @"com.tencent.xinWeChat";
     wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
-    
+
     NSArray *defaultAppModels = @[
         wechat,
     ];
-    
+
     return defaultAppModels;
 }
 
@@ -163,14 +162,14 @@ static EZEventMonitor *_instance = nil;
     self.type = type;
     self.mask = mask;
     self.handler = handler;
-    
+
     [self start];
 }
 
 - (void)start {
     [self stop];
     mm_weakify(self);
-    
+
     if (self.type == EZEventMonitorTypeLocal) {
         self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
@@ -197,9 +196,9 @@ static EZEventMonitor *_instance = nil;
         }
         return event;
     }];
-    
+
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown| NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         [self handleMonitorEvent:event];
@@ -208,7 +207,7 @@ static EZEventMonitor *_instance = nil;
 
 - (void)stop {
     [self stopCGEventTap];
-    
+
     if (self.localMonitor) {
         [NSEvent removeMonitor:self.localMonitor];
         self.localMonitor = nil;
@@ -225,18 +224,18 @@ static EZEventMonitor *_instance = nil;
 - (void)monitorCGEventTap {
     // Stop and release the previously created event tap
     [self stopCGEventTap];
-    
+
     // Since NSEvent cannot monitor shortcut event, like Cmd + E, we need to use CGEventTap.
     CGEventMask eventMask = CGEventMaskBit(kCGEventKeyDown);
-    
+
     /**
      !!!: CGEventTapCreate will return NULL if not root or has no accessibility permission.
-     
+
      FIX: https://github.com/tisfeng/Easydict/issues/124#issuecomment-1587696395
      */
     CFMachPortRef eventTap = CGEventTapCreate(kCGHIDEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, eventMask, eventCallback, NULL);
     self.eventTap = eventTap;
-    
+
     if (eventTap) {
         // eventTap must not be NULL, otherwise it will crash.
         CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
@@ -248,9 +247,9 @@ static EZEventMonitor *_instance = nil;
 
 CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
     if (type == kCGEventKeyDown) {
-//        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-//        MMLogInfo(@"nsEvent: %@", nsEvent);
-        
+        //        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
+        //        MMLogInfo(@"nsEvent: %@", nsEvent);
+
         // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
         [_instance delayDismissPopButton];
     }
@@ -313,12 +312,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
 
         NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-        EZAppleScriptManager *appleScriptManager = [EZAppleScriptManager shared];
 
-        // 2. Use AppleScript to get selected text from the browser.
-        if ([appleScriptManager isKnownBrowser:bundleID]) {
+        // 2. Use AppleScriptTask to get selected text from the browser.
+        if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
-            [appleScriptManager getBrowserSelectedText:bundleID completion:^(NSString *selectedText, NSError *error) {
+
+            [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
                 if (error) {
                     [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
                 } else {
@@ -357,11 +356,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)recordSelectTextInfo {
     self.endPoint = [NSEvent mouseLocation];
     self.frontmostApplication = [self getFrontmostApp];
-    
-    //    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-    //    [self getBrowserCurrentTabURL:bundleID completion:^(NSString *URLString) {
-    //        self.browserTabURLString = URLString;
-    //    }];
+
+    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+    [AppleScriptTask getCurrentTabURLFromBrowser:bundleID completionHandler:^(NSString *_Nullable URLString, NSError *_Nullable error) {
+        self.browserTabURLString = URLString;
+    }];
 }
 
 
@@ -388,7 +387,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         MMLog(@"disabled autoSelectText");
         return enabled;
     }
-    
+
     return enabled;
 }
 
@@ -406,19 +405,19 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
-        
+
     // Set volume to 0 to avoid alert.
     if (!self.isMutingAlertVolume) {
         self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
     }
     [AppleScriptUtils setAlertVolume:0];
     self.isMutingAlertVolume = YES;
-    
+
     [EZSystemUtility postCopyEvent];
-    
+
     [self cancelDelayRecoverVolume];
     [self delayRecoverVolume];
-    
+
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -429,16 +428,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             completion(nil);
             return;
         }
-        
+
         NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
         self.selectedText = selectedText;
         MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
-        
+
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         MMLogInfo(@"Key getText cost: %.1f ms", (endTime - startTime) * 1000); // cost ~110ms
-        
+
         [lastText copyToPasteboard];
-        
+
         completion(selectedText);
     });
 }
@@ -461,26 +460,26 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /**
  Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
- 
+
  But this method need allow Accessibility in setting first, no pop-up alerts.
- 
+
  Cannot work in Apps: Safari, Mail, etc.
  */
 - (void)getSelectedTextByAccessibility:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
-    
+
     AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-    
+
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
-    
+
     // !!!: This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
-//    MMLogInfo(@"selected text: %@", @(selectedTextFrame));
-    
+    //    MMLogInfo(@"selected text: %@", @(selectedTextFrame));
+
     self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
-    
+
     if (getFocusedUIElementError == kAXErrorSuccess) {
         AXValueRef selectedTextValue = NULL;
         AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
@@ -499,12 +498,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         error = getSelectedTextError;
     }
-    
+
     if (focusedElement != NULL) {
         CFRelease(focusedElement);
     }
     CFRelease(systemWideElement);
-    
+
     completion(selectedText, error);
 }
 
@@ -513,7 +512,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     AXUIElementRef focusedElement = NULL;
     AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     CFRelease(systemWideElement);
-    
+
     return focusedElement;
 }
 
@@ -523,34 +522,34 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     AXUIElementRef focusedElement = [self focusedElement];
     CGRect selectionFrame = CGRectZero;
     AXValueRef selectionRangeValue;
-    
+
     // 1. get selected text range value
     AXError selectionRangeError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectionRangeValue);
-    
+
     if (selectionRangeError == kAXErrorSuccess) {
         //  AXValueRef range --> CFRange
-//        CFRange selectionRange;
-//        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
-//        MMLogInfo(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
-        
+        //        CFRange selectionRange;
+        //        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
+        //        MMLogInfo(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
+
         // 2. get bounds from range
         AXValueRef selectionBoundsValue;
         AXError selectionBoundsError = AXUIElementCopyParameterizedAttributeValue(focusedElement, kAXBoundsForRangeParameterizedAttribute, selectionRangeValue, (CFTypeRef *)&selectionBoundsValue);
-        
+
         if (selectionBoundsError == kAXErrorSuccess) {
             // 3. AXValueRef bounds --> frame
             // ???: Sometimes, the text frame is incorrect { value = x:591 y:-16071 w:24 h:17 }
             AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionFrame);
-            
+
             CFRelease(selectionRangeValue);
             CFRelease(selectionBoundsValue);
         }
     }
-    
+
     if (focusedElement != NULL) {
         CFRelease(focusedElement);
     }
-    
+
     return selectionFrame;
 }
 
@@ -588,22 +587,22 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
-    
+
     BOOL isInEasydict = [bundleID isEqualToString:easydictBundleID];
-        
+
     /**
      When front most app is Easydict and user is recording select text shortcut key, should not use simulation key `Cmd + C`.
-     
+
      FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
      */
     if (isInEasydict && Configuration.shared.isRecordingSelectTextShortcutKey) {
         return NO;
     }
-        
+
     /**
      If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
-     
+
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora?
      */
@@ -611,31 +610,31 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         MMLogInfo(@"Unsupported Accessibility App: %@ (%@)", application.localizedName, bundleID);
         return YES;
     }
-    
+
     NSDictionary *allowedAppErrorDict = @{
         /**
          Some Apps return kAXErrorSuccess 0 but text is empty, so we need to check bundleID.
-         
+
          VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
          IDEA: Javadoc rendered view will return empty text
          */
         @(kAXErrorSuccess) : @[
-            @"com.microsoft.VSCode",      // VSCode
-            @"com.jetbrains.intellij.ce", // IDEA
+            @"com.microsoft.VSCode",              // VSCode
+            @"com.jetbrains.intellij.ce",         // IDEA
             @"com.foxitsoftware.FoxitReaderLite", // Foxit PDF Reader
         ],
-        
+
         // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4",  // Sublime Text
             @"com.microsoft.Word", // Word
-            
+
             @"com.tencent.xinWeChat",     // WeChat
             @"com.readdle.PDFExpert-Mac", // PDF Expert
             @"org.zotero.zotero",         // Zotero
             /**
              These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
-             
+
              FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
              */
             @"com.apple.iWork.Pages",   // Pages
@@ -643,15 +642,15 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.apple.iWork.Numbers", // Numbers
             @"com.apple.freeform",      // Freeform 无边记
             // Fix:  https://github.com/tisfeng/Easydict/issues/166
-            @"org.mozilla.firefox",       // Firefox
+            @"org.mozilla.firefox", // Firefox
         ],
-        
+
         // kAXErrorFailure -25200
         @(kAXErrorFailure) : @[
             @"com.apple.dt.Xcode", // Xcode, error when All messages page
         ],
     };
-    
+
     // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
     for (NSNumber *errorCode in allowedAppErrorDict.allKeys) {
         if ([errorCode integerValue] == error) {
@@ -662,15 +661,15 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             }
         }
     }
-    
+
     // Fallback, If using shortcut, to make sure we can get text, we use simulation key to get selected text.
     if (self.actionType == EZActionTypeShortcutQuery) {
         MMLogError(@"Fallback, need to add it to allowed app error list dict");
         MMLogError(@"%d, %@, %@", error, bundleID, application.localizedName);
-        
+
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -679,7 +678,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (BOOL)isSupportEmptyCopy {
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
-    
+
     NSArray *unsupportEmptyCopyApps = @[
         @"com.apple.Safari",   // Safari
         @"com.apple.mail",     // Mail
@@ -687,7 +686,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         @"com.apple.Terminal", // Terminal
         @"com.apple.finder",   // Finder
         @"com.apple.dt.Xcode", // Xcode
-        
+
         @"com.eusoft.freeeudic", // Eudic
         @"com.eusoft.eudic",
         @"eusoft.eudic.ip",
@@ -698,12 +697,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         @"xyz.chatboxapp.app",      // chatbox
         @"com.wutian.weibo",        // Maipo，微博客户端
     ];
-    
+
     if ([unsupportEmptyCopyApps containsObject:bundleID]) {
         MMLogInfo(@"unsupport emtpy copy: %@, %@", bundleID, application.localizedName);
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -712,8 +711,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 
 - (void)handleMonitorEvent:(NSEvent *)event {
-//    MMLogInfo(@"type: %ld", event.type);
-    
+    //    MMLogInfo(@"type: %ld", event.type);
+
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
             if ([self checkIfLeftMouseDragged]) {
@@ -725,8 +724,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDown: {
-//            MMLogInfo(@"mouse down");
-            
+            //            MMLogInfo(@"mouse down");
+
             // Record some mouse event except dragged event.
             [self updateRecordedEvents:event];
 
@@ -736,7 +735,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         case NSEventTypeLeftMouseDragged: {
             // Record dragged event.
             [self updateRecordedEvents:event];
-//            MMLogInfo(@"NSEventTypeLeftMouseDragged");
+            //            MMLogInfo(@"NSEventTypeLeftMouseDragged");
             break;
         }
         case NSEventTypeRightMouseDown: {
@@ -747,8 +746,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-//            MMLogInfo(@"key down: %@, modifierFlags: %ld", event.characters, event.modifierFlags);
-            
+            //            MMLogInfo(@"key down: %@, modifierFlags: %ld", event.characters, event.modifierFlags);
+
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];
             }
@@ -758,8 +757,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if (self.isPopButtonVisible) {
                 CGFloat deltaY = event.scrollingDeltaY;
                 self.movedY += deltaY;
-//                MMLogInfo(@"movedY: %.1f", self.movedY);
-                
+                //                MMLogInfo(@"movedY: %.1f", self.movedY);
+
                 CGFloat maxDeltaY = 80;
                 if (fabs(self.movedY) > maxDeltaY) {
                     [self dismissPopButton];
@@ -777,20 +776,20 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeFlagsChanged: {
-//            MMLogInfo(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
-            
+            //            MMLogInfo(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.
-//                MMLogInfo(@"Shift key is typed.");
+                //                MMLogInfo(@"Shift key is typed.");
             }
-            
-//            MMLogInfo(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
-            
+
+            //            MMLogInfo(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
+
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandKeyEvents:event];
                 if ([self checkIfDoubleCommandEvents]) {
                     [self dismissPopButton];
-                    
+
                     if (self.doubleCommandBlock) {
                         self.doubleCommandBlock();
                     }
@@ -798,10 +797,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             }
             break;
         }
-            
+
         default:
-//            MMLogInfo(@"default type: %ld", event.type);
-            
+            //            MMLogInfo(@"default type: %ld", event.type);
+
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];
             }
@@ -837,7 +836,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (self.recordEvents.count < kRecordEventCount) {
         return NO;
     }
-    
+
     for (NSEvent *event in self.recordEvents) {
         if (event.type != NSEventTypeLeftMouseDragged) {
             return NO;
@@ -848,15 +847,15 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)handleLeftMouseDownEvent:(NSEvent *)event {
     self.startPoint = NSEvent.mouseLocation;
-    
+
     if (self.leftMouseDownBlock) {
         self.leftMouseDownBlock(self.startPoint);
     }
-    
+
     [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
-    
+
     // FIXME: Since use Accessibility to get selected text in Chrome immediately by double click may fail, so we delay a little.
-    
+
     // Check if it is a double or triple click.
     if (event.clickCount == 2) {
         self.triggerType = EZTriggerTypeDoubleClick;
@@ -893,15 +892,15 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (self.commandKeyEvents.count < kCommandKeyEventCount) {
         return NO;
     }
-    
+
     NSEvent *firstEvent = self.commandKeyEvents.firstObject;
     NSEvent *lastEvent = self.commandKeyEvents.lastObject;
-    
+
     NSTimeInterval interval = lastEvent.timestamp - firstEvent.timestamp;
     if (interval < kDoublCommandInterval) {
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -922,9 +921,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (self.dismissPopButtonBlock) {
         self.dismissPopButtonBlock();
     }
-    
+
     self.isPopButtonVisible = NO;
-    
+
     [self stopCGEventTap];
 }
 
@@ -970,7 +969,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (AXUIElementRef)focusedElement2 {
     pid_t pid = [self getFrontmostApp].processIdentifier;
     AXUIElementRef focusedApp = AXUIElementCreateApplication(pid);
-    
+
     AXUIElementRef focusedElement;
     AXError focusedElementError = AXUIElementCopyAttributeValue(focusedApp, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     if (focusedElementError == kAXErrorSuccess) {
@@ -982,9 +981,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)authorize {
     MMLogInfo(@"AuthorizeButton clicked");
-    
+
     /// Open privacy prefpane
-    
+
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
 }
@@ -1001,40 +1000,40 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (selectedTextFrame.size.width == 0 && selectedTextFrame.size.height == 0) {
         return YES;
     }
-    
+
     // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
     CGFloat expandValue = 40;
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
                                                   selectedTextFrame.origin.y - expandValue,
                                                   selectedTextFrame.size.width + expandValue * 2,
                                                   selectedTextFrame.size.height + expandValue * 2);
-    
+
     // !!!: Note: sometimes selectedTextFrame is not correct, such as when select text in VSCode, selectedTextFrame is not correct.
     if (CGRectContainsPoint(expandedSelectedTextFrame, self.startPoint) &&
         CGRectContainsPoint(expandedSelectedTextFrame, self.endPoint)) {
         return YES;
     }
-    
+
     MMLogInfo(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
     MMLogInfo(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
-    
+
     return NO;
 }
 
 - (BOOL)isMouseInPopButtonExpandedFrame {
     EZPopButtonWindow *popButtonWindow = EZWindowManager.shared.popButtonWindow;
     CGRect popButtonFrame = popButtonWindow.frame;
-    
+
     // popButtonFrame center point
     CGPoint centerPoint = CGPointMake(popButtonFrame.origin.x + popButtonFrame.size.width / 2,
                                       popButtonFrame.origin.y + popButtonFrame.size.height / 2);
-    
+
     CGPoint mouseLocation = NSEvent.mouseLocation;
     BOOL insideCircle = [self isPoint:mouseLocation insideCircleWithCenter:centerPoint radius:kExpandedRadiusValue];
     if (insideCircle) {
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -1056,23 +1055,23 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             selectedTextFrame = popButtonWindow.frame;
         }
     }
-    
+
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedRadiusValue,
                                                   selectedTextFrame.origin.y - kExpandedRadiusValue,
                                                   selectedTextFrame.size.width + kExpandedRadiusValue * 2,
                                                   selectedTextFrame.size.height + kExpandedRadiusValue * 2);
-    
+
     CGPoint mouseLocation = NSEvent.mouseLocation;
     if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
         return YES;
     }
-    
+
     // Since selectedTextFrame may be zere, so we need to check start point and end point
     CGRect startEndPointFrame = [self frameFromStartPoint:self.startPoint endPoint:self.endPoint];
     if (CGRectContainsPoint(startEndPointFrame, mouseLocation)) {
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -1083,13 +1082,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (x == endPoint.x) {
         x = endPoint.x - kExpandedRadiusValue;
     }
-    
+
     CGFloat y = MIN(startPoint.y, endPoint.y);
     // if endPoint.y == startPoint.y, y = endPoint.y - expandValue
     if (y == endPoint.y) {
         y = endPoint.y - kExpandedRadiusValue;
     }
-    
+
     CGFloat width = fabs(startPoint.x - endPoint.x);
     // if endPoint.x == startPoint.x, width = expandValue * 2
     if (width == 0) {
@@ -1100,7 +1099,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (height == 0) {
         height = kExpandedRadiusValue * 2;
     }
-    
+
     CGRect frame = CGRectMake(x, y, width, height);
     return frame;
 }
