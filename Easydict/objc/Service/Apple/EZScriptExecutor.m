@@ -27,7 +27,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
      tell application "Shortcuts Events"
         run the shortcut named "Easydict-Translate-V1.2.0" with input "text=apple&from=en_US&to=zh_CN"
      end tell
-     
+
      @"tell application \"Shortcuts Events\" \n run the shortcut named \"Easydict-Translate-V1.2.0\" with input \"text=apple&from=en_US&to=zh_CN\" \n end tell"
      */
     NSString *appleScript = [self shortcutsAppleScript:shortcutName parameters:parameters];
@@ -39,7 +39,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
     NSTask *task = [[NSTask alloc] init];
     task.launchPath = @"/usr/bin/osascript";
     task.arguments = @[ @"-e", script ];
-    
+
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -47,26 +47,26 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
         task.standardOutput = outputPipe;
         NSPipe *errorPipe = [NSPipe pipe];
         task.standardError = errorPipe;
-        
+
         NSString *result = @"";
         // This method can only catch errors inside the NSTask object, and the error of executing the task needs to be used with standardError.
         EZError *error;
         if ([task launchAndReturnError:&error]) {
             NSData *data = [[outputPipe fileHandleForReading] readDataToEndOfFileAndReturnError:&error];
             // ???: This method value may be incorrect, read bool "true" from pipe.
-//            data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
+            //            data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             NSString *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             result = [output trim];
-//            MMLogInfo(@"Apple translate result: %@", result);
+            //            MMLogInfo(@"Apple translate result: %@", result);
         }
-        
+
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];
         NSString *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
-        
+
         if (error) {
             errorString = [error localizedDescription];
         }
-        
+
         //  *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '*** -[NSConcreteTask terminationStatus]: task still running'
         if (errorString.length) {
             // 34:114: execution error: “Shortcuts Events”遇到一个错误：不能获得“shortcut "123abc"”。 (-1728)
@@ -81,10 +81,10 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
                 error = [EZError errorWithType:type description:errorString];
             }
         }
-        
+
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         MMLogInfo(@"run AppleScript Task cost: %.1f ms", (endTime - startTime) * 1000);
-        
+
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(result, error);
         });
@@ -94,7 +94,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
 
 /// Use NSAppleScript to run AppleScript, faster than NSTask.
 /// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
-- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError * _Nullable error))completionHandler {
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError *_Nullable error))completionHandler {
     NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -130,7 +130,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
         } @catch (NSException *exception) {
             MMLogError(@"exception: %@", exception);
             [self runAppleScriptWithTask:script completionHandler:completionHandler];
-             
+
 #if Debug
             [EZToast showToast:exception.reason];
 #endif
@@ -141,7 +141,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
 - (NSString *)shortcutsAppleScript:(NSString *)shortcutName parameters:(NSDictionary *)parameters {
     NSString *queryString = AFQueryStringFromParameters(parameters);
     NSString *appleScript = [NSString stringWithFormat:@"tell application \"Shortcuts Events\" \n run the shortcut named \"%@\" with input \"%@\" \n end tell", shortcutName, queryString];
-    
+
     return appleScript;
 }
 

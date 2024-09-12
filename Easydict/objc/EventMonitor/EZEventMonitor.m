@@ -276,8 +276,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Use Accessibility to get selected text first, if failed, use AppleScript and Cmd+C.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
-    // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
+    MMLogInfo(@"getSelectedText in App: %@ (%@)", self.frontmostApplication.localizedName, self.frontmostApplication.bundleIdentifier);
 
     self.selectedTextEditable = NO;
 
@@ -313,12 +313,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
         NSString *bundleID = self.frontmostApplication.bundleIdentifier;
 
-        // 2. Use AppleScriptTask to get selected text from the browser.
+        // 2. Use AppleScript to get selected text from the browser.
         if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
             [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
+                        MMLogError(@"Failed to get selected text from browser: %@", error);
                         [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
                     } else {
                         completion(selectedText);
@@ -360,7 +361,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSString *bundleID = self.frontmostApplication.bundleIdentifier;
     [AppleScriptTask getCurrentTabURLFromBrowser:bundleID completionHandler:^(NSString *_Nullable URLString, NSError *_Nullable error) {
-        self.browserTabURLString = URLString;
+        if (error) {
+            MMLogError(@"Failed to get browser tabl url: %@", error);
+        } else {
+            self.browserTabURLString = URLString;
+        }
     }];
 }
 
@@ -409,9 +414,21 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     // Set volume to 0 to avoid alert.
     if (!self.isMutingAlertVolume) {
-        self.currentAlertVolume = [AppleScriptUtils getAlertVolume];
+        [AppleScriptTask getAlertVolumeWithCompletionHandler:^(int32_t volume, NSError *error) {
+            if (error) {
+                MMLogError(@"Failed to get alert volume: %@", error);
+                return;
+            }
+            self.currentAlertVolume = volume;
+
+            [AppleScriptTask setAlertVolume:0 completionHandler:^(NSError *error) {
+                if (error) {
+                    MMLogError(@"Failed to set alert volume: %@", error);
+                }
+            }];
+        }];
     }
-    [AppleScriptUtils setAlertVolume:0];
+
     self.isMutingAlertVolume = YES;
 
     [EZSystemUtility postCopyEvent];
@@ -425,7 +442,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         NSInteger newChangeCount = [pasteboard changeCount];
         // If changeCount is equal to newChangeCount, it means that the copy value is nil.
         if (changeCount == newChangeCount) {
-            MMLogInfo(@"Key getText is nil");
+            MMLogInfo(@"pasteboard changeCount does not change, means key getText is nil");
             completion(nil);
             return;
         }
@@ -454,8 +471,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)recoverVolume {
-    [AppleScriptUtils setAlertVolume:self.currentAlertVolume];
-    self.isMutingAlertVolume = NO;
+    [AppleScriptTask setAlertVolume:self.currentAlertVolume completionHandler:^(NSError *error) {
+        if (error) {
+            MMLogError(@"Failed to recover alert volume: %@", error.localizedDescription);
+        } else {
+            self.isMutingAlertVolume = NO;
+        }
+    }];
 }
 
 
@@ -580,7 +602,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
      Fix https://github.com/tisfeng/Easydict/issues/608#issuecomment-2262951479
      */
-    if (!Configuration.shared.forceAutoGetSelectedText) {
+
+    BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
+    MMLogInfo(@"enable force get selected text: %d", enableForceGetSelectedText);
+    if (!enableForceGetSelectedText) {
         return NO;
     }
 

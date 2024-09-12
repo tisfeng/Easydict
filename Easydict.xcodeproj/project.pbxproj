@@ -49,6 +49,7 @@
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
 		0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */; };
 		0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */; };
+		0340D3992C91D4B6004C9910 /* AppleScriptTask+System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3982C91D4B6004C9910 /* AppleScriptTask+System.swift */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
@@ -103,7 +104,6 @@
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
-		039459F72BE7DD6300FD70F9 /* AppleScriptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039459F62BE7DD6300FD70F9 /* AppleScriptUtils.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
@@ -427,6 +427,7 @@
 		0340D3902C8EEEE3004C9910 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
 		0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleScriptTask+Browser.swift"; sourceTree = "<group>"; };
+		0340D3982C91D4B6004C9910 /* AppleScriptTask+System.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleScriptTask+System.swift"; sourceTree = "<group>"; };
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
@@ -503,7 +504,6 @@
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
-		039459F62BE7DD6300FD70F9 /* AppleScriptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptUtils.swift; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -1129,6 +1129,16 @@
 			path = Dictionary;
 			sourceTree = "<group>";
 		};
+		0340D3972C91D4A3004C9910 /* AppleScript */ = {
+			isa = PBXGroup;
+			children = (
+				0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */,
+				0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */,
+				0340D3982C91D4B6004C9910 /* AppleScriptTask+System.swift */,
+			);
+			path = AppleScript;
+			sourceTree = "<group>";
+		};
 		03542A2D293645B800C34C33 /* Apple */ = {
 			isa = PBXGroup;
 			children = (
@@ -1408,14 +1418,6 @@
 				038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */,
 			);
 			path = AppKit;
-			sourceTree = "<group>";
-		};
-		039459F32BE7D1D100FD70F9 /* GetSelectedText */ = {
-			isa = PBXGroup;
-			children = (
-				039459F62BE7DD6300FD70F9 /* AppleScriptUtils.swift */,
-			);
-			path = GetSelectedText;
 			sourceTree = "<group>";
 		};
 		0396D612292CBDFD006A11D9 /* Storage */ = {
@@ -2340,7 +2342,6 @@
 			children = (
 				032AAA502C456D96007996A1 /* HTTPServer */,
 				03714B8E2C17FCAD00BB4459 /* Constants */,
-				039459F32BE7D1D100FD70F9 /* GetSelectedText */,
 				032A28632BB26DB600265BA4 /* Appearance */,
 				EA3B81F72B52549B004C0E8B /* Configuration */,
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
@@ -2468,11 +2469,10 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */,
-				0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 				96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */,
+				0340D3972C91D4A3004C9910 /* AppleScript */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 			);
 			path = Utility;
@@ -3062,7 +3062,6 @@
 				03BDA7BB2A26DA280079D04F /* XPMArgsKonstants.m in Sources */,
 				03BE26EB2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m in Sources */,
 				03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */,
-				039459F72BE7DD6300FD70F9 /* AppleScriptUtils.swift in Sources */,
 				0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */,
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
 				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
@@ -3097,6 +3096,7 @@
 				CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
+				0340D3992C91D4B6004C9910 /* AppleScriptTask+System.swift in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
 				9627F9392B59956800B1E999 /* KeyHolderWrapper.swift in Sources */,
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
