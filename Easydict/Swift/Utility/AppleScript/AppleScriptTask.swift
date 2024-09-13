@@ -1,6 +1,6 @@
 //
-//  test.swift
-//  iPoem
+//  AppleScriptTask.swift
+//  Easydict
 //
 //  Created by tisfeng on 2024/9/8.
 //
@@ -48,6 +48,11 @@ class AppleScriptTask: NSObject {
     @discardableResult
     static func runAppleScriptWithProcess(_ appleScript: String) async throws -> String? {
         try await AppleScriptTask(script: appleScript).runAppleScriptWithProcess()
+    }
+
+    static func runTranslateShortcut(parameters: [String: String]) async throws -> String? {
+        let appleScript = appleScript(of: Constants.easydictTranslatShortcutName, parameters: parameters)
+        return try await runAppleScript(appleScript)
     }
 
     @discardableResult

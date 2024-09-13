@@ -8,7 +8,6 @@
 
 #import "EZEventMonitor.h"
 #import "EZWindowManager.h"
-#import "EZScriptExecutor.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 #import "EZLocalStorage.h"
@@ -56,8 +55,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // When isMuting, we should not read alert volume, avoid reading this value incorrectly.
 @property (nonatomic, assign) BOOL isMutingAlertVolume;
 
-@property (nonatomic, strong) EZScriptExecutor *exeCommand;
-
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
 @property (nonatomic, assign) EZTriggerType frontmostAppTriggerType;
@@ -88,13 +85,6 @@ static EZEventMonitor *_instance = nil;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
     self.triggerType = EZTriggerTypeNone;
-}
-
-- (EZScriptExecutor *)exeCommand {
-    if (!_exeCommand) {
-        _exeCommand = [[EZScriptExecutor alloc] init];
-    }
-    return _exeCommand;
 }
 
 - (EZTriggerType)frontmostAppTriggerType {

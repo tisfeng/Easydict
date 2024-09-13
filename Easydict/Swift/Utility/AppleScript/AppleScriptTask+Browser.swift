@@ -1,5 +1,5 @@
 //
-//  AppleScriptManager.swift
+//  AppleScriptTask+Browser.swift
 //  Easydict
 //
 //  Created by tisfeng on 2024/9/11.
