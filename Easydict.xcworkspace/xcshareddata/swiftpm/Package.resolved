@@ -1,5 +1,5 @@
 {
-  "originHash" : "3588f15a7107655d055f18ab4819f4a9b5df055318a1ee6c8df5418f5b6ab025",
+  "originHash" : "a685d631f5593cb350025f6931dea2eb21f34abbf1a8c35459d913538fb0847b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -259,7 +259,7 @@
       "location" : "https://github.com/tisfeng/OpenAI",
       "state" : {
         "branch" : "dev",
-        "revision" : "97a67f5c7099996a772c3085dd1b29673a470e57"
+        "revision" : "33395d03eb4cadcdb28170710972e2c71f19916d"
       }
     },
     {
@@ -375,8 +375,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "46072478ca365fe48370993833cb22de9b41567f",
-        "version" : "3.5.2"
+        "revision" : "a53a7e8f858902659d4784322bede34f4e49097e",
+        "version" : "3.6.1"
       }
     },
     {
