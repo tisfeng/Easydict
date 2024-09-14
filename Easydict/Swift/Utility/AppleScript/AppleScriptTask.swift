@@ -62,7 +62,7 @@ class AppleScriptTask: NSObject {
             let script = NSAppleScript(source: appleScript)
             guard let output = script?.executeAndReturnError(&errorInfo) else {
                 let errorMessage = errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                throw AppleScriptError.executionError(message: errorMessage)
+                throw QueryError(type: .appleScript, message: errorMessage)
             }
             return output.stringValue
         }.value
@@ -80,7 +80,7 @@ class AppleScriptTask: NSObject {
 
                 guard let output, errorInfo == nil else {
                     let errorMessage = errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                    continuation.resume(throwing: AppleScriptError.executionError(message: errorMessage))
+                    continuation.resume(throwing: QueryError(type: .appleScript, message: errorMessage))
                     return
                 }
                 continuation.resume(returning: output)
@@ -99,7 +99,7 @@ class AppleScriptTask: NSObject {
                     let errorData = try self.errorPipe.fileHandleForReading.readToEnd()
 
                     if let error = errorData?.stringValue {
-                        continuation.resume(throwing: AppleScriptError.executionError(message: error))
+                        continuation.resume(throwing: QueryError(type: .appleScript, message: error))
 
                     } else {
                         continuation.resume(returning: outputData?.stringValue)
@@ -123,9 +123,9 @@ class AppleScriptTask: NSObject {
 
 // MARK: - AppleScriptError
 
-enum AppleScriptError: Error {
-    case executionError(message: String, code: Int = 1)
-}
+// enum AppleScriptError: Error {
+//    case executionError(message: String, code: Int = 1)
+// }
 
 func appleScript(of shortcutName: String, inputText: String) -> String {
     // inputText may contain ", we need to escape it

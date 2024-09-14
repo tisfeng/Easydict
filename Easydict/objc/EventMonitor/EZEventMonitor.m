@@ -398,6 +398,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Get selected text by simulated key: Cmd + C
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"get selected text by simulated key");
+
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
     NSString *lastText = [EZSystemUtility getLastPasteboardText];

@@ -16,7 +16,7 @@ extension AppleScriptTask {
             logInfo("AppleScript get alert volume: \(volume)")
             return volume
         }
-        throw AppleScriptError.executionError(message: "Failed to get alert volume")
+        throw QueryError(type: .appleScript, message: "Failed to get alert volume")
     }
 
     static func setAlertVolume(_ volume: Int) async throws {
