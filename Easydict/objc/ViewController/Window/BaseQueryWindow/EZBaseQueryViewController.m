@@ -1025,7 +1025,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
             context.duration = duration;
             context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-
+            
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
             //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
@@ -1148,12 +1148,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
             
             EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceTypeWithUniqueIdentifier windowType:self.windowType];
-
+            
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZLLMStreamService.class]) {
                 [((EZLLMStreamService *)service) cancelSubscribers];
             }
-
+            
             NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeWithUniqueIdentifier];
             newServices[index] = updatedService;
             self.services = newServices.copy;
@@ -1501,10 +1501,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         MMLogError(@"error row: %ld, windowType: %ld", row, self.windowType);
         return nil;
     }
-
+    
     EZQueryService *service = self.services[index];
     return service;
- }
+}
 
 - (BOOL)isTipsCell:(NSInteger)row {
     // TODO: 1 is query view, can be hidde later.
