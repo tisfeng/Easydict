@@ -213,7 +213,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self resetService:service];
             
             [services addObject:service];
-            [serviceTypeIds addObject:service.serviceTypeWithIdIfHave];
+            [serviceTypeIds addObject:service.serviceTypeWithUniqueIdentifier];
         }
         
         EZServiceType serviceType = service.serviceType;
@@ -749,7 +749,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryService *service in self.services) {
         BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.queryTextType != EZQueryTextTypeNone;
         if (!enableAutoQuery) {
-            MMLogInfo(@"service disabled: %@", service.serviceTypeWithIdIfHave);
+            MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;
         }
         
@@ -799,7 +799,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                service:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!service.enabledQuery) {
-        MMLogWarn(@"service disabled: %@", service.serviceTypeWithIdIfHave);
+        MMLogWarn(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
         return;
     }
     if (queryModel.queryText.length == 0) {
@@ -1109,9 +1109,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// !!!: Maybe return NSNotFound
 - (NSUInteger)rowIndexOfResult:(EZQueryResult *)result {
-    NSString *serviceTypeWithIdIfHave = result.serviceTypeWithIdIfHave;
+    NSString *serviceTypeWithUniqueIdentifier = result.serviceTypeWithUniqueIdentifier;
     // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
-    NSInteger row = [self.serviceTypeIds indexOfObject:serviceTypeWithIdIfHave];
+    NSInteger row = [self.serviceTypeIds indexOfObject:serviceTypeWithUniqueIdentifier];
     return row;
 }
 
@@ -1138,23 +1138,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     service.windowType = self.windowType;
 }
 
-- (void)updateService:(NSString *)serviceTypeWithIdIfHave autoQuery:(BOOL)autoQuery {
+- (void)updateService:(NSString *)serviceTypeWithUniqueIdentifier autoQuery:(BOOL)autoQuery {
     NSMutableArray *newServices = [self.services mutableCopy];
     for (EZQueryService *service in self.services) {
-        if ([service.serviceTypeWithIdIfHave isEqualToString:serviceTypeWithIdIfHave]) {
+        if ([service.serviceTypeWithUniqueIdentifier isEqualToString:serviceTypeWithUniqueIdentifier]) {
             if (!autoQuery) {
                 [self updateCellWithResult:service.result reloadData:YES completionHandler:nil];
                 return;
             }
             
-            EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceTypeWithIdIfHave windowType:self.windowType];
+            EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceTypeWithUniqueIdentifier windowType:self.windowType];
 
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZLLMStreamService.class]) {
                 [((EZLLMStreamService *)service) cancelSubscribers];
             }
 
-            NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeWithIdIfHave];
+            NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeWithUniqueIdentifier];
             newServices[index] = updatedService;
             self.services = newServices.copy;
             
@@ -1196,7 +1196,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceTypeWithIdIfHave];
+    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceTypeWithUniqueIdentifier];
     if (index != NSNotFound) {
         NSInteger row = index + [self resultCellOffset];
         EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];

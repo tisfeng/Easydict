@@ -139,7 +139,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             [self addSubview:resultLabel];
             
             // OpenAI result text has its own paragraph style.
-            if ([result.serviceTypeWithIdIfHave isEqualToString:EZServiceTypeOpenAI]) {
+            if ([result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeOpenAI]) {
                 resultLabel.paragraphSpacing = 0;
             }
             
@@ -770,7 +770,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         // For some special case, copied text language is not the queryTargetLanguage, like 龘, Youdao translate.
         EZLanguage language = [EZAppleService.shared detectText:text];
-        if ([result.serviceTypeWithIdIfHave isEqualToString:EZServiceTypeOpenAI]) {
+        if ([result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }
         
@@ -831,7 +831,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     linkButton.image = linkImage;
     
     NSString *toolTip = NSLocalizedString(@"open_web_link", nil);
-    if (result.serviceTypeWithIdIfHave == EZServiceTypeAppleDictionary) {
+    if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
         toolTip = NSLocalizedString(@"open_in_apple_dictionary", nil);
     }
     linkButton.toolTip = toolTip;
@@ -872,7 +872,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }];
     
     // webView height need time to calculate, and the value will be called back later.
-    if (result.serviceTypeWithIdIfHave == EZServiceTypeAppleDictionary) {
+    if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
         BOOL hasHTML = result.HTMLString.length > 0;
         linkButton.enabled = hasHTML;
         

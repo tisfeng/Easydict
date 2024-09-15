@@ -173,7 +173,7 @@
     
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-        [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithIdIfHave];
+        [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithUniqueIdentifier];
         self.result.isStreamFinished = YES;
         button.hidden = YES;
     }];

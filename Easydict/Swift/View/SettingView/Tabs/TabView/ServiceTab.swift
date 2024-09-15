@@ -28,7 +28,7 @@ struct ServiceTab: View {
                 .padding(.bottom)
                 .padding(.horizontal)
                 .frame(minWidth: 260)
-                .onReceive(serviceHasUpdatedPub) { _ in
+                .onReceive(serviceHasUpdatedNotification) { _ in
                     viewModel.updateServices()
                 }
             }
@@ -66,7 +66,7 @@ struct ServiceTab: View {
 
     // MARK: Private
 
-    private let serviceHasUpdatedPub = NotificationCenter.default
+    private let serviceHasUpdatedNotification = NotificationCenter.default
         .publisher(for: .serviceHasUpdated)
 
     @StateObject private var viewModel: ServiceTabViewModel = .init()
@@ -101,7 +101,7 @@ private class ServiceTabViewModel: ObservableObject {
         services = EZLocalStorage.shared().allServices(windowType)
 
         let isSelectedExist = services
-            .contains { $0.serviceTypeWithIdIfHave() == selectedService?.serviceTypeWithIdIfHave() }
+            .contains { $0.serviceTypeWithUniqueIdentifier() == selectedService?.serviceTypeWithUniqueIdentifier() }
         if !isSelectedExist {
             selectedService = nil
         }
@@ -111,7 +111,7 @@ private class ServiceTabViewModel: ObservableObject {
         var services = services
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
-        let serviceTypes = services.map { $0.serviceTypeWithIdIfHave() }
+        let serviceTypes = services.map { $0.serviceTypeWithUniqueIdentifier() }
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
@@ -142,7 +142,7 @@ private struct ServiceItems: View {
 
     private var servicesWithID: [(QueryService, String)] {
         viewModel.services.map { service in
-            (service, service.serviceTypeWithIdIfHave())
+            (service, service.serviceTypeWithUniqueIdentifier())
         }
     }
 }

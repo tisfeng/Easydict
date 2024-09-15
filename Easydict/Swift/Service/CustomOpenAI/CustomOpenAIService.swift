@@ -24,7 +24,7 @@ class CustomOpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
-    override func serviceTypeWithIdIfHave() -> String {
+    override func serviceTypeWithUniqueIdentifier() -> String {
         guard !uuid.isEmpty else {
             return ServiceType.customOpenAI.rawValue
         }

@@ -75,11 +75,11 @@ NS_SWIFT_NAME(QueryService)
 
 @interface EZQueryService ()
 
-/// 服务类型
+/// 服务类型，例如 Google
 - (EZServiceType)serviceType;
 
-/// 服务类型
-- (NSString *)serviceTypeWithIdIfHave;
+/// 唯一服务类型，默认为 serviceType。如果该服务支持复制，则后面添加 `#+UUID`，例如 Google#E621E1F8-C36C-495A-93FC-0C247A3E6E5F
+- (NSString *)serviceTypeWithUniqueIdentifier;
 
 /// 服务名字
 - (NSString *)name;

@@ -89,7 +89,7 @@ userInfo:nil]
     _result = translateResult;
 
     _result.service = self;
-    _result.serviceTypeWithIdIfHave = self.serviceTypeWithIdIfHave;
+    _result.serviceTypeWithUniqueIdentifier = self.serviceTypeWithUniqueIdentifier;
     _result.queryModel = self.queryModel;
 }
 
@@ -257,7 +257,7 @@ userInfo:nil]
     return nil;
 }
 
-- (NSString *)serviceTypeWithIdIfHave {
+- (NSString *)serviceTypeWithUniqueIdentifier {
     return [self serviceType];
 }
 

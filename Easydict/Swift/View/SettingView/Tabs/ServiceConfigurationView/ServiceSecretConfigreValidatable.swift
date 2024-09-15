@@ -70,7 +70,7 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
     func remove() {
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
             let allServiceTypes = EZLocalStorage.shared().allServiceTypes(winType)
-                .filter { $0 != serviceTypeWithIdIfHave() }
+                .filter { $0 != serviceTypeWithUniqueIdentifier() }
             EZLocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }

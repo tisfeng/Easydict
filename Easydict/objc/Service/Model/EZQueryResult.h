@@ -101,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
-@property (nonatomic, copy) NSString *serviceTypeWithIdIfHave;
+@property (nonatomic, copy) NSString *serviceTypeWithUniqueIdentifier;
 @property (nonatomic, weak) EZQueryService *service;
 
 @property (assign) BOOL isShowing;
