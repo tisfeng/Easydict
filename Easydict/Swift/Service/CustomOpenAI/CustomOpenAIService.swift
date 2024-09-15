@@ -24,6 +24,21 @@ class CustomOpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
+    override func serviceTypeWithUniqueIdentifier() -> String {
+        guard !uuid.isEmpty else {
+            return ServiceType.customOpenAI.rawValue
+        }
+        return "\(ServiceType.customOpenAI.rawValue)#\(uuid)"
+    }
+
+    override func isDuplicatable() -> Bool {
+        true
+    }
+
+    override func isRemovable(_ type: EZWindowType) -> Bool {
+        !uuid.isEmpty
+    }
+
     override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,

@@ -21,22 +21,6 @@ class GlobalContext: NSObject {
             updaterDelegate: updaterHelper,
             userDriverDelegate: userDriverHelper
         )
-
-        for service in services {
-            if let llmService = service as? LLMStreamService {
-                llmService.setupSubscribers()
-            }
-        }
-    }
-
-    // MARK: Public
-
-    /// Retrieves the service of the specified type.
-    ///
-    /// - Parameter type: The type of service to retrieve.
-    /// - Returns: The service of the specified type.
-    public func getService(ofType type: ServiceType) -> QueryService? {
-        services.first(where: { $0.serviceType().rawValue.caseInsensitiveCompare(type.rawValue) == .orderedSame })
     }
 
     // MARK: Internal
@@ -61,6 +45,22 @@ class GlobalContext: NSObject {
 
     let updaterController: SPUStandardUpdaterController
 
+    // refresh subscribed services after duplicate service
+    func reloadLLMServicesSubscribers() {
+        for service in services {
+            if let llmService = service as? LLMStreamService {
+                llmService.cancelSubscribers()
+            }
+        }
+        let allServiceTypes = EZLocalStorage.shared().allServiceTypes(EZWindowType.main)
+        services = ServiceTypes.shared().services(fromTypes: allServiceTypes)
+        for service in services {
+            if let llmService = service as? LLMStreamService {
+                llmService.setupSubscribers()
+            }
+        }
+    }
+
     // MARK: Private
 
     private let updaterHelper: SPUUpdaterHelper
@@ -75,5 +75,5 @@ class GlobalContext: NSObject {
 
      For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
      */
-    private let services = EZLocalStorage.shared().allServices(.none)
+    private var services: [QueryService] = []
 }

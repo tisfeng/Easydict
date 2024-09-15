@@ -76,7 +76,7 @@ extension LLMStreamService {
         logInfo("service config changed: \(serviceType().rawValue), windowType: \(windowType.rawValue)")
 
         NotificationCenter.default.postServiceUpdateNotification(
-            serviceType: serviceType(),
+            serviceType: serviceTypeWithUniqueIdentifier(),
             windowType: windowType,
             autoQuery: autoQuery
         )
@@ -87,10 +87,10 @@ extension LLMStreamService {
     }
 
     func stringDefaultsKey(_ key: StoredKey, defaultValue: String) -> Defaults.Key<String> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
+        defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
     }
 
     func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {
-        defaultsKey(key, serviceType: serviceType(), defaultValue: defaultValue)
+        defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
     }
 }

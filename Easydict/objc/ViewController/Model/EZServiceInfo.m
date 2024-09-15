@@ -16,7 +16,7 @@
     serviceInfo.enabled = service.enabled;
     serviceInfo.enabledQuery = service.enabledQuery;
     serviceInfo.windowType = service.windowType;
-
+    serviceInfo.uuid = service.uuid;
     return serviceInfo;
 }
 
