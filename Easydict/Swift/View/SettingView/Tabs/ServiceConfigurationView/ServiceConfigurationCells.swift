@@ -159,9 +159,9 @@ class ToggleViewModel: ObservableObject {
     }
 }
 
-// MARK: - ServiceConfigurationToggleCell
+// MARK: - StringToggleCell
 
-struct ServiceConfigurationToggleCell: View {
+struct StringToggleCell: View {
     // MARK: Lifecycle
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {
@@ -173,11 +173,37 @@ struct ServiceConfigurationToggleCell: View {
 
     let titleKey: LocalizedStringKey
 
-    // Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
-    @ObservedObject var viewModel: ToggleViewModel
-
     var body: some View {
         Toggle(titleKey, isOn: $viewModel.isOn)
             .padding(10.0)
     }
+
+    // MARK: Private
+
+    // Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
+    @ObservedObject private var viewModel: ToggleViewModel
+}
+
+// MARK: - BoolToggleCell
+
+struct BoolToggleCell: View {
+    // MARK: Lifecycle
+
+    init(titleKey: LocalizedStringKey, key: Defaults.Key<Bool>) {
+        self.titleKey = titleKey
+        self._value = .init(key)
+    }
+
+    // MARK: Internal
+
+    let titleKey: LocalizedStringKey
+
+    var body: some View {
+        Toggle(titleKey, isOn: $value)
+            .padding(10.0)
+    }
+
+    // MARK: Private
+
+    @Default private var value: Bool
 }

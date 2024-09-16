@@ -23,6 +23,7 @@ struct StreamConfigurationView: View {
         showEndpointSection: Bool = true,
         showSupportedModelsSection: Bool = true,
         showUsedModelSection: Bool = true,
+        showCustomPromptSection: Bool = false,
         showTranslationToggle: Bool = true,
         showSentenceToggle: Bool = true,
         showDictionaryToggle: Bool = true,
@@ -35,6 +36,7 @@ struct StreamConfigurationView: View {
         self.showEndpointSection = showEndpointSection
         self.showSupportedModelsSection = showSupportedModelsSection
         self.showUsedModelSection = showUsedModelSection
+        self.showCustomPromptSection = showCustomPromptSection
         self.showTranslationToggle = showTranslationToggle
         self.showSentenceToggle = showSentenceToggle
         self.showDictionaryToggle = showDictionaryToggle
@@ -57,6 +59,7 @@ struct StreamConfigurationView: View {
     let showEndpointSection: Bool
     let showSupportedModelsSection: Bool
     let showUsedModelSection: Bool
+    let showCustomPromptSection: Bool
     let showTranslationToggle: Bool
     let showSentenceToggle: Bool
     let showDictionaryToggle: Bool
@@ -111,20 +114,33 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if showCustomPromptSection {
+                BoolToggleCell(
+                    titleKey: "service.configuration.openai.enable_custom_prompt.title",
+                    key: service.enableCustomPromptKey
+                )
+
+                TextEditorCell(
+                    titleKey: "service.configuration.openai.custom_prompt.title",
+                    storedValueKey: service.customPromptKey,
+                    placeholder: "service.configuration.openai.custom_prompt.placeholder"
+                )
+            }
+
             if showTranslationToggle {
-                ServiceConfigurationToggleCell(
+                StringToggleCell(
                     titleKey: "service.configuration.openai.translation.title",
                     key: service.translationKey
                 )
             }
             if showSentenceToggle {
-                ServiceConfigurationToggleCell(
+                StringToggleCell(
                     titleKey: "service.configuration.openai.sentence.title",
                     key: service.sentenceKey
                 )
             }
             if showDictionaryToggle {
-                ServiceConfigurationToggleCell(
+                StringToggleCell(
                     titleKey: "service.configuration.openai.dictionary.title",
                     key: service.dictionaryKey
                 )

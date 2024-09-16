@@ -90,6 +90,10 @@ extension LLMStreamService {
         defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
     }
 
+    func boolDefaultsKey(_ key: StoredKey, defaultValue: Bool) -> Defaults.Key<Bool> {
+        defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
+    }
+
     func serviceDefaultsKey<T>(_ key: StoredKey, defaultValue: T) -> Defaults.Key<T> {
         defaultsKey(key, serviceType: serviceType(), id: uuid, defaultValue: defaultValue)
     }
