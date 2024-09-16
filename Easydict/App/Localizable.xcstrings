@@ -4550,7 +4550,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Easydict používa AppCenter a Firebase na zbieranie záznamov o pádoch (pre opravy chýb) a anonymných analytických údajov. Tieto údaje však nie sú spájané s tvojou identitou, slúžia iba na vylepšenie aplikácie a nikdy nebudú zdieľané s tretími stranami.  Easydict je open source softvér. V prípade záujmu si môžeš skontrolovať kód."
+            "value" : "Easydict používa AppCenter a Firebase na zbieranie záznamov o pádoch (pre opravy chýb) a anonymných analytických údajov. Tieto údaje však nie sú spájané s tvojou identitou, slúžia iba na vylepšenie aplikácie a nikdy nebudú zdieľané s tretími stranami.\n\nEasydict je open source softvér. V prípade záujmu si môžeš skontrolovať kód."
           }
         },
         "zh-Hans" : {
@@ -6236,6 +6236,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "驗證"
+          }
+        }
+      }
+    },
+    "service.configuration.duplicate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplikovať"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製"
+          }
+        }
+      }
+    },
+    "service.configuration.remove" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除"
           }
         }
       }
