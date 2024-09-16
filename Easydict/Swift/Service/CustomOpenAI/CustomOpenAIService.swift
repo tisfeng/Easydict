@@ -46,4 +46,51 @@ class CustomOpenAIService: BaseOpenAIService {
             showCustomPromptSection: true
         )
     }
+
+    override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+        if enableCustomPrompt {
+            let prompt = replaceCustomPromptWithVariable(customPrompt)
+            return [
+                chatMessage(role: .user, content: prompt),
+            ]
+        }
+        return super.chatMessageDicts(chatQuery)
+    }
+
+    /**
+     Convert custom prompt $xxx to variable.
+
+     e.g.
+     prompt: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}
+     runtime prompt: Translate the following English text into Simplified-Chinese: Hello, world
+
+     ${{queryFromLanguage}} --> queryModel.queryFromLanguage.rawValue
+     ${{queryTargetLanguage}} --> queryModel.queryTargetLanguage.rawValue
+     ${{queryText}} --> queryModel.queryText
+     ${{firstLanguage}} --> Configuration.shared.firstLanguage.rawValue
+     */
+    func replaceCustomPromptWithVariable(_ prompt: String) -> String {
+        var runtimePrompt = prompt
+        if runtimePrompt.isEmpty {
+            return queryModel.queryText
+        }
+
+        runtimePrompt = runtimePrompt.replacingOccurrences(
+            of: "${{queryFromLanguage}}",
+            with: queryModel.queryFromLanguage.rawValue
+        )
+        runtimePrompt = runtimePrompt.replacingOccurrences(
+            of: "${{queryTargetLanguage}}",
+            with: queryModel.queryTargetLanguage.rawValue
+        )
+        runtimePrompt = runtimePrompt.replacingOccurrences(
+            of: "${{queryText}}",
+            with: queryModel.queryText
+        )
+        runtimePrompt = runtimePrompt.replacingOccurrences(
+            of: "${{firstLanguage}}",
+            with: Configuration.shared.firstLanguage.rawValue
+        )
+        return runtimePrompt
+    }
 }

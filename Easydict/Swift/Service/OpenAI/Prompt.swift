@@ -749,14 +749,14 @@ extension LLMStreamService {
         }
     }
 
-    private func chatMessage(role: ChatRole, content: String) -> [String: String] {
+    func chatMessage(role: ChatRole, content: String) -> [String: String] {
         [
             "role": role.rawValue,
             "content": content,
         ]
     }
 
-    private func chatMessagePair(userContent: String, assistantContent: String) -> [[String: String]] {
+    func chatMessagePair(userContent: String, assistantContent: String) -> [[String: String]] {
         [
             chatMessage(role: .user, content: userContent),
             chatMessage(role: .assistant, content: assistantContent),
