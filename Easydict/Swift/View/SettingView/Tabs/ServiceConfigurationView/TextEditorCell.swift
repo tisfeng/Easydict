@@ -17,10 +17,12 @@ struct TextEditorCell: View {
     init(
         titleKey: LocalizedStringKey,
         storedValueKey: Defaults.Key<String>,
-        placeholder: LocalizedStringKey
+        placeholder: LocalizedStringKey? = nil,
+        detailText: LocalizedStringKey? = nil
     ) {
         self.titleKey = titleKey
         self.placeholder = placeholder
+        self.detailText = detailText
         _value = .init(storedValueKey)
     }
 
@@ -28,26 +30,38 @@ struct TextEditorCell: View {
 
     let titleKey: LocalizedStringKey
     @Default var value: String
-    let placeholder: LocalizedStringKey
+    let placeholder: LocalizedStringKey?
+    let detailText: LocalizedStringKey?
 
     var body: some View {
-        HStack(alignment: .center, spacing: 20) {
-            Text(titleKey)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 20) {
+                Text(titleKey)
 
-            TrailingTextEditorWithPlaceholder(text: $value, placeholder: placeholder)
-                .padding(.horizontal, 3)
-                .padding(.top, 5)
-                .padding(.bottom, 7)
-                .font(.body)
-                .lineSpacing(5)
-                .scrollContentBackground(.hidden) // Refer https://stackoverflow.com/a/62848618/8378840
-                .scrollIndicators(.hidden)
-                .background(Color.clear)
-                .clipShape(corner)
-                .overlay(alignment: .center, content: {
-                    corner.stroke(Color(NSColor.separatorColor), lineWidth: 1)
-                })
-                .frame(minHeight: 55, maxHeight: 200) // min height is two lines, for English placeholder.
+                TrailingTextEditorWithPlaceholder(text: $value, placeholder: placeholder)
+                    .padding(.horizontal, 3)
+                    .padding(.top, 5)
+                    .padding(.bottom, 7)
+                    .font(.body)
+                    .lineSpacing(5)
+                    .scrollContentBackground(.hidden) // Refer https://stackoverflow.com/a/62848618/8378840
+                    .scrollIndicators(.hidden)
+                    .background(Color.clear)
+                    .clipShape(corner)
+                    .overlay(alignment: .center, content: {
+                        corner.stroke(Color(NSColor.separatorColor), lineWidth: 1)
+                    })
+                    .frame(minHeight: 55, maxHeight: 200) // min height is two lines, for English placeholder.
+            }
+
+            if let detailText = detailText {
+                Text(detailText)
+                    .font(.footnote)
+                    .foregroundStyle(.gray)
+                    .textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineSpacing(3)
+            }
         }
         .padding(10)
     }

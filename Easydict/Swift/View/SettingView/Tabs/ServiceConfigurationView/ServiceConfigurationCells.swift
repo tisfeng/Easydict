@@ -161,6 +161,8 @@ class ToggleViewModel: ObservableObject {
 
 // MARK: - StringToggleCell
 
+/// Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
+/// For new feature, we should use ToggleCell instead of StringToggleCell.
 struct StringToggleCell: View {
     // MARK: Lifecycle
 
@@ -180,27 +182,36 @@ struct StringToggleCell: View {
 
     // MARK: Private
 
-    // Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
     @ObservedObject private var viewModel: ToggleViewModel
 }
 
-// MARK: - BoolToggleCell
+// MARK: - ToggleCell
 
-struct BoolToggleCell: View {
+struct ToggleCell: View {
     // MARK: Lifecycle
 
-    init(titleKey: LocalizedStringKey, key: Defaults.Key<Bool>) {
+    init(titleKey: LocalizedStringKey, key: Defaults.Key<Bool>, detailText: LocalizedStringKey? = nil) {
         self.titleKey = titleKey
+        self.detailText = detailText
         self._value = .init(key)
     }
 
     // MARK: Internal
 
     let titleKey: LocalizedStringKey
+    let detailText: LocalizedStringKey?
 
     var body: some View {
-        Toggle(titleKey, isOn: $value)
-            .padding(10.0)
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle(titleKey, isOn: $value)
+
+            if let detailText {
+                Text(detailText)
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding(10.0)
     }
 
     // MARK: Private

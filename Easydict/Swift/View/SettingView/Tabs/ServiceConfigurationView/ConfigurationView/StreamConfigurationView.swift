@@ -115,15 +115,17 @@ struct StreamConfigurationView: View {
             }
 
             if showCustomPromptSection {
-                BoolToggleCell(
+                ToggleCell(
                     titleKey: "service.configuration.openai.enable_custom_prompt.title",
-                    key: service.enableCustomPromptKey
+                    key: service.enableCustomPromptKey,
+                    detailText: "service.configuration.openai.enable_custom_prompt.detail"
                 )
 
                 TextEditorCell(
                     titleKey: "service.configuration.openai.custom_prompt.title",
                     storedValueKey: service.customPromptKey,
-                    placeholder: "service.configuration.openai.custom_prompt.placeholder"
+                    placeholder: "service.configuration.openai.custom_prompt.placeholder",
+                    detailText: "service.configuration.openai.custom_prompt.detail"
                 )
             }
 
