@@ -62,11 +62,14 @@ extension Locale {
 
         if let languageCode, let type = LanguageState.LanguageType(rawValue: languageCode) {
             return type
-        } else if let type = LanguageState.LanguageType(rawValue: languageCodeScriptRegion) {
+        }
+        if let type = LanguageState.LanguageType(rawValue: languageCodeScriptRegion) {
             return type
-        } else if let type = LanguageState.LanguageType(rawValue: languageCodeScript) {
+        }
+        if let type = LanguageState.LanguageType(rawValue: languageCodeScript) {
             return type
-        } else if let type = LanguageState.LanguageType(rawValue: languageCodeRegion) {
+        }
+        if let type = LanguageState.LanguageType(rawValue: languageCodeRegion) {
             return type
         }
 
