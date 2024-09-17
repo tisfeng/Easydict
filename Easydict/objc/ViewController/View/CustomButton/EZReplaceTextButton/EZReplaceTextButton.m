@@ -8,7 +8,6 @@
 #import "EZReplaceTextButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "EZAppleScriptManager.h"
 #import "EZSystemUtility.h"
 #import "EZLog.h"
 

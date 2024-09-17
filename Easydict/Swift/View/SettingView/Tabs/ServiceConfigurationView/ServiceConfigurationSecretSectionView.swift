@@ -41,20 +41,38 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     }
 
     var footer: some View {
-        Button {
-            validate()
-        } label: {
-            Group {
-                if viewModel.isValidating {
-                    ProgressView()
-                        .controlSize(.small)
-                        .progressViewStyle(.circular)
-                } else {
-                    Text("service.configuration.validate")
+        HStack {
+            if service.isDuplicatable() {
+                Button {
+                    service.duplicate()
+                } label: {
+                    Text("service.configuration.duplicate")
+                }
+
+                if service.isRemovable(service.windowType) {
+                    Button("service.configuration.remove", role: .destructive) {
+                        service.remove()
+                    }
+                }
+
+                Spacer()
+            }
+
+            Button {
+                validate()
+            } label: {
+                Group {
+                    if viewModel.isValidating {
+                        ProgressView()
+                            .controlSize(.small)
+                            .progressViewStyle(.circular)
+                    } else {
+                        Text("service.configuration.validate")
+                    }
                 }
             }
+            .disabled(viewModel.isValidateBtnDisabled)
         }
-        .disabled(viewModel.isValidateBtnDisabled)
     }
 
     var body: some View {

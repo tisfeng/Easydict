@@ -44,7 +44,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
 
     @DefaultsWrapper(.autoSelectText) var autoSelectText: Bool
-    @DefaultsWrapper(.enableForceGetSelectedText) var forceAutoGetSelectedText: Bool
+    @DefaultsWrapper(.enableForceGetSelectedText) var enableForceGetSelectedText: Bool
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
     @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
 
@@ -382,7 +382,7 @@ extension Configuration {
     }
 
     fileprivate func didSetForceAutoGetSelectedText() {
-        logSettings(["force_get_selected_text": forceAutoGetSelectedText])
+        logSettings(["force_get_selected_text": enableForceGetSelectedText])
     }
 
     fileprivate func didSetClickQuery() {
