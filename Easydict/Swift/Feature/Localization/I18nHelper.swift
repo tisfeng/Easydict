@@ -25,17 +25,13 @@ class I18nHelper: NSObject {
     }
 
     var localizeCode: String {
-        if let code = UserDefaults.standard.string(forKey: languagePreferenceLocalKey) {
+        if let code = UserDefaults.standard.string(forKey: languagePreferenceLocalKey),
+           LanguageState.LanguageType(rawValue: code) != nil {
             return code
         }
 
-        if let localLanguageType = LanguageState.LanguageType(rawValue: Locale.current.identifier) {
+        if let localLanguageType = Locale.current.languageType {
             return localLanguageType.rawValue
-        }
-
-        // We should use EZLanguageModel localeIdentifier to rewrite this code.
-        if Locale.current.identifier == "zh_CN" {
-            return LanguageState.LanguageType.simplifiedChinese.rawValue
         }
 
         return LanguageState.LanguageType.english.rawValue
