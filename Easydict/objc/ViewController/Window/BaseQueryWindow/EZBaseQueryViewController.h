@@ -70,8 +70,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// show tips view
 - (void)showTipsView:(BOOL)isVisible;
 
-- (void)replacingNewlinesWithWhitespace;
-
 @end
 
 NS_ASSUME_NONNULL_END

@@ -361,9 +361,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // !!!: Rewrite property copy setter. Avoid text being affected.
     _inputText = [inputText copy];
     
-    BOOL isReplaceNewlineWithSpace = Configuration.shared.replaceNewlineWithSpace;
-    
-    self.queryModel.inputText = isReplaceNewlineWithSpace ? [_inputText replacingNewlinesWithWhitespace] : _inputText;
+    self.queryModel.inputText = _inputText;
     
     
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
@@ -701,15 +699,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             break;
         }
         case EZTitlebarQuickActionReplaceNewlineWithSpace: {
-            [self replacingNewlinesWithWhitespace];
+            self.inputText = [self.inputText replacingNewlinesWithWhitespace];
         }
         default:
             break;
     }
-}
-
-- (void)replacingNewlinesWithWhitespace {
-    self.inputText = [self.inputText replacingNewlinesWithWhitespace];
 }
 
 #pragma mark - Query Methods
