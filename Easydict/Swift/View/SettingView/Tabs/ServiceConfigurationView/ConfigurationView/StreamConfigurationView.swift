@@ -103,6 +103,7 @@ struct StreamConfigurationView: View {
                     titleKey: "service.configuration.custom_openai.supported_models.title",
                     storedValueKey: service.supportedModelsKey,
                     placeholder: "service.configuration.custom_openai.model.placeholder",
+                    alignment: .trailing,
                     minHeight: 55,
                     maxHeight: 100
                 ).disabled(!isEditable)

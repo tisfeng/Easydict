@@ -18,6 +18,7 @@ struct TextEditorCell: View {
         titleKey: LocalizedStringKey,
         storedValueKey: Defaults.Key<String>,
         placeholder: LocalizedStringKey? = nil,
+        alignment: TextAlignment = .leading,
         footnote: LocalizedStringKey? = nil,
         minHeight: CGFloat? = nil,
         maxHeight: CGFloat? = nil,
@@ -25,6 +26,7 @@ struct TextEditorCell: View {
     ) {
         self.titleKey = titleKey
         self.placeholder = placeholder
+        self.alignment = alignment
         self.footnote = footnote
         self.minHeight = minHeight
         self.maxHeight = maxHeight
@@ -37,6 +39,7 @@ struct TextEditorCell: View {
     let titleKey: LocalizedStringKey
     @Default var value: String
     let placeholder: LocalizedStringKey?
+    var alignment: TextAlignment
     let footnote: LocalizedStringKey?
     let minHeight: CGFloat?
     let maxHeight: CGFloat?
@@ -47,7 +50,7 @@ struct TextEditorCell: View {
             HStack(alignment: .center, spacing: 20) {
                 Text(titleKey)
 
-                TrailingTextEditorWithPlaceholder(text: $value, placeholder: placeholder)
+                TextEditorWithPlaceholder(text: $value, placeholder: placeholder, alignment: alignment)
                     .padding(.horizontal, 3)
                     .padding(.top, 5)
                     .padding(.bottom, 7)
@@ -81,32 +84,58 @@ struct TextEditorCell: View {
     private let corner = RoundedRectangle(cornerRadius: 5)
 }
 
-// MARK: - TrailingTextEditorWithPlaceholder
+// MARK: - TextEditorWithPlaceholder
 
-struct TrailingTextEditorWithPlaceholder: View {
+struct TextEditorWithPlaceholder: View {
+    // MARK: Lifecycle
+
+    init(
+        text: Binding<String>,
+        placeholder: LocalizedStringKey? = nil,
+        alignment: TextAlignment = .leading
+    ) {
+        self._text = text
+        self.placeholder = placeholder
+        self.alignment = alignment
+        self._placeholderAlignment = State(initialValue: alignment == .leading ? .topLeading : .topTrailing)
+        self._textAlignment = State(initialValue: alignment == .leading ? .leading : .trailing)
+    }
+
+    // MARK: Internal
+
     @Binding var text: String
-    let placeholder: LocalizedStringKey?
-    @State var oneLineAlignment: Alignment = .topTrailing
+    var placeholder: LocalizedStringKey?
+    var alignment: TextAlignment
+
+    var font: Font = .body
+    var lineSpacing: CGFloat = 3
 
     var body: some View {
-        ZStack(alignment: oneLineAlignment) {
-            if let placeholder = placeholder, text.isEmpty {
+        ZStack(alignment: placeholderAlignment) {
+            if let placeholder, text.isEmpty {
                 Text(placeholder)
-                    .font(.body)
+                    .font(font)
+                    .lineSpacing(lineSpacing)
                     .foregroundStyle(Color(NSColor.placeholderTextColor))
                     .padding(.horizontal, 5)
                     .background(GeometryReader { geometry in
                         Color.clear.onAppear {
                             // 22 is one line height, if placeholder is more than one line, always set alignment to .leading
                             if geometry.size.height > 22 {
-                                oneLineAlignment = .topLeading
+                                placeholderAlignment = .topLeading
                             }
                         }
                     })
             }
-
             TextEditor(text: $text)
-                .multilineTextAlignment(.trailing)
+                .font(font)
+                .lineSpacing(lineSpacing)
+                .multilineTextAlignment(textAlignment)
         }
     }
+
+    // MARK: Private
+
+    @State private var placeholderAlignment: Alignment = .topLeading
+    @State private var textAlignment: TextAlignment = .leading
 }
