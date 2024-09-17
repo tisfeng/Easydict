@@ -9,7 +9,6 @@
 #import "EZAppleService.h"
 #import <Vision/Vision.h>
 #import <AVFoundation/AVFoundation.h>
-#import "EZScriptExecutor.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZChineseText.h"
 #import <CoreImage/CoreImage.h>
@@ -94,8 +93,6 @@ static char kJoinedStringKey;
 
 @interface EZAppleService ()
 
-@property (nonatomic, strong) EZScriptExecutor *exeCommand;
-
 @property (nonatomic, strong) NSDictionary *appleLangEnumFromStringDict;
 
 @property (nonatomic, copy) EZLanguage language;
@@ -155,13 +152,6 @@ static EZAppleService *_instance;
         self.appleDictionary = [[EZAppleDictionary alloc] init];
     }
     return self;
-}
-
-- (EZScriptExecutor *)exeCommand {
-    if (!_exeCommand) {
-        _exeCommand = [[EZScriptExecutor alloc] init];
-    }
-    return _exeCommand;
 }
 
 - (NSDictionary<NLLanguage, EZLanguage> *)appleLangEnumFromStringDict {
@@ -320,7 +310,7 @@ static EZAppleService *_instance;
 }
 
 - (BOOL)autoConvertTraditionalChinese {
-    // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
+    // Since Apple system translation not support zh-hans <--> zh-hant, so we need to convert it manually.
     return YES;
 }
 
@@ -340,11 +330,7 @@ static EZAppleService *_instance;
     };
 //    MMLogInfo(@"Apple translate paramters: %@", paramters);
     
-    NSTask *task = [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
-        if ([self.queryModel isServiceStopped:self.serviceType]) {
-            return;
-        }
-        
+    [AppleScriptTask runTranslateShortcutWithParameters:paramters completionHandler:^(NSString *result, NSError *error) {
         if (!error) {
             // Apple Translation does not distinguish between newlines and paragraphs, and the results are all merged with \n\n
             self.result.translatedResults = @[ result.trim ];
@@ -360,13 +346,6 @@ static EZAppleService *_instance;
         }
         completion(self.result, error);
     }];
-    
-    [self.queryModel setStopBlock:^{
-        [task interrupt];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [task terminate];
-        });
-    } serviceType:self.serviceType];
 }
 
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s

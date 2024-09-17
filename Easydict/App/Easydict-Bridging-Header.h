@@ -19,7 +19,6 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "DarkModeManager.h"
-#import "EZScriptExecutor.h"
 #import "EZNiuTransTranslate.h"
 #import "EZDeepLTranslate.h"
 #import "EZBingService.h"
