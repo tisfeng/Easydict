@@ -18,11 +18,11 @@ struct TextEditorCell: View {
         titleKey: LocalizedStringKey,
         storedValueKey: Defaults.Key<String>,
         placeholder: LocalizedStringKey? = nil,
-        detailText: LocalizedStringKey? = nil
+        footnote: LocalizedStringKey? = nil
     ) {
         self.titleKey = titleKey
         self.placeholder = placeholder
-        self.detailText = detailText
+        self.footnote = footnote
         _value = .init(storedValueKey)
     }
 
@@ -31,7 +31,7 @@ struct TextEditorCell: View {
     let titleKey: LocalizedStringKey
     @Default var value: String
     let placeholder: LocalizedStringKey?
-    let detailText: LocalizedStringKey?
+    let footnote: LocalizedStringKey?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -54,13 +54,13 @@ struct TextEditorCell: View {
                     .frame(minHeight: 55, maxHeight: 200) // min height is two lines, for English placeholder.
             }
 
-            if let detailText = detailText {
-                Text(detailText)
+            if let footnote = footnote {
+                Text(footnote)
                     .font(.footnote)
                     .foregroundStyle(.gray)
-                    .textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
                     .lineSpacing(3)
+                    .textSelection(.enabled)
             }
         }
         .padding(10)

@@ -14,7 +14,7 @@ import SwiftUI
 extension CaiyunService {
     public override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.caiyunToken]) {
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.caiyun.token.title",
                 key: .caiyunToken
             )

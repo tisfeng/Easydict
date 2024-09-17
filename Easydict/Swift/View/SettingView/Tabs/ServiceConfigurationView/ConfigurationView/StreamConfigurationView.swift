@@ -73,7 +73,7 @@ struct StreamConfigurationView: View {
             observeKeys: service.observeKeys
         ) {
             if showNameSection {
-                ServiceConfigurationInputCell(
+                InputCell(
                     textFieldTitleKey: "service.configuration.custom_openai.name.title",
                     key: service.nameKey,
                     placeholder: "custom_openai",
@@ -82,7 +82,7 @@ struct StreamConfigurationView: View {
             }
 
             if showAPIKeySection {
-                ServiceConfigurationSecureInputCell(
+                SecureInputCell(
                     textFieldTitleKey: "service.configuration.openai.api_key.title",
                     key: service.apiKeyKey,
                     placeholder: service.apiKeyPlaceholder
@@ -90,7 +90,7 @@ struct StreamConfigurationView: View {
             }
 
             if showEndpointSection {
-                ServiceConfigurationSecureInputCell(
+                SecureInputCell(
                     textFieldTitleKey: "service.configuration.openai.endpoint.title",
                     key: service.endpointKey,
                     placeholder: service.endpointPlaceholder,
@@ -118,14 +118,14 @@ struct StreamConfigurationView: View {
                 ToggleCell(
                     titleKey: "service.configuration.openai.enable_custom_prompt.title",
                     key: service.enableCustomPromptKey,
-                    detailText: "service.configuration.openai.enable_custom_prompt.detail"
+                    footnote: "service.configuration.openai.enable_custom_prompt.footnote"
                 )
 
                 TextEditorCell(
                     titleKey: "service.configuration.openai.custom_prompt.title",
                     storedValueKey: service.customPromptKey,
                     placeholder: "service.configuration.openai.custom_prompt.placeholder",
-                    detailText: "service.configuration.openai.custom_prompt.detail"
+                    footnote: "service.configuration.openai.custom_prompt.footnote"
                 )
             }
 
@@ -149,7 +149,7 @@ struct StreamConfigurationView: View {
             }
 
             if showUsageStatusPicker {
-                ServiceConfigurationPickerCell(
+                StaticPickerCell(
                     titleKey: "service.configuration.openai.usage_status.title",
                     key: service.serviceUsageStatusKey,
                     values: ServiceUsageStatus.allCases

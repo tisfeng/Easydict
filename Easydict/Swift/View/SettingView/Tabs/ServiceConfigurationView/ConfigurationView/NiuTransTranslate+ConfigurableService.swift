@@ -14,7 +14,7 @@ import SwiftUI
 extension EZNiuTransTranslate {
     open override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.niuTransAPIKey]) {
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.niutrans.api_key.title",
                 key: .niuTransAPIKey
             )

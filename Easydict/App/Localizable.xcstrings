@@ -5798,7 +5798,7 @@
         }
       }
     },
-    "service.configuration.openai.custom_prompt.detail" : {
+    "service.configuration.openai.custom_prompt.footnote" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5934,7 +5934,7 @@
         }
       }
     },
-    "service.configuration.openai.enable_custom_prompt.detail" : {
+    "service.configuration.openai.enable_custom_prompt.footnote" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {

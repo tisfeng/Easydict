@@ -10,9 +10,9 @@ import Combine
 import Defaults
 import SwiftUI
 
-// MARK: - ServiceConfigurationSecureInputCell
+// MARK: - SecureInputCell
 
-struct ServiceConfigurationSecureInputCell: View {
+struct SecureInputCell: View {
     // MARK: Lifecycle
 
     init(
@@ -39,9 +39,9 @@ struct ServiceConfigurationSecureInputCell: View {
     }
 }
 
-// MARK: - ServiceConfigurationInputCell
+// MARK: - InputCell
 
-struct ServiceConfigurationInputCell: View {
+struct InputCell: View {
     // MARK: Lifecycle
 
     init(
@@ -81,9 +81,9 @@ struct ServiceConfigurationInputCell: View {
     }
 }
 
-// MARK: - ServiceConfigurationPickerCell
+// MARK: - StaticPickerCell
 
-struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
+struct StaticPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
     // MARK: Lifecycle
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<T>, values: [T]) {
@@ -190,23 +190,23 @@ struct StringToggleCell: View {
 struct ToggleCell: View {
     // MARK: Lifecycle
 
-    init(titleKey: LocalizedStringKey, key: Defaults.Key<Bool>, detailText: LocalizedStringKey? = nil) {
+    init(titleKey: LocalizedStringKey, key: Defaults.Key<Bool>, footnote: LocalizedStringKey? = nil) {
         self.titleKey = titleKey
-        self.detailText = detailText
+        self.footnote = footnote
         self._value = .init(key)
     }
 
     // MARK: Internal
 
     let titleKey: LocalizedStringKey
-    let detailText: LocalizedStringKey?
+    let footnote: LocalizedStringKey?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Toggle(titleKey, isOn: $value)
 
-            if let detailText {
-                Text(detailText)
+            if let footnote {
+                Text(footnote)
                     .font(.footnote)
                     .foregroundColor(.gray)
             }

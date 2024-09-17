@@ -16,18 +16,18 @@ extension EZBaiduTranslate {
             service: self,
             observeKeys: [.baiduAppId, .baiduSecretKey]
         ) {
-            ServiceConfigurationPickerCell(
+            StaticPickerCell(
                 titleKey: "service.configuration.api_picker.title",
                 key: .baiduServiceApiTypeKey,
                 values: ServiceAPIType.allCases
             )
 
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.baidu.app_id.title",
                 key: .baiduAppId
             )
 
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.baidu.secret_key.title",
                 key: .baiduSecretKey
             )

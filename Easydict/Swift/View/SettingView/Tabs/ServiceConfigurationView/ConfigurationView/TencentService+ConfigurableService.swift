@@ -12,11 +12,11 @@ import SwiftUI
 extension TencentService {
     public override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.tencentSecretId, .tencentSecretKey]) {
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_id.title",
                 key: .tencentSecretId
             )
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_key.title",
                 key: .tencentSecretKey
             )
