@@ -18,11 +18,17 @@ struct TextEditorCell: View {
         titleKey: LocalizedStringKey,
         storedValueKey: Defaults.Key<String>,
         placeholder: LocalizedStringKey? = nil,
-        footnote: LocalizedStringKey? = nil
+        footnote: LocalizedStringKey? = nil,
+        minHeight: CGFloat? = nil,
+        maxHeight: CGFloat? = nil,
+        height: CGFloat? = nil
     ) {
         self.titleKey = titleKey
         self.placeholder = placeholder
         self.footnote = footnote
+        self.minHeight = minHeight
+        self.maxHeight = maxHeight
+        self.height = height
         _value = .init(storedValueKey)
     }
 
@@ -32,6 +38,9 @@ struct TextEditorCell: View {
     @Default var value: String
     let placeholder: LocalizedStringKey?
     let footnote: LocalizedStringKey?
+    let minHeight: CGFloat?
+    let maxHeight: CGFloat?
+    let height: CGFloat?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -44,14 +53,15 @@ struct TextEditorCell: View {
                     .padding(.bottom, 7)
                     .font(.body)
                     .lineSpacing(5)
-                    .scrollContentBackground(.hidden) // Refer https://stackoverflow.com/a/62848618/8378840
+                    .scrollContentBackground(.hidden)
                     .scrollIndicators(.hidden)
                     .background(Color.clear)
                     .clipShape(corner)
                     .overlay(alignment: .center, content: {
                         corner.stroke(Color(NSColor.separatorColor), lineWidth: 1)
                     })
-                    .frame(minHeight: 55, maxHeight: 200) // min height is two lines, for English placeholder.
+                    .frame(minHeight: minHeight, maxHeight: maxHeight)
+                    .frame(height: height)
             }
 
             if let footnote = footnote {

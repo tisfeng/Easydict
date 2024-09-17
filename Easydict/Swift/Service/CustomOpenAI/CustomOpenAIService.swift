@@ -49,9 +49,11 @@ class CustomOpenAIService: BaseOpenAIService {
 
     override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [[String: String]] {
         if enableCustomPrompt {
-            let prompt = replaceCustomPromptWithVariable(customPrompt)
+            let userPrompt = replaceCustomPromptWithVariable(userPrompt)
+            let systemPrompt = replaceCustomPromptWithVariable(systemPrompt)
             return [
-                chatMessage(role: .user, content: prompt),
+                chatMessage(role: .user, content: userPrompt),
+                chatMessage(role: .system, content: systemPrompt),
             ]
         }
         return super.chatMessageDicts(chatQuery)

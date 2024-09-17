@@ -102,7 +102,9 @@ struct StreamConfigurationView: View {
                 TextEditorCell(
                     titleKey: "service.configuration.custom_openai.supported_models.title",
                     storedValueKey: service.supportedModelsKey,
-                    placeholder: "service.configuration.custom_openai.model.placeholder"
+                    placeholder: "service.configuration.custom_openai.model.placeholder",
+                    minHeight: 55,
+                    maxHeight: 100
                 ).disabled(!isEditable)
             }
 
@@ -121,12 +123,24 @@ struct StreamConfigurationView: View {
                     footnote: "service.configuration.openai.enable_custom_prompt.footnote"
                 )
 
-                TextEditorCell(
-                    titleKey: "service.configuration.openai.custom_prompt.title",
-                    storedValueKey: service.customPromptKey,
-                    placeholder: "service.configuration.openai.custom_prompt.placeholder",
-                    footnote: "service.configuration.openai.custom_prompt.footnote"
-                )
+                VStack(spacing: 5) {
+                    // system prompt
+                    TextEditorCell(
+                        titleKey: "service.configuration.openai.system_prompt.title",
+                        storedValueKey: service.systemPromptKey,
+                        placeholder: "service.configuration.openai.system_prompt.placeholder",
+                        height: 100
+                    )
+
+                    // user prompt
+                    TextEditorCell(
+                        titleKey: "service.configuration.openai.user_prompt.title",
+                        storedValueKey: service.userPromptKey,
+                        placeholder: "service.configuration.openai.user_prompt.placeholder",
+                        footnote: "service.configuration.openai.user_prompt.footnote",
+                        height: 120
+                    )
+                }
             }
 
             if showTranslationToggle {

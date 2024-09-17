@@ -125,13 +125,8 @@ public class LLMStreamService: QueryService {
         stringDefaultsKey(.supportedModels, defaultValue: supportedModels(from: defaultModels))
     }
 
-    var customPrompt: String {
-        get { Defaults[customPromptKey] }
-        set { Defaults[customPromptKey] = newValue }
-    }
-
-    var customPromptKey: Defaults.Key<String> {
-        stringDefaultsKey(.customPrompt, defaultValue: "")
+    var enableCustomPromptKey: Defaults.Key<Bool> {
+        boolDefaultsKey(.enableCustomPrompt, defaultValue: false)
     }
 
     var enableCustomPrompt: Bool {
@@ -139,8 +134,22 @@ public class LLMStreamService: QueryService {
         set { Defaults[enableCustomPromptKey] = newValue }
     }
 
-    var enableCustomPromptKey: Defaults.Key<Bool> {
-        boolDefaultsKey(.enableCustomPrompt, defaultValue: false)
+    var userPromptKey: Defaults.Key<String> {
+        stringDefaultsKey(.userPrompt, defaultValue: "")
+    }
+
+    var userPrompt: String {
+        get { Defaults[userPromptKey] }
+        set { Defaults[userPromptKey] = newValue }
+    }
+
+    var systemPromptKey: Defaults.Key<String> {
+        stringDefaultsKey(.systemPrompt, defaultValue: "")
+    }
+
+    var systemPrompt: String {
+        get { Defaults[systemPromptKey] }
+        set { Defaults[systemPromptKey] = newValue }
     }
 
     /// Just getter, we should set supportedModels and get validModels.

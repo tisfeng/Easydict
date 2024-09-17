@@ -48,8 +48,9 @@ enum StoredKey: String {
     case apiKey = "API"
     case endpoint = "EndPoint"
     case name
-    case customPrompt
     case enableCustomPrompt
+    case systemPrompt
+    case userPrompt
 }
 
 extension String {

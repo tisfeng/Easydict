@@ -5798,108 +5798,6 @@
         }
       }
     },
-    "service.configuration.openai.custom_prompt.footnote" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supports the following environment variables:\n\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{queryText}}: Query text\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supports the following environment variables:\n\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{queryText}}: Query text\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podporuje nasledujúce premenné prostredia:\n\n${{queryFromLanguage}}: Jazyk dotazu\n${{queryTargetLanguage}}: Cieľový jazyk\n${{queryText}}: Text dotazu\n${{firstLanguage}}: Prvý jazyk používateľa\n\nPríklad: Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "支持以下环境变量：\n\n${{queryFromLanguage}}: 查询语言\n${{queryTargetLanguage}}: 目标语言\n${{queryText}}: 查询文本\n${{firstLanguage}}: 用户第一语言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "支援以下環境變數：\n\n${{queryFromLanguage}}: 查詢語言\n${{queryTargetLanguage}}: 目標語言\n${{queryText}}: 查詢文本\n${{firstLanguage}}: 使用者第一語言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.custom_prompt.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom Prompt"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom Prompt"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vlastný prompt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自定义 Prompt"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自訂 Prompt"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.custom_prompt.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom Prompt"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom Prompt"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vlastný prompt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自定义 Prompt"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自訂 Prompt"
-          }
-        }
-      }
-    },
     "service.configuration.openai.dictionary.title" : {
       "localizations" : {
         "en" : {
@@ -6138,6 +6036,74 @@
         }
       }
     },
+    "service.configuration.openai.system_prompt.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are a helpful translation assistant."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are a helpful translation assistant."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jste užitečná pomocí překladu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你是一个有用的翻译助手。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你是一個有用的翻譯助手。"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.system_prompt.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        }
+      }
+    },
     "service.configuration.openai.translation.title" : {
       "localizations" : {
         "en" : {
@@ -6304,6 +6270,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用狀態"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.user_prompt.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supports the following environment variables:\n\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{queryText}}: Query text\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supports the following environment variables:\n\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{queryText}}: Query text\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporuje nasledujúce premenné prostredia:\n\n${{queryFromLanguage}}: Jazyk dotazu\n${{queryTargetLanguage}}: Cieľový jazyk\n${{queryText}}: Text dotazu\n${{firstLanguage}}: Prvý jazyk používateľa\n\nPríklad: Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持以下环境变量：\n\n${{queryFromLanguage}}: 查询语言\n${{queryTargetLanguage}}: 目标语言\n${{queryText}}: 查询文本\n${{firstLanguage}}: 用户第一语言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援以下環境變數：\n\n${{queryFromLanguage}}: 查詢語言\n${{queryTargetLanguage}}: 目標語言\n${{queryText}}: 查詢文本\n${{firstLanguage}}: 使用者第一語言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.user_prompt.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将下面 ${{queryFromLanguage}} 的文本翻译成 ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將下面 ${{queryFromLanguage}} 的文本翻譯成 ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.user_prompt.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
           }
         }
       }
