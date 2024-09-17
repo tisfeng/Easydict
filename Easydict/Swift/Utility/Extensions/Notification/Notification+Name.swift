@@ -32,12 +32,12 @@ extension NSNotification {
 @objc
 extension NotificationCenter {
     func postServiceUpdateNotification(
-        serviceType: ServiceType = .init(rawValue: ""),
+        serviceType: String = "",
         windowType: EZWindowType = .none,
         autoQuery: Bool = false
     ) {
         let userInfo: [String: Any] = [
-            EZServiceTypeKey: serviceType.rawValue,
+            EZServiceTypeKey: serviceType,
             EZWindowTypeKey: windowType.rawValue,
             EZAutoQueryKey: autoQuery,
         ]

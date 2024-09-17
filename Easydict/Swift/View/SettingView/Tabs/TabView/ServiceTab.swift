@@ -28,6 +28,9 @@ struct ServiceTab: View {
                 .padding(.bottom)
                 .padding(.horizontal)
                 .frame(minWidth: 260)
+                .onReceive(serviceHasUpdatedNotification) { _ in
+                    viewModel.updateServices()
+                }
             }
 
             Group {
@@ -55,10 +58,16 @@ struct ServiceTab: View {
             }
             .layoutPriority(1)
         }
+        .onAppear {
+            GlobalContext.shared.reloadLLMServicesSubscribers()
+        }
         .environmentObject(viewModel)
     }
 
     // MARK: Private
+
+    private let serviceHasUpdatedNotification = NotificationCenter.default
+        .publisher(for: .serviceHasUpdated)
 
     @StateObject private var viewModel: ServiceTabViewModel = .init()
 }
@@ -89,26 +98,23 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func updateServices() {
-        services = getServices()
-    }
+        services = EZLocalStorage.shared().allServices(windowType)
 
-    func getServices() -> [QueryService] {
-        EZLocalStorage.shared().allServices(windowType)
+        let isSelectedExist = services
+            .contains { $0.serviceTypeWithUniqueIdentifier() == selectedService?.serviceTypeWithUniqueIdentifier() }
+        if !isSelectedExist {
+            selectedService = nil
+        }
     }
 
     func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
         var services = services
-
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
-        let serviceTypes = services.map { service in
-            service.serviceType()
-        }
-
+        let serviceTypes = services.map { $0.serviceTypeWithUniqueIdentifier() }
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
-
         updateServices()
     }
 
@@ -136,7 +142,7 @@ private struct ServiceItems: View {
 
     private var servicesWithID: [(QueryService, String)] {
         viewModel.services.map { service in
-            (service, service.serviceType().rawValue)
+            (service, service.serviceTypeWithUniqueIdentifier())
         }
     }
 }

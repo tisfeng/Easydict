@@ -9,6 +9,12 @@
             "value" : ""
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29,6 +35,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ API Key"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ API kľúč"
           }
         },
         "zh-Hans" : {
@@ -60,6 +72,12 @@
             "value" : "About"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplikácii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -86,6 +104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Advanced"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokročilé"
           }
         },
         "zh-Hans" : {
@@ -117,6 +141,12 @@
             "value" : "Ali Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ali Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -138,6 +168,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alignment Error"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba zarovnania"
           }
         },
         "zh-Hans" : {
@@ -168,6 +204,12 @@
             "value" : "Allow collection of analytics"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povoliť zbieranie analytických údajov"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -196,6 +238,12 @@
             "value" : "Allow collection of crash logs"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povoliť zbieranie záznamov o pádoch"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -222,6 +270,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Analytics:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analytika:"
           }
         },
         "zh-Hans" : {
@@ -253,6 +307,12 @@
             "value" : "Antonyms"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protiklady"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -280,6 +340,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App Shortcut"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skratka aplikácie"
           }
         },
         "zh-Hans" : {
@@ -310,6 +376,12 @@
             "value" : "Dark"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tmavý"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -336,6 +408,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Follow System"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podľa systému"
           }
         },
         "zh-Hans" : {
@@ -366,6 +444,12 @@
             "value" : "Light"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svetlý"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -384,6 +468,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -417,6 +507,12 @@
             "value" : "Apple Dictionary"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Slovník"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -443,6 +539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Tlmočník"
           }
         },
         "zh-Hans" : {
@@ -473,6 +575,12 @@
             "value" : "Automatically check for app updates"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky kontrolovať aktualizácie aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -499,6 +607,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto copy first translated text"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky skopírovať prvý preložený text"
           }
         },
         "zh-Hans" : {
@@ -529,6 +643,12 @@
             "value" : "Auto copy OCR text after OCR"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky skopírovať OCR text po rozpoznaní"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -555,6 +675,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto copy selected text"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky skopírovať označený text"
           }
         },
         "zh-Hans" : {
@@ -585,6 +711,12 @@
             "value" : "Auto query after OCR"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické prekladanie po OCR"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -611,6 +743,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto query after pasting text"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické prekladanie po vložení textu"
           }
         },
         "zh-Hans" : {
@@ -641,6 +779,12 @@
             "value" : "Auto query after selecting text"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické prekladanie po označení textu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -667,6 +811,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto show query icon after selecting text"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky zobraziť ikonu prekladania po označení textu"
           }
         },
         "zh-Hans" : {
@@ -697,6 +847,12 @@
             "value" : "Automatically remove code comment symbols「/*#」"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky odstrániť symboly komentárov kódu「/*#」"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -725,6 +881,12 @@
             "value" : "Automatically split words: key_value —> key value"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky rozdeliť slová: key_value —> key value"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -743,6 +905,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baidu"
@@ -777,6 +945,12 @@
             "value" : "Baidu Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -805,6 +979,12 @@
             "value" : "Bing Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -826,6 +1006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buffer Too Small"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Príliš malá vyrovnávacia pamäť"
           }
         },
         "zh-Hans" : {
@@ -856,6 +1042,12 @@
             "value" : "Built-In AI Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vstavaný AI prekladač"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -880,6 +1072,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "LingoCloud"
@@ -913,6 +1111,12 @@
             "value" : "Cancel"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -939,6 +1143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Check for updates"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolovať aktualizácie"
           }
         },
         "zh-Hans" : {
@@ -969,6 +1179,12 @@
             "value" : "Check Now"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolovať teraz"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -995,6 +1211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Check for Updates"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolovať aktualizácie"
           }
         },
         "zh-Hans" : {
@@ -1025,6 +1247,12 @@
             "value" : "Pronunciation"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výslovnosť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1051,6 +1279,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clear All"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazať všetko"
           }
         },
         "zh-Hans" : {
@@ -1081,6 +1315,12 @@
             "value" : "Clear input when translating"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazať zadaný text pri preklade"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1107,6 +1347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Query only when clicking query icon (when main window hidden)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prekladať len po kliknutí na ikonu prekladania (pri skrytom hlavnom okne)"
           }
         },
         "zh-Hans" : {
@@ -1138,6 +1384,12 @@
             "value" : "Collocation"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustálené spojenie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1164,6 +1416,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comparative"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porovnávací"
           }
         },
         "zh-Hans" : {
@@ -1194,6 +1452,12 @@
             "value" : "Copy Text"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírovať text"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1222,6 +1486,12 @@
             "value" : "Crash Log:"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Záznam o páde:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1248,6 +1518,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzia %@"
           }
         },
         "zh-Hans" : {
@@ -1279,6 +1555,12 @@
             "value" : "Custom OpenAI"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vlastná OpenAI"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1300,6 +1582,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Decode Error"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba dekódovania"
           }
         },
         "zh-Hans" : {
@@ -1330,6 +1618,12 @@
             "value" : "DeepL Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepL Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1350,19 +1644,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detected "
+            "value" : "Detected"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detected "
+            "value" : "Detected"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zistené"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "识别为 "
+            "value" : "识别为"
           }
         },
         "zh-Hant" : {
@@ -1386,6 +1686,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disable Tips View"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypnúť zobrazovanie tipov"
           }
         },
         "zh-Hans" : {
@@ -1417,6 +1723,12 @@
             "value" : "Disabled"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypnuté"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1445,6 +1757,12 @@
             "value" : "If the App is in the \"Disabled App List,\" the mouse will not trigger the automatic word retrieval."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ak je aplikácia na zozname zakázaných aplikácií, myš nebude spúšťať automatické prekladanie."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1467,6 +1785,12 @@
             "value" : "Easydict"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1484,6 +1808,12 @@
     "Easydict 🍃" : {
       "localizations" : {
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict 🍃"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict 🍃"
@@ -1518,6 +1848,12 @@
             "value" : "Enable Youdao OCR "
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť Youdao OCR"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1545,6 +1881,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Use the Youdao OCR for identification after a default OCR failure"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použiť Youdao OCR na identifikáciu po zlyhaní štandardného OCR"
           }
         },
         "zh-Hans" : {
@@ -1575,6 +1917,12 @@
             "value" : "Interface Exception"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výnimka rozhrania"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1601,6 +1949,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Insufficient built-in API Key quota."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedostatočný limit zabudovaného API kľúča."
           }
         },
         "zh-Hans" : {
@@ -1632,6 +1986,12 @@
             "value" : "Missing API Key"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chýbajúci API kľúč"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1658,6 +2018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Network Exception"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieťová výnimka"
           }
         },
         "zh-Hans" : {
@@ -1689,6 +2055,12 @@
             "value" : "Parameter Exception"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výnimka parametra"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1715,6 +2087,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unknown Error"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neznáma chyba"
           }
         },
         "zh-Hans" : {
@@ -1745,6 +2123,12 @@
             "value" : "Unsupported Language"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodporovaný jazyk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1773,6 +2157,12 @@
             "value" : "Etymology:"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pôvod slova:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1793,6 +2183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Export Log"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportovať záznamy"
           }
         },
         "zh-Hans" : {
@@ -1818,6 +2214,12 @@
             "value" : "Failed to allocate memory"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodarilo sa prideliť pamäť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1838,6 +2240,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feedback"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spätná väzba"
           }
         },
         "zh-Hans" : {
@@ -1868,6 +2276,12 @@
             "value" : "Fixed window"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixné okno"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1894,6 +2308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centre of screen"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stred obrazovky"
           }
         },
         "zh-Hans" : {
@@ -1924,6 +2344,12 @@
             "value" : "Last position"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posledná pozícia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1952,6 +2378,12 @@
             "value" : "Mouse position"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozícia kurzora"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1978,6 +2410,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Right side of screen"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pravá strana obrazovky"
           }
         },
         "zh-Hans" : {
@@ -2009,6 +2447,12 @@
             "value" : "Font Size:"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť písma:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2037,6 +2481,12 @@
             "value" : "Allow forced text selection (note that it may affect clipboard copying)"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povoliť vynútený výber textu (môže ovplyvniť kopírovanie do schránky)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2058,6 +2508,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Function not implemented for the current algorithm"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funkcia nie je implementovaná pre aktuálny algoritmus"
           }
         },
         "zh-Hans" : {
@@ -2084,6 +2540,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemini Translate"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gemini Translate"
@@ -2118,6 +2580,12 @@
             "value" : "Global Shortcut"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Globálna skratka"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2144,6 +2612,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Go to Settings"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prejdi do Nastavení"
           }
         },
         "zh-Hans" : {
@@ -2174,6 +2648,12 @@
             "value" : "Google Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2194,6 +2674,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Help"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pomocník"
           }
         },
         "zh-Hans" : {
@@ -2224,6 +2710,12 @@
             "value" : "Hide"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2250,6 +2742,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide main window at startup"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť hlavné okno pri spustení"
           }
         },
         "zh-Hans" : {
@@ -2280,6 +2778,12 @@
             "value" : "Hide Menu Bar Icon"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť ikonu v lište"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2306,6 +2810,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If you want to restore, open the settings page in the query window using the shortcut `Cmd + ,` then cancel the [Hide Status Bar Icon] option."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pre obnovenie otvor stránku s nastaveniami v okne prekladu použitím skratky ⌘ + , a potom zruš možnosť [Skryť ikonu v lište]."
           }
         },
         "zh-Hans" : {
@@ -2337,6 +2847,12 @@
             "value" : "Font size can be changed using the ⌘ +/- shortcut in the Translation windows."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť písma môžeš zmeniť pomocou skratky ⌘ +/- v okne prekladu."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2358,6 +2874,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Illegal parameter supplied to encryption/decryption algorithm"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neplatný parameter zadaný do algoritmu (de)šifrovania"
           }
         },
         "zh-Hans" : {
@@ -2383,6 +2905,12 @@
             "value" : "Input data did not decode or decrypt correctly"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vstupné údaje sa nepodarilo správne dekódovať alebo dešifrovať"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2406,6 +2934,12 @@
             "value" : "Input size to encryption algorithm was not aligned correctly"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť vstupných údajov do šifrovacieho algoritmu nebola správne zarovnaná"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2427,6 +2961,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Insufficient buffer provided for specified operation"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedostatočná vyrovnávacia pamäť poskytnutá pre zadanú operáciu"
           }
         },
         "zh-Hans" : {
@@ -2455,6 +2995,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please go to the official service website to register and apply for a personal API key."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navštív oficiálnu webstránku služby pre registráciu a požiadaj o osobný API kľúč."
           }
         },
         "zh-Hans" : {
@@ -2486,6 +3032,12 @@
             "value" : "Keep previous result when selected text is empty"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponechať predchádzajúci výsledok, keď je označený text prázdny"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2513,6 +3065,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keep Result:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponechať výsledok:"
           }
         },
         "zh-Hans" : {
@@ -2543,6 +3101,12 @@
             "value" : "Use Baidu language detection for optimization"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použi Baidu detekciu jazyka pre optimalizáciu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2571,6 +3135,12 @@
             "value" : "Use Google language detection for optimization"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použi Google detekciu jazyka pre optimalizáciu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2597,6 +3167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Only use System language detection"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Používať len detekciu jazyka systému"
           }
         },
         "zh-Hans" : {
@@ -2628,6 +3204,12 @@
             "value" : "Display Language"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jazyk zobrazenia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2655,6 +3237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Large"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľké"
           }
         },
         "zh-Hans" : {
@@ -2685,6 +3273,12 @@
             "value" : "Latest version %@"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Najnovšia verzia %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2713,6 +3307,12 @@
             "value" : "Launch at login"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spustiť pri prihlásení"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2733,6 +3333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Log Directory"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priečinok so záznamami"
           }
         },
         "zh-Hans" : {
@@ -2763,6 +3369,12 @@
             "value" : "Main window"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hlavné okno"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2784,6 +3396,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memory Failure"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zlyhanie pamäte"
           }
         },
         "zh-Hans" : {
@@ -2812,6 +3430,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feedback"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spätná väzba"
           }
         },
         "zh-Hans" : {
@@ -2843,6 +3467,12 @@
             "value" : "Input Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad vstupu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2870,6 +3500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Screenshot Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad snímky obrazovky"
           }
         },
         "zh-Hans" : {
@@ -2900,6 +3536,12 @@
             "value" : "Select Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad výberu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2926,6 +3568,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Mini Window"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť mini okno"
           }
         },
         "zh-Hans" : {
@@ -2956,6 +3604,12 @@
             "value" : "Silent Screenshot OCR"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tichý OCR snímok obrazovky"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2984,6 +3638,12 @@
             "value" : "About Easydict"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplikácii Easydict"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3010,6 +3670,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mini window"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini okno"
           }
         },
         "zh-Hans" : {
@@ -3041,6 +3707,12 @@
             "value" : "Menu bar icon"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikona v lište"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3064,6 +3736,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "NiuTrans"
@@ -3097,6 +3775,12 @@
             "value" : "No results found"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenašli sa žiadne výsledky"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3125,6 +3809,12 @@
             "value" : "No Screenshot Permission"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chýba povolenie na snímky obrazovky"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3145,6 +3835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "none_window"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadne okno"
           }
         },
         "zh-Hans" : {
@@ -3175,6 +3871,12 @@
             "value" : "OCR result is empty.  \n⚠️ Please manually select the language and try again."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výsledok OCR je prázdny.\n⚠️ Prosím, manuálne vyber jazyk a skús to znova."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3203,6 +3905,12 @@
             "value" : "OK"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ok"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3226,6 +3934,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Translate"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama Translate"
@@ -3259,6 +3973,12 @@
             "value" : "Open in Apple Dictionary"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť v Apple Slovníku"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3285,6 +4005,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open in Eudic"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť v Eudic"
           }
         },
         "zh-Hans" : {
@@ -3315,6 +4041,12 @@
             "value" : "Open in Google"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť v Google"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3341,6 +4073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open Web Link"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť webový odkaz"
           }
         },
         "zh-Hans" : {
@@ -3371,6 +4109,12 @@
             "value" : "OpenAI Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3392,6 +4136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parameter Error"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba parametra"
           }
         },
         "zh-Hans" : {
@@ -3422,6 +4172,12 @@
             "value" : "Past tense"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minulý čas"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3448,6 +4204,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Past participle"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minulé príčastie"
           }
         },
         "zh-Hans" : {
@@ -3478,6 +4240,12 @@
             "value" : "Pin"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pripnúť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3504,6 +4272,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "`Enter` to query, `Shift + Enter` to newline"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Enter\" pre prekladanie, \"Shift + Enter\" pre nový riadok"
           }
         },
         "zh-Hans" : {
@@ -3534,6 +4308,12 @@
             "value" : "Play Audio"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prehrať zvuk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3560,6 +4340,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please see 👉"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozri prosím 👉"
           }
         },
         "zh-Hans" : {
@@ -3590,6 +4376,12 @@
             "value" : "Plural"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Množné číslo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3618,6 +4410,12 @@
             "value" : "Polishing"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylepšovanie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3644,6 +4442,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Present participle"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Príčastie prítomné"
           }
         },
         "zh-Hans" : {
@@ -3675,6 +4479,12 @@
             "value" : "Privacy"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Súkromie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3701,6 +4511,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacy Statement"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyhlásenie o ochrane osobných údajov"
           }
         },
         "zh-Hans" : {
@@ -3731,6 +4547,12 @@
             "value" : "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but this data will not be associated with your identity. It is solely for improving user experience and will never be shared with other platforms.\n\nEasydict is open-source software; if you're interested, you can check the code."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict používa AppCenter a Firebase na zbieranie záznamov o pádoch (pre opravy chýb) a anonymných analytických údajov. Tieto údaje však nie sú spájané s tvojou identitou, slúžia iba na vylepšenie aplikácie a nikdy nebudú zdieľané s tretími stranami.\n\nEasydict je open source softvér. V prípade záujmu si môžeš skontrolovať kód."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3757,6 +4579,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "💥 Failed"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Zlyhalo"
           }
         },
         "zh-Hans" : {
@@ -3787,6 +4615,12 @@
             "value" : "Query in App"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad v aplikácii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3815,6 +4649,12 @@
             "value" : "Quick action"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rýchla akcia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3841,6 +4681,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quit"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukončiť"
           }
         },
         "zh-Hans" : {
@@ -3872,6 +4718,12 @@
             "value" : "Now detected that there is no input translation shortcut key or selection translation shortcut key set!\n\nSet the shortcut key to ensure you can use Easydict and hide the menu bar icon."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teraz bolo zistené, že nie je nastavená žiadna klávesová skratka pre preklad vstupu alebo preklad výberu!\n\nNastav klávesovú skratku, aby si mohol používať Easydict a skryť ikonu v lište."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3898,6 +4750,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove code comment symbols"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť symboly komentárov kódu"
           }
         },
         "zh-Hans" : {
@@ -3928,6 +4786,12 @@
             "value" : "Replace newline with space"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahradiť nový riadok medzerou"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3954,6 +4818,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Replace with Translation"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahradiť prekladom"
           }
         },
         "zh-Hans" : {
@@ -3984,6 +4854,12 @@
             "value" : "Please go to System Settings > Privacy & Security > Screen Recording & System Audio page to enable permissions for Easydict."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prejdi do Systémové nastavenia > Súkromie a bezpečnosť > Nahrávanie obrazovky a systémového audia o povoľ oprávnenia pre Easydict."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4012,6 +4888,12 @@
             "value" : "Retry"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opakovať"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4038,6 +4920,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Root"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koreň"
           }
         },
         "zh-Hans" : {
@@ -4069,6 +4957,12 @@
             "value" : "Select query text when window activate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Označiť prekladaný text pri aktivácii okna"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4096,6 +4990,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Service"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Služba"
           }
         },
         "zh-Hans" : {
@@ -4126,6 +5026,12 @@
             "value" : "AccessKey ID"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AccessKey ID"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4149,6 +5055,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AccessKey Secret"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AccessKey Secret"
@@ -4183,6 +5095,12 @@
             "value" : "Currently using the Secret Key API type, but a certain Secret Key is empty. Please go to Settings > Service > %@, fill in the required configuration information, or switch API types."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuálne používaš typ API tajného kľúča, ale určitý tajný kľúč je prázdny. Prejdi do Nastavenia > Služba > %@, vyplň požadované konfiguračné informácie alebo prepni typy API."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4210,6 +5128,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Type"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ API"
           }
         },
         "zh-Hans" : {
@@ -4241,6 +5165,12 @@
             "value" : "App ID"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4268,6 +5198,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tajný kľúč"
           }
         },
         "zh-Hans" : {
@@ -4298,6 +5234,12 @@
             "value" : "Cookie Key"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cookie kľúč"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4321,6 +5263,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Token"
@@ -4354,6 +5302,12 @@
             "value" : "Model name, use commas (,) to separate multiple models."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Názov modelu, použi čiarky (,) na oddelenie viacerých modelov."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4380,6 +5334,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Custom Service Name"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Názov vlastnej služby"
           }
         },
         "zh-Hans" : {
@@ -4410,6 +5370,12 @@
             "value" : "Supported Models"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporované modely"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4436,6 +5402,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auth Key"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentizačný kľúč"
           }
         },
         "zh-Hans" : {
@@ -4466,6 +5438,12 @@
             "value" : "Auth Key First"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Najskôr autentizačný kľúč"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4494,6 +5472,12 @@
             "value" : "Auth Key Only"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Len autentizačný kľúč"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4517,6 +5501,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-free.deepl.com/v2/translate"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api-free.deepl.com/v2/translate"
@@ -4550,6 +5540,12 @@
             "value" : "API Endpoint"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API koncový bod"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4576,6 +5572,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Usage Priority"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priorita využívania API"
           }
         },
         "zh-Hans" : {
@@ -4606,6 +5608,12 @@
             "value" : "Web API first"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Najskôr web API"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4629,6 +5637,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxx"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxxxxxxxxx"
@@ -4662,6 +5676,12 @@
             "value" : "API Key"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API kľúč"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4685,6 +5705,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxx"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "sk-xxxxxxxxxx"
@@ -4718,6 +5744,12 @@
             "value" : "API Key"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API kľúč"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4744,6 +5776,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dictionary"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slovník"
           }
         },
         "zh-Hans" : {
@@ -4774,6 +5812,12 @@
             "value" : "The full request URL, for example https://api.openai.com/v1/chat/completions"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celá URL adresa požiadavky, napr. https://api.openai.com/v1/chat/completions"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4800,6 +5844,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Endpoint"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API koncový bod"
           }
         },
         "zh-Hans" : {
@@ -4830,6 +5880,12 @@
             "value" : "Use Model"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použiť model"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4856,6 +5912,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentence"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veta"
           }
         },
         "zh-Hans" : {
@@ -4886,6 +5948,12 @@
             "value" : "Translation"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4912,6 +5980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Always Off"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vždy vypnuté"
           }
         },
         "zh-Hans" : {
@@ -4942,6 +6016,12 @@
             "value" : "Always On"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vždy zapnuté"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4968,6 +6048,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Default"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predvolené"
           }
         },
         "zh-Hans" : {
@@ -4998,6 +6084,12 @@
             "value" : "Usage Status"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stav používania"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5024,6 +6116,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť"
           }
         },
         "zh-Hans" : {
@@ -5054,6 +6152,12 @@
             "value" : "Secret Id"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tajné ID"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5080,6 +6184,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tajný kľúč"
           }
         },
         "zh-Hans" : {
@@ -5110,6 +6220,12 @@
             "value" : "Validate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5120,6 +6236,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "驗證"
+          }
+        }
+      }
+    },
+    "service.configuration.duplicate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplikovať"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製"
+          }
+        }
+      }
+    },
+    "service.configuration.remove" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除"
           }
         }
       }
@@ -5136,6 +6320,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Validation failed 💔"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overenie zlyhalo 💔"
           }
         },
         "zh-Hans" : {
@@ -5166,6 +6356,12 @@
             "value" : "Validation success 🎉"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overenie úspešné 🎉"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5189,6 +6385,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access Key ID"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Access Key ID"
@@ -5222,6 +6424,12 @@
             "value" : "Secret Access Key"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Access Key"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5248,6 +6456,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "General"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všeobecné"
           }
         },
         "zh-Hans" : {
@@ -5278,6 +6492,12 @@
             "value" : "Contributors"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spolupracovníci"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5301,6 +6521,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -5335,6 +6561,12 @@
             "value" : "Unable to add Application"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie je možné pridať aplikáciu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5361,6 +6593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Default TTS Service"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predvolená TTS služba"
           }
         },
         "zh-Hans" : {
@@ -5391,6 +6629,12 @@
             "value" : "Enable Beta features"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť beta funkcií"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5419,6 +6663,12 @@
             "value" : "Enable HTTP Server"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť HTTP server"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5442,6 +6692,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Server"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "HTTP Server"
@@ -5475,6 +6731,12 @@
             "value" : "HTTP Port"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Port"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5501,6 +6763,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "After modifying the port, you need to restart the server"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po zmene portu je nutné reštartovať server"
           }
         },
         "zh-Hans" : {
@@ -5531,6 +6799,12 @@
             "value" : "Use Replace with Translation in compatibility mode"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použiť Nahradiť prekladom v režime kompatibility"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5557,6 +6831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If using Replace with Translation fails in some applications, try turning on compatibility mode, which will use Copy + Paste to ensure successful replacement."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ak používanie Nahradiť prekladom zlyhá v niektorých aplikáciách, skús zapnúť režim kompatibility, ktorý použije funkcie Kopírovať + Vložiť na zabezpečenie úspešnej výmeny."
           }
         },
         "zh-Hans" : {
@@ -5587,6 +6867,12 @@
             "value" : "App Setting"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenie aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5613,6 +6899,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appearance"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vzhľad"
           }
         },
         "zh-Hans" : {
@@ -5643,6 +6935,12 @@
             "value" : "Auto Copy"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické kopírovanie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5669,6 +6967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto Query"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické prekladanie"
           }
         },
         "zh-Hans" : {
@@ -5699,6 +7003,12 @@
             "value" : "Font Size"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť písma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5725,6 +7035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Font"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Písmo"
           }
         },
         "zh-Hans" : {
@@ -5755,6 +7071,12 @@
             "value" : "Input Field"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vstupné pole"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5781,6 +7103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The first language should not be the same as the second language (%1$@). The %2$@ was replaced with %3$@."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prvý jazyk by nemal byť rovnaký ako druhý jazyk (%1$@). %2$@ bol nahradený %3$@."
           }
         },
         "zh-Hans" : {
@@ -5811,6 +7139,12 @@
             "value" : "first language"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prvý jazyk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5837,6 +7171,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "second language"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "druhý jazyk"
           }
         },
         "zh-Hans" : {
@@ -5867,6 +7207,12 @@
             "value" : "Language Duplicated"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplikovaný jazyk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5893,6 +7239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "First Language"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prvý jazyk"
           }
         },
         "zh-Hans" : {
@@ -5923,6 +7275,12 @@
             "value" : "Language"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jazyk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5949,6 +7307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Language Detection"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detekcia jazyka"
           }
         },
         "zh-Hans" : {
@@ -5979,6 +7343,12 @@
             "value" : "Second Language"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Druhý jazyk"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6007,6 +7377,12 @@
             "value" : "Adjust Query Icon Position to avoid conflict with PopClip"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprav pozíciu ikony prekladu pre vyhnutie sa konfliktu s PopClip"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6033,6 +7409,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Query with Mouse"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad myšou"
           }
         },
         "zh-Hans" : {
@@ -6064,6 +7446,12 @@
             "value" : "Other"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iné"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6090,6 +7478,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatically pin when the window is displayed."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické pripnutie po zobrazení okna."
           }
         },
         "zh-Hans" : {
@@ -6120,6 +7514,12 @@
             "value" : "Query Langauge"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jazyk prekladu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6146,6 +7546,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quick Link"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rýchly odkaz"
           }
         },
         "zh-Hans" : {
@@ -6176,6 +7582,12 @@
             "value" : "Auto play pronunciation after querying English words"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky prehrať výslovnosť po preklade anglických slov"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6202,6 +7614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Floating Window Position"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozícia plávajúceho okna"
           }
         },
         "zh-Hans" : {
@@ -6232,6 +7650,12 @@
             "value" : "Mouse Window Type"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ okna myši"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6258,6 +7682,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shortcut Window Type"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ okna skratky"
           }
         },
         "zh-Hans" : {
@@ -6288,6 +7718,12 @@
             "value" : "Window"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Okno"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6314,6 +7750,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No configuration for %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadna konfigurácia pre %@"
           }
         },
         "zh-Hans" : {
@@ -6344,6 +7786,12 @@
             "value" : "Select a service to show configuration"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyber službu pre zobrazenie konfigurácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6367,6 +7815,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -6400,6 +7854,12 @@
             "value" : "Baidu"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6423,6 +7883,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bing"
@@ -6456,6 +7922,12 @@
             "value" : "Google"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6484,6 +7956,12 @@
             "value" : "Youdao"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6504,6 +7982,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings..."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenia..."
           }
         },
         "zh-Hans" : {
@@ -6532,6 +8016,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shortcut"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skratka"
           }
         },
         "zh-Hans" : {
@@ -6563,6 +8053,12 @@
             "value" : "Clear All"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazať všetko"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6592,6 +8088,12 @@
             "value" : "Clear Input"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazať vstup"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6616,6 +8118,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -6650,6 +8158,12 @@
             "value" : "Confirm"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potvrdiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6677,6 +8191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The current shortcut can't be used because it is already used \"%@\""
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Táto skratka sa nemôže použiť, pretože sa už používa pre \"%@\""
           }
         },
         "zh-Hans" : {
@@ -6708,6 +8228,12 @@
             "value" : "Shortcut Confict With \"%@\" Unable Use This"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konflikt skratky s \"%@\" Nemožno ju použiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6735,6 +8261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copy"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírovať"
           }
         },
         "zh-Hans" : {
@@ -6766,6 +8298,12 @@
             "value" : "Copy first translated text"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírovať prvý preložený text"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6793,6 +8331,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Decrease Font Size"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zmenšiť veľkosť písma"
           }
         },
         "zh-Hans" : {
@@ -6824,6 +8368,12 @@
             "value" : "Focus"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaostriť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6851,6 +8401,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase Font Size"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zväčšiť veľkosť písma"
           }
         },
         "zh-Hans" : {
@@ -6882,6 +8438,12 @@
             "value" : "Play"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prehrať"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6908,6 +8470,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť"
           }
         },
         "zh-Hans" : {
@@ -6938,6 +8506,12 @@
             "value" : "Show Apple Dictionary quick link icon"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť Apple Slovník ikonu rýchleho odkazu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6964,6 +8538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Eudic quick link icon (if installed)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť Eudic ikonu rýchleho odkazu (ak je nainštalovaný)"
           }
         },
         "zh-Hans" : {
@@ -6994,6 +8574,12 @@
             "value" : "Show Google quick link icon"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť Google ikonu rýchleho odkazu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7022,6 +8608,12 @@
             "value" : "Show Setting quick link icon"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť ikonu Nastavenia rýchleho odkazu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7048,6 +8640,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Third person singular"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tretia osoba jednotného čísla"
           }
         },
         "zh-Hans" : {
@@ -7079,6 +8677,12 @@
             "value" : "Small"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Malé"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7105,6 +8709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Split words"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozdeliť slová"
           }
         },
         "zh-Hans" : {
@@ -7135,6 +8745,12 @@
             "value" : "💥 Failed to start local server, port: %@"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Nepodarilo sa spustiť lokálny server, port: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7161,6 +8777,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stop"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zastaviť"
           }
         },
         "zh-Hans" : {
@@ -7191,6 +8813,12 @@
             "value" : "Stop Playing Audio"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zastaviť prehrávanie zvuku"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7212,6 +8840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Success"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Úspech"
           }
         },
         "zh-Hans" : {
@@ -7242,6 +8876,12 @@
             "value" : "Summary"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Súhrn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7268,6 +8908,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Superlative"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Superlatív"
           }
         },
         "zh-Hans" : {
@@ -7299,6 +8945,12 @@
             "value" : "Synonyms"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synonymá"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7323,6 +8975,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent Translate"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tencent Translate"
@@ -7357,6 +9015,12 @@
             "value" : "Why does the edit button in the upper right corner flicker when selecting words in some applications?"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prečo tlačidlo úprav v pravom hornom rohu bliká pri označení slov v niektorých aplikáciách?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7384,6 +9048,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "See More"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zisti viac"
           }
         },
         "zh-Hans" : {
@@ -7415,6 +9085,12 @@
             "value" : "Why can't I use mouse hover to select words in some applications?"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prečo nemôžem použiť prechádzanie myšou na označenie slov v niektorých aplikáciách?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7444,6 +9120,12 @@
             "value" : "Why can't I select words on some web pages in the browser?"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prečo nemôžem označovať slová na niektorých webových stránkach v prehliadači?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7470,6 +9152,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Solve This"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyriešiť to"
           }
         },
         "zh-Hans" : {
@@ -7501,6 +9189,12 @@
             "value" : "Why does macOS still pop up asking for permissions even though I have given Easydict the Accessibility/Screen Recording permissions?"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prečo v macOS stále vyskakuje požiadavka na povolenia, aj keď som Easydictu udelil povolenia Prístupnosť/Nahrávanie obrazovky?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7528,6 +9222,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Why is the text empty when I select words in some applications?"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prečo je text prázdny pri označení slov v niektorých aplikáciách?"
           }
         },
         "zh-Hans" : {
@@ -7559,6 +9259,12 @@
             "value" : "Tips"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipy"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7586,6 +9292,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Why do word selection and OCR need to enable system-related permissions?"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prečo označovanie slov a OCR potrebujú povolenia súvisiace so systémom?"
           }
         },
         "zh-Hans" : {
@@ -7616,6 +9328,12 @@
             "value" : "Toggle Languages"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prepnúť jazyky"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7644,6 +9362,12 @@
             "value" : "UK"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UK"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7665,6 +9389,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unimplemented Function"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neimplementovaná funkcia"
           }
         },
         "zh-Hans" : {
@@ -7690,6 +9420,12 @@
             "value" : "Unknown Error"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neznáma chyba"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7710,6 +9446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unknown Option"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "neznáma možnosť"
           }
         },
         "zh-Hans" : {
@@ -7740,6 +9482,12 @@
             "value" : "Unpin"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odopnúť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7763,6 +9511,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "US"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "US"
@@ -7797,6 +9551,12 @@
             "value" : "Volcano Translate"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volcano Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7815,6 +9575,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Youdao"
@@ -7843,6 +9609,12 @@
           }
         },
         "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao Dictionary"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Youdao Dictionary"

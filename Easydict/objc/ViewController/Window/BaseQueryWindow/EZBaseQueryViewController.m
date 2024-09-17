@@ -58,7 +58,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, readonly) NSString *queryText;
-@property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
+@property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
@@ -202,7 +202,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 
 - (void)setupServices:(NSArray *)allServices {
-    NSMutableArray *serviceTypes = [NSMutableArray array];
+    NSMutableArray *serviceTypeIds = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
     
     self.youdaoService = nil;
@@ -213,7 +213,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self resetService:service];
             
             [services addObject:service];
-            [serviceTypes addObject:service.serviceType];
+            [serviceTypeIds addObject:service.serviceTypeWithUniqueIdentifier];
         }
         
         EZServiceType serviceType = service.serviceType;
@@ -226,7 +226,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
     self.services = services;
-    self.serviceTypes = serviceTypes;
+    self.serviceTypeIds = serviceTypeIds;
     
     self.audioPlayer = [[EZAudioPlayer alloc] init];
     if (!self.youdaoService) {
@@ -377,7 +377,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (EZQueryService *)defaultTTSService {
     EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
-        _defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        _defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
     }
     return _defaultTTSService;
 }
@@ -755,7 +755,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryService *service in self.services) {
         BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.queryTextType != EZQueryTextTypeNone;
         if (!enableAutoQuery) {
-            MMLogInfo(@"service disabled: %@", service.serviceType);
+            MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;
         }
         
@@ -805,7 +805,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                service:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!service.enabledQuery) {
-        MMLogWarn(@"service disabled: %@", service.serviceType);
+        MMLogWarn(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
         return;
     }
     if (queryModel.queryText.length == 0) {
@@ -1031,7 +1031,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
             context.duration = duration;
             context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-
+            
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
             //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
@@ -1115,9 +1115,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// !!!: Maybe return NSNotFound
 - (NSUInteger)rowIndexOfResult:(EZQueryResult *)result {
-    EZServiceType serviceType = result.serviceType;
+    NSString *serviceTypeWithUniqueIdentifier = result.serviceTypeWithUniqueIdentifier;
     // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
-    NSInteger row = [self.serviceTypes indexOfObject:serviceType];
+    NSInteger row = [self.serviceTypeIds indexOfObject:serviceTypeWithUniqueIdentifier];
     return row;
 }
 
@@ -1144,23 +1144,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     service.windowType = self.windowType;
 }
 
-- (void)updateService:(NSString *)serviceType autoQuery:(BOOL)autoQuery {
+- (void)updateService:(NSString *)serviceTypeWithUniqueIdentifier autoQuery:(BOOL)autoQuery {
     NSMutableArray *newServices = [self.services mutableCopy];
     for (EZQueryService *service in self.services) {
-        if (service.serviceType == serviceType) {
+        if ([service.serviceTypeWithUniqueIdentifier isEqualToString:serviceTypeWithUniqueIdentifier]) {
             if (!autoQuery) {
                 [self updateCellWithResult:service.result reloadData:YES completionHandler:nil];
                 return;
             }
             
-            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceType windowType:self.windowType];
-
+            EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceTypeWithUniqueIdentifier windowType:self.windowType];
+            
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZLLMStreamService.class]) {
                 [((EZLLMStreamService *)service) cancelSubscribers];
             }
-
-            NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+            
+            NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeWithUniqueIdentifier];
             newServices[index] = updatedService;
             self.services = newServices.copy;
             
@@ -1202,7 +1202,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.serviceTypes indexOfObject:result.service.serviceType];
+    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceTypeWithUniqueIdentifier];
     if (index != NSNotFound) {
         NSInteger row = index + [self resultCellOffset];
         EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
@@ -1507,7 +1507,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         MMLogError(@"error row: %ld, windowType: %ld", row, self.windowType);
         return nil;
     }
-
+    
     EZQueryService *service = self.services[index];
     return service;
 }
@@ -1518,8 +1518,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 
-- (nullable EZQueryService *)serviceWithType:(EZServiceType)serviceType {
-    NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+- (nullable EZQueryService *)serviceWithType:(NSString *)serviceTypeId {
+    NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeId];
     if (index != NSNotFound) {
         return self.services[index];
     }
