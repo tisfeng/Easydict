@@ -255,6 +255,14 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
         // Remove prefix [//,#,*,] and join texts.
         queryText = [queryText removeCommentBlockSymbols];
     }
+    
+    /**
+    Replace newlines with whitespace.
+    https://github.com/tisfeng/Easydict/issues/639
+     */
+    if (Configuration.shared.replaceNewlineWithSpace) {
+        queryText = [queryText replacingNewlinesWithWhitespace];
+    }
 
     return [queryText trim];
 }

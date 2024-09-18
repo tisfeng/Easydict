@@ -97,6 +97,7 @@ extension Defaults.Keys {
         "EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols",
         default: true
     )
+    static let replaceNewlineWithSpace = Key<Bool>("EZConfiguration_kReplaceNewlineWithSpace", default: false)
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
