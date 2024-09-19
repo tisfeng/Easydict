@@ -6138,18 +6138,18 @@
         }
       }
     },
-    "service.configuration.remove" : {
+    "service.configuration.delete" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove"
+            "value" : "Delete"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove"
+            "value" : "Delete"
           }
         },
         "sk" : {

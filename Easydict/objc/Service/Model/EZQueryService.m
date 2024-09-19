@@ -321,7 +321,7 @@ userInfo:nil]
     return NO;
 }
 
-- (BOOL)isRemovable:(EZWindowType)type {
+- (BOOL)isDeletable:(EZWindowType)type {
     return YES;
 }
 

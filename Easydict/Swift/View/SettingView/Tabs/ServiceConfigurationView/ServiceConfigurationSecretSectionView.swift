@@ -49,8 +49,8 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                     Text("service.configuration.duplicate")
                 }
 
-                if service.isRemovable(service.windowType) {
-                    Button("service.configuration.remove", role: .destructive) {
+                if service.isDeletable(service.windowType) {
+                    Button("service.configuration.delete", role: .destructive) {
                         service.remove()
                     }
                 }

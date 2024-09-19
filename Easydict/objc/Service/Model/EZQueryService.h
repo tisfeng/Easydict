@@ -127,7 +127,7 @@ NS_SWIFT_NAME(QueryService)
 
 - (BOOL)isDuplicatable;
 
-- (BOOL)isRemovable:(EZWindowType)type;
+- (BOOL)isDeletable:(EZWindowType)type;
 
 /// 获取文本的语言
 /// @param text 文本
