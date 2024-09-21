@@ -15,8 +15,6 @@ import SwiftUI
 struct GeneralTab: View {
     // MARK: Internal
 
-    @Environment(\.colorScheme) var colorScheme
-
     class CheckUpdaterViewModel: ObservableObject {
         // MARK: Lifecycle
 
@@ -38,6 +36,8 @@ struct GeneralTab: View {
 
         private let updater = Configuration.shared.updater
     }
+
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         Form {
@@ -104,9 +104,6 @@ struct GeneralTab: View {
                 Toggle("clear_input_when_translating", isOn: $clearInput)
                 Toggle("keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty)
                 Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
-                Toggle("automatically_remove_code_comment_symbols", isOn: $automaticallyRemoveCodeCommentSymbols)
-                Toggle("automatically_split_words", isOn: $automaticWordSegmentation)
-                Toggle("replace_newline_with_space", isOn: $replaceNewlineWithSpace)
             } header: {
                 Text("setting.general.input.header")
             }
@@ -262,9 +259,6 @@ struct GeneralTab: View {
     @Default(.clearQueryWhenInputTranslate) private var clearInput
     @Default(.keepPrevResultWhenSelectTranslateTextIsEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
-    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
-    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
-    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
 
     @Default(.autoPlayAudio) private var autoPlayAudio
 
