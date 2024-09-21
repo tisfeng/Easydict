@@ -5645,19 +5645,19 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obnoviť"
+            "value" : "Odstrániť"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重置"
+            "value" : "删除"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重設"
+            "value" : "刪除"
           }
         }
       }
@@ -6308,7 +6308,7 @@
         }
       }
     },
-    "service.configuration.tencent.secret_id.title" : {
+    "service.configuration.openai.user_prompt.footnote" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6341,6 +6341,7 @@
           }
         }
       }
+
     },
     "service.configuration.openai.user_prompt.placeholder" : {
       "localizations" : {
@@ -6406,6 +6407,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "User Prompt"
+          }
+        }
+      }
+    },
+    "service.configuration.tencent.secret_id.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          },
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          },
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          },
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          },
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          },
+        }
+      }
+    },
+    "service.configuration.tencent.secret_key.title" : {
+    "localizations" : {
+        "en" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "en-CA" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "sk" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "zh-Hant" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "zh-Hans" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        }
+      }
+    },
+    "service.configuration.validate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validate"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overenie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "驗證"
           }
         }
       }
@@ -6785,6 +6888,40 @@
         }
       }
     },
+    "setting.general.advance.footer.query_text_processing_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note: This will not modify the original text, only process the query content."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note: This will not modify the original text, only process the query content."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poznámka: Toto nebude meniť pôvodný text, len spracuje text dotazu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意，这不会修改原文，仅对查询内容进行处理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意，這不會修改原文，僅對查詢內容進行處理"
+          }
+        }
+      }
+    },
     "setting.general.advance.header.http_server" : {
       "localizations" : {
         "en" : {
@@ -6849,40 +6986,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢文本處理"
-          }
-        }
-      }
-    },
-    "setting.general.advance.footer.query_text_processing_desc" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note: This will not modify the original text, only process the query content."
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note: This will not modify the original text, only process the query content."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poznámka: Toto nebude meniť pôvodný text, len spracuje text dotazu."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "注意，这不会修改原文，仅对查询内容进行处理"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "注意，這不會修改原文，僅對查詢內容進行處理"
           }
         }
       }
