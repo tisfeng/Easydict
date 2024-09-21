@@ -71,13 +71,13 @@ struct SettingView: View {
         // Disable zoom button, refer: https://stackoverflow.com/a/66039864/8378840
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
-        // Keep the settings page windows all the same width to avoid strange animations.
+        // Keep the settings page Windows all the same width to avoid strange animations.
         let maxWidth: Double = 900
         let height: Double = switch selection {
         case .disabled:
             500
         case .advanced:
-            550
+            750
         case .privacy:
             320
         case .about:

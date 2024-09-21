@@ -779,7 +779,7 @@ Easydict is a free and open source project, currently mainly developed and maint
 
 If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a developer account to solve the app [signature problem](https://github.com/tisfeng/Easydict/issues/2) and make Easydict more accessible to more people.
 
-<a href="https://afdian.net/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
+<a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
@@ -869,6 +869,11 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-08-05 | succulent | 20 | 感谢老哥，easydict 很好用 |
 | 2024-08-08 | 须尽欢 | 20 | 感谢开源 感谢更新 |
 | 2024-08-14 | 장철 | 5 | 中韩翻译可以添加 papago 吗？（我没用这个翻译，等有缘人 PR）|
+| 2024-08-15 |  | 5 | 感恩！|
+| 2024-08-20 | Ishmael | 50 |  |
+| 2024-08-28 | Rich Coinu | 5 | 希望你越来越好 |
+| 2024-08-29 | 迦南 | 10 | 请大佬喝冰可乐🥤 |
+| 2024-08-30 | Benjamin | 10 | 感谢开源，辛苦了，在校生支持了 |
 
 </p>
 

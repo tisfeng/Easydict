@@ -61,6 +61,42 @@ struct AdvancedTab: View {
                     )
                 }
             }
+
+            Section {
+                Toggle(isOn: $replaceNewlineWithSpace) {
+                    AdvancedTabItemView(
+                        color: .mint,
+                        systemImage: "arrow.forward.square",
+                        labelText: "replace_newline_with_space"
+                    )
+                }
+                Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: "chevron.left.forwardslash.chevron.right",
+                        labelText: "automatically_remove_code_comment_symbols"
+                    )
+                }
+                Toggle(isOn: $automaticWordSegmentation) {
+                    AdvancedTabItemView(
+                        color: .indigo,
+                        systemImage: "text.word.spacing",
+                        labelText: "automatically_split_words"
+                    )
+                }
+            } header: {
+                Text("setting.general.advance.header.query_text_processing")
+            } footer: {
+                HStack {
+                    Text("setting.general.advance.footer.query_text_processing_desc")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 10)
+
+                    Spacer()
+                }
+            }
+
             Section {
                 Toggle(isOn: $enableHTTPServer) {
                     AdvancedTabItemView(
@@ -87,13 +123,16 @@ struct AdvancedTab: View {
 
     // MARK: Private
 
-    private let swiftColor = Color(red: 240 / 255, green: 81 / 255, blue: 56 / 255)
-
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.replaceWithTranslationInCompatibilityMode) private var replaceWithTranslationInCompatibilityMode
+
+    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
+    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
 }

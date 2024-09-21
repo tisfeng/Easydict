@@ -35,7 +35,7 @@ class CustomOpenAIService: BaseOpenAIService {
         true
     }
 
-    override func isRemovable(_ type: EZWindowType) -> Bool {
+    override func isDeletable(_ type: EZWindowType) -> Bool {
         !uuid.isEmpty
     }
 
