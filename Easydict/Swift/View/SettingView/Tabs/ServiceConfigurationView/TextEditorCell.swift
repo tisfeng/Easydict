@@ -80,7 +80,6 @@ struct TextEditorCell: View {
                 .font(.footnote)
                 .foregroundStyle(.gray)
                 .fixedSize(horizontal: false, vertical: true)
-                .lineSpacing(3)
                 .textSelection(.enabled)
         }
     }
