@@ -48,6 +48,8 @@ struct StreamConfigurationView: View {
         #if DEBUG
         self.isEditable = isEditable || Defaults[.enableBetaFeature]
         #endif
+
+        self._showCustomPromptTextEditor = .init(service.enableCustomPromptKey)
     }
 
     // MARK: Internal
@@ -66,6 +68,9 @@ struct StreamConfigurationView: View {
     let showUsageStatusPicker: Bool
 
     var isEditable = true
+
+    // show system prompt and user prompt, according to service.enableCustomPrompt
+    @Default var showCustomPromptTextEditor: Bool
 
     var body: some View {
         ServiceConfigurationSecretSectionView(
@@ -124,23 +129,25 @@ struct StreamConfigurationView: View {
                     footnote: "service.configuration.openai.enable_custom_prompt.footnote"
                 )
 
-                VStack(spacing: 5) {
-                    // system prompt
-                    TextEditorCell(
-                        titleKey: "service.configuration.openai.system_prompt.title",
-                        storedValueKey: service.systemPromptKey,
-                        placeholder: "service.configuration.openai.system_prompt.placeholder",
-                        height: 100
-                    )
+                if showCustomPromptTextEditor {
+                    VStack(spacing: 5) {
+                        // system prompt
+                        TextEditorCell(
+                            titleKey: "service.configuration.openai.system_prompt.title",
+                            storedValueKey: service.systemPromptKey,
+                            placeholder: "service.configuration.openai.system_prompt.placeholder",
+                            height: 100
+                        )
 
-                    // user prompt
-                    TextEditorCell(
-                        titleKey: "service.configuration.openai.user_prompt.title",
-                        storedValueKey: service.userPromptKey,
-                        placeholder: "service.configuration.openai.user_prompt.placeholder",
-                        footnote: "service.configuration.openai.user_prompt.footnote",
-                        height: 120
-                    )
+                        // user prompt
+                        TextEditorCell(
+                            titleKey: "service.configuration.openai.user_prompt.title",
+                            storedValueKey: service.userPromptKey,
+                            placeholder: "service.configuration.openai.user_prompt.placeholder",
+                            footnote: "service.configuration.openai.user_prompt.footnote",
+                            height: 120
+                        )
+                    }
                 }
             }
 
