@@ -6121,19 +6121,19 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Prompt"
+            "value" : "Systémový prompt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Prompt"
+            "value" : "系统 Prompt"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Prompt"
+            "value" : "系統 Prompt"
           }
         }
       }
@@ -6394,19 +6394,19 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "User Prompt"
+            "value" : "Uživatelský prompt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "User Prompt"
+            "value" : "用户 Prompt"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "User Prompt"
+            "value" : "用戶 Prompt"
           }
         }
       }
