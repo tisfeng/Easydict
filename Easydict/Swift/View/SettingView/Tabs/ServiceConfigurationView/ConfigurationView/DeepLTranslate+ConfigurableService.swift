@@ -13,18 +13,18 @@ import SwiftUI
 extension EZDeepLTranslate {
     open override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.deepLAuth]) {
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.deepl.auth_key.title",
                 key: .deepLAuth
             )
 
-            ServiceConfigurationInputCell(
+            InputCell(
                 textFieldTitleKey: "service.configuration.deepl.endpoint.title",
                 key: .deepLTranslateEndPointKey,
                 placeholder: "service.configuration.deepl.endpoint.placeholder"
             )
 
-            ServiceConfigurationPickerCell(
+            StaticPickerCell(
                 titleKey: "service.configuration.deepl.translation.title",
                 key: .deepLTranslation,
                 values: DeepLAPIUsagePriority.allCases

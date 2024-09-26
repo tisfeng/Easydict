@@ -15,11 +15,11 @@ extension VolcanoService {
             service: self,
             observeKeys: [.volcanoAccessKeyID, .volcanoSecretAccessKey]
         ) {
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.volcano.access_id.title",
                 key: .volcanoAccessKeyID
             )
-            ServiceConfigurationSecureInputCell(
+            SecureInputCell(
                 textFieldTitleKey: "service.configuration.volcano.secret_key.title",
                 key: .volcanoSecretAccessKey
             )

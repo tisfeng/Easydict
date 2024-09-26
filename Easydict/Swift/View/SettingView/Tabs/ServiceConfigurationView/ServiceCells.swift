@@ -10,9 +10,9 @@ import Combine
 import Defaults
 import SwiftUI
 
-// MARK: - ServiceConfigurationSecureInputCell
+// MARK: - SecureInputCell
 
-struct ServiceConfigurationSecureInputCell: View {
+struct SecureInputCell: View {
     // MARK: Lifecycle
 
     init(
@@ -39,9 +39,9 @@ struct ServiceConfigurationSecureInputCell: View {
     }
 }
 
-// MARK: - ServiceConfigurationInputCell
+// MARK: - InputCell
 
-struct ServiceConfigurationInputCell: View {
+struct InputCell: View {
     // MARK: Lifecycle
 
     init(
@@ -81,9 +81,9 @@ struct ServiceConfigurationInputCell: View {
     }
 }
 
-// MARK: - ServiceConfigurationPickerCell
+// MARK: - StaticPickerCell
 
-struct ServiceConfigurationPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
+struct StaticPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConvertible>: View {
     // MARK: Lifecycle
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<T>, values: [T]) {
@@ -159,9 +159,11 @@ class ToggleViewModel: ObservableObject {
     }
 }
 
-// MARK: - ServiceConfigurationToggleCell
+// MARK: - StringToggleCell
 
-struct ServiceConfigurationToggleCell: View {
+/// Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
+/// For new feature, we should use ToggleCell instead of StringToggleCell.
+struct StringToggleCell: View {
     // MARK: Lifecycle
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {
@@ -173,11 +175,46 @@ struct ServiceConfigurationToggleCell: View {
 
     let titleKey: LocalizedStringKey
 
-    // Since we previously used String for the toggle value, we have to connect String <--> Bool with a viewModel.
-    @ObservedObject var viewModel: ToggleViewModel
-
     var body: some View {
         Toggle(titleKey, isOn: $viewModel.isOn)
             .padding(10.0)
     }
+
+    // MARK: Private
+
+    @ObservedObject private var viewModel: ToggleViewModel
+}
+
+// MARK: - ToggleCell
+
+struct ToggleCell: View {
+    // MARK: Lifecycle
+
+    init(titleKey: LocalizedStringKey, key: Defaults.Key<Bool>, footnote: LocalizedStringKey? = nil) {
+        self.titleKey = titleKey
+        self.footnote = footnote
+        self._value = .init(key)
+    }
+
+    // MARK: Internal
+
+    let titleKey: LocalizedStringKey
+    let footnote: LocalizedStringKey?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle(titleKey, isOn: $value)
+
+            if let footnote {
+                Text(footnote)
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding(10.0)
+    }
+
+    // MARK: Private
+
+    @Default private var value: Bool
 }

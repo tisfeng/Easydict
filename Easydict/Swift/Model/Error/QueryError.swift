@@ -11,7 +11,7 @@ import Foundation
 // MARK: - QueryError
 
 @objcMembers
-public class QueryError: NSError, LocalizedError {
+public class QueryError: NSError, LocalizedError, @unchecked Sendable {
     // MARK: Lifecycle
 
     public init(type: ErrorType, code: Int = -1, message: String) {
