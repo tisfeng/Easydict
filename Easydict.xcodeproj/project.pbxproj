@@ -13,7 +13,6 @@
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
 		03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F182B3591AE00B63209 /* GoogleGenerativeAI */; };
 		03022F1C2B35DEBA00B63209 /* Hue in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1B2B35DEBA00B63209 /* Hue */; };
-		03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1E2B36CF3100B63209 /* SwiftShell */; };
 		03022F222B36D1A400B63209 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F212B36D1A400B63209 /* SnapKit */; };
 		03022F312B370B7100B63209 /* EasydictSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03022F302B370B7100B63209 /* EasydictSwiftTests.swift */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
@@ -214,8 +213,6 @@
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
-		03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 03CF27FD2B3DA7D500E19B57 /* Realm */; };
-		03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03CF27FF2B3DA7D500E19B57 /* RealmSwift */; };
 		03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF5E632C39B2310058F9DB /* OllamaModel.swift */; };
 		03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+Convenience.swift */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
@@ -878,11 +875,9 @@
 				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
 				C4BFDD7A2BE61F550094026B /* Vortex in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
-				03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
 				038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */,
-				03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */,
 				C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
 				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
@@ -894,7 +889,6 @@
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
 				03A830952B4076FC00112834 /* FirebaseAnalyticsSwift in Frameworks */,
 				EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */,
-				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
 				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
 				967712EA2B5B913600105E0F /* KeyHolder in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
@@ -2606,10 +2600,7 @@
 				2721E4CF2AFE920700A059AC /* Alamofire */,
 				03FD68BA2B1DC59600FD388E /* CryptoSwift */,
 				03022F1B2B35DEBA00B63209 /* Hue */,
-				03022F1E2B36CF3100B63209 /* SwiftShell */,
 				03022F212B36D1A400B63209 /* SnapKit */,
-				03CF27FD2B3DA7D500E19B57 /* Realm */,
-				03CF27FF2B3DA7D500E19B57 /* RealmSwift */,
 				03A8308C2B405F8E00112834 /* Sparkle */,
 				03A8308F2B4073E700112834 /* AppCenterAnalytics */,
 				03A830912B4073E700112834 /* AppCenterCrashes */,
@@ -2676,9 +2667,7 @@
 				2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */,
 				03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 				03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */,
-				03022F1D2B36CF3100B63209 /* XCRemoteSwiftPackageReference "SwiftShell" */,
 				03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				03A8308E2B4073E700112834 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
@@ -3553,14 +3542,6 @@
 				minimumVersion = 5.0.1;
 			};
 		};
-		03022F1D2B36CF3100B63209 /* XCRemoteSwiftPackageReference "SwiftShell" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kareman/SwiftShell";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.0;
-			};
-		};
 		03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -3649,14 +3630,6 @@
 				minimumVersion = 10.19.1;
 			};
 		};
-		03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.45.2;
-			};
-		};
 		03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
@@ -3726,11 +3699,6 @@
 			package = 03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */;
 			productName = Hue;
 		};
-		03022F1E2B36CF3100B63209 /* SwiftShell */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03022F1D2B36CF3100B63209 /* XCRemoteSwiftPackageReference "SwiftShell" */;
-			productName = SwiftShell;
-		};
 		03022F212B36D1A400B63209 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
@@ -3795,16 +3763,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalyticsSwift;
-		};
-		03CF27FD2B3DA7D500E19B57 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		03CF27FF2B3DA7D500E19B57 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 		03FD68BA2B1DC59600FD388E /* CryptoSwift */ = {
 			isa = XCSwiftPackageProductDependency;

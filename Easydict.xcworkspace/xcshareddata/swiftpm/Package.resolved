@@ -1,5 +1,5 @@
 {
-  "originHash" : "a685d631f5593cb350025f6931dea2eb21f34abbf1a8c35459d913538fb0847b",
+  "originHash" : "c0fbe2705b5ab5f64a7d6eaaaa483e2a47f2e6dd63ab90084e5d339d5c51cbd7",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -281,24 +281,6 @@
       }
     },
     {
-      "identity" : "realm-core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-core.git",
-      "state" : {
-        "revision" : "7227d6a447821c28895daa099b6c7cd4c99d461b",
-        "version" : "13.25.1"
-      }
-    },
-    {
-      "identity" : "realm-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-swift.git",
-      "state" : {
-        "revision" : "569c656a8494ad03d790fd1075338c1da92d495a",
-        "version" : "10.45.2"
-      }
-    },
-    {
       "identity" : "routing-kit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/routing-kit.git",
@@ -479,15 +461,6 @@
       }
     },
     {
-      "identity" : "swiftshell",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kareman/SwiftShell",
-      "state" : {
-        "revision" : "99680b2efc7c7dbcace1da0b3979d266f02e213c",
-        "version" : "5.1.0"
-      }
-    },
-    {
       "identity" : "vapor",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
@@ -524,5 +497,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
