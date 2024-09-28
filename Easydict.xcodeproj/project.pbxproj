@@ -75,6 +75,7 @@
 		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
 		0364EC8A2C208EB50036B61B /* KeySender in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC892C208EB50036B61B /* KeySender */; };
 		0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC8C2C208FB70036B61B /* AXSwift */; };
+		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
 		036BCD4A2BDE8A96009C893F /* DefaultsStoredKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* DefaultsStoredKey.swift */; };
@@ -891,6 +892,7 @@
 				EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */,
 				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
 				967712EA2B5B913600105E0F /* KeyHolder in Frameworks */,
+				036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
@@ -2619,6 +2621,7 @@
 				0364EC8C2C208FB70036B61B /* AXSwift */,
 				033E181E2C5A970A0099A7B0 /* Vapor */,
 				C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */,
+				036806572CA829F100800B76 /* SFSafeSymbols */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2684,6 +2687,7 @@
 				0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */,
 				033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */,
 				C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
+				036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3574,6 +3578,14 @@
 				minimumVersion = 0.3.2;
 			};
 		};
+		036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.3.0;
+			};
+		};
 		03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tisfeng/OpenAI";
@@ -3718,6 +3730,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */;
 			productName = AXSwift;
+		};
+		036806572CA829F100800B76 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
 		};
 		03779F192BB25797008D3C42 /* OpenAI */ = {
 			isa = XCSwiftPackageProductDependency;
