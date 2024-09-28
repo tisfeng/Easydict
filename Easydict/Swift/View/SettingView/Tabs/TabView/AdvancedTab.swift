@@ -7,7 +7,9 @@
 //
 
 import Defaults
+import SFSafeSymbols
 import SwiftUI
+
 struct AdvancedTab: View {
     // MARK: Internal
 
@@ -17,7 +19,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableBetaFeature) {
                     AdvancedTabItemView(
                         color: .blue,
-                        systemImage: "hammer.fill",
+                        systemImage: SFSymbol.hammerFill.rawValue,
                         labelText: "setting.general.advance.enable_beta_feature"
                     )
                 }
@@ -27,7 +29,7 @@ struct AdvancedTab: View {
                     selection: $defaultTTSServiceType,
                     label: AdvancedTabItemView(
                         color: .orange,
-                        systemImage: "ellipsis.bubble.fill",
+                        systemImage: SFSymbol.ellipsisBubbleFill.rawValue,
                         labelText: "setting.general.advance.default_tts_service"
                     )
                 ) {
@@ -39,7 +41,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $disableTipsView) {
                     AdvancedTabItemView(
                         color: .yellow,
-                        systemImage: "lightbulb.fill",
+                        systemImage: SFSymbol.lightbulbFill.rawValue,
                         labelText: "disable_tips_view"
                     )
                 }
@@ -47,7 +49,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableYoudaoOCR) {
                     AdvancedTabItemView(
                         color: .orange,
-                        systemImage: "circle.rectangle.filled.pattern.diagonalline",
+                        systemImage: SFSymbol.circleRectangleFilledPatternDiagonalline.rawValue,
                         labelText: "enable_youdao_ocr",
                         subtitleText: "enable_youdao_ocr_desc"
                     )
@@ -55,7 +57,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
                         color: .mint,
-                        systemImage: "arrow.forward.square",
+                        systemImage: SFSymbol.arrowForwardSquare.rawValue,
                         labelText: "setting.general.advance.replace_with_translation",
                         subtitleText: "setting.general.advance.replace_with_translation_desc"
                     )
@@ -66,21 +68,21 @@ struct AdvancedTab: View {
                 Toggle(isOn: $replaceNewlineWithSpace) {
                     AdvancedTabItemView(
                         color: .mint,
-                        systemImage: "arrow.forward.square",
+                        systemImage: SFSymbol.arrowForwardSquare.rawValue,
                         labelText: "replace_newline_with_space"
                     )
                 }
                 Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
                     AdvancedTabItemView(
                         color: .orange,
-                        systemImage: "chevron.left.forwardslash.chevron.right",
+                        systemImage: SFSymbol.chevronLeftForwardslashChevronRight.rawValue,
                         labelText: "automatically_remove_code_comment_symbols"
                     )
                 }
                 Toggle(isOn: $automaticWordSegmentation) {
                     AdvancedTabItemView(
                         color: .indigo,
-                        systemImage: "text.word.spacing",
+                        systemImage: SFSymbol.textWordSpacing.rawValue,
                         labelText: "automatically_split_words"
                     )
                 }
@@ -101,14 +103,14 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableHTTPServer) {
                     AdvancedTabItemView(
                         color: .green,
-                        systemImage: "network",
+                        systemImage: SFSymbol.network.rawValue,
                         labelText: "setting.general.advance.enable_http_server"
                     )
                 }
                 TextField(text: $httpPort, prompt: Text(verbatim: "8080")) {
                     AdvancedTabItemView(
                         color: .red,
-                        systemImage: "externaldrive.connected.to.line.below",
+                        systemImage: SFSymbol.externaldriveConnectedToLineBelow.rawValue,
                         labelText: "setting.general.advance.http_port",
                         subtitleText: "setting.general.advance.http_port_desc"
                     )
