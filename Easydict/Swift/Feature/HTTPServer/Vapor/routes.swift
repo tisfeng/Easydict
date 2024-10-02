@@ -13,6 +13,7 @@ func routes(_ app: Application) throws {
         "Hello, Welcome to Easydict server!"
     }
 
+    /// Translate text
     app.post("translate") { req async throws -> TranslationResponse in
         let request = try req.content.decode(TranslationRequest.self)
         let appleDictionaryNames = request.appleDictionaryNames
@@ -26,7 +27,8 @@ func routes(_ app: Application) throws {
         }
 
         if service.isStream() {
-            throw TranslationError
+            throw
+                TranslationError
                 .invalidParameter(
                     "\(request.serviceType) is stream service, which does not support 'translate' API. Please use 'streamTranslate."
                 )
@@ -52,12 +54,14 @@ func routes(_ app: Application) throws {
         let request = try req.content.decode(TranslationRequest.self)
         let serviceType = ServiceType(rawValue: request.serviceType)
 
-        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
+        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType)
+        else {
             throw TranslationError.unsupportedServiceType(request.serviceType)
         }
 
         guard let streamService = service as? LLMStreamService else {
-            throw TranslationError
+            throw
+                TranslationError
                 .invalidParameter(
                     "\(serviceType.rawValue) isn't stream service, which does not support 'streamTranslate' API. Please use 'translate."
                 )
@@ -73,7 +77,9 @@ func routes(_ app: Application) throws {
             headers: headers,
             body: .init(asyncStream: { writer in
                 do {
-                    let chatStreamResults = try await streamService.streamTranslate(request: request)
+                    let chatStreamResults = try await streamService.streamTranslate(
+                        request: request
+                    )
                     for try await streamResult in chatStreamResults {
                         if let json = streamResult.jsonString {
                             let event = "data: \(json)\n\n"
@@ -109,5 +115,12 @@ func routes(_ app: Application) throws {
             ocrText: result.mergedText,
             sourceLanguage: result.from.code
         )
+    }
+
+    /// Detect language
+    app.post("detect") { req async throws -> DetectResponse in
+        let request = try req.content.decode(DetectRequest.self)
+        let queryModel = try await EZDetectManager().detectText(request.text)
+        return DetectResponse(sourceLanguage: queryModel.detectedLanguage.code)
     }
 }

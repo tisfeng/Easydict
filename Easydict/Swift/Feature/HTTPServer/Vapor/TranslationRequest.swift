@@ -64,3 +64,15 @@ struct OCRResponse: Content {
     var ocrText: String
     var sourceLanguage: String
 }
+
+// MARK: - DetectRequest
+
+struct DetectRequest: Content {
+    var text: String
+}
+
+// MARK: - DetectResponse
+
+struct DetectResponse: Content {
+    var sourceLanguage: String // BCP-47 language code
+}
