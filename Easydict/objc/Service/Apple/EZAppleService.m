@@ -750,7 +750,7 @@ static EZAppleService *_instance;
     
     self.ocrImage = image;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         // Convert NSImage to CGImage
         CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
         
