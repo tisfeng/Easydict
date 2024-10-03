@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 单词或短语意思
 @property (nonatomic, strong, nullable) NSArray<NSString *> *means; // 美好的
 
-@property (nonatomic, copy) NSString *meansText; // means join @"; "
+@property (nonatomic, copy, readonly) NSString *meansText; // means array joined by @"; "
 
 ///  move part to meansText
 @property (nonatomic, assign) BOOL showPartMeans; // adj. 美好的

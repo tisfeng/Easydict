@@ -412,7 +412,7 @@ outer:
                     }
                     EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
                     simpleWord.word = examples.firstObject;
-                    simpleWord.meansText = examples.lastObject;
+                    simpleWord.means = [examples.lastObject componentsSeparatedByString:@";"];
                     [simpleWords addObject:simpleWord];
                 }
             } else if ([description isEqualToString:@"分类词典"]) {

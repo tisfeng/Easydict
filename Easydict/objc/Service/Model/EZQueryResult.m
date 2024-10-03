@@ -158,6 +158,10 @@ NSString *getPartAbbreviation(NSString *part) {
 @end
 
 
+@interface EZTranslateSimpleWord ()
+@property (nonatomic, copy) NSString *meansText;
+@end
+
 @implementation EZTranslateSimpleWord : NSObject
 
 - (void)setPart:(NSString *)part {
