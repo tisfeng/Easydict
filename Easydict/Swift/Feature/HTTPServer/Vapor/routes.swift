@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import MJExtension
 import Vapor
 
 func routes(_ app: Application) throws {
@@ -40,6 +41,17 @@ func routes(_ app: Application) throws {
             translatedText: result.translatedText ?? "",
             sourceLanguage: result.from.code
         )
+
+        // Decode word result to DictionaryEntry
+        if let jsonData = result.wordResult?.mj_JSONData() {
+            do {
+                let decoder = JSONDecoder()
+                let entry = try decoder.decode(DictionaryEntry.self, from: jsonData)
+                response.dictionaryEntry = entry
+            } catch {
+                print("Decode DictionaryEntry failed: \(error)")
+            }
+        }
 
         if service is AppleDictionary {
             response.HTMLStrings = result.htmlStrings

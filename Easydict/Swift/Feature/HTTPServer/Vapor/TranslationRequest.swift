@@ -24,6 +24,7 @@ struct TranslationResponse: Content {
     var translatedText: String
     var sourceLanguage: String
     var HTMLStrings: [String]?
+    var dictionaryEntry: DictionaryEntry?
 }
 
 // MARK: - TranslationError
