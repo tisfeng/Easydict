@@ -745,7 +745,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     MMLogInfo(@"selectTextTranslate windowType: %@", @(windowType));
     self.eventMonitor.actionType = EZActionTypeShortcutQuery;
-    [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
+    [self.eventMonitor getSelectedTextWithCompletion:^(NSString *_Nullable text) {
         self.actionType = self.eventMonitor.actionType;
 
         /**

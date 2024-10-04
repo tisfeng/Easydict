@@ -133,6 +133,14 @@ func routes(_ app: Application) throws {
     app.post("detect") { req async throws -> DetectResponse in
         let request = try req.content.decode(DetectRequest.self)
         let queryModel = try await EZDetectManager().detectText(request.text)
+
         return DetectResponse(sourceLanguage: queryModel.detectedLanguage.code)
+    }
+
+    /// Get selected text
+    app.get("selectedText") { _ async throws -> GetSelectedTextResponse in
+        // Refer to https://developer.apple.com/documentation/swift/calling-objective-c-apis-asynchronously
+        let selectedText = await EZEventMonitor.shared().selectedText()
+        return GetSelectedTextResponse(selectedText: selectedText)
     }
 }

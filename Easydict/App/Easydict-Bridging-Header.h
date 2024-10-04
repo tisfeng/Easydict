@@ -28,3 +28,4 @@
 #import "EZDetectManager.h"
 #import "EZAppleDictionary.h"
 #import "EZServiceTypes.h"
+#import "EZEventMonitor.h"

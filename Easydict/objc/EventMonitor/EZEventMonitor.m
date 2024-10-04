@@ -260,7 +260,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 #pragma mark - Get selected text.
 
-- (void)getSelectedText:(void (^)(NSString *_Nullable))completion {
+- (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable))completion {
     [self getSelectedText:NO completion:completion];
 }
 

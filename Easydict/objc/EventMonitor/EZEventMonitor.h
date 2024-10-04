@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)shared;
 
 /// Use Accessibility to get selected text first, if failed, use shortcut.
-- (void)getSelectedText:(void (^)(NSString *_Nullable text))completion;
+- (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable text))completion;
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
