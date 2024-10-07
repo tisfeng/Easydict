@@ -271,6 +271,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     self.selectedTextEditable = NO;
 
+//    NSString *selectedText = SystemUtility.getSelectedText;
+//    completion(selectedText);
+//    return;
+
     // Use Accessibility first
     [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError axError) {
         self.selectTextType = EZSelectTextTypeAccessibility;
@@ -578,12 +582,19 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)checkAndUseSimulatedKeyWithAXError:(AXError)error completion:(void (^)(NSString *))completion {
     if ([self shouldUseSimulatedKeyWithAXError:error]) {
+        NSString *selectedText = [SystemUtility getSelectedTextByMenuActionCopy];
+        if (selectedText.length > 0) {
+            completion(selectedText);
+            return;
+        }
+
         [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
             self.selectTextType = EZSelectTextTypeSimulatedKey;
             completion(text);
         }];
         return;
     }
+
     completion(nil);
 }
 

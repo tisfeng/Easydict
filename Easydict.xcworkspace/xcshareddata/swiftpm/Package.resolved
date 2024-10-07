@@ -1,5 +1,5 @@
 {
-  "originHash" : "4522f17a11a18c4ec2fe8a019a23d5abd4dbe177fde49641ee2910c5ab766161",
+  "originHash" : "eda589a5488b401c099ed4ed5e421b84e2c131f92a7db95dddc0cfa64abb0b40",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -62,6 +62,15 @@
       "state" : {
         "revision" : "81dcc36aced905d6464cc25e35f8d13184bbf21c",
         "version" : "0.3.2"
+      }
+    },
+    {
+      "identity" : "axswiftext",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/s1ntoneli/AXSwiftExt",
+      "state" : {
+        "revision" : "a2696cad4504996dffc53bb59892e13242a2c243",
+        "version" : "0.1.0"
       }
     },
     {

@@ -52,6 +52,10 @@
 		0340D39E2C951850004C9910 /* QueryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D39D2C951850004C9910 /* QueryError.swift */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
+		0346F3D02CAECAAF006A6CDF /* GetSelectedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CF2CAECAAF006A6CDF /* GetSelectedText.swift */; };
+		0346F3D32CAECB4C006A6CDF /* SystemUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */; };
+		0346F3D62CAECEFC006A6CDF /* AXSwiftExt in Frameworks */ = {isa = PBXBuildFile; productRef = 0346F3D52CAECEFC006A6CDF /* AXSwiftExt */; };
+		0346F3D82CAECF5C006A6CDF /* NSPasteboard+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D72CAECF5C006A6CDF /* NSPasteboard+Extension.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -430,6 +434,9 @@
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
+		0346F3CF2CAECAAF006A6CDF /* GetSelectedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetSelectedText.swift; sourceTree = "<group>"; };
+		0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtility.swift; sourceTree = "<group>"; };
+		0346F3D72CAECF5C006A6CDF /* NSPasteboard+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPasteboard+Extension.swift"; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
@@ -877,6 +884,7 @@
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
 				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
 				C4BFDD7A2BE61F550094026B /* Vortex in Frameworks */,
+				0346F3D62CAECEFC006A6CDF /* AXSwiftExt in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
@@ -1143,6 +1151,16 @@
 				0340D39D2C951850004C9910 /* QueryError.swift */,
 			);
 			path = Error;
+			sourceTree = "<group>";
+		};
+		0346F3D12CAECB38006A6CDF /* GetSelectedText */ = {
+			isa = PBXGroup;
+			children = (
+				0346F3CF2CAECAAF006A6CDF /* GetSelectedText.swift */,
+				0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */,
+				0346F3D72CAECF5C006A6CDF /* NSPasteboard+Extension.swift */,
+			);
+			path = GetSelectedText;
 			sourceTree = "<group>";
 		};
 		03542A2D293645B800C34C33 /* Apple */ = {
@@ -2473,6 +2491,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				0346F3D12CAECB38006A6CDF /* GetSelectedText */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 				96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */,
@@ -2625,6 +2644,7 @@
 				033E181E2C5A970A0099A7B0 /* Vapor */,
 				C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */,
 				036806572CA829F100800B76 /* SFSafeSymbols */,
+				0346F3D52CAECEFC006A6CDF /* AXSwiftExt */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2691,6 +2711,7 @@
 				033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */,
 				C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
+				0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3127,6 +3148,7 @@
 				03542A552937B7DE00C34C33 /* EZError.m in Sources */,
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
+				0346F3D32CAECB4C006A6CDF /* SystemUtility.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
@@ -3137,6 +3159,7 @@
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
+				0346F3D02CAECAAF006A6CDF /* GetSelectedText.swift in Sources */,
 				DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
@@ -3164,6 +3187,7 @@
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
 				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
+				0346F3D82CAECF5C006A6CDF /* NSPasteboard+Extension.swift in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,
 			);
@@ -3566,6 +3590,14 @@
 				minimumVersion = 4.102.1;
 			};
 		};
+		0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/s1ntoneli/AXSwiftExt";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 		0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jordanbaird/KeySender";
@@ -3724,6 +3756,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */;
 			productName = Vapor;
+		};
+		0346F3D52CAECEFC006A6CDF /* AXSwiftExt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */;
+			productName = AXSwiftExt;
 		};
 		0364EC892C208EB50036B61B /* KeySender */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -141,6 +141,9 @@ func routes(_ app: Application) throws {
     app.get("selectedText") { _ async throws -> GetSelectedTextResponse in
         // Refer to https://developer.apple.com/documentation/swift/calling-objective-c-apis-asynchronously
         let selectedText = await EZEventMonitor.shared().selectedText()
+
+//        let selectedText = SystemUtility.getSelectedText()
+
         return GetSelectedTextResponse(selectedText: selectedText)
     }
 }
