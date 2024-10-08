@@ -16,12 +16,42 @@ import ObjectiveC.runtime
 
 @objcMembers
 public class SystemUtility: NSObject {
-    // MARK: Internal
+    // MARK: Public
 
-    //    public class func getSelectedText() -> String? {
-    //        getSelectedTextByAXUI() ?? getSelectedTextByMenuActionCopy()
-    //            ?? getSelectedTextByShortcutCopy()
-    //    }
+    /// Get selected text, try to get text by AXUI first, if failed, try to get text by menu action copy, if failed, try to get text by shortcut copy.
+    public class func getSelectedText() -> String? {
+        logInfo("Attempting to get selected text")
+
+        // Try AXUI method first
+        switch getSelectedTextByAXUI() {
+        case let .success(text):
+            logInfo("Successfully got text via AXUI")
+            return text
+        case let .failure(error):
+            logError("Failed to get text via AXUI: \(error)")
+
+            // If AXUI fails, try menu action copy
+            if let menuCopyText = getSelectedTextByMenuActionCopy() {
+                logInfo("Successfully got text via menu action copy")
+                return menuCopyText
+            }
+
+            logError("Failed to get text via menu action copy")
+
+            // If menu action copy fails, try shortcut copy
+            if let shortcutCopyText = getSelectedTextByShortcutCopy() {
+                logInfo("Successfully got text via shortcut copy")
+                return shortcutCopyText
+            }
+
+            logError("Failed to get text via shortcut copy")
+        }
+
+        logError("All methods to get selected text have failed")
+        return nil
+    }
+
+    // MARK: Internal
 
     /// Get selected text by AXUI
     class func getSelectedTextByAXUI() -> Result<String, AXError> {
@@ -70,7 +100,7 @@ public class SystemUtility: NSObject {
     /// Get selected text by menu action copy
     class func getSelectedTextByMenuActionCopy() -> String? {
         var result: String?
-        protectPasteboard {
+        NSPasteboard.general.onPrivateMode {
             result = _getSelectedTextByMenuActionCopy()
         }
         return result
@@ -84,7 +114,7 @@ public class SystemUtility: NSObject {
         let pasteboard = NSPasteboard.general
         let initialChangeCount = pasteboard.changeCount
 
-        pasteboard.onPrivateMode(endDelay: 0) {
+        pasteboard.onPrivateMode {
             callSystemCopy()
 
             let semaphore = DispatchSemaphore(value: 0)
@@ -131,7 +161,7 @@ public class SystemUtility: NSObject {
             return nil
         }
 
-        let pasteboard = NSPasteboard.selected
+        let pasteboard = NSPasteboard.general
         let initialChangeCount = pasteboard.changeCount
 
         do {
@@ -165,14 +195,6 @@ public class SystemUtility: NSObject {
 
         return result
     }
-}
-
-/// Protect pasteboard, record the last pasteboard content, and restore it after the task is completed.
-func protectPasteboard(task: () -> ()) {
-    let pasteboard = NSPasteboard.general
-    pasteboard.save()
-    task()
-    pasteboard.restore()
 }
 
 // 模拟粘贴
@@ -237,138 +259,6 @@ func copyToClipboard(_ text: String) {
     pasteboard.setString(text, forType: .string)
 }
 
-private var kArchiveKey: UInt8 = 0
-
-extension NSPasteboard {
-    var archive: [NSPasteboardItem]? {
-        get {
-            objc_getAssociatedObject(self, &kArchiveKey) as? [NSPasteboardItem]
-        }
-        set {
-            objc_setAssociatedObject(self, &kArchiveKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-
-    func save() {
-        var archive = [NSPasteboardItem]()
-        for item in pasteboardItems! {
-            let archivedItem = NSPasteboardItem()
-            for type in item.types {
-                if let data = item.data(forType: type) {
-                    archivedItem.setData(data, forType: type)
-                }
-            }
-            archive.append(archivedItem)
-        }
-        self.archive = archive
-    }
-
-    func restore() {
-        clearContents()
-        writeObjects(archive ?? [])
-    }
-
-    func onPrivateMode(endDelay: TimeInterval = 0.05, _ task: @escaping () -> ()) {
-        save()
-        task()
-        if endDelay > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + endDelay) {
-                NSPasteboard.general.restore()
-                NSPasteboard.general.archive = nil
-            }
-        } else {
-            NSPasteboard.general.restore()
-            NSPasteboard.general.archive = nil
-        }
-    }
-}
-
-// safe copy value
-private var kSafeCopyKey = 0
-extension NSPasteboard {
-    func safeCopy() {}
-
-    var safeCopyValue: [NSPasteboardItem]? {
-        get {
-            objc_getAssociatedObject(self, &kSafeCopyKey) as? [NSPasteboardItem]
-        }
-        set {
-            objc_setAssociatedObject(self, &kSafeCopyKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-
-    func saveToSafeCopyValue() {
-        //        self.safeCopyValue = pasteboardItems.copy()
-        safeCopyValue = pasteboardItems.copy()
-    }
-}
-
-// clone
-extension [NSPasteboardItem]? {
-    func copy() -> [NSPasteboardItem] {
-        var copyValue = [NSPasteboardItem]()
-
-        for item in self ?? [] {
-            let newItem = NSPasteboardItem()
-            for type in item.types {
-                if let data = item.data(forType: type) {
-                    newItem.setData(data, forType: type)
-                }
-            }
-            copyValue.append(newItem)
-        }
-        let fromSCX = NSPasteboardItem()
-        fromSCX.setData(Data(), forType: .fromCopi)
-        copyValue.append(fromSCX)
-
-        return copyValue
-    }
-}
-
-// safe copy plain text value
-private var kSafeCopyPlainTextKey = 0
-extension NSPasteboard {
-    var safeCopyPlainTextValue: String? {
-        get {
-            objc_getAssociatedObject(self, &kSafeCopyPlainTextKey) as? String
-        }
-        set {
-            objc_setAssociatedObject(
-                self, &kSafeCopyPlainTextKey, newValue, .OBJC_ASSOCIATION_RETAIN
-            )
-            safeCopyChangeCountValue += 1
-        }
-    }
-}
-
-// safe copy changeCount
-private var kSafeCopyChangeCountKey = 0
-extension NSPasteboard {
-    var safeCopyChangeCountValue: Int {
-        get {
-            objc_getAssociatedObject(self, &kSafeCopyChangeCountKey) as? Int ?? 0
-        }
-        set {
-            objc_setAssociatedObject(
-                self, &kSafeCopyChangeCountKey, newValue, .OBJC_ASSOCIATION_RETAIN
-            )
-        }
-    }
-}
-
-// safe copy plain text value
-private var kSelectedTextKey = 0
-extension NSPasteboard {
-    var selectedTextValue: String? {
-        get {
-            objc_getAssociatedObject(self, &kSelectedTextKey) as? String
-        }
-        set {
-            objc_setAssociatedObject(self, &kSelectedTextKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-}
-
 func pollTask(
     every interval: TimeInterval,
     timeout: TimeInterval = 2,
@@ -422,10 +312,6 @@ func listenAndInterceptKeyEvent(events: [CGEventType], handler: CGEventTapCallBa
     return eventTap
 }
 
-extension NSPasteboard.PasteboardType {
-    static var fromCopi: NSPasteboard.PasteboardType = .init("com.gokoding.Copi")
-}
-
 func measureTime(block: () -> ()) {
     let startTime = DispatchTime.now()
     block()
@@ -435,35 +321,6 @@ func measureTime(block: () -> ()) {
     let milliseconds = Double(nanoseconds) / 1_000_000
 
     print("Execution time: \(milliseconds) milliseconds")
-}
-
-func copyByService() {
-    print("copyByService")
-    guard AXSwift.checkIsProcessTrusted() else {
-        return
-    }
-    //    Task {
-    if let frontmost = NSWorkspace.shared.frontmostApplication, let app = Application(frontmost),
-       let copy = app.findMenuItem(title: "Safe Copy") {
-        logInfo("found copy")
-        try? copy.performAction(.press)
-    }
-    //    }
-}
-
-func pasteByService() {
-    print("pasteByService")
-    guard AXSwift.checkIsProcessTrusted() else {
-        return
-    }
-    Task {
-        if let frontmost = NSWorkspace.shared.frontmostApplication,
-           let app = Application(frontmost),
-           let paste = app.findMenuItem(title: "Safe Paste") {
-            logInfo("found paste")
-            try? paste.performAction(.press)
-        }
-    }
 }
 
 func canPerformCopy() -> UIElement? {
@@ -494,16 +351,4 @@ func isCopyMenuItem(_ element: UIElement) -> Bool {
     ]
 
     return copyTitles.contains(title)
-}
-
-func canPerformPaste() -> UIElement? {
-    guard AXSwift.checkIsProcessTrusted() else {
-        return nil
-    }
-
-    if let frontmost = NSWorkspace.shared.frontmostApplication, let app = Application(frontmost),
-       let paste = app.findMenuItem(title: "Safe Paste") {
-        return paste
-    }
-    return nil
 }
