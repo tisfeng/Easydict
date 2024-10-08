@@ -96,7 +96,7 @@ extension SystemUtility {
 
         logInfo("getSelectedTextByMenuActionCopy")
 
-        guard let copyElement = findEnabledCopyElementInFrontmostApp() else {
+        guard let copyItem = findEnabledCopyItemInFrontmostApp() else {
             return nil
         }
 
@@ -105,7 +105,7 @@ extension SystemUtility {
 
         pasteboard.onPrivateMode {
             do {
-                try copyElement.performAction(.press)
+                try copyItem.performAction(.press)
                 logInfo("Performed action copy")
             } catch {
                 logError("Failed to perform action copy: \(error)")
