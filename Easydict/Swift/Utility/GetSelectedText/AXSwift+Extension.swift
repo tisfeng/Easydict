@@ -66,6 +66,7 @@ extension UIElement {
         guard let title = title else {
             return false
         }
+
         let copyTitles = [
             "Copy",
             "拷贝",
@@ -94,7 +95,8 @@ private func findCopyMenuItemIn(_ menuElement: UIElement) -> UIElement? {
             logInfo("Found copy element by copy identifier: \(identifier)")
             return true
         }
-        if element.isCopyTitle, element.cmdChar == "C" {
+
+        if element.cmdChar == "C", element.isCopyTitle {
             logInfo(
                 "Found copy element by copy title in menu: \(element.title!), identifier: \(identifier)"
             )

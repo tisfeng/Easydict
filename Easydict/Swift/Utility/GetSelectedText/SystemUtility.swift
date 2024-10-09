@@ -9,11 +9,8 @@
 import AXSwift
 import AXSwiftExt
 import Carbon
-import Cocoa
 
 // MARK: - SystemUtility
-
-// import ObjectiveC.runtime
 
 @objcMembers
 class SystemUtility: NSObject {}
