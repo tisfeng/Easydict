@@ -9,7 +9,7 @@
 import Foundation
 
 @objc(EZLocalizedBundle)
-class LocalizedBundle: Bundle {
+class LocalizedBundle: Bundle, @unchecked Sendable {
     override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
         I18nHelper.shared.localizedBundle.localizedString(forKey: key, value: value, table: tableName)
     }

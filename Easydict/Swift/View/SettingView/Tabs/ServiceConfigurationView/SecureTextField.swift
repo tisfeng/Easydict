@@ -37,6 +37,7 @@ struct SecureTextField: View {
                 Image(systemName: showText ? "eye.slash.fill" : "eye.fill")
             }
         }
+        .padding(10)
         .onChange(of: focus) { newValue in
             // if the PasswordField is focused externally, then make sure the correct field is actually focused
             if newValue != nil {

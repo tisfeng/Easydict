@@ -57,7 +57,7 @@ class AppleScriptTask: NSObject {
 
     @discardableResult
     static func runAppleScript(_ appleScript: String) async throws -> String? {
-        try await Task.detached {
+        try await Task.detached(priority: .userInitiated) {
             var errorInfo: NSDictionary?
             let script = NSAppleScript(source: appleScript)
             guard let output = script?.executeAndReturnError(&errorInfo) else {

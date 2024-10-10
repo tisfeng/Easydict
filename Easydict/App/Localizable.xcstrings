@@ -5645,19 +5645,19 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obnoviť"
+            "value" : "Odstrániť"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重置"
+            "value" : "删除"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重設"
+            "value" : "刪除"
           }
         }
       }
@@ -5866,6 +5866,74 @@
         }
       }
     },
+    "service.configuration.openai.enable_custom_prompt.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When custom prompt is enabled, the default translation, sentence analysis, and dictionary prompt will be disabled."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When custom prompt is enabled, the default translation, sentence analysis, and dictionary prompt will be disabled."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keď je povolený vlastný prompt, bude vypnutý predvolený preklad, analýza věty a slovník."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启自定义 Prompt 时，会禁用默认的翻译、句子分析和查单词 Prompt。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟自訂提示時，會禁用預設的翻譯、句子分析和查單字提示。"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.enable_custom_prompt.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Custom Prompt"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Custom Prompt"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povoliť vlastný prompt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用自定义 Prompt"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用自訂 Prompt"
+          }
+        }
+      }
+    },
     "service.configuration.openai.endpoint.placeholder" : {
       "localizations" : {
         "en" : {
@@ -5998,6 +6066,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "句子"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.system_prompt.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are a helpful translation assistant."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are a helpful translation assistant."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jste užitečná pomocí překladu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你是一个有用的翻译助手。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你是一個有用的翻譯助手。"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.system_prompt.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Prompt"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systémový prompt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统 Prompt"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系統 Prompt"
           }
         }
       }
@@ -6172,36 +6308,105 @@
         }
       }
     },
-    "service.configuration.tencent.secret_id.title" : {
+    "service.configuration.openai.user_prompt.footnote" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset"
+            "value" : "Supports the following environment variables:\n\n${{queryText}}: Query text\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset"
+            "value" : "Supports the following environment variables:\n\n${{queryText}}: Query text\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obnoviť"
+            "value" : "Podporuje nasledujúce premenné prostredia:\n\n${{queryText}}: Text dotazu\n${{queryFromLanguage}}: Jazyk dotazu\n${{queryTargetLanguage}}: Cieľový jazyk\n${{firstLanguage}}: Prvý jazyk používateľa\n\nPríklad: Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重置"
+            "value" : "支持以下环境变量：\n\n${{queryText}}: 查询文本\n${{queryFromLanguage}}: 查询语言\n${{queryTargetLanguage}}: 目标语言\n${{firstLanguage}}: 用户第一语言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重設"
+            "value" : "支援以下環境變數：\n\n${{queryText}}: 查詢文本\n${{queryFromLanguage}}: 查詢語言\n${{queryTargetLanguage}}: 目標語言\n${{firstLanguage}}: 使用者第一語言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        }
+      }
+
+    },
+    "service.configuration.openai.user_prompt.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将下面 ${{queryFromLanguage}} 的文本翻译成 ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將下面 ${{queryFromLanguage}} 的文本翻譯成 ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.user_prompt.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Prompt"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uživatelský prompt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户 Prompt"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用戶 Prompt"
           }
         }
       }
@@ -6211,65 +6416,99 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Id"
-          }
+            "value" : "Secret ID"
+          },
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Id"
-          }
+            "value" : "Secret ID"
+          },
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tajné ID"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secret Id"
-          }
+            "value" : "Secret ID"
+          },
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Id"
-          }
+            "value" : "Secret ID"
+          },
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          },
         }
       }
     },
     "service.configuration.tencent.secret_key.title" : {
+    "localizations" : {
+        "en" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "en-CA" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "sk" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "zh-Hant" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        },
+        "zh-Hans" : {
+          "stringUnit" : {  
+            "state" : "translated",
+            "value" : "Secret Key"
+          },
+        }
+      }
+    },
+    "service.configuration.validate" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Key"
+            "value" : "Validate"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Key"
+            "value" : "Validate"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tajný kľúč"
+            "value" : "Overenie"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Key"
+            "value" : "验证"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secret Key"
+            "value" : "驗證"
           }
         }
       }
@@ -6649,6 +6888,40 @@
         }
       }
     },
+    "setting.general.advance.footer.query_text_processing_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note: This will not modify the original text, only process the query content."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note: This will not modify the original text, only process the query content."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poznámka: Toto nebude meniť pôvodný text, len spracuje text dotazu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意，这不会修改原文，仅对查询内容进行处理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意，這不會修改原文，僅對查詢內容進行處理"
+          }
+        }
+      }
+    },
     "setting.general.advance.header.http_server" : {
       "localizations" : {
         "en" : {
@@ -6713,40 +6986,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢文本處理"
-          }
-        }
-      }
-    },
-    "setting.general.advance.footer.query_text_processing_desc" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note: This will not modify the original text, only process the query content."
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note: This will not modify the original text, only process the query content."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poznámka: Toto nebude meniť pôvodný text, len spracuje text dotazu."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "注意，这不会修改原文，仅对查询内容进行处理"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "注意，這不會修改原文，僅對查詢內容進行處理"
           }
         }
       }

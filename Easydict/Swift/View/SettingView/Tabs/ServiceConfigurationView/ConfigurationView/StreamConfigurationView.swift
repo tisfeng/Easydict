@@ -23,6 +23,7 @@ struct StreamConfigurationView: View {
         showEndpointSection: Bool = true,
         showSupportedModelsSection: Bool = true,
         showUsedModelSection: Bool = true,
+        showCustomPromptSection: Bool = false,
         showTranslationToggle: Bool = true,
         showSentenceToggle: Bool = true,
         showDictionaryToggle: Bool = true,
@@ -35,6 +36,7 @@ struct StreamConfigurationView: View {
         self.showEndpointSection = showEndpointSection
         self.showSupportedModelsSection = showSupportedModelsSection
         self.showUsedModelSection = showUsedModelSection
+        self.showCustomPromptSection = showCustomPromptSection
         self.showTranslationToggle = showTranslationToggle
         self.showSentenceToggle = showSentenceToggle
         self.showDictionaryToggle = showDictionaryToggle
@@ -46,6 +48,8 @@ struct StreamConfigurationView: View {
         #if DEBUG
         self.isEditable = isEditable || Defaults[.enableBetaFeature]
         #endif
+
+        self._showCustomPromptTextEditor = .init(service.enableCustomPromptKey)
     }
 
     // MARK: Internal
@@ -57,6 +61,7 @@ struct StreamConfigurationView: View {
     let showEndpointSection: Bool
     let showSupportedModelsSection: Bool
     let showUsedModelSection: Bool
+    let showCustomPromptSection: Bool
     let showTranslationToggle: Bool
     let showSentenceToggle: Bool
     let showDictionaryToggle: Bool
@@ -64,13 +69,16 @@ struct StreamConfigurationView: View {
 
     var isEditable = true
 
+    // show system prompt and user prompt, according to service.enableCustomPrompt
+    @Default var showCustomPromptTextEditor: Bool
+
     var body: some View {
         ServiceConfigurationSecretSectionView(
             service: service,
             observeKeys: service.observeKeys
         ) {
             if showNameSection {
-                ServiceConfigurationInputCell(
+                InputCell(
                     textFieldTitleKey: "service.configuration.custom_openai.name.title",
                     key: service.nameKey,
                     placeholder: "custom_openai",
@@ -79,7 +87,7 @@ struct StreamConfigurationView: View {
             }
 
             if showAPIKeySection {
-                ServiceConfigurationSecureInputCell(
+                SecureInputCell(
                     textFieldTitleKey: "service.configuration.openai.api_key.title",
                     key: service.apiKeyKey,
                     placeholder: service.apiKeyPlaceholder
@@ -87,7 +95,7 @@ struct StreamConfigurationView: View {
             }
 
             if showEndpointSection {
-                ServiceConfigurationSecureInputCell(
+                SecureInputCell(
                     textFieldTitleKey: "service.configuration.openai.endpoint.title",
                     key: service.endpointKey,
                     placeholder: service.endpointPlaceholder,
@@ -99,7 +107,9 @@ struct StreamConfigurationView: View {
                 TextEditorCell(
                     titleKey: "service.configuration.custom_openai.supported_models.title",
                     storedValueKey: service.supportedModelsKey,
-                    placeholder: "service.configuration.custom_openai.model.placeholder"
+                    placeholder: "service.configuration.custom_openai.model.placeholder",
+                    minHeight: 55,
+                    maxHeight: 100
                 ).disabled(!isEditable)
             }
 
@@ -111,27 +121,56 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if showCustomPromptSection {
+                ToggleCell(
+                    titleKey: "service.configuration.openai.enable_custom_prompt.title",
+                    key: service.enableCustomPromptKey,
+                    footnote: "service.configuration.openai.enable_custom_prompt.footnote"
+                )
+
+                if showCustomPromptTextEditor {
+                    VStack(spacing: 5) {
+                        // system prompt
+                        TextEditorCell(
+                            titleKey: "service.configuration.openai.system_prompt.title",
+                            storedValueKey: service.systemPromptKey,
+                            placeholder: "service.configuration.openai.system_prompt.placeholder",
+                            height: 100
+                        )
+
+                        // user prompt
+                        TextEditorCell(
+                            titleKey: "service.configuration.openai.user_prompt.title",
+                            storedValueKey: service.userPromptKey,
+                            placeholder: "service.configuration.openai.user_prompt.placeholder",
+                            footnote: "service.configuration.openai.user_prompt.footnote",
+                            height: 120
+                        )
+                    }
+                }
+            }
+
             if showTranslationToggle {
-                ServiceConfigurationToggleCell(
+                StringToggleCell(
                     titleKey: "service.configuration.openai.translation.title",
                     key: service.translationKey
                 )
             }
             if showSentenceToggle {
-                ServiceConfigurationToggleCell(
+                StringToggleCell(
                     titleKey: "service.configuration.openai.sentence.title",
                     key: service.sentenceKey
                 )
             }
             if showDictionaryToggle {
-                ServiceConfigurationToggleCell(
+                StringToggleCell(
                     titleKey: "service.configuration.openai.dictionary.title",
                     key: service.dictionaryKey
                 )
             }
 
             if showUsageStatusPicker {
-                ServiceConfigurationPickerCell(
+                StaticPickerCell(
                     titleKey: "service.configuration.openai.usage_status.title",
                     key: service.serviceUsageStatusKey,
                     values: ServiceUsageStatus.allCases
