@@ -230,14 +230,14 @@ struct GeneralTab: View {
                 let targetLanguage = Locale.Language(identifier: "zh") // 中文
 
                 // 使用 TranslationView 进行预览
-                if #available(macOS 15.0, *) {
-                    TranslationView(
-                        sourceLanguage: sourceLanguage,
-                        targetLanguage: targetLanguage
-                    )
-                } else {
-                    // Fallback on earlier versions
-                }
+//                if #available(macOS 15.0, *) {
+//                    TranslationView(
+//                        sourceLanguage: sourceLanguage,
+//                        targetLanguage: targetLanguage
+//                    )
+//                } else {
+//                    // Fallback on earlier versions
+//                }
             }
         }
         .formStyle(.grouped)
