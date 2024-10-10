@@ -11,6 +11,7 @@
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
 #import "EZLocalStorage.h"
+#import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
 

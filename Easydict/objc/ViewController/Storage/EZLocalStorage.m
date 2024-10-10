@@ -8,6 +8,7 @@
 
 #import "EZLocalStorage.h"
 #import "EZLog.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kServiceInfoStorageKey = @"kServiceInfoStorageKey";
 static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";

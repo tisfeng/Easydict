@@ -17,6 +17,7 @@
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
+#import "Easydict-Swift.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 

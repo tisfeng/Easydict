@@ -14,6 +14,7 @@
 #import <CoreImage/CoreImage.h>
 #import "NSString+EZUtils.h"
 #import "EZAppleDictionary.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";

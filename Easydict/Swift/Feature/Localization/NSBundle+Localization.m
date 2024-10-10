@@ -7,6 +7,7 @@
 //
 
 #import <objc/runtime.h>
+#import "Easydict-Swift.h"
 
 @implementation NSBundle (Localization)
 

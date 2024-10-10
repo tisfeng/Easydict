@@ -12,6 +12,7 @@
 #import "NSString+EZChineseText.h"
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
+#import "Easydict-Swift.h"
 
 #define MethodNotImplemented()                                                                                                           \
 @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \

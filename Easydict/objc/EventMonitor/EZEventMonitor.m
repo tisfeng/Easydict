@@ -12,6 +12,7 @@
 #import "EZToast.h"
 #import "EZLocalStorage.h"
 #import "EZSystemUtility.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;

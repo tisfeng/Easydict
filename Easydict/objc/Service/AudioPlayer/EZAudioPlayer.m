@@ -16,6 +16,7 @@
 #import "NSString+EZUtils.h"
 #import "EZServiceTypes.h"
 #import <sys/xattr.h>
+#import "Easydict-Swift.h"
 
 static NSString *const kFileExtendedAttributes = @"NSFileExtendedAttributes";
 

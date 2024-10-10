@@ -23,7 +23,7 @@ extension String {
         return encryptedString ?? ""
     }
 
-    func decryptAES() -> String {
+    public func decryptAES() -> String {
         let ciphertext = try? aes.decrypt(Array(base64: self))
         let decryptedString = String(bytes: ciphertext ?? [], encoding: .utf8)!
         return decryptedString

@@ -222,6 +222,23 @@ struct GeneralTab: View {
                 Text("hints_keyboard_shortcuts_font_size")
                     .font(.footnote)
             }
+
+            Section {
+                let sourceText = "Hello, world!"
+
+                let sourceLanguage = Locale.Language(identifier: "en") // 英文
+                let targetLanguage = Locale.Language(identifier: "zh") // 中文
+
+                // 使用 TranslationView 进行预览
+                if #available(macOS 15.0, *) {
+                    TranslationView(
+                        sourceLanguage: sourceLanguage,
+                        targetLanguage: targetLanguage
+                    )
+                } else {
+                    // Fallback on earlier versions
+                }
+            }
         }
         .formStyle(.grouped)
         .task {

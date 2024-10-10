@@ -10,6 +10,7 @@
 #import "EZSelectLanguageButton.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
+#import "Easydict-Swift.h"
 
 @interface EZSelectLanguageCell ()
 

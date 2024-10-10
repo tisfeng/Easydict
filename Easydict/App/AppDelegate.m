@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
+#import "Easydict-Swift.h"
 
 @interface AppDelegate ()
 

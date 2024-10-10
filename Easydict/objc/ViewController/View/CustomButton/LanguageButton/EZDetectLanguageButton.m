@@ -9,6 +9,7 @@
 #import "EZDetectLanguageButton.h"
 #import "EZLanguageManager.h"
 #import "NSView+EZAnimatedHidden.h"
+#import "Easydict-Swift.h"
 
 @interface EZDetectLanguageButton ()
 

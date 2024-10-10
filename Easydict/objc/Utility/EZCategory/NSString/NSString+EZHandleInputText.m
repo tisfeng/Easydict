@@ -11,6 +11,7 @@
 #import "NSString+EZSplit.h"
 #import "EZAppleService.h"
 #import "EZAppleDictionary.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 

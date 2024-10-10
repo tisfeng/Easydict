@@ -10,6 +10,7 @@
 #import "EZWindowManager.h"
 #import "EZSystemUtility.h"
 #import "EZLog.h"
+#import "Easydict-Swift.h"
 
 @implementation EZReplaceTextButton
 

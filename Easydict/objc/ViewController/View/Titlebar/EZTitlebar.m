@@ -13,6 +13,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
+#import "Easydict-Swift.h"
 
 typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZTitlebarButtonTypePin = 0,
