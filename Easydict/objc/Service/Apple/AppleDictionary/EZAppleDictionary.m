@@ -17,8 +17,6 @@
 /// Default is all active dicts: [TTTDictionary activeDictionaries]
 @property (nonatomic, copy) NSArray<TTTDictionary *> *appleDictionaries;
 
-@property (nonatomic, strong) WKWebView *webView;
-
 @end
 
 @implementation EZAppleDictionary
@@ -50,20 +48,6 @@ static EZAppleDictionary *_instance;
         self.appleDictionaryNames = names;
     }
     return self;
-}
-
-- (WKWebView *)webView {
-    if (!_webView) {
-        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-        WKPreferences *preferences = [[WKPreferences alloc] init];
-        preferences.javaScriptCanOpenWindowsAutomatically = NO;
-        configuration.preferences = preferences;
-
-        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
-        _webView = webView;
-        webView.navigationDelegate = self;
-    }
-    return _webView;
 }
 
 #pragma mark - Setter && Getter

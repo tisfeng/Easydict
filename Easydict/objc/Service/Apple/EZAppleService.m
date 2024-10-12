@@ -124,6 +124,8 @@ static char kJoinedStringKey;
 @property (nonatomic, strong) EZLanguageManager *languageManager;
 @property (nonatomic, strong) EZAppleDictionary *appleDictionary;
 
+@property (nonatomic, strong) API_AVAILABLE(macos(15.0)) TranslationService *translationService;
+
 @end
 
 @implementation EZAppleService
@@ -162,6 +164,12 @@ static EZAppleService *_instance;
     return _appleLangEnumFromStringDict;
 }
 
+- (TranslationService *)translationService {
+    if (!_translationService) {
+        _translationService = [[TranslationService alloc] init];
+    }
+    return _translationService;
+}
 
 #pragma mark - 子类重写
 
@@ -196,6 +204,8 @@ static EZAppleService *_instance;
                                         // macOS 14+
                                         EZLanguageDutch, @"nl_NL",
                                         EZLanguageUkrainian, @"uk_UA",
+                                        // macOS 15+
+                                        EZLanguageHindi, @"hi_IN",
                                         nil];
 
     return orderedDict;
@@ -254,7 +264,8 @@ static EZAppleService *_instance;
     return orderedDict;
 }
 
-/// Apple ocr language: "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+/// Apple ocr languages are from [VNRecognizeTextRequest supportedRecognitionLanguagesAndReturnError:nil]
+/// "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
 - (MMOrderedDictionary *)ocrLanguageDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageSimplifiedChinese, @"zh-Hans",
@@ -279,7 +290,7 @@ static EZAppleService *_instance;
 - (MMOrderedDictionary<EZLanguage, NLLanguage> *)spellCheckerLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"Multilingual",
-                                        EZLanguageEnglish, @"en", // NLLanguageEnglishen
+                                        EZLanguageEnglish, @"en", // NLLanguageEnglish
                                         EZLanguageKorean, @"ko",
                                         EZLanguageFrench, @"fr",
                                         EZLanguageSpanish, @"es",
@@ -318,8 +329,24 @@ static EZAppleService *_instance;
 - (void)translate:(NSString *)text
              from:(EZLanguage)from
                to:(EZLanguage)to
-       completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion
-{
+       completion:(void (^)(EZQueryResult *, NSError *))completion {
+    // Use macOS 15+ API to translate if enabled.
+    if (Configuration.shared.enableAppleOfflineTranslation) {
+        if (@available(macOS 15.0, *)) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.translationService translateWithText:text
+                                            sourceLanguage:from
+                                            targetLanguage:to
+                                         completionHandler:^(NSString *targetText, NSError *error) {
+                    if (targetText) {
+                        self.result.translatedResults = @[ targetText ];
+                    }
+                    completion(self.result, error);
+                }];
+            });
+            return;
+        }
+    }
 
     if (from == EZLanguageAuto) {
         from = [self appleDetectTextLanguage:text];
@@ -435,7 +462,7 @@ static EZAppleService *_instance;
     NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
 
     /**
-     The synthesizer’s speaking rate (words per minute).
+     The synthesizer's speaking rate (words per minute).
 
      The range of supported rates is not predefined by the Speech Synthesis framework; but the synthesizer may only respond to a limited range of speech rates. Average human speech occurs at a rate of 180 to 220 words per minute.
      */
@@ -501,7 +528,8 @@ static EZAppleService *_instance;
 
     NSMutableArray *needCorrectedLanguages = @[
         EZLanguageEnglish, // si
-    ].mutableCopy;
+    ]
+        .mutableCopy;
 
     /**
      Fix: cuda was detectde as SimplifiedChinese, --> 粗大 cuda
@@ -2269,7 +2297,7 @@ static EZAppleService *_instance;
     // 《蝶恋花 • 阅尽天涯离别苦》
     NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"⋅•⋅‧∙"];
     //    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@"·"];
-    
+
     NSString *text = string;
     NSArray *strings = [string componentsSeparatedByCharactersInSet:charSet];
 

@@ -7,30 +7,49 @@
 //
 
 import Testing
+import Translation
 
 @testable import Easydict
 
-@Test func checkName() {
-    #expect(1 + 2 == 3)
+@Test func testSystemLanguages() async {
+    systemLanguages()
+}
 
-    printAllAvailableLanguages()
+@Test func testAvailableIdentifiers() async {
+    availableIdentifiers()
 }
 
 @available(macOS 15.0, *)
-@Test func supportedLanguages() async {
-    prepareSupportedLanguages()
+@Test func testLanguageAvailability() async {
+    let apple = AppleService()
+    await apple.prepareSupportedLanguages()
 }
 
 @MainActor
 @available(macOS 15.0, *)
-@Test func translation() async throws {
-    let translationService = TranslationService()
+@Test func appleOfflineTranslation() async throws {
+    let translationService = TranslationService(
+        configuration: .init(
+            source: .init(languageCode: .english),
+            target: .init(languageCode: .chinese)
+        )
+    )
+
+    #expect(try await translationService.translate(text: "Hello, world!").targetText == "你好，世界！")
+    #expect(try await translationService.translate(text: "good").targetText == "利益")
+
     let response = try await translationService.translate(
-        text: "Hello, world!",
-        sourceLanguage: .init(identifier: "en"),
-        targetLanguage: .init(identifier: "zh")
+        text: "你好",
+        sourceLanguage: .init(languageCode: .chinese),
+        targetLanguage: .init(languageCode: .english)
     )
     print(response)
+    #expect(response.targetText == "Hello")
+}
 
-    #expect(response.targetText == "你好，世界！")
+@Test func testAES() {
+    let text = "123"
+    let encryptedText = text.encryptAES()
+    let decryptedText = encryptedText.decryptAES()
+    #expect(decryptedText == text)
 }

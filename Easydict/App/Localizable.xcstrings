@@ -833,74 +833,6 @@
         }
       }
     },
-    "automatically_remove_code_comment_symbols" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When querying, automatically remove the code comment symbol \"/*#\" from the text."
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When querying, automatically remove the code comment symbol \"/*#\" from the text."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pri dotazovaní sa automaticky odstráni symbol komentára kódu \"/*#\" z textu."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查询时，自动移除文本中的代码注释符号「/*#」"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查詢時，自動移除文本中的代碼注釋符號「/*#」"
-          }
-        }
-      }
-    },
-    "automatically_split_words" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When querying, automatically split single word text into key_value —> key value"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When querying, automatically split single word text into key_value —> key value"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pri dotazovaní sa automaticky rozdelí jednoduchý slovný text na key_value —> key value"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查询时，将单个单词文本自动分词 key_value —> key value"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查詢時，將單個單詞文本自動分詞 key_value —> key value"
-          }
-        }
-      }
-    },
     "Baidu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1673,41 +1605,6 @@
         }
       }
     },
-    "disable_tips_view" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable Tips View"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disable Tips View"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vypnúť zobrazovanie tipov"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭提示视图"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停用提示檢視"
-          }
-        }
-      }
-    },
     "disabled_app_list" : {
       "comment" : "disabled app list",
       "localizations" : {
@@ -1829,76 +1726,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict 🍃"
-          }
-        }
-      }
-    },
-    "enable_youdao_ocr" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable Youdao OCR "
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable Youdao OCR "
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zapnúť Youdao OCR"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启有道 OCR 识别"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用有道 OCR"
-          }
-        }
-      }
-    },
-    "enable_youdao_ocr_desc" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use the Youdao OCR for identification after a default OCR failure"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use the Youdao OCR for identification after a default OCR failure"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Použiť Youdao OCR na identifikáciu po zlyhaní štandardného OCR"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在默认OCR识别失败后使用有道OCR进行识别"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預設 OCR 識別失敗後使用有道 OCR 進行識別"
           }
         }
       }
@@ -4773,38 +4600,7 @@
       }
     },
     "replace_newline_with_space" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When querying, replace the \"newline\" in the text with \"space\""
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When querying, replace the \"newline\" in the text with \"space\""
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pri dotazovaní nahraď \"newline\" v texte s \"space\""
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查询时，将文本中的「换行符」替换为「空格」"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查詢時，將文本中的「換行符」替換為「空格」"
-          }
-        }
-      }
+
     },
     "replace_text" : {
       "localizations" : {
@@ -6341,7 +6137,6 @@
           }
         }
       }
-
     },
     "service.configuration.openai.user_prompt.placeholder" : {
       "localizations" : {
@@ -6417,65 +6212,65 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret ID"
-          },
+          }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret ID"
-          },
+          }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret ID"
-          },
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secret ID"
-          },
+          }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret ID"
-          },
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          }
         }
       }
     },
     "service.configuration.tencent.secret_key.title" : {
-    "localizations" : {
+      "localizations" : {
         "en" : {
-          "stringUnit" : {  
+          "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
-          },
+          }
         },
         "en-CA" : {
-          "stringUnit" : {  
+          "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
-          },
+          }
         },
         "sk" : {
-          "stringUnit" : {  
+          "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
-          },
-        },
-        "zh-Hant" : {
-          "stringUnit" : {  
-            "state" : "translated",
-            "value" : "Secret Key"
-          },
+          }
         },
         "zh-Hans" : {
-          "stringUnit" : {  
+          "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
-          },
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Key"
+          }
         }
       }
     },
@@ -6751,42 +6546,143 @@
         }
       }
     },
-    "setting.disabled.import_app_error.message" : {
-      "extractionState" : "manual",
+    "setting.advance.apple_offline_translation" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to add Application"
+            "value" : "Apple Offline Translation (macOS 15+ new feature)"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to add Application"
+            "value" : "Apple Offline Translation (macOS 15+ new feature)"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nie je možné pridať aplikáciu"
+            "value" : "Apple Offline Preklad (nová funkcia macOS 15+)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法添加应用"
+            "value" : "苹果离线翻译（macOS 15+ 新功能）"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無法新增應用程式"
+            "value" : "蘋果離線翻譯（macOS 15+ 新功能）"
           }
         }
       }
     },
-    "setting.general.advance.default_tts_service" : {
+    "setting.advance.automatically_remove_code_comment_symbols" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When querying, automatically remove the code comment symbol \"/*#\" from the text."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When querying, automatically remove the code comment symbol \"/*#\" from the text."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pri dotazovaní sa automaticky odstráni symbol komentára kódu \"/*#\" z textu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查询时，自动移除文本中的代码注释符号「/*#」"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查詢時，自動移除文本中的代碼注釋符號「/*#」"
+          }
+        }
+      }
+    },
+    "setting.advance.automatically_replace_newline_with_space" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When querying, automatically replace the \"newline\" in the text with \"space\""
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When querying, automatically replace the \"newline\" in the text with \"space\""
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pri dotazovaní automaticky nahraďte \"nový riadok\" v texte \"medzerou\""
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查询时，自动将文本中的「换行符」替换为「空格」"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查詢時，自動將文本中的「換行符」替換為「空格」"
+          }
+        }
+      }
+    },
+    "setting.advance.automatically_split_words" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When querying, automatically split single word text into key_value —> key value"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When querying, automatically split single word text into key_value —> key value"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pri dotazovaní sa automaticky rozdelí jednoduchý slovný text na key_value —> key value"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查询时，自动将单个单词文本分词为 key_value —> key value"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查詢時，自動將單個單詞文本分詞為 key_value —> key value"
+          }
+        }
+      }
+    },
+    "setting.advance.default_tts_service" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6820,7 +6716,42 @@
         }
       }
     },
-    "setting.general.advance.enable_beta_feature" : {
+    "setting.advance.disable_tips_view" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable Tips View"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable Tips View"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypnúť zobrazovanie tipov"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭提示视图"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停用提示檢視"
+          }
+        }
+      }
+    },
+    "setting.advance.enable_beta_feature" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6854,7 +6785,7 @@
         }
       }
     },
-    "setting.general.advance.enable_http_server" : {
+    "setting.advance.enable_http_server" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6888,7 +6819,7 @@
         }
       }
     },
-    "setting.general.advance.footer.query_text_processing_desc" : {
+    "setting.advance.footer.query_text_processing_desc" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6922,7 +6853,7 @@
         }
       }
     },
-    "setting.general.advance.header.http_server" : {
+    "setting.advance.header.http_server" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6956,7 +6887,7 @@
         }
       }
     },
-    "setting.general.advance.header.query_text_processing" : {
+    "setting.advance.header.query_text_processing" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6990,7 +6921,7 @@
         }
       }
     },
-    "setting.general.advance.http_port" : {
+    "setting.advance.http_port" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7024,7 +6955,7 @@
         }
       }
     },
-    "setting.general.advance.http_port_desc" : {
+    "setting.advance.http_port_desc" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7058,7 +6989,7 @@
         }
       }
     },
-    "setting.general.advance.replace_with_translation" : {
+    "setting.advance.replace_with_translation" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7092,7 +7023,7 @@
         }
       }
     },
-    "setting.general.advance.replace_with_translation_desc" : {
+    "setting.advance.replace_with_translation_desc" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7122,6 +7053,109 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果在某些應用程式中使用「以翻譯取代」功能失敗，請嘗試開啟相容模式，此模式會使用拷貝 + 貼上來確保成功取代。"
+          }
+        }
+      }
+    },
+    "setting.advance.youdao_ocr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR recognition"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR recognition"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR rozpoznávanie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道 OCR 识别"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道 OCR 辨識"
+          }
+        }
+      }
+    },
+    "setting.advance.youdao_ocr_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the Youdao OCR for identification after a default OCR failure"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the Youdao OCR for identification after a default OCR failure"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použiť Youdao OCR na identifikáciu po zlyhaní štandardného OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在默认OCR识别失败后使用有道OCR进行识别"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "預設 OCR 識別失敗後使用有道 OCR 進行識別"
+          }
+        }
+      }
+    },
+    "setting.disabled.import_app_error.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to add Application"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to add Application"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie je možné pridať aplikáciu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法添加应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法新增應用程式"
           }
         }
       }

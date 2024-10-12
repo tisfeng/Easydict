@@ -20,7 +20,7 @@ struct AdvancedTab: View {
                     AdvancedTabItemView(
                         color: .blue,
                         systemImage: SFSymbol.hammerFill.rawValue,
-                        labelText: "setting.general.advance.enable_beta_feature"
+                        labelText: "setting.advance.enable_beta_feature"
                     )
                 }
             }
@@ -30,7 +30,7 @@ struct AdvancedTab: View {
                     label: AdvancedTabItemView(
                         color: .orange,
                         systemImage: SFSymbol.ellipsisBubbleFill.rawValue,
-                        labelText: "setting.general.advance.default_tts_service"
+                        labelText: "setting.advance.default_tts_service"
                     )
                 ) {
                     ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
@@ -42,7 +42,7 @@ struct AdvancedTab: View {
                     AdvancedTabItemView(
                         color: .yellow,
                         systemImage: SFSymbol.lightbulbFill.rawValue,
-                        labelText: "disable_tips_view"
+                        labelText: "setting.advance.disable_tips_view"
                     )
                 }
 
@@ -50,16 +50,16 @@ struct AdvancedTab: View {
                     AdvancedTabItemView(
                         color: .orange,
                         systemImage: SFSymbol.circleRectangleFilledPatternDiagonalline.rawValue,
-                        labelText: "enable_youdao_ocr",
-                        subtitleText: "enable_youdao_ocr_desc"
+                        labelText: "setting.advance.youdao_ocr",
+                        subtitleText: "setting.advance.youdao_ocr_desc"
                     )
                 }
                 Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
                         color: .mint,
                         systemImage: SFSymbol.arrowForwardSquare.rawValue,
-                        labelText: "setting.general.advance.replace_with_translation",
-                        subtitleText: "setting.general.advance.replace_with_translation_desc"
+                        labelText: "setting.advance.replace_with_translation",
+                        subtitleText: "setting.advance.replace_with_translation_desc"
                     )
                 }
             }
@@ -69,28 +69,28 @@ struct AdvancedTab: View {
                     AdvancedTabItemView(
                         color: .mint,
                         systemImage: SFSymbol.arrowForwardSquare.rawValue,
-                        labelText: "replace_newline_with_space"
+                        labelText: "setting.advance.automatically_replace_newline_with_space"
                     )
                 }
                 Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
                     AdvancedTabItemView(
                         color: .orange,
                         systemImage: SFSymbol.chevronLeftForwardslashChevronRight.rawValue,
-                        labelText: "automatically_remove_code_comment_symbols"
+                        labelText: "setting.advance.automatically_remove_code_comment_symbols"
                     )
                 }
                 Toggle(isOn: $automaticWordSegmentation) {
                     AdvancedTabItemView(
                         color: .indigo,
                         systemImage: SFSymbol.textWordSpacing.rawValue,
-                        labelText: "automatically_split_words"
+                        labelText: "setting.advance.automatically_split_words"
                     )
                 }
             } header: {
-                Text("setting.general.advance.header.query_text_processing")
+                Text("setting.advance.header.query_text_processing")
             } footer: {
                 HStack {
-                    Text("setting.general.advance.footer.query_text_processing_desc")
+                    Text("setting.advance.footer.query_text_processing_desc")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .padding(.leading, 10)
@@ -104,7 +104,7 @@ struct AdvancedTab: View {
                     AdvancedTabItemView(
                         color: .green,
                         systemImage: SFSymbol.network.rawValue,
-                        labelText: "setting.general.advance.enable_http_server"
+                        labelText: "setting.advance.enable_http_server"
                     )
                 }
 
@@ -116,12 +116,25 @@ struct AdvancedTab: View {
                     AdvancedTabItemView(
                         color: .red,
                         systemImage: SFSymbol.externaldriveConnectedToLineBelow.rawValue,
-                        labelText: "setting.general.advance.http_port",
-                        subtitleText: "setting.general.advance.http_port_desc"
+                        labelText: "setting.advance.http_port",
+                        subtitleText: "setting.advance.http_port_desc"
                     )
                 }
             } header: {
-                Text("setting.general.advance.header.http_server")
+                Text("setting.advance.header.http_server")
+            }
+
+            // macOS 15+
+            if #available(macOS 15.0, *) {
+                Section {
+                    Toggle(isOn: $enableLocalAppleTranslation) {
+                        AdvancedTabItemView(
+                            color: .blue,
+                            systemImage: SFSymbol.appleLogo.rawValue,
+                            labelText: "setting.advance.apple_offline_translation"
+                        )
+                    }
+                }
             }
         }
         .formStyle(.grouped)
@@ -133,7 +146,8 @@ struct AdvancedTab: View {
     @Default(.enableBetaFeature) private var enableBetaFeature
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
-    @Default(.replaceWithTranslationInCompatibilityMode) private var replaceWithTranslationInCompatibilityMode
+    @Default(.replaceWithTranslationInCompatibilityMode) private
+    var replaceWithTranslationInCompatibilityMode
 
     @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
     @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
@@ -141,6 +155,8 @@ struct AdvancedTab: View {
 
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
+
+    @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
 }
 
 #Preview {

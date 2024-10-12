@@ -19,6 +19,7 @@ class TranslationManager: ObservableObject {
     @Published var targetText: String = ""
     @Published var configuration: TranslationSession.Configuration?
 
+    @MainActor
     func translate(
         text: String,
         sourceLanguage: Locale.Language?,
@@ -29,7 +30,15 @@ class TranslationManager: ObservableObject {
 
         return try await withCheckedThrowingContinuation { continuation in
             translationContinuation = continuation
-            configuration = .init(source: sourceLanguage, target: targetLanguage)
+
+            if configuration == nil {
+                configuration = .init(source: sourceLanguage, target: targetLanguage)
+                return
+            }
+
+            configuration?.source = sourceLanguage
+            configuration?.target = targetLanguage
+            configuration?.invalidate()
         }
     }
 

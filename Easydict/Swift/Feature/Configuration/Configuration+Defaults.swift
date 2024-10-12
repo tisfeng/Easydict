@@ -33,16 +33,24 @@ extension Defaults.Keys {
     )
 
     static let autoSelectText = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
-    static let enableForceGetSelectedText = Key<Bool>("EZConfiguration_kForceAutoGetSelectedText", default: true)
+    static let enableForceGetSelectedText = Key<Bool>(
+        "EZConfiguration_kForceAutoGetSelectedText", default: true
+    )
 
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
     static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
-    static let autoQuerySelectedText = Key<Bool>("EZConfiguration_kAutoQuerySelectedTextKey", default: true)
-    static let autoQueryPastedText = Key<Bool>("EZConfiguration_kAutoQueryPastedTextKey", default: false)
+    static let autoQuerySelectedText = Key<Bool>(
+        "EZConfiguration_kAutoQuerySelectedTextKey", default: true
+    )
+    static let autoQueryPastedText = Key<Bool>(
+        "EZConfiguration_kAutoQueryPastedTextKey", default: false
+    )
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
-    static let autoCopySelectedText = Key<Bool>("EZConfiguration_kAutoCopySelectedTextKey", default: false)
+    static let autoCopySelectedText = Key<Bool>(
+        "EZConfiguration_kAutoCopySelectedTextKey", default: false
+    )
     static let autoCopyFirstTranslatedText = Key<Bool>(
         "EZConfiguration_kAutoCopyFirstTranslatedTextKey",
         default: false
@@ -57,8 +65,12 @@ extension Defaults.Keys {
     )
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
-    static let showAppleDictionaryQuickLink = Key<Bool>("EZConfiguration_kShowAppleDictionaryLinkKey", default: true)
-    static let showQuickActionButton = Key<Bool>("EZConfiguration_kShowSettingQuickLink", default: true)
+    static let showAppleDictionaryQuickLink = Key<Bool>(
+        "EZConfiguration_kShowAppleDictionaryLinkKey", default: true
+    )
+    static let showQuickActionButton = Key<Bool>(
+        "EZConfiguration_kShowSettingQuickLink", default: true
+    )
     static let hideMenuBarIcon = Key<Bool>("EZConfiguration_kHideMenuBarIconKey", default: false)
     static let fixedWindowPosition = Key<EZShowWindowPosition>(
         "EZConfiguration_kShowFixedWindowPositionKey",
@@ -72,13 +84,19 @@ extension Defaults.Keys {
         "EZConfiguration_kShortcutSelectTranslateWindowTypeKey",
         default: .fixed
     )
-    static let pinWindowWhenDisplayed = Key<Bool>("EZConfiguration_kPinWindowWhenDisplayed", default: false)
+    static let pinWindowWhenDisplayed = Key<Bool>(
+        "EZConfiguration_kPinWindowWhenDisplayed", default: false
+    )
 
-    static let adjustPopButtonOrigin = Key<Bool>("EZConfiguration_kAdjustPopButtomOriginKey", default: false)
+    static let adjustPopButtonOrigin = Key<Bool>(
+        "EZConfiguration_kAdjustPopButtomOriginKey", default: false
+    )
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
 
-    static let clearQueryWhenInputTranslate = Key<Bool>("EZConfiguration_kClearInputKey", default: false)
+    static let clearQueryWhenInputTranslate = Key<Bool>(
+        "EZConfiguration_kClearInputKey", default: false
+    )
     static let keepPrevResultWhenSelectTranslateTextIsEmpty = Key<Bool>(
         "EZConfiguration_kKeepPrevResultKey",
         default: true
@@ -88,16 +106,26 @@ extension Defaults.Keys {
         default: false
     )
 
-    static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
-    static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
-    static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
+    static let appearanceType = Key<AppearenceType>(
+        "EZConfiguration_kApperanceKey", default: .followSystem
+    )
+    static let fontSizeOptionIndex = Key<UInt>(
+        "EZConfiguration_kTranslationControllerFontKey", default: 0
+    )
+    static let selectedMenuBarIcon = Key<MenuBarIconType>(
+        "EZConfiguration_kSelectedMenuBarIconKey", default: .square
+    )
 
-    static let automaticWordSegmentation = Key<Bool>("EZConfiguration_kAutomaticWordSegmentation", default: true)
+    static let automaticWordSegmentation = Key<Bool>(
+        "EZConfiguration_kAutomaticWordSegmentation", default: true
+    )
     static let automaticallyRemoveCodeCommentSymbols = Key<Bool>(
         "EZConfiguration_kAutomaticallyRemoveCodeCommentSymbols",
         default: true
     )
-    static let replaceNewlineWithSpace = Key<Bool>("EZConfiguration_kReplaceNewlineWithSpace", default: false)
+    static let replaceNewlineWithSpace = Key<Bool>(
+        "EZConfiguration_kReplaceNewlineWithSpace", default: false
+    )
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
@@ -108,6 +136,10 @@ extension Defaults.Keys {
     )
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
+
+    static var enableAppleOfflineTranslation = Key<Bool>(
+        "enableAppleOfflineTranslation", default: false
+    )
 }
 
 extension Defaults.Keys {
@@ -188,7 +220,8 @@ class DefaultsWrapper<T: Defaults.Serializable> {
     var wrappedValue: T {
         get {
             Defaults[key]
-        } set {
+        }
+        set {
             Defaults[key] = newValue
         }
     }
@@ -211,7 +244,8 @@ class ShortcutWrapper<T: KeyCombo> {
     var wrappedValue: String {
         let keyCombo = Defaults[key]
         if let keyCombo, keyCombo.doubledModifiers {
-            return keyCombo.keyEquivalentModifierMaskString + keyCombo.keyEquivalentModifierMaskString
+            return keyCombo.keyEquivalentModifierMaskString
+                + keyCombo.keyEquivalentModifierMaskString
         }
         return (keyCombo?.keyEquivalentModifierMaskString ?? "") + (keyCombo?.keyEquivalent ?? "")
     }
@@ -261,12 +295,16 @@ extension Defaults.Keys {
     // Ali
     static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")
     static let aliAccessKeySecret = Key<String>(EZAliAccessKeySecret, default: "")
-    static let aliServiceApiTypeKey = Key<ServiceAPIType>(EZAliServiceApiTypeKey, default: .secretKey)
+    static let aliServiceApiTypeKey = Key<ServiceAPIType>(
+        EZAliServiceApiTypeKey, default: .secretKey
+    )
 
     // baidu
     static let baiduAppId = Key<String>(EZBaiduAppId, default: "")
     static let baiduSecretKey = Key<String>(EZBaiduSecretKey, default: "")
-    static let baiduServiceApiTypeKey = Key<ServiceAPIType>(EZBaiduServiceApiTypeKey, default: .secretKey)
+    static let baiduServiceApiTypeKey = Key<ServiceAPIType>(
+        EZBaiduServiceApiTypeKey, default: .secretKey
+    )
 
     // Volcano
     static let volcanoAccessKeyID = Key<String>(EZVolcanoAccessKeyID, default: "")

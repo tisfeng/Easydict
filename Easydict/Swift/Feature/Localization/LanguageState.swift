@@ -40,9 +40,10 @@ class LanguageState: ObservableObject {
         }
     }
 
-    @AppStorage(languagePreferenceLocalKey) var language: LanguageType = (.init(
-        rawValue: I18nHelper.shared.localizeCode
-    ) ?? .simplifiedChinese) {
+    @AppStorage(languagePreferenceLocalKey) var language: LanguageType =
+        (.init(
+            rawValue: I18nHelper.shared.localizeCode
+        ) ?? .simplifiedChinese) {
         didSet {
             NotificationCenter.default.post(name: .languagePreferenceChanged, object: nil)
         }
@@ -52,6 +53,8 @@ class LanguageState: ObservableObject {
 // https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPInternational/LanguageandLocaleIDs/LanguageandLocaleIDs.html
 extension Locale {
     var languageType: LanguageState.LanguageType? {
+        // Bundle resource format: zh-Hans.lproj, zh-Hant.lproj, en.lproj, en-CA.lproj
+
         let languageCode = language.languageCode?.identifier // zh, en, ja
         let script = language.script?.identifier // Hans, Hant,
         let region = language.region?.identifier // CN, TW,
@@ -61,16 +64,16 @@ extension Locale {
         let languageCodeScript = [languageCode, script].compactMap { $0 }.joined(separator: "-") // zh-Hans
         let languageCodeRegion = [languageCode, region].compactMap { $0 }.joined(separator: "-") // zh-CN
 
-        if let languageCode, let type = LanguageState.LanguageType(rawValue: languageCode) {
+        if let languageCode, let type = LanguageState.LanguageType(rawValue: languageCode) { // en
             return type
         }
-        if let type = LanguageState.LanguageType(rawValue: languageCodeScriptRegion) {
+        if let type = LanguageState.LanguageType(rawValue: languageCodeScriptRegion) { // zh-Hans-CN
             return type
         }
-        if let type = LanguageState.LanguageType(rawValue: languageCodeScript) {
+        if let type = LanguageState.LanguageType(rawValue: languageCodeScript) { // zh-Hans
             return type
         }
-        if let type = LanguageState.LanguageType(rawValue: languageCodeRegion) {
+        if let type = LanguageState.LanguageType(rawValue: languageCodeRegion) { // zh-CN
             return type
         }
 

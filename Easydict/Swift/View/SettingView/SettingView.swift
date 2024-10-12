@@ -76,8 +76,6 @@ struct SettingView: View {
         let height: Double = switch selection {
         case .disabled:
             500
-        case .advanced:
-            750
         case .privacy:
             320
         case .about:

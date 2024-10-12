@@ -85,6 +85,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
 
+    @Default(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
+
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
 
@@ -119,7 +121,8 @@ class Configuration: NSObject {
             ServiceType(rawValue: Defaults[.defaultTTSServiceType].rawValue)
         }
         set {
-            Defaults[.defaultTTSServiceType] = TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
+            Defaults[.defaultTTSServiceType] =
+                TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
         }
     }
 
@@ -340,8 +343,7 @@ class Configuration: NSObject {
             .store(in: &cancellables)
 
         Defaults.publisher(
-            keys:
-            [
+            keys: [
                 .pinShortcut,
                 .appleDictionaryShortcut,
                 .googleShortcut,
@@ -550,10 +552,11 @@ extension Configuration {
         let stringValue = "\(enabled)"
         UserDefaults.standard.set(stringValue, forKey: key)
 
-        let parameters = [
-            "enabled": enabled,
-            "window_type": windowType.rawValue,
-        ] as [String: Any]
+        let parameters =
+            [
+                "enabled": enabled,
+                "window_type": windowType.rawValue,
+            ] as [String: Any]
 
         EZLog.logEvent(withName: "intelligent_query_mode", parameters: parameters)
     }
