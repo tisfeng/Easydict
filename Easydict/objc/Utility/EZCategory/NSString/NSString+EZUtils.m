@@ -17,7 +17,7 @@ static NSDictionary *const kQuotesDict = @{
     @"‘" : @"’",
     @"'" : @"'",
     @"`" : @"`",
-    @"「" : @"」",
+    //    @"「" : @"」", // """美しいアーチに囲まれた「乙女の中庭」""" will break.
 };
 
 BOOL EZ_isEmptyString(id param) {
@@ -40,7 +40,7 @@ BOOL EZ_isEmptyString(id param) {
     if (self.length != 1) {
         return NO;
     }
-    
+
     NSString *regex = @"[a-zA-Z]";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
     return [predicate evaluateWithObject:self];
@@ -64,7 +64,7 @@ BOOL EZ_isEmptyString(id param) {
     if (self.length == 0) {
         return NO;
     }
-    
+
     NSString *firstChar = [self substringToIndex:1];
     return [firstChar isLowercaseLetter];
 }
@@ -80,7 +80,7 @@ BOOL EZ_isEmptyString(id param) {
     if (self.length == 0) {
         return NO;
     }
-    
+
     NSString *firstChar = [self substringToIndex:1];
     return [firstChar isUppercaseLetter];
 }
@@ -112,7 +112,7 @@ BOOL EZ_isEmptyString(id param) {
     if (self.length == 0) {
         return nil;
     }
-    
+
     return [self substringToIndex:1];
 }
 
@@ -120,7 +120,7 @@ BOOL EZ_isEmptyString(id param) {
     if (self.length == 0) {
         return nil;
     }
-    
+
     return [self substringFromIndex:self.length - 1];
 }
 
@@ -147,7 +147,7 @@ BOOL EZ_isEmptyString(id param) {
 
 - (BOOL)isNumberFirstWord {
     NSString *firstWord = [self firstWord];
-    
+
     NSString *dot = @".";
     if ([firstWord containsString:dot]) {
         NSString *number = [firstWord componentsSeparatedByString:dot].firstObject;
@@ -160,12 +160,12 @@ BOOL EZ_isEmptyString(id param) {
 
 - (BOOL)isListTypeFirstWord {
     BOOL isList = [self isPointFirstWord] || [self isDashFirstWord] || [self isNumberFirstWord];
-    
+
     // Since ocr may be incorrect, we should check if the first char is a list type.
     if (!isList) {
         isList = [self isPointFirstChar] || [self isDashFirstChar];
     }
-    
+
     return isList;
 }
 
@@ -176,13 +176,13 @@ BOOL EZ_isEmptyString(id param) {
     if (isQueryDictionary) {
         return EZQueryTextTypeDictionary;
     }
-    
+
     BOOL isEnglishText = [language isEqualToString:EZLanguageEnglish];
     BOOL isQueryEnglishSentence = [self shouldQuerySentenceWithLanguage:language];
     if (isQueryEnglishSentence && isEnglishText) {
         return EZQueryTextTypeSentence;
     }
-    
+
     return EZQueryTextTypeTranslation;
 }
 
@@ -190,20 +190,20 @@ BOOL EZ_isEmptyString(id param) {
     if (self.length > EZEnglishWordMaxLength) {
         return NO;
     }
-    
+
     if ([EZLanguageManager.shared isChineseLanguage:language]) {
         return [self isChineseWord] || [self isChinesePhrase];
     }
-    
+
     NSInteger wordCount = [self wordCount];
     if (wordCount > maxWordCount) {
         return NO;
     }
-    
+
     if ([language isEqualToString:EZLanguageEnglish]) {
         return [self isEnglishWord] || [self isEnglishPhrase];
     }
-    
+
     return NO;
 }
 
@@ -211,7 +211,7 @@ BOOL EZ_isEmptyString(id param) {
     if ([self shouldQueryDictionaryWithLanguage:language maxWordCount:1]) {
         return NO;
     }
-    
+
     return [self isSentence];
 }
 
@@ -252,7 +252,7 @@ BOOL EZ_isEmptyString(id param) {
     if (text.length > maxWordLength) {
         return NO;
     }
-    
+
     NSString *pattern = @"^[a-zA-Z]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
@@ -271,7 +271,7 @@ BOOL EZ_isEmptyString(id param) {
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
-    
+
     NSInteger wordCount = [self wordCount];
     if (wordCount == 1) {
         return YES;
@@ -298,7 +298,7 @@ BOOL EZ_isEmptyString(id param) {
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
-    
+
     NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ NLTagSchemeTokenType ]];
     [tagger setString:self];
     __block BOOL result = NO;
@@ -316,16 +316,16 @@ BOOL EZ_isEmptyString(id param) {
     NLTagScheme tagScheme = NLTagSchemeLexicalClass;
     NLTaggerOptions options = NLTaggerOmitPunctuation | NLTaggerOmitWhitespace;
     NSRange range = NSMakeRange(0, self.length);
-    
+
     NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ tagScheme ]];
     tagger.string = self;
-    
+
     NSArray<NLTag> *tags = [tagger tagsInRange:range
                                           unit:NLTokenUnitWord
                                         scheme:tagScheme
                                        options:options
                                    tokenRanges:nil];
-    
+
     return tags;
 }
 
@@ -336,13 +336,13 @@ BOOL EZ_isEmptyString(id param) {
     NSString *text = [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSRange textRange = NSMakeRange(0, [text length]);
     tokenizer.string = text;
-    
+
     NSMutableArray<NSString *> *words = [NSMutableArray array];
     [tokenizer enumerateTokensInRange:textRange usingBlock:^(NSRange tokenRange, NLTokenizerAttributes flags, BOOL *stop) {
         NSString *token = [text substringWithRange:tokenRange];
         [words addObject:token];
     }];
-    
+
     return [words copy];
 }
 
@@ -355,7 +355,7 @@ BOOL EZ_isEmptyString(id param) {
     if (wordRange.location == NSNotFound) {
         return nil;
     }
-    
+
     NSString *word = [self substringWithRange:wordRange];
     return word;
 }
@@ -378,15 +378,15 @@ BOOL EZ_isEmptyString(id param) {
     if (!language) {
         language = spellChecker.language;
     }
-    
+
     NSRange wordRange = NSMakeRange(0, [self length]);
     // NSSpellChecker default language is en
     NSString *correctedWord = [spellChecker correctionForWordRange:wordRange inString:self language:language inSpellDocumentWithTag:0];
-    
+
     if (!correctedWord) {
         return nil;
     }
-    
+
     // poème --> poem
     NSArray *guessWords = [spellChecker guessesForWordRange:wordRange inString:self language:language inSpellDocumentWithTag:0];
     return guessWords;
@@ -446,7 +446,7 @@ BOOL EZ_isEmptyString(id param) {
 - (NSString *)prefixQuote {
     /**
      Creativity is intelligence having fun. Albert Einstein
-     
+
      """
      创造力是智力在玩耍。——阿尔伯特·爱因斯坦
      """
@@ -486,7 +486,7 @@ BOOL EZ_isEmptyString(id param) {
     if (prefixQuote) {
         return [self substringFromIndex:prefixQuote.length];
     }
-    
+
     return self;
 }
 
@@ -495,7 +495,7 @@ BOOL EZ_isEmptyString(id param) {
     if (suffixQuote) {
         return [self substringToIndex:self.length - suffixQuote.length];
     }
-    
+
     return self;
 }
 
@@ -504,14 +504,14 @@ BOOL EZ_isEmptyString(id param) {
     NSArray *leftQuotes = kQuotesDict.allKeys;
     NSArray *rightQuotes = kQuotesDict.allValues;
     NSArray *quotes = [leftQuotes arrayByAddingObjectsFromArray:rightQuotes];
-    
+
     for (NSUInteger i = 0; i < self.length; i++) {
         NSString *character = [self substringWithRange:NSMakeRange(i, 1)];
         if ([quotes containsObject:character]) {
             count++;
         }
     }
-    
+
     return count;
 }
 
@@ -525,7 +525,7 @@ BOOL EZ_isEmptyString(id param) {
 - (NSString *)removeStartAndEndWith:(NSString *)start end:(NSString *)end {
     /**
      Fix crash
-     
+
      SIGABRT: -[NSTaggedPointerString substringWithRange:]: Range {2, 18446744073709551614} out of bounds; string length 2
      */
     NSInteger substringLength = self.length - start.length - end.length;
@@ -542,7 +542,7 @@ BOOL EZ_isEmptyString(id param) {
     if (prefixQuote.length == suffixQuote.length) {
         text = [text removeStartAndEndWith:prefixQuote end:suffixQuote];
     }
-    
+
     return text;
 }
 
