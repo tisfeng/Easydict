@@ -61,18 +61,47 @@ extension UIElement {
         identifier == SystemMenuItem.copy.rawValue
     }
 
-    /// Check if the element is a copy element, title is "Copy", "拷贝", "复制", "拷貝", "複製".
+    /// Check if the element is a copy element, title is "Copy".
     public var isCopyTitle: Bool {
         guard let title = title else {
             return false
         }
 
-        let copyTitles = [
-            "Copy",
-            "拷贝",
-            "复制",
-            "拷貝",
-            "複製",
+        // Set of copy titles in various languages.
+        let copyTitles: Set<String> = [
+            "Copy", // English
+            "拷贝", "复制", // Simplified Chinese
+            "拷貝", "複製", // Traditional Chinese
+            "コピー", // Japanese
+            "복사", // Korean
+            "Copier", // French
+            "Copiar", // Spanish, Portuguese
+            "Copia", // Italian
+            "Kopieren", // German
+            "Копировать", // Russian
+            "Kopiëren", // Dutch
+            "Kopiér", // Danish
+            "Kopiera", // Swedish
+            "Kopioi", // Finnish
+            "Αντιγραφή", // Greek
+            "Kopyala", // Turkish
+            "Salin", // Indonesian
+            "Sao chép", // Vietnamese
+            "คัดลอก", // Thai
+            "Копіювати", // Ukrainian
+            "Kopiuj", // Polish
+            "Másolás", // Hungarian
+            "Kopírovat", // Czech
+            "Kopírovať", // Slovak
+            "Kopiraj", // Croatian, Serbian (Latin)
+            "Копирај", // Serbian (Cyrillic)
+            "Копиране", // Bulgarian
+            "Kopēt", // Latvian
+            "Kopijuoti", // Lithuanian
+            "Copiază", // Romanian
+            "העתק", // Hebrew
+            "نسخ", // Arabic
+            "کپی", // Persian
         ]
         return copyTitles.contains(title)
     }
@@ -92,14 +121,12 @@ private func findCopyMenuItemIn(_ menuElement: UIElement) -> UIElement? {
         }
 
         if element.isCopyIdentifier {
-            logInfo("Found copy element by copy identifier: \(identifier)")
+            logInfo("Found copy item by copy identifier: \(identifier)")
             return true
         }
 
         if element.cmdChar == "C", element.isCopyTitle {
-            logInfo(
-                "Found copy element by copy title in menu: \(element.title!), identifier: \(identifier)"
-            )
+            logInfo("Found copy title item in menu: \(element.title!), identifier: \(identifier)")
             return true
         }
         return false
