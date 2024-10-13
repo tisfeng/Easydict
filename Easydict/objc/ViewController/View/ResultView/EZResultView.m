@@ -316,8 +316,8 @@
     CGFloat modelButtonWidth = 0;
     if ([self isLLLStreamService:self.result.service]) {
         [self.serviceModelButton sizeToFit];
-        // 105 is the length of "gpt-4-turbo-preview"
-        modelButtonWidth = MIN(self.serviceModelButton.width, 105 * [self windowWidthRatio]);
+        // 120 is fit for model name `llama-3.1-70b-versatile`
+        modelButtonWidth = MIN(self.serviceModelButton.width, 120 * [self windowWidthRatio]);
     }
 
     [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -448,6 +448,8 @@
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
+        self.serviceModelButton.hoverTitle = service.model;
+        self.serviceModelButton.highlightTitle = service.model;
     }
 }
 
