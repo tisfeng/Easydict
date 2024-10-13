@@ -120,22 +120,24 @@ static EZEventMonitor *_instance = nil;
 }
 
 - (NSArray<EZAppModel *> *)defaultAppModelList {
-    /**
-     FIX https://github.com/tisfeng/Easydict/issues/123
+    NSMutableArray *defaultAppModels = [NSMutableArray array];
 
-     And WeChat does not support Shift select text, so please use shortcut key to instead.
-     */
-    EZAppModel *wechat = [[EZAppModel alloc] init];
-    wechat.appBundleID = @"com.tencent.xinWeChat";
-    wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
+    // When use simulated key to get selected text, add wechat to default app list.
+    if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeSimulatedShortcutCopy) {
+        /**
+         FIX https://github.com/tisfeng/Easydict/issues/123
 
-    NSArray *defaultAppModels = @[
-        //        wechat,
-    ];
+         And WeChat does not support Shift select text, so please use shortcut key to instead.
+         */
+        EZAppModel *wechat = [[EZAppModel alloc] init];
+        wechat.appBundleID = @"com.tencent.xinWeChat";
+        wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
+
+        [defaultAppModels addObject:wechat];
+    }
 
     return defaultAppModels;
 }
-
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
