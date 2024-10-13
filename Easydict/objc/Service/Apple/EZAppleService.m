@@ -167,6 +167,7 @@ static EZAppleService *_instance;
 - (TranslationService *)translationService {
     if (!_translationService) {
         _translationService = [[TranslationService alloc] init];
+        _translationService.enableTranslateSameLanguage = YES;
     }
     return _translationService;
 }

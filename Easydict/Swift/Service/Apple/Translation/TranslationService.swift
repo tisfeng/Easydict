@@ -44,11 +44,32 @@ public class TranslationService: NSObject {
         let source = sourceLanguage ?? configuration?.source
         let target = targetLanguage ?? configuration?.target
 
-        return try await manager.translate(
-            text: text,
-            sourceLanguage: source,
-            targetLanguage: target
-        )
+        do {
+            return try await manager.translate(
+                text: text,
+                sourceLanguage: source,
+                targetLanguage: target
+            )
+        } catch {
+            guard let translationError = error as? TranslationError else { throw error }
+
+            switch translationError {
+            case .unsupportedLanguagePairing:
+                if source == target, enableTranslateSameLanguage {
+                    return TranslationSession.Response(
+                        sourceLanguage: source ?? .init(identifier: ""),
+                        targetLanguage: target ?? .init(identifier: ""),
+                        sourceText: text,
+                        targetText: text
+                    )
+                }
+
+                fallthrough
+
+            default:
+                throw error
+            }
+        }
     }
 
     /// Translate text from source language to target language, used for objc.
@@ -84,6 +105,9 @@ public class TranslationService: NSObject {
     // MARK: Internal
 
     var configuration: TranslationSession.Configuration?
+
+    /// enable translate the same language
+    var enableTranslateSameLanguage = false
 
     // MARK: Private
 

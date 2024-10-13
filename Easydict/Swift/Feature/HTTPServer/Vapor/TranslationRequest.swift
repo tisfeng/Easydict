@@ -27,9 +27,9 @@ struct TranslationResponse: Content {
     var dictionaryEntry: DictionaryEntry?
 }
 
-// MARK: - TranslationError
+// MARK: - EZTranslationError
 
-enum TranslationError: Error, AbortError {
+enum EZTranslationError: Error, AbortError {
     case unsupportedServiceType(String)
     case invalidParameter(String)
 

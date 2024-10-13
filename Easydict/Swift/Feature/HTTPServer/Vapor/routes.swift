@@ -20,7 +20,7 @@ func routes(_ app: Application) throws {
         let appleDictionaryNames = request.appleDictionaryNames
 
         guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
-            throw TranslationError.unsupportedServiceType(request.serviceType)
+            throw EZTranslationError.unsupportedServiceType(request.serviceType)
         }
 
         if let appleDictionary = service as? AppleDictionary, let appleDictionaryNames {
@@ -29,7 +29,7 @@ func routes(_ app: Application) throws {
 
         if service.isStream() {
             throw
-                TranslationError
+                EZTranslationError
                 .invalidParameter(
                     "\(request.serviceType) is stream service, which does not support 'translate' API. Please use 'streamTranslate."
                 )
@@ -68,12 +68,12 @@ func routes(_ app: Application) throws {
 
         guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType)
         else {
-            throw TranslationError.unsupportedServiceType(request.serviceType)
+            throw EZTranslationError.unsupportedServiceType(request.serviceType)
         }
 
         guard let streamService = service as? LLMStreamService else {
             throw
-                TranslationError
+                EZTranslationError
                 .invalidParameter(
                     "\(serviceType.rawValue) isn't stream service, which does not support 'streamTranslate' API. Please use 'translate."
                 )
