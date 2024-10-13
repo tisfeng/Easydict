@@ -107,7 +107,12 @@ struct AdvancedTab: View {
                         labelText: "setting.general.advance.enable_http_server"
                     )
                 }
-                TextField(text: $httpPort, prompt: Text(verbatim: "8080")) {
+
+                LabeledContent {
+                    TextField("", text: $httpPort, prompt: Text(verbatim: "8080"))
+                        .frame(width: 100)
+                        .fixedSize(horizontal: true, vertical: false)
+                } label: {
                     AdvancedTabItemView(
                         color: .red,
                         systemImage: SFSymbol.externaldriveConnectedToLineBelow.rawValue,
@@ -115,7 +120,6 @@ struct AdvancedTab: View {
                         subtitleText: "setting.general.advance.http_port_desc"
                     )
                 }
-
             } header: {
                 Text("setting.general.advance.header.http_server")
             }
