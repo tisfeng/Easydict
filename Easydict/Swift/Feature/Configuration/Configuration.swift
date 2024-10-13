@@ -48,14 +48,17 @@ class Configuration: NSObject {
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
     @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
 
-    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
-    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
+    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType:
+        EZWindowType
+    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType:
+        EZWindowType
     @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
     @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
     @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
 
     @DefaultsWrapper(.clearQueryWhenInputTranslate) var clearInput: Bool
-    @DefaultsWrapper(.keepPrevResultWhenSelectTranslateTextIsEmpty) var keepPrevResultWhenEmpty: Bool
+    @DefaultsWrapper(.keepPrevResultWhenSelectTranslateTextIsEmpty) var keepPrevResultWhenEmpty:
+        Bool
     @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
     @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
     @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
@@ -84,6 +87,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
+    @Default(.forceGetSelectedTextType) var forceGetSelectedTextType:
+        ForceGetSelectedTextType
 
     @Default(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
 

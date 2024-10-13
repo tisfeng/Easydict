@@ -42,6 +42,7 @@
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
+		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
 		0340D38E2C8EEEA2004C9910 /* AppleScriptTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */; };
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
 		0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */; };
@@ -427,6 +428,7 @@
 		033C30FB2A7409C40095926A /* TTTDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTDictionary.m; sourceTree = "<group>"; };
 		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
+		033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceGetSelectedTextType.swift; sourceTree = "<group>"; };
 		0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleScriptTask.swift; sourceTree = "<group>"; };
 		0340D3902C8EEEE3004C9910 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
@@ -2536,6 +2538,7 @@
 			children = (
 				0340D39C2C951839004C9910 /* Error */,
 				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
+				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
 				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
 			);
 			path = Model;
@@ -3069,6 +3072,7 @@
 				EA3B81F92B5254AA004C0E8B /* Configuration+Defaults.swift in Sources */,
 				036BCD4A2BDE8A96009C893F /* DefaultsStoredKey.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
+				033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */,

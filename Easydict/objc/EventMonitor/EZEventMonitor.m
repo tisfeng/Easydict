@@ -130,7 +130,7 @@ static EZEventMonitor *_instance = nil;
     wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
 
     NSArray *defaultAppModels = @[
-        wechat,
+        //        wechat,
     ];
 
     return defaultAppModels;
@@ -272,10 +272,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     self.selectedTextEditable = NO;
 
-//    NSString *selectedText = SystemUtility.getSelectedText;
-//    completion(selectedText);
-//    return;
-
     // Use Accessibility first
     [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError axError) {
         self.selectTextType = EZSelectTextTypeAccessibility;
@@ -315,7 +311,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         MMLogError(@"Failed to get selected text from browser: %@", error);
-                        [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
+                        [self handleSimulatedCopyOnAXError:axError completion:completion];
                     } else {
                         completion(selectedText);
                     }
@@ -329,7 +325,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
 
         // 3. Try to use simulated key to get selected text.
-        [self checkAndUseSimulatedKeyWithAXError:axError completion:completion];
+        [self handleSimulatedCopyOnAXError:axError completion:completion];
 
         completion(nil);
     }];
@@ -581,26 +577,29 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     return accessibilityEnabled == YES;
 }
 
-- (void)checkAndUseSimulatedKeyWithAXError:(AXError)error completion:(void (^)(NSString *))completion {
-    if ([self shouldUseSimulatedKeyWithAXError:error]) {
-        NSString *selectedText = [SystemUtility getSelectedTextByMenuActionCopy];
-        if (selectedText.length > 0) {
-            completion(selectedText);
-            return;
-        }
-
-        [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
-            self.selectTextType = EZSelectTextTypeSimulatedKey;
+/// Check error type to use menu action copy or simulated key to get selected text.
+- (void)handleSimulatedCopyOnAXError:(AXError)error completion:(void (^)(NSString *_Nullable))completion {
+    if ([self shouldUseSimulatedCopyWithAXError:error]) {
+        // Menu action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it's not stable.
+        // TODO: Try to find a more stable way to get selected text.
+        if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuActionCopy) {
+            NSString *text = [SystemUtility getSelectedTextByMenuActionCopy];
+            self.selectTextType = EZSelectTextTypeMenuActionCopy;
             completion(text);
-        }];
+        } else {
+            [self getSelectedTextBySimulatedKey:^(NSString *text) {
+                self.selectTextType = EZSelectTextTypeSimulatedKey;
+                completion(text);
+            }];
+        }
         return;
     }
 
     completion(nil);
 }
 
-/// Check if should use simulation key to get selected text.
-- (BOOL)shouldUseSimulatedKeyWithAXError:(AXError)error {
+/// Check if should use simulated copy to get selected text.
+- (BOOL)shouldUseSimulatedCopyWithAXError:(AXError)error {
     /**
      Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
 

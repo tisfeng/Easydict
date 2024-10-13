@@ -62,6 +62,19 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.replace_with_translation_desc"
                     )
                 }
+                Picker(
+                    selection: $forceGetSelectedTextType,
+                    label: AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: SFSymbol.highlighter.rawValue,
+                        labelText: "setting.advance.force_get_selected_text_type"
+                    )
+                ) {
+                    ForEach(ForceGetSelectedTextType.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
             }
 
             Section {
@@ -148,6 +161,8 @@ struct AdvancedTab: View {
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.replaceWithTranslationInCompatibilityMode) private
     var replaceWithTranslationInCompatibilityMode
+
+    @Default(.forceGetSelectedTextType) private var forceGetSelectedTextType
 
     @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
     @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool

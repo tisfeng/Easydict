@@ -140,6 +140,11 @@ extension Defaults.Keys {
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
     )
+
+    static var forceGetSelectedTextType = Key<ForceGetSelectedTextType>(
+        "EZConfiguration_kForceGetSelectedTextTypeKey",
+        default: .simulatedShortcutCopy
+    )
 }
 
 extension Defaults.Keys {

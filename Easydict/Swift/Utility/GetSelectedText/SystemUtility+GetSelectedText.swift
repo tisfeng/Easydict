@@ -90,7 +90,8 @@ extension SystemUtility {
         return .success(selectedText)
     }
 
-    /// Get selected text by menu action copy
+    /// Get selected text by menu action copy.
+    /// Ref to Copi  https://github.com/s1ntoneli/Copi/blob/531a12fdc2da66c809951926ce88af02593e0723/Copi/Utilities/SystemUtilities.swift#L257
     class func getSelectedTextByMenuActionCopy() -> String? {
         var result: String?
 

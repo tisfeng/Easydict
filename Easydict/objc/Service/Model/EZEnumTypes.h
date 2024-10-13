@@ -88,6 +88,7 @@ typedef NSString *EZSelectTextType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAccessibility;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulatedKey; // Cmd+C
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAppleScript;
+FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeMenuActionCopy;
 
 
 /// Action trigger type
