@@ -62,6 +62,19 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.replace_with_translation_desc"
                     )
                 }
+
+                // Require macOS 15+
+                if #available(macOS 15.0, *) {
+                    Toggle(isOn: $enableLocalAppleTranslation) {
+                        AdvancedTabItemView(
+                            color: .green,
+                            systemImage: SFSymbol.appleLogo.rawValue,
+                            labelText: "setting.advance.apple_offline_translation",
+                            subtitleText: "setting.advance.apple_offline_translation_desc"
+                        )
+                    }
+                }
+
                 Picker(
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
@@ -135,19 +148,6 @@ struct AdvancedTab: View {
                 }
             } header: {
                 Text("setting.advance.header.http_server")
-            }
-
-            // macOS 15+
-            if #available(macOS 15.0, *) {
-                Section {
-                    Toggle(isOn: $enableLocalAppleTranslation) {
-                        AdvancedTabItemView(
-                            color: .blue,
-                            systemImage: SFSymbol.appleLogo.rawValue,
-                            labelText: "setting.advance.apple_offline_translation"
-                        )
-                    }
-                }
             }
         }
         .formStyle(.grouped)

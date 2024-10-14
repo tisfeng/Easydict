@@ -46,7 +46,7 @@ NSString *const EZActionTypeInvokeQuery = @"invoke_query";
 NSString *const EZSelectTextTypeAccessibility = @"accessibility_select_text";
 NSString *const EZSelectTextTypeSimulatedKey = @"simulate_key_select_text";
 NSString *const EZSelectTextTypeAppleScript = @"applescript_select_text";
-NSString *const EZSelectTextTypeMenuActionCopy = @"menu_action_copy_select_text";
+NSString *const EZSelectTextTypeMenuBarActionCopy = @"menu_bar_action_copy_select_text";
 
 NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
 

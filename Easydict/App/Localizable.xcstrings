@@ -6582,31 +6582,65 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Offline Translation (macOS 15+ new feature)"
+            "value" : "Apple Offline Translation"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Offline Translation (macOS 15+ new feature)"
+            "value" : "Apple Offline Translation"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Offline Preklad (nová funkcia macOS 15+)"
+            "value" : "Apple Offline Preklad"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "苹果离线翻译（macOS 15+ 新功能）"
+            "value" : "苹果离线翻译"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "蘋果離線翻譯（macOS 15+ 新功能）"
+            "value" : "蘋果離線翻譯"
+          }
+        }
+      }
+    },
+    "setting.advance.apple_offline_translation_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline translation requires downloading languages on the device, which can be managed in \"System Settings\"."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline translation requires downloading languages on the device, which can be managed in \"System Settings\"."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline translation requires downloading languages on the device, which can be managed in \"System Settings\"."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "离线翻译需要在设备上下载语言，可通过“系统设置”管理下载语言。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "離線翻譯需要在設備上下載語言，可通過“系統設置”管理下載語言。"
           }
         }
       }
@@ -6884,36 +6918,36 @@
         }
       }
     },
-    "setting.advance.force_get_selected_text_options.menu_action_copy" : {
+    "setting.advance.force_get_selected_text_options.menu_bar_action_copy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menu Action Copy"
+            "value" : "Menu Bar Action Copy"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menu Action Copy"
+            "value" : "Menu Bar Action Copy"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Akcia Menu Kopírovanie"
+            "value" : "Kopírovanie akcie na paneli ponuky"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "菜单动作复制取词"
+            "value" : "菜单栏动作复制取词"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選單動作複製取詞"
+            "value" : "選單欄動作複製取詞"
           }
         }
       }

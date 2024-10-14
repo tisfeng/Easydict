@@ -27,7 +27,7 @@ extension SystemUtility {
             logError("Failed to get text via AXUI: \(error)")
 
             // If AXUI fails, try menu action copy
-            if let menuCopyText = getSelectedTextByMenuActionCopy() {
+            if let menuCopyText = getSelectedTextByMenuBarActionCopy() {
                 logInfo("Successfully got text via menu action copy")
                 return menuCopyText
             }
@@ -90,17 +90,16 @@ extension SystemUtility {
         return .success(selectedText)
     }
 
-    /// Get selected text by menu action copy.
+    /// Get selected text by menu bar action copy.
     /// Ref to Copi  https://github.com/s1ntoneli/Copi/blob/531a12fdc2da66c809951926ce88af02593e0723/Copi/Utilities/SystemUtilities.swift#L257
-    class func getSelectedTextByMenuActionCopy() -> String? {
-        var result: String?
-
-        logInfo("getSelectedTextByMenuActionCopy")
+    class func getSelectedTextByMenuBarActionCopy() -> String? {
+        logInfo("Getting selected text by menu bar action copy")
 
         guard let copyItem = findEnabledCopyItemInFrontmostApp() else {
             return nil
         }
 
+        var result: String?
         let pasteboard = NSPasteboard.general
         let initialChangeCount = pasteboard.changeCount
 
@@ -130,7 +129,7 @@ extension SystemUtility {
 
             semaphore.wait()
 
-            logInfo("Menu action copy getSelectedText: \(result ?? "nil")")
+            logInfo("Menu bar action copy getSelectedText: \(result ?? "nil")")
         }
 
         return result

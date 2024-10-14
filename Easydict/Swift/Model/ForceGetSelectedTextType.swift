@@ -14,7 +14,7 @@ import Foundation
 @objc
 enum ForceGetSelectedTextType: Int, CaseIterable, Defaults.Serializable {
     case simulatedShortcutCopy
-    case menuActionCopy
+    case menuBarActionCopy
 }
 
 // MARK: CustomLocalizedStringResourceConvertible
@@ -24,8 +24,8 @@ extension ForceGetSelectedTextType: CustomLocalizedStringResourceConvertible {
         switch self {
         case .simulatedShortcutCopy:
             "setting.advance.force_get_selected_text_options.simulated_shortcut_copy"
-        case .menuActionCopy:
-            "setting.advance.force_get_selected_text_options.menu_action_copy"
+        case .menuBarActionCopy:
+            "setting.advance.force_get_selected_text_options.menu_bar_action_copy"
         }
     }
 }

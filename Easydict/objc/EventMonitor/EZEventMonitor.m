@@ -582,11 +582,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Check error type to use menu action copy or simulated key to get selected text.
 - (void)handleSimulatedCopyOnAXError:(AXError)error completion:(void (^)(NSString *_Nullable))completion {
     if ([self shouldUseSimulatedCopyWithAXError:error]) {
-        // Menu action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it's not stable.
-        // TODO: Try to find a more stable way to get selected text.
-        if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuActionCopy) {
-            NSString *text = [SystemUtility getSelectedTextByMenuActionCopy];
-            self.selectTextType = EZSelectTextTypeMenuActionCopy;
+        // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
+        // TODO: Try to find a more stable way to get selected text, or combine both methods.
+        if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
+            NSString *text = [SystemUtility getSelectedTextByMenuBarActionCopy];
+            self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
             completion(text);
         } else {
             [self getSelectedTextBySimulatedKey:^(NSString *text) {
