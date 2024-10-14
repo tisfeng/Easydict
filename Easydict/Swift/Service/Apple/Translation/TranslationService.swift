@@ -18,7 +18,7 @@ public class TranslationService: NSObject {
     @MainActor
     public init(configuration: TranslationSession.Configuration? = nil) {
         self.configuration = configuration
-        self.hostingController = TranslationService.createHostingController(manager: manager)
+        self.hostingView = TranslationService.createHostingView(manager: manager)
         super.init()
         setupView()
     }
@@ -26,7 +26,7 @@ public class TranslationService: NSObject {
     /// Used for objc init.
     @MainActor
     public override init() {
-        self.hostingController = TranslationService.createHostingController(manager: manager)
+        self.hostingView = TranslationService.createHostingView(manager: manager)
         super.init()
         setupView()
     }
@@ -112,21 +112,20 @@ public class TranslationService: NSObject {
     // MARK: Private
 
     private let manager = TranslationManager()
-    private var hostingController: NSHostingController<TranslationView>
+    private var hostingView: NSHostingView<TranslationView>
 
     @MainActor
-    private static func createHostingController(manager: TranslationManager) -> NSHostingController<
+    private static func createHostingView(manager: TranslationManager) -> NSHostingView<
         TranslationView
     > {
-        NSHostingController(rootView: TranslationView(manager: manager))
+        NSHostingView(rootView: TranslationView(manager: manager))
     }
 
     @MainActor
     private func setupView() {
         if let window = NSApplication.shared.windows.first {
-            let translationView = hostingController.view
-            window.contentView?.addSubview(translationView)
-            translationView.isHidden = true
+            window.contentView?.addSubview(hostingView)
+            hostingView.isHidden = true
         }
     }
 }
