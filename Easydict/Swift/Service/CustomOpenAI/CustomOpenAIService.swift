@@ -50,7 +50,11 @@ class CustomOpenAIService: BaseOpenAIService {
     override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [[String: String]] {
         if enableCustomPrompt {
             let systemPrompt = replaceCustomPromptWithVariable(systemPrompt)
-            let userPrompt = replaceCustomPromptWithVariable(userPrompt)
+            var userPrompt = replaceCustomPromptWithVariable(userPrompt)
+            if userPrompt.isEmpty {
+                userPrompt = queryModel.queryText
+            }
+
             return [
                 chatMessage(role: .system, content: systemPrompt),
                 chatMessage(role: .user, content: userPrompt),
@@ -73,9 +77,6 @@ class CustomOpenAIService: BaseOpenAIService {
      */
     func replaceCustomPromptWithVariable(_ prompt: String) -> String {
         var runtimePrompt = prompt
-        if runtimePrompt.isEmpty {
-            return queryModel.queryText
-        }
 
         runtimePrompt = runtimePrompt.replacingOccurrences(
             of: "${{queryFromLanguage}}",
