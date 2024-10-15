@@ -11,16 +11,28 @@ import AppKit
 private var kSavedItemsKey: UInt8 = 0
 
 extension NSPasteboard {
-    var savedItems: [NSPasteboardItem]? {
-        get {
-            objc_getAssociatedObject(self, &kSavedItemsKey) as? [NSPasteboardItem]
-        }
-        set {
-            objc_setAssociatedObject(self, &kSavedItemsKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
+    /// Perform temporary task, restore the pasteboard items after the task is completed.
+    @objc
+    func performTemporaryTask(_ task: @escaping () -> ()) {
+        performTemporaryTask(restoreDelay: 0, task: task)
     }
 
-    func save() {
+    func performTemporaryTask(restoreDelay: TimeInterval = 0, task: @escaping () -> ()) {
+        saveCurrentContents()
+        task()
+        if restoreDelay > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + restoreDelay) {
+                self.restoreOriginalContents()
+            }
+        } else {
+            restoreOriginalContents()
+        }
+    }
+}
+
+extension NSPasteboard {
+    @objc
+    func saveCurrentContents() {
         var archivedItems = [NSPasteboardItem]()
         if let allItems = pasteboardItems {
             for item in allItems {
@@ -39,7 +51,8 @@ extension NSPasteboard {
         }
     }
 
-    func restore() {
+    @objc
+    func restoreOriginalContents() {
         if let items = savedItems {
             clearContents()
             writeObjects(items)
@@ -47,16 +60,12 @@ extension NSPasteboard {
         }
     }
 
-    /// Save the current pasteboard items, perform the task, and then restore the saved items.
-    func onPrivateMode(restoreDelay: TimeInterval = 0, _ task: @escaping () -> ()) {
-        save()
-        task()
-        if restoreDelay > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + restoreDelay) {
-                self.restore()
-            }
-        } else {
-            restore()
+    private var savedItems: [NSPasteboardItem]? {
+        get {
+            objc_getAssociatedObject(self, &kSavedItemsKey) as? [NSPasteboardItem]
+        }
+        set {
+            objc_setAssociatedObject(self, &kSavedItemsKey, newValue, .OBJC_ASSOCIATION_RETAIN)
         }
     }
 }

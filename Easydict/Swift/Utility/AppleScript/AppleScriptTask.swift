@@ -34,7 +34,8 @@ class AppleScriptTask: NSObject {
     let task: Process
 
     @discardableResult
-    static func runShortcut(_ shortcutName: String, parameters: [String: String]) async throws -> String? {
+    static func runShortcut(_ shortcutName: String, parameters: [String: String]) async throws
+        -> String? {
         let appleScript = appleScript(of: shortcutName, parameters: parameters)
         return try await runAppleScriptWithProcess(appleScript)
     }
@@ -51,27 +52,36 @@ class AppleScriptTask: NSObject {
     }
 
     static func runTranslateShortcut(parameters: [String: String]) async throws -> String? {
-        let appleScript = appleScript(of: Constants.easydictTranslatShortcutName, parameters: parameters)
+        let appleScript = appleScript(
+            of: Constants.easydictTranslatShortcutName, parameters: parameters
+        )
         return try await runAppleScript(appleScript)
     }
 
     @discardableResult
     static func runAppleScript(_ appleScript: String) async throws -> String? {
         try await Task.detached(priority: .userInitiated) {
-            var errorInfo: NSDictionary?
-            let script = NSAppleScript(source: appleScript)
-            guard let output = script?.executeAndReturnError(&errorInfo) else {
-                let errorMessage = errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                throw QueryError(type: .appleScript, message: errorMessage)
-            }
-            return output.stringValue
+            try runAppleScript(appleScript)
         }.value
+    }
+
+    @discardableResult
+    static func runAppleScript(_ appleScript: String) throws -> String? {
+        var errorInfo: NSDictionary?
+        let script = NSAppleScript(source: appleScript)
+        guard let output = script?.executeAndReturnError(&errorInfo) else {
+            let errorMessage =
+                errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+            throw QueryError(type: .appleScript, message: errorMessage)
+        }
+        return output.stringValue
     }
 
     /// Run AppleScript with `NSAppleScript`, faster than `Process`, but requires AppleEvent permission.
 
     @discardableResult
-    static func runAppleScriptWithDescriptor(_ appleScript: String) async throws -> NSAppleEventDescriptor {
+    static func runAppleScriptWithDescriptor(_ appleScript: String) async throws
+        -> NSAppleEventDescriptor {
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global().async {
                 let appleScript = NSAppleScript(source: appleScript)
@@ -79,8 +89,11 @@ class AppleScriptTask: NSObject {
                 let output = appleScript?.executeAndReturnError(&errorInfo)
 
                 guard let output, errorInfo == nil else {
-                    let errorMessage = errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                    continuation.resume(throwing: QueryError(type: .appleScript, message: errorMessage))
+                    let errorMessage =
+                        errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+                    continuation.resume(
+                        throwing: QueryError(type: .appleScript, message: errorMessage)
+                    )
                     return
                 }
                 continuation.resume(returning: output)
@@ -99,7 +112,9 @@ class AppleScriptTask: NSObject {
                     let errorData = try self.errorPipe.fileHandleForReading.readToEnd()
 
                     if let error = errorData?.stringValue {
-                        continuation.resume(throwing: QueryError(type: .appleScript, message: error))
+                        continuation.resume(
+                            throwing: QueryError(type: .appleScript, message: error)
+                        )
 
                     } else {
                         continuation.resume(returning: outputData?.stringValue)

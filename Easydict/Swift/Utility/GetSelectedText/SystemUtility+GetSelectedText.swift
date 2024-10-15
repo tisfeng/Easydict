@@ -103,7 +103,7 @@ extension SystemUtility {
         let pasteboard = NSPasteboard.general
         let initialChangeCount = pasteboard.changeCount
 
-        pasteboard.onPrivateMode {
+        pasteboard.performTemporaryTask {
             do {
                 logInfo("Performed action copy")
                 try copyItem.performAction(.press)
@@ -127,14 +127,14 @@ extension SystemUtility {
 
     /// Get selected text by shortcut copy
     class func getSelectedTextByShortcutCopy() -> String? {
-        logInfo("getSelectedTextByShortcutCopy")
+        logInfo("Getting selected text by shortcut copy")
 
         var result: String?
         let pasteboard = NSPasteboard.general
         let initialChangeCount = pasteboard.changeCount
 
-        pasteboard.onPrivateMode {
-            callSystemCopy()
+        pasteboard.performTemporaryTask {
+            SystemUtility.postCopyEvent()
 
             pollTask {
                 if hasPasteboardChanged(initialCount: initialChangeCount) {

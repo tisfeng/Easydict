@@ -18,6 +18,7 @@
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */; };
+		030DD0F02CBE6ED700A5A925 /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DD0EF2CBE6EC000A5A925 /* SharedUtilities.swift */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */; };
@@ -392,6 +393,7 @@
 		0309E1F2292BD6A100AFB76A /* EZQueryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryModel.h; sourceTree = "<group>"; };
 		0309E1F3292BD6A100AFB76A /* EZQueryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryModel.m; sourceTree = "<group>"; };
 		030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
+		030DD0EF2CBE6EC000A5A925 /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
@@ -1166,6 +1168,7 @@
 		0346F3D12CAECB38006A6CDF /* GetSelectedText */ = {
 			isa = PBXGroup;
 			children = (
+				030DD0EF2CBE6EC000A5A925 /* SharedUtilities.swift */,
 				0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */,
 				0346F3CF2CAECAAF006A6CDF /* SystemUtility+GetSelectedText.swift */,
 				036463662CB541E400D0D6CC /* AXSwift+Extension.swift */,
@@ -3150,6 +3153,7 @@
 				9643D9422B6FE4AF000FBEA6 /* Shortcut+Bind.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
+				030DD0F02CBE6ED700A5A925 /* SharedUtilities.swift in Sources */,
 				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,
 				EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */,
 				96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */,

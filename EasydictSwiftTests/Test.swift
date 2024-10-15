@@ -53,3 +53,12 @@ import Translation
     let decryptedText = encryptedText.decryptAES()
     #expect(decryptedText == text)
 }
+
+@Test func alertVolume() async throws {
+    let volume = try await AppleScriptTask.alertVolume()
+    print(volume)
+}
+
+@Test func setAlertVolume() async throws {
+    try await AppleScriptTask.setAlertVolume(50)
+}

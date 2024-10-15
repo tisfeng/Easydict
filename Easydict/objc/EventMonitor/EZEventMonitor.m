@@ -61,6 +61,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, assign) EZTriggerType frontmostAppTriggerType;
 @property (nonatomic, assign) BOOL isPopButtonVisible;
 
+@property (nonatomic, strong) NSEvent *event;
+
 @end
 
 
@@ -386,7 +388,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         MMLog(@"disabled autoSelectText");
         return enabled;
     }
-
     return enabled;
 }
 
@@ -401,58 +402,28 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Get selected text by simulated key: Cmd + C
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
-    MMLogInfo(@"get selected text by simulated key");
+    MMLogInfo(@"Get selected text by simulated key");
 
-    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSInteger changeCount = [pasteboard changeCount];
-    NSString *lastText = [EZSystemUtility getLastPasteboardText];
-
-    // Set volume to 0 to avoid alert.
+    // Do not mute alert volume if already muting, avoid getting muted volume 0, since this method may be called multiple times when dragging window.
     if (!self.isMutingAlertVolume) {
-        [AppleScriptTask getAlertVolumeWithCompletionHandler:^(int32_t volume, NSError *error) {
-            if (error) {
-                MMLogError(@"Failed to get alert volume: %@", error);
-                return;
-            }
-            self.currentAlertVolume = volume;
+        self.isMutingAlertVolume = YES;
 
-            [AppleScriptTask setAlertVolume:0 completionHandler:^(NSError *error) {
-                if (error) {
-                    MMLogError(@"Failed to set alert volume: %@", error);
-                }
-            }];
+        //  Mute alert volume to avoid alert.
+        [AppleScriptTask muteAlertVolumeWithCompletionHandler:^(NSInteger volume, NSError *error) {
+            if (error) {
+                MMLogError(@"Failed to mute alert volume: %@", error);
+            } else {
+                self.currentAlertVolume = volume;
+            }
         }];
     }
-
-    self.isMutingAlertVolume = YES;
-
-    [EZSystemUtility postCopyEvent];
 
     [self cancelDelayRecoverVolume];
     [self delayRecoverVolume];
 
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    NSString *selectedText = [SystemUtility getSelectedTextByShortcutCopy];
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSInteger newChangeCount = [pasteboard changeCount];
-        // If changeCount is equal to newChangeCount, it means that the copy value is nil.
-        if (changeCount == newChangeCount) {
-            MMLogInfo(@"pasteboard changeCount does not change, means key getText is nil");
-            completion(nil);
-            return;
-        }
-
-        NSString *selectedText = [[EZSystemUtility getLastPasteboardText] removeInvisibleChar];
-        self.selectedText = selectedText;
-        MMLogInfo(@"--> Key getText: %@", selectedText.truncated);
-
-        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        MMLogInfo(@"Key getText cost: %.1f ms", (endTime - startTime) * 1000); // cost ~110ms
-
-        [lastText copyToPasteboard];
-
-        completion(selectedText);
-    });
+    completion(selectedText);
 }
 
 #pragma mark - Delay to recover volume
@@ -467,10 +438,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)recoverVolume {
     [AppleScriptTask setAlertVolume:self.currentAlertVolume completionHandler:^(NSError *error) {
+        self.isMutingAlertVolume = NO;
         if (error) {
             MMLogError(@"Failed to recover alert volume: %@", error.localizedDescription);
-        } else {
-            self.isMutingAlertVolume = NO;
         }
     }];
 }
@@ -742,6 +712,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 
 - (void)handleMonitorEvent:(NSEvent *)event {
+    self.event = event;
     //    MMLogInfo(@"type: %ld", event.type);
 
     switch (event.type) {
@@ -949,6 +920,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)dismissPopButton {
+    // If isMutingAlertVolume is YES, in this case, Cmd + C may be used to get selected text, so don't dismiss pop button.
+    if (self.isMutingAlertVolume && [self isCmdCEvent:self.event]) {
+        MMLogInfo(@"Skip simulated Cmd+C event: %@", self.event);
+        return;
+    }
+
     if (self.dismissPopButtonBlock) {
         self.dismissPopButtonBlock();
     }
@@ -1133,6 +1110,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     CGRect frame = CGRectMake(x, y, width, height);
     return frame;
+}
+
+- (BOOL)isCmdCEvent:(NSEvent *)event {
+    if (event.type != NSEventTypeKeyDown && event.type != NSEventTypeKeyUp) {
+        return NO;
+    }
+
+    BOOL isCmdKeyPressed = (event.modifierFlags & NSEventModifierFlagCommand) != 0;
+    BOOL isCKeyPressed = event.keyCode == kVK_ANSI_C;
+    return isCmdKeyPressed && isCKeyPressed;
 }
 
 @end

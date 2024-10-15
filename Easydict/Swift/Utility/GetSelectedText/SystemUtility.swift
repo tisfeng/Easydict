@@ -9,15 +9,22 @@
 import AXSwift
 import AXSwiftExt
 import Carbon
+import KeySender
 
 // MARK: - SystemUtility
 
 @objcMembers
-class SystemUtility: NSObject {}
+class SystemUtility: NSObject {
+    // Post copy event
+    static func postCopyEvent() {
+        let sender = KeySender(key: .c, modifiers: .command)
+        sender.sendGlobally()
+    }
+}
 
 // 模拟粘贴
 func pastePrivacy(_ text: String) {
-    NSPasteboard.general.onPrivateMode {
+    NSPasteboard.general.performTemporaryTask {
         copyToClipboard(text)
         callSystemPaste()
     }
