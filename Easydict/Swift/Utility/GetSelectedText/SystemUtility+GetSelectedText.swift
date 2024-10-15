@@ -105,29 +105,19 @@ extension SystemUtility {
 
         pasteboard.onPrivateMode {
             do {
-                try copyItem.performAction(.press)
                 logInfo("Performed action copy")
+                try copyItem.performAction(.press)
             } catch {
                 logError("Failed to perform action copy: \(error)")
             }
 
-            let semaphore = DispatchSemaphore(value: 0)
-
-            DispatchQueue.global().async {
-                pollTask(every: 0.005, timeout: 0.1) {
-                    if hasPasteboardChanged(initialCount: initialChangeCount) {
-                        result = getPasteboardString()
-                        semaphore.signal()
-                        return true
-                    }
-                    return false
-                } timeoutCallback: {
-                    logInfo("pollTask timeout call back")
-                    semaphore.signal()
+            pollTask {
+                if hasPasteboardChanged(initialCount: initialChangeCount) {
+                    result = getPasteboardString()
+                    return true
                 }
+                return false
             }
-
-            semaphore.wait()
 
             logInfo("Menu bar action copy getSelectedText: \(result ?? "nil")")
         }
@@ -146,21 +136,13 @@ extension SystemUtility {
         pasteboard.onPrivateMode {
             callSystemCopy()
 
-            let semaphore = DispatchSemaphore(value: 0)
-            DispatchQueue.global().async {
-                pollTask(every: 0.005, timeout: 0.1) {
-                    if hasPasteboardChanged(initialCount: initialChangeCount) {
-                        result = getPasteboardString()
-                        semaphore.signal()
-                        return true
-                    }
-                    return false
-                } timeoutCallback: {
-                    print("timeout")
-                    semaphore.signal()
+            pollTask {
+                if hasPasteboardChanged(initialCount: initialChangeCount) {
+                    result = getPasteboardString()
+                    return true
                 }
+                return false
             }
-            semaphore.wait()
         }
 
         logInfo("Shortcut copy getSelectedText: \(result ?? "nil")")

@@ -45,14 +45,14 @@ extension UIElement {
         // Try to get the 4th menu item, which usually is the Edit menu.
         if menuChildren.count >= 4 {
             let editMenu = menuChildren[3]
-            logInfo("Checking Edit menu (4th menu item)")
+            logInfo("Checking the Edit(4th) menu")
             if let copyElement = findCopyMenuItemIn(editMenu) {
                 return copyElement
             }
         }
 
         // If not found in Edit menu, search the entire menu.
-        logInfo("Copy not found in Edit menu, searching entire menu")
+        logInfo("Copy not found in Edit(4th) menu, searching entire menu")
         return findCopyMenuItemIn(menu)
     }
 
