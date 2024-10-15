@@ -111,7 +111,7 @@ extension SystemUtility {
                 logError("Failed to perform action copy: \(error)")
             }
 
-            pollTask {
+            SharedUtilities.pollTask {
                 if hasPasteboardChanged(initialCount: initialChangeCount) {
                     result = getPasteboardString()
                     return true
@@ -136,7 +136,7 @@ extension SystemUtility {
         pasteboard.performTemporaryTask {
             SystemUtility.postCopyEvent()
 
-            pollTask {
+            SharedUtilities.pollTask {
                 if hasPasteboardChanged(initialCount: initialChangeCount) {
                     result = getPasteboardString()
                     return true

@@ -84,30 +84,6 @@ func copyToClipboard(_ text: String) {
     pasteboard.setString(text, forType: .string)
 }
 
-/// Sync poll task, if task is true, return true, else continue polling.
-///
-/// - Warning: ⚠️ This method will block the current thread, only use when necessary.
-/// - Returns: true if the task succeeded, false if it timed out.
-@discardableResult
-func pollTask(
-    every interval: TimeInterval = 0.005,
-    timeout: TimeInterval = 0.1,
-    task: () -> Bool,
-    timeoutCallback: () -> () = {}
-)
-    -> Bool {
-    let startTime = Date()
-    while Date().timeIntervalSince(startTime) < timeout {
-        if task() {
-            return true
-        }
-        Thread.sleep(forTimeInterval: interval)
-    }
-    timeoutCallback()
-    logInfo("pollTask timeout call back")
-    return false
-}
-
 /// Async poll task, if task is true, call timeoutCallback.
 func asyncPollTask(
     every interval: TimeInterval = 0.005,

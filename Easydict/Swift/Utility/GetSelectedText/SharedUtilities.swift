@@ -8,14 +8,9 @@
 
 import Foundation
 
+/// Shared utilities for objc and swift.
 @objc
 public class SharedUtilities: NSObject {
-    @objc
-    @discardableResult
-    public static func pollTask(_ task: @escaping () -> Bool) -> Bool {
-        pollTask(every: 0.005, timeout: 0.1, task: task)
-    }
-
     /// Sync poll task, if task is true, return true, else continue polling.
     ///
     /// - Warning: ⚠️ This method will block the current thread, only use when necessary.
@@ -23,9 +18,9 @@ public class SharedUtilities: NSObject {
     @objc
     @discardableResult
     public static func pollTask(
+        _ task: @escaping () -> Bool,
         every interval: TimeInterval = 0.005,
         timeout: TimeInterval = 0.1,
-        task: @escaping () -> Bool,
         timeoutCallback: @escaping () -> () = {}
     )
         -> Bool {

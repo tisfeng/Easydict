@@ -608,7 +608,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        MMLogInfo(@"Unsupported Accessibility App: %@ (%@)", application.localizedName, bundleID);
+        MMLogInfo(@"error: kAXErrorNoValue, unsupported Accessibility App: %@ (%@)", application.localizedName, bundleID);
         return YES;
     }
 
@@ -922,7 +922,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)dismissPopButton {
     // If isMutingAlertVolume is YES, in this case, Cmd + C may be used to get selected text, so don't dismiss pop button.
     if (self.isMutingAlertVolume && [self isCmdCEvent:self.event]) {
-        MMLogInfo(@"Skip simulated Cmd+C event: %@", self.event);
         return;
     }
 
