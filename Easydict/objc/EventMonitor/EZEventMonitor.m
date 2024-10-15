@@ -330,8 +330,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
         // 3. Try to use simulated key to get selected text.
         [self handleSimulatedCopyOnAXError:axError completion:completion];
-
-        completion(nil);
     }];
 }
 
