@@ -577,7 +577,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      */
 
     BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
-    MMLogInfo(@"enable force get selected text: %d", enableForceGetSelectedText);
+    MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
     if (!enableForceGetSelectedText) {
         return NO;
     }

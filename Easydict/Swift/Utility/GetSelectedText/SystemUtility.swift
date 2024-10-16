@@ -27,8 +27,27 @@ class SystemUtility: NSObject {
         sender.sendGlobally()
     }
 
+    /// Copy text and paste text safely.
+    static func copyTextAndPasteSafely(_ text: String) {
+        logInfo("Copy text and paste text safely")
+
+        monitorPasteboardContentChange(
+            triggerAction: {
+                text.copyToClipboard()
+            },
+            onPasteboardChange: { text in
+                if let pastedText = text {
+                    postPasteEvent()
+                    logInfo("Pasted text: \(pastedText)")
+                } else {
+                    logError("Failed to paste text")
+                }
+            }
+        )
+    }
+
     /// Copy text and paste text
-    static func copyTextAndPaste(_ text: String) {
+    static func copyTextAndPaste2(_ text: String) {
         logInfo("Copy text and paste text: \(text)")
 
         let pasteboard = NSPasteboard.general
@@ -49,14 +68,6 @@ class SystemUtility: NSObject {
         postPasteEvent()
 
         logInfo("Pasted text: \(pasteboard.string()!)")
-    }
-
-    /// Paste text safely
-    static func pasteTextSafely(_ text: String) {
-        logInfo("Paste text safely")
-        NSPasteboard.general.performTemporaryTask {
-            copyTextAndPaste(text)
-        }
     }
 }
 

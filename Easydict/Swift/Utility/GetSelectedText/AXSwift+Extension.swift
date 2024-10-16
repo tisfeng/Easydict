@@ -29,7 +29,7 @@ func findEnabledCopyItemInFrontmostApp() -> UIElement? {
         return nil
     }
 
-    logInfo("Found enabled copy item in frontmost application: \(frontmostApp))")
+    logInfo("Found enabled copy item in frontmost application: \(frontmostApp)")
 
     return copyItem
 }

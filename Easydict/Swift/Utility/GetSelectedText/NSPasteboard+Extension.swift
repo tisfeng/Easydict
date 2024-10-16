@@ -11,7 +11,7 @@ import AppKit
 private var kSavedItemsKey: UInt8 = 0
 
 extension NSPasteboard {
-    /// Perform temporary task, restore the pasteboard items after the task is completed.
+    /// Protect the pasteboard items from being changed by temporary tasks.
     /// Restore delay is 0.05 second, to avoid pasteboard items being restored too early.
     @objc
     func performTemporaryTask(_ task: @escaping () -> ()) {

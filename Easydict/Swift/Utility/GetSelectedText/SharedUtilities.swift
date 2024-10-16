@@ -6,13 +6,18 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import AXSwift
 import Foundation
 
 // MARK: - SharedUtilities
 
 /// Shared utilities for objc and swift.
 @objc
-public class SharedUtilities: NSObject {}
+public class SharedUtilities: NSObject {
+    static func isAccessibilityEnabled() -> Bool {
+        checkIsProcessTrusted()
+    }
+}
 
 /// Sync poll task, if task is true, return true, else continue polling.
 ///

@@ -92,7 +92,7 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app);
 
-    [SystemUtility pasteTextSafely:replacementString];
+    [SystemUtility copyTextAndPasteSafely:replacementString];
 }
 
 @end

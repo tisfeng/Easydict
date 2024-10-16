@@ -15,7 +15,7 @@ extension SystemUtility {
     /// 1. Get selected text, try to get text by AXUI first.
     /// 2. If failed, try to get text by menu action copy.
     /// 3. if failed, try to get text by shortcut copy.
-    class func getSelectedText() -> String? {
+    static func getSelectedText() -> String? {
         logInfo("Attempting to get selected text")
 
         // Try AXUI method first
@@ -42,12 +42,13 @@ extension SystemUtility {
 
             logError("Failed to get text via shortcut copy")
         }
+
         logError("All methods to get selected text have failed")
         return nil
     }
 
     /// Get selected text by AXUI
-    class func getSelectedTextByAXUI() -> Result<String, AXError> {
+    static func getSelectedTextByAXUI() -> Result<String, AXError> {
         logInfo("Getting selected text via AXUI")
 
         let systemWideElement = AXUIElementCreateSystemWide()
@@ -91,74 +92,88 @@ extension SystemUtility {
     }
 
     /// Get selected text by menu bar action copy.
-    /// Ref to Copi  https://github.com/s1ntoneli/Copi/blob/531a12fdc2da66c809951926ce88af02593e0723/Copi/Utilities/SystemUtilities.swift#L257
-    class func getSelectedTextByMenuBarActionCopy() -> String? {
+    ///
+    /// Refer to Copi  https://github.com/s1ntoneli/Copi/blob/531a12fdc2da66c809951926ce88af02593e0723/Copi/Utilities/SystemUtilities.swift#L257
+    static func getSelectedTextByMenuBarActionCopy() -> String? {
         logInfo("Getting selected text by menu bar action copy")
 
         guard let copyItem = findEnabledCopyItemInFrontmostApp() else {
             return nil
         }
 
-        var result: String?
+        let selectedText = getSelectedTextWithAction {
+            try copyItem.performAction(.press)
+        }
+
+        logInfo("Menu bar action copy got selected text: \(selectedText ?? "nil")")
+
+        return selectedText
+    }
+
+    /// Get selected text by shortcut copy.
+    static func getSelectedTextByShortcutCopy() -> String? {
+        logInfo("Getting selected text by shortcut copy")
+
+        let selectedText = getSelectedTextWithAction {
+            SystemUtility.postCopyEvent()
+        }
+
+        logInfo("Shortcut copy got selected text: \(selectedText ?? "nil")")
+
+        return selectedText
+    }
+
+    static func getSelectedTextWithAction(
+        action: @escaping () throws -> ()
+    )
+        -> String? {
+        var selectedText: String?
+
+        monitorPasteboardContentChange(
+            triggerAction: {
+                try action()
+            },
+            onPasteboardChange: { copiedText in
+                selectedText = copiedText
+            }
+        )
+
+        return selectedText
+    }
+
+    /// Monitor pasteboard content change.
+    ///
+    /// - Parameters:
+    ///   - triggerAction: The action to trigger the pasteboard change.
+    ///   - onPasteboardChange: The callback when the pasteboard content changes.
+    static func monitorPasteboardContentChange(
+        triggerAction: @escaping () throws -> (),
+        onPasteboardChange: @escaping (String?) -> ()
+    ) {
+        logInfo("Monitoring pasteboard content change")
+
         let pasteboard = NSPasteboard.general
         let initialChangeCount = pasteboard.changeCount
 
         pasteboard.performTemporaryTask {
             do {
-                logInfo("Performed action copy")
-                try copyItem.performAction(.press)
+                logInfo("Executing trigger action")
+                try triggerAction()
             } catch {
-                logError("Failed to perform action copy: \(error)")
+                logError("Failed to execute trigger action: \(error)")
+                onPasteboardChange(nil)
+                return
             }
 
             pollTask {
-                if hasPasteboardChanged(initialCount: initialChangeCount) {
-                    result = getPasteboardString()
-                    return true
-                }
-                return false
-            }
-
-            logInfo("Menu bar action copy getSelectedText: \(result ?? "nil")")
-        }
-
-        return result
-    }
-
-    /// Get selected text by shortcut copy
-    class func getSelectedTextByShortcutCopy() -> String? {
-        logInfo("Getting selected text by shortcut copy")
-
-        var result: String?
-        let pasteboard = NSPasteboard.general
-        let initialChangeCount = pasteboard.changeCount
-
-        pasteboard.performTemporaryTask {
-            SystemUtility.postCopyEvent()
-
-            pollTask {
-                if hasPasteboardChanged(initialCount: initialChangeCount) {
-                    result = getPasteboardString()
+                if pasteboard.changeCount != initialChangeCount {
+                    let result = pasteboard.string()
+                    logInfo("Pasteboard changed content: \(result ?? "nil")")
+                    onPasteboardChange(result)
                     return true
                 }
                 return false
             }
         }
-
-        logInfo("Shortcut copy getSelectedText: \(result ?? "nil")")
-
-        return result
     }
-}
-
-func isAccessibilityEnabled() -> Bool {
-    checkIsProcessTrusted()
-}
-
-func hasPasteboardChanged(initialCount: Int) -> Bool {
-    NSPasteboard.general.changeCount != initialCount
-}
-
-func getPasteboardString() -> String? {
-    NSPasteboard.general.string(forType: .string)
 }
