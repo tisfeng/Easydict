@@ -173,15 +173,9 @@ struct AdvancedTab: View {
 
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
 
-    /// Returns Color.green if `enableHTTPServer` is true,
-    /// returns Color.red otherwise.
+    /// Returns Color.green if `enableHTTPServer` is true, returns Color.red otherwise.
     private func getHttpIconColor() -> Color {
-        switch enableHTTPServer {
-        case true:
-            .green
-        case false:
-            .red
-        }
+        enableHTTPServer ? .green : .red
     }
 }
 
