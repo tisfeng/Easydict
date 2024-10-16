@@ -8,7 +8,6 @@
 #import "EZReplaceTextButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "EZSystemUtility.h"
 #import "EZLog.h"
 #import "Easydict-Swift.h"
 
@@ -67,6 +66,8 @@
 }
 
 - (void)replaceSelectedTextByAccessibility:(NSString *)replacementString {
+    MMLogInfo(@"replaceSelectedTextByAccessibility: %@", replacementString);
+
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
 
@@ -89,20 +90,9 @@
 
 - (void)replaceSelectedTextByKey:(NSString *)replacementString {
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
-    MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
+    MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app);
 
-    NSString *lastText = [EZSystemUtility getLastPasteboardText];
-    [replacementString copyToPasteboard];
-
-    CGFloat delayTime = 2 * EZGetClipboardTextDelayTime;
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [EZSystemUtility postPasteEvent];
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [lastText copyToPasteboard];
-        });
-    });
+    [SystemUtility pasteTextSafely:replacementString];
 }
 
 @end

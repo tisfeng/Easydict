@@ -15,10 +15,48 @@ import KeySender
 
 @objcMembers
 class SystemUtility: NSObject {
-    // Post copy event
+    /// Post copy event
     static func postCopyEvent() {
         let sender = KeySender(key: .c, modifiers: .command)
         sender.sendGlobally()
+    }
+
+    /// Post paste event
+    static func postPasteEvent() {
+        let sender = KeySender(key: .v, modifiers: .command)
+        sender.sendGlobally()
+    }
+
+    /// Copy text and paste text
+    static func copyTextAndPaste(_ text: String) {
+        logInfo("Copy text and paste text: \(text)")
+
+        let pasteboard = NSPasteboard.general
+        let initialChangeCount = pasteboard.changeCount
+
+        // Copy text to clipboard
+        text.copyToClipboard()
+        logInfo("Copyed text to clipboard")
+
+        SharedUtilities.pollTask {
+            if pasteboard.changeCount != initialChangeCount {
+                return true
+            }
+            return false
+        }
+
+        // Paste text
+        postPasteEvent()
+
+        logInfo("Pasted text: \(pasteboard.string()!)")
+    }
+
+    /// Paste text safely
+    static func pasteTextSafely(_ text: String) {
+        logInfo("Paste text safely")
+        NSPasteboard.general.performTemporaryTask {
+            copyTextAndPaste(text)
+        }
     }
 }
 

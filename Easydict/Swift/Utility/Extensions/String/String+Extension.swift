@@ -34,6 +34,13 @@ extension String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
     }
+
+    /// Copy to clipboard
+    func copyToClipboard() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(self, forType: .string)
+    }
 }
 
 @objc

@@ -272,7 +272,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Use Accessibility to get selected text first, if failed, use AppleScript and Cmd+C.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     [self recordSelectTextInfo];
-    MMLogInfo(@"getSelectedText in App: %@ (%@)", self.frontmostApplication.localizedName, self.frontmostApplication.bundleIdentifier);
+    MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
 
     self.selectedTextEditable = NO;
 
