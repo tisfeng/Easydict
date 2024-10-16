@@ -40,7 +40,7 @@ struct AdvancedTab: View {
                 }
                 Toggle(isOn: $disableTipsView) {
                     AdvancedTabItemView(
-                        color: .yellow,
+                        color: .orange,
                         systemImage: SFSymbol.lightbulbFill.rawValue,
                         labelText: "setting.advance.disable_tips_view"
                     )
@@ -56,7 +56,7 @@ struct AdvancedTab: View {
                 }
                 Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
-                        color: .mint,
+                        color: .cyan,
                         systemImage: SFSymbol.arrowForwardSquare.rawValue,
                         labelText: "setting.advance.replace_with_translation",
                         subtitleText: "setting.advance.replace_with_translation_desc"
@@ -67,7 +67,7 @@ struct AdvancedTab: View {
                 if #available(macOS 15.0, *) {
                     Toggle(isOn: $enableLocalAppleTranslation) {
                         AdvancedTabItemView(
-                            color: .green,
+                            color: .cyan,
                             systemImage: SFSymbol.appleLogo.rawValue,
                             labelText: "setting.advance.apple_offline_translation",
                             subtitleText: "setting.advance.apple_offline_translation_desc"
@@ -78,7 +78,7 @@ struct AdvancedTab: View {
                 Picker(
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
-                        color: .blue,
+                        color: .cyan,
                         systemImage: SFSymbol.highlighter.rawValue,
                         labelText: "setting.advance.force_get_selected_text_type"
                     )
@@ -93,14 +93,14 @@ struct AdvancedTab: View {
             Section {
                 Toggle(isOn: $replaceNewlineWithSpace) {
                     AdvancedTabItemView(
-                        color: .mint,
+                        color: .indigo,
                         systemImage: SFSymbol.arrowForwardSquare.rawValue,
                         labelText: "setting.advance.automatically_replace_newline_with_space"
                     )
                 }
                 Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
                     AdvancedTabItemView(
-                        color: .orange,
+                        color: .indigo,
                         systemImage: SFSymbol.chevronLeftForwardslashChevronRight.rawValue,
                         labelText: "setting.advance.automatically_remove_code_comment_symbols"
                     )
@@ -128,7 +128,7 @@ struct AdvancedTab: View {
             Section {
                 Toggle(isOn: $enableHTTPServer) {
                     AdvancedTabItemView(
-                        color: .green,
+                        color: getHttpIconColor(),
                         systemImage: SFSymbol.network.rawValue,
                         labelText: "setting.advance.enable_http_server"
                     )
@@ -140,7 +140,7 @@ struct AdvancedTab: View {
                         .fixedSize(horizontal: true, vertical: false)
                 } label: {
                     AdvancedTabItemView(
-                        color: .red,
+                        color: getHttpIconColor(),
                         systemImage: SFSymbol.externaldriveConnectedToLineBelow.rawValue,
                         labelText: "setting.advance.http_port",
                         subtitleText: "setting.advance.http_port_desc"
@@ -172,6 +172,17 @@ struct AdvancedTab: View {
     @Default(.httpPort) private var httpPort
 
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
+
+    /// Returns Color.green if `enableHTTPServer` is true,
+    /// returns Color.red otherwise.
+    private func getHttpIconColor() -> Color {
+        switch enableHTTPServer {
+        case true:
+            .green
+        case false:
+            .red
+        }
+    }
 }
 
 #Preview {
