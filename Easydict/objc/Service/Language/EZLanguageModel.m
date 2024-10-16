@@ -77,6 +77,7 @@ NSString *const EZLanguageUnsupported = @"unsupported";
         autoLang.englishName = EZLanguageAuto;
         autoLang.nativeName = @"auto";
         autoLang.flagEmoji = @"🌐";
+        autoLang.code = @"und"; // BCP-47 code, und = undetermined
         [allLanguages setObject:autoLang forKey:EZLanguageAuto];
 
         EZLanguageModel *chineseSimplifiedLang = [[EZLanguageModel alloc] init];

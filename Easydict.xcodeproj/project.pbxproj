@@ -1022,10 +1022,10 @@
 		0317516C2C018A8800EFB343 /* Others */ = {
 			isa = PBXGroup;
 			children = (
+				EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */,
 				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
 				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
 				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
-				EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */,
 			);
 			path = Others;
 			sourceTree = "<group>";

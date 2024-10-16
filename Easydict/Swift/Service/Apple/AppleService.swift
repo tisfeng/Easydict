@@ -17,39 +17,36 @@ public class AppleService: QueryService {
 
     @available(macOS 15.0, *)
     func prepareSupportedLanguages() async {
-        supportedLanguages = await LanguageAvailability().supportedLanguages // zh_CN, zh_TW, ja_JP
+        supportedLanguages = await LanguageAvailability().supportedLanguages // en_US, zh_CN, zh_TW, ja_JP
 
         supportedLanguages.sort {
             $0.languageCode!.identifier < $1.languageCode!.identifier
         }
 
+        // supportedLanguages: ar_AE, de_DE, en_GB, en_US, es_ES, fr_FR, hi_IN, id_ID, it_IT, ja_JP, ko_KR, nl_NL, pl_PL, pt_BR, ru_RU, th_TH, tr_TR, uk_UA, vi_VN, zh_TW, zh_CN
         for language in supportedLanguages {
             print("\(language.languageCode!.identifier)_\(language.region!)")
         }
+    }
+}
 
-        /**
-         ar_AE
-         de_DE
-         en_GB
-         en_US
-         es_ES
-         fr_FR
-         hi_IN
-         id_ID
-         it_IT
-         ja_JP
-         ko_KR
-         nl_NL
-         pl_PL
-         pt_BR
-         ru_RU
-         th_TH
-         tr_TR
-         uk_UA
-         vi_VN
-         zh_TW
-         zh_CN
-         */
+extension NLLanguage {
+    var localeLanguage: Locale.Language {
+        .init(identifier: rawValue)
+    }
+}
+
+/// Test if NLLanguage is equal to Language.code
+func testNLLanguage() {
+    print("testNLLanguage")
+
+    let allLanguages = Language.allCases
+
+    let apple = EZAppleService.shared()
+
+    for language in allLanguages {
+        let nlLanguage = apple.appleLanguage(fromLanguageEnum: language)
+        print("\(language.rawValue): \(language.code): \(nlLanguage.rawValue)\n")
     }
 }
 

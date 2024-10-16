@@ -69,9 +69,13 @@ extension Language {
         }
     }
 
-    /// BCP-47 language code
+    /// BCP-47 language code: en, zh-Hans, zh-Hans, equal to Apple's NLLanguage.
     public var code: String {
         model.code
+    }
+
+    public var localeLanguage: Locale.Language {
+        .init(identifier: code)
     }
 }
 
@@ -86,5 +90,13 @@ extension Language {
     /// Is kind of Chinese language, means it is simplifiedChinese or traditionalChinese.
     func isKindOfChinese() -> Bool {
         self == .simplifiedChinese || self == .traditionalChinese
+    }
+}
+
+// MARK: - Language + CustomStringConvertible
+
+extension Language: CustomStringConvertible {
+    public var description: String {
+        "\(localizedName)(\(code)"
     }
 }

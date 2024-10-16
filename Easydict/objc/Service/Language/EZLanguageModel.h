@@ -81,7 +81,7 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageUnsupported;
 @property (nonatomic, copy) NSString *voiceLocaleIdentifier; // Used for Apple system TTS, value is ISO 639-1 and ISO 3166-1, such as en_US, zh_CN
 
 /**
- BCP-47 language code https://en.wikipedia.org/wiki/IETF_language_tag
+ BCP-47 language code: en, zh-Hans, zh-Hans, equal to Apple's NLLanguage. https://en.wikipedia.org/wiki/IETF_language_tag
 
  IANA language subtag https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
 

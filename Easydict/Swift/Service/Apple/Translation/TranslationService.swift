@@ -81,9 +81,10 @@ public class TranslationService: NSObject {
         -> String {
         let response = try await translate(
             text: text,
-            sourceLanguage: .init(identifier: sourceLanguage.code),
-            targetLanguage: .init(identifier: targetLanguage.code)
+            sourceLanguage: sourceLanguage.localeLanguage,
+            targetLanguage: targetLanguage.localeLanguage
         )
+
         return response.targetText
     }
 

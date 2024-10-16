@@ -38,7 +38,7 @@ class SystemUtility: NSObject {
         text.copyToClipboard()
         logInfo("Copyed text to clipboard")
 
-        SharedUtilities.pollTask {
+        pollTask {
             if pasteboard.changeCount != initialChangeCount {
                 return true
             }

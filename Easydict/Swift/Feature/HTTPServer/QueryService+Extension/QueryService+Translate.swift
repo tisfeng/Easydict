@@ -9,6 +9,7 @@
 import Foundation
 
 extension QueryService {
+    /// Translate request, if source language is auto or nil, will detect source language first.
     func translate(request: TranslationRequest) async throws -> EZQueryResult {
         let text = request.text
         var from = Language.auto
@@ -35,7 +36,9 @@ extension QueryService {
         }
 
         if enablePrehandle {
-            let (prehandled, result) = try await prehandleQueryText(text: text, from: sourceLanguage, to: to)
+            let (prehandled, result) = try await prehandleQueryText(
+                text: text, from: sourceLanguage, to: to
+            )
             if prehandled {
                 logInfo("prehandled query text: \(text.truncated())")
                 return result
