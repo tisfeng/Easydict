@@ -115,7 +115,7 @@ extension SystemUtility {
         logInfo("Getting selected text by shortcut copy")
 
         let selectedText = getSelectedTextWithAction {
-            SystemUtility.postCopyEvent()
+            postCopyEvent()
         }
 
         logInfo("Shortcut copy got selected text: \(selectedText ?? "nil")")
@@ -128,7 +128,6 @@ extension SystemUtility {
     )
         -> String? {
         var selectedText: String?
-
         monitorPasteboardContentChange(
             triggerAction: {
                 try action()
@@ -137,7 +136,6 @@ extension SystemUtility {
                 selectedText = copiedText
             }
         )
-
         return selectedText
     }
 

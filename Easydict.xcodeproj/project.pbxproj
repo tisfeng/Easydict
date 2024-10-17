@@ -1518,9 +1518,9 @@
 		03A4188A2CB7ED9800C45FEB /* Translation */ = {
 			isa = PBXGroup;
 			children = (
+				039F79ED2CB7D1E80017EF5B /* TranslationService.swift */,
 				039F79EB2CB7CBC80017EF5B /* TranslationManager.swift */,
 				0364636D2CB77BE400D0D6CC /* TranslationView.swift */,
-				039F79ED2CB7D1E80017EF5B /* TranslationService.swift */,
 			);
 			path = Translation;
 			sourceTree = "<group>";
