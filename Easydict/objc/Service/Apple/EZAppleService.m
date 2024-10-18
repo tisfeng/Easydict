@@ -16,6 +16,9 @@
 #import "EZAppleDictionary.h"
 #import "Easydict-Swift.h"
 
+@import AppleTranslation;
+
+
 static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
 static NSString *const kIndentationText = @"";
@@ -166,7 +169,8 @@ static EZAppleService *_instance;
 
 - (TranslationService *)translationService {
     if (!_translationService) {
-        _translationService = [[TranslationService alloc] init];
+        NSWindow *statusBarWindow = NSApplication.sharedApplication.windows.firstObject;
+        _translationService = [[TranslationService alloc] initWithAttachedWindow:statusBarWindow];
         _translationService.enableTranslateSameLanguage = YES;
     }
     return _translationService;

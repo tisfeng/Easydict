@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import AppleTranslation
 import Foundation
 import Testing
 import Translation
@@ -27,6 +28,25 @@ public class AppleService: QueryService {
         for language in supportedLanguages {
             print("\(language.languageCode!.identifier)_\(language.region!)")
         }
+    }
+}
+
+@available(macOS 15.0, *)
+extension TranslationService {
+    /// Translate text from source language to target language, used for objc.
+    public func translate(
+        text: String,
+        sourceLanguage: Language,
+        targetLanguage: Language
+    ) async throws
+        -> String {
+        let response = try await translate(
+            text: text,
+            sourceLanguage: sourceLanguage.localeLanguage,
+            targetLanguage: targetLanguage.localeLanguage
+        )
+
+        return response.targetText
     }
 }
 

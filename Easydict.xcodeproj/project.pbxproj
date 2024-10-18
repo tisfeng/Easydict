@@ -44,6 +44,7 @@
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
 		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
+		03404B2E2CC3643F0024CF69 /* AppleTranslation in Frameworks */ = {isa = PBXBuildFile; productRef = 03404B2D2CC3643F0024CF69 /* AppleTranslation */; };
 		0340D38E2C8EEEA2004C9910 /* AppleScriptTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */; };
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
 		0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */; };
@@ -82,7 +83,6 @@
 		036463672CB541E400D0D6CC /* AXSwift+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036463662CB541E400D0D6CC /* AXSwift+Extension.swift */; };
 		0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036463692CB62B8900D0D6CC /* AppleService.swift */; };
 		0364636C2CB6B4E100D0D6CC /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0364636B2CB6B4DF00D0D6CC /* Test.swift */; };
-		0364636E2CB77BE600D0D6CC /* TranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0364636D2CB77BE400D0D6CC /* TranslationView.swift */; };
 		0364EC8A2C208EB50036B61B /* KeySender in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC892C208EB50036B61B /* KeySender */; };
 		0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC8C2C208FB70036B61B /* AXSwift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
@@ -129,8 +129,6 @@
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039D119829D5E26300C93F46 /* EZAudioUtils.m */; };
-		039F79EC2CB7CBCA0017EF5B /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039F79EB2CB7CBC80017EF5B /* TranslationManager.swift */; };
-		039F79EE2CB7D1E80017EF5B /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039F79ED2CB7D1E80017EF5B /* TranslationService.swift */; };
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
 		03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308F2B4073E700112834 /* AppCenterAnalytics */; };
@@ -488,7 +486,6 @@
 		036463662CB541E400D0D6CC /* AXSwift+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AXSwift+Extension.swift"; sourceTree = "<group>"; };
 		036463692CB62B8900D0D6CC /* AppleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleService.swift; sourceTree = "<group>"; };
 		0364636B2CB6B4DF00D0D6CC /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
-		0364636D2CB77BE400D0D6CC /* TranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationView.swift; sourceTree = "<group>"; };
 		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
@@ -549,8 +546,6 @@
 		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
 		039D119729D5E26300C93F46 /* EZAudioUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioUtils.h; sourceTree = "<group>"; };
 		039D119829D5E26300C93F46 /* EZAudioUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioUtils.m; sourceTree = "<group>"; };
-		039F79EB2CB7CBC80017EF5B /* TranslationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationManager.swift; sourceTree = "<group>"; };
-		039F79ED2CB7D1E80017EF5B /* TranslationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationService.swift; sourceTree = "<group>"; };
 		03A3E1542BEBDB2000E7E210 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -919,6 +914,7 @@
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
+				03404B2E2CC3643F0024CF69 /* AppleTranslation in Frameworks */,
 				0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1246,7 +1242,6 @@
 		036463682CB62B6600D0D6CC /* Apple */ = {
 			isa = PBXGroup;
 			children = (
-				03A4188A2CB7ED9800C45FEB /* Translation */,
 				036463692CB62B8900D0D6CC /* AppleService.swift */,
 			);
 			path = Apple;
@@ -1513,16 +1508,6 @@
 				039D119829D5E26300C93F46 /* EZAudioUtils.m */,
 			);
 			path = EZAudioUtils;
-			sourceTree = "<group>";
-		};
-		03A4188A2CB7ED9800C45FEB /* Translation */ = {
-			isa = PBXGroup;
-			children = (
-				039F79ED2CB7D1E80017EF5B /* TranslationService.swift */,
-				039F79EB2CB7CBC80017EF5B /* TranslationManager.swift */,
-				0364636D2CB77BE400D0D6CC /* TranslationView.swift */,
-			);
-			path = Translation;
 			sourceTree = "<group>";
 		};
 		03B0221829231FA6001C7E63 /* Easydict */ = {
@@ -2680,6 +2665,7 @@
 				C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */,
 				036806572CA829F100800B76 /* SFSafeSymbols */,
 				0346F3D52CAECEFC006A6CDF /* AXSwiftExt */,
+				03404B2D2CC3643F0024CF69 /* AppleTranslation */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2747,6 +2733,7 @@
 				C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */,
+				03404B2C2CC3643F0024CF69 /* XCRemoteSwiftPackageReference "AppleTranslation" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3113,7 +3100,6 @@
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
-				039F79EC2CB7CBCA0017EF5B /* TranslationManager.swift in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0340D39B2C93DC1B004C9910 /* Constants.swift in Sources */,
@@ -3193,7 +3179,6 @@
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
-				0364636E2CB77BE600D0D6CC /* TranslationView.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
@@ -3227,7 +3212,6 @@
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
-				039F79EE2CB7D1E80017EF5B /* TranslationService.swift in Sources */,
 				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
 				0346F3D82CAECF5C006A6CDF /* NSPasteboard+Extension.swift in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
@@ -3632,6 +3616,14 @@
 				minimumVersion = 4.102.1;
 			};
 		};
+		03404B2C2CC3643F0024CF69 /* XCRemoteSwiftPackageReference "AppleTranslation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tisfeng/AppleTranslation";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/s1ntoneli/AXSwiftExt";
@@ -3798,6 +3790,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */;
 			productName = Vapor;
+		};
+		03404B2D2CC3643F0024CF69 /* AppleTranslation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03404B2C2CC3643F0024CF69 /* XCRemoteSwiftPackageReference "AppleTranslation" */;
+			productName = AppleTranslation;
 		};
 		0346F3D52CAECEFC006A6CDF /* AXSwiftExt */ = {
 			isa = XCSwiftPackageProductDependency;
