@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/AppleTranslation",
       "state" : {
-        "revision" : "95e5ab50ebd6e515080bbb3e67b73ddc1c92764d",
-        "version" : "1.0.1"
+        "revision" : "7618a4e8ba391e52df9de4124bfbbebf934556ab",
+        "version" : "1.0.2"
       }
     },
     {
