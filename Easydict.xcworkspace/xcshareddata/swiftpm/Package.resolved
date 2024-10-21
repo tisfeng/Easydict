@@ -1,5 +1,5 @@
 {
-  "originHash" : "1b5bf214999fc88f3a79515b2a6f574f8e5d9dc30f91419ecc416ae5a8f4acc9",
+  "originHash" : "d88b5b8250adbaea6c584fb14d5173d28fde088b92e123e49eb7f087b8d44d3d",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -35,15 +35,6 @@
       "state" : {
         "revision" : "1120c26835925f8314d035127c580bc71689c620",
         "version" : "5.0.4"
-      }
-    },
-    {
-      "identity" : "appletranslation",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tisfeng/AppleTranslation",
-      "state" : {
-        "revision" : "7618a4e8ba391e52df9de4124bfbbebf934556ab",
-        "version" : "1.0.2"
       }
     },
     {

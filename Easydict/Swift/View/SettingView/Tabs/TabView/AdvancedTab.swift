@@ -271,7 +271,7 @@ struct AdvancedTab: View {
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.replaceWithTranslationInCompatibilityMode) private
-        var replaceWithTranslationInCompatibilityMode
+    var replaceWithTranslationInCompatibilityMode
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
 
     // Force get selected text
