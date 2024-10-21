@@ -15,8 +15,8 @@ import Translation
 class TranslationManager: ObservableObject {
     // MARK: Internal
 
-    @Published var sourceText: String = ""
-    @Published var targetText: String = ""
+    @Published var sourceText = ""
+    @Published var targetText = ""
     @Published var configuration: TranslationSession.Configuration?
 
     @MainActor
