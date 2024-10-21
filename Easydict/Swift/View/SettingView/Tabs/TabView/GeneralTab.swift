@@ -43,7 +43,10 @@ struct GeneralTab: View {
         Form {
             Section {
                 FirstAndSecondLanguageSettingView()
-                Picker("setting.general.language.language_detect_optimize", selection: $languageDetectOptimize) {
+                Picker(
+                    "setting.general.language.language_detect_optimize",
+                    selection: $languageDetectOptimize
+                ) {
                     ForEach(LanguageDetectOptimize.allCases, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
@@ -54,56 +57,14 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle("auto_show_query_icon", isOn: $autoSelectText)
-                Toggle("force_get_selected_text", isOn: $enableForceGetSelectedText)
-                Toggle("click_icon_query_info", isOn: $clickQuery)
-                Toggle(
-                    "setting.general.mouse_query.adjust_pop_button_origin",
-                    isOn: $adjustPopButtonOrigin
-                ) // 调整查询图标位置:
-            } header: {
-                Text("setting.general.mouse_query.header")
-            }
-
-            Section {
-                Picker(
-                    "setting.general.window.mouse_select_translate_window_type",
-                    selection: $mouseSelectTranslateWindowType
-                ) {
-                    ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
-                Picker(
-                    "setting.general.window.shortcut_select_translate_window_type",
-                    selection: $shortcutSelectTranslateWindowType
-                ) {
-                    ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
-                Picker("setting.general.window.fixed_window_position", selection: $fixedWindowPosition) {
-                    ForEach(EZShowWindowPosition.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
-                Toggle(isOn: $pinWindowWhenDisplayed) {
-                    Text("setting.general.pin_window_when_showing")
-                }
-                Toggle(isOn: $hideMainWindow) {
-                    Text("hide_main_window")
-                }
-            } header: {
-                Text("setting.general.windows.header")
-            }
-
-            Section {
                 Toggle("clear_input_when_translating", isOn: $clearInput)
-                Toggle("keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty)
-                Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
+                Toggle(
+                    "keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty
+                )
+                Toggle(
+                    "select_query_text_when_window_activate",
+                    isOn: $selectQueryTextWhenWindowActivate
+                )
             } header: {
                 Text("setting.general.input.header")
             }
@@ -112,7 +73,7 @@ struct GeneralTab: View {
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
-                Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio) // 查询英语单词后自动播放发音
+                Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
             } header: {
                 Text("setting.general.auto_query.header")
             }
@@ -135,13 +96,15 @@ struct GeneralTab: View {
             }
 
             Section {
-                Picker("setting.general.language.header", selection: $languageState.language) {
+                Picker("setting.general.language", selection: $languageState.language) {
                     ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
                         Text(language.name)
                             .tag(language)
                     }
                 }
-                Picker("setting.general.appearance.light_dark_appearance", selection: $appearanceType) {
+                Picker(
+                    "setting.general.appearance.light_dark_appearance", selection: $appearanceType
+                ) {
                     ForEach(AppearenceType.allCases, id: \.rawValue) { option in
                         Text(option.title)
                             .tag(option)
@@ -173,17 +136,19 @@ struct GeneralTab: View {
                     logSettings(["launch_at_startup": newValue])
                 }
 
-                Toggle(isOn: $hideMenuBarIcon.didSet(execute: { state in
-                    if state {
-                        // user is not set input shortcut and selection shortcut not allow hide menu bar
-                        if !shortcutsHaveSetuped {
-                            Defaults[.hideMenuBarIcon] = false
-                            showRefuseAlert = true
-                        } else {
-                            showHideMenuBarIconAlert = true
+                Toggle(
+                    isOn: $hideMenuBarIcon.didSet(execute: { state in
+                        if state {
+                            // user is not set input shortcut and selection shortcut not allow hide menu bar
+                            if !shortcutsHaveSetuped {
+                                Defaults[.hideMenuBarIcon] = false
+                                showRefuseAlert = true
+                            } else {
+                                showHideMenuBarIconAlert = true
+                            }
                         }
-                    }
-                })) {
+                    })
+                ) {
                     Text("hide_menu_bar_icon")
                 }
                 Picker(
@@ -202,11 +167,14 @@ struct GeneralTab: View {
             }
 
             Section {
-                let bindingFontSize = Binding<Double>(get: {
-                    Double(fontSizeOptionIndex)
-                }, set: { newValue in
-                    fontSizeOptionIndex = UInt(newValue)
-                })
+                let bindingFontSize = Binding<Double>(
+                    get: {
+                        Double(fontSizeOptionIndex)
+                    },
+                    set: { newValue in
+                        fontSizeOptionIndex = UInt(newValue)
+                    }
+                )
                 Slider(value: bindingFontSize, in: 0.0 ... 4.0, step: 1) {
                     Text("setting.general.font.font_size.label")
                 } minimumValueLabel: {
@@ -250,46 +218,37 @@ struct GeneralTab: View {
 
     // MARK: Private
 
-    @EnvironmentObject private var languageState: LanguageState
-    @Default(.autoSelectText) private var autoSelectText
-    @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText
-    @Default(.clickQuery) private var clickQuery
-    @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
+    // Query language
+    @Default(.languageDetectOptimize) private var languageDetectOptimize
 
+    // Input textfield
     @Default(.clearQueryWhenInputTranslate) private var clearInput
     @Default(.keepPrevResultWhenSelectTranslateTextIsEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
 
-    @Default(.autoPlayAudio) private var autoPlayAudio
-
+    // Auto query
     @Default(.autoQueryOCRText) private var autoQueryOCRText
     @Default(.autoQuerySelectedText) private var autoQuerySelectedText
     @Default(.autoQueryPastedText) private var autoQueryPastedText
+    @Default(.autoPlayAudio) private var autoPlayAudio
 
+    // Auto copy
     @Default(.autoCopyOCRText) private var autoCopyOCRText
     @Default(.autoCopySelectedText) private var autoCopySelectedText
     @Default(.autoCopyFirstTranslatedText) private var autoCopyFirstTranslatedText
 
+    // Quick link
     @Default(.showGoogleQuickLink) private var showGoogleQuickLink
     @Default(.showEudicQuickLink) private var showEudicQuickLink
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
     @Default(.showQuickActionButton) private var showQuickActionButton
 
-    @Default(.hideMainWindow) private var hideMainWindow
-    @Default(.hideMenuBarIcon) private var hideMenuBarIcon
-
-    @Default(.languageDetectOptimize) private var languageDetectOptimize
-    @Default(.defaultTTSServiceType) private var defaultTTSServiceType
-
-    @Default(.fixedWindowPosition) private var fixedWindowPosition
-    @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
-    @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
-    @Default(.pinWindowWhenDisplayed) private var pinWindowWhenDisplayed
-    @Default(.enableBetaFeature) private var enableBetaFeature
+    // App setting
+    @EnvironmentObject private var languageState: LanguageState
     @Default(.appearanceType) private var appearanceType
-
-    @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
+    @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
+    @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
 
     @State private var showRefuseAlert = false
     @State private var showHideMenuBarIconAlert = false
@@ -339,14 +298,18 @@ private struct FirstAndSecondLanguageSettingView: View {
             let oldValue = firstLanguage
             if newValue == secondLanguage {
                 secondLanguage = oldValue
-                languageDuplicatedAlert = .init(duplicatedLanguage: newValue, setField: .second, setLanguage: oldValue)
+                languageDuplicatedAlert = .init(
+                    duplicatedLanguage: newValue, setField: .second, setLanguage: oldValue
+                )
             }
         }
         .onChange(of: secondLanguage) { [secondLanguage] newValue in
             let oldValue = secondLanguage
             if newValue == firstLanguage {
                 firstLanguage = oldValue
-                languageDuplicatedAlert = .init(duplicatedLanguage: newValue, setField: .first, setLanguage: oldValue)
+                languageDuplicatedAlert = .init(
+                    duplicatedLanguage: newValue, setField: .first, setLanguage: oldValue
+                )
             }
         }
         .alert(
@@ -389,7 +352,8 @@ private struct FirstAndSecondLanguageSettingView: View {
             // First language should not be same as second language. (\(duplicatedLanguage))
             // \(setField) is replaced with \(setLanguage).
             String(
-                localized: "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)"
+                localized:
+                "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)"
             )
         }
     }
