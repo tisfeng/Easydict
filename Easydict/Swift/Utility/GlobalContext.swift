@@ -21,6 +21,10 @@ class GlobalContext: NSObject {
             updaterDelegate: updaterHelper,
             userDriverDelegate: userDriverHelper
         )
+
+        super.init()
+
+        reloadLLMServicesSubscribers()
     }
 
     // MARK: Internal
@@ -47,6 +51,8 @@ class GlobalContext: NSObject {
 
     // refresh subscribed services after duplicate service
     func reloadLLMServicesSubscribers() {
+        logInfo("reloadLLMServicesSubscribers")
+
         for service in services {
             if let llmService = service as? LLMStreamService {
                 llmService.cancelSubscribers()
