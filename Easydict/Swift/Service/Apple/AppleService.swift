@@ -6,7 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import AppleTranslation
 import Foundation
 import Testing
 import Translation
