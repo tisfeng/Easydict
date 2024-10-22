@@ -13,7 +13,7 @@ import Sparkle
 class GlobalContext: NSObject {
     // MARK: Lifecycle
 
-    override init() {
+    private override init() {
         self.updaterHelper = SPUUpdaterHelper()
         self.userDriverHelper = SPUUserDriverHelper()
         self.updaterController = SPUStandardUpdaterController(
@@ -31,7 +31,8 @@ class GlobalContext: NSObject {
 
     class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {
         func feedURLString(for _: SPUUpdater) -> String? {
-            var feedURLString = "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
+            var feedURLString =
+                "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
             #if DEBUG
             feedURLString = "http://localhost:8000/appcast.xml"
             #endif
