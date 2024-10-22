@@ -907,52 +907,52 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     rtnView = synonymsTitle;
 
     mm_weakify(self)
-        [parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            if (obj.means.count == 0)
-                return;
-            EZLabel *partLabel = [[EZLabel alloc] init];
-            partLabel.font = typeTextFont;
-            partLabel.textForegroundColor = typeTextColor;
-            partLabel.text = obj.part;
-            [self addSubview:partLabel];
+    [parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        if (obj.means.count == 0)
+            return;
+        EZLabel *partLabel = [[EZLabel alloc] init];
+        partLabel.font = typeTextFont;
+        partLabel.textForegroundColor = typeTextColor;
+        partLabel.text = obj.part;
+        [self addSubview:partLabel];
 
-            EZWrapView *wrapView = [[EZWrapView alloc] init];
-            [self addSubview:wrapView];
+        EZWrapView *wrapView = [[EZWrapView alloc] init];
+        [self addSubview:wrapView];
 
-            NSArray *showingMeans = [obj.means trimToMaxCount:EZMaxFiveWordSynonymCount];
-            [showingMeans enumerateObjectsUsingBlock:^(NSString *_Nonnull mean, NSUInteger idx, BOOL *_Nonnull stop) {
-                EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
-                wordButton.fontSize = 14 * self.fontSizeRatio;
-                [wordButton setTitle:mean];
-                [wrapView addSubview:wordButton];
-                [wordButton setClickBlock:^(EZButton *_Nonnull button) {
-                    mm_strongify(self);
-                    if (self.queryTextBlock) {
-                        self.queryTextBlock(mean);
-                    }
-                }];
+        NSArray *showingMeans = [obj.means trimToMaxCount:EZMaxFiveWordSynonymCount];
+        [showingMeans enumerateObjectsUsingBlock:^(NSString *_Nonnull mean, NSUInteger idx, BOOL *_Nonnull stop) {
+            EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+            wordButton.fontSize = 14 * self.fontSizeRatio;
+            [wordButton setTitle:mean];
+            [wrapView addSubview:wordButton];
+            [wordButton setClickBlock:^(EZButton *_Nonnull button) {
+                mm_strongify(self);
+                if (self.queryTextBlock) {
+                    self.queryTextBlock(mean);
+                }
             }];
-
-            [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.offset(kHorizontalMargin_8);
-                make.centerY.equalTo(wrapView.subviews.firstObject);
-                CGSize labelSize = [partLabel oneLineSize];
-                make.size.mas_equalTo(labelSize).priorityHigh();
-            }];
-
-            [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
-                CGFloat topOffset = kBlueTextButtonVerticalPadding_2;
-                make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
-                *height += topOffset;
-                make.left.equalTo(partLabel.mas_right);
-                make.right.equalTo(self);
-            }];
-
-            [wrapView layoutSubtreeIfNeeded];
-            CGSize wrapViewSize = [wrapView intrinsicContentSize];
-            *height += wrapViewSize.height;
-            rtnView = wrapView;
         }];
+
+        [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(kHorizontalMargin_8);
+            make.centerY.equalTo(wrapView.subviews.firstObject);
+            CGSize labelSize = [partLabel oneLineSize];
+            make.size.mas_equalTo(labelSize).priorityHigh();
+        }];
+
+        [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
+            CGFloat topOffset = kBlueTextButtonVerticalPadding_2;
+            make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
+            *height += topOffset;
+            make.left.equalTo(partLabel.mas_right);
+            make.right.equalTo(self);
+        }];
+
+        [wrapView layoutSubtreeIfNeeded];
+        CGSize wrapViewSize = [wrapView intrinsicContentSize];
+        *height += wrapViewSize.height;
+        rtnView = wrapView;
+    }];
 
     return rtnView;
 }
@@ -975,7 +975,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     //    MMLogInfo(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
 
     CGFloat height = [label ez_getTextViewHeightDesignatedWidth:width]; // 397 ?
-                                                                        //    MMLogInfo(@"height: %@", @(height));
+    //    MMLogInfo(@"height: %@", @(height));
 
     return CGSizeMake(width, height);
 }
@@ -1182,21 +1182,21 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (NSString *)jsCodeOfUpdateAllIframeTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     NSString *jsCode = [NSString stringWithFormat:@""
-                                                   "var iframes = document.querySelectorAll('iframe');"
-                                                   "for (var i = 0; i < iframes.length; i++) {"
-                                                   "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
-                                                   "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
-                                                   "};",
-                                                  color, backgroundColor];
+                        "var iframes = document.querySelectorAll('iframe');"
+                        "for (var i = 0; i < iframes.length; i++) {"
+                        "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
+                        "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
+                        "};",
+                        color, backgroundColor];
 
     return jsCode;
 }
 
 - (NSString *)jsCodeOfUpdateBodyTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     NSString *jsCode = [NSString stringWithFormat:@""
-                                                  @"document.body.style.webkitTextFillColor='%@';"
-                                                  @"document.body.style.backgroundColor='%@';",
-                                                  color, backgroundColor];
+                        @"document.body.style.webkitTextFillColor='%@';"
+                        @"document.body.style.backgroundColor='%@';",
+                        color, backgroundColor];
 
     return jsCode;
 }
@@ -1208,8 +1208,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (NSString *)jsCodeOfOptimizeScrollableWebView {
     NSString *showScrollbarBriefly = @""
-                                     @"window.scrollTo(0, 1);"
-                                     @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
+    @"window.scrollTo(0, 1);"
+    @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
 
     NSString *jsCode = [NSString stringWithFormat:@"%@", showScrollbarBriefly];
     return jsCode;
@@ -1234,13 +1234,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (void)fetchWebViewAllIframeText:(void (^_Nullable)(NSString *text))completionHandler {
     NSString *jsCode = @""
-                        "var iframes = document.querySelectorAll('iframe');"
-                        "var text = '';"
-                        "for (var i = 0; i < iframes.length; i++) {"
-                        "   text += iframes[i].contentDocument.body.innerText;"
-                        "   text += '\\n\\n';"
-                        "};"
-                        "text;";
+    "var iframes = document.querySelectorAll('iframe');"
+    "var text = '';"
+    "for (var i = 0; i < iframes.length; i++) {"
+    "   text += iframes[i].contentDocument.body.innerText;"
+    "   text += '\\n\\n';"
+    "};"
+    "text;";
 
     [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error && [result isKindOfClass:[NSString class]]) {
@@ -1253,18 +1253,18 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (void)getTextWithHref:(NSString *)href completionHandler:(void (^_Nullable)(NSString *text))completionHandler {
     NSString *jsCode = [NSString stringWithFormat:
-                                     @"var iframes = document.querySelectorAll('iframe');"
-                                     @"var linkText = '';"
-                                     @"for (var i = 0; i < iframes.length; i++) {"
-                                     @"    var iframe = iframes[i];"
-                                     @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
-                                     @"    if (linkElement) {"
-                                     @"        linkText = linkElement.innerText;"
-                                     @"        break;"
-                                     @"    }"
-                                     @"}"
-                                     @"linkText;",
-                                     href];
+                        @"var iframes = document.querySelectorAll('iframe');"
+                        @"var linkText = '';"
+                        @"for (var i = 0; i < iframes.length; i++) {"
+                        @"    var iframe = iframes[i];"
+                        @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
+                        @"    if (linkElement) {"
+                        @"        linkText = linkElement.innerText;"
+                        @"        break;"
+                        @"    }"
+                        @"}"
+                        @"linkText;",
+                        href];
 
     [self evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
         if (!error) {
@@ -1278,13 +1278,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     CGFloat fontSize = Configuration.shared.fontSizeRatio * 100;
 
     NSString *jsCode = [NSString stringWithFormat:
-                                     @"var iframes = document.querySelectorAll('iframe');"
-                                     @"for (var i = 0; i < iframes.length; i++) {"
-                                     @"   var iframe = iframes[i];"
-                                     @"   var frameDoc = iframe.contentDocument || iframe.contentWindow.document;"
-                                     @"   frameDoc.body.style.fontSize = '%f%%';"
-                                     @"};",
-                                     fontSize];
+                        @"var iframes = document.querySelectorAll('iframe');"
+                        @"for (var i = 0; i < iframes.length; i++) {"
+                        @"   var iframe = iframes[i];"
+                        @"   var frameDoc = iframe.contentDocument || iframe.contentWindow.document;"
+                        @"   frameDoc.body.style.fontSize = '%f%%';"
+                        @"};",
+                        fontSize];
 
     [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error) {
