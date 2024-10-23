@@ -111,8 +111,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     } else {
         BOOL isShortWordLength = result.queryText.length && [EZLanguageManager.shared isShortWordLength:result.queryText language:result.queryFromLanguage];
 
-        __block CGFloat ezLabelTopOffset = 0;
-
         BOOL showBigWord = result.wordResult || result.showBigWord;
         if (isShortWordLength && showBigWord) {
             EZLabel *bigWordLabel = [[EZLabel alloc] init];
@@ -191,14 +189,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
                     make.size.mas_equalTo(labelSize).priorityHigh();
 
-                    // ???: This means the label text has more than 2 lines, so we need to adjust the top offset.
-                    if (labelSize.height > explainLabel.height * 2) {
-                        //                    ezLabelTopOffset = -1;
-                    }
-
                     if (explainLabel) {
                         if (lastView) {
-                            make.top.equalTo(lastView.mas_bottom).offset(topOffset + ezLabelTopOffset);
+                            make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                         } else {
                             make.top.equalTo(self).offset(topOffset);
                         }
@@ -549,17 +542,32 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
         // 同义词
         if (result.wordResult.synonyms.count) {
-            lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"synonyms", nil) parts:result.wordResult.synonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+            lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"synonyms", nil)
+                                                    parts:result.wordResult.synonyms
+                                                textColor:typeTextColor
+                                             typeTextFont:typeTextFont
+                                                   height:&height
+                                                 lastView:lastView];
         }
 
         // 反义词
         if (result.wordResult.antonyms.count) {
-            lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"antonyms", nil) parts:result.wordResult.antonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+            lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"antonyms", nil)
+                                                    parts:result.wordResult.antonyms
+                                                textColor:typeTextColor
+                                             typeTextFont:typeTextFont
+                                                   height:&height
+                                                 lastView:lastView];
         }
 
         // 搭配
         if (result.wordResult.collocation.count) {
-            lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"collocation", nil) parts:result.wordResult.collocation textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+            lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"collocation", nil)
+                                                    parts:result.wordResult.collocation
+                                                textColor:typeTextColor
+                                             typeTextFont:typeTextFont
+                                                   height:&height
+                                                 lastView:lastView];
         }
 
         __block NSString *lastSimpleWordPart = nil;
@@ -882,7 +890,12 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
 }
 
-- (NSView *)buildSynonymsAndAntonymsView:(NSString *)title parts:(NSArray<EZTranslatePart *> *)parts textColor:(NSColor *)typeTextColor typeTextFont:(NSFont *)typeTextFont height:(CGFloat *)height lastView:(NSView *)lastView {
+- (NSView *)buildSynonymsAndAntonymsView:(NSString *)title
+                                   parts:(NSArray<EZTranslatePart *> *)parts
+                               textColor:(NSColor *)typeTextColor
+                            typeTextFont:(NSFont *)typeTextFont
+                                  height:(CGFloat *)height
+                                lastView:(NSView *)lastView {
     __block NSView *rtnView = lastView;
     EZLabel *synonymsTitle = [[EZLabel alloc] init];
     [self addSubview:synonymsTitle];
@@ -1270,24 +1283,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         if (!error) {
             NSString *linkText = (NSString *)result;
             completionHandler(linkText);
-        }
-    }];
-}
-
-- (void)updateWebViewAllIframeFontSize {
-    CGFloat fontSize = Configuration.shared.fontSizeRatio * 100;
-
-    NSString *jsCode = [NSString stringWithFormat:
-                        @"var iframes = document.querySelectorAll('iframe');"
-                        @"for (var i = 0; i < iframes.length; i++) {"
-                        @"   var iframe = iframes[i];"
-                        @"   var frameDoc = iframe.contentDocument || iframe.contentWindow.document;"
-                        @"   frameDoc.body.style.fontSize = '%f%%';"
-                        @"};",
-                        fontSize];
-
-    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-        if (!error) {
         }
     }];
 }
