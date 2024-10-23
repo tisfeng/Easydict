@@ -13,7 +13,7 @@ import Sparkle
 class GlobalContext: NSObject {
     // MARK: Lifecycle
 
-    override init() {
+    private override init() {
         self.updaterHelper = SPUUpdaterHelper()
         self.userDriverHelper = SPUUserDriverHelper()
         self.updaterController = SPUStandardUpdaterController(
@@ -21,13 +21,18 @@ class GlobalContext: NSObject {
             updaterDelegate: updaterHelper,
             userDriverDelegate: userDriverHelper
         )
+
+        super.init()
+
+        reloadLLMServicesSubscribers()
     }
 
     // MARK: Internal
 
     class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {
         func feedURLString(for _: SPUUpdater) -> String? {
-            var feedURLString = "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
+            var feedURLString =
+                "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
             #if DEBUG
             feedURLString = "http://localhost:8000/appcast.xml"
             #endif
@@ -47,6 +52,8 @@ class GlobalContext: NSObject {
 
     // refresh subscribed services after duplicate service
     func reloadLLMServicesSubscribers() {
+        logInfo("reloadLLMServicesSubscribers")
+
         for service in services {
             if let llmService = service as? LLMStreamService {
                 llmService.cancelSubscribers()
