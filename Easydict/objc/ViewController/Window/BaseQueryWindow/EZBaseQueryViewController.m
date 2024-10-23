@@ -76,12 +76,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
 
-@property (nonatomic, assign) BOOL isTipsViewVisible;
-
 @property (nonatomic, assign) EZTipsCellType tipsCellType;
 
 @property (nonatomic, copy) NSString *tipsCellContent;
 
+@property (nonatomic, assign) BOOL isInputFieldCellVisible;
+@property (nonatomic, assign) BOOL isSelectLanguageCellVisible;
+@property (nonatomic, assign) BOOL isTipsViewVisible;
+
+@property (nonatomic, assign) NSInteger inputFieldCellIndex;     // always 0
+@property (nonatomic, assign) NSInteger selectLanguageCellIndex; // 0 or 1
+@property (nonatomic, assign) NSInteger tipsCellIndex;           // 0 or 1 or 2
 
 @end
 
@@ -136,6 +141,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [self setupServices:[self latestServices]];
     [self resetQueryAndResults];
+    
+    [self updateWindowConfiguration];
 }
 
 - (void)setupUI {
@@ -160,8 +167,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             CGFloat queryViewHeight = [self.queryView heightOfQueryView];
             if (queryViewHeight) {
                 self.queryModel.queryViewHeight = queryViewHeight;
-                NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-                [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+                
+                if (self.isInputFieldCellVisible) {
+                    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+                    [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+                }
             }
             
             [self updateWindowViewHeight];
@@ -197,10 +207,33 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [defaultCenter addObserver:self selector:@selector(modifyLanduage:) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
+- (void)updateWindowConfiguration {
+    // Do not show input in mini window
+    self.isInputFieldCellVisible = self.windowType != EZWindowTypeMini;
+    self.isSelectLanguageCellVisible = self.windowType != EZWindowTypeMini;
+    
+    self.inputFieldCellIndex = 0;
+    
+    if (self.isInputFieldCellVisible) {
+        if (self.isSelectLanguageCellVisible) {
+            self.selectLanguageCellIndex = 1;
+            self.tipsCellIndex = 2;
+        } else {
+            self.tipsCellIndex = 1;
+        }
+    } else {
+        if (self.isSelectLanguageCellVisible) {
+            self.selectLanguageCellIndex = 0;
+            self.tipsCellIndex = 1;
+        } else {
+            self.tipsCellIndex = 0;
+        }
+    }
+}
+
 - (void)modifyLanduage:(NSNotification *)notification {
     [self.tableView reloadData];
 }
-
 
 - (void)setupServices:(NSArray *)allServices {
     NSMutableArray *serviceTypeIds = [NSMutableArray array];
@@ -840,7 +873,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     //    MMLogInfo(@"tableView for row: %ld", row);
     
-    if (row == 0) {
+    if (row == self.inputFieldCellIndex && self.isInputFieldCellVisible) {
         self.queryView = [self createQueryView];
         self.queryView.windowType = self.windowType;
         [self.queryView initializeAimatedButtonAlphaValue:self.queryModel];
@@ -848,7 +881,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return self.queryView;
     }
     
-    if (self.windowType != EZWindowTypeMini && row == 1) {
+    if (row == self.selectLanguageCellIndex && self.isSelectLanguageCellVisible) {
         EZSelectLanguageCell *selectLanguageCell = [self.tableView makeViewWithIdentifier:EZSelectLanguageCellId owner:self];
         if (!selectLanguageCell) {
             selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
@@ -869,11 +902,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     // show tips view
-    if ([self isTipsCell:row] && self.isTipsViewVisible) {
+    if (row == self.tipsCellIndex && self.isTipsViewVisible) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
-                                                         type:self.tipsCellType 
+                                                         type:self.tipsCellType
                                                       content:self.tipsCellContent];
             tipsCell.identifier = EZTableTipsCellId;
         }
@@ -894,11 +927,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     CGFloat height;
     
-    if (row == 0) {
+    if (row == self.inputFieldCellIndex && self.isInputFieldCellVisible) {
         height = self.queryModel.queryViewHeight;
-    } else if (row == 1 && self.windowType != EZWindowTypeMini) {
+    } else if (row == self.selectLanguageCellIndex && self.isSelectLanguageCellVisible) {
         height = 35;
-    } else if ([self isTipsCell:row] && self.isTipsViewVisible) {
+    } else if (row == self.tipsCellIndex && self.isTipsViewVisible) {
         if (!self.tipsCell) {
             // mini cell height
             if ([self isCustomTipsType]) {
@@ -1054,18 +1087,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)updateQueryCellWithAnimation:(BOOL)animateFlag completionHandler:(nullable void (^)(void))completionHandler {
-    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO animate:animateFlag completionHandler:completionHandler];
+    if (self.isInputFieldCellVisible) {
+        NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:self.inputFieldCellIndex];
+        [self updateTableViewRowIndexes:firstIndexSet reloadData:NO animate:animateFlag completionHandler:completionHandler];
+    }
 }
 
 - (void)updateSelectLanguageCell {
-    NSInteger offset = [self resultCellOffset];
-    if (offset == 1) {
-        return;
+    if (self.isSelectLanguageCellVisible) {
+        NSIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:self.selectLanguageCellIndex];
+        [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
-    
-    NSIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
-    [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 
@@ -1473,21 +1505,29 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (NSInteger)resultCellOffset {
-    NSInteger offset;
-    switch (self.windowType) {
-        case EZWindowTypeMini: {
-            offset = 1;
-            break;
-        }
-        case EZWindowTypeMain:
-        case EZWindowTypeFixed: {
-            offset = 2;
-            break;
-        }
-        default: {
-            offset = 2;
-        }
+    NSInteger offset = 0;
+    
+    if (self.isInputFieldCellVisible) {
+        offset += 1;
     }
+    if (self.isSelectLanguageCellVisible) {
+        offset += 1;
+    }
+    
+    //    switch (self.windowType) {
+    //        case EZWindowTypeMini: {
+    //            offset = 1;
+    //            break;
+    //        }
+    //        case EZWindowTypeMain:
+    //        case EZWindowTypeFixed: {
+    //            offset = 2;
+    //            break;
+    //        }
+    //        default: {
+    //            offset = 2;
+    //        }
+    //    }
     
     if (self.isTipsViewVisible) {
         offset += 1;
@@ -1682,7 +1722,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (BOOL)isCustomTipsType {
     return self.tipsCellType == EZTipsCellTypeErrorTips ||
-    self.tipsCellType == EZTipsCellTypeInfoTips  ||
+    self.tipsCellType == EZTipsCellTypeInfoTips ||
     self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
