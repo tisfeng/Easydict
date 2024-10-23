@@ -543,31 +543,31 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         // 同义词
         if (result.wordResult.synonyms.count) {
             lastView = [self createSectionViewForSynonymsOrAntonyms:NSLocalizedString(@"synonyms", nil)
-                                                    parts:result.wordResult.synonyms
-                                                textColor:typeTextColor
-                                             typeTextFont:typeTextFont
-                                                   height:&height
-                                                 lastView:lastView];
+                                                              parts:result.wordResult.synonyms
+                                                          textColor:typeTextColor
+                                                       typeTextFont:typeTextFont
+                                                             height:&height
+                                                           lastView:lastView];
         }
 
         // 反义词
         if (result.wordResult.antonyms.count) {
             lastView = [self createSectionViewForSynonymsOrAntonyms:NSLocalizedString(@"antonyms", nil)
-                                                    parts:result.wordResult.antonyms
-                                                textColor:typeTextColor
-                                             typeTextFont:typeTextFont
-                                                   height:&height
-                                                 lastView:lastView];
+                                                              parts:result.wordResult.antonyms
+                                                          textColor:typeTextColor
+                                                       typeTextFont:typeTextFont
+                                                             height:&height
+                                                           lastView:lastView];
         }
 
         // 搭配
         if (result.wordResult.collocation.count) {
             lastView = [self createSectionViewForSynonymsOrAntonyms:NSLocalizedString(@"collocation", nil)
-                                                    parts:result.wordResult.collocation
-                                                textColor:typeTextColor
-                                             typeTextFont:typeTextFont
-                                                   height:&height
-                                                 lastView:lastView];
+                                                              parts:result.wordResult.collocation
+                                                          textColor:typeTextColor
+                                                       typeTextFont:typeTextFont
+                                                             height:&height
+                                                           lastView:lastView];
         }
 
         __block NSString *lastSimpleWordPart = nil;
@@ -1195,21 +1195,21 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (NSString *)jsCodeOfUpdateAllIframeTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     NSString *jsCode = [NSString stringWithFormat:@""
-                                                   "var iframes = document.querySelectorAll('iframe');"
-                                                   "for (var i = 0; i < iframes.length; i++) {"
-                                                   "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
-                                                   "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
-                                                   "};",
-                                                  color, backgroundColor];
+                        "var iframes = document.querySelectorAll('iframe');"
+                        "for (var i = 0; i < iframes.length; i++) {"
+                        "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
+                        "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
+                        "};",
+                        color, backgroundColor];
 
     return jsCode;
 }
 
 - (NSString *)jsCodeOfUpdateBodyTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     NSString *jsCode = [NSString stringWithFormat:@""
-                                                  @"document.body.style.webkitTextFillColor='%@';"
-                                                  @"document.body.style.backgroundColor='%@';",
-                                                  color, backgroundColor];
+                        @"document.body.style.webkitTextFillColor='%@';"
+                        @"document.body.style.backgroundColor='%@';",
+                        color, backgroundColor];
 
     return jsCode;
 }
@@ -1221,8 +1221,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (NSString *)jsCodeOfOptimizeScrollableWebView {
     NSString *showScrollbarBriefly = @""
-                                     @"window.scrollTo(0, 1);"
-                                     @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
+    @"window.scrollTo(0, 1);"
+    @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
 
     NSString *jsCode = [NSString stringWithFormat:@"%@", showScrollbarBriefly];
     return jsCode;
@@ -1247,13 +1247,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (void)fetchWebViewAllIframeText:(void (^_Nullable)(NSString *text))completionHandler {
     NSString *jsCode = @""
-                        "var iframes = document.querySelectorAll('iframe');"
-                        "var text = '';"
-                        "for (var i = 0; i < iframes.length; i++) {"
-                        "   text += iframes[i].contentDocument.body.innerText;"
-                        "   text += '\\n\\n';"
-                        "};"
-                        "text;";
+    "var iframes = document.querySelectorAll('iframe');"
+    "var text = '';"
+    "for (var i = 0; i < iframes.length; i++) {"
+    "   text += iframes[i].contentDocument.body.innerText;"
+    "   text += '\\n\\n';"
+    "};"
+    "text;";
 
     [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error && [result isKindOfClass:[NSString class]]) {
@@ -1266,18 +1266,18 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (void)getTextWithHref:(NSString *)href completionHandler:(void (^_Nullable)(NSString *text))completionHandler {
     NSString *jsCode = [NSString stringWithFormat:
-                                     @"var iframes = document.querySelectorAll('iframe');"
-                                     @"var linkText = '';"
-                                     @"for (var i = 0; i < iframes.length; i++) {"
-                                     @"    var iframe = iframes[i];"
-                                     @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
-                                     @"    if (linkElement) {"
-                                     @"        linkText = linkElement.innerText;"
-                                     @"        break;"
-                                     @"    }"
-                                     @"}"
-                                     @"linkText;",
-                                     href];
+                        @"var iframes = document.querySelectorAll('iframe');"
+                        @"var linkText = '';"
+                        @"for (var i = 0; i < iframes.length; i++) {"
+                        @"    var iframe = iframes[i];"
+                        @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
+                        @"    if (linkElement) {"
+                        @"        linkText = linkElement.innerText;"
+                        @"        break;"
+                        @"    }"
+                        @"}"
+                        @"linkText;",
+                        href];
 
     [self evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
         if (!error) {
