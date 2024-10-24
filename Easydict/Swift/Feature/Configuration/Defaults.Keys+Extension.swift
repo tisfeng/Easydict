@@ -256,12 +256,12 @@ class ShortcutWrapper<T: KeyCombo> {
     }
 }
 
-func defaultsKey<T>(_ key: StoredKey, serviceType: ServiceType, id: String) -> Defaults.Key<T?> {
+func defaultsKey<T>(_ key: ServiceConfigurationKey, serviceType: ServiceType, id: String) -> Defaults.Key<T?> {
     defaultsKey(key, serviceType: serviceType, id: id, defaultValue: nil)
 }
 
 func defaultsKey<T: _DefaultsSerializable>(
-    _ key: StoredKey,
+    _ key: ServiceConfigurationKey,
     serviceType: ServiceType,
     id: String?,
     defaultValue: T

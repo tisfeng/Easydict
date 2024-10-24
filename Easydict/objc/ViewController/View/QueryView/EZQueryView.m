@@ -84,7 +84,10 @@
         }
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserverForName:NotificationName.didChangeFontSize object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:NSNotification.didChangeFontSize
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification * _Nonnull notification) {
         self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
     }];
     

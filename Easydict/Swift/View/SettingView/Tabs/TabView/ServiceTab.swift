@@ -49,11 +49,7 @@ struct ServiceTab: View {
                         }
                     }
                 } else {
-                    HStack {
-                        Spacer()
-                        Text("setting.service.detail.no_selection")
-                        Spacer()
-                    }
+                    WindowConfigurationView(windowType: viewModel.windowType)
                 }
             }
             .layoutPriority(1)
@@ -97,8 +93,12 @@ private class ServiceTabViewModel: ObservableObject {
     func updateServices() {
         services = EZLocalStorage.shared().allServices(windowType)
 
-        let isSelectedExist = services
-            .contains { $0.serviceTypeWithUniqueIdentifier() == selectedService?.serviceTypeWithUniqueIdentifier() }
+        let isSelectedExist =
+            services
+                .contains {
+                    $0.serviceTypeWithUniqueIdentifier()
+                        == selectedService?.serviceTypeWithUniqueIdentifier()
+                }
         if !isSelectedExist {
             selectedService = nil
         }
