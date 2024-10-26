@@ -200,11 +200,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                                object:nil
                                 queue:NSOperationQueue.mainQueue
                            usingBlock:^(NSNotification *_Nonnull notification) {
-                               mm_strongify(self);
-                               [self reloadTableViewData:^{
-                                   [self updateTableViewHeight];
-                               }];
-                           }];
+        mm_strongify(self);
+        [self reloadTableViewData:^{
+            [self updateTableViewHeight];
+        }];
+    }];
 
     [defaultCenter addObserver:self
                       selector:@selector(modifyLanduage:)
@@ -1588,7 +1588,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
-//    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
+    //    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
 
     // Diable change window height manually.
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -1620,7 +1620,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = NO;
     });
 
-//    MMLogInfo(@"window frame: %@", @(window.frame));
+    //    MMLogInfo(@"window frame: %@", @(window.frame));
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
@@ -1709,8 +1709,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (BOOL)isCustomTipsType {
     return self.tipsCellType == EZTipsCellTypeErrorTips ||
-        self.tipsCellType == EZTipsCellTypeInfoTips ||
-        self.tipsCellType == EZTipsCellTypeWarnTips;
+    self.tipsCellType == EZTipsCellTypeInfoTips ||
+    self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
 @end

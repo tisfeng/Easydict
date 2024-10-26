@@ -1,8 +1,8 @@
 //
-//  DefaultsStoredKey.swift
+//  WindowConfigurationKey.swift
 //  Easydict
 //
-//  Created by tisfeng on 2024/4/28.
+//  Created by tisfeng on 2024/10/26.
 //  Copyright © 2024 izual. All rights reserved.
 //
 
