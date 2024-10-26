@@ -142,7 +142,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self setupServices:[self latestServices]];
     [self resetQueryAndResults];
 
-    [self updateWindowConfiguration];
+    [self updateWindowConfiguration:nil];
 }
 
 - (void)setupUI {
@@ -201,11 +201,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                                object:nil
                                 queue:NSOperationQueue.mainQueue
                            usingBlock:^(NSNotification *_Nonnull notification) {
-        mm_strongify(self);
-        [self reloadTableViewData:^{
-            [self updateTableViewHeight];
-        }];
-    }];
+                               mm_strongify(self);
+                               [self reloadTableViewData:^{
+                                   [self updateTableViewHeight];
+                               }];
+                           }];
 
     [defaultCenter addObserver:self
                       selector:@selector(modifyLanduage:)
@@ -213,12 +213,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                         object:nil];
 
     [defaultCenter addObserver:self
-                      selector:@selector(updateWindowConfiguration)
+                      selector:@selector(updateWindowConfiguration:)
                           name:NSNotification.didChangeWindowConfiguration
                         object:nil];
 }
 
-- (void)updateWindowConfiguration {
+- (void)updateWindowConfiguration:(NSNotification *)notification {
+    UpdateNotificationInfo *info = notification.object;
+    if (info && info.windowType != self.windowType) {
+        return;
+    }
+
     self.isInputFieldCellVisible = [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible
                                                                         windowType:self.windowType];
     self.isSelectLanguageCellVisible = [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeySelectLanguageCellVisible
@@ -888,7 +893,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     if (row == self.inputFieldCellIndex && self.isInputFieldCellVisible) {
         self.queryView = [self createQueryView];
-        self.queryView.windowType = self.windowType;
+        self.queryView.associatedWindowType = self.windowType;
         [self.queryView initializeAimatedButtonAlphaValue:self.queryModel];
         self.queryView.queryModel = self.queryModel;
         return self.queryView;
@@ -928,7 +933,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     EZResultView *resultCell = [self resultCellAtRow:row];
-    resultCell.windowType = self.windowType;
+    resultCell.associatedWindowType = self.windowType;
 
     return resultCell;
 }
@@ -1526,22 +1531,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (self.isSelectLanguageCellVisible) {
         offset += 1;
     }
-
-    //    switch (self.windowType) {
-    //        case EZWindowTypeMini: {
-    //            offset = 1;
-    //            break;
-    //        }
-    //        case EZWindowTypeMain:
-    //        case EZWindowTypeFixed: {
-    //            offset = 2;
-    //            break;
-    //        }
-    //        default: {
-    //            offset = 2;
-    //        }
-    //    }
-
     if (self.isTipsViewVisible) {
         offset += 1;
     }
@@ -1559,12 +1548,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryService *service = self.services[index];
     return service;
 }
-
-- (BOOL)isTipsCell:(NSInteger)row {
-    // TODO: 1 is query view, can be hidde later.
-    return row == [self resultCellOffset] - 1;
-}
-
 
 - (nullable EZQueryService *)serviceWithType:(NSString *)serviceTypeId {
     NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeId];
@@ -1735,8 +1718,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (BOOL)isCustomTipsType {
     return self.tipsCellType == EZTipsCellTypeErrorTips ||
-    self.tipsCellType == EZTipsCellTypeInfoTips ||
-    self.tipsCellType == EZTipsCellTypeWarnTips;
+        self.tipsCellType == EZTipsCellTypeInfoTips ||
+        self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
 @end

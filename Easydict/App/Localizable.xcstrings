@@ -8337,18 +8337,18 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示输入文本框"
+            "value" : "显示文本输入框"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "顯示輸入文本框"
+            "value" : "顯示文本輸入框"
           }
         }
       }
     },
-    "setting.service.show_select_language_text_field" : {
+    "setting.service.show_select_language_bar" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8371,13 +8371,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示选择语言栏"
+            "value" : "显示语言选择栏"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "顯示選擇語言欄"
+            "value" : "顯示語言選擇欄"
           }
         }
       }

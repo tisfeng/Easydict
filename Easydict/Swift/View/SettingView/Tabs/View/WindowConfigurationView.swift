@@ -39,24 +39,35 @@ struct WindowConfigurationView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("setting.service.show_input_text_field", isOn: $showInputTextField)
-                    .onChange(of: showInputTextField) { _ in
-                        NotificationCenter.default.post(
-                            name: .didChangeWindowConfiguration, object: nil
-                        )
-                    }
-
-                Toggle(
-                    "setting.service.show_select_language_text_field",
-                    isOn: $showSelectLanguageTextField
+                NotifyingToggle(
+                    title: "setting.service.show_input_text_field",
+                    isOn: $showInputTextField,
+                    windowType: windowType
                 )
-                .onChange(of: showSelectLanguageTextField) { _ in
-                    NotificationCenter.default.post(
-                        name: .didChangeWindowConfiguration, object: nil
-                    )
-                }
+
+                NotifyingToggle(
+                    title: "setting.service.show_select_language_bar",
+                    isOn: $showSelectLanguageTextField,
+                    windowType: windowType
+                )
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+// MARK: - NotifyingToggle
+
+struct NotifyingToggle: View {
+    let title: LocalizedStringKey
+    @Binding var isOn: Bool
+    let windowType: EZWindowType
+
+    var body: some View {
+        Toggle(title, isOn: $isOn)
+            .onChange(of: isOn) { _ in
+                let info = UpdateNotificationInfo(windowType: windowType)
+                NotificationCenter.default.post(name: .didChangeWindowConfiguration, object: info)
+            }
     }
 }
