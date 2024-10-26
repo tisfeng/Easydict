@@ -89,7 +89,7 @@
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
-		036BCD4A2BDE8A96009C893F /* ConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* ConfigurationKey.swift */; };
+		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
 		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
 		03779F0E2BB256A7008D3C42 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0B2BB256A7008D3C42 /* OpenAIService.swift */; };
@@ -115,6 +115,7 @@
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
+		03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
@@ -496,7 +497,7 @@
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
 		036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZReplaceTextButton.m; sourceTree = "<group>"; };
-		036BCD492BDE8A96009C893F /* ConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationKey.swift; sourceTree = "<group>"; };
+		036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationKey.swift; sourceTree = "<group>"; };
 		036D62802BCAB613002C95C7 /* BuiltInAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInAIService.swift; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
@@ -524,6 +525,7 @@
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
+		03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationKey.swift; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -2522,7 +2524,8 @@
 				0327A5A52CCA7ACF002BA81B /* Configuration+Extension.swift */,
 				EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */,
 				DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */,
-				036BCD492BDE8A96009C893F /* ConfigurationKey.swift */,
+				03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */,
+				036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -3083,7 +3086,7 @@
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */,
 				EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */,
-				036BCD4A2BDE8A96009C893F /* ConfigurationKey.swift in Sources */,
+				036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
 				033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
@@ -3095,6 +3098,7 @@
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
+				03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */,
 				033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */,

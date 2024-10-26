@@ -1,16 +1,21 @@
 //
-//  DefaultsStoredKey.swift
+//  ServiceConfigurationKey.swift
 //  Easydict
 //
-//  Created by tisfeng on 2024/4/28.
+//  Created by tisfeng on 2024/10/26.
 //  Copyright © 2024 izual. All rights reserved.
 //
 
 import Defaults
 import Foundation
 
-func storedKey(_ key: ServiceConfigurationKey, serviceType: ServiceType, id: String? = nil)
-    -> String {
+func serivceConfigurationKey<T: _DefaultsSerializable>(
+    _ key: ServiceConfigurationKey,
+    serviceType: ServiceType,
+    id: String? = nil,
+    defaultValue: T
+)
+    -> Defaults.Key<T> {
     // This key should be compatible with existing OpenAI config keys
     // EZOpenAIServiceUsageStatusKey
     // EZOpenAIDictionaryKey
@@ -20,7 +25,8 @@ func storedKey(_ key: ServiceConfigurationKey, serviceType: ServiceType, id: Str
     if let id, !id.isEmpty {
         identifier = "_\(id)_"
     }
-    return "EZ" + serviceType.rawValue + key.rawValue.capitalizeFirstLetter() + identifier + "Key"
+    let key = "EZ" + serviceType.rawValue + key.rawValue.capitalizeFirstLetter() + identifier + "Key"
+    return .init(key, default: defaultValue)
 }
 
 extension String {
@@ -45,29 +51,4 @@ enum ServiceConfigurationKey: String {
     case enableCustomPrompt
     case systemPrompt
     case userPrompt
-}
-
-// MARK: - WindowConfigurationKey
-
-@objc
-enum WindowConfigurationKey: Int {
-    case inputFieldCellVisible
-    case selectLanguageCellVisible
-
-    // MARK: Internal
-
-    var stringValue: String {
-        switch self {
-        case .inputFieldCellVisible: "inputFieldCellVisible"
-        case .selectLanguageCellVisible: "selectLanguageCellVisible"
-        }
-    }
-}
-
-func windowConfigurationKey<T: _DefaultsSerializable>(
-    _ key: WindowConfigurationKey, windowType: EZWindowType, defaultValue: T
-)
-    -> Defaults.Key<T> {
-    let key = "EZConfiguration_\(key.stringValue)_\(windowType.rawValue)"
-    return .init(key, default: defaultValue)
 }
