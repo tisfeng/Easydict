@@ -135,7 +135,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
-    self.queryModel.queryViewHeight = [self miniQueryViewHeight];
 
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
 
@@ -224,6 +223,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
+    self.queryModel.queryViewHeight = [self miniQueryViewHeight];
+
     self.isInputFieldCellVisible = [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible
                                                                         windowType:self.windowType];
     self.isSelectLanguageCellVisible = [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeySelectLanguageCellVisible
@@ -247,9 +248,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
 
-    [self reloadTableViewData:^{
-//        [self updateTableViewHeight];
-    }];
+    [self reloadTableViewData:nil];
 }
 
 - (void)modifyLanduage:(NSNotification *)notification {
@@ -1589,11 +1588,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
+//    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
 
     // Diable change window height manually.
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_greaterThanOrEqualTo(scrollViewHeight);
-        make.height.mas_lessThanOrEqualTo(scrollViewHeight);
+        make.height.equalTo(@(scrollViewHeight)).priority(MASLayoutPriorityDefaultHigh);
     }];
 
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
@@ -1621,7 +1620,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = NO;
     });
 
-    //    MMLogInfo(@"window frame: %@", @(window.frame));
+//    MMLogInfo(@"window frame: %@", @(window.frame));
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
