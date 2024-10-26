@@ -148,7 +148,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)setupUI {
     [self tableView];
 
-    [self updateWindowViewHeight];
+    [self updateWindowHeight];
 
     mm_weakify(self);
     [self setResizeWindowBlock:^{
@@ -174,7 +174,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 }
             }
 
-            [self updateWindowViewHeight];
+            [self updateWindowHeight];
         }];
     }];
 
@@ -247,7 +247,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }
 
-    [self reloadTableViewData:nil];
+    [self reloadTableViewData:^{
+//        [self updateTableViewHeight];
+    }];
 }
 
 - (void)modifyLanduage:(NSNotification *)notification {
@@ -909,7 +911,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.selectLanguageCell = selectLanguageCell;
 
         mm_weakify(self);
-        [selectLanguageCell setEnterActionBlock:^(EZLanguage _Nonnull from, EZLanguage _Nonnull to) {
+        [selectLanguageCell setEnterActionBlock:^(EZLanguage from, EZLanguage to) {
             mm_strongify(self);
             self.queryModel.userSourceLanguage = from;
             self.queryModel.userTargetLanguage = to;
@@ -996,7 +998,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)reloadTableViewDataWithLock:(BOOL)lockFlag completion:(nullable void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        [self updateWindowViewHeightWithLock:lockFlag animate:NO display:YES];
+        [self updateWindowHeightWithLock:lockFlag];
         if (completion) {
             completion();
         }
@@ -1081,7 +1083,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
             //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
             [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-            [self updateWindowViewHeight];
+            [self updateWindowHeight];
         } completionHandler:^{
             //            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
             if (completionHandler) {
@@ -1566,17 +1568,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 #pragma mark - Update Window Height
 
-- (void)updateWindowViewHeight {
-    [self updateWindowViewHeightWithAnimation:NO display:YES];
+- (void)updateWindowHeight {
+    [self updateWindowHeightWithLock:YES];
 }
 
-- (void)updateWindowViewHeightWithAnimation:(BOOL)animateFlag display:(BOOL)displayFlag {
-    [self updateWindowViewHeightWithLock:YES animate:animateFlag display:displayFlag];
-}
-
-- (void)updateWindowViewHeightWithLock:(BOOL)lockFlag
-                               animate:(BOOL)animateFlag
-                               display:(BOOL)displayFlag {
+- (void)updateWindowHeightWithLock:(BOOL)lockFlag {
     if (lockFlag) {
         self.lockResizeWindow = YES;
     }
@@ -1615,19 +1611,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
-    [self.baseQueryWindow setFrame:safeFrame display:NO];
+    [self.baseQueryWindow setFrame:safeFrame display:YES];
 
     // Restore tableView height.
     self.tableView.height = tableViewHeight;
 
-    if (animateFlag) {
-        // Animation cost time.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZUpdateTableViewRowHeightAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.lockResizeWindow = NO;
-        });
-    } else {
+    // Animation cost time.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZUpdateTableViewRowHeightAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.lockResizeWindow = NO;
-    }
+    });
 
     //    MMLogInfo(@"window frame: %@", @(window.frame));
 }
