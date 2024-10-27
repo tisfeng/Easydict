@@ -892,7 +892,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     //    MMLogInfo(@"tableView for row: %ld", row);
 
-    if (row == self.inputFieldCellIndex && self.isInputFieldCellVisible) {
+    if ([self isInputFieldCellAtRow:row]) {
         self.queryView = [self createQueryView];
         self.queryView.associatedWindowType = self.windowType;
         [self.queryView initializeAimatedButtonAlphaValue:self.queryModel];
@@ -900,7 +900,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return self.queryView;
     }
 
-    if (row == self.selectLanguageCellIndex && self.isSelectLanguageCellVisible) {
+    if ([self isSelectLanguageCellAtRow:row]) {
         EZSelectLanguageCell *selectLanguageCell = [self.tableView makeViewWithIdentifier:EZSelectLanguageCellId owner:self];
         if (!selectLanguageCell) {
             selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
@@ -921,7 +921,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     // show tips view
-    if (row == self.tipsCellIndex && self.isTipsViewVisible) {
+    if ([self isTipsViewAtRow:row]) {
         EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
         if (!tipsCell) {
             tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
@@ -946,11 +946,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     CGFloat height;
 
-    if (row == self.inputFieldCellIndex && self.isInputFieldCellVisible) {
+    if ([self isInputFieldCellAtRow:row]) {
         height = self.queryModel.queryViewHeight;
-    } else if (row == self.selectLanguageCellIndex && self.isSelectLanguageCellVisible) {
+    } else if ([self isSelectLanguageCellAtRow:row]) {
         height = 35;
-    } else if (row == self.tipsCellIndex && self.isTipsViewVisible) {
+    } else if ([self isTipsViewAtRow:row]) {
         if (!self.tipsCell) {
             // mini cell height
             if ([self isCustomTipsType]) {
@@ -1199,7 +1199,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
 
-            EZQueryService *updatedService = [EZLocalStorage.shared service:service.serviceTypeWithUniqueIdentifier windowType:self.windowType];
+            EZQueryService *updatedService = [EZLocalStorage.shared service:serviceTypeWithUniqueIdentifier windowType:self.windowType];
 
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZLLMStreamService.class]) {
@@ -1711,6 +1711,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return self.tipsCellType == EZTipsCellTypeErrorTips ||
     self.tipsCellType == EZTipsCellTypeInfoTips ||
     self.tipsCellType == EZTipsCellTypeWarnTips;
+}
+
+- (BOOL)isInputFieldCellAtRow:(NSInteger)row {
+    return row == self.inputFieldCellIndex && self.isInputFieldCellVisible;
+}
+
+- (BOOL)isSelectLanguageCellAtRow:(NSInteger)row {
+    return row == self.selectLanguageCellIndex && self.isSelectLanguageCellVisible;
+}
+
+- (BOOL)isTipsViewAtRow:(NSInteger)row {
+    return row == self.tipsCellIndex && self.isTipsViewVisible;
 }
 
 @end
