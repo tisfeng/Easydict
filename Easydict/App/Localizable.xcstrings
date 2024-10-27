@@ -4840,7 +4840,7 @@
         }
       }
     },
-    "request_screen_capture_access_description" : {
+    "request_screen_capture__description" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5012,12 +5012,12 @@
         }
       }
     },
-    "service.configuration.ali.access_key_id.title" : {
+    "service.configuration.ali._key_id.title" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AccessKey ID"
+            "value" : "Key ID"
           }
         },
         "en-CA" : {
@@ -6325,7 +6325,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ID prístupového kľúča"
+            "value" : "Access Key ID"
           }
         },
         "zh-Hans" : {
@@ -6359,7 +6359,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tajný prístupový kľúč"
+            "value" : "Secret Access Key"
           }
         },
         "zh-Hans" : {
