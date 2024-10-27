@@ -15,7 +15,7 @@ struct ServiceTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack {
+        HStack(alignment: .top, spacing: 0) {
             VStack {
                 WindowTypePicker(windowType: $viewModel.windowType)
                     .padding()
@@ -35,16 +35,24 @@ struct ServiceTab: View {
 
             Group {
                 if let service = viewModel.selectedService {
-                    if let view = service.configurationListItems() as? (any View) {
-                        Form {
-                            AnyView(view)
+                    VStack(alignment: .leading) {
+                        Button("setting.service.back") {
+                            viewModel.selectedService = nil
                         }
-                        .formStyle(.grouped)
+                        .padding()
 
-                    } else {
-                        HStack {
+                        if let view = service.configurationListItems() as? (any View) {
+                            Form {
+                                AnyView(view)
+                            }
+                            .formStyle(.grouped)
+                        } else {
                             Spacer()
-                            Text("setting.service.detail.no_configuration \(service.name())")
+                            HStack {
+                                Spacer()
+                                Text("setting.service.detail.no_configuration \(service.name())")
+                                Spacer()
+                            }
                             Spacer()
                         }
                     }
