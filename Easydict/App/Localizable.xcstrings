@@ -1589,7 +1589,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vypnuté"
+            "value" : "Zakázané"
           }
         },
         "zh-Hans" : {
@@ -2575,7 +2575,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Veľkosť písma môžeš zmeniť pomocou skratky ⌘ +/- v okne prekladu."
+            "value" : "Veľkosť písma môžeš zmeniť pomocou skratky ⌘ + +/- v okne prekladu"
           }
         },
         "zh-Hans" : {
@@ -2829,7 +2829,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Použi Baidu detekciu jazyka pre optimalizáciu"
+            "value" : "Použiť Baidu detekciu jazyka pre optimalizáciu"
           }
         },
         "zh-Hans" : {
@@ -2863,7 +2863,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Použi Google detekciu jazyka pre optimalizáciu"
+            "value" : "Použiť Google detekciu jazyka pre optimalizáciu"
           }
         },
         "zh-Hans" : {
@@ -2897,7 +2897,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Používať len detekciu jazyka systému"
+            "value" : "Použiť len detekciu jazyka systému"
           }
         },
         "zh-Hans" : {
@@ -6424,7 +6424,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spolupracovníci"
+            "value" : "Prispievateľ"
           }
         },
         "zh-Hans" : {
@@ -6799,7 +6799,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zapnúť beta funkcií"
+            "value" : "Zapnúť beta funkcie"
           }
         },
         "zh-Hans" : {
@@ -8058,7 +8058,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duplikovaný jazyk"
+            "value" : "Automatické pripnutie po zobrazení okna"
           }
         },
         "zh-Hans" : {
