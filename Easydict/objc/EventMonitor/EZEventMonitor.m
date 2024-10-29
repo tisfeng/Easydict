@@ -419,14 +419,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self cancelDelayRecoverVolume];
     [self delayRecoverVolume];
 
-    [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText, NSError *error) {
-        if (error) {
-            MMLogError(@"Failed to get selected text by simulated key: %@", error);
-            completion(nil);
-        } else {
-            MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
-            completion(selectedText);
-        }
+    [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
+        MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
+        completion(selectedText);
     }];
 }
 

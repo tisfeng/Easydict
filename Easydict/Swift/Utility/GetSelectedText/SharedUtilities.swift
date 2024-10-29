@@ -25,7 +25,7 @@ class SharedUtilities: NSObject {
         try await SelectedTextKit.getSelectedTextByMenuBarActionCopy()
     }
 
-    static func getSelectedTextByShortcutCopy() async throws -> String? {
+    static func getSelectedTextByShortcutCopy() async -> String? {
         await SelectedTextKit.getSelectedTextByShortcutCopy()
     }
 
