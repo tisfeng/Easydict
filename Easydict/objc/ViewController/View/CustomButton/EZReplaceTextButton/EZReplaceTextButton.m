@@ -92,7 +92,9 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app);
 
-    [SystemUtility copyTextAndPasteSafely:replacementString];
+    [SharedUtilities copyTextAndPaste:replacementString completionHandler:^{
+        MMLogInfo(@"End replace selected text by key");
+    }];
 }
 
 @end

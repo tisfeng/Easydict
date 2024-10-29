@@ -2,39 +2,30 @@
 //  SharedUtilities.swift
 //  Easydict
 //
-//  Created by tisfeng on 10/15/24.
+//  Created by tisfeng on 2024/10/3.
 //  Copyright © 2024 izual. All rights reserved.
 //
 
 import AXSwift
-import Foundation
+import AXSwiftExt
+import Carbon
+import KeySender
+import SelectedTextKit
 
-// MARK: - SharedUtilities
+// MARK: - SystemUtility
 
-/// Shared utilities for objc and swift.
-@objc
-public class SharedUtilities: NSObject {
-    static func isAccessibilityEnabled() -> Bool {
-        checkIsProcessTrusted()
+@objcMembers
+class SharedUtilities: NSObject {
+    static func getSelectedText() async throws -> String? {
+        try await SelectedTextKit.getSelectedText()
     }
-}
 
-/// Sync poll task, if task is true, return true, else continue polling.
-///
-/// - Warning: ⚠️ This method will block the current thread, only use when necessary.
-func pollTask(
-    _ task: @escaping () -> Bool,
-    every interval: TimeInterval = 0.005,
-    timeout: TimeInterval = 0.1,
-    timeoutCallback: @escaping () -> () = {}
-) {
-    let startTime = Date()
-    while Date().timeIntervalSince(startTime) < timeout {
-        if task() {
-            return
-        }
-        Thread.sleep(forTimeInterval: interval)
+    static func getSelectedTextByMenuBarActionCopy() async throws -> String? {
+        try await SelectedTextKit.getSelectedTextByMenuBarActionCopy()
     }
-    timeoutCallback()
-    logInfo("pollTask timeout call back")
+
+    /// Copy text and paste text.
+    static func copyTextAndPaste(_ text: String) async {
+        await SelectedTextKit.copyTextAndPaste(text)
+    }
 }

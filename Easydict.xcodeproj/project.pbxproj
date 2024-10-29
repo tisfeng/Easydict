@@ -18,7 +18,6 @@
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */; };
-		030DD0F02CBE6ED700A5A925 /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DD0EF2CBE6EC000A5A925 /* SharedUtilities.swift */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */; };
@@ -55,10 +54,7 @@
 		0340D39E2C951850004C9910 /* QueryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D39D2C951850004C9910 /* QueryError.swift */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
-		0346F3D02CAECAAF006A6CDF /* SystemUtility+GetSelectedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CF2CAECAAF006A6CDF /* SystemUtility+GetSelectedText.swift */; };
-		0346F3D32CAECB4C006A6CDF /* SystemUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */; };
-		0346F3D62CAECEFC006A6CDF /* AXSwiftExt in Frameworks */ = {isa = PBXBuildFile; productRef = 0346F3D52CAECEFC006A6CDF /* AXSwiftExt */; };
-		0346F3D82CAECF5C006A6CDF /* NSPasteboard+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D72CAECF5C006A6CDF /* NSPasteboard+Extension.swift */; };
+		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -81,11 +77,9 @@
 		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
 		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
 		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
-		036463672CB541E400D0D6CC /* AXSwift+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036463662CB541E400D0D6CC /* AXSwift+Extension.swift */; };
 		0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036463692CB62B8900D0D6CC /* AppleService.swift */; };
 		0364636C2CB6B4E100D0D6CC /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0364636B2CB6B4DF00D0D6CC /* Test.swift */; };
 		0364EC8A2C208EB50036B61B /* KeySender in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC892C208EB50036B61B /* KeySender */; };
-		0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC8C2C208FB70036B61B /* AXSwift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
@@ -133,6 +127,7 @@
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039D119829D5E26300C93F46 /* EZAudioUtils.m */; };
+		03A173E72CD120E600791B51 /* SelectedTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03A173E62CD120E600791B51 /* SelectedTextKit */; };
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
 		03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308F2B4073E700112834 /* AppCenterAnalytics */; };
@@ -396,7 +391,6 @@
 		0309E1F2292BD6A100AFB76A /* EZQueryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryModel.h; sourceTree = "<group>"; };
 		0309E1F3292BD6A100AFB76A /* EZQueryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryModel.m; sourceTree = "<group>"; };
 		030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
-		030DD0EF2CBE6EC000A5A925 /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
@@ -446,9 +440,7 @@
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
-		0346F3CF2CAECAAF006A6CDF /* SystemUtility+GetSelectedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+GetSelectedText.swift"; sourceTree = "<group>"; };
-		0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtility.swift; sourceTree = "<group>"; };
-		0346F3D72CAECF5C006A6CDF /* NSPasteboard+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPasteboard+Extension.swift"; sourceTree = "<group>"; };
+		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
@@ -490,7 +482,6 @@
 		036196742A000F5900806370 /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
 		036196792A0037F700806370 /* NSData+EZMD5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+EZMD5.h"; sourceTree = "<group>"; };
 		0361967A2A0037F700806370 /* NSData+EZMD5.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+EZMD5.m"; sourceTree = "<group>"; };
-		036463662CB541E400D0D6CC /* AXSwift+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AXSwift+Extension.swift"; sourceTree = "<group>"; };
 		036463692CB62B8900D0D6CC /* AppleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleService.swift; sourceTree = "<group>"; };
 		0364636B2CB6B4DF00D0D6CC /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
@@ -903,10 +894,10 @@
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
 				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
 				C4BFDD7A2BE61F550094026B /* Vortex in Frameworks */,
-				0346F3D62CAECEFC006A6CDF /* AXSwiftExt in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
+				03A173E72CD120E600791B51 /* SelectedTextKit in Frameworks */,
 				038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */,
 				C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
@@ -925,7 +916,6 @@
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
-				0364EC8D2C208FB70036B61B /* AXSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1174,11 +1164,7 @@
 		0346F3D12CAECB38006A6CDF /* GetSelectedText */ = {
 			isa = PBXGroup;
 			children = (
-				030DD0EF2CBE6EC000A5A925 /* SharedUtilities.swift */,
-				0346F3D22CAECB4C006A6CDF /* SystemUtility.swift */,
-				0346F3CF2CAECAAF006A6CDF /* SystemUtility+GetSelectedText.swift */,
-				036463662CB541E400D0D6CC /* AXSwift+Extension.swift */,
-				0346F3D72CAECF5C006A6CDF /* NSPasteboard+Extension.swift */,
+				0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */,
 			);
 			path = GetSelectedText;
 			sourceTree = "<group>";
@@ -2684,11 +2670,10 @@
 				03779F192BB25797008D3C42 /* OpenAI */,
 				C4BFDD792BE61F550094026B /* Vortex */,
 				0364EC892C208EB50036B61B /* KeySender */,
-				0364EC8C2C208FB70036B61B /* AXSwift */,
 				033E181E2C5A970A0099A7B0 /* Vapor */,
 				C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */,
 				036806572CA829F100800B76 /* SFSafeSymbols */,
-				0346F3D52CAECEFC006A6CDF /* AXSwiftExt */,
+				03A173E62CD120E600791B51 /* SelectedTextKit */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2751,11 +2736,10 @@
 				03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */,
 				C4BFDD782BE61F550094026B /* XCRemoteSwiftPackageReference "Vortex" */,
 				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
-				0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */,
 				033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */,
 				C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
-				0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */,
+				03A173E52CD120E600791B51 /* XCRemoteSwiftPackageReference "SelectedTextKit" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3167,7 +3151,6 @@
 				9643D9422B6FE4AF000FBEA6 /* Shortcut+Bind.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
-				030DD0F02CBE6ED700A5A925 /* SharedUtilities.swift in Sources */,
 				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,
 				EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */,
 				96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */,
@@ -3196,13 +3179,12 @@
 				03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */,
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
-				036463672CB541E400D0D6CC /* AXSwift+Extension.swift in Sources */,
 				C466CB662C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift in Sources */,
 				9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */,
 				03542A552937B7DE00C34C33 /* EZError.m in Sources */,
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
-				0346F3D32CAECB4C006A6CDF /* SystemUtility.swift in Sources */,
+				0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,
@@ -3214,7 +3196,6 @@
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
-				0346F3D02CAECAAF006A6CDF /* SystemUtility+GetSelectedText.swift in Sources */,
 				DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
@@ -3241,7 +3222,6 @@
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
 				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
-				0346F3D82CAECF5C006A6CDF /* NSPasteboard+Extension.swift in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,
 			);
@@ -3644,28 +3624,12 @@
 				minimumVersion = 4.102.1;
 			};
 		};
-		0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/s1ntoneli/AXSwiftExt";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
-			};
-		};
 		0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jordanbaird/KeySender";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.0.5;
-			};
-		};
-		0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/tmandry/AXSwift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.2;
 			};
 		};
 		036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
@@ -3706,6 +3670,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 3.4.1;
+			};
+		};
+		03A173E52CD120E600791B51 /* XCRemoteSwiftPackageReference "SelectedTextKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tisfeng/SelectedTextKit.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
@@ -3811,20 +3783,10 @@
 			package = 033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */;
 			productName = Vapor;
 		};
-		0346F3D52CAECEFC006A6CDF /* AXSwiftExt */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0346F3D42CAECEFC006A6CDF /* XCRemoteSwiftPackageReference "AXSwiftExt" */;
-			productName = AXSwiftExt;
-		};
 		0364EC892C208EB50036B61B /* KeySender */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */;
 			productName = KeySender;
-		};
-		0364EC8C2C208FB70036B61B /* AXSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0364EC8B2C208FB70036B61B /* XCRemoteSwiftPackageReference "AXSwift" */;
-			productName = AXSwift;
 		};
 		036806572CA829F100800B76 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3855,6 +3817,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */;
 			productName = MJExtension;
+		};
+		03A173E62CD120E600791B51 /* SelectedTextKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03A173E52CD120E600791B51 /* XCRemoteSwiftPackageReference "SelectedTextKit" */;
+			productName = SelectedTextKit;
 		};
 		03A8308C2B405F8E00112834 /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;

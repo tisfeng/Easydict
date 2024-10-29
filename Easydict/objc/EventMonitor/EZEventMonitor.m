@@ -419,9 +419,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self cancelDelayRecoverVolume];
     [self delayRecoverVolume];
 
-    NSString *selectedText = [SystemUtility getSelectedTextByShortcutCopy];
-
-    completion(selectedText);
+    [SharedUtilities getSelectedTextWithCompletionHandler:^(NSString *selectedText, NSError *error) {
+        if (error) {
+            completion(nil);
+        } else {
+            completion(selectedText);
+        }
+    }];
 }
 
 #pragma mark - Delay to recover volume
@@ -553,9 +557,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
         // TODO: Try to find a more stable way to get selected text, or combine both methods.
         if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
-            NSString *text = [SystemUtility getSelectedTextByMenuBarActionCopy];
             self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
-            completion(text);
+            [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:^(NSString *text, NSError *error) {
+                if (error) {
+                    MMLogError(@"Failed to get selected text by menu bar action copy: %@", error);
+                    completion(nil);
+                } else {
+                    MMLogInfo(@"Get selected text by menu bar action copy success: %@", text);
+                    completion(text);
+                }
+            }];
         } else {
             [self getSelectedTextBySimulatedKey:^(NSString *text) {
                 self.selectTextType = EZSelectTextTypeSimulatedKey;

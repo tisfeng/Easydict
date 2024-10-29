@@ -1,5 +1,5 @@
 {
-  "originHash" : "d88b5b8250adbaea6c584fb14d5173d28fde088b92e123e49eb7f087b8d44d3d",
+  "originHash" : "68ad07a7a58de7ede24f52d8abef08548f760cda61aee03dc81b076aaa3e2aaf",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -305,6 +305,15 @@
       "state" : {
         "revision" : "8f8fabaa8509c1a653d6c2c3c87396a4c493d876",
         "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "selectedtextkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tisfeng/SelectedTextKit.git",
+      "state" : {
+        "revision" : "548ee88fa7a63048c94f6841cba0dd8c750a4131",
+        "version" : "1.0.0"
       }
     },
     {
