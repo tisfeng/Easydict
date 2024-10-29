@@ -330,7 +330,7 @@
 
 - (CGFloat)windowWidthRatio {
     // if minimumWindowWidth = 360, self.width = 340
-    CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.associatedWindowType].width;
     CGFloat miniSelfWidth = minimumWindowWidth - EZHorizontalCellSpacing_10 * 2;
     CGFloat ratio = self.width / miniSelfWidth;
     return ratio;

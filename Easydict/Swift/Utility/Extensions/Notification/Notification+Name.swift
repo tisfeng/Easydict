@@ -10,23 +10,23 @@ import Foundation
 
 extension Notification.Name {
     static let serviceHasUpdated = Notification.Name(EZServiceHasUpdatedNotification)
-
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
-
-    static let languagePreferenceChanged = Notification.Name(I18nHelper.languagePreferenceChangedNotification)
-
+    static let languagePreferenceChanged = Notification.Name(
+        I18nHelper.languagePreferenceChangedNotification
+    )
     static let linkButtonUpdated = Notification.Name(EZQuickLinkButtonUpdateNotification)
+    static let didChangeFontSize = Notification.Name("didChangeFontSize")
+    static let didChangeWindowConfiguration = Notification.Name("didChangeWindowConfiguration")
 }
 
 @objc
 extension NSNotification {
-    public static let serviceHasUpdated = Notification.Name.serviceHasUpdated
-
-    public static let openSettings = Notification.Name.openSettings
-
-    public static let languagePreferenceChanged = Notification.Name.languagePreferenceChanged
-
-    public static let linkButtonUpdated = Notification.Name.linkButtonUpdated
+    static let serviceHasUpdated = Notification.Name.serviceHasUpdated
+    static let openSettings = Notification.Name.openSettings
+    static let languagePreferenceChanged = Notification.Name.languagePreferenceChanged
+    static let linkButtonUpdated = Notification.Name.linkButtonUpdated
+    static let didChangeFontSize = Notification.Name.didChangeFontSize
+    static let didChangeWindowConfiguration = Notification.Name.didChangeWindowConfiguration
 }
 
 @objc
