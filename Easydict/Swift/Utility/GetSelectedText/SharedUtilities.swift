@@ -12,8 +12,9 @@ import Carbon
 import KeySender
 import SelectedTextKit
 
-// MARK: - SystemUtility
+// MARK: - SharedUtilities
 
+/// Shared utilities for objc.
 @objcMembers
 class SharedUtilities: NSObject {
     static func getSelectedText() async throws -> String? {
@@ -22,6 +23,10 @@ class SharedUtilities: NSObject {
 
     static func getSelectedTextByMenuBarActionCopy() async throws -> String? {
         try await SelectedTextKit.getSelectedTextByMenuBarActionCopy()
+    }
+
+    static func getSelectedTextByShortcutCopy() async throws -> String? {
+        await SelectedTextKit.getSelectedTextByShortcutCopy()
     }
 
     /// Copy text and paste text.
