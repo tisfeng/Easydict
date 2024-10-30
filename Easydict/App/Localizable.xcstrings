@@ -578,7 +578,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automaticky kontrolovať aktualizácie aplikácie"
+            "value" : "Automaticky kontrolovať pre aktualizácie"
           }
         },
         "zh-Hans" : {
@@ -1981,7 +1981,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exportovať záznamy"
+            "value" : "Exportovať záznam"
           }
         },
         "zh-Hans" : {
@@ -3063,7 +3063,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Priečinok so záznamami"
+            "value" : "Priečinok so záznamom"
           }
         },
         "zh-Hans" : {
@@ -3633,7 +3633,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ok"
+            "value" : "OK"
           }
         },
         "zh-Hans" : {
@@ -4823,7 +4823,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktuálne používaš typ API tajného kľúča, ale určitý tajný kľúč je prázdny. Prejdi do Nastavenia > Služba > %@, vyplň požadované konfiguračné informácie alebo prepni typy API."
+            "value" : "Aktuálne používaš typ Secret Key API, ale niektorý Secret Key je prázdny. Prejdi do Nastavenia > Služba > %@, vyplň požadované konfiguračné informácie alebo prepni typy API."
           }
         },
         "zh-Hans" : {
@@ -4928,7 +4928,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tajný kľúč"
+            "value" : "Secret Key"
           }
         },
         "zh-Hans" : {
@@ -4962,7 +4962,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie kľúč"
+            "value" : "Cookie Key"
           }
         },
         "zh-Hans" : {
@@ -5132,7 +5132,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autentizačný kľúč"
+            "value" : "Auth Key"
           }
         },
         "zh-Hans" : {
@@ -5166,7 +5166,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Najskôr autentizačný kľúč"
+            "value" : "Najskôr Auth Key"
           }
         },
         "zh-Hans" : {
@@ -5200,7 +5200,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Len autentizačný kľúč"
+            "value" : "Len Auth Key"
           }
         },
         "zh-Hans" : {
@@ -5336,7 +5336,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Najskôr web API"
+            "value" : "Najskôr Web API"
           }
         },
         "zh-Hans" : {
@@ -5472,7 +5472,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API kľúč"
+            "value" : "API Key"
           }
         },
         "zh-Hans" : {
@@ -5540,7 +5540,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API kľúč"
+            "value" : "API Key"
           }
         },
         "zh-Hans" : {
@@ -5608,7 +5608,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keď je povolený vlastný prompt, bude vypnutý predvolený preklad, analýza věty a slovník."
+            "value" : "Keď je povolená vlastná výzva, predvolený preklad, analýza viet a výzva slovníka budú zakázané."
           }
         },
         "zh-Hans" : {
@@ -5642,7 +5642,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Povoliť vlastný prompt"
+            "value" : "Povoliť vlastnú výzvu"
           }
         },
         "zh-Hans" : {
@@ -5812,7 +5812,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jste užitečná pomocí překladu."
+            "value" : "Si užitočným pomocníkom pri preklade."
           }
         },
         "zh-Hans" : {
@@ -5846,7 +5846,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Systémový prompt"
+            "value" : "Systémová výzva"
           }
         },
         "zh-Hans" : {
@@ -6050,7 +6050,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podporuje nasledujúce premenné prostredia:\n\n${{queryText}}: Text dotazu\n${{queryFromLanguage}}: Jazyk dotazu\n${{queryTargetLanguage}}: Cieľový jazyk\n${{firstLanguage}}: Prvý jazyk používateľa\n\nPríklad: Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
+            "value" : "Podporuje nasledujúce premenné prostredia:\n\n${{queryText}}: Text dotazu\n${{queryFromLanguage}}: Jazyk dotazu\n${{queryTargetLanguage}}: Cieľový jazyk\n${{firstLanguage}}: Prvý jazyk používateľa\n\nPríklad: Prelož nasledujúci text ${{queryFromLanguage}} do ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
         "zh-Hans" : {
@@ -6084,7 +6084,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preložte nasledujúci ${{queryFromLanguage}} text do ${{queryTargetLanguage}}: ${{queryText}}"
+            "value" : "Preložte nasledujúci text ${{queryFromLanguage}} do ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
         "zh-Hans" : {
@@ -6118,7 +6118,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uživatelský prompt"
+            "value" : "Uživatelská výzva"
           }
         },
         "zh-Hans" : {
@@ -6214,7 +6214,7 @@
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Validate"
+            "value" : "Overiť"
           }
         },
         "sk" : {
@@ -6424,7 +6424,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prispievateľ"
+            "value" : "Prispeli"
           }
         },
         "zh-Hans" : {
@@ -6526,7 +6526,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline translation requires downloading languages on the device, which can be managed in \"System Settings\"."
+            "value" : "Offline preklad vyžaduje stiahnutie jazykov do zariadenia, ktoré je možné spravovať v \"Systémových nastaveniach\"."
           }
         },
         "zh-Hans" : {
@@ -6628,7 +6628,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pri dotazovaní automaticky nahraďte \"nový riadok\" v texte \"medzerou\""
+            "value" : "Pri dotazovaní automaticky nahraď \"nový riadok\" v texte \"medzerou\""
           }
         },
         "zh-Hans" : {
@@ -6662,7 +6662,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pri dotazovaní sa automaticky rozdelí jednoduchý slovný text na key_value —> key value"
+            "value" : "Pri dotazovaní automaticky rozdeľ jednoduchý slovný text na key_value —> key value"
           }
         },
         "zh-Hans" : {
@@ -6833,7 +6833,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zapnúť silné získanie vybraného textu"
+            "value" : "Zapnúť vynútené získanie vybraného textu"
           }
         },
         "zh-Hans" : {
@@ -6969,7 +6969,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopírovanie akcie na paneli ponuky"
+            "value" : "Kopírovanie akcie v lište"
           }
         },
         "zh-Hans" : {
@@ -7003,7 +7003,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simulovaný skratový kópirovanie"
+            "value" : "Simulované kópirovanie skratky"
           }
         },
         "zh-Hans" : {
@@ -7037,7 +7037,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Typ silnejho získania vybraného textu"
+            "value" : "Vynútené získanie vybraného typu textu"
           }
         },
         "zh-Hans" : {
@@ -7071,7 +7071,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Silné získanie vybraného textu"
+            "value" : "Vynútené získanie vybraného textu"
           }
         },
         "zh-Hans" : {
@@ -7139,7 +7139,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spracovanie textu dopytu"
+            "value" : "Spracovanie textu dotazu"
           }
         },
         "zh-Hans" : {
@@ -7309,7 +7309,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vyber text myšou"
+            "value" : "Preklad textu myšou"
           }
         },
         "zh-Hans" : {
@@ -8052,7 +8052,7 @@
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Language Duplicated"
+            "value" : "Duplicitný jazyk"
           }
         },
         "sk" : {
@@ -9489,7 +9489,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Súhrn"
+            "value" : "Zhrnutie"
           }
         },
         "zh-Hans" : {
@@ -10061,7 +10061,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "neznáma možnosť"
+            "value" : "Neznáma možnosť"
           }
         },
         "zh-Hans" : {
