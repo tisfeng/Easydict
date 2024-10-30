@@ -21,6 +21,27 @@ class SharedUtilities: NSObject {
         try await SelectedTextKit.getSelectedText()
     }
 
+    static func getSelectedTextByAXUI() async -> Result<String, AXError> {
+        await SelectedTextKit.getSelectedTextByAXUI()
+    }
+
+    /// Get selected text by AXUI with completion handler
+    /// - Parameter completion: Callback with selected text or error
+    @MainActor
+    static func getSelectedTextByAXUI(
+        completion: @escaping (_ text: String?, _ error: AXError) -> ()
+    ) {
+        Task {
+            let result = await SelectedTextKit.getSelectedTextByAXUI()
+            switch result {
+            case let .success(text):
+                completion(text, .success)
+            case let .failure(error):
+                completion(nil, error)
+            }
+        }
+    }
+
     static func getSelectedTextByMenuBarActionCopy() async throws -> String? {
         try await SelectedTextKit.getSelectedTextByMenuBarActionCopy()
     }

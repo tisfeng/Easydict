@@ -277,7 +277,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     self.selectedTextEditable = NO;
 
     // Use Accessibility first
-    [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError axError) {
+    [SharedUtilities getSelectedTextByAXUIWithCompletion:^(NSString * _Nullable text, AXError axError) {
         self.selectTextType = EZSelectTextTypeAccessibility;
 
         // If selected text frame is invalid, ignore it.
@@ -549,8 +549,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Check error type to use menu action copy or simulated key to get selected text.
-- (void)handleSimulatedCopyOnAXError:(AXError)error completion:(void (^)(NSString *_Nullable))completion {
-    if ([self shouldUseSimulatedCopyWithAXError:error]) {
+- (void)handleSimulatedCopyOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
+    if ([self shouldUseSimulatedCopyWithAXError:axError]) {
         // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
         // TODO: Try to find a more stable way to get selected text, or combine both methods.
         if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
@@ -577,7 +577,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Check if should use simulated copy to get selected text.
-- (BOOL)shouldUseSimulatedCopyWithAXError:(AXError)error {
+- (BOOL)shouldUseSimulatedCopyWithAXError:(AXError)axError {
     /**
      Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
 
@@ -613,8 +613,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora?
      */
-    if (error == kAXErrorNoValue) {
-        MMLogInfo(@"error: kAXErrorNoValue, unsupported Accessibility App: %@ (%@)", application.localizedName, bundleID);
+    if (axError == kAXErrorNoValue) {
+        MMLogInfo(@"error: kAXErrorNoValue, unsupported Accessibility App: %@", application);
         return YES;
     }
 
@@ -660,22 +660,23 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
     for (NSNumber *errorCode in allowedAppErrorDict.allKeys) {
-        if ([errorCode integerValue] == error) {
+        if ([errorCode integerValue] == axError) {
             NSArray *bundleIDs = allowedAppErrorDict[errorCode];
             if ([bundleIDs containsObject:bundleID]) {
-                MMLogError(@"%@, %@, %@", errorCode, bundleID, application.localizedName);
+                MMLogError(@"Allow force get selected text: %@, %@", errorCode, application);
                 return YES;
             }
         }
     }
 
-    // Fallback, If using shortcut, to make sure we can get text, we use simulation key to get selected text.
+    // Fallback, If using shortcut, we should use force get selected text.
     if (self.actionType == EZActionTypeShortcutQuery) {
-        MMLogError(@"Fallback, need to add it to allowed app error list dict");
-        MMLogError(@"%d, %@, %@", error, bundleID, application.localizedName);
-
+        MMLogInfo(@"Fallback to use force get selected text for shortcut query");
+        MMLogError(@"Maybe need to add it to allowed app error list dict: %d, %@", axError, application);
         return YES;
     }
+
+    MMLogInfo(@"Not use force get selected text: %d, %@", axError, application);
 
     return NO;
 }
