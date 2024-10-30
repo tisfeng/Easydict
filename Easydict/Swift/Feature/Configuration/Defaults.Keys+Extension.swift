@@ -256,24 +256,6 @@ class ShortcutWrapper<T: KeyCombo> {
     }
 }
 
-func defaultsKey<T>(_ key: StoredKey, serviceType: ServiceType, id: String) -> Defaults.Key<T?> {
-    defaultsKey(key, serviceType: serviceType, id: id, defaultValue: nil)
-}
-
-func defaultsKey<T: _DefaultsSerializable>(
-    _ key: StoredKey,
-    serviceType: ServiceType,
-    id: String?,
-    defaultValue: T
-)
-    -> Defaults
-    .Key<T> {
-    Defaults.Key<T>(
-        storedKey(key, serviceType: serviceType, id: id),
-        default: defaultValue
-    )
-}
-
 // Service Configuration
 extension Defaults.Keys {
     // DeepL

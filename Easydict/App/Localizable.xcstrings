@@ -799,6 +799,40 @@
         }
       }
     },
+    "setting.service.back" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Späť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        }
+      }
+    },
     "Baidu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8314,36 +8348,70 @@
         }
       }
     },
-    "setting.service.detail.no_selection" : {
+    "setting.service.show_input_text_field" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a service to show configuration"
+            "value" : "Show Input Text Field"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a service to show configuration"
+            "value" : "Show Input Text Field"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vyber službu pre zobrazenie konfigurácie"
+            "value" : "Zobraziť pole na zadávanie textu"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择服务以查看配置"
+            "value" : "显示文本输入框"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選擇要顯示設定的服務"
+            "value" : "顯示文本輸入框"
+          }
+        }
+      }
+    },
+    "setting.service.show_select_language_bar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Select Language Bar"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Select Language Bar"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť panel na výber jazyka"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示语言选择栏"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示語言選擇欄"
           }
         }
       }

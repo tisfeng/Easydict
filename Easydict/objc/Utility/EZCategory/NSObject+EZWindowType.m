@@ -12,11 +12,11 @@ static NSString *_EZWindowTypeKey = @"EZWindowTypeKey";
 
 @implementation NSObject (EZWindowType)
 
-- (void)setWindowType:(EZWindowType)windowType {
+- (void)setAssociatedWindowType:(EZWindowType)windowType {
     objc_setAssociatedObject(self, (__bridge const void *)(_EZWindowTypeKey), @(windowType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (EZWindowType)windowType {
+- (EZWindowType)associatedWindowType {
     return [objc_getAssociatedObject(self, (__bridge const void *)(_EZWindowTypeKey)) integerValue];
 }
 

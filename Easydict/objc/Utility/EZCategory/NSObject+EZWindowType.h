@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSObject (EZWindowType)
 
-@property (nonatomic, assign) EZWindowType windowType;
+@property (nonatomic, assign) EZWindowType associatedWindowType;
 
 
 @end

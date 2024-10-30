@@ -44,8 +44,8 @@ static EZLayoutManager *_instance;
 
 - (void)commonInitialize {
     self.screen = NSScreen.mainScreen;
-    self.minimumWindowSize = CGSizeMake(360, 70);
-    
+    self.minimumWindowSize = CGSizeMake(360, 40);
+
     Configuration *configuration = [Configuration shared];
     
     self.miniWindowFrame = [configuration windowFrameWithType:EZWindowTypeMini];
@@ -107,6 +107,10 @@ static EZLayoutManager *_instance;
 
 
 - (CGFloat)inputViewMinHeight:(EZWindowType)type {
+    if (![self showInputTextField:type]) {
+        return 0;
+    }
+
     switch (type) {
         case EZWindowTypeMain:
             return 75; // three line
@@ -120,6 +124,10 @@ static EZLayoutManager *_instance;
 }
 
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type {
+    if (![self showInputTextField:type]) {
+        return 0;
+    }
+
     switch (type) {
         case EZWindowTypeMain:
             return NSScreen.mainScreen.frame.size.height * 0.3;
@@ -208,6 +216,10 @@ static EZLayoutManager *_instance;
     }
     
     [Configuration.shared setWindowFrame:window.frame windowType:windowType];
+}
+
+- (BOOL)showInputTextField:(EZWindowType)windowType {
+    return [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible windowType:windowType];
 }
 
 @end

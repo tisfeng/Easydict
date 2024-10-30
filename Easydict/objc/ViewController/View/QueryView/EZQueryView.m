@@ -84,7 +84,10 @@
         }
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserverForName:NotificationName.didChangeFontSize object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:NSNotification.didChangeFontSize
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification * _Nonnull notification) {
         self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
     }];
     
@@ -303,8 +306,8 @@
     [self updateButtonsDisplayState:queryText];
 }
 
-- (void)setWindowType:(EZWindowType)windowType {
-    [super setWindowType:windowType];
+- (void)setAssociatedWindowType:(EZWindowType)windowType {
+    [super setAssociatedWindowType:windowType];
     
     if (windowType == EZWindowTypeMini) {
         self.textView.customParagraphSpacing = FLT_MIN; // minimum positive float value.
@@ -504,7 +507,7 @@
 }
 
 - (void)updateCustomLayout {
-    EZWindowType windowType = self.windowType;
+    EZWindowType windowType = self.associatedWindowType;
     
     self.textViewMinHeight = [EZLayoutManager.shared inputViewMinHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];

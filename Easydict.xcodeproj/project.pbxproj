@@ -28,6 +28,8 @@
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
+		0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0327A5A52CCA7ACF002BA81B /* Configuration+Extension.swift */; };
+		0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0327A5A72CCB3339002BA81B /* UpdateNotificationInfo.swift */; };
 		03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */; };
 		0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0329CD6E29EE924500963F78 /* EZRightClickDetector.m */; };
 		032AAA592C456F04007996A1 /* configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA542C456F03007996A1 /* configure.swift */; };
@@ -87,10 +89,9 @@
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
-		036BCD4A2BDE8A96009C893F /* DefaultsStoredKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* DefaultsStoredKey.swift */; };
+		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
 		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
-		03714B902C17FD9400BB4459 /* Notification.Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03714B8F2C17FD9400BB4459 /* Notification.Name.swift */; };
 		03779F0E2BB256A7008D3C42 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0B2BB256A7008D3C42 /* OpenAIService.swift */; };
 		03779F0F2BB256A7008D3C42 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0C2BB256A7008D3C42 /* Prompt.swift */; };
 		03779F132BB256B5008D3C42 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F102BB256B5008D3C42 /* APIKey.swift */; };
@@ -114,6 +115,7 @@
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
+		03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
@@ -238,6 +240,7 @@
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
 		03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
+		03D90F8F2CCA451200EE4E84 /* WindowConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D90F8E2CCA451200EE4E84 /* WindowConfigurationView.swift */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C5D2A3ABE28000BF7C9 /* EZConstKey.m */; };
 		03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C652A3CA465000BF7C9 /* HWSegmentedControl.m */; };
@@ -337,7 +340,7 @@
 		DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C882B3969510055EFFC /* Appearance.swift */; };
 		DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */; };
 		EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */; };
-		EA3B81F92B5254AA004C0E8B /* Configuration+Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Configuration+Defaults.swift */; };
+		EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */; };
 		EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = EA3B81FB2B52555C004C0E8B /* Defaults */; };
 		EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */; };
 		EA9943E82B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */; };
@@ -407,6 +410,8 @@
 		03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEnumTypes.m; sourceTree = "<group>"; };
 		03262C2329EFE97B00EFECA0 /* NSViewController+EZWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSViewController+EZWindow.h"; sourceTree = "<group>"; };
 		03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSViewController+EZWindow.m"; sourceTree = "<group>"; };
+		0327A5A52CCA7ACF002BA81B /* Configuration+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Extension.swift"; sourceTree = "<group>"; };
+		0327A5A72CCB3339002BA81B /* UpdateNotificationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotificationInfo.swift; sourceTree = "<group>"; };
 		03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamConfigurationView.swift; sourceTree = "<group>"; };
 		0329CD6D29EE924500963F78 /* EZRightClickDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZRightClickDetector.h; sourceTree = "<group>"; };
 		0329CD6E29EE924500963F78 /* EZRightClickDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZRightClickDetector.m; sourceTree = "<group>"; };
@@ -492,11 +497,10 @@
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
 		036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZReplaceTextButton.m; sourceTree = "<group>"; };
-		036BCD492BDE8A96009C893F /* DefaultsStoredKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsStoredKey.swift; sourceTree = "<group>"; };
+		036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationKey.swift; sourceTree = "<group>"; };
 		036D62802BCAB613002C95C7 /* BuiltInAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInAIService.swift; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
-		03714B8F2C17FD9400BB4459 /* Notification.Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.Name.swift; sourceTree = "<group>"; };
 		03779F0B2BB256A7008D3C42 /* OpenAIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		03779F0C2BB256A7008D3C42 /* Prompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
 		03779F102BB256B5008D3C42 /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
@@ -521,6 +525,7 @@
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
+		03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationKey.swift; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -746,6 +751,7 @@
 		03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeviceSystemInfo.m; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
+		03D90F8E2CCA451200EE4E84 /* WindowConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationView.swift; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
 		03DC38C0292CC97900922CB2 /* EZServiceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceInfo.m; sourceTree = "<group>"; };
 		03DC7C5C2A3ABE28000BF7C9 /* EZConstKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZConstKey.h; sourceTree = "<group>"; };
@@ -865,7 +871,7 @@
 		DC6D9C882B3969510055EFFC /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
-		EA3B81F82B5254AA004C0E8B /* Configuration+Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Defaults.swift"; sourceTree = "<group>"; };
+		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
 		EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
 		EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectOptimizeExtensions.swift; sourceTree = "<group>"; };
 		EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTypeExtensions.swift; sourceTree = "<group>"; };
@@ -1300,7 +1306,6 @@
 			isa = PBXGroup;
 			children = (
 				0340D39A2C93DC1B004C9910 /* Constants.swift */,
-				03714B8F2C17FD9400BB4459 /* Notification.Name.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -2359,6 +2364,7 @@
 			isa = PBXGroup;
 			children = (
 				9627F9342B59956800B1E999 /* Shortcut */,
+				03D90F8E2CCA451200EE4E84 /* WindowConfigurationView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2515,9 +2521,11 @@
 			isa = PBXGroup;
 			children = (
 				DC46DF7F2B4417B900DEAE3E /* Configuration.swift */,
-				EA3B81F82B5254AA004C0E8B /* Configuration+Defaults.swift */,
+				0327A5A52CCA7ACF002BA81B /* Configuration+Extension.swift */,
+				EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */,
 				DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */,
-				036BCD492BDE8A96009C893F /* DefaultsStoredKey.swift */,
+				03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */,
+				036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -2543,6 +2551,7 @@
 				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
 				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
 				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
+				0327A5A72CCB3339002BA81B /* UpdateNotificationInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3030,6 +3039,7 @@
 				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */,
+				03D90F8F2CCA451200EE4E84 /* WindowConfigurationView.swift in Sources */,
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
 				03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
@@ -3075,8 +3085,8 @@
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */,
-				EA3B81F92B5254AA004C0E8B /* Configuration+Defaults.swift in Sources */,
-				036BCD4A2BDE8A96009C893F /* DefaultsStoredKey.swift in Sources */,
+				EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */,
+				036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
 				033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
@@ -3088,6 +3098,7 @@
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
+				03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */,
 				033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */,
@@ -3118,6 +3129,7 @@
 				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
+				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
 				0340D39B2C93DC1B004C9910 /* Constants.swift in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
 				03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */,
@@ -3193,6 +3205,7 @@
 				0346F3D32CAECB4C006A6CDF /* SystemUtility.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
+				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
@@ -3207,7 +3220,6 @@
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
 				0AC8A8452B6A4D97006DA5CC /* ServiceCells.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,
-				03714B902C17FD9400BB4459 /* Notification.Name.swift in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03BA35C42C520058007BF100 /* AppleDictionary+Translate.swift in Sources */,
 				038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */,
