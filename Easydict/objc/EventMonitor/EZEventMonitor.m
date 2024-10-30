@@ -649,7 +649,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.apple.iWork.Numbers", // Numbers
             @"com.apple.freeform",      // Freeform 无边记 // Fix:  https://github.com/tisfeng/Easydict/issues/166
             @"org.mozilla.firefox", // Firefox
-            @"com.openai.chat",   // ChatGPT code block is not AttributeUnsupported
+            @"com.openai.chat",   // ChatGPT code block return AttributeUnsupported
         ],
 
         // kAXErrorFailure -25200
