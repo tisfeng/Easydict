@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Testing
 import Translation
 
 // MARK: - AppleService
