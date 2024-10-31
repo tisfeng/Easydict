@@ -220,11 +220,11 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             if (errorData) {
                 /**
                  {
-                 "error" : {
-                 "code" : 1042912,
-                 "message" : "Too many requests"
-                 },
-                 "jsonrpc" : "2.0"
+                   "error" : {
+                     "code" : 1042912,
+                     "message" : "Too many requests"
+                   },
+                   "jsonrpc" : "2.0"
                  }
                  */
                 NSError *jsonError;
@@ -350,12 +350,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 - (NSArray<NSString *> *)parseOfficialResponseObject:(NSDictionary *)responseObject {
     /**
      {
-     "translations" : [
-     {
-     "detected_source_language" : "EN",
-     "text" : "很好"
-     }
-     ]
+       "translations" : [
+         {
+           "detected_source_language" : "EN",
+           "text" : "很好"
+         }
+       ]
      }
      */
     NSString *translatedText = [responseObject[@"translations"] firstObject][@"text"];
