@@ -7,15 +7,12 @@
 //
 
 #import "EZDeepLTranslate.h"
-#import "EZWebViewTranslator.h"
 #import "EZError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 @interface EZDeepLTranslate ()
-
-@property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *deepLTranslateEndPointKey;
@@ -24,22 +21,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 @end
 
 @implementation EZDeepLTranslate
-
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
-- (EZWebViewTranslator *)webViewTranslator {
-    if (!_webViewTranslator) {
-        NSString *selector = @"#target-dummydiv";
-        _webViewTranslator = [[EZWebViewTranslator alloc] init];
-        _webViewTranslator.querySelector = selector;
-        _webViewTranslator.queryModel = self.queryModel;
-    }
-    return _webViewTranslator;
-}
 
 - (NSString *)authKey {
     // easydict://writeKeyValue?EZDeepLAuthKey=xxx
@@ -153,38 +134,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (BOOL)autoConvertTraditionalChinese {
     return YES;
-}
-
-#pragma mark - WebView Translate
-
-- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    NSString *wordLink = [self wordLink:self.queryModel];
-
-    mm_weakify(self);
-    [self.queryModel setStopBlock:^{
-        mm_strongify(self);
-        [self.webViewTranslator resetWebView];
-    } serviceType:self.serviceType];
-
-    [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-        if ([self.queryModel isServiceStopped:self.serviceType]) {
-            return;
-        }
-
-        self.result.translatedResults = texts;
-        completion(self.result, error);
-    }];
-
-    //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    //    NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
-    //    [self.webViewTranslator monitorBaseURLString:monitorURL
-    //                                         loadURL:self.wordLink
-    //                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-    //        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    //        MMLogInfo(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-    //
-    //        MMLogInfo(@"deepL responseObject: %@", responseObject);
-    //    }];
 }
 
 #pragma mark - DeepL Web Translate
