@@ -49,16 +49,21 @@ class CustomOpenAIService: BaseOpenAIService {
 
     override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [[String: String]] {
         if enableCustomPrompt {
+            var chatMessages: [[String: String]] = []
             let systemPrompt = replaceCustomPromptWithVariable(systemPrompt)
             var userPrompt = replaceCustomPromptWithVariable(userPrompt)
+
+            if !systemPrompt.isEmpty {
+                chatMessages.append(chatMessage(role: .system, content: systemPrompt))
+            }
+
+            // If user prompt is empty, use query text as user prompt
             if userPrompt.isEmpty {
                 userPrompt = queryModel.queryText
             }
+            chatMessages.append(chatMessage(role: .user, content: userPrompt))
 
-            return [
-                chatMessage(role: .system, content: systemPrompt),
-                chatMessage(role: .user, content: userPrompt),
-            ]
+            return chatMessages
         }
         return super.chatMessageDicts(chatQuery)
     }
