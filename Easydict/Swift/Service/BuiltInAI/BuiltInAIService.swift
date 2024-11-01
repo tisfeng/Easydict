@@ -11,6 +11,16 @@ import Foundation
 
 @objc(EZBuiltInAIService)
 class BuiltInAIService: BaseOpenAIService {
+    // MARK: Lifecycle
+
+    override init() {
+        super.init()
+
+        // Set default supported models, disable user to change it.
+        // Generally, it should be updated only when the app is updated.
+        supportedModels = defaultModels.joined(separator: ", ")
+    }
+
     // MARK: Public
 
     public override func name() -> String {
@@ -33,9 +43,10 @@ class BuiltInAIService: BaseOpenAIService {
 
     override var defaultModels: [String] {
         [
-            "glm-4-flash", // zhipu free model, 128k context, 4k output, 200 QoS https://bigmodel.cn/dev/howuse/model
+            "glm-4-flash",
+            // zhipu free model, 128k context, 4k output, 200 QoS https://bigmodel.cn/dev/howuse/model
             "hunyuan-lite",
-            // tencent free model, 256k context, 6k output, 5 QoS https://cloud.tencent.com/document/product/1729/97731
+            // tencent free model, 256k context, 6k output, 5 QoS https://cloud.tencent.com/document/product/1729/104753
 
             // Groq free models https://console.groq.com/docs/models
             "llama-3.1-8b-instant", // 8k context, 30 RPM, 14,400 RPD, 20,000 TPM, 500,000 TPD
@@ -44,7 +55,7 @@ class BuiltInAIService: BaseOpenAIService {
             "gemma2-9b-it", // 8k context, 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD
 
             // Google Gemini https://ai.google.dev/pricing?hl=zh-cn
-            "gemini-1.5-flash", // free quota, 15 RPM, 100,000 TPD, 1,000 TPM, 1,500,000 RPD
+            "gemini-1.5-flash", // free, 15 RPM, 100,000 TPD, 1,000 TPM, 1,500,000 RPD
         ]
     }
 

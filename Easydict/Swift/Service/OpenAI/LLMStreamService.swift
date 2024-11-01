@@ -113,6 +113,7 @@ public class LLMStreamService: QueryService {
         stringDefaultsKey(.model, defaultValue: defaultModel)
     }
 
+    /// When `supportedModels` is set, `validModels` will be updated automatically.
     var supportedModels: String {
         get { Defaults[supportedModelsKey] }
         set {
@@ -152,7 +153,7 @@ public class LLMStreamService: QueryService {
         set { Defaults[systemPromptKey] = newValue }
     }
 
-    /// Just getter, we should set supportedModels and get validModels.
+    /// Just getter, we should not change it directly, we should set `supportedModels` instead.
     var validModels: [String] {
         Defaults[validModelsKey]
     }
