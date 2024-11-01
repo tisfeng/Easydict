@@ -370,8 +370,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 /// Since DeepL API source language code is different from the target language code, it has no variant.
 /// DeepL Docs: https://developers.deepl.com/docs/zh/resources/supported-languages#source-languages
 - (NSString *)removeLanguageVariant:(NSString *)languageCode {
-    NSString *sourceLangCode = [languageCode componentsSeparatedByString:@"-"].firstObject;
-    return sourceLangCode;
+    return [languageCode componentsSeparatedByString:@"-"].firstObject;
 }
 
 @end
