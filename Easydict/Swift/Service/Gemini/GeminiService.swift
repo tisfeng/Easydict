@@ -118,7 +118,7 @@ public final class GeminiService: LLMStreamService {
         if let currentTask, currentTask.isCancelled == false {
             currentTask.cancel()
         }
-        
+
         let queryType = queryType(text: text, from: from, to: to)
 
         // Gemini Docs: https://github.com/google/generative-ai-swift
