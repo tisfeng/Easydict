@@ -95,6 +95,8 @@ public final class GeminiService: LLMStreamService {
 
     // MARK: Private
 
+    private var currentTask: Task<(), Never>?
+
     // Set Gemini safety level to BLOCK_NONE
     private let blockNoneSettings = [
         SafetySetting(harmCategory: .harassment, threshold: .blockNone),
@@ -109,11 +111,15 @@ public final class GeminiService: LLMStreamService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
+        if let currentTask, currentTask.isCancelled == false {
+            currentTask.cancel()
+        }
+        
         let queryType = queryType(text: text, from: from, to: to)
 
         // Gemini Docs: https://github.com/google/generative-ai-swift
 
-        Task {
+        currentTask = Task {
             do {
                 result.isStreamFinished = false
 
@@ -152,6 +158,7 @@ public final class GeminiService: LLMStreamService {
 
                 let outputContentStream = model.generateContentStream(chatHistory)
                 for try await outputContent in outputContentStream {
+                    try Task.checkCancellation()
                     guard let line = outputContent.text else {
                         return
                     }
@@ -163,6 +170,9 @@ public final class GeminiService: LLMStreamService {
                 updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 result.isStreamFinished = true
 
+            } catch is CancellationError {
+                // Task was cancelled.
+                log("Gemini task was cancelled.")
             } catch {
                 /**
                  https://github.com/google/generative-ai-swift/issues/89
