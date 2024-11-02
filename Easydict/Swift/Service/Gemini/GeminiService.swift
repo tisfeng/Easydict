@@ -93,6 +93,10 @@ public final class GeminiService: LLMStreamService {
         return chatModels
     }
 
+    override func cancelStream() {
+        currentTask?.cancel()
+    }
+
     // MARK: Private
 
     private var currentTask: Task<(), Never>?
