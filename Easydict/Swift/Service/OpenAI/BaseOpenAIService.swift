@@ -63,22 +63,22 @@ public class BaseOpenAIService: LLMStreamService {
 
     // MARK: Internal
 
-    typealias ChatMessage = ChatQuery.ChatCompletionMessageParam
+    typealias OpenAIChatMessage = ChatQuery.ChatCompletionMessageParam
 
     let control = StreamControl()
 
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
-        var chatModels: [ChatMessage] = []
+        var chatMessages: [OpenAIChatMessage] = []
         for message in chatMessageDicts(chatQuery) {
-            if let roleRawValue = message["role"],
-               let role = ChatMessage.Role(rawValue: roleRawValue),
-               let content = message["content"] {
-                if let chat = ChatMessage(role: role, content: content) {
-                    chatModels.append(chat)
-                }
+            let openAIRole = message.role.rawValue
+            let content = message.content
+
+            if let role = OpenAIChatMessage.Role(rawValue: openAIRole),
+               let chat = OpenAIChatMessage(role: role, content: content) {
+                chatMessages.append(chat)
             }
         }
-        return chatModels
+        return chatMessages
     }
 
     override func cancelStream() {
@@ -111,7 +111,7 @@ public class BaseOpenAIService: LLMStreamService {
         )
 
         let chatHistory = serviceChatMessageModels(chatQueryParam)
-        guard let chatHistory = chatHistory as? [ChatMessage] else {
+        guard let chatHistory = chatHistory as? [OpenAIChatMessage] else {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: invalidURLError)
             }

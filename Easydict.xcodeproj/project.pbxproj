@@ -21,6 +21,7 @@
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */; };
+		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* LLMStreamService+Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* LLMStreamService+Stream.swift */; };
@@ -395,6 +396,7 @@
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
 		0315D3DF2C4E64A500AC0442 /* QueryService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Translate.swift"; sourceTree = "<group>"; };
+		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* LLMStreamService+Stream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LLMStreamService+Stream.swift"; sourceTree = "<group>"; };
@@ -1349,6 +1351,7 @@
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
 				03779F0B2BB256A7008D3C42 /* OpenAIService.swift */,
 				03779F0C2BB256A7008D3C42 /* Prompt.swift */,
+				031CBA632CD76F1500364437 /* ChatMessage.swift */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -3032,6 +3035,7 @@
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
+				031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */,
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
 				0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */,
 				17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */,

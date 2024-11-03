@@ -284,8 +284,7 @@ public class LLMStreamService: QueryService {
         }
     }
 
-    func chatMessageDicts(_ chatQuery: ChatQueryParam)
-        -> [[String: String]] {
+    func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         switch chatQuery.queryType {
         case .dictionary:
             dictMessages(chatQuery)

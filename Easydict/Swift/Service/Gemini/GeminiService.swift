@@ -82,13 +82,13 @@ public final class GeminiService: LLMStreamService {
 
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
         var chatModels: [ModelContent] = []
-        for prompt in chatMessageDicts(chatQuery) {
-            if let openAIRole = prompt["role"],
-               let parts = prompt["content"] {
-                let role = getGeminiRole(from: openAIRole)
-                let chat = ModelContent(role: role, parts: parts)
-                chatModels.append(chat)
-            }
+        for message in chatMessageDicts(chatQuery) {
+            let openAIRole = message.role.rawValue
+            let parts = message.content
+
+            let role = getGeminiRole(from: openAIRole)
+            let chat = ModelContent(role: role, parts: parts)
+            chatModels.append(chat)
         }
         return chatModels
     }

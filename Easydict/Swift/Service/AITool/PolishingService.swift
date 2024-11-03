@@ -23,7 +23,7 @@ class PolishingService: AIToolService {
 
     // MARK: Internal
 
-    override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         polishingMessages(chatQuery)
     }
 }

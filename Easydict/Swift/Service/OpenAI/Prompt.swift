@@ -40,88 +40,81 @@ extension LLMStreamService {
         "Using \(answerLanguage.rawValue) to summarize the following \(sourceLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\"."
     }
 
-    func polishingMessages(_ derivParam: ChatQueryParam) -> [[String: String]] {
+    func polishingMessages(_ derivParam: ChatQueryParam) -> [ChatMessage] {
         let (text, sourceLanguage, _, _, _) = derivParam.unpack()
-
         let prompt = polishingPrompt(text: text, in: sourceLanguage)
 
         let englishFewShot = [
             chatMessagePair(
-                userContent: "Polish the following English text to improve its clarity and coherence: \"\"\"The book was wrote by an unknown author but it was very popular among readers.\"\"\"",
-                assistantContent: "The book was written by an unknown author, but it was very popular among readers."
+                userContent:
+                "Polish the following English text to improve its clarity and coherence: \"\"\"The book was wrote by an unknown author but it was very popular among readers.\"\"\"",
+                assistantContent:
+                "The book was written by an unknown author, but it was very popular among readers."
             ),
             chatMessagePair(
-                userContent: "Polish the following English text to improve its grammar and readability: \"\"\"She don’t like the weather today, it makes her feel bad.\"\"\"",
+                userContent:
+                "Polish the following English text to improve its grammar and readability: \"\"\"She don’t like the weather today, it makes her feel bad.\"\"\"",
                 assistantContent: "She doesn't like the weather today; it makes her feel bad."
             ),
             chatMessagePair(
-                userContent: "Polish the following English text to enhance its overall quality: \"\"\"The project was successful although we faced many problems in the beginning.\"\"\"",
-                assistantContent: "The project was successful despite facing many problems in the beginning."
+                userContent:
+                "Polish the following English text to enhance its overall quality: \"\"\"The project was successful although we faced many problems in the beginning.\"\"\"",
+                assistantContent:
+                "The project was successful despite facing many problems in the beginning."
             ),
         ].flatMap { $0 }
 
-        let systemMessages = [chatMessage(
-            role: .system,
-            content: LLMStreamService.polishingSystemPrompt
-        )]
-
-        var messages = systemMessages
-        messages.append(contentsOf: englishFewShot)
-
-        let userMessages = [
-            [
-                "role": "user",
-                "content": prompt,
-            ],
+        var messages: [ChatMessage] = [
+            .init(role: .system, content: LLMStreamService.polishingSystemPrompt),
         ]
+        messages.append(contentsOf: englishFewShot)
+        messages.append(.init(role: .user, content: prompt))
 
-        messages.append(contentsOf: userMessages)
         return messages
     }
 
-    func summaryMessages(_ derivParam: ChatQueryParam) -> [[String: String]] {
+    func summaryMessages(_ derivParam: ChatQueryParam) -> [ChatMessage] {
         let (text, sourceLanguage, _, _, _) = derivParam.unpack()
         let answerLanguage = Configuration.shared.firstLanguage
-        let prompt = summaryPrompt(text: text, sourceLanguage: sourceLanguage, answerLanguage: answerLanguage)
+        let prompt = summaryPrompt(
+            text: text, sourceLanguage: sourceLanguage, answerLanguage: answerLanguage
+        )
 
         let fewShot = [
             chatMessagePair(
-                userContent: "Using English to summarize the following English text: \"\"\"The quick brown fox jumps over the lazy dog. The fox is very quick and agile, making it difficult for the dog to catch up. Despite several attempts, the dog remains lazy and doesn't put in much effort to chase the fox.\"\"\".",
-                assistantContent: "The quick and agile fox jumps over the lazy dog, who remains lazy and doesn't put in much effort to chase the fox."
+                userContent:
+                "Using English to summarize the following English text: \"\"\"The quick brown fox jumps over the lazy dog. The fox is very quick and agile, making it difficult for the dog to catch up. Despite several attempts, the dog remains lazy and doesn't put in much effort to chase the fox.\"\"\".",
+                assistantContent:
+                "The quick and agile fox jumps over the lazy dog, who remains lazy and doesn't put in much effort to chase the fox."
             ),
             chatMessagePair(
-                userContent: "Using Simplified-Chinese to summarize the following text: \"\"\"联合国在西非地区的最高官员周五表示，马里、布基纳法索和尼日尔决定退出西非国家经济共同体，将全面破坏地区关系，而此时恐怖主义和跨国有组织犯罪仍然对该地区构成普遍威胁。联合国西非和萨赫勒办事处负责人莱昂纳多•桑托斯•西芒向安理会表示，放弃西非经共体 将使三个军方领导的政府放弃关键利益，包括地区一体化、行动自由、安全合作和一体化的地区经济，这既伤害了他们自己，也伤害了西非经共体的其他成员。在高级军官分别于 2021 年、2022 年和 2023 年发动军事接管后，这三个过渡政府断绝了与西非经共体的关系。西芒说，军事领导人因此推迟了恢复宪政的时间，并引发了对长期不确定性的恐惧，因为公民空间继续缩小。\"\"\".",
-                assistantContent: "马里、布基纳法索和尼日尔退出西非国家经济共同体，将严重破坏地区关系，尤其是在恐怖主义和跨国有组织犯罪仍威胁该地区的情况下。联合国官员西芒指出，这一决定将使这三个国家失去地区一体化、安全合作和经济利益，推迟恢复宪政，并加剧长期不确定性。"
+                userContent:
+                "Using Simplified-Chinese to summarize the following text: \"\"\"联合国在西非地区的最高官员周五表示，马里、布基纳法索和尼日尔决定退出西非国家经济共同体，将全面破坏地区关系，而此时恐怖主义和跨国有组织犯罪仍然对该地区构成普遍威胁。联合国西非和萨赫勒办事处负责人莱昂纳多•桑托斯•西芒向安理会表示，放弃西非经共体 将使三个军方领导的政府放弃关键利益，包括地区一体化、行动自由、安全合作和一体化的地区经济，这既伤害了他们自己，也伤害了西非经共体的其他成员。在高级军官分别于 2021 年、2022 年和 2023 年发动军事接管后，这三个过渡政府断绝了与西非经共体的关系。西芒说，军事领导人因此推迟了恢复宪政的时间，并引发了对长期不确定性的恐惧，因为公民空间继续缩小。\"\"\".",
+                assistantContent:
+                "马里、布基纳法索和尼日尔退出西非国家经济共同体，将严重破坏地区关系，尤其是在恐怖主义和跨国有组织犯罪仍威胁该地区的情况下。联合国官员西芒指出，这一决定将使这三个国家失去地区一体化、安全合作和经济利益，推迟恢复宪政，并加剧长期不确定性。"
             ),
 
         ].flatMap { $0 }
 
-        let systemMessages = [chatMessage(
-            role: .system,
-            content: LLMStreamService.summarySystemPrompt
-        )]
-
-        var messages = systemMessages
-        messages.append(contentsOf: fewShot)
-
-        let userMessages = [
-            [
-                "role": "user",
-                "content": prompt,
-            ],
+        var messages: [ChatMessage] = [
+            .init(role: .system, content: LLMStreamService.summarySystemPrompt),
         ]
+        messages.append(contentsOf: fewShot)
+        messages.append(.init(role: .user, content: prompt))
 
-        messages.append(contentsOf: userMessages)
         return messages
     }
 
     // MARK: Translation Messages
 
-    private func translationPrompt(text: String, from sourceLanguage: Language, to targetLanguage: Language) -> String {
+    private func translationPrompt(
+        text: String, from sourceLanguage: Language, to targetLanguage: Language
+    )
+        -> String {
         "Translate the following \(sourceLanguage.queryLanguageName) text into \(targetLanguage.queryLanguageName) text: \"\"\"\(text)\"\"\""
     }
 
-    func translationMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    func translationMessages(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (text, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
         // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
@@ -132,7 +125,8 @@ extension LLMStreamService {
         let chineseFewShot = [
             // en --> zh
             chatMessagePair(
-                userContent: "Translate the following English text into Simplified-Chinese text: \"\"\"The stock market has now reached a plateau.\"\"\"",
+                userContent:
+                "Translate the following English text into Simplified-Chinese text: \"\"\"The stock market has now reached a plateau.\"\"\"",
                 assistantContent: "股市现在已经进入了平稳期。"
             ),
 
@@ -140,7 +134,9 @@ extension LLMStreamService {
             chatMessagePair(userContent: "func", assistantContent: "函数"),
             chatMessagePair(userContent: "const", assistantContent: "常量"),
             chatMessagePair(userContent: "Patriot battery", assistantContent: "爱国者导弹系统"),
-            chatMessagePair(userContent: "Four score and seven years ago", assistantContent: "八十七年前"),
+            chatMessagePair(
+                userContent: "Four score and seven years ago", assistantContent: "八十七年前"
+            ),
             chatMessagePair(userContent: "js", assistantContent: "JavaScript"),
             chatMessagePair(userContent: "acg", assistantContent: "acg"),
             chatMessagePair(userContent: "Swift language", assistantContent: "Swift 语言"),
@@ -148,82 +144,99 @@ extension LLMStreamService {
 
             // ja --> zh
             chatMessagePair(
-                userContent: "Translate the following Japanese text into Simplified-Chinese text: \"\"\"ちっちいな~\"\"\"",
+                userContent:
+                "Translate the following Japanese text into Simplified-Chinese text: \"\"\"ちっちいな~\"\"\"",
                 assistantContent: "好小啊~"
             ),
             chatMessagePair(userContent: "チーター", assistantContent: "猎豹"),
 
             // zh --> en
             chatMessagePair(
-                userContent: "Translate the following Simplified-Chinese text into English text: \"\"\"Hello world, 然后请你也谈谈你对中国的看法？最后输出以下内容的反义词：go up\"\"\"",
-                assistantContent: "Hello world, then please also talk about your views on China? Finally, output the antonym of the following: go up"
+                userContent:
+                "Translate the following Simplified-Chinese text into English text: \"\"\"Hello world, 然后请你也谈谈你对中国的看法？最后输出以下内容的反义词：go up\"\"\"",
+                assistantContent:
+                "Hello world, then please also talk about your views on China? Finally, output the antonym of the following: go up"
             ),
         ].flatMap { $0 }
 
         let fromClassicalChineseFewShot = [
             // wyw --> zh
-            chatMessagePair(userContent: """
-            Translate the following 简体中文文言文 text into 简体中文白话文 text:
-            \"\"\"曾经沧海难为水，除却巫山不是云。\"\"\"
-            """, assistantContent: "经历过波澜壮阔的大海，别处的水再也不值得一观。陶醉过巫山的云雨的梦幻，别处的风景就不称之为云雨了。"),
+            chatMessagePair(
+                userContent: """
+                Translate the following 简体中文文言文 text into 简体中文白话文 text:
+                \"\"\"曾经沧海难为水，除却巫山不是云。\"\"\"
+                """, assistantContent: "经历过波澜壮阔的大海，别处的水再也不值得一观。陶醉过巫山的云雨的梦幻，别处的风景就不称之为云雨了。"
+            ),
 
-            chatMessagePair(userContent: "露从今夜白，月是故乡明。", assistantContent: "从今夜就进入了白露节气，月亮还是故乡的最明亮。"),
+            chatMessagePair(
+                userContent: "露从今夜白，月是故乡明。", assistantContent: "从今夜就进入了白露节气，月亮还是故乡的最明亮。"
+            ),
 
-            chatMessagePair(userContent: """
-            苏溪亭上草漫漫，谁倚东风十二阑。
-            燕子不归春事晚，一汀烟雨杏花寒。
-            """, assistantContent: """
-            苏溪亭外野草青青，无边无际；是谁随着东风唱着阑干十二曲呢？
-            燕子还没有回到旧窝，而美好的春光已快要完了；迷蒙的烟雨笼罩着一片沙洲，杏花在料峭春风中只感凄寒。
-            """),
+            chatMessagePair(
+                userContent: """
+                苏溪亭上草漫漫，谁倚东风十二阑。
+                燕子不归春事晚，一汀烟雨杏花寒。
+                """,
+                assistantContent: """
+                苏溪亭外野草青青，无边无际；是谁随着东风唱着阑干十二曲呢？
+                燕子还没有回到旧窝，而美好的春光已快要完了；迷蒙的烟雨笼罩着一片沙洲，杏花在料峭春风中只感凄寒。
+                """
+            ),
 
-            chatMessagePair(userContent: """
-            《不第后赋菊》
-            待到秋来九月八，我花开后百花杀。
-            冲天香阵透长安，满城尽带黄金甲。
-            """, assistantContent: """
-            《不第后赋菊》
-            等到秋天九月重阳节来临的时候，菊花盛开以后别的花就凋零了。
-            盛开的菊花香气弥漫整个长安，遍地都是金黄如铠甲般的菊花。
-            """),
+            chatMessagePair(
+                userContent: """
+                《不第后赋菊》
+                待到秋来九月八，我花开后百花杀。
+                冲天香阵透长安，满城尽带黄金甲。
+                """,
+                assistantContent: """
+                《不第后赋菊》
+                等到秋天九月重阳节来临的时候，菊花盛开以后别的花就凋零了。
+                盛开的菊花香气弥漫整个长安，遍地都是金黄如铠甲般的菊花。
+                """
+            ),
 
-            chatMessagePair(userContent: """
-            Translate the following 中文文言文 text into 繁体中文白话文 text:
-            《题菊花》
-            飒飒西风满院栽，蕊寒香冷蝶难来。
-            他年我若为青帝，报与桃花一处开。
-            """, assistantContent: """
-            《題菊花》
-            秋風颯颯搖動滿院菊花，花蕊花香充滿寒意，再難有蝴蝶飛來採蜜。
-            若是有朝一日我成為了司春之神，一定要讓菊花和桃花同在春天盛開。
-            """),
+            chatMessagePair(
+                userContent: """
+                Translate the following 中文文言文 text into 繁体中文白话文 text:
+                《题菊花》
+                飒飒西风满院栽，蕊寒香冷蝶难来。
+                他年我若为青帝，报与桃花一处开。
+                """,
+                assistantContent: """
+                《題菊花》
+                秋風颯颯搖動滿院菊花，花蕊花香充滿寒意，再難有蝴蝶飛來採蜜。
+                若是有朝一日我成為了司春之神，一定要讓菊花和桃花同在春天盛開。
+                """
+            ),
 
         ].flatMap { $0 }
 
         let toClassicalChineseFewShot = [
             //  --> wyw
-            chatMessagePair(userContent: """
-            Translate the following 简体中文白话文 text into 简体中文文言文 text:
-            \"\"\"不要忽视梦想。不要工作过久。说出想法。交朋友。要开心。\"\"\"
-            """, assistantContent: "勿轻梦想，勿久劳形，宜言志，善交友，当乐也。"),
+            chatMessagePair(
+                userContent: """
+                Translate the following 简体中文白话文 text into 简体中文文言文 text:
+                \"\"\"不要忽视梦想。不要工作过久。说出想法。交朋友。要开心。\"\"\"
+                """, assistantContent: "勿轻梦想，勿久劳形，宜言志，善交友，当乐也。"
+            ),
 
-            chatMessagePair(userContent: """
-            Translate the following Eglish text into 简体中文文言文 text:
-            Don't ignore your dreams;
-            don't work too much;
-            say what you think;
-            cultivate friendships;
-            be happy.
-            """, assistantContent: "勿轻梦想，勿久劳形，宜言志，善交友，当乐也。"),
+            chatMessagePair(
+                userContent: """
+                Translate the following Eglish text into 简体中文文言文 text:
+                Don't ignore your dreams;
+                don't work too much;
+                say what you think;
+                cultivate friendships;
+                be happy.
+                """, assistantContent: "勿轻梦想，勿久劳形，宜言志，善交友，当乐也。"
+            ),
 
         ].flatMap { $0 }
 
-        let systemMessages = enableSystemPrompt ? [chatMessage(
-            role: .system,
-            content: LLMStreamService.translationSystemPrompt
-        )] : []
+        var messages: [ChatMessage] = enableSystemPrompt
+            ? [.init(role: .system, content: LLMStreamService.translationSystemPrompt)] : []
 
-        var messages = systemMessages
         messages.append(contentsOf: chineseFewShot)
 
         if sourceLanguage == .classicalChinese {
@@ -233,18 +246,13 @@ extension LLMStreamService {
             messages.append(contentsOf: toClassicalChineseFewShot)
         }
 
-        let userMessages = [
-            [
-                "role": "user",
-                "content": prompt,
-            ],
-        ]
-
+        let userMessages: [ChatMessage] = [.init(role: .user, content: prompt)]
         messages.append(contentsOf: userMessages)
+
         return messages
     }
 
-    func sentenceMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    func sentenceMessages(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (sentence, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
         let answerLanguage = Configuration.shared.firstLanguage
@@ -265,7 +273,8 @@ extension LLMStreamService {
         let sourceLanguageString = sourceLanguage.rawValue
         let targetLanguageString = targetLanguage.rawValue
 
-        let sentencePrompt = "Here is a \(sourceLanguageString) sentence: \"\"\"\(sentence)\"\"\".\n"
+        let sentencePrompt =
+            "Here is a \(sourceLanguageString) sentence: \"\"\"\(sentence)\"\"\".\n"
         prompt += sentencePrompt
 
         let directTranslationPrompt =
@@ -304,7 +313,8 @@ extension LLMStreamService {
                 2. Analyze the grammatical structure of the sentence.
                 3. Provide the inferred translation in Simplified Chinese.
                 Answer in Simplified Chinese.
-                """, assistantContent: """
+                """,
+                assistantContent: """
                 直译：
                 但是这位新任总理是否能够提供有活力的领导，而不是延续德国最近的漂泊，还很难说。
 
@@ -323,96 +333,104 @@ extension LLMStreamService {
                 """
             ),
 
-            chatMessagePair(userContent: "The Sword of Damocles", assistantContent: """
-            直译：
-            达摩克利斯之剑
+            chatMessagePair(
+                userContent: "The Sword of Damocles",
+                assistantContent: """
+                直译：
+                达摩克利斯之剑
 
-            重点词汇：
-            Sword: n. 剑。
-            Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
+                重点词汇：
+                Sword: n. 剑。
+                Damocles: n. 达摩克利斯，一个古希腊传说中的人物。
 
-            语法分析：
-            这是一个简单名词短语。
+                语法分析：
+                这是一个简单名词短语。
 
-            意译：
-            达摩克利斯之剑
+                意译：
+                达摩克利斯之剑
 
-            （达摩克利斯之剑，又称为“悬顶之剑”，源自古希腊的一个寓言故事。这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
-            """),
+                （达摩克利斯之剑，又称为“悬顶之剑”，源自古希腊的一个寓言故事。这个短语经常被用来描述那些处于高位但随时可能遭遇不幸或灾难的人的处境。它提醒人们，权力和成功往往伴随着风险和挑战。）
+                """
+            ),
 
-            chatMessagePair(userContent: "better late than never", assistantContent: """
-            直译：
-            迟到总比不到好
+            chatMessagePair(
+                userContent: "better late than never",
+                assistantContent: """
+                直译：
+                迟到总比不到好
 
-            重点词汇：
-            better: adj. 较好的；更好的。
-            late: adj. 迟到的；晚的。
-            never: adv. 从来不；从不。
+                重点词汇：
+                better: adj. 较好的；更好的。
+                late: adj. 迟到的；晚的。
+                never: adv. 从来不；从不。
 
-            语法分析：
-            这是一个固定短语。
+                语法分析：
+                这是一个固定短语。
 
-            意译：
-            迟做总比不做好
+                意译：
+                迟做总比不做好
 
-            （这是一句广为人知的英语谚语，传达了一个乐观且鼓励的态度，即在面对任务、决定或目标时，即使开始得较晚或者错过了最初的机会，采取行动并最终完成仍然比完全放弃要好。它强调了坚持与努力的价值，即便成果来得晚些，也不失为一种成功。）
-            """),
+                （这是一句广为人知的英语谚语，传达了一个乐观且鼓励的态度，即在面对任务、决定或目标时，即使开始得较晚或者错过了最初的机会，采取行动并最终完成仍然比完全放弃要好。它强调了坚持与努力的价值，即便成果来得晚些，也不失为一种成功。）
+                """
+            ),
 
-            chatMessagePair(userContent: "Ukraine may get another Patriot battery.", assistantContent: """
-            直译：
-            乌克兰可能会获得另一套爱国者导弹系统。
+            chatMessagePair(
+                userContent: "Ukraine may get another Patriot battery.",
+                assistantContent: """
+                直译：
+                乌克兰可能会获得另一套爱国者导弹系统。
 
-            重点词汇：
-            Ukraine: n. 乌克兰，一个东欧的共和制国家。
-            Patriot: n. 爱国者。这里指爱国者导弹系统。
-            battery: n. 电池；炮兵连。这里指导弹炮组。
+                重点词汇：
+                Ukraine: n. 乌克兰，一个东欧的共和制国家。
+                Patriot: n. 爱国者。这里指爱国者导弹系统。
+                battery: n. 电池；炮兵连。这里指导弹炮组。
 
-            语法分析：
-            该句为简单句。主语为 "Ukraine"，谓语为 "may get"，宾语为 "another Patriot battery"。
+                语法分析：
+                该句为简单句。主语为 "Ukraine"，谓语为 "may get"，宾语为 "another Patriot battery"。
 
-            意译：
-            乌克兰可能会获得另一套爱国者导弹系统。
-            """),
+                意译：
+                乌克兰可能会获得另一套爱国者导弹系统。
+                """
+            ),
         ].flatMap { $0 }
 
         let englishFewShot = [
-            chatMessagePair(userContent: """
-            Here is an English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
+            chatMessagePair(
+                userContent: """
+                Here is an English sentence: \"\"\"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\"\"\"
 
-            First, translate the sentence into English literally, keeping the original format and including all information. Use the following format: \"Literal Translation:\n{literal_translation_result}\".
+                First, translate the sentence into English literally, keeping the original format and including all information. Use the following format: \"Literal Translation:\n{literal_translation_result}\".
 
-            Then, follow these steps:
+                Then, follow these steps:
 
-            1. List up to 5 key words, common phrases, or collocations in the sentence. For each, include all parts of speech and meanings, and explain its specific meaning in this context. Use the format: \"Key Words:\n{key_words}\".
+                1. List up to 5 key words, common phrases, or collocations in the sentence. For each, include all parts of speech and meanings, and explain its specific meaning in this context. Use the format: \"Key Words:\n{key_words}\".
 
-            2. Analyze the grammatical structure of the sentence. Use the format: \"Grammar Parsing:\n{grammatical_analysis}\".
+                2. Analyze the grammatical structure of the sentence. Use the format: \"Grammar Parsing:\n{grammatical_analysis}\".
 
-            3. Provide a free translation of the sentence, ensuring it retains the original meaning but is easier to understand and more natural in English. Keep the original format unchanged. Use the format: \"Free Translation:\n{free_translation_result}\".
+                3. Provide a free translation of the sentence, ensuring it retains the original meaning but is easier to understand and more natural in English. Keep the original format unchanged. Use the format: \"Free Translation:\n{free_translation_result}\".
 
-            Answer in English.
-            """, assistantContent: """
-            Literal Translation:
-            But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is difficult to say.
+                Answer in English.
+                """,
+                assistantContent: """
+                Literal Translation:
+                But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is difficult to say.
 
-            Key Words:
-            chancellor: n. Chancellor; minister. Here it refers to the German chancellor.
-            dynamic: adj. energetic; dynamic. Here it refers to strong leadership.
-            drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic.
+                Key Words:
+                chancellor: n. Chancellor; minister. Here it refers to the German chancellor.
+                dynamic: adj. energetic; dynamic. Here it refers to strong leadership.
+                drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic.
 
-            Grammar Parsing:
-            The sentence is a complex sentence. The main clause is "But .... is hard to say" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause.
+                Grammar Parsing:
+                The sentence is a complex sentence. The main clause is "But .... is hard to say" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause.
 
-            Free Translation:
-            It's hard to say whether the incoming chancellor will offer dynamic leadership, or just prolong Germany's recent drift.
-            """),
+                Free Translation:
+                It's hard to say whether the incoming chancellor will offer dynamic leadership, or just prolong Germany's recent drift.
+                """
+            ),
         ].flatMap { $0 }
 
-        let systemMessages = enableSystemPrompt ? [chatMessage(
-            role: .system,
-            content: LLMStreamService.translationSystemPrompt
-        )] : []
-
-        var messages = systemMessages
+        var messages: [ChatMessage] = enableSystemPrompt
+            ? [ChatMessage(role: .system, content: LLMStreamService.translationSystemPrompt)] : []
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
@@ -420,13 +438,13 @@ extension LLMStreamService {
             messages += englishFewShot
         }
 
-        let userMessage = chatMessage(role: .user, content: prompt)
+        let userMessage: ChatMessage = .init(role: .user, content: prompt)
         messages.append(userMessage)
 
         return messages
     }
 
-    func dictMessages(_ chatQuery: ChatQueryParam) -> [[String: String]] {
+    func dictMessages(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (word, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
         var prompt = ""
@@ -448,7 +466,8 @@ extension LLMStreamService {
         let isEnglishWord = sourceLanguage == .english && word.isEnglishWord()
         let isEnglishPhrase = sourceLanguage == .english && word.isEnglishPhrase()
 
-        let isChineseWord = EZLanguageManager.shared().isChineseLanguage(sourceLanguage) && word.isChineseWord()
+        let isChineseWord =
+            EZLanguageManager.shared().isChineseLanguage(sourceLanguage) && word.isChineseWord()
 
         let isWord = isEnglishWord || isChineseWord
 
@@ -491,8 +510,12 @@ extension LLMStreamService {
             """
             prompt.append(tensePrompt)
         } else {
-            let translationPrompt = translationPrompt(text: word, from: sourceLanguage, to: targetLanguage)
-            prompt.append("\(translationPrompt), use the format: \"\(translationTitle): {translation}\" ")
+            let translationPrompt = translationPrompt(
+                text: word, from: sourceLanguage, to: targetLanguage
+            )
+            prompt.append(
+                "\(translationPrompt), use the format: \"\(translationTitle): {translation}\" "
+            )
         }
 
         let explanationPrompt = """
@@ -568,104 +591,113 @@ extension LLMStreamService {
         let disableNotePrompt = "Do not display additional information or notes."
         prompt.append(disableNotePrompt)
 
-        let chineseFewShot: [[String: String]] = [
-            chatMessagePair(userContent: """
-            Using Simplified-Chinese:
-            Here is a English word: \"\"\"album\"\"\",
-            Look up its pronunciation, part of speech and meanings, tenses, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
-            """, assistantContent: """
-            发音：/ ˈælbəm /
+        let chineseFewShot: [ChatMessage] = [
+            chatMessagePair(
+                userContent: """
+                Using Simplified-Chinese:
+                Here is a English word: \"\"\"album\"\"\",
+                Look up its pronunciation, part of speech and meanings, tenses, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences.
+                """,
+                assistantContent: """
+                发音：/ ˈælbəm /
 
-            n. 相册；唱片集；集邮簿
+                n. 相册；唱片集；集邮簿
 
-            时态：
-            复数：albums
+                时态：
+                复数：albums
 
-            解释：{explanation}
+                解释：{explanation}
 
-            词源学：早期 17 世纪：源自拉丁语“albus”（意即“白色”）的中性单词“album”，原意为“白板”。该词是从拉丁语短语“album amicorum”（意即“好友相册”，一种可收集亲笔签名、素描、诗句等内容的空白书籍）中借来的，最初被有意作为拉丁语词汇使用。
+                词源学：早期 17 世纪：源自拉丁语“albus”（意即“白色”）的中性单词“album”，原意为“白板”。该词是从拉丁语短语“album amicorum”（意即“好友相册”，一种可收集亲笔签名、素描、诗句等内容的空白书籍）中借来的，最初被有意作为拉丁语词汇使用。
 
-            记忆方法：{how_to_remember}
+                记忆方法：{how_to_remember}
 
-            同根词：
-            n. almanac 年历，历书
-            n. anthology 选集，文选
+                同根词：
+                n. almanac 年历，历书
+                n. anthology 选集，文选
 
-            近义词：record, collection, compilation
-            反义词：dispersal, disarray, disorder
+                近义词：record, collection, compilation
+                反义词：dispersal, disarray, disorder
 
-            常用短语：
-            1. White Album: 白色相簿
-            2. photo album: 写真集；相册；相簿
-            3. debut album: 首张专辑
+                常用短语：
+                1. White Album: 白色相簿
+                2. photo album: 写真集；相册；相簿
+                3. debut album: 首张专辑
 
-            例句：
-            1. Their new album is dynamite.
-            （他们的*新唱*引起轰动。）
-            2. I stuck the photos into an album.
-            （我把照片贴到*相册*上。）
-            """),
+                例句：
+                1. Their new album is dynamite.
+                （他们的*新唱*引起轰动。）
+                2. I stuck the photos into an album.
+                （我把照片贴到*相册*上。）
+                """
+            ),
 
-            chatMessagePair(userContent: "raven", assistantContent: """
-            发音：/ ˈreɪvən /
+            chatMessagePair(
+                userContent: "raven",
+                assistantContent: """
+                发音：/ ˈreɪvən /
 
-            n. 掠夺，劫掠；大乌鸦
-            adj. 乌黑的
-            vt. 掠夺；狼吞虎咽
-            vi. 掠夺；狼吞虎咽
+                n. 掠夺，劫掠；大乌鸦
+                adj. 乌黑的
+                vt. 掠夺；狼吞虎咽
+                vi. 掠夺；狼吞虎咽
 
-            时态：
-            复数：ravens
-            第三人称单数：ravens
-            现在分词：ravening
-            过去式：ravened
-            过去分词：ravened
+                时态：
+                复数：ravens
+                第三人称单数：ravens
+                现在分词：ravening
+                过去式：ravened
+                过去分词：ravened
 
-            解释：{explanation}
+                解释：{explanation}
 
-            词源学：{etymology}
+                词源学：{etymology}
 
-            记忆方法：{how_to_remember}
+                记忆方法：{how_to_remember}
 
-            同根词：
-            n. ravage 蹂躏，破坏
-            vi. ravage 毁坏；掠夺
-            vt. ravage 毁坏；破坏；掠夺
-            adj. ravenous 贪婪的；渴望的；狼吞虎咽的
+                同根词：
+                n. ravage 蹂躏，破坏
+                vi. ravage 毁坏；掠夺
+                vt. ravage 毁坏；破坏；掠夺
+                adj. ravenous 贪婪的；渴望的；狼吞虎咽的
 
-            近义词：seize, blackbird
-            反义词：protect, guard, defend
+                近义词：seize, blackbird
+                反义词：protect, guard, defend
 
-            常用短语：
-            1. Raven paradox: 乌鸦悖论
-            2. raven hair: 乌黑的头发
-            3. The Raven: 乌鸦；魔鸟
+                常用短语：
+                1. Raven paradox: 乌鸦悖论
+                2. raven hair: 乌黑的头发
+                3. The Raven: 乌鸦；魔鸟
 
-            例句：
-            1. She has long raven hair.
-            （她有一头*乌黑的*长头发。）
-            2. The raven is often associated with death and the supernatural.
-            （*乌鸦*常常与死亡和超自然现象联系在一起。）
-            """),
+                例句：
+                1. She has long raven hair.
+                （她有一头*乌黑的*长头发。）
+                2. The raven is often associated with death and the supernatural.
+                （*乌鸦*常常与死亡和超自然现象联系在一起。）
+                """
+            ),
 
-            chatMessagePair(userContent: "js", assistantContent: """
-            Pronunciation: {Pronunciation}
+            chatMessagePair(
+                userContent: "js",
+                assistantContent: """
+                Pronunciation: {Pronunciation}
 
-            n. JavaScript 的缩写，一种直译式脚本语言。
+                n. JavaScript 的缩写，一种直译式脚本语言。
 
-            Explanation: {Explanation}
+                Explanation: {Explanation}
 
-            Etymology: {Etymology}
+                Etymology: {Etymology}
 
-            Synonym: {Synonym}
+                Synonym: {Synonym}
 
-            Phrases: {Phrases}
+                Phrases: {Phrases}
 
-            Example Sentences: {Example_Sentences}
-            """),
+                Example Sentences: {Example_Sentences}
+                """
+            ),
         ].flatMap { $0 }
 
-        let englishFewShot: [[String: String]] = [
+        let englishFewShot: [ChatMessage] = [
             chatMessagePair(
                 userContent: """
                 Using English:
@@ -700,33 +732,34 @@ extension LLMStreamService {
                 """
             ),
 
-            chatMessagePair(userContent: "acg", assistantContent: """
-            Pronunciation: xxx
+            chatMessagePair(
+                userContent: "acg",
+                assistantContent: """
+                Pronunciation: xxx
 
-            n. acg: Animation, Comic, Game
+                n. acg: Animation, Comic, Game
 
-            Explanation: xxx
+                Explanation: xxx
 
-            Etymology: xxx
+                Etymology: xxx
 
-            How to remember: xxx
+                How to remember: xxx
 
-            Cognates: xxx
+                Cognates: xxx
 
-            Synonyms: xxx
-            Antonyms: xxx
+                Synonyms: xxx
+                Antonyms: xxx
 
-            Phrases: xxx
+                Phrases: xxx
 
-            Example Sentences: xxx
-            """),
+                Example Sentences: xxx
+                """
+            ),
         ].flatMap { $0 }
 
-        let systemMessages = enableSystemPrompt ?
-            [chatMessage(role: .system, content: LLMStreamService.dictSystemPrompt)]
+        var messages: [ChatMessage] = enableSystemPrompt
+            ? [ChatMessage(role: .system, content: LLMStreamService.dictSystemPrompt)]
             : []
-
-        var messages = systemMessages
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
@@ -734,67 +767,28 @@ extension LLMStreamService {
             messages += englishFewShot
         }
 
-        let userMessage = chatMessage(role: .user, content: prompt)
+        let userMessage: ChatMessage = .init(role: .user, content: prompt)
         messages.append(userMessage)
 
         return messages
-    }
-
-    private func systemMessage(queryType: EZQueryTextType) -> [String: String] {
-        switch queryType {
-        case .dictionary:
-            chatMessage(role: .system, content: LLMStreamService.dictSystemPrompt)
-        default:
-            chatMessage(role: .system, content: LLMStreamService.translationSystemPrompt)
-        }
-    }
-
-    func chatMessage(role: ChatRole, content: String) -> [String: String] {
-        [
-            "role": role.rawValue,
-            "content": content,
-        ]
-    }
-
-    func chatMessagePair(userContent: String, assistantContent: String) -> [[String: String]] {
-        [
-            chatMessage(role: .user, content: userContent),
-            chatMessage(role: .assistant, content: assistantContent),
-        ]
     }
 }
 
 extension Language {
     var queryLanguageName: String {
-        let languageName = switch self {
-        case .classicalChinese:
-            "简体中文文言文"
-        case .simplifiedChinese:
-            "简体中文白话文"
-        case .traditionalChinese:
-            "繁体中文白话文"
-        default:
-            rawValue
-        }
+        let languageName =
+            switch self {
+            case .classicalChinese:
+                "简体中文文言文"
+            case .simplifiedChinese:
+                "简体中文白话文"
+            case .traditionalChinese:
+                "繁体中文白话文"
+            default:
+                rawValue
+            }
         return languageName
     }
-}
-
-// MARK: - ChatRole
-
-enum ChatRole: String, Codable, Equatable, CaseIterable {
-    case system
-    case user
-    case assistant
-    case tool
-    case model // Gemini role, equal to OpenAI assistant role.
-}
-
-// MARK: - AIToolType
-
-enum AIToolType {
-    case polishing
-    case summary
 }
 
 // swiftlint:enable all
