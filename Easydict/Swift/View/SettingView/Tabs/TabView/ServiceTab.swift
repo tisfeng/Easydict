@@ -222,12 +222,15 @@ private struct ServiceItemView: View {
         }
         .onReceive(serviceItemViewModel.$isEnable) { newValue in
             guard service.enabled != newValue else { return }
-            service.enabled = newValue
+            // open service
             if newValue {
-                service.enabledQuery = newValue
+                // validate service enabled
+                handleValidateServiceEnable(isEnable: true)
+            } else { // close service
+                service.enabled = false
+                EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+                viewModel.postUpdateServiceNotification()
             }
-            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
-            viewModel.postUpdateServiceNotification()
         }
         .toggleStyle(.switch)
         .controlSize(.small)
@@ -235,6 +238,32 @@ private struct ServiceItemView: View {
         .listRowInsets(.init())
         .padding(.horizontal, 8)
         .padding(.vertical, 12)
+    }
+    
+    func handleValidateServiceEnable(isEnable: Bool) {
+        
+        service.validate { result, error in
+            // Validate existence error
+            guard error == nil else {
+                // close switch
+                serviceItemViewModel.isEnable = false
+                logInfo("\(service.serviceType().rawValue) validate error")
+                return
+            }
+    
+            // If error is nil but result text is also empty, we should report error.
+            guard let translatedText = result.translatedText, !translatedText.isEmpty else {
+                serviceItemViewModel.isEnable = false
+                logInfo("\(service.serviceType().rawValue) validate translated text is empty")
+                return
+            }
+            
+            // service enabel open the switch and toggle enable status
+            service.enabled = isEnable
+            service.enabledQuery = isEnable
+            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+            viewModel.postUpdateServiceNotification()
+        }
     }
 
     // MARK: Private
