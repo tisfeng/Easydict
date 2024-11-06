@@ -170,6 +170,34 @@ private class ServiceItemViewModel: ObservableObject {
         )
     }
 
+    // MARK: Public
+
+    public func handleValidateServiceEnable(isEnable: Bool) {
+        service.validate { [weak self] result, error in
+            guard let self = self else { return }
+            // Validate existence error
+            guard error == nil else {
+                // close switch
+                self.isEnable = false
+                logInfo("\(self.service.serviceType().rawValue) validate error")
+                return
+            }
+
+            // If error is nil but result text is also empty, we should report error.
+            guard let translatedText = result.translatedText, !translatedText.isEmpty else {
+                self.isEnable = false
+                logInfo("\(self.service.serviceType().rawValue) validate translated text is empty")
+                return
+            }
+
+            // service enabel open the switch and toggle enable status
+            self.service.enabled = isEnable
+            self.service.enabledQuery = isEnable
+            EZLocalStorage.shared().setService(self.service, windowType: self.serviceTabViewModel.windowType)
+            self.serviceTabViewModel.postUpdateServiceNotification()
+        }
+    }
+
     // MARK: Internal
 
     let service: QueryService
@@ -180,6 +208,8 @@ private class ServiceItemViewModel: ObservableObject {
     // MARK: Private
 
     private var cancellables: [AnyCancellable] = []
+
+    @EnvironmentObject private var serviceTabViewModel: ServiceTabViewModel
 
     private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
         NotificationCenter.default
@@ -225,7 +255,7 @@ private struct ServiceItemView: View {
             // open service
             if newValue {
                 // validate service enabled
-                handleValidateServiceEnable(isEnable: true)
+                serviceItemViewModel.handleValidateServiceEnable(isEnable: true)
             } else { // close service
                 service.enabled = false
                 EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
@@ -238,32 +268,6 @@ private struct ServiceItemView: View {
         .listRowInsets(.init())
         .padding(.horizontal, 8)
         .padding(.vertical, 12)
-    }
-    
-    func handleValidateServiceEnable(isEnable: Bool) {
-        
-        service.validate { result, error in
-            // Validate existence error
-            guard error == nil else {
-                // close switch
-                serviceItemViewModel.isEnable = false
-                logInfo("\(service.serviceType().rawValue) validate error")
-                return
-            }
-    
-            // If error is nil but result text is also empty, we should report error.
-            guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                serviceItemViewModel.isEnable = false
-                logInfo("\(service.serviceType().rawValue) validate translated text is empty")
-                return
-            }
-            
-            // service enabel open the switch and toggle enable status
-            service.enabled = isEnable
-            service.enabledQuery = isEnable
-            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
-            viewModel.postUpdateServiceNotification()
-        }
     }
 
     // MARK: Private
