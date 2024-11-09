@@ -1568,7 +1568,6 @@
 				03BDA7982A26DA000079D04F /* Libraries */,
 				038954372A25A94E00EFFDC3 /* Utility */,
 				03B0228629231FA6001C7E63 /* DarkMode */,
-				03B0228E29231FA6001C7E63 /* Snip */,
 				03B022A529231FA6001C7E63 /* MMKit */,
 			);
 			path = objc;
@@ -1969,6 +1968,7 @@
 		03BDA7982A26DA000079D04F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				03B0228E29231FA6001C7E63 /* Snip */,
 				033C30F82A7409C40095926A /* DictionaryKit */,
 				0361966B2A000E7800806370 /* FWEncryptorAES */,
 				03BDA7992A26DA280079D04F /* ArgumentParser */,
