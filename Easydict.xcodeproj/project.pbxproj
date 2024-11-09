@@ -3658,10 +3658,10 @@
 		};
 		030D61212CD93CED000DF298 /* XCRemoteSwiftPackageReference "AcknowList" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/vtourraine/AcknowList";
+			repositoryURL = "https://github.com/tisfeng/AcknowList";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.2.0;
+				branch = dev;
+				kind = branch;
 			};
 		};
 		033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */ = {

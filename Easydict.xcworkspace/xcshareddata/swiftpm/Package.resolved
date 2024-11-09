@@ -1,5 +1,5 @@
 {
-  "originHash" : "8a8610a73745e43b0f623c6e4a87f7f10a7a88d914f771786f6ecb647a6bd637",
+  "originHash" : "6b2d9735092da5c9bc9b0a4954947f373d68f35b0939813ad8f54d785301c35e",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -13,10 +13,10 @@
     {
       "identity" : "acknowlist",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vtourraine/AcknowList",
+      "location" : "https://github.com/tisfeng/AcknowList",
       "state" : {
-        "revision" : "125ff1915a639bf7d97471a4d5ae16765d0c50f2",
-        "version" : "3.2.0"
+        "branch" : "dev",
+        "revision" : "8c782e03bb38367507e2f69a32bbfc0db68b6444"
       }
     },
     {
