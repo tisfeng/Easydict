@@ -22,38 +22,41 @@ struct AcknowListView: View {
 
     var body: some View {
         NavigationStack {
-            AcknowListSwiftUIView(acknowledgements: acknowledgements)
+            AcknowListSwiftUIView(acknowList: acknowList)
         }
     }
 
     // MARK: Private
 
-    @State private var acknowledgements: [Acknow] = []
+    @State private var acknowList: AcknowList?
 
     private mutating func loadPackageInfo() {
-        var allAcknowledgements: [Acknow] = []
+        var acknowList = AcknowParser.defaultAcknowList()
 
-        // Load SPM dependencies
-        if let url = Bundle.main.url(forResource: "Package", withExtension: "resolved"),
-           let data = try? Data(contentsOf: url),
-           let spmList = try? AcknowPackageDecoder().decode(from: data) {
-            allAcknowledgements.append(contentsOf: spmList.acknowledgements)
-        }
+        // Manual acknow list
+        let manualAcknowList: [Acknow] = [
+            .init(
+                title: "DictionaryKit",
+                repository: URL(string: "https://github.com/NSHipster/DictionaryKit.git")!
+            ),
+            .init(
+                title: "ArgumentParser",
+                repository: URL(string: "https://github.com/mysteriouspants/ArgumentParser")!
+            ),
+            .init(
+                title: "CoolToast",
+                repository: URL(string: "https://github.com/socoolby/CoolToast")!
+            ),
+            .init(
+                title: "Snip",
+                repository: URL(string: "https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac")!
+            ),
+        ]
 
-        // Load CocoaPods dependencies
-        if let url = Bundle.main.url(
-            forResource: "Pods-Easydict-acknowledgements", withExtension: "plist"
-        ),
-            let data = try? Data(contentsOf: url),
-            let podList = try? AcknowPodDecoder().decode(from: data) {
-            allAcknowledgements.append(contentsOf: podList.acknowledgements)
-        }
-
-        // Sort by name
-        allAcknowledgements.sort { $0.title.lowercased() < $1.title.lowercased() }
+        acknowList?.acknowledgements += manualAcknowList
 
         // Update state
-        _acknowledgements = State(initialValue: allAcknowledgements)
+        _acknowList = State(initialValue: acknowList)
     }
 }
 
