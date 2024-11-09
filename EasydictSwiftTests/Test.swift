@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import SelectedTextKit
 import Testing
 import Translation
 
@@ -61,4 +62,25 @@ import Translation
 
 @Test func setAlertVolume() async throws {
     try await AppleScriptTask.setAlertVolume(50)
+}
+
+@Test func testGetSelectedText() async {
+    // Run thousands of times to test crash.
+    for i in 0..<2000 {
+        print("test index: \(i)")
+        let selectedText = await (try? getSelectedText()) ?? ""
+        print("\(i) selectedText: \(selectedText)")
+    }
+}
+
+@Test func testConcurrentGetSelectedText() async throws {
+    await withTaskGroup(of: Void.self) { group in
+        for i in 0..<2000 {
+            group.addTask {
+                print("test index: \(i)")
+                let selectedText = (try? await getSelectedText()) ?? ""
+                print("\(i) selectedText: \(selectedText)")
+            }
+        }
+    }
 }
