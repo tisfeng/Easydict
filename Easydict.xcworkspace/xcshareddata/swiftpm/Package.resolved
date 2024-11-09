@@ -1,5 +1,5 @@
 {
-  "originHash" : "f2964e0e4e5c324c85b7a1286e21567873fba063dfd3e08dc9a347c992ec4a35",
+  "originHash" : "8a8610a73745e43b0f623c6e4a87f7f10a7a88d914f771786f6ecb647a6bd637",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -285,8 +285,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/microsoft/PLCrashReporter.git",
       "state" : {
-        "revision" : "1aed8f7dc79ce8e674c61e430ef51ca3db18cea9",
-        "version" : "1.11.1"
+        "revision" : "6752f71de206f6a53fa6a758c3660fd9a7fe7527",
+        "version" : "1.11.2"
       }
     },
     {
