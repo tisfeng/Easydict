@@ -15,8 +15,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/AcknowList",
       "state" : {
-        "branch" : "dev",
-        "revision" : "8c782e03bb38367507e2f69a32bbfc0db68b6444"
+        "revision" : "6a7af0bb6ec82f77e2835b290c7e4fe950b8f7d8"
       }
     },
     {
