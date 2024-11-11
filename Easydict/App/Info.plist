@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Easydict requires permission to execute AppleScript.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -52,8 +54,6 @@
 	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2023-2024 tisfeng. All rights reserved.</string>
-	<key>NSMainStoryboardFile</key>
-	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>

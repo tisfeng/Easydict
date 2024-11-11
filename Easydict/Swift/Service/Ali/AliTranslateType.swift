@@ -6,8 +6,6 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import Foundation
 
 struct AliTranslateType: Equatable {
@@ -103,5 +101,3 @@ struct AliTranslateType: Equatable {
         return AliTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
     }
 }
-
-// swiftlint:enable all

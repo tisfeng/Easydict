@@ -10,7 +10,7 @@
 #import "EZYoudaoTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+EZUtils.h"
-#import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
@@ -345,9 +345,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 EZLanguage googleTo = to;
                 
                 result.raw = responseObject;
-                result.queryText = text;
-                result.from = googleFrom;
-                result.to = googleTo;
                 result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                 
                 EZTranslateWordResult *wordResult;
@@ -695,10 +692,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 }
                 
                 EZLanguage googleTo = to;
-                
-                result.queryText = text;
-                result.from = googleFrom;
-                result.to = googleTo;
                 result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                 
                 // 普通释义

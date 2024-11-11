@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512@2x.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
 <p align="center"> 
@@ -71,7 +71,7 @@
 - [语种识别](#语种识别)
 - [TTS 服务](#tts-服务)
 - [查询服务](#查询服务)
-  - [  各个服务支持的语言 ](#--各个服务支持的语言-)
+  - [各个服务支持的语言](#各个服务支持的语言)
   - [🍎 苹果系统词典](#-苹果系统词典)
   - [OpenAI 翻译](#openai-翻译)
     - [配置个人的 APIKey](#配置个人的-apikey)
@@ -244,7 +244,14 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 > [!NOTE]
 > Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
-### <details> <summary> 各个服务支持的语言 </summary>
+
+<details>
+<summary> 
+
+### 各个服务支持的语言 
+
+</summary>
+
 
 <p>
 
@@ -261,7 +268,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 |   意大利语   |    ✅    |     ✅      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
 |     德语     |    ✅    |     ✅      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
 |     俄语     |    ✅    |     ✅      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
-|   阿拉伯语   |    ✅    |     ✅      |     ❌     |    ✅    |     ✅      |    ✅    |    ✅    |
+|   阿拉伯语   |    ✅    |     ✅      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
 |    瑞典语    |    ❌    |     ❌      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
 |  罗马尼亚语  |    ❌    |     ❌      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
 |     泰语     |    ✅    |     ✅      |     ❌     |    ✅    |     ✅      |    ✅    |    ✅    |
@@ -781,7 +788,7 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 
 如果发电量足够，能够 Cover 苹果的 $99 年费，我会注册一个开发者账号，以解决应用[签名问题](https://github.com/tisfeng/Easydict/issues/2)，让更多人能够方便地使用 Easydict。
 
-<a href="https://afdian.net/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
+<a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
@@ -859,6 +866,26 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2024-04-12 | 奥雷里亚诺 | 50 | 界面精致，而且帮我节约了不少时间 |
 | 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
 | 2024-05-11 |  | 35 | 感谢开源和持续更新！ |
+| 2024-05-29 | 天色晚晚 | 10 | 项目很用心！感谢！！！ |
+| 2024-06-06 | 天不发火的老虎 | 5 | 很赞，继续加油 |
+| 2024-06-08 | MLeo | 10 | 感谢免费开源，快捷好用。 |
+| 2024-06-12 | Sacri | 10 | 学生，这个学英语太方便了，谢谢你 |
+| 2024-06-24 | 迦南 | 10 | 大佬辛苦了💦 |
+| 2024-07-07 | Javen Fang | 100 | 感谢！建议支持 Claude。(这个可以有) |
+| 2024-07-11 |  | 6.6.6 | 希望大佬看下 Issues 最新问题 |
+| 2024-07-12 | callxm | 3 | 世上应存在免费开源 bob，大义！ |
+| 2024-07-31 |  | 5 | 谢谢！非常好的软件！你们太厉害啦 |
+| 2024-08-05 | succulent | 20 | 感谢老哥，easydict 很好用 |
+| 2024-08-08 | 须尽欢 | 20 | 感谢开源 感谢更新 |
+| 2024-08-14 | 장철 | 5 | 中韩翻译可以添加 papago 吗？（我没用这个翻译，等有缘人 PR）|
+| 2024-08-15 |  | 5 | 感恩！|
+| 2024-08-20 | Ishmael | 50 |  |
+| 2024-08-28 | Rich Coinu | 5 | 希望你越来越好 |
+| 2024-08-29 | 迦南 | 10 | 请大佬喝冰可乐🥤 |
+| 2024-08-30 | Benjamin | 10 | 感谢开源，辛苦了，在校生支持了 |
+| 2024-09-24 |  | 100 |  |
+| 2024-09-25 | 噗啦啦啦 | 20 | 真是太棒啦，非常喜欢  伟大的！ |
+| 2024-10-14 | Y&T | 10 | 感谢开源 非常好用！！！ |
 
 </p>
 

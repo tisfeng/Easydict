@@ -44,8 +44,11 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeCaiyun;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeTencent;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeAli;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeAlibaba;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGemini;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeOllama;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypePolishing;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeSummary;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
@@ -85,6 +88,7 @@ typedef NSString *EZSelectTextType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAccessibility;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulatedKey; // Cmd+C
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAppleScript;
+FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeMenuBarActionCopy;
 
 
 /// Action trigger type

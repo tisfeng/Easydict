@@ -8,7 +8,7 @@
 
 #import "EZLanguageManager.h"
 #import "EZAppleService.h"
-#import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @interface EZLanguageManager ()
 
@@ -348,7 +348,7 @@ static EZLanguageManager *_instance;
 /// Get language local name, Chinese -> 中文, English -> English.
 - (NSString *)languageLocalName:(EZLanguage)language {
     EZLanguageModel *lang = [[EZLanguageModel allLanguagesDict] objectForKey:language];
-    return lang.localName;
+    return lang.nativeName;
 }
 
 /// Showing language name according user first language, Chinese: English -> 英语, English: English -> English.

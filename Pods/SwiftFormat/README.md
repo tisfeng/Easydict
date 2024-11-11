@@ -22,6 +22,7 @@ Table of Contents
     - [Sublime Text plugin](#sublime-text-plugin)
     - [Nova plugin](nova-plugin)
     - [Git pre-commit hook](#git-pre-commit-hook)
+    - [GitHub Actions](#github-actions)
     - [On CI using Danger](#on-ci-using-danger)
     - [Bazel build](#bazel-build)
     - [Docker](#docker)
@@ -110,7 +111,7 @@ Another option is to include the binary artifactbundle in your `Package.swift`:
 ```swift
 .binaryTarget(
     name: "swiftformat",
-    url: "https://github.com/nicklockwood/SwiftFormat/releases/download/0.49.12/swiftformat-macos.artifactbundle.zip",
+    url: "https://github.com/nicklockwood/SwiftFormat/releases/download/0.53.9/swiftformat-macos.artifactbundle.zip",
     checksum: "CHECKSUM"
 ),
 ``` 
@@ -251,7 +252,7 @@ let package = Package(
     name: "BuildTools",
     platforms: [.macOS(.v10_11)],
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.49.0"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
     ],
     targets: [.target(name: "BuildTools", path: "")]
 )
@@ -285,7 +286,7 @@ You can also use `swift run -c release --package-path BuildTools swiftformat "$S
 1. Add the `swiftformat` binary to your project directory via [CocoaPods](https://cocoapods.org/), by adding the following line to your Podfile then running `pod install`:
 
     ```ruby
-    pod 'SwiftFormat/CLI', '~> 0.49'
+    pod 'SwiftFormat/CLI', '~> 0.54'
     ```
 
 **NOTE:** This will only install the pre-built command-line app, not the source code for the SwiftFormat framework.
@@ -353,7 +354,7 @@ You can use `SwiftFormat` as a SwiftPM command plugin.
 ```swift
 dependencies: [
     // ...
-    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.50.4"),
+    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
 ]
 ```
 
@@ -444,6 +445,25 @@ The pre-commit hook will now run whenever you run `git commit`. Running `git com
 **NOTE:** If you are using Git via a GUI client such as [Tower](https://www.git-tower.com), [additional steps](https://www.git-tower.com/help/mac/faq-and-tips/faq/hook-scripts) may be needed.
 
 **NOTE (2):** Unlike the Xcode build phase approach, git pre-commit hook won't be checked in to source control, and there's no way to guarantee that all users of the project are using the same version of SwiftFormat. For a collaborative project, you might want to consider a *post*-commit hook instead, which would run on your continuous integration server.
+
+GitHub Actions
+---------------------
+
+1. SwiftFormat comes preinstalled on all macOS GitHub-hosted runners. If you are self hosting you will need to ensure SwiftFormat is installed on your runner.
+2. Create a GitHub Actions workflow using SwiftFormat, passing the `--reporter github-actions-log` command line option. The following example action lints pull requests using SwiftFormat, reporting warnings using the GitHub Actions log.
+```yaml
+# Lint.yml
+name: Lint
+on: pull_request
+
+jobs:
+  Lint:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: SwiftFormat
+        run: swiftformat --lint . --reporter github-actions-log
+```
 
 On CI using Danger
 -------------------
@@ -635,7 +655,7 @@ The preferred option is to add a `.swift-version` file to your project directory
 
 The `.swift-version` file applies hierarchically; If you have submodules in your project that use a different Swift version, you can add separate `.swift-version` files to those directories.
 
-The other option to specify the Swift version using the `--swiftversion` command line argument. Note that this will be overridden by any `.swift-version` files encountered while processing.
+The other option to specify the Swift version using the `--swiftversion` command line argument. Note that this will be overridden by any `.swift-version` files encountered while processing. You can also add the `--swiftversion` option to your `.swiftformat` file.
 
 
 Config file
@@ -761,7 +781,7 @@ Error codes
 The swiftformat command-line tool will always exit with one of the following codes:
 
 * 0 - Success. This code will be returned in the event of a successful formatting run or if `--lint` detects no violations.
-* 1 - Lint failure. This code will be returned only when running in `--lint` mode if the input requires formatting.
+* 1 - Lint failure. This code will be returned when running in `--lint` mode, or when autocorrecting in `--strict` mode, if the input requires formatting.
 * 70 - Program error. This code will be returned if there is a problem with the input or configuration arguments.
 
 
@@ -806,6 +826,8 @@ It is common practice to include the file name, creation date and/or the current
 * `{file}` - the name of the file
 * `{year}` - the current year
 * `{created}` - the date on which the file was created
+* `{created.name}` - the name of the user who first committed the file
+* `{created.email}` - the email of the user who first committed the file 
 * `{created.year}` - the year in which the file was created
 
 For example, a header template of:
@@ -822,7 +844,7 @@ Will be formatted as:
 // Created by John Smith on 01/02/2016.
 ```
 
-**NOTE:** the `{year}` value and `{created}` date format are determined from the current locale and timezone of the machine running the script.
+**NOTE:** the `{year}` value and `{created}` date format are determined from the current locale and timezone of the machine running the script. `{created.name}` and `{created.email}` requires the project to be version controlled by git.
 
 
 FAQ
@@ -927,7 +949,7 @@ Known issues
 
 * When running a version of SwiftFormat built using Xcode 10.2 on macOS 10.14.3 or earlier, you may experience a crash with the error "dyld: Library not loaded: @rpath/libswiftCore.dylib". To fix this, you need to install the [Swift 5 Runtime Support for Command Line Tools](https://support.apple.com/kb/DL1998). These tools are included by default in macOS 10.14.4 and later.
 
-* If you have a generic typealias that defines a closure (e.g. `typealias ResultCompletion<T> = (Result<T, Error>) -> Void`) and use this closure as an argument in a generic function (e.g. `func handle<T: Decodable>(_ completion: ResultCompletion<T>)`), the `opaqueGenericParameters` rule may update the function definition to use `some` syntax (e.g. `func handle(_ completion: ResultCompletion<some Decodable>)`). `some` syntax is not permitted in closure parameters, so this will no longer compile. Workarounds include spelling out the closure explicitly in the generic function (instead of using a `typealias`) or disabling the `opaqueGenericParameters` rule (e.g. with `// swiftformat:next:disable opaqueGenericParameters`).
+* If you have a generic typealias that defines a closure (e.g. `typealias ResultCompletion<T> = (Result<T, Error>) -> Void`) and use this closure as an argument in a generic function (e.g. `func handle<T: Decodable>(_ completion: ResultCompletion<T>)`), the `opaqueGenericParameters` rule may update the function definition to use `some` syntax (e.g. `func handle(_ completion: ResultCompletion<some Decodable>)`). `some` syntax is not permitted in closure parameters, so this will no longer compile. Workarounds include spelling out the closure explicitly in the generic function (instead of using a `typealias`) or disabling the `opaqueGenericParameters` rule (e.g. with `// swiftformat:disable:next opaqueGenericParameters`).
 
 * If compiling for macOS with Xcode 14.0 and configuring SwiftFormat with `--swift-version 5.7`, the `genericExtensions` rule may cause a build failure by updating extensions of the format `extension Collection where Element == Foo` to `extension Collection<Foo>`. This fails to compile for macOS in Xcode 14.0, because the macOS SDK in that version of Xcode [does not include](https://forums.swift.org/t/xcode-14-rc-cannot-specialize-protocol-type/60171) the Swift 5.7 standard library. Workarounds include using `--swift-version 5.6` instead, updating to Xcode 14.1+, or disabling the `genericExtensions` rule (e.g. with `// swiftformat:next:disable genericExtensions`).
 
@@ -943,6 +965,7 @@ SwiftFormat is not a commercially-funded product, it's a labor of love given fre
 Credits
 ------------
 
+* [Cal Stephens](https://github.com/calda) - Numerous new formatting rules, options and bug fixes
 * [Tony Arnold](https://github.com/tonyarnold) - SwiftFormat for Xcode
 * [Vincent Bernier](https://github.com/vinceburn) - SwiftFormat for Xcode settings UI
 * [Vikram Kriplaney](https://github.com/markiv) - SwiftFormat for Xcode icon and search feature
@@ -950,7 +973,6 @@ Credits
 * [Maxime Marinel](https://github.com/bourvill) - Git pre-commit hook script
 * [Romain Pouclet](https://github.com/palleas) - Homebrew formula
 * [Aerobounce](https://github.com/aerobounce) - Homebrew cask and Sublime Text plugin
-* [Cal Stephens](https://github.com/calda) - Several new formatting rules and options
 * [Facundo Menzella](https://github.com/facumenzella) - Several new formatting rules and options
 * [Ali Akhtarzada](https://github.com/aliak00) - Several path-related CLI enhancements
 * [Yonas Kolb](https://github.com/yonaskolb) - Swift Package Manager integration
@@ -967,6 +989,7 @@ Credits
 * [Saleem Abdulrasool](https://github.com/compnerd) - Windows build workflow
 * [Arthur Semenyutin](https://github.com/vox-humana) - Docker image
 * [Marco Eidinger](https://github.com/MarcoEidinger) - Swift Package Manager plugin
+* [Hampus Tågerud](https://github.com/hampustagerud) - Git integration for fileHeader rule
 * [Nick Lockwood](https://github.com/nicklockwood) - Everything else
 
 ([Full list of contributors](https://github.com/nicklockwood/SwiftFormat/graphs/contributors))

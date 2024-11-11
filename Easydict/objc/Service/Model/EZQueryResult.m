@@ -158,6 +158,10 @@ NSString *getPartAbbreviation(NSString *part) {
 @end
 
 
+@interface EZTranslateSimpleWord ()
+@property (nonatomic, copy) NSString *meansText;
+@end
+
 @implementation EZTranslateSimpleWord : NSObject
 
 - (void)setPart:(NSString *)part {
@@ -255,7 +259,7 @@ NSString *getPartAbbreviation(NSString *part) {
     self.translatedResults = nil;
     self.wordResult = nil;
     self.error = nil;
-    self.serviceType = EZServiceTypeYoudao;
+    self.serviceTypeWithUniqueIdentifier = EZServiceTypeYoudao;
     [self.service.audioPlayer stop];
     self.service = nil;
     self.isShowing = NO;
@@ -282,6 +286,12 @@ NSString *getPartAbbreviation(NSString *part) {
 
 - (void)convertToTraditionalChineseResult {
     self.translatedResults = [self.translatedResults toTraditionalChineseTexts];
+}
+
+#pragma mark - MJExtension
+
++ (NSArray *)mj_ignoredPropertyNames {
+    return @[ @"service" ];
 }
 
 @end

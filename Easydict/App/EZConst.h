@@ -29,7 +29,7 @@ static CGFloat const EZAudioButtonRightPadding_1 = 1;
 static NSString *const EZBundleId = @"com.izual.Easydict";
 static NSString *const EZDebugBundleId = @"com.izual.Easydict-debug";
 
-
+/// tisfeng/Easydict
 static NSString *const EZGithubRepoEasydict = @"tisfeng/Easydict";
 static NSString *const EZGithubRepoEasydictURL = @"https://github.com/tisfeng/Easydict";
 
@@ -55,5 +55,7 @@ static NSInteger const EZMaxFiveWordSynonymCount = 5;
 static CGFloat const EZGetClipboardTextDelayTime = 0.1;
 
 static NSString *const EZOpenSettingsNotification = @"EZOpenSettingsNotification";
+
+static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 
 #endif /* EZConst_h */

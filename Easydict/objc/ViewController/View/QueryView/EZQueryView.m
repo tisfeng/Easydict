@@ -16,8 +16,8 @@
 #import "EZDetectLanguageButton.h"
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
-#import "EZConfiguration.h"
 #import "NSImage+EZSymbolmage.h"
+#import "Easydict-Swift.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -83,9 +83,11 @@
             self.pasteTextBlock(text);
         }
     }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
-        mm_strongify(self);
+
+    [[NSNotificationCenter defaultCenter] addObserverForName:NSNotification.didChangeFontSize
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification * _Nonnull notification) {
         self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
     }];
     
@@ -304,8 +306,8 @@
     [self updateButtonsDisplayState:queryText];
 }
 
-- (void)setWindowType:(EZWindowType)windowType {
-    [super setWindowType:windowType];
+- (void)setAssociatedWindowType:(EZWindowType)windowType {
+    [super setAssociatedWindowType:windowType];
     
     if (windowType == EZWindowTypeMini) {
         self.textView.customParagraphSpacing = FLT_MIN; // minimum positive float value.
@@ -505,7 +507,7 @@
 }
 
 - (void)updateCustomLayout {
-    EZWindowType windowType = self.windowType;
+    EZWindowType windowType = self.associatedWindowType;
     
     self.textViewMinHeight = [EZLayoutManager.shared inputViewMinHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];

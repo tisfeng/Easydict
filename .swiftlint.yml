@@ -24,6 +24,7 @@ disabled_rules:
   - force_try
   - large_tuple
   - todo
+  - no_fallthrough_only
 
 opt_in_rules:
   - convenience_type
@@ -33,6 +34,7 @@ opt_in_rules:
 line_length:
   warning: 120
   ignores_comments: true
+  ignores_interpolated_strings: true
 function_body_length:
   warning: 120
   error: 400
@@ -48,7 +50,8 @@ type_name:
     warning: 50
     error: 50
 identifier_name:
-  min_length: 3
+  min_length: 2
+  max_length: 50
   excluded: # excluded via string array
     - id
     - URL
@@ -58,6 +61,7 @@ identifier_name:
     - i
     - j
     - Defaults # Make use of `SwiftyUserDefaults`
+    - to
 reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
 trailing_comma:
   severity: warning

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)shared;
 
-- (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)langString;
+- (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)appleLanguage;
 - (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)lang;
 
 - (NSSpeechSynthesizer *)playTextAudio:(NSString *)text textLanguage:(EZLanguage)fromLanguage;

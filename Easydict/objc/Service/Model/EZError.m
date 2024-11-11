@@ -78,7 +78,9 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
         case EZErrorTypeInsufficientQuota:
             errorString = NSLocalizedString(@"error_insufficient_quota", nil);
             break;
-            
+        case EZErrorTypeMissingAPIKey:
+            errorString = NSLocalizedString(@"error_missing_api_key", nil);
+            break;
         default:
             errorString = NSLocalizedString(@"error_unknown", nil);
             break;

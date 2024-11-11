@@ -12,15 +12,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ServiceTypes)
 @interface EZServiceTypes : NSObject
 
 @property (nonatomic, copy, readonly) NSArray<EZServiceType> *allServiceTypes;
+@property (nonatomic, copy, readonly) NSArray<NSString *> *allServiceTypeIDs;
 
 + (instancetype)shared;
 
-- (nullable EZQueryService *)serviceWithType:(EZServiceType)type;
+- (nullable EZQueryService *)serviceWithTypeId:(NSString *)typeIdIfHave;
 
-- (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<EZServiceType> *)types;
+- (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<NSString *> *)types;
 
 @end
 

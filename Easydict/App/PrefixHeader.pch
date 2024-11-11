@@ -39,4 +39,5 @@
 #import "EZConstKey.h"
 #import "NSString+EZConvenience.h"
 
-#import "Easydict-Swift.h"
+// It may cause compile error when using swift test.
+//#import "Easydict-Swift.h"

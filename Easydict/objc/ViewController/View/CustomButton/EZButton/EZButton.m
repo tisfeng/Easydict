@@ -39,6 +39,12 @@
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
+- (void)drawRect:(NSRect)dirtyRect {
+    NSRect originRect = self.bounds;
+    self.bounds = NSInsetRect(originRect, self.edgeInsets.left + self.edgeInsets.right, self.edgeInsets.top + self.edgeInsets.bottom);
+    [super drawRect:dirtyRect];
+    self.bounds = originRect;
+}
 
 #pragma mark - Mouse Actions
 

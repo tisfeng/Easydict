@@ -7,7 +7,7 @@
 //
 
 #import "EZWebViewManager.h"
-#import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
@@ -70,6 +70,12 @@ static NSString *kMethod = @"method";
     self.isLoaded = NO;
     self.needUpdateIframeHeight = NO;
     self.didFinishUpdatingIframeHeightBlock = nil;
+}
+
+#pragma mark - MJExtension
+
++ (NSArray *)mj_ignoredPropertyNames {
+    return @[ @"webView" ];
 }
 
 @end

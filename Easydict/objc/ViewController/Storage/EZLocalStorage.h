@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZServiceHasUpdatedNotification = @"EZServiceHasUpdatedNotification";
 static NSString *const EZWindowTypeKey = @"EZWindowTypeKey";
+static NSString *const EZAutoQueryKey = @"EZAutoQueryKey";
 
 @interface EZLocalStorage : NSObject
 
@@ -28,18 +29,19 @@ static NSString *const EZWindowTypeKey = @"EZWindowTypeKey";
 + (void)destroySharedInstance;
 
 
-- (NSArray<EZServiceType> *)allServiceTypes:(EZWindowType)windowType;
-- (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes windowType:(EZWindowType)windowType;
+- (NSArray<NSString *> *)allServiceTypes:(EZWindowType)windowType;
+- (void)setAllServiceTypes:(NSArray<NSString *> *)allServiceTypes windowType:(EZWindowType)windowType;
 
 - (NSArray<EZQueryService *> *)allServices:(EZWindowType)windowType;
-- (EZQueryService *)service:(EZServiceType)serviceType windowType:(EZWindowType)windowType;
+// pass service type with uuid to support service multi instance 
+- (EZQueryService *)service:(NSString *)serviceTypeId windowType:(EZWindowType)windowType;
 
-- (nullable EZServiceInfo *)serviceInfoWithType:(EZServiceType)type windowType:(EZWindowType)windowType;
+- (nullable EZServiceInfo *)serviceInfoWithType:(EZServiceType)type serviceId:(NSString *)serviceId windowType:(EZWindowType)windowType;
 - (void)setServiceInfo:(EZServiceInfo *)service windowType:(EZWindowType)windowType;
 
 - (void)setService:(EZQueryService *)service windowType:(EZWindowType)windowType;
 
-- (void)setEnabledQuery:(BOOL)enabledQuery serviceType:(EZServiceType)serviceType windowType:(EZWindowType)windowType;
+- (void)setEnabledQuery:(BOOL)enabledQuery serviceType:(EZServiceType)serviceType serviceId:(NSString *)serviceId windowType:(EZWindowType)windowType;
 
 - (void)increaseQueryCount:(NSString *)queryText;
 - (NSInteger)queryCount;

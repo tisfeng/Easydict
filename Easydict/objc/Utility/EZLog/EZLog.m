@@ -7,8 +7,8 @@
 //
 
 #import "EZLog.h"
-#import "EZConfiguration.h"
 #import "EZDeviceSystemInfo.h"
+#import "Easydict-Swift.h"
 
 @import FirebaseCore;
 @import FirebaseAnalytics;

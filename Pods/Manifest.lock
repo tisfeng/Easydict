@@ -15,10 +15,8 @@ PODS:
   - JLRoutes (2.1)
   - KVOController (1.2.0)
   - Masonry (1.1.0)
-  - MASPreferences (1.4.1)
-  - MASShortcut (2.4.0)
   - ReactiveObjC (3.1.1)
-  - SwiftFormat/CLI (0.53.2)
+  - SwiftFormat/CLI (0.54.0)
   - SwiftLint (0.54.0)
 
 DEPENDENCIES:
@@ -26,10 +24,8 @@ DEPENDENCIES:
   - JLRoutes (~> 2.1)
   - KVOController (~> 1.2.0)
   - Masonry (~> 1.1.0)
-  - MASPreferences (~> 1.4.1)
-  - "MASShortcut (from `git@github.com:AkaShark/MASShortcut.git`, branch `double_click_modifier`)"
   - ReactiveObjC (~> 3.1.1)
-  - SwiftFormat/CLI (~> 0.53.2)
+  - SwiftFormat/CLI (~> 0.54)
   - SwiftLint (~> 0.54.0)
 
 SPEC REPOS:
@@ -38,32 +34,19 @@ SPEC REPOS:
     - JLRoutes
     - KVOController
     - Masonry
-    - MASPreferences
     - ReactiveObjC
     - SwiftFormat
     - SwiftLint
-
-EXTERNAL SOURCES:
-  MASShortcut:
-    :branch: double_click_modifier
-    :git: "git@github.com:AkaShark/MASShortcut.git"
-
-CHECKOUT OPTIONS:
-  MASShortcut:
-    :commit: 694922e088bc91eb70eff42ddaf7602c5b87f1f1
-    :git: "git@github.com:AkaShark/MASShortcut.git"
 
 SPEC CHECKSUMS:
   AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
   JLRoutes: d755245322b94227662ea3e43492fdca94e05c5b
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  MASPreferences: 1ba2deb14086792857af44d22846fc4aae477fd9
-  MASShortcut: d9e4909e878661cc42877cc9d6efbe638273ab57
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  SwiftFormat: 19cf302c4ecf4f8c64d394d57589beb145debed5
+  SwiftFormat: 0e0b577434e6aa63bc82a8905b40d9597b8452d4
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: a917f2cf8e48ae0bd43c5f127191bfd1abbc938a
+PODFILE CHECKSUM: b38d6c42d6418a0fcc74bc0514c2f683236f940f
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.14.2

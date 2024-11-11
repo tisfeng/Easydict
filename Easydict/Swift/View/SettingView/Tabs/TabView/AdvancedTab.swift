@@ -7,21 +7,32 @@
 //
 
 import Defaults
+import SFSafeSymbols
 import SwiftUI
 
-@available(macOS 13, *)
 struct AdvancedTab: View {
     // MARK: Internal
 
     var body: some View {
         Form {
             Section {
+                Toggle(isOn: $enableBetaFeature) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: SFSymbol.hammerFill.rawValue,
+                        labelText: "setting.advance.enable_beta_feature"
+                    )
+                }
+            }
+
+            // Items image color order: blue, green, orange, purple, red
+            Section {
                 Picker(
                     selection: $defaultTTSServiceType,
                     label: AdvancedTabItemView(
-                        color: .orange,
-                        systemImage: "ellipsis.bubble.fill",
-                        labelText: "setting.general.advance.default_tts_service"
+                        color: .blue,
+                        systemImage: SFSymbol.ellipsisBubbleFill.rawValue,
+                        labelText: "setting.advance.default_tts_service"
                     )
                 ) {
                     ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
@@ -29,23 +40,224 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $disableTipsView) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        systemImage: SFSymbol.lightbulbFill.rawValue,
+                        labelText: "setting.advance.disable_tips_view"
+                    )
+                }
+
+                Toggle(isOn: $enableYoudaoOCR) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: SFSymbol.circleRectangleFilledPatternDiagonalline.rawValue,
+                        labelText: "setting.advance.youdao_ocr",
+                        subtitleText: "setting.advance.youdao_ocr_desc"
+                    )
+                }
+                Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        systemImage: SFSymbol.arrowForwardSquare.rawValue,
+                        labelText: "setting.advance.replace_with_translation",
+                        subtitleText: "setting.advance.replace_with_translation_desc"
+                    )
+                }
+
+                // Require macOS 15+
+                if #available(macOS 15.0, *) {
+                    Toggle(isOn: $enableLocalAppleTranslation) {
+                        AdvancedTabItemView(
+                            color: .red,
+                            systemImage: SFSymbol.appleLogo.rawValue,
+                            labelText: "setting.advance.apple_offline_translation",
+                            subtitleText: "setting.advance.apple_offline_translation_desc"
+                        )
+                    }
+                }
             }
+
+            // Force get selected text
             Section {
-                Toggle(isOn: $enableBetaFeature) {
+                Toggle(isOn: $enableForceGetSelectedText) {
                     AdvancedTabItemView(
                         color: .blue,
-                        systemImage: "hammer.fill",
-                        labelText: "setting.general.advance.enable_beta_feature"
+                        systemImage: SFSymbol.characterCursorIbeam.rawValue,
+                        labelText: "setting.advance.enable_force_get_selected_text",
+                        subtitleText: "setting.advance.enable_force_get_selected_text_desc"
                     )
                 }
-                Toggle(isOn: $enableBetaNewApp) {
+
+                Picker(
+                    selection: $forceGetSelectedTextType,
+                    label: AdvancedTabItemView(
+                        color: .green,
+                        systemImage: SFSymbol.highlighter.rawValue,
+                        labelText: "setting.advance.force_get_selected_text_type"
+                    )
+                ) {
+                    ForEach(ForceGetSelectedTextType.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+            } header: {
+                Text("setting.advance.header.force_get_selected_text")
+            }
+
+            // Mouse query icon
+            Section {
+                Toggle(isOn: $autoSelectText) {
                     AdvancedTabItemView(
-                        color: swiftColor,
-                        systemImage: "swift",
-                        labelText: "enable_beta_new_app",
-                        subtitleText: "enable_beta_new_app_info"
+                        color: .blue,
+                        systemImage: SFSymbol.cursorarrowRays.rawValue,
+                        labelText: "setting.advance.auto_show_query_icon"
                     )
                 }
+
+                Toggle(isOn: $clickQuery) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        systemImage: SFSymbol.cursorarrowClick.rawValue,
+                        labelText: "setting.advance.click_icon_query_info"
+                    )
+                }
+
+                Toggle(isOn: $adjustPopButtonOrigin) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: SFSymbol.arrowUpAndDownAndArrowLeftAndRight.rawValue,
+                        labelText: "setting.advance.mouse_query.adjust_pop_button_origin"
+                    )
+                }
+            } header: {
+                Text("setting.advance.mouse_select_query.header")
+            }
+
+            // Query text processing
+            Section {
+                Toggle(isOn: $replaceNewlineWithSpace) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: SFSymbol.arrowForwardSquare.rawValue,
+                        labelText: "setting.advance.automatically_replace_newline_with_space"
+                    )
+                }
+                Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        systemImage: SFSymbol.chevronLeftForwardslashChevronRight.rawValue,
+                        labelText: "setting.advance.automatically_remove_code_comment_symbols"
+                    )
+                }
+                Toggle(isOn: $automaticWordSegmentation) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        systemImage: SFSymbol.textWordSpacing.rawValue,
+                        labelText: "setting.advance.automatically_split_words"
+                    )
+                }
+            } header: {
+                Text("setting.advance.header.query_text_processing")
+            } footer: {
+                HStack {
+                    Text("setting.advance.footer.query_text_processing_desc")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 10)
+
+                    Spacer()
+                }
+            }
+
+            // Windows management
+            Section {
+                Picker(
+                    selection: $mouseSelectTranslateWindowType,
+                    label: AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: SFSymbol.cursorarrowRays.rawValue,
+                        labelText: "setting.advance.window.mouse_select_translate_window_type"
+                    )
+                ) {
+                    ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+
+                Picker(
+                    selection: $shortcutSelectTranslateWindowType,
+                    label: AdvancedTabItemView(
+                        color: .green,
+                        systemImage: SFSymbol.keyboardFill.rawValue,
+                        labelText: "setting.advance.window.shortcut_select_translate_window_type"
+                    )
+                ) {
+                    ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+
+                Picker(
+                    selection: $fixedWindowPosition,
+                    label: AdvancedTabItemView(
+                        color: .orange,
+                        systemImage: SFSymbol.arrowUpLeftAndArrowDownRight.rawValue,
+                        labelText: "setting.advance.window.fixed_window_position"
+                    )
+                ) {
+                    ForEach(EZShowWindowPosition.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+
+                Toggle(isOn: $pinWindowWhenDisplayed) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        systemImage: SFSymbol.pinFill.rawValue,
+                        labelText: "setting.advance.pin_window_when_showing"
+                    )
+                }
+
+                Toggle(isOn: $hideMainWindow) {
+                    AdvancedTabItemView(
+                        color: .red,
+                        systemImage: SFSymbol.eyeSlashFill.rawValue,
+                        labelText: "setting.advance.hide_main_window"
+                    )
+                }
+            } header: {
+                Text("setting.advance.window_management.header")
+            }
+
+            // HTTP server
+            Section {
+                Toggle(isOn: $enableHTTPServer) {
+                    AdvancedTabItemView(
+                        color: getHttpIconColor(),
+                        systemImage: SFSymbol.network.rawValue,
+                        labelText: "setting.advance.enable_http_server"
+                    )
+                }
+
+                LabeledContent {
+                    TextField("", text: $httpPort, prompt: Text(verbatim: "8080"))
+                        .frame(width: 100)
+                        .fixedSize(horizontal: true, vertical: false)
+                } label: {
+                    AdvancedTabItemView(
+                        color: getHttpIconColor(),
+                        systemImage: SFSymbol.externaldriveConnectedToLineBelow.rawValue,
+                        labelText: "setting.advance.http_port",
+                        subtitleText: "setting.advance.http_port_desc"
+                    )
+                }
+            } header: {
+                Text("setting.advance.header.http_server")
             }
         }
         .formStyle(.grouped)
@@ -53,14 +265,45 @@ struct AdvancedTab: View {
 
     // MARK: Private
 
-    private let swiftColor = Color(red: 240 / 255, green: 81 / 255, blue: 56 / 255)
+    @Default(.enableBetaFeature) private var enableBetaFeature
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
-    @Default(.enableBetaFeature) private var enableBetaFeature
-    @Default(.enableBetaNewApp) private var enableBetaNewApp
+    @Default(.disableTipsView) private var disableTipsView
+    @Default(.enableYoudaoOCR) private var enableYoudaoOCR
+    @Default(.replaceWithTranslationInCompatibilityMode) private
+    var replaceWithTranslationInCompatibilityMode
+    @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
+
+    // Force get selected text
+    @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText
+    @Default(.forceGetSelectedTextType) private var forceGetSelectedTextType
+
+    // Mouse select query
+    @Default(.autoSelectText) private var autoSelectText
+    @Default(.clickQuery) private var clickQuery
+    @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
+
+    // Query text processing
+    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
+    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+
+    // Windows management
+    @Default(.fixedWindowPosition) private var fixedWindowPosition
+    @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
+    @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
+    @Default(.pinWindowWhenDisplayed) private var pinWindowWhenDisplayed
+    @Default(.hideMainWindow) private var hideMainWindow
+
+    @Default(.enableHTTPServer) private var enableHTTPServer
+    @Default(.httpPort) private var httpPort
+
+    /// Returns Color.green if `enableHTTPServer` is true, returns Color.red otherwise.
+    private func getHttpIconColor() -> Color {
+        enableHTTPServer ? .green : .red
+    }
 }
 
-@available(macOS 13, *)
 #Preview {
     AdvancedTab()
 }

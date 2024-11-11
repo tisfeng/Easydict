@@ -6,13 +6,12 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-// swiftlint:disable all
-
 import Alamofire
 import CryptoKit
 import Foundation
 
 // Tencent sigh header, Ref: https://github.com/TencentCloud/signature-process-demo/blob/main/signature-v3/swift/signv3.swift
+// swiftlint:disable:next function_parameter_count
 func tencentSignHeader(
     service: String,
     action: String,
@@ -103,5 +102,3 @@ extension String {
         return Data(hmac)
     }
 }
-
-// swiftlint:enable all

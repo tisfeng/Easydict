@@ -19,9 +19,6 @@ enum LanguageDetectOptimize: Int {
     case google = 2
 }
 
-let kEnableBetaNewAppKey = "EZConfiguration_kEnableBetaNewAppKey"
-let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
-
 // MARK: - Configuration
 
 @objcMembers
@@ -41,93 +38,77 @@ class Configuration: NSObject {
     private(set) static var shared = Configuration()
 
     @DefaultsWrapper(.firstLanguage) var firstLanguage: Language
-
     @DefaultsWrapper(.secondLanguage) var secondLanguage: Language
-
     @DefaultsWrapper(.queryFromLanguage) var fromLanguage: Language
-
     @DefaultsWrapper(.queryToLanguage) var toLanguage: Language
+    @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
 
     @DefaultsWrapper(.autoSelectText) var autoSelectText: Bool
-
-    @DefaultsWrapper(.forceAutoGetSelectedText) var forceAutoGetSelectedText: Bool
-
+    @DefaultsWrapper(.enableForceGetSelectedText) var enableForceGetSelectedText: Bool
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
+    @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
 
-    @DefaultsWrapper(.launchAtStartup) var launchAtStartup: Bool
-
-    let updater = GlobalContext.shared.updaterController.updater
-
+    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType:
+        EZWindowType
+    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType:
+        EZWindowType
+    @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
+    @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
     @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
 
+    @DefaultsWrapper(.clearQueryWhenInputTranslate) var clearInput: Bool
+    @DefaultsWrapper(.keepPrevResultWhenSelectTranslateTextIsEmpty) var keepPrevResultWhenEmpty:
+        Bool
+    @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
+    @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+    @DefaultsWrapper(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
+
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
-
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
-
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
-
     @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
 
     @DefaultsWrapper(.autoCopySelectedText) var autoCopySelectedText: Bool
-
     @DefaultsWrapper(.autoCopyOCRText) var autoCopyOCRText: Bool
-
     @DefaultsWrapper(.autoCopyFirstTranslatedText) var autoCopyFirstTranslatedText: Bool
 
-    @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
-
     @DefaultsWrapper(.showGoogleQuickLink) var showGoogleQuickLink: Bool
-
     @DefaultsWrapper(.showEudicQuickLink) var showEudicQuickLink: Bool
-
     @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
-
-    @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
-
-    @DefaultsWrapper(.enableBetaNewApp) var enableBetaNewApp: Bool
-
-    @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
-
-    @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType: EZWindowType
-
-    @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType: EZWindowType
-
-    @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
-
-    @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
-
-    @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
-
-    @DefaultsWrapper(.clearInput) var clearInput: Bool
-
-    @DefaultsWrapper(.keepPrevResultWhenEmpty) var keepPrevResultWhenEmpty: Bool
-
-    @DefaultsWrapper(.selectQueryTextWhenWindowActivate) var selectQueryTextWhenWindowActivate: Bool
-
-    var disabledAutoSelect: Bool = false
-
-    var isRecordingSelectTextShortcutKey: Bool = false
-
-    let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
-
-    @DefaultsWrapper(.automaticWordSegmentation) var automaticWordSegmentation: Bool
-
-    @DefaultsWrapper(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
-
-    @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
-
-    @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
-
-    @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
-
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
-    var cancellables: Set<AnyCancellable> = []
+    @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
+    @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
+    @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
+
+    // Advanced Tab
+    @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
+    @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
+    @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
+    @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
+    @Default(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
+
+    @Default(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
+
+    @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
+    @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
 
     @ShortcutWrapper(.pinShortcut) var pinShortcutString: String
     @ShortcutWrapper(.googleShortcut) var googleShortcutString: String
     @ShortcutWrapper(.appleDictionaryShortcut) var appleDictShortcutString: String
     @ShortcutWrapper(.eudicShortcut) var eudicDictShortcutString: String
+
+    let updater = GlobalContext.shared.updaterController.updater
+    let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
+    var disabledAutoSelect: Bool = false
+    var isRecordingSelectTextShortcutKey: Bool = false
+    var cancellables: Set<AnyCancellable> = []
+
+    var fontSizeRatio: CGFloat {
+        let safeIndex = max(0, min(Int(fontSizeIndex), fontSizes.count - 1))
+        return fontSizes[safeIndex]
+    }
 
     var automaticallyChecksForUpdates: Bool {
         get {
@@ -144,13 +125,9 @@ class Configuration: NSObject {
             ServiceType(rawValue: Defaults[.defaultTTSServiceType].rawValue)
         }
         set {
-            Defaults[.defaultTTSServiceType] = TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
+            Defaults[.defaultTTSServiceType] =
+                TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
         }
-    }
-
-    var fontSizeRatio: CGFloat {
-        let safeIndex = max(0, min(Int(fontSizeIndex), fontSizes.count - 1))
-        return fontSizes[safeIndex]
     }
 
     static func destroySharedInstance() {
@@ -186,7 +163,7 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.forceAutoGetSelectedText, options: [])
+        Defaults.publisher(.enableForceGetSelectedText, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetForceAutoGetSelectedText()
@@ -197,13 +174,6 @@ class Configuration: NSObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetClickQuery()
-            }
-            .store(in: &cancellables)
-
-        Defaults.publisher(.launchAtStartup, options: [])
-            .removeDuplicates()
-            .sink { [weak self] change in
-                self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
             }
             .store(in: &cancellables)
 
@@ -312,13 +282,6 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.enableBetaNewApp, options: [])
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.didSetEnableBetaNewApp()
-            }
-            .store(in: &cancellables)
-
         Defaults.publisher(.fixedWindowPosition, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
@@ -361,7 +324,7 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.clearInput, options: [])
+        Defaults.publisher(.clearQueryWhenInputTranslate, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetClearInput()
@@ -384,8 +347,7 @@ class Configuration: NSObject {
             .store(in: &cancellables)
 
         Defaults.publisher(
-            keys:
-            [
+            keys: [
                 .pinShortcut,
                 .appleDictionaryShortcut,
                 .googleShortcut,
@@ -398,6 +360,16 @@ class Configuration: NSObject {
             EZWindowManager.shared().updateWindowsTitlebarButtonsToolTip()
         }
         .store(in: &cancellables)
+
+        Defaults.publisher(.enableHTTPServer)
+            .removeDuplicates()
+            .sink { change in
+                let isOn = change.newValue
+                Task {
+                    await VaporServer.shared.startServer(isOn: isOn)
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -417,21 +389,13 @@ extension Configuration {
     }
 
     fileprivate func didSetForceAutoGetSelectedText() {
-        logSettings(["force_get_selected_text": forceAutoGetSelectedText])
+        logSettings(["force_get_selected_text": enableForceGetSelectedText])
     }
 
     fileprivate func didSetClickQuery() {
         EZWindowManager.shared().updatePopButtonQueryAction()
 
         logSettings(["click_query": clickQuery])
-    }
-
-    fileprivate func didSetLaunchAtStartup(_ old: Bool, new: Bool) {
-        if new != old {
-            updateLoginItemWithLaunchAtStartup(new)
-        }
-
-        logSettings(["launch_at_startup": new])
     }
 
     fileprivate func didSetAutomaticallyChecksForUpdates() {
@@ -487,25 +451,16 @@ extension Configuration {
 
     fileprivate func didSetShowGoogleQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().googleItem?.isHidden = !showGoogleQuickLink
-
         logSettings(["show_google_link": showGoogleQuickLink])
     }
 
     fileprivate func didSetShowEudicQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().eudicItem?.isHidden = !showEudicQuickLink
-
         logSettings(["show_eudic_link": showEudicQuickLink])
     }
 
     fileprivate func didSetShowAppleDictionaryQuickLink() {
         postUpdateQuickLinkButtonNotification()
-
-        EZMenuItemManager.shared().appleDictionaryItem?.isHidden = !showAppleDictionaryQuickLink
-
         logSettings(["show_apple_dictionary_link": showAppleDictionaryQuickLink])
     }
 
@@ -516,15 +471,7 @@ extension Configuration {
     }
 
     fileprivate func didSetHideMenuBarIcon() {
-        if !Configuration.shared.enableBetaNewApp {
-            hideMenuBarIcon(hidden: hideMenuBarIcon)
-        }
-
         logSettings(["hide_menu_bar_icon": hideMenuBarIcon])
-    }
-
-    fileprivate func didSetEnableBetaNewApp() {
-        logSettings(["enable_beta_new_app": enableBetaNewApp])
     }
 
     fileprivate func didSetFixedWindowPosition() {
@@ -557,7 +504,7 @@ extension Configuration {
     }
 
     fileprivate func didSetFontSizeIndex() {
-        NotificationCenter.default.post(name: .init(ChangeFontSizeView.changeFontSizeNotificationName), object: nil)
+        NotificationCenter.default.post(name: .didChangeFontSize, object: nil)
     }
 
     fileprivate func didSetAppearance(_ appearance: AppearenceType) {
@@ -565,105 +512,10 @@ extension Configuration {
     }
 }
 
-// MARK: Window Frame
-
-extension Configuration {
-    func windowFrameWithType(_ windowType: EZWindowType) -> CGRect {
-        Defaults[.windorFrame(for: windowType)]
-    }
-
-    func setWindowFrame(_ frame: CGRect, windowType: EZWindowType) {
-        Defaults[.windorFrame(for: windowType)] = frame
-    }
-}
-
-// MARK: Intelligent Query Text Type of Service
-
-extension Configuration {
-    func setIntelligentQueryTextType(_ queryTextType: EZQueryTextType, serviceType: ServiceType) {
-        Defaults[.intelligentQueryTextType(for: serviceType)] = queryTextType
-    }
-
-    func intelligentQueryTextTypeForServiceType(_ serviceType: ServiceType) -> EZQueryTextType {
-        Defaults[.intelligentQueryTextType(for: serviceType)]
-    }
-}
-
-// MARK: Intelligent Query Text Type of Service
-
-extension Configuration {
-    func setQueryTextType(_ queryTextType: EZQueryTextType, serviceType: ServiceType) {
-        Defaults[.queryTextType(for: serviceType)] = queryTextType
-    }
-
-    func queryTextTypeForServiceType(_ serviceType: ServiceType) -> EZQueryTextType {
-        Defaults[.queryTextType(for: serviceType)]
-    }
-}
-
-// MARK: Intelligent Query Mode
-
-extension Configuration {
-    func setIntelligentQueryMode(_ enabled: Bool, windowType: EZWindowType) {
-        let key = EZConstKey.constkey("IntelligentQueryMode", windowType: windowType)
-        let stringValue = "\(enabled)"
-        UserDefaults.standard.set(stringValue, forKey: key)
-
-        let parameters = [
-            "enabled": enabled,
-            "window_type": windowType.rawValue,
-        ] as [String: Any]
-
-        EZLog.logEvent(withName: "intelligent_query_mode", parameters: parameters)
-    }
-
-    func intelligentQueryModeForWindowType(_ windowType: EZWindowType) -> Bool {
-        let key = EZConstKey.constkey("IntelligentQueryMode", windowType: windowType)
-        return UserDefaults.standard.bool(forKey: key)
-    }
-}
-
 extension Configuration {
     fileprivate func postUpdateQuickLinkButtonNotification() {
-        let notification = Notification(name: .init("EZQuickLinkButtonUpdateNotification"), object: nil)
+        let notification = Notification(name: Notification.Name.linkButtonUpdated, object: nil)
         NotificationCenter.default.post(notification)
-    }
-
-    fileprivate func hideMenuBarIcon(hidden: Bool) {
-        if hidden {
-            EZMenuItemManager.shared().remove()
-        } else {
-            EZMenuItemManager.shared().setup()
-        }
-    }
-
-    fileprivate func updateLoginItemWithLaunchAtStartup(_ launchAtStartup: Bool) {
-        let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable") as? String
-        let appBundlePath = Bundle.main.bundlePath
-
-        let script = """
-            tell application "System Events" to get the name of every login item
-            tell application "System Events"
-                set loginItems to every login item
-                repeat with aLoginItem in loginItems
-                    if (aLoginItem's name is "\(appName ?? "")") then
-                        delete aLoginItem
-                    end if
-                end repeat
-                if \(launchAtStartup) then
-                    make login item at end with properties {path:"\(appBundlePath)", hidden:false}
-                end if
-            end tell
-        """
-
-        let exeCommand = EZScriptExecutor()
-        exeCommand.runAppleScript(script) { result, error in
-            if let error {
-                logError("launchAtStartup error: error: \(error)")
-            } else {
-                logInfo("launchAtStartup result: \(result)")
-            }
-        }
     }
 
     fileprivate func logSettings(_ parameters: [String: Any]) {

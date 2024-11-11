@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512@2x.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
 <p align="center"> 
@@ -70,6 +70,7 @@ We plan to refactor the project with Swift. If you are interested in this open s
 - [Language Recognition](#language-recognition)
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
+  - [Supported languages](#supported-languages)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI Translate](#openai-translate)
     - [Configure Personal APIKey](#configure-personal-apikey)
@@ -241,7 +242,12 @@ Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple S
 > [!NOTE] 
 > Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
-<details> <summary> Supported languages: </summary>
+<details>
+<summary> 
+
+### Supported languages
+
+</summary>
 
 <p>
 
@@ -258,7 +264,7 @@ Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple S
 |        Italian        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 |        German         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 |        Russian        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-|        Arabic         |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Arabic         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 |        Swedish        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 |       Romanian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 |         Thai          |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
@@ -773,7 +779,7 @@ Easydict is a free and open source project, currently mainly developed and maint
 
 If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a developer account to solve the app [signature problem](https://github.com/tisfeng/Easydict/issues/2) and make Easydict more accessible to more people.
 
-<a href="https://afdian.net/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
+<a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
@@ -851,6 +857,26 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-04-12 | 奥雷里亚诺 | 50 | 界面精致，而且帮我节约了不少时间 |
 | 2024-04-15 |  | 5 | 谢谢你的 Easydict！！ |
 | 2024-05-11 |  | 35 | 感谢开源和持续更新！ |
+| 2024-05-29 | 天色晚晚 | 10 | 项目很用心！感谢！！！ |
+| 2024-06-06 | 天不发火的老虎 | 5 | 很赞，继续加油 |
+| 2024-06-08 | MLeo | 10 | 感谢免费开源，快捷好用。 |
+| 2024-06-12 | Sacri | 10 | 学生，这个学英语太方便了，谢谢你 |
+| 2024-06-24 | 迦南 | 10 | 大佬辛苦了💦 |
+| 2024-07-07 | Javen Fang | 100 | 感谢！建议支持 Claude。(这个可以有) |
+| 2024-07-11 |  | 6.6.6 | 希望大佬看下 Issues 最新问题 |
+| 2024-07-12 | callxm | 3 | 世上应存在免费开源 bob，大义！ |
+| 2024-07-31 |  | 5 | 谢谢！非常好的软件！你们太厉害啦 |
+| 2024-08-05 | succulent | 20 | 感谢老哥，easydict 很好用 |
+| 2024-08-08 | 须尽欢 | 20 | 感谢开源 感谢更新 |
+| 2024-08-14 | 장철 | 5 | 中韩翻译可以添加 papago 吗？（我没用这个翻译，等有缘人 PR）|
+| 2024-08-15 |  | 5 | 感恩！|
+| 2024-08-20 | Ishmael | 50 |  |
+| 2024-08-28 | Rich Coinu | 5 | 希望你越来越好 |
+| 2024-08-29 | 迦南 | 10 | 请大佬喝冰可乐🥤 |
+| 2024-08-30 | Benjamin | 10 | 感谢开源，辛苦了，在校生支持了 |
+| 2024-09-24 |  | 100 |  |
+| 2024-09-25 | 噗啦啦啦 | 20 | 真是太棒啦，非常喜欢  伟大的！ |
+| 2024-10-14 | Y&T | 10 | 感谢开源 非常好用！！！ |
 
 </p>
 

@@ -13,7 +13,6 @@ import ZipArchive
 
 // MARK: - MenuItemStore
 
-@available(macOS 13, *)
 final class MenuItemStore: ObservableObject {
     // MARK: Lifecycle
 
@@ -30,7 +29,6 @@ final class MenuItemStore: ObservableObject {
 
 // MARK: - MenuItemView
 
-@available(macOS 13, *)
 struct MenuItemView: View {
     // MARK: Internal
 
@@ -62,10 +60,7 @@ struct MenuItemView: View {
                 .keyboardShortcut(.init("q"))
         }
         .task {
-            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-            await MainActor.run {
-                latestVersion = version
-            }
+            latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
         }
     }
 
@@ -237,7 +232,6 @@ struct MenuItemView: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     MenuItemView()
 }

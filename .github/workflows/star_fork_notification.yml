@@ -23,7 +23,7 @@ jobs:
 
       - name: Get repository information
         run: |
-          result=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
+          result=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
           stars=$(echo $result | jq '.stargazers_count')
           forks=$(echo $result | jq '.forks_count')
           repo_name=$(echo $result | jq -r '.name')
@@ -37,16 +37,16 @@ jobs:
 
       - name: Get repo download count
         run: |
-          download_count=$(curl -s -H  "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[].assets[].download_count' | awk '{sum += $1} END {print sum}')
+          download_count=$(curl -s -H  "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[].assets[].download_count' | awk '{sum += $1} END {print sum}')
           echo "Number of downloads: $download_count"
           echo "download_count=$download_count" >> $GITHUB_ENV
 
       - name: Get user information
         id: check_conditions
         run: |
-          earn_star_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}/repos" | jq '[.[] | .stargazers_count] | add // 0')
-          commit_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/search/commits?q=author:${{ github.actor }}" | jq -r '.total_count // 0')
-          follower_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '.followers // 0')
+          earn_star_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.actor }}/repos?per_page=100&sort=pushed" | jq '[.[] | .stargazers_count] | add // 0')
+          commit_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/commits?per_page=100&q=author:${{ github.actor }}" | jq -r '.total_count // 0')
+          follower_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '.followers // 0')
 
           echo "Star count: $earn_star_count"
           echo "Commit count: $commit_count"

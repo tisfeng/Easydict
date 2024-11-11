@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)managerWithModel:(EZQueryModel *)model;
 
+- (instancetype)initWithModel:(EZQueryModel *)model;
+
 - (void)ocrAndDetectText:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
 
 - (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion;

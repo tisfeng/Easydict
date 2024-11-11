@@ -9,6 +9,7 @@
 #import "EZBingRequest.h"
 #import "EZError.h"
 #import "NSString+EZRegex.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kAudioMIMEType = @"audio/mpeg";
 static NSString *const kBingConfigKey = @"kBingConfigKey";

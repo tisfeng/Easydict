@@ -17,11 +17,14 @@ import SwiftUI
 enum EasydictCmpatibilityEntry {
     static func main() {
         parseArmguments()
-        if Configuration.shared.enableBetaNewApp {
-            EasydictApp.main()
-        } else {
-            _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
-        }
+
+        // Capturing crash logs must be placed first.
+        MMCrash.registerHandler()
+        EZLog.setupCrashService()
+        EZLog.logAppInfo()
+
+        // app launch
+        EasydictApp.main()
     }
 }
 
@@ -31,48 +34,49 @@ struct EasydictApp: App {
     // MARK: Internal
 
     var body: some Scene {
-        if #available(macOS 13, *) {
-            MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
-                MenuItemView()
-                    .environmentObject(languageState)
-                    .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
-            } label: {
-                Label {
-                    Text("Easydict")
-                        .openSettingsAccess() // trick way for open setting
-                        .onReceive(NotificationCenter.default.publisher(
+        MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
+            MenuItemView()
+                .environmentObject(languageState)
+                .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
+        } label: {
+            Label {
+                Text("Easydict")
+                    .openSettingsAccess() // trick way for open setting
+                    .onReceive(
+                        NotificationCenter.default.publisher(
                             for: Notification.Name.openSettings,
                             object: nil
-                        )) { _ in
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                // calling `openSettings` immediately doesn't work so wait a quick moment
-                                try? openSettings()
-                            }
+                        )
+                    ) { _ in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                            // calling `openSettings` immediately doesn't work so wait a quick moment
+                            try? openSettings()
                         }
-                } icon: {
-                    Image(menuBarIcon.rawValue)
-                        .resizable()
-                    #if DEBUG
-                        .renderingMode(.original)
-                    #else
-                        .renderingMode(.template)
-                    #endif
-                        .scaledToFit()
-                }
-                .help("Easydict 🍃")
-            }
-            .menuBarExtraStyle(.menu)
-            .commands {
-                EasyDictMainMenu() // main menu
-                // Override About button
-                CommandGroup(replacing: .appInfo) {
-                    Button {
-                        showAboutWindow()
-                    } label: {
-                        Text("menubar.about")
                     }
+            } icon: {
+                Image(menuBarIcon.rawValue)
+                    .resizable()
+                #if DEBUG
+                    .renderingMode(.original)
+                #else
+                    .renderingMode(.template)
+                #endif
+                    .scaledToFit()
+            }
+            .help("Easydict 🍃")
+        }
+        .menuBarExtraStyle(.menu)
+        .commands {
+            EasyDictMainMenu() // main menu
+            // Override About button
+            CommandGroup(replacing: .appInfo) {
+                Button {
+                    showAboutWindow()
+                } label: {
+                    Text("menubar.about")
                 }
             }
+        }
 
             Settings {
                 SettingView().environmentObject(languageState).environment(
@@ -100,28 +104,6 @@ struct EasydictApp: App {
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
     @StateObject private var languageState = LanguageState()
-
-    @State var aboutWindow: NSWindow?
-
-    private func showAboutWindow() {
-        if let aboutWindow = aboutWindow {
-            aboutWindow.makeKeyAndOrderFront(nil)
-        } else {
-            aboutWindow = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 500, height: 220),
-                styleMask: [.titled, .closable],
-                backing: .buffered, defer: false
-            )
-            aboutWindow?.titleVisibility = .hidden
-            aboutWindow?.titlebarAppearsTransparent = true
-            aboutWindow?.isReleasedWhenClosed = false
-            aboutWindow?.center()
-            if #available(macOS 13, *) {
-                aboutWindow?.contentView = NSHostingView(rootView: SettingsAboutTab())
-            }
-            aboutWindow?.makeKeyAndOrderFront(nil)
-        }
-    }
 }
 
 extension Bool {

@@ -9,6 +9,7 @@
 #import "EZDetectLanguageButton.h"
 #import "EZLanguageManager.h"
 #import "NSView+EZAnimatedHidden.h"
+#import "Easydict-Swift.h"
 
 @interface EZDetectLanguageButton ()
 
@@ -63,23 +64,23 @@
     [self setAnimatedHidden:NO];
     
     NSString *detectLanguageTitle = [EZLanguageManager.shared showingLanguageName:detectedLanguage];
-    
-    NSString *title = NSLocalizedString(@"detected", nil);
-    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
+
+    // Button title format: Detected English
+    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"detected", nil)];
     [attrTitle addAttributes:@{
         NSForegroundColorAttributeName : NSColor.grayColor,
         NSFontAttributeName : [NSFont systemFontOfSize:10],
-    }
-                       range:NSMakeRange(0, attrTitle.length)];
-    
-    
+    } range:NSMakeRange(0, attrTitle.length)];
+
+    NSMutableAttributedString *whitespace = [[NSMutableAttributedString alloc] initWithString:@" "];
+    [attrTitle appendAttributedString:whitespace];
+
     NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguageTitle];
     [detectAttrTitle addAttributes:@{
         NSForegroundColorAttributeName : [NSColor ez_blueTitleColor],
         NSFontAttributeName : [NSFont systemFontOfSize:10],
-    }
-                             range:NSMakeRange(0, detectAttrTitle.length)];
-    
+    } range:NSMakeRange(0, detectAttrTitle.length)];
+
     [attrTitle appendAttributedString:detectAttrTitle];
     self.attributedTitle = attrTitle;
     

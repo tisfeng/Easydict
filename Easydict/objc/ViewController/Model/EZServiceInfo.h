@@ -13,9 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZServiceInfo : NSObject
 
+@property (nonatomic, strong) NSString *uuid;
 @property (nonatomic, assign) EZServiceType type;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) BOOL enabledQuery;
+@property (nonatomic, assign) EZWindowType windowType;
 
 + (instancetype)serviceInfoWithService:(EZQueryService *)service;
 

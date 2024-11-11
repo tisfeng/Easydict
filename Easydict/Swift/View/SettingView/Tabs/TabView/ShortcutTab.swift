@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-
-@available(macOS 13, *)
 struct ShortcutTab: View {
     var body: some View {
         Form {
@@ -21,7 +19,6 @@ struct ShortcutTab: View {
     }
 }
 
-@available(macOS 13, *)
 #Preview {
     ShortcutTab()
 }

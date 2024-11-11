@@ -22,7 +22,6 @@ enum SettingTab: Int {
 
 // MARK: - SettingView
 
-@available(macOS 13, *)
 struct SettingView: View {
     // MARK: Internal
 
@@ -72,19 +71,17 @@ struct SettingView: View {
         // Disable zoom button, refer: https://stackoverflow.com/a/66039864/8378840
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
-        // Keep the settings page windows all the same width to avoid strange animations.
-        let maxWidth = 820.0
+        // Keep the settings page Windows all the same width to avoid strange animations.
+        let maxWidth: Double = 900
         let height: Double = switch selection {
         case .disabled:
             500
-        case .advanced:
-            400
         case .privacy:
-            320
+            340
         case .about:
             300
         default:
-            maxWidth * 0.82
+            maxWidth * 0.8
         }
 
         let newSize = CGSize(width: maxWidth, height: height)
@@ -94,6 +91,11 @@ struct SettingView: View {
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
         window.setFrame(newRect, display: true, animate: true)
+
+        // Disable user to resize window, wait for the animation to finish.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            window.styleMask.remove(.resizable)
+        }
     }
 
     // MARK: Private
@@ -102,7 +104,6 @@ struct SettingView: View {
     @State private var window: NSWindow?
 }
 
-@available(macOS 13, *)
 #Preview {
     SettingView()
 }

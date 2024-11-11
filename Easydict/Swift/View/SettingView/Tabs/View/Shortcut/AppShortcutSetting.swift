@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-
-@available(macOS 13, *)
 extension ShortcutTab {
     struct AppShortcutSettingView: View {
         @State private var shortcutDataList = [

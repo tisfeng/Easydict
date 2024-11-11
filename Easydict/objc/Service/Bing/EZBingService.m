@@ -10,8 +10,8 @@
 #import "EZBingRequest.h"
 #import "EZBingTranslateModel.h"
 #import "EZBingLookupModel.h"
-#import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
+#import "Easydict-Swift.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
@@ -53,7 +53,8 @@
                                         EZLanguageKorean, @"ko",
                                         EZLanguageFrench, @"fr",
                                         EZLanguageSpanish, @"es",
-                                        EZLanguagePortuguese, @"pt",
+                                        EZLanguagePortuguese, @"pt-PT",
+                                        EZLanguageBrazilianPortuguese, @"pt",
                                         EZLanguageItalian, @"it",
                                         EZLanguageGerman, @"de",
                                         EZLanguageRussian, @"ru",
@@ -114,7 +115,7 @@
     if (useDictQuery) {
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
             [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError * _Nullable dictError) {
-                if (error) {
+                if (error || dictError) {
                     [self bingTranslate:text useDictQuery:NO from:from to:to completion:completion];
                 } else {
                     self.isDictQueryResult = YES;
@@ -250,8 +251,6 @@
         return [EZError errorWithType:EZErrorTypeAPI description:msg request:nil];
     }
     EZBingTranslateModel *translateModel = [EZBingTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
-    self.result.from = translateModel.detectedLanguage.language ? [self languageEnumFromCode:translateModel.detectedLanguage.language] : from;
-    self.result.to = translateModel.translations.firstObject.to ? [self languageEnumFromCode:translateModel.translations.firstObject.to] : to;
     
     // phonetic
     if (json.count >= 2 && [json[1] isKindOfClass:[NSDictionary class]]) {
@@ -345,6 +344,17 @@ outer:
 - (void)parseBingDictTranslate:(NSDictionary *)json word:(NSString *)word completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     @try {
         NSArray *value = json[@"value"];
+        /**
+         It is strange, for some polluted ip, it will return emtpy value ☹️
+
+         See in https://github.com/tisfeng/Easydict/pull/243#issuecomment-1828133561
+
+         {
+           "_type" : "DictionaryWords",
+           "value" : [
+           ]
+         }
+         */
         if (value.count == 0) {
             completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict value is empty" request:nil]);
             return;
@@ -403,7 +413,7 @@ outer:
                     }
                     EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
                     simpleWord.word = examples.firstObject;
-                    simpleWord.meansText = examples.lastObject;
+                    simpleWord.means = [examples.lastObject componentsSeparatedByString:@";"];
                     [simpleWords addObject:simpleWord];
                 }
             } else if ([description isEqualToString:@"分类词典"]) {
@@ -474,9 +484,7 @@ outer:
         if (collocation.count) {
             wordResult.collocation = collocation;
         }
-        self.result.from = EZLanguageEnglish;
-        self.result.to = EZLanguageSimplifiedChinese;
-        
+
         // 接口没有字段表示翻译结果，从parts里去一个当作结果。
         NSString *translateResult = wordResult.parts.firstObject.means.firstObject;
         if (translateResult.length) {

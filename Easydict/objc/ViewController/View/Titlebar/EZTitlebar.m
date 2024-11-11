@@ -13,8 +13,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
-#import "EZConfiguration.h"
-#import "EZPreferencesWindowController.h"
+#import "Easydict-Swift.h"
 
 typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZTitlebarButtonTypePin = 0,
@@ -58,7 +57,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [self addSubview:self.stackView];
 
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
-    [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:EZQuickLinkButtonUpdateNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:NSNotification.linkButtonUpdated object:nil];
     [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:NSNotification.languagePreferenceChanged object:nil];
 }
 
@@ -141,11 +140,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)goToSettings {
-    if ([[Configuration shared] enableBetaNewApp]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
-    } else {
-        [EZPreferencesWindowController.shared show];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
 }
 
 #pragma mark - Getter && Setter
@@ -311,8 +306,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)setPin:(BOOL)pin {
-    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-    window.pin = pin;
+    [(EZBaseQueryWindow *)self.window updateWindowLevel:pin];
 
     [self updatePinButton];
 }
@@ -445,13 +439,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         }
     }
     return NO;
-}
-
-
-- (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
-    
-    // Drawing code here.
 }
 
 @end

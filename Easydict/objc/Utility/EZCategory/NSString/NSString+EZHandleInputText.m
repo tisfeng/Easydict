@@ -11,6 +11,7 @@
 #import "NSString+EZSplit.h"
 #import "EZAppleService.h"
 #import "EZAppleDictionary.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 
@@ -235,6 +236,10 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 
 /// Handle input text, return queryText.
 - (NSString *)handleInputText {
+    if (self.length == 0) {
+        return self;
+    }
+
     NSString *queryText = self;
     
     /**
@@ -250,6 +255,14 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
     if (Configuration.shared.automaticallyRemoveCodeCommentSymbols) {
         // Remove prefix [//,#,*,] and join texts.
         queryText = [queryText removeCommentBlockSymbols];
+    }
+    
+    /**
+    Replace newlines with whitespace.
+    https://github.com/tisfeng/Easydict/issues/639
+     */
+    if (Configuration.shared.replaceNewlineWithSpace) {
+        queryText = [queryText replacingNewlinesWithWhitespace];
     }
 
     return [queryText trim];

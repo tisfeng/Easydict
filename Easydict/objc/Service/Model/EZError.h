@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeNoResultsFound, // 未查询到结果
     EZErrorTypeInsufficientQuota, // 内置 API key 额度不足
     EZErrorTypeWarppedNSError, // Warp NSError
+    EZErrorTypeMissingAPIKey, // 没有设置 API Key
 };
 
 /// 错误，不支持的语言

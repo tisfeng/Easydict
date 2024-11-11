@@ -15,8 +15,8 @@
 #import "EZGoogleTranslate.h"
 #import "NSString+EZUtils.h"
 #import "EZServiceTypes.h"
-#import "EZConfiguration.h"
 #import <sys/xattr.h>
+#import "Easydict-Swift.h"
 
 static NSString *const kFileExtendedAttributes = @"NSFileExtendedAttributes";
 
@@ -130,7 +130,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 - (EZQueryService *)defaultTTSService {
     EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
-        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
         _defaultTTSService = defaultTTSService;
         _defaultTTSService.audioPlayer = self;
         

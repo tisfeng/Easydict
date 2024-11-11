@@ -9,7 +9,6 @@
 import Defaults
 import SwiftUI
 
-@available(macOS 13, *)
 struct PrivacyTab: View {
     // MARK: Internal
 
@@ -42,7 +41,6 @@ struct PrivacyTab: View {
     @Default(.allowAnalytics) private var allowCollectAnalytics
 }
 
-@available(macOS 13, *)
 #Preview {
     PrivacyTab()
 }

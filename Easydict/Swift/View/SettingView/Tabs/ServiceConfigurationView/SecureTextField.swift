@@ -10,26 +10,25 @@ import SwiftUI
 
 // MARK: - SecureTextField
 
-@available(macOS 13.0, *)
 struct SecureTextField: View {
     // MARK: Internal
 
     let title: LocalizedStringKey
     let placeholder: LocalizedStringKey
-
-    @Binding var text: String?
+    @Binding var text: String
+    @State var showText: Bool = false
 
     var body: some View {
         HStack {
             ZStack {
-                SecureField(title, text: $text ?? "")
+                SecureField(title, text: $text)
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
-                TextField(title, text: $text ?? "", prompt: Text(placeholder))
+                TextField(title, text: $text, prompt: Text(placeholder))
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .text)
-                    .opacity(showText || (text?.isEmpty ?? true) ? 1 : 0)
+                    .opacity(showText || (text.isEmpty) ? 1 : 0)
             }
 
             Button(action: {
@@ -38,6 +37,7 @@ struct SecureTextField: View {
                 Image(systemName: showText ? "eye.slash.fill" : "eye.fill")
             }
         }
+        .padding(10)
         .onChange(of: focus) { newValue in
             // if the PasswordField is focused externally, then make sure the correct field is actually focused
             if newValue != nil {
@@ -65,8 +65,6 @@ struct SecureTextField: View {
         case secure, text
     }
 
-    @State private var showText: Bool = false
-
     @FocusState private var focus: Focus?
 
     @Environment(\.scenePhase) private var scenePhase
@@ -75,7 +73,6 @@ struct SecureTextField: View {
 
 // MARK: - SecureInput_Previews
 
-@available(macOS 13.0, *)
 struct SecureInput_Previews: PreviewProvider {
     static var previews: some View {
         Group {

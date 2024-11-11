@@ -11,6 +11,7 @@
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZWindowType.h"
+#import "Easydict-Swift.h"
 
 @interface EZResultView ()
 
@@ -173,7 +174,7 @@
     
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-        [self.result.queryModel stopServiceRequest:self.result.serviceType];
+        [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithUniqueIdentifier];
         self.result.isStreamFinished = YES;
         button.hidden = YES;
     }];
@@ -260,15 +261,15 @@
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
     
-    EZServiceType serviceType = result.serviceType;
+    EZServiceType serviceType = result.service.serviceType;
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
     
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     
     mm_weakify(self);
     
-    if ([self isBaseOpenAIService:result.service]) {
-        EZBaseOpenAIService *service = (EZBaseOpenAIService *)result.service;
+    if ([self isLLLStreamService:result.service]) {
+        EZLLMStreamService *service = (EZLLMStreamService *)result.service;
         NSString *model = service.model;
         self.serviceModelButton.title = model;
         // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
@@ -314,10 +315,10 @@
     }];
     
     CGFloat modelButtonWidth = 0;
-    if ([self isBaseOpenAIService:self.result.service]) {
+    if ([self isLLLStreamService:self.result.service]) {
         [self.serviceModelButton sizeToFit];
-        // 105 is the length of "gpt-4-turbo-preview"
-        modelButtonWidth = MIN(self.serviceModelButton.width, 105 * [self windowWidthRatio]);
+        // 120 is fit for model name `llama-3.1-70b-versatile`
+        modelButtonWidth = MIN(self.serviceModelButton.width, 120 * [self windowWidthRatio]);
     }
 
     [self.serviceModelButton mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -329,7 +330,7 @@
 
 - (CGFloat)windowWidthRatio {
     // if minimumWindowWidth = 360, self.width = 340
-    CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    CGFloat minimumWindowWidth = [EZLayoutManager.shared minimumWindowSize:self.associatedWindowType].width;
     CGFloat miniSelfWidth = minimumWindowWidth - EZHorizontalCellSpacing_10 * 2;
     CGFloat ratio = self.width / miniSelfWidth;
     return ratio;
@@ -405,7 +406,6 @@
 - (void)updateStopButton {
     BOOL showStopButton = NO;
     
-    // Currently, only support stop OpenAI service.
     if (self.result.service.isStream) {
         showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
     }
@@ -429,14 +429,14 @@
     }];
 }
 
-- (BOOL)isBaseOpenAIService:(EZQueryService *)service {
-    return [service isKindOfClass:[EZBaseOpenAIService class]];
+- (BOOL)isLLLStreamService:(EZQueryService *)service {
+    return [service isKindOfClass:[EZLLMStreamService class]];
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
+    EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    for (NSString *model in service.availableModels) {
+    for (NSString *model in service.validModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
         item.target = self;
         [menu addItem:item];
@@ -445,18 +445,13 @@
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
-    EZBaseOpenAIService *service = (EZBaseOpenAIService *)self.result.service;
+    EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
-        [self postServiceUpdatedNotification:service.serviceType];
+        self.serviceModelButton.hoverTitle = service.model;
+        self.serviceModelButton.highlightTitle = service.model;
     }
-}
-
-- (void)postServiceUpdatedNotification:(EZServiceType)serviceType {
-    NSDictionary *userInfo = @{EZServiceTypeKey : serviceType};
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 #pragma mark - Animation
