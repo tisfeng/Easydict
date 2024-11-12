@@ -31,6 +31,12 @@ struct ServiceTab: View {
                 .onReceive(serviceHasUpdatedNotification) { _ in
                     viewModel.updateServices()
                 }
+
+                if viewModel.isValidating {
+                    ProgressView()
+                        .controlSize(.small)
+                        .progressViewStyle(.circular)
+                }
             }
 
             Group {
@@ -84,6 +90,8 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     // MARK: Internal
+
+    @Published var isValidating: Bool = false
 
     @Published var selectedService: QueryService?
 
@@ -174,27 +182,30 @@ private class ServiceItemViewModel: ObservableObject {
 
     public func handleValidateServiceEnable(isEnable: Bool, viewModel: ServiceTabViewModel) {
         service.validate { [weak self] result, error in
-            guard let weakSelf = self else { return }
-            // Validate existence error
-            guard error == nil else {
-                // close switch
-                weakSelf.isEnable = false
-                logInfo("\(weakSelf.service.serviceType().rawValue) validate error")
-                return
-            }
+            // check into main thread
+            DispatchQueue.main.async {
+                guard let weakSelf = self else { return }
+                // Validate existence error
+                guard error == nil else {
+                    // close switch
+                    weakSelf.isEnable = false
+                    logInfo("\(weakSelf.service.serviceType().rawValue) validate error")
+                    return
+                }
 
-            // If error is nil but result text is also empty, we should report error.
-            guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                weakSelf.isEnable = false
-                logInfo("\(weakSelf.service.serviceType().rawValue) validate translated text is empty")
-                return
-            }
+                // If error is nil but result text is also empty, we should report error.
+                guard let translatedText = result.translatedText, !translatedText.isEmpty else {
+                    weakSelf.isEnable = false
+                    logInfo("\(weakSelf.service.serviceType().rawValue) validate translated text is empty")
+                    return
+                }
 
-            // service enabel open the switch and toggle enable status
-            weakSelf.service.enabled = isEnable
-            weakSelf.service.enabledQuery = isEnable
-            EZLocalStorage.shared().setService(weakSelf.service, windowType: viewModel.windowType)
-            viewModel.postUpdateServiceNotification()
+                // service enabel open the switch and toggle enable status
+                weakSelf.service.enabled = isEnable
+                weakSelf.service.enabledQuery = isEnable
+                EZLocalStorage.shared().setService(weakSelf.service, windowType: viewModel.windowType)
+                viewModel.postUpdateServiceNotification()
+            }
         }
     }
 
