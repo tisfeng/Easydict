@@ -172,29 +172,29 @@ private class ServiceItemViewModel: ObservableObject {
 
     // MARK: Public
 
-    public func handleValidateServiceEnable(isEnable: Bool) {
+    public func handleValidateServiceEnable(isEnable: Bool, viewModel: ServiceTabViewModel) {
         service.validate { [weak self] result, error in
-            guard let self = self else { return }
+            guard let weakSelf = self else { return }
             // Validate existence error
             guard error == nil else {
                 // close switch
-                self.isEnable = false
-                logInfo("\(self.service.serviceType().rawValue) validate error")
+                weakSelf.isEnable = false
+                logInfo("\(weakSelf.service.serviceType().rawValue) validate error")
                 return
             }
 
             // If error is nil but result text is also empty, we should report error.
             guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                self.isEnable = false
-                logInfo("\(self.service.serviceType().rawValue) validate translated text is empty")
+                weakSelf.isEnable = false
+                logInfo("\(weakSelf.service.serviceType().rawValue) validate translated text is empty")
                 return
             }
 
             // service enabel open the switch and toggle enable status
-            self.service.enabled = isEnable
-            self.service.enabledQuery = isEnable
-            EZLocalStorage.shared().setService(self.service, windowType: self.serviceTabViewModel.windowType)
-            self.serviceTabViewModel.postUpdateServiceNotification()
+            weakSelf.service.enabled = isEnable
+            weakSelf.service.enabledQuery = isEnable
+            EZLocalStorage.shared().setService(weakSelf.service, windowType: viewModel.windowType)
+            viewModel.postUpdateServiceNotification()
         }
     }
 
@@ -255,7 +255,7 @@ private struct ServiceItemView: View {
             // open service
             if newValue {
                 // validate service enabled
-                serviceItemViewModel.handleValidateServiceEnable(isEnable: true)
+                serviceItemViewModel.handleValidateServiceEnable(isEnable: true, viewModel: viewModel)
             } else { // close service
                 service.enabled = false
                 EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
