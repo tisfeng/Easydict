@@ -135,7 +135,7 @@ public final class GeminiService: LLMStreamService {
                 var systemInstruction: ModelContent? = try ModelContent(role: "system", systemPrompt)
 
                 // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
-                if model == "gemini_1_0_pro" {
+                if model == "gemini-1.0-pro" {
                     systemInstruction = nil
                     enableSystemPromptInChats = true
                 }
