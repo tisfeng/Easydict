@@ -11,7 +11,10 @@ import Foundation
 class Throttler {
     // MARK: Lifecycle
 
-    init(maxInterval: TimeInterval = 0.2, queue: DispatchQueue = DispatchQueue.main) {
+    /// - Parameters:
+    ///   - maxInterval: The maximum interval between executions. This value should be greater than 0.2s, otherwise it may update UI too frequently, cause CPU too high.
+    ///   - queue: The dispatch queue to execute the block on.
+    init(maxInterval: TimeInterval = 0.3, queue: DispatchQueue = DispatchQueue.main) {
         self.maxInterval = maxInterval
         self.queue = queue
     }
