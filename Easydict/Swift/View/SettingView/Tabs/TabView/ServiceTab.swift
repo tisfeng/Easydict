@@ -15,58 +15,65 @@ struct ServiceTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            VStack {
-                WindowTypePicker(windowType: $viewModel.windowType)
-                    .padding()
-                List(selection: $viewModel.selectedService) {
-                    ServiceItems()
-                }
-                .listStyle(.plain)
-                .scrollIndicators(.never)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.bottom)
-                .padding(.horizontal)
-                .frame(minWidth: 260)
-                .onReceive(serviceHasUpdatedNotification) { _ in
-                    viewModel.updateServices()
+        ZStack {
+            HStack(alignment: .top, spacing: 0) {
+                VStack {
+                    WindowTypePicker(windowType: $viewModel.windowType)
+                        .padding()
+                    List(selection: $viewModel.selectedService) {
+                        ServiceItems()
+                    }
+                    .listStyle(.plain)
+                    .scrollIndicators(.never)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.bottom)
+                    .padding(.horizontal)
+                    .frame(minWidth: 260)
+                    .onReceive(serviceHasUpdatedNotification) { _ in
+                        viewModel.updateServices()
+                    }
                 }
 
-                if viewModel.isValidating {
+                Group {
+                    if let service = viewModel.selectedService {
+                        VStack(alignment: .leading) {
+                            Button("setting.service.back") {
+                                viewModel.selectedService = nil
+                            }
+                            .padding()
+
+                            if let view = service.configurationListItems() as? (any View) {
+                                Form {
+                                    AnyView(view)
+                                }
+                                .formStyle(.grouped)
+                            } else {
+                                Spacer()
+                                HStack {
+                                    Spacer()
+                                    Text("setting.service.detail.no_configuration \(service.name())")
+                                    Spacer()
+                                }
+                                Spacer()
+                            }
+                        }
+                    } else {
+                        WindowConfigurationView(windowType: viewModel.windowType)
+                    }
+                }
+                .layoutPriority(1)
+            }
+
+            if viewModel.isValidating {
+                VStack {
                     ProgressView()
                         .controlSize(.small)
                         .progressViewStyle(.circular)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black.opacity(0.4))
+                .zIndex(1)
             }
-
-            Group {
-                if let service = viewModel.selectedService {
-                    VStack(alignment: .leading) {
-                        Button("setting.service.back") {
-                            viewModel.selectedService = nil
-                        }
-                        .padding()
-
-                        if let view = service.configurationListItems() as? (any View) {
-                            Form {
-                                AnyView(view)
-                            }
-                            .formStyle(.grouped)
-                        } else {
-                            Spacer()
-                            HStack {
-                                Spacer()
-                                Text("setting.service.detail.no_configuration \(service.name())")
-                                Spacer()
-                            }
-                            Spacer()
-                        }
-                    }
-                } else {
-                    WindowConfigurationView(windowType: viewModel.windowType)
-                }
-            }
-            .layoutPriority(1)
         }
         .environmentObject(viewModel)
     }
@@ -180,31 +187,43 @@ private class ServiceItemViewModel: ObservableObject {
 
     // MARK: Public
 
-    public func handleValidateServiceEnable(isEnable: Bool, viewModel: ServiceTabViewModel) {
-        service.validate { [weak self] result, error in
+    public func handleValidateServiceEnable(viewModel: ServiceTabViewModel) {
+        // filter
+        if service.serviceType() == .appleDictionary ||
+            service.serviceType() == .apple {
+            service.enabled = true
+            service.enabledQuery = true
+            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+            viewModel.postUpdateServiceNotification()
+            return
+        }
+
+        viewModel.isValidating = true
+        service.validate { [self] result, error in
             // check into main thread
             DispatchQueue.main.async {
-                guard let weakSelf = self else { return }
                 // Validate existence error
-                guard error == nil else {
-                    // close switch
-                    weakSelf.isEnable = false
-                    logInfo("\(weakSelf.service.serviceType().rawValue) validate error")
+                if let error = error {
+                    self.isEnable = false
+                    logInfo("\(self.service.serviceType().rawValue) validate error: \(error)")
+                    viewModel.isValidating = false
                     return
                 }
 
                 // If error is nil but result text is also empty, we should report error.
                 guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                    weakSelf.isEnable = false
-                    logInfo("\(weakSelf.service.serviceType().rawValue) validate translated text is empty")
+                    self.isEnable = false
+                    logInfo("\(self.service.serviceType().rawValue) validate translated text is empty")
+                    viewModel.isValidating = false
                     return
                 }
 
                 // service enabel open the switch and toggle enable status
-                weakSelf.service.enabled = isEnable
-                weakSelf.service.enabledQuery = isEnable
-                EZLocalStorage.shared().setService(weakSelf.service, windowType: viewModel.windowType)
+                self.service.enabled = true
+                self.service.enabledQuery = true
+                EZLocalStorage.shared().setService(self.service, windowType: viewModel.windowType)
                 viewModel.postUpdateServiceNotification()
+                viewModel.isValidating = false
             }
         }
     }
@@ -266,7 +285,7 @@ private struct ServiceItemView: View {
             // open service
             if newValue {
                 // validate service enabled
-                serviceItemViewModel.handleValidateServiceEnable(isEnable: true, viewModel: viewModel)
+                serviceItemViewModel.handleValidateServiceEnable(viewModel: viewModel)
             } else { // close service
                 service.enabled = false
                 EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
