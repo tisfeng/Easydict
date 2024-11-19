@@ -175,8 +175,7 @@ private class ServiceItemViewModel: ObservableObject {
 
     public func enableService() {
         // filter
-        if service.serviceType() == .appleDictionary ||
-            service.serviceType() == .apple {
+        if service.serviceType() == .appleDictionary || service.serviceType() == .apple {
             service.enabled = true
             service.enabledQuery = true
             EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
@@ -233,7 +232,8 @@ private class ServiceItemViewModel: ObservableObject {
     var isEnable: Bool {
         get {
             service.enabled
-        } set {
+        }
+        set {
             if newValue {
                 // validate service enabled
                 enableService()
@@ -291,15 +291,22 @@ private struct ServiceItemView: View {
                         .lineLimit(1)
                 }
                 Spacer()
-                if serviceItemViewModel.isValidating {
-                    ProgressView()
-                        .controlSize(.small)
-                } else {
-                    Toggle(serviceItemViewModel.service.name(), isOn: $serviceItemViewModel.isEnable)
+                // Use a fixed width container for both controls, to make sure they are center aligned.
+                ZStack {
+                    if serviceItemViewModel.isValidating {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Toggle(
+                            serviceItemViewModel.service.name(),
+                            isOn: $serviceItemViewModel.isEnable
+                        )
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .controlSize(.small)
+                        .controlSize(.small) // size: 32*18
+                    }
                 }
+                .frame(width: 32)
             }
         }
         .listRowSeparator(.hidden)
