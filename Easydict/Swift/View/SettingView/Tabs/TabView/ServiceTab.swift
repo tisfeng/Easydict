@@ -214,7 +214,6 @@ private class ServiceItemViewModel: ObservableObject {
                 self.service.enabledQuery = true
                 EZLocalStorage.shared().setService(self.service, windowType: self.viewModel.windowType)
                 self.viewModel.postUpdateServiceNotification()
-//                self.objectWillChange.send()
             }
         }
     }

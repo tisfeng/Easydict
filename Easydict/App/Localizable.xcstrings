@@ -1964,17 +1964,6 @@
         }
       }
     },
-    "fail_validate_service %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " Fail to enable @%"
-          }
-        }
-      }
-    },
     "Failed to allocate memory" : {
       "comment" : "Error reason",
       "localizations" : {
