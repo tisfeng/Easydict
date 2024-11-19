@@ -799,40 +799,6 @@
         }
       }
     },
-    "setting.service.back" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Späť"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "返回"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "返回"
-          }
-        }
-      }
-    },
     "Baidu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1994,6 +1960,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匯出記錄"
+          }
+        }
+      }
+    },
+    "fail_validate_service %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " Fail to enable @%"
           }
         }
       }
@@ -8314,6 +8291,40 @@
         }
       }
     },
+    "setting.service.back" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Späť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        }
+      }
+    },
     "setting.service.detail.no_configuration %@" : {
       "localizations" : {
         "en" : {
@@ -8412,6 +8423,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示語言選擇欄"
+          }
+        }
+      }
+    },
+    "setting.service.unable_enable %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to enable translation service %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用%@翻译服务失败"
+          }
+        }
+      }
+    },
+    "setting.service.validate.error.empty_translate_result" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fail to validate service since test translation query returned invalid empty result. "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证翻译服务时，返回了无效的空结果"
           }
         }
       }
