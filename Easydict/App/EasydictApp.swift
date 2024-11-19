@@ -78,16 +78,15 @@ struct EasydictApp: App {
             }
         }
 
-            Settings {
-                SettingView().environmentObject(languageState).environment(
-                    \.locale,
-                    .init(identifier: I18nHelper.shared.localizeCode)
-                )
-            }
+        Settings {
+            SettingView().environmentObject(languageState).environment(
+                \.locale,
+                .init(identifier: I18nHelper.shared.localizeCode)
+            )
+        }
 
-            Window("Query", id: "query") {
-                QueryView()
-            }
+        Window("Query", id: "query") {
+            QueryView()
         }
     }
 
