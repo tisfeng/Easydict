@@ -84,6 +84,10 @@ struct EasydictApp: App {
                 .init(identifier: I18nHelper.shared.localizeCode)
             )
         }
+
+        Window("Query", id: "query") {
+            QueryView()
+        }
     }
 
     // MARK: Private
