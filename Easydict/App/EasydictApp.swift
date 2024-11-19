@@ -42,10 +42,12 @@ struct EasydictApp: App {
             Label {
                 Text("Easydict")
                     .openSettingsAccess() // trick way for open setting
-                    .onReceive(NotificationCenter.default.publisher(
-                        for: Notification.Name.openSettings,
-                        object: nil
-                    )) { _ in
+                    .onReceive(
+                        NotificationCenter.default.publisher(
+                            for: Notification.Name.openSettings,
+                            object: nil
+                        )
+                    ) { _ in
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                             // calling `openSettings` immediately doesn't work so wait a quick moment
                             try? openSettings()
@@ -97,26 +99,6 @@ struct EasydictApp: App {
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
     @StateObject private var languageState = LanguageState()
-
-    @State var aboutWindow: NSWindow?
-
-    private func showAboutWindow() {
-        if let aboutWindow = aboutWindow {
-            aboutWindow.makeKeyAndOrderFront(nil)
-        } else {
-            aboutWindow = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 500, height: 220),
-                styleMask: [.titled, .closable],
-                backing: .buffered, defer: false
-            )
-            aboutWindow?.titleVisibility = .hidden
-            aboutWindow?.titlebarAppearsTransparent = true
-            aboutWindow?.isReleasedWhenClosed = false
-            aboutWindow?.center()
-            aboutWindow?.contentView = NSHostingView(rootView: SettingsAboutTab())
-            aboutWindow?.makeKeyAndOrderFront(nil)
-        }
-    }
 }
 
 extension Bool {

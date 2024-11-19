@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import SelectedTextKit
 import Testing
 import Translation
 
@@ -54,11 +55,39 @@ import Translation
     #expect(decryptedText == text)
 }
 
-@Test func alertVolume() async throws {
-    let volume = try await AppleScriptTask.alertVolume()
-    print(volume)
+@Test func testAlertVolume() async throws {
+    let originalVolume = try await AppleScriptTask.alertVolume()
+    print("Original volume: \(originalVolume)")
+
+    let testVolume = 50
+    try await AppleScriptTask.setAlertVolume(testVolume)
+
+    let newVolume = try await AppleScriptTask.alertVolume()
+    #expect(newVolume == testVolume)
+
+    try await AppleScriptTask.setAlertVolume(originalVolume)
+    #expect(true, "Alert volume test completed")
 }
 
-@Test func setAlertVolume() async throws {
-    try await AppleScriptTask.setAlertVolume(50)
+@Test func testGetSelectedText() async throws {
+    // Run thousands of times to test crash.
+    for i in 0..<2000 {
+        print("test index: \(i)")
+        let selectedText = await (try? getSelectedText()) ?? ""
+        print("\(i) selectedText: \(selectedText)")
+    }
+    #expect(true, "Test getSelectedText completed without crash")
+}
+
+@Test func testConcurrentGetSelectedText() async throws {
+    await withTaskGroup(of: Void.self) { group in
+        for i in 0..<2000 {
+            group.addTask {
+                print("test index: \(i)")
+                let selectedText = (try? await getSelectedText()) ?? ""
+                print("\(i) selectedText: \(selectedText)")
+            }
+        }
+    }
+    #expect(true, "Concurrent test getSelectedText completed without crash")
 }
