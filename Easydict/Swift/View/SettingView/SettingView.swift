@@ -77,7 +77,7 @@ struct SettingView: View {
         case .disabled:
             500
         case .privacy:
-            320
+            340
         case .about:
             300
         default:

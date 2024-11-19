@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import SFSafeSymbols
 import SwiftUI
 import Vortex
 
@@ -80,18 +81,29 @@ struct AboutTab: View {
 
                             HStack(spacing: 15) {
                                 Button {
-                                    NSWorkspace.shared.open(URL(string: "https://github.com/tisfeng/Easydict")!)
+                                    NSWorkspace.shared.open(
+                                        URL(string: "https://github.com/tisfeng/Easydict")!
+                                    )
                                 } label: {
-                                    Label("setting.about.github_link", systemImage: "star.fill")
-                                        .frame(width: 120, height: 20)
+                                    Label("setting.about.github_link", systemSymbol: .starFill)
                                 }
 
                                 Button {
                                     NSWorkspace.shared
-                                        .open(URL(string: "https://github.com/tisfeng/Easydict/graphs/contributors")!)
+                                        .open(
+                                            URL(
+                                                string:
+                                                "https://github.com/tisfeng/Easydict/graphs/contributors"
+                                            )!
+                                        )
                                 } label: {
-                                    Label("setting.about.contributor_link", systemImage: "person.3.sequence.fill")
-                                        .frame(width: 120, height: 20)
+                                    Label("setting.about.contributor_link", systemSymbol: .person3Fill)
+                                }
+
+                                Button {
+                                    showAcknowWindow()
+                                } label: {
+                                    Label("setting.about.acknowledgements", systemSymbol: .checkmarkSealFill)
                                 }
                             }
                             .padding(.bottom, 10)

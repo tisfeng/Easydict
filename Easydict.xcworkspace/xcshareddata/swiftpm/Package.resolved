@@ -1,5 +1,5 @@
 {
-  "originHash" : "68ad07a7a58de7ede24f52d8abef08548f760cda61aee03dc81b076aaa3e2aaf",
+  "originHash" : "6b2d9735092da5c9bc9b0a4954947f373d68f35b0939813ad8f54d785301c35e",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -8,6 +8,14 @@
       "state" : {
         "revision" : "bfc0b6f81adc06ce5121eb23f628473638d67c5c",
         "version" : "1.2022062300.0"
+      }
+    },
+    {
+      "identity" : "acknowlist",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tisfeng/AcknowList",
+      "state" : {
+        "revision" : "6a7af0bb6ec82f77e2835b290c7e4fe950b8f7d8"
       }
     },
     {
@@ -276,8 +284,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/microsoft/PLCrashReporter.git",
       "state" : {
-        "revision" : "1aed8f7dc79ce8e674c61e430ef51ca3db18cea9",
-        "version" : "1.11.1"
+        "revision" : "6752f71de206f6a53fa6a758c3660fd9a7fe7527",
+        "version" : "1.11.2"
       }
     },
     {
@@ -312,8 +320,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/SelectedTextKit.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "90e1ba93646adc0efa2f6e6e424523d0648feb11"
+        "revision" : "b4a19071f3d2661dc1dd673e2a9206320a2f0484",
+        "version" : "1.0.3"
       }
     },
     {
