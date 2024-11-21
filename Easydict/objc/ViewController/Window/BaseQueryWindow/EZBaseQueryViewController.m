@@ -100,7 +100,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (instancetype)initWithWindowType:(EZWindowType)type {
     if (self = [super init]) {
         self.windowType = type;
+        [self setupUI];
         [self setupData];
+        [self updateWindowHeight];
     }
     return self;
 }
@@ -122,8 +124,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [self setupUI];
 }
 
 - (void)viewWillAppear {
@@ -146,8 +146,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)setupUI {
     [self tableView];
-
-    [self updateWindowHeight];
 
     mm_weakify(self);
     [self setResizeWindowBlock:^{
