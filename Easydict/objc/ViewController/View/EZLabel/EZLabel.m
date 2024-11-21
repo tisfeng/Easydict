@@ -22,7 +22,7 @@
     self.editable = NO;
     self.backgroundColor = NSColor.clearColor;
     [self setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
-    
+
     self.lineSpacing = 4;
     self.paragraphSpacing = 0;
     self.font = [NSFont systemFontOfSize:14];
@@ -31,37 +31,31 @@
 
 - (void)setText:(NSString *)text {
     _text = text;
-    
     self.string = text;
-    NSRange range = NSMakeRange(0, text.length);
-    
-    // Character spacing
+
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-    
-    // Line spacing
+    NSRange range = NSMakeRange(0, text.length);
+
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = self.lineSpacing;
     paragraphStyle.paragraphSpacing = self.paragraphSpacing;
-    
+
     [attributedString addAttributes:@{
         NSParagraphStyleAttributeName : paragraphStyle,
         NSKernAttributeName : @(0.2),
         NSFontAttributeName : self.font,
     }
                               range:range];
-    
+
+    __block NSColor *textColor = self.textForegroundColor ?: nil;
     [self excuteLight:^(NSTextView *textView) {
-        [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : self.textForegroundColor ?: [NSColor ez_resultTextLightColor],
-        }
-                                  range:range];
-        [textView.textStorage setAttributedString:attributedString];
+        textColor = textColor ?: [NSColor ez_resultTextLightColor];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:textColor range:range];
+        textView.textStorage.attributedString = attributedString;
     } dark:^(NSTextView *textView) {
-        [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : self.textForegroundColor ?: [NSColor ez_resultTextDarkColor],
-        }
-                                  range:range];
-        [textView.textStorage setAttributedString:attributedString];
+        textColor = textColor ?: [NSColor ez_resultTextDarkColor];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:textColor range:range];
+        textView.textStorage.attributedString = attributedString;
     }];
 }
 
@@ -76,7 +70,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
-    
+
     // Drawing code here.
 }
 
