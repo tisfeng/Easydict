@@ -30,33 +30,52 @@
 }
 
 - (void)setText:(NSString *)text {
+    if (!text) {
+        text = @"";
+    }
+
     _text = text;
     self.string = text;
 
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+    // Create attributed string and set range
     NSRange range = NSMakeRange(0, text.length);
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
 
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    // Use static or cached paragraph style object
+    static NSMutableParagraphStyle *paragraphStyle = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    });
+
     paragraphStyle.lineSpacing = self.lineSpacing;
     paragraphStyle.paragraphSpacing = self.paragraphSpacing;
 
-    [attributedString addAttributes:@{
+    // Set common attributes
+    NSDictionary *attributes = @{
         NSParagraphStyleAttributeName : paragraphStyle,
         NSKernAttributeName : @(0.2),
         NSFontAttributeName : self.font,
-    }
-                              range:range];
+    };
+    [attributedString addAttributes:attributes range:range];
 
-    __block NSColor *textColor = self.textForegroundColor ?: nil;
+    // Handle color for light/dark mode
     [self excuteLight:^(NSTextView *textView) {
-        textColor = textColor ?: [NSColor ez_resultTextLightColor];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:textColor range:range];
-        textView.textStorage.attributedString = attributedString;
+        NSColor *color = self.textForegroundColor ?: [NSColor ez_resultTextLightColor];
+        [self updateTextView:textView withAttributedString:attributedString color:color range:range];
     } dark:^(NSTextView *textView) {
-        textColor = textColor ?: [NSColor ez_resultTextDarkColor];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:textColor range:range];
-        textView.textStorage.attributedString = attributedString;
+        NSColor *color = self.textForegroundColor ?: [NSColor ez_resultTextDarkColor];
+        [self updateTextView:textView withAttributedString:attributedString color:color range:range];
     }];
+}
+
+// Helper method to update text view with color
+- (void)updateTextView:(NSTextView *)textView
+    withAttributedString:(NSMutableAttributedString *)attributedString
+                   color:(NSColor *)color
+                   range:(NSRange)range {
+    [attributedString addAttribute:NSForegroundColorAttributeName value:color range:range];
+    textView.textStorage.attributedString = attributedString;
 }
 
 
