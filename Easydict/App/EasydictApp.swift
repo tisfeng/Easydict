@@ -84,6 +84,9 @@ struct EasydictApp: App {
                 .init(identifier: I18nHelper.shared.localizeCode)
             )
         }
+        Window("setting.about.acknowledgements", id: "acknowledgements") {
+            AcknowListView()
+        }
     }
 
     // MARK: Private

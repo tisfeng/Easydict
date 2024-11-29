@@ -55,9 +55,3 @@ func showAboutWindow() {
         SettingsAboutTab()
     }
 }
-
-func showAcknowWindow() {
-    showWindow(title: "setting.about.acknowledgements") {
-        AcknowListView()
-    }
-}

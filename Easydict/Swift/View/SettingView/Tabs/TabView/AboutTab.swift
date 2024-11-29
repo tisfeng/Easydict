@@ -26,6 +26,8 @@ struct SettingsAboutTab: View {
 struct AboutTab: View {
     // MARK: Internal
 
+    @Environment(\.openWindow) var openWindow
+
     var body: some View {
         VortexViewReader { proxy in
             GeometryReader { geometry in
@@ -101,7 +103,7 @@ struct AboutTab: View {
                                 }
 
                                 Button {
-                                    showAcknowWindow()
+                                    openWindow(id: "acknowledgements")
                                 } label: {
                                     Label("setting.about.acknowledgements", systemSymbol: .checkmarkSealFill)
                                 }

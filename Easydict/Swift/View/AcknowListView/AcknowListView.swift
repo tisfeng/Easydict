@@ -21,8 +21,18 @@ struct AcknowListView: View {
     // MARK: Internal
 
     var body: some View {
-        NavigationStack {
-            AcknowListSwiftUIView(acknowList: acknowList)
+        if #available(macOS 15, *) {
+            NavigationStack {
+                AcknowListSwiftUIView(acknowList: acknowList)
+                    .listStyle(.sidebar)
+                    .listRowBackground(Color.red)
+            }
+            .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+            .containerBackground(.thickMaterial, for: .window)
+        } else {
+            NavigationStack {
+                AcknowListSwiftUIView(acknowList: acknowList)
+            }
         }
     }
 
