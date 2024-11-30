@@ -29,4 +29,4 @@ Easydict 的翻译是通过 Xcode 中的 String Catalog 管理的，下面是翻
 - [Localizing and varying text with a string catalog - Apple Developer](https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog)
 - [Discover String Catalogs - WWDC23 Videos](https://developer.apple.com/videos/play/wwdc2023/10155)
 - [Apple 本地化术语表](https://applelocalization.com)
-- [Easydict 本地化示例 PR](https://github.com/tisfeng/Easydict/pull/656)
+- [Easydict 本地化示例 PR](https://github.com/tisfeng/Easydict/pull/668)

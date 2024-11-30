@@ -29,4 +29,4 @@ Now you can wait for a maintainer's review and get your translations adopted in 
 - [Localizing and varying text with a string catalog - Apple Developer](https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog)
 - [Discover String Catalogs - WWDC23 Videos](https://developer.apple.com/videos/play/wwdc2023/10155)
 - [Apple Localization Glossaries](https://applelocalization.com)
-- [Sample Pull Request for Easydict](https://github.com/tisfeng/Easydict/pull/656)
+- [Sample Pull Request for Easydict](https://github.com/tisfeng/Easydict/pull/668)

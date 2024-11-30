@@ -17,7 +17,6 @@ let languagePreferenceLocalKey = "LanguagePreferenceLocalKey"
 class LanguageState: ObservableObject {
     enum LanguageType: String, CaseIterable {
         case english = "en"
-        case canadianEnglish = "en-CA"
         case simplifiedChinese = "zh-Hans"
         case traditionalChinese = "zh-Hant"
         case slovak = "sk"
@@ -28,8 +27,6 @@ class LanguageState: ObservableObject {
             switch self {
             case .english:
                 "English"
-            case .canadianEnglish:
-                "English (Canada)"
             case .simplifiedChinese:
                 "简体中文"
             case .traditionalChinese:
