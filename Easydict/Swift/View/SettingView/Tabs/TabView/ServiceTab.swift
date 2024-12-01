@@ -135,7 +135,7 @@ private struct ServiceItems: View {
 
     var body: some View {
         ForEach(servicesWithID, id: \.1) { service, _ in
-            ServiceItemView(service: service)
+            ServiceItemView(service: service, viewModel: viewModel)
                 .tag(service)
         }
         .onMove(perform: viewModel.onServiceItemMove)
@@ -154,13 +154,14 @@ private struct ServiceItems: View {
 
 // MARK: - ServiceItemViewModel
 
+@MainActor
 private class ServiceItemViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(_ service: QueryService) {
+    init(_ service: QueryService, viewModel: ServiceTabViewModel) {
         self.service = service
-        self.isEnable = service.enabled
         self.name = service.name()
+        self.viewModel = viewModel
 
         cancellables.append(
             serviceUpdatePublisher
@@ -170,16 +171,85 @@ private class ServiceItemViewModel: ObservableObject {
         )
     }
 
+    // MARK: Public
+
+    public func enableService() {
+        // filter
+        if service.serviceType() == .appleDictionary || service.serviceType() == .apple {
+            service.enabled = true
+            service.enabledQuery = true
+            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+            viewModel.postUpdateServiceNotification()
+            return
+        }
+
+        isValidating = true
+
+        service.validate { [self] result, error in
+            // check into main thread
+            DispatchQueue.main.async {
+                defer { self.isValidating = false }
+                // Validate existence error
+                if let error = error {
+                    logInfo("\(self.service.serviceType().rawValue) validate error: \(error)")
+                    self.error = error
+                    self.showErrorAlert = true
+                    return
+                }
+
+                // If error is nil but result text is also empty, we should report error.
+                guard let translatedText = result.translatedText, !translatedText.isEmpty else {
+                    logInfo("\(self.service.serviceType().rawValue) validate translated text is empty")
+                    self.showErrorAlert = true
+                    self.error = EZError(
+                        type: .API,
+                        description: String(localized: "setting.service.validate.error.empty_translate_result")
+                    )
+                    return
+                }
+
+                // service enabel open the switch and toggle enable status
+                self.service.enabled = true
+                self.service.enabledQuery = true
+                EZLocalStorage.shared().setService(self.service, windowType: self.viewModel.windowType)
+                self.viewModel.postUpdateServiceNotification()
+            }
+        }
+    }
+
     // MARK: Internal
 
     let service: QueryService
 
-    @Published var isEnable = false
+    @Published var isValidating = false
     @Published var name = ""
+
+    @Published var showErrorAlert = false
+    @Published var error: (any Error)?
+
+    unowned var viewModel: ServiceTabViewModel
+
+    var isEnable: Bool {
+        get {
+            service.enabled
+        }
+        set {
+            if newValue {
+                // validate service enabled
+                enableService()
+            } else { // close service
+                service.enabled = false
+                EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+                viewModel.postUpdateServiceNotification()
+            }
+        }
+    }
 
     // MARK: Private
 
     private var cancellables: [AnyCancellable] = []
+
+    @EnvironmentObject private var serviceTabViewModel: ServiceTabViewModel
 
     private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
         NotificationCenter.default
@@ -200,9 +270,9 @@ private class ServiceItemViewModel: ObservableObject {
 private struct ServiceItemView: View {
     // MARK: Lifecycle
 
-    init(service: QueryService) {
+    init(service: QueryService, viewModel: ServiceTabViewModel) {
         self.service = service
-        self.serviceItemViewModel = ServiceItemViewModel(service)
+        self.serviceItemViewModel = ServiceItemViewModel(service, viewModel: viewModel)
     }
 
     // MARK: Internal
@@ -210,31 +280,49 @@ private struct ServiceItemView: View {
     let service: QueryService
 
     var body: some View {
-        Toggle(isOn: $serviceItemViewModel.isEnable) {
+        Group {
             HStack {
-                Image(service.serviceType().rawValue)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20.0, height: 20.0)
-                Text(service.name())
-                    .lineLimit(1)
+                HStack {
+                    Image(service.serviceType().rawValue)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20.0, height: 20.0)
+                    Text(service.name())
+                        .lineLimit(1)
+                }
+                Spacer()
+                // Use a fixed width container for both controls, to make sure they are center aligned.
+                ZStack {
+                    if serviceItemViewModel.isValidating {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Toggle(
+                            serviceItemViewModel.service.name(),
+                            isOn: $serviceItemViewModel.isEnable
+                        )
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .controlSize(.small) // size: 32*18
+                    }
+                }
+                .frame(width: 32)
             }
         }
-        .onReceive(serviceItemViewModel.$isEnable) { newValue in
-            guard service.enabled != newValue else { return }
-            service.enabled = newValue
-            if newValue {
-                service.enabledQuery = newValue
-            }
-            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
-            viewModel.postUpdateServiceNotification()
-        }
-        .toggleStyle(.switch)
-        .controlSize(.small)
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
         .padding(.horizontal, 8)
         .padding(.vertical, 12)
+        .alert(
+            "setting.service.unable_enable \(serviceItemViewModel.service.name())",
+            isPresented: $serviceItemViewModel.showErrorAlert
+        ) {
+            Button("ok") {
+                serviceItemViewModel.showErrorAlert = false
+            }
+        } message: {
+            Text(serviceItemViewModel.error?.localizedDescription ?? "error_unknown")
+        }
     }
 
     // MARK: Private
