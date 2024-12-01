@@ -96,6 +96,7 @@ struct EasydictApp: App {
         Window("setting.about", id: .aboutWindowId) {
             SettingsAboutTab()
                 .frame(width: 500, height: 220)
+                .disableWindowMinimize()
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)

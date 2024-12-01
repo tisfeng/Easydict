@@ -21,18 +21,11 @@ struct AcknowListView: View {
     // MARK: Internal
 
     var body: some View {
-        if #available(macOS 15, *) {
-            NavigationStack {
-                AcknowListSwiftUIView(acknowList: acknowList)
-                    .listStyle(.sidebar)
-            }
-            .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
-            .containerBackground(.thickMaterial, for: .window)
-        } else {
-            NavigationStack {
-                AcknowListSwiftUIView(acknowList: acknowList)
-            }
+        NavigationStack {
+            AcknowListSwiftUIView(acknowList: acknowList)
         }
+        .hideWindowToolbarBackground()
+        .thickMaterialWindowBackground()
     }
 
     // MARK: Private
