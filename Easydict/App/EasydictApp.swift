@@ -71,7 +71,7 @@ struct EasydictApp: App {
             // Override About button
             CommandGroup(replacing: .appInfo) {
                 Button {
-                    showAboutWindow()
+                    openWindow(id: .aboutWindowId)
                 } label: {
                     Text("menubar.about")
                 }
@@ -84,11 +84,28 @@ struct EasydictApp: App {
                 .init(identifier: I18nHelper.shared.localizeCode)
             )
         }
+
+        // Acknowledgements window
+        Window("setting.about.acknowledgements", id: .acknowledgementsWindowId) {
+            AcknowListView()
+        }
+        .windowToolbarStyle(.unifiedCompact)
+        .defaultSize(width: 800, height: 600)
+
+        // About window
+        Window("setting.about", id: .aboutWindowId) {
+            SettingsAboutTab()
+                .frame(width: 500, height: 220)
+                .disableWindowMinimize()
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
     }
 
     // MARK: Private
 
     @Environment(\.openSettings) private var openSettings
+    @Environment(\.openWindow) private var openWindow
 
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
 

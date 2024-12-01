@@ -23,7 +23,9 @@ struct AcknowListView: View {
     var body: some View {
         NavigationStack {
             AcknowListSwiftUIView(acknowList: acknowList)
+                .listStyle(.sidebar)
         }
+        .thickMaterialWindowBackground()
     }
 
     // MARK: Private

@@ -51,7 +51,7 @@ struct SettingView: View {
                 .tag(SettingTab.privacy)
 
             SettingsAboutTab()
-                .tabItem { Label("about", systemImage: "info.bubble") }
+                .tabItem { Label("setting.about", systemImage: "info.bubble") }
                 .tag(SettingTab.about)
         }
         .background(

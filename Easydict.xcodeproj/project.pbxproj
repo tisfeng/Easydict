@@ -20,7 +20,6 @@
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
 		030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */; };
 		030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 030D612D2CD9BBC3000DF298 /* Package.resolved */; };
-		030D61312CD9C974000DF298 /* StaticWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61302CD9C974000DF298 /* StaticWindows.swift */; };
 		030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
@@ -49,6 +48,7 @@
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
+		033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EA07D2CFC66380017F86C /* View+Builder.swift */; };
 		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
 		0340D38E2C8EEEA2004C9910 /* AppleScriptTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */; };
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
@@ -399,7 +399,6 @@
 		030D61242CD9B905000DF298 /* AcknowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowListView.swift; sourceTree = "<group>"; };
 		030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pods-Easydict-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Easydict/Pods-Easydict-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		030D612D2CD9BBC3000DF298 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; name = Package.resolved; path = Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = SOURCE_ROOT; };
-		030D61302CD9C974000DF298 /* StaticWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticWindows.swift; sourceTree = "<group>"; };
 		030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -440,6 +439,7 @@
 		033C30FB2A7409C40095926A /* TTTDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTDictionary.m; sourceTree = "<group>"; };
 		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
+		033EA07D2CFC66380017F86C /* View+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Builder.swift"; sourceTree = "<group>"; };
 		033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceGetSelectedTextType.swift; sourceTree = "<group>"; };
 		0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleScriptTask.swift; sourceTree = "<group>"; };
 		0340D3902C8EEEE3004C9910 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
@@ -1017,14 +1017,6 @@
 			path = AcknowListView;
 			sourceTree = "<group>";
 		};
-		030D612F2CD9C947000DF298 /* Windows */ = {
-			isa = PBXGroup;
-			children = (
-				030D61302CD9C974000DF298 /* StaticWindows.swift */,
-			);
-			path = Windows;
-			sourceTree = "<group>";
-		};
 		0313F86E2AD5577400A5CFB0 /* EasydictTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1155,6 +1147,14 @@
 				0310C8262A94EFA100B1D81E /* apple-dictionary.html */,
 			);
 			path = AppleDictionary;
+			sourceTree = "<group>";
+		};
+		033EA07C2CFC63A50017F86C /* View */ = {
+			isa = PBXGroup;
+			children = (
+				033EA07D2CFC66380017F86C /* View+Builder.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		0340D38F2C8EEECD004C9910 /* Data */ = {
@@ -2290,7 +2290,6 @@
 		27FE98062B3DD525000AD654 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				030D612F2CD9C947000DF298 /* Windows */,
 				030D61262CD9BA0F000DF298 /* AcknowListView */,
 				9643D93E2B6FC405000FBEA6 /* MenuView */,
 				27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */,
@@ -2578,6 +2577,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				033EA07C2CFC63A50017F86C /* View */,
 				0340D3922C8EEF4B004C9910 /* Dictionary */,
 				0340D38F2C8EEECD004C9910 /* Data */,
 				038048492C4975AA006C6210 /* Encodable */,
@@ -3166,7 +3166,7 @@
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */,
 				03779F0F2BB256A7008D3C42 /* LLMStreamService+Prompt.swift in Sources */,
-				030D61312CD9C974000DF298 /* StaticWindows.swift in Sources */,
+				033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */,
 				03779F172BB256C5008D3C42 /* URL+Extension.swift in Sources */,
 				0315D3E02C4E64A500AC0442 /* QueryService+Translate.swift in Sources */,
 				6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */,
