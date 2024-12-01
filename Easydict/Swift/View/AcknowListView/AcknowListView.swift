@@ -25,7 +25,6 @@ struct AcknowListView: View {
             NavigationStack {
                 AcknowListSwiftUIView(acknowList: acknowList)
                     .listStyle(.sidebar)
-                    .listRowBackground(Color.red)
             }
             .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
             .containerBackground(.thickMaterial, for: .window)

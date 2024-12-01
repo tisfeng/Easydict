@@ -87,6 +87,7 @@ struct EasydictApp: App {
         Window("setting.about.acknowledgements", id: "acknowledgements") {
             AcknowListView()
         }
+        .windowToolbarStyle(.unifiedCompact)
     }
 
     // MARK: Private
