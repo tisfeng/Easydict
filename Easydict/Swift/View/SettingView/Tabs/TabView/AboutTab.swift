@@ -103,7 +103,7 @@ struct AboutTab: View {
                                 }
 
                                 Button {
-                                    openWindow(id: "acknowledgements")
+                                    openWindow(id: .acknowledgementsWindowId)
                                 } label: {
                                     Label("setting.about.acknowledgements", systemSymbol: .checkmarkSealFill)
                                 }
