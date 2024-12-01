@@ -25,7 +25,6 @@ struct AcknowListView: View {
             AcknowListSwiftUIView(acknowList: acknowList)
                 .listStyle(.sidebar)
         }
-        .hideWindowToolbarBackground()
         .thickMaterialWindowBackground()
     }
 
