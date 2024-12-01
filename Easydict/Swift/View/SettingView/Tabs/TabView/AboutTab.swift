@@ -26,7 +26,7 @@ struct SettingsAboutTab: View {
 struct AboutTab: View {
     // MARK: Internal
 
-    @Environment(\.openWindow) var openWindow
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VortexViewReader { proxy in
