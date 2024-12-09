@@ -26,8 +26,6 @@ struct SettingsAboutTab: View {
 struct AboutTab: View {
     // MARK: Internal
 
-    @Environment(\.openWindow) private var openWindow
-
     var body: some View {
         VortexViewReader { proxy in
             GeometryReader { geometry in
@@ -118,6 +116,8 @@ struct AboutTab: View {
     }
 
     // MARK: Private
+
+    @Environment(\.openWindow) private var openWindow
 
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ""
