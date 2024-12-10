@@ -88,7 +88,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                 viewModel.reset()
             }
         } message: {
-            Text(viewModel.errorMessage)
+            Text(viewModel.errorMessage.prefix(1000))
         }
         .onDisappear {
             viewModel.invalidate()
