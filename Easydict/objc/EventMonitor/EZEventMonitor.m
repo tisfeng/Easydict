@@ -315,7 +315,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         MMLogError(@"Failed to get selected text from browser: %@", error);
-                        [self handleSimulatedCopyOnAXError:axError completion:completion];
+                        [self handleForceGetSelectedTextOnAXError:axError completion:completion];
                     } else {
                         completion(selectedText);
                     }
@@ -329,7 +329,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
 
         // 3. Try to use simulated key to get selected text.
-        [self handleSimulatedCopyOnAXError:axError completion:completion];
+        [self handleForceGetSelectedTextOnAXError:axError completion:completion];
     }];
 }
 
@@ -549,8 +549,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Check error type to use menu action copy or simulated key to get selected text.
-- (void)handleSimulatedCopyOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
-    if ([self shouldUseSimulatedCopyWithAXError:axError]) {
+- (void)handleForceGetSelectedTextOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
+    if ([self shouldForceGetSelectedTextWithAXError:axError]) {
         // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
         // TODO: Try to find a more stable way to get selected text, or combine both methods.
         if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
@@ -576,8 +576,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     completion(nil);
 }
 
-/// Check if should use simulated copy to get selected text.
-- (BOOL)shouldUseSimulatedCopyWithAXError:(AXError)axError {
+/// Check if should force get selected text when Accessibility failed.
+- (BOOL)shouldForceGetSelectedTextWithAXError:(AXError)axError {
     /**
      Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
 
