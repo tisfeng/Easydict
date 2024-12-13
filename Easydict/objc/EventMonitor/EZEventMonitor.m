@@ -629,6 +629,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.microsoft.VSCode",              // VSCode
             @"com.jetbrains.intellij.ce",         // IDEA
             @"com.foxitsoftware.FoxitReaderLite", // Foxit PDF Reader
+            @"com.foxit-software.Foxit.PDF.Reader", // 福昕PDF阅读器 https://www.foxitsoftware.cn/pdf-reader/
         ],
 
         // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
