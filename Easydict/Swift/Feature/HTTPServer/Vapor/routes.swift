@@ -61,8 +61,7 @@ func routes(_ app: Application) throws {
         return response
     }
 
-    #if DEBUG
-    // Currently, streamTranslate only supports base OpenAI services for test.
+    // Currently, streamTranslate only supports base OpenAI services.
     app.post("streamTranslate") { req async throws -> Response in
         let request = try req.content.decode(TranslationRequest.self)
         let serviceType = ServiceType(rawValue: request.serviceType)
@@ -106,7 +105,6 @@ func routes(_ app: Application) throws {
             })
         )
     }
-    #endif
 
     /// OCR image data up to 10MB. https://docs.vapor.codes/basics/routing/
     app.on(.POST, "ocr", body: .collect(maxSize: "10mb")) { req async throws -> OCRResponse in
