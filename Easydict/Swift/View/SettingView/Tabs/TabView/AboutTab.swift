@@ -8,7 +8,6 @@
 
 import SFSafeSymbols
 import SwiftUI
-import Vortex
 
 // MARK: - AboutTab
 
