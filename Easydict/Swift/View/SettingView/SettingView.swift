@@ -50,7 +50,7 @@ struct SettingView: View {
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
 
-            SettingsAboutTab()
+            AboutTab()
                 .tabItem { Label("setting.about", systemImage: "info.bubble") }
                 .tag(SettingTab.about)
         }

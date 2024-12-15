@@ -94,7 +94,7 @@ struct EasydictApp: App {
 
         // About window
         Window("setting.about", id: .aboutWindowId) {
-            SettingsAboutTab()
+            AboutTab()
                 .frame(width: 500, height: 220)
                 .disableWindowMinimize()
         }

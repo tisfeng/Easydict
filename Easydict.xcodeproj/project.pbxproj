@@ -327,7 +327,6 @@
 		C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */; };
 		C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A512BD2C414A2400F00F33 /* AIToolService.swift */; };
 		C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */; };
-		C4BFDD7A2BE61F550094026B /* Vortex in Frameworks */ = {isa = PBXBuildFile; productRef = C4BFDD792BE61F550094026B /* Vortex */; };
 		C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */; };
 		C4CCDAA52C407A4100AC88BA /* PolishingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA42C407A4100AC88BA /* PolishingService.swift */; };
 		C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01E82B12B3C80025EE8E /* TencentService.swift */; };
@@ -904,7 +903,6 @@
 			files = (
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
 				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
-				C4BFDD7A2BE61F550094026B /* Vortex in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
@@ -2701,7 +2699,6 @@
 				03022F182B3591AE00B63209 /* GoogleGenerativeAI */,
 				0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */,
 				03779F192BB25797008D3C42 /* OpenAI */,
-				C4BFDD792BE61F550094026B /* Vortex */,
 				0364EC892C208EB50036B61B /* KeySender */,
 				033E181E2C5A970A0099A7B0 /* Vapor */,
 				C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */,
@@ -2767,7 +2764,6 @@
 				03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */,
 				03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */,
-				C4BFDD782BE61F550094026B /* XCRemoteSwiftPackageReference "Vortex" */,
 				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
 				033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */,
 				C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
@@ -3791,14 +3787,6 @@
 				minimumVersion = 1.1.0;
 			};
 		};
-		C4BFDD782BE61F550094026B /* XCRemoteSwiftPackageReference "Vortex" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/twostraws/Vortex";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
-			};
-		};
 		EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Defaults.git";
@@ -3919,11 +3907,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
 			productName = LaunchAtLogin;
-		};
-		C4BFDD792BE61F550094026B /* Vortex */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C4BFDD782BE61F550094026B /* XCRemoteSwiftPackageReference "Vortex" */;
-			productName = Vortex;
 		};
 		EA3B81FB2B52555C004C0E8B /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
