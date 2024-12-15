@@ -67,15 +67,7 @@ struct EasydictApp: App {
         }
         .menuBarExtraStyle(.menu)
         .commands {
-            EasyDictMainMenu() // main menu
-            // Override About button
-            CommandGroup(replacing: .appInfo) {
-                Button {
-                    openWindow(id: .aboutWindowId)
-                } label: {
-                    Text("menubar.about")
-                }
-            }
+            EasydictMainMenu() // main menu
         }
 
         Settings {

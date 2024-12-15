@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-extension EasyDictMainMenu {
+extension EasydictMainMenu {
     struct MainMenuShortcutCommand: Commands {
         // MARK: Internal
 
