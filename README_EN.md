@@ -109,9 +109,12 @@ We plan to refactor the project with Swift. If you are interested in this open s
 - [Sponsor](#sponsor)
   - [Sponsor List](#sponsor-list)
 
+
 ## Installation
 
-You can install it using one of the following two methods. Support macOS 11.0+
+You can install it using one of the following two methods. 
+
+The latest version of Easydict supports macOS 13.0+, if the system version is macOS 11.0+, please use [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2).
 
 ### 1. Manual Installation
 

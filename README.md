@@ -112,7 +112,9 @@
 
 ## 安装
 
-你可以使用下面两种方式之一安装。支持系统 macOS 11.0+
+你可以使用下面两种方式之一安装。
+
+Easydict 最新版本支持系统 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)。
 
 ### 1. 手动下载安装
 
