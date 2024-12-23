@@ -831,9 +831,9 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 - (void)webTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     NSString *client = @"fanyideskweb";
     NSString *product = @"webfanyi";
-    NSString *key = @"fsdsogkndfokasodnaso";
+    NSString *key = @"Vy4EQ1uwPkUoqvcP1nIu6WiAjxFeA3YW";
     NSString *timestamp = [NSString stringWithFormat:@"%ld", (long)([[NSDate date] timeIntervalSince1970] * 1000)];
-    
+
     NSString *string = [NSString stringWithFormat:@"client=%@&mysticTime=%@&product=%@&key=%@", client, timestamp, product, key];
     NSString *sign = [string md5];
     
