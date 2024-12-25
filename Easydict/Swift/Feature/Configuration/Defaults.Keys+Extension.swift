@@ -143,7 +143,7 @@ extension Defaults.Keys {
 
     static var forceGetSelectedTextType = Key<ForceGetSelectedTextType>(
         "EZConfiguration_kForceGetSelectedTextTypeKey",
-        default: .simulatedShortcutCopy
+        default: .menuBarActionCopy
     )
 }
 
