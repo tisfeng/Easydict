@@ -11,12 +11,8 @@
 #import "EZYoudaoOCRResponse.h"
 #import "EZYoudaoDictModel.h"
 #import "EZQueryResult+EZYoudaoDictModel.h"
-#import "EZWebViewTranslator.h"
 #import "NSString+EZUtils.h"
-#import <JavaScriptCore/JavaScriptCore.h>
-#import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
-#import "FWEncryptorAES.h"
 #import "NSData+EZMD5.h"
 #import "EZNetworkManager.h"
 #import "Easydict-Swift.h"
@@ -27,12 +23,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 @interface EZYoudaoTranslate ()
 
 @property (nonatomic, strong) AFHTTPSessionManager *jsonSession;
-@property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
-@property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
-
-@property (nonatomic, strong) JSContext *jsContext;
-@property (nonatomic, strong) JSValue *jsFunction;
-@property (nonatomic, strong) WKWebView *webView;
 
 @property (nonatomic, strong) EZNetworkManager *networkManager;
 
@@ -42,23 +32,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 
 @implementation EZYoudaoTranslate
-
-- (EZWebViewTranslator *)webViewTranslator {
-    if (!_webViewTranslator) {
-        NSString *selector = @"p.trans-content";
-        _webViewTranslator = [[EZWebViewTranslator alloc] init];
-        _webViewTranslator.querySelector = selector;
-        _webViewTranslator.queryModel = self.queryModel;
-    }
-    return _webViewTranslator;
-}
-
-- (EZNetworkManager *)networkManager {
-    if (!_networkManager) {
-        _networkManager = [[EZNetworkManager alloc] init];
-    }
-    return _networkManager;
-}
 
 - (AFHTTPSessionManager *)jsonSession {
     if (!_jsonSession) {
@@ -75,64 +48,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         _jsonSession = jsonSession;
     }
     return _jsonSession;
-}
-
-- (AFHTTPSessionManager *)htmlSession {
-    if (!_htmlSession) {
-        AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
-        
-        AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
-         @"10_15_0) AppleWebKit/537.36 (KHTML, like "
-         @"Gecko) Chrome/77.0.3865.120 Safari/537.36"
-                 forHTTPHeaderField:@"User-Agent"];
-        htmlSession.requestSerializer = requestSerializer;
-        
-        AFHTTPResponseSerializer *responseSerializer =
-        [AFHTTPResponseSerializer serializer];
-        responseSerializer.acceptableContentTypes =
-        [NSSet setWithObjects:@"text/html", nil];
-        htmlSession.responseSerializer = responseSerializer;
-        
-        _htmlSession = htmlSession;
-    }
-    return _htmlSession;
-}
-
-- (JSContext *)jsContext {
-    if (!_jsContext) {
-        JSContext *jsContext = [JSContext new];
-        NSString *jsPath = [[NSBundle mainBundle] pathForResource:@"youdao-sign" ofType:@"js"];
-        NSString *jsString = [NSString stringWithContentsOfFile:jsPath encoding:NSUTF8StringEncoding error:nil];
-        // 加载方法
-        [jsContext evaluateScript:jsString];
-        _jsContext = jsContext;
-    }
-    return _jsContext;
-}
-
-- (JSValue *)jsFunction {
-    if (!_jsFunction) {
-        _jsFunction = [self.jsContext objectForKeyedSubscript:@"decrypt"];
-    }
-    return _jsFunction;
-}
-
-- (WKWebView *)webView {
-    if (!_webView) {
-        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-        WKPreferences *preferences = [[WKPreferences alloc] init];
-        preferences.javaScriptCanOpenWindowsAutomatically = NO;
-        configuration.preferences = preferences;
-        
-        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
-        
-        NSURL *URL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"js"];
-        [webView loadFileURL:URL allowingReadAccessToURL:URL];
-        
-        _webView = webView;
-    }
-    return _webView;
 }
 
 - (NSString *)cookie {
@@ -549,248 +464,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     } serviceType:self.serviceType];
 }
 
-
-/// Youdao web translate API,
-/// !!!: Deprecated, 2023.5
-- (void)youdaoWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
-    NSString *fromLanguage = [self languageCodeForLanguage:from];
-    NSString *toLanguage = [self languageCodeForLanguage:to];
-    
-    // TODO: Handle cookie expiration cases.
-    
-    text = [text trimToMaxLength:5000];
-    
-    // Ref: https://mp.weixin.qq.com/s/AWL3et91N8T24cKs1v660g
-    NSInteger timestamp = [[NSDate date] timeIntervalSince1970] * 1000;
-    NSString *lts = [NSString stringWithFormat:@"%ld", timestamp];
-    NSString *salt = [NSString stringWithFormat:@"%@%d", lts, arc4random() % 10];
-    NSString *bv = [EZUserAgent md5];
-    NSString *sign = [self signWithSalt:salt word:text];
-    
-    NSString *url = [NSString stringWithFormat:@"%@/translate_o?smartresult=dict&smartresult=rule", kYoudaoTranslatetURL];
-    NSDictionary *params = @{
-        @"salt" : salt,
-        @"sign" : sign,
-        @"lts" : lts,
-        @"bv" : bv,
-        @"i" : text,
-        @"from" : fromLanguage,
-        @"to" : toLanguage,
-        @"smartresult" : @"dict",
-        @"client" : @"fanyideskweb",
-        @"doctype" : @"json",
-        @"version" : @"2.1",
-        @"keyfrom" : @"fanyi.web",
-        @"action" : @"FY_BY_REALTlME",
-    };
-    
-    NSDictionary *headers = @{
-        @"User-Agent" : EZUserAgent,
-        @"Referer" : kYoudaoTranslatetURL,
-        @"Cookie" : self.cookie,
-    };
-    
-    // set headers
-    for (NSString *key in headers.allKeys) {
-        [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
-    }
-    
-    NSURLSessionTask *task = [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *dict = (NSDictionary *)responseObject;
-            NSString *errorCode = dict[@"errorCode"];
-            if (errorCode.integerValue == 0) {
-                NSArray *texts = [self parseTranslateResult:dict];
-                self.result.translatedResults = texts;
-                completion(self.result, nil);
-                return;
-            }
-        }
-        completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"翻译失败" request:nil]);
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        if (error.code == NSURLErrorCancelled) {
-            return;
-        }
-        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description:@"翻译失败" request:nil]);
-    }];
-    
-    [self.queryModel setStopBlock:^{
-        [task cancel];
-    } serviceType:self.serviceType];
-}
-
-- (NSString *)signWithSalt:(NSString *)salt word:(NSString *)word {
-    NSString *sign = [NSString stringWithFormat:@"fanyideskweb%@%@Ygy_4c=r#e#4EX^NUGUc5", word, salt];
-    return [sign md5];
-}
-
-// TODO: Use a stable Youdao translation API.
-- (void)youdaoAIDemoTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
-    if (!text.length) {
-        completion(self.result, [EZError errorWithType:EZErrorTypeParam description:@"翻译的文本为空" request:nil]);
-        return;
-    }
-    
-    NSString *url = @"https://aidemo.youdao.com/trans";
-    NSDictionary *params = @{
-        @"from" : [self languageCodeForLanguage:from],
-        @"to" : [self languageCodeForLanguage:to],
-        @"q" : text,
-    };
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
-    
-    EZQueryResult *result = self.result;
-    
-    mm_weakify(self);
-    [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        mm_strongify(self);
-        NSString *message = nil;
-        if (responseObject) {
-            @try {
-                EZYoudaoTranslateResponse *response = [EZYoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
-                if (response && response.errorCode.integerValue == 0) {
-                    result.fromSpeakURL = response.speakUrl;
-                    result.toSpeakURL = response.tSpeakUrl;
-                    
-                    // 中文查词 英文查词
-                    EZYoudaoTranslateResponseBasic *basic = response.basic;
-                    if (basic) {
-                        EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
-                        
-                        EZLanguage language = result.queryFromLanguage;
-                        // 解析音频
-                        NSMutableArray *phoneticArray = [NSMutableArray array];
-                        if (basic.us_phonetic && basic.us_speech) {
-                            EZWordPhonetic *phonetic = [EZWordPhonetic new];
-                            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
-                            phonetic.language = language;
-                            phonetic.accent = @"us";
-                            phonetic.value = basic.us_phonetic;
-                            phonetic.speakURL = basic.us_speech;
-                            [phoneticArray addObject:phonetic];
-                        }
-                        if (basic.uk_phonetic && basic.uk_speech) {
-                            EZWordPhonetic *phonetic = [EZWordPhonetic new];
-                            phonetic.name = NSLocalizedString(@"uk_phonetic", nil);
-                            phonetic.language = language;
-                            phonetic.accent = @"uk";
-                            phonetic.value = basic.uk_phonetic;
-                            phonetic.speakURL = basic.uk_speech;
-                            [phoneticArray addObject:phonetic];
-                        }
-                        if (phoneticArray.count) {
-                            wordResult.phonetics = phoneticArray.copy;
-                        }
-                        
-                        // 解析词性词义
-                        if (wordResult.phonetics) {
-                            // 英文查词
-                            NSMutableArray *partArray = [NSMutableArray array];
-                            [basic.explains enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                if (![obj isKindOfClass:NSString.class]) {
-                                    return;
-                                }
-                                EZTranslatePart *part = [EZTranslatePart new];
-                                part.means = @[ obj ];
-                                [partArray addObject:part];
-                            }];
-                            if (partArray.count) {
-                                wordResult.parts = partArray.copy;
-                            }
-                        } else if ([result.from isEqualToString:EZLanguageSimplifiedChinese] && [result.to isEqualToString:EZLanguageEnglish]) {
-                            // 中文查词
-                            NSMutableArray *simpleWordArray = [NSMutableArray array];
-                            [basic.explains enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                if ([obj isKindOfClass:NSString.class]) {
-                                    if ([obj containsString:@";"]) {
-                                        // 拆分成多个
-                                        MMLogInfo(@"有道翻译手动拆词 %@", obj);
-                                        NSArray<NSString *> *words = [obj componentsSeparatedByString:@";"];
-                                        [words enumerateObjectsUsingBlock:^(NSString *_Nonnull subObj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                            EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
-                                            word.word = subObj;
-                                            [simpleWordArray addObject:word];
-                                        }];
-                                    } else {
-                                        EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
-                                        word.word = obj;
-                                        [simpleWordArray addObject:word];
-                                    }
-                                } else if ([obj isKindOfClass:NSDictionary.class]) {
-                                    // 20191226 突然变成了字典结构，应该是改 API 了
-                                    NSDictionary *dict = (NSDictionary *)obj;
-                                    NSString *text = [dict objectForKey:@"text"];
-                                    NSString *tran = [dict objectForKey:@"tran"];
-                                    if ([text isKindOfClass:NSString.class] && text.length) {
-                                        if ([text containsString:@";"]) {
-                                            // 拆分成多个 测试中
-                                            MMLogInfo(@"有道翻译手动拆词 %@", text);
-                                            NSArray<NSString *> *words = [text componentsSeparatedByString:@";"];
-                                            [words enumerateObjectsUsingBlock:^(NSString *_Nonnull subObj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                                EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
-                                                word.word = subObj;
-                                                [simpleWordArray addObject:word];
-                                            }];
-                                        } else {
-                                            EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
-                                            word.word = text;
-                                            if ([tran isKindOfClass:NSString.class] && tran.length) {
-                                                word.means = @[ tran ];
-                                            }
-                                            [simpleWordArray addObject:word];
-                                        }
-                                    }
-                                }
-                            }];
-                            if (simpleWordArray.count) {
-                                wordResult.simpleWords = simpleWordArray;
-                            }
-                        }
-                        
-                        // 至少要有词义或单词组才认为有单词翻译结果
-                        if (wordResult.parts || wordResult.simpleWords) {
-                            // If has assigned Youdao dict data, use it directly.
-                            if (!result.wordResult) {
-                                result.wordResult = wordResult;
-                            }
-                            // 如果是单词或短语，优先使用美式发音
-                            BOOL hasEnglishWordAudioURL = [result.from isEqualToString:EZLanguageEnglish] && [result.to isEqualToString:EZLanguageSimplifiedChinese] && wordResult.phonetics.firstObject.speakURL.length;
-                            if (hasEnglishWordAudioURL) {
-                                result.fromSpeakURL = wordResult.phonetics.firstObject.speakURL;
-                            }
-                        }
-                    }
-                    
-                    // 解析普通释义
-                    NSMutableArray *normalResults = [NSMutableArray array];
-                    [response.translation enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                        [normalResults addObject:obj];
-                    }];
-                    result.translatedResults = normalResults.count ? normalResults.copy : nil;
-                    
-                    // 原始数据
-                    result.raw = responseObject;
-                    
-                    if (result.wordResult || result.translatedResults) {
-                        completion(result, nil);
-                        return;
-                    }
-                } else {
-                    message = [NSString stringWithFormat:@"错误码 %@", response.errorCode];
-                }
-            } @catch (NSException *exception) {
-                MMLogError(@"有道翻译翻译接口数据解析异常 %@", exception);
-                message = @"有道翻译翻译接口数据解析异常";
-            }
-        }
-        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(self.result, [EZError errorWithType:EZErrorTypeAPI description: message request:reqDict]);
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description: nil request:reqDict]);
-    }];
-}
-
 // Get youdao fanyi cookie, and save it to NSUserDefaults.
 - (void)requestYoudaoCookie {
     // https://fanyi.youdao.com/index.html#/
@@ -801,29 +474,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         }
     }];
 }
-
-#pragma mark - WebView Translate
-
-- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    NSString *wordLink = [self wordLink:self.queryModel];
-    if ([wordLink isEqualToString:kYoudaoTranslatetURL]) {
-        NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage description:nil request:nil];
-        completion(self.result, error);
-        return;
-    }
-    
-    [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *texts, NSError *error) {
-        self.result.translatedResults = texts;
-        completion(self.result, error);
-    }];
-    
-    mm_weakify(self);
-    [self.queryModel setStopBlock:^{
-        mm_strongify(self);
-        [self.webViewTranslator resetWebView];
-    } serviceType:self.serviceType];
-}
-
 
 #pragma mark - New Web Translate, 2023.5
 
@@ -897,7 +547,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                 return;
             }
         }
-        [self webViewTranslate:completion];
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
