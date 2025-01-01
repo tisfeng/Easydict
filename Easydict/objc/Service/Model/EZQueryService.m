@@ -280,6 +280,20 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
+/**
+ public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+     // TODO: Replace MMOrderedDictionary.
+     let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+     for (key, value) in CaiyunTranslateType.supportLanguagesDictionary {
+         orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
+     }
+     return orderedDict
+ }
+ */
+
+
+
+
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }

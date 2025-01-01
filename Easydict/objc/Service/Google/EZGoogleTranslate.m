@@ -7,7 +7,6 @@
 //
 
 #import "EZGoogleTranslate.h"
-#import "EZYoudaoTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+EZUtils.h"
 #import "Easydict-Swift.h"
@@ -21,7 +20,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 @property (nonatomic, strong) JSValue *window;
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) AFHTTPSessionManager *jsonSession;
-@property (nonatomic, strong) EZYoudaoTranslate *youdao;
 
 @end
 
@@ -95,13 +93,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         _jsonSession = jsonSession;
     }
     return _jsonSession;
-}
-
-- (EZYoudaoTranslate *)youdao {
-    if (!_youdao) {
-        _youdao = [[EZYoudaoTranslate alloc] init];
-    }
-    return _youdao;
 }
 
 #pragma mark - 重写父类方法
@@ -269,54 +260,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                           text.length, sign];
     return audioURL;
 }
-
-- (void)ocr:(NSImage *)image
-       from:(EZLanguage)from
-         to:(EZLanguage)to
- completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    if (!image) {
-        completion(nil, [EZError errorWithType:EZErrorTypeParam description:@"图片为空" request:nil]);
-        return;
-    }
-    
-    // 暂未找到谷歌 OCR 接口，暂时用有道 OCR 代替
-    // TODO: 考虑一下有没有语言问题
-    [self.youdao ocr:image from:from to:to completion:completion];
-}
-
-- (void)ocrAndTranslate:(NSImage *)image
-                   from:(EZLanguage)from
-                     to:(EZLanguage)to
-             ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess
-             completion:(void (^)(EZOCRResult *_Nullable,
-                                  EZQueryResult *_Nullable,
-                                  NSError *_Nullable))completion {
-    if (!image) {
-        completion(nil, nil, [EZError errorWithType:EZErrorTypeParam description:@"图片为空" request:nil]);
-        return;
-    }
-    
-    mm_weakify(self);
-    [self ocr:image
-         from:from
-           to:to
-   completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        mm_strongify(self);
-        if (ocrResult) {
-            ocrSuccess(ocrResult, YES);
-            [self translate:ocrResult.mergedText
-                       from:from
-                         to:to
-                 completion:^(EZQueryResult *_Nullable result,
-                              NSError *_Nullable error) {
-                completion(ocrResult, result, error);
-            }];
-        } else {
-            completion(nil, nil, error);
-        }
-    }];
-}
-
 
 #pragma mark - WebApp, including word info.
 

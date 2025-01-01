@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong) EZGoogleTranslate *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
-@property (nonatomic, strong) EZYoudaoTranslate *youdaoService;
+@property (nonatomic, strong) EZYoudaoService *youdaoService;
 
 @end
 

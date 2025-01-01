@@ -87,9 +87,9 @@ extension [Language] {
 }
 
 extension Language {
-    /// Is kind of Chinese language, means it is simplifiedChinese or traditionalChinese.
+    /// Is kind of Chinese language, means it is simplifiedChinese, traditionalChinese or classicalChinese.
     func isKindOfChinese() -> Bool {
-        self == .simplifiedChinese || self == .traditionalChinese
+        [.simplifiedChinese, .traditionalChinese, .classicalChinese].contains(self)
     }
 }
 

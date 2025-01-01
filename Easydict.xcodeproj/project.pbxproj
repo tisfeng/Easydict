@@ -91,6 +91,7 @@
 		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
 		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
+		03727B262D25336E009B72E2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03727B252D25336E009B72E2 /* NetworkManager.swift */; };
 		03779F0E2BB256A7008D3C42 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0B2BB256A7008D3C42 /* OpenAIService.swift */; };
 		03779F0F2BB256A7008D3C42 /* LLMStreamService+Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0C2BB256A7008D3C42 /* LLMStreamService+Prompt.swift */; };
 		03779F132BB256B5008D3C42 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F102BB256B5008D3C42 /* APIKey.swift */; };
@@ -228,6 +229,7 @@
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
+		03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CD01572D24E17C0079D0CB /* YoudaoService.swift */; };
 		03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF5E632C39B2310058F9DB /* OllamaModel.swift */; };
 		03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+Convenience.swift */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
@@ -502,6 +504,7 @@
 		036D62802BCAB613002C95C7 /* BuiltInAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInAIService.swift; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
+		03727B252D25336E009B72E2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		03779F0B2BB256A7008D3C42 /* OpenAIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		03779F0C2BB256A7008D3C42 /* LLMStreamService+Prompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LLMStreamService+Prompt.swift"; sourceTree = "<group>"; };
 		03779F102BB256B5008D3C42 /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
@@ -732,6 +735,7 @@
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
+		03CD01572D24E17C0079D0CB /* YoudaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoService.swift; sourceTree = "<group>"; };
 		03CF5E632C39B2310058F9DB /* OllamaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaModel.swift; sourceTree = "<group>"; };
 		03CF88622B137F650030C199 /* Array+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Convenience.swift"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
@@ -1072,13 +1076,6 @@
 			path = HTTPServer;
 			sourceTree = "<group>";
 		};
-		032AAA562C456F03007996A1 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
 		033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */ = {
 			isa = PBXGroup;
 			children = (
@@ -1365,6 +1362,7 @@
 				2746AEBF2AF95040005FE0A1 /* Caiyun */,
 				62E2BF462B4082BA00E42D38 /* Ali */,
 				C43B566A2C693F4000EF26FD /* Volcano */,
+				03CD01582D24E17C0079D0CB /* Youdao */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1404,7 +1402,6 @@
 			children = (
 				03792EA12C3831040074A145 /* OllamaService.swift */,
 				03CF5E632C39B2310058F9DB /* OllamaModel.swift */,
-				032AAA562C456F03007996A1 /* Controllers */,
 			);
 			path = Ollama;
 			sourceTree = "<group>";
@@ -2078,6 +2075,14 @@
 			path = SystemUtility;
 			sourceTree = "<group>";
 		};
+		03CD01582D24E17C0079D0CB /* Youdao */ = {
+			isa = PBXGroup;
+			children = (
+				03CD01572D24E17C0079D0CB /* YoudaoService.swift */,
+			);
+			path = Youdao;
+			sourceTree = "<group>";
+		};
 		03CF88612B137ED60030C199 /* Array */ = {
 			isa = PBXGroup;
 			children = (
@@ -2556,6 +2561,7 @@
 				03714B8E2C17FCAD00BB4459 /* Constants */,
 				0340D3972C91D4A3004C9910 /* AppleScript */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
+				03727B252D25336E009B72E2 /* NetworkManager.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -3043,6 +3049,7 @@
 				C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */,
 				27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
+				03727B262D25336E009B72E2 /* NetworkManager.swift in Sources */,
 				032AAA5D2C45744E007996A1 /* VaporServer.swift in Sources */,
 				276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */,
 				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
@@ -3131,6 +3138,7 @@
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
 				62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */,
+				03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
 				C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */,
 				038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */,
