@@ -1,0 +1,1597 @@
+{
+    "web_trans": {
+        "web-translation": [
+            {
+                "@same": "true",
+                "key": "look up",
+                "key-speech": "look+up",
+                "trans": [
+                    {
+                        "summary": {
+                            "line": [
+                                "... 11。B。定语从语，从语的主语和先行词是从属关系，故用whose 意思为： 几乎每个人都喜欢住在窗户朝南的房子里 <b>look up</b> （在字典里）<b>查找</b> ought to 应该 ..."
+                            ]
+                        },
+                        "value": "查找",
+                        "support": 1393,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "<b>向上看</b>（Look up）：P 向下看（Look Down）：&gt;"
+                            ]
+                        },
+                        "value": "向上看",
+                        "support": 1346,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "... get up 起床；起立； <b>look up</b> <b>抬头看</b>；查阅；看望；好转；中途接入；发条；使紧张；兴奋；结束 put up 举起；盖起；支起；张贴；投宿 ..."
+                            ]
+                        },
+                        "value": "抬头看",
+                        "support": 965,
+                        "url": ""
+                    }
+                ]
+            },
+            {
+                "key": "look up to",
+                "key-speech": "look+up+to",
+                "trans": [
+                    {
+                        "value": "尊敬"
+                    },
+                    {
+                        "value": "敬仰"
+                    },
+                    {
+                        "value": "仰望"
+                    },
+                    {
+                        "value": "尊重"
+                    }
+                ]
+            },
+            {
+                "key": "look up to sb",
+                "key-speech": "look+up+to+sb",
+                "trans": [
+                    {
+                        "value": "尊敬某人"
+                    },
+                    {
+                        "value": "敬重某人"
+                    },
+                    {
+                        "value": "尊敬"
+                    },
+                    {
+                        "value": "尊重某人"
+                    }
+                ]
+            },
+            {
+                "key": "look up a word",
+                "key-speech": "look+up+a+word",
+                "trans": [
+                    {
+                        "value": "查字典"
+                    },
+                    {
+                        "value": "查单词"
+                    }
+                ]
+            },
+            {
+                "key": "Look-Up Table",
+                "key-speech": "Look-Up+Table",
+                "trans": [
+                    {
+                        "value": "查找表"
+                    },
+                    {
+                        "value": "查阅表"
+                    },
+                    {
+                        "value": "表"
+                    },
+                    {
+                        "value": "查表法"
+                    }
+                ]
+            },
+            {
+                "key": "Look Up Table",
+                "key-speech": "Look+Up+Table",
+                "trans": [
+                    {
+                        "value": "查找表"
+                    },
+                    {
+                        "value": "查阅表"
+                    },
+                    {
+                        "value": "几乎都是由查找表"
+                    },
+                    {
+                        "value": "几乎都是查找表"
+                    }
+                ]
+            },
+            {
+                "key": "look up and down",
+                "key-speech": "look+up+and+down",
+                "trans": [
+                    {
+                        "value": "上下打量"
+                    },
+                    {
+                        "value": "到处搜查"
+                    },
+                    {
+                        "value": "上下看看"
+                    },
+                    {
+                        "value": "向上和向下看"
+                    }
+                ]
+            },
+            {
+                "key": "look up sth in dictionary",
+                "key-speech": "look+up+sth+in+dictionary",
+                "trans": [
+                    {
+                        "value": "在字典中查找"
+                    }
+                ]
+            },
+            {
+                "key": "Look Up in the Sky",
+                "key-speech": "Look+Up+in+the+Sky",
+                "trans": [
+                    {
+                        "value": "超人的奇幻故事"
+                    },
+                    {
+                        "value": "超人的奇异故事"
+                    }
+                ]
+            },
+            {
+                "key": "look-up",
+                "key-speech": "look-up",
+                "trans": [
+                    {
+                        "value": "检查"
+                    },
+                    {
+                        "value": "仰视"
+                    },
+                    {
+                        "value": "查找"
+                    },
+                    {
+                        "value": "查表"
+                    }
+                ]
+            }
+        ]
+    },
+    "ee": {
+        "source": {
+            "name": "WordNet",
+            "url": "https://wordnet.princeton.edu"
+        },
+        "word": {
+            "trs": [
+                {
+                    "pos": "n.",
+                    "tr": [
+                        {
+                            "tran": "an operation that determines whether one or more of a set of items has a specified property",
+                            "similar-words": [
+                                "search",
+                                "lookup"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "pos": "v.",
+                    "tr": [
+                        {
+                            "tran": "seek information from",
+                            "similar-words": [
+                                "consult",
+                                "refer"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "speech": "look+up",
+            "return-phrase": "look up"
+        }
+    },
+    "blng_sents_part": {
+        "sentence-count": 6,
+        "sentence-pair": [
+            {
+                "sentence": "Users will be able to use their handhelds to look up timetables on the net, search for a local hotel, and check their bank accounts.",
+                "sentence-eng": "Users will be able to use their handhelds to <b>look</b> <b>up</b> timetables on the net, search for a local hotel, and check their bank accounts.",
+                "sentence-translation": "用户将能够使用掌上装置查阅网上时刻表，搜索当地旅馆并核对他们的银行账户。",
+                "speech-size": "38kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "6",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "7",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "15",
+                                "@e": "22",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "23",
+                                "@e": "26",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "27",
+                                "@e": "42",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "54",
+                                "@e": "64",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "72",
+                                "@e": "75",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "77",
+                                "@e": "87",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "88",
+                                "@e": "95",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "96",
+                                "@e": "101",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "103",
+                                "@e": "106",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            },
+                            {
+                                "@s": "107",
+                                "@e": "112",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "12"
+                            },
+                            {
+                                "@s": "113",
+                                "@e": "118",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "13"
+                            },
+                            {
+                                "@s": "119",
+                                "@e": "123",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ]
+                                },
+                                "@id": "14"
+                            },
+                            {
+                                "@s": "124",
+                                "@e": "132",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "15"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ]
+                                },
+                                "@id": "15"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "3",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "3",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "6",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "6",
+                                "@e": "8",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "10",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "14",
+                                "@e": "16",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "16",
+                                "@e": "19",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "20",
+                                "@e": "22",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "22",
+                                "@e": "24",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "24",
+                                "@e": "26",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "26",
+                                "@e": "27",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "27",
+                                "@e": "29",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            },
+                            {
+                                "@s": "29",
+                                "@e": "31",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ]
+                                },
+                                "@id": "12"
+                            },
+                            {
+                                "@s": "32",
+                                "@e": "34",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ]
+                                },
+                                "@id": "13"
+                            },
+                            {
+                                "@s": "34",
+                                "@e": "36",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "15"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ]
+                                },
+                                "@id": "14"
+                            }
+                        ]
+                    }
+                },
+                "source": "《柯林斯英汉双解大词典》",
+                "url": "https://《柯林斯英汉双解大词典》/",
+                "sentence-speech": "Users+will+be+able+to+use+their+handhelds+to+look+up+timetables+on+the+net%2C+search+for+a+local+hotel%2C+and+check+their+bank+accounts.&le=eng"
+            },
+            {
+                "sentence": "I'll look up to you.",
+                "sentence-eng": "I'll <b>look</b> <b>up</b> to you.",
+                "sentence-translation": "我会尊敬你的。",
+                "speech-size": "5kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "5",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "6",
+                                "@e": "13",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "17",
+                                "@e": "20",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "3",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "3",
+                                "@e": "5",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "6",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            }
+                        ]
+                    }
+                },
+                "url": "youdao",
+                "sentence-speech": "I%27ll+look+up+to+you.&le=eng"
+            },
+            {
+                "sentence": "Can you look up the opening times on the website?",
+                "sentence-eng": "Can you <b>look</b> <b>up</b> the opening times on the website?",
+                "sentence-translation": "你可以在网站上查一下开放的时间吗？",
+                "speech-size": "14kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "8",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "9",
+                                "@e": "16",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "21",
+                                "@e": "28",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "29",
+                                "@e": "34",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "35",
+                                "@e": "41",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "42",
+                                "@e": "49",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "2",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "2",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "5",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "8",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "11",
+                                "@e": "13",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "14",
+                                "@e": "16",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            }
+                        ]
+                    }
+                },
+                "source": "《牛津词典》",
+                "url": "https://《牛津词典》/",
+                "sentence-speech": "Can+you+look+up+the+opening+times+on+the+website%3F&le=eng"
+            }
+        ],
+        "more": "blng_sents",
+        "trs-classify": [
+            {
+                "proportion": "100%",
+                "tr": "全部"
+            },
+            {
+                "proportion": "54.8%",
+                "tr": "查找"
+            },
+            {
+                "proportion": "17.2%",
+                "tr": "抬头"
+            },
+            {
+                "proportion": "11.6%",
+                "tr": "查阅"
+            },
+            {
+                "proportion": "8.6%",
+                "tr": "尊敬"
+            },
+            {
+                "proportion": "7.3%",
+                "tr": "仰望"
+            },
+            {
+                "proportion": "0.7%",
+                "tr": "拜访"
+            }
+        ]
+    },
+    "auth_sents_part": {
+        "sentence-count": 6,
+        "more": "auth_sents",
+        "sent": [
+            {
+                "score": 0.9681409597396851,
+                "speech": "Look+up+your+nearest+station%2C+find+out+what+amenities+it+has+and+plan+your+trip+around+the+city.+",
+                "speech-size": "30kb",
+                "source": "BBC: <i>Free apps for exploring LA</i>",
+                "url": "youdao",
+                "foreign": "<b>Look</b> <b>up</b> your nearest station, find out what amenities it has and plan your trip around the city. "
+            },
+            {
+                "score": 0.9632576704025269,
+                "speech": "You+may+want+to+look+up+the+IP+addresses+that+accessed+each+URL+you+serve.+",
+                "speech-size": "24kb",
+                "source": "FORBES: <i>What You Need to Know About NoSQL Databases</i>",
+                "url": "youdao",
+                "foreign": "You may want to <b>look</b> <b>up</b> the IP addresses that accessed each URL you serve. "
+            },
+            {
+                "score": 0.9628245830535889,
+                "speech": "The+first%2C+state+law%2C+is+at+least+codified%2C+so+you+can+look+up+the+relevant+legislation.+",
+                "speech-size": "27kb",
+                "source": "ECONOMIST: <i>State constitutions</i>",
+                "url": "youdao",
+                "foreign": "The first, state law, is at least codified, so you can <b>look</b> <b>up</b> the relevant legislation. "
+            }
+        ]
+    },
+    "simple": {
+        "query": "look up",
+        "word": [
+            {
+                "speech": "look+up",
+                "return-phrase": "look up"
+            }
+        ]
+    },
+    "media_sents_part": {
+        "sentence-count": 6,
+        "more": "media_sents",
+        "query": "look up",
+        "sent": [
+            {
+                "@mediatype": "audio",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "streamUrl": "https://dict.youdao.com/pureaudio?docid=-5937276751531339481",
+                            "duration": "9400",
+                            "swf": "",
+                            "name": "special.2009.04.06",
+                            "source": "VOA",
+                            "win8": "https://dict.youdao.com/pureaudio?docid=-5937276751531339481&dist=win8"
+                        }
+                    ]
+                },
+                "speech-size": "34kb",
+                "eng": "The center of the museum is open, so people can <b>look </b><b>up</b> toward the roof or down toward the ground floor."
+            },
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=8406375427422513085&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=8406375427422513085",
+                            "name": "麻省理工公开课",
+                            "source": "固态化学导论课程节选"
+                        }
+                    ]
+                },
+                "chn": "我查了一下电负性,碳是2。,2。<br>",
+                "eng": "And I <b>look </b><b>up</b> and see that 55 the electronegativity of carbon is 2.55 2 we already know, is 2.20.<br>"
+            },
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=3223444225960068698&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=3223444225960068698",
+                            "name": "方言口音很重",
+                            "source": "SpeakingMax英语口语达人"
+                        }
+                    ]
+                },
+                "chn": "如果你在网上搜索，利物浦，搜索说利物浦方言的人的视频，<br>",
+                "eng": "If you <b>look </b><b>up</b> on the internet, Liverpool, and <b>look </b><b>up</b> a video of somebody speaking from Liverpool,<br>"
+            },
+            {
+                "@mediatype": "audio",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "streamUrl": "https://dict.youdao.com/pureaudio?docid=-9082707112496823607",
+                            "duration": "9700",
+                            "swf": "",
+                            "name": "special.2010.03.31",
+                            "source": "VOA",
+                            "win8": "https://dict.youdao.com/pureaudio?docid=-9082707112496823607&dist=win8"
+                        }
+                    ]
+                },
+                "speech-size": "34kb",
+                "eng": "Today we <b>look </b><b>up</b> into the skies to explore the past and present of the tallest buildings in the world."
+            },
+            {
+                "@mediatype": "audio",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "streamUrl": "https://dict.youdao.com/pureaudio?docid=-5086126431580622092",
+                            "duration": "8400",
+                            "swf": "",
+                            "name": "special.2010.02.03",
+                            "source": "VOA",
+                            "win8": "https://dict.youdao.com/pureaudio?docid=-5086126431580622092&dist=win8"
+                        }
+                    ]
+                },
+                "speech-size": "32kb",
+                "eng": "But when we enter the Sistine Chapel, we <b>look </b><b>up</b> to see the most beautiful ceiling in the world."
+            }
+        ]
+    },
+    "phrs": {
+        "word": "lookup",
+        "phrs": [
+            {
+                "headword": "table lookup",
+                "translation": "查表；表格查找"
+            }
+        ]
+    },
+    "special": {
+        "summary": {
+            "sources": {
+                "source": {
+                    "site": "NoteExpress",
+                    "url": "https://dict.youdao.com"
+                }
+            },
+            "text": "以上统计来源于2,447,534篇论文数据，部分数据来源于"
+        },
+        "co-add": "https://dict.youdao.com",
+        "total": "2,447,543",
+        "entries": [
+            {
+                "entry": {
+                    "major": "电子、通信与自动控制技术",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "仰望；查阅；尊敬；拜访",
+                                "cite": "78",
+                                "docTitle": "基于混沌映射的Hash函数构造研究 ",
+                                "url": "youdao"
+                            }
+                        },
+                        {
+                            "tr": {
+                                "nat": "查找",
+                                "cite": "0"
+                            }
+                        }
+                    ],
+                    "num": 2
+                }
+            },
+            {
+                "entry": {
+                    "major": "计算机科学技术",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "查找",
+                                "cite": "0"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            }
+        ]
+    },
+    "syno": {
+        "synos": [
+            {
+                "pos": "",
+                "ws": [
+                    "refer",
+                    "esteem"
+                ],
+                "tran": "仰望；查阅；尊敬；拜访"
+            }
+        ],
+        "word": "look up"
+    },
+    "input": "look up",
+    "music_sents": {
+        "sents_data": [
+            {
+                "songName": "The Rise",
+                "lyricTranslation": "这是上升期 我的目标是顶端 所以在任何情况我都只会往上看",
+                "singer": "邵艾伦Alan",
+                "coverImg": "http://p1.music.126.net/H-UerycmTub3UwXxjyrdOA==/109951165293544409.jpg?imageView=&type=webp",
+                "supportCount": 28,
+                "lyric": "This the ascent and my goal is the top so in any event I will only <b>look up</b>",
+                "lyricList": [
+                    {
+                        "duration": 4160,
+                        "lyricTranslation": "这是上升期 我的目标是顶端 所以在任何情况我都只会往上看",
+                        "lyric": "This the ascent and my goal is the top so in any event I will only <b>look up</b>",
+                        "start": 0
+                    },
+                    {
+                        "duration": 1777,
+                        "lyricTranslation": "haters总会找到理由不喜欢我",
+                        "lyric": "Haters gon hate, ain’t that what they say",
+                        "start": 4160
+                    }
+                ],
+                "id": "e543e9c720",
+                "songId": "161190325783C61705F8D79D33C84758",
+                "playUrl": "https://dict.youdao.com/dictserver/sentencemusic/playUrl?redirectUrl=https%3A%2F%2Fydlunacommon-cdn.nosdn.127.net%2F2ca6752cd1c88d413913ba2ad103cd19.mp3"
+            }
+        ],
+        "more": false,
+        "word": "look up"
+    },
+    "collins": {
+        "collins_entries": [
+            {
+                "entries": {
+                    "entry": [
+                        {
+                            "tran_entry": [
+                                {
+                                    "pos_entry": {
+                                        "pos": "PHRASAL VERB",
+                                        "pos_tips": "动词词组"
+                                    },
+                                    "exam_sents": {
+                                        "sent": [
+                                            {
+                                                "chn_sent": "我从人事档案里查到了你的地址。",
+                                                "eng_sent": "I looked your address up in the personnel file."
+                                            }
+                                        ]
+                                    },
+                                    "tran": "If you <b>look up</b> a fact or a piece of information, you find it out by looking in something such as a reference book or a list. 查阅"
+                                }
+                            ]
+                        },
+                        {
+                            "tran_entry": [
+                                {
+                                    "pos_entry": {
+                                        "pos": "PHRASAL VERB",
+                                        "pos_tips": "动词词组"
+                                    },
+                                    "exam_sents": {
+                                        "sent": [
+                                            {
+                                                "chn_sent": "我想要去拜访他，问他几个问题。",
+                                                "eng_sent": "I'll try to look him up, ask him a few questions."
+                                            }
+                                        ]
+                                    },
+                                    "tran": "If you <b>look</b> someone <b>up</b>, you visit them after not having seen them for a long time. (久别后) 拜访"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "basic_entries": {
+                    "basic_entry": [
+                        {
+                            "headword": "look up",
+                            "wordforms": {
+                                "wordform": [
+                                    {
+                                        "word": "looking"
+                                    },
+                                    {
+                                        "word": "looked"
+                                    },
+                                    {
+                                        "word": "looks"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "headword": "look up"
+            }
+        ]
+    },
+    "meta": {
+        "input": "look up",
+        "guessLanguage": "eng",
+        "isHasSimpleDict": "1",
+        "le": "en",
+        "lang": "eng",
+        "dicts": [
+            "web_trans",
+            "ee",
+            "blng_sents_part",
+            "auth_sents_part",
+            "simple",
+            "media_sents_part",
+            "phrs",
+            "special",
+            "syno",
+            "music_sents",
+            "collins",
+            "meta",
+            "webster",
+            "discriminate",
+            "wikipedia_digest",
+            "ec"
+        ]
+    },
+    "webster": {
+        "encryptedData": "cIUbJDMFJ-sQnHQaxcn682eHWNsHRurricXC_oO2ZGHhjt_Is2giiXZj-6EGmMQ0KpMToI3HJa1QZYZCclgToiTC8mZWBeETzlD7XxsS36qfHNVG8NWpyX_efeRbkBT5MzgFVTppZG85kiyP89s0Y6m3LpsDt5chTCWew6HDhKV0H3FgxD19nejAn-X1D4vNNnFoTkmCFFK4tfRjcBXY_hVVxbpDqBmMzmoXmmkGC-F09WnQTLtlm4dxOyeKW4zCSkcb4x7724mHoA-rl15LHDwQ7GDZA35Edmi4xDmnt3RMQUwU2r9ocH5tn630m9t-J5NAQ9c6PqMUafO7QJUvfGJy4Rutm_N0HGGEQv_TN46JfMdIq4wYAeiW82tNEAgOPv_M5tiEgG-4tcH_oKVjueASFypWHPNQ9VoF4JNi-46gMKGF3olZCRpWoodZmVOiAtDwD7bcXi7TRtqFagNK1iCMia8iKJ8PdLOEsD4GEstNE2Y7YsPG_kBO7pBvS0dlG1vZ02oMcg68f5_pykbU7Jdyz0cckNV3Iuveh5pGCA760zkf7OYk7KP-sRJaIA11AkPrLlyw8Ktnm3bsMdu4C83zDzf9tHe_tmaPrTrSCmylR4ClzR6hR33xKfKbO3-5kkOmUHRRB3FIC1FiSPfagutuS6e3H3dXUvBEiZq9flUFqnFtwPcYbJ9V4nuCKXwkVfeIj-LRCqyJp0KcKyYPaoypdyYjStLKBdf2vf8oV8VRDK-mG6zpNp3dga7Ie0p3IsZ9CCw9uCisynviy89WE6fkOi12GQM8fOZZGsM4oud7PADsdYkJV-rHLcxUexZcUd0pIleq2gOdVsJkxOp3dKN3pai6fcmTSyIIshBkO_wP_qcTHrpyB06TY9tm7WSa"
+    },
+    "le": "en",
+    "discriminate": {
+        "data": [
+            {
+                "usages": [
+                    {
+                        "headword": "look up",
+                        "usage": "查检（单词等），通过查阅词典来查检单词"
+                    },
+                    {
+                        "headword": "consult",
+                        "usage": "查阅（词典等）；"
+                    }
+                ],
+                "headwords": [
+                    "look up",
+                    "consult"
+                ]
+            }
+        ],
+        "return-phrase": "look up"
+    },
+    "wikipedia_digest": {
+        "summarys": [
+            {
+                "summary": "Gareth Daley (born 29 September 1989), known professionally as Daley, is a British singer-songwriter from Manchester, signed to Polydor Records in the UK and Universal Republic Records in the US.",
+                "key": "Look Up"
+            }
+        ],
+        "source": {
+            "name": "维基百科",
+            "url": "http://en.wikipedia.org/wiki/Look_Up"
+        }
+    },
+    "lang": "eng",
+    "ec": {
+        "web_trans": [
+            "查找",
+            "向上看",
+            "抬头看"
+        ],
+        "special": [
+            {
+                "nat": "仰望；查阅；尊敬；拜访",
+                "major": "电子、通信与自动控制技术"
+            }
+        ],
+        "source": {
+            "name": "有道词典",
+            "url": "https://dict.youdao.com"
+        },
+        "word": {
+            "trs": [
+                {
+                    "sentence": [
+                        {
+                            "enShow": "Business is looking up.",
+                            "en": "Business is looking up.",
+                            "type": "双语例句-《精编例句》",
+                            "zh": "生意正在好转。"
+                        }
+                    ],
+                    "tran": "改善前景或条件：指在前景或条件方面有所改善。"
+                },
+                {
+                    "sentence": [
+                        {
+                            "enShow": "<b>Look up</b> an address.",
+                            "en": "Look up an address.",
+                            "type": "双语例句-《精编例句》",
+                            "zh": "查找一个地址。"
+                        }
+                    ],
+                    "tran": "查找（信息）：指在参考资料中查找信息。"
+                },
+                {
+                    "sentence": [
+                        {
+                            "enShow": "Look me up when you're here.",
+                            "en": "Look me up when you're here.",
+                            "type": "双语例句-《精编例句》",
+                            "zh": "你来的时候来找我。"
+                        }
+                    ],
+                    "tran": "拜访：指为了短暂的拜访而寻找某人。"
+                },
+                {
+                    "sentence": [
+                        {
+                            "enShow": "<b>Look up</b> - things are not all bad.",
+                            "en": "Look up - things are not all bad.",
+                            "type": "双语例句-《精编例句》",
+                            "zh": "振作起来-并不都是坏事。"
+                        }
+                    ],
+                    "tran": "振作起来：指让自己振作起来。"
+                }
+            ],
+            "speech": "look+up",
+            "return-phrase": "look up"
+        }
+    }
+}

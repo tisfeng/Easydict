@@ -102,7 +102,7 @@ final class YoudaoService: QueryService {
         Task {
             do {
                 guard !text.isEmpty else {
-                    throw TranslateError.emptyText
+                    throw QueryError(type: .parameter, message: "Translation text is empty")
                 }
 
                 let result = try await queryYoudaoDictAndTranslation(text: text, from: from, to: to)
@@ -113,46 +113,25 @@ final class YoudaoService: QueryService {
         }
     }
 
-    override func detectText(_ text: String, completion: @escaping (Language, (any Error)?) -> ()) {
-        Task {
-            do {
-                guard !text.isEmpty else {
-                    throw TranslateError.emptyText
-                }
-
-                let queryString = String(text.prefix(73))
-                let result = try await translate(queryString, from: .auto, to: .auto)
-                completion(result.from, nil)
-            } catch {
-                completion(.auto, error)
-            }
-        }
-    }
-
     override func text(
         toAudio text: String,
         fromLanguage from: Language,
         completion: @escaping (String?, (any Error)?) -> ()
     ) {
-        Task {
-            do {
-                guard !text.isEmpty else {
-                    throw TranslateError.emptyText
-                }
-
-                let language = getTTSLanguageCode(from)
-                let encodedText =
-                    text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-                let audioURL = "\(kYoudaoDictURL)/dictvoice?audio=\(encodedText)&le=\(language)"
-                completion(audioURL, nil)
-            } catch {
-                completion(nil, error)
-            }
+        guard !text.isEmpty else {
+            return completion(
+                nil, QueryError(type: .parameter, message: "Translation text is empty")
+            )
         }
+
+        let language = getTTSLanguageCode(from)
+        let encodedText =
+            text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let audioURL = "\(kYoudaoDictURL)/dictvoice?audio=\(encodedText)&le=\(language)"
+        completion(audioURL, nil)
     }
 
     override func getTTSLanguageCode(_ language: Language) -> String {
-        // Implement TTS language code conversion
         languageCode(forLanguage: language) ?? ""
     }
 
@@ -182,23 +161,16 @@ final class YoudaoService: QueryService {
     ) async throws
         -> EZQueryResult {
         guard !text.isEmpty else {
-            throw TranslateError.emptyText
+            throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
         if queryTextType().isEmpty {
-            throw TranslateError.noResultsFound
+            throw QueryError(type: .unsupported, message: "No results found")
         }
 
-        _ = try await webTranslate(text: text, from: from, to: to)
-
-//        async let dictResult = queryYoudaoDict(text: text, from: from, to: to)
-//
-//        if queryTextType().contains(.translation) {
-//            async let translateResult = webTranslate(text: text, from: from, to: to)
-//            _ = try await [dictResult, translateResult]
-//        } else {
-//            _ = try await dictResult
-//        }
+        async let dictResult = queryYoudaoDict(text: text, from: from, to: to)
+        async let translateResult = webTranslate(text: text, from: from, to: to)
+        _ = try await [dictResult, translateResult]
 
         return result
     }
@@ -215,7 +187,7 @@ final class YoudaoService: QueryService {
         let toCode = languageCode(forLanguage: to)
 
         guard let fromCode = fromCode, let toCode = toCode else {
-            throw TranslateError.apiError("Invalid language code")
+            throw QueryError(type: .api, message: "Invalid language code")
         }
 
         let parameters: [String: Any] = [
@@ -246,22 +218,33 @@ final class YoudaoService: QueryService {
 
         do {
             if let stringData = String(data: data, encoding: .utf8),
-               let decodedData = decodeAES128(stringData)?.data(using: .utf8) {
-                let response = try JSONDecoder().decode(YoudaoTranslateResponse.self, from: decodedData)
+               let decodedData = decryptAES128CBC(encryptedText: stringData)?.data(using: .utf8) {
+                let response = try JSONDecoder().decode(
+                    YoudaoTranslateResponse.self, from: decodedData
+                )
                 if response.code == 0 {
                     // Flatten the nested arrays and join translations
-                    result.translatedResults = response.translateResult.map { group in
-                        group.map(\.tgt).joined(separator: "\n")
+                    let translations = response.translateResult.map { group in
+                        group.map(\.tgt).joined(separator: "")
                     }
+                    let translatedText = translations.joined(separator: "")
+                    result.translatedResults = translatedText.split(
+                        separator: "\n", omittingEmptySubsequences: false
+                    )
+                    .map { String($0) }
                     result.raw = response
                 } else {
-                    throw TranslateError.apiError("Translation failed with code: \(response.code)")
+                    throw QueryError(
+                        type: .api, message: "Translation failed with code: \(response.code)"
+                    )
                 }
             } else {
-                throw TranslateError.apiError("Failed to decode response data")
+                throw QueryError(type: .api, message: "Failed to decode response data")
             }
         } catch {
-            throw TranslateError.apiError("Failed to parse response: \(error.localizedDescription)")
+            throw QueryError(
+                type: .api, message: "Failed to parse response: \(error.localizedDescription)"
+            )
         }
 
         return result
@@ -292,7 +275,7 @@ final class YoudaoService: QueryService {
     private func queryYoudaoDict(text: String, from: Language, to: Language) async throws
         -> EZQueryResult {
         guard !text.isEmpty else {
-            throw TranslateError.emptyText
+            throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
         guard !queryTextType().isEmpty else {
@@ -304,11 +287,17 @@ final class YoudaoService: QueryService {
         guard let foreignLanguage = youdaoDictForeignLanguage(queryModel),
               enableDictionary
         else {
-            throw TranslateError.noResultsFound
+            throw QueryError(type: .unsupported, message: "No results found")
         }
 
-        // Prepare dictionary query parameters
-        let dicts = [["web_trans", "ec", "ce", "newhh", "baike", "wikipedia_digest"]]
+        /**
+         dicts can be empty, means all dictionaries.
+
+         dicts values from response meta.dicts, for example:
+
+         web_trans, oxfordAdvanceHtml, video_sents, simple, phrs, oxford, syno, collins, word_video, webster, discriminate, ec, ee, blng_sents_part, individual, collins_primary, rel_word, auth_sents_part, media_sents_part, expand_ec, etym, special, senior, music_sents, baike, meta, oxfordAdvance
+         */
+        let dicts = [["web_trans", "ec", "ce", "newhh", "baike", "wikipedia_digest", "fanyi"]]
         let dictsParams =
             [
                 "count": 99,
@@ -316,33 +305,35 @@ final class YoudaoService: QueryService {
             ] as [String: Any]
 
         let jsonData = try JSONSerialization.data(withJSONObject: dictsParams)
-        guard let dictsString = String(data: jsonData, encoding: .utf8) else {
-            throw TranslateError.apiError("Failed to encode dicts parameters")
-        }
+        let dictsString = String(data: jsonData, encoding: .utf8) ?? ""
 
         let parameters = [
             "q": text,
             "le": foreignLanguage,
-            "dicts": dictsString,
+            "dicts": dictsString, // dicts can be empty, means all dictionaries
         ]
 
         let url = "\(kYoudaoDictURL)/jsonapi"
 
         do {
-            let response = try await session.request(
+            // Get the raw data
+            let responseData = try await session.request(
                 url,
                 method: .get,
                 parameters: parameters
             )
-            .serializingDecodable(YoudaoDictModel.self)
+            .serializingData()
             .value
 
-            // Update result with dictionary response
-            updateResult(with: response)
+            // Decode the data
+            let response = try JSONDecoder().decode(YoudaoDictResponse.self, from: responseData)
+            result.update(with: response)
             return result
-
         } catch {
-            throw TranslateError.networkError(error)
+            throw QueryError(
+                type: .api,
+                message: "Failed to query Youdao dictionary: \(String(describing: error))"
+            )
         }
     }
 
@@ -363,137 +354,72 @@ final class YoudaoService: QueryService {
         let supportedCodes = supportedLanguages.map { languageCode(forLanguage: $0) }
         return supportedCodes.contains(foreignLanguage ?? "") ? foreignLanguage : nil
     }
-
-    private func updateResult(with dictModel: YoudaoDictModel) {
-        // Implement result update logic based on dictionary model
-        // This should mirror the Objective-C implementation of setupWithYoudaoDictModel:
-    }
 }
 
-func decodeAES128(_ t: String) -> String? {
-    let key = "ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl"
-    let lv = "ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4"
-
+/// AES-128-CBC decryption with PKCS7 padding
+/// - Parameters:
+///   - encryptedText: Base64 encoded encrypted text with URL-safe characters (- and _)
+///   - key: The key used for encryption
+///   - iv: The initialization vector used for encryption
+/// - Returns: Decrypted string if successful, nil otherwise
+/// - Note: From https://github.com/blance714/StaticeApp/blob/a8706aaf4806468a663d7986b901b09be5fc9319/Statice/Model/Search/Youdao.swift
+private func decryptAES128CBC(
+    encryptedText: String,
+    key: String =
+        "ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl",
+    iv: String =
+        "ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4"
+)
+    -> String? {
+    // Convert key and iv to UTF-8 data
     guard let keyData = key.data(using: .utf8),
-          let lvData = lv.data(using: .utf8) else {
+          let ivData = iv.data(using: .utf8)
+    else {
+        print("Failed to convert key or iv to data")
         return nil
     }
 
-    let base64String = t.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
-    guard let tData = Data(base64Encoded: base64String) else {
+    // Convert URL-safe base64 to standard base64
+    let standardBase64 =
+        encryptedText
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+
+    // Decode base64 string to data
+    guard let encryptedData = Data(base64Encoded: standardBase64) else {
+        print("Failed to decode base64 string")
         return nil
     }
 
-    let fo = Insecure.MD5.hash(data: keyData)
-    let fn = Insecure.MD5.hash(data: lvData)
+    // Generate MD5 hashes for key and iv
+    let keyHash = Insecure.MD5.hash(data: keyData)
+    let ivHash = Insecure.MD5.hash(data: ivData)
 
-    let a = Data(fo)
-    let i = Data(fn)
+    // Convert hashes to Data
+    let keyHashData = Data(keyHash)
+    let ivHashData = Data(ivHash)
 
     do {
-        let aes = try AES(key: [UInt8](a), blockMode: CBC(iv: [UInt8](i)), padding: .pkcs7)
-        let decryptedData = try aes.decrypt([UInt8](tData))
-        return String(data: Data(decryptedData), encoding: .utf8)
-    } catch {
-        print("Error decrypting: \(error)")
-        return nil
-    }
-}
+        // Create AES cipher with CBC mode and PKCS7 padding
+        let cipher = try AES(
+            key: [UInt8](keyHashData),
+            blockMode: CBC(iv: [UInt8](ivHashData)),
+            padding: .pkcs7
+        )
 
-// MARK: - YoudaoTranslateResponse
+        // Decrypt the data
+        let decryptedBytes = try cipher.decrypt([UInt8](encryptedData))
 
-struct YoudaoTranslateResponse: Codable {
-    struct TranslateResultItem: Codable {
-        let src: String
-        let tgt: String
-        let tgtPronounce: String?
-    }
-
-    let translateResult: [[TranslateResultItem]]
-    let type: String // en2zh-CHS
-    let code: Int
-    let dictResult: YoudaoDictModel?
-}
-
-// MARK: - YoudaoDictModel
-
-struct YoudaoDictModel: Codable {
-    enum CodingKeys: String, CodingKey {
-        case ec
-    }
-
-    let ec: EC?
-}
-
-// MARK: - EC
-
-struct EC: Codable {
-    enum CodingKeys: String, CodingKey {
-        case examType = "exam_type"
-        case word
-    }
-
-    let examType: [String]?
-    let word: ECWord?
-}
-
-// MARK: - ECWord
-
-struct ECWord: Codable {
-    enum CodingKeys: String, CodingKey {
-        case prototype
-        case returnPhrase = "return-phrase"
-        case trs, ukphone, ukspeech, usphone, usspeech, wfs
-    }
-
-    let prototype: String?
-    let returnPhrase: String?
-    let trs: [ECTrs]?
-    let ukphone: String?
-    let ukspeech: String?
-    let usphone: String?
-    let usspeech: String?
-    let wfs: [ECWordForm]?
-}
-
-// MARK: - ECTrs
-
-struct ECTrs: Codable {
-    let pos: String?
-    let tran: String?
-}
-
-// MARK: - ECWordForm
-
-struct ECWordForm: Codable {
-    struct WordForm: Codable {
-        let name: String
-        let value: String
-    }
-
-    let wf: WordForm
-}
-
-// MARK: - TranslateError
-
-enum TranslateError: LocalizedError {
-    case emptyText
-    case noResultsFound
-    case networkError(Error)
-    case apiError(String)
-
-    // MARK: Internal
-
-    var errorDescription: String? {
-        switch self {
-        case .emptyText:
-            "Translation text is empty"
-        case .noResultsFound:
-            "No results found"
-        case let .networkError(error):
-            "Network error: \(error.localizedDescription)"
-        case let .apiError(message):
-            "API error: \(message)"
+        // Convert decrypted bytes to string
+        guard let decryptedString = String(data: Data(decryptedBytes), encoding: .utf8) else {
+            print("Failed to convert decrypted data to string")
+            return nil
         }
+
+        return decryptedString
+
+    } catch {
+        print("AES decryption error: \(error)")
+        return nil
     }
 }

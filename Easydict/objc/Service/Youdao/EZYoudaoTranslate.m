@@ -374,7 +374,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     BOOL enableTranslation = self.queryTextType & EZQueryTextTypeTranslation;
     if (enableTranslation) {
-        // 2.Query Youdao translate.
+        // 2. Query Youdao translate.
         dispatch_group_enter(group);
         [self webTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {

@@ -60,6 +60,14 @@
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
+		03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */; };
+		03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */; };
+		03538DF02D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */; };
+		03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DF12D25AAD1005E56A8 /* CookieManager.swift */; };
+		03538DF42D263FA5005E56A8 /* good.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DF32D263FA5005E56A8 /* good.json */; };
+		03538DF62D2652F7005E56A8 /* 美.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DF52D2652F7005E56A8 /* 美.json */; };
+		03538DF92D26536C005E56A8 /* 人的一生.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DF82D26536C005E56A8 /* 人的一生.json */; };
+		03538DFB2D2653E2005E56A8 /* look up.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DFA2D2653E2005E56A8 /* look up.json */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -91,7 +99,6 @@
 		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
 		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
-		03727B262D25336E009B72E2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03727B252D25336E009B72E2 /* NetworkManager.swift */; };
 		03779F0E2BB256A7008D3C42 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0B2BB256A7008D3C42 /* OpenAIService.swift */; };
 		03779F0F2BB256A7008D3C42 /* LLMStreamService+Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F0C2BB256A7008D3C42 /* LLMStreamService+Prompt.swift */; };
 		03779F132BB256B5008D3C42 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F102BB256B5008D3C42 /* APIKey.swift */; };
@@ -453,6 +460,14 @@
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
 		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
+		03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponse.swift; sourceTree = "<group>"; };
+		03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoTranslateResponese.swift; sourceTree = "<group>"; };
+		03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+YoudaoDict.swift"; sourceTree = "<group>"; };
+		03538DF12D25AAD1005E56A8 /* CookieManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieManager.swift; sourceTree = "<group>"; };
+		03538DF32D263FA5005E56A8 /* good.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = good.json; sourceTree = "<group>"; };
+		03538DF52D2652F7005E56A8 /* 美.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "美.json"; sourceTree = "<group>"; };
+		03538DF82D26536C005E56A8 /* 人的一生.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "人的一生.json"; sourceTree = "<group>"; };
+		03538DFA2D2653E2005E56A8 /* look up.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "look up.json"; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
@@ -504,7 +519,6 @@
 		036D62802BCAB613002C95C7 /* BuiltInAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInAIService.swift; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
-		03727B252D25336E009B72E2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		03779F0B2BB256A7008D3C42 /* OpenAIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		03779F0C2BB256A7008D3C42 /* LLMStreamService+Prompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LLMStreamService+Prompt.swift"; sourceTree = "<group>"; };
 		03779F102BB256B5008D3C42 /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
@@ -1192,6 +1206,17 @@
 				0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */,
 			);
 			path = GetSelectedText;
+			sourceTree = "<group>";
+		};
+		03538DF72D265301005E56A8 /* DictJSONExample */ = {
+			isa = PBXGroup;
+			children = (
+				03538DF32D263FA5005E56A8 /* good.json */,
+				03538DF52D2652F7005E56A8 /* 美.json */,
+				03538DF82D26536C005E56A8 /* 人的一生.json */,
+				03538DFA2D2653E2005E56A8 /* look up.json */,
+			);
+			path = DictJSONExample;
 			sourceTree = "<group>";
 		};
 		03542A2D293645B800C34C33 /* Apple */ = {
@@ -2079,6 +2104,10 @@
 			isa = PBXGroup;
 			children = (
 				03CD01572D24E17C0079D0CB /* YoudaoService.swift */,
+				03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */,
+				03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */,
+				03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */,
+				03538DF72D265301005E56A8 /* DictJSONExample */,
 			);
 			path = Youdao;
 			sourceTree = "<group>";
@@ -2561,7 +2590,7 @@
 				03714B8E2C17FCAD00BB4459 /* Constants */,
 				0340D3972C91D4A3004C9910 /* AppleScript */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
-				03727B252D25336E009B72E2 /* NetworkManager.swift */,
+				03538DF12D25AAD1005E56A8 /* CookieManager.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -2809,13 +2838,16 @@
 			files = (
 				0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */,
 				03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */,
+				03538DF62D2652F7005E56A8 /* 美.json in Resources */,
 				031DBD792AE01E130071CF85 /* easydict in Resources */,
+				03538DFB2D2653E2005E56A8 /* look up.json in Resources */,
 				03BFBB7329239E9F00C48725 /* blue-white-icon@2x.png in Resources */,
 				03882F9229D95044005B5A52 /* Info.plist in Resources */,
 				03BFBB7C2923A1D900C48725 /* cyan-white-icon@3x.png in Resources */,
 				C477BF912C0E2C61006A3F27 /* InfoPlist.xcstrings in Resources */,
 				03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */,
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
+				03538DF92D26536C005E56A8 /* 人的一生.json in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
@@ -2831,6 +2863,7 @@
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
+				03538DF42D263FA5005E56A8 /* good.json in Resources */,
 				0361965529FFECFC00806370 /* youdao-sign.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3014,6 +3047,7 @@
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
+				03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */,
 				0AC8A8352B6641A7006DA5CC /* TencentService+ConfigurableService.swift in Sources */,
 				DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
@@ -3049,7 +3083,6 @@
 				C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */,
 				27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
-				03727B262D25336E009B72E2 /* NetworkManager.swift in Sources */,
 				032AAA5D2C45744E007996A1 /* VaporServer.swift in Sources */,
 				276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */,
 				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
@@ -3128,6 +3161,7 @@
 				033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */,
 				9643D93D2B6F829C000FBEA6 /* MainMenuCommand.swift in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
+				03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */,
 				9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */,
 				0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */,
 				0AC8A8412B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift in Sources */,
@@ -3144,6 +3178,7 @@
 				038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */,
 				03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
+				03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
@@ -3227,6 +3262,7 @@
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */,
+				03538DF02D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,

@@ -9,7 +9,6 @@
 #import "EZServiceTypes.h"
 #import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
-#import "EZYoudaoTranslate.h"
 #import "EZDeepLTranslate.h"
 #import "EZAppleService.h"
 #import "EZBingService.h"
