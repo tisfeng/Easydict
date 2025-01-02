@@ -243,7 +243,7 @@ final class YoudaoService: QueryService {
             }
         } catch {
             throw QueryError(
-                type: .api, message: "Failed to parse response: \(error.localizedDescription)"
+                type: .api, message: "Failed to parse response: \(String(describing: error))"
             )
         }
 

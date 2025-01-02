@@ -14,7 +14,6 @@ import Foundation
 extension EZQueryResult {
     func update(with model: YoudaoDictResponse) {
         raw = model
-        queryText = model.input
 
         let wordResult = EZTranslateWordResult()
         let language = queryModel.queryFromLanguage
