@@ -355,12 +355,6 @@ userInfo:nil]
 
     NSString *languageCode = [self languageCodeForLanguage:language];
 
-    // Youdao web TTS,
-    if (self.serviceType == EZServiceTypeYoudao) {
-        if ([EZLanguageManager.shared isChineseLanguage:language]) {
-            languageCode = @"zh"; // Not zh-CHS
-        }
-    }
     return languageCode;
 }
 

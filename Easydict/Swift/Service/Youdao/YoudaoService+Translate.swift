@@ -134,7 +134,7 @@ extension YoudaoService {
         guard let keyData = key.data(using: .utf8),
               let ivData = iv.data(using: .utf8)
         else {
-            print("Failed to convert key or iv to data")
+            logError("Failed to convert key or iv to data")
             return nil
         }
 
@@ -146,7 +146,7 @@ extension YoudaoService {
 
         // Decode base64 string to data
         guard let encryptedData = Data(base64Encoded: standardBase64) else {
-            print("Failed to decode base64 string")
+            logError("Failed to decode base64 string")
             return nil
         }
 
@@ -171,14 +171,14 @@ extension YoudaoService {
 
             // Convert decrypted bytes to string
             guard let decryptedString = String(data: Data(decryptedBytes), encoding: .utf8) else {
-                print("Failed to convert decrypted data to string")
+                logError("Failed to convert decrypted data to string")
                 return nil
             }
 
             return decryptedString
 
         } catch {
-            print("AES decryption error: \(error)")
+            logError("AES decryption error: \(error)")
             return nil
         }
     }

@@ -19,27 +19,14 @@ let kYoudaoDictURL = "https://dict.youdao.com"
 // MARK: - YoudaoService
 
 @objc(EZYoudaoService)
-final class YoudaoService: QueryService {
-    // MARK: Lifecycle
-
-    override init() {
-        let configuration = URLSessionConfiguration.default
-        self.session = Session(configuration: configuration)
-        super.init()
-
-        configuration.headers = headers
-    }
-
+class YoudaoService: QueryService {
     // MARK: Internal
-
-    let session: Session
 
     var headers: HTTPHeaders {
         [
             "User-Agent": EZUserAgent,
             "Referer": kYoudaoTranslateURL,
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Cookie": cookie,
+            "Cookie": "OUTFOX_SEARCH_USER_ID=1796239350@10.110.96.157;",
         ]
     }
 
@@ -109,6 +96,13 @@ final class YoudaoService: QueryService {
         completion(audioURL, nil)
     }
 
+    override func getTTSLanguageCode(_ language: Language) -> String {
+        if language.isKindOfChinese() {
+            return "zh"
+        }
+        return super.getTTSLanguageCode(language)
+    }
+
     // MARK: Private
 
     /// Note: The official Youdao API supports most languages, but its web page shows that only 15 languages are supported. https://fanyi.youdao.com/index.html#/
@@ -131,26 +125,5 @@ final class YoudaoService: QueryService {
             .indonesian: "id",
             .vietnamese: "vi",
         ]
-    }
-
-    private var cookie: String {
-        if let cookie = UserDefaults.standard.string(forKey: kYoudaoTranslateURL) {
-            return cookie
-        }
-        let defaultCookie =
-            "OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000"
-        UserDefaults.standard.set(defaultCookie, forKey: kYoudaoTranslateURL)
-        requestYoudaoCookie()
-        return defaultCookie
-    }
-
-    private func requestYoudaoCookie() {
-        // https://fanyi.youdao.com/index.html#/
-        let cookieURL = kYoudaoTranslateURL + "/index.html#/"
-        CookieManager.shared.requestCookie(ofURL: cookieURL, cookieName: "OUTFOX_SEARCH_USER_ID") { cookie in
-            if let cookie = cookie {
-                UserDefaults.standard.set(cookie, forKey: kYoudaoTranslateURL)
-            }
-        }
     }
 }

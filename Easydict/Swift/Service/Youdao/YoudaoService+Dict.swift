@@ -54,7 +54,7 @@ extension YoudaoService {
 
         do {
             // Get the raw data
-            let responseData = try await session.request(
+            let responseData = try await AF.request(
                 url,
                 method: .get,
                 parameters: parameters
