@@ -20,6 +20,26 @@ let kYoudaoDictURL = "https://dict.youdao.com"
 
 @objc(EZYoudaoService)
 class YoudaoService: QueryService {
+    // MARK: Public
+
+    public func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
+        let fromLanguage = queryModel.queryFromLanguage
+        let toLanguage = queryModel.queryTargetLanguage
+
+        let supportedLanguages: [Language] = [.english, .japanese, .french, .korean]
+
+        var foreignLanguage: String?
+
+        if fromLanguage.isKindOfChinese() {
+            foreignLanguage = languageCode(forLanguage: toLanguage)
+        } else if toLanguage.isKindOfChinese() {
+            foreignLanguage = languageCode(forLanguage: fromLanguage)
+        }
+
+        let supportedCodes = supportedLanguages.map { languageCode(forLanguage: $0) }
+        return supportedCodes.contains(foreignLanguage ?? "") ? foreignLanguage : nil
+    }
+
     // MARK: Internal
 
     var headers: HTTPHeaders {
@@ -40,6 +60,19 @@ class YoudaoService: QueryService {
 
     override func link() -> String {
         kYoudaoTranslateURL
+    }
+
+    /**
+     Youdao word link, support 4 languages: en, ja, ko, fr, and to Chinese. https://www.youdao.com/result?word=good&lang=en
+
+     means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
+     */
+    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+        let encodedWord = queryModel.queryText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        guard let foreignLangauge = youdaoDictForeignLanguage(queryModel) else {
+            return link()
+        }
+        return "\(kYoudaoDictURL)/result?word=\(encodedWord)&lang=\(foreignLangauge)"
     }
 
     override func name() -> String {

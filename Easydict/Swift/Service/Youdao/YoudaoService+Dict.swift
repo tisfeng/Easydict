@@ -73,22 +73,4 @@ extension YoudaoService {
             )
         }
     }
-
-    private func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
-        let fromLanguage = queryModel.queryFromLanguage
-        let toLanguage = queryModel.queryTargetLanguage
-
-        let supportedLanguages: [Language] = [.english, .japanese, .french, .korean]
-
-        var foreignLanguage: String?
-
-        if fromLanguage.isKindOfChinese() {
-            foreignLanguage = languageCode(forLanguage: toLanguage)
-        } else if toLanguage.isKindOfChinese() {
-            foreignLanguage = languageCode(forLanguage: fromLanguage)
-        }
-
-        let supportedCodes = supportedLanguages.map { languageCode(forLanguage: $0) }
-        return supportedCodes.contains(foreignLanguage ?? "") ? foreignLanguage : nil
-    }
 }

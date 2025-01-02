@@ -107,14 +107,14 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
  */
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *encodedWord = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSString *foreignLangauge = [self youdaoDictForeignLangauge:queryModel];
+    NSString *foreignLangauge = [self youdaoDictForeignLanguage:queryModel];
     if (!foreignLangauge) {
         return self.link;
     }
     return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoDictURL, encodedWord, foreignLangauge];
 }
 
-- (nullable NSString *)youdaoDictForeignLangauge:(EZQueryModel *)queryModel {
+- (nullable NSString *)youdaoDictForeignLanguage:(EZQueryModel *)queryModel {
     EZLanguage fromLanguage = queryModel.queryFromLanguage;
     EZLanguage toLanguage = queryModel.queryTargetLanguage;
     
@@ -404,7 +404,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     
-    NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
+    NSString *foreignLangauge = [self youdaoDictForeignLanguage:self.queryModel];
     BOOL supportQueryDictionaryLanguage = foreignLangauge != nil;
     
     // If Youdao Dictionary does not support the language, try querying translate API.
