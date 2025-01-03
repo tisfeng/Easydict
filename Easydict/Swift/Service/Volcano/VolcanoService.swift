@@ -37,11 +37,7 @@ public final class VolcanoService: QueryService {
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for (key, value) in VolcanoTranslateType.supportLanguagesDictionary {
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
-        }
-        return orderedDict
+        VolcanoTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
     override public func translate(

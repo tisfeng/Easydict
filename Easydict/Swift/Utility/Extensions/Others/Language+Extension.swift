@@ -100,3 +100,27 @@ extension Language: CustomStringConvertible {
         "\(localizedName)(\(code)"
     }
 }
+
+// MARK: - Language + MMOrderedDictionary
+
+extension [Language: String] {
+    /// Convert Language dict to MMOrderedDictionary
+    func toMMOrderedDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+        for (key, value) in self {
+            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
+        }
+        return orderedDict
+    }
+}
+
+extension [Language] {
+    /// Convert Language array to MMOrderedDictionary, dict value is the same as key
+    func toMMOrderedDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+        for language in self {
+            orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
+        }
+        return orderedDict
+    }
+}

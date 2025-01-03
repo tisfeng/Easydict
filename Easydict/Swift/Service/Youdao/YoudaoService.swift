@@ -96,12 +96,9 @@ class YoudaoService: QueryService {
         return typeOptions
     }
 
+    // TODO: refactor QueryService, replace supportLanguagesDictionary with languagesDictionary
     override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for (key, value) in languagesDictionary {
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
-        }
-        return orderedDict
+        languagesDictionary.toMMOrderedDictionary()
     }
 
     override func translate(
