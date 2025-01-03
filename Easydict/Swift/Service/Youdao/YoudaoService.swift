@@ -9,6 +9,7 @@
 import Alamofire
 import CryptoKit
 import CryptoSwift
+import Defaults
 import Foundation
 
 // MARK: - Constants
@@ -30,12 +31,23 @@ class YoudaoService: QueryService {
         ]
     }
 
-    override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for (key, value) in languagesDictionary {
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
-        }
-        return orderedDict
+    // TODO: refactor QueryService, move these keys to QueryService
+    var translationKey: Defaults.Key<String> {
+        stringDefaultsKey(.translation, defaultValue: "1")
+    }
+
+    var sentenceKey: Defaults.Key<String> {
+        stringDefaultsKey(.sentence, defaultValue: "1")
+    }
+
+    var dictionaryKey: Defaults.Key<String> {
+        stringDefaultsKey(.dictionary, defaultValue: "1")
+    }
+
+    // MARK: - override functions
+
+    override func serviceType() -> ServiceType {
+        .youdao
     }
 
     override func link() -> String {
@@ -63,12 +75,33 @@ class YoudaoService: QueryService {
         Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
+    // TODO: add configuration UI
     override func queryTextType() -> EZQueryTextType {
-        [.dictionary, .sentence, .translation]
+        var typeOptions: EZQueryTextType = []
+
+        let isTranslationEnabled = Defaults[translationKey].boolValue
+        let isSentenceEnabled = Defaults[sentenceKey].boolValue
+        let isDictionaryEnabled = Defaults[dictionaryKey].boolValue
+
+        if isTranslationEnabled {
+            typeOptions.insert(.translation)
+        }
+        if isSentenceEnabled {
+            typeOptions.insert(.sentence)
+        }
+        if isDictionaryEnabled {
+            typeOptions.insert(.dictionary)
+        }
+
+        return typeOptions
     }
 
-    override func serviceType() -> ServiceType {
-        .youdao
+    override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+        for (key, value) in languagesDictionary {
+            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
+        }
+        return orderedDict
     }
 
     override func translate(

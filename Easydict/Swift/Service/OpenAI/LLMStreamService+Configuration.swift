@@ -81,7 +81,9 @@ extension LLMStreamService {
             autoQuery: autoQuery
         )
     }
+}
 
+extension QueryService {
     func stringDefaultsKey(_ key: ServiceConfigurationKey) -> Defaults.Key<String> {
         stringDefaultsKey(key, defaultValue: "")
     }
