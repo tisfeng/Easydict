@@ -26,7 +26,6 @@ class YoudaoService: QueryService {
         [
             "User-Agent": EZUserAgent,
             "Referer": kYoudaoTranslateURL,
-//            "Origin": kYoudaoTranslateURL,
             "Cookie": "OUTFOX_SEARCH_USER_ID=1796239350@10.110.96.157;",
         ]
     }
@@ -115,6 +114,45 @@ class YoudaoService: QueryService {
             return "zh"
         }
         return super.getTTSLanguageCode(language)
+    }
+
+    override func ocr(
+        _ image: NSImage,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZOCRResult?, (any Error)?) -> ()
+    ) {
+        Task {
+            do {
+                let result = try await ocr(image: image, from: from, to: to)
+                completion(result, nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    override func ocrAndTranslate(
+        _ image: NSImage,
+        from: Language,
+        to: Language,
+        ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
+        completion: @escaping (EZOCRResult?, EZQueryResult?, (any Error)?) -> ()
+    ) {
+        Task {
+            do {
+                let ocrResult = try await ocr(image: image, from: from, to: to)
+                let queryResult = try await queryYoudaoDictAndTranslation(
+                    text: ocrResult.mergedText,
+                    from: from,
+                    to: to
+                )
+                ocrSuccess(ocrResult, queryResult.hasTranslatedResult)
+                completion(ocrResult, queryResult, nil)
+            } catch {
+                completion(nil, nil, error)
+            }
+        }
     }
 
     // MARK: Private

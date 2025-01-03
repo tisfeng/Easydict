@@ -71,6 +71,8 @@
 		03538E022D26D705005E56A8 /* YoudaoService+Dict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */; };
 		03538E042D26D70E005E56A8 /* YoudaoService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */; };
 		03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E072D278872005E56A8 /* YoudaoKey.swift */; };
+		03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E092D281920005E56A8 /* YoudaoService+OCR.swift */; };
+		03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -474,6 +476,8 @@
 		03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YoudaoService+Dict.swift"; sourceTree = "<group>"; };
 		03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YoudaoService+Translate.swift"; sourceTree = "<group>"; };
 		03538E072D278872005E56A8 /* YoudaoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoKey.swift; sourceTree = "<group>"; };
+		03538E092D281920005E56A8 /* YoudaoService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YoudaoService+OCR.swift"; sourceTree = "<group>"; };
+		03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoOCRResponse.swift; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
@@ -1232,6 +1236,7 @@
 				03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */,
 				03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */,
 				03538E072D278872005E56A8 /* YoudaoKey.swift */,
+				03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2125,6 +2130,7 @@
 				03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */,
 				03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */,
 				03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */,
+				03538E092D281920005E56A8 /* YoudaoService+OCR.swift */,
 			);
 			path = Youdao;
 			sourceTree = "<group>";
@@ -3060,6 +3066,7 @@
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03538E042D26D70E005E56A8 /* YoudaoService+Translate.swift in Sources */,
 				6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */,
+				03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */,
 				0340D39E2C951850004C9910 /* QueryError.swift in Sources */,
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
 				C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */,
@@ -3190,6 +3197,7 @@
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
+				03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */,
 				62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */,
 				03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
