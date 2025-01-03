@@ -20,32 +20,13 @@ let kYoudaoDictURL = "https://dict.youdao.com"
 
 @objc(EZYoudaoService)
 class YoudaoService: QueryService {
-    // MARK: Public
-
-    public func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
-        let fromLanguage = queryModel.queryFromLanguage
-        let toLanguage = queryModel.queryTargetLanguage
-
-        let supportedLanguages: [Language] = [.english, .japanese, .french, .korean]
-
-        var foreignLanguage: String?
-
-        if fromLanguage.isKindOfChinese() {
-            foreignLanguage = languageCode(forLanguage: toLanguage)
-        } else if toLanguage.isKindOfChinese() {
-            foreignLanguage = languageCode(forLanguage: fromLanguage)
-        }
-
-        let supportedCodes = supportedLanguages.map { languageCode(forLanguage: $0) }
-        return supportedCodes.contains(foreignLanguage ?? "") ? foreignLanguage : nil
-    }
-
     // MARK: Internal
 
     var headers: HTTPHeaders {
         [
             "User-Agent": EZUserAgent,
             "Referer": kYoudaoTranslateURL,
+//            "Origin": kYoudaoTranslateURL,
             "Cookie": "OUTFOX_SEARCH_USER_ID=1796239350@10.110.96.157;",
         ]
     }
@@ -158,5 +139,22 @@ class YoudaoService: QueryService {
             .indonesian: "id",
             .vietnamese: "vi",
         ]
+    }
+
+    private func queryYoudaoDictAndTranslation(
+        text: String,
+        from: Language,
+        to: Language
+    ) async throws
+        -> EZQueryResult {
+        guard !text.isEmpty else {
+            throw QueryError(type: .parameter, message: "Translation text is empty")
+        }
+
+        async let dictResult = queryYoudaoDict(text: text, from: from, to: to)
+        async let translateResult = webTranslate(text: text, from: from, to: to)
+        _ = try await [dictResult, translateResult]
+
+        return result
     }
 }

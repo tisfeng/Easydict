@@ -70,6 +70,7 @@
 		03538DFB2D2653E2005E56A8 /* look up.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DFA2D2653E2005E56A8 /* look up.json */; };
 		03538E022D26D705005E56A8 /* YoudaoService+Dict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */; };
 		03538E042D26D70E005E56A8 /* YoudaoService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */; };
+		03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E072D278872005E56A8 /* YoudaoKey.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -472,6 +473,7 @@
 		03538DFA2D2653E2005E56A8 /* look up.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "look up.json"; sourceTree = "<group>"; };
 		03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YoudaoService+Dict.swift"; sourceTree = "<group>"; };
 		03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YoudaoService+Translate.swift"; sourceTree = "<group>"; };
+		03538E072D278872005E56A8 /* YoudaoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoKey.swift; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
@@ -1229,6 +1231,7 @@
 				03538DF72D265301005E56A8 /* DictJSONExample */,
 				03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */,
 				03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */,
+				03538E072D278872005E56A8 /* YoudaoKey.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3044,6 +3047,7 @@
 				C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */,
 				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
 				036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */,
+				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */,

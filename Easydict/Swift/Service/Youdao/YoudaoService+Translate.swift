@@ -11,33 +11,54 @@ import CryptoKit
 import CryptoSwift
 import Foundation
 
+// MARK: - YoudaoService+Translate
+
 extension YoudaoService {
-    func queryYoudaoDictAndTranslation(
-        text: String,
-        from: Language,
-        to: Language
-    ) async throws
-        -> EZQueryResult {
-        guard !text.isEmpty else {
-            throw QueryError(type: .parameter, message: "Translation text is empty")
-        }
+    // MARK: - Constants
 
-        async let dictResult = queryYoudaoDict(text: text, from: from, to: to)
-        async let translateResult = webTranslate(text: text, from: from, to: to)
-        _ = try await [dictResult, translateResult]
+    private enum Constants {
+        static let client = "fanyideskweb"
+        static let product = "webfanyi"
 
-        return result
+        static let appVersion = "1.0.0"
+        static let vendor = "web"
+        static let pointParam = "client,mysticTime,product"
+        static let keyfrom = "fanyi.web"
+
+        // For get youdao key
+        static let defaultKey = "asdjnjfenknafdfsdfsd"
     }
 
-    /// Youdao web translate API. Ref: https://github.com/blance714/StaticeApp/blob/a8706aaf4806468a663d7986b901b09be5fc9319/Statice/Model/Search/Youdao.swift
-    private func webTranslate(text: String, from: Language, to: Language) async throws
-        -> EZQueryResult {
-        let client = "fanyideskweb"
-        let product = "webfanyi"
-        let key = "Vy4EQ1uwPkUoqvcP1nIu6WiAjxFeA3Ye"
-        let timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
+    private var generalParameters: [String: Any] {
+        [
+            "client": Constants.client,
+            "product": Constants.product,
+            "appVersion": Constants.appVersion,
+            "vendor": Constants.vendor,
+            "pointParam": Constants.pointParam,
+            "keyfrom": Constants.keyfrom,
 
-        let sign = generateSign(client: client, timestamp: timestamp, product: product, key: key)
+            "keyid": "",
+            "sign": "",
+            "mysticTime": "",
+        ]
+    }
+
+    func webTranslate(text: String, from: Language, to: Language) async throws
+        -> EZQueryResult {
+        let key = try await getYoudaoKey()
+        let aesKey = key.data.aesKey
+        let aesIv = key.data.aesIv
+        let secretKey = key.data.secretKey
+
+        let timestamp = currentTimestamp()
+        let sign = generateSign(
+            client: Constants.client,
+            timestamp: timestamp,
+            product: Constants.product,
+            key: secretKey
+        )
+
         let fromCode = languageCode(forLanguage: from)
         let toCode = languageCode(forLanguage: to)
 
@@ -45,21 +66,18 @@ extension YoudaoService {
             throw QueryError(type: .api, message: "Invalid language code")
         }
 
-        let parameters: [String: Any] = [
-            "i": text,
-            "from": fromCode,
-            "to": toCode,
-            "dictResult": "true",
-            "keyid": product,
-            "sign": sign,
-            "client": client,
-            "product": product,
-            "appVersion": "1.1.0",
-            "vendor": "web",
-            "pointParam": "client,mysticTime,product",
-            "mysticTime": timestamp,
-            "keyfrom": "fanyi.web",
-        ]
+        var parameters = generalParameters
+        parameters.merge(
+            [
+                "i": text,
+                "from": fromCode,
+                "to": toCode,
+                "dictResult": "false",
+                "keyid": "webfanyi",
+                "sign": sign,
+                "mysticTime": timestamp,
+            ], uniquingKeysWith: { _, new in new }
+        )
 
         let data = try await AF.request(
             "\(kYoudaoDictURL)/webtranslate",
@@ -71,30 +89,8 @@ extension YoudaoService {
         .value
 
         do {
-            if let stringData = String(data: data, encoding: .utf8),
-               let decodedData = decryptAES128CBC(encryptedText: stringData)?.data(using: .utf8) {
-                let response = try JSONDecoder().decode(
-                    YoudaoTranslateResponse.self, from: decodedData
-                )
-                if response.code == 0 {
-                    // Flatten the nested arrays and join translations
-                    let translations = response.translateResult.map { group in
-                        group.map(\.tgt).joined(separator: "")
-                    }
-                    let translatedText = translations.joined(separator: "")
-                    result.translatedResults = translatedText.split(
-                        separator: "\n", omittingEmptySubsequences: false
-                    )
-                    .map { String($0) }
-                    result.raw = response
-                } else {
-                    throw QueryError(
-                        type: .api, message: "Translation failed with code: \(response.code)"
-                    )
-                }
-            } else {
-                throw QueryError(type: .api, message: "Failed to decode response data")
-            }
+            let translateResponse = try parseTranslationResult(data, aesKey: aesKey, aesIv: aesIv)
+            try updateResult(translateResponse: translateResponse)
         } catch {
             throw QueryError(
                 type: .api, message: "Failed to parse response: \(String(describing: error))"
@@ -102,6 +98,36 @@ extension YoudaoService {
         }
 
         return result
+    }
+
+    /// Get secret key from Youdao web
+    /// Refer: https://github.com/HolynnChen/somejs/blob/5c74682faccaa17d52740e7fe285d13de3c32dba/translate.js#L717
+    private func getYoudaoKey() async throws -> YoudaoKey {
+        let timestamp = currentTimestamp()
+        let sign = generateSign(
+            client: Constants.client,
+            timestamp: timestamp,
+            product: Constants.product,
+            key: Constants.defaultKey
+        )
+
+        var parameters = generalParameters
+        parameters.merge(
+            [
+                "keyid": "webfanyi-key-getter",
+                "sign": sign,
+                "mysticTime": timestamp,
+            ], uniquingKeysWith: { _, new in new }
+        )
+
+        return try await AF.request(
+            "\(kYoudaoDictURL)/webtranslate/key",
+            method: .get,
+            parameters: parameters,
+            headers: headers
+        )
+        .serializingDecodable(YoudaoKey.self)
+        .value
     }
 
     private func generateSign(
@@ -112,8 +138,7 @@ extension YoudaoService {
     )
         -> String {
         let signText = "client=\(client)&mysticTime=\(timestamp)&product=\(product)&key=\(key)"
-        let sign = signText.md5()
-        return sign
+        return signText.md5()
     }
 
     /// AES-128-CBC decryption with PKCS7 padding
@@ -122,6 +147,7 @@ extension YoudaoService {
     ///   - key: The key used for encryption
     ///   - iv: The initialization vector used for encryption
     /// - Returns: Decrypted string if successful, nil otherwise
+    /// - Note: From https://github.com/blance714/StaticeApp/blob/a8706aaf4806468a663d7986b901b09be5fc9319/Statice/Model/Search/Youdao.swift
     private func decryptAES128CBC(
         encryptedText: String,
         key: String =
@@ -180,6 +206,52 @@ extension YoudaoService {
         } catch {
             logError("AES decryption error: \(error)")
             return nil
+        }
+    }
+
+    /// A timestamp string in milliseconds, for example, "1735872379000".
+    private func currentTimestamp() -> String {
+        String(Int(Date().timeIntervalSince1970 * 1000))
+    }
+
+    /// Parse translation result from Youdao web
+    private func parseTranslationResult(
+        _ data: Data,
+        aesKey: String,
+        aesIv: String
+    ) throws
+        -> YoudaoTranslateResponse {
+        if let encryptedText = String(data: data, encoding: .utf8),
+           let decodedData = decryptAES128CBC(
+               encryptedText: encryptedText,
+               key: aesKey,
+               iv: aesIv
+           )?.data(using: .utf8) {
+            let response = try JSONDecoder().decode(
+                YoudaoTranslateResponse.self, from: decodedData
+            )
+            return response
+        } else {
+            throw QueryError(type: .api, message: "Failed to decode response data")
+        }
+    }
+
+    private func updateResult(translateResponse: YoudaoTranslateResponse) throws {
+        if translateResponse.code == 0 {
+            // Flatten the nested arrays and join translations
+            let translations = translateResponse.translateResult.map { group in
+                group.map { $0.tgt }.joined(separator: "")
+            }
+            let translatedText = translations.joined(separator: "")
+            result.translatedResults = translatedText.split(
+                separator: "\n", omittingEmptySubsequences: false
+            )
+            .map { String($0) }
+            result.raw = translateResponse
+        } else {
+            throw QueryError(
+                type: .api, message: "Translation failed with code: \(translateResponse.code)"
+            )
         }
     }
 }
