@@ -942,7 +942,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     NSString *salt = [w md5];
     NSString *key = @"Mk6hqtUp33DGGtoS63tTJbMUYjRrG1Lu";
     NSString *sign = [[NSString stringWithFormat:@"web%@%ld%@%@", text, (long)t, key, salt] md5];
-    
         
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
