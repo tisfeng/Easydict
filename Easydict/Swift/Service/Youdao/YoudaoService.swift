@@ -151,9 +151,19 @@ class YoudaoService: QueryService {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
-        async let dictResult = queryYoudaoDict(text: text, from: from, to: to)
-        async let translateResult = webTranslate(text: text, from: from, to: to)
-        _ = try await [dictResult, translateResult]
+        do {
+            async let dictResult = queryYoudaoDict(text: text, from: from, to: to)
+            async let translateResult = webTranslate(text: text, from: from, to: to)
+
+            _ = try await [dictResult, translateResult]
+        } catch {
+            // If result doesn't have translation or dictionary result, throw error
+            if !result.hasTranslatedResult {
+                throw error
+            } else {
+                logError("Youdao part success, but translation or dictionary failed: \(error)")
+            }
+        }
 
         return result
     }

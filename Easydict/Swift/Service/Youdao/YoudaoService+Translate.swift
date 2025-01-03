@@ -93,7 +93,7 @@ extension YoudaoService {
             try updateResult(translateResponse: translateResponse)
         } catch {
             throw QueryError(
-                type: .api, message: "Failed to parse response: \(String(describing: error))"
+                type: .api, message: "Failed to parse response: \(error)"
             )
         }
 

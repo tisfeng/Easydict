@@ -69,7 +69,7 @@ extension YoudaoService {
         } catch {
             throw QueryError(
                 type: .api,
-                message: "Failed to query Youdao dictionary: \(String(describing: error))"
+                message: "Failed to query Youdao dictionary: \(error)"
             )
         }
     }
