@@ -7,7 +7,6 @@
 //
 
 #import "EZSchemeParser.h"
-#import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
 #import "EZLocalStorage.h"
@@ -193,9 +192,6 @@
     NSArray *readWriteKeys = @[
         EZBetaFeatureKey,
         
-        EZYoudaoTranslationKey,
-        EZYoudaoDictionaryKey,
-        
         EZDeepLAuthKey,
         EZDeepLTranslateEndPointKey,
         EZDeepLTranslationAPIKey,
@@ -225,7 +221,6 @@
         
         // easydict://resetUserDefaultsData
         EZResetUserDefaultsDataKey,
-        
     ];
     
     return actionKeys;
