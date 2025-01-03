@@ -461,7 +461,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     if (enableTranslation) {
         // 2.Query Youdao translate.
         dispatch_group_enter(group);
-        [self webTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        [self jsonApi_webTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 MMLogError(@"translateYoudaoAPI error: %@", error);
                 self.result.error = [EZError errorWithNSError:error];
@@ -932,6 +932,76 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     return decryptedText;
 }
 
+#pragma mark - New web translate 2025/01/03
+
+- (void)jsonApi_webTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+    text = [text trimToMaxLength:5000];
+
+    NSString *w = [NSString stringWithFormat:@"%@webdict", text];
+    NSInteger t = w.length % 10;
+    NSString *salt = [w md5];
+    NSString *key = @"Mk6hqtUp33DGGtoS63tTJbMUYjRrG1Lu";
+    NSString *sign = [[NSString stringWithFormat:@"web%@%ld%@%@", text, (long)t, key, salt] md5];
+    
+        
+    NSString *fromLanguage = [self languageCodeForLanguage:from];
+    NSString *toLanguage = [self languageCodeForLanguage:to];
+    
+    text = [text trimToMaxLength:5000];
+    
+    NSDictionary *params = @{
+        @"q" : text,
+        @"le" : fromLanguage,
+        @"t" : [NSNumber numberWithInteger:t],
+        @"client" : @"web",
+        @"keyid" : @"webfanyi",
+        @"sign" : sign,
+        @"keyfrom" : @"webdict",
+    };
+    
+    NSDictionary *headers = @{
+        @"User-Agent" : EZUserAgent,
+        @"Referer" : kYoudaoTranslatetURL,
+        @"Cookie" : self.cookie,
+    };
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
+    // default is AFJSONResponseSerializer
+    manager.responseSerializer = serializer;
+    
+    // set headers
+    for (NSString *key in headers.allKeys) {
+        [manager.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
+    }
+    
+    NSString *url = [NSString stringWithFormat:@"%@/jsonapi_s?doctype=json&jsonversion=4", kYoudaoDictURL];
+    NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSData class]]) {
+            NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSArray *translatedTexts = [self jsonApi_parseTranslateResult:resp];
+            if (translatedTexts.count) {
+                self.result.translatedResults = translatedTexts;
+                completion(self.result, nil);
+                return;
+            }
+        }
+        [self webViewTranslate:completion];
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+        
+        [self requestYoudaoCookie];
+        completion(self.result, error);
+    }];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
+    } serviceType:self.serviceType];
+}
+
 #pragma mark -
 
 /// Parse Youdao transalte.
@@ -953,6 +1023,23 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 
+- (NSArray<NSString *> *)jsonApi_parseTranslateResult:(NSDictionary *)dict {
+    if([dict isKindOfClass:[NSDictionary class]] == NO) {
+        return nil;
+    }
+    
+    NSDictionary *fanyiDict = dict[@"fanyi"];
+    if([fanyiDict isKindOfClass:[NSDictionary class]] == NO) {
+        return nil;
+    }
+    
+    NSString *result = fanyiDict[@"tran"];
+    if([result isKindOfClass:[NSString class]] == NO) {
+        return nil;
+    }
+
+    return @[result];
+}
 #pragma mark - AES Decrypt manually
 
 - (NSString *)decryptAES:(NSString *)text {
