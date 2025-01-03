@@ -946,9 +946,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
-    
-    text = [text trimToMaxLength:5000];
-    
+        
     NSDictionary *params = @{
         @"q" : text,
         @"le" : fromLanguage,
