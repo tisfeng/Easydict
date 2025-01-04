@@ -11,17 +11,21 @@ import Foundation
 // MARK: - ServiceSecretConfigreValidatable
 
 protocol ServiceSecretConfigreValidatable {
-    func validate(completion: @escaping (EZQueryResult, Error?) -> ())
+    func validate() async throws -> EZQueryResult
 }
 
+// MARK: - QueryService + ServiceSecretConfigreValidatable
+
 extension ServiceSecretConfigreValidatable {
-    func validate(completion _: @escaping (EZQueryResult, Error?) -> ()) {}
+    func validate() async throws -> EZQueryResult {
+        throw QueryError(type: .api, message: "Not implemented")
+    }
 }
 
 // MARK: - QueryService + ServiceSecretConfigreValidatable
 
 extension QueryService: ServiceSecretConfigreValidatable {
-    func validate(completion: @escaping (EZQueryResult, Error?) -> ()) {
+    func validate() async throws -> EZQueryResult {
         resetServiceResult()
         /**
          To reduce output text, save cost, a simple translation example is enough.
@@ -29,7 +33,8 @@ extension QueryService: ServiceSecretConfigreValidatable {
          1. use zh -> en to avoid analyze English sentence.
          2. if Chinese text length > 5, it won't query dict.
          */
-        translate("曾经沧海难为水", from: .simplifiedChinese, to: .english, completion: completion)
+
+        return try await translate("曾经沧海难为水", from: .simplifiedChinese, to: .english, enablePrehandle: true)
     }
 }
 

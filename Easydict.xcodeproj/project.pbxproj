@@ -1400,6 +1400,7 @@
 		03779F0A2BB25688008D3C42 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				03538E0F2D2961A5005E56A8 /* QueryService */,
 				036463682CB62B6600D0D6CC /* Apple */,
 				03779F0D2BB256A7008D3C42 /* OpenAI */,
 				036D627F2BCAB5C6002C95C7 /* BuiltInAI */,
@@ -3091,6 +3092,7 @@
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
+				03538E0E2D29619A005E56A8 /* QueryService+Extension.swift in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
 				C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */,

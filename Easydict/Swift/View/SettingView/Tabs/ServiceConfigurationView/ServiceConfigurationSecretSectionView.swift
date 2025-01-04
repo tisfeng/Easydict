@@ -97,29 +97,30 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     func validate() {
         viewModel.isValidating.toggle()
-        service.validate { result, error in
-            DispatchQueue.main.async {
-                guard viewModel.isValidating else { return }
 
-                var error = error
+        Task {
+            do {
+                let result = try await service.validate()
 
-                // If error is nil but result text is also empty, we should report error.
-                if error == nil, (result.translatedText?.isEmpty) == nil {
-                    error = EZError(type: .API)
+                guard result.error == nil else {
+                    throw result.error!
                 }
 
-                viewModel.isValidating = false
-                viewModel
-                    .alertTitle = (error == nil)
-                    ? "service.configuration.validation_success"
-                    : "service.configuration.validation_fail"
+                guard let translatedText = result.translatedText, !translatedText.isEmpty else {
+                    throw QueryError(type: .api, message: "Empty result text")
+                }
 
-                result.error = EZError(nsError: error)
+                viewModel.alertTitle = "service.configuration.validation_success"
                 viewModel.errorMessage = result.errorMessage ?? ""
-                viewModel.isAlertPresented = true
-
-                logInfo("\(service.serviceType().rawValue) validate \(error == nil ? "success" : "fail")!")
+            } catch {
+                viewModel.alertTitle = "service.configuration.validation_fail"
+                viewModel.errorMessage = error.localizedDescription
             }
+
+            viewModel.isValidating = false
+            viewModel.isAlertPresented = true
+
+            logInfo("\(service.serviceType().rawValue) validate \(viewModel.alertTitle)")
         }
     }
 
