@@ -13,6 +13,7 @@ import Foundation
 
 // MARK: - YoudaoService+Translate
 
+// TODO: move translate api to a independent class instead of extension.
 extension YoudaoService {
     // MARK: - Constants
 

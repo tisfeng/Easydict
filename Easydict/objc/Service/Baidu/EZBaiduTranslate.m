@@ -10,7 +10,6 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZBaiduTranslateResponse.h"
 #import "EZWebViewTranslator.h"
-#import "EZNetworkManager.h"
 #import "NSString+EZRegex.h"
 #import "Easydict-Swift.h"
 
@@ -30,8 +29,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
-@property (nonatomic, strong) EZNetworkManager *networkManager;
-
 @property (nonatomic, copy) NSString *cookie;
 
 @end
@@ -43,10 +40,10 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     if (self = [super init]) {
         /**
          Previously, in order to optimize the request experience, the cookie and token would be updated when initializing the service, [self updateCookieAndToken], but this would cause them to be frequently called under certain circumstances, so I removed it.
-         
+
          FIX https://github.com/tisfeng/Easydict/issues/466
          */
-        
+
         self.apiTranslate = [[EZBaiduApiTranslate alloc] initWithQueryModel:self.queryModel];
     }
     return self;
@@ -59,13 +56,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         _webViewTranslator.querySelector = selector;
     }
     return _webViewTranslator;
-}
-
-- (EZNetworkManager *)networkManager {
-    if (!_networkManager) {
-        _networkManager = [[EZNetworkManager alloc] init];
-    }
-    return _networkManager;
 }
 
 - (JSContext *)jsContext {
@@ -137,7 +127,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 - (EZQueryTextType)queryTextType {
     EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
     EZQueryTextType type = [Configuration.shared queryTextTypeForServiceType:self.serviceType];
-    
+
     if (type == 0) {
         type = defaultType;
     }
@@ -169,58 +159,58 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 // get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                        EZLanguageAuto, @"auto",
-                                                                        EZLanguageSimplifiedChinese, @"zh",
-                                                                        EZLanguageClassicalChinese, @"wyw",
-                                                                        EZLanguageTraditionalChinese, @"cht",
-                                                                        EZLanguageEnglish, @"en",
-                                                                        EZLanguageJapanese, @"jp",
-                                                                        EZLanguageKorean, @"kor",
-                                                                        EZLanguageFrench, @"fra",
-                                                                        EZLanguageSpanish, @"spa",
-                                                                        EZLanguagePortuguese, @"pt",
-                                                                        EZLanguageBrazilianPortuguese, @"pot",
-                                                                        EZLanguageItalian, @"it",
-                                                                        EZLanguageGerman, @"de",
-                                                                        EZLanguageRussian, @"ru",
-                                                                        EZLanguageArabic, @"ara",
-                                                                        EZLanguageSwedish, @"swe",
-                                                                        EZLanguageRomanian, @"rom",
-                                                                        EZLanguageThai, @"th",
-                                                                        EZLanguageSlovak, @"slo",
-                                                                        EZLanguageDutch, @"nl",
-                                                                        EZLanguageHungarian, @"hu",
-                                                                        EZLanguageGreek, @"el",
-                                                                        EZLanguageDanish, @"dan",
-                                                                        EZLanguageFinnish, @"fin",
-                                                                        EZLanguagePolish, @"pl",
-                                                                        EZLanguageCzech, @"cs",
-                                                                        EZLanguageTurkish, @"tr",
-                                                                        EZLanguageLithuanian, @"lit",
-                                                                        EZLanguageLatvian, @"lav",
-                                                                        EZLanguageUkrainian, @"ukr",
-                                                                        EZLanguageBulgarian, @"bul",
-                                                                        EZLanguageIndonesian, @"id",
-                                                                        EZLanguageMalay, @"msa",
-                                                                        EZLanguageSlovenian, @"slv",
-                                                                        EZLanguageEstonian, @"est",
-                                                                        EZLanguageVietnamese, @"vie",
-                                                                        EZLanguagePersian, @"per",
-                                                                        EZLanguageHindi, @"hin",
-                                                                        EZLanguageTelugu, @"tel",
-                                                                        EZLanguageTamil, @"tam",
-                                                                        EZLanguageUrdu, @"urd",
-                                                                        EZLanguageFilipino, @"fil",
-                                                                        EZLanguageKhmer, @"khm",
-                                                                        EZLanguageLao, @"lo",
-                                                                        EZLanguageBengali, @"ben",
-                                                                        EZLanguageBurmese, @"bur",
-                                                                        EZLanguageNorwegian, @"nor",
-                                                                        EZLanguageSerbian, @"srp",
-                                                                        EZLanguageCroatian, @"hrv",
-                                                                        EZLanguageMongolian, @"mon",
-                                                                        EZLanguageHebrew, @"heb",
-                                                                        nil];
+                                        EZLanguageAuto, @"auto",
+                                        EZLanguageSimplifiedChinese, @"zh",
+                                        EZLanguageClassicalChinese, @"wyw",
+                                        EZLanguageTraditionalChinese, @"cht",
+                                        EZLanguageEnglish, @"en",
+                                        EZLanguageJapanese, @"jp",
+                                        EZLanguageKorean, @"kor",
+                                        EZLanguageFrench, @"fra",
+                                        EZLanguageSpanish, @"spa",
+                                        EZLanguagePortuguese, @"pt",
+                                        EZLanguageBrazilianPortuguese, @"pot",
+                                        EZLanguageItalian, @"it",
+                                        EZLanguageGerman, @"de",
+                                        EZLanguageRussian, @"ru",
+                                        EZLanguageArabic, @"ara",
+                                        EZLanguageSwedish, @"swe",
+                                        EZLanguageRomanian, @"rom",
+                                        EZLanguageThai, @"th",
+                                        EZLanguageSlovak, @"slo",
+                                        EZLanguageDutch, @"nl",
+                                        EZLanguageHungarian, @"hu",
+                                        EZLanguageGreek, @"el",
+                                        EZLanguageDanish, @"dan",
+                                        EZLanguageFinnish, @"fin",
+                                        EZLanguagePolish, @"pl",
+                                        EZLanguageCzech, @"cs",
+                                        EZLanguageTurkish, @"tr",
+                                        EZLanguageLithuanian, @"lit",
+                                        EZLanguageLatvian, @"lav",
+                                        EZLanguageUkrainian, @"ukr",
+                                        EZLanguageBulgarian, @"bul",
+                                        EZLanguageIndonesian, @"id",
+                                        EZLanguageMalay, @"msa",
+                                        EZLanguageSlovenian, @"slv",
+                                        EZLanguageEstonian, @"est",
+                                        EZLanguageVietnamese, @"vie",
+                                        EZLanguagePersian, @"per",
+                                        EZLanguageHindi, @"hin",
+                                        EZLanguageTelugu, @"tel",
+                                        EZLanguageTamil, @"tam",
+                                        EZLanguageUrdu, @"urd",
+                                        EZLanguageFilipino, @"fil",
+                                        EZLanguageKhmer, @"khm",
+                                        EZLanguageLao, @"lo",
+                                        EZLanguageBengali, @"ben",
+                                        EZLanguageBurmese, @"bur",
+                                        EZLanguageNorwegian, @"nor",
+                                        EZLanguageSerbian, @"srp",
+                                        EZLanguageCroatian, @"hrv",
+                                        EZLanguageMongolian, @"mon",
+                                        EZLanguageHebrew, @"heb",
+                                        nil];
     return orderedDict;
 }
 
@@ -229,19 +219,21 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         completion(self.result, [EZError errorWithType:EZErrorTypeParam description:@"翻译的文本为空" request:nil]);
         return;
     }
-    
+
     text = [text trimToMaxLength:5000];
-    
+
+    [self updateCookieAndToken];
+
     if (self.apiTranslate.isEnable) {
         [self.apiTranslate translate:text from:[self languageCodeForLanguage:from] to:[self languageCodeForLanguage:to] completion:completion];
         return;
     }
-    
+
     void (^request)(void) = ^(void) {
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
             [self sendTranslateRequest:text from:from to:to completion:completion];
         };
-        
+
         if ([from isEqualToString:EZLanguageAuto]) {
             [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
                 if (error) {
@@ -254,7 +246,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             translateBlock(from);
         }
     };
-    
+
     if (!self.token || !self.gtk) {
         MMLogInfo(@"get Baidu token and gtk");
         mm_weakify(self);
@@ -338,18 +330,18 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     /**
      ???: As far as I tested, the max length of text is ~1000.
      !!!: This audio url sometimes cannot be played, Baidu web audio is not reliable.
-     
+
      https://fanyi.baidu.com/gettts?lan=en&text=good&spd=4&source=web
      */
-    
+
     text = [text trimToMaxLength:1000];
     text = [text encode]; // text.mm_urlencode
-    
+
     // Refer to Baidu web.
     NSInteger speed = [ttsLangCode isEqualToString:@"zh"] ? 5 : 3;
-        
+
     NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?text=%@&lan=%@&spd=%ld&source=web", kBaiduTranslateURL, text, ttsLangCode, speed];
-    
+
     return audioURL;
 }
 
@@ -434,8 +426,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                     if (result.texts.count) {
                         // 百度翻译按图片中的行进行分割，可能是一句话，所以用空格拼接
                         result.mergedText = [NSString mm_stringByCombineComponents:[result.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                                          return obj.text;
-                                                      }] separatedString:@" "];
+                            return obj.text;
+                        }] separatedString:@" "];
                         completion(result, nil);
                         return;
                     }
@@ -449,7 +441,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         completion(nil, [EZError errorWithType:EZErrorTypeAPI description:message ?: @"识别图片文本失败" request:reqDict]);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, [EZError errorWithType:EZErrorTypeNetwork description: @"识别图片文本失败" request:reqDict]);
+        completion(nil, [EZError errorWithType:EZErrorTypeNetwork description:@"识别图片文本失败" request:reqDict]);
     }];
 }
 
@@ -475,7 +467,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 #pragma mark - Web translate API
 
 - (void)sendTranslateRequest:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-        
     // 获取sign
     JSValue *value = [self.jsFunction callWithArguments:@[ text, self.gtk ]];
     NSString *sign = [value toString];
@@ -491,13 +482,13 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         @"sign" : sign,
         @"token" : self.token,
     };
-    
+
     NSDictionary *headers = @{
         @"User-Agent" : EZUserAgent,
         @"Content-Type" : @"application/x-www-form-urlencoded; charset=UTF-8",
         @"Cookie" : self.cookie,
     };
-    
+
     // set headers
     for (NSString *key in headers.allKeys) {
         [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
@@ -511,7 +502,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
         NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description: nil request:reqDict]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description:nil request:reqDict]);
     }];
 
     [self.queryModel setStopBlock:^{
@@ -524,7 +515,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     if ([self.queryModel isServiceStopped:self.serviceType]) {
         return;
     }
-    
+
     EZQueryResult *result = self.result;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
 
@@ -550,12 +541,12 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             }
                         }
                         wordResult.tags = tags;
-                        
+
                         [simple_means.symbols.firstObject mm_anyPut:^(EZBaiduTranslateResponseSymbol *_Nonnull symbol) {
                             // 解析音标
                             NSMutableArray *phonetics = [NSMutableArray array];
                             EZLanguage language = self.queryModel.queryFromLanguage;
-                            
+
                             if (symbol.ph_am.length) {
                                 [phonetics addObject:[EZWordPhonetic mm_anyMake:^(EZWordPhonetic *_Nonnull obj) {
                                     obj.name = NSLocalizedString(@"us_phonetic", nil);
@@ -600,51 +591,51 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             NSMutableArray *exchanges = [NSMutableArray array];
                             if (exchange.word_third.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"singular", nil);
-                                               obj.words = exchange.word_third;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"singular", nil);
+                                    obj.words = exchange.word_third;
+                                }]];
                             }
                             if (exchange.word_pl.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"plural", nil);
-                                               obj.words = exchange.word_pl;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"plural", nil);
+                                    obj.words = exchange.word_pl;
+                                }]];
                             }
                             if (exchange.word_er.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"comparative", nil);
-                                               obj.words = exchange.word_er;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"comparative", nil);
+                                    obj.words = exchange.word_er;
+                                }]];
                             }
                             if (exchange.word_est.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"superlative", nil);
-                                               obj.words = exchange.word_est;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"superlative", nil);
+                                    obj.words = exchange.word_est;
+                                }]];
                             }
                             if (exchange.word_past.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"past", nil);
-                                               obj.words = exchange.word_past;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"past", nil);
+                                    obj.words = exchange.word_past;
+                                }]];
                             }
                             if (exchange.word_done.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"past_participle", nil);
-                                               obj.words = exchange.word_done;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"past_participle", nil);
+                                    obj.words = exchange.word_done;
+                                }]];
                             }
                             if (exchange.word_ing.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"present_participle", nil);
-                                               obj.words = exchange.word_ing;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"present_participle", nil);
+                                    obj.words = exchange.word_ing;
+                                }]];
                             }
                             if (exchange.word_proto.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"root", nil);
-                                               obj.words = exchange.word_proto;
-                                           }]];
+                                    obj.name = NSLocalizedString(@"root", nil);
+                                    obj.words = exchange.word_proto;
+                                }]];
                             }
                             wordResult.exchanges = exchanges.count ? exchanges.copy : nil;
                         }];
@@ -754,34 +745,31 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             message = @"百度翻译接口数据解析异常";
         }
     }
-    
+
     // If error, update cookie.
     [self updateCookieAndToken];
 
-    NSError *error = [EZError errorWithType:EZErrorTypeAPI description: message request:reqDict];
+    NSError *error = [EZError errorWithType:EZErrorTypeAPI description:message request:reqDict];
     MMLogError(@"baidu API error: %@", error);
 
     [self webViewTranslate:completion];
-
-    //    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-    //    completion(self.result, error);
 }
 
 /// Get token, gtk
 - (void)sendGetTokenAndGtkRequestWithCompletion:(void (^)(NSString *_Nullable token, NSString *_Nullable gtk, NSError *error))completion {
     NSString *url = kBaiduTranslateURL;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
-    
+
     NSDictionary *headers = @{
         @"Cookie" : self.cookie,
     };
-    
+
     // set headers
     for (NSString *key in headers.allKeys) {
         [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
         [self.htmlSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
     }
-    
+
     [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSString *html = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
 
@@ -797,23 +785,24 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             completion(token, gtk, nil);
         } else {
             [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-            completion(nil, nil, [EZError errorWithType:EZErrorTypeAPI description: @"获取 token 失败" request:reqDict]);
+            completion(nil, nil, [EZError errorWithType:EZErrorTypeAPI description:@"获取 token 失败" request:reqDict]);
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, [EZError errorWithType:EZErrorTypeNetwork description: @"获取 token 失败" request:reqDict]);
+        completion(nil, nil, [EZError errorWithType:EZErrorTypeNetwork description:@"获取 token 失败" request:reqDict]);
     }];
 }
 
 /// Update cookie and token.
 - (void)updateCookieAndToken {
     MMLogInfo(@"update Baidu cookie and token.");
-    
-    [self.networkManager requestCookieOfURL:kBaiduTranslateURL cookieName:@"BAIDUID" completion:^(NSString *cookie) {
+
+    [EZCookieManager.shared requestCookieOfURL:kBaiduTranslateURL name:@"BAIDUID" completionHandler:^(NSString *cookie, NSError *error) {
         if (cookie.length) {
-            [NSUserDefaults mm_write:cookie forKey:kBaiduTranslateURL];
+            NSString *cookieString = [NSString stringWithFormat:@"BAIDUID=%@", cookie];
+            [NSUserDefaults mm_write:cookieString forKey:kBaiduTranslateURL];
         }
-        
+
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
             MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
@@ -836,15 +825,15 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
-        
+
         if (error) {
             completion(self.result, error);
             return;
         }
-        
+
         [self parseResponseObject:responseObject completion:completion];
     }];
-    
+
     mm_weakify(self);
     [self.queryModel setStopBlock:^{
         mm_strongify(self);
