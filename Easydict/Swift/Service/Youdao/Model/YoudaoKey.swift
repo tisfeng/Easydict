@@ -30,9 +30,9 @@ struct DataClass: Codable {
 /**
  {
      "data": {
-         "secretKey": "Vy4EQ1uwPkUoqvcP1nIu6WiAjxFeA3Ye",
-         "aesKey": "ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl",
-         "aesIv": "ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4"
+         "secretKey": "",
+         "aesKey": "",
+         "aesIv": ""
      },
      "code": 0,
      "msg": "OK"
