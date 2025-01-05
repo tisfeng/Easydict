@@ -889,6 +889,8 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2024-12-06 |  | 50 |  |
 | 2024-12-11 | 阳光夜风 | 50 |  |
 | 2024-12-12 | 李佳骏 | 100 | 非常感谢作者！ |
+| 2024-01-02 | Yuki | 5 | 好用的 加油 |
+| 2024-01-02 | Mia | 10 | 超级好用！！感谢大佬 |
 
 </p>
 
