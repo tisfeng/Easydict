@@ -32,11 +32,7 @@ class AliService: QueryService {
     }
 
     public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for (key, value) in AliTranslateType.supportLanguagesDictionary {
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
-        }
-        return orderedDict
+        AliTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
