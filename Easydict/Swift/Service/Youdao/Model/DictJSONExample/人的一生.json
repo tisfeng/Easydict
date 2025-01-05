@@ -1,0 +1,22 @@
+{
+    "input": "人的一生，其实是很短暂的，但如果选择卑微地度过，却又太漫长了。《海贼法典》",
+    "meta": {
+        "input": "人的一生，其实是很短暂的，但如果选择卑微地度过，却又太漫长了。《海贼法典》",
+        "guessLanguage": "zh",
+        "isHasSimpleDict": "0",
+        "le": "en",
+        "lang": "eng",
+        "dicts": [
+            "fanyi",
+            "meta"
+        ]
+    },
+    "fanyi": {
+        "voice": "Human+life%2C+in+fact%2C+is+very+short%2C+but+if+you+choose+to+spend+humbly%2C+it+is+too+long.+Seafarers+Code&type=2",
+        "input": "人的一生，其实是很短暂的，但如果选择卑微地度过，却又太漫长了。《海贼法典》",
+        "type": "zh-CHS2en",
+        "tran": "Human life, in fact, is very short, but if you choose to spend humbly, it is too long. Seafarers Code"
+    },
+    "le": "en",
+    "lang": "eng"
+}

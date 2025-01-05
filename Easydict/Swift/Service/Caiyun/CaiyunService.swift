@@ -29,12 +29,7 @@ public final class CaiyunService: QueryService {
     }
 
     public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        // TODO: Replace MMOrderedDictionary.
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for (key, value) in CaiyunTranslateType.supportLanguagesDictionary {
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
-        }
-        return orderedDict
+        CaiyunTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
     public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {

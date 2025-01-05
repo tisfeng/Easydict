@@ -32,12 +32,7 @@ public class LLMStreamService: QueryService {
         let supportedLanguages = allLanguages.filter { language in
             !unsupportedLanguages.contains(language)
         }
-
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for language in supportedLanguages {
-            orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
-        }
-        return orderedDict
+        return supportedLanguages.toMMOrderedDictionary()
     }
 
     public override func queryTextType() -> EZQueryTextType {

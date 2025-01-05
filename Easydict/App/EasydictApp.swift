@@ -71,10 +71,9 @@ struct EasydictApp: App {
         }
 
         Settings {
-            SettingView().environmentObject(languageState).environment(
-                \.locale,
-                .init(identifier: I18nHelper.shared.localizeCode)
-            )
+            SettingView()
+                .environmentObject(languageState)
+                .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
         }
 
         // Acknowledgements window

@@ -9,7 +9,6 @@
 #import "EZServiceTypes.h"
 #import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
-#import "EZYoudaoTranslate.h"
 #import "EZDeepLTranslate.h"
 #import "EZAppleService.h"
 #import "EZBingService.h"
@@ -48,7 +47,7 @@ static EZServiceTypes *_instance;
 - (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                            EZServiceTypeAppleDictionary, [EZAppleDictionary class],
-                                           EZServiceTypeYoudao, [EZYoudaoTranslate class],
+                                           EZServiceTypeYoudao, [EZYoudaoService class],
                                            EZServiceTypeOpenAI, [EZOpenAIService class],
                                            EZServiceTypeBuiltInAI, [EZBuiltInAIService class],
                                            EZServiceTypeGemini, [EZGeminiService class],

@@ -155,7 +155,7 @@ extension Defaults.Keys {
 
     static func queryTextType(for serviceType: ServiceType) -> Key<EZQueryTextType> {
         let key = EZConstKey.constkey("QueryTextType", serviceType: serviceType)
-        return .init(key, default: EZQueryTextType(rawValue: 0))
+        return .init(key, default: EZQueryTextType(rawValue: 1))
     }
 
     static func windowFrame(for windowType: EZWindowType) -> Key<CGRect> {

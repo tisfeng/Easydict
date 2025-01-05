@@ -27,11 +27,7 @@ public final class TencentService: QueryService {
     }
 
     public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        for (key, value) in TencentTranslateType.supportLanguagesDictionary {
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
-        }
-        return orderedDict
+        TencentTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
     public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
