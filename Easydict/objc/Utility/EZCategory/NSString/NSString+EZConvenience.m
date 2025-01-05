@@ -101,10 +101,9 @@
     return encodedText;
 }
 
-/// Replace \" with &quot;
+/// Escape XML entities, including [ &, <, >, ", '], such as & --> &amp;
 - (NSString *)escapedXMLString {
     NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)self, NULL));
-    //    NSString *escapedHTMLContent = [self stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
     return escapedXMLText;
 }
 
