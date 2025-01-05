@@ -79,7 +79,15 @@
     if (hasEncoded) {
         return self;
     }
-    return self.encode;
+    return self.encodeCustom;
+}
+
+/// Customized encode, create a custom character set that also encodes '&'
+- (NSString *)encodeCustom {
+    NSMutableCharacterSet *customAllowedSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
+    [customAllowedSet removeCharactersInString:@"&"];
+    NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:customAllowedSet];
+    return encodedText;
 }
 
 /// Replace \" with &quot;
