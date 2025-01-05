@@ -105,7 +105,7 @@
      easydict://query?text=Agent Mode & Auto Context
 
      */
-    NSURL *URL = [NSURL URLWithString:urlString.encodeSafely];
+    NSURL *URL = [NSURL URLWithString:urlString.encodeIncludingAmpersandSafely];
 
     // easydict://query?text=good, easydict://query?text=你好
     if ([URL.scheme containsString:EZEasydictScheme]) {

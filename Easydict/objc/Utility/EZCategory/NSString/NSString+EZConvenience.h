@@ -37,6 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Only encode if text has not been encoded.
 - (NSString *)encodeSafely;
 
+/// URL Encode including "&" safely.
+- (NSString *)encodeIncludingAmpersandSafely;
+
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString;
 

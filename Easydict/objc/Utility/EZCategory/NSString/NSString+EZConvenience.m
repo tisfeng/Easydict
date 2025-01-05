@@ -33,12 +33,12 @@
 /// Remove invisible char "\U0000fffc"
 - (NSString *)removeInvisibleChar {
     /**
-     FIX: Sometimes selected text may contain a Unicode char "\U0000fffc", empty text but length is 1 😢
-     
+     FIX: Sometimes selected text may contain a Unicode char "\U0000fffc", empty text but length is 1
+
      For example, if getting selected text using shortcut by three click the following text in Wikipedia, the selected text last char is "\U0000fffc"
-     
+
      Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.
-     
+
      From: https://zh.wikipedia.org/wiki/%E8%93%8B%E8%8C%B2%E5%A0%A1%E6%BC%94%E8%AA%AA#%E6%9E%97%E8%82%AF%E7%9A%84%E8%93%8B%E8%8C%B2%E5%A0%A1%E6%BC%94%E8%AA%AA
      */
     NSString *text = [self stringByReplacingOccurrencesOfString:@"\U0000fffc" withString:@""];
@@ -79,21 +79,32 @@
     if (hasEncoded) {
         return self;
     }
-    return self.encodeCustom;
+    return self.encode;
 }
 
-/// Customized encode, create a custom character set that also encodes '&'
-- (NSString *)encodeCustom {
-    NSMutableCharacterSet *customAllowedSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
-    [customAllowedSet removeCharactersInString:@"&"];
-    NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:customAllowedSet];
+- (NSString *)encodeIncludingAmpersandSafely {
+    BOOL hasEncoded = ![self.decode isEqualToString:self];
+    if (hasEncoded) {
+        return self;
+    }
+    return [self encodeIncludingCharacters:@"&"];
+}
+
+/// URL encode with specified characters to be encoded
+/// @param includingChars Characters that should be percent-encoded in addition to URLQueryAllowedCharacterSet
+- (NSString *)encodeIncludingCharacters:(NSString *)includingChars {
+    NSMutableCharacterSet *allowedSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
+    if (includingChars.length > 0) {
+        [allowedSet removeCharactersInString:includingChars];
+    }
+    NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:allowedSet];
     return encodedText;
 }
 
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString {
     NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)self, NULL));
-//    NSString *escapedHTMLContent = [self stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
+    //    NSString *escapedHTMLContent = [self stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
     return escapedXMLText;
 }
 
