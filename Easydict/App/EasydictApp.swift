@@ -76,13 +76,23 @@ struct EasydictApp: App {
                 .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
         }
 
+        // Can't use else direct here since SceneBuilder does not implement it yet.
+        // Fix issue "Closure containing control flow statement cannot be used with result builder 'SceneBuilder'"
+        if #available(macOS 15.0, *) {
+            // Acknowledgements window
+            Window("setting.about.acknowledgements", id: .acknowledgementsWindowId_15Plus) {
+                AcknowListView()
+            }
+            .windowToolbarStyle(.unifiedCompact)
+            .defaultSize(width: 800, height: 600)
+            .restorationBehavior(.disabled)
+        }
         // Acknowledgements window
         Window("setting.about.acknowledgements", id: .acknowledgementsWindowId) {
             AcknowListView()
         }
         .windowToolbarStyle(.unifiedCompact)
         .defaultSize(width: 800, height: 600)
-        .restorationBehavior(.disabled)
 
         // About window
         Window("setting.about", id: .aboutWindowId) {

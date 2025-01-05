@@ -64,7 +64,11 @@ struct AboutTab: View {
                     }
 
                     Button {
-                        openWindow(id: .acknowledgementsWindowId)
+                        if #available(macOS 15, *) {
+                            openWindow(id: .acknowledgementsWindowId_15Plus)
+                        } else {
+                            openWindow(id: .acknowledgementsWindowId)
+                        }
                     } label: {
                         Label("setting.about.acknowledgements", systemSymbol: .checkmarkSealFill)
                     }

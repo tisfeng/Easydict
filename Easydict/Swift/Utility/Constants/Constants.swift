@@ -17,6 +17,9 @@ class Constants: NSObject {
 }
 
 extension String {
+    // Acknowledgements window id for macOS 15.
+    static let acknowledgementsWindowId_15Plus = "setting.about.acknowledgements_15_plus"
+    
     // Acknowledgements window id.
     static let acknowledgementsWindowId = "setting.about.acknowledgements"
 
