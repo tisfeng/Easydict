@@ -1713,7 +1713,7 @@ struct YoudaoDictResponseV2: Codable {
 
     struct Ce: Codable {
         let source: BaikeSource?
-        let word: [CeWord]?
+        let word: CeWord?
     }
 
     struct BaikeSource: Codable {
@@ -1725,16 +1725,28 @@ struct YoudaoDictResponseV2: Codable {
 
     struct CeWord: Codable {
         enum CodingKeys: String, CodingKey {
-            // TODO: need parse trs field
-//            case trs
+            case trs
             case phone
             case returnPhrase = "return-phrase"
         }
 
-        // TODO: need parse trs field
-//        let trs: [PurpleTr]?
+        let trs: [PurpleL]?
         let phone: String?
         let returnPhrase: String?
+    }
+
+    struct PurpleL: Codable {
+        enum CodingKeys: String, CodingKey {
+            case voice
+            case tran = "#tran"
+            case text = "#text"
+            case action = "@action"
+            case href = "@href"
+        }
+
+        let voice: String?
+        let text, action, href: String?
+        let tran: String?
     }
 
     // MARK: - Fanyi

@@ -94,6 +94,7 @@ extension YoudaoService {
     }
 
     // MARK: Keep this api temporarily
+
     @available(*, deprecated)
     func jsonApiQuery(text: String, from: Language, to: Language) async throws -> EZQueryResult {
         guard !text.isEmpty else {
