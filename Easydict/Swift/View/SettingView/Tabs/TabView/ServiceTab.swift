@@ -173,13 +173,11 @@ private class ServiceItemViewModel: ObservableObject {
 
     // MARK: Public
 
-    public func enableService() {
-        // filter
-        if service.serviceType() == .appleDictionary || service.serviceType() == .apple {
-            service.enabled = true
-            service.enabledQuery = true
-            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
-            viewModel.postUpdateServiceNotification()
+    /// Try to enable the service, if the service is LLMStreamService, we need to validate it first.
+    public func tryEnableService() {
+        // If service is not LLMStreamService, we can enable it directly
+        if !service.isKind(of: LLMStreamService.self) {
+            turnOnService(service, viewModel: viewModel)
             return
         }
 
@@ -187,20 +185,20 @@ private class ServiceItemViewModel: ObservableObject {
 
         service.validate { [self] result, error in
             // check into main thread
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 defer { self.isValidating = false }
                 // Validate existence error
                 if let error = error {
-                    logInfo("\(self.service.serviceType().rawValue) validate error: \(error)")
+                    logInfo("\(service.serviceType().rawValue) validate error: \(error)")
                     self.error = error
-                    self.showErrorAlert = true
+                    showErrorAlert = true
                     return
                 }
 
                 // If error is nil but result text is also empty, we should report error.
                 guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                    logInfo("\(self.service.serviceType().rawValue) validate translated text is empty")
-                    self.showErrorAlert = true
+                    logInfo("\(service.serviceType().rawValue) validate translated text is empty")
+                    showErrorAlert = true
                     self.error = EZError(
                         type: .API,
                         description: String(localized: "setting.service.validate.error.empty_translate_result")
@@ -208,11 +206,7 @@ private class ServiceItemViewModel: ObservableObject {
                     return
                 }
 
-                // service enabel open the switch and toggle enable status
-                self.service.enabled = true
-                self.service.enabledQuery = true
-                EZLocalStorage.shared().setService(self.service, windowType: self.viewModel.windowType)
-                self.viewModel.postUpdateServiceNotification()
+                turnOnService(service, viewModel: viewModel)
             }
         }
     }
@@ -234,9 +228,9 @@ private class ServiceItemViewModel: ObservableObject {
             service.enabled
         }
         set {
+            // turn on service
             if newValue {
-                // validate service enabled
-                enableService()
+                tryEnableService()
             } else { // close service
                 service.enabled = false
                 EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
@@ -262,6 +256,14 @@ private class ServiceItemViewModel: ObservableObject {
         guard let serviceType = info[EZServiceTypeKey] as? String else { return }
         guard serviceType == service.serviceType().rawValue else { return }
         name = service.name()
+    }
+
+    /// Turn on the service
+    private func turnOnService(_ service: QueryService, viewModel: ServiceTabViewModel) {
+        service.enabled = true
+        service.enabledQuery = true
+        EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+        viewModel.postUpdateServiceNotification()
     }
 }
 
