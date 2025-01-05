@@ -82,6 +82,7 @@ struct EasydictApp: App {
         }
         .windowToolbarStyle(.unifiedCompact)
         .defaultSize(width: 800, height: 600)
+        .restorationBehavior(.disabled)
 
         // About window
         Window("setting.about", id: .aboutWindowId) {
