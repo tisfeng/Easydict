@@ -16,6 +16,7 @@ import Foundation
 //   let youdaoDictResponse = try? JSONDecoder().decode(YoudaoDictResponse.self, from: jsonData)
 
 // swiftlint:disable all
+@available(*, deprecated)
 struct YoudaoDictResponse: Codable {
     // MARK: - Baike
 
@@ -1417,6 +1418,358 @@ struct YoudaoDictResponse: Codable {
     let oxfordAdvance: Oxford?
 
     let wikipediaDigest: Baike?
+}
+
+// MARK: - YoudaoDictResponseV2
+
+struct YoudaoDictResponseV2: Codable {
+    // MARK: - WebTrans
+
+    struct WebTrans: Codable {
+        enum CodingKeys: String, CodingKey {
+            case webTranslation = "web-translation"
+        }
+
+        let webTranslation: [WebTranslation]?
+    }
+
+    // MARK: - WebTranslation
+
+    struct WebTranslation: Codable {
+        enum CodingKeys: String, CodingKey {
+            case same = "@same"
+            case key
+            case keySpeech = "key-speech"
+            case trans
+        }
+
+        let same: String?
+        let key: String
+        let keySpeech: String?
+        let trans: [Tran]?
+    }
+
+    // MARK: - Tran
+
+    struct Tran: Codable {
+        let summary: TranSummary?
+        let value: String?
+        let support: Int?
+        let url: String?
+    }
+
+    // MARK: - TranSummary
+
+    struct TranSummary: Codable {
+        let line: [String]?
+    }
+
+    // MARK: - Ec
+
+    struct Ec: Codable {
+        enum CodingKeys: String, CodingKey {
+            case webTrans = "web_trans"
+            case examType = "exam_type"
+            case source, word
+        }
+
+        let webTrans: [String]?
+        let examType: [String]?
+        let source: Source?
+        let word: EcWord?
+    }
+
+    // MARK: - Source
+
+    struct Source: Codable {
+        let name: String?
+        let url: String?
+    }
+
+    // MARK: - EcWord
+
+    struct EcWord: Codable {
+        enum CodingKeys: String, CodingKey {
+            case usphone, ukphone, ukspeech, trs, wfs
+            case returnPhrase = "return-phrase"
+            case usspeech
+        }
+
+        let usphone: String?
+        let ukphone: String?
+        let ukspeech: String?
+        let usspeech: String?
+        let trs: [WordTr]?
+        let wfs: [WfElement]?
+        let returnPhrase: String?
+    }
+
+    // MARK: - WordTr
+
+    struct WordTr: Codable {
+        let pos: String?
+        let tran: String?
+    }
+
+    // MARK: - WfElement
+
+    struct WfElement: Codable {
+        let wf: WfWf?
+    }
+
+    // MARK: - WfWf
+
+    struct WfWf: Codable {
+        let name, value: String?
+    }
+
+    // MARK: - Simple
+
+    struct Simple: Codable {
+        let query: String?
+        let word: [SimpleWord]?
+    }
+
+    // MARK: - SimpleWord
+
+    struct SimpleWord: Codable {
+        enum CodingKeys: String, CodingKey {
+            case usphone, ukphone, ukspeech
+            case returnPhrase = "return-phrase"
+            case usspeech, collegeExamVoice
+        }
+
+        let usphone, ukphone, ukspeech, returnPhrase: String?
+        let usspeech: String?
+        let collegeExamVoice: CollegeExamVoice?
+    }
+
+    // MARK: - CollegeExamVoice
+
+    struct CollegeExamVoice: Codable {
+        let speechWord: String?
+    }
+
+    // MARK: - Phrs
+
+    struct Phrs: Codable {
+        let word: String?
+        let phrs: [Phr]?
+    }
+
+    // MARK: - Phr
+
+    struct Phr: Codable {
+        let headword, translation: String?
+    }
+
+    // MARK: - Oxford
+
+    struct Oxford: Codable {
+        let encryptedData: String?
+    }
+
+    // MARK: - Syno
+
+    struct Syno: Codable {
+        let synos: [SynoElement]?
+        let word: String?
+    }
+
+    // MARK: - SynoElement
+
+    struct SynoElement: Codable {
+        let pos: String?
+        let ws: [String]?
+        let tran: String?
+    }
+
+    // MARK: - Collins
+
+    struct Collins: Codable {
+        let collinsEntries: [CollinsEntry]?
+    }
+
+    // MARK: - CollinsEntry
+
+    struct CollinsEntry: Codable {
+        let entries: Entries?
+        let phonetic: String?
+        let basicEntries: BasicEntries?
+        let headword, star: String?
+    }
+
+    // MARK: - BasicEntries
+
+    struct BasicEntries: Codable {
+        let basicEntry: [BasicEntry]?
+    }
+
+    // MARK: - BasicEntry
+
+    struct BasicEntry: Codable {
+        let cet: String?
+        let headword: String?
+    }
+
+    // MARK: - Entries
+
+    struct Entries: Codable {
+        let entry: [EntriesEntry]?
+    }
+
+    // MARK: - EntriesEntry
+
+    struct EntriesEntry: Codable {
+        let tranEntry: [TranEntry]?
+    }
+
+    // MARK: - TranEntry
+
+    struct TranEntry: Codable {
+        let posEntry: PosEntry?
+        let examSents: ExamSents?
+        let tran: String?
+    }
+
+    // MARK: - PosEntry
+
+    struct PosEntry: Codable {
+        let pos: String?
+        let posTips: String?
+    }
+
+    // MARK: - ExamSents
+
+    struct ExamSents: Codable {
+        let sent: [ExamSentsSent]?
+    }
+
+    // MARK: - ExamSentsSent
+
+    struct ExamSentsSent: Codable {
+        let chnSent, engSent: String?
+    }
+
+    // MARK: - Webster
+
+    struct Webster: Codable {
+        let encryptedData: String?
+    }
+
+    // MARK: - WikipediaDigest
+
+    struct WikipediaDigest: Codable {
+        let summarys: [SummaryElement]?
+        let source: Source?
+    }
+
+    // MARK: - SummaryElement
+
+    struct SummaryElement: Codable {
+        let summary, key: String?
+    }
+
+    // MARK: - Meta
+
+    struct Meta: Codable {
+        let input: String
+        let guessLanguage: String
+        let isHasSimpleDict: String
+        let le: String
+        let lang: String
+        let dicts: [String]?
+    }
+
+    // MARK: - MusicSents
+
+    struct MusicSents: Codable {
+        let sentsData: [MusicSentsSentsDatum]?
+        let more: Bool?
+        let word: String?
+    }
+
+    // MARK: - MusicSentsSentsDatum
+
+    struct MusicSentsSentsDatum: Codable {
+        let songName, lyricTranslation, singer: String?
+        let coverImg: String?
+        let supportCount: Int?
+        let lyric: String?
+        let lyricList: [LyricList]?
+        let songID: String?
+        let playURL: String?
+    }
+
+    // MARK: - LyricList
+
+    struct LyricList: Codable {
+        let duration: Int?
+        let lyricTranslation, lyric: String?
+        let start: Int?
+    }
+
+    // MARK: - Ce
+
+    struct Ce: Codable {
+        let source: BaikeSource?
+        let word: [CeWord]?
+    }
+
+    struct BaikeSource: Codable {
+        let name: String?
+        let url: String?
+    }
+
+    // MARK: - CeWord
+
+    struct CeWord: Codable {
+        enum CodingKeys: String, CodingKey {
+            // TODO: need parse trs field
+//            case trs
+            case phone
+            case returnPhrase = "return-phrase"
+        }
+
+        // TODO: need parse trs field
+//        let trs: [PurpleTr]?
+        let phone: String?
+        let returnPhrase: String?
+    }
+
+    // MARK: - Fanyi
+
+    struct Fanyi: Codable {
+        let input: String?
+        let type: String?
+        let tran: String?
+    }
+
+    // MARK: - CodingKeys
+
+    enum CodingKeys: String, CodingKey {
+        case webTrans = "web_trans"
+        case oxfordAdvanceHTML = "oxfordAdvanceHtml"
+        case simple, phrs, oxford, syno, collins
+        case webster, wikipediaDigest = "wikipedia_digest"
+        case ec, ce, meta, musicSents = "music_sents"
+        case fanyi
+    }
+
+    let webTrans: WebTrans?
+    let oxfordAdvanceHTML: Oxford?
+    let simple: Simple?
+    let phrs: Phrs?
+    let oxford: Oxford?
+    let syno: Syno?
+    let collins: Collins?
+    let webster: Webster?
+    let wikipediaDigest: WikipediaDigest?
+    let ec: Ec?
+    let ce: Ce?
+    let meta: Meta?
+    let musicSents: MusicSents?
+    let fanyi: Fanyi?
 }
 
 // swiftlint:enable all
