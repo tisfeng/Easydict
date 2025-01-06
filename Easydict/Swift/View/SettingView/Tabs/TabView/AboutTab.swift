@@ -65,7 +65,7 @@ struct AboutTab: View {
 
                     Button {
                         if #available(macOS 15, *) {
-                            openWindow(id: .acknowledgementsWindowId_15Plus)
+                            openWindow(id: .acknowledgementsWindowIdMacOS15Plus)
                         } else {
                             openWindow(id: .acknowledgementsWindowId)
                         }

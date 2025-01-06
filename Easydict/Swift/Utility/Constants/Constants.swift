@@ -13,13 +13,13 @@ import Foundation
 @objcMembers
 class Constants: NSObject {
     // Easydict translate shortcut name.
-    static let easydictTranslatShortcutName = "Easydict-Translate-V1.2.0"
+    static let easydictTranslateShortcutName = "Easydict-Translate-V1.2.0"
 }
 
 extension String {
-    // Acknowledgements window id for macOS 15.
-    static let acknowledgementsWindowId_15Plus = "setting.about.acknowledgements_15_plus"
-    
+    // Window ID for acknowledgements on macOS 15 and later
+    static let acknowledgementsWindowIdMacOS15Plus = "setting.about.acknowledgements_macOS_15_plus"
+
     // Acknowledgements window id.
     static let acknowledgementsWindowId = "setting.about.acknowledgements"
 
