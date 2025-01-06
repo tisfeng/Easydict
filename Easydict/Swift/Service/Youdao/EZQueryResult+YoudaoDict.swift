@@ -290,64 +290,47 @@ extension EZQueryResult {
             wordResult.tags = ec.examType
         }
 
-        // TODO: need parse ec field
         // Handle Chinese to English translation
-//        if let ce = model.ce, let word = ce.word?.first {
-//            // Parse phonetics
-//            var phonetics: [EZWordPhonetic] = []
-//            if let phone = word.phone {
-//                let phonetic = EZWordPhonetic()
-//                phonetic.word = queryText
-//                phonetic.language = language
-//                phonetic.name = NSLocalizedString("chinese_phonetic", comment: "")
-//                phonetic.value = phone
-//                phonetics.append(phonetic)
-//            }
-//
-//            if !phonetics.isEmpty {
-//                wordResult.phonetics = phonetics
-//            }
-//
-//            // Parse word translations
-//            var simpleWords: [EZTranslateSimpleWord] = []
-//            if let trs = word.trs {
-//                for tr in trs {
-//                    if let l = tr.tr?.first?.l {
-//                        var words: [YoudaoDictResponse.TextWord] = []
-//                        if let i = l.i {
-//                            for wordDict in i {
-//                                switch wordDict {
-//                                case .string:
-//                                    break
-//                                case let .ii(wordDict):
-//                                    words.append(wordDict)
-//                                }
-//                            }
-//                        }
-//
-//                        let texts = words.compactMap { $0.text }
-//                        let text = texts.joined(separator: " ")
-//
-//                        let simpleWord = EZTranslateSimpleWord()
-//                        simpleWord.word = text
-//                        simpleWord.part = l.pos
-//                        if let tran = l.tran {
-//                            simpleWord.means = [tran]
-//                        }
-//                        simpleWord.showPartMeans = true
-//                        simpleWords.append(simpleWord)
-//                    }
-//                }
-//
-//                if !simpleWords.isEmpty {
-//                    wordResult.simpleWords = simpleWords
-//                }
-//            }
-//
-//            if !simpleWords.isEmpty {
-//                wordResult.simpleWords = simpleWords
-//            }
-//        }
+        if let ce = model.ce, let word = ce.word {
+            // Parse phonetics
+            var phonetics: [EZWordPhonetic] = []
+            if let phone = word.phone {
+                let phonetic = EZWordPhonetic()
+                phonetic.word = queryText
+                phonetic.language = language
+                phonetic.name = NSLocalizedString("chinese_phonetic", comment: "")
+                phonetic.value = phone
+                phonetics.append(phonetic)
+            }
+
+            if !phonetics.isEmpty {
+                wordResult.phonetics = phonetics
+            }
+
+            // Parse word translations
+            var simpleWords: [EZTranslateSimpleWord] = []
+            if let trs = word.trs {
+                for tr in trs {
+                    if let text = tr.text,
+                       let tran = tr.tran {
+                        let simpleWord = EZTranslateSimpleWord()
+                        simpleWord.word = text
+//                      simpleWord.part = l.pos
+                        simpleWord.means = [tran]
+                        simpleWord.showPartMeans = true
+                        simpleWords.append(simpleWord)
+                    }
+                }
+            }
+
+            if !simpleWords.isEmpty {
+                wordResult.simpleWords = simpleWords
+            }
+
+            if !simpleWords.isEmpty {
+                wordResult.simpleWords = simpleWords
+            }
+        }
 
         // Handle web translations
         if let webTrans = model.webTrans {
