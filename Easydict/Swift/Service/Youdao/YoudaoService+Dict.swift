@@ -80,11 +80,6 @@ extension YoudaoService {
 
             // Decode the data
             let response = try JSONDecoder().decode(YoudaoDictResponseV2.self, from: responseData)
-            #if DEBUG
-//            let respDict = try JSONSerialization.jsonObject(with: responseData)
-//            let jsonResp = String(data: responseData, encoding: .utf8)
-//            print("\(response)")
-            #endif
             result.updateV2(with: response)
             return result
         } catch {
