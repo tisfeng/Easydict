@@ -13,7 +13,7 @@ import Foundation
 @objcMembers
 class Constants: NSObject {
     // Easydict translate shortcut name.
-    static let easydictTranslatShortcutName = "Easydict-Translate-V1.2.0"
+    static let easydictTranslateShortcutName = "Easydict-Translate-V1.2.0"
 }
 
 extension String {
