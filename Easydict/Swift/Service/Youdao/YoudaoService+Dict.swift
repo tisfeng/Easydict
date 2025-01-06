@@ -61,10 +61,10 @@ extension YoudaoService {
             "q": text,
             "le": foreignLanguage,
             "client": "web",
-            "keyid": "webfanyi",
+            "t": time,
             "sign": sign,
             "keyfrom": "webdict",
-        ]
+        ] as [String: Any]
 
         let url = "\(kYoudaoDictURL)/jsonapi_s?doctype=json&jsonversion=4"
 
