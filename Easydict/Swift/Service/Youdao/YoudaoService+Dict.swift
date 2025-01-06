@@ -51,11 +51,11 @@ extension YoudaoService {
             throw QueryError(type: .unsupported, message: "No results found")
         }
 
-        let w = "\(text)webdict"
-        let t = w.count % 10
-        let salt = w.md5()
+        let ww = "\(text)webdict"
+        let time = ww.count % 10
+        let salt = ww.md5()
         let key = "Mk6hqtUp33DGGtoS63tTJbMUYjRrG1Lu"
-        let sign = "web\(text)\(t)\(key)\(salt)".md5()
+        let sign = "web\(text)\(time)\(key)\(salt)".md5()
 
         let parameters = [
             "q": text,
@@ -78,11 +78,13 @@ extension YoudaoService {
             .serializingData()
             .value
 
-            let respDict = try JSONSerialization.jsonObject(with: responseData)
-            let jsonResp = String(data: responseData, encoding: .utf8)
             // Decode the data
             let response = try JSONDecoder().decode(YoudaoDictResponseV2.self, from: responseData)
-            print("\(response)")
+            #if DEBUG
+//            let respDict = try JSONSerialization.jsonObject(with: responseData)
+//            let jsonResp = String(data: responseData, encoding: .utf8)
+//            print("\(response)")
+            #endif
             result.updateV2(with: response)
             return result
         } catch {

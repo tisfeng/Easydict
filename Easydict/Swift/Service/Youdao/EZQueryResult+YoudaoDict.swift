@@ -243,29 +243,22 @@ extension EZQueryResult {
                 wordResult.phonetics = phonetics
             }
 
-            // TODO: need parse parts
             // Parse word translations
             var parts: [EZTranslatePart] = []
-//            if let trs = word.trs {
-//                for tr in trs {
-//                    if let explanation = tr.tr?.first?.l?.i?.first {
-//                        let part = EZTranslatePart()
-//                        var means = explanation
-//
-//                        let delimiterSymbol = "."
-//                        let array = explanation.components(separatedBy: delimiterSymbol)
-//                        if array.count > 1 {
-//                            let pos = array[0]
-//                            if pos.count < 5 {
-//                                part.part = "\(pos)\(delimiterSymbol)"
-//                                means = array[1].trimmingCharacters(in: .whitespaces)
-//                            }
-//                        }
-//                        part.means = [means]
-//                        parts.append(part)
-//                    }
-//                }
-//            }
+            if let trs = word.trs {
+                for tr in trs {
+                    if let pos = tr.pos,
+                       let tran = tr.tran {
+                        let part = EZTranslatePart()
+                        part.part = pos
+
+                        let means = tran
+                        part.means = [means]
+
+                        parts.append(part)
+                    }
+                }
+            }
 
             if !parts.isEmpty {
                 wordResult.parts = parts
