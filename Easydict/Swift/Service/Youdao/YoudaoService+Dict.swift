@@ -72,7 +72,7 @@ extension YoudaoService {
             // Get the raw data
             let responseData = try await AF.request(
                 url,
-                method: .get,
+                method: .post,
                 parameters: parameters
             )
             .serializingData()
