@@ -187,20 +187,25 @@ private class ServiceItemViewModel: ObservableObject {
             do {
                 defer { isValidating = false }
 
-                let result = try await service.validate()
+                let result = await service.validate()
+
                 // If error is nil but result text is also empty, we should report error.
                 guard let translatedText = result.translatedText, !translatedText.isEmpty else {
                     logError(
-                        "\(self.service.serviceType().rawValue) validate translated text is empty"
+                        "\(service.serviceType().rawValue) validate translated text is empty"
                     )
-                    self.showErrorAlert = true
-                    self.error = EZError(
+                    showErrorAlert = true
+                    error = EZError(
                         type: .API,
                         description: String(
                             localized: "setting.service.validate.error.empty_translate_result"
                         )
                     )
-                    return
+                    throw error!
+                }
+
+                if let error = result.error {
+                    throw error
                 }
 
                 // service enabel open the switch and toggle enable status

@@ -20,43 +20,11 @@ public class BaseOpenAIService: LLMStreamService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (EZQueryResult, (any Error)?) -> ()
     ) {
         Task {
-            result.isStreamFinished = false
-            result.isLoading = true
-
-            var resultText = ""
-            let queryType = self.queryType(text: text, from: from, to: to)
-
-            do {
-                let chatStreamResults = try await self.streamTranslate(text, from: from, to: to)
-                for try await streamResult in chatStreamResults {
-                    if let content = streamResult.choices.first?.delta.content {
-                        resultText += content
-                    }
-                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-                }
-
-                // Get final result text
-                resultText = getFinalResultText(resultText)
-                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-                result.isLoading = false
-                result.isStreamFinished = true
-            } catch {
-                // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
-                var text: String?
-                var err: Error? = error
-                if !resultText.isEmpty {
-                    text = resultText
-                    err = nil
-
-                    logError("\(name())-(\(model)) error: \(error.localizedDescription)")
-                    logError(String(describing: error))
-                }
-                updateResultText(text, queryType: queryType, error: err, completion: completion)
-                result.isLoading = false
-                result.isStreamFinished = true
+            for try await result in translate(text: text, from: from, to: to) {
+                completion(result, result.error)
             }
         }
     }
@@ -66,6 +34,61 @@ public class BaseOpenAIService: LLMStreamService {
     typealias OpenAIChatMessage = ChatQuery.ChatCompletionMessageParam
 
     let control = StreamControl()
+
+    func translate(text: String, from: Language, to: Language) -> AsyncStream<EZQueryResult> {
+        AsyncStream { continuation in
+            var resultText = ""
+            let queryType = queryType(text: text, from: from, to: to)
+
+            Task {
+                do {
+                    result.isStreamFinished = false
+                    result.isLoading = true
+
+                    for try await streamResult in streamTranslate(text, from: from, to: to) {
+                        if let content = streamResult.choices.first?.delta.content {
+                            resultText += content
+
+                            updateResultText(resultText, queryType: queryType, error: nil) { result, _ in
+                                continuation.yield(result)
+                            }
+                        }
+                    }
+
+                    // Handle final result
+                    resultText = getFinalResultText(resultText)
+                    result.isLoading = false
+                    result.isStreamFinished = true
+
+                    updateResultText(resultText, queryType: queryType, error: nil) { result, _ in
+                        continuation.yield(result)
+                    }
+
+                } catch {
+                    // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
+                    var text: String?
+                    var err: Error? = error
+                    if !resultText.isEmpty {
+                        text = resultText
+                        err = nil
+                    }
+
+                    logError("\(name())-(\(model)) error: \(error.localizedDescription)")
+                    logError(String(describing: error))
+
+                    result.isLoading = false
+                    result.isStreamFinished = true
+
+                    updateResultText(text, queryType: queryType, error: err) { result, err in
+                        result.error = EZError(nsError: err)
+                        continuation.yield(result)
+                    }
+                }
+
+                continuation.finish()
+            }
+        }
+    }
 
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
         var chatMessages: [OpenAIChatMessage] = []
@@ -89,10 +112,12 @@ public class BaseOpenAIService: LLMStreamService {
         _ text: String,
         from: Language,
         to: Language
-    ) async throws
+    )
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         let url = URL(string: endpoint)
-        let invalidURLError = EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
+        let invalidURLError = EZError(
+            type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid"
+        )
         guard let url, url.isValid else {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: invalidURLError)

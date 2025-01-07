@@ -175,7 +175,9 @@ public class LLMStreamService: QueryService {
 
     var endpointPlaceholder: LocalizedStringKey {
         defaultEndpoint
-            .isEmpty ? "service.configuration.openai.endpoint.placeholder" : LocalizedStringKey(defaultEndpoint)
+            .isEmpty
+            ? "service.configuration.openai.endpoint.placeholder"
+            : LocalizedStringKey(defaultEndpoint)
     }
 
     var defaultEndpoint: String {
@@ -238,7 +240,9 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
-    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<ChatStreamResult, Error> {
+    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<
+        ChatStreamResult, Error
+    > {
         let text = request.text
         var from = Language.auto
         let to = Language.language(fromCode: request.targetLanguage)
@@ -260,14 +264,14 @@ public class LLMStreamService: QueryService {
             }
         }
 
-        return try await streamTranslate(text, from: from, to: to)
+        return streamTranslate(text, from: from, to: to)
     }
 
     func streamTranslate(
         _ text: String,
         from: Language,
         to: Language
-    ) async throws
+    )
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         // Default is not implemented.
         let unimplementedError = EZError(
@@ -311,7 +315,9 @@ public class LLMStreamService: QueryService {
         let enableDictionary = queryTextType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
-            isQueryDictionary = (text as NSString).shouldQueryDictionary(withLanguage: from, maxWordCount: 2)
+            isQueryDictionary = (text as NSString).shouldQueryDictionary(
+                withLanguage: from, maxWordCount: 2
+            )
             if isQueryDictionary {
                 return .dictionary
             }

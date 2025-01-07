@@ -22,15 +22,19 @@ class Throttler {
     // MARK: Internal
 
     func throttle(block: @escaping () -> ()) {
+        // Cancel the previous work item
         workItem.cancel()
-        workItem = DispatchWorkItem { [weak self] in
+
+        // Create a new work item and capture block strongly
+        let item = DispatchWorkItem { [weak self, block] in
             self?.previousRun = Date()
             block()
         }
+        workItem = item
 
         let timeSinceLastRun = -previousRun.timeIntervalSinceNow
         let delay = timeSinceLastRun > maxInterval ? 0 : maxInterval - timeSinceLastRun
-        queue.asyncAfter(deadline: .now() + delay, execute: workItem)
+        queue.asyncAfter(deadline: .now() + delay, execute: item)
     }
 
     // MARK: Private
