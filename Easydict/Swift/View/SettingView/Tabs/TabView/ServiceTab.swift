@@ -177,7 +177,7 @@ private class ServiceItemViewModel: ObservableObject {
     public func tryEnableService() {
         // If service is not LLMStreamService, we can enable it directly
         if !service.isKind(of: LLMStreamService.self) {
-            turnOnService(service, viewModel: viewModel)
+            updateServiceStatus(enabled: true)
             return
         }
 
@@ -208,8 +208,7 @@ private class ServiceItemViewModel: ObservableObject {
                     throw error
                 }
 
-                // service enabel open the switch and toggle enable status
-                turnOnService(service, viewModel: viewModel)
+                updateServiceStatus(enabled: true)
             } catch {
                 logError("\(self.service.serviceType().rawValue) validate error: \(error)")
                 self.error = error
@@ -240,9 +239,7 @@ private class ServiceItemViewModel: ObservableObject {
                 tryEnableService()
             } else {
                 // turn off service
-                service.enabled = false
-                EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
-                viewModel.postUpdateServiceNotification()
+                updateServiceStatus(enabled: false)
             }
         }
     }
@@ -266,9 +263,9 @@ private class ServiceItemViewModel: ObservableObject {
         name = service.name()
     }
 
-    /// Turn on the service
-    private func turnOnService(_ service: QueryService, viewModel: ServiceTabViewModel) {
-        service.enabled = true
+    /// Update service enabled status, and post update service notification.
+    private func updateServiceStatus(enabled: Bool) {
+        service.enabled = enabled
         EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
         viewModel.postUpdateServiceNotification()
     }
