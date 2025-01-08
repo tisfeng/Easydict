@@ -63,14 +63,15 @@ extension EZQueryResult {
             var parts: [EZTranslatePart] = []
             if let trs = word.trs {
                 for tr in trs {
-                    if let pos = tr.pos,
-                       let tran = tr.tran {
-                        let part = EZTranslatePart()
-                        part.part = pos
+                    let part = EZTranslatePart()
+                    part.part = tr.pos ?? ""
 
-                        let means = tran
-                        part.means = [means]
-
+                    var means: [String] = .init()
+                    if let tran = tr.tran {
+                        means.append(tran)
+                    }
+                    part.means = means
+                    if !means.isEmpty {
                         parts.append(part)
                     }
                 }
@@ -120,12 +121,17 @@ extension EZQueryResult {
             var simpleWords: [EZTranslateSimpleWord] = []
             if let trs = word.trs {
                 for tr in trs {
-                    if let text = tr.text,
-                       let tran = tr.tran {
-                        let simpleWord = EZTranslateSimpleWord()
-                        simpleWord.word = text
-                        simpleWord.means = [tran]
-                        simpleWord.showPartMeans = true
+                    let simpleWord = EZTranslateSimpleWord()
+                    simpleWord.word = tr.text ?? ""
+
+                    var means: [String] = .init()
+                    if let tran = tr.tran {
+                        means.append(tran)
+                    }
+                    simpleWord.means = means
+                    simpleWord.showPartMeans = true
+
+                    if !simpleWord.word.isEmpty || !means.isEmpty {
                         simpleWords.append(simpleWord)
                     }
                 }
