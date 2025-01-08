@@ -302,7 +302,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeAPI description:@"判断语言失败" request:reqDict]);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeNetwork description:@"判断语言失败" request:reqDict]);
+        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeAPI description:@"判断语言失败" request:reqDict]);
     }];
 }
 
@@ -441,7 +441,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         completion(nil, [EZError errorWithType:EZErrorTypeAPI description:message ?: @"识别图片文本失败" request:reqDict]);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, [EZError errorWithType:EZErrorTypeNetwork description:@"识别图片文本失败" request:reqDict]);
+        completion(nil, [EZError errorWithType:EZErrorTypeAPI description:@"识别图片文本失败" request:reqDict]);
     }];
 }
 
@@ -502,7 +502,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
         NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description:nil request:reqDict]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:nil request:reqDict]);
     }];
 
     [self.queryModel setStopBlock:^{
@@ -789,7 +789,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, [EZError errorWithType:EZErrorTypeNetwork description:@"获取 token 失败" request:reqDict]);
+        completion(nil, nil, [EZError errorWithType:EZErrorTypeAPI description:@"获取 token 失败" request:reqDict]);
     }];
 }
 

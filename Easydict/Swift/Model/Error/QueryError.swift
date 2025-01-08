@@ -11,44 +11,102 @@ import Foundation
 // MARK: - QueryError
 
 @objcMembers
-public class QueryError: NSError, LocalizedError, @unchecked Sendable {
+public class QueryError: NSObject, LocalizedError, @unchecked Sendable {
     // MARK: Lifecycle
 
-    public init(type: ErrorType, code: Int = -1, message: String) {
+    public init(
+        type: ErrorType,
+        message: String? = nil,
+        errorDataMessage: String? = nil
+    ) {
         self.type = type
         self.message = message
-        let userInfo = [NSLocalizedDescriptionKey: message]
-        super.init(domain: Bundle.main.bundleIdentifier!, code: code, userInfo: userInfo)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        self.errorDataMessage = errorDataMessage
+        super.init()
     }
 
     // MARK: Public
 
-    public enum ErrorType: String {
-        case unknown = "Unknown Error"
-        case api = "API Error"
-        case parameter = "Parameter Error"
-        case timeout = "Timeout Error"
-        case appleScript = "AppleScript Execution Error"
-        case unsupported = "Unsupported Language"
-        case missingSecretKey = "Missing Secret Key"
+    // enum Int for objc
+
+    @objc
+    public enum ErrorType: Int {
+        case unknown
+        case api
+        case parameter
+        case appleScript
+        case unsupported
+        case missingSecretKey
+        case noResult
+
+        // MARK: Internal
+
+        var localizationKey: String {
+            switch self {
+            case .unknown:
+                "unknown_error"
+            case .api:
+                "api_error"
+            case .parameter:
+                "parameter_error"
+            case .appleScript:
+                "apple_script_error"
+            case .unsupported:
+                "unsupported_language_error"
+            case .missingSecretKey:
+                "missing_secret_key_error"
+            case .noResult:
+                "no_result_error"
+            }
+        }
+
+        var localizedString: String {
+            NSLocalizedString(localizationKey, comment: "")
+        }
     }
 
     public let type: ErrorType
-    public var message: String
+    public var message: String?
+    public var errorDataMessage: String?
 
-    public override var localizedDescription: String {
-        description
+    public var errorDescription: String? {
+        var errorString = ""
+
+        // Add zero-width space to fix emoji rendering issue
+//        let queryFailed = "\u{200B}" + String(localized: "query_failed")
+//        errorString += "\(queryFailed), "
+
+        errorString += "\(type.localizedString)"
+
+        if let message, !message.isEmpty {
+            errorString += ": \(message)"
+        }
+
+        if let errorDataMessage, !errorDataMessage.isEmpty {
+            errorString += "\n\(errorDataMessage)"
+        }
+
+        return errorString
     }
 
     public override var description: String {
-        "\(type.rawValue): \(message)"
+        "\(type.rawValue): \(message ?? "")"
     }
 
-    public static func error(type: ErrorType, code: Int = -1, message: String) -> QueryError {
-        QueryError(type: type, code: code, message: message)
+    public static func error(type: ErrorType) -> QueryError {
+        .init(type: type)
+    }
+
+    public static func error(type: ErrorType, message: String? = nil) -> QueryError {
+        .init(type: type, message: message)
+    }
+
+    public static func error(
+        type: ErrorType,
+        message: String? = nil,
+        errorDataMessage: String? = nil
+    )
+        -> QueryError {
+        .init(type: type, message: message, errorDataMessage: errorDataMessage)
     }
 }

@@ -351,6 +351,12 @@ extension LLMStreamService {
     ) {
         if result.isStreamFinished {
             cancelStream()
+
+            var error = error
+            // If error is nil but result text is also empty, we should report error.
+            if error == nil, resultText?.isEmpty ?? true {
+                error = QueryError(type: .noResult)
+            }
             completion(result, error)
             return
         }
@@ -360,9 +366,11 @@ extension LLMStreamService {
             translatedTexts = [resultText.trim()]
         }
 
+        // If error is not nil, means stream is finished.
         result.isStreamFinished = error != nil
         result.translatedResults = translatedTexts
 
+        // Throttle update completion to avoid update UI too frequently.
         let updateCompletion = {
             self.throttler.throttle { [weak self] in
                 guard let self else { return }

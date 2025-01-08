@@ -61,28 +61,25 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
             errorString = @"None";
             break;
         case EZErrorTypeParam:
-            errorString = NSLocalizedString(@"error_parameter", nil);
-            break;
-        case EZErrorTypeNetwork:
-            errorString = NSLocalizedString(@"error_network", nil);
+            errorString = NSLocalizedString(@"parameter_error", nil);
             break;
         case EZErrorTypeAPI:
-            errorString = NSLocalizedString(@"error_api", nil);
+            errorString = NSLocalizedString(@"api_error", nil);
             break;
         case EZErrorTypeUnsupportedLanguage:
-            errorString = NSLocalizedString(@"error_unsupport_language", nil);
+            errorString = NSLocalizedString(@"unsupported_language_error", nil);
             break;
-        case EZErrorTypeNoResultsFound:
-            errorString = NSLocalizedString(@"no_results_found", nil);
+        case EZErrorTypeNoResult:
+            errorString = NSLocalizedString(@"no_result_error", nil);
             break;
         case EZErrorTypeInsufficientQuota:
-            errorString = NSLocalizedString(@"error_insufficient_quota", nil);
+            errorString = NSLocalizedString(@"insufficient_quota_error", nil);
             break;
         case EZErrorTypeMissingAPIKey:
-            errorString = NSLocalizedString(@"error_missing_api_key", nil);
+            errorString = NSLocalizedString(@"missing_secret_key_error", nil);
             break;
         default:
-            errorString = NSLocalizedString(@"error_unknown", nil);
+            errorString = NSLocalizedString(@"unknown_error", nil);
             break;
     }
     

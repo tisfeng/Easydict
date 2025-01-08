@@ -60,7 +60,8 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isLoading = false
                     result.isStreamFinished = true
 
-                    updateResultText(resultText, queryType: queryType, error: nil) { result, _ in
+                    updateResultText(resultText, queryType: queryType, error: nil) { result, error in
+                        result.error = EZError(nsError: error)
                         continuation.yield(result)
                     }
 

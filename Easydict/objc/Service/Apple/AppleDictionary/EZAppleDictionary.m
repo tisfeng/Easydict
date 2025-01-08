@@ -104,7 +104,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    EZError *noResultError = [EZError errorWithType:EZErrorTypeNoResultsFound description:nil];
+    EZError *noResultError = [EZError errorWithType:EZErrorTypeNoResult description:nil];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Note: this method may cost long time(>1.0s), if the html is very large.

@@ -447,7 +447,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             return;
         }
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeNetwork description: nil request:reqDict]);
+        completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeAPI description: nil request:reqDict]);
     }];
     
     [self.queryModel setStopBlock:^{
@@ -503,7 +503,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, [EZError errorWithType:EZErrorTypeNetwork description: @"谷歌翻译获取 tkk 失败" request:reqDict]);
+        completion(nil, [EZError errorWithType:EZErrorTypeAPI description: @"谷歌翻译获取 tkk 失败" request:reqDict]);
     }];
 }
 
@@ -582,7 +582,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             return;
         }
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeNetwork description: nil request:reqDict]);
+        completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeAPI description: nil request:reqDict]);
     }];
     
     [self.queryModel setStopBlock:^{

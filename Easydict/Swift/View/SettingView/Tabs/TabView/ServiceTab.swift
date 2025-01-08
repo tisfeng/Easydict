@@ -188,26 +188,9 @@ private class ServiceItemViewModel: ObservableObject {
                 defer { isValidating = false }
 
                 let result = await service.validate()
-
-                // If error is nil but result text is also empty, we should report error.
-                guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                    logError(
-                        "\(service.serviceType().rawValue) validate translated text is empty"
-                    )
-                    showErrorAlert = true
-                    error = EZError(
-                        type: .API,
-                        description: String(
-                            localized: "setting.service.validate.error.empty_translate_result"
-                        )
-                    )
-                    throw error!
-                }
-
                 if let error = result.error {
                     throw error
                 }
-
                 updateServiceStatus(enabled: true)
             } catch {
                 logError("\(self.service.serviceType().rawValue) validate error: \(error)")

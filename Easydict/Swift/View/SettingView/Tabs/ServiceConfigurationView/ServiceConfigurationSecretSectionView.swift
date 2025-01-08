@@ -101,16 +101,11 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         Task {
             do {
                 let result = await service.validate()
-
                 if let error = result.error {
                     throw error
                 }
 
                 guard viewModel.isValidating else { return }
-
-                guard let translatedText = result.translatedText, !translatedText.isEmpty else {
-                    throw QueryError(type: .api, message: "Empty result text")
-                }
 
                 viewModel.alertTitle = "service.configuration.validation_success"
                 viewModel.errorMessage = result.errorMessage ?? ""

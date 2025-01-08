@@ -225,7 +225,7 @@ NSString *getPartAbbreviation(NSString *part) {
 - (BOOL)isWarningErrorType {
     EZErrorType errorType = self.error.type;
     BOOL warningType = (errorType == EZErrorTypeUnsupportedLanguage)
-    || (errorType == EZErrorTypeNoResultsFound)
+    || (errorType == EZErrorTypeNoResult)
     || (errorType == EZErrorTypeInsufficientQuota);
     return warningType;
 }
