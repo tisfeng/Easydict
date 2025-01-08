@@ -62,7 +62,7 @@
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
 		03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */; };
 		03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */; };
-		03538DF02D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */; };
+		03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */; };
 		03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DF12D25AAD1005E56A8 /* CookieManager.swift */; };
 		03538DF42D263FA5005E56A8 /* good.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DF32D263FA5005E56A8 /* good.json */; };
 		03538DF62D2652F7005E56A8 /* 美.json in Resources */ = {isa = PBXBuildFile; fileRef = 03538DF52D2652F7005E56A8 /* 美.json */; };
@@ -84,6 +84,7 @@
 		03542A552937B7DE00C34C33 /* EZError.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A542937B7DE00C34C33 /* EZError.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
+		035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */; };
 		0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357B9592C04387D00A48CB0 /* TextEditorCell.swift */; };
 		035E37E72A0953120061DFAF /* EZToast.m in Sources */ = {isa = PBXBuildFile; fileRef = 035E37E62A0953120061DFAF /* EZToast.m */; };
 		035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */; };
@@ -465,7 +466,7 @@
 		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponse.swift; sourceTree = "<group>"; };
 		03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoTranslateResponese.swift; sourceTree = "<group>"; };
-		03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+YoudaoDict.swift"; sourceTree = "<group>"; };
+		03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+Dict.swift"; sourceTree = "<group>"; };
 		03538DF12D25AAD1005E56A8 /* CookieManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieManager.swift; sourceTree = "<group>"; };
 		03538DF32D263FA5005E56A8 /* good.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = good.json; sourceTree = "<group>"; };
 		03538DF52D2652F7005E56A8 /* 美.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "美.json"; sourceTree = "<group>"; };
@@ -498,6 +499,7 @@
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
 		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
+		035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+DictV4.swift"; sourceTree = "<group>"; };
 		0357B9592C04387D00A48CB0 /* TextEditorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorCell.swift; sourceTree = "<group>"; };
 		035E37E52A0953120061DFAF /* EZToast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZToast.h; sourceTree = "<group>"; };
 		035E37E62A0953120061DFAF /* EZToast.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZToast.m; sourceTree = "<group>"; };
@@ -1211,11 +1213,8 @@
 		03538DF72D265301005E56A8 /* DictJSONExample */ = {
 			isa = PBXGroup;
 			children = (
+				035605FE2D2EAFD200FC28B3 /* v2 */,
 				CA9CF8A12D2E6CA2000C1860 /* v4 */,
-				03538DF32D263FA5005E56A8 /* good.json */,
-				03538DF52D2652F7005E56A8 /* 美.json */,
-				03538DF82D26536C005E56A8 /* 人的一生.json */,
-				03538DFA2D2653E2005E56A8 /* look up.json */,
 			);
 			path = DictJSONExample;
 			sourceTree = "<group>";
@@ -1275,6 +1274,17 @@
 				03DC7C5D2A3ABE28000BF7C9 /* EZConstKey.m */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		035605FE2D2EAFD200FC28B3 /* v2 */ = {
+			isa = PBXGroup;
+			children = (
+				03538DF32D263FA5005E56A8 /* good.json */,
+				03538DF52D2652F7005E56A8 /* 美.json */,
+				03538DF82D26536C005E56A8 /* 人的一生.json */,
+				03538DFA2D2653E2005E56A8 /* look up.json */,
+			);
+			path = v2;
 			sourceTree = "<group>";
 		};
 		0361966B2A000E7800806370 /* FWEncryptorAES */ = {
@@ -2101,7 +2111,8 @@
 				03CD01572D24E17C0079D0CB /* YoudaoService.swift */,
 				03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */,
 				03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */,
-				03538DEF2D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift */,
+				03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */,
+				035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */,
 				03538E092D281920005E56A8 /* YoudaoService+OCR.swift */,
 			);
 			path = Youdao;
@@ -3172,6 +3183,7 @@
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
+				035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */,
 				03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */,
 				62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */,
 				03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */,
@@ -3262,7 +3274,7 @@
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */,
-				03538DF02D259B0A005E56A8 /* EZQueryResult+YoudaoDict.swift in Sources */,
+				03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,

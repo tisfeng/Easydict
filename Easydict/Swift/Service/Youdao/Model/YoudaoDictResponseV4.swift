@@ -1,23 +1,21 @@
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
 //
-//   let youdaoDictResponseV4 = try? JSONDecoder().decode(YoudaoDictResponseV4.self, from: jsonData)
+//  YoudaoModel.swift
+//  Easydict
+//
+//  Created by tisfeng on 2025/1/8.
+//  Copyright © 2025 izual. All rights reserved.
+//
 
 import Foundation
 
 // MARK: - YoudaoDictResponseV4
 
+// This file was generated from JSON Schema using quicktype, do not modify it directly.
+// To parse the JSON, add this file to your project and do:
+//
+//   let youdaoDictResponseV4 = try? JSONDecoder().decode(YoudaoDictResponseV4.self, from: jsonData)
+
 // swiftlint:disable all
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
-//
-//   let youdaoDictResponseV4 = try? JSONDecoder().decode(YoudaoDictResponseV4.self, from: jsonData)
-
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
-//
-//   let youdaoDictResponseV4 = try? JSONDecoder().decode(YoudaoDictResponseV4.self, from: jsonData)
-
 struct YoudaoDictResponseV4: Codable {
     // MARK: - AuthSentsPart
 
