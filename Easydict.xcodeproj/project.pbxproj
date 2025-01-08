@@ -340,6 +340,11 @@
 		C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */; };
 		C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */; };
 		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
+		CA9CF8A32D2E6CE6000C1860 /* good_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A22D2E6CE6000C1860 /* good_v4.json */; };
+		CA9CF8A52D2E6D13000C1860 /* 美_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A42D2E6D13000C1860 /* 美_v4.json */; };
+		CA9CF8A72D2E6D3C000C1860 /* 人的一生_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A62D2E6D3C000C1860 /* 人的一生_v4.json */; };
+		CA9CF8A92D2E6D54000C1860 /* look up_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A82D2E6D54000C1860 /* look up_v4.json */; };
+		CA9CF8AB2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9CF8AA2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift */; };
 		CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */; };
 		CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */; };
 		CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */; };
@@ -873,6 +878,11 @@
 		C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentTranslateType.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
 		C99EEB182385796700FEE666 /* Easydict-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA9CF8A22D2E6CE6000C1860 /* good_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = good_v4.json; sourceTree = "<group>"; };
+		CA9CF8A42D2E6D13000C1860 /* 美_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "美_v4.json"; sourceTree = "<group>"; };
+		CA9CF8A62D2E6D3C000C1860 /* 人的一生_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "人的一生_v4.json"; sourceTree = "<group>"; };
+		CA9CF8A82D2E6D54000C1860 /* look up_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "look up_v4.json"; sourceTree = "<group>"; };
+		CA9CF8AA2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponseV4.swift; sourceTree = "<group>"; };
 		CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BaiduTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
 		CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiTranslate.swift; sourceTree = "<group>"; };
 		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
@@ -1201,6 +1211,7 @@
 		03538DF72D265301005E56A8 /* DictJSONExample */ = {
 			isa = PBXGroup;
 			children = (
+				CA9CF8A12D2E6CA2000C1860 /* v4 */,
 				03538DF32D263FA5005E56A8 /* good.json */,
 				03538DF52D2652F7005E56A8 /* 美.json */,
 				03538DF82D26536C005E56A8 /* 人的一生.json */,
@@ -1214,6 +1225,7 @@
 			children = (
 				03538DF72D265301005E56A8 /* DictJSONExample */,
 				03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */,
+				CA9CF8AA2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift */,
 				03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */,
 				03538E072D278872005E56A8 /* YoudaoKey.swift */,
 				03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */,
@@ -2533,6 +2545,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		CA9CF8A12D2E6CA2000C1860 /* v4 */ = {
+			isa = PBXGroup;
+			children = (
+				CA9CF8A22D2E6CE6000C1860 /* good_v4.json */,
+				CA9CF8A42D2E6D13000C1860 /* 美_v4.json */,
+				CA9CF8A62D2E6D3C000C1860 /* 人的一生_v4.json */,
+				CA9CF8A82D2E6D54000C1860 /* look up_v4.json */,
+			);
+			path = v4;
+			sourceTree = "<group>";
+		};
 		EA1013412B5DBDA5005E43F9 /* Defaults */ = {
 			isa = PBXGroup;
 			children = (
@@ -2810,6 +2833,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA9CF8A72D2E6D3C000C1860 /* 人的一生_v4.json in Resources */,
 				0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */,
 				03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */,
 				03538DF62D2652F7005E56A8 /* 美.json in Resources */,
@@ -2823,6 +2847,7 @@
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
 				03538DF92D26536C005E56A8 /* 人的一生.json in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
+				CA9CF8A92D2E6D54000C1860 /* look up_v4.json in Resources */,
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
@@ -2830,10 +2855,12 @@
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */,
+				CA9CF8A52D2E6D13000C1860 /* 美_v4.json in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
 				03D2A3DF29F42B290035CED4 /* bd.js in Resources */,
 				C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */,
+				CA9CF8A32D2E6CE6000C1860 /* good_v4.json in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
@@ -2988,6 +3015,7 @@
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
 				0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */,
 				03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */,
+				CA9CF8AB2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift in Sources */,
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,

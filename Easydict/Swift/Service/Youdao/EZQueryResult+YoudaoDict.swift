@@ -196,7 +196,7 @@ extension EZQueryResult {
         }
     }
 
-    func updateV2(with model: YoudaoDictResponseV2) {
+    func updateV4(with model: YoudaoDictResponseV4) {
         raw = model
 
         let wordResult = EZTranslateWordResult()
@@ -330,8 +330,11 @@ extension EZQueryResult {
             var webExplanations: [EZTranslateSimpleWord] = []
             if let webTranslations = webTrans.webTranslation {
                 for webTranslation in webTranslations {
+                    guard let key = webTranslation.key else {
+                        continue
+                    }
                     let simpleWord = EZTranslateSimpleWord()
-                    simpleWord.word = webTranslation.key
+                    simpleWord.word = key
 
                     let explanations = webTranslation.trans?.compactMap { $0.value }
                     simpleWord.means = explanations

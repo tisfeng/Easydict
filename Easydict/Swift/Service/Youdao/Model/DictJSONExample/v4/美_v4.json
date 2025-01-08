@@ -1,0 +1,1617 @@
+{
+    "web_trans": {
+        "web-translation": [
+            {
+                "@same": "true",
+                "key": "美",
+                "trans": [
+                    {
+                        "summary": {
+                            "line": [
+                                "<b>美</b>(<b>beauty; Schonheit; beauté</b>)"
+                            ]
+                        },
+                        "value": "beauty; Schonheit; beauté",
+                        "support": 4999,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "<b>美</b>(beauty)"
+                            ]
+                        },
+                        "value": "Beauty",
+                        "support": 4999,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "... Megaphone 喇叭筒 <b>Mel</b> <b>美</b>（声调单位） Menu 点菜单，节目表 ..."
+                            ]
+                        },
+                        "value": "Mel",
+                        "support": 402,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "... Part-time Job 业余工作 <b>Virtue</b> <b>美</b> 德 Difference 区 别 ..."
+                            ]
+                        },
+                        "value": "Virtue",
+                        "support": 228,
+                        "url": ""
+                    }
+                ]
+            },
+            {
+                "key": "美德",
+                "trans": [
+                    {
+                        "value": "virtue"
+                    },
+                    {
+                        "value": "virtue(s); virtus; ἀρετή"
+                    },
+                    {
+                        "value": "virtue(s)"
+                    },
+                    {
+                        "value": "goodness"
+                    }
+                ]
+            },
+            {
+                "key": "美洲",
+                "trans": [
+                    {
+                        "value": "Americas"
+                    },
+                    {
+                        "value": "The America"
+                    },
+                    {
+                        "cls": {
+                            "cl": [
+                                "地理"
+                            ]
+                        },
+                        "value": "america"
+                    },
+                    {
+                        "value": "America Amerika"
+                    }
+                ]
+            },
+            {
+                "key": "美国",
+                "trans": [
+                    {
+                        "value": "United States"
+                    },
+                    {
+                        "value": "The United States of America"
+                    },
+                    {
+                        "value": "America"
+                    },
+                    {
+                        "value": "USA"
+                    }
+                ]
+            },
+            {
+                "key": "美洲狮",
+                "trans": [
+                    {
+                        "cls": {
+                            "cl": [
+                                "脊椎"
+                            ]
+                        },
+                        "value": "Cougar"
+                    },
+                    {
+                        "cls": {
+                            "cl": [
+                                "脊椎"
+                            ]
+                        },
+                        "value": "Puma"
+                    },
+                    {
+                        "value": "Puma concolor"
+                    },
+                    {
+                        "value": "Mountain Lion"
+                    }
+                ]
+            },
+            {
+                "key": "睡美人",
+                "trans": [
+                    {
+                        "value": "Sleeping Beauty"
+                    },
+                    {
+                        "value": "Maleficent"
+                    },
+                    {
+                        "value": "The Sleeper"
+                    },
+                    {
+                        "value": "Remixed by DJ Ming"
+                    },
+                    {
+                        "value": "sleeping beauty"
+                    }
+                ]
+            },
+            {
+                "key": "美国大学",
+                "trans": [
+                    {
+                        "value": "American University"
+                    },
+                    {
+                        "value": "The American University in Cairo"
+                    },
+                    {
+                        "value": "University"
+                    },
+                    {
+                        "value": "American University of Dubai"
+                    }
+                ]
+            },
+            {
+                "key": "黄美英",
+                "trans": [
+                    {
+                        "value": "Tiffany"
+                    },
+                    {
+                        "value": "Hwang Mi Young"
+                    },
+                    {
+                        "value": "Tifny"
+                    },
+                    {
+                        "value": "Mi Young"
+                    }
+                ]
+            },
+            {
+                "key": "艾美奖",
+                "trans": [
+                    {
+                        "value": "Emmy Award"
+                    },
+                    {
+                        "value": "Emmy Awards"
+                    },
+                    {
+                        "value": "The Emmy Awards"
+                    },
+                    {
+                        "value": "Emmys"
+                    }
+                ]
+            },
+            {
+                "key": "美国梦",
+                "trans": [
+                    {
+                        "value": "American Dream"
+                    },
+                    {
+                        "value": "Americano"
+                    },
+                    {
+                        "value": "In America"
+                    }
+                ]
+            }
+        ]
+    },
+    "blng_sents_part": {
+        "sentence-count": 6,
+        "sentence-pair": [
+            {
+                "sentence": "英、美、法军队的主力向西面散开。",
+                "sentence-translation-speech": "The+main+body+of+British%2C+American%2C+and+French+troops+had+fanned+out+to+the+west.&le=eng",
+                "sentence-eng": "英、<b>美</b>、法军队的主力向西面散开。",
+                "sentence-translation": "The main body of British, American, and French troops had fanned out to the west.",
+                "speech-size": "21kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "2",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "3",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "6",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "9",
+                                "@e": "11",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "11",
+                                "@e": "12",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "12",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "14",
+                                "@e": "16",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "5",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "15",
+                                "@e": "17",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "18",
+                                "@e": "25",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "27",
+                                "@e": "35",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "41",
+                                "@e": "54",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "55",
+                                "@e": "69",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "70",
+                                "@e": "76",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "77",
+                                "@e": "81",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            }
+                        ]
+                    }
+                },
+                "source": "《柯林斯英汉双解大词典》",
+                "url": "https://《柯林斯英汉双解大词典》/"
+            },
+            {
+                "sentence": "那景色有一种简朴、超凡的美。",
+                "sentence-translation-speech": "The+landscape+had+a+stark%2C+unworldly+beauty.&le=eng",
+                "sentence-eng": "那景色有一种简朴、超凡的<b>美</b>。",
+                "sentence-translation": "The landscape had a stark, unworldly beauty.",
+                "speech-size": "11kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "2",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "2",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "5",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "7",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "10",
+                                "@e": "12",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "13",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "15",
+                                "@e": "18",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "19",
+                                "@e": "20",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "21",
+                                "@e": "26",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "28",
+                                "@e": "37",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "38",
+                                "@e": "44",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            }
+                        ]
+                    }
+                },
+                "source": "《牛津词典》",
+                "url": "https://《牛津词典》/"
+            },
+            {
+                "sentence": "美甲师对修剪、锉光指甲很在行。",
+                "sentence-translation-speech": "Manicurists+are+skilled+at+shaping+and+filing+nails.&le=eng",
+                "sentence-eng": "<b>美</b>甲师对修剪、锉光指甲很在行。",
+                "sentence-translation": "Manicurists are skilled at shaping and filing nails.",
+                "speech-size": "14kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "3",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "9",
+                                "@e": "12",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "12",
+                                "@e": "13",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "13",
+                                "@e": "15",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "12",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "13",
+                                "@e": "16",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "17",
+                                "@e": "27",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "40",
+                                "@e": "46",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "47",
+                                "@e": "52",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            }
+                        ]
+                    }
+                },
+                "source": "《柯林斯英汉双解大词典》",
+                "url": "https://《柯林斯英汉双解大词典》/"
+            }
+        ],
+        "more": "blng_sents",
+        "trs-classify": [
+            {
+                "proportion": "100%",
+                "tr": "全部"
+            },
+            {
+                "proportion": "68.6%",
+                "tr": "beauty"
+            },
+            {
+                "proportion": "31.1%",
+                "tr": "beautiful"
+            },
+            {
+                "proportion": "0.3%",
+                "tr": "good"
+            }
+        ]
+    },
+    "ce": {
+        "source": {
+            "name": "有道词典",
+            "url": "https://dict.youdao.com"
+        },
+        "word": {
+            "trs": [
+                {
+                    "voice": "beauty&type=2",
+                    "#text": "beauty",
+                    "#tran": "美丽，漂亮；美好的事物，上品；美人，美女；魅力，吸引人之处；优点，妙处；美容品，化妆品；（产品、工作或活动）美容的；"
+                },
+                {
+                    "voice": "beautiful&type=2",
+                    "#text": "beautiful",
+                    "#tran": "美丽的，漂亮的；令人愉悦的，美妙的；（完成得）出色的，极好的；<美>仁慈的；"
+                },
+                {
+                    "voice": "good&type=2",
+                    "#text": "good",
+                    "#tran": "优良的；能干的，擅长的；令人愉快的，满意的；合适的，方便的；有益的；乖的；虔诚的；健康的；善良的；正直的；相当大的，相当多的；至少；彻底的；明智的，合理的；划算的，收益可观的；赢得赞许的，令人尊敬的；（用于表示回应）好的；表示惊讶、生气或者加强语气；（用于打招呼）好；有趣的；有效的；能提供……的；（踢、射、投）命中；亲密的；<非正式>够了；善，正义；好事；商品，所有物；<英>（运载的）货物（goods）；优势，利益；<非正式>真货，正品（the goods）；好人，有道德的人（the good）；<非正式>好地；<美>彻底地，完全地；【名】 （Good）（英）古德，（瑞典）戈德（人名）；"
+                },
+                {
+                    "voice": "beauteousness&type=2",
+                    "#text": "beauteousness",
+                    "#tran": "美丽；"
+                },
+                {
+                    "voice": "prettily&type=2",
+                    "#text": "prettily",
+                    "#tran": "漂亮地，可爱地；恰如其分地；"
+                }
+            ],
+            "phone": "měi",
+            "return-phrase": "美"
+        }
+    },
+    "wuguanghua": {
+        "dataList": [
+            {
+                "trs": [
+                    {
+                        "pos": "形",
+                        "tr": {
+                            "en": "beautiful; pretty",
+                            "cn": "美丽;好看"
+                        },
+                        "sents": [
+                            {
+                                "en": "She's quite pretty, isn't she?",
+                                "cn": "她长得挺美，不是吗?"
+                            },
+                            {
+                                "en": "What a beautiful girl!",
+                                "cn": "小姑娘长得真美呀!"
+                            },
+                            {
+                                "en": "The park is beautiful beyond description.",
+                                "cn": "这个公园美得无法形容。"
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "形",
+                        "tr": {
+                            "en": "satisfactory; satisfying ; good; pleasing",
+                            "cn": "令人满意;好"
+                        },
+                        "sents": [
+                            {
+                                "en": "perfect",
+                                "cn": "完美"
+                            },
+                            {
+                                "en": "good and cheap",
+                                "cn": "价廉物美"
+                            },
+                            {
+                                "en": "live quite happily",
+                                "cn": "日子过得挺美"
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "动",
+                        "tr": {
+                            "en": "beautify; prettify",
+                            "cn": "使美丽"
+                        },
+                        "sents": [
+                            {
+                                "en": "make up one's looks; improve a woman's looks",
+                                "cn": "美容"
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "动",
+                        "rhetoric": "[方]",
+                        "tr": {
+                            "en": "pride oneself upon; be pleased with oneself",
+                            "cn": "得意"
+                        },
+                        "sents": [
+                            {
+                                "en": "take too much pride in oneself",
+                                "cn": "美得了不得"
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "名",
+                        "tr": {
+                            "en": "short for America",
+                            "cn": "指美洲"
+                        },
+                        "sents": [
+                            {
+                                "en": "South America",
+                                "cn": "南美"
+                            },
+                            {
+                                "en": "North America",
+                                "cn": "北美"
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "名",
+                        "tr": {
+                            "en": "the United States of America",
+                            "cn": "指美国"
+                        }
+                    }
+                ],
+                "phone": "[měi]",
+                "speech": "mei3"
+            }
+        ],
+        "source": {
+            "name": "《吴光华汉英大辞典》"
+        },
+        "word": "美"
+    },
+    "ce_new": {
+        "source": {
+            "name": "新汉英大辞典"
+        },
+        "word": [
+            {
+                "trs": [
+                    {
+                        "pos": "形容词",
+                        "tr": [
+                            {
+                                "exam": [
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "She's quite pretty, isn't she?"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "她长得挺美， 不是吗?"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "What a beautiful girl!"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "小姑娘长得真美呀!"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "l": {
+                                    "i": [
+                                        "（美丽; 好看） beautiful; pretty:"
+                                    ]
+                                }
+                            },
+                            {
+                                "exam": [
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "perfect;"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "完美"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "good and cheap;"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "价廉物美"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "l": {
+                                    "i": [
+                                        "（令人满意; 好） satisfactory; satisfying ; good; pleasing:"
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "动词",
+                        "tr": [
+                            {
+                                "exam": [
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "make up one's looks; improve a woman's looks"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "美容"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "l": {
+                                    "i": [
+                                        "（使美丽） beautify; prettify:"
+                                    ]
+                                }
+                            },
+                            {
+                                "exam": [
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "take too much pride in oneself"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "美得了不得"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "l": {
+                                    "i": [
+                                        "（得意） pride oneself upon; be pleased with oneself:"
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "pos": "名词",
+                        "tr": [
+                            {
+                                "exam": [
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "South America;"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "南美"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "i": {
+                                            "f": {
+                                                "l": {
+                                                    "i": "North America"
+                                                }
+                                            },
+                                            "n": {
+                                                "l": {
+                                                    "i": "北美"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "l": {
+                                    "i": [
+                                        "（指美洲） short for America:"
+                                    ]
+                                }
+                            },
+                            {
+                                "l": {
+                                    "i": [
+                                        "（指美国） the United States of America"
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "phone": "měi",
+                "return-phrase": {
+                    "l": {
+                        "i": [
+                            "美"
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    "simple": {
+        "query": "美",
+        "word": [
+            {
+                "phone": "měi",
+                "return-phrase": "美"
+            }
+        ]
+    },
+    "media_sents_part": {
+        "sentence-count": 6,
+        "more": "media_sents",
+        "query": "美",
+        "sent": [
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=4304739422038144308&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=4304739422038144308",
+                            "name": "耶鲁公开课",
+                            "source": "旧约导论课程节选"
+                        }
+                    ]
+                },
+                "chn": "他对永生的追求,吉尔伽<b>美</b>什找到，唯一可以长生不老的人类。<br>",
+                "eng": "You'll remember that in his search for immortality Utnapishtim Gilgamesh sought out Utnapishtim, the one human who had been granted immortality.<br>"
+            },
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=1840698550190512104&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=1840698550190512104",
+                            "name": "世界是我的家",
+                            "source": "SpeakingMax英语口语达人"
+                        }
+                    ]
+                },
+                "chn": "非洲东南部的一个城市，很<b>美</b>很<b>美</b>，人人都应该去。<br>",
+                "eng": "which is a city in South Eastern Africa, which is a beautiful, beautiful city which everyone should go to.<br>"
+            },
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=-1548637038907216462&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=-1548637038907216462",
+                            "name": "耶鲁公开课",
+                            "source": "现代诗歌课程节选"
+                        }
+                    ]
+                },
+                "chn": "他在亚当的诅咒中后悔地称,这种<b>美</b>值得为之劳累,他想隐藏这种劳累。<br>",
+                "eng": "Yeats, in \"Adam's Curse,\" regrets that the beautiful is something to be labored for and he wants to conceal that labor.<br>"
+            }
+        ]
+    },
+    "special": {
+        "summary": {
+            "sources": {
+                "source": {
+                    "site": "NoteExpress",
+                    "url": "https://dict.youdao.com"
+                }
+            },
+            "text": "以上统计来源于2,447,534篇论文数据，部分数据来源于"
+        },
+        "co-add": "https://dict.youdao.com",
+        "total": "2,447,543",
+        "entries": [
+            {
+                "entry": {
+                    "major": "文学",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "beauty",
+                                "chnSent": "他把<b>美</b>分为道德的<b>美</b>和感性的<b>美</b>。",
+                                "cite": "1097",
+                                "docTitle": "自然的追寻 ",
+                                "engSent": "He classified <b>beauty</b> with ethic <b>beauty</b> and perceptive one.",
+                                "url": "youdao"
+                            }
+                        },
+                        {
+                            "tr": {
+                                "nat": "beautiful",
+                                "chnSent": "魏晋士人人格<b>美</b>观念的形成是有着复杂的思想文化渊源的。",
+                                "cite": "170",
+                                "docTitle": "论魏晋士人的人格美观念 ",
+                                "engSent": "The Wei Jin literary man’s personality <b>beautiful</b> idea formation is has the complexthought culture origin.",
+                                "url": "youdao"
+                            }
+                        }
+                    ],
+                    "num": 2
+                }
+            },
+            {
+                "entry": {
+                    "major": "法学",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "beauty",
+                                "cite": "27",
+                                "docTitle": "关于演艺合同纠纷的法律分析（研究生论文）",
+                                "url": "youdao"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            },
+            {
+                "entry": {
+                    "major": "经济学",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "and japan",
+                                "chnSent": "我国的信息化起步较晚，与<b>美</b>、日等发达国家存在很大的差距。",
+                                "cite": "129",
+                                "docTitle": "我国经济信息化水平测度研究 ",
+                                "engSent": "The informatization in our country begins late, <b>and</b> there is a big gap between it <b>and</b> developed countries such as the U. S. <b>and </b><b>Japan</b>.",
+                                "url": "youdao"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            },
+            {
+                "entry": {
+                    "major": "体育",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "beautiful",
+                                "chnSent": "蹦床是奥运会比赛项目，蹦床项目的主要特色可以概括为：“高”、“难”、“稳”、“<b>美</b>”、“准”，被赋予“空中芭蕾”之<b>美</b>称。",
+                                "cite": "46",
+                                "docTitle": "蹦床运动员注意特征研究 ",
+                                "engSent": "Trampoline is an Olympic Game event, its special feature can be generalized as: \"high\" , \"difficult \" , \"steady\" , \"<b>beautiful</b> \"and \"accurate\" , and is given the name of \"air ballet\" .",
+                                "url": "youdao"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            },
+            {
+                "entry": {
+                    "major": "哲学",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "beauty",
+                                "cite": "0"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            }
+        ]
+    },
+    "input": "美",
+    "baike": {
+        "summarys": [
+            {
+                "summary": "美（韩文：미，英文：MIIII）1988年出生，韩国歌手。2010年以Digital Single Album《7月15日》出道，曾为很多韩剧演唱OST，如《秘密花园》，《公主的男人》等。 ",
+                "key": "美"
+            }
+        ],
+        "source": {
+            "name": "百度百科",
+            "url": ""
+        }
+    },
+    "meta": {
+        "input": "美",
+        "guessLanguage": "zh",
+        "isHasSimpleDict": "1",
+        "le": "en",
+        "lang": "eng",
+        "dicts": [
+            "web_trans",
+            "blng_sents_part",
+            "ce",
+            "wuguanghua",
+            "ce_new",
+            "simple",
+            "media_sents_part",
+            "special",
+            "baike",
+            "meta",
+            "newhh"
+        ]
+    },
+    "le": "en",
+    "lang": "eng",
+    "newhh": {
+        "dataList": [
+            {
+                "pinyin": "měi",
+                "sense": [
+                    {
+                        "examples": [
+                            "长得很<self>美</self>",
+                            "家乡的景色像画一样<self>美</self>",
+                            "俊<self>美</self>。"
+                        ],
+                        "def": [
+                            "好看；美丽（跟“丑”相对）"
+                        ],
+                        "cat": "形容词"
+                    },
+                    {
+                        "examples": [
+                            "<self>美</self>容",
+                            "<self>美</self>发（fà）。"
+                        ],
+                        "def": [
+                            "使事物变美"
+                        ],
+                        "cat": "动词"
+                    },
+                    {
+                        "examples": [
+                            "物<self>美</self>价廉",
+                            "<self>美</self>名",
+                            "<self>美</self>德。"
+                        ],
+                        "def": [
+                            "好的；令人满意的"
+                        ],
+                        "cat": "形容词"
+                    },
+                    {
+                        "examples": [
+                            "瞧他<self>美</self>得不知怎么好了。"
+                        ],
+                        "def": [
+                            "非常满意；得意"
+                        ],
+                        "cat": "形容词",
+                        "style": "口"
+                    },
+                    {
+                        "def": [
+                            "姓。"
+                        ],
+                        "cat": "名词"
+                    },
+                    {
+                        "examples": [
+                            "北<self>美</self>",
+                            "欧<self>美</self>。"
+                        ],
+                        "def": [
+                            "指美洲"
+                        ],
+                        "cat": "名词"
+                    },
+                    {
+                        "examples": [
+                            "<self>美</self>元",
+                            "<self>美</self>金",
+                            "<self>美</self>籍华人。"
+                        ],
+                        "def": [
+                            "指美国"
+                        ],
+                        "cat": "名词"
+                    }
+                ],
+                "word": "美"
+            }
+        ],
+        "source": {
+            "name": "《现代汉语规范词典》"
+        },
+        "word": "美"
+    }
+}

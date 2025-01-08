@@ -79,8 +79,8 @@ extension YoudaoService {
             .value
 
             // Decode the data
-            let response = try JSONDecoder().decode(YoudaoDictResponseV2.self, from: responseData)
-            result.updateV2(with: response)
+            let response = try JSONDecoder().decode(YoudaoDictResponseV4.self, from: responseData)
+            result.updateV4(with: response)
             return result
         } catch {
             throw QueryError(
