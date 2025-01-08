@@ -6917,30 +6917,30 @@
         }
       }
     },
-    "setting.service.unable_enable %@" : {
+    "setting.service.failed_to_enable_service %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to enable translation service %@"
+            "value" : "Failed to enable [%@] service"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nemôže aktivovať prekladovú službu %@"
+            "value" : "Nepodarilo sa povoliť službu [%@]"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启用%@翻译服务失败"
+            "value" : "启用【%@】服务失败"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "啟用%@翻譯服務失敗"
+            "value" : "無法啟用【%@】服務"
           }
         }
       }

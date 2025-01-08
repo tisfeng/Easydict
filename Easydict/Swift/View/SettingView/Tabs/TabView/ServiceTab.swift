@@ -303,14 +303,14 @@ private struct ServiceItemView: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 12)
         .alert(
-            "setting.service.unable_enable \(serviceItemViewModel.service.name())",
+            "setting.service.failed_to_enable_service \(serviceItemViewModel.service.name())",
             isPresented: $serviceItemViewModel.showErrorAlert
         ) {
             Button("ok") {
                 serviceItemViewModel.showErrorAlert = false
             }
         } message: {
-            Text(serviceItemViewModel.error?.localizedDescription ?? "error_unknown")
+            Text(serviceItemViewModel.error?.localizedDescription ?? "unknown_error")
         }
     }
 
