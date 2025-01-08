@@ -11,7 +11,7 @@ import Foundation
 
 extension YoudaoService {
     func queryYoudaoDict(text: String, from: Language, to: Language) async throws -> EZQueryResult {
-        try await jsonapi_sApiQuery(text: text, from: from, to: to)
+        try await jsonapisApiQuery(text: text, from: from, to: to)
     }
 
     func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
@@ -34,7 +34,7 @@ extension YoudaoService {
 
     // MARK: Updated new web api at 2025/01/03
 
-    func jsonapi_sApiQuery(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+    func jsonapisApiQuery(text: String, from: Language, to: Language) async throws -> EZQueryResult {
         guard !text.isEmpty else {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
