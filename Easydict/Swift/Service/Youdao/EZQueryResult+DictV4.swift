@@ -130,14 +130,7 @@ extension EZQueryResult {
                     }
                 }
             }
-
-            if !simpleWords.isEmpty {
-                wordResult.simpleWords = simpleWords
-            }
-
-            if !simpleWords.isEmpty {
-                wordResult.simpleWords = simpleWords
-            }
+            wordResult.simpleWords = simpleWords
         }
 
         // Handle web translations
