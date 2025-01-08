@@ -308,7 +308,6 @@ extension EZQueryResult {
                        let tran = tr.tran {
                         let simpleWord = EZTranslateSimpleWord()
                         simpleWord.word = text
-//                      simpleWord.part = l.pos
                         simpleWord.means = [tran]
                         simpleWord.showPartMeans = true
                         simpleWords.append(simpleWord)
