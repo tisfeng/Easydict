@@ -21,7 +21,7 @@ extern NSString *const EZTranslateErrorRequestErrorKey;
 
 typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeNone, // 预留参数，暂未使用
-    
+
     EZErrorTypeAPI, // 接口异常
     EZErrorTypeParam, // 参数异常
     EZErrorTypeTimeout, // 超时
@@ -44,18 +44,18 @@ FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *servi
 + (instancetype)errorWithType:(EZErrorType)type;
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description;
+                      message:(nullable NSString *)description;
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description
+                      message:(nullable NSString *)description
              errorDataMessage:(nullable NSString *)errorDataMessage;
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description
+                      message:(nullable NSString *)description
                       request:(id _Nullable)request;
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description
+                      message:(nullable NSString *)description
              errorDataMessage:(nullable NSString *)errorDataMessage
                       request:(nullable id)request;
 

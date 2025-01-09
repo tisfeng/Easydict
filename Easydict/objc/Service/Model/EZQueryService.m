@@ -220,7 +220,7 @@ userInfo:nil]
     // Some services need API Key, the built-in API key free quota may not be enough for all users to use, so it is provided to new users first.
     if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared hasFreeQuotaLeft:self]) {
         EZError *error = [EZError errorWithType:EZErrorTypeInsufficientQuota
-                                    description:nil
+                                    message:nil
                                errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
 
         self.result.promptURL = self.link;

@@ -96,7 +96,7 @@
     if (queryText.length == 0) {
         NSString *errorString = @"detectText cannot be nil";
         MMLogError(@"%@", errorString);
-        completion(self.queryModel, [EZError errorWithType:EZErrorTypeParam description:errorString]);
+        completion(self.queryModel, [EZError errorWithType:EZErrorTypeParam message:errorString]);
         return;
     }
 
@@ -167,7 +167,7 @@
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSImage *image = self.queryModel.OCRImage;
     if (!image) {
-        EZError *error = [EZError errorWithType:EZErrorTypeParam description: @"ocr image cannot be nil"];
+        EZError *error = [EZError errorWithType:EZErrorTypeParam message: @"ocr image cannot be nil"];
         completion(nil, error);
         return;
     }

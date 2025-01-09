@@ -160,7 +160,7 @@
                     message = [NSString stringWithFormat:@"%@, %@", errorCode, errorMsg];
                 }
                 NSError *error = [EZError errorWithType:EZErrorTypeAPI
-                                                         description:message
+                                                         message:message
                                                          request:task.currentRequest];
                 completion(self.result, error);
             }

@@ -23,7 +23,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     }
     
     NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
-    NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage description:showUnsupportLanguage request:nil];
+    NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage message:showUnsupportLanguage request:nil];
     return error;
 }
 
@@ -31,28 +31,28 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
 @implementation EZError
 
 + (instancetype)errorWithType:(EZErrorType)type {
-    return [self errorWithType:type description:nil];
+    return [self errorWithType:type message:nil];
 }
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description
+                  message:(nullable NSString *)description
                       request:(id _Nullable)request {
-    return [self errorWithType:type description:description errorDataMessage:nil request:request];
+    return [self errorWithType:type message:description errorDataMessage:nil request:request];
 }
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description {
-    return [self errorWithType:type description:description request:nil];
+                  message:(nullable NSString *)description {
+    return [self errorWithType:type message:description request:nil];
 }
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description
+                  message:(nullable NSString *)description
              errorDataMessage:(nullable NSString *)errorDataMessage {
-    return [self errorWithType:type description:description errorDataMessage:errorDataMessage request:nil];
+    return [self errorWithType:type message:description errorDataMessage:errorDataMessage request:nil];
 }
 
 + (instancetype)errorWithType:(EZErrorType)type
-                  description:(nullable NSString *)description
+                  message:(nullable NSString *)description
              errorDataMessage:(nullable NSString *)errorDataMessage
                       request:(nullable id)request {
     NSString *errorString = nil;
@@ -119,7 +119,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
 
 + (instancetype)timeoutError {
     NSString *description = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
-    return [self errorWithType:EZErrorTypeTimeout description:description];
+    return [self errorWithType:EZErrorTypeTimeout message:description];
 }
 
 
@@ -145,7 +145,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     }
     
     EZError *ezError = [self errorWithType:EZErrorTypeWarppedNSError 
-                               description:error.localizedDescription
+                               message:error.localizedDescription
                           errorDataMessage:errorDataMessage];
     return ezError;
 }

@@ -38,6 +38,7 @@ public class QueryError: NSObject, LocalizedError, @unchecked Sendable {
         case unsupported
         case missingSecretKey
         case noResult
+        case timeout
 
         // MARK: Internal
 
@@ -57,6 +58,8 @@ public class QueryError: NSObject, LocalizedError, @unchecked Sendable {
                 "missing_secret_key_error"
             case .noResult:
                 "no_result_error"
+            case .timeout:
+                "timeout_error"
             }
         }
 
