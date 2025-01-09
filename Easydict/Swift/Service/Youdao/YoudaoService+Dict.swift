@@ -11,7 +11,7 @@ import Foundation
 
 extension YoudaoService {
     func queryYoudaoDict(text: String, from: Language, to: Language) async throws -> EZQueryResult {
-        try await jsonapisApiQuery(text: text, from: from, to: to)
+        try await queryDictionaryV4(text: text, from: from, to: to)
     }
 
     func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
@@ -32,9 +32,9 @@ extension YoudaoService {
         return supportedCodes.contains(foreignLanguage ?? "") ? foreignLanguage : nil
     }
 
-    // MARK: Updated new web api at 2025/01/03
+    // MARK: - Youdao Web Dictionary API V4 (Updated at 2025/01/03)
 
-    func jsonapisApiQuery(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+    func queryDictionaryV4(text: String, from: Language, to: Language) async throws -> EZQueryResult {
         guard !text.isEmpty else {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
@@ -57,14 +57,15 @@ extension YoudaoService {
         let key = "Mk6hqtUp33DGGtoS63tTJbMUYjRrG1Lu"
         let sign = "web\(text)\(time)\(key)\(salt)".md5()
 
-        let parameters = [
-            "q": text,
-            "le": foreignLanguage,
-            "client": "web",
-            "t": time,
-            "sign": sign,
-            "keyfrom": "webdict",
-        ] as [String: Any]
+        let parameters =
+            [
+                "q": text,
+                "le": foreignLanguage,
+                "client": "web",
+                "t": time,
+                "sign": sign,
+                "keyfrom": "webdict",
+            ] as [String: Any]
 
         let url = "\(kYoudaoDictURL)/jsonapi_s?doctype=json&jsonversion=4"
 
@@ -90,10 +91,10 @@ extension YoudaoService {
         }
     }
 
-    // MARK: Keep this api temporarily
+    // MARK: - Legacy Youdao Web Dictionary API V2 (Deprecated)
 
     @available(*, deprecated)
-    func jsonApiQuery(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+    func queryDictionaryV2(text: String, from: Language, to: Language) async throws -> EZQueryResult {
         guard !text.isEmpty else {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
