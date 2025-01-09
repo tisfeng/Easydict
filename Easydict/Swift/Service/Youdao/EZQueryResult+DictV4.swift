@@ -1,25 +1,25 @@
 //
-//  EZQueryResult+YoudaoDict.swift
+//  EZQueryResult+DictV4.swift
 //  Easydict
 //
-//  Created by tisfeng on 2025/1/1.
+//  Created by tisfeng on 2025/1/8.
 //  Copyright © 2025 izual. All rights reserved.
 //
 
 import Foundation
 
-// MARK: - EZQueryResult + YoudaoDict
+// MARK: - EZQueryResult + DictV4
 
 // swiftlint:disable all
 extension EZQueryResult {
-    func update(with model: YoudaoDictResponse) {
+    func update(dictV4 model: YoudaoDictResponseV4) {
         raw = model
 
         let wordResult = EZTranslateWordResult()
         let language = queryModel.queryFromLanguage
 
         // Handle English to Chinese translation
-        if let ec = model.ec, let word = ec.word?.first {
+        if let ec = model.ec, let word = ec.word {
             // Parse phonetics
             var phonetics: [EZWordPhonetic] = []
             let audioURL = "https://dict.youdao.com/dictvoice?audio="
@@ -63,20 +63,15 @@ extension EZQueryResult {
             var parts: [EZTranslatePart] = []
             if let trs = word.trs {
                 for tr in trs {
-                    if let explanation = tr.tr?.first?.l?.i?.first {
-                        let part = EZTranslatePart()
-                        var means = explanation
+                    let part = EZTranslatePart()
+                    part.part = tr.pos ?? ""
 
-                        let delimiterSymbol = "."
-                        let array = explanation.components(separatedBy: delimiterSymbol)
-                        if array.count > 1 {
-                            let pos = array[0]
-                            if pos.count < 5 {
-                                part.part = "\(pos)\(delimiterSymbol)"
-                                means = array[1].trimmingCharacters(in: .whitespaces)
-                            }
-                        }
-                        part.means = [means]
+                    var means: [String] = .init()
+                    if let tran = tr.tran {
+                        means.append(tran)
+                    }
+                    part.means = means
+                    if !means.isEmpty {
                         parts.append(part)
                     }
                 }
@@ -106,7 +101,7 @@ extension EZQueryResult {
         }
 
         // Handle Chinese to English translation
-        if let ce = model.ce, let word = ce.word?.first {
+        if let ce = model.ce, let word = ce.word {
             // Parse phonetics
             var phonetics: [EZWordPhonetic] = []
             if let phone = word.phone {
@@ -126,41 +121,22 @@ extension EZQueryResult {
             var simpleWords: [EZTranslateSimpleWord] = []
             if let trs = word.trs {
                 for tr in trs {
-                    if let l = tr.tr?.first?.l {
-                        var words: [YoudaoDictResponse.TextWord] = []
-                        if let i = l.i {
-                            for wordDict in i {
-                                switch wordDict {
-                                case .string:
-                                    break
-                                case let .ii(wordDict):
-                                    words.append(wordDict)
-                                }
-                            }
-                        }
+                    let simpleWord = EZTranslateSimpleWord()
+                    simpleWord.word = tr.text ?? ""
 
-                        let texts = words.compactMap { $0.text }
-                        let text = texts.joined(separator: " ")
+                    var means: [String] = .init()
+                    if let tran = tr.tran {
+                        means.append(tran)
+                    }
+                    simpleWord.means = means
+                    simpleWord.showPartMeans = true
 
-                        let simpleWord = EZTranslateSimpleWord()
-                        simpleWord.word = text
-                        simpleWord.part = l.pos
-                        if let tran = l.tran {
-                            simpleWord.means = [tran]
-                        }
-                        simpleWord.showPartMeans = true
+                    if !simpleWord.word.isEmpty || !means.isEmpty {
                         simpleWords.append(simpleWord)
                     }
                 }
-
-                if !simpleWords.isEmpty {
-                    wordResult.simpleWords = simpleWords
-                }
             }
-
-            if !simpleWords.isEmpty {
-                wordResult.simpleWords = simpleWords
-            }
+            wordResult.simpleWords = simpleWords
         }
 
         // Handle web translations
@@ -168,8 +144,11 @@ extension EZQueryResult {
             var webExplanations: [EZTranslateSimpleWord] = []
             if let webTranslations = webTrans.webTranslation {
                 for webTranslation in webTranslations {
+                    guard let key = webTranslation.key else {
+                        continue
+                    }
                     let simpleWord = EZTranslateSimpleWord()
-                    simpleWord.word = webTranslation.key
+                    simpleWord.word = key
 
                     let explanations = webTranslation.trans?.compactMap { $0.value }
                     simpleWord.means = explanations

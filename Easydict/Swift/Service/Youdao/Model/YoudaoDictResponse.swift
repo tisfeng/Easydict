@@ -16,6 +16,7 @@ import Foundation
 //   let youdaoDictResponse = try? JSONDecoder().decode(YoudaoDictResponse.self, from: jsonData)
 
 // swiftlint:disable all
+@available(*, deprecated)
 struct YoudaoDictResponse: Codable {
     // MARK: - Baike
 
