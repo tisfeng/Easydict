@@ -64,7 +64,7 @@ class AliService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
+            let error = EZError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -142,7 +142,7 @@ class AliService: QueryService {
                 result,
                 EZError(
                     type: EZErrorType.missingAPIKey,
-                    description: String.localizedStringWithFormat(
+                    message: String.localizedStringWithFormat(
                         NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
                         name()
                     )
@@ -199,7 +199,7 @@ class AliService: QueryService {
         }.joined(separator: "&")
 
         if !paramsEncodeErrorString.isEmpty {
-            completion(result, EZError(type: .API, description: paramsEncodeErrorString))
+            completion(result, EZError(type: .API, message: paramsEncodeErrorString))
             return
         }
 
@@ -207,7 +207,7 @@ class AliService: QueryService {
               let canonicalizedQueryStringEncode = canonicalizedQueryString
               .addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
         else {
-            completion(result, EZError(type: .API, description: "encoding error"))
+            completion(result, EZError(type: .API, message: "encoding error"))
             return
         }
 
@@ -217,12 +217,12 @@ class AliService: QueryService {
             data: signData,
             encoding: .nonLossyASCII
         ) else {
-            completion(result, EZError(type: .API, description: "signature error"))
+            completion(result, EZError(type: .API, message: "signature error"))
             return
         }
 
         guard let signature = hmacSha1(key: secret + "&", params: utf8String) else {
-            completion(result, EZError(type: .API, description: "hmacSha1 error"))
+            completion(result, EZError(type: .API, message: "hmacSha1 error"))
             return
         }
 
@@ -242,7 +242,7 @@ class AliService: QueryService {
                     } else {
                         completion(
                             result,
-                            EZError(type: .API, description: value.code?.stringValue, errorDataMessage: value.message)
+                            EZError(type: .API, message: value.code?.stringValue, errorDataMessage: value.message)
                         )
                     }
                 case let .failure(error):
@@ -303,7 +303,7 @@ class AliService: QueryService {
                 } else {
                     let ezError = EZError(
                         type: .API,
-                        description: value.code?.stringValue,
+                        message: value.code?.stringValue,
                         errorDataMessage: value.message
                     )
                     completion(result, ezError)

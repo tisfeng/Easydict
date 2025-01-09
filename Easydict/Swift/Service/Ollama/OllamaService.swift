@@ -74,7 +74,7 @@ class OllamaService: BaseOpenAIService {
         // endpoint is http://localhost:11434/v1/chat/completions, we need url http://localhost:11434/api/tags
         let endpointURL = URL(string: endpoint)
         guard let endpointURL, let trueBaseURL = endpointURL.rootURL else {
-            throw EZError(type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid")
+            throw EZError(type: .param, message: "`\(serviceType().rawValue)` endpoint is invalid")
         }
 
         let modelsURL = trueBaseURL.appendingPathComponent("api/tags")

@@ -117,7 +117,7 @@ public class BaseOpenAIService: LLMStreamService {
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         let url = URL(string: endpoint)
         let invalidURLError = EZError(
-            type: .param, description: "`\(serviceType().rawValue)` endpoint is invalid"
+            type: .param, message: "`\(serviceType().rawValue)` endpoint is invalid"
         )
         guard let url, url.isValid else {
             return AsyncThrowingStream { continuation in

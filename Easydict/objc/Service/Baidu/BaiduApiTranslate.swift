@@ -34,7 +34,7 @@ class BaiduApiTranslate: NSObject {
                 result,
                 EZError(
                     type: EZErrorType.missingAPIKey,
-                    description: String.localizedStringWithFormat(
+                    message: String.localizedStringWithFormat(
                         NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
                         NSLocalizedString("baidu_translate", comment: "Baidu Translate")
                     )
@@ -46,7 +46,7 @@ class BaiduApiTranslate: NSObject {
         guard let utf8Data = text.data(using: .utf8),
               let utf8String = String(data: utf8Data, encoding: .utf8) else {
             logError("Failed to convert text to UTF8")
-            completion(result, EZError(type: EZErrorType.API, description: "Failed to convert text to UTF8"))
+            completion(result, EZError(type: EZErrorType.API, message: "Failed to convert text to UTF8"))
             return
         }
         let salt = UUID().uuidString

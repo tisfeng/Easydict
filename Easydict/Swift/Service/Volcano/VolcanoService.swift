@@ -61,7 +61,7 @@ public final class VolcanoService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
+            let error = EZError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -107,7 +107,7 @@ public final class VolcanoService: QueryService {
                 if let error = volcanoResponse.responseMetadata.error {
                     let errorMessage = error.message
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = EZError(type: .API, description: errorMessage)
+                    let ezError = EZError(type: .API, message: errorMessage)
                     completion(result, ezError)
                 } else if let translationList = volcanoResponse.translationList {
                     result.translatedResults = translationList.map { $0.translation }
@@ -115,7 +115,7 @@ public final class VolcanoService: QueryService {
                 } else {
                     let errorMessage = "Unexpected response format"
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = EZError(type: .none, description: errorMessage)
+                    let ezError = EZError(type: .none, message: errorMessage)
                     completion(result, ezError)
                 }
 
@@ -160,7 +160,7 @@ public final class VolcanoService: QueryService {
         if key.isEmpty {
             return EZError(
                 type: .missingAPIKey,
-                description: "Missing Volcano \(keyType). Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
+                message: "Missing Volcano \(keyType). Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
             )
         }
         return nil

@@ -276,7 +276,7 @@ public class LLMStreamService: QueryService {
         // Default is not implemented.
         let unimplementedError = EZError(
             type: .API,
-            description: "`\(serviceType().rawValue)` streamTranslate is not implemented"
+            message: "`\(serviceType().rawValue)` streamTranslate is not implemented"
         )
         return AsyncThrowingStream { continuation in
             continuation.finish(throwing: unimplementedError)
