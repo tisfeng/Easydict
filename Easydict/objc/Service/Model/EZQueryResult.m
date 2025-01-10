@@ -10,6 +10,7 @@
 #import "EZLocalStorage.h"
 #import "NSArray+EZChineseText.h"
 #import "NSString+EZUtils.h"
+#import "Easydict-Swift.h"
 
 /**
  Get the abbreviation of the part of speech.
@@ -223,10 +224,8 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (BOOL)isWarningErrorType {
-    EZErrorType errorType = self.error.type;
-    BOOL warningType = (errorType == EZErrorTypeUnsupportedLanguage)
-    || (errorType == EZErrorTypeNoResult)
-    || (errorType == EZErrorTypeInsufficientQuota);
+    EZQueryErrorType errorType = self.error.type;
+    BOOL warningType = (errorType == EZQueryErrorTypeUnsupportedLanguage) || (errorType == EZQueryErrorTypeNoResult);
     return warningType;
 }
 
@@ -243,7 +242,7 @@ NSString *getPartAbbreviation(NSString *part) {
 
 - (NSString *)errorMessage {
     NSString *errorMessage = self.error.localizedDescription;
-    if ([self.error isMemberOfClass:[EZError class]]) {
+    if ([self.error isMemberOfClass:[EZQueryError class]]) {
         NSString *errorDataMessage = self.error.errorDataMessage;
         if (errorDataMessage.length) {
             errorMessage = [NSString stringWithFormat:@"%@\n\n%@", errorMessage, errorDataMessage];

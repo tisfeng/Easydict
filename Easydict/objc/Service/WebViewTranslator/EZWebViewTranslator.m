@@ -9,7 +9,7 @@
 #import "EZWebViewTranslator.h"
 #import <WebKit/WebKit.h>
 #import "EZURLSchemeHandler.h"
-#import "EZError.h"
+#import "Easydict-Swift.h"
 
 // Query time interval
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
@@ -122,7 +122,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             [self resetWebView];
 
             NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:monitorURL] statusCode:200 HTTPVersion:@"HTTP/1.1" headerFields:@{@"Content-Type" : @"application/json"}];
-            completionHandler(response, nil, [EZError timeoutError]);
+            completionHandler(response, nil, [EZQueryError timeoutError]);
         }
     });
 }
@@ -231,7 +231,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 MMLogError(@"fail, max retry count: %ld", self.retryCount);
                 if (completion) {
-                    completion(nil, [EZError timeoutError]);
+                    completion(nil, [EZQueryError timeoutError]);
                 }
             }
         };

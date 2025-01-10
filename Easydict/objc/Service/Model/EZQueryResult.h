@@ -10,12 +10,11 @@
 #import "EZQueryModel.h"
 #import "EZEnumTypes.h"
 #import "EZLanguageModel.h"
-#import "EZError.h"
 #import "EZWebViewManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class EZQueryService;
+@class EZQueryService, EZQueryError;
 
 @interface EZWordPhonetic : NSObject
 
@@ -130,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (readonly, nonatomic, copy, nullable) NSString *translatedText;
 
-@property (nonatomic, strong, nullable) EZError *error;
+@property (nonatomic, strong, nullable) EZQueryError *error;
 
 @property (nonatomic, assign) BOOL manulShow;
 
@@ -140,7 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// If (self.wordResult && self.translatedText.length), YES
 @property (readonly, nonatomic, assign) BOOL hasTranslatedResult;
 
-/// EZErrorTypeUnsupportedLanguage || EZErrorTypeNoResultsFound
+/// EZQueryErrorTypeUnsupportedLanguage || EZQueryErrorTypeNoResultsFound
 @property (readonly, nonatomic, assign) BOOL isWarningErrorType;
 
 /// 查询文本的发音地址

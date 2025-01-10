@@ -6861,6 +6861,34 @@
         }
       }
     },
+    "setting.service.failed_to_enable_service %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to enable [%@] service"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodarilo sa povoliť službu [%@]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用【%@】服务失败"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法啟用【%@】服務"
+          }
+        }
+      }
+    },
     "setting.service.show_input_text_field" : {
       "localizations" : {
         "en" : {
@@ -6913,34 +6941,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示語言選擇欄"
-          }
-        }
-      }
-    },
-    "setting.service.failed_to_enable_service %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Failed to enable [%@] service"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nepodarilo sa povoliť službu [%@]"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用【%@】服务失败"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法啟用【%@】服務"
           }
         }
       }

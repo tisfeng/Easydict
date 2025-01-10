@@ -61,7 +61,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = true
 
                     updateResultText(resultText, queryType: queryType, error: nil) { result, error in
-                        result.error = EZError(nsError: error)
+                        result.error = QueryError(type: .api, message: error?.localizedDescription)
                         continuation.yield(result)
                     }
 
@@ -81,7 +81,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = true
 
                     updateResultText(text, queryType: queryType, error: err) { result, err in
-                        result.error = EZError(nsError: err)
+                        result.error = QueryError(type: .api, message: err?.localizedDescription)
                         continuation.yield(result)
                     }
                 }
@@ -116,8 +116,8 @@ public class BaseOpenAIService: LLMStreamService {
     )
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         let url = URL(string: endpoint)
-        let invalidURLError = EZError(
-            type: .param, message: "`\(serviceType().rawValue)` endpoint is invalid"
+        let invalidURLError = QueryError(
+            type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
         )
         guard let url, url.isValid else {
             return AsyncThrowingStream { continuation in

@@ -213,13 +213,15 @@ userInfo:nil]
     }
 
     if (unsupportedLanguage) {
-        completion(self.result, EZQueryUnsupportedLanguageError(self));
+//        completion(self.result, EZQueryUnsupportedLanguageError(self));
+        completion(self.result, [EZQueryError unsupportedLanguageErrorWithService:self]);
+
         return YES;
     }
 
     // Some services need API Key, the built-in API key free quota may not be enough for all users to use, so it is provided to new users first.
     if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared hasFreeQuotaLeft:self]) {
-        EZError *error = [EZError errorWithType:EZErrorTypeInsufficientQuota
+        EZQueryError *error = [EZQueryError errorWithType:EZQueryErrorTypeApi
                                     message:nil
                                errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
 

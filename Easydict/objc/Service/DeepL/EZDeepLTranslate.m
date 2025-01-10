@@ -7,7 +7,7 @@
 //
 
 #import "EZDeepLTranslate.h"
-#import "EZError.h"
+#import "Easydict-Swift.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
@@ -83,40 +83,40 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 // Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, @"auto",
-                                        EZLanguageSimplifiedChinese, @"zh-hans",
-                                        EZLanguageTraditionalChinese, @"zh-hant",
-                                        EZLanguageEnglish, @"en",
-                                        EZLanguageJapanese, @"ja",
-                                        EZLanguageKorean, @"ko",
-                                        EZLanguageFrench, @"fr",
-                                        EZLanguageSpanish, @"es",
-                                        EZLanguagePortuguese, @"pt-PT",
-                                        EZLanguageBrazilianPortuguese, @"pt-BR",
-                                        EZLanguageItalian, @"it",
-                                        EZLanguageGerman, @"de",
-                                        EZLanguageRussian, @"ru",
-                                        EZLanguageSwedish, @"sv",
-                                        EZLanguageRomanian, @"ro",
-                                        EZLanguageSlovak, @"sk",
-                                        EZLanguageDutch, @"nl",
-                                        EZLanguageHungarian, @"hu",
-                                        EZLanguageGreek, @"el",
-                                        EZLanguageDanish, @"da",
-                                        EZLanguageFinnish, @"fi",
-                                        EZLanguagePolish, @"pl",
-                                        EZLanguageCzech, @"cs",
-                                        EZLanguageTurkish, @"tr",
-                                        EZLanguageLithuanian, @"lt",
-                                        EZLanguageLatvian, @"lv",
-                                        EZLanguageUkrainian, @"uk",
-                                        EZLanguageBulgarian, @"bg",
-                                        EZLanguageIndonesian, @"id",
-                                        EZLanguageSlovenian, @"sl",
-                                        EZLanguageEstonian, @"et",
-                                        EZLanguageNorwegian, @"nb",
-                                        EZLanguageArabic, @"ar",
-                                        nil];
+                                                                        EZLanguageAuto, @"auto",
+                                                                        EZLanguageSimplifiedChinese, @"zh-hans",
+                                                                        EZLanguageTraditionalChinese, @"zh-hant",
+                                                                        EZLanguageEnglish, @"en",
+                                                                        EZLanguageJapanese, @"ja",
+                                                                        EZLanguageKorean, @"ko",
+                                                                        EZLanguageFrench, @"fr",
+                                                                        EZLanguageSpanish, @"es",
+                                                                        EZLanguagePortuguese, @"pt-PT",
+                                                                        EZLanguageBrazilianPortuguese, @"pt-BR",
+                                                                        EZLanguageItalian, @"it",
+                                                                        EZLanguageGerman, @"de",
+                                                                        EZLanguageRussian, @"ru",
+                                                                        EZLanguageSwedish, @"sv",
+                                                                        EZLanguageRomanian, @"ro",
+                                                                        EZLanguageSlovak, @"sk",
+                                                                        EZLanguageDutch, @"nl",
+                                                                        EZLanguageHungarian, @"hu",
+                                                                        EZLanguageGreek, @"el",
+                                                                        EZLanguageDanish, @"da",
+                                                                        EZLanguageFinnish, @"fi",
+                                                                        EZLanguagePolish, @"pl",
+                                                                        EZLanguageCzech, @"cs",
+                                                                        EZLanguageTurkish, @"tr",
+                                                                        EZLanguageLithuanian, @"lt",
+                                                                        EZLanguageLatvian, @"lv",
+                                                                        EZLanguageUkrainian, @"uk",
+                                                                        EZLanguageBulgarian, @"bg",
+                                                                        EZLanguageIndonesian, @"id",
+                                                                        EZLanguageSlovenian, @"sl",
+                                                                        EZLanguageEstonian, @"et",
+                                                                        EZLanguageNorwegian, @"nb",
+                                                                        EZLanguageArabic, @"ar",
+                                                                        nil];
     return orderedDict;
 }
 
@@ -147,9 +147,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *targetLangCode = [regionalVariant componentsSeparatedByString:@"-"].firstObject; // pt-PT, pt-BR
 
     NSString *url = @"https://"
-    @"www2."
-    @"deepl.com"
-    @"/jsonrpc";
+                    @"www2."
+                    @"deepl.com"
+                    @"/jsonrpc";
 
     NSInteger ID = [self getRandomNumber];
     NSInteger iCount = [self getICount:text];
@@ -160,7 +160,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         @"splitting" : @"newlines",
         @"lang" : @{@"source_lang_user_selected" : sourceLangCode, @"target_lang" : targetLangCode},
         @"timestamp" : @(ts),
-    }.mutableCopy;
+    }
+                                      .mutableCopy;
 
     if (![regionalVariant isEqualToString:targetLangCode]) {
         NSDictionary *commonJobParams = @{
@@ -208,7 +209,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
         if (error) {
             MMLogError(@"deepLWebTranslate error: %@", error);
-            EZError *ezError = [EZError errorWithNSError:error];
+            EZQueryError *ezError = [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:[error localizedDescription] errorDataMessage:nil];
 
             BOOL useOfficialAPI = (self.authKey.length > 0) && (self.apiType == EZDeepLTranslationAPIWebFirst);
             if (useOfficialAPI) {
@@ -336,7 +337,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             return;
         }
 
-        EZError *ezError = [EZError errorWithNSError:error];
+        EZQueryError *ezError = [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:[error localizedDescription] errorDataMessage:nil];
 
         completion(self.result, ezError);
     }];

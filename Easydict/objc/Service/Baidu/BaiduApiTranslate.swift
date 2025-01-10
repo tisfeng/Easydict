@@ -28,25 +28,24 @@ class BaiduApiTranslate: NSObject {
         Defaults[.baiduServiceApiTypeKey] == ServiceAPIType.secretKey
     }
 
-    func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult?, Error?) -> ()) {
+    func translate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZQueryResult?, Error?) -> ()
+    ) {
         if appId.isEmpty || secretKey.isEmpty {
-            completion(
-                result,
-                EZError(
-                    type: EZErrorType.missingAPIKey,
-                    message: String.localizedStringWithFormat(
-                        NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
-                        NSLocalizedString("baidu_translate", comment: "Baidu Translate")
-                    )
-                )
-            )
+            let message =
+                String(localized: "service.configuration.api_missing.tips \(String(localized: "baidu_translate"))")
+            completion(result, QueryError(type: .missingSecretKey, message: message))
             return
         }
 
         guard let utf8Data = text.data(using: .utf8),
-              let utf8String = String(data: utf8Data, encoding: .utf8) else {
+              let utf8String = String(data: utf8Data, encoding: .utf8)
+        else {
             logError("Failed to convert text to UTF8")
-            completion(result, EZError(type: EZErrorType.API, message: "Failed to convert text to UTF8"))
+            completion(result, QueryError(type: .api, message: "Failed to convert text to UTF8"))
             return
         }
         let salt = UUID().uuidString
@@ -84,11 +83,14 @@ class BaiduApiTranslate: NSObject {
                 completion(result, nil)
             case let .failure(error):
                 logError("Baidu official API error \(error)")
-                let ezError = EZError(nsError: error)
+                let ezError = QueryError(type: .api, message: error.localizedDescription)
                 if let data = response.data {
                     do {
-                        let errorResponse = try JSONDecoder().decode(BaiduApiErrorResponse.self, from: data)
-                        ezError?.errorDataMessage = "code:\(errorResponse.errorCode), msg:\(errorResponse.errorMsg)"
+                        let errorResponse = try JSONDecoder().decode(
+                            BaiduApiErrorResponse.self, from: data
+                        )
+                        ezError.errorDataMessage =
+                            "code:\(errorResponse.errorCode), msg:\(errorResponse.errorMsg)"
                     } catch {
                         logError("Failed to decode error response: \(error)")
                     }
@@ -96,6 +98,7 @@ class BaiduApiTranslate: NSObject {
                 completion(result, ezError)
             }
         }
+
         queryModel.setStop({
             request.cancel()
         }, serviceType: ServiceType.baidu.rawValue)

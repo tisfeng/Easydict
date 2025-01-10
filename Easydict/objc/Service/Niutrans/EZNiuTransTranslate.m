@@ -159,9 +159,8 @@
                 if (errorMsg) {
                     message = [NSString stringWithFormat:@"%@, %@", errorCode, errorMsg];
                 }
-                NSError *error = [EZError errorWithType:EZErrorTypeAPI
-                                                         message:message
-                                                         request:task.currentRequest];
+                NSError *error = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                         message:message];
                 completion(self.result, error);
             }
         }

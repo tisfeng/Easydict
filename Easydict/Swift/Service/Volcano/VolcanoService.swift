@@ -25,11 +25,15 @@ public final class VolcanoService: QueryService {
     override public func wordLink(_ queryModel: EZQueryModel) -> String? {
         guard let from = languageCode(forLanguage: queryModel.queryFromLanguage),
               let to = languageCode(forLanguage: queryModel.queryTargetLanguage),
-              let queryText = queryModel.queryText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+              let queryText = queryModel.queryText.addingPercentEncoding(
+                  withAllowedCharacters: .urlQueryAllowed
+              )
+        else {
             return nil
         }
 
-        return "https://translate.volcengine.com/?source_language=\(from)&target_language=\(to)&text=\(queryText)"
+        return
+            "https://translate.volcengine.com/?source_language=\(from)&target_language=\(to)&text=\(queryText)"
     }
 
     override public func name() -> String {
@@ -61,7 +65,7 @@ public final class VolcanoService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
+            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -107,7 +111,7 @@ public final class VolcanoService: QueryService {
                 if let error = volcanoResponse.responseMetadata.error {
                     let errorMessage = error.message
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = EZError(type: .API, message: errorMessage)
+                    let ezError = QueryError(type: .api, message: errorMessage)
                     completion(result, ezError)
                 } else if let translationList = volcanoResponse.translationList {
                     result.translatedResults = translationList.map { $0.translation }
@@ -115,19 +119,23 @@ public final class VolcanoService: QueryService {
                 } else {
                     let errorMessage = "Unexpected response format"
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = EZError(type: .none, message: errorMessage)
+                    let ezError = QueryError(type: .unknown, message: errorMessage)
                     completion(result, ezError)
                 }
 
             case let .failure(error):
                 logError("Volcano lookup error: \(error)")
-                let ezError = EZError(nsError: error)
+                // Convert NSError to QueryError with proper error message
+                let errorMessage = error.localizedDescription
+                let ezError = QueryError(type: .api, message: errorMessage)
 
                 if let data = response.data {
                     do {
-                        let errorResponse = try JSONDecoder().decode(VolcanoResponse.self, from: data)
+                        let errorResponse = try JSONDecoder().decode(
+                            VolcanoResponse.self, from: data
+                        )
                         if let volcanoError = errorResponse.responseMetadata.error {
-                            ezError?.errorDataMessage = volcanoError.message
+                            ezError.errorDataMessage = volcanoError.message
                         }
                     } catch {
                         logError("Failed to decode error response: \(error)")
@@ -153,14 +161,15 @@ public final class VolcanoService: QueryService {
         Defaults[.volcanoSecretAccessKey]
     }
 
-    /// Validates the provided API key, returns an EZError of type `.missingAPIKey`
+    /// Validates the provided API key, returns a QueryError of type `.missingAPIKey`
     /// with a description indicating a missing Volcano `keyType` and instructions
     /// to get one if `key` is empty,  returns nil otherwise
-    private func validateAPIKey(_ key: String, keyType: String) -> EZError? {
+    private func validateAPIKey(_ key: String, keyType: String) -> QueryError? {
         if key.isEmpty {
-            return EZError(
-                type: .missingAPIKey,
-                message: "Missing Volcano \(keyType). Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
+            return QueryError(
+                type: .missingSecretKey,
+                message:
+                "Missing Volcano \(keyType). Volcano Service requires users' own API Key. Get it at https://www.volcengine.com"
             )
         }
         return nil

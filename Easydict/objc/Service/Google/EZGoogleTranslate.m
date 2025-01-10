@@ -209,7 +209,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
        fromLanguage:(EZLanguage)from
          completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(nil, [EZError errorWithType:EZErrorTypeParam message:@"获取音频的文本为空" request:nil]);
+        completion(nil, [EZQueryError errorWithType:EZQueryErrorTypeParameter message:@"获取音频的文本为空"]);
         return;
     }
     
@@ -266,7 +266,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
 - (void)webApptranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(self.result, [EZError errorWithType:EZErrorTypeParam message:@"翻译的文本为空" request:nil]);
+        completion(self.result, [EZQueryError errorWithType:EZQueryErrorTypeParameter message:@"翻译的文本为空"]);
         return;
     }
     
@@ -430,24 +430,22 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         @"tk" : sign,
         @"q" : text,
     };
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
-    
+
     NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
         
         if (responseObject) {
-            completion(responseObject, sign, reqDict, nil);
+            completion(responseObject, sign, nil, nil);
         } else {
-            completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeAPI message: nil request:reqDict]);
+            completion(nil, nil, nil, [EZQueryError errorWithType:EZQueryErrorTypeApi message: nil]);
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
         }
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeAPI message: nil request:reqDict]);
+        completion(nil, nil, nil, [EZQueryError errorWithType:EZQueryErrorTypeApi message: nil]);
     }];
     
     [self.queryModel setStopBlock:^{
@@ -457,8 +455,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
 - (void)sendGetWebAppTKKRequestWithCompletion:(void (^)(NSString *_Nullable TKK, NSError *_Nullable error))completion {
     NSString *url = kGoogleTranslateURL;
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
-    
+
     [self.htmlSession GET:url
                parameters:nil
                  progress:nil
@@ -497,13 +494,10 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 return;
             }
             
-            [reqDict setObject:responseObject ?: [NSNull null]
-                        forKey:EZTranslateErrorRequestResponseKey];
-            completion(nil, [EZError errorWithType:EZErrorTypeAPI message: @"谷歌翻译获取 tkk 失败" request:reqDict]);
+            completion(nil, [EZQueryError errorWithType:EZQueryErrorTypeApi message: @"谷歌翻译获取 tkk 失败"]);
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, [EZError errorWithType:EZErrorTypeAPI message: @"谷歌翻译获取 tkk 失败" request:reqDict]);
+        completion(nil, [EZQueryError errorWithType:EZQueryErrorTypeApi message: @"谷歌翻译获取 tkk 失败"]);
     }];
 }
 
@@ -558,12 +552,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         @"ie" : @"UTF-8",
         @"client" : @"gtx",
     };
-    
-    NSMutableDictionary *reqDict = @{
-        EZTranslateErrorRequestURLKey : url,
-        EZTranslateErrorRequestParamKey : params,
-    }.mutableCopy;
-    
+
     NSURLSessionTask *task = [self.jsonSession GET:url
                                         parameters:params
                                           progress:nil
@@ -573,16 +562,15 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         }
         
         if (responseObject) {
-            completion(responseObject, sign, reqDict, nil);
+            completion(responseObject, sign, nil, nil);
         } else {
-            completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeAPI message: nil request:reqDict]);
+            completion(nil, nil, nil, [EZQueryError errorWithType:EZQueryErrorTypeApi message: nil]);
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
         }
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, [EZError errorWithType:EZErrorTypeAPI message: nil request:reqDict]);
+        completion(nil, nil, nil, [EZQueryError errorWithType:EZQueryErrorTypeApi message: nil]);
     }];
     
     [self.queryModel setStopBlock:^{
@@ -597,7 +585,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     EZQueryResult *result = self.result;
     
     if (!text.length) {
-        completion(result, [EZError errorWithType:EZErrorTypeParam message:@"翻译的文本为空" request:nil]);
+        completion(result, [EZQueryError errorWithType:EZQueryErrorTypeParameter message:@"翻译的文本为空"]);
         return;
     }
     
@@ -669,15 +657,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 message = @"谷歌翻译接口数据解析异常";
             }
         }
-        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(result, [EZError errorWithType:EZErrorTypeAPI message: message request:reqDict]);
+        completion(result, [EZQueryError errorWithType:EZQueryErrorTypeApi message: message]);
     }];
 }
 
 - (void)gtxDetectText:(NSString *)text
            completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeParam message:@"识别语言的文本为空" request:nil]);
+        completion(EZLanguageAuto, [EZQueryError errorWithType:EZQueryErrorTypeParameter message:@"识别语言的文本为空"]);
         return;
     }
     
@@ -714,15 +701,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         } @catch (NSException *exception) {
             MMLogError(@"谷歌翻译接口语言解析失败 %@", exception);
         }
-        [reqDict setObject:responseObject forKey:EZTranslateErrorRequestResponseKey];
-        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeAPI message: message ?: @"识别语言失败" request:reqDict]);
+        completion(EZLanguageAuto, [EZQueryError errorWithType:EZQueryErrorTypeApi message: message ?: @"识别语言失败"]);
     }];
 }
 
 - (void)webAppDetectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
         completion(EZLanguageAuto,
-                   [EZError errorWithType:EZErrorTypeParam message:@"识别语言的文本为空" request:nil]);
+                   [EZQueryError errorWithType:EZQueryErrorTypeParameter message:@"识别语言的文本为空"]);
         return;
     }
     
@@ -784,8 +770,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         } @catch (NSException *exception) {
             MMLogError(@"谷歌翻译接口语言解析失败 %@", exception);
         }
-        [reqDict setObject:responseObject forKey:EZTranslateErrorRequestResponseKey];
-        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeAPI message: message ?: @"识别语言失败" request:reqDict]);
+        completion(EZLanguageAuto, [EZQueryError errorWithType:EZQueryErrorTypeApi message: message ?: @"识别语言失败"]);
     }];
 }
 

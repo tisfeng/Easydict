@@ -46,12 +46,7 @@ class AliService: QueryService {
         return true
     }
 
-    // MARK: Internal
-
-    private(set) var tokenResponse: AliTokenResponse?
-    private(set) var canWebRetry = true
-
-    override func translate(
+    override public func translate(
         _ text: String,
         from: Language,
         to: Language,
@@ -64,7 +59,7 @@ class AliService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
+            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -81,24 +76,30 @@ class AliService: QueryService {
             )
         } else { // use web api
             if hasToken.has {
-                requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
+                requestByWeb(
+                    transType: transType, text: text, from: from, to: to, completion: completion
+                )
                 return
             }
 
             // get web request token
-            let request = AF.request("https://translate.alibaba.com/api/translate/csrftoken", method: .get)
-                .validate()
-                .responseDecodable(of: AliTokenResponse.self) { [weak self] response in
-                    guard let self else { return }
-                    switch response.result {
-                    case let .success(value):
-                        tokenResponse = value
-                    case let .failure(error):
-                        logError("ali translate get token error: \(error)")
-                    }
-
-                    requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
+            let request = AF.request(
+                "https://translate.alibaba.com/api/translate/csrftoken", method: .get
+            )
+            .validate()
+            .responseDecodable(of: AliTokenResponse.self) { [weak self] response in
+                guard let self else { return }
+                switch response.result {
+                case let .success(value):
+                    tokenResponse = value
+                case let .failure(error):
+                    logError("ali translate get token error: \(error)")
                 }
+
+                requestByWeb(
+                    transType: transType, text: text, from: from, to: to, completion: completion
+                )
+            }
 
             queryModel.setStop({
                 request.cancel()
@@ -106,12 +107,30 @@ class AliService: QueryService {
         }
     }
 
+    // MARK: Internal
+
+    private(set) var tokenResponse: AliTokenResponse?
+    private(set) var canWebRetry = true
+
+    func hmacSha1(key: String, params: String) -> String? {
+        guard let secret = key.data(using: .utf8),
+              let what = params.data(using: .utf8)
+        else {
+            return nil
+        }
+        var hmac = HMAC<Insecure.SHA1>(key: SymmetricKey(data: secret))
+        hmac.update(data: what)
+        let mac = Data(hmac.finalize())
+        return mac.base64EncodedString()
+    }
+
     // MARK: Private
 
     private let dateFormatter = ISO8601DateFormatter()
 
     private var hasToken: (has: Bool, token: String, parameterName: String) {
-        if let token = tokenResponse?.token, let parameterName = tokenResponse?.parameterName, !token.isEmpty,
+        if let token = tokenResponse?.token, let parameterName = tokenResponse?.parameterName,
+           !token.isEmpty,
            !parameterName.isEmpty {
             (true, token, parameterName)
         } else {
@@ -138,29 +157,9 @@ class AliService: QueryService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         if id.isEmpty || secret.isEmpty {
-            completion(
-                result,
-                EZError(
-                    type: EZErrorType.missingAPIKey,
-                    message: String.localizedStringWithFormat(
-                        NSLocalizedString("service.configuration.api_missing.tips %@", comment: "API key missing"),
-                        name()
-                    )
-                )
-            )
+            let message = String(localized: "service.configuration.api_missing.tips \(name())")
+            completion(result, QueryError(type: .missingSecretKey, message: message))
             return
-        }
-
-        func hmacSha1(key: String, params: String) -> String? {
-            guard let secret = key.data(using: .utf8),
-                  let what = params.data(using: .utf8)
-            else {
-                return nil
-            }
-            var hmac = HMAC<Insecure.SHA1>(key: SymmetricKey(data: secret))
-            hmac.update(data: what)
-            let mac = Data(hmac.finalize())
-            return mac.base64EncodedString()
         }
 
         /// https://help.aliyun.com/zh/sdk/product-overview/rpc-mechanism?spm=a2c4g.11186623.0.i20#sectiondiv-6jf-89b-wfa
@@ -183,14 +182,20 @@ class AliService: QueryService {
         ]
 
         let allowedCharacterSet =
-            CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~")
+            CharacterSet(
+                charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~"
+            )
 
         let sortParams = param.keys.sorted()
 
         var paramsEncodeErrorString = ""
         let canonicalizedQueryString = sortParams.map { key in
-            guard let keyEncode = key.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet),
-                  let valueEncode = param[key]?.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
+            guard let keyEncode = key.addingPercentEncoding(
+                withAllowedCharacters: allowedCharacterSet
+            ),
+                let valueEncode = param[key]?.addingPercentEncoding(
+                    withAllowedCharacters: allowedCharacterSet
+                )
             else {
                 paramsEncodeErrorString = paramsEncodeErrorString + "\(key) param encoding error \n"
                 return ""
@@ -199,30 +204,33 @@ class AliService: QueryService {
         }.joined(separator: "&")
 
         if !paramsEncodeErrorString.isEmpty {
-            completion(result, EZError(type: .API, message: paramsEncodeErrorString))
+            completion(result, QueryError(type: .api, message: paramsEncodeErrorString))
             return
         }
 
         guard let slashEncode = "/".addingPercentEncoding(withAllowedCharacters: allowedCharacterSet),
-              let canonicalizedQueryStringEncode = canonicalizedQueryString
-              .addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
+              let canonicalizedQueryStringEncode =
+              canonicalizedQueryString
+                  .addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
         else {
-            completion(result, EZError(type: .API, message: "encoding error"))
+            completion(result, QueryError(type: .api, message: "encoding error"))
             return
         }
 
         let stringToSign = "POST" + "&" + slashEncode + "&" + canonicalizedQueryStringEncode
 
-        guard let signData = stringToSign.data(using: .utf8), let utf8String = String(
-            data: signData,
-            encoding: .nonLossyASCII
-        ) else {
-            completion(result, EZError(type: .API, message: "signature error"))
+        guard let signData = stringToSign.data(using: .utf8),
+              let utf8String = String(
+                  data: signData,
+                  encoding: .nonLossyASCII
+              )
+        else {
+            completion(result, QueryError(type: .api, message: "signature error"))
             return
         }
 
         guard let signature = hmacSha1(key: secret + "&", params: utf8String) else {
-            completion(result, EZError(type: .API, message: "hmacSha1 error"))
+            completion(result, QueryError(type: .api, message: "hmacSha1 error"))
             return
         }
 
@@ -242,7 +250,10 @@ class AliService: QueryService {
                     } else {
                         completion(
                             result,
-                            EZError(type: .API, message: value.code?.stringValue, errorDataMessage: value.message)
+                            QueryError(
+                                type: .api, message: value.code?.stringValue,
+                                errorDataMessage: value.message
+                            )
                         )
                     }
                 case let .failure(error):
@@ -251,11 +262,16 @@ class AliService: QueryService {
                         let res = try? JSONDecoder().decode(AliAPIResponse.self, from: data)
                         msg = res?.message
                     } else {
-                        msg = error.errorDescription
+                        msg = error.localizedDescription
                     }
 
                     logError("Ali translate error: \(msg ?? "")")
-                    completion(result, EZError(nsError: error, errorDataMessage: msg))
+                    completion(
+                        result,
+                        QueryError(
+                            type: .api, message: error.localizedDescription, errorDataMessage: msg
+                        )
+                    )
                 }
             }
 
@@ -301,8 +317,8 @@ class AliService: QueryService {
                     completion(result, nil)
                     logInfo("ali web translate success")
                 } else {
-                    let ezError = EZError(
-                        type: .API,
+                    let ezError = QueryError(
+                        type: .api,
                         message: value.code?.stringValue,
                         errorDataMessage: value.message
                     )
@@ -319,7 +335,10 @@ class AliService: QueryService {
                         // Request token again.
                         translate(text, from: from, to: to, completion: completion)
                     } else {
-                        requestByWeb(transType: transType, text: text, from: from, to: to, completion: completion)
+                        requestByWeb(
+                            transType: transType, text: text, from: from, to: to,
+                            completion: completion
+                        )
                     }
 
                 } else {
@@ -328,11 +347,16 @@ class AliService: QueryService {
                         let res = try? JSONDecoder().decode(AliWebResponse.self, from: data)
                         msg = res?.message
                     } else {
-                        msg = error.errorDescription
+                        msg = error.localizedDescription
                     }
 
                     logError("ali web translate error: \(msg ?? "")")
-                    completion(result, EZError(nsError: error, errorDataMessage: msg))
+                    completion(
+                        result,
+                        QueryError(
+                            type: .api, message: error.localizedDescription, errorDataMessage: msg
+                        )
+                    )
                 }
             }
         }

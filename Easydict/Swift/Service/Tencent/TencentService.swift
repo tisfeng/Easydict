@@ -50,7 +50,7 @@ public final class TencentService: QueryService {
         500 * 10000
     }
 
-    public override func translate(
+    override public func translate(
         _ text: String,
         from: Language,
         to: Language,
@@ -60,7 +60,7 @@ public final class TencentService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
+            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -105,12 +105,14 @@ public final class TencentService: QueryService {
                 completion(result, nil)
             case let .failure(error):
                 logError("Tencent lookup error \(error)")
-                let ezError = EZError(nsError: error)
+                let ezError = QueryError(type: .api, message: error.localizedDescription)
 
                 if let data = response.data {
                     do {
-                        let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
-                        ezError?.errorDataMessage = errorResponse.response.error.message
+                        let errorResponse = try JSONDecoder().decode(
+                            TencentErrorResponse.self, from: data
+                        )
+                        ezError.errorDataMessage = errorResponse.response.error.message
                     } catch {
                         logError("Failed to decode error response: \(error)")
                     }
@@ -118,6 +120,7 @@ public final class TencentService: QueryService {
                 completion(result, ezError)
             }
         }
+
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)

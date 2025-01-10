@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryResult.h"
-#import "EZError.h"
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
 #import "EZLayoutManager.h"

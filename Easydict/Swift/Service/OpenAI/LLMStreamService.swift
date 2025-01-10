@@ -274,8 +274,8 @@ public class LLMStreamService: QueryService {
     )
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         // Default is not implemented.
-        let unimplementedError = EZError(
-            type: .API,
+        let unimplementedError = QueryError(
+            type: .api,
             message: "`\(serviceType().rawValue)` streamTranslate is not implemented"
         )
         return AsyncThrowingStream { continuation in

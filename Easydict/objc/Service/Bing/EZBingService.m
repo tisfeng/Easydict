@@ -16,7 +16,7 @@
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
 @property (nonatomic, assign) BOOL canRetry;
-@property (nonatomic, assign) BOOL isDictQueryResult ;
+@property (nonatomic, assign) BOOL isDictQueryResult;
 @end
 
 @implementation EZBingService
@@ -45,57 +45,57 @@
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, @"auto-detect",
-                                        EZLanguageSimplifiedChinese, @"zh-Hans",
-                                        EZLanguageTraditionalChinese, @"zh-Hant",
-                                        EZLanguageEnglish, @"en",
-                                        EZLanguageJapanese, @"ja",
-                                        EZLanguageKorean, @"ko",
-                                        EZLanguageFrench, @"fr",
-                                        EZLanguageSpanish, @"es",
-                                        EZLanguagePortuguese, @"pt-PT",
-                                        EZLanguageBrazilianPortuguese, @"pt",
-                                        EZLanguageItalian, @"it",
-                                        EZLanguageGerman, @"de",
-                                        EZLanguageRussian, @"ru",
-                                        EZLanguageArabic, @"ar",
-                                        EZLanguageSwedish, @"sv",
-                                        EZLanguageRomanian, @"ro",
-                                        EZLanguageThai, @"th",
-                                        EZLanguageSlovak, @"sk",
-                                        EZLanguageDutch, @"nl",
-                                        EZLanguageHungarian, @"hu",
-                                        EZLanguageGreek, @"el",
-                                        EZLanguageDanish, @"da",
-                                        EZLanguageFinnish, @"fi",
-                                        EZLanguagePolish, @"pl",
-                                        EZLanguageCzech, @"cs",
-                                        EZLanguageTurkish, @"tr",
-                                        EZLanguageLithuanian, @"lt",
-                                        EZLanguageLatvian, @"lv",
-                                        EZLanguageUkrainian, @"uk",
-                                        EZLanguageBulgarian, @"bg",
-                                        EZLanguageIndonesian, @"id",
-                                        EZLanguageMalay, @"ms",
-                                        EZLanguageSlovenian, @"sl",
-                                        EZLanguageEstonian, @"et",
-                                        EZLanguageVietnamese, @"vi",
-                                        EZLanguagePersian, @"fa",
-                                        EZLanguageHindi, @"hi",
-                                        EZLanguageTelugu, @"te",
-                                        EZLanguageTamil, @"ta",
-                                        EZLanguageUrdu, @"ur",
-                                        EZLanguageFilipino, @"fil",
-                                        EZLanguageKhmer, @"km",
-                                        EZLanguageLao, @"lo",
-                                        EZLanguageBengali, @"bn",
-                                        EZLanguageBurmese, @"my",
-                                        EZLanguageNorwegian, @"nb",
-                                        EZLanguageSerbian, @"sr-Cyrl",
-                                        EZLanguageCroatian, @"hr",
-                                        EZLanguageMongolian, @"mn-Mong",
-                                        EZLanguageHebrew, @"he",
-                                        nil];
+                                                                        EZLanguageAuto, @"auto-detect",
+                                                                        EZLanguageSimplifiedChinese, @"zh-Hans",
+                                                                        EZLanguageTraditionalChinese, @"zh-Hant",
+                                                                        EZLanguageEnglish, @"en",
+                                                                        EZLanguageJapanese, @"ja",
+                                                                        EZLanguageKorean, @"ko",
+                                                                        EZLanguageFrench, @"fr",
+                                                                        EZLanguageSpanish, @"es",
+                                                                        EZLanguagePortuguese, @"pt-PT",
+                                                                        EZLanguageBrazilianPortuguese, @"pt",
+                                                                        EZLanguageItalian, @"it",
+                                                                        EZLanguageGerman, @"de",
+                                                                        EZLanguageRussian, @"ru",
+                                                                        EZLanguageArabic, @"ar",
+                                                                        EZLanguageSwedish, @"sv",
+                                                                        EZLanguageRomanian, @"ro",
+                                                                        EZLanguageThai, @"th",
+                                                                        EZLanguageSlovak, @"sk",
+                                                                        EZLanguageDutch, @"nl",
+                                                                        EZLanguageHungarian, @"hu",
+                                                                        EZLanguageGreek, @"el",
+                                                                        EZLanguageDanish, @"da",
+                                                                        EZLanguageFinnish, @"fi",
+                                                                        EZLanguagePolish, @"pl",
+                                                                        EZLanguageCzech, @"cs",
+                                                                        EZLanguageTurkish, @"tr",
+                                                                        EZLanguageLithuanian, @"lt",
+                                                                        EZLanguageLatvian, @"lv",
+                                                                        EZLanguageUkrainian, @"uk",
+                                                                        EZLanguageBulgarian, @"bg",
+                                                                        EZLanguageIndonesian, @"id",
+                                                                        EZLanguageMalay, @"ms",
+                                                                        EZLanguageSlovenian, @"sl",
+                                                                        EZLanguageEstonian, @"et",
+                                                                        EZLanguageVietnamese, @"vi",
+                                                                        EZLanguagePersian, @"fa",
+                                                                        EZLanguageHindi, @"hi",
+                                                                        EZLanguageTelugu, @"te",
+                                                                        EZLanguageTamil, @"ta",
+                                                                        EZLanguageUrdu, @"ur",
+                                                                        EZLanguageFilipino, @"fil",
+                                                                        EZLanguageKhmer, @"km",
+                                                                        EZLanguageLao, @"lo",
+                                                                        EZLanguageBengali, @"bn",
+                                                                        EZLanguageBurmese, @"my",
+                                                                        EZLanguageNorwegian, @"nb",
+                                                                        EZLanguageSerbian, @"sr-Cyrl",
+                                                                        EZLanguageCroatian, @"hr",
+                                                                        EZLanguageMongolian, @"mn-Mong",
+                                                                        EZLanguageHebrew, @"he",
+                                                                        nil];
     return orderedDict;
 }
 
@@ -113,8 +113,8 @@
 - (void)bingTranslate:(NSString *)text useDictQuery:(BOOL)useDictQuery from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     self.isDictQueryResult = NO;
     if (useDictQuery) {
-        [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
-            [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError * _Nullable dictError) {
+        [self.request translateTextFromDict:text completion:^(NSDictionary *_Nullable json, NSError *_Nullable error) {
+            [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError *_Nullable dictError) {
                 if (error || dictError) {
                     [self bingTranslate:text useDictQuery:NO from:from to:to completion:completion];
                 } else {
@@ -125,63 +125,63 @@
         }];
         return;
     }
-    
+
     text = [self maxTextLength:text fromLanguage:from];
     NSString *fromCode = [self languageCodeForLanguage:from];
     NSString *toCode = [self languageCodeForLanguage:to];
     mm_weakify(self)
-    [self.request translateText:text from:fromCode to:toCode completionHandler:^(NSData *_Nullable translateData, NSData *_Nullable lookupData, NSError *_Nullable translateError, NSError *_Nullable lookupError) {
-        mm_strongify(self)
-        @try {
-            if (translateError) {
-                self.result.error = [EZError errorWithNSError:translateError];
-                MMLogError(@"bing translate error %@", translateError);
-            } else {
-                BOOL needRetry;
-                NSError *error = [self processTranslateResult:translateData text:text from:from to:to needRetry:&needRetry];
-                // canRetry用来避免递归调用，code205只主动重试一次。
-                if (self.canRetry && needRetry) {
-                    self.canRetry = NO;
-                    [self translate:text from:from to:to completion:completion];
-                    return;
-                }
-                self.canRetry = YES;
-                if (error) {
-                    self.result.error = [EZError errorWithNSError:error];
-                    completion(self.result, error);
-                    return;
-                }
-                if (lookupError) {
-                    MMLogError(@"bing lookup error %@", lookupError);
+        [self.request translateText:text from:fromCode to:toCode completionHandler:^(NSData *_Nullable translateData, NSData *_Nullable lookupData, NSError *_Nullable translateError, NSError *_Nullable lookupError) {
+            mm_strongify(self)
+                @try {
+                if (translateError) {
+                    self.result.error = [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:translateError.localizedDescription errorDataMessage:nil];
+                    MMLogError(@"bing translate error %@", translateError);
                 } else {
-                    [self processWordSimpleWordAndPart:lookupData];
+                    BOOL needRetry;
+                    NSError *error = [self processTranslateResult:translateData text:text from:from to:to needRetry:&needRetry];
+                    // canRetry用来避免递归调用，code205只主动重试一次。
+                    if (self.canRetry && needRetry) {
+                        self.canRetry = NO;
+                        [self translate:text from:from to:to completion:completion];
+                        return;
+                    }
+                    self.canRetry = YES;
+                    if (error) {
+                        self.result.error = [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:error.localizedDescription errorDataMessage:nil];
+                        completion(self.result, error);
+                        return;
+                    }
+                    if (lookupError) {
+                        MMLogError(@"bing lookup error %@", lookupError);
+                    } else {
+                        [self processWordSimpleWordAndPart:lookupData];
+                    }
                 }
+                completion(self.result, translateError);
+            } @catch (NSException *exception) {
+                MMLogError(@"微软翻译接口数据解析异常 %@", exception);
+                completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing translate data parse failed" errorDataMessage:nil]);
             }
-            completion(self.result, translateError);
-        } @catch (NSException *exception) {
-            MMLogError(@"微软翻译接口数据解析异常 %@", exception);
-            completion(self.result, [EZError errorWithType:EZErrorTypeAPI message:@"bing translate data parse failed" request:nil]);
-        }
-    }];
+        }];
 }
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     EZLanguage textLanguage = queryModel.queryFromLanguage;
-    
+
     NSString *from = [self languageCodeForLanguage:textLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
     NSString *maxText = [self maxTextLength:queryModel.queryText fromLanguage:textLanguage];
-    
+
     NSString *text = maxText;
-    
+
     // If Chinese text too long, web link page will report error.
     if ([EZLanguageManager.shared isChineseLanguage:textLanguage]) {
         text = [maxText trimToMaxLength:450];
     }
-    
+
     if (self.isDictQueryResult) {
         return [NSString stringWithFormat:@"https://%@/dict/search?q=%@", self.request.bingConfig.host, text.encode];
     }
-    
+
     return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", self.request.bingConfig.translatorURLString, text.encode, from, to];
 }
 
@@ -197,28 +197,28 @@
     if ([from isEqualToString:EZLanguageClassicalChinese]) {
         from = EZLanguageSimplifiedChinese;
     }
-    
+
     NSString *filePath = [self.audioPlayer getWordAudioFilePath:text
                                                        language:from
                                                          accent:nil
                                                     serviceType:self.serviceType];
-    
+
     // If file path already exists.
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         completion(filePath, nil);
         return;
     }
-    
+
     MMLogInfo(@"Bing is fetching text audio: %@", text);
-    
+
     [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError *_Nullable error) {
         if (error || !audioData) {
             completion(nil, error);
             return;
         }
-        
+
         [audioData writeToFile:filePath atomically:YES];
-        
+
         completion(filePath, nil);
     }];
 }
@@ -233,7 +233,7 @@
 
 - (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to needRetry:(BOOL *)needRetry {
     if (translateData.length == 0) {
-        return [EZError errorWithType:EZErrorTypeAPI message:@"bing translate data is empty" request:nil];
+        return [EZQueryError errorWithType:EZQueryErrorTypeApi message:@"bing translate data is empty"];
     }
     NSArray *json = [NSJSONSerialization JSONObjectWithData:translateData options:0 error:nil];
     if (![json isKindOfClass:[NSArray class]]) {
@@ -248,35 +248,35 @@
                 }
             }
         }
-        return [EZError errorWithType:EZErrorTypeAPI message:msg request:nil];
+        return [EZQueryError errorWithType:EZQueryErrorTypeApi message:msg];
     }
     EZBingTranslateModel *translateModel = [EZBingTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
-    
+
     // phonetic
     if (json.count >= 2 && [json[1] isKindOfClass:[NSDictionary class]]) {
         NSString *inputTransliteration = json[1][@"inputTransliteration"];
         EZWordPhonetic *phonetic = [EZWordPhonetic new];
-        
+
         EZLanguage fromLanguage = self.result.queryFromLanguage;
         phonetic.name = [fromLanguage isEqualToString:EZLanguageEnglish] ? NSLocalizedString(@"us_phonetic", nil) : NSLocalizedString(@"chinese_phonetic", nil);
-        
+
         // If text is too long, we don't show phonetic.
         if (![EZLanguageManager.shared isShortWordLength:text language:fromLanguage]) {
             goto outer;
         }
-        
+
         phonetic.value = inputTransliteration;
         // https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts#supported-languages
         //        phonetic.speakURL = result.fromSpeakURL;
         phonetic.language = fromLanguage;
         phonetic.word = text;
-        
+
         if (!self.result.wordResult) {
             self.result.wordResult = [EZTranslateWordResult new];
         }
         self.result.wordResult.phonetics = @[ phonetic ];
     }
-    
+
 outer:
     self.result.raw = translateData;
     self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZBingTranslationsModel *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -302,7 +302,7 @@ outer:
             }
             [array addObject:translation];
         }
-        
+
         // 中文翻译英文
         if (([self.result.from isEqualToString:EZLanguageSimplifiedChinese] || [self.result.from isEqualToString:EZLanguageTraditionalChinese]) && [self.result.to isEqualToString:EZLanguageEnglish]) {
             NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
@@ -334,7 +334,7 @@ outer:
                 wordResult.parts = [parts copy];
             }
         }
-        
+
         if (wordResult.parts.count || wordResult.simpleWords.count) {
             self.result.wordResult = wordResult;
         }
@@ -345,7 +345,7 @@ outer:
     @try {
         NSArray *value = json[@"value"];
         /**
-         It is strange, for some polluted ip, it will return emtpy value ☹️
+         It is strange, for some polluted ip, it will return emtpy value
 
          See in https://github.com/tisfeng/Easydict/pull/243#issuecomment-1828133561
 
@@ -356,15 +356,15 @@ outer:
          }
          */
         if (value.count == 0) {
-            completion(self.result, [EZError errorWithType:EZErrorTypeAPI message:@"bing dict value is empty" request:nil]);
+            completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing dict value is empty" errorDataMessage:nil]);
             return;
         }
         NSArray *meaningGroups = value.firstObject[@"meaningGroups"];
         if (meaningGroups.count == 0) {
-            completion(self.result, [EZError errorWithType:EZErrorTypeAPI message:@"bing dict translate meaning groups is empty" request:nil]);
+            completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing dict translate meaning groups is empty" errorDataMessage:nil]);
             return;
         }
-        
+
         NSMutableArray<EZTranslatePart *> *parts = [NSMutableArray array];
         NSMutableArray<EZTranslateExchange *> *exchanges = [NSMutableArray array];
         NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
@@ -372,7 +372,7 @@ outer:
         NSMutableArray<EZTranslatePart *> *synonyms = [NSMutableArray array];
         NSMutableArray<EZTranslatePart *> *antonyms = [NSMutableArray array];
         NSMutableArray<EZTranslatePart *> *collocation = [NSMutableArray array];
-        
+
         for (NSDictionary *meaningGroup in meaningGroups) {
             NSArray *partOfSpeech = meaningGroup[@"partsOfSpeech"];
             if (partOfSpeech.count == 0) {
@@ -417,20 +417,20 @@ outer:
                     [simpleWords addObject:simpleWord];
                 }
             } else if ([description isEqualToString:@"分类词典"]) {
-                NSArray<NSString *> *synonymMeans = [meanings.firstObject[@"synonyms"] mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSArray<NSString *> *synonymMeans = [meanings.firstObject[@"synonyms"] mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                     return obj[@"name"];
                 }];
-                NSArray<NSString *> *antonymMeans = [meanings.firstObject[@"antonyms"] mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSArray<NSString *> *antonymMeans = [meanings.firstObject[@"antonyms"] mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                     return obj[@"name"];
                 }];
-                
+
                 if (synonymMeans.count) {
                     EZTranslatePart *synonymsPart = [EZTranslatePart new];
                     synonymsPart.part = name;
                     synonymsPart.means = synonymMeans;
                     [synonyms addObject:synonymsPart];
                 }
-                
+
                 if (antonymMeans.count) {
                     EZTranslatePart *antonymsPart = [EZTranslatePart new];
                     antonymsPart.part = name;
@@ -438,7 +438,7 @@ outer:
                     [antonyms addObject:antonymsPart];
                 }
             } else if ([description isEqualToString:@"搭配"]) {
-                NSArray *means = [fragments mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSArray *means = [fragments mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                     return obj[@"text"];
                 }];
                 EZTranslatePart *collocationPart = [EZTranslatePart new];
@@ -446,7 +446,7 @@ outer:
                 collocationPart.means = means;
                 [collocation addObject:collocationPart];
             }
-            
+
             if ([name isEqualToString:@"变形"]) {
                 for (NSDictionary *fragment in fragments) {
                     NSString *text = fragment[@"text"];
@@ -454,13 +454,13 @@ outer:
                     if (value.count == 2) {
                         EZTranslateExchange *exchange = [EZTranslateExchange new];
                         exchange.name = value.firstObject;
-                        exchange.words = @[value.lastObject];
+                        exchange.words = @[ value.lastObject ];
                         [exchanges addObject:exchange];
                     }
                 }
             }
         }
-        
+
         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
         self.result.wordResult = wordResult;
         if (phonetics.count) {
@@ -488,13 +488,13 @@ outer:
         // 接口没有字段表示翻译结果，从parts里去一个当作结果。
         NSString *translateResult = wordResult.parts.firstObject.means.firstObject;
         if (translateResult.length) {
-            self.result.translatedResults = @[translateResult];
+            self.result.translatedResults = @[ translateResult ];
         }
         self.result.raw = json;
         completion(self.result, nil);
     } @catch (NSException *exception) {
         MMLogWarn(@"微软词典接口数据解析异常 %@", exception);
-        completion(self.result, [EZError errorWithType:EZErrorTypeAPI message:@"bing dict translate data parse failed" request:nil]);
+        completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing dict translate data parse failed" errorDataMessage:nil]);
     }
 }
 

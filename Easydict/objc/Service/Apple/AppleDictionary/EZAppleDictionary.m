@@ -11,6 +11,7 @@
 #import "NSString+EZUtils.h"
 #import "NSString+EZHandleInputText.h"
 #import "NSString+EZChineseText.h"
+#import "Easydict-Swift.h"
 
 @interface EZAppleDictionary ()
 
@@ -104,7 +105,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    EZError *noResultError = [EZError errorWithType:EZErrorTypeNoResult message:nil];
+    EZQueryError *noResultError = [EZQueryError errorWithType:EZQueryErrorTypeNoResult message:nil];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Note: this method may cost long time(>1.0s), if the html is very large.
@@ -113,7 +114,7 @@ static EZAppleDictionary *_instance;
                                                      inDictionaries:self.appleDictionaries];
         self.result.HTMLString = htmlString;
 
-        EZError *error = nil;
+        EZQueryError *error = nil;
         if (htmlString.length == 0) {
             error = noResultError;
         }

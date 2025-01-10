@@ -3,7 +3,7 @@
 //  Easydict
 //
 //  Created by Jerry on 2024-01-02.
-//  Copyright © 2024 izual. All rights reserved.
+//  Copyright 2024 izual. All rights reserved.
 //
 
 import Defaults
@@ -35,7 +35,7 @@ public final class GeminiService: LLMStreamService {
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
         if model.isEmpty {
-            let emptyModelError = EZError(type: .param, message: "model is empty")
+            let emptyModelError = QueryError(type: .parameter, message: "model is empty")
             completion(result, emptyModelError)
             return
         }
@@ -127,12 +127,17 @@ public final class GeminiService: LLMStreamService {
             do {
                 result.isStreamFinished = false
 
-                let systemPrompt = queryType == .dictionary ? LLMStreamService
-                    .dictSystemPrompt : LLMStreamService
-                    .translationSystemPrompt
+                let systemPrompt =
+                    queryType == .dictionary
+                        ? LLMStreamService
+                        .dictSystemPrompt
+                        : LLMStreamService
+                        .translationSystemPrompt
 
                 var enableSystemPromptInChats = false
-                var systemInstruction: ModelContent? = try ModelContent(role: "system", systemPrompt)
+                var systemInstruction: ModelContent? = try ModelContent(
+                    role: "system", systemPrompt
+                )
 
                 // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
                 if model == "gemini-1.0-pro" {
@@ -167,11 +172,15 @@ public final class GeminiService: LLMStreamService {
                         return
                     }
                     resultText += line
-                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                    updateResultText(
+                        resultText, queryType: queryType, error: nil, completion: completion
+                    )
                 }
 
                 resultText = getFinalResultText(resultText)
-                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
+                updateResultText(
+                    resultText, queryType: queryType, error: nil, completion: completion
+                )
                 result.isStreamFinished = true
 
             } catch is CancellationError {
@@ -186,10 +195,10 @@ public final class GeminiService: LLMStreamService {
                  "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
                  */
 
-                let ezError = EZError(nsError: error)
                 let errorString = String(describing: error)
-                let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
-                ezError?.errorDataMessage = errorMessage
+                let errorMessage =
+                    errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
+                let ezError = QueryError(type: .api, errorDataMessage: errorMessage)
 
                 updateResultText(nil, queryType: queryType, error: ezError, completion: completion)
             }

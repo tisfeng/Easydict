@@ -3,7 +3,7 @@
 //  Easydict
 //
 //  Created by Kyle on 2023/11/7.
-//  Copyright © 2023 izual. All rights reserved.
+//  Copyright 2023 izual. All rights reserved.
 //
 
 import Alamofire
@@ -55,7 +55,7 @@ public final class CaiyunService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
+            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -91,10 +91,16 @@ public final class CaiyunService: QueryService {
                 completion(result, nil)
             case let .failure(error):
                 logError("Caiyun lookup error \(error)")
-                let ezError = EZError(nsError: error, errorResponseData: response.data)
+                let ezError = QueryError(type: .api, message: error.localizedDescription)
+                if let data = response.data {
+                    if let errorString = String(data: data, encoding: .utf8) {
+                        ezError.errorDataMessage = errorString
+                    }
+                }
                 completion(result, ezError)
             }
         }
+
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)
