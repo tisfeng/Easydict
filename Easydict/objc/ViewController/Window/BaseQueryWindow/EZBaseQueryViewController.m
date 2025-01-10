@@ -1015,7 +1015,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData {
-    [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
+    if (result) {
+        [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
+    }
 }
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
