@@ -10,7 +10,6 @@
 #import "EZQueryResult.h"
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
-#import "EZLayoutManager.h"
 #import "EZAudioPlayer.h"
 #import "MMOrderedDictionary.h"
 

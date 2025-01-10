@@ -32,6 +32,7 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         super.init(domain: "com.izual.Easydict.QueryError", code: type.rawValue, userInfo: userInfo)
     }
 
+    @available(*, deprecated)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -141,5 +142,26 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         )
 
         return .error(type: .unsupportedLanguage, message: showUnsupportLanguage)
+    }
+
+    /// Create a QueryError from any error type
+    /// - Parameter error: The source error
+    /// - Returns: If error is nil, returns nil
+    ///           If error is already a QueryError, returns it directly
+    ///           Otherwise, creates a new QueryError with the error's localized description
+    public static func queryError(
+        from error: Error?,
+        type: ErrorType = .api
+    )
+        -> QueryError? {
+        if let error {
+            if let queryError = error as? QueryError {
+                return queryError
+            } else {
+                return .init(type: type, message: error.localizedDescription)
+            }
+        } else {
+            return nil
+        }
     }
 }

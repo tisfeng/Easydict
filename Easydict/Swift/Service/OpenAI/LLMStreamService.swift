@@ -347,17 +347,21 @@ extension LLMStreamService {
         _ resultText: String?,
         queryType: EZQueryTextType,
         error: Error?,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (EZQueryResult, QueryError?) -> ()
     ) {
         if result.isStreamFinished {
             cancelStream()
 
-            var error = error
-            // If error is nil but result text is also empty, we should report error.
-            if error == nil, resultText?.isEmpty ?? true {
-                error = QueryError(type: .noResult)
+            var queryError: QueryError?
+
+            if let error {
+                queryError = .queryError(from: error)
+            } else if resultText?.isEmpty ?? true {
+                // If error is nil but result text is also empty, we should report error.
+                queryError = .init(type: .noResult)
             }
-            completion(result, error)
+
+            completion(result, queryError)
             return
         }
 
@@ -375,7 +379,7 @@ extension LLMStreamService {
             self.throttler.throttle { [weak self] in
                 guard let self else { return }
 
-                completion(result, error)
+                completion(result, .queryError(from: error))
             }
         }
 

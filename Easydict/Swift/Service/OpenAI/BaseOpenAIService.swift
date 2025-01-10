@@ -61,7 +61,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = true
 
                     updateResultText(resultText, queryType: queryType, error: nil) { result, error in
-                        result.error = error as? QueryError
+                        result.error = error
                         continuation.yield(result)
                     }
 
@@ -81,7 +81,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = true
 
                     updateResultText(text, queryType: queryType, error: err) { result, err in
-                        result.error = err as? QueryError
+                        result.error = err
                         continuation.yield(result)
                     }
                 }
