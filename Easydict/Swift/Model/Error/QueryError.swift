@@ -41,7 +41,7 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
     // enum Int for objc
 
     @objc(EZQueryErrorType)
-    public enum ErrorType: Int {
+    public enum ErrorType: Int, LocalizedError {
         case unknown
         case api
         case parameter
@@ -51,31 +51,27 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         case noResult
         case timeout
 
-        // MARK: Internal
+        // MARK: Public
 
-        var localizationKey: String {
+        public var errorDescription: String? {
             switch self {
             case .unknown:
-                "unknown_error"
+                String(localized: "unknown_error")
             case .api:
-                "api_error"
+                String(localized: "api_error")
             case .parameter:
-                "parameter_error"
+                String(localized: "parameter_error")
             case .appleScript:
-                "apple_script_error"
+                String(localized: "apple_script_error")
             case .unsupportedLanguage:
-                "unsupported_language_error"
+                String(localized: "unsupported_language_error")
             case .missingSecretKey:
-                "missing_secret_key_error"
+                String(localized: "missing_secret_key_error")
             case .noResult:
-                "no_result_error"
+                String(localized: "no_result_error")
             case .timeout:
-                "timeout_error"
+                String(localized: "timeout_error")
             }
-        }
-
-        var localizedString: String {
-            NSLocalizedString(localizationKey, comment: "")
         }
     }
 
@@ -95,14 +91,14 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         let queryFailed = "\u{200B}" + String(localized: "query_failed")
         errorString += "\(queryFailed), "
 
-        errorString += "\(type.localizedString)"
+        errorString += "\(type.localizedDescription)"
 
         if let message, !message.isEmpty {
             errorString += ": \(message)"
         }
 
         if let errorDataMessage, !errorDataMessage.isEmpty {
-            errorString += "\n\(errorDataMessage)"
+            errorString += "\n\n\(errorDataMessage)"
         }
 
         return errorString
