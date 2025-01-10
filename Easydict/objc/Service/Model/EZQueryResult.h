@@ -139,7 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// If (self.wordResult && self.translatedText.length), YES
 @property (readonly, nonatomic, assign) BOOL hasTranslatedResult;
 
-/// EZQueryErrorTypeUnsupportedLanguage || EZQueryErrorTypeNoResultsFound
+/// EZQueryErrorTypeUnsupportedLanguage || EZQueryErrorTypeNoResult
 @property (readonly, nonatomic, assign) BOOL isWarningErrorType;
 
 /// 查询文本的发音地址

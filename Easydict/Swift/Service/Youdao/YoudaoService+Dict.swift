@@ -30,7 +30,7 @@ extension YoudaoService {
         guard let foreignLanguage = youdaoDictForeignLanguage(queryModel),
               enableDictionary
         else {
-            throw QueryError(type: .unsupportedLanguage, message: "No results found")
+            throw QueryError(type: .unsupportedLanguage)
         }
 
         let ww = "\(text)webdict"

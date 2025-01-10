@@ -213,7 +213,6 @@ userInfo:nil]
     }
 
     if (unsupportedLanguage) {
-//        completion(self.result, EZQueryUnsupportedLanguageError(self));
         completion(self.result, [EZQueryError unsupportedLanguageErrorWithService:self]);
 
         return YES;

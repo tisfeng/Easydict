@@ -292,7 +292,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             if ([from isKindOfClass:NSString.class] && from.length) {
                 completion([self languageEnumFromCode:from], nil);
             } else {
-                completion(EZLanguageAuto, [EZQueryError errorWithType:EZQueryErrorTypeUnsupportedLanguage message:nil]);
+                completion(EZLanguageAuto, [EZQueryError errorWithType:EZQueryErrorTypeUnsupportedLanguage]);
             }
             return;
         }
@@ -492,7 +492,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         if (error.code == NSURLErrorCancelled) {
             return;
         }
-        completion(self.result, [EZQueryError errorWithType:EZQueryErrorTypeApi message:nil]);
+        completion(self.result, [EZQueryError errorWithType:EZQueryErrorTypeApi]);
     }];
 
     [self.queryModel setStopBlock:^{

@@ -3,7 +3,7 @@
 //  Easydict
 //
 //  Created by Jerry on 2024-01-02.
-//  Copyright 2024 izual. All rights reserved.
+//  Copyright © 2024 izual. All rights reserved.
 //
 
 import Defaults
@@ -198,9 +198,9 @@ public final class GeminiService: LLMStreamService {
                 let errorString = String(describing: error)
                 let errorMessage =
                     errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
-                let ezError = QueryError(type: .api, errorDataMessage: errorMessage)
+                let queryError = QueryError(type: .api, errorDataMessage: errorMessage)
 
-                updateResultText(nil, queryType: queryType, error: ezError, completion: completion)
+                updateResultText(nil, queryType: queryType, error: queryError, completion: completion)
             }
         }
     }

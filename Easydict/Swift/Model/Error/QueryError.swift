@@ -92,8 +92,8 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         var errorString = ""
 
         // Add zero-width space to fix emoji rendering issue
-        //        let queryFailed = "\u{200B}" + String(localized: "query_failed")
-        //        errorString += "\(queryFailed), "
+        let queryFailed = "\u{200B}" + String(localized: "query_failed")
+        errorString += "\(queryFailed), "
 
         errorString += "\(type.localizedString)"
 
@@ -133,20 +133,7 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         .init(type: type, message: message, errorDataMessage: errorDataMessage)
     }
 
-    // NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
-    //    NSString *to = [service languageCodeForLanguage:service.queryModel.queryTargetLanguage];
-    //    EZLanguage unsupportLanguage = service.queryModel.queryFromLanguage;
-    //    if (!to) {
-    //        unsupportLanguage = service.queryModel.queryTargetLanguage;
-    //    }
-    //
-    //    NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
-    //    NSError *error = [EZQueryError errorWithType:EZQueryErrorTypeUnsupportedLanguage message:showUnsupportLanguage];
-    //    return error;
-    // }
-
-    public static func unsupportedLanguageError(service: QueryService)
-        -> QueryError {
+    public static func unsupportedLanguageError(service: QueryService) -> QueryError {
         let to = service.languageCode(forLanguage: service.queryModel.queryTargetLanguage)
         var unsupportLanguage = service.queryModel.queryFromLanguage
         if to == nil {
@@ -157,9 +144,6 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
             unsupportLanguage
         )
 
-        return .error(
-            type: .unsupportedLanguage,
-            message: showUnsupportLanguage
-        )
+        return .error(type: .unsupportedLanguage, message: showUnsupportLanguage)
     }
 }

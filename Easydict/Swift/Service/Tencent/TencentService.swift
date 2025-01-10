@@ -105,19 +105,19 @@ public final class TencentService: QueryService {
                 completion(result, nil)
             case let .failure(error):
                 logError("Tencent lookup error \(error)")
-                let ezError = QueryError(type: .api, message: error.localizedDescription)
+                let queryError = QueryError(type: .api, message: error.localizedDescription)
 
                 if let data = response.data {
                     do {
                         let errorResponse = try JSONDecoder().decode(
                             TencentErrorResponse.self, from: data
                         )
-                        ezError.errorDataMessage = errorResponse.response.error.message
+                        queryError.errorDataMessage = errorResponse.response.error.message
                     } catch {
                         logError("Failed to decode error response: \(error)")
                     }
                 }
-                completion(result, ezError)
+                completion(result, queryError)
             }
         }
 

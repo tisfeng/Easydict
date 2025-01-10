@@ -105,7 +105,7 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    EZQueryError *noResultError = [EZQueryError errorWithType:EZQueryErrorTypeNoResult message:nil];
+    EZQueryError *noResultError = [EZQueryError errorWithType:EZQueryErrorTypeNoResult];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Note: this method may cost long time(>1.0s), if the html is very large.
@@ -130,6 +130,7 @@ static EZAppleDictionary *_instance;
     for (EZLanguage language in supportedLanguages) {
         if ([self queryDictionaryForText:text language:language]) {
             completion(language, nil);
+            return;
         }
     }
 

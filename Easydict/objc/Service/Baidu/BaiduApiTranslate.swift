@@ -83,19 +83,19 @@ class BaiduApiTranslate: NSObject {
                 completion(result, nil)
             case let .failure(error):
                 logError("Baidu official API error \(error)")
-                let ezError = QueryError(type: .api, message: error.localizedDescription)
+                let queryError = QueryError(type: .api, message: error.localizedDescription)
                 if let data = response.data {
                     do {
                         let errorResponse = try JSONDecoder().decode(
                             BaiduApiErrorResponse.self, from: data
                         )
-                        ezError.errorDataMessage =
+                        queryError.errorDataMessage =
                             "code:\(errorResponse.errorCode), msg:\(errorResponse.errorMsg)"
                     } catch {
                         logError("Failed to decode error response: \(error)")
                     }
                 }
-                completion(result, ezError)
+                completion(result, queryError)
             }
         }
 

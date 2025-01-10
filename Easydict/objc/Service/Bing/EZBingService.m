@@ -134,7 +134,8 @@
             mm_strongify(self)
                 @try {
                 if (translateError) {
-                    self.result.error = [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:translateError.localizedDescription errorDataMessage:nil];
+                    self.result.error = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                            message:translateError.localizedDescription];
                     MMLogError(@"bing translate error %@", translateError);
                 } else {
                     BOOL needRetry;
@@ -147,7 +148,8 @@
                     }
                     self.canRetry = YES;
                     if (error) {
-                        self.result.error = [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:error.localizedDescription errorDataMessage:nil];
+                        self.result.error = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                                message:error.localizedDescription];
                         completion(self.result, error);
                         return;
                     }
@@ -160,7 +162,8 @@
                 completion(self.result, translateError);
             } @catch (NSException *exception) {
                 MMLogError(@"微软翻译接口数据解析异常 %@", exception);
-                completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing translate data parse failed" errorDataMessage:nil]);
+                EZQueryError *error = [EZQueryError errorWithType:EZQueryErrorTypeApi message:@"bing translate data parse failed"];
+                completion(self.result, error);
             }
         }];
 }
@@ -356,12 +359,12 @@ outer:
          }
          */
         if (value.count == 0) {
-            completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing dict value is empty" errorDataMessage:nil]);
+            completion(self.result, [EZQueryError errorWithType:EZQueryErrorTypeApi message:@"bing dict value is empty"]);
             return;
         }
         NSArray *meaningGroups = value.firstObject[@"meaningGroups"];
         if (meaningGroups.count == 0) {
-            completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing dict translate meaning groups is empty" errorDataMessage:nil]);
+            completion(self.result, [EZQueryError errorWithType:EZQueryErrorTypeApi message:@"bing dict translate meaning groups is empty"]);
             return;
         }
 
@@ -494,7 +497,7 @@ outer:
         completion(self.result, nil);
     } @catch (NSException *exception) {
         MMLogWarn(@"微软词典接口数据解析异常 %@", exception);
-        completion(self.result, [[EZQueryError alloc] initWithType:EZQueryErrorTypeApi message:@"bing dict translate data parse failed" errorDataMessage:nil]);
+        completion(self.result, [EZQueryError errorWithType:EZQueryErrorTypeApi message:@"bing dict translate data parse failed"]);
     }
 }
 

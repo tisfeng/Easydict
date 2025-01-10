@@ -3,7 +3,7 @@
 //  Easydict
 //
 //  Created by Kyle on 2023/11/7.
-//  Copyright 2023 izual. All rights reserved.
+//  Copyright © 2023 izual. All rights reserved.
 //
 
 import Alamofire
@@ -91,13 +91,13 @@ public final class CaiyunService: QueryService {
                 completion(result, nil)
             case let .failure(error):
                 logError("Caiyun lookup error \(error)")
-                let ezError = QueryError(type: .api, message: error.localizedDescription)
+                let queryError = QueryError(type: .api, message: error.localizedDescription)
                 if let data = response.data {
                     if let errorString = String(data: data, encoding: .utf8) {
-                        ezError.errorDataMessage = errorString
+                        queryError.errorDataMessage = errorString
                     }
                 }
-                completion(result, ezError)
+                completion(result, queryError)
             }
         }
 

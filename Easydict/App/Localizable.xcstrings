@@ -239,6 +239,7 @@
       }
     },
     "api_error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2631,6 +2632,7 @@
       }
     },
     "missing_secret_key_error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2716,6 +2718,7 @@
       }
     },
     "no_result_error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3069,6 +3072,7 @@
       }
     },
     "parameter_error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8292,6 +8296,7 @@
       }
     },
     "unknown_error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8370,6 +8375,7 @@
       }
     },
     "unsupported_language_error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8386,7 +8392,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "不支持的语言"
           }
         },
         "zh-Hant" : {

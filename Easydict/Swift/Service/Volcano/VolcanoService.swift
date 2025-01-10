@@ -111,23 +111,23 @@ public final class VolcanoService: QueryService {
                 if let error = volcanoResponse.responseMetadata.error {
                     let errorMessage = error.message
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = QueryError(type: .api, message: errorMessage)
-                    completion(result, ezError)
+                    let queryError = QueryError(type: .api, message: errorMessage)
+                    completion(result, queryError)
                 } else if let translationList = volcanoResponse.translationList {
                     result.translatedResults = translationList.map { $0.translation }
                     completion(result, nil)
                 } else {
                     let errorMessage = "Unexpected response format"
                     logError("Volcano lookup error: \(errorMessage)")
-                    let ezError = QueryError(type: .unknown, message: errorMessage)
-                    completion(result, ezError)
+                    let queryError = QueryError(type: .unknown, message: errorMessage)
+                    completion(result, queryError)
                 }
 
             case let .failure(error):
                 logError("Volcano lookup error: \(error)")
-                // Convert NSError to QueryError with proper error message
+
                 let errorMessage = error.localizedDescription
-                let ezError = QueryError(type: .api, message: errorMessage)
+                let queryError = QueryError(type: .api, message: errorMessage)
 
                 if let data = response.data {
                     do {
@@ -135,13 +135,13 @@ public final class VolcanoService: QueryService {
                             VolcanoResponse.self, from: data
                         )
                         if let volcanoError = errorResponse.responseMetadata.error {
-                            ezError.errorDataMessage = volcanoError.message
+                            queryError.errorDataMessage = volcanoError.message
                         }
                     } catch {
                         logError("Failed to decode error response: \(error)")
                     }
                 }
-                completion(result, ezError)
+                completion(result, queryError)
             }
         }
         queryModel.setStop({

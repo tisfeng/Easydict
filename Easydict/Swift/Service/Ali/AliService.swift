@@ -204,7 +204,7 @@ class AliService: QueryService {
         }.joined(separator: "&")
 
         if !paramsEncodeErrorString.isEmpty {
-            completion(result, QueryError(type: .api, message: paramsEncodeErrorString))
+            completion(result, QueryError(type: .parameter, message: paramsEncodeErrorString))
             return
         }
 
@@ -213,7 +213,7 @@ class AliService: QueryService {
               canonicalizedQueryString
                   .addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
         else {
-            completion(result, QueryError(type: .api, message: "encoding error"))
+            completion(result, QueryError(type: .parameter, message: "encoding error"))
             return
         }
 
@@ -225,12 +225,12 @@ class AliService: QueryService {
                   encoding: .nonLossyASCII
               )
         else {
-            completion(result, QueryError(type: .api, message: "signature error"))
+            completion(result, QueryError(type: .parameter, message: "signature error"))
             return
         }
 
         guard let signature = hmacSha1(key: secret + "&", params: utf8String) else {
-            completion(result, QueryError(type: .api, message: "hmacSha1 error"))
+            completion(result, QueryError(type: .parameter, message: "hmacSha1 error"))
             return
         }
 
@@ -250,10 +250,7 @@ class AliService: QueryService {
                     } else {
                         completion(
                             result,
-                            QueryError(
-                                type: .api, message: value.code?.stringValue,
-                                errorDataMessage: value.message
-                            )
+                            QueryError(type: .api, message: value.code?.stringValue, errorDataMessage: value.message)
                         )
                     }
                 case let .failure(error):
@@ -261,16 +258,12 @@ class AliService: QueryService {
                     if let data = response.data {
                         let res = try? JSONDecoder().decode(AliAPIResponse.self, from: data)
                         msg = res?.message
-                    } else {
-                        msg = error.localizedDescription
                     }
 
                     logError("Ali translate error: \(msg ?? "")")
                     completion(
                         result,
-                        QueryError(
-                            type: .api, message: error.localizedDescription, errorDataMessage: msg
-                        )
+                        QueryError(type: .api, message: error.localizedDescription, errorDataMessage: msg)
                     )
                 }
             }
@@ -317,12 +310,12 @@ class AliService: QueryService {
                     completion(result, nil)
                     logInfo("ali web translate success")
                 } else {
-                    let ezError = QueryError(
+                    let queryError = QueryError(
                         type: .api,
                         message: value.code?.stringValue,
                         errorDataMessage: value.message
                     )
-                    completion(result, ezError)
+                    completion(result, queryError)
                 }
                 canWebRetry = true
             case let .failure(error):
@@ -346,8 +339,6 @@ class AliService: QueryService {
                     if let data = response.data {
                         let res = try? JSONDecoder().decode(AliWebResponse.self, from: data)
                         msg = res?.message
-                    } else {
-                        msg = error.localizedDescription
                     }
 
                     logError("ali web translate error: \(msg ?? "")")
