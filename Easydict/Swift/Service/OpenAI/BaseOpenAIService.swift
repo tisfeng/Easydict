@@ -61,7 +61,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = true
 
                     updateResultText(resultText, queryType: queryType, error: nil) { result, error in
-                        result.error = QueryError(type: .api, message: error?.localizedDescription)
+                        result.error = error as? QueryError
                         continuation.yield(result)
                     }
 
@@ -81,7 +81,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = true
 
                     updateResultText(text, queryType: queryType, error: err) { result, err in
-                        result.error = QueryError(type: .api, message: err?.localizedDescription)
+                        result.error = err as? QueryError
                         continuation.yield(result)
                     }
                 }
@@ -116,10 +116,11 @@ public class BaseOpenAIService: LLMStreamService {
     )
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         let url = URL(string: endpoint)
-        let invalidURLError = QueryError(
-            type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
-        )
+
         guard let url, url.isValid else {
+            let invalidURLError = QueryError(
+                type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
+            )
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: invalidURLError)
             }
@@ -138,8 +139,11 @@ public class BaseOpenAIService: LLMStreamService {
 
         let chatHistory = serviceChatMessageModels(chatQueryParam)
         guard let chatHistory = chatHistory as? [OpenAIChatMessage] else {
+            let error = QueryError(
+                type: .parameter, message: "Failed to convert chat messages"
+            )
             return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: invalidURLError)
+                continuation.finish(throwing: error)
             }
         }
 
