@@ -386,7 +386,14 @@
 }
 
 - (void)updateErrorImage {
-    BOOL showWarningImage = !self.result.hasTranslatedResult && self.result.error.type;
+    EZQueryErrorType type = self.result.error.type;
+    BOOL warningType = (
+        type == EZQueryErrorTypeUnsupportedLanguage ||
+        type == EZQueryErrorTypeUnsupportedQueryType ||
+        type == EZQueryErrorTypeNoResult
+    );
+
+    BOOL showWarningImage = !self.result.hasTranslatedResult && warningType;
     self.errorImageView.hidden = !showWarningImage;
     
     NSString *errorImageName = @"disabled";
@@ -398,6 +405,7 @@
 }
 
 - (void)updateRetryButton {
+    // Do not show retry button for warning error type.
     BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     self.retryButton.hidden = !showRetryButton;
     self.retryButton.toolTip = NSLocalizedString(@"retry", nil);

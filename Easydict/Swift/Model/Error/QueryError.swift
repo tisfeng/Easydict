@@ -51,6 +51,7 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         case missingSecretKey
         case noResult
         case timeout
+        case unsupportedQueryType // If query dict type but the service does not support it
 
         // MARK: Public
 
@@ -72,6 +73,8 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
                 String(localized: "no_result_error")
             case .timeout:
                 String(localized: "timeout_error")
+            case .unsupportedQueryType:
+                String(localized: "unsupported_query_type_error")
             }
         }
     }

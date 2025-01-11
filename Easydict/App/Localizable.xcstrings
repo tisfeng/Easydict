@@ -8425,6 +8425,34 @@
         }
       }
     },
+    "unsupported_query_type_error" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported query type"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodporovaný typ dotazu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持的查询类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支援的查詢類型"
+          }
+        }
+      }
+    },
     "us_phonetic" : {
       "localizations" : {
         "en" : {

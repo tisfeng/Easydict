@@ -21,15 +21,11 @@ extension YoudaoService {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
-        guard !queryTextType().isEmpty else {
-            return result
+        guard queryTextType().contains(.dictionary) else {
+            throw QueryError(type: .unsupportedQueryType)
         }
 
-        let enableDictionary = queryTextType().contains(.dictionary)
-
-        guard let foreignLanguage = youdaoDictForeignLanguage(queryModel),
-              enableDictionary
-        else {
+        guard let foreignLanguage = youdaoDictForeignLanguage(queryModel) else {
             throw QueryError(type: .unsupportedLanguage)
         }
 
@@ -98,16 +94,12 @@ extension YoudaoService {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
-        guard !queryTextType().isEmpty else {
-            return result
+        guard queryTextType().contains(.dictionary) else {
+            throw QueryError(type: .unsupportedQueryType)
         }
 
-        let enableDictionary = queryTextType().contains(.dictionary)
-
-        guard let foreignLanguage = youdaoDictForeignLanguage(queryModel),
-              enableDictionary
-        else {
-            throw QueryError(type: .unsupported, message: "No results found")
+        guard let foreignLanguage = youdaoDictForeignLanguage(queryModel) else {
+            throw QueryError(type: .unsupportedLanguage)
         }
 
         /**
