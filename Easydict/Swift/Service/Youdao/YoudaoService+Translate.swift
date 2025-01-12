@@ -151,10 +151,8 @@ extension YoudaoService {
     /// - Note: From https://github.com/blance714/StaticeApp/blob/a8706aaf4806468a663d7986b901b09be5fc9319/Statice/Model/Search/Youdao.swift
     private func decryptAES128CBC(
         encryptedText: String,
-        key: String =
-            "ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl",
-        iv: String =
-            "ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4"
+        key: String,
+        iv: String
     )
         -> String? {
         // Convert key and iv to UTF-8 data
