@@ -46,18 +46,12 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = false
 
                     let stream = resultTextStreamTranslate(text, from: from, to: to)
-
-                    // Throttle to avoid update UI too frequently.
-                    for try await text in stream._throttle(for: .seconds(0.2)) {
-                        resultText = text
-
-                        updateResultText(resultText, queryType: queryType, error: nil) { result in
-                            continuation.yield(result)
-                        }
+                    try await throttleUpdateResultText(stream, queryType: queryType, error: nil) { result in
+                        continuation.yield(result)
                     }
 
                     // Handle final result text
-                    resultText = getFinalResultText(resultText)
+                    resultText = getFinalResultText(result.translatedText ?? "")
                     result.isStreamFinished = true
 
                     updateResultText(resultText, queryType: queryType, error: nil) { result in

@@ -341,6 +341,19 @@ public class LLMStreamService: QueryService {
 }
 
 extension LLMStreamService {
+    /// Throttle update result text, avoid update UI too frequently.
+    func throttleUpdateResultText(
+        _ textStream: AsyncThrowingStream<String, Error>,
+        queryType: EZQueryTextType,
+        error: Error?,
+        interval: TimeInterval = 0.2,
+        completion: @escaping (EZQueryResult) -> ()
+    ) async throws {
+        for try await text in textStream._throttle(for: .seconds(interval)) {
+            updateResultText(text, queryType: queryType, error: nil, completion: completion)
+        }
+    }
+
     func updateResultText(
         _ resultText: String?,
         queryType: EZQueryTextType,

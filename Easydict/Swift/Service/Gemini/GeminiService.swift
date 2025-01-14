@@ -131,10 +131,8 @@ public final class GeminiService: LLMStreamService {
 
                 let systemPrompt =
                     queryType == .dictionary
-                        ? LLMStreamService
-                        .dictSystemPrompt
-                        : LLMStreamService
-                        .translationSystemPrompt
+                        ? LLMStreamService.dictSystemPrompt
+                        : LLMStreamService.translationSystemPrompt
 
                 var enableSystemPromptInChats = false
                 var systemInstruction: ModelContent? = try ModelContent(
@@ -174,17 +172,13 @@ public final class GeminiService: LLMStreamService {
                         return
                     }
                     resultText += line
-                    updateResultText(
-                        resultText, queryType: queryType, error: nil, completion: completion
-                    )
+                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
                 }
 
                 result.isStreamFinished = true
 
                 resultText = getFinalResultText(resultText)
-                updateResultText(
-                    resultText, queryType: queryType, error: nil, completion: completion
-                )
+                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
 
             } catch is CancellationError {
                 // Task was cancelled.
