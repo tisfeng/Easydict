@@ -374,13 +374,8 @@ extension LLMStreamService {
         result.isStreamFinished = error != nil
         result.translatedResults = translatedTexts
 
-        // Throttle update completion to avoid update UI too frequently.
         let updateCompletion = {
-            self.throttler.throttle { [weak self] in
-                guard let self else { return }
-
-                completion(result, .queryError(from: error))
-            }
+            completion(self.result, .queryError(from: error))
         }
 
         switch queryType {

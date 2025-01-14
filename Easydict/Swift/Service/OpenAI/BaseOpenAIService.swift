@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import AsyncAlgorithms
 import Foundation
 import OpenAI
 
@@ -45,17 +46,19 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isStreamFinished = false
                     result.isLoading = true
 
-                    for try await streamResult in streamTranslate(text, from: from, to: to) {
-                        if let content = streamResult.choices.first?.delta.content {
-                            resultText += content
+                    let stream = resultTextStreamTranslate(text, from: from, to: to)
 
-                            updateResultText(resultText, queryType: queryType, error: nil) { result, _ in
-                                continuation.yield(result)
-                            }
+                    // Throttle to avoid update UI too frequently.
+                    for try await text in stream._throttle(for: .seconds(0.2)) {
+                        resultText = text
+
+                        updateResultText(resultText, queryType: queryType, error: nil) { result, error in
+                            result.error = error
+                            continuation.yield(result)
                         }
                     }
 
-                    // Handle final result
+                    // Handle final result text
                     resultText = getFinalResultText(resultText)
                     result.isLoading = false
                     result.isStreamFinished = true
@@ -154,5 +157,51 @@ public class BaseOpenAIService: LLMStreamService {
         unowned let unownedControl = control
 
         return openAI.chatsStream(query: query, url: url, control: unownedControl)
+    }
+
+    /// Convert chat stream to content stream
+    func contentStreamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    for try await result in streamTranslate(text, from: from, to: to) {
+                        if let content = result.choices.first?.delta.content {
+                            continuation.yield(content)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+
+    /// Convert content stream to result text stream
+    func resultTextStreamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    var resultText = ""
+                    for try await content in contentStreamTranslate(text, from: from, to: to) {
+                        resultText += content
+                        continuation.yield(resultText)
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
     }
 }
