@@ -72,8 +72,6 @@ public class LLMStreamService: QueryService {
 
     // MARK: Internal
 
-    let throttler = Throttler()
-
     let mustOverride = "This property or method must be overridden by a subclass"
 
     var cancellables: Set<AnyCancellable> = []
@@ -347,7 +345,7 @@ extension LLMStreamService {
         _ resultText: String?,
         queryType: EZQueryTextType,
         error: Error?,
-        completion: @escaping (EZQueryResult, QueryError?) -> ()
+        completion: @escaping (EZQueryResult) -> ()
     ) {
         if result.isStreamFinished {
             cancelStream()
@@ -361,7 +359,8 @@ extension LLMStreamService {
                 queryError = .init(type: .noResult)
             }
 
-            completion(result, queryError)
+            result.error = queryError
+            completion(result)
             return
         }
 
@@ -375,7 +374,8 @@ extension LLMStreamService {
         result.translatedResults = translatedTexts
 
         let updateCompletion = {
-            completion(self.result, .queryError(from: error))
+            self.result.error = .queryError(from: error)
+            completion(self.result)
         }
 
         switch queryType {

@@ -40,7 +40,9 @@ public final class GeminiService: LLMStreamService {
             return
         }
 
-        performTranslationTask(text: text, from: from, to: to, completion: completion)
+        performTranslationTask(text: text, from: from, to: to) { result in
+            completion(result, result.error)
+        }
     }
 
     public override func configurationListItems() -> Any {
@@ -113,7 +115,7 @@ public final class GeminiService: LLMStreamService {
         text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (EZQueryResult) -> ()
     ) {
         if let currentTask, currentTask.isCancelled == false {
             currentTask.cancel()
@@ -177,11 +179,12 @@ public final class GeminiService: LLMStreamService {
                     )
                 }
 
+                result.isStreamFinished = true
+
                 resultText = getFinalResultText(resultText)
                 updateResultText(
                     resultText, queryType: queryType, error: nil, completion: completion
                 )
-                result.isStreamFinished = true
 
             } catch is CancellationError {
                 // Task was cancelled.

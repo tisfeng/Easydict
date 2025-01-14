@@ -44,7 +44,6 @@ public class BaseOpenAIService: LLMStreamService {
             Task {
                 do {
                     result.isStreamFinished = false
-                    result.isLoading = true
 
                     let stream = resultTextStreamTranslate(text, from: from, to: to)
 
@@ -52,19 +51,16 @@ public class BaseOpenAIService: LLMStreamService {
                     for try await text in stream._throttle(for: .seconds(0.2)) {
                         resultText = text
 
-                        updateResultText(resultText, queryType: queryType, error: nil) { result, error in
-                            result.error = error
+                        updateResultText(resultText, queryType: queryType, error: nil) { result in
                             continuation.yield(result)
                         }
                     }
 
                     // Handle final result text
                     resultText = getFinalResultText(resultText)
-                    result.isLoading = false
                     result.isStreamFinished = true
 
-                    updateResultText(resultText, queryType: queryType, error: nil) { result, error in
-                        result.error = error
+                    updateResultText(resultText, queryType: queryType, error: nil) { result in
                         continuation.yield(result)
                     }
 
@@ -83,8 +79,7 @@ public class BaseOpenAIService: LLMStreamService {
                     result.isLoading = false
                     result.isStreamFinished = true
 
-                    updateResultText(text, queryType: queryType, error: err) { result, err in
-                        result.error = err
+                    updateResultText(text, queryType: queryType, error: err) { result in
                         continuation.yield(result)
                     }
                 }
