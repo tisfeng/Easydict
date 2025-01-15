@@ -65,9 +65,20 @@ public class LLMStreamService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        fatalError(mustOverride)
+        let stream = streamTranslate(text: text, from: from, to: to)
+        let textStream = convertToTextStream(stream)
+
+        Task {
+            do {
+                try await throttleUpdateResultText(textStream, queryType: queryTextType(), error: nil) { result in
+                    completion(result, result.error)
+                }
+            } catch {
+                completion(result, error)
+            }
+        }
     }
 
     // MARK: Internal
@@ -262,10 +273,10 @@ public class LLMStreamService: QueryService {
             }
         }
 
-        return streamTranslate(text, from: from, to: to)
+        return chatStreamTranslate(text, from: from, to: to)
     }
 
-    func streamTranslate(
+    func chatStreamTranslate(
         _ text: String,
         from: Language,
         to: Language
@@ -338,6 +349,36 @@ public class LLMStreamService: QueryService {
 
     /// Cancel stream request manually.
     func cancelStream() {}
+
+    /// Stream translate text, return EZQueryResult stream.
+    /// - Note: This func do not throttle result.
+    func streamTranslate(text: String, from: Language, to: Language) -> AsyncStream<EZQueryResult> {
+        fatalError(mustOverride)
+    }
+
+    /// Convert AsyncStream<EZQueryResult> to AsyncThrowingStream<String, Error>
+    func convertToTextStream(
+        _ queryResultStream: AsyncStream<EZQueryResult>
+    )
+        -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream<String, Error> { continuation in
+            Task {
+                do {
+                    for try await queryResult in queryResultStream {
+                        if let error = queryResult.error {
+                            throw error
+                        }
+                        if let translatedText = queryResult.translatedText {
+                            continuation.yield(translatedText)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
 }
 
 extension LLMStreamService {
@@ -350,7 +391,7 @@ extension LLMStreamService {
         completion: @escaping (EZQueryResult) -> ()
     ) async throws {
         for try await text in textStream._throttle(for: .seconds(interval)) {
-            updateResultText(text, queryType: queryType, error: nil, completion: completion)
+            updateResultText(text, queryType: queryType, error: error, completion: completion)
         }
     }
 
@@ -407,19 +448,5 @@ extension LLMStreamService {
         default:
             updateCompletion()
         }
-    }
-}
-
-// MARK: - ChatQueryParam
-
-struct ChatQueryParam {
-    let text: String
-    let sourceLanguage: Language
-    let targetLanguage: Language
-    let queryType: EZQueryTextType
-    let enableSystemPrompt: Bool
-
-    func unpack() -> (String, Language, Language, EZQueryTextType, Bool) {
-        (text, sourceLanguage, targetLanguage, queryType, enableSystemPrompt)
     }
 }

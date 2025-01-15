@@ -28,23 +28,6 @@ public final class GeminiService: LLMStreamService {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
-    public override func translate(
-        _ text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        if model.isEmpty {
-            let emptyModelError = QueryError(type: .parameter, message: "model is empty")
-            completion(result, emptyModelError)
-            return
-        }
-
-        performTranslationTask(text: text, from: from, to: to) { result in
-            completion(result, result.error)
-        }
-    }
-
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
@@ -82,6 +65,99 @@ public final class GeminiService: LLMStreamService {
         ]
     }
 
+    override func streamTranslate(text: String, from: Language, to: Language)
+        -> AsyncStream<EZQueryResult> {
+        AsyncStream { continuation in
+            if let currentTask, currentTask.isCancelled == false {
+                currentTask.cancel()
+            }
+
+            let queryType = queryType(text: text, from: from, to: to)
+
+            currentTask = Task {
+                do {
+                    result.isStreamFinished = false
+
+                    let systemPrompt =
+                        queryType == .dictionary
+                            ? LLMStreamService.dictSystemPrompt
+                            : LLMStreamService.translationSystemPrompt
+
+                    var enableSystemPromptInChats = false
+                    var systemInstruction: ModelContent? = try ModelContent(
+                        role: "system", systemPrompt
+                    )
+
+                    // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
+                    if model == "gemini-1.0-pro" {
+                        systemInstruction = nil
+                        enableSystemPromptInChats = true
+                    }
+
+                    let chatQueryParam = ChatQueryParam(
+                        text: text,
+                        sourceLanguage: from,
+                        targetLanguage: to,
+                        queryType: queryType,
+                        enableSystemPrompt: enableSystemPromptInChats
+                    )
+
+                    let chatHistory = serviceChatMessageModels(chatQueryParam)
+                    guard let chatHistory = chatHistory as? [ModelContent] else { return }
+
+                    let model = GenerativeModel(
+                        name: model,
+                        apiKey: apiKey,
+                        safetySettings: blockNoneSettings,
+                        systemInstruction: systemInstruction
+                    )
+
+                    var resultText = ""
+
+                    let outputContentStream = model.generateContentStream(chatHistory)
+                    for try await outputContent in outputContentStream {
+                        try Task.checkCancellation()
+                        guard let line = outputContent.text else { continue }
+
+                        resultText += line
+                        updateResultText(resultText, queryType: queryType, error: nil) { result in
+                            continuation.yield(result)
+                        }
+                    }
+
+                    result.isStreamFinished = true
+                    resultText = getFinalResultText(resultText)
+                    updateResultText(resultText, queryType: queryType, error: nil) { result in
+                        continuation.yield(result)
+                    }
+
+                    continuation.finish()
+                } catch is CancellationError {
+                    logInfo("Gemini task was cancelled.")
+                    continuation.finish()
+                } catch {
+                    /**
+                     https://github.com/google/generative-ai-swift/issues/89
+
+                     String(describing: error)
+
+                     "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
+                     */
+
+                    let errorString = String(describing: error)
+                    let errorMessage =
+                        errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
+                    let queryError = QueryError(type: .api, errorDataMessage: errorMessage)
+
+                    updateResultText(nil, queryType: queryType, error: queryError) { result in
+                        continuation.yield(result)
+                    }
+                    continuation.finish()
+                }
+            }
+        }
+    }
+
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
         var chatModels: [ModelContent] = []
         for message in chatMessageDicts(chatQuery) {
@@ -110,97 +186,6 @@ public final class GeminiService: LLMStreamService {
         SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone),
         SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone),
     ]
-
-    private func performTranslationTask(
-        text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult) -> ()
-    ) {
-        if let currentTask, currentTask.isCancelled == false {
-            currentTask.cancel()
-        }
-
-        let queryType = queryType(text: text, from: from, to: to)
-
-        // Gemini Docs: https://github.com/google/generative-ai-swift
-
-        currentTask = Task {
-            do {
-                result.isStreamFinished = false
-
-                let systemPrompt =
-                    queryType == .dictionary
-                        ? LLMStreamService.dictSystemPrompt
-                        : LLMStreamService.translationSystemPrompt
-
-                var enableSystemPromptInChats = false
-                var systemInstruction: ModelContent? = try ModelContent(
-                    role: "system", systemPrompt
-                )
-
-                // !!!: gemini-1.0-pro model does not support system instruction https://github.com/google-gemini/generative-ai-python/issues/328
-                if model == "gemini-1.0-pro" {
-                    systemInstruction = nil
-                    enableSystemPromptInChats = true
-                }
-
-                let chatQueryParam = ChatQueryParam(
-                    text: text,
-                    sourceLanguage: from,
-                    targetLanguage: to,
-                    queryType: queryType,
-                    enableSystemPrompt: enableSystemPromptInChats
-                )
-
-                let chatHistory = serviceChatMessageModels(chatQueryParam)
-                guard let chatHistory = chatHistory as? [ModelContent] else { return }
-
-                let model = GenerativeModel(
-                    name: model,
-                    apiKey: apiKey,
-                    safetySettings: blockNoneSettings,
-                    systemInstruction: systemInstruction
-                )
-
-                var resultText = ""
-
-                let outputContentStream = model.generateContentStream(chatHistory)
-                for try await outputContent in outputContentStream {
-                    try Task.checkCancellation()
-                    guard let line = outputContent.text else {
-                        return
-                    }
-                    resultText += line
-                    updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-                }
-
-                result.isStreamFinished = true
-
-                resultText = getFinalResultText(resultText)
-                updateResultText(resultText, queryType: queryType, error: nil, completion: completion)
-
-            } catch is CancellationError {
-                // Task was cancelled.
-                log("Gemini task was cancelled.")
-            } catch {
-                /**
-                 https://github.com/google/generative-ai-swift/issues/89
-
-                 String(describing: error)
-
-                 "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
-                 */
-
-                let errorString = String(describing: error)
-                let errorMessage =
-                    errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
-                let queryError = QueryError(type: .api, errorDataMessage: errorMessage)
-
-                updateResultText(nil, queryType: queryType, error: queryError, completion: completion)
-            }
-        }
-    }
 
     /// Get gemini role, currently only support "user" and "model", "model" is equal to OpenAI "assistant". https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift&hl=zh-cn#multi-turn-conversations-chat
     private func getGeminiRole(from openAIRole: String) -> String {

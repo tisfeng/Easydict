@@ -15,28 +15,11 @@ import OpenAI
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: LLMStreamService {
-    // MARK: Public
-
-    public override func translate(
-        _ text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
-    ) {
-        Task {
-            for try await result in translate(text: text, from: from, to: to) {
-                completion(result, result.error)
-            }
-        }
-    }
-
-    // MARK: Internal
-
     typealias OpenAIChatMessage = ChatQuery.ChatCompletionMessageParam
 
     let control = StreamControl()
 
-    func translate(text: String, from: Language, to: Language) -> AsyncStream<EZQueryResult> {
+    override func streamTranslate(text: String, from: Language, to: Language) -> AsyncStream<EZQueryResult> {
         AsyncStream { continuation in
             var resultText = ""
             let queryType = queryType(text: text, from: from, to: to)
@@ -45,9 +28,11 @@ public class BaseOpenAIService: LLMStreamService {
                 do {
                     result.isStreamFinished = false
 
-                    let stream = resultTextStreamTranslate(text, from: from, to: to)
-                    try await throttleUpdateResultText(stream, queryType: queryType, error: nil) { result in
-                        continuation.yield(result)
+                    let textStream = resultTextStreamTranslate(text, from: from, to: to)
+                    for try await text in textStream {
+                        updateResultText(text, queryType: queryType, error: nil) { result in
+                            continuation.yield(result)
+                        }
                     }
 
                     // Handle final result text
@@ -57,7 +42,6 @@ public class BaseOpenAIService: LLMStreamService {
                     updateResultText(resultText, queryType: queryType, error: nil) { result in
                         continuation.yield(result)
                     }
-
                 } catch {
                     // For stream requests, certain special cases may be normal for the first part of the data transfer, but the final parsing is incorrect.
                     var text: String?
@@ -101,7 +85,7 @@ public class BaseOpenAIService: LLMStreamService {
         control.cancel()
     }
 
-    override func streamTranslate(
+    override func chatStreamTranslate(
         _ text: String,
         from: Language,
         to: Language
@@ -148,6 +132,8 @@ public class BaseOpenAIService: LLMStreamService {
         return openAI.chatsStream(query: query, url: url, control: unownedControl)
     }
 
+    // MARK: - Convert Stream
+
     /// Convert chat stream to content stream
     func contentStreamTranslate(
         _ text: String,
@@ -158,7 +144,7 @@ public class BaseOpenAIService: LLMStreamService {
         AsyncThrowingStream { continuation in
             Task {
                 do {
-                    for try await result in streamTranslate(text, from: from, to: to) {
+                    for try await result in chatStreamTranslate(text, from: from, to: to) {
                         if let content = result.choices.first?.delta.content {
                             continuation.yield(content)
                         }

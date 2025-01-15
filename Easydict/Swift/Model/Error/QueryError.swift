@@ -167,4 +167,8 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
             return nil
         }
     }
+
+    public static func queryError(from error: Error?) -> QueryError? {
+        queryError(from: error, type: .api)
+    }
 }

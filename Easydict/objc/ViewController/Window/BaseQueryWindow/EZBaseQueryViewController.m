@@ -823,7 +823,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (error) {
             MMLogError(@"query error: %@", error);
         }
-        result.error = (EZQueryError *)error;
+        result.error = [EZQueryError queryErrorFrom:error];
 
         // Auto convert to traditional Chinese if needed.
         if (service.autoConvertTraditionalChinese &&
