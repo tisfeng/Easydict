@@ -97,9 +97,12 @@ func routes(_ app: Application) throws {
                         }
                     }
                 } catch {
-                    try? await writer.write(.error(error))
+                    if let queryError = QueryError.queryError(from: error) {
+                        let errorEvent = "data: \(queryError.localizedDescription)\n\n"
+                        try await writer.write(.buffer(.init(string: errorEvent)))
+                    }
                 }
-                try? await writer.write(.end)
+                try await writer.write(.end)
             })
         )
     }
