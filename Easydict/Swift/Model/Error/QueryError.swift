@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import Vapor
 
 // MARK: - QueryError
 
 @objc(EZQueryError)
 @objcMembers
-public class QueryError: NSError, LocalizedError, @unchecked Sendable {
+public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendable {
     // MARK: Lifecycle
 
     public init(
@@ -52,6 +53,7 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
         case noResult
         case timeout
         case unsupportedQueryType // If query dict type but the service does not support it
+        case unsupportedServiceType // HTTP request serviceType not supported
 
         // MARK: Public
 
@@ -75,6 +77,8 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
                 String(localized: "timeout_error")
             case .unsupportedQueryType:
                 String(localized: "unsupported_query_type_error")
+            case .unsupportedServiceType:
+                String(localized: "unsupported_service_type_error")
             }
         }
     }
@@ -170,5 +174,17 @@ public class QueryError: NSError, LocalizedError, @unchecked Sendable {
 
     public static func queryError(from error: Error?) -> QueryError? {
         queryError(from: error, type: .api)
+    }
+}
+
+// MARK: - Vapor AbortError
+
+extension QueryError {
+    public var status: HTTPResponseStatus {
+        .badRequest
+    }
+
+    public var reason: String {
+        errorDescription ?? ""
     }
 }

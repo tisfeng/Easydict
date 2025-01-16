@@ -27,31 +27,6 @@ struct TranslationResponse: Content {
     var dictionaryEntry: DictionaryEntry?
 }
 
-// MARK: - EZTranslationError
-
-enum EZTranslationError: Error, AbortError {
-    case unsupportedServiceType(String)
-    case invalidParameter(String)
-
-    // MARK: Internal
-
-    var status: HTTPResponseStatus {
-        switch self {
-        case .invalidParameter, .unsupportedServiceType:
-            .badRequest
-        }
-    }
-
-    var reason: String {
-        switch self {
-        case let .unsupportedServiceType(serviceType):
-            "Unsupported service type: \(serviceType)"
-        case let .invalidParameter(parameter):
-            "Invalid parameter: \(parameter)"
-        }
-    }
-}
-
 // MARK: - OCRRequest
 
 struct OCRRequest: Content {

@@ -21,7 +21,9 @@ func routes(_ app: Application) throws {
         let appleDictionaryNames = request.appleDictionaryNames
 
         guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
-            throw EZTranslationError.unsupportedServiceType(request.serviceType)
+            throw QueryError(
+                type: .unsupportedServiceType, message: "\(request.serviceType)"
+            )
         }
 
         if let appleDictionary = service as? AppleDictionary, let appleDictionaryNames {
@@ -29,11 +31,9 @@ func routes(_ app: Application) throws {
         }
 
         if service.isStream() {
-            throw
-                EZTranslationError
-                .invalidParameter(
-                    "\(request.serviceType) is stream service, which does not support 'translate' API. Please use 'streamTranslate."
-                )
+            let message =
+                "\(request.serviceType) is stream service, which does not support 'translate'. Please use 'streamTranslate instead."
+            throw QueryError(type: .api, message: message)
         }
 
         let result = try await service.translate(request: request)
@@ -64,19 +64,17 @@ func routes(_ app: Application) throws {
     // Currently, streamTranslate only supports base OpenAI services.
     app.post("streamTranslate") { req async throws -> Response in
         let request = try req.content.decode(TranslationRequest.self)
-        let serviceType = ServiceType(rawValue: request.serviceType)
 
-        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType)
-        else {
-            throw EZTranslationError.unsupportedServiceType(request.serviceType)
+        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
+            throw QueryError(
+                type: .unsupportedServiceType, message: "\(request.serviceType)"
+            )
         }
 
         guard let streamService = service as? LLMStreamService else {
-            throw
-                EZTranslationError
-                .invalidParameter(
-                    "\(serviceType.rawValue) isn't stream service, which does not support 'streamTranslate' API. Please use 'translate."
-                )
+            let message =
+                "\(request.serviceType) is not stream service, which does not support 'streamTranslate'. Please use 'translate' instead."
+            throw QueryError(type: .api, message: message)
         }
 
         let headers = HTTPHeaders([
