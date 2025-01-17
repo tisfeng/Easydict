@@ -7,6 +7,7 @@
 //
 
 import MJExtension
+import OpenAI
 import SelectedTextKit
 import Vapor
 
@@ -63,48 +64,54 @@ func routes(_ app: Application) throws {
 
     // Currently, streamTranslate only supports base OpenAI services.
     app.post("streamTranslate") { req async throws -> Response in
-        let request = try req.content.decode(TranslationRequest.self)
+        do {
+            let request = try req.content.decode(TranslationRequest.self)
 
-        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
-            throw QueryError(
-                type: .unsupportedServiceType, message: "\(request.serviceType)"
-            )
-        }
+            guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType)
+            else {
+                throw QueryError(
+                    type: .unsupportedServiceType, message: "\(request.serviceType)"
+                )
+            }
 
-        guard let streamService = service as? LLMStreamService else {
-            let message =
-                "\(request.serviceType) is not stream service, which does not support 'streamTranslate'. Please use 'translate' instead."
-            throw QueryError(type: .api, message: message)
-        }
+            guard let streamService = service as? LLMStreamService else {
+                let message =
+                    "\(request.serviceType) is not stream service, which does not support 'streamTranslate'. Please use 'translate' instead."
+                throw QueryError(type: .api, message: message)
+            }
 
-        let headers = HTTPHeaders([
-            ("Content-Type", "text/event-stream"),
-            ("Cache-Control", "no-cache"),
-            ("Connection", "keep-alive"),
-        ])
+            let headers = HTTPHeaders([
+                ("Content-Type", "text/event-stream"),
+                ("Cache-Control", "no-cache"),
+                ("Connection", "keep-alive"),
+            ])
 
-        return Response(
-            headers: headers,
-            body: .init(asyncStream: { writer in
+            let chatStream = try await streamService.streamTranslate(request: request)
+            let jsonStream = try await chatStreamToJSONStream(chatStream: chatStream)
+
+            let asyncBodyStream: @Sendable (AsyncBodyStreamWriter) async throws -> () = { writer in
                 do {
-                    let chatStreamResults = try await streamService.streamTranslate(
-                        request: request
-                    )
-                    for try await streamResult in chatStreamResults {
-                        if let json = streamResult.jsonString {
-                            let event = "data: \(json)\n\n"
-                            try await writer.write(.buffer(.init(string: event)))
-                        }
+                    for try await json in jsonStream {
+                        // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+                        let data = "data: \(json)\n\n"
+                        try await writer.write(.buffer(.init(string: data)))
                     }
+                    try await writer.write(.end)
                 } catch {
                     if let queryError = QueryError.queryError(from: error) {
-                        let errorEvent = "data: \(queryError.localizedDescription)\n\n"
-                        try await writer.write(.buffer(.init(string: errorEvent)))
+                        let errorData = "data: \(queryError.localizedDescription)\n\n"
+                        try await writer.write(.buffer(.init(string: errorData)))
                     }
                 }
-                try await writer.write(.end)
-            })
-        )
+            }
+
+            return Response(
+                headers: headers,
+                body: .init(asyncStream: asyncBodyStream)
+            )
+        } catch {
+            throw QueryError.queryError(from: error) ?? .init(type: .api)
+        }
     }
 
     /// OCR image data up to 10MB. https://docs.vapor.codes/basics/routing/
@@ -141,5 +148,34 @@ func routes(_ app: Application) throws {
     app.get("selectedText") { _ async throws -> GetSelectedTextResponse in
         let selectedText = try await getSelectedText()
         return GetSelectedTextResponse(selectedText: selectedText)
+    }
+}
+
+/// Convert chat stream to json stream
+func chatStreamToJSONStream(chatStream: AsyncThrowingStream<ChatStreamResult, Error>) async throws
+    -> AsyncThrowingStream<String, Error> {
+    var json: String?
+
+    // Check first element for potential errors
+    var iterator = chatStream.makeAsyncIterator()
+    if let firstResult = try await iterator.next() {
+        json = firstResult.jsonString
+    }
+
+    return AsyncThrowingStream<String, Error> { continuation in
+        continuation.yield(json ?? "")
+
+        Task {
+            do {
+                for try await chatResult in chatStream {
+                    if let json = chatResult.jsonString {
+                        continuation.yield(json)
+                    }
+                }
+                continuation.finish()
+            } catch {
+                continuation.finish(throwing: error)
+            }
+        }
     }
 }
