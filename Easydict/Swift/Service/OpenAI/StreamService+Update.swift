@@ -1,5 +1,5 @@
 //
-//  LLMStreamService+Update.swift
+//  StreamService+Update.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/1/18.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension LLMStreamService {
+extension StreamService {
     /// Throttle update result text, avoid update UI too frequently.
     func throttleUpdateResultText(
         _ textStream: AsyncThrowingStream<String, Error>,

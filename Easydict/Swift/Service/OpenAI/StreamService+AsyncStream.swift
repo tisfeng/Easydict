@@ -1,5 +1,5 @@
 //
-//  LLMStreamService+Stream.swift
+//  StreamService+Stream.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/1/18.
@@ -11,7 +11,7 @@ import OpenAI
 
 // MARK: - Stream Translate
 
-extension LLMStreamService {
+extension StreamService {
     func chatStreamTranslate(
         _ text: String,
         from: Language,

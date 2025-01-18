@@ -73,7 +73,7 @@ func routes(_ app: Application) throws {
             )
         }
 
-        guard let streamService = service as? LLMStreamService else {
+        guard let streamService = service as? StreamService else {
             let message =
                 "\(request.serviceType) is not stream service, which does not support 'streamTranslate'. Please use 'translate' instead."
             throw QueryError(type: .api, message: message)

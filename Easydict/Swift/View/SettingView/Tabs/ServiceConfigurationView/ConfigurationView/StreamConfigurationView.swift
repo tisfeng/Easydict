@@ -17,7 +17,7 @@ struct StreamConfigurationView: View {
     // MARK: Lifecycle
 
     init(
-        service: LLMStreamService,
+        service: StreamService,
         showNameSection: Bool = false,
         showAPIKeySection: Bool = true,
         showEndpointSection: Bool = true,
@@ -54,7 +54,7 @@ struct StreamConfigurationView: View {
 
     // MARK: Internal
 
-    let service: LLMStreamService
+    let service: StreamService
 
     let showNameSection: Bool
     let showAPIKeySection: Bool

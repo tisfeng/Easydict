@@ -269,7 +269,7 @@
     mm_weakify(self);
     
     if ([self isLLLStreamService:result.service]) {
-        EZLLMStreamService *service = (EZLLMStreamService *)result.service;
+        EZStreamService *service = (EZStreamService *)result.service;
         NSString *model = service.model;
         self.serviceModelButton.title = model;
         // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
@@ -438,11 +438,11 @@
 }
 
 - (BOOL)isLLLStreamService:(EZQueryService *)service {
-    return [service isKindOfClass:[EZLLMStreamService class]];
+    return [service isKindOfClass:[EZStreamService class]];
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
+    EZStreamService *service = (EZStreamService *)self.result.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.validModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
@@ -453,7 +453,7 @@
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
-    EZLLMStreamService *service = (EZLLMStreamService *)self.result.service;
+    EZStreamService *service = (EZStreamService *)self.result.service;
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;

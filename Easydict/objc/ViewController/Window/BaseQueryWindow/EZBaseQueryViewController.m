@@ -1202,8 +1202,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceTypeWithUniqueIdentifier windowType:self.windowType];
 
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
-            if ([service isKindOfClass:EZLLMStreamService.class]) {
-                [((EZLLMStreamService *)service) cancelSubscribers];
+            if ([service isKindOfClass:EZStreamService.class]) {
+                [((EZStreamService *)service) cancelSubscribers];
             }
 
             NSInteger index = [self.serviceTypeIds indexOfObject:serviceTypeWithUniqueIdentifier];

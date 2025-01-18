@@ -173,10 +173,10 @@ private class ServiceItemViewModel: ObservableObject {
 
     // MARK: Public
 
-    /// Try to enable the service, if the service is LLMStreamService, we need to validate it first.
+    /// Try to enable the service, if the service is StreamService, we need to validate it first.
     public func tryEnableService() {
-        // If service is not LLMStreamService, we can enable it directly
-        if !service.isKind(of: LLMStreamService.self) {
+        // If service is not StreamService, we can enable it directly
+        if !service.isKind(of: StreamService.self) {
             updateServiceStatus(enabled: true)
             return
         }

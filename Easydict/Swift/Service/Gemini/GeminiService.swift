@@ -14,7 +14,7 @@ import GoogleGenerativeAI
 
 /// Gemini Docs: https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=swift
 @objc(EZGeminiService)
-public final class GeminiService: LLMStreamService {
+public final class GeminiService: StreamService {
     // MARK: Public
 
     public override func serviceType() -> ServiceType {
@@ -83,8 +83,8 @@ public final class GeminiService: LLMStreamService {
                 do {
                     let systemPrompt =
                         queryType == .dictionary
-                            ? LLMStreamService.dictSystemPrompt
-                            : LLMStreamService.translationSystemPrompt
+                            ? StreamService.dictSystemPrompt
+                            : StreamService.translationSystemPrompt
 
                     var enableSystemPromptInChats = false
                     var systemInstruction: ModelContent? = try ModelContent(

@@ -1,5 +1,5 @@
 //
-//  LLMStreamService.swift
+//  StreamService.swift
 //  Easydict
 //
 //  Created by tisfeng on 2024/5/20.
@@ -12,11 +12,11 @@ import Foundation
 import OpenAI
 import SwiftUI
 
-// MARK: - LLMStreamService
+// MARK: - StreamService
 
 @objcMembers
-@objc(EZLLMStreamService)
-public class LLMStreamService: QueryService {
+@objc(EZStreamService)
+public class StreamService: QueryService {
     // MARK: Public
 
     public override func isStream() -> Bool {

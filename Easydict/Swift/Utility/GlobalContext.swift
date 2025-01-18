@@ -55,14 +55,14 @@ class GlobalContext: NSObject {
         logInfo("reloadLLMServicesSubscribers")
 
         for service in services {
-            if let llmService = service as? LLMStreamService {
+            if let llmService = service as? StreamService {
                 llmService.cancelSubscribers()
             }
         }
         let allServiceTypes = EZLocalStorage.shared().allServiceTypes(EZWindowType.main)
         services = ServiceTypes.shared().services(fromTypes: allServiceTypes)
         for service in services {
-            if let llmService = service as? LLMStreamService {
+            if let llmService = service as? StreamService {
                 llmService.setupSubscribers()
             }
         }

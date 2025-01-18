@@ -1,5 +1,5 @@
 //
-//  LLMStreamService+Configuation.swift
+//  StreamService+Configuation.swift
 //  Easydict
 //
 //  Created by tisfeng on 2024/6/28.
@@ -9,7 +9,7 @@
 import Defaults
 import Foundation
 
-extension LLMStreamService {
+extension StreamService {
     func setupSubscribers() {
         logInfo("setup subscribers: \(self), windowType: \(windowType.rawValue)")
 

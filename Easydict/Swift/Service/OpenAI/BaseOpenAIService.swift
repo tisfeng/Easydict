@@ -14,7 +14,7 @@ import OpenAI
 
 @objcMembers
 @objc(EZBaseOpenAIService)
-public class BaseOpenAIService: LLMStreamService {
+public class BaseOpenAIService: StreamService {
     typealias OpenAIChatMessage = ChatQuery.ChatCompletionMessageParam
 
     let control = StreamControl()

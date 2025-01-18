@@ -10,7 +10,7 @@ import Foundation
 
 // swiftlint:disable all
 
-extension LLMStreamService {
+extension StreamService {
     static let translationSystemPrompt = """
     You are a translation expert proficient in various languages, focusing solely on translating text without interpretation. You accurately understand the meanings of proper nouns, idioms, metaphors, allusions, and other obscure words in sentences, translating them appropriately based on the context and language environment. The translation should be natural and fluent. Only return the translated text, without including redundant quotes or additional notes.
     """
@@ -149,7 +149,7 @@ extension LLMStreamService {
         ].flatMap { $0 }
 
         var messages: [ChatMessage] = enableSystemPrompt
-            ? [.init(role: .system, content: LLMStreamService.translationSystemPrompt)] : []
+            ? [.init(role: .system, content: StreamService.translationSystemPrompt)] : []
 
         messages.append(contentsOf: chineseFewShot)
 
@@ -344,7 +344,7 @@ extension LLMStreamService {
         ].flatMap { $0 }
 
         var messages: [ChatMessage] = enableSystemPrompt
-            ? [ChatMessage(role: .system, content: LLMStreamService.translationSystemPrompt)] : []
+            ? [ChatMessage(role: .system, content: StreamService.translationSystemPrompt)] : []
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
@@ -672,7 +672,7 @@ extension LLMStreamService {
         ].flatMap { $0 }
 
         var messages: [ChatMessage] = enableSystemPrompt
-            ? [ChatMessage(role: .system, content: LLMStreamService.dictSystemPrompt)]
+            ? [ChatMessage(role: .system, content: StreamService.dictSystemPrompt)]
             : []
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {

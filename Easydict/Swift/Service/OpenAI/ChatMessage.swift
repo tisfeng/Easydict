@@ -11,9 +11,9 @@ import Foundation
 func systemMessage(queryType: EZQueryTextType) -> ChatMessage {
     switch queryType {
     case .dictionary:
-        .init(role: .system, content: LLMStreamService.dictSystemPrompt)
+        .init(role: .system, content: StreamService.dictSystemPrompt)
     default:
-        .init(role: .system, content: LLMStreamService.translationSystemPrompt)
+        .init(role: .system, content: StreamService.translationSystemPrompt)
     }
 }
 

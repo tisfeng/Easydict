@@ -1,5 +1,5 @@
 //
-//  QueryService+Stream.swift
+//  StreamService+Request.swift
 //  Easydict
 //
 //  Created by tisfeng on 2024/7/27.
@@ -9,7 +9,7 @@
 import Foundation
 import OpenAI
 
-extension LLMStreamService {
+extension StreamService {
     func streamTranslate(request: TranslationRequest) async throws
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         let text = request.text
