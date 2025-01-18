@@ -9,7 +9,6 @@
 import Defaults
 import Foundation
 import GoogleGenerativeAI
-import OpenAI
 
 // MARK: - GeminiService
 
@@ -65,52 +64,6 @@ public final class GeminiService: LLMStreamService {
             .tamil,
             .urdu,
         ]
-    }
-
-    override func streamTranslate(text: String, from: Language, to: Language)
-        -> AsyncStream<EZQueryResult> {
-        AsyncStream { continuation in
-            Task {
-                var resultText = ""
-                let queryType = queryType(text: text, from: from, to: to)
-                result.isStreamFinished = false
-
-                let contentStream = contentStreamTranslate(text, from: from, to: to)
-                for try await content in contentStream {
-                    try Task.checkCancellation()
-
-                    resultText += content
-                    updateResultText(resultText, queryType: queryType, error: nil) { result in
-                        continuation.yield(result)
-                    }
-                }
-
-                result.isStreamFinished = true
-                resultText = getFinalResultText(resultText)
-                updateResultText(resultText, queryType: queryType, error: nil) { result in
-                    continuation.yield(result)
-                }
-                continuation.finish()
-            }
-        }
-    }
-
-    override func chatStreamTranslate(
-        _ text: String,
-        from: Language,
-        to: Language
-    )
-        -> AsyncThrowingStream<ChatStreamResult, Error> {
-        AsyncThrowingStream { continuation in
-            Task {
-                let contentStream = contentStreamTranslate(text, from: from, to: to)
-                for try await content in contentStream {
-                    let chatStreamResult = try textToChatStreamResult(content, model: model)
-                    continuation.yield(chatStreamResult)
-                }
-                continuation.finish()
-            }
-        }
     }
 
     override func contentStreamTranslate(
@@ -248,23 +201,3 @@ enum GeminiModel: String, CaseIterable {
 }
 
 // swiftlint:enable identifier_name
-
-func textToChatStreamResult(_ text: String, model: String) throws -> ChatStreamResult {
-    let json: [String: Any] = [
-        "id": "chatcmpl-\(UUID().uuidString)",
-        "object": "chat.completion.chunk",
-        "created": Date().timeIntervalSince1970,
-        "model": model,
-        "choices": [
-            [
-                "index": 0,
-                "delta": [
-                    "content": text,
-                ],
-            ],
-        ],
-    ]
-
-    let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
-    return try JSONDecoder().decode(ChatStreamResult.self, from: jsonData)
-}
