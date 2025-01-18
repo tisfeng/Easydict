@@ -249,49 +249,6 @@ public class LLMStreamService: QueryService {
         fatalError(mustOverride)
     }
 
-    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<
-        ChatStreamResult, Error
-    > {
-        let text = request.text
-        var from = Language.auto
-        let to = Language.language(fromCode: request.targetLanguage)
-
-        if let sourceLanguage = request.sourceLanguage {
-            from = Language.language(fromCode: sourceLanguage)
-        }
-
-        if from == .auto {
-            let queryModel = try await EZDetectManager().detectText(text)
-            from = queryModel.detectedLanguage
-        }
-
-        let (prehandled, result) = try await prehandleQueryText(text: text, from: from, to: to)
-        if prehandled {
-            logInfo("prehandled query text: \(text.truncated())")
-            if let error = result.error {
-                throw error
-            }
-        }
-
-        return chatStreamTranslate(text, from: from, to: to)
-    }
-
-    func chatStreamTranslate(
-        _ text: String,
-        from: Language,
-        to: Language
-    )
-        -> AsyncThrowingStream<ChatStreamResult, Error> {
-        // Default is not implemented.
-        let unimplementedError = QueryError(
-            type: .api,
-            message: "`\(serviceType().rawValue)` streamTranslate is not implemented"
-        )
-        return AsyncThrowingStream { continuation in
-            continuation.finish(throwing: unimplementedError)
-        }
-    }
-
     func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         switch chatQuery.queryType {
         case .dictionary:
@@ -350,10 +307,97 @@ public class LLMStreamService: QueryService {
     /// Cancel stream request manually.
     func cancelStream() {}
 
+    // MARK: - Stream Translate
+
+    func streamTranslate(request: TranslationRequest) async throws -> AsyncThrowingStream<
+        ChatStreamResult, Error
+    > {
+        let text = request.text
+        var from = Language.auto
+        let to = Language.language(fromCode: request.targetLanguage)
+
+        if let sourceLanguage = request.sourceLanguage {
+            from = Language.language(fromCode: sourceLanguage)
+        }
+
+        if from == .auto {
+            let queryModel = try await EZDetectManager().detectText(text)
+            from = queryModel.detectedLanguage
+        }
+
+        let (prehandled, result) = try await prehandleQueryText(text: text, from: from, to: to)
+        if prehandled {
+            logInfo("prehandled query text: \(text.truncated())")
+            if let error = result.error {
+                throw error
+            }
+        }
+
+        return chatStreamTranslate(text, from: from, to: to)
+    }
+
+    func chatStreamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> AsyncThrowingStream<ChatStreamResult, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                let contentStream = contentStreamTranslate(text, from: from, to: to)
+                for try await content in contentStream {
+                    let chatStreamResult = try textToChatStreamResult(content, model: model)
+                    continuation.yield(chatStreamResult)
+                }
+                continuation.finish()
+            }
+        }
+    }
+
+    func contentStreamTranslate(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream { continuation in
+            continuation.finish(
+                throwing:
+                QueryError(
+                    type: .api,
+                    message: "`\(serviceType().rawValue)` contentStreamTranslate is not implemented"
+                )
+            )
+        }
+    }
+
     /// Stream translate text, return EZQueryResult stream.
     /// - Note: This func do not throttle result.
     func streamTranslate(text: String, from: Language, to: Language) -> AsyncStream<EZQueryResult> {
-        fatalError(mustOverride)
+        AsyncStream { continuation in
+            Task {
+                var resultText = ""
+                let queryType = queryType(text: text, from: from, to: to)
+                result.isStreamFinished = false
+
+                let contentStream = contentStreamTranslate(text, from: from, to: to)
+                for try await content in contentStream {
+                    try Task.checkCancellation()
+
+                    resultText += content
+                    updateResultText(resultText, queryType: queryType, error: nil) { result in
+                        continuation.yield(result)
+                    }
+                }
+
+                result.isStreamFinished = true
+                resultText = getFinalResultText(resultText)
+                updateResultText(resultText, queryType: queryType, error: nil) { result in
+                    continuation.yield(result)
+                }
+                continuation.finish()
+            }
+        }
     }
 
     /// Convert AsyncStream<EZQueryResult> to AsyncThrowingStream<String, Error>
@@ -377,76 +421,6 @@ public class LLMStreamService: QueryService {
                     continuation.finish(throwing: error)
                 }
             }
-        }
-    }
-}
-
-extension LLMStreamService {
-    /// Throttle update result text, avoid update UI too frequently.
-    func throttleUpdateResultText(
-        _ textStream: AsyncThrowingStream<String, Error>,
-        queryType: EZQueryTextType,
-        error: Error?,
-        interval: TimeInterval = 0.2,
-        completion: @escaping (EZQueryResult) -> ()
-    ) async throws {
-        for try await text in textStream._throttle(for: .seconds(interval)) {
-            updateResultText(text, queryType: queryType, error: error, completion: completion)
-        }
-    }
-
-    func updateResultText(
-        _ resultText: String?,
-        queryType: EZQueryTextType,
-        error: Error?,
-        completion: @escaping (EZQueryResult) -> ()
-    ) {
-        if result.isStreamFinished {
-            cancelStream()
-
-            var queryError: QueryError?
-
-            if let error {
-                queryError = .queryError(from: error)
-            } else if resultText?.isEmpty ?? true {
-                // If error is nil but result text is also empty, we should report error.
-                queryError = .init(type: .noResult)
-            }
-
-            result.error = queryError
-            completion(result)
-            return
-        }
-
-        var translatedTexts: [String]?
-        if let resultText {
-            translatedTexts = [resultText.trim()]
-        }
-
-        // If error is not nil, means stream is finished.
-        result.isStreamFinished = error != nil
-        result.translatedResults = translatedTexts
-
-        let updateCompletion = {
-            self.result.error = .queryError(from: error)
-            completion(self.result)
-        }
-
-        switch queryType {
-        case .dictionary:
-            if error != nil {
-                result.showBigWord = false
-                result.translateResultsTopInset = 0
-                updateCompletion()
-                return
-            }
-
-            result.showBigWord = true
-            result.translateResultsTopInset = 6
-            updateCompletion()
-
-        default:
-            updateCompletion()
         }
     }
 }

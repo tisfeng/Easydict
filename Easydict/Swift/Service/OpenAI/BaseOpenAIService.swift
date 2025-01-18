@@ -135,7 +135,7 @@ public class BaseOpenAIService: LLMStreamService {
     // MARK: - Convert Stream
 
     /// Convert chat stream to content stream
-    func contentStreamTranslate(
+    override func contentStreamTranslate(
         _ text: String,
         from: Language,
         to: Language

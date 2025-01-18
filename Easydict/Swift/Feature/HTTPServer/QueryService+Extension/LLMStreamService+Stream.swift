@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OpenAI
 import Vapor
 
 extension LLMStreamService {

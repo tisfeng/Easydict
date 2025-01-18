@@ -95,6 +95,7 @@
 		0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036463692CB62B8900D0D6CC /* AppleService.swift */; };
 		0364636C2CB6B4E100D0D6CC /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0364636B2CB6B4DF00D0D6CC /* Test.swift */; };
 		0364EC8A2C208EB50036B61B /* KeySender in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC892C208EB50036B61B /* KeySender */; };
+		0365B0672D3BE26000865F46 /* LLMStreamService+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0662D3BE26000865F46 /* LLMStreamService+Update.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
@@ -512,6 +513,7 @@
 		0361967A2A0037F700806370 /* NSData+EZMD5.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+EZMD5.m"; sourceTree = "<group>"; };
 		036463692CB62B8900D0D6CC /* AppleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleService.swift; sourceTree = "<group>"; };
 		0364636B2CB6B4DF00D0D6CC /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		0365B0662D3BE26000865F46 /* LLMStreamService+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LLMStreamService+Update.swift"; sourceTree = "<group>"; };
 		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
@@ -1417,6 +1419,7 @@
 			isa = PBXGroup;
 			children = (
 				0387FB792BFBA990000A7A82 /* LLMStreamService.swift */,
+				0365B0662D3BE26000865F46 /* LLMStreamService+Update.swift */,
 				03FA677D2C2EFB10000FEA64 /* LLMStreamService+Configuration.swift */,
 				03779F0C2BB256A7008D3C42 /* LLMStreamService+Prompt.swift */,
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
@@ -3194,6 +3197,7 @@
 				03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
+				0365B0672D3BE26000865F46 /* LLMStreamService+Update.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
