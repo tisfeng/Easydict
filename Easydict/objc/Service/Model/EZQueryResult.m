@@ -241,14 +241,7 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (NSString *)errorMessage {
-    NSString *errorMessage = self.error.localizedDescription;
-    if ([self.error isMemberOfClass:[EZQueryError class]]) {
-        NSString *errorDataMessage = self.error.errorDataMessage;
-        if (errorDataMessage.length) {
-            errorMessage = [NSString stringWithFormat:@"%@\n\n%@", errorMessage, errorDataMessage];
-        }
-    }
-    return errorMessage;
+    return self.error.localizedDescription;
 }
 
 #pragma mark -

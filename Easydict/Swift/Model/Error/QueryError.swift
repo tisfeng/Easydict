@@ -165,7 +165,7 @@ public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendabl
             if let queryError = error as? QueryError {
                 return queryError
             } else {
-                return .init(type: type, message: error.localizedDescription)
+                return .init(type: type, errorDataMessage: String(describing: error))
             }
         } else {
             return nil

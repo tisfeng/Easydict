@@ -178,6 +178,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL showReplaceButton;
 
+/// self.error.localizedDescription
 @property (readonly, nonatomic, copy, nullable) NSString *errorMessage;
 
 
