@@ -34,7 +34,12 @@ extension StreamService {
             var queryError: QueryError?
 
             if let error {
-                queryError = .queryError(from: error)
+                let nsError = error as NSError
+                if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
+                    // Do not throw error if user cancelled request.
+                } else {
+                    queryError = .queryError(from: error)
+                }
             } else if resultText?.isEmpty ?? true {
                 // If error is nil but result text is also empty, we should report error.
                 queryError = .init(type: .noResult)
