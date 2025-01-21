@@ -91,7 +91,7 @@
     self.serviceModelButton.cornerRadius = 3.0;
     self.serviceModelButton.titleFont = [NSFont systemFontOfSize:10];
     self.serviceModelButton.lineBreakMode = NSLineBreakByClipping;
-    
+
     [self.serviceModelButton excuteLight:^(EZButton *button) {
         button.titleColor = [NSColor mm_colorWithHexString:@"#666666"];
         button.backgroundColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
@@ -275,7 +275,8 @@
         // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
         self.serviceModelButton.hoverTitle = model;
         self.serviceModelButton.highlightTitle = model;
-        
+        self.serviceModelButton.toolTip = model;
+
         [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
             [self showModelSelectionMenu:button];
