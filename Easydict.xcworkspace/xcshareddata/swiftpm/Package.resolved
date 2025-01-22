@@ -1,5 +1,5 @@
 {
-  "originHash" : "c1d6c6e62d3c1395188892fa63ae66c4b7869c09cdd6525eead7da2f8c4daff2",
+  "originHash" : "994b0f1e4f00561f4af5f1b521ad1cc030da7584a336b185424a98a280a70b74",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -275,8 +275,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/OpenAI",
       "state" : {
-        "branch" : "dev",
-        "revision" : "85d985a1e794500bd348cec4dc341902c372818e"
+        "revision" : "ebfb671f5b6eeb65e666016a3ede942b928c17a7"
       }
     },
     {

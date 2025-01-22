@@ -1,5 +1,5 @@
 //
-//  StreamService+Update.swift
+//  StreamService+UpdateResult.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/1/18.

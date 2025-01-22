@@ -1,5 +1,5 @@
 //
-//  StreamService+Stream.swift
+//  StreamService+AsyncStream.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/1/18.
@@ -90,7 +90,7 @@ extension StreamService {
             Task {
                 do {
                     for try await content in contentStream {
-                        let chatStreamResult = try textToChatStreamResult(content, model: model)
+                        let chatStreamResult = ChatStreamResult.create(content: content, model: model)
                         continuation.yield(chatStreamResult)
                     }
                     continuation.finish()
@@ -124,24 +124,17 @@ extension StreamService {
             }
         }
     }
+}
 
-    func textToChatStreamResult(_ text: String, model: String) throws -> ChatStreamResult {
-        let json: [String: Any] = [
-            "id": "chatcmpl-\(UUID().uuidString)",
-            "object": "chat.completion.chunk",
-            "created": Date().timeIntervalSince1970,
-            "model": model,
-            "choices": [
-                [
-                    "index": 0,
-                    "delta": [
-                        "content": text,
-                    ],
-                ],
-            ],
-        ]
-
-        let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
-        return try JSONDecoder().decode(ChatStreamResult.self, from: jsonData)
+extension ChatStreamResult {
+    static func create(content: String, model: String) -> ChatStreamResult {
+        .init(
+            id: "chatcmpl-\(UUID().uuidString)",
+            created: TimeInterval(Int(Date().timeIntervalSince1970)),
+            model: model,
+            choices: [
+                .init(delta: .init(content: content)),
+            ]
+        )
     }
 }

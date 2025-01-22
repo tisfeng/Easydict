@@ -95,7 +95,7 @@
 		0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036463692CB62B8900D0D6CC /* AppleService.swift */; };
 		0364636C2CB6B4E100D0D6CC /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0364636B2CB6B4DF00D0D6CC /* Test.swift */; };
 		0364EC8A2C208EB50036B61B /* KeySender in Frameworks */ = {isa = PBXBuildFile; productRef = 0364EC892C208EB50036B61B /* KeySender */; };
-		0365B0672D3BE26000865F46 /* StreamService+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0662D3BE26000865F46 /* StreamService+Update.swift */; };
+		0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */; };
 		0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
@@ -514,7 +514,7 @@
 		0361967A2A0037F700806370 /* NSData+EZMD5.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+EZMD5.m"; sourceTree = "<group>"; };
 		036463692CB62B8900D0D6CC /* AppleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleService.swift; sourceTree = "<group>"; };
 		0364636B2CB6B4DF00D0D6CC /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
-		0365B0662D3BE26000865F46 /* StreamService+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Update.swift"; sourceTree = "<group>"; };
+		0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+UpdateResult.swift"; sourceTree = "<group>"; };
 		0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+AsyncStream.swift"; sourceTree = "<group>"; };
 		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
@@ -1422,7 +1422,7 @@
 			children = (
 				03A5E0912D3C020200FF7D95 /* StreamService.swift */,
 				0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */,
-				0365B0662D3BE26000865F46 /* StreamService+Update.swift */,
+				0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */,
 				03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */,
 				03779F0C2BB256A7008D3C42 /* StreamService+Prompt.swift */,
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
@@ -3202,7 +3202,7 @@
 				03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
-				0365B0672D3BE26000865F46 /* StreamService+Update.swift in Sources */,
+				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
@@ -3749,8 +3749,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tisfeng/OpenAI";
 			requirement = {
-				branch = dev;
-				kind = branch;
+				kind = revision;
+				revision = ebfb671f5b6eeb65e666016a3ede942b928c17a7;
 			};
 		};
 		038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
