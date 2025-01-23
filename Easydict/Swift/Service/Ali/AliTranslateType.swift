@@ -63,6 +63,7 @@ struct AliTranslateType: Equatable {
         .croatian: "hbs",
         .mongolian: "mn",
         .hebrew: "he",
+        .georgian: "ka",
     ]
 
     var sourceLanguage: String

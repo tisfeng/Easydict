@@ -180,6 +180,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                         EZLanguageCroatian, @"hr",
                                         EZLanguageMongolian, @"mn",
                                         EZLanguageHebrew, @"iw",
+                                        EZLanguageGeorgian, @"ka",
                                         nil];
     return orderedDict;
 }

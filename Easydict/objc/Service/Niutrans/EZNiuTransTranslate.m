@@ -101,6 +101,7 @@
                                         EZLanguageCroatian, @"hr",
                                         EZLanguageMongolian, @"mn",
                                         EZLanguageHebrew, @"he",
+                                        EZLanguageGeorgian, @"jy",
                                         nil];
     return orderedDict;
 }

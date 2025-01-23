@@ -210,6 +210,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                                         EZLanguageCroatian, @"hrv",
                                         EZLanguageMongolian, @"mon",
                                         EZLanguageHebrew, @"heb",
+                                        EZLanguageGeorgian, @"geo",
                                         nil];
     return orderedDict;
 }

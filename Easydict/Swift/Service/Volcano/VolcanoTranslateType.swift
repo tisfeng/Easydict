@@ -61,6 +61,7 @@ struct VolcanoTranslateType: Equatable {
         .classicalChinese: "lzh",
         .serbian: "sr",
         .hungarian: "hu",
+        .georgian: "ka",
     ]
 
     var sourceLanguage: String
