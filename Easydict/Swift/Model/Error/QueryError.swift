@@ -117,7 +117,7 @@ public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendabl
     }
 
     public override var description: String {
-        "\(type.rawValue): \(message ?? "")"
+        errorDescription ?? ""
     }
 
     public static func error(type: ErrorType) -> QueryError {
