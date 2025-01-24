@@ -144,6 +144,8 @@
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039D119829D5E26300C93F46 /* EZAudioUtils.m */; };
 		03A173E72CD120E600791B51 /* SelectedTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03A173E62CD120E600791B51 /* SelectedTextKit */; };
+		03A220062D42414C00788927 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		03A220072D42414C00788927 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
@@ -295,6 +297,7 @@
 		27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE95262B3DC55F000AD654 /* EasydictApp.swift */; };
 		27FE98092B3DD536000AD654 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE98082B3DD536000AD654 /* SettingView.swift */; };
 		27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */; };
+		5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA77A6C61B54C27803F5D7D /* Sentry */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
 		6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */; };
 		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
@@ -908,6 +911,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03A220072D42414C00788927 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,6 +920,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */,
+				03A220062D42414C00788927 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -949,6 +954,7 @@
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
 				03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */,
+				5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2721,6 +2727,7 @@
 				C99EEB162385796700FEE666 /* Resources */,
 				124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */,
 				C98CAE74239F45DA005F7DCA /* CopyFiles */,
+				0A10B7439899441180660AF2 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -2752,6 +2759,7 @@
 				03A173E62CD120E600791B51 /* SelectedTextKit */,
 				03E534BB2CE0D38C00B37264 /* AcknowList */,
 				0354E91F2D3601500050E5BE /* AsyncAlgorithms */,
+				8FA77A6C61B54C27803F5D7D /* Sentry */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2818,6 +2826,7 @@
 				03A173E52CD120E600791B51 /* XCRemoteSwiftPackageReference "SelectedTextKit" */,
 				03E534BA2CE0D38C00B37264 /* XCRemoteSwiftPackageReference "AcknowList" */,
 				0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+				61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -2905,6 +2914,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT/$TARGET_NAME\"\n";
+		};
+		0A10B7439899441180660AF2 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/sentry-upload-debug-symbols.log",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=izual\nexport SENTRY_PROJECT=easydict\nexport SENTRY_AUTH_TOKEN=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\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
 		124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3583,9 +3610,11 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 43;
 				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_TESTING_SEARCH_PATHS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
@@ -3623,9 +3652,11 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 43;
 				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_TESTING_SEARCH_PATHS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
@@ -3841,6 +3872,14 @@
 				minimumVersion = 5.8.1;
 			};
 		};
+		61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Clipy/KeyHolder.git";
@@ -3972,6 +4011,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		8FA77A6C61B54C27803F5D7D /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 		967712E92B5B913600105E0F /* KeyHolder */ = {
 			isa = XCSwiftPackageProductDependency;
