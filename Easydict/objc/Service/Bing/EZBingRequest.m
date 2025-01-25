@@ -210,6 +210,9 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         
         EZBingLanguageVoice *hebrewVoice = [EZBingLanguageVoice voiceWithLanguage:@"he-IL" voiceName:@"he-IL-HilaNeural"];
         [allLanguageVoices setObject:hebrewVoice forKey:EZLanguageHebrew];
+        
+        EZBingLanguageVoice *georgianVoice = [EZBingLanguageVoice voiceWithLanguage:@"ka-GE" voiceName:@"ka-GE-EkaNeural"];
+        [allLanguageVoices setObject:georgianVoice forKey:EZLanguageGeorgian];
     });
     
     return allLanguageVoices;

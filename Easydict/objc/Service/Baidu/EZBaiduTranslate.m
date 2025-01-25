@@ -156,7 +156,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduTranslateURL, from, to, text];
 }
 
-// get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
+/// Baidu Translate supported languages: https://fanyi-api.baidu.com/product/113
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
@@ -210,6 +210,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                                         EZLanguageCroatian, @"hrv",
                                         EZLanguageMongolian, @"mon",
                                         EZLanguageHebrew, @"heb",
+                                        EZLanguageGeorgian, @"geo",
                                         nil];
     return orderedDict;
 }

@@ -261,6 +261,7 @@ static EZAppleService *_instance;
                                         EZLanguageCroatian, NLLanguageCroatian,
                                         EZLanguageMongolian, NLLanguageMongolian, // mn-Mong
                                         EZLanguageHebrew, NLLanguageHebrew,
+                                        EZLanguageGeorgian, NLLanguageGeorgian,
                                         nil];
 
     return orderedDict;
