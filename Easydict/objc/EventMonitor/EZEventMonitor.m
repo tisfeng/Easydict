@@ -648,9 +648,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.apple.iWork.Pages",   // Pages
             @"com.apple.iWork.Keynote", // Keynote
             @"com.apple.iWork.Numbers", // Numbers
-            @"com.apple.freeform",      // Freeform 无边记 // Fix:  https://github.com/tisfeng/Easydict/issues/166
+            @"com.apple.freeform",      // Freeform 无边记 // Fix https://github.com/tisfeng/Easydict/issues/166
             @"org.mozilla.firefox", // Firefox
             @"com.openai.chat",   // ChatGPT code block return AttributeUnsupported
+            @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
         ],
 
         // kAXErrorFailure -25200
