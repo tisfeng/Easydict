@@ -630,6 +630,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.jetbrains.intellij.ce",         // IDEA
             @"com.foxitsoftware.FoxitReaderLite", // Foxit PDF Reader
             @"com.foxit-software.Foxit.PDF.Reader", // 福昕PDF阅读器 https://www.foxitsoftware.cn/pdf-reader/
+            @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
         ],
 
         // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
@@ -651,7 +652,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.apple.freeform",      // Freeform 无边记 // Fix https://github.com/tisfeng/Easydict/issues/166
             @"org.mozilla.firefox", // Firefox
             @"com.openai.chat",   // ChatGPT code block return AttributeUnsupported
-            @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
         ],
 
         // kAXErrorFailure -25200
