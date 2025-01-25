@@ -128,7 +128,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     return [NSString stringWithFormat:@"%@/?sl=%@&tl=%@&text=%@&op=translate", kGoogleTranslateURL, from, to, text];
 }
 
-
+/// Google translate support languages: https://cloud.google.com/translate/docs/languages?hl=zh-cn
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",

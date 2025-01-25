@@ -11,7 +11,7 @@ import Foundation
 struct AliTranslateType: Equatable {
     static let unsupported = AliTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
-    /// https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes#h2-url-1
+    /// Ali supported languages: https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes#h2-url-1
     static let supportLanguagesDictionary: [Language: String] = [
         .auto: "auto",
         .simplifiedChinese: "zh",

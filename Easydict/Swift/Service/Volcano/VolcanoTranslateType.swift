@@ -11,8 +11,8 @@ import Foundation
 struct VolcanoTranslateType: Equatable {
     static let unsupported = VolcanoTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
-    // https://www.volcengine.com/docs/4640/35107
-    // All languages support bidirectional translations except Slovak
+    // Volcano supported languages: https://www.volcengine.com/docs/4640/35107
+    // Volcano languages support bidirectional translations except Slovak
     static let supportLanguagesDictionary: [Language: String] = [
         .simplifiedChinese: "zh",
         .traditionalChinese: "zh-Hant",

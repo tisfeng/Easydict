@@ -43,6 +43,7 @@
     return type;
 }
 
+/// Azure transalte supported languages: https://learn.microsoft.com/zh-cn/azure/ai-services/translator/language-support
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                                                         EZLanguageAuto, @"auto-detect",

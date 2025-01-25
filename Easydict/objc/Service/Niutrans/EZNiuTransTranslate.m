@@ -48,7 +48,7 @@
     return @"https://niutrans.com";
 }
 
-// Supported languages: https://niutrans.com/documents/contents/trans_text#languageList
+/// Niutrans translate supported languages: https://niutrans.com/documents/contents/trans_text#languageList
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
