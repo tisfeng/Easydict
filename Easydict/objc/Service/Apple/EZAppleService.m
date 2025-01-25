@@ -319,7 +319,6 @@ static EZAppleService *_instance;
                                         EZLanguageTelugu, @"te",
                                         EZLanguageNorwegian, @"nb",
                                         EZLanguageHebrew, @"he",
-                                        EZLanguageGeorgian, @"ka",
                                         nil];
 
     return orderedDict;
