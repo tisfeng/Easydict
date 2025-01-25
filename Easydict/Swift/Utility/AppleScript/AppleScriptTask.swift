@@ -68,17 +68,24 @@ class AppleScriptTask: NSObject {
     @discardableResult
     static func runAppleScript(_ appleScript: String) throws -> String? {
         var errorInfo: NSDictionary?
-        let script = NSAppleScript(source: appleScript)
-        guard let output = script?.executeAndReturnError(&errorInfo) else {
-            let errorMessage =
-                errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+        guard let script = NSAppleScript(source: appleScript) else {
+            throw QueryError(
+                type: .appleScript,
+                message: "Failed to create AppleScript instance",
+                errorDataMessage: appleScript
+            )
+        }
+
+        let output = script.executeAndReturnError(&errorInfo)
+        if let errorInfo {
+            let errorMessage = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
             throw QueryError(type: .appleScript, message: errorMessage)
         }
+
         return output.stringValue
     }
 
     /// Run AppleScript with `NSAppleScript`, faster than `Process`, but requires AppleEvent permission.
-
     @discardableResult
     static func runAppleScriptWithDescriptor(_ appleScript: String) async throws
         -> NSAppleEventDescriptor {

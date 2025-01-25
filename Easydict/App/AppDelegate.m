@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "MMCrash.h"
 #import "AppDelegate+EZURLScheme.h"
 #import "Easydict-Swift.h"
 
@@ -27,23 +26,6 @@
     [self registerRouters];
     
     [[DarkModeManager manager] updateDarkMode:Configuration.shared.appearance];
-    // Change App icon manually.
-    //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
-}
-
-- (void)restartApplication {
-    NSApplication *application = [NSApplication sharedApplication];
-    [application terminate:nil];
-    
-    // Relaunch app.
-    NSString *launchPath = @"/usr/bin/open";
-    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSArray *arguments = @[bundlePath];
-    
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:launchPath];
-    [task setArguments:arguments];
-    [task launch];
 }
 
 #pragma mark - NSApplicationDelegate

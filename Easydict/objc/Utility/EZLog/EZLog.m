@@ -15,6 +15,7 @@
 @import AppCenter;
 @import AppCenterAnalytics;
 @import AppCenterCrashes;
+@import Sentry;
 
 @implementation EZLog
 
@@ -28,7 +29,26 @@
     
     // Firebase
     [FIRApp configure];
+
+    [self setupSentry];
 #endif
+}
+
++ (void)setupSentry {
+    // Sentry SDK https://izual.sentry.io/projects/easydict/getting-started/?installationMode=manual&product=performance-monitoring&product=profiling
+    [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
+        options.dsn = SecretKeyManager.keyValues[@"sentryDSN"];
+        options.debug = YES; // Enabled debug when first installing is always helpful
+
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = @(1);
+
+        options.swiftAsyncStacktraces = YES; // only applies to async code in Swift
+    }];
+
+    // Manually call startProfiler and stopProfiler to profile any code that runs in between.
+    [SentrySDK startProfiler];
 }
 
 + (void)setCrashEnabled:(BOOL)enabled {
@@ -38,6 +58,12 @@
 #endif
     // This method can only take effect after the service is started.
     [MSACCrashes setEnabled:isEnabled];
+
+    if (!isEnabled) {
+        [SentrySDK close];
+    } else {
+        [self setupSentry];
+    }
 }
 
 /// Log event.
