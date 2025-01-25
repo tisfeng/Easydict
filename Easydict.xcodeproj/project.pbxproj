@@ -2931,7 +2931,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=izual\nexport SENTRY_PROJECT=easydict\nexport SENTRY_AUTH_TOKEN=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\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=izual\nexport SENTRY_PROJECT=easydict\n\n# SENTRY_AUTH_TOKEN should be a local environment variable set in the `.zshrc` file.\n#export SENTRY_AUTH_TOKEN=xxx\n\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
 		124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
