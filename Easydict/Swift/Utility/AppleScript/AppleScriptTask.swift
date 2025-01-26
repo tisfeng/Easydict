@@ -60,8 +60,8 @@ class AppleScriptTask: NSObject {
 
     @discardableResult
     static func runAppleScript(_ appleScript: String) async throws -> String? {
-        try await Task.detached(priority: .userInitiated) {
-            try runAppleScript(appleScript)
+        try await Task { () -> String? in
+            try Self.runAppleScript(appleScript)
         }.value
     }
 
