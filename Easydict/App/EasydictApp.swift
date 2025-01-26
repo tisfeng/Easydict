@@ -76,13 +76,6 @@ struct EasydictApp: App {
                 .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
         }
 
-        // Acknowledgements window
-        Window("setting.about.acknowledgements", id: .acknowledgementsWindowId) {
-            AcknowListView()
-        }
-        .windowToolbarStyle(.unifiedCompact)
-        .defaultSize(width: 800, height: 600)
-
         // About window
         Window("setting.about", id: .aboutWindowId) {
             AboutTab()
