@@ -53,7 +53,7 @@ class BuiltInAIService: BaseOpenAIService {
             "gemma-2-9b-it",
             // gemma2-9b-it, 8k, 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD | google/gemma-2-9b-it(SiliconFlow)
             "llama-3-70b", // llama3-70b-8192, 8k, 30 RPM, 14,400 RPD, 6,000 TPM, 500,000 TPD
-            "llama-3.1-70b", // llama-3.1-70b-versatile, 128k, 30 RPM, 14,400 RPD, 6,000 TPM, 200,000 TPD
+            "llama-3.3-70b", // llama-3.3-70b-versatile, 128k, 30 RPM, 1,00 RPD, 6,000 TPM, 100,000 TPD
 
             // Google Gemini https://ai.google.dev/gemini-api/docs/models/gemini
             "gemini-1.5-flash", // Free: 15 RPM, 1,000,000 TPM, 1,500 RPD
