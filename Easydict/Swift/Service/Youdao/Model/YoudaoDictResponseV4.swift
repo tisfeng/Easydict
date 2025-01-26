@@ -368,9 +368,87 @@ struct YoudaoDictResponseV4: Codable {
     // MARK: - Words
 
     struct Words: Codable {
-        let indexforms: [String]?
+        // MARK: Lifecycle
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.word = try container.decodeIfPresent(String.self, forKey: .word)
+
+            // indexforms may be a single string or an array of strings
+            // indexforms is [String] for `good` and String for `obscene`
+            if let stringValue = try? container.decode(String.self, forKey: .indexforms) {
+                self.indexforms = [stringValue]
+            } else {
+                self.indexforms = (try? container.decode([String].self, forKey: .indexforms)) ?? []
+            }
+        }
+
+        // MARK: Internal
+
+        let indexforms: [String]
         let word: String?
+
+        // MARK: Private
+
+        private enum CodingKeys: String, CodingKey {
+            case indexforms, word
+        }
     }
+
+    /**
+     "words": {
+                 "indexforms": "",
+                 "word": "obscene"
+             }
+
+     "words": {
+                 "indexforms": [
+                     "good",
+                     "better",
+                     "best",
+                     "good's"
+                 ],
+                 "word": "good"
+             }
+     */
+
+//    struct Words: Codable {
+//        let indexforms: IndexForms
+//        let word: String
+//    }
+//
+//    enum IndexForms: Codable {
+//        case single(String)
+//        case multiple([String])
+//        case none
+//
+//        // MARK: Lifecycle
+//
+//        init(from decoder: Decoder) throws {
+//            let container = try decoder.singleValueContainer()
+//            if let stringValue = try? container.decode(String.self) {
+//                self = .single(stringValue)
+//            } else if let arrayValue = try? container.decode([String].self) {
+//                self = .multiple(arrayValue)
+//            } else {
+//                self = .none
+//            }
+//        }
+//
+//        // MARK: Internal
+//
+//        func encode(to encoder: Encoder) throws {
+//            var container = encoder.singleValueContainer()
+//            switch self {
+//            case let .single(stringValue):
+//                try container.encode(stringValue)
+//            case let .multiple(arrayValue):
+//                try container.encode(arrayValue)
+//            case .none:
+//                try container.encodeNil()
+//            }
+//        }
+//    }
 
     // MARK: - Discriminate
 
