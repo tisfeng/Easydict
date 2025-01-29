@@ -73,9 +73,17 @@ final class HostWindowManager {
 // MARK: - Window Creation Methods
 
 extension HostWindowManager {
+    /// Show the acknowledgements window.
     func showAcknowWindow() {
         showWindow(windowId: .acknowledgementsWindowId) {
             AcknowListView()
+        }
+    }
+
+    /// Show the About window.
+    func showAboutWindow() {
+        showWindow(windowId: .aboutWindowId, width: 500, height: 220, resizable: false) {
+            AboutTab()
         }
     }
 }

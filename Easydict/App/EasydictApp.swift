@@ -75,15 +75,6 @@ struct EasydictApp: App {
                 .environmentObject(languageState)
                 .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
         }
-
-        // About window
-        Window("setting.about", id: .aboutWindowId) {
-            AboutTab()
-                .frame(width: 500, height: 220)
-                .disableWindowMinimize()
-        }
-        .windowResizability(.contentSize)
-        .windowStyle(.hiddenTitleBar)
     }
 
     // MARK: Private

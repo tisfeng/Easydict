@@ -25,7 +25,7 @@ struct EasydictMainMenu: Commands {
         // Override About
         CommandGroup(replacing: .appInfo) {
             Button {
-                openWindow(id: .aboutWindowId)
+                HostWindowManager.shared.showAboutWindow()
             } label: {
                 Text("menubar.about")
             }
