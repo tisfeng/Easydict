@@ -310,7 +310,7 @@ class Configuration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.allowCrashLog, options: [])
+        Defaults.publisher(.allowCrashLog, options: [.initial])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAllowCrashLog()

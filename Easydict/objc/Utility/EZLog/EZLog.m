@@ -53,9 +53,13 @@
 
 + (void)setCrashEnabled:(BOOL)enabled {
     BOOL isEnabled = enabled;
+
 #if DEBUG
     isEnabled = NO;
 #endif
+
+    // TODO: Later, remove App Center SDK if Sentry is stable.
+
     // This method can only take effect after the service is started.
     [MSACCrashes setEnabled:isEnabled];
 
