@@ -46,9 +46,6 @@
 
         options.swiftAsyncStacktraces = YES; // only applies to async code in Swift
     }];
-
-    // Manually call startProfiler and stopProfiler to profile any code that runs in between.
-    [SentrySDK startProfiler];
 }
 
 + (void)setCrashEnabled:(BOOL)enabled {

@@ -311,7 +311,7 @@ static EZWindowManager *_instance;
     self.selectedText = queryText;
     self.actionType = actionType;
 
-    MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText, autoQuery, actionType, @(point));
+    MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText.truncated, autoQuery, actionType, @(point));
 
     // Update isTextEditable value when using invoke query, such as open URL Scheme by PopClip.
     if (actionType == EZActionTypeInvokeQuery) {
