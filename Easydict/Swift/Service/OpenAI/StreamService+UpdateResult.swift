@@ -55,26 +55,38 @@ extension StreamService {
             translatedTexts = [resultText.trim()]
         }
 
+        // Make a local copy of result to avoid potential retain cycles
+        let localResult = result
+
         // If error is not nil, means stream is finished.
-        result.isStreamFinished = error != nil
-        result.translatedResults = translatedTexts
+        localResult.isStreamFinished = error != nil
+
+        /**
+         This code may crash
+
+         SIGABRT
+         Object 0x600002932840 of class __BridgingBufferStorage deallocated with non-zero retain count 2. This object's deinit, or something called from it, may have created a strong reference to self which outlived deinit, resulting in a dangling reference.
+          >
+         KERN_INVALID_ADDRESS at 0xfffffffffffffff0.
+         */
+        localResult.translatedResults = translatedTexts
 
         let updateCompletion = {
-            self.result.error = .queryError(from: error)
-            completion(self.result)
+            localResult.error = .queryError(from: error)
+            completion(localResult)
         }
 
         switch queryType {
         case .dictionary:
             if error != nil {
-                result.showBigWord = false
-                result.translateResultsTopInset = 0
+                localResult.showBigWord = false
+                localResult.translateResultsTopInset = 0
                 updateCompletion()
                 return
             }
 
-            result.showBigWord = true
-            result.translateResultsTopInset = 6
+            localResult.showBigWord = true
+            localResult.translateResultsTopInset = 6
             updateCompletion()
 
         default:
