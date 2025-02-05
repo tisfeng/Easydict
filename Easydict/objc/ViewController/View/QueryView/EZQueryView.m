@@ -231,10 +231,14 @@
 - (void)setAlertTextHidden:(BOOL)hidden {
     if (hidden) {
         self.alertText = @"";
-        
     }
+
+    // FIX: Modifications to the layout engine must not be performed from a background thread after it has been accessed from the main thread.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.textView.editable = hidden;
+    });
+
     self.alertTextField.hidden = hidden;
-    self.textView.editable = hidden;
     self.detectButton.showAutoLanguage = NO;
     [self updateDetectButton];
 }
