@@ -277,7 +277,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     self.selectedTextEditable = NO;
 
     // Use Accessibility first
-    [SharedUtilities getSelectedTextByAXUIWithCompletion:^(NSString * _Nullable text, AXError axError) {
+    [SharedUtilities getSelectedTextByAXUIWithCompletion:^(NSString *_Nullable text, AXError axError) {
         self.selectTextType = EZSelectTextTypeAccessibility;
 
         // If selected text frame is invalid, ignore it.
@@ -357,7 +357,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         if (error) {
             MMLogError(@"Failed to get browser tabl url: %@", error);
         } else {
-            self.browserTabURLString = URLString;
+            // Create a new copy of URLString and set it on main thread
+            // FIX: Detected over-release of a CFTypeRef 0x60000158c4e0 (7 / CFString)
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.browserTabURLString = [URLString copy];
+            });
         }
     }];
 }
@@ -626,9 +630,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
          IDEA: Javadoc rendered view will return empty text
          */
         @(kAXErrorSuccess) : @[
-            @"com.microsoft.VSCode",              // VSCode
-            @"com.jetbrains.intellij.ce",         // IDEA
-            @"com.foxitsoftware.FoxitReaderLite", // Foxit PDF Reader
+            @"com.microsoft.VSCode",                // VSCode
+            @"com.jetbrains.intellij.ce",           // IDEA
+            @"com.foxitsoftware.FoxitReaderLite",   // Foxit PDF Reader
             @"com.foxit-software.Foxit.PDF.Reader", // 福昕PDF阅读器 https://www.foxitsoftware.cn/pdf-reader/
             @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
         ],
@@ -650,8 +654,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.apple.iWork.Keynote", // Keynote
             @"com.apple.iWork.Numbers", // Numbers
             @"com.apple.freeform",      // Freeform 无边记 // Fix https://github.com/tisfeng/Easydict/issues/166
-            @"org.mozilla.firefox", // Firefox
-            @"com.openai.chat",   // ChatGPT code block return AttributeUnsupported
+            @"org.mozilla.firefox",     // Firefox
+            @"com.openai.chat",         // ChatGPT code block return AttributeUnsupported
         ],
 
         // kAXErrorFailure -25200
