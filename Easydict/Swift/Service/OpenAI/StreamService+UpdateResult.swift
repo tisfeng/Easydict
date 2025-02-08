@@ -45,8 +45,7 @@ extension StreamService {
                 queryError = .init(type: .noResult)
             }
 
-            result.error = queryError
-            completion(result)
+            completeWithResult(result, error: queryError)
             return
         }
 
@@ -68,8 +67,7 @@ extension StreamService {
                     result.translatedResults = nil
                 }
 
-                result.error = .queryError(from: error)
-                completion(result)
+                completeWithResult(result, error: error)
             }
         }
 
@@ -88,6 +86,11 @@ extension StreamService {
 
         default:
             updateCompletion()
+        }
+
+        func completeWithResult(_ result: EZQueryResult, error: Error?) {
+            result.error = .queryError(from: error)
+            completion(result)
         }
     }
 }
