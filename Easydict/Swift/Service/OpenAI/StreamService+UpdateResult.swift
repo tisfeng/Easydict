@@ -50,21 +50,23 @@ extension StreamService {
             return
         }
 
-        var translatedTexts: [String]?
-        if let resultText {
-            translatedTexts = [resultText.trim()]
-        }
-
         // If error is not nil, means stream is finished.
         result.isStreamFinished = error != nil
 
+        // Create translated texts array before async operation
+        let finalText = resultText?.trim()
+
         let updateCompletion = { [weak result] in
+            // Update result in main queue, to avoid multi-thread issue.
             DispatchQueue.main.async {
                 guard let result = result else { return }
 
-                // !!!: This code may crash in a rare case.
-                // So we try to put it in main queue.
-                result.translatedResults = translatedTexts
+                // Update translated results in main queue
+                if let finalText {
+                    result.translatedResults = [finalText]
+                } else {
+                    result.translatedResults = nil
+                }
 
                 result.error = .queryError(from: error)
                 completion(result)
