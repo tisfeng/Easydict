@@ -3761,7 +3761,7 @@
 			repositoryURL = "https://github.com/vapor/vapor.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.102.1;
+				minimumVersion = 4.112.1;
 			};
 		};
 		0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
