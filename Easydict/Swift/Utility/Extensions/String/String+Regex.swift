@@ -27,12 +27,12 @@ extension String {
 }
 
 extension String {
-    /// Filter <think>...</think> tag content.
+    /// Filter ^<think>...</think> tag content.
     /// Example:
-    /// - "<think>hello</think> abc" -> " abc"
     /// - "<think>hello" -> ""
-    /// - "hello<think>world</think>" -> "hello"
-    /// - "hello<think>world</think> abc" -> "hello abc"
+    /// - "<think></think>hello" -> "hello"
+    /// - "<think>hello</think>world" -> "world"
+    /// - "hello<think>world</think>" -> "hello<think>world</think>"
     /// - "no tags here" -> "no tags here"
     func filterThinkTagContent() -> String {
         filterTagContent("think")
@@ -44,6 +44,7 @@ extension String {
 
         // Tag pattern
         let tagPattern = Regex {
+            Anchor.startOfSubject
             startTag
             ZeroOrMore {
                 // Match any character (non-greedy) until </tag> is found

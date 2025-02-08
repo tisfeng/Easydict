@@ -94,13 +94,11 @@ import Translation
 
 @Test func testFilterThinkTags() {
     let testCases: [(input: String, expected: String)] = [
-        ("<think>hello</think> world", " world"),
-        ("<think>hello</think>world", "world"),
         ("<think>hello", ""),
-        ("hello<think>world</think>", "hello"),
+        ("<think></think>hello", "hello"),
+        ("<think>hello</think>world", "world"),
+        ("hello<think>world</think>", "hello<think>world</think>"),
         ("no tags here", "no tags here"),
-        ("<think>partially closed", ""),
-        ("<think>one</think>text<think>two</think>", "text"),
         ("", ""),
     ]
 
