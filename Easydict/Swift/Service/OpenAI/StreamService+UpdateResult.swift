@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RegexBuilder
 
 extension StreamService {
     /// Throttle update result text, avoid update UI too frequently.
@@ -52,7 +53,7 @@ extension StreamService {
         // If error is not nil, means stream is finished.
         result.isStreamFinished = error != nil
 
-        let finalText = resultText?.trim() ?? ""
+        let finalText = resultText?.filterThinkTagContent().trim() ?? ""
 
         let updateCompletion = { [weak result] in
             guard let result else { return }

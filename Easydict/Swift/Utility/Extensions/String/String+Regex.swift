@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RegexBuilder
 
 extension String {
     func extract(withPattern pattern: String) -> String? {
@@ -22,5 +23,38 @@ extension String {
             logError("Invalid regex: \(error.localizedDescription)")
         }
         return nil
+    }
+}
+
+extension String {
+    /// Filter <think>...</think> tag content.
+    /// Example:
+    /// - "<think>hello</think> abc" -> " abc"
+    /// - "<think>hello" -> ""
+    /// - "hello<think>world</think>" -> "hello"
+    /// - "hello<think>world</think> abc" -> "hello abc"
+    /// - "no tags here" -> "no tags here"
+    func filterThinkTagContent() -> String {
+        filterTagContent("think")
+    }
+
+    func filterTagContent(_ tag: String) -> String {
+        let startTag = "<\(tag)>"
+        let endTag = "</\(tag)>"
+
+        // Tag pattern
+        let tagPattern = Regex {
+            startTag
+            ZeroOrMore {
+                // Match any character (non-greedy) until </tag> is found
+                NegativeLookahead(endTag)
+                CharacterClass.any
+            }
+            // Match the closing tag if it exists
+            Optionally(endTag)
+        }
+
+        // Replace all matches with an empty string
+        return replacing(tagPattern, with: "")
     }
 }
