@@ -223,6 +223,14 @@ public class StreamService: QueryService {
         serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
     }
 
+    var thinkTagKey: Defaults.Key<Bool> {
+        boolDefaultsKey(.thinkTag, defaultValue: true)
+    }
+
+    var hideThinkTagContent: Bool {
+        Defaults[thinkTagKey]
+    }
+
     // In general, LLM services need to observe these keys to enable validation button.
     var observeKeys: [Defaults.Key<String>] {
         [

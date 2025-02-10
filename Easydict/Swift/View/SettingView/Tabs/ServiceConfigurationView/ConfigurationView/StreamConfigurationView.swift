@@ -27,7 +27,8 @@ struct StreamConfigurationView: View {
         showTranslationToggle: Bool = true,
         showSentenceToggle: Bool = true,
         showDictionaryToggle: Bool = true,
-        showUsageStatusPicker: Bool = true
+        showUsageStatusPicker: Bool = true,
+        showThinkTagContent: Bool = true
     ) {
         self.service = service
 
@@ -41,6 +42,7 @@ struct StreamConfigurationView: View {
         self.showSentenceToggle = showSentenceToggle
         self.showDictionaryToggle = showDictionaryToggle
         self.showUsageStatusPicker = showUsageStatusPicker
+        self.showThinkTagSection = showThinkTagContent
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -66,6 +68,7 @@ struct StreamConfigurationView: View {
     let showSentenceToggle: Bool
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
+    let showThinkTagSection: Bool
 
     var isEditable = true
 
@@ -174,6 +177,13 @@ struct StreamConfigurationView: View {
                     titleKey: "service.configuration.openai.usage_status.title",
                     key: service.serviceUsageStatusKey,
                     values: ServiceUsageStatus.allCases
+                )
+            }
+
+            if showThinkTagSection {
+                ToggleCell(
+                    titleKey: "service.configuration.openai.hide_think_tag_content.title",
+                    key: service.thinkTagKey
                 )
             }
         }

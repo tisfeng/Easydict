@@ -4672,6 +4672,34 @@
         }
       }
     },
+    "service.configuration.openai.hide_think_tag_content.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide <think> Tag Content"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť obsah <think> Tag"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏 <think> 标签内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏 <think> 標籤內容"
+          }
+        }
+      }
+    },
     "service.configuration.openai.system_prompt.placeholder" : {
       "localizations" : {
         "en" : {
