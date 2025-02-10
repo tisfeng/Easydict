@@ -15,7 +15,7 @@ extension StreamService {
         queryType: EZQueryTextType,
         error: Error?,
         interval: TimeInterval = 0.2,
-        completion: @escaping (EZQueryResult) -> Void
+        completion: @escaping (EZQueryResult) -> ()
     ) async throws {
         for try await text in textStream._throttle(for: .seconds(interval)) {
             updateResultText(text, queryType: queryType, error: error, completion: completion)
@@ -26,7 +26,7 @@ extension StreamService {
         _ resultText: String?,
         queryType: EZQueryTextType,
         error: Error?,
-        completion: @escaping (EZQueryResult) -> Void
+        completion: @escaping (EZQueryResult) -> ()
     ) {
         if result.isStreamFinished {
             cancelStream()
@@ -52,24 +52,13 @@ extension StreamService {
         // If error is not nil, means stream is finished.
         result.isStreamFinished = error != nil
 
-        // Create translated texts array before async operation
-        let finalText = resultText?.trim()
+        let finalText = resultText?.trim() ?? ""
 
         let updateCompletion = { [weak result] in
-            // Update result in main queue, to avoid multi-thread issue.
-            DispatchQueue.main.async { [weak result] in
-                guard let result = result else { return }
+            guard let result else { return }
 
-                // Use autoreleasepool to ensure proper memory management
-                autoreleasepool {
-                    // Create a stable array with a single string
-                    let nsArray = NSMutableArray()
-                    nsArray.add(finalText)
-                    result.translatedResults = (nsArray as NSArray) as? [String]
-                }
-
-                completeWithResult(result, error: error)
-            }
+            result.translatedResults = [finalText]
+            completeWithResult(result, error: error)
         }
 
         switch queryType {

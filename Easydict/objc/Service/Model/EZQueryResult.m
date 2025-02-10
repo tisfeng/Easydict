@@ -196,6 +196,8 @@ NSString *getPartAbbreviation(NSString *part) {
 
 @implementation EZQueryResult
 
+@synthesize translatedResults = _translatedResults;
+
 - (instancetype)init {
     if (self = [super init]) {
         [self reset];
@@ -205,11 +207,26 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (nullable NSString *)translatedText {
+    return [self.translatedResults componentsJoinedByString:@"\n"];
+}
+
+- (void)setTranslatedResults:(NSArray<NSString *> *)translatedResults {
+    /**
+     Add a lock to avoid multi-threading crash.
+
+     NIO-SGLTN-0-#0 (17): EXC_BAD_ACCESS (code=1, address=0x63de9142ce0)
+     A bad access to memory terminated the process.
+
+     Object 0x600002890560 of class __SwiftDeferredNSArray deallocated with non-zero retain count 2. This object's deinit, or something called from it, may have created a strong reference to self which outlived deinit, resulting in a dangling reference.
+     */
     @synchronized(self) {
-        if (!_translatedResults) {
-            return @"";
-        }
-        return [_translatedResults componentsJoinedByString:@"\n"];
+        _translatedResults = [translatedResults copy];
+    }
+}
+
+- (NSArray<NSString *> *)translatedResults {
+    @synchronized (self) {
+        return _translatedResults;
     }
 }
 
@@ -282,21 +299,6 @@ NSString *getPartAbbreviation(NSString *part) {
 
 - (void)convertToTraditionalChineseResult {
     self.translatedResults = [self.translatedResults toTraditionalChineseTexts];
-}
-
-- (void)setTranslatedResults:(NSArray<NSString *> *)translatedResults {
-    @synchronized(self) {
-        if (!translatedResults) {
-            _translatedResults = nil;
-            return;
-        }
-        // Create a new array with copied strings to ensure stability
-        NSMutableArray *safeArray = [NSMutableArray arrayWithCapacity:translatedResults.count];
-        for (NSString *str in translatedResults) {
-            [safeArray addObject:[str copy]];
-        }
-        _translatedResults = [safeArray copy];
-    }
 }
 
 #pragma mark - MJExtension
