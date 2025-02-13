@@ -226,13 +226,13 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     EZQueryService *service = designatedService ?: self.service;
     
     // 3. get service text audio URL, and play.
-    [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+    [service textToAudio:text fromLanguage:language byAccent:accent completion:^(NSString *_Nullable url, NSError *_Nullable error) {
         self.currentServiceType = service.serviceType;
         
         if (!error && url.length) {
             [self playTextAudio:text
                        language:language
-                         accent:nil
+                         accent:accent
                        audioURL:url
               designatedService:service];
         } else {

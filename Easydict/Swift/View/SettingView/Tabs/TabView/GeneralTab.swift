@@ -73,7 +73,15 @@ struct GeneralTab: View {
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
-                Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
+                Picker(
+                    "setting.general.voice.auto_play_word_audio",
+                    selection: $autoPlayAudio
+                ) {
+                    ForEach(AutoPlayAudio.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
             } header: {
                 Text("setting.general.auto_query.header")
             }

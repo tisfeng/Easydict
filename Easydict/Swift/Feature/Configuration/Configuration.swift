@@ -19,6 +19,15 @@ enum LanguageDetectOptimize: Int {
     case google = 2
 }
 
+// MARK: - AutoPlayAudio
+
+@objc
+enum AutoPlayAudio: Int {
+    case disabled
+    case uk
+    case us
+}
+
 // MARK: - Configuration
 
 @objcMembers
@@ -67,7 +76,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
-    @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
+    @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: AutoPlayAudio
 
     @DefaultsWrapper(.autoCopySelectedText) var autoCopySelectedText: Bool
     @DefaultsWrapper(.autoCopyOCRText) var autoCopyOCRText: Bool
