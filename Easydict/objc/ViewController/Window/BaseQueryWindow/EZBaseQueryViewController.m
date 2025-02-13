@@ -659,10 +659,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If query text is an English word, use Youdao TTS to play.
         EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
+        NSString *accent = Configuration.shared.autoPlayAudio == AutoPlayAudioUk ? @"uk" : @"us";
 
         [self.audioPlayer playTextAudio:queryText
                                language:textLanguage
-                                 accent:nil
+                                 accent:accent
                                audioURL:nil
                       designatedService:ttsService];
     };
@@ -1671,7 +1672,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Auto play English word
 
 - (void)autoPlayEnglishWordAudio {
-    if (!Configuration.shared.autoPlayAudio) {
+    if (Configuration.shared.autoPlayAudio == AutoPlayAudioDisabled) {
         return;
     }
 

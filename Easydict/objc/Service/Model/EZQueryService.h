@@ -145,6 +145,12 @@ NS_SWIFT_NAME(QueryService)
 /// @param completion 回调
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion;
 
+/// 获取文本的音频的URL地址
+/// @param text 文本
+/// @param from 文本语言
+/// @param accent 英音 or 美音
+/// @param completion 回调
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from byAccent:(NSString *_Nullable)accent completion:(void (^)(NSString *_Nullable url, NSError *_Nullable error))completion;
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion;
 
