@@ -25,10 +25,9 @@
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 
-/// the screen where the mouse is located
-@property (nonatomic, strong) NSScreen *screen;
-
 @property (nonatomic, copy) EZActionType actionType;
+
+@property (nonatomic, assign) CGPoint lastPoint;
 
 @end
 
@@ -65,7 +64,6 @@ static EZWindowManager *_instance;
 
 - (void)setup {
     self.offsetPoint = CGPointMake(18, -12);
-    self.screen = NSScreen.mainScreen;
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
     self.actionType = EZActionTypeInvokeQuery;
 
@@ -107,13 +105,13 @@ static EZWindowManager *_instance;
     [self.eventMonitor setLeftMouseDownBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
         self.startPoint = clickPoint;
-        self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
+        self.lastPoint = clickPoint;
         EZLayoutManager.shared.screen = self.screen;
     }];
 
     [self.eventMonitor setRightMouseDownBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
-        self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
+        self.lastPoint = clickPoint;
         EZLayoutManager.shared.screen = self.screen;
     }];
 
@@ -225,6 +223,10 @@ static EZWindowManager *_instance;
     return _backgroundQueryViewController;
 }
 
+- (NSScreen *)screen {
+    MMLogInfo(@"lastPoint: %@", NSStringFromPoint(self.lastPoint));
+    return [EZCoordinateUtils screenForPoint:self.lastPoint];
+}
 
 #pragma mark - Others
 
@@ -310,6 +312,7 @@ static EZWindowManager *_instance;
              completionHandler:(nullable void (^)(void))completionHandler {
     self.selectedText = queryText;
     self.actionType = actionType;
+    self.lastPoint = point;
 
     MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText.truncated, autoQuery, actionType, @(point));
 

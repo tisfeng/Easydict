@@ -31,6 +31,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Right-bottom offset: (15, -12)
 @property (nonatomic, assign) CGPoint offsetPoint;
 
+@property (nonatomic, strong, readonly) NSScreen *screen;
+
+@property (nonatomic, assign, readonly) CGPoint lastPoint;
+
 + (instancetype)shared;
 
 

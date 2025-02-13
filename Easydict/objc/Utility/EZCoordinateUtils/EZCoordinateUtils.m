@@ -60,15 +60,6 @@
         y = visibleFrame.origin.y;
     }
     
-    // !!!: If mouse position is not in screen that the "frame" located, we need to move frame to mouse position screen.
-    CGPoint mousePosition = [NSEvent mouseLocation];
-    NSScreen *mouseInScreen = [self screenForPoint:mousePosition];
-    NSScreen *frameInScreen = [self screenForRect:frame];
-    if (mouseInScreen != frameInScreen) {
-        x = mousePosition.x + 10;
-        y = mousePosition.y - height;
-    }
-    
     return CGRectMake(x, y, width, height);
 }
 
