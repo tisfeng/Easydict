@@ -27,7 +27,8 @@
 
 @property (nonatomic, copy) EZActionType actionType;
 
-@property (nonatomic, assign) CGPoint lastPoint;
+/// The screen that the last mouse clicked on.
+@property (nonatomic, strong, readonly) NSScreen *screen;
 
 @end
 
@@ -106,13 +107,11 @@ static EZWindowManager *_instance;
         mm_strongify(self);
         self.startPoint = clickPoint;
         self.lastPoint = clickPoint;
-        EZLayoutManager.shared.screen = self.screen;
     }];
 
     [self.eventMonitor setRightMouseDownBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
         self.lastPoint = clickPoint;
-        EZLayoutManager.shared.screen = self.screen;
     }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
@@ -175,7 +174,7 @@ static EZWindowManager *_instance;
     [self->_popButtonWindow close];
 }
 
-#pragma mark - Getter
+#pragma mark - Getter && Setter
 
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
@@ -224,8 +223,13 @@ static EZWindowManager *_instance;
 }
 
 - (NSScreen *)screen {
-    MMLogInfo(@"lastPoint: %@", NSStringFromPoint(self.lastPoint));
     return [EZCoordinateUtils screenForPoint:self.lastPoint];
+}
+
+- (void)setLastPoint:(CGPoint)lastPoint {
+    _lastPoint = lastPoint;
+
+    [EZLayoutManager.shared updateScreen:self.screen];
 }
 
 #pragma mark - Others
@@ -312,7 +316,6 @@ static EZWindowManager *_instance;
              completionHandler:(nullable void (^)(void))completionHandler {
     self.selectedText = queryText;
     self.actionType = actionType;
-    self.lastPoint = point;
 
     MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText.truncated, autoQuery, actionType, @(point));
 
@@ -640,9 +643,7 @@ static EZWindowManager *_instance;
 
 - (CGPoint)getFloatingWindowInRightSideOfScreenPoint:(NSWindow *)floatingWindow {
     CGPoint position = CGPointZero;
-
-    NSScreen *targetScreen = self.screen;
-    NSRect screenRect = [targetScreen visibleFrame];
+    NSRect screenRect = self.screen.visibleFrame;
 
     CGFloat x = screenRect.origin.x + screenRect.size.width - floatingWindow.width;
     CGFloat y = screenRect.origin.y + screenRect.size.height;
@@ -654,9 +655,7 @@ static EZWindowManager *_instance;
 /// Get the position of floatingWindow that make sure floatingWindow show in the center of self.screen.
 - (CGPoint)getFloatingWindowInCenterOfScreenPoint:(NSWindow *)floatingWindow {
     CGPoint position = CGPointZero;
-
-    NSScreen *targetScreen = self.screen;
-    NSRect screenRect = [targetScreen visibleFrame];
+    NSRect screenRect = self.screen.visibleFrame;
 
     // top-left point
     CGFloat x = screenRect.origin.x + (screenRect.size.width - floatingWindow.width) / 2;
@@ -716,8 +715,10 @@ static EZWindowManager *_instance;
  */
 - (NSPoint)getSafePointForPopButtonWindow:(NSPoint)point {
     CGFloat safeOffsetX = 50;
-    CGFloat minX = CGRectGetMinX(self.screen.visibleFrame);
-    CGFloat maxX = CGRectGetMaxX(self.screen.visibleFrame) - self.popButtonWindow.width;
+    NSRect screenRect = self.screen.visibleFrame;
+
+    CGFloat minX = CGRectGetMinX(screenRect);
+    CGFloat maxX = CGRectGetMaxX(screenRect) - self.popButtonWindow.width;
 
     NSPoint safePoint = point;
 
