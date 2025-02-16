@@ -40,7 +40,7 @@ extension AppleScriptTask {
         end tell
         """
 
-        let result = try await runAppleScript(script)
+        let result = try await runAppleScript(script, timeout: 0.2)
         logInfo("Safari selected text: \(result ?? "")")
         return result
     }
@@ -54,7 +54,8 @@ extension AppleScriptTask {
         end tell
         """
 
-        let result = try await runAppleScript(script)
+        // Generally, AppleScript cost < 0.2s to get the selected text.
+        let result = try await runAppleScript(script, timeout: 0.2)
         logInfo("Chrome Browser selected text: \(result ?? "")")
         return result
     }
