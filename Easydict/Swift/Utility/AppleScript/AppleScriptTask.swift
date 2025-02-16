@@ -59,14 +59,20 @@ class AppleScriptTask: NSObject {
     }
 
     @discardableResult
-    static func runAppleScript(_ appleScript: String) async throws -> String? {
+    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws -> String? {
         try await Task { () -> String? in
-            try Self.runAppleScript(appleScript)
+            try runAppleScript(appleScript, timeout: timeout)
         }.value
     }
 
+    /// Run AppleScript with timeout control
+    /// - Parameters:
+    ///   - appleScript: The AppleScript to execute
+    ///   - timeout: Maximum execution time in seconds, defaults to 10
+    /// - Returns: Optional string result from the AppleScript execution
+    /// - Throws: QueryError if execution fails or times out
     @discardableResult
-    static func runAppleScript(_ appleScript: String) throws -> String? {
+    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) throws -> String? {
         func makeError(_ message: String) -> QueryError {
             .init(type: .appleScript, message: message, errorDataMessage: appleScript)
         }
@@ -76,19 +82,35 @@ class AppleScriptTask: NSObject {
         }
 
         var errorInfo: NSDictionary?
-        do {
-            // This code may crash EXC_BAD_ACCESS
+
+        // Create semaphore for timeout control
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: String?
+        var executionError: Error?
+
+        // Execute AppleScript in background queue
+        DispatchQueue.global().async {
             let output = script.executeAndReturnError(&errorInfo)
             if let errorInfo {
                 let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                throw makeError(message)
+                executionError = makeError(message)
+            } else {
+                result = output.stringValue
             }
-            return output.stringValue
-        } catch let error as QueryError {
-            throw error
-        } catch {
-            throw makeError("Run AppleScript error")
+            semaphore.signal()
         }
+
+        // Wait for completion or timeout
+        let timeoutResult = semaphore.wait(timeout: .now() + timeout)
+        if timeoutResult == .timedOut {
+            throw makeError("AppleScript execution timed out after \(timeout) seconds")
+        }
+
+        if let error = executionError {
+            throw error
+        }
+
+        return result
     }
 
     /// Run AppleScript with `NSAppleScript`, faster than `Process`, but requires AppleEvent permission.
