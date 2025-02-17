@@ -20,7 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGRect fixedWindowFrame;
 @property (nonatomic, assign) CGRect mainWindowFrame;
 
-@property (nonatomic, strong) NSScreen *screen;
+/// The screen where the last mouse click occurred, updated by EZWindowManager's lastPoint.
+@property (nonatomic, strong, readonly) NSScreen *screen;
 
 
 + (instancetype)shared;
@@ -35,6 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type;
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
+
+- (void)updateScreen:(NSScreen *)screen;
 
 @end
 

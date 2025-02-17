@@ -24,7 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) NSArray<EZQueryService *> *services;
 
-
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
