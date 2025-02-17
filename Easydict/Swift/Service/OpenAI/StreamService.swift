@@ -17,6 +17,21 @@ import SwiftUI
 @objcMembers
 @objc(EZStreamService)
 public class StreamService: QueryService {
+    // MARK: Lifecycle
+
+    override init() {
+        super.init()
+
+        // Since getter Defaults[thinkTagKey] cost CPU high when update too frequently, we observe it here.
+        Defaults.publisher(thinkTagKey)
+            .removeDuplicates()
+            .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
+            .sink { [weak self] in
+                self?.hideThinkTagContent = $0.newValue
+            }
+            .store(in: &cancellables)
+    }
+
     // MARK: Public
 
     public override func isStream() -> Bool {
@@ -88,6 +103,8 @@ public class StreamService: QueryService {
     let mustOverride = "This property or method must be overridden by a subclass"
 
     var cancellables: Set<AnyCancellable> = []
+
+    var hideThinkTagContent: Bool = true
 
     var defaultModels: [String] {
         [""]
@@ -225,10 +242,6 @@ public class StreamService: QueryService {
 
     var thinkTagKey: Defaults.Key<Bool> {
         boolDefaultsKey(.thinkTag, defaultValue: true)
-    }
-
-    var hideThinkTagContent: Bool {
-        Defaults[thinkTagKey]
     }
 
     // In general, LLM services need to observe these keys to enable validation button.
