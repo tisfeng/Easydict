@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Right-bottom offset: (15, -12)
 @property (nonatomic, assign) CGPoint offsetPoint;
 
+/// The last point of mouse click, used for record the last point of mouse click.
+@property (nonatomic, assign) CGPoint lastPoint;
+
 + (instancetype)shared;
 
 

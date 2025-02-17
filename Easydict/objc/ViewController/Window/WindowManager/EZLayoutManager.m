@@ -222,4 +222,10 @@ static EZLayoutManager *_instance;
     return [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible windowType:windowType];
 }
 
+- (void)updateScreen:(NSScreen *)screen {
+    _screen = screen;
+
+    [self setupMaximumWindowSize:screen];
+}
+
 @end
