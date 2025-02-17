@@ -19,12 +19,11 @@ enum LanguageDetectOptimize: Int {
     case google = 2
 }
 
-// MARK: - AutoPlayAudio
+// MARK: - Pronunciation
 
 @objc
-enum AutoPlayAudio: Int {
-    case disabled
-    case uk
+enum Pronunciation: Int {
+    case uk = 1
     case us
 }
 
@@ -76,7 +75,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
-    @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: AutoPlayAudio
+    @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
+    @DefaultsWrapper(.pronunciation) var pronunciation: Pronunciation
 
     @DefaultsWrapper(.autoCopySelectedText) var autoCopySelectedText: Bool
     @DefaultsWrapper(.autoCopyOCRText) var autoCopyOCRText: Bool
@@ -218,6 +218,13 @@ class Configuration: NSObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoPlayAudio()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.pronunciation, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetPronunciation()
             }
             .store(in: &cancellables)
 
@@ -435,6 +442,10 @@ extension Configuration {
 
     fileprivate func didSetAutoPlayAudio() {
         logSettings(["auto_play_word_audio": autoPlayAudio])
+    }
+
+    fileprivate func didSetPronunciation() {
+        logSettings(["word_pronunciation": pronunciation])
     }
 
     fileprivate func didSetAutoCopySelectedText() {

@@ -38,7 +38,8 @@ extension Defaults.Keys {
     )
 
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
-    static let autoPlayAudio = Key<AutoPlayAudio>("EZConfiguration_kAutoPlayAudioKey", default: AutoPlayAudio.disabled)
+    static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
+    static let pronunciation = Key<Pronunciation>("EZConfiguration_kPronunciationKey", default: Pronunciation.us)
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
     static let autoQuerySelectedText = Key<Bool>(

@@ -73,13 +73,16 @@ struct GeneralTab: View {
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
-                Picker(
-                    "setting.general.voice.auto_play_word_audio",
-                    selection: $autoPlayAudio
-                ) {
-                    ForEach(AutoPlayAudio.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
+                Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
+                if autoPlayAudio {
+                    Picker(
+                        "setting.general.voice.word_pronunciation",
+                        selection: $pronunciation
+                    ) {
+                        ForEach(Pronunciation.allCases, id: \.rawValue) { option in
+                            Text(option.localizedStringResource)
+                                .tag(option)
+                        }
                     }
                 }
             } header: {
@@ -239,6 +242,7 @@ struct GeneralTab: View {
     @Default(.autoQuerySelectedText) private var autoQuerySelectedText
     @Default(.autoQueryPastedText) private var autoQueryPastedText
     @Default(.autoPlayAudio) private var autoPlayAudio
+    @Default(.pronunciation) private var pronunciation
 
     // Auto copy
     @Default(.autoCopyOCRText) private var autoCopyOCRText
