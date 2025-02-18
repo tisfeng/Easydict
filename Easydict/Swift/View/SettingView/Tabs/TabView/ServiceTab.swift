@@ -229,9 +229,9 @@ private class ServiceItemViewModel: ObservableObject {
 
     // MARK: Private
 
-    private var cancellables: [AnyCancellable] = []
-
     @EnvironmentObject private var serviceTabViewModel: ServiceTabViewModel
+
+    private var cancellables: [AnyCancellable] = []
 
     private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
         NotificationCenter.default
