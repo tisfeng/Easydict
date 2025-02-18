@@ -3,7 +3,7 @@
 [![PayPal](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9ZGWNK5FEZFF6&source=url)
 [![Build](https://github.com/nicklockwood/SwiftFormat/actions/workflows/build.yml/badge.svg)](https://github.com/nicklockwood/SwiftFormat/actions/workflows/build.yml)
 [![Codecov](https://codecov.io/gh/nicklockwood/SwiftFormat/graphs/badge.svg)](https://codecov.io/gh/nicklockwood/SwiftFormat)
-[![Swift 5.1](https://img.shields.io/badge/swift-5.1-red.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 5.3](https://img.shields.io/badge/swift-5.1-red.svg?style=flat)](https://developer.apple.com/swift)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 [![Mastodon](https://img.shields.io/badge/mastodon-@nicklockwood@mastodon.social-636dff.svg)](https://mastodon.social/@nicklockwood)
 
@@ -111,7 +111,7 @@ Another option is to include the binary artifactbundle in your `Package.swift`:
 ```swift
 .binaryTarget(
     name: "swiftformat",
-    url: "https://github.com/nicklockwood/SwiftFormat/releases/download/0.53.9/swiftformat-macos.artifactbundle.zip",
+    url: "https://github.com/nicklockwood/SwiftFormat/releases/download/0.55.0/swiftformat-macos.artifactbundle.zip",
     checksum: "CHECKSUM"
 ),
 ``` 
@@ -252,7 +252,7 @@ let package = Package(
     name: "BuildTools",
     platforms: [.macOS(.v10_11)],
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.55.0"),
     ],
     targets: [.target(name: "BuildTools", path: "")]
 )
@@ -286,7 +286,7 @@ You can also use `swift run -c release --package-path BuildTools swiftformat "$S
 1. Add the `swiftformat` binary to your project directory via [CocoaPods](https://cocoapods.org/), by adding the following line to your Podfile then running `pod install`:
 
     ```ruby
-    pod 'SwiftFormat/CLI', '~> 0.54'
+    pod 'SwiftFormat/CLI', '~> 0.55'
     ```
 
 **NOTE:** This will only install the pre-built command-line app, not the source code for the SwiftFormat framework.
@@ -354,7 +354,7 @@ You can use `SwiftFormat` as a SwiftPM command plugin.
 ```swift
 dependencies: [
     // ...
-    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
+    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.55.0"),
 ]
 ```
 
@@ -641,7 +641,7 @@ let bar = baz // rule(s) will be re-enabled for this line
 
 There is no need to manually re-enable a rule after using the `next` directive.
 
-**NOTE:** The `swiftformat:enable` directives only serves to counter a previous `swiftformat:disable` directive in the same file. It is not possible to use `swiftformat:enable` to enable a rule that was not already enabled when formatting started.
+**NOTE:** The `swiftformat:enable` directive only serves to counter a previous `swiftformat:disable` directive in the same file. It is not possible to use `swiftformat:enable` to enable a rule that was not already enabled when formatting started.
 
 
 Swift version
@@ -649,13 +649,22 @@ Swift version
 
 Most SwiftFormat rules are version-agnostic, but some are applicable only to newer Swift versions. These rules will be disabled automatically if the Swift version is not specified, so to make sure that the full functionality is available you should specify the version of Swift that is used by your project.
 
-You can specify the Swift version in one of two ways:
+You can specify the Swift compiler version in one of two ways:
 
-The preferred option is to add a `.swift-version` file to your project directory. This is a text file that should contain the minimum Swift version supported by your project, and is a standard already used by other tools.
+You can specify your project's Swift compiler version using the `--swiftversion` command line argument. You can also add the `--swiftversion` option to your `.swiftformat` file.
 
-The `.swift-version` file applies hierarchically; If you have submodules in your project that use a different Swift version, you can add separate `.swift-version` files to those directories.
+Another option is to add a `.swift-version` file to your project directory. This is a text file that should contain the minimum Swift version supported by your project, and is also supported by some other tools. The `--swiftversion` argument takes precedence over any `.swift-version` files.
 
-The other option to specify the Swift version using the `--swiftversion` command line argument. Note that this will be overridden by any `.swift-version` files encountered while processing. You can also add the `--swiftversion` option to your `.swiftformat` file.
+Both the `.swift-version` file and the `--swiftversion` option in a `.swiftformat` file are applied hierarchically; If you have submodules in your project that use a different Swift version, you can add separate swift version configurations for those directories.
+
+Swift language mode
+-------------------
+
+SwiftFormat also allows you to specify the Swift _language mode_ used by your project. This is distinct from the Swift compiler version. For example, you can use the Swift 6.0 compiler with either the Swift 5 language mode or the Swift 6 language mode. Some SwiftFormat rules will behave differently under different Swift language modes.
+
+You can specify your project's Swift language mode using the `--languagemode` command line argument. You can also add the `--languagemode` option to your `.swiftformat` file.
+
+If not specified, SwiftFormat uses the default language mode of the specified Swift compiler version. The default language mode in Swift 5.x and Swift 6.x is the Swift 5 language mode. If your project uses the Swift 6 language mode, you should specify `--languagemode 6`.
 
 
 Config file
@@ -826,9 +835,9 @@ It is common practice to include the file name, creation date and/or the current
 * `{file}` - the name of the file
 * `{year}` - the current year
 * `{created}` - the date on which the file was created
-* `{created.name}` - the name of the user who first committed the file
-* `{created.email}` - the email of the user who first committed the file 
 * `{created.year}` - the year in which the file was created
+* `{author.name}` - the name of the user who first committed the file
+* `{author.email}` - the email of the user who first committed the file 
 
 For example, a header template of:
 
@@ -844,7 +853,7 @@ Will be formatted as:
 // Created by John Smith on 01/02/2016.
 ```
 
-**NOTE:** the `{year}` value and `{created}` date format are determined from the current locale and timezone of the machine running the script. `{created.name}` and `{created.email}` requires the project to be version controlled by git.
+**NOTE:** the `{year}` value and `{created}` date format are determined from the current locale and timezone of the machine running the script. `{author.name}` and `{author.email}` requires the project to be version controlled by git.
 
 
 FAQ
@@ -867,7 +876,7 @@ FAQ
 
 *Q. What versions of Swift are supported?*
 
-> A. The SwiftFormat framework and command-line tool can be compiled using Swift 4.2 and above, and can format programs written in Swift 4.x or 5. Swift 3.x is no longer actively supported. If you are still using Swift 3.x or earlier and find that SwiftFormat breaks your code, the best solution is probably to revert to an earlier SwiftFormat release, or enable only a small subset of rules. Use the `--swiftversion` argument to enable additional rules specific to later Swift versions.
+> A. The SwiftFormat framework and command-line tool can be compiled using Swift 5.3 and above, and can format programs written in Swift 4.x or 5. Swift 3.x is no longer actively supported. If you are still using Swift 3.x or earlier and find that SwiftFormat breaks your code, the best solution is probably to revert to an earlier SwiftFormat release, or enable only a small subset of rules. Use the `--swiftversion` argument to enable additional rules specific to later Swift versions.
 
 
 *Q. SwiftFormat made changes I didn't want it to. How can I find out which rules to disable?*
@@ -945,13 +954,21 @@ Known issues
 
 * The `isEmpty` rule will convert `count == 0` to `isEmpty` even for types that do not have an `isEmpty` method, such as `NSArray`/`NSDictionary`/etc. Use of Foundation collections in Swift code is pretty rare, but just in case, the rule is disabled by default.
 
+* The `preferForLoop` rule will convert `foo.forEach` to `for item in foo` even for types that do not conform to the `Sequence` protocol and cannot be used with a `for ... in` loop. There are no such types built in, but custom types may have this issue.
+
 * If a file begins with a comment, the `stripHeaders` rule will remove it if it is followed by a blank line. To avoid this, make sure that the first comment is directly followed by a line of code.
 
 * When running a version of SwiftFormat built using Xcode 10.2 on macOS 10.14.3 or earlier, you may experience a crash with the error "dyld: Library not loaded: @rpath/libswiftCore.dylib". To fix this, you need to install the [Swift 5 Runtime Support for Command Line Tools](https://support.apple.com/kb/DL1998). These tools are included by default in macOS 10.14.4 and later.
 
 * If you have a generic typealias that defines a closure (e.g. `typealias ResultCompletion<T> = (Result<T, Error>) -> Void`) and use this closure as an argument in a generic function (e.g. `func handle<T: Decodable>(_ completion: ResultCompletion<T>)`), the `opaqueGenericParameters` rule may update the function definition to use `some` syntax (e.g. `func handle(_ completion: ResultCompletion<some Decodable>)`). `some` syntax is not permitted in closure parameters, so this will no longer compile. Workarounds include spelling out the closure explicitly in the generic function (instead of using a `typealias`) or disabling the `opaqueGenericParameters` rule (e.g. with `// swiftformat:disable:next opaqueGenericParameters`).
 
-* If compiling for macOS with Xcode 14.0 and configuring SwiftFormat with `--swift-version 5.7`, the `genericExtensions` rule may cause a build failure by updating extensions of the format `extension Collection where Element == Foo` to `extension Collection<Foo>`. This fails to compile for macOS in Xcode 14.0, because the macOS SDK in that version of Xcode [does not include](https://forums.swift.org/t/xcode-14-rc-cannot-specialize-protocol-type/60171) the Swift 5.7 standard library. Workarounds include using `--swift-version 5.6` instead, updating to Xcode 14.1+, or disabling the `genericExtensions` rule (e.g. with `// swiftformat:next:disable genericExtensions`).
+* If compiling for macOS with Xcode 14.0 and configuring SwiftFormat with `--swift-version 5.7`, the `genericExtensions` rule may cause a build failure by updating extensions of the format `extension Collection where Element == Foo` to `extension Collection<Foo>`. This fails to compile for macOS in Xcode 14.0, because the macOS SDK in that version of Xcode [does not include](https://forums.swift.org/t/xcode-14-rc-cannot-specialize-protocol-type/60171) the Swift 5.7 standard library. Workarounds include using `--swift-version 5.6` instead, updating to Xcode 14.1+, or disabling the `genericExtensions` rule (e.g. with `// swiftformat:disable:next genericExtensions`).
+
+* The `propertyTypes` rule can cause a build failure in cases where there are multiple static overloads with the same name but different return types. As a workaround you can rename the overloads to no longer conflict, or exclude the property name with `--preservesymbols propertyName,otherPropertyName,etc`.
+
+* The `propertyTypes` rule can cause a build failure in cases where the property's type is a protocol / existential like `let shapeStyle: ShapeStyle = .myShapeStyle`, and the value used on the right-hand side is defined in an extension like `extension ShapeStyle where Self == MyShapeStyle { static var myShapeStyle: MyShapeStyle { ... } }`. As a workaround you can use the existential `any` syntax (`let shapeStyle: any ShapeStyle = .myShapeStyle`), which the rule will preserve as-is, or exclude the type name and/or property name with `--preservesymbols ShapeStyle,myShapeStyle,etc`.
+
+* The `propertyTypes` rule can cause a build failure in cases like `let foo = Foo.bar` where the value is a static member that doesn't return the same time. For example, `let foo: Foo = .bar` would be invalid if the `bar` property was defined as `static var bar: Bar`. As a workaround you can write the name of the type explicitly, like `let foo: Bar = Foo.bar`, or exclude the type name and/or property name with `--preservesymbols Bar,bar,etc`.
 
 
 Tip Jar
