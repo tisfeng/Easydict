@@ -335,6 +335,10 @@ userInfo:nil]
     [self.audioPlayer.defaultTTSService textToAudio:text fromLanguage:from completion:completion];
 }
 
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from byAccent:(NSString *)accent completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+    [self textToAudio:text fromLanguage:from completion:completion];
+}
+
 - (NSString *)getTTSLanguageCode:(EZLanguage)language {
     if ([language isEqualToString:EZLanguageClassicalChinese]) {
         language = EZLanguageSimplifiedChinese;
