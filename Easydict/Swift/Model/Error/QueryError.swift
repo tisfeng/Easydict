@@ -88,6 +88,14 @@ public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendabl
         .error(type: .timeout)
     }
 
+    public override var localizedDescription: String {
+        errorDescription ?? ""
+    }
+
+    public override var description: String {
+        errorDescription ?? ""
+    }
+
     public let type: ErrorType
     public var message: String?
     public var errorDataMessage: String?
@@ -110,14 +118,6 @@ public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendabl
         }
 
         return errorString
-    }
-
-    public override var localizedDescription: String {
-        errorDescription ?? ""
-    }
-
-    public override var description: String {
-        errorDescription ?? ""
     }
 
     public static func error(type: ErrorType) -> QueryError {

@@ -109,6 +109,7 @@ struct TextEditorWithPlaceholder: View {
     // MARK: Internal
 
     @Binding var text: String
+
     let placeholder: LocalizedStringKey?
     let alignment: TextAlignment
     let font: Font
