@@ -22,12 +22,24 @@ public class StreamService: QueryService {
     override init() {
         super.init()
 
-        // Since getter Defaults[thinkTagKey] cost CPU high when update too frequently, we observe it here.
+        // Since getter Defaults[key] cost CPU high when update too frequently, we observe it here.
+
         Defaults.publisher(thinkTagKey)
-            .removeDuplicates()
-            .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] in
                 self?.hideThinkTagContent = $0.newValue
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(modelKey)
+            .sink { [weak self] in
+                guard let self else { return }
+
+                var newModel = $0.newValue
+                if !validModels.contains(newModel) || newModel.isEmpty {
+                    newModel = validModels.first ?? ""
+                    Defaults[modelKey] = newModel
+                }
+                self.model = newModel
             }
             .store(in: &cancellables)
     }
@@ -106,6 +118,8 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
+    var model: String = ""
+
     var defaultModels: [String] {
         [""]
     }
@@ -118,19 +132,19 @@ public class StreamService: QueryService {
         []
     }
 
-    var model: String {
-        get {
-            var model = Defaults[modelKey]
-            if !validModels.contains(model) || model.isEmpty {
-                model = validModels.first ?? ""
-                Defaults[modelKey] = model
-            }
-            return model
-        }
-        set {
-            Defaults[modelKey] = newValue
-        }
-    }
+//    var model: String {
+//        get {
+//            var model = Defaults[modelKey]
+//            if !validModels.contains(model) || model.isEmpty {
+//                model = validModels.first ?? ""
+//                Defaults[modelKey] = model
+//            }
+//            return model
+//        }
+//        set {
+//            Defaults[modelKey] = newValue
+//        }
+//    }
 
     var modelKey: Defaults.Key<String> {
         stringDefaultsKey(.model, defaultValue: defaultModel)
