@@ -79,7 +79,7 @@ struct GeneralTab: View {
                         "setting.general.voice.word_pronunciation",
                         selection: $pronunciation
                     ) {
-                        ForEach(Pronunciation.allCases, id: \.rawValue) { option in
+                        ForEach(EnglishPronunciation.allCases, id: \.rawValue) { option in
                             Text(option.localizedStringResource)
                                 .tag(option)
                         }

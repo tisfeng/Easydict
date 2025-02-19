@@ -9,19 +9,19 @@
 import Defaults
 import Foundation
 
-// MARK: - Pronunciation + Defaults.Serializable
+// MARK: - EnglishPronunciation + Defaults.Serializable
 
-extension Pronunciation: Defaults.Serializable {}
+extension EnglishPronunciation: Defaults.Serializable {}
 
-// MARK: - Pronunciation + CaseIterable
+// MARK: - EnglishPronunciation + CaseIterable
 
-extension Pronunciation: CaseIterable {
-    public static let allCases: [Pronunciation] = [.us, .uk]
+extension EnglishPronunciation: CaseIterable {
+    public static let allCases: [EnglishPronunciation] = [.us, .uk]
 }
 
-// MARK: - Pronunciation + CustomLocalizedStringResourceConvertible
+// MARK: - EnglishPronunciation + CustomLocalizedStringResourceConvertible
 
-extension Pronunciation: CustomLocalizedStringResourceConvertible {
+extension EnglishPronunciation: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {
         case .uk:

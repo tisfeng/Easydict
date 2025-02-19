@@ -19,10 +19,10 @@ enum LanguageDetectOptimize: Int {
     case google = 2
 }
 
-// MARK: - Pronunciation
+// MARK: - EnglishPronunciation
 
 @objc
-enum Pronunciation: Int {
+enum EnglishPronunciation: Int {
     case uk = 1
     case us
 }
@@ -76,7 +76,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
     @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
-    @DefaultsWrapper(.pronunciation) var pronunciation: Pronunciation
+    @DefaultsWrapper(.pronunciation) var pronunciation: EnglishPronunciation
 
     @DefaultsWrapper(.autoCopySelectedText) var autoCopySelectedText: Bool
     @DefaultsWrapper(.autoCopyOCRText) var autoCopyOCRText: Bool
