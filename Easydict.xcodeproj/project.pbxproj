@@ -298,6 +298,7 @@
 		27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE95262B3DC55F000AD654 /* EasydictApp.swift */; };
 		27FE98092B3DD536000AD654 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE98082B3DD536000AD654 /* SettingView.swift */; };
 		27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */; };
+		40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */; };
 		5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA77A6C61B54C27803F5D7D /* Sentry */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
 		6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */; };
@@ -832,6 +833,7 @@
 		27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
 		357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.release.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.release.xcconfig"; sourceTree = "<group>"; };
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
 		6220AD592A82812300BBFB52 /* EZBingService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingService.h; sourceTree = "<group>"; };
 		6220AD5A2A82812300BBFB52 /* EZBingService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingService.m; sourceTree = "<group>"; };
 		6295DE2F2A84D82E006145F4 /* EZBingTranslateModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingTranslateModel.h; sourceTree = "<group>"; };
@@ -1409,6 +1411,7 @@
 		03779F0A2BB25688008D3C42 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				40F5D52A2D65B1A200EDB997 /* DeepSeek */,
 				036463682CB62B6600D0D6CC /* Apple */,
 				03779F0D2BB256A7008D3C42 /* OpenAI */,
 				036D627F2BCAB5C6002C95C7 /* BuiltInAI */,
@@ -2369,6 +2372,14 @@
 			path = Tabs;
 			sourceTree = "<group>";
 		};
+		40F5D52A2D65B1A200EDB997 /* DeepSeek */ = {
+			isa = PBXGroup;
+			children = (
+				40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */,
+			);
+			path = DeepSeek;
+			sourceTree = "<group>";
+		};
 		6220AD582A8280E800BBFB52 /* Bing */ = {
 			isa = PBXGroup;
 			children = (
@@ -3126,6 +3137,7 @@
 				0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */,
 				03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */,
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,
+				40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				039785282CC678F400A49087 /* TranslationManager.swift in Sources */,
 				039785292CC678F400A49087 /* TranslationService.swift in Sources */,

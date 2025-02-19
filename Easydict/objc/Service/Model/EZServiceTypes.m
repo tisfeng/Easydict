@@ -49,6 +49,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeAppleDictionary, [EZAppleDictionary class],
                                            EZServiceTypeYoudao, [EZYoudaoService class],
                                            EZServiceTypeOpenAI, [EZOpenAIService class],
+                                           EZServiceTypeDeepSeek, [EZDeepSeekAIService class],
                                            EZServiceTypeBuiltInAI, [EZBuiltInAIService class],
                                            EZServiceTypeGemini, [EZGeminiService class],
                                            EZServiceTypeOllama, [EZOllamaService class],
