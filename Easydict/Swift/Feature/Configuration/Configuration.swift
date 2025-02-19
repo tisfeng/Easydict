@@ -445,7 +445,7 @@ extension Configuration {
     }
 
     fileprivate func didSetPronunciation() {
-        logSettings(["word_pronunciation": pronunciation])
+        logSettings(["english_pronunciation": pronunciation])
     }
 
     fileprivate func didSetAutoCopySelectedText() {

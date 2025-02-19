@@ -6891,30 +6891,30 @@
         }
       }
     },
-    "setting.general.voice.word_pronunciation" : {
+    "setting.general.voice.english_pronunciation" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a pronunciation"
+            "value" : "English Pronunciation"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Изаберите изговор"
+            "value" : "Anglická výslovnosť"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择发音"
+            "value" : "英语发音"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選擇發音"
+            "value" : "英文發音"
           }
         }
       }

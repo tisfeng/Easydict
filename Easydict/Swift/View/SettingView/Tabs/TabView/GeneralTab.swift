@@ -76,7 +76,7 @@ struct GeneralTab: View {
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
                 if autoPlayAudio {
                     Picker(
-                        "setting.general.voice.word_pronunciation",
+                        "setting.general.voice.english_pronunciation",
                         selection: $pronunciation
                     ) {
                         ForEach(EnglishPronunciation.allCases, id: \.rawValue) { option in
