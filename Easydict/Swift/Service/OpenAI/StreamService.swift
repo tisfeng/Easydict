@@ -25,14 +25,16 @@ public class StreamService: QueryService {
         // Since getter Defaults[key] cost CPU high when update too frequently, we observe it here.
 
         Defaults.publisher(thinkTagKey)
+            .removeDuplicates()
             .sink { [weak self] in
                 self?.hideThinkTagContent = $0.newValue
             }
             .store(in: &cancellables)
 
         Defaults.publisher(modelKey)
+            .removeDuplicates()
             .sink { [weak self] in
-                guard let self else { return }
+                guard let self, !uuid.isEmpty else { return }
 
                 var newModel = $0.newValue
                 if !validModels.contains(newModel) || newModel.isEmpty {
@@ -45,6 +47,13 @@ public class StreamService: QueryService {
     }
 
     // MARK: Public
+
+    public override var uuid: String {
+        // For custom openai service, model is associated with uuid, so we should update model when uuid is set.
+        didSet {
+            model = Defaults[modelKey]
+        }
+    }
 
     public override func isStream() -> Bool {
         true
@@ -118,7 +127,11 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
-    var model: String = ""
+    var model: String = "" {
+        didSet {
+            Defaults[modelKey] = model
+        }
+    }
 
     var defaultModels: [String] {
         [""]
@@ -131,20 +144,6 @@ public class StreamService: QueryService {
     var unsupportedLanguages: [Language] {
         []
     }
-
-//    var model: String {
-//        get {
-//            var model = Defaults[modelKey]
-//            if !validModels.contains(model) || model.isEmpty {
-//                model = validModels.first ?? ""
-//                Defaults[modelKey] = model
-//            }
-//            return model
-//        }
-//        set {
-//            Defaults[modelKey] = newValue
-//        }
-//    }
 
     var modelKey: Defaults.Key<String> {
         stringDefaultsKey(.model, defaultValue: defaultModel)
