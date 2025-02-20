@@ -124,6 +124,7 @@ class YoudaoService: QueryService {
     override func text(
         toAudio text: String,
         fromLanguage from: Language,
+        byAccent accent: String?,
         completion: @escaping (String?, (any Error)?) -> ()
     ) {
         guard !text.isEmpty else {
@@ -143,7 +144,9 @@ class YoudaoService: QueryService {
         let language = getTTSLanguageCode(from)
         let encodedText =
             text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let audioURL = "\(kYoudaoDictURL)/dictvoice?audio=\(encodedText)&le=\(language)"
+        // type=1 英音 | type=2 美音
+        let accentType = accent == "uk" ? "1" : "2"
+        let audioURL = "\(kYoudaoDictURL)/dictvoice?audio=\(encodedText)&le=\(language)&type=\(accentType)"
         completion(audioURL, nil)
     }
 
