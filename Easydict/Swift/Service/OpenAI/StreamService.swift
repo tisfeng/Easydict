@@ -30,30 +30,9 @@ public class StreamService: QueryService {
                 self?.hideThinkTagContent = $0.newValue
             }
             .store(in: &cancellables)
-
-        Defaults.publisher(modelKey)
-            .removeDuplicates()
-            .sink { [weak self] in
-                guard let self, !uuid.isEmpty else { return }
-
-                var newModel = $0.newValue
-                if !validModels.contains(newModel) || newModel.isEmpty {
-                    newModel = validModels.first ?? ""
-                    Defaults[modelKey] = newModel
-                }
-                self.model = newModel
-            }
-            .store(in: &cancellables)
     }
 
     // MARK: Public
-
-    public override var uuid: String {
-        // For custom openai service, model is associated with uuid, so we should update model when uuid is set.
-        didSet {
-            model = Defaults[modelKey]
-        }
-    }
 
     public override func isStream() -> Bool {
         true
@@ -127,9 +106,17 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
-    var model: String = "" {
-        didSet {
-            Defaults[modelKey] = model
+    var model: String {
+        get {
+            var model = Defaults[modelKey]
+            if !validModels.contains(model) || model.isEmpty {
+                model = validModels.first ?? ""
+                Defaults[modelKey] = model
+            }
+            return model
+        }
+        set {
+            Defaults[modelKey] = newValue
         }
     }
 
