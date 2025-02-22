@@ -15,7 +15,7 @@ extension StreamService {
         _ textStream: AsyncThrowingStream<String, Error>,
         queryType: EZQueryTextType,
         error: Error?,
-        interval: TimeInterval = 0.2,
+        interval: TimeInterval = 0.3,
         completion: @escaping (EZQueryResult) -> ()
     ) async throws {
         for try await text in textStream._throttle(for: .seconds(interval)) {
