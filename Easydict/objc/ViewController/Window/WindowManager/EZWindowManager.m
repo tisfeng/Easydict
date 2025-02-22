@@ -25,10 +25,10 @@
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 
-/// the screen where the mouse is located
-@property (nonatomic, strong) NSScreen *screen;
-
 @property (nonatomic, copy) EZActionType actionType;
+
+/// The screen that the last mouse clicked on.
+@property (nonatomic, strong, readonly) NSScreen *screen;
 
 @end
 
@@ -65,7 +65,6 @@ static EZWindowManager *_instance;
 
 - (void)setup {
     self.offsetPoint = CGPointMake(18, -12);
-    self.screen = NSScreen.mainScreen;
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
     self.actionType = EZActionTypeInvokeQuery;
 
@@ -107,14 +106,12 @@ static EZWindowManager *_instance;
     [self.eventMonitor setLeftMouseDownBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
         self.startPoint = clickPoint;
-        self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
-        EZLayoutManager.shared.screen = self.screen;
+        self.lastPoint = clickPoint;
     }];
 
     [self.eventMonitor setRightMouseDownBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
-        self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
-        EZLayoutManager.shared.screen = self.screen;
+        self.lastPoint = clickPoint;
     }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
@@ -177,7 +174,7 @@ static EZWindowManager *_instance;
     [self->_popButtonWindow close];
 }
 
-#pragma mark - Getter
+#pragma mark - Getter && Setter
 
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
@@ -225,6 +222,15 @@ static EZWindowManager *_instance;
     return _backgroundQueryViewController;
 }
 
+- (NSScreen *)screen {
+    return [EZCoordinateUtils screenForPoint:self.lastPoint];
+}
+
+- (void)setLastPoint:(CGPoint)lastPoint {
+    _lastPoint = lastPoint;
+
+    [EZLayoutManager.shared updateScreen:self.screen];
+}
 
 #pragma mark - Others
 
@@ -637,9 +643,7 @@ static EZWindowManager *_instance;
 
 - (CGPoint)getFloatingWindowInRightSideOfScreenPoint:(NSWindow *)floatingWindow {
     CGPoint position = CGPointZero;
-
-    NSScreen *targetScreen = self.screen;
-    NSRect screenRect = [targetScreen visibleFrame];
+    NSRect screenRect = self.screen.visibleFrame;
 
     CGFloat x = screenRect.origin.x + screenRect.size.width - floatingWindow.width;
     CGFloat y = screenRect.origin.y + screenRect.size.height;
@@ -651,9 +655,7 @@ static EZWindowManager *_instance;
 /// Get the position of floatingWindow that make sure floatingWindow show in the center of self.screen.
 - (CGPoint)getFloatingWindowInCenterOfScreenPoint:(NSWindow *)floatingWindow {
     CGPoint position = CGPointZero;
-
-    NSScreen *targetScreen = self.screen;
-    NSRect screenRect = [targetScreen visibleFrame];
+    NSRect screenRect = self.screen.visibleFrame;
 
     // top-left point
     CGFloat x = screenRect.origin.x + (screenRect.size.width - floatingWindow.width) / 2;
@@ -713,8 +715,10 @@ static EZWindowManager *_instance;
  */
 - (NSPoint)getSafePointForPopButtonWindow:(NSPoint)point {
     CGFloat safeOffsetX = 50;
-    CGFloat minX = CGRectGetMinX(self.screen.visibleFrame);
-    CGFloat maxX = CGRectGetMaxX(self.screen.visibleFrame) - self.popButtonWindow.width;
+    NSRect screenRect = self.screen.visibleFrame;
+
+    CGFloat minX = CGRectGetMinX(screenRect);
+    CGFloat maxX = CGRectGetMaxX(screenRect) - self.popButtonWindow.width;
 
     NSPoint safePoint = point;
 

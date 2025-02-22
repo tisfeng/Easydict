@@ -659,10 +659,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If query text is an English word, use Youdao TTS to play.
         EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
+        NSString *accent = Configuration.shared.pronunciation == EnglishPronunciationUk ? @"uk" : @"us";
 
         [self.audioPlayer playTextAudio:queryText
                                language:textLanguage
-                                 accent:nil
+                                 accent:accent
                                audioURL:nil
                       designatedService:ttsService];
     };
@@ -1600,12 +1601,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     // Since chaneg height will cause position change, we need to adjust y to keep top-left coordinate position.
     NSWindow *window = self.view.window;
-
     CGFloat deltaHeight = window.height - showingWindowHeight;
     CGFloat y = window.y + deltaHeight;
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreen:nil];
+    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreen:EZLayoutManager.shared.screen];
 
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?

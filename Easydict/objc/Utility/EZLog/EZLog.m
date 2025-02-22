@@ -20,21 +20,21 @@
 @implementation EZLog
 
 + (void)setupCrashLogService {
+    // TODO: Later, remove App Center SDK if Sentry is stable.
+
 #if !DEBUG
     // App Center
     [MSACAppCenter start:SecretKeyManager.keyValues[@"appcenterSecret"] withServices:@[
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];
-    
-    // Firebase
-    [FIRApp configure];
 
-    [self setupSentry];
-#endif
-}
+    // Firebase can only be configured once.
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [FIRApp configure];
+    });
 
-+ (void)setupSentry {
     // Sentry SDK https://izual.sentry.io/projects/easydict/getting-started/?installationMode=manual&product=performance-monitoring&product=profiling
     [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
         options.dsn = SecretKeyManager.keyValues[@"sentryDSN"];
@@ -42,10 +42,11 @@
 
         // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
         // We recommend adjusting this value in production.
-        options.tracesSampleRate = @(1);
+        options.tracesSampleRate = @(0.1);
 
         options.swiftAsyncStacktraces = YES; // only applies to async code in Swift
     }];
+#endif
 }
 
 + (void)setCrashEnabled:(BOOL)enabled {
@@ -55,16 +56,14 @@
     isEnabled = NO;
 #endif
 
-    // TODO: Later, remove App Center SDK if Sentry is stable.
-
-    // This method can only take effect after the service is started.
-    [MSACCrashes setEnabled:isEnabled];
-
     if (!isEnabled) {
         [SentrySDK close];
     } else {
-        [self setupSentry];
+        [self setupCrashLogService];
     }
+
+    // This method can only take effect after the service is started.
+    [MSACCrashes setEnabled:isEnabled];
 }
 
 /// Log event.
@@ -72,11 +71,11 @@
 /// ⚠️ parameters dict key and value both should be NSString.
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
 //    MMLogError(@"log event: %@, %@", name, dict);
-    
+
     if (![Configuration.shared allowAnalytics]) {
         return;
     }
-    
+
 #if !DEBUG
         [MSACAnalytics trackEvent:name withProperties:dict];
         [FIRAnalytics logEventWithName:name parameters:dict];

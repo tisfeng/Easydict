@@ -312,6 +312,7 @@
 		6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988D2BAC88B500DB835A /* I18nHelper.swift */; };
 		6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C98942BAE841600DB835A /* LocalizedBundle.swift */; };
 		6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */; };
+		894B8BB72D5D98A3004B36C1 /* PronunciationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894B8BB62D5D989A004B36C1 /* PronunciationExtensions.swift */; };
 		960835502B6791F200C6A931 /* Shortcut+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
 		9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */; };
@@ -852,6 +853,7 @@
 		6A8C988D2BAC88B500DB835A /* I18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = I18nHelper.swift; sourceTree = "<group>"; };
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
+		894B8BB62D5D989A004B36C1 /* PronunciationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationExtensions.swift; sourceTree = "<group>"; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* Shortcut+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shortcut+Validator.swift"; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
@@ -1071,6 +1073,7 @@
 		0317516C2C018A8800EFB343 /* Others */ = {
 			isa = PBXGroup;
 			children = (
+				894B8BB62D5D989A004B36C1 /* PronunciationExtensions.swift */,
 				EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */,
 				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
 				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
@@ -3247,6 +3250,7 @@
 				03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
 				C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */,
+				894B8BB72D5D98A3004B36C1 /* PronunciationExtensions.swift in Sources */,
 				038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */,
 				03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
@@ -3773,7 +3777,7 @@
 			repositoryURL = "https://github.com/vapor/vapor.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.102.1;
+				minimumVersion = 4.112.1;
 			};
 		};
 		0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {

@@ -763,9 +763,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
             //            MMLogInfo(@"key down: %@, modifierFlags: %ld", event.characters, event.modifierFlags);
 
+            EZWindowManager.shared.lastPoint = NSEvent.mouseLocation;
+
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];
             }
+
             break;
         }
         case NSEventTypeScrollWheel: {
@@ -792,6 +795,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeFlagsChanged: {
             //            MMLogInfo(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+
+            EZWindowManager.shared.lastPoint = NSEvent.mouseLocation;
 
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.

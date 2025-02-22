@@ -51,4 +51,5 @@ enum ServiceConfigurationKey: String {
     case enableCustomPrompt
     case systemPrompt
     case userPrompt
+    case thinkTag
 }

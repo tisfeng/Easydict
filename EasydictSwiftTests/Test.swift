@@ -91,3 +91,20 @@ import Translation
     }
     #expect(true, "Concurrent test getSelectedText completed without crash")
 }
+
+@Test func testFilterThinkTags() {
+    let testCases: [(input: String, expected: String)] = [
+        ("<think>hello", ""),
+        ("<think></think>hello", "hello"),
+        ("<think>hello</think>world", "world"),
+        ("hello<think>world</think>", "hello<think>world</think>"),
+        ("no tags here", "no tags here"),
+        ("", ""),
+    ]
+
+    for (index, testCase) in testCases.enumerated() {
+        let result = testCase.input.filterThinkTagContent()
+        print("Test Case \(index + 1): \(result)")
+        #expect(result == testCase.expected)
+    }
+}

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RegexBuilder
 
 extension StreamService {
     /// Throttle update result text, avoid update UI too frequently.
@@ -45,52 +46,46 @@ extension StreamService {
                 queryError = .init(type: .noResult)
             }
 
-            result.error = queryError
-            completion(result)
+            completeWithResult(result, error: queryError)
             return
         }
 
-        var translatedTexts: [String]?
-        if let resultText {
-            translatedTexts = [resultText.trim()]
+        // If error is not nil, means stream is finished.
+        result.isStreamFinished = error != nil
+
+        var finalText = resultText?.trim() ?? ""
+
+        if hideThinkTagContent {
+            finalText = finalText.filterThinkTagContent().trim()
         }
 
-        // Make a local copy of result to avoid potential retain cycles
-        let localResult = result
+        let updateCompletion = { [weak result] in
+            guard let result else { return }
 
-        // If error is not nil, means stream is finished.
-        localResult.isStreamFinished = error != nil
-
-        /**
-         This code may crash
-
-         SIGABRT
-         Object 0x600002932840 of class __BridgingBufferStorage deallocated with non-zero retain count 2. This object's deinit, or something called from it, may have created a strong reference to self which outlived deinit, resulting in a dangling reference.
-          >
-         KERN_INVALID_ADDRESS at 0xfffffffffffffff0.
-         */
-        localResult.translatedResults = translatedTexts
-
-        let updateCompletion = {
-            localResult.error = .queryError(from: error)
-            completion(localResult)
+            result.translatedResults = [finalText]
+            completeWithResult(result, error: error)
         }
 
         switch queryType {
         case .dictionary:
             if error != nil {
-                localResult.showBigWord = false
-                localResult.translateResultsTopInset = 0
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
                 updateCompletion()
                 return
             }
 
-            localResult.showBigWord = true
-            localResult.translateResultsTopInset = 6
+            result.showBigWord = true
+            result.translateResultsTopInset = 6
             updateCompletion()
 
         default:
             updateCompletion()
+        }
+
+        func completeWithResult(_ result: EZQueryResult, error: Error?) {
+            result.error = .queryError(from: error)
+            completion(result)
         }
     }
 }
