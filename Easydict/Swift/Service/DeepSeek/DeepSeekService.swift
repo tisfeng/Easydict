@@ -13,16 +13,6 @@ import Foundation
 
 @objc(EZDeepSeekAIService)
 class DeepSeekService: OpenAIService {
-    // MARK: Lifecycle
-
-    override init() {
-        super.init()
-
-        // Set default supported models, disable user to change it.
-        // Generally, it should be updated only when the app is updated.
-        supportedModels = defaultModels.joined(separator: ", ")
-    }
-
     // MARK: Public
 
     public override func name() -> String {
