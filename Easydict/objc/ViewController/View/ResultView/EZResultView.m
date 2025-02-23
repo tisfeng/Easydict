@@ -391,7 +391,7 @@
     BOOL warningType = (
         type == EZQueryErrorTypeUnsupportedLanguage ||
         type == EZQueryErrorTypeUnsupportedQueryType ||
-        type == EZQueryErrorTypeNoResult
+        (type == EZQueryErrorTypeNoResult && !self.result.service.isStream)
     );
 
     BOOL showWarningImage = !self.result.hasTranslatedResult && warningType;
