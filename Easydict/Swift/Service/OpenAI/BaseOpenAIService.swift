@@ -27,12 +27,21 @@ public class BaseOpenAIService: StreamService {
         -> AsyncThrowingStream<String, any Error> {
         let url = URL(string: endpoint)
 
+        // Check endpoint
         guard let url, url.isValid else {
             let invalidURLError = QueryError(
                 type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
             )
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: invalidURLError)
+            }
+        }
+
+        // Check API key
+        guard !apiKey.isEmpty else {
+            let error = QueryError(type: .missingSecretKey, message: "API key is empty")
+            return AsyncThrowingStream { continuation in
+                continuation.finish(throwing: error)
             }
         }
 
