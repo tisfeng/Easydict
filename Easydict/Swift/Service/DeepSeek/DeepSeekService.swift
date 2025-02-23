@@ -1,5 +1,5 @@
 //
-//  DeepSeekAIService.swift
+//  DeepSeekService.swift
 //  Easydict
 //
 //  Created by GarethNg on 2025/2/19.
@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - DeepSeekService
 
-@objc(EZDeepSeekAIService)
+@objc(EZDeepSeekService)
 class DeepSeekService: OpenAIService {
     // MARK: Public
 
