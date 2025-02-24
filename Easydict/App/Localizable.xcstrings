@@ -1260,6 +1260,35 @@
         }
       }
     },
+    "deepseek_translate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek 翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek 翻譯"
+          }
+        }
+      }
+    },
     "detected" : {
       "comment" : "query window",
       "localizations" : {
