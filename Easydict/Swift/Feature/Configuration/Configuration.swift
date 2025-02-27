@@ -99,6 +99,7 @@ class Configuration: NSObject {
     @Default(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
 
     @Default(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
+    @Default(.screenVisibleFrame) var screenVisibleFrame: CGRect
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
