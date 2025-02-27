@@ -731,6 +731,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
+//            MMLogInfo(@"mouse up");
+
+            EZWindowManager.shared.lastPoint = NSEvent.mouseLocation;
+
             if ([self checkIfLeftMouseDragged]) {
                 self.triggerType = EZTriggerTypeDragged;
                 if (self.frontmostAppTriggerType & self.triggerType) {
@@ -740,7 +744,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDown: {
-            //            MMLogInfo(@"mouse down");
+//            MMLogInfo(@"mouse down");
 
             // Record some mouse event except dragged event.
             [self updateRecordedEvents:event];
@@ -749,9 +753,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDragged: {
+//            NSLog(@"mouse dragged");
+
             // Record dragged event.
             [self updateRecordedEvents:event];
-            //            MMLogInfo(@"NSEventTypeLeftMouseDragged");
             break;
         }
         case NSEventTypeRightMouseDown: {
