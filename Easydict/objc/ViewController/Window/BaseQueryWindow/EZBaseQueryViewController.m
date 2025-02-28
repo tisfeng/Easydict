@@ -1605,7 +1605,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     CGFloat y = window.y + deltaHeight;
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreen:EZLayoutManager.shared.screen];
+
+    CGRect screenVisibleFrame = EZLayoutManager.shared.screen.visibleFrame;
+    if (Configuration.shared.fixedWindowPosition == EZShowWindowPositionFormer) {
+        screenVisibleFrame = Configuration.shared.screenVisibleFrame;
+    }
+
+    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?

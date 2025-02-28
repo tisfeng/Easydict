@@ -207,6 +207,17 @@ static EZLayoutManager *_instance;
             break;
         case EZWindowTypeFixed:
             _fixedWindowFrame = window.frame;
+
+            // Record screenVisibleFrame when fixedWindowPosition is EZShowWindowPositionFormer
+            if (Configuration.shared.fixedWindowPosition == EZShowWindowPositionFormer) {
+                CGPoint fixedWindowCenter = NSMakePoint(NSMidX(_fixedWindowFrame), NSMidY(_fixedWindowFrame));
+
+                // Update lastPoint to update current active screen
+                EZWindowManager.shared.lastPoint = fixedWindowCenter;
+
+                Configuration.shared.screenVisibleFrame = self.screen.visibleFrame;
+            }
+
             break;
         case EZWindowTypeMini:
             _miniWindowFrame = window.frame;
@@ -224,6 +235,8 @@ static EZLayoutManager *_instance;
 
 - (void)updateScreen:(NSScreen *)screen {
     _screen = screen;
+
+//    MMLogInfo(@"update screen: %@", @(screen.visibleFrame));
 
     [self setupMaximumWindowSize:screen];
 }

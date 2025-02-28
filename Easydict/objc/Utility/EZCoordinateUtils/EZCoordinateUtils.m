@@ -10,30 +10,26 @@
 
 @implementation EZCoordinateUtils
 
-+ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point inScreen:(NSScreen *)screen {
+/// left-bottom safe postion.
++ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point inScreenVisibleFrame:(CGRect)screenVisibleFrame {
     CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
-    return [self getSafeLocation:newFrame inScreen:screen];
+    return [self getSafeLocation:newFrame inScreenVisibleFrame:screenVisibleFrame];
 }
 
-+ (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point inScreen:(NSScreen *)screen {
++ (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point inScreenVisibleFrame:(CGRect)screenVisibleFrame {
     CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
-    return [self getSafeAreaFrame:newFrame inScreen:screen];
+    return [self getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 }
-
 
 /// left-bottom safe postion.
-+ (CGPoint)getSafeLocation:(CGRect)frame inScreen:(NSScreen *)screen {
-    CGRect safeFrame = [self getSafeAreaFrame:frame inScreen:screen];
++ (CGPoint)getSafeLocation:(CGRect)frame inScreenVisibleFrame:(CGRect)screenVisibleFrame {
+    CGRect safeFrame = [self getSafeAreaFrame:frame inScreenVisibleFrame:screenVisibleFrame];
     return safeFrame.origin;
 }
 
 /// Make sure frame show in screen visible frame, return left-bottom postion frame.
-+ (CGRect)getSafeAreaFrame:(CGRect)frame inScreen:(nullable NSScreen *)screen {
-    if (!screen) {
-        screen = [self screenOfMousePosition];
-    }
-    CGRect visibleFrame = screen.visibleFrame;
-    if (CGRectContainsRect(visibleFrame, frame)) {
++ (CGRect)getSafeAreaFrame:(CGRect)frame inScreenVisibleFrame:(CGRect)screenVisibleFrame {
+    if (CGRectContainsRect(screenVisibleFrame, frame)) {
         return frame;
     }
 
@@ -43,21 +39,21 @@
     CGFloat height = frame.size.height;
 
     // left safe
-    if (x < visibleFrame.origin.x) {
-        x = visibleFrame.origin.x;
+    if (x < screenVisibleFrame.origin.x) {
+        x = screenVisibleFrame.origin.x;
     }
     // right safe
-    if (x + width > visibleFrame.origin.x + visibleFrame.size.width) {
-        x = visibleFrame.origin.x + visibleFrame.size.width - width;
+    if (x + width > screenVisibleFrame.origin.x + screenVisibleFrame.size.width) {
+        x = screenVisibleFrame.origin.x + screenVisibleFrame.size.width - width;
     }
 
     // top safe
-    if (y > visibleFrame.origin.y + visibleFrame.size.height) {
-        y = visibleFrame.origin.y + visibleFrame.size.height;
+    if (y > screenVisibleFrame.origin.y + screenVisibleFrame.size.height) {
+        y = screenVisibleFrame.origin.y + screenVisibleFrame.size.height;
     }
     // keep bottom safe, if frame bottom beyond visibleFrame bottom and frame height <= visibleFrame height , try to move it up.
-    if (y < visibleFrame.origin.y && height <= visibleFrame.size.height) {
-        y = visibleFrame.origin.y;
+    if (y < screenVisibleFrame.origin.y && height <= screenVisibleFrame.size.height) {
+        y = screenVisibleFrame.origin.y;
     }
     
     return CGRectMake(x, y, width, height);

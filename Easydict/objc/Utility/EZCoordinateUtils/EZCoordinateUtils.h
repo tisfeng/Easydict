@@ -13,13 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZCoordinateUtils : NSObject
 
 /// Get safe point, bottom-left coordinate.
-+ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point inScreen:(NSScreen *)screen;
-+ (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point inScreen:(NSScreen *)screen;
++ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point inScreenVisibleFrame:(CGRect)screenVisibleFrame;
 
 /// Make sure frame show in screen visible frame, return left-bottom postion frame.
-+ (CGRect)getSafeAreaFrame:(CGRect)frame inScreen:(nullable NSScreen *)screen;
-+ (CGPoint)getSafeLocation:(CGRect)frame inScreen:(NSScreen *)screen;
-
++ (CGRect)getSafeAreaFrame:(CGRect)frame inScreenVisibleFrame:(CGRect)screenVisibleFrame;
++ (CGPoint)getSafeLocation:(CGRect)frame inScreenVisibleFrame:(CGRect)screenVisibleFrame;
 
 /// Convert point from top-left to bottom-left coordinate system
 + (CGPoint)convertPointToBottomLeft:(CGPoint)point;

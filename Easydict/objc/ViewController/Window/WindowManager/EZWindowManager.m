@@ -90,7 +90,9 @@ static EZWindowManager *_instance;
 
         CGPoint point = [self getPopButtonWindowLocation]; // This is top-left point
         CGPoint bottomLeftPoint = CGPointMake(point.x, point.y - self.popButtonWindow.height);
-        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint inScreen:self.screen];
+        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame
+                                                     moveToPoint:bottomLeftPoint
+                                            inScreenVisibleFrame:self.screen.visibleFrame];
 
         safePoint = [self getSafePointForPopButtonWindow:safePoint];
 
@@ -228,6 +230,8 @@ static EZWindowManager *_instance;
 
 - (void)setLastPoint:(CGPoint)lastPoint {
     _lastPoint = lastPoint;
+
+//    MMLogInfo(@"lastPoint: %@", @(lastPoint));
 
     [EZLayoutManager.shared updateScreen:self.screen];
 }
@@ -424,7 +428,16 @@ static EZWindowManager *_instance;
     [[self currentShowingSettingsWindow] close];
 
     // get safe window position
-    CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
+
+    CGRect screenVisibleFrame = self.screen.visibleFrame;
+    if (Configuration.shared.fixedWindowPosition == EZShowWindowPositionFormer) {
+        // If fixed window position is former, we need to get the screen frame when fixed window is shown.
+        screenVisibleFrame = Configuration.shared.screenVisibleFrame;
+    }
+
+    CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame
+                                                    moveToPoint:point
+                                           inScreenVisibleFrame:screenVisibleFrame];
     [window setFrameOrigin:safeLocation];
     window.level = EZFloatingWindowLevel;
 
