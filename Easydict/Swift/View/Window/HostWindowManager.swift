@@ -82,7 +82,7 @@ extension HostWindowManager {
 
     /// Show the About window.
     func showAboutWindow() {
-        showWindow(windowId: .aboutWindowId, width: 500, height: 220, resizable: false) {
+        showWindow(windowId: .aboutWindowId, width: 600, height: 220, resizable: false) {
             AboutTab()
         }
     }
