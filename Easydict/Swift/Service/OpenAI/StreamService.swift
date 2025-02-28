@@ -189,6 +189,10 @@ public class StreamService: QueryService {
         Defaults[apiKeyKey]
     }
 
+    var requireAPIKey: Bool {
+        true
+    }
+
     var apiKeyKey: Defaults.Key<String> {
         stringDefaultsKey(.apiKey)
     }

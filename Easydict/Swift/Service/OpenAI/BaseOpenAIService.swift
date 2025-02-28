@@ -37,8 +37,8 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
-        // Check API key
-        guard !apiKey.isEmpty else {
+        // Check API key if required
+        if requireAPIKey, apiKey.isEmpty {
             let error = QueryError(type: .missingSecretKey, message: "API key is empty")
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: error)
