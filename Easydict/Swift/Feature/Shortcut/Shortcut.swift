@@ -115,6 +115,14 @@ class Shortcut: NSObject {
 
     var confictMenuItem: NSMenuItem?
 
+    override func copy() -> Any {
+        self // SingletonClass.shared
+    }
+
+    override func mutableCopy() -> Any {
+        self // SingletonClass.shared
+    }
+
     @objc
     static func setupShortcut() {
         let shortcut = Shortcut.shared
@@ -127,14 +135,6 @@ class Shortcut: NSObject {
         } else {
             // do nothing
         }
-    }
-
-    override func copy() -> Any {
-        self // SingletonClass.shared
-    }
-
-    override func mutableCopy() -> Any {
-        self // SingletonClass.shared
     }
 
     // Optional

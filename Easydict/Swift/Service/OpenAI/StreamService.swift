@@ -17,6 +17,21 @@ import SwiftUI
 @objcMembers
 @objc(EZStreamService)
 public class StreamService: QueryService {
+    // MARK: Lifecycle
+
+    override init() {
+        super.init()
+
+        // Since getter Defaults[key] cost CPU high when update too frequently, we observe it here.
+
+        Defaults.publisher(thinkTagKey)
+            .removeDuplicates()
+            .sink { [weak self] in
+                self?.hideThinkTagContent = $0.newValue
+            }
+            .store(in: &cancellables)
+    }
+
     // MARK: Public
 
     public override func isStream() -> Bool {
@@ -89,17 +104,7 @@ public class StreamService: QueryService {
 
     var cancellables: Set<AnyCancellable> = []
 
-    var defaultModels: [String] {
-        [""]
-    }
-
-    var defaultModel: String {
-        defaultModels.first ?? ""
-    }
-
-    var unsupportedLanguages: [Language] {
-        []
-    }
+    var hideThinkTagContent: Bool = true
 
     var model: String {
         get {
@@ -113,6 +118,18 @@ public class StreamService: QueryService {
         set {
             Defaults[modelKey] = newValue
         }
+    }
+
+    var defaultModels: [String] {
+        [""]
+    }
+
+    var defaultModel: String {
+        defaultModels.first ?? ""
+    }
+
+    var unsupportedLanguages: [Language] {
+        []
     }
 
     var modelKey: Defaults.Key<String> {
@@ -172,6 +189,10 @@ public class StreamService: QueryService {
         Defaults[apiKeyKey]
     }
 
+    var requireAPIKey: Bool {
+        true
+    }
+
     var apiKeyKey: Defaults.Key<String> {
         stringDefaultsKey(.apiKey)
     }
@@ -225,10 +246,6 @@ public class StreamService: QueryService {
 
     var thinkTagKey: Defaults.Key<Bool> {
         boolDefaultsKey(.thinkTag, defaultValue: true)
-    }
-
-    var hideThinkTagContent: Bool {
-        Defaults[thinkTagKey]
     }
 
     // In general, LLM services need to observe these keys to enable validation button.

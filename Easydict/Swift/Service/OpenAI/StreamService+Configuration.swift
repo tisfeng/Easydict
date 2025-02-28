@@ -74,6 +74,9 @@ extension StreamService {
 
     func notifyServiceConfigurationChanged(autoQuery: Bool = false) {
         logInfo("service config changed: \(serviceType().rawValue), windowType: \(windowType.rawValue)")
+        if !uuid.isEmpty {
+            logInfo("service name: \(name()), id: \(serviceTypeWithUniqueIdentifier())")
+        }
 
         NotificationCenter.default.postServiceUpdateNotification(
             serviceType: serviceTypeWithUniqueIdentifier(),

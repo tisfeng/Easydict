@@ -74,15 +74,6 @@ struct MenuItemView: View {
 
     @Environment(\.openURL) private var openURL
 
-    @ViewBuilder private var versionItem: some View {
-        Button(versionString) {
-            guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/releases") else {
-                return
-            }
-            openURL(versionURL)
-        }
-    }
-
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
         if let latestVersion,
@@ -90,6 +81,15 @@ struct MenuItemView: View {
             return defaultLabel + "  (✨\(latestVersion) )"
         } else {
             return defaultLabel
+        }
+    }
+
+    @ViewBuilder private var versionItem: some View {
+        Button(versionString) {
+            guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/releases") else {
+                return
+            }
+            openURL(versionURL)
         }
     }
 

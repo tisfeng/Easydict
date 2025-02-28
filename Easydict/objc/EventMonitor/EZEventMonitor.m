@@ -314,8 +314,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
+                        // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
                         MMLogError(@"Failed to get selected text from browser: %@", error);
-                        [self handleForceGetSelectedTextOnAXError:axError completion:completion];
+                        [self handleForceGetSelectedTextOnAXError:kAXErrorNoValue completion:completion];
                     } else {
                         completion(selectedText);
                     }

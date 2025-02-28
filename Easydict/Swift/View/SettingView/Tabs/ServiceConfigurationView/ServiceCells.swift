@@ -29,10 +29,11 @@ struct SecureInputCell: View {
 
     // MARK: Internal
 
+    @State var showText: Bool
+
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: LocalizedStringKey
-    @State var showText: Bool
 
     var body: some View {
         SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)

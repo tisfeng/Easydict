@@ -58,6 +58,10 @@ class OllamaService: BaseOpenAIService {
         false
     }
 
+    override var requireAPIKey: Bool {
+        false
+    }
+
     override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,

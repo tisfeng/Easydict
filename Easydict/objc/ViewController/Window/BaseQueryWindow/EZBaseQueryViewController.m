@@ -822,7 +822,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"query error: %@", error);
+            MMLogError(@"service: %@, query error: %@", service.serviceType ,error);
         }
         result.error = [EZQueryError queryErrorFrom:error];
 

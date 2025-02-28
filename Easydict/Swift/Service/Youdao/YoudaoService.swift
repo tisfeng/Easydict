@@ -44,8 +44,6 @@ class YoudaoService: QueryService {
         stringDefaultsKey(.dictionary, defaultValue: "1")
     }
 
-    // MARK: - override functions
-
     override func serviceType() -> ServiceType {
         .youdao
     }
