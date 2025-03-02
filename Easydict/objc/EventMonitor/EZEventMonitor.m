@@ -316,10 +316,19 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                     if (error) {
                         // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
                         MMLogError(@"Failed to get selected text from browser: %@", error);
-                        [self handleForceGetSelectedTextOnAXError:kAXErrorNoValue completion:completion];
-                    } else {
-                        completion(selectedText);
+                        [self forceGetSelectedText:completion];
+                        return;
                     }
+
+                    NSString *text = selectedText.trim;
+                    if (text.length > 0) {
+                        completion(text);
+                        return;
+                    }
+
+                    MMLogInfo(@"AppleScript get selected text is empty, try to use force get selected text for browser");
+
+                    [self forceGetSelectedText:completion];
                 });
             }];
             return;
@@ -329,7 +338,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
         }
 
-        // 3. Try to use simulated key to get selected text.
+        // 3. Try to use force get selected text.
         [self handleForceGetSelectedTextOnAXError:axError completion:completion];
     }];
 }
@@ -556,29 +565,37 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Check error type to use menu action copy or simulated key to get selected text.
 - (void)handleForceGetSelectedTextOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
     if ([self shouldForceGetSelectedTextWithAXError:axError]) {
-        // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
-        // TODO: Try to find a more stable way to get selected text, or combine both methods.
-        if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
-            self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
-            [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:^(NSString *text, NSError *error) {
-                if (error) {
-                    MMLogError(@"Failed to get selected text by menu bar action copy: %@", error);
-                    completion(nil);
-                } else {
-                    MMLogInfo(@"Get selected text by menu bar action copy success: %@", text);
-                    completion(text);
-                }
-            }];
-        } else {
-            [self getSelectedTextBySimulatedKey:^(NSString *text) {
-                self.selectTextType = EZSelectTextTypeSimulatedKey;
-                completion(text);
-            }];
-        }
-        return;
+        [self forceGetSelectedText:completion];
+    } else {
+        completion(nil);
     }
+}
 
-    completion(nil);
+/// Force get selected text when Accessibility failed.
+- (void)forceGetSelectedText:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"Use force get selected text");
+
+    // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
+
+    // TODO: Try to find a more stable way to get selected text, or combine both methods.
+
+    if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
+        self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
+        [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:^(NSString *text, NSError *error) {
+            if (error) {
+                MMLogError(@"Failed to get selected text by menu bar action copy: %@", error);
+                completion(nil);
+            } else {
+                MMLogInfo(@"Get selected text by menu bar action copy success: %@", text);
+                completion(text);
+            }
+        }];
+    } else {
+        [self getSelectedTextBySimulatedKey:^(NSString *text) {
+            self.selectTextType = EZSelectTextTypeSimulatedKey;
+            completion(text);
+        }];
+    }
 }
 
 /// Check if should force get selected text when Accessibility failed.
@@ -683,7 +700,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         return YES;
     }
 
-    MMLogInfo(@"Not use force get selected text: %d, %@", axError, application);
+    MMLogInfo(@"After check axError: %d, not use force get selected text: %@", axError, application);
 
     return NO;
 }
