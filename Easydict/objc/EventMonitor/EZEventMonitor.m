@@ -412,9 +412,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 
-/// Get selected text by simulated key: Cmd + C
+/// Get selected text by simulated key Cmd+C, and mute alert volume.
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
     MMLogInfo(@"Get selected text by simulated key");
+
+    self.selectTextType = EZSelectTextTypeSimulatedKey;
 
     // Do not mute alert volume if already muting, avoid getting muted volume 0, since this method may be called multiple times when dragging window.
     if (!self.isMutingAlertVolume) {
@@ -575,26 +577,29 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)forceGetSelectedText:(void (^)(NSString *_Nullable))completion {
     MMLogInfo(@"Use force get selected text");
 
-    // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, we need more test.
+    // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, some apps do not have copy menu item, like Billfish.
 
     // TODO: Try to find a more stable way to get selected text, or combine both methods.
 
     if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
         self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
-        [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:^(NSString *text, NSError *error) {
+        [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:^(NSString *_Nullable text, NSError *error) {
+            NSString *trimText = [text trim];
+            if (trimText.length > 0) {
+                MMLogInfo(@"Get selected text by menu bar action copy success: %@", trimText);
+                completion(trimText);
+                return;
+            }
+
             if (error) {
                 MMLogError(@"Failed to get selected text by menu bar action copy: %@", error);
-                completion(nil);
             } else {
-                MMLogInfo(@"Get selected text by menu bar action copy success: %@", text);
-                completion(text);
+                MMLogError(@"Get selected text by menu bar action copy is empty, try to use simulated key");
             }
+            [self getSelectedTextBySimulatedKey:completion];
         }];
     } else {
-        [self getSelectedTextBySimulatedKey:^(NSString *text) {
-            self.selectTextType = EZSelectTextTypeSimulatedKey;
-            completion(text);
-        }];
+        [self getSelectedTextBySimulatedKey:completion];
     }
 }
 
