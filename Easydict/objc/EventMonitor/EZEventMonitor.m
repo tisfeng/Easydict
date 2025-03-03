@@ -422,23 +422,26 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (!self.isMutingAlertVolume) {
         self.isMutingAlertVolume = YES;
 
-        //  Mute alert volume to avoid alert.
+        // First, mute alert volume to avoid alert.
         [AppleScriptTask muteAlertVolumeWithCompletionHandler:^(NSInteger volume, NSError *error) {
             if (error) {
                 MMLogError(@"Failed to mute alert volume: %@", error);
             } else {
                 self.currentAlertVolume = volume;
             }
+
+            // After muting alert volume, get selected text by simulated key.
+            [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
+                MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
+                completion(selectedText);
+            }];
         }];
     }
 
     [self cancelDelayRecoverVolume];
-    [self delayRecoverVolume];
 
-    [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
-        MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
-        completion(selectedText);
-    }];
+    // Delay to recover volume, avoid alert volume if the user does not select text when simulating Cmd+C.
+    [self delayRecoverVolume];
 }
 
 #pragma mark - Delay to recover volume
