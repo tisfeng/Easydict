@@ -5798,58 +5798,58 @@
         }
       }
     },
-    "setting.advance.force_get_selected_text_options.menu_bar_action_copy" : {
+    "setting.advance.force_get_selected_text_options.menu_bar_action_copy_first" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menu Bar Action Copy"
+            "value" : "Menu Bar Action Copy First"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopírovanie akcie v lište"
+            "value" : "Akcia ponuky skopírovať prvý"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "菜单栏动作复制取词"
+            "value" : "优先菜单栏动作复制取词"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選單欄動作複製取詞"
+            "value" : "優先選單列動作複製取詞"
           }
         }
       }
     },
-    "setting.advance.force_get_selected_text_options.simulated_shortcut_copy" : {
+    "setting.advance.force_get_selected_text_options.simulated_shortcut_copy_first" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simulated Shortcut Copy"
+            "value" : "Simulated Shortcut Copy First"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simulované kópirovanie skratky"
+            "value" : "Simulované skratky skopírovať prvý"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模拟快捷键复制取词"
+            "value" : "优先模拟快捷键复制取词"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模擬快捷鍵複製取詞"
+            "value" : "優先模擬快速鍵複製取詞"
           }
         }
       }

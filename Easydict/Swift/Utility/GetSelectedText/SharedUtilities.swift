@@ -50,4 +50,9 @@ class SharedUtilities: NSObject {
     static func copyTextAndPaste(_ text: String) async {
         await SelectedTextKit.copyTextAndPaste(text)
     }
+
+    /// Check if the frontmost app has copy menu item.
+    static func hasCopyMenuItem() -> Bool {
+        SelectedTextKit.findCopyMenuItem() != nil
+    }
 }

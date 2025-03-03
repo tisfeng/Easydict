@@ -22,16 +22,16 @@ extension AppleScriptTask {
 
     /// Set alert volume of volume settings, cost ~0.1s
     static func setAlertVolume(_ volume: Int) async throws {
+        logInfo("AppleScript set alert volume: \(volume)")
         let script = "set volume alert volume \(volume)"
         try await runAppleScript(script)
-        logInfo("AppleScript set alert volume: \(volume)")
     }
 
     /// Mute the alert volume and return the previous volume
     /// - Returns: The previous alert volume before muting
     static func muteAlertVolume() async throws -> Int {
-        let previousVolume = try await setAlertVolumeAndReturnPrevious(0)
         logInfo("AppleScript muted alert volume")
+        let previousVolume = try await setAlertVolumeAndReturnPrevious(0)
         return previousVolume
     }
 

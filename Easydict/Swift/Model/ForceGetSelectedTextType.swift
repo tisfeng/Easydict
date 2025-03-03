@@ -23,9 +23,9 @@ extension ForceGetSelectedTextType: CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .simulatedShortcutCopy:
-            "setting.advance.force_get_selected_text_options.simulated_shortcut_copy"
+            "setting.advance.force_get_selected_text_options.simulated_shortcut_copy_first"
         case .menuBarActionCopy:
-            "setting.advance.force_get_selected_text_options.menu_bar_action_copy"
+            "setting.advance.force_get_selected_text_options.menu_bar_action_copy_first"
         }
     }
 }

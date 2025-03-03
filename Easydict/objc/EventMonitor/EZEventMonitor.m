@@ -343,6 +343,115 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     }];
 }
 
+/// Check error type to use menu action copy or simulated key to get selected text.
+- (void)handleForceGetSelectedTextOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
+    if ([self shouldForceGetSelectedTextWithAXError:axError]) {
+        [self forceGetSelectedText:completion];
+    } else {
+        completion(nil);
+    }
+}
+
+/// Force get selected text when Accessibility failed.
+- (void)forceGetSelectedText:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"Use force get selected text");
+
+    // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, some apps do not have copy menu item, like Billfish.
+
+    if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
+        [self getSelectedTextByMenuBarActionCopyFirst:completion];
+    } else {
+        [self getSelectedTextBySimulatedKeyFirst:completion];
+    }
+}
+
+/// Get selected text by simulated key Cmd+C, and mute alert volume.
+- (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"Get selected text by simulated key");
+
+    self.selectTextType = EZSelectTextTypeSimulatedKey;
+
+    // Do not mute alert volume if already muting, avoid getting muted volume 0, since this method may be called multiple times when dragging window.
+    if (!self.isMutingAlertVolume) {
+        self.isMutingAlertVolume = YES;
+
+        // First, mute alert volume to avoid alert.
+        [AppleScriptTask muteAlertVolumeWithCompletionHandler:^(NSInteger volume, NSError *error) {
+            if (error) {
+                MMLogError(@"Failed to mute alert volume: %@", error);
+            } else {
+                self.currentAlertVolume = volume;
+            }
+
+            // After muting alert volume, get selected text by simulated key.
+            [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
+                MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
+                completion(selectedText);
+            }];
+        }];
+    }
+
+    [self cancelDelayRecoverVolume];
+
+    // Delay to recover volume, avoid alert volume if the user does not select text when simulating Cmd+C.
+    [self delayRecoverVolume];
+}
+
+/// Get selected text by menu bar action copy.
+- (void)getSelectedTextByMenuBarActionCopy:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+    MMLogInfo(@"Get selected text by menu bar action copy");
+
+    self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
+
+    [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:completion];
+}
+
+/// Get selected text by simulated key first, if failed, use menu bar action copy.
+- (void)getSelectedTextBySimulatedKeyFirst:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"Get selected text by simulated key first");
+
+    [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
+        if (text.length > 0) {
+            completion(text);
+            return;
+        }
+
+        MMLogError(@"Get selected text by simulated key is empty, try to use menu bar action copy");
+
+        [self getSelectedTextByMenuBarActionCopy:^(NSString *_Nullable text, NSError *_Nullable error) {
+            completion(text);
+        }];
+    }];
+}
+
+/// Get selected text by menu bar action copy first, if failed, use simulated key if app has no copy menu item.
+- (void)getSelectedTextByMenuBarActionCopyFirst:(void (^)(NSString *_Nullable))completion {
+    MMLogInfo(@"Get selected text by menu bar action copy first");
+
+    [self getSelectedTextByMenuBarActionCopy:^(NSString *_Nullable text, NSError *_Nullable error) {
+        NSString *trimText = [text trim];
+
+        if (trimText.length > 0) {
+            MMLogInfo(@"Get selected text by menu bar action copy success: %@", trimText);
+            completion(trimText);
+            return;
+        }
+
+        if (error) {
+            MMLogError(@"Failed to get selected text by menu bar action copy: %@", error);
+        }
+
+        // If the frontmost app has no copy menu item, try to use simulated key to get selected text.
+        if (![SharedUtilities hasCopyMenuItem]) {
+            MMLogError(@"Get selected text by menu bar action copy is empty, try to use simulated key");
+            [self getSelectedTextBySimulatedKey:completion];
+        } else {
+            MMLogError(@"Get selected text by menu bar action copy is empty, and app has copy menu item, return empty text");
+            completion(nil);
+        }
+    }];
+}
+
 - (void)updateSelectedTextEditableState {
     self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
 }
@@ -375,7 +484,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
     }];
 }
-
 
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
@@ -411,37 +519,111 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     }
 }
 
+/// Check if should force get selected text when Accessibility failed.
+- (BOOL)shouldForceGetSelectedTextWithAXError:(AXError)axError {
+    /**
+     Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
 
-/// Get selected text by simulated key Cmd+C, and mute alert volume.
-- (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
-    MMLogInfo(@"Get selected text by simulated key");
+     Fix https://github.com/tisfeng/Easydict/issues/608#issuecomment-2262951479
+     */
 
-    self.selectTextType = EZSelectTextTypeSimulatedKey;
-
-    // Do not mute alert volume if already muting, avoid getting muted volume 0, since this method may be called multiple times when dragging window.
-    if (!self.isMutingAlertVolume) {
-        self.isMutingAlertVolume = YES;
-
-        // First, mute alert volume to avoid alert.
-        [AppleScriptTask muteAlertVolumeWithCompletionHandler:^(NSInteger volume, NSError *error) {
-            if (error) {
-                MMLogError(@"Failed to mute alert volume: %@", error);
-            } else {
-                self.currentAlertVolume = volume;
-            }
-
-            // After muting alert volume, get selected text by simulated key.
-            [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
-                MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
-                completion(selectedText);
-            }];
-        }];
+    BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
+    MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
+    if (!enableForceGetSelectedText) {
+        return NO;
     }
 
-    [self cancelDelayRecoverVolume];
+    NSString *easydictBundleID = [[NSBundle mainBundle] bundleIdentifier];
 
-    // Delay to recover volume, avoid alert volume if the user does not select text when simulating Cmd+C.
-    [self delayRecoverVolume];
+    NSRunningApplication *application = [self getFrontmostApp];
+    NSString *bundleID = application.bundleIdentifier;
+
+    BOOL isInEasydict = [bundleID isEqualToString:easydictBundleID];
+
+    /**
+     When front most app is Easydict and user is recording select text shortcut key, should not use simulation key `Cmd + C`.
+
+     FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
+     */
+    if (isInEasydict && Configuration.shared.isRecordingSelectTextShortcutKey) {
+        return NO;
+    }
+
+    /**
+     If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
+     ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
+
+     kAXErrorNoValue: Safari, Mail, Telegram, Reeder
+     kAXErrorAPIDisabled: Typora?
+     */
+    if (axError == kAXErrorNoValue) {
+        MMLogInfo(@"error: kAXErrorNoValue, unsupported Accessibility App: %@", application);
+        return YES;
+    }
+
+    NSDictionary *allowedAppErrorDict = @{
+        /**
+         Some Apps return kAXErrorSuccess 0 but text is empty, so we need to check bundleID.
+
+         VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
+         IDEA: Javadoc rendered view will return empty text
+         */
+        @(kAXErrorSuccess) : @[
+            @"com.microsoft.VSCode",                // VSCode
+            @"com.jetbrains.intellij.ce",           // IDEA
+            @"com.foxitsoftware.FoxitReaderLite",   // Foxit PDF Reader
+            @"com.foxit-software.Foxit.PDF.Reader", // 福昕PDF阅读器 https://www.foxitsoftware.cn/pdf-reader/
+            @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
+        ],
+
+        // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
+        @(kAXErrorAttributeUnsupported) : @[
+            @"com.sublimetext.4",  // Sublime Text
+            @"com.microsoft.Word", // Word
+
+            @"com.tencent.xinWeChat",     // WeChat
+            @"com.readdle.PDFExpert-Mac", // PDF Expert
+            @"org.zotero.zotero",         // Zotero
+            /**
+             These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
+
+             FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
+             */
+            @"com.apple.iWork.Pages",   // Pages
+            @"com.apple.iWork.Keynote", // Keynote
+            @"com.apple.iWork.Numbers", // Numbers
+            @"com.apple.freeform",      // Freeform 无边记 // Fix https://github.com/tisfeng/Easydict/issues/166
+            @"org.mozilla.firefox",     // Firefox
+            @"com.openai.chat",         // ChatGPT code block return AttributeUnsupported
+        ],
+
+        // kAXErrorFailure -25200
+        @(kAXErrorFailure) : @[
+            @"com.apple.dt.Xcode", // Xcode, error when All messages page
+        ],
+    };
+
+    // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
+    for (NSNumber *errorCode in allowedAppErrorDict.allKeys) {
+        if ([errorCode integerValue] == axError) {
+            NSArray *bundleIDs = allowedAppErrorDict[errorCode];
+            if ([bundleIDs containsObject:bundleID]) {
+                MMLogError(@"Allow force get selected text: %@, %@", errorCode, application);
+                return YES;
+            }
+        }
+    }
+
+    // Fallback, If using shortcut, we should use force get selected text.
+    if (self.actionType == EZActionTypeShortcutQuery) {
+        MMLogInfo(@"Fallback to use force get selected text for shortcut query");
+        MMLogError(@"Maybe need to add it to allowed app error list dict: %d, %@", axError, application);
+        return YES;
+    }
+
+    MMLogInfo(@"After check axError: %d, not use force get selected text: %@", axError, application);
+
+    return NO;
 }
 
 #pragma mark - Delay to recover volume
@@ -566,153 +748,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     MMLogInfo(@"accessibilityEnabled: %d", accessibilityEnabled);
     return accessibilityEnabled == YES;
 }
-
-/// Check error type to use menu action copy or simulated key to get selected text.
-- (void)handleForceGetSelectedTextOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
-    if ([self shouldForceGetSelectedTextWithAXError:axError]) {
-        [self forceGetSelectedText:completion];
-    } else {
-        completion(nil);
-    }
-}
-
-/// Force get selected text when Accessibility failed.
-- (void)forceGetSelectedText:(void (^)(NSString *_Nullable))completion {
-    MMLogInfo(@"Use force get selected text");
-
-    // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, some apps do not have copy menu item, like Billfish.
-
-    // TODO: Try to find a more stable way to get selected text, or combine both methods.
-
-    if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
-        self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
-        [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:^(NSString *_Nullable text, NSError *error) {
-            NSString *trimText = [text trim];
-            if (trimText.length > 0) {
-                MMLogInfo(@"Get selected text by menu bar action copy success: %@", trimText);
-                completion(trimText);
-                return;
-            }
-
-            if (error) {
-                MMLogError(@"Failed to get selected text by menu bar action copy: %@", error);
-            } else {
-                MMLogError(@"Get selected text by menu bar action copy is empty, try to use simulated key");
-            }
-            [self getSelectedTextBySimulatedKey:completion];
-        }];
-    } else {
-        [self getSelectedTextBySimulatedKey:completion];
-    }
-}
-
-/// Check if should force get selected text when Accessibility failed.
-- (BOOL)shouldForceGetSelectedTextWithAXError:(AXError)axError {
-    /**
-     Cmd + C may cause clipboard issues, so only enable when user turn on forceAutoGetSelectedText.
-
-     Fix https://github.com/tisfeng/Easydict/issues/608#issuecomment-2262951479
-     */
-
-    BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
-    MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
-    if (!enableForceGetSelectedText) {
-        return NO;
-    }
-
-    NSString *easydictBundleID = [[NSBundle mainBundle] bundleIdentifier];
-
-    NSRunningApplication *application = [self getFrontmostApp];
-    NSString *bundleID = application.bundleIdentifier;
-
-    BOOL isInEasydict = [bundleID isEqualToString:easydictBundleID];
-
-    /**
-     When front most app is Easydict and user is recording select text shortcut key, should not use simulation key `Cmd + C`.
-
-     FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
-     */
-    if (isInEasydict && Configuration.shared.isRecordingSelectTextShortcutKey) {
-        return NO;
-    }
-
-    /**
-     If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
-     ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
-
-     kAXErrorNoValue: Safari, Mail, Telegram, Reeder
-     kAXErrorAPIDisabled: Typora?
-     */
-    if (axError == kAXErrorNoValue) {
-        MMLogInfo(@"error: kAXErrorNoValue, unsupported Accessibility App: %@", application);
-        return YES;
-    }
-
-    NSDictionary *allowedAppErrorDict = @{
-        /**
-         Some Apps return kAXErrorSuccess 0 but text is empty, so we need to check bundleID.
-
-         VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
-         IDEA: Javadoc rendered view will return empty text
-         */
-        @(kAXErrorSuccess) : @[
-            @"com.microsoft.VSCode",                // VSCode
-            @"com.jetbrains.intellij.ce",           // IDEA
-            @"com.foxitsoftware.FoxitReaderLite",   // Foxit PDF Reader
-            @"com.foxit-software.Foxit.PDF.Reader", // 福昕PDF阅读器 https://www.foxitsoftware.cn/pdf-reader/
-            @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
-        ],
-
-        // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
-        @(kAXErrorAttributeUnsupported) : @[
-            @"com.sublimetext.4",  // Sublime Text
-            @"com.microsoft.Word", // Word
-
-            @"com.tencent.xinWeChat",     // WeChat
-            @"com.readdle.PDFExpert-Mac", // PDF Expert
-            @"org.zotero.zotero",         // Zotero
-            /**
-             These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
-
-             FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
-             */
-            @"com.apple.iWork.Pages",   // Pages
-            @"com.apple.iWork.Keynote", // Keynote
-            @"com.apple.iWork.Numbers", // Numbers
-            @"com.apple.freeform",      // Freeform 无边记 // Fix https://github.com/tisfeng/Easydict/issues/166
-            @"org.mozilla.firefox",     // Firefox
-            @"com.openai.chat",         // ChatGPT code block return AttributeUnsupported
-        ],
-
-        // kAXErrorFailure -25200
-        @(kAXErrorFailure) : @[
-            @"com.apple.dt.Xcode", // Xcode, error when All messages page
-        ],
-    };
-
-    // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
-    for (NSNumber *errorCode in allowedAppErrorDict.allKeys) {
-        if ([errorCode integerValue] == axError) {
-            NSArray *bundleIDs = allowedAppErrorDict[errorCode];
-            if ([bundleIDs containsObject:bundleID]) {
-                MMLogError(@"Allow force get selected text: %@, %@", errorCode, application);
-                return YES;
-            }
-        }
-    }
-
-    // Fallback, If using shortcut, we should use force get selected text.
-    if (self.actionType == EZActionTypeShortcutQuery) {
-        MMLogInfo(@"Fallback to use force get selected text for shortcut query");
-        MMLogError(@"Maybe need to add it to allowed app error list dict: %d, %@", axError, application);
-        return YES;
-    }
-
-    MMLogInfo(@"After check axError: %d, not use force get selected text: %@", axError, application);
-
-    return NO;
-}
-
 
 /// Check if current app support emtpy copy action.
 - (BOOL)isSupportEmptyCopy {
