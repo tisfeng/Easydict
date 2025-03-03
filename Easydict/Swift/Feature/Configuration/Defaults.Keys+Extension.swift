@@ -149,6 +149,9 @@ extension Defaults.Keys {
         "EZConfiguration_kForceGetSelectedTextTypeKey",
         default: .menuBarActionCopy
     )
+
+    /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
+    static var screenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
 }
 
 extension Defaults.Keys {
