@@ -749,41 +749,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     return accessibilityEnabled == YES;
 }
 
-/// Check if current app support emtpy copy action.
-- (BOOL)isSupportEmptyCopy {
-    NSRunningApplication *application = [self getFrontmostApp];
-    NSString *bundleID = application.bundleIdentifier;
-
-    NSArray *unsupportEmptyCopyApps = @[
-        @"com.apple.Safari",   // Safari
-        @"com.apple.mail",     // Mail
-        @"com.apple.TextEdit", // TextEdit
-        @"com.apple.Terminal", // Terminal
-        @"com.apple.finder",   // Finder
-        @"com.apple.dt.Xcode", // Xcode
-
-        @"com.eusoft.freeeudic", // Eudic
-        @"com.eusoft.eudic",
-        @"eusoft.eudic.ip",
-        @"com.reederapp.5.macOS",   // Reeder
-        @"com.apple.ScriptEditor2", // 脚本编辑器
-        @"abnerworks.Typora",       // Typora
-        @"com.jinghaoshe.shi",      // 晓诗
-        @"xyz.chatboxapp.app",      // chatbox
-        @"com.wutian.weibo",        // Maipo，微博客户端
-    ];
-
-    if ([unsupportEmptyCopyApps containsObject:bundleID]) {
-        MMLogInfo(@"unsupport emtpy copy: %@, %@", bundleID, application.localizedName);
-        return NO;
-    }
-
-    return YES;
-}
-
 
 #pragma mark - Handle Event
-
 
 - (void)handleMonitorEvent:(NSEvent *)event {
     self.event = event;
@@ -900,7 +867,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         self.dismissAllNotPinndFloatingWindowBlock();
     }
 }
-
 
 - (BOOL)checkIfMouseLocationInWindow:(NSWindow *)window {
     if (CGRectContainsPoint(window.frame, NSEvent.mouseLocation)) {
@@ -1037,20 +1003,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 #pragma mark -
 
-// Get the frontmost window
-- (void)getFrontmostWindowInfo:(void (^)(NSDictionary *_Nullable))completion {
-    NSArray *arr = (NSArray *)CFBridgingRelease(CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID));
-    NSString *frontAppName = [self getFrontmostApp].localizedName;
-    for (NSDictionary *dict in arr) {
-        if ([dict[@"kCGWindowOwnerName"] isEqualToString:frontAppName]) {
-            MMLogInfo(@"dict: %@", dict);
-            completion(dict);
-            return;
-        }
-    }
-    completion(nil);
-}
-
 // Get the frontmost app
 - (NSRunningApplication *)getFrontmostApp {
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication ?: NSRunningApplication.currentApplication;
@@ -1079,9 +1031,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
 }
 
-
-/// Check selected text frame is valid.
 /**
+ Check selected text frame is valid.
+
  If selected text frame size is zero, return YES
  If selected text frame size is not zero, and start point and end point is in selected text frame, return YES, else return NO
  */
