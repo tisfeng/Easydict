@@ -19,10 +19,12 @@
 
 - (instancetype)initWithWindowType:(EZWindowType)type {
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
-    
-    if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
+
+    CGRect frame = [EZLayoutManager.shared windowFrameWithType:type];
+
+    if (self = [super initWithContentRect:frame styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.windowType = type;
-        
+
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel;
         self.titlebarAppearsTransparent = YES;

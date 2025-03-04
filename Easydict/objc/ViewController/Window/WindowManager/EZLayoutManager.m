@@ -201,32 +201,35 @@ static EZLayoutManager *_instance;
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window {
     EZWindowType windowType = window.windowType;
+
+    CGRect windowFrame = window.frame;
+
+    // Record floating window frame
+    [Configuration.shared setWindowFrame:windowFrame windowType:windowType];
+
     switch (windowType) {
         case EZWindowTypeMain:
-            _mainWindowFrame = window.frame;
+            self.mainWindowFrame = windowFrame;
             break;
-        case EZWindowTypeFixed:
-            _fixedWindowFrame = window.frame;
+        case EZWindowTypeFixed: {
+            self.fixedWindowFrame = windowFrame;
 
             // Record screenVisibleFrame when fixedWindowPosition is EZShowWindowPositionFormer
             if (Configuration.shared.fixedWindowPosition == EZShowWindowPositionFormer) {
-                CGPoint fixedWindowCenter = NSMakePoint(NSMidX(_fixedWindowFrame), NSMidY(_fixedWindowFrame));
+                CGPoint fixedWindowCenter = NSMakePoint(NSMidX(windowFrame), NSMidY(windowFrame));
 
                 // Update lastPoint to update current active screen
                 EZWindowManager.shared.lastPoint = fixedWindowCenter;
-
                 Configuration.shared.screenVisibleFrame = self.screen.visibleFrame;
             }
-
             break;
+        }
         case EZWindowTypeMini:
-            _miniWindowFrame = window.frame;
+            self.miniWindowFrame = window.frame;
             break;
         default:
             break;
     }
-    
-    [Configuration.shared setWindowFrame:window.frame windowType:windowType];
 }
 
 - (BOOL)showInputTextField:(EZWindowType)windowType {
