@@ -50,7 +50,7 @@ NS_SWIFT_NAME(QueryService)
 - (NSInteger)indexForLanguage:(EZLanguage)lang;
 
 /// 预处理查询，如遇到不支持的语言，直接报错，或是需要自动转换简体<-->繁体，则提前处理。
-/// 
+///
 /// 返回 YES 表示已预处理过了，则后续无需再进行请求查询。
 - (BOOL)prehandleQueryText:(NSString *)text
                       from:(EZLanguage)from
@@ -58,7 +58,9 @@ NS_SWIFT_NAME(QueryService)
                 completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
 /// Get TTS langauge code.
-- (NSString *)getTTSLanguageCode:(EZLanguage)language;
+/// @param language Text language
+/// @param accent English text tone, such as en-US, en-GB
+- (NSString *)getTTSLanguageCode:(EZLanguage)language accent:(NSString *_Nullable)accent;
 
 - (EZQueryResult *)resetServiceResult;
 
@@ -143,7 +145,7 @@ NS_SWIFT_NAME(QueryService)
 /// @param from 文本语言
 /// @param accent 英音 or 美音
 /// @param completion 回调
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from byAccent:(NSString *_Nullable)accent completion:(void (^)(NSString *_Nullable url, NSError *_Nullable error))completion;
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from accent:(NSString *_Nullable)accent completion:(void (^)(NSString *_Nullable url, NSError *_Nullable error))completion;
 
 /// 识别图片文本
 /// @param image image对象

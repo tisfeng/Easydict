@@ -122,7 +122,7 @@ class YoudaoService: QueryService {
     override func text(
         toAudio text: String,
         fromLanguage from: Language,
-        byAccent accent: String?,
+        accent: String?,
         completion: @escaping (String?, (any Error)?) -> ()
     ) {
         guard !text.isEmpty else {
@@ -139,20 +139,20 @@ class YoudaoService: QueryService {
          https://fanyi.sogou.com/reventondc/synthesis?text=class&speed=1&lang=enS&from=translateweb&speaker=6
          */
 
-        let language = getTTSLanguageCode(from)
-        let encodedText =
-            text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        // type=1 英音 | type=2 美音
+        let language = getTTSLanguageCode(from, accent: accent)
+        let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+
+        // uk: type=1, us: type=2
         let accentType = accent == "uk" ? "1" : "2"
         let audioURL = "\(kYoudaoDictURL)/dictvoice?audio=\(encodedText)&le=\(language)&type=\(accentType)"
         completion(audioURL, nil)
     }
 
-    override func getTTSLanguageCode(_ language: Language) -> String {
+    override func getTTSLanguageCode(_ language: Language, accent: String?) -> String {
         if language.isKindOfChinese() {
             return "zh"
         }
-        return super.getTTSLanguageCode(language)
+        return super.getTTSLanguageCode(language, accent: accent)
     }
 
     override func ocr(

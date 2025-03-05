@@ -208,6 +208,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
 - (void)textToAudio:(NSString *)text
        fromLanguage:(EZLanguage)from
+           accent:(NSString * _Nullable)accent
          completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
         completion(nil, [EZQueryError errorWithType:EZQueryErrorTypeParameter message:@"获取音频的文本为空"]);
@@ -228,7 +229,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             
             NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
             NSString *url = [self getAudioURLWithText:text
-                                             language:[self getTTSLanguageCode:lang]
+                                             language:[self getTTSLanguageCode:lang accent:accent]
                                                  sign:sign];
             completion(url, nil);
         }];
@@ -241,7 +242,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             
             NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
             NSString *url = [self getAudioURLWithText:text
-                                             language:[self getTTSLanguageCode:from]
+                                             language:[self getTTSLanguageCode:from accent:accent]
                                                  sign:sign];
             completion(url, nil);
         }];
