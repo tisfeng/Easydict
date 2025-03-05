@@ -198,14 +198,17 @@
     return EZServiceTypeBing;
 }
 
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+- (void)textToAudio:(NSString *)text
+       fromLanguage:(EZLanguage)from
+             accent:(NSString * _Nullable)accent
+         completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if ([from isEqualToString:EZLanguageClassicalChinese]) {
         from = EZLanguageSimplifiedChinese;
     }
 
     NSString *filePath = [self.audioPlayer getWordAudioFilePath:text
                                                        language:from
-                                                         accent:nil
+                                                         accent:accent
                                                     serviceType:self.serviceType];
 
     // If file path already exists.
@@ -216,7 +219,10 @@
 
     MMLogInfo(@"Bing is fetching text audio: %@", text);
 
-    [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError *_Nullable error) {
+    [self.request fetchTextToAudio:text
+                      fromLanguage:from
+                            accent:accent
+                        completion:^(NSData *audioData, NSError *_Nullable error) {
         if (error || !audioData) {
             completion(nil, error);
             return;

@@ -53,7 +53,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         }
         _bingConfig = bingConfig;
     }
-    
+
     return _bingConfig;
 }
 
@@ -68,153 +68,153 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         allLanguageVoices = [[MMOrderedDictionary alloc] init];
-        
+
         // Docs: https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts
         EZBingLanguageVoice *simplifiedChineseVoice = [EZBingLanguageVoice voiceWithLanguage:@"zh-CN" voiceName:@"zh-CN-XiaoxiaoNeural"];
         [allLanguageVoices setObject:simplifiedChineseVoice forKey:EZLanguageSimplifiedChinese];
-        
+
         EZBingLanguageVoice *traditionalChineseVoice = [EZBingLanguageVoice voiceWithLanguage:@"zh-TW" voiceName:@"zh-TW-HsiaoChenNeural"];
         [allLanguageVoices setObject:traditionalChineseVoice forKey:EZLanguageTraditionalChinese];
-        
+
         EZBingLanguageVoice *englishVoice = [EZBingLanguageVoice voiceWithLanguage:@"en-US" voiceName:@"en-US-JennyNeural"];
         [allLanguageVoices setObject:englishVoice forKey:EZLanguageEnglish];
-        
+
         EZBingLanguageVoice *japaneseVoice = [EZBingLanguageVoice voiceWithLanguage:@"ja-JP" voiceName:@"ja-JP-NanamiNeural"];
         [allLanguageVoices setObject:japaneseVoice forKey:EZLanguageJapanese];
-        
+
         EZBingLanguageVoice *koreanVoice = [EZBingLanguageVoice voiceWithLanguage:@"ko-KR" voiceName:@"ko-KR-SunHiNeural"];
         [allLanguageVoices setObject:koreanVoice forKey:EZLanguageKorean];
-        
+
         EZBingLanguageVoice *frenchVoice = [EZBingLanguageVoice voiceWithLanguage:@"fr-FR" voiceName:@"fr-FR-DeniseNeural"];
         [allLanguageVoices setObject:frenchVoice forKey:EZLanguageFrench];
-        
+
         EZBingLanguageVoice *spanishVoice = [EZBingLanguageVoice voiceWithLanguage:@"es-ES" voiceName:@"es-ES-ElviraNeural"];
         [allLanguageVoices setObject:spanishVoice forKey:EZLanguageSpanish];
-        
+
         EZBingLanguageVoice *portugueseVoice = [EZBingLanguageVoice voiceWithLanguage:@"pt-PT" voiceName:@"pt-PT-RaquelNeural"];
         [allLanguageVoices setObject:portugueseVoice forKey:EZLanguagePortuguese];
-        
+
         EZBingLanguageVoice *italianVoice = [EZBingLanguageVoice voiceWithLanguage:@"it-IT" voiceName:@"it-IT-ElsaNeural"];
         [allLanguageVoices setObject:italianVoice forKey:EZLanguageItalian];
-        
+
         EZBingLanguageVoice *germanVoice = [EZBingLanguageVoice voiceWithLanguage:@"de-DE" voiceName:@"de-DE-KatjaNeural"];
         [allLanguageVoices setObject:germanVoice forKey:EZLanguageGerman];
-        
+
         EZBingLanguageVoice *russianVoice = [EZBingLanguageVoice voiceWithLanguage:@"ru-RU" voiceName:@"ru-RU-SvetlanaNeural"];
         [allLanguageVoices setObject:russianVoice forKey:EZLanguageRussian];
-        
+
         EZBingLanguageVoice *arabicVoice = [EZBingLanguageVoice voiceWithLanguage:@"ar-EG" voiceName:@"ar-EG-SalmaNeural"];
         [allLanguageVoices setObject:arabicVoice forKey:EZLanguageArabic];
-        
+
         EZBingLanguageVoice *swedishVoice = [EZBingLanguageVoice voiceWithLanguage:@"sv-SE" voiceName:@"sv-SE-HedvigNeural"];
         [allLanguageVoices setObject:swedishVoice forKey:EZLanguageSwedish];
-        
+
         EZBingLanguageVoice *romanianVoice = [EZBingLanguageVoice voiceWithLanguage:@"ro-RO" voiceName:@"ro-RO-AlinaNeural"];
         [allLanguageVoices setObject:romanianVoice forKey:EZLanguageRomanian];
-        
+
         EZBingLanguageVoice *thaiVoice = [EZBingLanguageVoice voiceWithLanguage:@"th-TH" voiceName:@"th-TH-PremwadeeNeural"];
         [allLanguageVoices setObject:thaiVoice forKey:EZLanguageThai];
-        
+
         EZBingLanguageVoice *slovakVoice = [EZBingLanguageVoice voiceWithLanguage:@"sk-SK" voiceName:@"sk-SK-ViktoriaNeural"];
         [allLanguageVoices setObject:slovakVoice forKey:EZLanguageSlovak];
-        
+
         EZBingLanguageVoice *dutchVoice = [EZBingLanguageVoice voiceWithLanguage:@"nl-NL" voiceName:@"nl-NL-ColetteNeural"];
         [allLanguageVoices setObject:dutchVoice forKey:EZLanguageDutch];
-        
+
         EZBingLanguageVoice *czechVoice = [EZBingLanguageVoice voiceWithLanguage:@"cs-CZ" voiceName:@"cs-CZ-AntoninNeural"];
         [allLanguageVoices setObject:czechVoice forKey:EZLanguageCzech];
-        
+
         EZBingLanguageVoice *turkishVoice = [EZBingLanguageVoice voiceWithLanguage:@"tr-TR" voiceName:@"tr-TR-EmelNeural"];
         [allLanguageVoices setObject:turkishVoice forKey:EZLanguageTurkish];
-        
+
         EZBingLanguageVoice *greekVoice = [EZBingLanguageVoice voiceWithLanguage:@"el-GR" voiceName:@"el-GR-AthinaNeural"];
         [allLanguageVoices setObject:greekVoice forKey:EZLanguageGreek];
-        
+
         EZBingLanguageVoice *danishVoice = [EZBingLanguageVoice voiceWithLanguage:@"da-DK" voiceName:@"da-DK-ChristelNeural"];
         [allLanguageVoices setObject:danishVoice forKey:EZLanguageDanish];
-        
+
         EZBingLanguageVoice *finnishVoice = [EZBingLanguageVoice voiceWithLanguage:@"fi-FI" voiceName:@"fi-FI-NooraNeural"];
         [allLanguageVoices setObject:finnishVoice forKey:EZLanguageFinnish];
-        
+
         EZBingLanguageVoice *polishVoice = [EZBingLanguageVoice voiceWithLanguage:@"pl-PL" voiceName:@"pl-PL-AgnieszkaNeural"];
         [allLanguageVoices setObject:polishVoice forKey:EZLanguagePolish];
-        
+
         EZBingLanguageVoice *lithuanianVoice = [EZBingLanguageVoice voiceWithLanguage:@"lt-LT" voiceName:@"lt-LT-OnaNeural"];
         [allLanguageVoices setObject:lithuanianVoice forKey:EZLanguageLithuanian];
-        
+
         EZBingLanguageVoice *latvianVoice = [EZBingLanguageVoice voiceWithLanguage:@"lv-LV" voiceName:@"lv-LV-EveritaNeural"];
         [allLanguageVoices setObject:latvianVoice forKey:EZLanguageLatvian];
-        
+
         EZBingLanguageVoice *ukrainianVoice = [EZBingLanguageVoice voiceWithLanguage:@"uk-UA" voiceName:@"uk-UA-OstapNeural"];
         [allLanguageVoices setObject:ukrainianVoice forKey:EZLanguageUkrainian];
-        
+
         EZBingLanguageVoice *bulgarianVoice = [EZBingLanguageVoice voiceWithLanguage:@"bg-BG" voiceName:@"bg-BG-KalinaNeural"];
         [allLanguageVoices setObject:bulgarianVoice forKey:EZLanguageBulgarian];
-        
+
         EZBingLanguageVoice *indonesianVoice = [EZBingLanguageVoice voiceWithLanguage:@"id-ID" voiceName:@"id-ID-DamayantiNeural"];
         [allLanguageVoices setObject:indonesianVoice forKey:EZLanguageIndonesian];
-        
+
         EZBingLanguageVoice *malayVoice = [EZBingLanguageVoice voiceWithLanguage:@"ms-MY" voiceName:@"ms-MY-OsmanNeural"];
         [allLanguageVoices setObject:malayVoice forKey:EZLanguageMalay];
-        
+
         EZBingLanguageVoice *slovenianVoice = [EZBingLanguageVoice voiceWithLanguage:@"sl-SI" voiceName:@"sl-SI-PetraNeural"];
         [allLanguageVoices setObject:slovenianVoice forKey:EZLanguageSlovenian];
-        
+
         EZBingLanguageVoice *estonianVoice = [EZBingLanguageVoice voiceWithLanguage:@"et-EE" voiceName:@"et-EE-AnuNeural"];
         [allLanguageVoices setObject:estonianVoice forKey:EZLanguageEstonian];
-        
+
         EZBingLanguageVoice *vietnameseVoice = [EZBingLanguageVoice voiceWithLanguage:@"vi-VN" voiceName:@"vi-VN-HoaiMyNeural"];
         [allLanguageVoices setObject:vietnameseVoice forKey:EZLanguageVietnamese];
-        
+
         EZBingLanguageVoice *persianVoice = [EZBingLanguageVoice voiceWithLanguage:@"fa-IR" voiceName:@"fa-IR-SimaNeural"];
         [allLanguageVoices setObject:persianVoice forKey:EZLanguagePersian];
-        
+
         EZBingLanguageVoice *hindiVoice = [EZBingLanguageVoice voiceWithLanguage:@"hi-IN" voiceName:@"hi-IN-MadhurNeural"];
         [allLanguageVoices setObject:hindiVoice forKey:EZLanguageHindi];
-        
+
         EZBingLanguageVoice *teluguVoice = [EZBingLanguageVoice voiceWithLanguage:@"te-IN" voiceName:@"te-IN-MohanNeural"];
         [allLanguageVoices setObject:teluguVoice forKey:EZLanguageTelugu];
-        
+
         EZBingLanguageVoice *tamilVoice = [EZBingLanguageVoice voiceWithLanguage:@"ta-IN" voiceName:@"ta-IN-PallaviNeural"];
         [allLanguageVoices setObject:tamilVoice forKey:EZLanguageTamil];
-        
+
         EZBingLanguageVoice *urduVoice = [EZBingLanguageVoice voiceWithLanguage:@"ur-PK" voiceName:@"ur-PK-AsadNeural"];
         [allLanguageVoices setObject:urduVoice forKey:EZLanguageUrdu];
-        
+
         EZBingLanguageVoice *filipinoVoice = [EZBingLanguageVoice voiceWithLanguage:@"fil-PH" voiceName:@"fil-PH-AlingNeural"];
         [allLanguageVoices setObject:filipinoVoice forKey:EZLanguageFilipino];
-        
+
         EZBingLanguageVoice *khmerVoice = [EZBingLanguageVoice voiceWithLanguage:@"km-KH" voiceName:@"km-KH-PichNeural"];
         [allLanguageVoices setObject:khmerVoice forKey:EZLanguageKhmer];
-        
+
         EZBingLanguageVoice *laoVoice = [EZBingLanguageVoice voiceWithLanguage:@"lo-LA" voiceName:@"lo-LA-AcharaNeural"];
         [allLanguageVoices setObject:laoVoice forKey:EZLanguageLao];
-        
+
         EZBingLanguageVoice *bengaliVoice = [EZBingLanguageVoice voiceWithLanguage:@"bn-IN" voiceName:@"bn-IN-AnuNeural"];
         [allLanguageVoices setObject:bengaliVoice forKey:EZLanguageBengali];
-        
+
         EZBingLanguageVoice *burmeseVoice = [EZBingLanguageVoice voiceWithLanguage:@"my-MM" voiceName:@"my-MM-ShanNeural"];
         [allLanguageVoices setObject:burmeseVoice forKey:EZLanguageBurmese];
-        
+
         EZBingLanguageVoice *norwegianVoice = [EZBingLanguageVoice voiceWithLanguage:@"nb-NO" voiceName:@"nb-NO-PernilleNeural"];
         [allLanguageVoices setObject:norwegianVoice forKey:EZLanguageNorwegian];
-        
+
         EZBingLanguageVoice *serbianVoice = [EZBingLanguageVoice voiceWithLanguage:@"sr-SP" voiceName:@"sr-SP-LjubicaNeural"];
         [allLanguageVoices setObject:serbianVoice forKey:EZLanguageSerbian];
-        
+
         EZBingLanguageVoice *croatianVoice = [EZBingLanguageVoice voiceWithLanguage:@"hr-HR" voiceName:@"hr-HR-SreckoNeural"];
         [allLanguageVoices setObject:croatianVoice forKey:EZLanguageCroatian];
-        
+
         EZBingLanguageVoice *mongolianVoice = [EZBingLanguageVoice voiceWithLanguage:@"mn-MN" voiceName:@"mn-MN-NarangerelNeural"];
         [allLanguageVoices setObject:mongolianVoice forKey:EZLanguageMongolian];
-        
+
         EZBingLanguageVoice *hebrewVoice = [EZBingLanguageVoice voiceWithLanguage:@"he-IL" voiceName:@"he-IL-HilaNeural"];
         [allLanguageVoices setObject:hebrewVoice forKey:EZLanguageHebrew];
-        
+
         EZBingLanguageVoice *georgianVoice = [EZBingLanguageVoice voiceWithLanguage:@"ka-GE" voiceName:@"ka-GE-EkaNeural"];
         [allLanguageVoices setObject:georgianVoice forKey:EZLanguageGeorgian];
     });
-    
+
     return allLanguageVoices;
 }
 
@@ -246,10 +246,10 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         callback();
         return;
     }
-    
+
     // For www.bing.com, sometimes it won't return redirect URL, so we use cn.bing.com
     NSString *webBingURLString = [NSString stringWithFormat:@"http://%@", EZBingChinaHost];
-    
+
     [self.translateSession GET:webBingURLString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSString *host = host = task.response.URL.host ?: EZBingChinaHost;
         self.bingConfig.host = host;
@@ -268,7 +268,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         callback();
         return;
     }
-    
+
     NSString *url = self.bingConfig.translatorURLString;
     [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSError *error;
@@ -278,9 +278,9 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             MMLogWarn(@"bing html responseObject type is %@", [responseObject class]);
             return;
         }
-        
+
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        
+
         NSString *IG = [self getIGValueFromHTML:responseString];
         if (IG.length == 0) {
             error = [EZQueryError errorWithType:EZQueryErrorTypeApi message: @"bing IG is empty" ];
@@ -288,7 +288,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             return;
         }
         MMLogInfo(@"bing IG: %@", IG);
-        
+
         NSString *IID = [self getValueOfDataIidFromHTML:responseString];
         if (IID.length == 0) {
             error = [EZQueryError errorWithType:EZQueryErrorTypeApi message: @"bing IID is empty" ];
@@ -296,7 +296,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             return;
         }
         MMLogInfo(@"bing IID: %@", IID);
-        
+
         NSArray *arr = [self getParamsAbusePreventionHelperArrayFromHTML:responseString];
         if (arr.count != 3) {
             error = [EZQueryError errorWithType:EZQueryErrorTypeApi message: @"bing get key and token failed" ];
@@ -317,9 +317,9 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         }
         MMLogInfo(@"bing key: %@", key);
         MMLogInfo(@"bing token: %@", token);
-        
+
         NSString *expirationInterval = arr[2];
-        
+
         self.bingConfig.IG = IG;
         self.bingConfig.IID = IID;
         self.bingConfig.key = key;
@@ -345,14 +345,14 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                 @"token" : self.bingConfig.token,
                 @"key" : self.bingConfig.key
             };
-                        
+
             // Get translate data
             NSMutableDictionary *translateParameters = [parameters mutableCopy];
             [translateParameters addEntriesFromDictionary:@{
                 @"fromLang" : from,
                 @"tryFetchingGenderDebiasedTranslations" : @"true",
             }];
-            
+
             [self.translateSession POST:self.bingConfig.ttranslatev3URLString parameters:translateParameters
                                progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
@@ -375,13 +375,13 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                 }
                 [self executeCallback];
             }];
-            
+
             // Get lookup data
             NSMutableDictionary *dictParameters = [parameters mutableCopy];
             [dictParameters addEntriesFromDictionary:@{
                 @"from" : from,
             }];
-            
+
             [self.translateSession POST:self.bingConfig.tlookupv3URLString parameters:dictParameters
                                progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
@@ -403,16 +403,19 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
     }];
 }
 
-- (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSData *_Nullable, NSError *_Nullable))completion {
+- (void)fetchTextToAudio:(NSString *)text
+            fromLanguage:(EZLanguage)from
+                  accent:(NSString * _Nullable)accent
+              completion:(void (^)(NSData *_Nullable, NSError *_Nullable))completion {
     [self fetchBingHost:^{
         [self fetchBingConfig:^{
-            NSString *ssml = [self genrateSSMLWithText:text language:from];
+            NSString *ssml = [self genrateSSMLWithText:text language:from accent:accent];
             NSDictionary *parameters = @{
                 @"ssml" : ssml,
                 @"token" : self.bingConfig.token,
                 @"key" : self.bingConfig.key
             };
-            
+
             [self.ttsSession POST:self.bingConfig.tfetttsURLString parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 NSData *audioData = responseObject;
                 if ([task.response.MIMEType isEqualToString:kAudioMIMEType]) {
@@ -425,7 +428,10 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                         self.bingConfig.host = host;
                         [self saveBingConfig];
 
-                        [self fetchTextToAudio:text fromLanguage:from completion:completion];
+                        [self fetchTextToAudio:text
+                                  fromLanguage:from
+                                        accent:accent
+                                    completion:completion];
                         return;
                     } else {
                         completion(nil, nil);
@@ -460,46 +466,53 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 
 /**
  Generate ssml with text and language.
- 
+
  Docs: https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#speak-examples
- 
+
  <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
  <voice name="en-US-JennyNeural">
  This is the text that is spoken.
  </voice>
  </speak>
- 
+
  */
-- (NSString *)genrateSSMLWithText:(NSString *)text language:(EZLanguage)language {
+- (NSString *)genrateSSMLWithText:(NSString *)text
+                         language:(EZLanguage)language
+                           accent:(NSString * _Nullable)accent {
     NSString *voiceRate = @"-10%"; // bing web is -20%
-    
+
     EZBingLanguageVoice *languageVoice = [[EZBingRequest langaugeVoices] objectForKey:language];
-    
+
     /**
      !!!: We need to hanle xml speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters
-     
+
      1000 Chinese characters, is about 1MB, duration 4 minutes (mp3)
-     
+
      2000 Chinese characters, is about 1.9MB, duration 8 minutes
-     
+
      7000 English characters, is about 2MB, duration 8 minutes
      */
-    
+
     NSString *trimText = [text trimToMaxLength:7000];
     // Chinese text should short, long TTS will cost much time.
     if (![EZLanguageManager.shared isLanguageWordsNeedSpace:language]) {
         trimText = [text trimToMaxLength:2000];
     }
-    
+
     NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)trimText, NULL));
-    
+
+    // Handle uk accent
+    if ([language isEqualToString:EZLanguageEnglish] && [accent isEqualToString:@"uk"]) {
+        languageVoice = [EZBingLanguageVoice voiceWithLanguage:@"en-GB" voiceName:@"en-GB-SoniaNeural"];
+    }
+
     NSString *ssml = [NSString stringWithFormat:@"<speak version=\"1.0\" xml:lang='%@'>"
                       @"<voice name='%@'>"
                       @"<prosody rate='%@'>%@</prosody>"
                       @"</voice>"
                       @"</speak>",
                       languageVoice.lang, languageVoice.voiceName, voiceRate, escapedXMLText];
-    
+
     return ssml;
 }
 
@@ -532,7 +545,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         NSArray *array = [arrayString componentsSeparatedByString:@","];
         return array;
     }
-    
+
     return nil;
 }
 
