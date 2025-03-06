@@ -28,10 +28,7 @@ class DeepSeekService: OpenAIService {
     }
 
     public override func configurationListItems() -> Any {
-        StreamConfigurationView(
-            service: self,
-            showEndpointSection: false
-        )
+        StreamConfigurationView(service: self)
     }
 
     // MARK: Internal
@@ -48,7 +45,7 @@ class DeepSeekService: OpenAIService {
         [apiKeyKey, supportedModelsKey]
     }
 
-    override var endpoint: String {
+    override var defaultEndpoint: String {
         "https://api.deepseek.com/v1/chat/completions"
     }
 }
