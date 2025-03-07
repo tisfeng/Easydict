@@ -12,23 +12,12 @@
 
 @import FirebaseCore;
 @import FirebaseAnalytics;
-@import AppCenter;
-@import AppCenterAnalytics;
-@import AppCenterCrashes;
 @import Sentry;
 
 @implementation EZLog
 
 + (void)setupCrashLogService {
-    // TODO: Later, remove App Center SDK if Sentry is stable.
-
 #if !DEBUG
-    // App Center
-    [MSACAppCenter start:SecretKeyManager.keyValues[@"appcenterSecret"] withServices:@[
-        [MSACAnalytics class],
-        [MSACCrashes class]
-    ]];
-
     // Firebase can only be configured once.
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -61,9 +50,6 @@
     } else {
         [self setupCrashLogService];
     }
-
-    // This method can only take effect after the service is started.
-    [MSACCrashes setEnabled:isEnabled];
 }
 
 /// Log event.
@@ -77,7 +63,6 @@
     }
 
 #if !DEBUG
-        [MSACAnalytics trackEvent:name withProperties:dict];
         [FIRAnalytics logEventWithName:name parameters:dict];
 #endif
 }

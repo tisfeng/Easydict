@@ -149,8 +149,6 @@
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
-		03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308F2B4073E700112834 /* AppCenterAnalytics */; };
-		03A830922B4073E700112834 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 03A830912B4073E700112834 /* AppCenterCrashes */; };
 		03A830952B4076FC00112834 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03A830942B4076FC00112834 /* FirebaseAnalyticsSwift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -947,12 +945,10 @@
 				0364EC8A2C208EB50036B61B /* KeySender in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */,
-				03A830922B4073E700112834 /* AppCenterCrashes in Frameworks */,
 				03779F1A2BB25797008D3C42 /* OpenAI in Frameworks */,
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
 				03A830952B4076FC00112834 /* FirebaseAnalyticsSwift in Frameworks */,
 				EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */,
-				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
 				0354E9202D3601500050E5BE /* AsyncAlgorithms in Frameworks */,
 				967712EA2B5B913600105E0F /* KeyHolder in Frameworks */,
 				036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */,
@@ -2765,8 +2761,6 @@
 				03022F1B2B35DEBA00B63209 /* Hue */,
 				03022F212B36D1A400B63209 /* SnapKit */,
 				03A8308C2B405F8E00112834 /* Sparkle */,
-				03A8308F2B4073E700112834 /* AppCenterAnalytics */,
-				03A830912B4073E700112834 /* AppCenterCrashes */,
 				03A830942B4076FC00112834 /* FirebaseAnalyticsSwift */,
 				038030942B4106800009230C /* CocoaLumberjack */,
 				038030962B4106800009230C /* CocoaLumberjackSwift */,
@@ -2834,7 +2828,6 @@
 				03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */,
 				03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */,
-				03A8308E2B4073E700112834 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				038EA1A82B41169C008A6DD1 /* XCRemoteSwiftPackageReference "ZipArchive" */,
@@ -3852,14 +3845,6 @@
 				minimumVersion = 2.6.4;
 			};
 		};
-		03A8308E2B4073E700112834 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.4;
-			};
-		};
 		03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -4004,16 +3989,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
-		};
-		03A8308F2B4073E700112834 /* AppCenterAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03A8308E2B4073E700112834 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterAnalytics;
-		};
-		03A830912B4073E700112834 /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03A8308E2B4073E700112834 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterCrashes;
 		};
 		03A830942B4076FC00112834 /* FirebaseAnalyticsSwift */ = {
 			isa = XCSwiftPackageProductDependency;

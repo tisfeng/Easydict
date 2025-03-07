@@ -1,5 +1,5 @@
 {
-  "originHash" : "c0dc32142f32f123527c8227076e2024279aeba232ee37e0d743157637092d8e",
+  "originHash" : "59fb665309614717c793ae0a58a89f94cbb47fa0c38afa587f34f6bdae2b3394",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -34,15 +34,6 @@
       "state" : {
         "revision" : "5746b2d35c91c50581590ed97abe4c06b5037274",
         "version" : "10.18.0"
-      }
-    },
-    {
-      "identity" : "appcenter-sdk-apple",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/microsoft/appcenter-sdk-apple.git",
-      "state" : {
-        "revision" : "1120c26835925f8314d035127c580bc71689c620",
-        "version" : "5.0.4"
       }
     },
     {
@@ -276,15 +267,6 @@
       "location" : "https://github.com/tisfeng/OpenAI",
       "state" : {
         "revision" : "ebfb671f5b6eeb65e666016a3ede942b928c17a7"
-      }
-    },
-    {
-      "identity" : "plcrashreporter",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/microsoft/PLCrashReporter.git",
-      "state" : {
-        "revision" : "6752f71de206f6a53fa6a758c3660fd9a7fe7527",
-        "version" : "1.11.2"
       }
     },
     {
