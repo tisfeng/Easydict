@@ -1904,9 +1904,9 @@
 				03B022C629231FA6001C7E63 /* MMCrashFileTool.h */,
 				03B022CA29231FA6001C7E63 /* MMCrashFileTool.m */,
 				03B022C729231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.h */,
-				03B022C829231FA6001C7E63 /* MMCrashSignalExceptionHandler.m */,
-				03B022CB29231FA6001C7E63 /* MMCrashSignalExceptionHandler.h */,
 				03B022CC29231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m */,
+				03B022CB29231FA6001C7E63 /* MMCrashSignalExceptionHandler.h */,
+				03B022C829231FA6001C7E63 /* MMCrashSignalExceptionHandler.m */,
 			);
 			path = Crash;
 			sourceTree = "<group>";
