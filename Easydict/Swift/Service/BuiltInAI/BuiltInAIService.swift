@@ -45,9 +45,9 @@ class BuiltInAIService: BaseOpenAIService {
         [
             // Groq free models https://console.groq.com/docs/models
             "gemma-2-9b", // gemma2-9b-it, 8k, 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD
-            "llama-3.1-8b", // llama-3.1-8b-instant, 128k, 30 RPM, 14,400 RPD, 6,000 TPM, 500,000 TPD
             "llama-3-70b", // llama3-70b-8192, 8k, 30 RPM, 14,400 RPD, 6,000 TPM, 500,000 TPD
             "llama-3.3-70b", // llama-3.3-70b-versatile, 128k, 30 RPM, 1,00 RPD, 6,000 TPM, 100,000 TPD
+            "qwen-2.5-32b", // qwen-2.5-32b, 128k, 30 RPM, 1,000 RPD, 6,000 TPM,
 
             // zhipu free model https://bigmodel.cn/dev/howuse/model
             "glm-4-flash", // glm-4-flash, 128k context, 4k output, 200 QoS | THUDM/glm-4-9b-chat(SiliconFlow)
