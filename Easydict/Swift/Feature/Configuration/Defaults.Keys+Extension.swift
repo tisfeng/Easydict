@@ -33,10 +33,6 @@ extension Defaults.Keys {
     )
 
     static let autoSelectText = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
-    static let enableForceGetSelectedText = Key<Bool>(
-        "EZConfiguration_kForceAutoGetSelectedText", default: true
-    )
-
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
     static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
     static let pronunciation = Key<EnglishPronunciation>(
@@ -145,6 +141,10 @@ extension Defaults.Keys {
         "enableAppleOfflineTranslation", default: false
     )
 
+    static let enableForceGetSelectedText = Key<Bool>(
+        "EZConfiguration_kForceAutoGetSelectedText",
+        default: true
+    )
     static var forceGetSelectedTextType = Key<ForceGetSelectedTextType>(
         "EZConfiguration_kForceGetSelectedTextTypeKey",
         default: .menuBarActionCopy

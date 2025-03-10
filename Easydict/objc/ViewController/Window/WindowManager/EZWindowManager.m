@@ -874,7 +874,8 @@ static EZWindowManager *_instance;
         return;
     }
 
-    [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
+    Screenshot *screenshot = [[Screenshot alloc] init];
+    [screenshot captureScreenshotWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
             MMLogWarn(@"not get screenshot");
             return;
