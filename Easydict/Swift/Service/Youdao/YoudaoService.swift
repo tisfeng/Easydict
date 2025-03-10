@@ -164,9 +164,13 @@ class YoudaoService: QueryService {
         Task {
             do {
                 let result = try await ocr(image: image, from: from, to: to)
-                completion(result, nil)
+                await MainActor.run {
+                    completion(result, nil)
+                }
             } catch {
-                completion(nil, error)
+                await MainActor.run {
+                    completion(nil, error)
+                }
             }
         }
     }
