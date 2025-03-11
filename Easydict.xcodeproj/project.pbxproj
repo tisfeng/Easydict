@@ -102,7 +102,6 @@
 		03675A382D7FE598004E780A /* OverlayWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2C2D7FE598004E780A /* OverlayWindowManager.swift */; };
 		03675A3D2D7FE598004E780A /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2B2D7FE598004E780A /* OverlayView.swift */; };
 		03675A432D7FE598004E780A /* ScreenCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2E2D7FE598004E780A /* ScreenCaptureManager.swift */; };
-		03675A4D2D8030BA004E780A /* ScreenshotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A4C2D8030BA004E780A /* ScreenshotOverlayView.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
@@ -531,7 +530,6 @@
 		03675A2C2D7FE598004E780A /* OverlayWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindowManager.swift; sourceTree = "<group>"; };
 		03675A2E2D7FE598004E780A /* ScreenCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureManager.swift; sourceTree = "<group>"; };
 		03675A342D7FE598004E780A /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		03675A4C2D8030BA004E780A /* ScreenshotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOverlayView.swift; sourceTree = "<group>"; };
 		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
@@ -1352,7 +1350,6 @@
 		03675A352D7FE598004E780A /* SnipMac */ = {
 			isa = PBXGroup;
 			children = (
-				03675A4C2D8030BA004E780A /* ScreenshotOverlayView.swift */,
 				03675A2B2D7FE598004E780A /* OverlayView.swift */,
 				03675A2C2D7FE598004E780A /* OverlayWindowManager.swift */,
 				03675A2E2D7FE598004E780A /* ScreenCaptureManager.swift */,
@@ -3330,7 +3327,6 @@
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
 				9643D9422B6FE4AF000FBEA6 /* Shortcut+Bind.swift in Sources */,
-				03675A4D2D8030BA004E780A /* ScreenshotOverlayView.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
 				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,

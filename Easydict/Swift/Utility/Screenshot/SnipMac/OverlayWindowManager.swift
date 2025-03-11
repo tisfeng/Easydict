@@ -55,11 +55,8 @@ class OverlayWindowManager: NSObject {
             styleMask: [.borderless],
             backing: .buffered, defer: false
         )
-        overlayWindow?.isOpaque = false
-        overlayWindow?.backgroundColor = NSColor(white: 1, alpha: 0.3)
+
         overlayWindow?.level = .screenSaver
-        overlayWindow?.ignoresMouseEvents = false
-        print("Creating new overlay")
         let contentView = ScreenshotOverlayView(captureType: captureType)
         overlayWindow?.contentView = NSHostingView(rootView: contentView)
     }
