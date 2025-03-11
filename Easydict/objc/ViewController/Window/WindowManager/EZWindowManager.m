@@ -874,8 +874,8 @@ static EZWindowManager *_instance;
         return;
     }
 
-    Screenshot *screenshot = [[Screenshot alloc] init];
-    [screenshot captureScreenshotWithCompletion:^(NSImage *_Nullable image) {
+    OverlayWindowManager *overlayWindowManager = [OverlayWindowManager shared];
+    [overlayWindowManager showOverlayWindowWithCompletion:^(NSImage * _Nullable image) {
         if (!image) {
             MMLogWarn(@"not get screenshot");
             return;
@@ -895,6 +895,28 @@ static EZWindowManager *_instance;
 
         [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
+
+//    Screenshot *screenshot = [[Screenshot alloc] init];
+//    [screenshot captureScreenshotWithCompletion:^(NSImage *_Nullable image) {
+//        if (!image) {
+//            MMLogWarn(@"not get screenshot");
+//            return;
+//        }
+//
+//        MMLogInfo(@"get screenshot: %@", image);
+//
+//        // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
+//        static NSString *_imagePath = nil;
+//        static dispatch_once_t onceToken;
+//        dispatch_once(&onceToken, ^{
+//            _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
+//        });
+//        [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
+//        [image mm_writeToFileAsPNG:_imagePath];
+//        MMLogInfo(@"已保存图片：%@", _imagePath);
+//
+//        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
+//    }];
 }
 
 #pragma mark - Application Shorcut

@@ -1,5 +1,5 @@
 //
-//  Screenshot.swift
+//  Screencapture.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/3/9.
@@ -9,10 +9,10 @@
 import AppKit
 import Cocoa
 
-// MARK: - Screenshot
+// MARK: - Screencapture
 
 @objc
-public class Screenshot: NSObject {
+public class Screencapture: NSObject {
     /// Start the screenshot process using macOS native screencapture tool
     @objc
     public func captureScreenshot(completion: @escaping (NSImage?) -> ()) {
