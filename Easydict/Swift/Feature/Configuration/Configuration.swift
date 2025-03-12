@@ -96,10 +96,10 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
-    @Default(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
+    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
 
-    @Default(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
-    @Default(.screenVisibleFrame) var screenVisibleFrame: CGRect
+    @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
+    @DefaultsWrapper(.screenVisibleFrame) var screenVisibleFrame: CGRect
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
