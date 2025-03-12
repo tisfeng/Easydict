@@ -1,9 +1,11 @@
 //
 //  OverlayWindowManager.swift
-//  SnipMac
+//  Easydict
 //
-//  Created by Sai Sandeep Vaddi on 11/18/23.
+//  Created by tisfeng on 2025/3/11.
+//  Copyright © 2025 izual. All rights reserved.
 //
+
 import AppKit
 import SwiftUI
 
@@ -14,27 +16,24 @@ class OverlayWindowManager: NSObject {
     @objc static let shared = OverlayWindowManager()
 
     var overlayWindow: NSWindow?
-    var capturedImage: NSImage?
     var onImageCaptured: ((NSImage) -> ())?
 
     @objc
     func showOverlayWindow(completion: ((NSImage?) -> ())? = nil) {
-        // 先获取截图
-        capturedImage = ScreenCaptureManager.takeScreenshot(of: nil)
+        NSCursor.arrow.set()
 
         if overlayWindow == nil {
-            createOverlayWindow(captureType: .screenshot)
+            createOverlayWindow()
         }
         overlayWindow?.makeKeyAndOrderFront(nil)
 
-        // 设置回调，当用户完成选择后调用
+        // Set callback to be called when user completes selection
         onImageCaptured = { image in
             completion?(image)
         }
     }
 
     func finishCapture(with selectedImage: NSImage) {
-        capturedImage = selectedImage
         onImageCaptured?(selectedImage)
         hideOverlayWindow()
     }
@@ -46,18 +45,20 @@ class OverlayWindowManager: NSObject {
 
     // MARK: Private
 
-    private func observeAppStateChanges() {}
-
-    private func createOverlayWindow(captureType: CaptureType) {
+    private func createOverlayWindow() {
         let screenRect = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
         overlayWindow = NSWindow(
             contentRect: screenRect,
             styleMask: [.borderless],
-            backing: .buffered, defer: false
+            backing: .buffered,
+            defer: false
         )
 
         overlayWindow?.level = .screenSaver
-        let contentView = ScreenshotOverlayView(captureType: captureType)
+        overlayWindow?.backgroundColor = .clear
+        overlayWindow?.isOpaque = false
+
+        let contentView = ScreenshotOverlayView()
         overlayWindow?.contentView = NSHostingView(rootView: contentView)
     }
 }

@@ -1,8 +1,9 @@
 //
-//  Utils.swift
-//  SnipMac
+//  Screencapture.swift
+//  Easydict
 //
-//  Created by Sai Sandeep Vaddi on 11/11/23.
+//  Created by tisfeng on 2025/3/11.
+//  Copyright © 2025 izual. All rights reserved.
 //
 
 import AppKit
@@ -35,13 +36,6 @@ func calculateCropRect(from selectedRect: CGRect) -> CGRect {
     )
 
     return scaledRect
-}
-
-// MARK: - CaptureType
-
-enum CaptureType {
-    case screenshot
-    case screenRecord
 }
 
 extension Notification.Name {
