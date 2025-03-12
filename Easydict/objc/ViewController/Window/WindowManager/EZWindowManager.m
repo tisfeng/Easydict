@@ -874,8 +874,8 @@ static EZWindowManager *_instance;
         return;
     }
 
-    OverlayWindowManager *overlayWindowManager = [OverlayWindowManager shared];
-    [overlayWindowManager showOverlayWindowWithCompletion:^(NSImage * _Nullable image) {
+    Screenshot *screenshot = [Screenshot shared];
+    [screenshot startCaptureWithCompletion:^(NSImage * _Nullable image) {
         if (!image) {
             MMLogWarn(@"not get screenshot");
             return;

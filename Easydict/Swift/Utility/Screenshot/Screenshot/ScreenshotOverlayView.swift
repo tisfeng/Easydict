@@ -12,14 +12,14 @@ import SwiftUI
 struct ScreenshotOverlayView: View {
     // MARK: Lifecycle
 
-    init() {
-        // Get screen screenshot as background during initialization
-        _backgroundImage = State(initialValue: ScreenCaptureManager.takeScreenshot(of: nil))
+    init(onImageCaptured: @escaping (NSImage?) -> ()) {
+        self.onImageCaptured = onImageCaptured
+        _backgroundImage = State(initialValue: takeScreenshot(of: nil))
     }
 
     // MARK: Internal
 
-    let overlayWindowManager = OverlayWindowManager.shared
+    let onImageCaptured: (NSImage?) -> ()
 
     var drag: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .global)
@@ -47,16 +47,16 @@ struct ScreenshotOverlayView: View {
             }
             .onEnded { _ in
                 isSelecting = false
-                overlayWindowManager.hideOverlayWindow()
 
                 print("Selected rect: \(selectedRect)")
 
                 // Crop the selected area from the background image
                 if selectedRect.width > 10, selectedRect.height > 10 {
-                    // Directly use ScreenCaptureManager to get screenshot of the selected area
-                    if let croppedImage = ScreenCaptureManager.takeScreenshot(of: selectedRect) {
-                        OverlayWindowManager.shared.finishCapture(with: croppedImage)
+                    if let croppedImage = takeScreenshot(of: selectedRect) {
+                        onImageCaptured(croppedImage)
                     }
+                } else {
+                    onImageCaptured(nil)
                 }
             }
     }
@@ -69,31 +69,32 @@ struct ScreenshotOverlayView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .edgesIgnoringSafeArea(.all)
-                    .opacity(0.2)
+                //                    .opacity(0.2)
             }
 
             GeometryReader { geometry in
                 ZStack {
                     // Dark mask when selecting, turn to transparent when mouse moving.
                     Rectangle()
-                        .fill(Color.black.opacity(isMouseMoved ? 0 : 0.3))
+                        .fill(Color.black.opacity(isMouseMoved ? 0 : 0.4))
                         .edgesIgnoringSafeArea(.all)
-//                        .animation(.easeOut(duration: 0.2), value: isMouseMoved)
+                        .animation(.easeOut, value: isMouseMoved)
                         .onAppear {
                             NSLog("onAppear mask, isMouseMoved: \(isMouseMoved)")
                         }
 
                     if isSelecting {
-                        // Selection area
+                        // Selection area with light gray background
                         Rectangle()
                             .stroke(Color.white, lineWidth: 2)
-                            .background(Color.clear)
+                            .background(Color.black.opacity(0.1))
                             .frame(width: selectedRect.width, height: selectedRect.height)
                             .position(
                                 x: selectedRect.midX,
                                 y: selectedRect.midY
                             )
 
+                        // Clear mask for selection area
                         Rectangle()
                             .fill(Color.clear)
                             .frame(width: selectedRect.width, height: selectedRect.height)
@@ -168,8 +169,9 @@ struct ScreenshotOverlayView: View {
 
             if event.keyCode == kVK_Escape { // ESC key
                 NSLog("ESC key detected, close window")
+
                 DispatchQueue.main.async {
-                    OverlayWindowManager.shared.hideOverlayWindow()
+                    onImageCaptured(nil)
                 }
             }
         }
@@ -181,7 +183,7 @@ struct ScreenshotOverlayView: View {
             if event.keyCode == kVK_Escape { // ESC key
                 NSLog("ESC key detected, close window")
                 DispatchQueue.main.async {
-                    OverlayWindowManager.shared.hideOverlayWindow()
+                    onImageCaptured(nil)
                 }
                 return nil
             }
@@ -199,5 +201,19 @@ struct ScreenshotOverlayView: View {
         }
         keyboardMonitors = []
         NSLog("Remove all keyboard monitors")
+    }
+
+    private func takeScreenshot(of area: CGRect? = nil) -> NSImage? {
+        var capturedImage: NSImage?
+
+        let captureRect = area ?? CGDisplayBounds(CGMainDisplayID())
+        if let cgImage = CGDisplayCreateImage(CGMainDisplayID(), rect: captureRect) {
+            capturedImage = NSImage(
+                cgImage: cgImage,
+                size: NSSize(width: cgImage.width, height: cgImage.height)
+            )
+        }
+
+        return capturedImage
     }
 }

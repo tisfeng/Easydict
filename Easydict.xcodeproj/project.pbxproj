@@ -99,9 +99,7 @@
 		0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */; };
 		0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */; };
 		03675A362D7FE598004E780A /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A342D7FE598004E780A /* Utils.swift */; };
-		03675A382D7FE598004E780A /* OverlayWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2C2D7FE598004E780A /* OverlayWindowManager.swift */; };
 		03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */; };
-		03675A432D7FE598004E780A /* ScreenCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2E2D7FE598004E780A /* ScreenCaptureManager.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
@@ -263,6 +261,7 @@
 		03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */; };
 		03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */; };
 		03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = 03E534BB2CE0D38C00B37264 /* AcknowList */; };
+		03EFED072D81BAB40019E8FF /* Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EFED062D81BAB40019E8FF /* Screenshot.swift */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
@@ -527,8 +526,6 @@
 		0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+UpdateResult.swift"; sourceTree = "<group>"; };
 		0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+AsyncStream.swift"; sourceTree = "<group>"; };
 		03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOverlayView.swift; sourceTree = "<group>"; };
-		03675A2C2D7FE598004E780A /* OverlayWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindowManager.swift; sourceTree = "<group>"; };
-		03675A2E2D7FE598004E780A /* ScreenCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureManager.swift; sourceTree = "<group>"; };
 		03675A342D7FE598004E780A /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
 		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
@@ -796,6 +793,7 @@
 		03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZUtils.m"; sourceTree = "<group>"; };
 		03E3E7C02ADE318800812C84 /* EZQueryMenuTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryMenuTextView.h; sourceTree = "<group>"; };
 		03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryMenuTextView.m; sourceTree = "<group>"; };
+		03EFED062D81BAB40019E8FF /* Screenshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screenshot.swift; sourceTree = "<group>"; };
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
@@ -1100,7 +1098,7 @@
 		0328D0792D7D42520050B2C7 /* Screenshot */ = {
 			isa = PBXGroup;
 			children = (
-				03675A352D7FE598004E780A /* SnipMac */,
+				03675A352D7FE598004E780A /* Screenshot */,
 				0328D07A2D7D42A70050B2C7 /* Screencapture.swift */,
 			);
 			path = Screenshot;
@@ -1347,15 +1345,14 @@
 			path = Apple;
 			sourceTree = "<group>";
 		};
-		03675A352D7FE598004E780A /* SnipMac */ = {
+		03675A352D7FE598004E780A /* Screenshot */ = {
 			isa = PBXGroup;
 			children = (
+				03EFED062D81BAB40019E8FF /* Screenshot.swift */,
 				03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */,
-				03675A2C2D7FE598004E780A /* OverlayWindowManager.swift */,
-				03675A2E2D7FE598004E780A /* ScreenCaptureManager.swift */,
 				03675A342D7FE598004E780A /* Utils.swift */,
 			);
-			path = SnipMac;
+			path = Screenshot;
 			sourceTree = "<group>";
 		};
 		036A0DBD2AD9420B006E6D4F /* EZReplaceTextButton */ = {
@@ -3367,6 +3364,7 @@
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
+				03EFED072D81BAB40019E8FF /* Screenshot.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
@@ -3398,9 +3396,7 @@
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
 				03675A362D7FE598004E780A /* Utils.swift in Sources */,
-				03675A382D7FE598004E780A /* OverlayWindowManager.swift in Sources */,
 				03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */,
-				03675A432D7FE598004E780A /* ScreenCaptureManager.swift in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
 				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
