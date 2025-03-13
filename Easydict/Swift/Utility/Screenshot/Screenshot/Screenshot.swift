@@ -54,6 +54,8 @@ class Screenshot: NSObject {
     }
 
     private func showOverlayWindow(completion: @escaping (NSImage?) -> ()) {
+        NSLog("Showing overlay window")
+
         onImageCaptured = completion
 
         if overlayWindow == nil {
@@ -63,7 +65,9 @@ class Screenshot: NSObject {
     }
 
     private func createOverlayWindow() {
-        let screenRect = NSScreen.main?.frame ?? .zero
+        let screenRect = getCurrentScreenRect()
+        NSLog("Screen rect: \(screenRect)")
+
         overlayWindow = NSWindow(
             contentRect: screenRect,
             styleMask: [.borderless],
@@ -75,7 +79,7 @@ class Screenshot: NSObject {
         overlayWindow?.backgroundColor = .clear
         overlayWindow?.isOpaque = false
 
-        let contentView = ScreenshotOverlayView { [weak self] image in
+        let contentView = ScreenshotOverlayView(screenRect: screenRect) { [weak self] image in
             self?.onImageCaptured?(image)
             self?.hideOverlayWindow()
         }
@@ -90,7 +94,9 @@ class Screenshot: NSObject {
     private func showScreenCapturePermissionAlert() {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("need_screen_capture_permission", comment: "")
-        alert.informativeText = NSLocalizedString("request_screen_capture_access_description", comment: "")
+        alert.informativeText = NSLocalizedString(
+            "request_screen_capture_access_description", comment: ""
+        )
         alert.alertStyle = .warning
 
         alert.addButton(withTitle: NSLocalizedString("open_system_settings", comment: ""))
@@ -104,5 +110,15 @@ class Screenshot: NSObject {
                 NSWorkspace.shared.open(url)
             }
         }
+    }
+
+    /// Get the screen that contains the current mouse location
+    private func getCurrentScreenRect() -> CGRect {
+        let mouseLocation = NSEvent.mouseLocation
+        let screen = NSScreen.screens.first { screen in
+            screen.frame.contains(mouseLocation)
+        } ?? NSScreen.main
+
+        return screen?.frame ?? .zero
     }
 }

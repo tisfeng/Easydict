@@ -7,59 +7,20 @@
 //
 
 import Carbon
+import ScreenCaptureKit
 import SwiftUI
+
+// MARK: - ScreenshotOverlayView
 
 struct ScreenshotOverlayView: View {
     // MARK: Lifecycle
 
-    init(onImageCaptured: @escaping (NSImage?) -> ()) {
+    init(screenRect: CGRect, onImageCaptured: @escaping (NSImage?) -> ()) {
         self.onImageCaptured = onImageCaptured
-        _backgroundImage = State(initialValue: takeScreenshot(of: nil))
+        self.screenRect = screenRect
     }
 
     // MARK: Internal
-
-    let onImageCaptured: (NSImage?) -> ()
-
-    var drag: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .global)
-            .onChanged { value in
-                let adjustedStartLocation = CGPoint(
-                    x: value.startLocation.x,
-                    y: value.startLocation.y
-                )
-                let adjustedLocation = CGPoint(
-                    x: value.location.x,
-                    y: value.location.y
-                )
-
-                let origin = CGPoint(
-                    x: min(adjustedStartLocation.x, adjustedLocation.x),
-                    y: min(adjustedStartLocation.y, adjustedLocation.y)
-                )
-                let size = CGSize(
-                    width: abs(adjustedLocation.x - adjustedStartLocation.x),
-                    height: abs(adjustedLocation.y - adjustedStartLocation.y)
-                )
-
-                selectedRect = CGRect(origin: origin, size: size)
-                isSelecting = true
-            }
-            .onEnded { _ in
-                isSelecting = false
-
-                print("Selected rect: \(selectedRect)")
-
-                // Crop the selected area from the background image
-                if selectedRect.width > 10, selectedRect.height > 10 {
-                    if let croppedImage = takeScreenshot(of: selectedRect) {
-                        onImageCaptured(croppedImage)
-                    }
-                } else {
-                    onImageCaptured(nil)
-                }
-            }
-    }
 
     var body: some View {
         ZStack {
@@ -69,20 +30,20 @@ struct ScreenshotOverlayView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .edgesIgnoringSafeArea(.all)
-                //                    .opacity(0.2)
+//                    .opacity(0.2)
+
+                // Dark mask when selecting, turn to transparent when mouse moving.
+                Rectangle()
+                    .fill(Color.black.opacity(isMouseMoved ? 0 : 0.4))
+                    .edgesIgnoringSafeArea(.all)
+                    .animation(.easeOut, value: isMouseMoved)
+                    .onAppear {
+                        NSLog("onAppear mask, isMouseMoved: \(isMouseMoved)")
+                    }
             }
 
             GeometryReader { geometry in
                 ZStack {
-                    // Dark mask when selecting, turn to transparent when mouse moving.
-                    Rectangle()
-                        .fill(Color.black.opacity(isMouseMoved ? 0 : 0.4))
-                        .edgesIgnoringSafeArea(.all)
-                        .animation(.easeOut, value: isMouseMoved)
-                        .onAppear {
-                            NSLog("onAppear mask, isMouseMoved: \(isMouseMoved)")
-                        }
-
                     if isSelecting {
                         // Selection area with light gray background
                         Rectangle()
@@ -126,6 +87,11 @@ struct ScreenshotOverlayView: View {
             removeKeyboardMonitor()
             removeMouseMonitor()
         }
+        .task {
+            NSLog("task")
+
+            loadBackgroundImage()
+        }
     }
 
     // MARK: Private
@@ -135,10 +101,50 @@ struct ScreenshotOverlayView: View {
     @State private var backgroundImage: NSImage?
     @State private var isMouseMoved = false
     @State private var mouseMonitor: Any?
-
     // Modified to array to store multiple monitors
     @State private var keyboardMonitors: [Any] = []
     @State private var keyboardMonitor: Any?
+
+    private let screenRect: CGRect
+    private let onImageCaptured: (NSImage?) -> ()
+
+    private var drag: some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .global)
+            .onChanged { value in
+                let adjustedStartLocation = CGPoint(
+                    x: value.startLocation.x,
+                    y: value.startLocation.y
+                )
+                let adjustedLocation = CGPoint(
+                    x: value.location.x,
+                    y: value.location.y
+                )
+
+                let origin = CGPoint(
+                    x: min(adjustedStartLocation.x, adjustedLocation.x),
+                    y: min(adjustedStartLocation.y, adjustedLocation.y)
+                )
+                let size = CGSize(
+                    width: abs(adjustedLocation.x - adjustedStartLocation.x),
+                    height: abs(adjustedLocation.y - adjustedStartLocation.y)
+                )
+
+                selectedRect = CGRect(origin: origin, size: size)
+                isSelecting = true
+            }
+            .onEnded { _ in
+                isSelecting = false
+                print("Selected rect: \(selectedRect)")
+
+                if selectedRect.width > 10, selectedRect.height > 10 {
+                    ScreenCaptureHelper.shared.takeScreenshot(of: selectedRect) { [self] image in
+                        onImageCaptured(image)
+                    }
+                } else {
+                    onImageCaptured(nil)
+                }
+            }
+    }
 
     private func setupMouseMonitor() {
         mouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.mouseMoved]) { _ in
@@ -203,17 +209,13 @@ struct ScreenshotOverlayView: View {
         NSLog("Remove all keyboard monitors")
     }
 
-    private func takeScreenshot(of area: CGRect? = nil) -> NSImage? {
-        var capturedImage: NSImage?
+    private func loadBackgroundImage() {
+        NSLog("Load background image")
 
-        let captureRect = area ?? CGDisplayBounds(CGMainDisplayID())
-        if let cgImage = CGDisplayCreateImage(CGMainDisplayID(), rect: captureRect) {
-            capturedImage = NSImage(
-                cgImage: cgImage,
-                size: NSSize(width: cgImage.width, height: cgImage.height)
-            )
+        ScreenCaptureHelper.shared.takeScreenshot(of: screenRect) { image in
+            DispatchQueue.main.async {
+                backgroundImage = image
+            }
         }
-
-        return capturedImage
     }
 }
