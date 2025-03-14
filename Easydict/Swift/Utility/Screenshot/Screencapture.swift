@@ -18,67 +18,22 @@ public class Screencapture: NSObject {
     /// Take a screenshot interactively, using the system screencapture command.
     @objc
     public func takeScreenshot(completion: @escaping (NSImage?) -> ()) {
-        let fileManager = FileManager.default
+        startScreenshot(of: nil, completion: completion)
+    }
 
-        // Create a temporary file to store the screenshot
-        let temporaryPath = fileManager.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension("png")
-            .path
-
-        // Create a Process to run the screencapture command
-        let process = Process()
-        process.launchPath = "/usr/sbin/screencapture"
-
-        // Set arguments for the screencapture command https://www.unix.com/man_page/osx/1/screencapture/
-        // -i: interactive mode, allows user to select an area
-        // -s: only allow mouse selection mode
-        // -x: do not play sounds
-        process.arguments = ["-i", "-s", "-x", temporaryPath]
-
-        // Set process termination handler
-        process.terminationHandler = { _ in
-            DispatchQueue.main.async {
-                // Check if the file exists (if the user didn't cancel)
-                if fileManager.fileExists(atPath: temporaryPath) {
-                    // Load the image from the temporary file
-                    if let image = NSImage(contentsOfFile: temporaryPath) {
-                        completion(image)
-                        // Delete the temporary file
-                        try? fileManager.removeItem(atPath: temporaryPath)
-                    } else {
-                        // Failed to load the image
-                        NSLog("Failed to load screenshot from \(temporaryPath)")
-                        completion(nil)
-                    }
-                } else {
-                    // File doesn't exist, user probably cancelled
-                    NSLog("Screenshot was cancelled")
-                    completion(nil)
-                }
-            }
-        }
-
-        // Launch the process
-        do {
-            try process.run()
-        } catch {
-            NSLog("Failed to launch screencapture: \(error)")
-            completion(nil)
-        }
+    @objc
+    public func takeScreenshot(of area: CGRect, completion: @escaping (NSImage?) -> ()) {
+        startScreenshot(of: area, completion: completion)
     }
 
     // MARK: Internal
 
     @objc static let shared = Screencapture()
 
-    /// Take a screenshot of a specific area, top-left origin.
-    @objc
-    func takeScreenshot(of area: CGRect, completion: @escaping (NSImage?) -> ()) {
-        NSLog("Taking screenshot of area: \(area)")
+    // MARK: Private
 
+    private func startScreenshot(of area: CGRect? = nil, completion: @escaping (NSImage?) -> ()) {
         let fileManager = FileManager.default
-
         let temporaryPath = fileManager.temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("png")
@@ -87,10 +42,14 @@ public class Screencapture: NSObject {
         let process = Process()
         process.launchPath = "/usr/sbin/screencapture"
 
-        // Capture rectangle using format x,y,width,height (Top-Left origin)
-        let areaString =
-            "\(Int(area.origin.x)),\(Int(area.origin.y)),\(Int(area.width)),\(Int(area.height))"
-        process.arguments = ["-x", "-R", areaString, temporaryPath]
+        if let area = area {
+            NSLog("Start screenshot of area: \(area)")
+            let areaString =
+                "\(Int(area.origin.x)),\(Int(area.origin.y)),\(Int(area.width)),\(Int(area.height))"
+            process.arguments = ["-x", "-R", areaString, temporaryPath]
+        } else {
+            process.arguments = ["-i", "-s", "-x", temporaryPath]
+        }
 
         process.terminationHandler = { _ in
             DispatchQueue.main.async {
@@ -99,11 +58,11 @@ public class Screencapture: NSObject {
                         completion(image)
                         try? fileManager.removeItem(atPath: temporaryPath)
                     } else {
-                        NSLog("Failed to load area screenshot from \(temporaryPath)")
+                        NSLog("Failed to load screenshot from \(temporaryPath)")
                         completion(nil)
                     }
                 } else {
-                    NSLog("Area screenshot capture failed")
+                    NSLog(area == nil ? "Screenshot was cancelled" : "Area screenshot capture failed")
                     completion(nil)
                 }
             }
@@ -112,7 +71,7 @@ public class Screencapture: NSObject {
         do {
             try process.run()
         } catch {
-            NSLog("Failed to launch area screencapture: \(error)")
+            NSLog("Failed to launch screencapture: \(error)")
             completion(nil)
         }
     }
