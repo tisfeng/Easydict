@@ -893,7 +893,7 @@ static EZWindowManager *_instance;
         [image mm_writeToFileAsPNG:_imagePath];
         MMLogInfo(@"已保存图片：%@", _imagePath);
 
-        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
+//        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
 
 //    Screenshot *screenshot = [[Screenshot alloc] init];

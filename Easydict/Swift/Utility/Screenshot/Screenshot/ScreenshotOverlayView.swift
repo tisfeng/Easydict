@@ -15,9 +15,9 @@ import SwiftUI
 struct ScreenshotOverlayView: View {
     // MARK: Lifecycle
 
-    init(screenRect: CGRect, onImageCaptured: @escaping (NSImage?) -> ()) {
+    init(screenFrame: CGRect, onImageCaptured: @escaping (NSImage?) -> ()) {
         self.onImageCaptured = onImageCaptured
-        self.screenRect = screenRect
+        self.screenFrame = screenFrame
     }
 
     // MARK: Internal
@@ -28,14 +28,15 @@ struct ScreenshotOverlayView: View {
             if let image = backgroundImage {
                 Image(nsImage: image)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .edgesIgnoringSafeArea(.all)
-//                    .opacity(0.2)
+                    .aspectRatio(contentMode: .fit)
+                    .ignoresSafeArea()
+                    .border(.red)
+                //                    .opacity(0.2)
 
                 // Dark mask when selecting, turn to transparent when mouse moving.
                 Rectangle()
                     .fill(Color.black.opacity(isMouseMoved ? 0 : 0.4))
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
                     .animation(.easeOut, value: isMouseMoved)
                     .onAppear {
                         NSLog("onAppear mask, isMouseMoved: \(isMouseMoved)")
@@ -76,6 +77,9 @@ struct ScreenshotOverlayView: View {
                     .gesture(drag)
             }
         }
+        .ignoresSafeArea()
+        .border(.orange)
+
         .onAppear {
             NSLog("onAppear")
             setupKeyboardMonitor()
@@ -105,12 +109,15 @@ struct ScreenshotOverlayView: View {
     @State private var keyboardMonitors: [Any] = []
     @State private var keyboardMonitor: Any?
 
-    private let screenRect: CGRect
+    /// Screen frame is `bottom-left` origin.
+    private let screenFrame: CGRect
     private let onImageCaptured: (NSImage?) -> ()
 
     private var drag: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .global)
             .onChanged { value in
+                // value is `top-left` coordinate location in current screen
+
                 let adjustedStartLocation = CGPoint(
                     x: value.startLocation.x,
                     y: value.startLocation.y
@@ -128,7 +135,6 @@ struct ScreenshotOverlayView: View {
                     width: abs(adjustedLocation.x - adjustedStartLocation.x),
                     height: abs(adjustedLocation.y - adjustedStartLocation.y)
                 )
-
                 selectedRect = CGRect(origin: origin, size: size)
                 isSelecting = true
             }
@@ -136,10 +142,23 @@ struct ScreenshotOverlayView: View {
                 isSelecting = false
                 print("Selected rect: \(selectedRect)")
 
+                // Convert to `top-left` origin rect
+                let screenshotRect = CGRect(
+                    x: screenFrame.origin.x + selectedRect.origin.x,
+                    y: selectedRect.origin.y,
+                    width: selectedRect.width,
+                    height: selectedRect.height
+                )
+
+                NSLog("Screenshot rect: \(screenshotRect)")
+
                 if selectedRect.width > 10, selectedRect.height > 10 {
-                    ScreenCaptureHelper.shared.takeScreenshot(of: selectedRect) { [self] image in
+                    Screencapture.shared.takeScreenshot(of: screenshotRect) { [self] image in
                         onImageCaptured(image)
                     }
+
+//                    onImageCaptured(takeScreenshot(of: selectedRect))
+
                 } else {
                     onImageCaptured(nil)
                 }
@@ -212,10 +231,13 @@ struct ScreenshotOverlayView: View {
     private func loadBackgroundImage() {
         NSLog("Load background image")
 
-        ScreenCaptureHelper.shared.takeScreenshot(of: screenRect) { image in
+        let screenshotRect = convertToTopLeftOrigin(rect: screenFrame)
+        Screencapture.shared.takeScreenshot(of: screenshotRect) { image in
             DispatchQueue.main.async {
                 backgroundImage = image
+//                onImageCaptured(backgroundImage)
             }
         }
+//        backgroundImage = takeScreenshot(of: screenRect)
     }
 }

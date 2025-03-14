@@ -13,9 +13,11 @@ import Cocoa
 
 @objc
 public class Screencapture: NSObject {
-    /// Start the screenshot process using macOS native screencapture tool
+    // MARK: Public
+
+    /// Take a screenshot interactively, using the system screencapture command.
     @objc
-    public func captureScreenshot(completion: @escaping (NSImage?) -> ()) {
+    public func takeScreenshot(completion: @escaping (NSImage?) -> ()) {
         let fileManager = FileManager.default
 
         // Create a temporary file to store the screenshot
@@ -32,7 +34,7 @@ public class Screencapture: NSObject {
         // -i: interactive mode, allows user to select an area
         // -s: only allow mouse selection mode
         // -x: do not play sounds
-        process.arguments = ["-i", "-s", "-o", temporaryPath]
+        process.arguments = ["-i", "-s", "-x", temporaryPath]
 
         // Set process termination handler
         process.terminationHandler = { _ in
@@ -62,6 +64,55 @@ public class Screencapture: NSObject {
             try process.run()
         } catch {
             NSLog("Failed to launch screencapture: \(error)")
+            completion(nil)
+        }
+    }
+
+    // MARK: Internal
+
+    @objc static let shared = Screencapture()
+
+    /// Take a screenshot of a specific area, top-left origin.
+    @objc
+    func takeScreenshot(of area: CGRect, completion: @escaping (NSImage?) -> ()) {
+        NSLog("Taking screenshot of area: \(area)")
+
+        let fileManager = FileManager.default
+
+        let temporaryPath = fileManager.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("png")
+            .path
+
+        let process = Process()
+        process.launchPath = "/usr/sbin/screencapture"
+
+        // Capture rectangle using format x,y,width,height (Top-Left origin)
+        let areaString =
+            "\(Int(area.origin.x)),\(Int(area.origin.y)),\(Int(area.width)),\(Int(area.height))"
+        process.arguments = ["-x", "-R", areaString, temporaryPath]
+
+        process.terminationHandler = { _ in
+            DispatchQueue.main.async {
+                if fileManager.fileExists(atPath: temporaryPath) {
+                    if let image = NSImage(contentsOfFile: temporaryPath) {
+                        completion(image)
+                        try? fileManager.removeItem(atPath: temporaryPath)
+                    } else {
+                        NSLog("Failed to load area screenshot from \(temporaryPath)")
+                        completion(nil)
+                    }
+                } else {
+                    NSLog("Area screenshot capture failed")
+                    completion(nil)
+                }
+            }
+        }
+
+        do {
+            try process.run()
+        } catch {
+            NSLog("Failed to launch area screencapture: \(error)")
             completion(nil)
         }
     }

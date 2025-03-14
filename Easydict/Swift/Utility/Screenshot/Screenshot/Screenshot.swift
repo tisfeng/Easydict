@@ -65,11 +65,11 @@ class Screenshot: NSObject {
     }
 
     private func createOverlayWindow() {
-        let screenRect = getCurrentScreenRect()
-        NSLog("Screen rect: \(screenRect)")
+        let screenFrame = getActiveScreenFrame()
+        NSLog("Screen frame: \(screenFrame)")
 
         overlayWindow = NSWindow(
-            contentRect: screenRect,
+            contentRect: screenFrame,
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
@@ -79,7 +79,7 @@ class Screenshot: NSObject {
         overlayWindow?.backgroundColor = .clear
         overlayWindow?.isOpaque = false
 
-        let contentView = ScreenshotOverlayView(screenRect: screenRect) { [weak self] image in
+        let contentView = ScreenshotOverlayView(screenFrame: screenFrame) { [weak self] image in
             self?.onImageCaptured?(image)
             self?.hideOverlayWindow()
         }
@@ -110,15 +110,5 @@ class Screenshot: NSObject {
                 NSWorkspace.shared.open(url)
             }
         }
-    }
-
-    /// Get the screen that contains the current mouse location
-    private func getCurrentScreenRect() -> CGRect {
-        let mouseLocation = NSEvent.mouseLocation
-        let screen = NSScreen.screens.first { screen in
-            screen.frame.contains(mouseLocation)
-        } ?? NSScreen.main
-
-        return screen?.frame ?? .zero
     }
 }
