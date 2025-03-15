@@ -54,8 +54,6 @@ class Screenshot: NSObject {
     }
 
     private func showOverlayWindow(completion: @escaping (NSImage?) -> ()) {
-        NSLog("Showing overlay window")
-
         onImageCaptured = completion
 
         if overlayWindow == nil {
@@ -66,7 +64,6 @@ class Screenshot: NSObject {
 
     private func createOverlayWindow() {
         let screenFrame = getActiveScreenFrame()
-        NSLog("Screen frame: \(screenFrame)")
 
         overlayWindow = NSWindow(
             contentRect: screenFrame,

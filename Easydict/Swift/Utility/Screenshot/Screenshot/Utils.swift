@@ -86,8 +86,6 @@ func takeScreenshot(of rect: CGRect, targetScreen: NSScreen? = nil) -> NSImage? 
         height: rect.height * scaleFactor
     ).integral
 
-    NSLog("scaledCropRect: \(scaledCropRect)")
-
     // Crop the image to the specified rect
     guard let croppedImage = displayImage.cropping(to: scaledCropRect) else {
         NSLog("Failed to crop display image")
