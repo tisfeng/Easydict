@@ -11,16 +11,18 @@ import Cocoa
 
 // MARK: - Screencapture
 
+/// A utility class to take screenshots using the system screencapture command.
 @objc
 public class Screencapture: NSObject {
     // MARK: Public
 
-    /// Take a screenshot interactively, using the system screencapture command.
+    /// Take a screenshot interactively.
     @objc
     public func takeScreenshot(completion: @escaping (NSImage?) -> ()) {
         startScreenshot(of: nil, completion: completion)
     }
 
+    /// Take a screenshot of a specific area, `top-left` coordinate.
     @objc
     public func takeScreenshot(of area: CGRect, completion: @escaping (NSImage?) -> ()) {
         startScreenshot(of: area, completion: completion)
@@ -32,6 +34,9 @@ public class Screencapture: NSObject {
 
     // MARK: Private
 
+    /// Start a screenshot process using the system screencapture command.
+    /// - Parameters:
+    ///  - area: The `top-left` coordinate area to capture, or nil for interactive selection.
     private func startScreenshot(of area: CGRect? = nil, completion: @escaping (NSImage?) -> ()) {
         let fileManager = FileManager.default
         let temporaryPath = fileManager.temporaryDirectory

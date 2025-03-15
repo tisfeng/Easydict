@@ -1101,7 +1101,7 @@
 			isa = PBXGroup;
 			children = (
 				03675A352D7FE598004E780A /* Screenshot */,
-				0328D07A2D7D42A70050B2C7 /* Screencapture.swift */,
+				03FEB53F2D85A5FD004FF9E3 /* Screencapture */,
 			);
 			path = Screenshot;
 			sourceTree = "<group>";
@@ -2292,6 +2292,14 @@
 				03F0DB372953428300EBF9C1 /* EZLog.m */,
 			);
 			path = EZLog;
+			sourceTree = "<group>";
+		};
+		03FEB53F2D85A5FD004FF9E3 /* Screencapture */ = {
+			isa = PBXGroup;
+			children = (
+				0328D07A2D7D42A70050B2C7 /* Screencapture.swift */,
+			);
+			path = Screencapture;
 			sourceTree = "<group>";
 		};
 		03FEF15F2D45D06E002D5F28 /* Window */ = {

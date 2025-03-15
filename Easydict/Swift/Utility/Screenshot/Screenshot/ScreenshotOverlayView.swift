@@ -18,6 +18,9 @@ struct ScreenshotOverlayView: View {
     init(screenFrame: CGRect, onImageCaptured: @escaping (NSImage?) -> ()) {
         self.onImageCaptured = onImageCaptured
         self.screenFrame = screenFrame
+
+        let screenBounds = getBounds(of: screenFrame)
+        self._backgroundImage = State(initialValue: takeScreenshot(of: screenBounds))
     }
 
     // MARK: Internal
@@ -31,7 +34,6 @@ struct ScreenshotOverlayView: View {
                     .aspectRatio(contentMode: .fit)
                     .ignoresSafeArea()
                     .border(.red)
-                //                    .opacity(0.2)
 
                 // Dark mask when selecting, turn to transparent when mouse moving.
                 Rectangle()
@@ -79,22 +81,14 @@ struct ScreenshotOverlayView: View {
         }
         .ignoresSafeArea()
         .border(.orange)
-
         .onAppear {
-            NSLog("onAppear")
             setupKeyboardMonitor()
             setupMouseMonitor()
             isMouseMoved = false
         }
         .onDisappear {
-            NSLog("Remove monitors")
             removeKeyboardMonitor()
             removeMouseMonitor()
-        }
-        .task {
-            NSLog("task")
-
-            loadBackgroundImage()
         }
     }
 
@@ -137,29 +131,16 @@ struct ScreenshotOverlayView: View {
                 )
                 selectedRect = CGRect(origin: origin, size: size)
                 isSelecting = true
+                isMouseMoved = true
             }
             .onEnded { _ in
                 isSelecting = false
-                print("Selected rect: \(selectedRect)")
-
-                // Convert to `top-left` origin rect
-                let screenshotRect = CGRect(
-                    x: screenFrame.origin.x + selectedRect.origin.x,
-                    y: selectedRect.origin.y,
-                    width: selectedRect.width,
-                    height: selectedRect.height
-                )
-
-                NSLog("Screenshot rect: \(screenshotRect)")
+                NSLog("Selected rect: \(selectedRect)")
 
                 if selectedRect.width > 10, selectedRect.height > 10 {
-                    Screencapture.shared.takeScreenshot(of: screenshotRect) { [self] image in
-                        onImageCaptured(image)
-                    }
-
-//                    onImageCaptured(takeScreenshot(of: selectedRect))
-
+                    onImageCaptured(takeScreenshot(of: selectedRect))
                 } else {
+                    NSLog("Selected rect is too small, ignore")
                     onImageCaptured(nil)
                 }
             }
@@ -184,17 +165,14 @@ struct ScreenshotOverlayView: View {
     }
 
     private func setupKeyboardMonitor() {
-        // Ensure no duplicate monitors
         removeKeyboardMonitor()
 
-        NSLog("Set up keyboard monitor")
         // Use global monitor instead of local monitor
         keyboardMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
             NSLog("Global key: \(event.keyCode)")
 
-            if event.keyCode == kVK_Escape { // ESC key
+            if event.keyCode == kVK_Escape {
                 NSLog("ESC key detected, close window")
-
                 DispatchQueue.main.async {
                     onImageCaptured(nil)
                 }
@@ -205,7 +183,7 @@ struct ScreenshotOverlayView: View {
         let localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             NSLog("Local key: \(event.keyCode)")
 
-            if event.keyCode == kVK_Escape { // ESC key
+            if event.keyCode == kVK_Escape {
                 NSLog("ESC key detected, close window")
                 DispatchQueue.main.async {
                     onImageCaptured(nil)
@@ -226,18 +204,5 @@ struct ScreenshotOverlayView: View {
         }
         keyboardMonitors = []
         NSLog("Remove all keyboard monitors")
-    }
-
-    private func loadBackgroundImage() {
-        NSLog("Load background image")
-
-        let screenshotRect = convertToTopLeftOrigin(rect: screenFrame)
-        Screencapture.shared.takeScreenshot(of: screenshotRect) { image in
-            DispatchQueue.main.async {
-                backgroundImage = image
-//                onImageCaptured(backgroundImage)
-            }
-        }
-//        backgroundImage = takeScreenshot(of: screenRect)
     }
 }
