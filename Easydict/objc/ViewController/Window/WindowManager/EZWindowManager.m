@@ -780,52 +780,6 @@ static EZWindowManager *_instance;
     }];
 }
 
-- (void)snipTranslate {
-    MMLogInfo(@"snipTranslate");
-
-    [self saveFrontmostApplication];
-
-    if (Snip.shared.isSnapshotting) {
-        return;
-    }
-
-    // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
-    [self closeFloatingWindowIfNotPinnedOrMain];
-
-    // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
-    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-    EZBaseQueryWindow *window = [self windowWithType:windowType];
-
-    // Wait to close floating window if need.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
-            if (!image) {
-                MMLogWarn(@"not get screenshot");
-                return;
-            }
-
-            MMLogInfo(@"get screenshot: %@", image);
-
-            // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
-            static NSString *_imagePath = nil;
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
-                _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
-            });
-            [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
-            [image mm_writeToFileAsPNG:_imagePath];
-            MMLogInfo(@"已保存图片：%@", _imagePath);
-
-            // Reset window height first, avoid being affected by previous window height.
-            [window.queryViewController resetTableView:^{
-                self.actionType = EZActionTypeOCRQuery;
-                [self showFloatingWindowType:windowType queryText:nil];
-                [window.queryViewController startOCRImage:image actionType:self.actionType];
-            }];
-        }];
-    });
-}
-
 - (void)inputTranslate {
     MMLogInfo(@"inputTranslate");
 
@@ -865,58 +819,84 @@ static EZWindowManager *_instance;
     [self showFloatingWindowType:windowType queryText:nil];
 }
 
+- (void)snipTranslate {
+    MMLogInfo(@"snipTranslate");
+    
+    // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
+    [self closeFloatingWindowIfNotPinnedOrMain];
+
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+    
+    [self captureWithCompletion:^(NSImage * _Nullable image) {
+        if (!image) {
+            return;
+        }
+
+        // Reset window height first, avoid being affected by previous window height.
+        [window.queryViewController resetTableView:^{
+            self.actionType = EZActionTypeOCRQuery;
+            [self showFloatingWindowType:windowType queryText:nil];
+            [window.queryViewController startOCRImage:image actionType:self.actionType];
+        }];
+    }];
+}
+
 - (void)screenshotOCR {
-    MMLogInfo(@"screenshotOCR");
+    MMLogInfo(@"Screenshot and OCR");
+
+    [self captureWithCompletion:^(NSImage * _Nullable image) {
+        if (!image) {
+            return;
+        }
+
+        // Just OCR image, don't show floating window.
+        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
+    }];
+}
+
+/// Capture screenshot and save image to file.
+- (void)captureWithCompletion:(void (^)(NSImage *_Nullable image))imageHandler {
+    MMLogInfo(@"Starting capture");
 
     [self saveFrontmostApplication];
 
     if (Snip.shared.isSnapshotting) {
+        MMLogWarn(@"Already snapshotting, ignoring request");
         return;
     }
 
-    Screenshot *screenshot = [Screenshot shared];
-    [screenshot startCaptureWithCompletion:^(NSImage * _Nullable image) {
+    void (^captureCompletion)(NSImage *_Nullable) = ^(NSImage *_Nullable image) {
         if (!image) {
-            MMLogWarn(@"not get screenshot");
+            MMLogWarn(@"Failed to capture screenshot");
             return;
         }
 
-        MMLogInfo(@"get screenshot: %@", image);
+        MMLogInfo(@"Screenshot captured: %@", image);
 
-        // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
         static NSString *_imagePath = nil;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
         });
+
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
         [image mm_writeToFileAsPNG:_imagePath];
-        MMLogInfo(@"已保存图片：%@", _imagePath);
+        MMLogInfo(@"Saved image: %@", _imagePath);
 
-//        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
-    }];
+        if (imageHandler) {
+            imageHandler(image);
+        }
+    };
 
-//    Screenshot *screenshot = [[Screenshot alloc] init];
-//    [screenshot captureScreenshotWithCompletion:^(NSImage *_Nullable image) {
-//        if (!image) {
-//            MMLogWarn(@"not get screenshot");
-//            return;
-//        }
-//
-//        MMLogInfo(@"get screenshot: %@", image);
-//
-//        // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
-//        static NSString *_imagePath = nil;
-//        static dispatch_once_t onceToken;
-//        dispatch_once(&onceToken, ^{
-//            _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
-//        });
-//        [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
-//        [image mm_writeToFileAsPNG:_imagePath];
-//        MMLogInfo(@"已保存图片：%@", _imagePath);
-//
-//        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
-//    }];
+    // New screenshot feature may be unstable, so we only enable it in beta.
+    // TODO: Remove old Snip code after new screenshot is tested and stable.
+
+    if (Configuration.shared.beta) {
+        [Screenshot.shared startCaptureWithCompletion:captureCompletion];
+    } else {
+        [Snip.shared startWithCompletion:captureCompletion];
+    }
 }
 
 #pragma mark - Application Shorcut
