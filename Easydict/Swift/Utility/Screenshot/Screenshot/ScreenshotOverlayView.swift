@@ -33,7 +33,7 @@ struct ScreenshotOverlayView: View {
             backgroundLayer
             selectionLayer
 
-            // Show last screenshot area tip
+            // Show last screenshot area tip if available
             if showTip {
                 tipLayer
             }
@@ -55,6 +55,8 @@ struct ScreenshotOverlayView: View {
     @State private var keyboardMonitors: [Any] = []
     @State private var savedRect: CGRect
     @State private var showTip: Bool
+    @State private var isShowingPreview = false
+    @State private var previewTimer: Timer?
 
     /// Screen frame is `bottom-left` origin.
     private let screenFrame: CGRect
@@ -120,6 +122,7 @@ struct ScreenshotOverlayView: View {
                     x: selectedRect.midX,
                     y: selectedRect.midY
                 )
+                .animation(isShowingPreview ? .easeInOut : nil, value: selectedRect)
 
             // Clear mask for selection area
             Rectangle()
@@ -194,25 +197,53 @@ struct ScreenshotOverlayView: View {
 
     /// Handle drag gesture end
     private func handleDragEnd(_ value: DragGesture.Value? = nil) {
-        isSelecting = false
+        isMouseMoved = true
 
         var rectToCapture = selectedRect
 
-        // If triggered by D keyboard shortcut (no value), use saved area
+        // If triggered by D keyboard shortcut (no value), use saved area as selected rect
         if value == nil, savedRect != .zero {
             NSLog("Using saved rect: \(savedRect)")
             rectToCapture = savedRect
+
+            showPreviewForRect(rectToCapture)
         } else {
             NSLog("Selected rect: \(selectedRect)")
-        }
 
-        if rectToCapture.width > 10, rectToCapture.height > 10 {
-            // Save screenshot area to UserDefaults
-            Self.saveLastScreenshotRect(rectToCapture)
-            onImageCaptured(takeScreenshot(of: rectToCapture))
-        } else {
-            NSLog("Selected rect is too small, ignore")
-            onImageCaptured(nil)
+            if rectToCapture.width > 10, rectToCapture.height > 10 {
+                // Save screenshot area to UserDefaults
+                Self.saveLastScreenshotRect(rectToCapture)
+                onImageCaptured(takeScreenshot(of: rectToCapture))
+            } else {
+                NSLog("Selected rect is too small, ignore")
+                onImageCaptured(nil)
+            }
+        }
+    }
+
+    /// Show preview and set delayed callback
+    private func showPreviewForRect(_ rect: CGRect) {
+        // Cancel previous timer
+        previewTimer?.invalidate()
+
+        // Set selection rectangle to trigger UI update
+        selectedRect = rect
+        isSelecting = true
+        isShowingPreview = true
+
+        // Call callback after 1 second
+        previewTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [self] _ in
+            isSelecting = false
+            isShowingPreview = false
+
+            if rect.width > 10, rect.height > 10 {
+                // Save and call callback
+                Self.saveLastScreenshotRect(rect)
+                onImageCaptured(takeScreenshot(of: rect))
+            } else {
+                NSLog("Preview rect is too small, ignore")
+                onImageCaptured(nil)
+            }
         }
     }
 
@@ -283,7 +314,11 @@ struct ScreenshotOverlayView: View {
 
     /// Remove all event monitors
     private func removeMonitors() {
-        // Remove mouse monitor
+        // Clean up timer
+        previewTimer?.invalidate()
+        previewTimer = nil
+
+        // Existing cleanup code
         if let monitor = mouseMonitor {
             NSEvent.removeMonitor(monitor)
             mouseMonitor = nil
