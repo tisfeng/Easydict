@@ -3835,6 +3835,62 @@
         }
       }
     },
+    "screenshot.tip.click_d_to_capture_last_area" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click D to capture the last screenshot area"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klikni D pre zachytenie poslednej oblasti snímky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击 D 选择上一次截图区域"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 D 鍵選擇上次截圖區域"
+          }
+        }
+      }
+    },
+    "screenshot.tip.escape_to_cancel_capture" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press Esc to cancel capture"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stlač Esc pre zrušenie snímania"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 Esc 取消截图"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 Esc 鍵取消截圖"
+          }
+        }
+      }
+    },
     "select_query_text_when_window_activate" : {
       "extractionState" : "manual",
       "localizations" : {

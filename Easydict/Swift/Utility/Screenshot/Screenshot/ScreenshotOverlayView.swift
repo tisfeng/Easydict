@@ -19,6 +19,11 @@ struct ScreenshotOverlayView: View {
         self.screenFrame = screenFrame
         let screenBounds = getBounds(of: screenFrame)
         self._backgroundImage = State(initialValue: takeScreenshot(of: screenBounds))
+
+        // Load last screenshot area from UserDefaults
+        let lastRect = Self.loadLastScreenshotRect()
+        self._savedRect = State(initialValue: lastRect)
+        self._showTip = State(initialValue: !lastRect.isEmpty)
     }
 
     // MARK: Internal
@@ -27,6 +32,11 @@ struct ScreenshotOverlayView: View {
         ZStack {
             backgroundLayer
             selectionLayer
+
+            // Show last screenshot area tip
+            if showTip {
+                tipLayer
+            }
         }
         .ignoresSafeArea()
         .onAppear(perform: setupMonitors)
@@ -34,6 +44,9 @@ struct ScreenshotOverlayView: View {
     }
 
     // MARK: Private
+
+    // UserDefaults keys
+    private static let lastScreenshotRectKey = "Easydict.LastScreenshotRect"
 
     // MARK: State Variables
 
@@ -43,6 +56,8 @@ struct ScreenshotOverlayView: View {
     @State private var isMouseMoved = false
     @State private var mouseMonitor: Any?
     @State private var keyboardMonitors: [Any] = []
+    @State private var savedRect: CGRect
+    @State private var showTip: Bool
 
     /// Screen frame is `bottom-left` origin.
     private let screenFrame: CGRect
@@ -121,6 +136,55 @@ struct ScreenshotOverlayView: View {
         }
     }
 
+    /// Tip layer at the bottom-left
+    private var tipLayer: some View {
+        VStack {
+            Spacer()
+            HStack {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("screenshot.tip.click_d_to_capture_last_area")
+                        .foregroundStyle(.white)
+
+                    Divider()
+
+                    Text("screenshot.tip.escape_to_cancel_capture")
+                        .foregroundStyle(.white)
+                }
+                .fixedSize(horizontal: true, vertical: false)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 16)
+                .background {
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.black.opacity(0.8))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5)
+                                .strokeBorder(Color.white.opacity(0.5), lineWidth: 1)
+                        }
+                }
+
+                Spacer()
+            }
+        }
+    }
+
+    // MARK: UserDefaults Helpers
+
+    /// Save screenshot area to UserDefaults
+    private static func saveLastScreenshotRect(_ rect: CGRect) {
+        let defaults = UserDefaults.standard
+        let rectString = NSStringFromRect(rect)
+        defaults.set(rectString, forKey: lastScreenshotRectKey)
+    }
+
+    /// Load last screenshot area from UserDefaults
+    private static func loadLastScreenshotRect() -> CGRect {
+        let defaults = UserDefaults.standard
+        guard let rectString = defaults.string(forKey: lastScreenshotRectKey) else {
+            return .zero
+        }
+        return NSRectFromString(rectString)
+    }
+
     // MARK: Event Handlers
 
     /// Handle drag gesture change
@@ -150,12 +214,22 @@ struct ScreenshotOverlayView: View {
     }
 
     /// Handle drag gesture end
-    private func handleDragEnd(_ value: DragGesture.Value) {
+    private func handleDragEnd(_ value: DragGesture.Value? = nil) {
         isSelecting = false
-        NSLog("Selected rect: \(selectedRect)")
 
-        if selectedRect.width > 10, selectedRect.height > 10 {
-            onImageCaptured(takeScreenshot(of: selectedRect))
+        // If triggered by keyboard shortcut (no value), use saved area
+        var rectToCapture = selectedRect
+        if value == nil, savedRect != .zero {
+            NSLog("Using saved rect: \(savedRect)")
+            rectToCapture = savedRect
+        } else {
+            NSLog("Selected rect: \(selectedRect)")
+        }
+
+        if rectToCapture.width > 10, rectToCapture.height > 10 {
+            // Save screenshot area to UserDefaults
+            Self.saveLastScreenshotRect(rectToCapture)
+            onImageCaptured(takeScreenshot(of: rectToCapture))
         } else {
             NSLog("Selected rect is too small, ignore")
             onImageCaptured(nil)
@@ -184,20 +258,41 @@ struct ScreenshotOverlayView: View {
             }
         }
 
+        // Add keyboard listener to detect D key
+        let keyHandler = { [self] (event: NSEvent) -> NSEvent? in
+            if event.type == .keyDown {
+                if event.keyCode == kVK_ANSI_D {
+                    NSLog("D key pressed, capturing last screenshot area")
+                    DispatchQueue.main.async {
+                        if savedRect != .zero {
+                            handleDragEnd(nil)
+                        } else {
+                            NSLog("No previous screenshot rect available")
+                        }
+                    }
+                    return nil // Don't propagate this event
+                } else if event.keyCode == kVK_Escape {
+                    escapeHandler()
+                    return nil
+                }
+            }
+            return event
+        }
+
         // Setup keyboard monitors (both global and local)
         let globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
             if event.keyCode == kVK_Escape {
                 escapeHandler()
+            } else if event.keyCode == kVK_ANSI_D {
+                DispatchQueue.main.async { [self] in
+                    if savedRect != .zero {
+                        handleDragEnd(nil)
+                    }
+                }
             }
         }
 
-        let localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            if event.keyCode == kVK_Escape {
-                escapeHandler()
-                return nil
-            }
-            return event
-        }
+        let localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: keyHandler)
 
         // Save keyboard monitors
         keyboardMonitors = [globalMonitor, localMonitor].compactMap { $0 }
