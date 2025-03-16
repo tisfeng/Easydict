@@ -41,6 +41,7 @@ class Screenshot: NSObject {
 
     private var overlayWindow: NSWindow?
     private var onImageCaptured: ((NSImage?) -> ())?
+    private var previousActiveApp: NSRunningApplication?
 
     private let hasRequestedPermissionKey = "ScreenCaptureHasRequestedPermission"
 
@@ -59,6 +60,12 @@ class Screenshot: NSObject {
         if overlayWindow == nil {
             createOverlayWindow()
         }
+
+        // Save the currently active application
+        previousActiveApp = NSWorkspace.shared.frontmostApplication
+
+        NSApp.activate(ignoringOtherApps: true)
+
         overlayWindow?.makeKeyAndOrderFront(nil)
     }
 
@@ -75,6 +82,7 @@ class Screenshot: NSObject {
         overlayWindow?.level = .screenSaver
         overlayWindow?.backgroundColor = .clear
         overlayWindow?.isOpaque = false
+        overlayWindow?.becomeFirstResponder()
 
         let contentView = ScreenshotOverlayView(screenFrame: screenFrame) { [weak self] image in
             self?.onImageCaptured?(image)
@@ -86,6 +94,13 @@ class Screenshot: NSObject {
     private func hideOverlayWindow() {
         overlayWindow?.orderOut(nil)
         overlayWindow = nil
+
+        // Restore focus to previous application
+        if let previousApp = previousActiveApp {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                previousApp.activate(options: [])
+            }
+        }
     }
 
     private func showScreenCapturePermissionAlert() {

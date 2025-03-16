@@ -51,8 +51,7 @@ struct ScreenshotOverlayView: View {
     @State private var isSelecting = false
     @State private var backgroundImage: NSImage?
     @State private var isMouseMoved = false
-    @State private var mouseMonitor: Any?
-    @State private var keyboardMonitors: [Any] = []
+    @State private var monitors: [Any] = [] // Single array to store all event monitors
     @State private var savedRect: CGRect
     @State private var showTip: Bool
     @State private var isShowingPreview = false
@@ -251,62 +250,46 @@ struct ScreenshotOverlayView: View {
 
     /// Setup all event monitors
     private func setupMonitors() {
-        // Setup mouse monitor
-        mouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { [self] _ in
+        // Add mouse listener to detect mouse movement
+        if let mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved, handler: { [self] _ in
             if !isMouseMoved {
                 DispatchQueue.main.async {
                     isMouseMoved = true
                     NSLog("Mouse moved, isMouseMoved: \(isMouseMoved)")
                 }
             }
+            return nil
+        }) {
+            monitors.append(mouseMonitor)
         }
 
         // Handle escape key
         let escapeHandler = {
             NSLog("ESC key detected, close window")
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 onImageCaptured(nil)
             }
         }
 
-        // Add keyboard listener to detect D key
-        let keyHandler = { [self] (event: NSEvent) -> NSEvent? in
-            if event.type == .keyDown {
-                if event.keyCode == kVK_ANSI_D {
-                    NSLog("D key pressed, capturing last screenshot area")
+        // Add keyboard listener to detect D key - Only use local monitor for key events
+        // This allows us to prevent the D key from being passed to other applications
+        if let keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [self] event in
+            if event.keyCode == kVK_ANSI_D {
+                NSLog("D key pressed, capturing last screenshot area")
+                if savedRect != .zero {
                     DispatchQueue.main.async {
-                        if savedRect != .zero {
-                            handleDragEnd(nil)
-                        } else {
-                            NSLog("No previous screenshot rect available")
-                        }
-                    }
-                    return nil // Don't propagate this event
-                } else if event.keyCode == kVK_Escape {
-                    escapeHandler()
-                    return nil
-                }
-            }
-            return event
-        }
-
-        // Setup keyboard monitors (both global and local)
-        let globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
-            if event.keyCode == kVK_Escape {
-                escapeHandler()
-            } else if event.keyCode == kVK_ANSI_D {
-                DispatchQueue.main.async { [self] in
-                    if savedRect != .zero {
                         handleDragEnd(nil)
                     }
+                } else {
+                    NSLog("No previous screenshot rect available")
                 }
+            } else if event.keyCode == kVK_Escape {
+                escapeHandler()
             }
+            return nil // Don't propagate this event
+        }) {
+            monitors.append(keyboardMonitor)
         }
-
-        let localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: keyHandler)
-
-        // Save keyboard monitors
-        keyboardMonitors = [globalMonitor, localMonitor].compactMap { $0 }
 
         // Reset mouse movement state
         isMouseMoved = false
@@ -318,17 +301,11 @@ struct ScreenshotOverlayView: View {
         previewTimer?.invalidate()
         previewTimer = nil
 
-        // Existing cleanup code
-        if let monitor = mouseMonitor {
-            NSEvent.removeMonitor(monitor)
-            mouseMonitor = nil
-        }
-
-        // Remove all keyboard monitors
-        for monitor in keyboardMonitors {
+        // Remove all monitors
+        for monitor in monitors {
             NSEvent.removeMonitor(monitor)
         }
-        keyboardMonitors = []
+        monitors.removeAll()
     }
 }
 
