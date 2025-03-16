@@ -45,9 +45,6 @@ struct ScreenshotOverlayView: View {
 
     // MARK: Private
 
-    // UserDefaults keys
-    private static let lastScreenshotRectKey = "Easydict.LastScreenshotRect"
-
     // MARK: State Variables
 
     @State private var selectedRect = CGRect.zero
@@ -167,24 +164,6 @@ struct ScreenshotOverlayView: View {
         }
     }
 
-    // MARK: UserDefaults Helpers
-
-    /// Save screenshot area to UserDefaults
-    private static func saveLastScreenshotRect(_ rect: CGRect) {
-        let defaults = UserDefaults.standard
-        let rectString = NSStringFromRect(rect)
-        defaults.set(rectString, forKey: lastScreenshotRectKey)
-    }
-
-    /// Load last screenshot area from UserDefaults
-    private static func loadLastScreenshotRect() -> CGRect {
-        let defaults = UserDefaults.standard
-        guard let rectString = defaults.string(forKey: lastScreenshotRectKey) else {
-            return .zero
-        }
-        return NSRectFromString(rectString)
-    }
-
     // MARK: Event Handlers
 
     /// Handle drag gesture change
@@ -217,8 +196,9 @@ struct ScreenshotOverlayView: View {
     private func handleDragEnd(_ value: DragGesture.Value? = nil) {
         isSelecting = false
 
-        // If triggered by keyboard shortcut (no value), use saved area
         var rectToCapture = selectedRect
+
+        // If triggered by D keyboard shortcut (no value), use saved area
         if value == nil, savedRect != .zero {
             NSLog("Using saved rect: \(savedRect)")
             rectToCapture = savedRect
@@ -314,5 +294,28 @@ struct ScreenshotOverlayView: View {
             NSEvent.removeMonitor(monitor)
         }
         keyboardMonitors = []
+    }
+}
+
+// MARK: - ScreenshotOverlayView + UserDefaults
+
+extension ScreenshotOverlayView {
+    // UserDefaults keys
+    private static let lastScreenshotRectKey = "easydict.screenshot.lastRect"
+
+    /// Save screenshot area to UserDefaults
+    static func saveLastScreenshotRect(_ rect: CGRect) {
+        let defaults = UserDefaults.standard
+        let rectString = NSStringFromRect(rect)
+        defaults.set(rectString, forKey: lastScreenshotRectKey)
+    }
+
+    /// Load last screenshot area from UserDefaults
+    static func loadLastScreenshotRect() -> CGRect {
+        let defaults = UserDefaults.standard
+        guard let rectString = defaults.string(forKey: lastScreenshotRectKey) else {
+            return .zero
+        }
+        return NSRectFromString(rectString)
     }
 }
