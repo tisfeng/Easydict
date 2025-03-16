@@ -828,7 +828,7 @@ static EZWindowManager *_instance;
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     
-    [self captureWithCompletion:^(NSImage * _Nullable image) {
+    [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
         if (!image) {
             return;
         }
@@ -845,7 +845,7 @@ static EZWindowManager *_instance;
 - (void)screenshotOCR {
     MMLogInfo(@"Screenshot and OCR");
 
-    [self captureWithCompletion:^(NSImage * _Nullable image) {
+    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
         if (!image) {
             return;
         }
@@ -855,16 +855,24 @@ static EZWindowManager *_instance;
     }];
 }
 
-/// Capture screenshot and save image to file.
-- (void)captureWithCompletion:(void (^)(NSImage *_Nullable image))imageHandler {
+/**
+ * Capture screenshot with options for app restoration
+ * @param restorePreviousApp Whether to restore the previous application after capture
+ * @param imageHandler Block to handle the captured image
+ */
+- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp 
+                           completion:(void (^)(NSImage *_Nullable image))imageHandler {
     MMLogInfo(@"Starting capture");
 
     [self saveFrontmostApplication];
 
-    if (Snip.shared.isSnapshotting) {
+    if (Snip.shared.isSnapshotting || Screenshot.shared.isTakingScreenshot) {
         MMLogWarn(@"Already snapshotting, ignoring request");
         return;
     }
+
+    // Set whether to restore previous app
+    Screenshot.shared.shouldRestorePreviousApp = restorePreviousApp;
 
     void (^captureCompletion)(NSImage *_Nullable) = ^(NSImage *_Nullable image) {
         if (!image) {
@@ -890,8 +898,6 @@ static EZWindowManager *_instance;
     };
 
     // New screenshot feature may be unstable, so we only enable it in beta.
-    // TODO: Remove old Snip code after new screenshot is tested and stable.
-
     if (Configuration.shared.beta) {
         [Screenshot.shared startCaptureWithCompletion:captureCompletion];
     } else {
@@ -899,7 +905,7 @@ static EZWindowManager *_instance;
     }
 }
 
-#pragma mark - Application Shorcut
+#pragma mark - Application Shortcut
 
 - (void)rerty {
     if (Snip.shared.isSnapshotting) {

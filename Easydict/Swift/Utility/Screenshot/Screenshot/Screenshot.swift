@@ -9,14 +9,27 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Screenshot
+
 @objc
 class Screenshot: NSObject {
+    // MARK: Public
+
+    @objc public private(set) var isTakingScreenshot = false
+
+    @objc public var shouldRestorePreviousApp = false
+
     // MARK: Internal
 
     @objc static let shared = Screenshot()
 
     @objc
     func startCapture(completion: @escaping (NSImage?) -> ()) {
+        if isTakingScreenshot {
+            completion(nil)
+            return
+        }
+
         let hasScreenCapturePermission = CGPreflightScreenCaptureAccess()
         if !hasScreenCapturePermission {
             if !hasRequestedPermission {
@@ -34,6 +47,8 @@ class Screenshot: NSObject {
             return
         }
 
+        isTakingScreenshot = true
+
         showOverlayWindow(completion: completion)
     }
 
@@ -42,17 +57,6 @@ class Screenshot: NSObject {
     private var overlayWindow: NSWindow?
     private var onImageCaptured: ((NSImage?) -> ())?
     private var previousActiveApp: NSRunningApplication?
-
-    private let hasRequestedPermissionKey = "ScreenCaptureHasRequestedPermission"
-
-    private var hasRequestedPermission: Bool {
-        get {
-            UserDefaults.standard.bool(forKey: hasRequestedPermissionKey)
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: hasRequestedPermissionKey)
-        }
-    }
 
     private func showOverlayWindow(completion: @escaping (NSImage?) -> ()) {
         onImageCaptured = completion
@@ -84,26 +88,55 @@ class Screenshot: NSObject {
         overlayWindow?.isOpaque = false
         overlayWindow?.becomeFirstResponder()
 
-        let contentView = ScreenshotOverlayView(screenFrame: screenFrame) { [weak self] image in
-            self?.onImageCaptured?(image)
-            self?.hideOverlayWindow()
-        }
+        let contentView = ScreenshotOverlayView(screenFrame: screenFrame, onImageCaptured: { [weak self] image in
+            self?.finishCapture(image)
+        })
         overlayWindow?.contentView = NSHostingView(rootView: contentView)
     }
 
     private func hideOverlayWindow() {
         overlayWindow?.orderOut(nil)
         overlayWindow = nil
+    }
 
-        // Restore focus to previous application
-        if let previousApp = previousActiveApp {
+    /// Finish screenshot capture
+    private func finishCapture(_ image: NSImage?) {
+        isTakingScreenshot = false
+
+        onImageCaptured?(image)
+        hideOverlayWindow()
+
+        // Restore focus to previous application only if shouldRestorePreviousApp is true
+        if shouldRestorePreviousApp, let previousApp = previousActiveApp {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                previousApp.activate(options: [])
+                previousApp.activate()
             }
+        }
+
+        // Clear the previous app reference
+        previousActiveApp = nil
+    }
+}
+
+// MARK: - Permission Handling
+
+extension Screenshot {
+    // Key for storing permission request status
+    private var hasRequestedPermissionKey: String {
+        "easydict.screenshot.hasRequestedPermission"
+    }
+
+    // Track whether we've already requested screen capture permission
+    fileprivate var hasRequestedPermission: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: hasRequestedPermissionKey)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: hasRequestedPermissionKey)
         }
     }
 
-    private func showScreenCapturePermissionAlert() {
+    fileprivate func showScreenCapturePermissionAlert() {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("need_screen_capture_permission", comment: "")
         alert.informativeText = NSLocalizedString(
