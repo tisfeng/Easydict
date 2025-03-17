@@ -15,16 +15,13 @@ import SwiftUI
 class Screenshot: NSObject {
     // MARK: Public
 
-    @objc public private(set) var isTakingScreenshot = false
+    @objc public static let shared = Screenshot()
 
+    @objc public private(set) var isTakingScreenshot = false
     @objc public var shouldRestorePreviousApp = false
 
-    // MARK: Internal
-
-    @objc static let shared = Screenshot()
-
     @objc
-    func startCapture(completion: @escaping (NSImage?) -> ()) {
+    public func startCapture(completion: @escaping (NSImage?) -> ()) {
         if isTakingScreenshot {
             completion(nil)
             return
@@ -54,49 +51,59 @@ class Screenshot: NSObject {
 
     // MARK: Private
 
-    private var overlayWindow: NSWindow?
+    private var overlayWindows: [NSScreen: NSWindow] = [:]
     private var onImageCaptured: ((NSImage?) -> ())?
     private var previousActiveApp: NSRunningApplication?
 
     private func showOverlayWindow(completion: @escaping (NSImage?) -> ()) {
         onImageCaptured = completion
 
-        if overlayWindow == nil {
-            createOverlayWindow()
-        }
-
         // Save the currently active application
         previousActiveApp = NSWorkspace.shared.frontmostApplication
 
-        NSApp.activate(ignoringOtherApps: true)
+        // Remove any existing overlay windows
+        hideAllOverlayWindows()
 
-        overlayWindow?.makeKeyAndOrderFront(nil)
+        // Create and show overlay window on each screen
+        for screen in NSScreen.screens {
+            createOverlayWindow(for: screen)
+        }
+
+        NSApp.activate(ignoringOtherApps: true)
     }
 
-    private func createOverlayWindow() {
-        let screenFrame = getActiveScreenFrame()
+    private func createOverlayWindow(for screen: NSScreen) {
+        let screenFrame = screen.frame
 
-        overlayWindow = NSWindow(
+        let window = NSWindow(
             contentRect: screenFrame,
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
         )
 
-        overlayWindow?.level = .screenSaver
-        overlayWindow?.backgroundColor = .clear
-        overlayWindow?.isOpaque = false
-        overlayWindow?.becomeFirstResponder()
+        window.level = .screenSaver
+        window.backgroundColor = .clear
+        window.isOpaque = false
+        window.orderFront(nil)
 
-        let contentView = ScreenshotOverlayView(screenFrame: screenFrame, onImageCaptured: { [weak self] image in
+        // Pass the screen object instead of just screenFrame
+        let contentView = ScreenshotOverlayView(screen: screen, onImageCaptured: { [weak self] image in
             self?.finishCapture(image)
         })
-        overlayWindow?.contentView = NSHostingView(rootView: contentView)
+        NSLog("init ScreenshotOverlayView, screen: \(screen.frame)")
+
+        window.contentView = NSHostingView(rootView: contentView)
+
+        // Store the window in our dictionary
+        overlayWindows[screen] = window
     }
 
-    private func hideOverlayWindow() {
-        overlayWindow?.orderOut(nil)
-        overlayWindow = nil
+    private func hideAllOverlayWindows() {
+        for (_, window) in overlayWindows {
+            window.orderOut(nil)
+        }
+        overlayWindows.removeAll()
     }
 
     /// Finish screenshot capture
@@ -104,7 +111,7 @@ class Screenshot: NSObject {
         isTakingScreenshot = false
 
         onImageCaptured?(image)
-        hideOverlayWindow()
+        hideAllOverlayWindows()
 
         // Restore focus to previous application only if shouldRestorePreviousApp is true
         if shouldRestorePreviousApp, let previousApp = previousActiveApp {
@@ -116,27 +123,9 @@ class Screenshot: NSObject {
         // Clear the previous app reference
         previousActiveApp = nil
     }
-}
 
-// MARK: - Permission Handling
-
-extension Screenshot {
-    // Key for storing permission request status
-    private var hasRequestedPermissionKey: String {
-        "easydict.screenshot.hasRequestedPermission"
-    }
-
-    // Track whether we've already requested screen capture permission
-    fileprivate var hasRequestedPermission: Bool {
-        get {
-            UserDefaults.standard.bool(forKey: hasRequestedPermissionKey)
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: hasRequestedPermissionKey)
-        }
-    }
-
-    fileprivate func showScreenCapturePermissionAlert() {
+    /// Show an alert to guide the user to enable screen capture permission
+    private func showScreenCapturePermissionAlert() {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("need_screen_capture_permission", comment: "")
         alert.informativeText = NSLocalizedString(

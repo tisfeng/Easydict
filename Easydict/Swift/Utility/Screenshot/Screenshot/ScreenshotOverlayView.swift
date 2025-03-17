@@ -14,16 +14,18 @@ import SwiftUI
 struct ScreenshotOverlayView: View {
     // MARK: Lifecycle
 
-    init(screenFrame: CGRect, onImageCaptured: @escaping (NSImage?) -> ()) {
+    init(screen: NSScreen, onImageCaptured: @escaping (NSImage?) -> ()) {
         self.onImageCaptured = onImageCaptured
-        self.screenFrame = screenFrame
-        let screenBounds = getBounds(of: screenFrame)
-        self._backgroundImage = State(initialValue: takeScreenshot(of: screenBounds))
+        self.screen = screen
+        let screenBounds = getBounds(of: screen.frame)
+        self._backgroundImage = State(initialValue: takeScreenshot(of: screenBounds, in: screen))
 
         // Load last screenshot area from UserDefaults
-        let lastRect = Self.loadLastScreenshotRect()
+        let lastRect = Screenshot.shared.lastScreenshotRect
         self._savedRect = State(initialValue: lastRect)
         self._showTip = State(initialValue: !lastRect.isEmpty)
+
+//        updateMouseLocation(NSEvent.mouseLocation)
     }
 
     // MARK: Internal
@@ -58,8 +60,14 @@ struct ScreenshotOverlayView: View {
     @State private var previewTimer: Timer?
 
     /// Screen frame is `bottom-left` origin.
-    private let screenFrame: CGRect
+    private let screen: NSScreen
     private let onImageCaptured: (NSImage?) -> ()
+
+    @State private var isMouseInCurrentScreen = true {
+        didSet {
+//            NSLog("didSet isMouseInCurrentScreen: \(isMouseInCurrentScreen)")
+        }
+    }
 
     // MARK: Gestures
 
@@ -80,12 +88,13 @@ struct ScreenshotOverlayView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .ignoresSafeArea()
+                    .opacity(0.2)
 
-                // Dark mask when selecting, turn to transparent when mouse moving
+                // Dark mask when selecting, turn to transparent when mouse moving AND mouse is in current screen
                 Rectangle()
-                    .fill(Color.black.opacity(isMouseMoved ? 0 : 0.4))
+                    .fill(Color.black.opacity(isMouseMoved && isMouseInCurrentScreen ? 0 : 0.4))
                     .ignoresSafeArea()
-                    .animation(.easeOut, value: isMouseMoved)
+                    .animation(.easeOut, value: isMouseMoved && isMouseInCurrentScreen)
             }
         }
     }
@@ -189,7 +198,7 @@ struct ScreenshotOverlayView: View {
             height: abs(adjustedLocation.y - adjustedStartLocation.y)
         )
 
-        selectedRect = CGRect(origin: origin, size: size)
+        selectedRect = CGRect(origin: origin, size: size).integral
         isSelecting = true
         isMouseMoved = true
     }
@@ -201,18 +210,28 @@ struct ScreenshotOverlayView: View {
         var rectToCapture = selectedRect
 
         // If triggered by D keyboard shortcut (no value), use saved area as selected rect
-        if value == nil, savedRect != .zero {
+        if value == nil, !savedRect.isEmpty {
             NSLog("Using saved rect: \(savedRect)")
+
             rectToCapture = savedRect
 
-            showPreviewForRect(rectToCapture)
+            // Adjust saved rect to fit current screen
+//            rectToCapture = adjusLasttScreenshotRect(
+//                lastRect: savedRect,
+//                lastScreenFrame: Screenshot.shared.lastScreenFrame,
+//                currentScreenFrame: screen.frame
+//            )
+//            NSLog("Adjusted rect to fit screen: \(rectToCapture)")
+
+            showPreviewForRect(rectToCapture, in: Screenshot.shared.lastScreen)
         } else {
             NSLog("Selected rect: \(selectedRect)")
 
             if rectToCapture.width > 10, rectToCapture.height > 10 {
                 // Save screenshot area to UserDefaults
-                Self.saveLastScreenshotRect(rectToCapture)
-                onImageCaptured(takeScreenshot(of: rectToCapture))
+                Screenshot.shared.lastScreenshotRect = rectToCapture
+                Screenshot.shared.lastScreen = screen
+                onImageCaptured(takeScreenshot(of: rectToCapture, in: screen))
             } else {
                 NSLog("Selected rect is too small, ignore")
                 onImageCaptured(nil)
@@ -221,7 +240,7 @@ struct ScreenshotOverlayView: View {
     }
 
     /// Show preview and set delayed callback
-    private func showPreviewForRect(_ rect: CGRect) {
+    private func showPreviewForRect(_ rect: CGRect, in screen: NSScreen?) {
         // Cancel previous timer
         previewTimer?.invalidate()
 
@@ -230,15 +249,13 @@ struct ScreenshotOverlayView: View {
         isSelecting = true
         isShowingPreview = true
 
-        // Call callback after 1 second
+        // Call callback after 1.0 second
         previewTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [self] _ in
             isSelecting = false
             isShowingPreview = false
 
             if rect.width > 10, rect.height > 10 {
-                // Save and call callback
-                Self.saveLastScreenshotRect(rect)
-                onImageCaptured(takeScreenshot(of: rect))
+                onImageCaptured(takeScreenshot(of: rect, in: screen))
             } else {
                 NSLog("Preview rect is too small, ignore")
                 onImageCaptured(nil)
@@ -251,14 +268,10 @@ struct ScreenshotOverlayView: View {
     /// Setup all event monitors
     private func setupMonitors() {
         // Add mouse listener to detect mouse movement
-        if let mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved, handler: { [self] _ in
-            if !isMouseMoved {
-                DispatchQueue.main.async {
-                    isMouseMoved = true
-                    NSLog("Mouse moved, isMouseMoved: \(isMouseMoved)")
-                }
-            }
-            return nil
+        if let mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved, handler: { [self] event in
+            // Update mouse location and check if it's in current screen
+            updateMouseLocation(NSEvent.mouseLocation)
+            return event
         }) {
             monitors.append(mouseMonitor)
         }
@@ -276,7 +289,11 @@ struct ScreenshotOverlayView: View {
         if let keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [self] event in
             if event.keyCode == kVK_ANSI_D {
                 NSLog("D key pressed, capturing last screenshot area")
-                if savedRect != .zero {
+
+                NSLog("Last screen: \(Screenshot.shared.lastScreen?.deviceDescriptionString)")
+                NSLog("screen: \(screen.deviceDescriptionString)")
+
+                if savedRect != .zero, screen.isSameScreen(Screenshot.shared.lastScreen) {
                     DispatchQueue.main.async {
                         handleDragEnd(nil)
                     }
@@ -286,13 +303,38 @@ struct ScreenshotOverlayView: View {
             } else if event.keyCode == kVK_Escape {
                 escapeHandler()
             }
-            return nil // Don't propagate this event
+            return event
         }) {
             monitors.append(keyboardMonitor)
         }
+    }
 
-        // Reset mouse movement state
-        isMouseMoved = false
+    /// Update mouse location and check if it's in current screen
+    private func updateMouseLocation(_ location: NSPoint) {
+        // Convert mouse location to screen coordinates if needed
+        // NSScreen.frame uses bottom-left origin coordinates
+        // NSEvent.mouseLocation uses bottom-left origin coordinates with y=0 at the bottom of main screen
+
+        let mouseInScreen = NSMouseInRect(location, screen.frame, false)
+
+        NSLog("Mouse location: \(location)")
+        NSLog("Screen frame: \(screen.frame)")
+        NSLog("Mouse in screen using NSMouseInRect: \(mouseInScreen)")
+
+        if isMouseInCurrentScreen != mouseInScreen {
+            isMouseInCurrentScreen = mouseInScreen
+            NSLog("isInScreen updated: \(isMouseInCurrentScreen), screen frame: \(screen.frame)")
+        }
+
+        // If mouse is not in current screen, ignore
+        if !isMouseInCurrentScreen {
+            return
+        }
+
+        if !isMouseMoved {
+            isMouseMoved = true
+            NSLog("Mouse moved, isMouseMoved: \(isMouseMoved), isInScreen: \(isMouseInCurrentScreen)")
+        }
     }
 
     /// Remove all event monitors
@@ -306,28 +348,5 @@ struct ScreenshotOverlayView: View {
             NSEvent.removeMonitor(monitor)
         }
         monitors.removeAll()
-    }
-}
-
-// MARK: - ScreenshotOverlayView + UserDefaults
-
-extension ScreenshotOverlayView {
-    // UserDefaults keys
-    private static let lastScreenshotRectKey = "easydict.screenshot.lastRect"
-
-    /// Save screenshot area to UserDefaults
-    static func saveLastScreenshotRect(_ rect: CGRect) {
-        let defaults = UserDefaults.standard
-        let rectString = NSStringFromRect(rect)
-        defaults.set(rectString, forKey: lastScreenshotRectKey)
-    }
-
-    /// Load last screenshot area from UserDefaults
-    static func loadLastScreenshotRect() -> CGRect {
-        let defaults = UserDefaults.standard
-        guard let rectString = defaults.string(forKey: lastScreenshotRectKey) else {
-            return .zero
-        }
-        return NSRectFromString(rectString)
     }
 }
