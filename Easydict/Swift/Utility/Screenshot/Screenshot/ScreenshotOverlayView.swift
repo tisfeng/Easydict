@@ -198,21 +198,19 @@ struct ScreenshotOverlayView: View {
             NSLog("Using saved rect: \(savedRect)")
 
             rectToCapture = savedRect
-            showPreviewForRect(rectToCapture, in: Screenshot.shared.lastScreen)
-        } else {
-            selectedRect = .zero
+            var targetScreen = Screenshot.shared.lastScreen
 
+            // If the target screen is nil, adjust rect to fit current screen
+            if targetScreen == nil {
+                targetScreen = screen
+                rectToCapture = adjusLastScreenshotRect(lastRect: savedRect, screenFrame: targetScreen!.frame)
+            }
+            showPreviewForRect(rectToCapture, in: targetScreen!)
+        } else {
             NSLog("Selected rect: \(selectedRect)")
 
             if rectToCapture.width > 10, rectToCapture.height > 10 {
-                // Save screenshot area to UserDefaults
-                Screenshot.shared.lastScreenshotRect = rectToCapture
-                Screenshot.shared.lastScreen = screen
-
-                asyncTakeScreenshot(of: rectToCapture, in: screen) { image in
-                    onImageCaptured(image)
-                }
-
+                asyncTakeScreenshot(of: rectToCapture, in: screen, completion: onImageCaptured)
             } else {
                 NSLog("Selected rect is too small, ignore")
                 onImageCaptured(nil)
@@ -221,32 +219,20 @@ struct ScreenshotOverlayView: View {
     }
 
     /// Show preview and set delayed callback
-    private func showPreviewForRect(_ rect: CGRect, in screen: NSScreen?) {
+    private func showPreviewForRect(_ rect: CGRect, in screen: NSScreen) {
+        NSLog("Show preview for rect: \(rect), screen frame: \(screen.frame)")
+
         // Cancel previous timer
         previewTimer?.invalidate()
 
-        var rectToCapture = rect
-        let targetScreen = screen ?? self.screen
-
-        // If the target screen is nil, adjust rect to fit current screen
-        if screen == nil {
-            rectToCapture = adjusLastScreenshotRect(
-                lastRect: rectToCapture, currentScreenFrame: targetScreen.frame
-            )
-        }
-
         // Set selection rectangle to trigger UI update
-        selectedRect = rectToCapture
+        selectedRect = rect
         isShowingPreview = true
 
         // Call callback after 1.0 second
         previewTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [self] _ in
-            if rectToCapture.width > 10, rectToCapture.height > 10 {
-                selectedRect = .zero
-
-                asyncTakeScreenshot(of: rectToCapture, in: targetScreen) { image in
-                    onImageCaptured(image)
-                }
+            if rect.width > 10, rect.height > 10 {
+                asyncTakeScreenshot(of: rect, in: screen, completion: onImageCaptured)
             } else {
                 NSLog("Preview rect is too small, ignore")
                 onImageCaptured(nil)
@@ -272,7 +258,7 @@ struct ScreenshotOverlayView: View {
 
         // Handle escape key
         let escapeHandler = {
-            NSLog("ESC key detected, close window")
+            NSLog("ESC key detected")
             DispatchQueue.main.async { [self] in
                 onImageCaptured(nil)
             }
@@ -286,12 +272,7 @@ struct ScreenshotOverlayView: View {
                     NSLog("D key pressed, capturing last screenshot area")
 
                     isMouseInCurrentScreen = screen.frame.contains(NSEvent.mouseLocation)
-
                     let lastScreen = Screenshot.shared.lastScreen
-                    NSLog("Last screen: \(lastScreen?.deviceDescriptionString ?? "")")
-                    NSLog("Current screen: \(screen.deviceDescriptionString)")
-                    NSLog("Is mouse in current screen: \(isMouseInCurrentScreen)")
-
                     let isRightScreen =
                         screen.isSameScreen(lastScreen)
                             || (lastScreen == nil && isMouseInCurrentScreen)
@@ -347,7 +328,7 @@ struct ScreenshotOverlayView: View {
         monitors.removeAll()
     }
 
-    /// Take screenshot of the screen area asynchronously
+    /// Take screenshot of the screen area asynchronously, and save last screenshot rect.
     private func asyncTakeScreenshot(
         of rect: CGRect,
         in screen: NSScreen?,
@@ -355,6 +336,9 @@ struct ScreenshotOverlayView: View {
     ) {
         // Hide selection rectangle, avoid capturing it
         selectedRect = .zero
+
+        Screenshot.shared.lastScreenshotRect = rect
+        Screenshot.shared.lastScreen = screen
 
         // async to wait for UI update
         DispatchQueue.main.async {

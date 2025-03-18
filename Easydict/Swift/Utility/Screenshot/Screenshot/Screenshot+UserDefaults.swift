@@ -70,7 +70,6 @@ extension Screenshot {
         set {
             let defaults = UserDefaults.standard
             let screenDescription = newValue?.deviceDescriptionString
-            NSLog("lastScreen screenDescription: \(screenDescription ?? "")")
             defaults.set(screenDescription, forKey: lastScreenKey)
         }
     }

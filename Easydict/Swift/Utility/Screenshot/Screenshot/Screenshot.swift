@@ -61,22 +61,23 @@ class Screenshot: NSObject {
         // Save the currently active application
         previousActiveApp = NSWorkspace.shared.frontmostApplication
 
-        // Remove any existing overlay windows
         hideAllOverlayWindows()
 
-        // Create and show overlay window on each screen
+        if #available(macOS 14.0, *) {
+            NSApplication.shared.activate()
+        } else {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+        }
+
+        // Show overlay window on each screen
         for screen in NSScreen.screens {
             createOverlayWindow(for: screen)
         }
-
-        NSApp.activate(ignoringOtherApps: true)
     }
 
     private func createOverlayWindow(for screen: NSScreen) {
-        let screenFrame = screen.frame
-
         let window = NSWindow(
-            contentRect: screenFrame,
+            contentRect: screen.frame,
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
@@ -87,15 +88,11 @@ class Screenshot: NSObject {
         window.isOpaque = false
         window.orderFront(nil)
 
-        // Pass the screen object instead of just screenFrame
         let contentView = ScreenshotOverlayView(screen: screen, onImageCaptured: { [weak self] image in
             self?.finishCapture(image)
         })
-        NSLog("init ScreenshotOverlayView, screen: \(screen.frame)")
-
         window.contentView = NSHostingView(rootView: contentView)
 
-        // Store the window in our dictionary
         overlayWindows[screen] = window
     }
 
@@ -106,7 +103,7 @@ class Screenshot: NSObject {
         overlayWindows.removeAll()
     }
 
-    /// Finish screenshot capture
+    /// Finish screenshot capture and call the completion handler
     private func finishCapture(_ image: NSImage?) {
         isTakingScreenshot = false
 
@@ -120,7 +117,6 @@ class Screenshot: NSObject {
             }
         }
 
-        // Clear the previous app reference
         previousActiveApp = nil
     }
 

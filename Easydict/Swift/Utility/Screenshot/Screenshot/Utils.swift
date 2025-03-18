@@ -218,11 +218,11 @@ public func adjusLastScreenshotRect(
 ///        Else, the adjusted rect location to fit within the screen.
 public func adjusLastScreenshotRect(
     lastRect: CGRect,
-    currentScreenFrame: CGRect
+    screenFrame: CGRect
 )
     -> CGRect {
     NSLog("Adjusting last screenshot rect: \(lastRect)")
-    NSLog("Current screen frame: \(currentScreenFrame)")
+    NSLog("Current screen frame: \(screenFrame)")
 
     if lastRect.isEmpty {
         NSLog("Last rect is empty, cannot adjust")
@@ -232,24 +232,24 @@ public func adjusLastScreenshotRect(
     // Convert lastRect from top-left to bottom-left origin for comparison with screen frames
     let lastRectScreenCoordinate = CGRect(
         x: lastRect.origin.x,
-        y: currentScreenFrame.height - lastRect.origin.y - lastRect.height,
+        y: screenFrame.height - lastRect.origin.y - lastRect.height,
         width: lastRect.width,
         height: lastRect.height
     )
 
     // Check if the last rect is completely within current screen's bounds
-    let currentScreenBounds = CGRect(origin: .zero, size: currentScreenFrame.size)
+    let currentScreenBounds = CGRect(origin: .zero, size: screenFrame.size)
     if currentScreenBounds.contains(lastRectScreenCoordinate) {
         NSLog("Last rect is within the current screen")
         return lastRect
     }
 
     // If lastRect size is larger than current screen, scale down to fit within the screen
-    if lastRect.width > currentScreenFrame.width || lastRect.height > currentScreenFrame.height {
+    if lastRect.width > screenFrame.width || lastRect.height > screenFrame.height {
         NSLog("Last rect is larger than current screen, scaling down")
 
-        let widthRatio = currentScreenFrame.width / lastRect.width
-        let heightRatio = currentScreenFrame.height / lastRect.height
+        let widthRatio = screenFrame.width / lastRect.width
+        let heightRatio = screenFrame.height / lastRect.height
         let scale = min(widthRatio, heightRatio) * 0.9 // Use 90% of screen to leave margin
 
         let newSize = CGSize(
@@ -258,8 +258,8 @@ public func adjusLastScreenshotRect(
         )
 
         // Center in current screen (in top-left coordinates)
-        let newX = (currentScreenFrame.width - newSize.width) / 2
-        let newY = (currentScreenFrame.height - newSize.height) / 2
+        let newX = (screenFrame.width - newSize.width) / 2
+        let newY = (screenFrame.height - newSize.height) / 2
 
         return CGRect(
             x: newX,
@@ -276,15 +276,15 @@ public func adjusLastScreenshotRect(
     // Adjust X position
     if adjustedRect.minX < 0 {
         adjustedRect.origin.x = 0
-    } else if adjustedRect.maxX > currentScreenFrame.width {
-        adjustedRect.origin.x = currentScreenFrame.width - adjustedRect.width
+    } else if adjustedRect.maxX > screenFrame.width {
+        adjustedRect.origin.x = screenFrame.width - adjustedRect.width
     }
 
     // Adjust Y position
     if adjustedRect.minY < 0 {
         adjustedRect.origin.y = 0
-    } else if adjustedRect.maxY > currentScreenFrame.height {
-        adjustedRect.origin.y = currentScreenFrame.height - adjustedRect.height
+    } else if adjustedRect.maxY > screenFrame.height {
+        adjustedRect.origin.y = screenFrame.height - adjustedRect.height
     }
 
     NSLog("Adjusted rect (top-left): \(adjustedRect)")
