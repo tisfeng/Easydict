@@ -134,7 +134,7 @@ func convertToTopLeftOrigin(rect: CGRect, in screenFrame: CGRect? = nil) -> CGRe
 /// - Note: If `currentScreen` contains `lastRect`, the adjusted rect will be the same as lastRect.
 ///        Otherwise, if `lastRect` size is larger than `currentScreen`, the adjusted rect will be scaled down to fit within the screen.
 ///        Else, the adjusted rect location will be scaled to fit within the screen.
-public func adjusLasttScreenshotRect(
+public func adjusLastScreenshotRect(
     lastRect: CGRect,
     lastScreenFrame: CGRect,
     currentScreenFrame: CGRect
@@ -207,4 +207,86 @@ public func adjusLasttScreenshotRect(
 
     NSLog("Adjusted rect (top-left): \(adjustedRect)")
     return adjustedRect
+}
+
+/// Adjust last screenshot rect to fit within the current screen boundaries
+/// - Parameters: lastRect Last screenshot rect, `top-left` origin
+/// - Parameters: currentScreenFrame: Screen where the current screenshot is being taken, `bottom-left` origin
+/// - Returns: Adjusted rect that fits within the current screen, `top-left` origin
+/// - Note: If `currentScreen` contains `lastRect`, the adjusted rect will be the same as lastRect.
+///        Otherwise, if `lastRect` size is larger than `currentScreen`, the adjusted rect will be scaled down to fit within the screen.
+///        Else, the adjusted rect location to fit within the screen.
+public func adjusLastScreenshotRect(
+    lastRect: CGRect,
+    currentScreenFrame: CGRect
+)
+    -> CGRect {
+    NSLog("Adjusting last screenshot rect: \(lastRect)")
+    NSLog("Current screen frame: \(currentScreenFrame)")
+
+    if lastRect.isEmpty {
+        NSLog("Last rect is empty, cannot adjust")
+        return .zero
+    }
+
+    // Convert lastRect from top-left to bottom-left origin for comparison with screen frames
+    let lastRectScreenCoordinate = CGRect(
+        x: lastRect.origin.x,
+        y: currentScreenFrame.height - lastRect.origin.y - lastRect.height,
+        width: lastRect.width,
+        height: lastRect.height
+    )
+
+    // Check if the last rect is completely within current screen's bounds
+    let currentScreenBounds = CGRect(origin: .zero, size: currentScreenFrame.size)
+    if currentScreenBounds.contains(lastRectScreenCoordinate) {
+        NSLog("Last rect is within the current screen")
+        return lastRect
+    }
+
+    // If lastRect size is larger than current screen, scale down to fit within the screen
+    if lastRect.width > currentScreenFrame.width || lastRect.height > currentScreenFrame.height {
+        NSLog("Last rect is larger than current screen, scaling down")
+
+        let widthRatio = currentScreenFrame.width / lastRect.width
+        let heightRatio = currentScreenFrame.height / lastRect.height
+        let scale = min(widthRatio, heightRatio) * 0.9 // Use 90% of screen to leave margin
+
+        let newSize = CGSize(
+            width: lastRect.width * scale,
+            height: lastRect.height * scale
+        )
+
+        // Center in current screen (in top-left coordinates)
+        let newX = (currentScreenFrame.width - newSize.width) / 2
+        let newY = (currentScreenFrame.height - newSize.height) / 2
+
+        return CGRect(
+            x: newX,
+            y: newY,
+            width: newSize.width,
+            height: newSize.height
+        )
+    }
+
+    // Adjust position to fit within screen
+    NSLog("Adjusting last rect position to fit within screen")
+    var adjustedRect = lastRect
+
+    // Adjust X position
+    if adjustedRect.minX < 0 {
+        adjustedRect.origin.x = 0
+    } else if adjustedRect.maxX > currentScreenFrame.width {
+        adjustedRect.origin.x = currentScreenFrame.width - adjustedRect.width
+    }
+
+    // Adjust Y position
+    if adjustedRect.minY < 0 {
+        adjustedRect.origin.y = 0
+    } else if adjustedRect.maxY > currentScreenFrame.height {
+        adjustedRect.origin.y = currentScreenFrame.height - adjustedRect.height
+    }
+
+    NSLog("Adjusted rect (top-left): \(adjustedRect)")
+    return adjustedRect.integral
 }

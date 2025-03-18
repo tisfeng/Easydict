@@ -24,8 +24,6 @@ struct ScreenshotOverlayView: View {
         let lastRect = Screenshot.shared.lastScreenshotRect
         self._savedRect = State(initialValue: lastRect)
         self._showTip = State(initialValue: !lastRect.isEmpty)
-
-//        updateMouseLocation(NSEvent.mouseLocation)
     }
 
     // MARK: Internal
@@ -50,9 +48,9 @@ struct ScreenshotOverlayView: View {
     // MARK: State Variables
 
     @State private var selectedRect = CGRect.zero
-    @State private var isSelecting = false
     @State private var backgroundImage: NSImage?
     @State private var isMouseMoved = false
+    @State private var isMouseInCurrentScreen = false
     @State private var monitors: [Any] = [] // Single array to store all event monitors
     @State private var savedRect: CGRect
     @State private var showTip: Bool
@@ -63,10 +61,8 @@ struct ScreenshotOverlayView: View {
     private let screen: NSScreen
     private let onImageCaptured: (NSImage?) -> ()
 
-    @State private var isMouseInCurrentScreen = true {
-        didSet {
-//            NSLog("didSet isMouseInCurrentScreen: \(isMouseInCurrentScreen)")
-        }
+    private var hideDarkOverlay: Bool {
+        isMouseMoved && isMouseInCurrentScreen || isShowingPreview
     }
 
     // MARK: Gestures
@@ -88,13 +84,12 @@ struct ScreenshotOverlayView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .ignoresSafeArea()
-                    .opacity(0.2)
 
                 // Dark mask when selecting, turn to transparent when mouse moving AND mouse is in current screen
                 Rectangle()
-                    .fill(Color.black.opacity(isMouseMoved && isMouseInCurrentScreen ? 0 : 0.4))
+                    .fill(Color.black.opacity(hideDarkOverlay ? 0 : 0.4))
                     .ignoresSafeArea()
-                    .animation(.easeOut, value: isMouseMoved && isMouseInCurrentScreen)
+                    .animation(.easeOut, value: hideDarkOverlay)
             }
         }
     }
@@ -103,8 +98,8 @@ struct ScreenshotOverlayView: View {
     private var selectionLayer: some View {
         GeometryReader { geometry in
             ZStack {
-                if isSelecting {
-                    selectionRectangle
+                if !selectedRect.isEmpty {
+                    selectionRectangleView
                 }
             }
             .compositingGroup()
@@ -119,32 +114,22 @@ struct ScreenshotOverlayView: View {
     }
 
     /// Visual representation of the selection area
-    private var selectionRectangle: some View {
+    private var selectionRectangleView: some View {
         Group {
-            // Selection border with semi-transparent background
+            // Selection border with semi-transparent dark background
             Rectangle()
                 .stroke(Color.white, lineWidth: 2)
-                .background(Color.black.opacity(0.1))
+                .background(Color.black.opacity(0.1)) // Add a darker overlay for selection area
                 .frame(width: selectedRect.width, height: selectedRect.height)
                 .position(
                     x: selectedRect.midX,
                     y: selectedRect.midY
                 )
                 .animation(isShowingPreview ? .easeInOut : nil, value: selectedRect)
-
-            // Clear mask for selection area
-            Rectangle()
-                .fill(Color.clear)
-                .frame(width: selectedRect.width, height: selectedRect.height)
-                .position(
-                    x: selectedRect.midX,
-                    y: selectedRect.midY
-                )
-                .blendMode(.destinationOut)
         }
     }
 
-    /// Tip layer at the bottom-left
+    /// Tip layer at bottom-left corner
     private var tipLayer: some View {
         VStack {
             Spacer()
@@ -199,7 +184,6 @@ struct ScreenshotOverlayView: View {
         )
 
         selectedRect = CGRect(origin: origin, size: size).integral
-        isSelecting = true
         isMouseMoved = true
     }
 
@@ -209,29 +193,26 @@ struct ScreenshotOverlayView: View {
 
         var rectToCapture = selectedRect
 
-        // If triggered by D keyboard shortcut (no value), use saved area as selected rect
+        // If triggered by D key shortcut (no value), use saved area as selected rect
         if value == nil, !savedRect.isEmpty {
             NSLog("Using saved rect: \(savedRect)")
 
             rectToCapture = savedRect
-
-            // Adjust saved rect to fit current screen
-//            rectToCapture = adjusLasttScreenshotRect(
-//                lastRect: savedRect,
-//                lastScreenFrame: Screenshot.shared.lastScreenFrame,
-//                currentScreenFrame: screen.frame
-//            )
-//            NSLog("Adjusted rect to fit screen: \(rectToCapture)")
-
             showPreviewForRect(rectToCapture, in: Screenshot.shared.lastScreen)
         } else {
+            selectedRect = .zero
+
             NSLog("Selected rect: \(selectedRect)")
 
             if rectToCapture.width > 10, rectToCapture.height > 10 {
                 // Save screenshot area to UserDefaults
                 Screenshot.shared.lastScreenshotRect = rectToCapture
                 Screenshot.shared.lastScreen = screen
-                onImageCaptured(takeScreenshot(of: rectToCapture, in: screen))
+
+                asyncTakeScreenshot(of: rectToCapture, in: screen) { image in
+                    onImageCaptured(image)
+                }
+
             } else {
                 NSLog("Selected rect is too small, ignore")
                 onImageCaptured(nil)
@@ -244,18 +225,28 @@ struct ScreenshotOverlayView: View {
         // Cancel previous timer
         previewTimer?.invalidate()
 
+        var rectToCapture = rect
+        let targetScreen = screen ?? self.screen
+
+        // If the target screen is nil, adjust rect to fit current screen
+        if screen == nil {
+            rectToCapture = adjusLastScreenshotRect(
+                lastRect: rectToCapture, currentScreenFrame: targetScreen.frame
+            )
+        }
+
         // Set selection rectangle to trigger UI update
-        selectedRect = rect
-        isSelecting = true
+        selectedRect = rectToCapture
         isShowingPreview = true
 
         // Call callback after 1.0 second
         previewTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [self] _ in
-            isSelecting = false
-            isShowingPreview = false
+            if rectToCapture.width > 10, rectToCapture.height > 10 {
+                selectedRect = .zero
 
-            if rect.width > 10, rect.height > 10 {
-                onImageCaptured(takeScreenshot(of: rect, in: screen))
+                asyncTakeScreenshot(of: rectToCapture, in: targetScreen) { image in
+                    onImageCaptured(image)
+                }
             } else {
                 NSLog("Preview rect is too small, ignore")
                 onImageCaptured(nil)
@@ -268,11 +259,14 @@ struct ScreenshotOverlayView: View {
     /// Setup all event monitors
     private func setupMonitors() {
         // Add mouse listener to detect mouse movement
-        if let mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved, handler: { [self] event in
-            // Update mouse location and check if it's in current screen
-            updateMouseLocation(NSEvent.mouseLocation)
-            return event
-        }) {
+        if let mouseMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: .mouseMoved,
+            handler: { [self] event in
+                // NSEvent.mouseLocation is `bottom-left` origin, the same as screen frame.
+                updateMouseLocation(NSEvent.mouseLocation)
+                return event
+            }
+        ) {
             monitors.append(mouseMonitor)
         }
 
@@ -285,45 +279,46 @@ struct ScreenshotOverlayView: View {
         }
 
         // Add keyboard listener to detect D key - Only use local monitor for key events
-        // This allows us to prevent the D key from being passed to other applications
-        if let keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [self] event in
-            if event.keyCode == kVK_ANSI_D {
-                NSLog("D key pressed, capturing last screenshot area")
+        if let keyboardMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: .keyDown,
+            handler: { [self] event in
+                if event.keyCode == kVK_ANSI_D {
+                    NSLog("D key pressed, capturing last screenshot area")
 
-                NSLog("Last screen: \(Screenshot.shared.lastScreen?.deviceDescriptionString)")
-                NSLog("screen: \(screen.deviceDescriptionString)")
+                    isMouseInCurrentScreen = screen.frame.contains(NSEvent.mouseLocation)
 
-                if savedRect != .zero, screen.isSameScreen(Screenshot.shared.lastScreen) {
-                    DispatchQueue.main.async {
-                        handleDragEnd(nil)
+                    let lastScreen = Screenshot.shared.lastScreen
+                    NSLog("Last screen: \(lastScreen?.deviceDescriptionString ?? "")")
+                    NSLog("Current screen: \(screen.deviceDescriptionString)")
+                    NSLog("Is mouse in current screen: \(isMouseInCurrentScreen)")
+
+                    let isRightScreen =
+                        screen.isSameScreen(lastScreen)
+                            || (lastScreen == nil && isMouseInCurrentScreen)
+                    if !savedRect.isEmpty, isRightScreen {
+                        DispatchQueue.main.async {
+                            handleDragEnd(nil)
+                        }
+                    } else {
+                        NSLog("No previous screenshot rect available")
                     }
-                } else {
-                    NSLog("No previous screenshot rect available")
+                } else if event.keyCode == kVK_Escape {
+                    escapeHandler()
                 }
-            } else if event.keyCode == kVK_Escape {
-                escapeHandler()
+                return event
             }
-            return event
-        }) {
+        ) {
             monitors.append(keyboardMonitor)
         }
     }
 
     /// Update mouse location and check if it's in current screen
     private func updateMouseLocation(_ location: NSPoint) {
-        // Convert mouse location to screen coordinates if needed
-        // NSScreen.frame uses bottom-left origin coordinates
-        // NSEvent.mouseLocation uses bottom-left origin coordinates with y=0 at the bottom of main screen
-
-        let mouseInScreen = NSMouseInRect(location, screen.frame, false)
-
-        NSLog("Mouse location: \(location)")
-        NSLog("Screen frame: \(screen.frame)")
-        NSLog("Mouse in screen using NSMouseInRect: \(mouseInScreen)")
+        let mouseInScreen = screen.frame.contains(location)
 
         if isMouseInCurrentScreen != mouseInScreen {
             isMouseInCurrentScreen = mouseInScreen
-            NSLog("isInScreen updated: \(isMouseInCurrentScreen), screen frame: \(screen.frame)")
+            NSLog("isInScreen updated: \(isMouseInCurrentScreen)")
         }
 
         // If mouse is not in current screen, ignore
@@ -333,7 +328,9 @@ struct ScreenshotOverlayView: View {
 
         if !isMouseMoved {
             isMouseMoved = true
-            NSLog("Mouse moved, isMouseMoved: \(isMouseMoved), isInScreen: \(isMouseInCurrentScreen)")
+            NSLog(
+                "Mouse moved, isMouseMoved: \(isMouseMoved), isInScreen: \(isMouseInCurrentScreen)"
+            )
         }
     }
 
@@ -348,5 +345,20 @@ struct ScreenshotOverlayView: View {
             NSEvent.removeMonitor(monitor)
         }
         monitors.removeAll()
+    }
+
+    /// Take screenshot of the screen area asynchronously
+    private func asyncTakeScreenshot(
+        of rect: CGRect,
+        in screen: NSScreen?,
+        completion: @escaping (NSImage?) -> ()
+    ) {
+        // Hide selection rectangle, avoid capturing it
+        selectedRect = .zero
+
+        // async to wait for UI update
+        DispatchQueue.main.async {
+            completion(takeScreenshot(of: rect, in: screen))
+        }
     }
 }

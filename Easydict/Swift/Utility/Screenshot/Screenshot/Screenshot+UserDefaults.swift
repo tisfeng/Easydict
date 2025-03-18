@@ -23,14 +23,14 @@ extension Screenshot {
         "easydict.screenshot.lastScreenshotRect"
     }
 
-    /// Last screen frame key
-    private var lastScreenFrameKey: String {
-        "easydict.screenshot.lastScreenFrame"
-    }
-
     /// Last screen key
     private var lastScreenKey: String {
         "easydict.screenshot.lastScreen"
+    }
+
+    /// Last screen frame key
+    private var lastScreenFrameKey: String {
+        "easydict.screenshot.lastScreenFrame"
     }
 
     /// Whether screen capture permission has been requested
@@ -59,22 +59,6 @@ extension Screenshot {
         }
     }
 
-    /// Last screen frame, persisted in UserDefaults
-//    @objc public var lastScreenFrame: CGRect {
-//        get {
-//            let defaults = UserDefaults.standard
-//            guard let frameString = defaults.string(forKey: lastScreenFrameKey) else {
-//                return .zero
-//            }
-//            return NSRectFromString(frameString)
-//        }
-//        set {
-//            let defaults = UserDefaults.standard
-//            let frameString = NSStringFromRect(newValue)
-//            defaults.set(frameString, forKey: lastScreenFrameKey)
-//        }
-//    }
-
     @objc public var lastScreen: NSScreen? {
         get {
             let defaults = UserDefaults.standard
@@ -88,6 +72,21 @@ extension Screenshot {
             let screenDescription = newValue?.deviceDescriptionString
             NSLog("lastScreen screenDescription: \(screenDescription ?? "")")
             defaults.set(screenDescription, forKey: lastScreenKey)
+        }
+    }
+
+    @objc public var lastScreenFrame: NSRect {
+        get {
+            let defaults = UserDefaults.standard
+            guard let frameString = defaults.string(forKey: lastScreenFrameKey) else {
+                return .zero
+            }
+            return NSRectFromString(frameString)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let frameString = NSStringFromRect(newValue)
+            defaults.set(frameString, forKey: lastScreenFrameKey)
         }
     }
 }
