@@ -8,7 +8,6 @@
 
 import AppKit
 import Foundation
-import QuartzCore
 
 func calculateCropRect(from selectedRect: CGRect) -> CGRect {
     guard let screen = getActiveScreen() else { return CGRect.zero }
@@ -52,17 +51,12 @@ func getActiveScreen() -> NSScreen? {
 }
 
 /// Take screenshot of the specified area in the target screen.
-/// - Parameter rect: The rect in the target screen to capture. The rect's origin is `top-left` origin.
 /// - Parameter screen: The screen to capture.
+/// - Parameter rect: The rect in the target screen to capture. The rect is `top-left` origin. If nil, capture the entire screen.
 /// - Returns: NSImage of captured screenshot or nil if failed
-func takeScreenshot(of rect: CGRect, in screen: NSScreen?) -> NSImage? {
-    NSLog("Taking screenshot of rect: \(rect)")
-
-    guard let screen else {
-        return nil
-    }
-
-    NSLog("In screen: \(screen.debugDescription)")
+func takeScreenshot(screen: NSScreen, rect: CGRect? = nil) -> NSImage? {
+    let rect = rect ?? screen.bounds
+    NSLog("Taking screenshot of rect: \(rect), screen: \(screen.debugDescription)")
 
     // Get screen's display ID
     let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber
@@ -109,11 +103,6 @@ func convertToScreenCoordinate(rect: CGRect, in screenFrame: CGRect? = nil) -> C
         height: rect.height
     )
     return globalRect
-}
-
-/// Get bounds of the rect.
-func getBounds(of rect: CGRect) -> CGRect {
-    CGRect(x: 0, y: 0, width: rect.width, height: rect.height)
 }
 
 /// Convert `bottom-left` origin rect to `top-left` origin rect
@@ -289,4 +278,9 @@ public func adjusLastScreenshotRect(
 
     NSLog("Adjusted rect (top-left): \(adjustedRect)")
     return adjustedRect.integral
+}
+
+/// Get the current mouse screen
+func getCurrentMouseScreen() -> NSScreen? {
+    NSScreen.screens.first { $0.frame.contains(NSEvent.mouseLocation) }
 }

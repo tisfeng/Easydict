@@ -89,23 +89,3 @@ extension Screenshot {
         }
     }
 }
-
-extension NSScreen {
-    /// Device description string
-    var deviceDescriptionString: String {
-        // Sort keys to ensure consistent order
-        let sortedKeys = deviceDescription.keys.sorted { $0.rawValue < $1.rawValue }
-
-        var description = ""
-        for key in sortedKeys {
-            if let value = deviceDescription[key] {
-                description += "\(key.rawValue): \(value)\n"
-            }
-        }
-        return "{\n\(description)}"
-    }
-
-    func isSameScreen(_ other: NSScreen?) -> Bool {
-        deviceDescriptionString == other?.deviceDescriptionString
-    }
-}

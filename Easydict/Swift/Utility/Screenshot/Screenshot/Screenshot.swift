@@ -45,13 +45,38 @@ class Screenshot: NSObject {
         }
 
         isTakingScreenshot = true
-
+        setupKeyDownEventMonitor()
         showOverlayWindow(completion: completion)
+    }
+
+    // MARK: Internal
+
+    var overlayWindows: [NSScreen: NSWindow] = [:]
+    var overlayViewStates: [NSScreen: ScreenshotState] = [:]
+
+    var monitors: [Any] = []
+
+    /// Finish screenshot capture and call the completion handler
+    func finishCapture(_ image: NSImage?) {
+        isTakingScreenshot = false
+
+        // Restore focus to previous application only if shouldRestorePreviousApp is true
+        if shouldRestorePreviousApp, let previousApp = previousActiveApp {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                previousApp.activate()
+            }
+        }
+
+        previousActiveApp = nil
+
+        onImageCaptured?(image)
+        hideAllOverlayWindows()
+        removeEventMonitors()
+        overlayViewStates.removeAll()
     }
 
     // MARK: Private
 
-    private var overlayWindows: [NSScreen: NSWindow] = [:]
     private var onImageCaptured: ((NSImage?) -> ())?
     private var previousActiveApp: NSRunningApplication?
 
@@ -88,12 +113,19 @@ class Screenshot: NSObject {
         window.isOpaque = false
         window.orderFront(nil)
 
-        let contentView = ScreenshotOverlayView(screen: screen, onImageCaptured: { [weak self] image in
-            self?.finishCapture(image)
-        })
+        let state = ScreenshotState(screen: screen)
+
+        // Pass the screen to the overlay view
+        let contentView = ScreenshotOverlayView(
+            state: state,
+            onImageCaptured: { [weak self] image in
+                self?.finishCapture(image)
+            }
+        )
         window.contentView = NSHostingView(rootView: contentView)
 
         overlayWindows[screen] = window
+        overlayViewStates[screen] = state
     }
 
     private func hideAllOverlayWindows() {
@@ -101,44 +133,5 @@ class Screenshot: NSObject {
             window.orderOut(nil)
         }
         overlayWindows.removeAll()
-    }
-
-    /// Finish screenshot capture and call the completion handler
-    private func finishCapture(_ image: NSImage?) {
-        isTakingScreenshot = false
-
-        onImageCaptured?(image)
-        hideAllOverlayWindows()
-
-        // Restore focus to previous application only if shouldRestorePreviousApp is true
-        if shouldRestorePreviousApp, let previousApp = previousActiveApp {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                previousApp.activate()
-            }
-        }
-
-        previousActiveApp = nil
-    }
-
-    /// Show an alert to guide the user to enable screen capture permission
-    private func showScreenCapturePermissionAlert() {
-        let alert = NSAlert()
-        alert.messageText = NSLocalizedString("need_screen_capture_permission", comment: "")
-        alert.informativeText = NSLocalizedString(
-            "request_screen_capture_access_description", comment: ""
-        )
-        alert.alertStyle = .warning
-
-        alert.addButton(withTitle: NSLocalizedString("open_system_settings", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("cancel", comment: ""))
-
-        if alert.runModal() == .alertFirstButtonReturn {
-            if let url = URL(
-                string:
-                "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"
-            ) {
-                NSWorkspace.shared.open(url)
-            }
-        }
     }
 }

@@ -5,8 +5,7 @@
 //  Created by tisfeng on 2025/3/11.
 //  Copyright © 2025 izual. All rights reserved.
 //
-import Carbon
-import ScreenCaptureKit
+
 import SwiftUI
 
 // MARK: - ScreenshotOverlayView
@@ -14,11 +13,14 @@ import SwiftUI
 struct ScreenshotOverlayView: View {
     // MARK: Lifecycle
 
-    init(screen: NSScreen, onImageCaptured: @escaping (NSImage?) -> ()) {
+    init(
+        state: ScreenshotState,
+        onImageCaptured: @escaping (NSImage?) -> ()
+    ) {
+        self.state = state
         self.onImageCaptured = onImageCaptured
-        self.screen = screen
-        let screenBounds = getBounds(of: screen.frame)
-        self._backgroundImage = State(initialValue: takeScreenshot(of: screenBounds, in: screen))
+
+        self._backgroundImage = State(initialValue: takeScreenshot(screen: state.screen))
 
         // Load last screenshot area from UserDefaults
         let lastRect = Screenshot.shared.lastScreenshotRect
@@ -27,6 +29,8 @@ struct ScreenshotOverlayView: View {
     }
 
     // MARK: Internal
+
+    @ObservedObject var state: ScreenshotState
 
     var body: some View {
         ZStack {
@@ -39,31 +43,24 @@ struct ScreenshotOverlayView: View {
             }
         }
         .ignoresSafeArea()
-        .onAppear(perform: setupMonitors)
-        .onDisappear(perform: removeMonitors)
+        .onChange(of: state.isShowingPreview) { showing in
+            if showing {
+                NSLog("Showing preview, take screenshot")
+                // Show preview 1.0s, then take screenshot
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    handleDragEnd()
+                }
+            }
+        }
     }
 
     // MARK: Private
 
-    // MARK: State Variables
-
-    @State private var selectedRect = CGRect.zero
     @State private var backgroundImage: NSImage?
-    @State private var isMouseMoved = false
-    @State private var isMouseInCurrentScreen = false
-    @State private var monitors: [Any] = [] // Single array to store all event monitors
     @State private var savedRect: CGRect
     @State private var showTip: Bool
-    @State private var isShowingPreview = false
-    @State private var previewTimer: Timer?
 
-    /// Screen frame is `bottom-left` origin.
-    private let screen: NSScreen
     private let onImageCaptured: (NSImage?) -> ()
-
-    private var hideDarkOverlay: Bool {
-        isMouseMoved && isMouseInCurrentScreen || isShowingPreview
-    }
 
     // MARK: Gestures
 
@@ -85,11 +82,10 @@ struct ScreenshotOverlayView: View {
                     .aspectRatio(contentMode: .fit)
                     .ignoresSafeArea()
 
-                // Dark mask when selecting, turn to transparent when mouse moving AND mouse is in current screen
                 Rectangle()
-                    .fill(Color.black.opacity(hideDarkOverlay ? 0 : 0.4))
+                    .fill(Color.black.opacity(state.shouldHideDarkOverlay ? 0 : 0.4))
                     .ignoresSafeArea()
-                    .animation(.easeOut, value: hideDarkOverlay)
+                    .animation(.easeInOut, value: state.shouldHideDarkOverlay)
             }
         }
     }
@@ -98,11 +94,16 @@ struct ScreenshotOverlayView: View {
     private var selectionLayer: some View {
         GeometryReader { geometry in
             ZStack {
-                if !selectedRect.isEmpty {
+                if !state.selectedRect.isEmpty {
                     selectionRectangleView
                 }
             }
             .compositingGroup()
+            .onChange(of: state.selectedRect) { rect in
+                if rect.isEmpty {
+                    NSLog("Selection rect is empty")
+                }
+            }
 
             // Gesture recognition layer
             Rectangle()
@@ -120,12 +121,11 @@ struct ScreenshotOverlayView: View {
             Rectangle()
                 .stroke(Color.white, lineWidth: 2)
                 .background(Color.black.opacity(0.1)) // Add a darker overlay for selection area
-                .frame(width: selectedRect.width, height: selectedRect.height)
+                .frame(width: state.selectedRect.width, height: state.selectedRect.height)
                 .position(
-                    x: selectedRect.midX,
-                    y: selectedRect.midY
+                    x: state.selectedRect.midX,
+                    y: state.selectedRect.midY
                 )
-                .animation(isShowingPreview ? .easeInOut : nil, value: selectedRect)
         }
     }
 
@@ -183,166 +183,47 @@ struct ScreenshotOverlayView: View {
             height: abs(adjustedLocation.y - adjustedStartLocation.y)
         )
 
-        selectedRect = CGRect(origin: origin, size: size).integral
-        isMouseMoved = true
+        state.selectedRect = CGRect(origin: origin, size: size).integral
     }
 
     /// Handle drag gesture end
     private func handleDragEnd(_ value: DragGesture.Value? = nil) {
-        isMouseMoved = true
+        let selectedRect = state.selectedRect
+        NSLog("Drag ended, selected rect: \(selectedRect)")
 
-        var rectToCapture = selectedRect
-
-        // If triggered by D key shortcut (no value), use saved area as selected rect
-        if value == nil, !savedRect.isEmpty {
-            NSLog("Using saved rect: \(savedRect)")
-
-            rectToCapture = savedRect
-            var targetScreen = Screenshot.shared.lastScreen
-
-            // If the target screen is nil, adjust rect to fit current screen
-            if targetScreen == nil {
-                targetScreen = screen
-                rectToCapture = adjusLastScreenshotRect(lastRect: savedRect, screenFrame: targetScreen!.frame)
-            }
-            showPreviewForRect(rectToCapture, in: targetScreen!)
-        } else {
-            NSLog("Selected rect: \(selectedRect)")
-
-            if rectToCapture.width > 10, rectToCapture.height > 10 {
-                asyncTakeScreenshot(of: rectToCapture, in: screen, completion: onImageCaptured)
-            } else {
-                NSLog("Selected rect is too small, ignore")
-                onImageCaptured(nil)
-            }
-        }
-    }
-
-    /// Show preview and set delayed callback
-    private func showPreviewForRect(_ rect: CGRect, in screen: NSScreen) {
-        NSLog("Show preview for rect: \(rect), screen frame: \(screen.frame)")
-
-        // Cancel previous timer
-        previewTimer?.invalidate()
-
-        // Set selection rectangle to trigger UI update
-        selectedRect = rect
-        isShowingPreview = true
-
-        // Call callback after 1.0 second
-        previewTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [self] _ in
-            if rect.width > 10, rect.height > 10 {
-                asyncTakeScreenshot(of: rect, in: screen, completion: onImageCaptured)
-            } else {
-                NSLog("Preview rect is too small, ignore")
-                onImageCaptured(nil)
-            }
-        }
-    }
-
-    // MARK: Monitor Setup and Cleanup
-
-    /// Setup all event monitors
-    private func setupMonitors() {
-        // Add mouse listener to detect mouse movement
-        if let mouseMonitor = NSEvent.addLocalMonitorForEvents(
-            matching: .mouseMoved,
-            handler: { [self] event in
-                // NSEvent.mouseLocation is `bottom-left` origin, the same as screen frame.
-                updateMouseLocation(NSEvent.mouseLocation)
-                return event
-            }
-        ) {
-            monitors.append(mouseMonitor)
-        }
-
-        // Handle escape key
-        let escapeHandler = {
-            NSLog("ESC key detected")
-            DispatchQueue.main.async { [self] in
-                onImageCaptured(nil)
-            }
-        }
-
-        // Add keyboard listener to detect D key - Only use local monitor for key events
-        if let keyboardMonitor = NSEvent.addLocalMonitorForEvents(
-            matching: .keyDown,
-            handler: { [self] event in
-                if event.keyCode == kVK_ANSI_D {
-                    NSLog("D key pressed, capturing last screenshot area")
-
-                    isMouseInCurrentScreen = screen.frame.contains(NSEvent.mouseLocation)
-                    let lastScreen = Screenshot.shared.lastScreen
-                    let isRightScreen =
-                        screen.isSameScreen(lastScreen)
-                            || (lastScreen == nil && isMouseInCurrentScreen)
-                    if !savedRect.isEmpty, isRightScreen {
-                        DispatchQueue.main.async {
-                            handleDragEnd(nil)
-                        }
-                    } else {
-                        NSLog("No previous screenshot rect available")
-                    }
-                } else if event.keyCode == kVK_Escape {
-                    escapeHandler()
-                }
-                return event
-            }
-        ) {
-            monitors.append(keyboardMonitor)
-        }
-    }
-
-    /// Update mouse location and check if it's in current screen
-    private func updateMouseLocation(_ location: NSPoint) {
-        let mouseInScreen = screen.frame.contains(location)
-
-        if isMouseInCurrentScreen != mouseInScreen {
-            isMouseInCurrentScreen = mouseInScreen
-            NSLog("isInScreen updated: \(isMouseInCurrentScreen)")
-        }
-
-        // If mouse is not in current screen, ignore
-        if !isMouseInCurrentScreen {
-            return
-        }
-
-        if !isMouseMoved {
-            isMouseMoved = true
-            NSLog(
-                "Mouse moved, isMouseMoved: \(isMouseMoved), isInScreen: \(isMouseInCurrentScreen)"
+        // Check if selection meets minimum size requirements
+        if selectedRect.width > 10, selectedRect.height > 10 {
+            asyncTakeScreenshot(
+                screen: state.screen,
+                rect: selectedRect,
+                completion: onImageCaptured
             )
+        } else {
+            NSLog("Screenshot cancelled - Selection too small (minimum: 10x10)")
+            onImageCaptured(nil)
         }
-    }
-
-    /// Remove all event monitors
-    private func removeMonitors() {
-        // Clean up timer
-        previewTimer?.invalidate()
-        previewTimer = nil
-
-        // Remove all monitors
-        for monitor in monitors {
-            NSEvent.removeMonitor(monitor)
-        }
-        monitors.removeAll()
     }
 
     /// Take screenshot of the screen area asynchronously, and save last screenshot rect.
     private func asyncTakeScreenshot(
-        of rect: CGRect,
-        in screen: NSScreen?,
+        screen: NSScreen,
+        rect: CGRect,
         completion: @escaping (NSImage?) -> ()
     ) {
-        // Hide selection rectangle, avoid capturing it
-        selectedRect = .zero
+        NSLog("Async take screenshot, screen frame: \(screen.frame), rect: \(rect)")
 
+        // Hide selection rectangle, avoid capturing it
+        state.reset()
+
+        // Save last screenshot rect
         Screenshot.shared.lastScreenshotRect = rect
         Screenshot.shared.lastScreen = screen
 
-        // async to wait for UI update
-        DispatchQueue.main.async {
-            completion(takeScreenshot(of: rect, in: screen))
+        // Async to wait for UI update
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            NSLog("Async take screenshot completion")
+            let image = takeScreenshot(screen: screen, rect: rect)
+            completion(image)
         }
     }
 }
