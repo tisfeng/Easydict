@@ -57,17 +57,14 @@ extension Screenshot {
         }
 
         // Find appropriate screen for capturing
-        guard let targetScreen = lastScreen ?? getCurrentMouseScreen() ?? NSScreen.main else {
+        guard let targetScreen = lastScreen ?? NSScreen.currentMouseScreen() ?? NSScreen.main else {
             NSLog("No valid screen found for capture")
             return
         }
 
         // Last screen may have gone offline, adjust rect to current screen
         if lastScreen == nil {
-            lastRect = adjusLastScreenshotRect(
-                lastRect: lastRect,
-                screenFrame: targetScreen.frame
-            )
+            lastRect = targetScreen.adjustedScreenshotRect(lastRect)
         }
 
         let state = overlayViewStates[targetScreen]

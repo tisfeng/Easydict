@@ -20,7 +20,7 @@ struct ScreenshotOverlayView: View {
         self.state = state
         self.onImageCaptured = onImageCaptured
 
-        self._backgroundImage = State(initialValue: takeScreenshot(screen: state.screen))
+        self._backgroundImage = State(initialValue: state.screen.takeScreenshot())
 
         // Load last screenshot area from UserDefaults
         let lastRect = Screenshot.shared.lastScreenshotRect
@@ -222,7 +222,7 @@ struct ScreenshotOverlayView: View {
         // Async to wait for UI update
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             NSLog("Async take screenshot completion")
-            let image = takeScreenshot(screen: screen, rect: rect)
+            let image = screen.takeScreenshot(rect: rect)
             completion(image)
         }
     }

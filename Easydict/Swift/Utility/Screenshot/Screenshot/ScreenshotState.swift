@@ -56,7 +56,7 @@ class ScreenshotState: ObservableObject {
     func updateHideDarkOverlay() {
         shouldHideDarkOverlay =
             isShowingPreview ||
-            isMouseMoved && screen.isSameScreen(getCurrentMouseScreen())
+            isMouseMoved && screen.isSameScreen(NSScreen.currentMouseScreen())
     }
 
     /// Show preview rect, update state
