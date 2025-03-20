@@ -38,14 +38,14 @@ class ScreenshotState: ObservableObject {
     @Published var isShowingPreview = false
 
     /// Whether the dark overlay should be hidden
-    @Published private(set) var shouldHideDarkOverlay = false
+    @Published private(set) var shouldHideDarkOverlay = true
 
     /// Reset all state variables
     func reset() {
         isMouseMoved = false
         selectedRect = .zero
         isShowingPreview = false
-        shouldHideDarkOverlay = false
+        shouldHideDarkOverlay = true
 
         removeMonitor()
     }
