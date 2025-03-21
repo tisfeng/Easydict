@@ -127,27 +127,24 @@ struct ScreenshotOverlayView: View {
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
         .background {
-            RoundedRectangle(cornerRadius: 5)
-                .fill(Color.black.opacity(0.8))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 5)
-                        .strokeBorder(Color.white.opacity(0.5), lineWidth: 1)
-                }
-        }
-        .background(
             GeometryReader { geometry in
-                Color.clear
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(Color.black.opacity(0.8))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 5)
+                            .strokeBorder(Color.white.opacity(0.5), lineWidth: 1)
+                    }
+                    // Get the tip frame
                     .onAppear {
-                        let frame = CGRect(
+                        state.tipFrame = CGRect(
                             x: state.screen.frame.minX,
                             y: state.screen.frame.minY,
                             width: geometry.size.width,
                             height: geometry.size.height
                         )
-                        state.tipFrame = frame
                     }
             }
-        )
+        }
     }
 
     // MARK: Event Handlers
