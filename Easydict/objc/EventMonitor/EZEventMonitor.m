@@ -354,6 +354,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Force get selected text when Accessibility failed.
 - (void)forceGetSelectedText:(void (^)(NSString *_Nullable))completion {
+    BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
+    MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
+
+    if (!enableForceGetSelectedText) {
+        completion(nil);
+        return;
+    }
+
     MMLogInfo(@"Use force get selected text");
 
     // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, some apps do not have copy menu item, like Billfish.
