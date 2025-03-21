@@ -771,10 +771,11 @@ static EZWindowManager *_instance;
 
          !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
          */
+        text = text.removeInvisibleChar.trim;
         if (text.length == 0) {
             text = Configuration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }
-        self.selectedText = [text trim];
+        self.selectedText = text;
 
         [self showFloatingWindowType:windowType queryText:self.selectedText];
     }];
@@ -851,7 +852,8 @@ static EZWindowManager *_instance;
         }
 
         // Just OCR image, don't show floating window.
-        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
+        self.actionType = EZActionTypeScreenshotOCR;
+        [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType];
     }];
 }
 
