@@ -352,7 +352,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     }
 }
 
-/// Force get selected text when Accessibility failed.
+/// Try to force get selected text when Accessibility failed.
 - (void)tryForceGetSelectedText:(void (^)(NSString *_Nullable))completion {
     BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
     MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
