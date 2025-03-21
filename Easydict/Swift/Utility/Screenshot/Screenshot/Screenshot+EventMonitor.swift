@@ -10,39 +10,43 @@ import Carbon
 import Foundation
 
 extension Screenshot {
-    // MARK: - Key Monitor
+    // MARK: - Event Monitor
 
     /// Setup key event monitors for ESC key and D key
-    func setupKeyDownEventMonitor() {
-        if let keyboardMonitor = NSEvent.addLocalMonitorForEvents(
-            matching: .keyDown,
-            handler: { [weak self] event in
-                guard let self = self else { return event }
+    func setupEventMonitor() {
+        // Monitor both key down and right mouse down events
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .rightMouseDown]) { [weak self] event in
+            guard let self = self else { return event }
 
+            switch event.type {
+            case .keyDown:
+                // Handle keyboard events
                 if event.keyCode == kVK_Escape {
                     NSLog("ESC key detected locally, canceling screenshot")
                     finishCapture(nil)
-                    return nil
                 } else if event.keyCode == kVK_ANSI_D {
                     NSLog("D key detected locally, capturing last screenshot rect")
                     captureLastScreenshotRect()
-                    return nil
                 }
 
-                return event
+            case .rightMouseDown:
+                // Handle right mouse click
+                NSLog("Right mouse click detected, canceling screenshot")
+                finishCapture(nil)
+
+            default:
+                break
             }
-        ) {
-            monitors.append(keyboardMonitor)
+
+            return nil // Consume the event, avoid beep sound
         }
     }
 
     // MARK: Private
 
-    func removeEventMonitors() {
-        for monitor in monitors {
-            NSEvent.removeMonitor(monitor)
-        }
-        monitors.removeAll()
+    func removeEventMonitor() {
+        NSEvent.removeMonitor(eventMonitor as Any)
+        eventMonitor = nil
     }
 
     // MARK: - Screenshot Rect Preview

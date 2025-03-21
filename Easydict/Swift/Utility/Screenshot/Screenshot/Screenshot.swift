@@ -45,7 +45,7 @@ class Screenshot: NSObject {
         }
 
         isTakingScreenshot = true
-        setupKeyDownEventMonitor()
+        setupEventMonitor()
         showOverlayWindow(completion: completion)
     }
 
@@ -54,7 +54,7 @@ class Screenshot: NSObject {
     var overlayWindows: [NSScreen: NSWindow] = [:]
     var overlayViewStates: [NSScreen: ScreenshotState] = [:]
 
-    var monitors: [Any] = []
+    var eventMonitor: Any?
 
     /// Finish screenshot capture and call the completion handler
     func finishCapture(_ image: NSImage?) {
@@ -71,7 +71,7 @@ class Screenshot: NSObject {
 
         onImageCaptured?(image)
         hideAllOverlayWindows()
-        removeEventMonitors()
+        removeEventMonitor()
         overlayViewStates.removeAll()
     }
 

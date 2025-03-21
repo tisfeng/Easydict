@@ -80,26 +80,23 @@ class ScreenshotState: ObservableObject {
     /// Setup local mouse monitor to track mouse movement
     /// Since SwiftUI `onHover` is not reliable, we need to track mouse movement manually
     private func setupMouseMovedMonitor() {
-        mouseMovedMonitor = NSEvent.addLocalMonitorForEvents(
-            matching: .mouseMoved,
-            handler: { [self] event in
-                isMouseMoved = true
-                updateHideDarkOverlay()
+        mouseMovedMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved) { [self] event in
+            isMouseMoved = true
+            updateHideDarkOverlay()
 
-                let expandedValue = 20.0
-                let tipLayerExpandedFrame = CGRect(
-                    origin: tipFrame.origin,
-                    size: .init(
-                        width: tipFrame.width + expandedValue,
-                        height: tipFrame.height + expandedValue
-                    )
+            let expandedValue = 20.0
+            let tipLayerExpandedFrame = CGRect(
+                origin: tipFrame.origin,
+                size: .init(
+                    width: tipFrame.width + expandedValue,
+                    height: tipFrame.height + expandedValue
                 )
-                isTipVisible = !tipLayerExpandedFrame.contains(NSEvent.mouseLocation)
+            )
+            isTipVisible = !tipLayerExpandedFrame.contains(NSEvent.mouseLocation)
 
-                // Pass the event to the next screen monitor
-                return event
-            }
-        )
+            // Pass the event to the next screen monitor
+            return event
+        }
     }
 
     private func removeMonitor() {

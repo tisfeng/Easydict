@@ -115,12 +115,12 @@ struct ScreenshotOverlayView: View {
     /// Tip layer at bottom-left corner
     private var tipLayer: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("screenshot.tip.click_d_to_capture_last_area")
+            Text("screenshot.tip.capture_last_area_desc")
                 .foregroundStyle(.white)
 
             Divider()
 
-            Text("screenshot.tip.escape_to_cancel_capture")
+            Text("screenshot.tip.cancel_capture_desc")
                 .foregroundStyle(.white)
         }
         .fixedSize(horizontal: true, vertical: false)

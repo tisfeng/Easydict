@@ -3830,63 +3830,63 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "根目錄"
+            "value" : "詞根"
           }
         }
       }
     },
-    "screenshot.tip.click_d_to_capture_last_area" : {
+    "screenshot.tip.capture_last_area_desc" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click D to capture the last screenshot area"
+            "value" : "Click D to select the last screenshot area"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klikni D pre zachytenie poslednej oblasti snímky"
+            "value" : "Kliknite D pre výber poslednej oblasti snímky"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "单击 D 选择上一次截图区域"
+            "value" : "单击 D 键选择上一次截图区域"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按 D 鍵選擇上次截圖區域"
+            "value" : "單擊 D 鍵選擇上一次截圖區域"
           }
         }
       }
     },
-    "screenshot.tip.escape_to_cancel_capture" : {
+    "screenshot.tip.cancel_capture_desc" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Press Esc to cancel capture"
+            "value" : "Click Esc or right-click to cancel capture"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stlač Esc pre zrušenie snímania"
+            "value" : "Kliknite Esc alebo pravým tlačidlom myši pre zrušenie snímky"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按 Esc 取消截图"
+            "value" : "单击 Esc 或右键取消截图"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按 Esc 鍵取消截圖"
+            "value" : "單擊 Esc 或右鍵取消截圖"
           }
         }
       }
