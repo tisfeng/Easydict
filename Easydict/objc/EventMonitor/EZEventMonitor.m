@@ -316,7 +316,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                     if (error) {
                         // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
                         MMLogError(@"Failed to get selected text from browser: %@", error);
-                        [self forceGetSelectedText:completion];
+                        [self tryForceGetSelectedText:completion];
                         return;
                     }
 
@@ -328,7 +328,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
                     MMLogInfo(@"AppleScript get selected text is empty, try to use force get selected text for browser");
 
-                    [self forceGetSelectedText:completion];
+                    [self tryForceGetSelectedText:completion];
                 });
             }];
             return;
@@ -346,14 +346,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Check error type to use menu action copy or simulated key to get selected text.
 - (void)handleForceGetSelectedTextOnAXError:(AXError)axError completion:(void (^)(NSString *_Nullable))completion {
     if ([self shouldForceGetSelectedTextWithAXError:axError]) {
-        [self forceGetSelectedText:completion];
+        [self tryForceGetSelectedText:completion];
     } else {
         completion(nil);
     }
 }
 
 /// Force get selected text when Accessibility failed.
-- (void)forceGetSelectedText:(void (^)(NSString *_Nullable))completion {
+- (void)tryForceGetSelectedText:(void (^)(NSString *_Nullable))completion {
     BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
     MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
 
