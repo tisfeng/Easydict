@@ -21,24 +21,16 @@ struct ScreenshotOverlayView: View {
         self.onImageCaptured = onImageCaptured
 
         self._backgroundImage = State(initialValue: state.screen.takeScreenshot())
-
-        // Load last screenshot area from UserDefaults
-        let lastRect = Screenshot.shared.lastScreenshotRect
-        self._savedRect = State(initialValue: lastRect)
-        self._showTip = State(initialValue: !lastRect.isEmpty)
     }
 
     // MARK: Internal
 
-    @ObservedObject var state: ScreenshotState
-
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottomLeading) {
             backgroundLayer
             selectionLayer
 
-            // Show last screenshot area tip if available
-            if showTip {
+            if state.isTipVisible {
                 tipLayer
             }
         }
@@ -57,8 +49,7 @@ struct ScreenshotOverlayView: View {
     // MARK: Private
 
     @State private var backgroundImage: NSImage?
-    @State private var savedRect: CGRect
-    @State private var showTip: Bool
+    @ObservedObject private var state: ScreenshotState
 
     private let onImageCaptured: (NSImage?) -> ()
 
@@ -80,11 +71,9 @@ struct ScreenshotOverlayView: View {
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .ignoresSafeArea()
 
                 Rectangle()
-                    .fill(Color.black.opacity(state.shouldHideDarkOverlay ? 0 : 0.4))
-                    .ignoresSafeArea()
+                    .fill(Color.black.opacity(state.shouldHideDarkOverlay ? 0 : 0.3))
                     .animation(.easeInOut, value: state.shouldHideDarkOverlay)
             }
         }
@@ -96,12 +85,6 @@ struct ScreenshotOverlayView: View {
             ZStack {
                 if !state.selectedRect.isEmpty {
                     selectionRectangleView
-                }
-            }
-            .compositingGroup()
-            .onChange(of: state.selectedRect) { rect in
-                if rect.isEmpty {
-                    NSLog("Selection rect is empty")
                 }
             }
 
@@ -131,33 +114,40 @@ struct ScreenshotOverlayView: View {
 
     /// Tip layer at bottom-left corner
     private var tipLayer: some View {
-        VStack {
-            Spacer()
-            HStack {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("screenshot.tip.click_d_to_capture_last_area")
-                        .foregroundStyle(.white)
+        VStack(alignment: .leading, spacing: 8) {
+            Text("screenshot.tip.click_d_to_capture_last_area")
+                .foregroundStyle(.white)
 
-                    Divider()
+            Divider()
 
-                    Text("screenshot.tip.escape_to_cancel_capture")
-                        .foregroundStyle(.white)
-                }
-                .fixedSize(horizontal: true, vertical: false)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 16)
-                .background {
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.black.opacity(0.8))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5)
-                                .strokeBorder(Color.white.opacity(0.5), lineWidth: 1)
-                        }
-                }
-
-                Spacer()
-            }
+            Text("screenshot.tip.escape_to_cancel_capture")
+                .foregroundStyle(.white)
         }
+        .fixedSize(horizontal: true, vertical: false)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .background {
+            RoundedRectangle(cornerRadius: 5)
+                .fill(Color.black.opacity(0.8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 5)
+                        .strokeBorder(Color.white.opacity(0.5), lineWidth: 1)
+                }
+        }
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        let frame = CGRect(
+                            x: state.screen.frame.minX,
+                            y: state.screen.frame.minY,
+                            width: geometry.size.width,
+                            height: geometry.size.height
+                        )
+                        state.tipFrame = frame
+                    }
+            }
+        )
     }
 
     // MARK: Event Handlers
@@ -184,10 +174,13 @@ struct ScreenshotOverlayView: View {
         )
 
         state.selectedRect = CGRect(origin: origin, size: size).integral
+        state.isTipVisible = false
     }
 
     /// Handle drag gesture end
     private func handleDragEnd(_ value: DragGesture.Value? = nil) {
+        state.isTipVisible = false
+
         let selectedRect = state.selectedRect
         NSLog("Drag ended, selected rect: \(selectedRect)")
 
@@ -221,7 +214,6 @@ struct ScreenshotOverlayView: View {
 
         // Async to wait for UI update
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            NSLog("Async take screenshot completion")
             let image = screen.takeScreenshot(rect: rect)
             completion(image)
         }

@@ -15,6 +15,7 @@ class ScreenshotState: ObservableObject {
 
     init(screen: NSScreen) {
         self.screen = screen
+        self.isTipVisible = !Screenshot.shared.lastScreenshotRect.isEmpty
 
         updateHideDarkOverlay()
         setupMouseMovedMonitor()
@@ -40,6 +41,10 @@ class ScreenshotState: ObservableObject {
     /// Whether the dark overlay should be hidden
     @Published private(set) var shouldHideDarkOverlay = true
 
+    @Published var isTipVisible = false
+
+    var tipFrame: CGRect = .zero
+
     /// Reset all state variables
     func reset() {
         isMouseMoved = false
@@ -55,14 +60,14 @@ class ScreenshotState: ObservableObject {
     /// Update the state to hide the dark overlay, based on the current screen mouse is moved or is showing preview.
     func updateHideDarkOverlay() {
         shouldHideDarkOverlay =
-            isShowingPreview ||
-            isMouseMoved && screen.isSameScreen(NSScreen.currentMouseScreen())
+            isShowingPreview || isMouseMoved && screen.isSameScreen(NSScreen.currentMouseScreen())
     }
 
     /// Show preview rect, update state
     func showPreview(rect: CGRect) {
         isShowingPreview = true
         selectedRect = rect
+        isTipVisible = false
         updateHideDarkOverlay()
     }
 
@@ -73,13 +78,26 @@ class ScreenshotState: ObservableObject {
     // MARK: - Mouse moved event monitoring
 
     /// Setup local mouse monitor to track mouse movement
+    /// Since SwiftUI `onHover` is not reliable, we need to track mouse movement manually
     private func setupMouseMovedMonitor() {
         mouseMovedMonitor = NSEvent.addLocalMonitorForEvents(
             matching: .mouseMoved,
             handler: { [self] event in
                 isMouseMoved = true
                 updateHideDarkOverlay()
-                return event // Pass the event to the next screen monitor
+
+                let expandedValue = 20.0
+                let tipLayerExpandedFrame = CGRect(
+                    origin: tipFrame.origin,
+                    size: .init(
+                        width: tipFrame.width + expandedValue,
+                        height: tipFrame.height + expandedValue
+                    )
+                )
+                isTipVisible = !tipLayerExpandedFrame.contains(NSEvent.mouseLocation)
+
+                // Pass the event to the next screen monitor
+                return event
             }
         )
     }
