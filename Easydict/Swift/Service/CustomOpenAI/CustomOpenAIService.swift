@@ -42,7 +42,7 @@ class CustomOpenAIService: BaseOpenAIService {
     override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
-            showNameSection: true
+            showCustomNameSection: true
         )
     }
 }

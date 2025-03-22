@@ -10,7 +10,7 @@ import Foundation
 import RegexBuilder
 
 extension StreamService {
-    /// Get final result text, remove redundant content, like "</s"> and qoutes.
+    /// Get final result text, remove redundant content, like tag and qoutes.
     func getFinalResultText(_ text: String) -> String {
         var resultText = text.trim()
 

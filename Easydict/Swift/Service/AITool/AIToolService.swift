@@ -16,7 +16,7 @@ class AIToolService: BuiltInAIService {
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
-            showNameSection: false,
+            showCustomNameSection: false,
             showAPIKeySection: false,
             showEndpointSection: false,
             showSupportedModelsSection: false,

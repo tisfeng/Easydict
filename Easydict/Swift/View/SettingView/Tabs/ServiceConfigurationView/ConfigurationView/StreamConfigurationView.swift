@@ -18,7 +18,7 @@ struct StreamConfigurationView: View {
 
     init(
         service: StreamService,
-        showNameSection: Bool = false,
+        showCustomNameSection: Bool = false,
         showAPIKeySection: Bool = true,
         showEndpointSection: Bool = true,
         showSupportedModelsSection: Bool = true,
@@ -32,7 +32,7 @@ struct StreamConfigurationView: View {
     ) {
         self.service = service
 
-        self.showNameSection = showNameSection
+        self.showCustomNameSection = showCustomNameSection
         self.showAPIKeySection = showAPIKeySection
         self.showEndpointSection = showEndpointSection
         self.showSupportedModelsSection = showSupportedModelsSection
@@ -58,7 +58,7 @@ struct StreamConfigurationView: View {
 
     let service: StreamService
 
-    let showNameSection: Bool
+    let showCustomNameSection: Bool
     let showAPIKeySection: Bool
     let showEndpointSection: Bool
     let showSupportedModelsSection: Bool
@@ -80,7 +80,7 @@ struct StreamConfigurationView: View {
             service: service,
             observeKeys: service.observeKeys
         ) {
-            if showNameSection {
+            if showCustomNameSection {
                 InputCell(
                     textFieldTitleKey: "service.configuration.custom_openai.name.title",
                     key: service.nameKey,
