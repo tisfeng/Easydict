@@ -43,7 +43,7 @@ public final class GeminiService: StreamService {
     }
 
     override var defaultModel: String {
-        GeminiModel.gemini_1_5_pro.rawValue
+        GeminiModel.gemini_2_0_flash.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -191,14 +191,15 @@ public final class GeminiService: StreamService {
 
 // swiftlint:disable identifier_name
 enum GeminiModel: String, CaseIterable {
-    // Docs: https://ai.google.dev/gemini-api/docs/models/gemini
+    // Docs: https://ai.google.dev/gemini-api/docs/models
 
     // RPM: Requests per minute, TPM: Tokens per minute
     // RPD: Requests per day, TPD: Tokens per day
-    case gemini_1_5_flash = "gemini-1.5-flash" // Free 15 RPM/100million TPM, 1500 RPD/ n/a TPD  (1048k context length)
-    case gemini_1_5_pro = "gemini-1.5-pro" // Free 2 RPM/32,000 TPM, 50 RPD/46,080,000 TPD (1048k context length)
-    case gemini_1_5_pro_exp_0801 = "gemini-1.5-pro-exp-0801" // Experimental
-    case gemini_2_0_flash_exp = "gemini-2.0-flash-exp" // Experimental
+    case gemini_2_0_flash = "gemini-2.0-flash" // Free 15 RPM, 1,000,000 TPM, 1500 RPD
+    case gemini_2_0_flash_lite = "gemini-2.0-flash-lite" // Free 30 RPM, 1,000,000 TPM, 1500 RPD
+    case gemini_2_0_flash_exp = "gemini-2.0-flash-exp" // Exp 10 RPM, 1,000,000 TPM, 1500 RPD
+    case gemini_2_0_pro_exp = "gemini-2.0-pro-exp" // Exp 2 RPM, 1,000,000 TPM, 50 RPD
+    case gemini_1_5_flash = "gemini-1.5-flash" // Free 15 RPM, 1,000,000 TPM, 1500 RPD
 }
 
 // swiftlint:enable identifier_name
