@@ -23,7 +23,7 @@ struct StreamConfigurationView: View {
         showEndpointSection: Bool = true,
         showSupportedModelsSection: Bool = true,
         showUsedModelSection: Bool = true,
-        showCustomPromptSection: Bool = false,
+        showCustomPromptSection: Bool = true,
         showTranslationToggle: Bool = true,
         showSentenceToggle: Bool = true,
         showDictionaryToggle: Bool = true,
