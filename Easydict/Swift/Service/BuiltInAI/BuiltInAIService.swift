@@ -43,8 +43,8 @@ class BuiltInAIService: BaseOpenAIService {
 
     override var defaultModels: [String] {
         [
-            // Mistral free models https://docs.mistral.ai/getting-started/models/models_overview/#free-models
-            "mistral-small-latest", // 32k, 1 RPS, 500,000 TPM,  [≈ Llama 3.3 70B or Qwen 32B]
+            // zhipu free model https://bigmodel.cn/dev/howuse/model
+            "glm-4-flash", // glm-4-flash, 128k context, 4k output, 200 QoS | THUDM/glm-4-9b-chat(SiliconFlow)
 
             // Groq free models https://console.groq.com/docs/models
             "gemma-2-9b", // gemma2-9b-it, 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD
@@ -54,9 +54,6 @@ class BuiltInAIService: BaseOpenAIService {
 
             // Google free models https://ai.google.dev/gemini-api/docs/models/gemini#gemini-2.0-flash-lite
             "gemini-2.0-flash-lite", // 30 RPM, 1,500 RPD, 1,000,000 TPM
-
-            // zhipu free model https://bigmodel.cn/dev/howuse/model
-            "glm-4-flash", // glm-4-flash, 128k context, 4k output, 200 QoS | THUDM/glm-4-9b-chat(SiliconFlow)
         ]
     }
 
