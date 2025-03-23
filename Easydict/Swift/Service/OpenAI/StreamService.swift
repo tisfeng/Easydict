@@ -276,31 +276,27 @@ public class StreamService: QueryService {
         fatalError(mustOverride)
     }
 
+    /// Base on chat query, convert prompt dict to LLM service prompt model.
+    /// If enableCustomPrompt is true, we will use custom prompt, otherwise use system prompt.
     func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
-        switch chatQuery.queryType {
-        case .dictionary:
-            dictMessages(chatQuery)
-        case .sentence:
-            sentenceMessages(chatQuery)
-        default:
-            translationMessages(chatQuery)
+        if enableCustomPrompt {
+            var chatMessages: [ChatMessage] = []
+            let systemPrompt = replaceCustomPromptWithVariable(systemPrompt)
+            var userPrompt = replaceCustomPromptWithVariable(userPrompt)
+
+            if !systemPrompt.isEmpty {
+                chatMessages.append(.init(role: .system, content: systemPrompt))
+            }
+
+            // If user prompt is empty, use query text as user prompt
+            if userPrompt.isEmpty {
+                userPrompt = queryModel.queryText
+            }
+            chatMessages.append(.init(role: .user, content: userPrompt))
+
+            return chatMessages
         }
-    }
-
-    func getFinalResultText(_ text: String) -> String {
-        var resultText = text.trim()
-
-        // Remove last </s>, fix Groq model mixtral-8x7b-32768
-        let stopFlag = "</s>"
-        if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
-            resultText = String(resultText.dropLast(stopFlag.count)).trim()
-        }
-
-        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes().trim()
-
-        return resultText
+        return builtInChatMessageDicts(chatQuery)
     }
 
     /// Get query type by text and from && to language.

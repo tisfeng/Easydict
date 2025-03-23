@@ -32,7 +32,8 @@ public final class GeminiService: StreamService {
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,
-            showEndpointSection: false
+            showEndpointSection: false,
+            showCustomPromptSection: true
         )
     }
 

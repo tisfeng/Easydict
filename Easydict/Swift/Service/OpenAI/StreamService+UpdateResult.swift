@@ -10,6 +10,23 @@ import Foundation
 import RegexBuilder
 
 extension StreamService {
+    /// Get final result text, remove redundant content, like tag and qoutes.
+    func getFinalResultText(_ text: String) -> String {
+        var resultText = text.trim()
+
+        // Remove last </s>, fix Groq model mixtral-8x7b-32768
+        let stopFlag = "</s>"
+        if !queryModel.queryText.hasSuffix(stopFlag), resultText.hasSuffix(stopFlag) {
+            resultText = String(resultText.dropLast(stopFlag.count)).trim()
+        }
+
+        // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
+        let nsText = resultText as NSString
+        resultText = nsText.tryToRemoveQuotes().trim()
+
+        return resultText
+    }
+
     /// Throttle update result text, avoid update UI too frequently.
     func throttleUpdateResultText(
         _ textStream: AsyncThrowingStream<String, Error>,
