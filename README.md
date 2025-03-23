@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepSeek](https://www.deepseek.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,7 +42,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI，Gemini，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
+- [x] 支持有道词典，OpenAI，Gemini，DeepSeek，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
@@ -74,17 +74,10 @@
   - [各个服务支持的语言](#各个服务支持的语言)
   - [🍎 苹果系统词典](#-苹果系统词典)
   - [OpenAI 翻译](#openai-翻译)
-    - [配置个人的 APIKey](#配置个人的-apikey)
     - [OpenAI 查询模式](#openai-查询模式)
-    - [OpenAI 自定义参数](#openai-自定义参数)
-  - [自定义 OpenAI 翻译](#自定义-openai-翻译)
   - [内置 AI 翻译](#内置-ai-翻译)
-    - [DashScope](#dashscope)
-    - [Groq](#groq)
-    - [Google Gemini](#google-gemini)
   - [Gemini 翻译](#gemini-翻译)
   - [DeepL 翻译](#deepl-翻译)
-    - [配置 AuthKey](#配置-authkey)
     - [自定义 DeepL 接口地址](#自定义-deepl-接口地址)
     - [配置 API 调用方式](#配置-api-调用方式)
   - [腾讯翻译](#腾讯翻译)
@@ -343,22 +336,6 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 ![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
 
 
-#### 配置个人的 APIKey
-
-```bash
-easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
-```
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
-</div>
-
-查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
-
-```bash
-easydict://readValueOfKey?EZOpenAIAPIKey
-```
-
 #### OpenAI 查询模式
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
@@ -369,85 +346,17 @@ easydict://readValueOfKey?EZOpenAIAPIKey
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
 </table>
 
-考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后，OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
-
-```bash
-easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
-```
-
-```bash
-// 关闭查单词
-easydict://writeKeyValue?EZOpenAIDictionaryKey=0
-
-// 关闭句子分析
-easydict://writeKeyValue?EZOpenAISentenceKey=0
-```
 温馨提示：如果你只是偶尔不希望分析句子，可以不用关闭句子类型，只需要在【句子】后面添加一个波浪符～，这样就会变成翻译类型了。
 
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
-#### OpenAI 自定义参数
-
-设置自定义域名和模型
-
-```bash
-// 设置接口的请求地址，例如 https://api.openai.com/v1/chat/completions
-easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
-
-// 设置使用模型，例如 gpt-3.5-turbo
-easydict://writeKeyValue?EZOpenAIModelKey=xxx
-
-// 设置可使用模型列表，例如 gpt-3.5-turbo, gpt-4-turbo
-easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
-```
-
-由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
-
-### 自定义 OpenAI 翻译
-
-支持的配置项和 OpenAI 一样，只要将 OpenA 换成 CustomOpenAI 即可。
-
-```bash
-// 设置 API key
-easydict://writeKeyValue?EZCustomOpenAIAPIKey=sk-xxx
-
-// 设置接口的请求地址，例如 https://api.openai.com/v1/chat/completions
-easydict://writeKeyValue?EZCustomOpenAIEndPointKey=xxx
-
-// 设置使用模型，例如 gpt-3.5-turbo
-easydict://writeKeyValue?EZCustomOpenAIModelKey=xxx
-
-// 设置服务查询模式，0 默认，1 始终关闭，2 始终开启
-easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
-```
-
 ### 内置 AI 翻译
 
-目前部分 LLM 服务厂商提供有限制的免费 AI 模型，例如 阿里的灵积模型服务 [DashScope](https://dashscope.console.aliyun.com/)，[Groq](https://console.groq.com)，[Google Gemini](https://aistudio.google.com/app/apikey) 等。
+目前部分 LLM 服务厂商提供有限制的免费 AI 模型，例如 [Groq](https://console.groq.com)，[Google Gemini](https://aistudio.google.com/app/apikey) 等。
 
-为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务，支持以下服务模型：
+为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务。
 
-#### [DashScope](https://dashscope.console.aliyun.com/)
-
-> 通义千问开源系列，开通 DashScope 即获赠总计 1,000,000 tokens
-> qwen1.5-32b-chat 模型目前限时免费开放中
-
-- qwen1.5-32b-chat
-- qwen-turbo
-- baichuan2-13b-chat-v1
-- deepseek-7b-chat
-- internlm-7b-chat
-
-#### [Groq](https://console.groq.com)
-
-- llama3-70b-8192
-- mixtral-8x7b-32768
-
-#### [Google Gemini](https://aistudio.google.com/app/apikey)
-
-- gemini-pro
-
-但请注意，上面这些内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [one-api](https://github.com/songquanpeng/one-api) 搭建自己的大模型服务。
+但请注意，内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [one-api](https://github.com/songquanpeng/one-api) 搭建自己的大模型服务。
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
 
@@ -455,9 +364,6 @@ easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
 
 [Gemini 翻译](https://gemini.google.com/) 需要 API key，可在官网[控制台](https://makersuite.google.com/app/apikey)免费获取。
 
-```bash
-easydict://writeKeyValue?EZGeminiAPIKey=xxx
-```
 
 ### DeepL 翻译
 
@@ -468,61 +374,27 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 > [!TIP]
 > 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
-#### 配置 AuthKey
-
-在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 Enter
-
-```bash
-easydict://writeKeyValue?EZDeepLAuthKey=xxx
-```
-
 #### 自定义 DeepL 接口地址
 
 如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
-
-这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 `https://api-free.deepl.com/v2/translate`，如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
 
 使用自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
 
 Easydict 支持 [DeepLX](https://github.com/OwO-Network/DeepLX) 接口，详情请看 [#464](https://github.com/tisfeng/Easydict/issues/464)。
 
-```bash
-easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
-```
-
 #### 配置 API 调用方式
 
 1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey（如果有）
 
-```bash
-easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
-```
-
 2. 优先使用个人的 AuthKey，失败时使用网页版 API。若高频率使用 DeepL，建议使用这种方式，能减少一次失败的请求，提高响应速度。
 
-```bash
-easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
-```
-
 3. 只使用个人的 AuthKey
-
-```bash
-easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
-```
 
 ### 腾讯翻译
 
 [腾讯翻译](https://fanyi.qq.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
 
 建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
-
-```bash
-// xxx 腾讯翻译的 SecretId
-easydict://writeKeyValue?EZTencentSecretId=xxx
-
-// xxx 腾讯翻译的 SecretKey
-easydict://writeKeyValue?EZTencentSecretKey=xxx
-```
 
 ### Bing 翻译
 
@@ -534,25 +406,16 @@ easydict://writeKeyValue?EZTencentSecretKey=xxx
 cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + result.value)));
 ```
 
-最后将 cookie 使用命令写入 Easydict
+最后将 cookie 填写到 Easydict
 
-```bash
-// xxx 是前面获取的 cookie
-easydict://writeKeyValue?EZBingCookieKey=xxx
-```
 > [!NOTE]
 > Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
 
 ### 小牛翻译
-
+    
 [小牛翻译](https://niutrans.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
 
 建议使用自己的 API key，每个注册用户小牛翻译每日赠送 20 万字符流量。
-
-```bash
-// xxx 小牛翻译的 APIKey
-easydict://writeKeyValue?EZNiuTransAPIKey=xxx
-```
 
 ### 彩云小译
 
@@ -560,21 +423,11 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 
 建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度。
 
-```bash
-// xxx 彩云小译的 Token
-easydict://writeKeyValue?EZCaiyunToken=xxx
-```
-
 ### 阿里翻译
 
 [阿里翻译](https://translate.alibaba.com/) 虽然目前支持网页版接口，但这个接口有一定限制，不保证一直能用。
 
 建议使用自己的 API key，阿里翻译每月免费额度一百万字符。
-
-```bash
-easydict://writeKeyValue?EZAliAccessKeyId=xxx
-easydict://writeKeyValue?EZAliAccessKeySecret=xxx
-```
 
 ## 智能查询模式
 
@@ -666,7 +519,7 @@ end tell
 
 ### 通用
 
-![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
+![](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/5IacMJ.png)
 
 ### 服务
 
@@ -674,9 +527,7 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
 - 迷你窗口：鼠标自动划词时显示。
 - 侧悬浮窗口：快捷键划词和截图翻译时显示。
-- 主窗口：默认关闭，可在设置中开启，程序启动时显示。（稍后会增强主窗口功能）
-
-![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
+- 主窗口：默认关闭，可在设置中开启，程序启动时显示。
 
 ## 应用内快捷键
 

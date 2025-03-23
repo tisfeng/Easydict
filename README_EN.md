@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/) and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/) and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,7 +41,7 @@
 - [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
 - [x] Support [🍎 Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
-- [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali and Volcano Translate.
+- [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali and Volcano Translate.
 - [x] Support for 48 languages.
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
@@ -73,17 +73,10 @@ We plan to refactor the project with Swift. If you are interested in this open s
   - [Supported languages](#supported-languages)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI Translate](#openai-translate)
-    - [Configure Personal APIKey](#configure-personal-apikey)
     - [OpenAI Query Mode](#openai-query-mode)
-    - [OpenAI Custom Settings](#openai-custom-settings)
-  - [Custom OpenAI Translate](#custom-openai-translate)
   - [Built-In AI Translate](#built-in-ai-translate)
-    - [DashScope](#dashscope)
-    - [Groq](#groq)
-    - [Google Gemini](#google-gemini)
   - [Gemini Translate](#gemini-translate)
   - [DeepL Translate](#deepl-translate)
-    - [Configure AuthKey](#configure-authkey)
     - [Configure API endpoint](#configure-api-endpoint)
     - [Configure API call method](#configure-api-call-method)
   - [Tencent Translate](#tencent-translate)
@@ -339,22 +332,6 @@ For example, [one-api](https://github.com/songquanpeng/one-api), one-api is a go
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
 
-#### Configure Personal APIKey
-
-```bash
-easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
-```
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
-</div>
-
-Lookup for APIKey (similar to other keys), if the query succeeds, the result will be written to the clipboard.
-
-```bash
-easydict://readValueOfKey?EZOpenAIAPIKey
-```
-
 #### OpenAI Query Mode
 
 Currently, OpenAI translation supports three query modes: word lookup, sentence translation, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
@@ -365,92 +342,24 @@ Currently, OpenAI translation supports three query modes: word lookup, sentence 
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
 </table>
 
-Considering the token cost associated with OpenAI, a default 'Close' option has been implemented. After executing the following command, OpenAI will automatically stop the queries by default, and it will only be queried when the user manually clicks the 'Expand' button.
-
-```bash
-easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
-```
-
-```bash
-// Disable word lookup
-easydict://writeKeyValue?EZOpenAIDictionaryKey=0
-
-// Disable sentence analysis
-easydict://writeKeyValue?EZOpenAISentenceKey=0
-```
 A quick tip: If you only want to exclude occasional sentence analysis without turning off the Sentence mode, simply append a tilde (~) after `[Sentence]`. This will convert it into the Translation mode.
 
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
-#### OpenAI Custom Settings
-
-Support custom domains and models
-
-```bash
-// set custom API URL, https://api.openai.com/v1/chat/completions
-easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
-
-// set default model, gpt-3.5-turbo
-easydict://writeKeyValue?EZOpenAIModelKey=xxx
-
-// set available modes, gpt-3.5-turbo, gpt-4-turbo
-easydict://writeKeyValue?EZOpenAIAvailableModelsKey=xxx
-```
-
-Since the official OpenAI interface has restrictions on user IPs, if you need a reverse proxy, you can refer to this project [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
-
-### Custom OpenAI Translate
-
-The supported configuration items are the same as OpenAI, just replace OpenA with CustomOpenAI.
-
-```bash
-easydict://writeKeyValue?EZCustomOpenAIAPIKey=sk-xxx
-
-easydict://writeKeyValue?EZCustomOpenAIEndPointKey=xxx
-
-easydict://writeKeyValue?EZCustomOpenAIModelKey=xxx
-
-easydict://writeKeyValue?EZCustomOpenAIServiceUsageStatusKey=xxx
-```
-
 ### Built-In AI Translate
 
-Currently, some LLM service vendors provide free AI models with restrictions, such as Ali's Lingjian modeling service [DashScope](https://dashscope.console.aliyun.com/), [Groq](https://console.groq.com), [Google Gemini](https://aistudio.google.com/app/apikey), and so on.
+Currently, some LLM service vendors provide free AI models with restrictions, such as [Groq](https://console.groq.com), [Google Gemini](https://aistudio.google.com/app/apikey), and so on.
 
-To make it easier for new users to get a taste of using these big model AI translations, we have added a built-in AI translation service that supports the following service models:
+To make it easier for new users to get a taste of using these big model AI translations, we have added a built-in AI translation service, which can be used directly without the need to configure the API key.
 
-#### [DashScope](https://dashscope.console.aliyun.com/)
-
-> Tongyi Thousand Questions open source series, open DashScope and get a total of 1,000,000 tokens!
-> The qwen1.5-32b-chat model is currently available for free for a limited time.
-
-- qwen1.5-32b-chat
-- qwen-turbo
-- baichuan2-13b-chat-v1
-- deepseek-7b-chat
-- internlm-7b-chat
-
-#### [Groq](https://console.groq.com)
-
-- llama3-70b-8192
-- mixtral-8x7b-32768
-
-#### [Google Gemini](https://aistudio.google.com/app/apikey)
-
-- gemini-pro
-
-However, please note that the above built-in models have some limitations (mainly on the free amount), we do not guarantee that they can be used stably all the time, and we recommend users to use [one-api](https://github.com/songquanpeng/one-api) to build their own big model service.
+However, please note that the built-in models have some limitations (mainly on the free amount), we do not guarantee that they can be used stably all the time, and we recommend users to use [one-api](https://github.com/songquanpeng/one-api) to build their own big model service.
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
 
 ### Gemini Translate ##
 
 [Gemini Translation](https://gemini.google.com/) requires an API key, which can be obtained for free on the official website [Console](https://makersuite.google.com/app/apikey).
-
-```bash
-easydict://writeKeyValue?EZGeminiAPIKey=xxx
-```
 
 ### DeepL Translate
 
@@ -461,61 +370,28 @@ If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to a
 > [!NOTE] 
 >  Using a new proxy IP is a generic solution that works for other frequency-limited services.
 
-#### Configure AuthKey
-
-Enter the following code in the input box, xxx is your DeepL AuthKey, and then Enter
-
-```bash
-easydict://writeKeyValue?EZDeepLAuthKey=xxx
-```
-
 #### Configure API endpoint
 
 If you don't have your own AuthKey and need to use DeepL translation a lot, you can consider deploying your own interface service that supports DeepL, or using a third-party service that supports DeepL.
-
-In this case, you need to set a custom DeepL interface address, where the value of EZDeepLTranslateEndPointKey should be the complete request URL, for example, the DeepL official interface is https://api-free.deepl.com/v2/translate. If the custom interface requires AuthKey, the configuration method is the same as before, and the interface parameters are consistent with the DeepL official.
 
 The way to customize the DeepL API URL is equivalent to the DeepL official AuthKey API form in Easydict.
 
 Easydict supports the [DeepLX](https://github.com/OwO-Network/DeepLX) API, see [#464](https://github.com/tisfeng/Easydict/issues/464) for details.
 
-```bash
-easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
-```
 
 #### Configure API call method
 
 1. The web version API is used by default, and the personal AuthKey will be used when the web version API fails (if any)
 
-```bash
-easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
-```
-
 2. Use personal AuthKey first, and use web version API when it fails. If you use DeepL frequently, it is recommended to use this method, which can reduce one failed request and improve response speed.
 
-```bash
-easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
-```
-
 3. Only use personal AuthKey
-
-```bash
-easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
-```
 
 ### Tencent Translate
 
 [Tencent Translate](https://fanyi.qq.com/) requires an APIKey, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
 
 It is recommended to use your own APIKey, each registered user of Tencent Translate is given 5 million characters of traffic per month, which is enough for daily use.
-
-```bash
-// xxx is the SecretId of Tencent Translate
-easydict://writeKeyValue?EZTencentSecretId=xxx
-
-// xxx is the SecretKey of Tencent Translate
-easydict://writeKeyValue?EZTencentSecretKey=xxx
-```
 
 ### Bing Translate
 
@@ -527,12 +403,6 @@ The specific steps are, to use the browser to log in [Bing Translator](https://w
 cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
 ```
 
-Finally, use the command to write the cookie in Easydict
-
-```bash
-// xxx is the obtained cookie
-easydict://writeKeyValue?EZBingCookieKey=xxx
-```
 > [!NOTE] 
 > Bing TTS also uses a web API, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
 
@@ -542,31 +412,16 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 It is recommended to use your own API key, each registered user of Niutrans is given 200,000 characters of traffic per day.
 
-```bash
-// xxx is the APIKey of Niutrans
-easydict://writeKeyValue?EZNiuTransAPIKey=xxx
-```
-
 ### Lingocloud
 
 [Lingocloud](https://fanyi.caiyunapp.com/#/) needs an Token, for ease of use, we have built-in a token, this token has a limit on the amount, not guaranteed to be available all the time.
 
 It is recommended to use your own Token, each registered user of Lingocloud is given 100,000 characters of traffic per day.
 
-```bash
-// xxx is the Token of Lingocloud
-easydict://writeKeyValue?EZCaiyunToken=xxx
-```
-
 ### Ali Translate
 [Ali Translate](https://translate.alibaba.com/) requires an API key, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
 
 It is recommended to use your own API key, each registered user of Ali Translate is given 100,000 characters of traffic per day.
-
-```bash
-easydict://writeKeyValue?EZAliAccessKeyId=xxx
-easydict://writeKeyValue?EZAliAccessKeySecret=xxx
-```
 
 ## Smart query mode
 
@@ -665,9 +520,7 @@ Easydict has 3 types of Windows and you can set different services for each of t
 
 - Mini window: displayed when the mouse automatically picks up words.
 - Floating window: displayed when shortcut keys are used to fetch words and screenshot translation.
-- Main window: hidden by default, you can turn it on in the settings and show it when the program starts. (The main window function will be enhanced later)
-
-<img width="1330" alt="Services" src="https://github.com/Jerry23011/Easydict/assets/89069957/b3185b45-c593-4a23-a1be-0601bf347c30">
+- Main window: hidden by default, you can turn it on in the settings and show it when the program starts. 
 
 ### In-App Shortcuts
 
