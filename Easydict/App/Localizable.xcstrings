@@ -3445,25 +3445,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is open source software, if you are interested, you can check the code."
+            "value" : "Easydict uses Sentry and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is open source software, if you are interested, you can check the code."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Easydict používa AppCenter a Firebase na zbieranie záznamov o pádoch (pre opravy chýb) a anonymných analytických údajov. Tieto údaje však nie sú spájané s tvojou identitou, slúžia iba na vylepšenie aplikácie a nikdy nebudú zdieľané s tretími stranami.\n\nEasydict je open source softvér. V prípade záujmu si môžeš skontrolovať kód."
+            "value" : "Easydict používa Sentry a Firebase na zbieranie záznamov o pádoch (pre opravy chýb) a anonymných analytických údajov. Tieto údaje však nie sú spájané s tvojou identitou, slúžia iba na vylepšenie aplikácie a nikdy nebudú zdieľané s tretími stranami.\n\nEasydict je open source softvér. V prípade záujmu si môžeš skontrolovať kód."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Easydict 使用了 AppCenter 和 Firebase，它们会收集用户的崩溃日志（用于修复 bug）和匿名统计数据，但这些数据都不会关联到您的身份，仅用于改进用户体验，绝不会分享给其他平台。\n\nEasydict 是开源软件，如果你感兴趣，可以查看代码。"
+            "value" : "Easydict 使用了 Sentry 和 Firebase，它们会收集用户的崩溃日志（用于修复 bug）和匿名统计数据，但这些数据都不会关联到您的身份，仅用于改进用户体验，绝不会分享给其他平台。\n\nEasydict 是开源软件，如果你感兴趣，可以查看代码。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Easydict 使用 AppCenter 和 Firebase 來收集當機記錄（用於修復錯誤）和匿名分析資料，但這些資料不會與您的身分有關聯，僅用於改善使用者體驗，絕不會與其他平台分享。\n\nEasydict 是開放原始碼軟體，如果您有興趣，可以查看程式碼。"
+            "value" : "Easydict 使用了 Sentry 和 Firebase 來收集當機記錄（用於修復錯誤）和匿名分析資料，但這些資料不會與您的身分有關聯，僅用於改善使用者體驗，絕不會與其他平台分享。\n\nEasydict 是開放原始碼軟體，如果您有興趣，可以查看程式碼。"
           }
         }
       }
