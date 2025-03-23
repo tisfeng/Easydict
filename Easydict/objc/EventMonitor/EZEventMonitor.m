@@ -520,7 +520,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)handleSelectedText:(NSString *)text {
-    NSString *trimText = [text trim];
+    NSString *trimText = text.removeInvisibleChar.trim;
     if (trimText.length > 0 && self.selectedTextBlock) {
         [self cancelDismissPopButton];
         self.selectedTextBlock(trimText);

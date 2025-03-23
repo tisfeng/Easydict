@@ -1765,32 +1765,7 @@
       }
     },
     "go_to_settings" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Go to Settings"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prejdi do Nastavení"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "前往设置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "前往設定"
-          }
-        }
-      }
+
     },
     "google_translate" : {
       "localizations" : {
@@ -2716,6 +2691,34 @@
         }
       }
     },
+    "need_screen_capture_permission" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Need screen capture permission"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potrebné povolenie na snímanie obrazovky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要屏幕录制权限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要螢幕錄製權限"
+          }
+        }
+      }
+    },
     "niuTrans_translate" : {
       "localizations" : {
         "en" : {
@@ -2801,32 +2804,7 @@
       }
     },
     "no_screenshot_permission" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Screenshot Permission"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chýba povolenie na snímky obrazovky"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有截图权限"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沒有螢幕截圖權限"
-          }
-        }
-      }
+
     },
     "none_window" : {
       "localizations" : {
@@ -3014,6 +2992,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Google 中開啟"
+          }
+        }
+      }
+    },
+    "open_system_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open System Settings"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť systémové nastavenia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开系统设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟系統設定"
           }
         }
       }
@@ -3824,7 +3830,63 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "根目錄"
+            "value" : "詞根"
+          }
+        }
+      }
+    },
+    "screenshot.tip.capture_last_area_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click D to select the last screenshot area"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknite D pre výber poslednej oblasti snímky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击 D 键选择上一次截图区域"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單擊 D 鍵選擇上一次截圖區域"
+          }
+        }
+      }
+    },
+    "screenshot.tip.cancel_capture_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click Esc or right-click to cancel capture"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknite Esc alebo pravým tlačidlom myši pre zrušenie snímky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击 Esc 或右键取消截图"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單擊 Esc 或右鍵取消截圖"
           }
         }
       }
