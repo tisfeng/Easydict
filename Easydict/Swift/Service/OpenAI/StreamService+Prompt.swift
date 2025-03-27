@@ -213,7 +213,8 @@ extension StreamService {
         let answerLanguagePrompt = "Answer in \(answerLanguage.rawValue).\n"
         prompt += answerLanguagePrompt
 
-        let disableNotePrompt = "Do not include additional information or notes."
+        let disableNotePrompt =
+            "Total word count should not exceed 1000. Do not include additional information or notes."
         prompt += disableNotePrompt
 
         // Add few-shot examples or other messages as needed
@@ -498,7 +499,7 @@ extension StreamService {
         prompt.append(exampleSentencePrompt)
 
         let wordCountPrompt = """
-        Ensure the explanation is around 50 words and the etymology is between 100 and 400 words. Word count does not need to be displayed.
+        Ensure the explanation is around 50 words and the etymology is between 100 and 400 words. Total word count should not exceed 1000. Word count does not need to be displayed.
         """
         prompt.append(wordCountPrompt)
 
