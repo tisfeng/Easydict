@@ -2238,6 +2238,11 @@ static EZAppleService *_instance;
 /// Check Chinese language type of text, traditional or simplified.
 /// - !!!: Make sure the text is Chinese.
 - (EZLanguage)chineseLanguageTypeOfText:(NSString *)chineseText {
+    // Check if classical Chinese.
+    if ([chineseText isClassicalChinese]) {
+        return EZLanguageClassicalChinese;
+    }
+
     // test: 狗，勿 --> zh-Hant --> zh-Hans
 
     // Check if simplified Chinese.
