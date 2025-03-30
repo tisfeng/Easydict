@@ -267,6 +267,7 @@
 		03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = 03E534BB2CE0D38C00B37264 /* AcknowList */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
+		03F2815D2D98E7DF00AE518C /* ClassicalMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
@@ -804,6 +805,7 @@
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
+		03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicalMarker.swift; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
@@ -1568,7 +1570,6 @@
 		038A723E2B62C07B004995E3 /* String */ = {
 			isa = PBXGroup;
 			children = (
-				03F281562D97A22500AE518C /* String+ClassicalChinese.swift */,
 				033A8EAD2BDFE09B00030C08 /* String+Extension.swift */,
 				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
 				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
@@ -2303,6 +2304,23 @@
 			path = EZLog;
 			sourceTree = "<group>";
 		};
+		03F2815A2D98E50600AE518C /* Detection */ = {
+			isa = PBXGroup;
+			children = (
+				03F2815B2D98E52200AE518C /* ClassicalChinese */,
+			);
+			path = Detection;
+			sourceTree = "<group>";
+		};
+		03F2815B2D98E52200AE518C /* ClassicalChinese */ = {
+			isa = PBXGroup;
+			children = (
+				03F281562D97A22500AE518C /* String+ClassicalChinese.swift */,
+				03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */,
+			);
+			path = ClassicalChinese;
+			sourceTree = "<group>";
+		};
 		03FEB53F2D85A5FD004FF9E3 /* Screencapture */ = {
 			isa = PBXGroup;
 			children = (
@@ -2668,6 +2686,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03F2815A2D98E50600AE518C /* Detection */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				0346F3D12CAECB38006A6CDF /* GetSelectedText */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
@@ -3313,6 +3332,7 @@
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
+				03F2815D2D98E7DF00AE518C /* ClassicalMarker.swift in Sources */,
 				0340D39B2C93DC1B004C9910 /* Constants.swift in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
 				03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */,
