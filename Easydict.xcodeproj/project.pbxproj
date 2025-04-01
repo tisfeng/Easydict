@@ -141,6 +141,7 @@
 		0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */; };
 		0399C6B829A9F4B800B4AFCC /* EZSchemeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */; };
 		039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 039B694E2A9D9F370063709D /* EZWebViewManager.m */; };
+		039CBE872D9AFBF3009A04DC /* ChineseText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CBE862D9AFBF3009A04DC /* ChineseText.swift */; };
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
@@ -206,6 +207,8 @@
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
 		03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B63ABE2A86967800E155ED /* CoreServices.framework */; };
+		03B73F7B2D9C51580051CB74 /* ChineseText+Poetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B73F7A2D9C51580051CB74 /* ChineseText+Poetry.swift */; };
+		03B73F7D2D9C51700051CB74 /* ChineseText+Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B73F7C2D9C51700051CB74 /* ChineseText+Lyrics.swift */; };
 		03BA35C42C520058007BF100 /* AppleDictionary+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BA35C32C520058007BF100 /* AppleDictionary+Translate.swift */; };
 		03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DE229F5772F00447EDD /* EZAudioButton.m */; };
 		03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */; };
@@ -268,6 +271,7 @@
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
 		03F2815D2D98E7DF00AE518C /* ClassicalMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */; };
+		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
@@ -585,6 +589,7 @@
 		0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSchemeParser.m; sourceTree = "<group>"; };
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
 		039B694E2A9D9F370063709D /* EZWebViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewManager.m; sourceTree = "<group>"; };
+		039CBE862D9AFBF3009A04DC /* ChineseText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseText.swift; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
@@ -703,6 +708,8 @@
 		03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonViewController.h; sourceTree = "<group>"; };
 		03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonViewController.m; sourceTree = "<group>"; };
 		03B63ABE2A86967800E155ED /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		03B73F7A2D9C51580051CB74 /* ChineseText+Poetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseText+Poetry.swift"; sourceTree = "<group>"; };
+		03B73F7C2D9C51700051CB74 /* ChineseText+Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseText+Lyrics.swift"; sourceTree = "<group>"; };
 		03BA35C32C520058007BF100 /* AppleDictionary+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleDictionary+Translate.swift"; sourceTree = "<group>"; };
 		03BB2DE129F5772F00447EDD /* EZAudioButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioButton.h; sourceTree = "<group>"; };
 		03BB2DE229F5772F00447EDD /* EZAudioButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioButton.m; sourceTree = "<group>"; };
@@ -806,6 +813,7 @@
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
 		03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicalMarker.swift; sourceTree = "<group>"; };
+		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
@@ -2315,8 +2323,12 @@
 		03F2815B2D98E52200AE518C /* ClassicalChinese */ = {
 			isa = PBXGroup;
 			children = (
+				039CBE862D9AFBF3009A04DC /* ChineseText.swift */,
+				03B73F7A2D9C51580051CB74 /* ChineseText+Poetry.swift */,
+				03B73F7C2D9C51700051CB74 /* ChineseText+Lyrics.swift */,
 				03F281562D97A22500AE518C /* String+ClassicalChinese.swift */,
 				03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */,
+				03F2815E2D9A323700AE518C /* String+Utils.swift */,
 			);
 			path = ClassicalChinese;
 			sourceTree = "<group>";
@@ -3026,9 +3038,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Easydict/Pods-Easydict-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Easydict/Pods-Easydict-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3087,9 +3103,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3160,6 +3180,7 @@
 				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
 				036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */,
 				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
+				039CBE872D9AFBF3009A04DC /* ChineseText.swift in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */,
@@ -3197,6 +3218,7 @@
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				032AAA592C456F04007996A1 /* configure.swift in Sources */,
 				6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */,
+				03B73F7D2D9C51700051CB74 /* ChineseText+Lyrics.swift in Sources */,
 				0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
@@ -3402,6 +3424,7 @@
 				9643D9442B6FEF5F000FBEA6 /* Shortcut+Default.swift in Sources */,
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
+				03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */,
 				0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */,
 				03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
@@ -3415,6 +3438,7 @@
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
+				03B73F7B2D9C51580051CB74 /* ChineseText+Poetry.swift in Sources */,
 				DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
