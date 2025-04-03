@@ -39,35 +39,42 @@ extension String {
 
     // MARK: - Feature Detection Methods
 
-    func hasHighClassicalLinguisticFeatureRatio(_ threshold: Double = 0.15) -> Bool {
-        let ratio = calculateLinguisticFeatureRatio(for: ClassicalMarker.Prose.particles)
-        print("Classical linguistic feature ratio: \(String(format: "%.2f", ratio))")
-        return ratio > threshold
+    /// Calculate the ratio of classical Chinese characters in text
+    func calculateClassicalChineseMarkerRatio() -> Double {
+        calculateLinguisticFeatureRatio(for: ClassicalMarker.Prose.particles)
     }
 
-    func hasHighModernLinguisticFeatureRatio(_ threshold: Double = 0.2) -> Bool {
-        let ratio = calculateLinguisticFeatureRatio(for: ClassicalMarker.Modern.particles)
-        print("Modern linguistic feature ratio: \(String(format: "%.2f", ratio))")
-        return ratio > threshold
+    /// Calculate the ratio of modern Chinese characters in text
+    func calculateModernChineseMarkerRatio() -> Double {
+        calculateLinguisticFeatureRatio(for: ClassicalMarker.Modern.particles)
     }
 
     func calculateLinguisticFeatureRatio(for features: [String]) -> Double {
         let cleanText = removeAllPunctuation().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanText.isEmpty else { return 0.0 }
 
-        var featureCount = 0
         let totalChars = cleanText.count
+        let featureCount = countOccurrences(of: features)
 
-        // Count features
-        for char in cleanText where features.contains(String(char)) {
-            featureCount += 1
-        }
+        let matches = findMatchedPatterns(in: features)
+        logInfo("Debug log, found linguistic features: \(matches)")
 
         // Calculate ratio
         return Double(featureCount) / Double(totalChars)
     }
 
-    /// Find matched count for given pattern list
+    /// Calculate the count of occurrences in the text
+    /// - Parameter elements: Array of elements to count occurrences
+    /// - Returns: Total number of occurrences in the text. e.g. "这是一个的的的啊啊测试文本", ["的", "啊"] -> 5 (total occurrences)
+    func countOccurrences(of elements: [String]) -> Int {
+        elements.reduce(0) { count, element in
+            count + components(separatedBy: element).count - 1
+        }
+    }
+
+    /// Find matched elements in the given pattern list
+    /// - Parameter patterns: Array of elements to check
+    /// - Returns: Array of matched elements. e.g. "这是一个的的的啊啊测试文本", ["的", "啊"] -> ["的", "啊"]
     func findMatchedPatterns(in patterns: [String]) -> [String] {
         patterns.filter { contains($0) }
     }

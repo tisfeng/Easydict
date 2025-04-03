@@ -29,25 +29,7 @@ extension String {
         print("Text: \(self)")
 
         // Create ChineseText instance to analyze the text
-        let chineseText = ChineseText(self)
-        chineseText.detect()
-
-        // Log analysis results
-        print("\nAnalysis results:")
-        if let title = chineseText.title {
-            print("- Title: \(title)")
-        }
-        if let author = chineseText.author {
-            print("- Author: \(author)")
-        }
-        if let dynasty = chineseText.dynasty {
-            print("- Dynasty: \(dynasty)")
-        }
-        print("- Content: \(chineseText.content)")
-
-        print("- Type: \(chineseText.type)")
-
-        // Return true for any classical Chinese type
-        return chineseText.type != .modern
+        let chineseText = ChineseDetection(text: self)
+        return chineseText.detect().genre != .modern
     }
 }

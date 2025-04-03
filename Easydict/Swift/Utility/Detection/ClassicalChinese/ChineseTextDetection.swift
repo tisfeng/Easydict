@@ -1,5 +1,5 @@
 //
-//  ChineseText.swift
+//  ChineseTextDetection.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/4/1.
@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - ChineseText
 
-class ChineseText {
+class ChineseTextDetection {
     // MARK: Lifecycle
 
     // MARK: - Initialization
@@ -47,11 +47,36 @@ class ChineseText {
     /// - `poetry`: Classical poetry 古诗
     /// - `lyric`: Classical lyric 古词
     /// - `modern`: Modern Chinese 现代汉语
-    enum TextType {
+    enum Genre {
         case prose
         case poetry
         case lyric
         case modern
+    }
+
+    /// Structure to store content analysis information
+    struct ContentInfo {
+        /// Phrase analysis after splitting by punctuation
+        struct PhraseAnalysis {
+            let averageLength: Double
+            let maxLength: Int
+            let minLength: Int
+            let isUniformLength: Bool
+            let phrases: [String]
+        }
+
+        /// Total character count including punctuation
+        let totalCharCount: Int
+        /// Count of punctuation marks
+        let punctuationCount: Int
+        /// Ratio of punctuation marks to total characters
+        let punctuationRatio: Double
+        /// Character count excluding punctuation
+        let textCharCount: Int
+        /// Parallel structure ratio between adjacent lines
+        let parallelStructureRatio: Double
+
+        let phraseAnalysis: PhraseAnalysis
     }
 
     let originalText: String
@@ -67,7 +92,7 @@ class ChineseText {
     var author: String?
     var authorIndex: Int? = 0
     var dynasty: String?
-    var type: TextType = .modern
+    var type: Genre = .modern
 
     // MARK: - Public Methods
 
@@ -500,5 +525,56 @@ class ChineseText {
         }
 
         return false
+    }
+
+    /// Analyze the structure of content and return detailed information
+    func analyzeStructure(_ content: String) -> ContentInfo {
+        // Count characters and punctuation
+        let totalCount = content.count
+        let punctCount = content.filter { $0.isPunctuation }.count
+        let textCount = totalCount - punctCount
+        let punctRatio = Double(punctCount) / Double(totalCount)
+
+        // Analyze parallel structure
+        let lines = splitTextIntoLines(content)
+        var parallelCount = 0
+        var totalComparisons = 0
+
+        for i in 0 ..< lines.count - 1 {
+            let similarity = compareStructuralPatterns(lines[i], lines[i + 1])
+            if similarity >= 0.8 { // Consider as parallel if similarity >= 80%
+                parallelCount += 1
+            }
+            totalComparisons += 1
+        }
+
+        let parallelRatio =
+            totalComparisons > 0 ? Double(parallelCount) / Double(totalComparisons) : 0.0
+
+        // Analyze phrases
+        let phrases = splitIntoShortPhrases(content)
+        let phraseLengths = phrases.map { $0.filter { !$0.isWhitespace }.count }
+
+        let avgLength = Double(phraseLengths.reduce(0, +)) / Double(phraseLengths.count)
+        let maxLength = phraseLengths.max() ?? 0
+        let minLength = phraseLengths.min() ?? 0
+        let isUniform = Set(phraseLengths).count == 1
+
+        let phraseAnalysis = ContentInfo.PhraseAnalysis(
+            averageLength: avgLength,
+            maxLength: maxLength,
+            minLength: minLength,
+            isUniformLength: isUniform,
+            phrases: phrases
+        )
+
+        return ContentInfo(
+            totalCharCount: totalCount,
+            punctuationCount: punctCount,
+            punctuationRatio: punctRatio,
+            textCharCount: textCount,
+            parallelStructureRatio: parallelRatio,
+            phraseAnalysis: phraseAnalysis
+        )
     }
 }
