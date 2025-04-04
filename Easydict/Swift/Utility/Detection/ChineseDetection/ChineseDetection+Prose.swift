@@ -18,7 +18,7 @@ extension ChineseDetection {
             return false
         }
 
-        let hasZeroeModernChineseRatio = contentInfo.modernChineseRatio == 0
+        let hasZeroeModernChinese = contentInfo.modernChineseRatio == 0
 
         /**
          日落山水静，为君起松声。
@@ -28,7 +28,7 @@ extension ChineseDetection {
         if contentInfo.phraseAnalysis.phrases.count == 2,
            contentInfo.phraseAnalysis.isUniformLength,
            contentInfo.phraseAnalysis.maxLength < 8,
-           hasZeroeModernChineseRatio {
+           hasZeroeModernChinese {
             logInfo("✅ Prose, phrase length is uniform, max length is less than 8, and modern Chinese ratio is 0.")
             return true
         }
@@ -37,16 +37,16 @@ extension ChineseDetection {
          念征衣未捣，佳人拂杵，有盈盈泪。
          */
         if contentInfo.phraseAnalysis.phrases.count >= 3,
-           contentInfo.phraseAnalysis.averageLength <= 5,
-           contentInfo.phraseAnalysis.maxLength < 10,
-           contentInfo.modernChineseRatio == 0 {
+           contentInfo.phraseAnalysis.averageLength < 5,
+           contentInfo.phraseAnalysis.maxLength < 6,
+           hasZeroeModernChinese {
             logInfo("✅ Prose, phrase average length <= 5, and max length < 10, and modern Chinese ratio = 0.")
             return true
         }
 
         if contentInfo.phraseAnalysis.phrases.count >= 4,
            contentInfo.phraseAnalysis.averageLength <= 6,
-           contentInfo.modernChineseRatio == 0 {
+           hasZeroeModernChinese {
             logInfo("✅ Prose, phrase average length <= 6, and modern Chinese ratio = 0.")
             return true
         }
