@@ -44,24 +44,25 @@ extension ChineseDetection {
             return true
         }
 
-        if contentInfo.phraseAnalysis.averageLength <= 6,
+        if contentInfo.phraseAnalysis.phrases.count >= 4,
+           contentInfo.phraseAnalysis.averageLength <= 6,
            contentInfo.modernChineseRatio == 0 {
             logInfo("✅ Prose, phrase average length <= 6, and modern Chinese ratio = 0.")
             return true
         }
 
         if contentInfo.phraseAnalysis.phrases.count >= 8,
-           contentInfo.phraseAnalysis.averageLength < 7,
-           contentInfo.modernChineseRatio < 0.1 {
-            logInfo("✅ Prose, phrase average length < 7, and modern Chinese ratio < 0.1.")
+           contentInfo.phraseAnalysis.averageLength < 8,
+           contentInfo.modernChineseRatio < 0.05 {
+            logInfo("✅ Prose, phrase average length < 7, and modern Chinese ratio < 0.05.")
             return true
         }
 
-        if contentInfo.phraseAnalysis.averageLength < 7,
-           contentInfo.classicalChineseRatio > 0.15,
-           contentInfo.modernChineseRatio < 0.1 {
+        if contentInfo.phraseAnalysis.averageLength < 8,
+           contentInfo.classicalChineseRatio > 0.1,
+           contentInfo.modernChineseRatio < 0.05 {
             logInfo(
-                "✅ Prose, phrase average length < 7, and classical ratio > 0.15, and modern ratio < 0.1."
+                "✅ Prose, phrase average length < 7, and classical ratio > 0.1, and modern ratio < 0.05."
             )
             return true
         }

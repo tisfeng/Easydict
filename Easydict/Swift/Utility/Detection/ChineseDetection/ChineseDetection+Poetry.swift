@@ -39,34 +39,4 @@ extension ChineseDetection {
 
         return isPoetry
     }
-
-    // MARK: - Helper Methods
-
-    /// Check poetry format and return format ratios
-    func checkPoetryFormat(_ lines: [String]) -> (
-        standardLineRatio: Double, parallelRatio: Double
-    ) {
-        var standardCount = 0
-        var parallelCount = 0
-
-        for (index, line) in lines.enumerated() {
-            // Check standard length (5/7)
-            if line.count == 5 || line.count == 7 {
-                standardCount += 1
-            }
-
-            // Check parallel structure
-            if index < lines.count - 1 {
-                let nextLine = lines[index + 1]
-                if line.count == nextLine.count {
-                    parallelCount += 1
-                }
-            }
-        }
-
-        return (
-            Double(standardCount) / Double(lines.count),
-            Double(parallelCount) / Double(max(1, lines.count - 1))
-        )
-    }
 }

@@ -157,61 +157,6 @@ class ChineseDetection {
         return Double(matchCount) / Double(minCount)
     }
 
-    /// Calculate clean lengths for two lines
-    func getCleanLengths(_ line1: String, _ line2: String) -> (Int, Int) {
-        let cleanLine1 = line1.filter {
-            !ClassicalMarker.Common.punctuationCharacters.contains(String($0))
-                && !$0.isWhitespace
-        }
-        let cleanLine2 = line2.filter {
-            !ClassicalMarker.Common.punctuationCharacters.contains(String($0))
-                && !$0.isWhitespace
-        }
-        return (cleanLine1.count, cleanLine2.count)
-    }
-
-    /// Calculate parallel structure similarity between two lines
-    func calculateParallelStructure(_ line1: String, _ line2: String) -> Double {
-        // Split lines into phrases by punctuation
-        let phrases1 = splitIntoShortPhrases(line1)
-        let phrases2 = splitIntoShortPhrases(line2)
-
-        guard !phrases1.isEmpty, !phrases2.isEmpty else {
-            return 0.0
-        }
-
-        // Only compare phrase lengths
-        return comparePhraseLengths(phrases1, phrases2)
-    }
-
-    /// Compare structural patterns between phrases.
-    /// Analyzes both phrase lengths and internal structure to determine similarity.
-    /// - Parameters:
-    ///   - phrases1: First array of phrases
-    ///   - phrases2: Second array of phrases
-    /// - Returns: Similarity score between 0.0 and 1.0
-    func compareStructuralPatterns(_ phrases1: [String], _ phrases2: [String]) -> Double {
-        // Compare phrase lengths first
-        let lengthSimilarity = comparePhraseLengths(phrases1, phrases2)
-
-        // Calculate pattern similarity based on phrase counts
-        let pattern1 = phrases1.map { $0.count }
-        let pattern2 = phrases2.map { $0.count }
-
-        let minLength = min(pattern1.count, pattern2.count)
-        var matchCount = 0
-
-        // Allow 1 character difference in length
-        for i in 0 ..< minLength where abs(pattern1[i] - pattern2[i]) <= 1 {
-            matchCount += 1
-        }
-
-        let structureScore = Double(matchCount) / Double(minLength)
-
-        // Weighted combination (total weight = 1.0)
-        return (lengthSimilarity * 0.6) + (structureScore * 0.4)
-    }
-
     /// Split text into lines with advanced options
     /// - Parameters:
     ///   - text: Input text to split

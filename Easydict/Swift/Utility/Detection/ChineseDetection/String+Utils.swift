@@ -79,28 +79,6 @@ extension String {
         patterns.filter { contains($0) }
     }
 
-    func hasClassicalCiSpecificMarkers() -> Bool {
-        let matches = findMatchedPatterns(in: ClassicalMarker.LyricPoetry.commonPhrases)
-        if !matches.isEmpty {
-            print("Found Ci markers: \(matches.joined(separator: ", "))")
-        }
-        // Require at least 2 markers
-        return matches.count >= 2
-    }
-
-    /// Check if text contains classical poetry markers or patterns
-    func hasClassicalPoetrySpecificMarkers() -> Bool {
-        // Check common phrases
-        let phraseMatches = findMatchedPatterns(in: ClassicalMarker.Poetry.commonPhrases)
-        let hasCommonPhrases = phraseMatches.count >= 2
-
-        if !phraseMatches.isEmpty {
-            print("Found common phrases: \(phraseMatches.joined(separator: ", "))")
-        }
-
-        return hasCommonPhrases
-    }
-
     /// Calculate the ratio of punctuation marks in text
     func calculatePunctuationRatio() -> Double {
         let text = trimmingCharacters(in: .whitespacesAndNewlines)
