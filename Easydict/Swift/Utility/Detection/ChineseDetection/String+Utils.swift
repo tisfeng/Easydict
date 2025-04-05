@@ -85,9 +85,7 @@ extension String {
         guard !text.isEmpty else { return 0.0 }
 
         var punctuationCount = 0
-        for char in text
-            where
-            ClassicalMarker.Common.punctuationCharacters.contains(String(char)) {
+        for char in text where char.isPunctuation {
             punctuationCount += 1
         }
 
