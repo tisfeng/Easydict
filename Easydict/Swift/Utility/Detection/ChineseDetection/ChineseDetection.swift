@@ -21,6 +21,8 @@ class ChineseDetection {
 
     // MARK: Internal
 
+    // MARK: - String Extensions
+
     let originalText: String
 
     // MARK: - Public Methods
@@ -118,7 +120,7 @@ class ChineseDetection {
         guard minCount > 0 else { return 0.0 }
 
         var matchCount = 0
-        for i in 0..<minCount {
+        for i in 0 ..< minCount {
             let char1 = line1[line1.index(line1.startIndex, offsetBy: i)]
             let char2 = line2[line2.index(line2.startIndex, offsetBy: i)]
             // If both characters are not punctuation, count as a match
@@ -161,8 +163,7 @@ class ChineseDetection {
         _ line: String,
         separators: [String] = ClassicalMarker.Common.lineSeparators
     )
-        -> [String]
-    {
+        -> [String] {
         var phrases = [line]
         for separator in separators {
             phrases = phrases.flatMap { $0.components(separatedBy: separator) }
@@ -170,8 +171,8 @@ class ChineseDetection {
 
         return
             phrases
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
     }
 
     /// Check if line only contains meta punctuation marks in metadata
@@ -193,8 +194,7 @@ class ChineseDetection {
         titleIndex: Int?,
         authorIndex: Int?
     )
-        -> [String]
-    {
+        -> [String] {
         guard lines.count >= 2 else { return lines }
 
         var removedIndices: [Int] = []
@@ -237,10 +237,10 @@ class ChineseDetection {
 
         // Check each metadata line
         let linesToCheck = [
-            (lines[0], 0),  // First line
-            lines.count >= 2 ? (lines[1], 1) : nil,  // Second line
-            lines.count >= 3 ? (lines[lines.count - 2], lines.count - 2) : nil,  // Second to last line
-            (lines[lines.count - 1], lines.count - 1),  // Last line
+            (lines[0], 0), // First line
+            lines.count >= 2 ? (lines[1], 1) : nil, // Second line
+            lines.count >= 3 ? (lines[lines.count - 2], lines.count - 2) : nil, // Second to last line
+            (lines[lines.count - 1], lines.count - 1), // Last line
         ].compactMap { $0 }
 
         for (line, index) in linesToCheck where isTitleOrAuthorLine(line) {
@@ -288,9 +288,9 @@ class ChineseDetection {
         var parallelCount = 0
         var totalComparisons = 0
 
-        for i in 0..<lines.count - 1 {
+        for i in 0 ..< lines.count - 1 {
             let similarity = compareStructuralPatterns(lines[i], lines[i + 1])
-            if similarity >= 0.8 {  // Consider as parallel if similarity >= 80%
+            if similarity >= 0.8 { // Consider as parallel if similarity >= 80%
                 parallelCount += 1
             }
             totalComparisons += 1
@@ -335,6 +335,8 @@ class ChineseDetection {
 
     private var analysis: ChineseTextAnalysis?
 
+    // MARK: - Private Methods
+
     /// Extract metadata (dynasty, author, title) from a line
     /// - Parameter line: Input line to extract metadata from
     /// - Returns: Tuple containing extracted dynasty, author and title
@@ -351,189 +353,13 @@ class ChineseDetection {
     private func extractMetadata(from line: String) -> (
         dynasty: String?, author: String?, title: String?
     ) {
-        // Early return if line is empty or too long
         guard !line.isEmpty, line.count <= 20 else { return (nil, nil, nil) }
 
-        // Clean line by removing spaces, em dash and normalize dots
-        let cleanLine = cleanMetadataLine(line)
-
-        // Extract dynasty, author, and title
-        let dynasty = extractDynasty(from: cleanLine)
-        let title = extractTitle(from: cleanLine)
-        let author = extractAuthor(from: cleanLine)
+        let extractor = MetadataExtractor(line)
+        let dynasty = extractor.extractDynasty()
+        let title = extractor.extractTitle()
+        let author = extractor.extractAuthor()
 
         return (dynasty, author, title)
-    }
-
-    /// Clean metadata line by removing spaces, em dash and normalize dots
-    private func cleanMetadataLine(_ line: String) -> String {
-        line.replacingOccurrences(of: "——", with: "")
-            .replacingOccurrences(of: " · ", with: "·")  // Normalize dots with spaces
-            .replacingOccurrences(of: "：", with: "·")
-            // Don't remove "代" character here
-            .trimmingCharacters(in: .whitespaces)
-    }
-
-    /// Extract dynasty name from a line of text
-    /// - Parameter cleanLine: Clean text line to extract dynasty from
-    /// - Returns: Dynasty name if found, nil otherwise
-    ///
-    /// - Example:
-    ///   - "李白〔唐代〕" -> "唐"
-    ///   - "王维［唐］" -> "唐"
-    ///   - "李白（南唐）" -> "南唐"
-    ///   - "宋·苏轼" -> "宋"
-    ///   - "辛弃疾·宋" -> "宋"
-    ///   - "明代·李白" -> "明"
-    ///   - "李白【明】" -> "明"
-    ///   - "五代十国" -> "五代十国"
-    private func extractDynasty(from cleanLine: String) -> String? {
-        // Dynasty markers are already sorted by length (longer first)
-        for dynastyName in ClassicalMarker.Common.dynastyMarkers
-        where cleanLine.contains(dynastyName) {
-            // Direct match for longer names (like "五代十国")
-            for (left, right) in ClassicalMarker.Common.bracketPairs {
-                // Check if dynasty is in brackets
-                if cleanLine.contains("\(left)\(dynastyName)\(right)")
-                    || cleanLine.contains("\(left)\(dynastyName)代\(right)")
-                {
-                    logInfo("Found dynasty \(dynastyName) in brackets")
-                    return dynastyName
-                }
-            }
-
-            // Check dot format or prefix
-            if cleanLine.contains("·\(dynastyName)") || cleanLine.contains("\(dynastyName)·")
-                || cleanLine.hasPrefix(dynastyName)
-            {
-                logInfo("Found dynasty \(dynastyName)")
-                return dynastyName
-            }
-        }
-
-        logInfo("No dynasty found")
-        return nil
-    }
-
-    /// Extract title from line
-    ///
-    /// - Example:
-    /// - Example:
-    ///     - "李白〔唐代〕《将进酒》" -> "将进酒"
-    ///     - "定风波·莫听穿林打叶声" -> "定风波"
-    ///     - "《定风波·莫听穿林打叶声》" -> "定风波"
-    ///     - "定风波" -> "定风波"
-    ///     - "《定风波》" -> "定风波"
-    private func extractTitle(from cleanLine: String) -> String? {
-        // Extract title from 《》if present
-        if cleanLine.contains("《"), cleanLine.contains("》") {
-            let titlePattern = "《([^》]+)》"
-            if let range = cleanLine.range(of: titlePattern, options: .regularExpression) {
-                let titleMatch = cleanLine[range]
-                return String(titleMatch)
-                    .replacingOccurrences(of: "《", with: "")
-                    .replacingOccurrences(of: "》", with: "")
-                    .components(separatedBy: "·")
-                    .first?
-                    .trimmingCharacters(in: .whitespaces)
-            }
-        } else if cleanLine.contains("·") {
-            // Extract title from dot separator format
-            return cleanLine.components(separatedBy: "·")
-                .first?
-                .replacingOccurrences(of: "令", with: "")
-                .trimmingCharacters(in: .whitespaces)
-        } else if !cleanLine.isEmpty,
-            !hasDynastyMarker(cleanLine),
-            !hasAuthorMarker(cleanLine)
-        {
-            // If line has no dynasty or author markers, treat as title
-            return cleanLine
-        }
-        return nil
-    }
-
-    /// Extract author from a line of text
-    /// - Parameter cleanLine: Clean text line to extract author from
-    /// - Returns: Author name if found, nil otherwise
-    ///
-    /// - Example:
-    ///   - "李白【唐】" -> "李白"
-    ///   - "李白〔唐代〕" -> "李白"
-    ///   - "王维〔唐代〕" -> "王维"
-    ///   - "李白（南唐）" -> "李白"
-    ///   - "宋·苏轼" -> "苏轼"
-    ///   - "宋代·李白" -> "李白"
-    ///   - "唐·李白《将进酒》" -> "李白"
-    ///   - "—— 李白" -> "李白"
-    ///   - "李白《将进酒》" -> "李白"
-    ///   - "五代十国·李煜" -> "李煜"
-    private func extractAuthor(from cleanLine: String) -> String? {
-        // Get clean text without brackets and dynasty markers
-        var authorLine = cleanLine
-
-        // Remove title part if exists
-        if let titleRange = cleanLine.range(of: "《.*》", options: .regularExpression) {
-            authorLine = authorLine.replacingCharacters(in: titleRange, with: "")
-        }
-
-        // Remove dynasty markers with brackets
-        for dynasty in ClassicalMarker.Common.dynastyMarkers {
-            for (left, right) in ClassicalMarker.Common.bracketPairs {
-                let escapedLeft = NSRegularExpression.escapedPattern(for: left)
-                let escapedRight = NSRegularExpression.escapedPattern(for: right)
-                let pattern = "\(escapedLeft)\(dynasty)(代)?\(escapedRight)"
-
-                // Create regex and try to match
-                if let regex = try? NSRegularExpression(pattern: pattern) {
-                    let range = NSRange(authorLine.startIndex..., in: authorLine)
-                    authorLine = regex.stringByReplacingMatches(
-                        in: authorLine,
-                        range: range,
-                        withTemplate: ""
-                    )
-                }
-            }
-
-            // Remove dynasty with dot
-            let dotFormats = [
-                "\(dynasty)代·",
-                "\(dynasty)·",
-                "·\(dynasty)代",
-                "·\(dynasty)",
-            ]
-
-            for format in dotFormats {
-                authorLine = authorLine.replacingOccurrences(of: format, with: "")
-            }
-        }
-
-        // Clean up and validate
-        authorLine = authorLine.trimmingCharacters(in: .whitespacesAndNewlines)
-            .replacingOccurrences(of: "·", with: "")
-
-        // Author name should be 2-4 characters
-        if !authorLine.isEmpty, authorLine.count >= 2, authorLine.count <= 4 {
-            logInfo("Found author: \(authorLine)")
-            return authorLine
-        }
-
-        logInfo("No author found")
-        return nil
-    }
-
-    /// Check if line contains dynasty marker
-    private func hasDynastyMarker(_ line: String) -> Bool {
-        for dynasty in ClassicalMarker.Common.dynastyMarkers where line.contains(dynasty) {
-            return true
-        }
-        return false
-    }
-
-    /// Check if line matches author patterns
-    private func hasAuthorMarker(_ line: String) -> Bool {
-        // Author name usually 2-4 characters
-        let cleanLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-        return cleanLine.count >= 2 && cleanLine.count <= 4 && hasDynastyMarker(line)
     }
 }
