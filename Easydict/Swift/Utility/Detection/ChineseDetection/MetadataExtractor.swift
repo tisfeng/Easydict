@@ -7,264 +7,219 @@
 //
 
 import Foundation
+import RegexBuilder
 
 // MARK: - MetadataExtractor
 
-struct MetadataExtractor {
+class MetadataExtractor {
     // MARK: Lifecycle
 
-    init(_ line: String) {
+    // MARK: - Initialization
+
+    init(line: String, index: Int) {
+        self.index = index
         self.cleanLine = line.cleanFormat()
     }
 
     // MARK: Internal
 
-    // MARK: - MetadataType
+    // MARK: - Types
 
-    enum MetadataType {
+    enum MetadataType: String {
         case dynasty
         case author
         case title
 
         // MARK: Internal
 
-        var maxLength: Int {
+        var lengthRange: ClosedRange<Int> {
             switch self {
-            case .dynasty: return 4
-            case .author: return 4
-            case .title: return 10
-            }
-        }
-
-        var minLength: Int {
-            switch self {
-            case .dynasty: return 1
-            case .author: return 2
-            case .title: return 2
+            case .dynasty: return 1 ... 4
+            case .author: return 2 ... 4
+            case .title: return 2 ... 10
             }
         }
     }
 
-    let cleanLine: String
+    // MARK: - Public Methods
 
-    var title: String?
-    var author: String?
-    var dynasty: String?
+    /// Extract metadata from line
+    func extract() -> (dynasty: String?, author: String?, title: String?) {
+        guard !cleanLine.isEmpty, cleanLine.count <= 20 else { return (nil, nil, nil) }
 
-    /// Find content between brackets
-    func findInBrackets(_ content: String) -> String? {
-        for (left, right) in ClassicalMarker.Common.bracketPairs {
-            let pattern = "\(left)([^\(right)]+)\(right)"
-            if let match = cleanLine.firstMatch(pattern: pattern) {
-                return match
-            }
-        }
-        return nil
-    }
+        // Step 1: Extract formatted text with markers
+        extractFormattedText()
 
-    /// Find content around dot
-    func findAroundDot(_ content: String) -> String? {
-        let patterns = [
-            "^(\(content))·",
-            "·(\(content))$",
-            "^(\(content))代·",
-            "·(\(content))代$",
-        ]
+        // Step 2: Extract clean content
+        let dynasty = extractDynasty()
+        let title = extractTitle()
+        let author = extractAuthor()
 
-        for pattern in patterns {
-            if let match = cleanLine.firstMatch(pattern: pattern) {
-                return match
-            }
-        }
-        return nil
-    }
-
-    /// Validate content length
-    func validateLength(_ content: String?, for type: MetadataType) -> String? {
-        guard let content = content,
-              content.count >= type.minLength,
-              content.count <= type.maxLength
-        else { return nil }
-        return content
-    }
-
-    /// Extract dynasty name from a line of text
-    /// - Parameter cleanLine: Clean text line to extract dynasty from
-    /// - Returns: Dynasty name if found, nil otherwise
-    ///
-    /// - Example:
-    ///   - "李白〔唐代〕" -> "唐"
-    ///   - "王维［唐］" -> "唐"
-    ///   - "李白（南唐）" -> "南唐"
-    ///   - "宋·苏轼" -> "宋"
-    ///   - "辛弃疾·宋" -> "宋"
-    ///   - "明代·李白" -> "明"
-    ///   - "李白【明】" -> "明"
-    ///   - "五代十国" -> "五代十国"
-    func extractDynasty() -> String? {
-        for dynastyName in ClassicalMarker.Common.dynastyMarkers
-            where cleanLine.contains(dynastyName) {
-            // Check bracket format
-            for (left, right) in ClassicalMarker.Common.bracketPairs {
-                if cleanLine.contains("\(left)\(dynastyName)\(right)")
-                    || cleanLine.contains("\(left)\(dynastyName)代\(right)") {
-                    logInfo("Found dynasty \(dynastyName) in brackets")
-                    return dynastyName
-                }
-            }
-
-            // Check dot format or prefix
-            if cleanLine.contains("·\(dynastyName)") || cleanLine.contains("\(dynastyName)·")
-                || cleanLine.hasPrefix(dynastyName) {
-                logInfo("Found dynasty \(dynastyName)")
-                return dynastyName
-            }
-        }
-
-        logInfo("No dynasty found")
-        return nil
-    }
-
-    /// Extract title from line, support both 《》format and dot format
-    ///
-    /// - Example:
-    ///     - "李白〔唐代〕《将进酒》" -> "将进酒"
-    ///     - "定风波·莫听穿林打叶声" -> "定风波"
-    ///     - "《定风波·莫听穿林打叶声》" -> "定风波"
-    ///     - "定风波" -> "定风波"
-    ///     - "《定风波》" -> "定风波"
-    func extractTitle() -> String? {
-        // Extract title from 《》if present
-        if cleanLine.contains("《"), cleanLine.contains("》") {
-            let titlePattern = "《([^》]+)》"
-            if let range = cleanLine.range(of: titlePattern, options: .regularExpression) {
-                let titleMatch = cleanLine[range]
-                return String(titleMatch)
-                    .replacingOccurrences(of: "《", with: "")
-                    .replacingOccurrences(of: "》", with: "")
-                    .components(separatedBy: "·")
-                    .first?
-                    .trimmingCharacters(in: .whitespaces)
-            }
-        } else if cleanLine.contains("·") {
-            // Extract title from dot separator format
-            return cleanLine.components(separatedBy: "·")
-                .first?
-                .replacingOccurrences(of: "令", with: "")
-                .trimmingCharacters(in: .whitespaces)
-        } else if !containsDynasty(), !containsAuthor() {
-            // If line has no dynasty or author markers, treat as title
-            return cleanLine
-        }
-        return nil
-    }
-
-    /// Extract author by removing dynasty and title markers
-    /// - Returns: Author name if found, nil otherwise
-    ///
-    /// - Example:
-    ///   - "李白【唐】" -> "李白"
-    ///   - "李白〔唐代〕" -> "李白"
-    ///   - "王维〔唐代〕" -> "王维"
-    ///   - "李白（南唐）" -> "李白"
-    ///   - "宋·苏轼" -> "苏轼"
-    ///   - "宋代·李白" -> "李白"
-    ///   - "唐·李白《将进酒》" -> "李白"
-    ///   - "—— 李白" -> "李白"
-    ///   - "李白《将进酒》" -> "李白"
-    ///   - "五代十国·李煜" -> "李煜"
-    func extractAuthor() -> String? {
-        var line = cleanLine
-
-        // Remove title part
-        if let titleRange = line.range(of: "《.*》", options: .regularExpression) {
-            line = line.replacingCharacters(in: titleRange, with: "")
-        }
-
-        // Remove dynasty markers
-        for dynasty in ClassicalMarker.Common.dynastyMarkers {
-            for (left, right) in ClassicalMarker.Common.bracketPairs {
-                let escapedLeft = NSRegularExpression.escapedPattern(for: left)
-                let escapedRight = NSRegularExpression.escapedPattern(for: right)
-                let pattern = "\(escapedLeft)\(dynasty)(代)?\(escapedRight)"
-
-                if let regex = try? NSRegularExpression(pattern: pattern) {
-                    let range = NSRange(line.startIndex..., in: line)
-                    line = regex.stringByReplacingMatches(
-                        in: line, range: range, withTemplate: ""
-                    )
-                }
-            }
-
-            // Remove dynasty with dot format
-            let dotFormats = [
-                "\(dynasty)代·", "\(dynasty)·",
-                "·\(dynasty)代", "·\(dynasty)",
-            ]
-
-            for format in dotFormats {
-                line = line.replacingOccurrences(of: format, with: "")
-            }
-        }
-
-        // Clean up and validate
-        line = line.trimmingCharacters(in: .whitespaces)
-            .replacingOccurrences(of: "·", with: "")
-
-        // Author name should be 2-4 characters
-        if !line.isEmpty, line.count >= 2, line.count <= 4 {
-            logInfo("Found author: \(line)")
-            return line
-        }
-
-        logInfo("No author found")
-        return nil
+        return (dynasty, author, title)
     }
 
     // MARK: Private
 
-    private func containsDynasty() -> Bool {
-        for dynasty in ClassicalMarker.Common.dynastyMarkers where cleanLine.contains(dynasty) {
-            return true
+    private let cleanLine: String
+    private let index: Int
+
+    /// Dynasty matched text with format, e.g. 〔唐代〕, [唐], ·唐·
+    private var dynastyText: String?
+
+    /// Title matched text with format, e.g. 《定风波·莫听穿林打叶声》,《定风波》, 定风波·莫听穿林打叶声
+    private var titleText: String?
+
+    /// Author matched text, cleanLine remove dynastyText and titleText
+    private var authorText: String?
+
+    // MARK: - Format Text Extraction
+
+    /// Extract formatted text first
+    private func extractFormattedText() {
+        var remainingText = cleanLine
+
+        // 1. Extract title text with brackets 《》
+        if let range = findBracketRange("《", "》", in: remainingText) {
+            titleText = String(remainingText[range])
+            remainingText = remainingText.replacingCharacters(in: range, with: "")
         }
-        return false
-    }
 
-    private func containsAuthor() -> Bool {
-        let line = cleanLine.trimmingCharacters(in: .whitespaces)
-        return line.count >= 2 && line.count <= 4 && containsDynasty()
-    }
+        // 2. Extract dynasty text
+        for dynastyName in ClassicalMarker.Common.dynastyMarkers where remainingText.contains(dynastyName) {
+            // Try bracket format first
+            if let format = findDynastyBracketFormat(dynastyName, in: remainingText) {
+                dynastyText = format
+                if let range = remainingText.range(of: format) {
+                    remainingText = remainingText.replacingCharacters(in: range, with: "")
+                }
+                break
+            }
 
-    /// Check if line contains dynasty marker
-    private func hasDynastyMarker(_ line: String) -> Bool {
-        for dynasty in ClassicalMarker.Common.dynastyMarkers where line.contains(dynasty) {
-            return true
+            // Try dot format
+            if let format = findDynastyDotFormat(dynastyName, in: remainingText) {
+                dynastyText = format
+                if let range = remainingText.range(of: format) {
+                    remainingText = remainingText.replacingCharacters(in: range, with: "")
+                }
+                break
+            }
         }
-        return false
+
+        // 3. If no title in brackets, try dot format
+        if titleText == nil {
+            if remainingText.contains("·") {
+                titleText = remainingText.components(separatedBy: "·").first.map { "\($0)·" }
+                if let titleText = titleText,
+                   let range = remainingText.range(of: titleText) {
+                    remainingText = remainingText.replacingCharacters(in: range, with: "")
+                }
+            } else if index == 0 {
+                titleText = remainingText
+                remainingText = ""
+            }
+        }
+
+        // 4. Set author text as remaining text
+        if !remainingText.isEmpty {
+            authorText = remainingText.trimmingCharacters(in: .whitespaces)
+        }
     }
 
-    /// Check if line matches author patterns
-    private func hasAuthorMarker(_ line: String) -> Bool {
-        // Author name usually 2-4 characters
-        let cleanLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-        return cleanLine.count >= 2 && cleanLine.count <= 4 && hasDynastyMarker(line)
+    // MARK: - Content Extraction
+
+    private func extractDynasty() -> String? {
+        guard let dynastyText = dynastyText else { return nil }
+
+        // Sort dynasty markers by length
+        let sortedDynastyMarkers = ClassicalMarker.Common.dynastyMarkers.sorted { $0.count > $1.count }
+
+        for dynasty in sortedDynastyMarkers where dynastyText.contains(dynasty) {
+            return validateLength(dynasty, for: .dynasty)
+        }
+
+        return nil
+    }
+
+    private func extractTitle() -> String? {
+        guard let titleText = titleText else { return nil }
+
+        // Remove brackets and get first part before ·
+        var title =
+            titleText
+                .replacingOccurrences(of: "《", with: "")
+                .replacingOccurrences(of: "》", with: "")
+
+        if title.contains("·") {
+            title = title.components(separatedBy: "·").first ?? title
+        }
+
+        return validateLength(title.trimmingCharacters(in: .whitespaces), for: .title)
+    }
+
+    private func extractAuthor() -> String? {
+        validateLength(authorText, for: .author)
+    }
+
+    // MARK: - Helper Methods
+
+    private func findBracketRange(_ left: String, _ right: String, in text: String) -> Range<
+        String.Index
+    >? {
+        guard let leftRange = text.range(of: left),
+              let rightRange = text.range(of: right, range: leftRange.upperBound ..< text.endIndex)
+        else { return nil }
+
+        return leftRange.lowerBound ..< rightRange.upperBound
+    }
+
+    private func findDynastyBracketFormat(_ dynasty: String, in text: String) -> String? {
+        for (left, right) in ClassicalMarker.Common.bracketPairs {
+            let patterns = [
+                "\(left)\(dynasty)\(right)",
+                "\(left)\(dynasty)代\(right)",
+                "\(left)\(dynasty)朝\(right)",
+            ]
+
+            for pattern in patterns where text.contains(pattern) {
+                return pattern
+            }
+        }
+        return nil
+    }
+
+    private func findDynastyDotFormat(_ dynasty: String, in text: String) -> String? {
+        let patterns = [
+            "·\(dynasty)·",
+            "\(dynasty)·",
+            "·\(dynasty)",
+            "\(dynasty)代·",
+            "·\(dynasty)代",
+        ]
+
+        return patterns.first { text.contains($0) }
+    }
+
+    private func validateLength(_ content: String?, for type: MetadataType) -> String? {
+        guard let content = content,
+              !content.isEmpty,
+              type.lengthRange.contains(content.count)
+        else { return nil }
+        return content
+    }
+
+    private func cleanFormat(_ text: String) -> String {
+        text.replacing("——", with: "")
+            .replacing(try! Regex("\\s*·\\s*"), with: "·")
+            .trimmingCharacters(in: .whitespaces)
     }
 }
+
+// MARK: - String Extensions
 
 extension String {
     fileprivate func cleanFormat() -> String {
         replacingOccurrences(of: "——", with: "")
-            .replacingOccurrences(of: " · ", with: "·")
-            .replacingOccurrences(of: "：", with: "·")
+            .replacing(try! Regex("\\s*·\\s*"), with: "·") // #/\s*·\s*/#
             .trimmingCharacters(in: .whitespaces)
-    }
-
-    fileprivate func firstMatch(pattern: String) -> String? {
-        guard let range = range(of: pattern, options: .regularExpression),
-              let match = self[range].components(
-                  separatedBy: CharacterSet(charactersIn: "《》[]()（）【】〔〕")
-              ).first
-        else { return nil }
-        return String(match)
     }
 }

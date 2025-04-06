@@ -244,7 +244,8 @@ class ChineseDetection {
         ].compactMap { $0 }
 
         for (line, index) in linesToCheck where isTitleOrAuthorLine(line) {
-            let metadata = extractMetadata(from: line)
+            let extractor = MetadataExtractor(line: line, index: index)
+            let metadata = extractor.extract()
 
             // Found new title
             if title == nil, let extractedTitle = metadata.title {
@@ -334,32 +335,4 @@ class ChineseDetection {
     // MARK: Private
 
     private var analysis: ChineseTextAnalysis?
-
-    // MARK: - Private Methods
-
-    /// Extract metadata (dynasty, author, title) from a line
-    /// - Parameter line: Input line to extract metadata from
-    /// - Returns: Tuple containing extracted dynasty, author and title
-    ///
-    /// - Example:
-    ///     - "唐·李白《将进酒》" -> ("唐", "李白", "将进酒")
-    ///     - "—— 宋·苏轼《定风波·莫听穿林打叶声》" -> ("宋", "苏轼", "定风波")
-    ///     - "李白 [唐]：将进酒" -> ("唐", "李白", "将进酒")
-    ///     - "定风波·莫听穿林打叶声" -> (nil, nil, "定风波")
-    ///     - "—— 唐 · 李白" -> ("唐", "李白", nil)
-    ///     - "将进酒" -> (nil, nil, "将进酒")
-    ///     - "李白〔唐代〕" -> ("唐", "李白", nil)
-    ///     - "—— 五代十国 · 李煜" -> ("五代十国", "李煜", nil)
-    private func extractMetadata(from line: String) -> (
-        dynasty: String?, author: String?, title: String?
-    ) {
-        guard !line.isEmpty, line.count <= 20 else { return (nil, nil, nil) }
-
-        let extractor = MetadataExtractor(line)
-        let dynasty = extractor.extractDynasty()
-        let title = extractor.extractTitle()
-        let author = extractor.extractAuthor()
-
-        return (dynasty, author, title)
-    }
 }
