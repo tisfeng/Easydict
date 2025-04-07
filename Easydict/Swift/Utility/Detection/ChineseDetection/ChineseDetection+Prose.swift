@@ -54,15 +54,15 @@ extension ChineseDetection {
         if contentInfo.phraseAnalysis.phrases.count >= 8,
            contentInfo.phraseAnalysis.averageLength < 8,
            contentInfo.modernChineseRatio < 0.05 {
-            logInfo("✅ Prose, phrase average length < 7, and modern Chinese ratio < 0.05.")
+            logInfo("✅ Prose, phrase average length < 8, and modern Chinese ratio < 0.05.")
             return true
         }
 
-        if contentInfo.phraseAnalysis.averageLength < 8,
+        if contentInfo.phraseAnalysis.averageLength < 9,
            contentInfo.classicalChineseRatio > 0.1,
            contentInfo.modernChineseRatio < 0.05 {
             logInfo(
-                "✅ Prose, phrase average length < 7, and classical ratio > 0.1, and modern ratio < 0.05."
+                "✅ Prose, phrase average length < 9, and classical ratio > 0.1, and modern ratio < 0.05."
             )
             return true
         }

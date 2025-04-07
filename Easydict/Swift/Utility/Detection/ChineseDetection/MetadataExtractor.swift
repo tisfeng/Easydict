@@ -17,8 +17,8 @@ class MetadataExtractor {
     // MARK: - Initialization
 
     init(line: String, index: Int) {
+        self.line = line
         self.index = index
-        self.cleanLine = line.cleanFormat()
     }
 
     // MARK: Internal
@@ -45,7 +45,7 @@ class MetadataExtractor {
 
     /// Extract metadata from line
     func extract() -> (dynasty: String?, author: String?, title: String?) {
-        guard !cleanLine.isEmpty, cleanLine.count <= 20 else { return (nil, nil, nil) }
+        guard !line.isEmpty, line.count <= 20 else { return (nil, nil, nil) }
 
         // Step 1: Extract formatted text with markers
         extractFormattedText()
@@ -60,10 +60,10 @@ class MetadataExtractor {
 
     // MARK: Private
 
-    private let cleanLine: String
+    private let line: String
     private let index: Int
 
-    /// Dynasty matched text with format, e.g. 〔唐代〕, [唐], ·唐·
+    /// Dynasty matched text with format, e.g. 〔唐代〕, [唐], 唐·
     private var dynastyText: String?
 
     /// Title matched text with format, e.g. 《定风波·莫听穿林打叶声》,《定风波》, 定风波·莫听穿林打叶声
@@ -76,12 +76,15 @@ class MetadataExtractor {
 
     /// Extract formatted text first
     private func extractFormattedText() {
-        var remainingText = cleanLine
+        // Format line, remove unnecessary characters
+        var remainingText = line.replacing("——", with: "")
+            .replacing(#/\s*·\s*/#, with: "·") // Remove extra spaces around dot
+            .trimmingCharacters(in: .whitespaces)
 
-        // 1. Extract title text with brackets 《》
-        if let range = findBracketRange("《", "》", in: remainingText) {
-            titleText = String(remainingText[range])
-            remainingText = remainingText.replacingCharacters(in: range, with: "")
+        // 1. Extract title text with brackets 《》: 《定风波·莫听穿林打叶声》
+        if let match = remainingText.firstMatch(of: #/《.*》/#) {
+            titleText = String(match.0)
+            remainingText.replace(match.0, with: " ")
         }
 
         // 2. Extract dynasty text
@@ -89,39 +92,42 @@ class MetadataExtractor {
             // Try bracket format first
             if let format = findDynastyBracketFormat(dynastyName, in: remainingText) {
                 dynastyText = format
-                if let range = remainingText.range(of: format) {
-                    remainingText = remainingText.replacingCharacters(in: range, with: "")
-                }
+                remainingText.replace(format, with: " ")
                 break
             }
 
             // Try dot format
             if let format = findDynastyDotFormat(dynastyName, in: remainingText) {
                 dynastyText = format
-                if let range = remainingText.range(of: format) {
-                    remainingText = remainingText.replacingCharacters(in: range, with: "")
-                }
+                remainingText.replace(format, with: " ")
                 break
             }
         }
 
-        // 3. If no title in brackets, try dot format
+        // 3. If no title in brackets, try dot format: 定风波·莫听穿林打叶声
         if titleText == nil {
-            if remainingText.contains("·") {
-                titleText = remainingText.components(separatedBy: "·").first.map { "\($0)·" }
-                if let titleText = titleText,
-                   let range = remainingText.range(of: titleText) {
-                    remainingText = remainingText.replacingCharacters(in: range, with: "")
-                }
+            // Equal literal regex: /.*·.*/
+            let titleRegex = Regex {
+                ZeroOrMore(.any)
+                "·"
+                ZeroOrMore(.any)
+            }
+
+            if let match = remainingText.firstMatch(of: titleRegex) {
+                let title = String(match.0)
+                titleText = title
+                remainingText.replace(title, with: "")
             } else if index == 0 {
                 titleText = remainingText
                 remainingText = ""
             }
         }
 
+        remainingText = remainingText.trimmingCharacters(in: .whitespaces)
+
         // 4. Set author text as remaining text
         if !remainingText.isEmpty {
-            authorText = remainingText.trimmingCharacters(in: .whitespaces)
+            authorText = remainingText
         }
     }
 
@@ -140,20 +146,26 @@ class MetadataExtractor {
         return nil
     }
 
+    /// Extract title from line, support both 《》format and dot format
+    ///
+    /// - Example:
+    ///     - "李白〔唐代〕《将进酒》" -> "将进酒"
+    ///     - "定风波·莫听穿林打叶声" -> "定风波"
+    ///     - "《定风波·莫听穿林打叶声》" -> "定风波"
+    ///     - "定风波" -> "定风波"
+    ///     - "《定风波》" -> "定风波"
     private func extractTitle() -> String? {
-        guard let titleText = titleText else { return nil }
+        guard var title = titleText else { return nil }
 
-        // Remove brackets and get first part before ·
-        var title =
-            titleText
-                .replacingOccurrences(of: "《", with: "")
-                .replacingOccurrences(of: "》", with: "")
+        // Remove brackets 《》 from title text
+        title.replace("《", with: "")
+        title.replace("》", with: "")
 
-        if title.contains("·") {
-            title = title.components(separatedBy: "·").first ?? title
-        }
+        // Get the first part of title if contains dot
+        title = title.components(separatedBy: "·").first ?? title
+        title = title.trimmingCharacters(in: .whitespaces)
 
-        return validateLength(title.trimmingCharacters(in: .whitespaces), for: .title)
+        return validateLength(title, for: .title)
     }
 
     private func extractAuthor() -> String? {
@@ -161,16 +173,6 @@ class MetadataExtractor {
     }
 
     // MARK: - Helper Methods
-
-    private func findBracketRange(_ left: String, _ right: String, in text: String) -> Range<
-        String.Index
-    >? {
-        guard let leftRange = text.range(of: left),
-              let rightRange = text.range(of: right, range: leftRange.upperBound ..< text.endIndex)
-        else { return nil }
-
-        return leftRange.lowerBound ..< rightRange.upperBound
-    }
 
     private func findDynastyBracketFormat(_ dynasty: String, in text: String) -> String? {
         for (left, right) in ClassicalMarker.Common.bracketPairs {
@@ -200,26 +202,7 @@ class MetadataExtractor {
     }
 
     private func validateLength(_ content: String?, for type: MetadataType) -> String? {
-        guard let content = content,
-              !content.isEmpty,
-              type.lengthRange.contains(content.count)
-        else { return nil }
+        guard let content, type.lengthRange.contains(content.count) else { return nil }
         return content
-    }
-
-    private func cleanFormat(_ text: String) -> String {
-        text.replacing("——", with: "")
-            .replacing(try! Regex("\\s*·\\s*"), with: "·")
-            .trimmingCharacters(in: .whitespaces)
-    }
-}
-
-// MARK: - String Extensions
-
-extension String {
-    fileprivate func cleanFormat() -> String {
-        replacingOccurrences(of: "——", with: "")
-            .replacing(try! Regex("\\s*·\\s*"), with: "·") // #/\s*·\s*/#
-            .trimmingCharacters(in: .whitespaces)
     }
 }
