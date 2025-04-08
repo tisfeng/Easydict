@@ -118,13 +118,20 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
             viewModel.isValidating = false
             viewModel.isAlertPresented = true
 
-            logInfo("\(service.serviceType().rawValue) validate \(viewModel.alertTitle)")
+            let alertTitle = NSLocalizedString(viewModel.alertTitle.stringKey!, comment: "")
+            logInfo("\(service.serviceType().rawValue) \(alertTitle)")
         }
     }
 
     // MARK: Private
 
     @ObservedObject private var viewModel: ServiceValidationViewModel
+}
+
+extension LocalizedStringKey {
+    var stringKey: String? {
+        Mirror(reflecting: self).children.first(where: { $0.label == "key" })?.value as? String
+    }
 }
 
 // MARK: - ServiceValidationViewModel
