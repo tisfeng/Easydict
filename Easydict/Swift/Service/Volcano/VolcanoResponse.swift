@@ -53,9 +53,23 @@ struct VolcanoResponseMetadata: Decodable {
 struct VolcanoTranslation: Decodable {
     // MARK: Internal
 
+    struct Extra: Decodable {
+        // MARK: Internal
+
+        let sourceLanguage: String
+        let inputCharacters: String
+
+        // MARK: Private
+
+        private enum CodingKeys: String, CodingKey {
+            case sourceLanguage = "source_language"
+            case inputCharacters = "input_characters"
+        }
+    }
+
     let translation: String
     let detectedSourceLanguage: String
-    let extra: String?
+    let extra: Extra?
 
     // MARK: Private
 

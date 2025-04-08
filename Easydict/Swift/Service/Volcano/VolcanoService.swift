@@ -44,6 +44,7 @@ public final class VolcanoService: QueryService {
         VolcanoTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
+    /// Volcano Translate API: https://www.volcengine.com/docs/4640/65067
     override public func translate(
         _ text: String,
         from: Language,
