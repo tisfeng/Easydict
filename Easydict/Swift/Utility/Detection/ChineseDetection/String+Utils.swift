@@ -23,30 +23,16 @@ extension String {
         components(separatedBy: .punctuationCharacters).joined()
     }
 
-    /// Alternative punctuation removal using regex pattern.
-    /// More flexible but potentially slower than removeAllPunctuation().
-    /// - Returns: String with punctuation removed
-    func removePunctuation2() -> String {
-        let pattern = "[\\p{P}]"
-        let regex = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
-        return regex.stringByReplacingMatches(
-            in: self,
-            options: [],
-            range: NSRange(location: 0, length: count),
-            withTemplate: ""
-        )
-    }
-
     // MARK: - Feature Detection Methods
 
     /// Calculate the ratio of classical Chinese characters in text
     func calculateClassicalChineseMarkerRatio() -> Double {
-        calculateLinguisticFeatureRatio(for: ClassicalMarker.Prose.particles)
+        calculateLinguisticFeatureRatio(for: ChinseseMarker.Prose.particles)
     }
 
     /// Calculate the ratio of modern Chinese characters in text
     func calculateModernChineseMarkerRatio() -> Double {
-        calculateLinguisticFeatureRatio(for: ClassicalMarker.Modern.particles)
+        calculateLinguisticFeatureRatio(for: ChinseseMarker.Modern.particles)
     }
 
     func calculateLinguisticFeatureRatio(for features: [String]) -> Double {

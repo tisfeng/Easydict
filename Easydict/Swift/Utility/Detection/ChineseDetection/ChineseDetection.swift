@@ -117,6 +117,7 @@ class ChineseDetection {
     /// - Returns: Structural similarity score (0.0 to 1.0)
     func compareStructuralPatterns(_ line1: String, _ line2: String) -> Double {
         let minCount = min(line1.count, line2.count)
+        let maxCount = max(line1.count, line2.count)
         guard minCount > 0 else { return 0.0 }
 
         var matchCount = 0
@@ -134,18 +135,21 @@ class ChineseDetection {
             }
         }
 
-        return Double(matchCount) / Double(minCount)
+        return Double(matchCount) / Double(maxCount)
     }
 
-    /// Split text into lines with advanced options
+    /// Split text into lines with separators.
     /// - Parameters:
     ///   - text: Input text to split
-    ///   - clean: Whether to clean the text (remove spaces, empty lines), default is true
-    ///   - separators: Additional separators to split lines, default is nil
+    ///   - separators: Additional separators to split lines, default is "\n".
+    /// - Returns: Array of lines
+    ///
+    /// - Note:
+    /// If the text contains only one line, split it with "。"
     func splitTextIntoLines(_ text: String, separators: [String] = ["\n"]) -> [String] {
         let lines = splitIntoShortPhrases(text, separators: separators)
 
-        // If we have only one line and separators, try to split it
+        // If only one line, try to split it with "。"
         if lines.count == 1, let singleLine = lines.first {
             return splitIntoShortPhrases(singleLine, separators: ["。"])
         }
@@ -161,7 +165,7 @@ class ChineseDetection {
     /// - Returns: Array of non-empty phrases with whitespace trimmed
     func splitIntoShortPhrases(
         _ line: String,
-        separators: [String] = ClassicalMarker.Common.lineSeparators
+        separators: [String] = ChinseseMarker.Common.lineSeparators
     )
         -> [String] {
         var phrases = [line]
@@ -180,7 +184,7 @@ class ChineseDetection {
         !line.contains { char in
             let charStr = String(char)
             return charStr.rangeOfCharacter(from: .punctuationCharacters) != nil
-                && !ClassicalMarker.Common.metaPunctuationCharacters.contains(charStr)
+                && !ChinseseMarker.Common.metaPunctuationCharacters.contains(charStr)
         }
     }
 
@@ -291,7 +295,7 @@ class ChineseDetection {
 
         for i in 0 ..< lines.count - 1 {
             let similarity = compareStructuralPatterns(lines[i], lines[i + 1])
-            if similarity >= 0.8 { // Consider as parallel if similarity >= 80%
+            if similarity >= 0.9 { // Consider as parallel if similarity >= 90%
                 parallelCount += 1
             }
             totalComparisons += 1

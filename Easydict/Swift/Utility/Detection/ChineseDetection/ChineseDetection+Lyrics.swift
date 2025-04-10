@@ -47,7 +47,7 @@ extension ChineseDetection {
     /// - Returns: Tuple of (pattern, [expectedCount]) if found, nil otherwise
     func hasCiTunePattern(in title: String?) -> (pattern: String, count: [Int])? {
         guard let title = title,
-              let pattern = ClassicalMarker.LyricPoetry.tunePatterns.first(where: {
+              let pattern = ChinseseMarker.LyricPoetry.tunePatterns.first(where: {
                   title.contains($0.key)
               })
         else { return nil }

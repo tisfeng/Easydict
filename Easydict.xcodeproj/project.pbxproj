@@ -273,7 +273,7 @@
 		03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = 03E534BB2CE0D38C00B37264 /* AcknowList */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
-		03F2815D2D98E7DF00AE518C /* ClassicalMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */; };
+		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
@@ -818,7 +818,7 @@
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
-		03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicalMarker.swift; sourceTree = "<group>"; };
+		03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChinseseMarker.swift; sourceTree = "<group>"; };
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
@@ -2336,7 +2336,7 @@
 				03F281562D97A22500AE518C /* String+ClassicalChinese.swift */,
 				03F2815E2D9A323700AE518C /* String+Utils.swift */,
 				03D5C4C72D9D1EE70054D0D4 /* ChineseTextAnalysis.swift */,
-				03F2815C2D98E7DF00AE518C /* ClassicalMarker.swift */,
+				03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */,
 				03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */,
 			);
 			path = ChineseDetection;
@@ -3365,7 +3365,7 @@
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
-				03F2815D2D98E7DF00AE518C /* ClassicalMarker.swift in Sources */,
+				03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */,
 				0340D39B2C93DC1B004C9910 /* Constants.swift in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
 				03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */,

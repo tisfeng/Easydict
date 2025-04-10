@@ -88,7 +88,7 @@ class MetadataExtractor {
         }
 
         // 2. Extract dynasty text
-        for dynastyName in ClassicalMarker.Common.dynastyMarkers where remainingText.contains(dynastyName) {
+        for dynastyName in ChinseseMarker.Common.dynastyMarkers where remainingText.contains(dynastyName) {
             // Try bracket format first
             if let format = findDynastyBracketFormat(dynastyName, in: remainingText) {
                 dynastyText = format
@@ -137,7 +137,7 @@ class MetadataExtractor {
         guard let dynastyText = dynastyText else { return nil }
 
         // Sort dynasty markers by length
-        let sortedDynastyMarkers = ClassicalMarker.Common.dynastyMarkers.sorted { $0.count > $1.count }
+        let sortedDynastyMarkers = ChinseseMarker.Common.dynastyMarkers.sorted { $0.count > $1.count }
 
         for dynasty in sortedDynastyMarkers where dynastyText.contains(dynasty) {
             return validateLength(dynasty, for: .dynasty)
@@ -175,7 +175,7 @@ class MetadataExtractor {
     // MARK: - Helper Methods
 
     private func findDynastyBracketFormat(_ dynasty: String, in text: String) -> String? {
-        for (left, right) in ClassicalMarker.Common.bracketPairs {
+        for (left, right) in ChinseseMarker.Common.bracketPairs {
             let patterns = [
                 "\(left)\(dynasty)\(right)",
                 "\(left)\(dynasty)代\(right)",
