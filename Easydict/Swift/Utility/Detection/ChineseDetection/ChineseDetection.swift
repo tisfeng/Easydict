@@ -28,78 +28,32 @@ class ChineseDetection {
     // MARK: - Public Methods
 
     /// Detect the type of Chinese text and return analysis result
-    func detect() -> ChineseTextAnalysis {
+    func detect() -> ChineseAnalysis {
         logInfo("\nStarting Chinese text detection...")
 
-        // If already analyzed, return cached result
-        if let analysis = analysis {
+        if let analysis {
             return analysis
         }
 
-        // Initialize detection process
         let lines = splitTextIntoLines(originalText)
-        let metadata = findTitleAndAuthor(in: lines)
-
-        // Extract content without metadata
-        let content = removeMetadataLines(
-            from: lines,
-            titleIndex: metadata.titleIndex,
-            authorIndex: metadata.authorIndex
-        ).joined(separator: "\n")
-
-        logInfo("\nStarting analysis...")
-
-        // Analyze content structure
-        let contentInfo = analyzeStructure(content)
-        logInfo("\nContent analysis:")
-        logInfo("===================================================")
-        logInfo("- Content: \(content)")
-        logInfo("- Title: \(metadata.title ?? "")")
-        logInfo("- Author: \(metadata.author ?? "")")
-        logInfo("- Dynasty: \(metadata.dynasty ?? "")")
-        logInfo("- Phrases count: \(contentInfo.phraseAnalysis.phrases.count)")
-        logInfo("- Total characters: \(contentInfo.text.count)")
-        logInfo("- Punctuation count: \(contentInfo.punctuationCount)")
-        logInfo("- Punctuation ratio: \(contentInfo.punctuationRatio)")
-        logInfo("- Text characters: \(contentInfo.textCharCount)")
-        logInfo("- Parallel structure ratio: \(contentInfo.parallelStructureRatio)")
-        logInfo("- Average phrase length: \(contentInfo.phraseAnalysis.averageLength)")
-        logInfo("- Max phrase length: \(contentInfo.phraseAnalysis.maxLength)")
-        logInfo("- Min phrase length: \(contentInfo.phraseAnalysis.minLength)")
-        logInfo("- Uniform phrase length: \(contentInfo.phraseAnalysis.isUniformLength)")
-        logInfo("- Modern Chinese marker ratio: \(contentInfo.modernChineseRatio)")
-        logInfo("- Classical Chinese marker ratio: \(contentInfo.classicalChineseRatio)")
-        logInfo("===================================================")
+        let analysis = analyzeStructure(lines)
 
         // Determine text genre
-        let detectedGenre: Genre
-        if contentInfo.hasHighModernChineseMarkerRatio() {
+        let detectedGenre: ChineseAnalysis.Genre
+        if analysis.hasHighModernChineseMarkerRatio() {
             detectedGenre = .modern
-        } else if isClassicalPoetry(contentInfo) {
+        } else if isClassicalPoetry(analysis) {
             detectedGenre = .poetry
-        } else if isClassicalLyrics(contentInfo, title: metadata.title) {
+        } else if isClassicalLyrics(analysis) {
             detectedGenre = .lyric
-        } else if isClassicalProse(contentInfo) {
+        } else if isClassicalProse(analysis) {
             detectedGenre = .prose
         } else {
             detectedGenre = .modern
         }
 
-        // Create and cache analysis result
-        let result = ChineseTextAnalysis(
-            contentInfo: contentInfo,
-            originalText: originalText,
-            lines: lines,
-            content: content,
-            title: metadata.title,
-            author: metadata.author,
-            dynasty: metadata.dynasty,
-            titleIndex: metadata.titleIndex,
-            authorIndex: metadata.authorIndex,
-            genre: detectedGenre,
-        )
-
-        analysis = result
+        let result = analysis.with(genre: detectedGenre)
+        self.analysis = result
         return result
     }
 
@@ -146,7 +100,12 @@ class ChineseDetection {
     ///
     /// - Note:
     /// If the text contains only one line, split it with "。"
-    func splitTextIntoLines(_ text: String, separators: [String] = ["\n"]) -> [String] {
+    func splitTextIntoLines(
+        _ text: String,
+        separators: [String] = ["\n"],
+        omittingEmptySubsequences: Bool = true
+    )
+        -> [String] {
         let lines = splitIntoShortPhrases(text, separators: separators)
 
         // If only one line, try to split it with "。"
@@ -165,7 +124,8 @@ class ChineseDetection {
     /// - Returns: Array of non-empty phrases with whitespace trimmed
     func splitIntoShortPhrases(
         _ line: String,
-        separators: [String] = ChinseseMarker.Common.lineSeparators
+        separators: [String] = ChinseseMarker.Common.lineSeparators,
+        omittingEmptySubsequences: Bool = true
     )
         -> [String] {
         var phrases = [line]
@@ -173,10 +133,12 @@ class ChineseDetection {
             phrases = phrases.flatMap { $0.components(separatedBy: separator) }
         }
 
-        return
-            phrases
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
+        phrases = phrases.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+        if omittingEmptySubsequences {
+            phrases = phrases.filter { !$0.isEmpty }
+        }
+        return phrases
     }
 
     /// Check if line only contains meta punctuation marks in metadata
@@ -218,20 +180,13 @@ class ChineseDetection {
 
     /// Find title and author in classical Chinese text
     /// - Parameter lines: Array of text lines
-    /// - Returns: Tuple containing:
-    ///   - title: Title text if found
-    ///   - author: Author text if found
-    ///   - dynasty: Dynasty text if found
-    ///   - titleIndex: Index of title line
-    ///   - authorIndex: Index of author line
-    func findTitleAndAuthor(in lines: [String]) -> (
-        title: String?,
-        author: String?,
-        dynasty: String?,
-        titleIndex: Int?,
-        authorIndex: Int?
-    ) {
-        guard lines.count >= 2 else { return (nil, nil, nil, nil, nil) }
+    /// - Returns: Metadata information containing title, author, dynasty and their indices
+    func findTitleAndAuthor(in lines: [String]) -> ChineseAnalysis.Metadata {
+        guard lines.count >= 2 else {
+            return ChineseAnalysis.Metadata(
+                title: nil, author: nil, dynasty: nil, titleIndex: nil, authorIndex: nil
+            )
+        }
 
         var titleIndex: Int?
         var authorIndex: Int?
@@ -269,7 +224,13 @@ class ChineseDetection {
             }
         }
 
-        return (title, author, dynasty, titleIndex, authorIndex)
+        return ChineseAnalysis.Metadata(
+            title: title,
+            author: author,
+            dynasty: dynasty,
+            titleIndex: titleIndex,
+            authorIndex: authorIndex
+        )
     }
 
     /// Check if a line could be a title or author line based on length and punctuation
@@ -281,21 +242,31 @@ class ChineseDetection {
         return hasOnlyMetaPunctuation(line)
     }
 
-    /// Analyze the structure of content and return detailed information
-    func analyzeStructure(_ content: String) -> ContentInfo {
+    /// Analyze the structure and return analysis result
+    func analyzeStructure(_ lines: [String]) -> ChineseAnalysis {
+        // Extract metadata
+        let metadata = findTitleAndAuthor(in: lines)
+
+        // Extract content without metadata
+        let content = removeMetadataLines(
+            from: lines,
+            titleIndex: metadata.titleIndex,
+            authorIndex: metadata.authorIndex
+        ).joined(separator: "\n")
+
         // Count characters and punctuation
         let totalCount = content.count
         let punctCount = content.filter { $0.isPunctuation }.count
         let punctRatio = Double(punctCount) / Double(totalCount)
 
         // Analyze parallel structure
-        let lines = splitTextIntoLines(content)
+        let contentLines = splitTextIntoLines(content)
         var parallelCount = 0
         var totalComparisons = 0
 
-        for i in 0 ..< lines.count - 1 {
-            let similarity = compareStructuralPatterns(lines[i], lines[i + 1])
-            if similarity >= 0.9 { // Consider as parallel if similarity >= 90%
+        for i in 0 ..< contentLines.count - 1 {
+            let similarity = compareStructuralPatterns(contentLines[i], contentLines[i + 1])
+            if similarity >= 0.9 {
                 parallelCount += 1
             }
             totalComparisons += 1
@@ -313,7 +284,7 @@ class ChineseDetection {
         let minLength = phraseLengths.min() ?? 0
         let isUniform = Set(phraseLengths).count == 1
 
-        let phraseAnalysis = ContentInfo.PhraseAnalysis(
+        let phraseAnalysis = ChineseAnalysis.PhraseAnalysis(
             averageLength: avgLength,
             maxLength: maxLength,
             minLength: minLength,
@@ -323,10 +294,13 @@ class ChineseDetection {
 
         let textCount = phraseLengths.reduce(0, +)
 
-        return ContentInfo(
+        return ChineseAnalysis(
+            originalText: originalText,
+            content: content,
+            metadata: metadata,
             phraseAnalysis: phraseAnalysis,
-            text: content,
-            lines: lines,
+            genre: .modern, // Default genre, will be updated later
+            lines: contentLines,
             textCharCount: textCount,
             punctuationCount: punctCount,
             punctuationRatio: punctRatio,
@@ -338,5 +312,5 @@ class ChineseDetection {
 
     // MARK: Private
 
-    private var analysis: ChineseTextAnalysis?
+    private var analysis: ChineseAnalysis?
 }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - String with Punctuation
+
 extension String {
     /// Remove specific punctuation marks from text.
     /// - Parameter punctuations: Array of punctuation strings to remove
@@ -35,6 +37,7 @@ extension String {
         calculateLinguisticFeatureRatio(for: ChinseseMarker.Modern.particles)
     }
 
+    /// Calculate the ratio of specific linguistic features in text
     func calculateLinguisticFeatureRatio(for features: [String]) -> Double {
         let cleanText = removeAllPunctuation().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanText.isEmpty else { return 0.0 }
@@ -76,5 +79,59 @@ extension String {
         }
 
         return Double(punctuationCount) / Double(text.count)
+    }
+}
+
+// MARK: - Split Text into Lines
+
+// This extension provides functionality to split text into lines based on specified separators.
+
+extension String {
+    /// Split text into lines with separators.
+    /// - Parameters:
+    ///   - separators: Additional separators to split lines, default is "\n".
+    ///   - omittingEmptySubsequences: Whether to omit empty subsequences, default is true.
+    /// - Returns: Array of lines
+    ///
+    /// - Note:
+    /// If the text contains only one line, split it with "。"
+    func splitTextIntoLines(
+        separators: [String] = ["\n"],
+        omittingEmptySubsequences: Bool = true
+    )
+        -> [String] {
+        let lines = splitIntoShortPhrases(separators: separators)
+
+        // If only one line, try to split it with "。"
+        if lines.count == 1, let singleLine = lines.first {
+            return singleLine.splitIntoShortPhrases(separators: ["。"])
+        }
+
+        return lines
+    }
+
+    /// Split a string into phrases using specified separators.
+    /// Used to analyze the internal structure of classical Chinese text.
+    /// - Parameters:
+    ///   - separators: Array of separator strings, defaults to classical Chinese punctuation
+    ///   - omittingEmptySubsequences: Whether to omit empty subsequences, default is true.
+    /// - Returns: Array of non-empty phrases with whitespace trimmed
+    func splitIntoShortPhrases(
+        separators: [String] = ChinseseMarker.Common.lineSeparators,
+        omittingEmptySubsequences: Bool = true
+    )
+        -> [String] {
+        var phrases = [self]
+        for separator in separators {
+            phrases = phrases.flatMap { $0.components(separatedBy: separator) }
+        }
+
+        phrases = phrases.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+        if omittingEmptySubsequences {
+            phrases = phrases.filter { !$0.isEmpty }
+        }
+
+        return phrases
     }
 }

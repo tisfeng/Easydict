@@ -10,30 +10,27 @@ import Foundation
 
 extension ChineseDetection {
     /// Detect if the text is Chinese classical Lyrics (词)
-    func isClassicalLyrics(_ contentInfo: ContentInfo, title: String?) -> Bool {
+    func isClassicalLyrics(_ analysis: ChineseAnalysis) -> Bool {
         logInfo("\n----- Classical Lyrics Detection -----")
 
-        if contentInfo.textCharCount < 10, contentInfo.phraseAnalysis.phrases.count < 2 {
+        if analysis.textCharCount < 10, analysis.phraseAnalysis.phrases.count < 2 {
             logInfo("Text is too short to be considered classical lyrics.")
             return false
         }
 
         // Check if we have a valid tune pattern from title
-        if let title, let pattern = hasCiTunePattern(in: title) {
+        if let title = analysis.metadata.title,
+           let pattern = hasCiTunePattern(in: title) {
             logInfo("Found Ci tune pattern: \(pattern.pattern)")
 
-            // If character count matches the tune pattern, it's a strong signal
-            if matchesCiTuneCharacterCounts(
-                contentInfo, tunePattern: pattern
-            ) {
+            if matchesCiTuneCharacterCounts(analysis, tunePattern: pattern) {
                 logInfo("✅ Lyrics, character count matches tune pattern")
                 return true
             }
         }
 
-        // Even without a tune pattern, check if it has a valid ci structure
         let hasCiFormat =
-            contentInfo.parallelStructureRatio > 0.8 && contentInfo.phraseAnalysis.averageLength < 7
+            analysis.parallelStructureRatio > 0.8 && analysis.phraseAnalysis.averageLength < 7
         if hasCiFormat {
             logInfo("✅ Lyrics, has Ci format with parallel structure and average length < 7")
             return true
@@ -57,16 +54,16 @@ extension ChineseDetection {
 
     /// Check if content matches expected character count for ci tune pattern
     /// - Parameters:
-    ///   - contentInfo: Content info containing text and structure analysis
+    ///   - analysis: ChineseAnalysis object containing analysis results
     ///   - tunePattern: Tuple containing the tune pattern and expected count
     /// - Returns: True if character count matches within tolerance
     func matchesCiTuneCharacterCounts(
-        _ contentInfo: ContentInfo,
+        _ analysis: ChineseAnalysis,
         tunePattern: (pattern: String, count: [Int])
     )
         -> Bool {
         let (pattern, expectedCounts) = tunePattern
-        let charCount = contentInfo.textCharCount
+        let charCount = analysis.textCharCount
 
         logInfo("Tune pattern '\(pattern)' expects \(expectedCounts) chars")
         logInfo("Content has \(charCount) chars")
@@ -75,7 +72,7 @@ extension ChineseDetection {
         logInfo("Character count matches: \(matchesCount ? "✅" : "❌")")
 
         // Currently, classical ci content lines should no more than 2 lines
-        if contentInfo.lines.count > 2 {
+        if analysis.lines.count > 2 {
             logInfo("Warning: Content lino es count exceeds 2, may not be a valid ci.")
             return false
         }

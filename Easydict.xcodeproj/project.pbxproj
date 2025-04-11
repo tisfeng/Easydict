@@ -254,7 +254,7 @@
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
-		03D5C4C82D9D1EE70054D0D4 /* ChineseTextAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C72D9D1EE70054D0D4 /* ChineseTextAnalysis.swift */; };
+		03D5C4C82D9D1EE70054D0D4 /* ChineseAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C72D9D1EE70054D0D4 /* ChineseAnalysis.swift */; };
 		03D5C4CA2D9D455E0054D0D4 /* ChineseDetection+Prose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */; };
 		03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */; };
 		03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */; };
@@ -791,7 +791,7 @@
 		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
 		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
 		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
-		03D5C4C72D9D1EE70054D0D4 /* ChineseTextAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseTextAnalysis.swift; sourceTree = "<group>"; };
+		03D5C4C72D9D1EE70054D0D4 /* ChineseAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseAnalysis.swift; sourceTree = "<group>"; };
 		03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Prose.swift"; sourceTree = "<group>"; };
 		03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataExtractor.swift; sourceTree = "<group>"; };
 		03D5FCFD2A5EF4E400AD26BE /* EZDeviceSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeviceSystemInfo.h; sourceTree = "<group>"; };
@@ -1657,6 +1657,15 @@
 			path = EZAudioUtils;
 			sourceTree = "<group>";
 		};
+		03ADCACA2DA7C2B700ACB756 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				03D5C4C72D9D1EE70054D0D4 /* ChineseAnalysis.swift */,
+				03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		03B0221829231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
@@ -2329,14 +2338,13 @@
 		03F2815B2D98E52200AE518C /* ChineseDetection */ = {
 			isa = PBXGroup;
 			children = (
+				03ADCACA2DA7C2B700ACB756 /* Models */,
 				039CBE862D9AFBF3009A04DC /* ChineseDetection.swift */,
 				03B73F7A2D9C51580051CB74 /* ChineseDetection+Poetry.swift */,
 				03B73F7C2D9C51700051CB74 /* ChineseDetection+Lyrics.swift */,
 				03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */,
 				03F281562D97A22500AE518C /* String+ClassicalChinese.swift */,
 				03F2815E2D9A323700AE518C /* String+Utils.swift */,
-				03D5C4C72D9D1EE70054D0D4 /* ChineseTextAnalysis.swift */,
-				03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */,
 				03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */,
 			);
 			path = ChineseDetection;
@@ -3179,7 +3187,7 @@
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
-				03D5C4C82D9D1EE70054D0D4 /* ChineseTextAnalysis.swift in Sources */,
+				03D5C4C82D9D1EE70054D0D4 /* ChineseAnalysis.swift in Sources */,
 				0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */,
