@@ -11,9 +11,77 @@ import Foundation
 // MARK: - ChineseAnalysis
 
 /// Analysis result for Chinese text detection
-struct ChineseAnalysis {
+class ChineseAnalysis: Codable {
+    // MARK: Lifecycle
+
+    // MARK: - Initialization
+
+    init(
+        textInfo: TextInfo,
+        metadata: Metadata?,
+        phraseInfo: PhraseInfo,
+        punctInfo: PunctuationInfo,
+        lingInfo: LinguisticInfo,
+        genre: Genre = .modern
+    ) {
+        self.textInfo = textInfo
+        self.metadata = metadata
+        self.phraseInfo = phraseInfo
+        self.punctInfo = punctInfo
+        self.lingInfo = lingInfo
+        self.genre = genre
+    }
+
+    // MARK: Internal
+
+    // MARK: - Types
+
+    /// Text content information
+    struct TextInfo: Codable {
+        /// Original text
+        let rawText: String
+
+        /// Content after metadata removal
+        let processedText: String
+
+        /// Content lines, including empty lines
+        let lines: [String]
+
+        /// Character count excluding punctuation
+        let characterCount: Int
+    }
+
+    /// Punctuation statistics
+    struct PunctuationInfo: Codable {
+        let count: Int
+        let ratio: Double
+
+        var isEmpty: Bool {
+            count == 0
+        }
+    }
+
+    /// Linguistic feature ratios
+    struct LinguisticInfo: Codable {
+        enum CodingKeys: String, CodingKey {
+            case classicalRatio
+            case modernRatio
+        }
+
+        let classicalRatio: Double
+        let modernRatio: Double
+
+        func hasHighClassicalRatio(_ threshold: Double = 0.1) -> Bool {
+            classicalRatio >= threshold
+        }
+
+        func hasHighModernRatio(_ threshold: Double = 0.1) -> Bool {
+            modernRatio >= threshold
+        }
+    }
+
     /// Metadata information
-    struct Metadata {
+    struct Metadata: Codable {
         let title: String?
         let author: String?
         let dynasty: String?
@@ -21,13 +89,19 @@ struct ChineseAnalysis {
         let authorIndex: Int?
     }
 
-    /// Phrase analysis after splitting by punctuation
-    struct PhraseAnalysis {
+    /// Phrase analysis information
+    struct PhraseInfo: Codable {
+        /// Phrase text removed punctuation
+        let phrases: [String]
         let averageLength: Double
         let maxLength: Int
         let minLength: Int
+
+        /// All phrases are the same length
         let isUniformLength: Bool
-        let phrases: [String]
+
+        /// Parallel structure ratio between adjacent lines
+        let parallelRatio: Double
     }
 
     // MARK: - Genre
@@ -37,73 +111,17 @@ struct ChineseAnalysis {
     /// - `poetry`: Classical poetry 古诗
     /// - `lyric`: Classical lyric 古词
     /// - `modern`: Modern Chinese 现代汉语
-    enum Genre {
+    enum Genre: String, Codable {
         case prose
         case poetry
         case lyric
         case modern
     }
 
-    /// Original text
-    let originalText: String
-
-    /// Original text removed metadata
-    let content: String
-
-    let metadata: Metadata
-
-    /// Phrase analysis
-    let phraseAnalysis: PhraseAnalysis
-
-    /// Genre of the content
-    let genre: Genre
-
-    /// Content lines
-    let lines: [String]
-
-    /// Character count excluding punctuation
-    let textCharCount: Int
-
-    /// Count of punctuation marks
-    let punctuationCount: Int
-
-    /// Ratio of punctuation marks to total characters
-    let punctuationRatio: Double
-
-    /// Parallel structure ratio between adjacent lines
-    let parallelStructureRatio: Double
-
-    /// Ratio of classical Chinese characters
-    let classicalChineseRatio: Double
-
-    /// Ratio of modern Chinese characters
-    let modernChineseRatio: Double
-
-    /// Has high classical Chinese marker ratio, threshold is 0.15
-    func hasHighClassicalChineseMarkerRatio(_ threshold: Double = 0.15) -> Bool {
-        classicalChineseRatio >= threshold
-    }
-
-    /// Has high modern Chinese marker ratio, threshold is 0.2
-    func hasHighModernChineseMarkerRatio(_ threshold: Double = 0.2) -> Bool {
-        modernChineseRatio >= threshold
-    }
-
-    /// Create new analysis with updated genre
-    func with(genre: Genre) -> ChineseAnalysis {
-        ChineseAnalysis(
-            originalText: originalText,
-            content: content,
-            metadata: metadata,
-            phraseAnalysis: phraseAnalysis,
-            genre: genre,
-            lines: lines,
-            textCharCount: textCharCount,
-            punctuationCount: punctuationCount,
-            punctuationRatio: punctuationRatio,
-            parallelStructureRatio: parallelStructureRatio,
-            classicalChineseRatio: classicalChineseRatio,
-            modernChineseRatio: modernChineseRatio
-        )
-    }
+    let textInfo: TextInfo
+    let metadata: Metadata?
+    let phraseInfo: PhraseInfo
+    let punctInfo: PunctuationInfo
+    let lingInfo: LinguisticInfo
+    var genre: Genre = .modern
 }

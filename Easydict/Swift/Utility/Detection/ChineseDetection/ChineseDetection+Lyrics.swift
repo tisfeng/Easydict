@@ -13,13 +13,13 @@ extension ChineseDetection {
     func isClassicalLyrics(_ analysis: ChineseAnalysis) -> Bool {
         logInfo("\n----- Classical Lyrics Detection -----")
 
-        if analysis.textCharCount < 10, analysis.phraseAnalysis.phrases.count < 2 {
+        if analysis.textInfo.characterCount < 10, analysis.phraseInfo.phrases.count < 2 {
             logInfo("Text is too short to be considered classical lyrics.")
             return false
         }
 
         // Check if we have a valid tune pattern from title
-        if let title = analysis.metadata.title,
+        if let title = analysis.metadata?.title,
            let pattern = hasCiTunePattern(in: title) {
             logInfo("Found Ci tune pattern: \(pattern.pattern)")
 
@@ -30,7 +30,7 @@ extension ChineseDetection {
         }
 
         let hasCiFormat =
-            analysis.parallelStructureRatio > 0.8 && analysis.phraseAnalysis.averageLength < 7
+            analysis.phraseInfo.parallelRatio > 0.8 && analysis.phraseInfo.averageLength < 7
         if hasCiFormat {
             logInfo("✅ Lyrics, has Ci format with parallel structure and average length < 7")
             return true
@@ -63,19 +63,13 @@ extension ChineseDetection {
     )
         -> Bool {
         let (pattern, expectedCounts) = tunePattern
-        let charCount = analysis.textCharCount
+        let charCount = analysis.textInfo.characterCount
 
         logInfo("Tune pattern '\(pattern)' expects \(expectedCounts) chars")
         logInfo("Content has \(charCount) chars")
 
         let matchesCount = expectedCounts.contains(charCount)
         logInfo("Character count matches: \(matchesCount ? "✅" : "❌")")
-
-        // Currently, classical ci content lines should no more than 2 lines
-        if analysis.lines.count > 2 {
-            logInfo("Warning: Content lino es count exceeds 2, may not be a valid ci.")
-            return false
-        }
 
         return matchesCount
     }

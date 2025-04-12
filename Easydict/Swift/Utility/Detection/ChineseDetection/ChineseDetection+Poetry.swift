@@ -13,20 +13,20 @@ extension ChineseDetection {
     func isClassicalPoetry(_ analysis: ChineseAnalysis) -> Bool {
         logInfo("\n----- Classical Poetry Detection -----")
 
-        if analysis.textCharCount < 10, analysis.phraseAnalysis.phrases.count < 2 {
+        if analysis.textInfo.characterCount < 10, analysis.phraseInfo.phrases.count < 2 {
             logInfo("Text is too short to be poetry.")
             return false
         }
 
         // Check poetry format characteristics
-        let hasStandardLength = analysis.phraseAnalysis.phrases.allSatisfy { phrase in
+        let hasStandardLength = analysis.phraseInfo.phrases.allSatisfy { phrase in
             let len = phrase.filter { !$0.isWhitespace && !$0.isPunctuation }.count
             return len == 5 || len == 7 // 五言或七言
         }
 
-        let hasUniformLength = analysis.phraseAnalysis.isUniformLength
-        let hasProperPhraseCount = analysis.phraseAnalysis.phrases.count >= 4 // 至少四句
-        let hasStrongParallel = analysis.parallelStructureRatio >= 0.7
+        let hasUniformLength = analysis.phraseInfo.isUniformLength
+        let hasProperPhraseCount = analysis.phraseInfo.phrases.count >= 4 // 至少四句
+        let hasStrongParallel = analysis.phraseInfo.parallelRatio >= 0.7
 
         let isPoetry =
             (hasStandardLength && hasUniformLength && hasProperPhraseCount)

@@ -12,23 +12,27 @@ import Translation
 
 @testable import Easydict
 
-@Test func testSystemLanguages() async {
+@Test
+func testSystemLanguages() async {
     systemLanguages()
 }
 
-@Test func testAvailableIdentifiers() async {
+@Test
+func testAvailableIdentifiers() async {
     availableIdentifiers()
 }
 
 @available(macOS 15.0, *)
-@Test func testLanguageAvailability() async {
+@Test
+func testLanguageAvailability() async {
     let apple = AppleService()
     await apple.prepareSupportedLanguages()
 }
 
 @MainActor
 @available(macOS 15.0, *)
-@Test func appleOfflineTranslation() async throws {
+@Test
+func appleOfflineTranslation() async throws {
     let translationService = TranslationService(
         configuration: .init(
             source: .init(languageCode: .english),
@@ -48,14 +52,16 @@ import Translation
     #expect(response.targetText == "Hello")
 }
 
-@Test func testAES() {
+@Test
+func testAES() {
     let text = "123"
     let encryptedText = text.encryptAES()
     let decryptedText = encryptedText.decryptAES()
     #expect(decryptedText == text)
 }
 
-@Test func testAlertVolume() async throws {
+@Test
+func testAlertVolume() async throws {
     let originalVolume = try await AppleScriptTask.alertVolume()
     print("Original volume: \(originalVolume)")
 
@@ -69,9 +75,10 @@ import Translation
     #expect(true, "Alert volume test completed")
 }
 
-@Test func testGetSelectedText() async throws {
+@Test
+func testGetSelectedText() async throws {
     // Run thousands of times to test crash.
-    for i in 0..<2000 {
+    for i in 0 ..< 2000 {
         print("test index: \(i)")
         let selectedText = await (try? getSelectedText()) ?? ""
         print("\(i) selectedText: \(selectedText)")
@@ -79,9 +86,10 @@ import Translation
     #expect(true, "Test getSelectedText completed without crash")
 }
 
-@Test func testConcurrentGetSelectedText() async throws {
+@Test
+func testConcurrentGetSelectedText() async throws {
     await withTaskGroup(of: Void.self) { group in
-        for i in 0..<2000 {
+        for i in 0 ..< 2000 {
             group.addTask {
                 print("test index: \(i)")
                 let selectedText = (try? await getSelectedText()) ?? ""
@@ -92,7 +100,8 @@ import Translation
     #expect(true, "Concurrent test getSelectedText completed without crash")
 }
 
-@Test func testFilterThinkTags() {
+@Test
+func testFilterThinkTags() {
     let testCases: [(input: String, expected: String)] = [
         ("<think>hello", ""),
         ("<think></think>hello", "hello"),

@@ -90,14 +90,14 @@ extension String {
     /// Split text into lines with separators.
     /// - Parameters:
     ///   - separators: Additional separators to split lines, default is "\n".
-    ///   - omittingEmptySubsequences: Whether to omit empty subsequences, default is true.
+    ///   - omittingEmptySubsequences: Whether to omit empty subsequences, default is false.
     /// - Returns: Array of lines
     ///
     /// - Note:
     /// If the text contains only one line, split it with "。"
     func splitTextIntoLines(
         separators: [String] = ["\n"],
-        omittingEmptySubsequences: Bool = true
+        omittingEmptySubsequences: Bool = false
     )
         -> [String] {
         let lines = splitIntoShortPhrases(separators: separators)
@@ -114,11 +114,11 @@ extension String {
     /// Used to analyze the internal structure of classical Chinese text.
     /// - Parameters:
     ///   - separators: Array of separator strings, defaults to classical Chinese punctuation
-    ///   - omittingEmptySubsequences: Whether to omit empty subsequences, default is true.
+    ///   - omittingEmptySubsequences: Whether to omit empty subsequences, default is false.
     /// - Returns: Array of non-empty phrases with whitespace trimmed
     func splitIntoShortPhrases(
         separators: [String] = ChinseseMarker.Common.lineSeparators,
-        omittingEmptySubsequences: Bool = true
+        omittingEmptySubsequences: Bool = false
     )
         -> [String] {
         var phrases = [self]
