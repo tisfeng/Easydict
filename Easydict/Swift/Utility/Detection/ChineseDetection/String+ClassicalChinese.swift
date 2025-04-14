@@ -25,10 +25,6 @@ extension String {
     /// This includes detecting classical poetry (格律诗), ci (词), and classical prose.
     /// - Returns: True if text is classical Chinese, false otherwise.
     public func isClassicalChinese() -> Bool {
-        print("\n=========== Classical Chinese Detection ===========")
-        print("Text: \(self)")
-
-        // Create ChineseText instance to analyze the text
         let chineseText = ChineseDetection(text: self)
         return chineseText.detect().genre != .modern
     }
