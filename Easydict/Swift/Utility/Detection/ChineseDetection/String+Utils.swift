@@ -46,7 +46,7 @@ extension String {
         let featureCount = countOccurrences(of: features)
 
         let matches = findMatchedPatterns(in: features)
-        logInfo("Debug log, found linguistic features: \(matches)")
+        logInfo("Found linguistic features: \(matches)")
 
         // Calculate ratio
         return Double(featureCount) / Double(totalChars)

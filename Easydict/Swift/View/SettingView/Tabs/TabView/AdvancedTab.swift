@@ -76,6 +76,22 @@ struct AdvancedTab: View {
                         )
                     }
                 }
+
+                LabeledContent {
+                    TextField("", text: $minClassicalChineseTextDetectLength, prompt: Text(verbatim: "10"))
+                        .frame(width: 100)
+                        .fixedSize(horizontal: true, vertical: false)
+                        .onChange(of: minClassicalChineseTextDetectLength) { newValue in
+                            minClassicalChineseTextDetectLength = newValue.filter { $0.isNumber }
+                            logInfo("Min classical Chinese text detect length: \(minClassicalChineseTextDetectLength)")
+                        }
+                } label: {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        systemImage: SFSymbol.book.rawValue,
+                        labelText: "setting.advance.min_classical_chinese_text_detect_length"
+                    )
+                }
             }
 
             // Force get selected text
@@ -248,6 +264,10 @@ struct AdvancedTab: View {
                     TextField("", text: $httpPort, prompt: Text(verbatim: "8080"))
                         .frame(width: 100)
                         .fixedSize(horizontal: true, vertical: false)
+                        // Add onChange modifier to filter input
+                        .onChange(of: httpPort) { newValue in
+                            httpPort = newValue.filter { $0.isNumber }
+                        }
                 } label: {
                     AdvancedTabItemView(
                         color: getHttpIconColor(),
@@ -273,6 +293,8 @@ struct AdvancedTab: View {
     @Default(.replaceWithTranslationInCompatibilityMode) private
     var replaceWithTranslationInCompatibilityMode
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
+
+    @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
 
     // Force get selected text
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText

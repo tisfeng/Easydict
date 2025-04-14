@@ -20,8 +20,6 @@ extension ChineseDetection {
             return false
         }
 
-        let hasZeroeModernChinese = analysis.lingInfo.modernRatio == 0
-
         /**
          日落山水静，为君起松声。
 
@@ -30,7 +28,7 @@ extension ChineseDetection {
         if analysis.phraseInfo.phrases.count == 2,
            analysis.phraseInfo.isUniformLength,
            analysis.phraseInfo.maxLength < 8,
-           hasZeroeModernChinese {
+           analysis.lingInfo.hasZeroModernRatio() {
             logInfo(
                 "✅ Prose, phrase length is uniform, max length is less than 8, and modern Chinese ratio is 0."
             )
@@ -43,32 +41,32 @@ extension ChineseDetection {
         if analysis.phraseInfo.phrases.count >= 3,
            analysis.phraseInfo.averageLength < 5,
            analysis.phraseInfo.maxLength < 6,
-           hasZeroeModernChinese {
+           analysis.lingInfo.hasZeroModernRatio() {
             logInfo(
-                "✅ Prose, phrase average length <= 5, and max length < 10, and modern Chinese ratio = 0."
+                "✅ Prose, phrase average length <= 5, and max length < 10, and has zero modern Chinese ratio."
             )
             return true
         }
 
         if analysis.phraseInfo.phrases.count >= 4,
            analysis.phraseInfo.averageLength <= 6,
-           hasZeroeModernChinese {
-            logInfo("✅ Prose, phrase average length <= 6, and modern Chinese ratio = 0.")
+           analysis.lingInfo.hasZeroModernRatio() {
+            logInfo("✅ Prose, phrase average length <= 6, and has zero modern Chinese ratio.")
             return true
         }
 
         if analysis.phraseInfo.phrases.count >= 8,
            analysis.phraseInfo.averageLength < 8,
-           analysis.lingInfo.modernRatio < 0.05 {
-            logInfo("✅ Prose, phrase average length < 8, and modern Chinese ratio < 0.05.")
+           analysis.lingInfo.hasLowModernRatio() {
+            logInfo("✅ Prose, phrase average length < 8, and has low modern ratio.")
             return true
         }
 
         if analysis.phraseInfo.averageLength < 9,
-           analysis.lingInfo.classicalRatio > 0.1,
-           analysis.lingInfo.modernRatio < 0.05 {
+           analysis.lingInfo.hasHighClassicalRatio(),
+           analysis.lingInfo.hasLowModernRatio() {
             logInfo(
-                "✅ Prose, phrase average length < 9, and classical ratio > 0.1, and modern ratio < 0.05."
+                "✅ Prose, phrase average length < 9, and has high classical ratio, and has low modern ratio."
             )
             return true
         }

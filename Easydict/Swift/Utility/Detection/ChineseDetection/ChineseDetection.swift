@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - ChineseDetection
@@ -27,34 +28,43 @@ class ChineseDetection {
 
     var analysis: ChineseAnalysis?
 
+    /// Minimum length for classical Chinese text detection, default is 10
+    var minClassicalChineseTextDetectLength: Int {
+        let minLength = 10
+        let length = Int(Defaults[.minClassicalChineseTextDetectLength]) ?? minLength
+        return max(length, minLength)
+    }
+
     // MARK: - Public Methods
 
     /// Detect the type of Chinese text and return analysis result
     func detect() -> ChineseAnalysis {
         logInfo("\nStarting Chinese text detection...")
 
-        if let analysis {
-            return analysis
+        // Return cached analysis if available
+        if let existingAnalysis = analysis {
+            logInfo("Returning cached analysis.")
+            return existingAnalysis
         }
 
-        let analysis = analyzeStructure(originalText)
-        log("Text analysis: \(analysis.prettyJSONString)")
+        let newAnalysis = analyzeStructure(originalText)
+        log("Text analysis: \(newAnalysis.prettyJSONString)")
 
-        // Determine and set text genre
-        if analysis.lingInfo.hasHighModernRatio() {
-            analysis.genre = .modern
-        } else if isClassicalPoetry(analysis) {
-            analysis.genre = .poetry
-        } else if isClassicalLyrics(analysis) {
-            analysis.genre = .lyric
-        } else if isClassicalProse(analysis) {
-            analysis.genre = .prose
-        } else {
-            analysis.genre = .modern
+        // Check if the text is too short for classical Chinese detection
+        guard newAnalysis.textInfo.characterCount >= minClassicalChineseTextDetectLength else {
+            logInfo(
+                "Text count (\(newAnalysis.textInfo.characterCount)) is less than \(minClassicalChineseTextDetectLength), skipping classical detection."
+            )
+            newAnalysis.genre = .modern
+            analysis = newAnalysis
+            return newAnalysis
         }
 
-        self.analysis = analysis
-        return analysis
+        // Determine and set text genre based on analysis
+        newAnalysis.genre = determineGenre(for: newAnalysis)
+
+        analysis = newAnalysis
+        return newAnalysis
     }
 
     /// Compare structural patterns between two lines including punctuation.
@@ -208,8 +218,8 @@ class ChineseDetection {
         let lines = text.splitTextIntoLines()
         let metadata = findTitleAndAuthor(in: lines)
 
+        // Determine content lines by removing metadata if found
         var contentLines = lines
-
         if let metadata {
             contentLines = removeMetadataLines(
                 from: lines,
@@ -224,19 +234,18 @@ class ChineseDetection {
         // Analyze text components
         let phraseInfo = analyzePhraseStructure(nonEmptyLines)
         let punctInfo = analyzePunctuation(content)
+        let lingInfo = analyzeLinguisticFeatures(content)
+
+        // Calculate character count from phrases
+        let characterCount = phraseInfo.phrases.reduce(0) {
+            $0 + $1.filter { !$0.isWhitespace }.count
+        }
 
         let textInfo = ChineseAnalysis.TextInfo(
             rawText: text,
             processedText: content,
             lines: lines,
-            characterCount: phraseInfo.phrases.reduce(0) {
-                $0 + $1.filter { !$0.isWhitespace }.count
-            }
-        )
-
-        let lingInfo = ChineseAnalysis.LinguisticInfo(
-            classicalRatio: content.calculateClassicalChineseMarkerRatio(),
-            modernRatio: content.calculateModernChineseMarkerRatio()
+            characterCount: characterCount
         )
 
         return ChineseAnalysis(
@@ -264,6 +273,31 @@ class ChineseDetection {
         )
     }
 
+    /// Determine the genre of the text based on analysis results
+    private func determineGenre(for analysis: ChineseAnalysis) -> ChineseAnalysis.Genre {
+        if analysis.lingInfo.hasHighModernRatio() {
+            return .modern
+        }
+        if isClassicalPoetry(analysis) {
+            return .poetry
+        }
+        if isClassicalLyrics(analysis) {
+            return .lyric
+        }
+        if isClassicalProse(analysis) {
+            return .prose
+        }
+        return .modern // Default to modern if no classical type matches
+    }
+
+    /// Analyze linguistic features (classical/modern ratios)
+    private func analyzeLinguisticFeatures(_ text: String) -> ChineseAnalysis.LinguisticInfo {
+        ChineseAnalysis.LinguisticInfo(
+            classicalRatio: text.calculateClassicalChineseMarkerRatio(),
+            modernRatio: text.calculateModernChineseMarkerRatio()
+        )
+    }
+
     /// Analyze phrase structure including parallel structure and phrase lengths
     /// - Parameters:
     ///   - contentLines: Array of content lines, excluding metadata and empty lines
@@ -286,7 +320,10 @@ class ChineseDetection {
         let phrases = contentLines.joined(separator: "\n").splitIntoShortPhrases()
         let phraseLengths = phrases.map { $0.filter { !$0.isWhitespace }.count }
 
-        let avgLength = Double(phraseLengths.reduce(0, +)) / Double(phraseLengths.count)
+        // Guard against division by zero if there are no phrases
+        let avgLength =
+            phraseLengths.isEmpty
+                ? 0.0 : Double(phraseLengths.reduce(0, +)) / Double(phraseLengths.count)
         let maxLength = phraseLengths.max() ?? 0
         let minLength = phraseLengths.min() ?? 0
         let isUniform = Set(phraseLengths).count == 1

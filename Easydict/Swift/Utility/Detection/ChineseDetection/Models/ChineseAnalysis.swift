@@ -71,12 +71,34 @@ class ChineseAnalysis: Codable {
         let classicalRatio: Double
         let modernRatio: Double
 
+        /// High ratio of classical Chinese, default threshold is 0.1
         func hasHighClassicalRatio(_ threshold: Double = 0.1) -> Bool {
             classicalRatio >= threshold
         }
 
+        /// High ratio of modern Chinese, default threshold is 0.1
         func hasHighModernRatio(_ threshold: Double = 0.1) -> Bool {
             modernRatio >= threshold
+        }
+
+        /// Low ratio of classical Chinese, default threshold is 0.03
+        func hasLowClassicalRatio(_ threshold: Double = 0.03) -> Bool {
+            classicalRatio <= threshold
+        }
+
+        /// Low ratio of modern Chinese, default threshold is 0.03
+        func hasLowModernRatio(_ threshold: Double = 0.03) -> Bool {
+            modernRatio <= threshold
+        }
+
+        /// Zero ratio of classical Chinese,
+        func hasZeroClassicalRatio() -> Bool {
+            classicalRatio == 0
+        }
+
+        /// Zero ratio of modern Chinese,
+        func hasZeroModernRatio() -> Bool {
+            modernRatio == 0
         }
     }
 
