@@ -141,6 +141,10 @@ extension Defaults.Keys {
         "enableAppleOfflineTranslation", default: false
     )
 
+    static var minClassicalChineseTextDetectLength = Key<String>(
+        "minClassicalChineseTextDetectLength", default: "10"
+    )
+
     static let enableForceGetSelectedText = Key<Bool>(
         "EZConfiguration_kForceAutoGetSelectedText",
         default: true

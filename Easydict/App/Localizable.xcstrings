@@ -3835,34 +3835,6 @@
         }
       }
     },
-    "screenshot.tip.capture_last_area_desc" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Click D to select the last screenshot area"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kliknite D pre výber poslednej oblasti snímky"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "单击 D 键选择上一次截图区域"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "單擊 D 鍵選擇上一次截圖區域"
-          }
-        }
-      }
-    },
     "screenshot.tip.cancel_capture_desc" : {
       "localizations" : {
         "en" : {
@@ -3887,6 +3859,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "單擊 Esc 或右鍵取消截圖"
+          }
+        }
+      }
+    },
+    "screenshot.tip.capture_last_area_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click D to select the last screenshot area"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknite D pre výber poslednej oblasti snímky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击 D 键选择上一次截图区域"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單擊 D 鍵選擇上一次截圖區域"
           }
         }
       }
@@ -6108,6 +6108,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "修改連接埠後，您需要重新啟動伺服器"
+          }
+        }
+      }
+    },
+    "setting.advance.min_classical_chinese_text_detect_length" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum length of text to detect Classical Chinese"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimálna dĺžka textu na detekciu klasickej čínštiny"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测古文的最小文本长度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢測古文的最小文本長度"
           }
         }
       }

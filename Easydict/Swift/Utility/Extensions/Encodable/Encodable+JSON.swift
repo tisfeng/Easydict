@@ -23,7 +23,7 @@ extension Encodable {
 
     /// Print pretty JSON string. `NSString` allows you to pretty print newline instead of `\n`, https://stackoverflow.com/a/68760531/8378840
     var prettyJSONString: NSString {
-        toJSONString(outputFormatting: .prettyPrinted)! as NSString
+        toJSONString(outputFormatting: .customized)! as NSString
     }
 
     var jsonData: Data? {
@@ -36,4 +36,13 @@ extension Encodable {
         }
         return nil
     }
+}
+
+// Extension for formatting JSON output
+extension JSONEncoder.OutputFormatting {
+    static let customized: JSONEncoder.OutputFormatting = [
+        .prettyPrinted,
+        .sortedKeys,
+        .withoutEscapingSlashes,
+    ]
 }
