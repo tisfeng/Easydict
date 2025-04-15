@@ -27,6 +27,9 @@ class ScreenshotState: ObservableObject {
     /// Screen frame is `bottom-left` origin.
     var screen: NSScreen
 
+    /// Controls whether the dark overlay is shown during screenshot selection for this specific screen state. Defaults to false.
+    var enableDarkOverlay = false
+
     // MARK: - Published Properties
 
     /// Whether the mouse has moved since capture started
@@ -57,8 +60,15 @@ class ScreenshotState: ObservableObject {
 
     // MARK: - State Management
 
-    /// Update the state to hide the dark overlay, based on the current screen mouse is moved or is showing preview.
+    /// Update the state to hide the dark overlay, based on the local setting and current interaction state.
     func updateHideDarkOverlay() {
+        // If dark overlay is disabled for this state, always hide it.
+        guard enableDarkOverlay else {
+            shouldHideDarkOverlay = true
+            return
+        }
+
+        // Otherwise, hide based on interaction state (previewing or mouse moved onto the screen).
         shouldHideDarkOverlay =
             isShowingPreview || isMouseMoved && screen.isSameScreen(NSScreen.currentMouseScreen())
     }
