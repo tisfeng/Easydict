@@ -35,7 +35,7 @@ class OpenAIService: BaseOpenAIService {
     }
 
     override var defaultModel: String {
-        OpenAIModel.gpt_4o_mini.rawValue
+        OpenAIModel.gpt_4_1_mini.rawValue
     }
 
     override var defaultEndpoint: String {
@@ -60,12 +60,16 @@ class OpenAIService: BaseOpenAIService {
 // swiftlint:disable identifier_name
 enum OpenAIModel: String, CaseIterable {
     // Docs: https://platform.openai.com/docs/models
-    // Pricing https://openai.com/api/pricing/
+    // Pricing https://platform.openai.com/docs/pricing
 
-    case gpt_3_5_turbo = "gpt-3.5-turbo" // Currently points to gpt-3.5-turbo-0125. Input: $0.50 | Output: $1.50  (16k)
-    case gpt_4_turbo = "gpt-4-turbo" // Currently points to gpt-4-turbo-2024-04-09. Input: $10 | Output: $30  (128k)
-    case gpt_4o = "gpt-4o" // Currently points to gpt-4o-2024-05-13. Input: $5 | Output: $15  (128k context length)
-    case gpt_4o_mini = "gpt-4o-mini" // Input: $0.15 / 1M | Output: $0.6 (128k)
+    case gpt_4_1 = "gpt-4.1" // gpt-4.1-2025-04-14  Input: $2 | Output: $8
+    case gpt_4_1_mini = "gpt-4.1-mini" // gpt-4.1-mini-2025-04-14  Input: $0.4 | Output: $1.6
+    case gpt_4_1_nano = "gpt-4.1-nano" // gpt-4.1-nano-2025-04-14  Input: $0.1 | Output: $0.4
+
+    case o3_mini = "o3-mini" // o3-mini-2025-01-31  Input: $1.1 | Output: $4.4
+
+    case gpt_4o = "gpt-4o" // gpt-4o-2024-08-06  Input: $2.5 | Output: $10
+    case gpt_4o_mini = "gpt-4o-mini" // gpt-4o-mini-2024-07-18  Input: $0.15 | Output: $0.6
 }
 
 // swiftlint:enable identifier_name
