@@ -88,12 +88,6 @@ class Screenshot: NSObject {
 
         hideAllOverlayWindows()
 
-        if #available(macOS 14.0, *) {
-            NSApplication.shared.activate()
-        } else {
-            NSApplication.shared.activate(ignoringOtherApps: true)
-        }
-
         // Show overlay window on each screen
         for screen in NSScreen.screens {
             createOverlayWindow(for: screen)
@@ -126,6 +120,21 @@ class Screenshot: NSObject {
 
         overlayWindows[screen] = window
         overlayViewStates[screen] = state
+
+        /*
+         Activate App after taking all screenshot, avoid losing focus application.
+
+         Activate the application to ensure it receives key events.
+         Local event monitors (`addLocalMonitorForEvents`) only capture events
+         dispatched to the *active* application. Without activating,
+         key down events (like ESC to cancel) might not be received
+         if another application was active when the screenshot started.
+         */
+        if #available(macOS 14.0, *) {
+            NSApplication.shared.activate()
+        } else {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+        }
     }
 
     private func hideAllOverlayWindows() {

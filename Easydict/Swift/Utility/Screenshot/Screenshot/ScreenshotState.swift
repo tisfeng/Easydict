@@ -80,7 +80,16 @@ class ScreenshotState: ObservableObject {
     /// Setup local mouse monitor to track mouse movement
     /// Since SwiftUI `onHover` is not reliable, we need to track mouse movement manually
     private func setupMouseMovedMonitor() {
-        mouseMovedMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved) { [self] event in
+        /*
+         Unlike keyDown events which are typically sent only to the active application,
+         mouseMoved events can be captured by a local monitor even if the application
+         isn't active, especially when an overlay window is present under the cursor.
+         Therefore, explicit NSApplication.shared.activate() is not strictly required
+         for this specific monitor to function, unlike the keyDown monitor for ESC.
+         */
+        mouseMovedMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved) { [weak self] event in
+            guard let self else { return event }
+
             isMouseMoved = true
             updateHideDarkOverlay()
 
@@ -92,6 +101,7 @@ class ScreenshotState: ObservableObject {
                     height: tipFrame.height + expandedValue
                 )
             )
+            // Check if mouse is outside the expanded tip frame
             isTipVisible = !tipLayerExpandedFrame.contains(NSEvent.mouseLocation)
 
             // Pass the event to the next screen monitor
