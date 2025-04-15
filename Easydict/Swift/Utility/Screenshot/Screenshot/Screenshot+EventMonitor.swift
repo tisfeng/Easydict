@@ -16,7 +16,7 @@ extension Screenshot {
     func setupEventMonitor() {
         // Monitor both key down and right mouse down events
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .rightMouseDown]) { [weak self] event in
-            guard let self = self else { return event }
+            guard let self else { return event }
 
             switch event.type {
             case .keyDown:
