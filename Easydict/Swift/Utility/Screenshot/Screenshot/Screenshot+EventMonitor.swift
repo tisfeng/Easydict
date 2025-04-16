@@ -45,8 +45,10 @@ extension Screenshot {
     // MARK: Private
 
     func removeEventMonitor() {
-        NSEvent.removeMonitor(eventMonitor as Any)
-        eventMonitor = nil
+        if let eventMonitor {
+            NSEvent.removeMonitor(eventMonitor)
+            self.eventMonitor = nil
+        }
     }
 
     // MARK: - Screenshot Rect Preview
