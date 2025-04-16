@@ -56,8 +56,14 @@ class Screenshot: NSObject {
 
     var eventMonitor: Any?
 
+    /// Work item for the delayed screenshot capture after pressing 'D' for preview.
+    var previewScreenshotWorkItem: DispatchWorkItem?
+
     /// Finish screenshot capture and call the completion handler
     func finishCapture(_ image: NSImage?) {
+        // Cancel any pending preview screenshot task first
+        cancelPreviewScreenshotTimer()
+
         isTakingScreenshot = false
 
         // Restore focus to previous application only if shouldRestorePreviousApp is true
@@ -73,6 +79,12 @@ class Screenshot: NSObject {
         hideAllOverlayWindows()
         removeEventMonitor()
         overlayViewStates.removeAll()
+    }
+
+    /// Cancels the scheduled preview screenshot task, if any.
+    func cancelPreviewScreenshotTimer() {
+        previewScreenshotWorkItem?.cancel()
+        previewScreenshotWorkItem = nil
     }
 
     // MARK: Private
@@ -91,6 +103,21 @@ class Screenshot: NSObject {
         // Show overlay window on each screen
         for screen in NSScreen.screens {
             createOverlayWindow(for: screen)
+        }
+
+        /*
+         Activate App after creating all screenshot windows, avoid losing focus application.
+
+         Activate the application to ensure it receives key events.
+         Local event monitors (`addLocalMonitorForEvents`) only capture events
+         dispatched to the *active* application. Without activating,
+         key down events (like ESC to cancel) might not be received
+         if another application was active when the screenshot started.
+         */
+        if #available(macOS 14.0, *) {
+            NSApplication.shared.activate()
+        } else {
+            NSApplication.shared.activate(ignoringOtherApps: true)
         }
     }
 
@@ -120,21 +147,6 @@ class Screenshot: NSObject {
 
         overlayWindows[screen] = window
         overlayViewStates[screen] = state
-
-        /*
-         Activate App after taking all screenshot, avoid losing focus application.
-
-         Activate the application to ensure it receives key events.
-         Local event monitors (`addLocalMonitorForEvents`) only capture events
-         dispatched to the *active* application. Without activating,
-         key down events (like ESC to cancel) might not be received
-         if another application was active when the screenshot started.
-         */
-        if #available(macOS 14.0, *) {
-            NSApplication.shared.activate()
-        } else {
-            NSApplication.shared.activate(ignoringOtherApps: true)
-        }
     }
 
     private func hideAllOverlayWindows() {

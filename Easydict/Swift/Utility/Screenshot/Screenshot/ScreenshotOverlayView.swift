@@ -35,15 +35,6 @@ struct ScreenshotOverlayView: View {
             }
         }
         .ignoresSafeArea()
-        .onChange(of: state.isShowingPreview) { showing in
-            if showing {
-                NSLog("Showing preview, take screenshot")
-                // Show preview 1.0s, then take screenshot
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    handleDragEnd()
-                }
-            }
-        }
     }
 
     // MARK: Private
@@ -151,6 +142,9 @@ struct ScreenshotOverlayView: View {
 
     /// Handle drag gesture change
     private func handleDragChange(_ value: DragGesture.Value) {
+        // Cancel any pending preview screenshot if user starts dragging
+        Screenshot.shared.cancelPreviewScreenshotTimer()
+
         let adjustedStartLocation = CGPoint(
             x: value.startLocation.x,
             y: value.startLocation.y
@@ -176,6 +170,9 @@ struct ScreenshotOverlayView: View {
 
     /// Handle drag gesture end
     private func handleDragEnd(_ value: DragGesture.Value? = nil) {
+        // Cancel any pending preview screenshot (might be redundant here but safe)
+        Screenshot.shared.cancelPreviewScreenshotTimer()
+
         state.isTipVisible = false
 
         let selectedRect = state.selectedRect

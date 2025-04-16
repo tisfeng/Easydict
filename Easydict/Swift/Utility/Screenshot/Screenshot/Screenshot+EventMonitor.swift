@@ -73,8 +73,39 @@ extension Screenshot {
             lastRect = targetScreen.adjustedScreenshotRect(lastRect)
         }
 
-        let state = overlayViewStates[targetScreen]
-        state?.showPreview(rect: lastRect)
+        guard let state = overlayViewStates[targetScreen] else {
+            NSLog("No state found for target screen")
+            return
+        }
+
+        // Cancel any previously scheduled preview screenshot task
+        cancelPreviewScreenshotTimer()
+
+        // Show the preview rectangle visually
+        state.showPreview(rect: lastRect)
+
+        // Create a work item to perform the actual screenshot after a delay
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+
+            // Ensure we are still in screenshot mode and the state exists
+            guard isTakingScreenshot, overlayViewStates[targetScreen] != nil else {
+                NSLog("Preview screenshot cancelled because state changed or capture finished.")
+                return
+            }
+
+            NSLog("Executing delayed screenshot for preview rect: \(lastRect)")
+            // Capture the image for the previewed rect
+            let image = targetScreen.takeScreenshot(rect: lastRect)
+            // Finish the capture process
+            finishCapture(image)
+        }
+        // Store the work item so it can be cancelled
+        previewScreenshotWorkItem = workItem
+
+        // Schedule the work item to run after 1 second
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: workItem)
+        NSLog("Scheduled screenshot capture in 1 second for preview.")
     }
 }
 
