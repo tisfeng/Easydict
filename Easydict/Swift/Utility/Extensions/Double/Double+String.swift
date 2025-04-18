@@ -20,4 +20,8 @@ extension Double {
     var twoDecimalString: String {
         String(format: "%.2f", self)
     }
+
+    var intString: String {
+        String(format: "%.0f", self)
+    }
 }
