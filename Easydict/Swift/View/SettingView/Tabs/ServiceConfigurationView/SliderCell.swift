@@ -24,13 +24,15 @@ struct SliderCell: View {
         storedValueKey: Defaults.Key<Double>,
         minValue: Double = 0,
         maxValue: Double = 2,
+        step: Double = 0.1
     ) {
         self.titleKey = titleKey
         self.storedValueKey = storedValueKey
         self.minValue = minValue
         self.maxValue = maxValue
+        self.step = step
 
-        self.viewModel = SliderViewModel(key: storedValueKey)
+        self._value = .init(storedValueKey)
     }
 
     // MARK: Internal
@@ -40,70 +42,29 @@ struct SliderCell: View {
 
     let minValue: Double
     let maxValue: Double
+    let step: Double
+
+    @Default var value: Double
 
     var body: some View {
         HStack {
             Slider(
-                value: $viewModel.value,
-                in: minValue ... maxValue
+                value: $value,
+                in: minValue ... maxValue,
+                step: step
             ) {
                 Text(titleKey)
             } minimumValueLabel: {
-                Text(minValue.intString)
+                Text(minValue.oneDecimalString)
                     .font(.body)
             } maximumValueLabel: {
-                Text(maxValue.intString)
+                Text(maxValue.oneDecimalString)
                     .font(.body)
-            } onEditingChanged: { editing in
-                isEditing = editing
-            }
-            .onChange(of: viewModel.value) { newValue in
-                // Update the text field value when the slider changes
-                if isEditing {
-                    viewModel.textFieldValue = newValue.oneDecimalString
-                }
             }
 
-            TextField("", text: $viewModel.textFieldValue)
+            Text(value.oneDecimalString)
                 .frame(width: 40, alignment: .trailing)
-                .onChange(of: viewModel.textFieldValue) { newValue in
-                    // Filter input: allow digits and decimal point
-                    let validText = newValue.filter { "0123456789.".contains($0) }
-                    viewModel.textFieldValue = validText
-                }
         }
         .padding(10)
-    }
-
-    // MARK: Private
-
-    @State private var isEditing = false
-    @ObservedObject private var viewModel: SliderViewModel
-}
-
-// MARK: - SliderViewModel
-
-class SliderViewModel: ObservableObject {
-    // MARK: Lifecycle
-
-    init(key: Defaults.Key<Double>) {
-        self.key = key
-        self._value = .init(key)
-        self.textFieldValue = Defaults[key].oneDecimalString
-    }
-
-    // MARK: Internal
-
-    let key: Defaults.Key<Double>
-    @Default var value: Double
-
-    @Published var textFieldValue: String {
-        didSet {
-            if let doubleValue = Double(textFieldValue) {
-                value = doubleValue
-            } else {
-                value = 0
-            }
-        }
     }
 }
