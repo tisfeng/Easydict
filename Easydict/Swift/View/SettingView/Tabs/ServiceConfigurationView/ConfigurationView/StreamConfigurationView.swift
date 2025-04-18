@@ -28,7 +28,7 @@ struct StreamConfigurationView: View {
         showSentenceToggle: Bool = true,
         showDictionaryToggle: Bool = true,
         showUsageStatusPicker: Bool = true,
-        showThinkTagContent: Bool = true
+        showThinkTagContent: Bool = true,
     ) {
         self.service = service
 
@@ -69,6 +69,7 @@ struct StreamConfigurationView: View {
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
+    let showTemperatureSlider: Bool = true
 
     var isEditable = true
 
@@ -184,6 +185,13 @@ struct StreamConfigurationView: View {
                 ToggleCell(
                     titleKey: "service.configuration.openai.hide_think_tag_content.title",
                     key: service.thinkTagKey
+                )
+            }
+
+            if showTemperatureSlider {
+                SliderCell(
+                    titleKey: "service.configuration.openai.temperature.title",
+                    storedValueKey: service.temperatureKey,
                 )
             }
         }

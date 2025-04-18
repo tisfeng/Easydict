@@ -109,9 +109,11 @@ public final class GeminiService: StreamService {
                     let chatHistory = serviceChatMessageModels(chatQueryParam)
                     guard let chatHistory = chatHistory as? [ModelContent] else { return }
 
+                    let config = GenerationConfig(temperature: Float(temperature))
                     let geminiModel = GenerativeModel(
                         name: model,
                         apiKey: apiKey,
+                        generationConfig: config,
                         safetySettings: blockNoneSettings,
                         systemInstruction: systemInstruction
                     )

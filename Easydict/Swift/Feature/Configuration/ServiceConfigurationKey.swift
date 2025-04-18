@@ -52,4 +52,5 @@ enum ServiceConfigurationKey: String {
     case systemPrompt
     case userPrompt
     case thinkTag
+    case temperature
 }

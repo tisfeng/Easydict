@@ -261,6 +261,14 @@ public class StreamService: QueryService {
         "\(serviceType().rawValue) API Key"
     }
 
+    var temperatureKey: Defaults.Key<Double> {
+        serviceDefaultsKey(.temperature, defaultValue: 0.3)
+    }
+
+    var temperature: Double {
+        Defaults[temperatureKey]
+    }
+
     func validModels(from supportedModels: String) -> [String] {
         supportedModels.components(separatedBy: ",")
             .map { $0.trim() }.filter { !$0.isEmpty }
