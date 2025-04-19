@@ -29,6 +29,7 @@ struct StreamConfigurationView: View {
         showDictionaryToggle: Bool = true,
         showUsageStatusPicker: Bool = true,
         showThinkTagContent: Bool = true,
+        showTemperatureSlider: Bool = true,
     ) {
         self.service = service
 
@@ -43,6 +44,7 @@ struct StreamConfigurationView: View {
         self.showDictionaryToggle = showDictionaryToggle
         self.showUsageStatusPicker = showUsageStatusPicker
         self.showThinkTagSection = showThinkTagContent
+        self.showTemperatureSlider = showTemperatureSlider
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -69,7 +71,7 @@ struct StreamConfigurationView: View {
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
-    let showTemperatureSlider: Bool = true
+    let showTemperatureSlider: Bool
 
     var isEditable = true
 

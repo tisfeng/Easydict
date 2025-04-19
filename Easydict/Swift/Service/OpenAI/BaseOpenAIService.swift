@@ -66,8 +66,6 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
-//        let temperature = min(max(temperature, 0), 2)
-
         let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
         let openAI = OpenAI(apiToken: apiKey)
 
