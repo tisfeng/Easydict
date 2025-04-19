@@ -29,7 +29,7 @@ struct StreamConfigurationView: View {
         showDictionaryToggle: Bool = true,
         showUsageStatusPicker: Bool = true,
         showThinkTagContent: Bool = true,
-        showTemperatureSlider: Bool = true,
+        showTemperatureSlider: Bool = true
     ) {
         self.service = service
 
