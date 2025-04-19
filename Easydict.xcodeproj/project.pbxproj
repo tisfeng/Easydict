@@ -272,6 +272,7 @@
 		03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */; };
 		03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */; };
 		03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = 03E534BB2CE0D38C00B37264 /* AcknowList */; };
+		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
 		03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F12DB1F5F000268DF0 /* SliderCell.swift */; };
 		03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F42DB21EC200268DF0 /* Double+String.swift */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
@@ -819,6 +820,7 @@
 		03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZUtils.m"; sourceTree = "<group>"; };
 		03E3E7C02ADE318800812C84 /* EZQueryMenuTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryMenuTextView.h; sourceTree = "<group>"; };
 		03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryMenuTextView.m; sourceTree = "<group>"; };
+		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
 		03F086F12DB1F5F000268DF0 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		03F086F42DB21EC200268DF0 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
@@ -1478,6 +1480,7 @@
 		03779F0A2BB25688008D3C42 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				03F086F62DB3A93200268DF0 /* Groq */,
 				0371A4FF2DB128E50097D4A1 /* GitHub Models */,
 				40F5D52A2D65B1A200EDB997 /* DeepSeek */,
 				036463682CB62B6600D0D6CC /* Apple */,
@@ -2331,6 +2334,14 @@
 				03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */,
 			);
 			path = EZQueryMenuTextView;
+			sourceTree = "<group>";
+		};
+		03F086F62DB3A93200268DF0 /* Groq */ = {
+			isa = PBXGroup;
+			children = (
+				03F086F72DB3A94600268DF0 /* GroqService.swift */,
+			);
+			path = Groq;
 			sourceTree = "<group>";
 		};
 		03F086F32DB21EAD00268DF0 /* Double */ = {
@@ -3216,6 +3227,7 @@
 				0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */,
+				03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */,
 				962B9ACE2BFA03270080F4D4 /* EZAppModel.m in Sources */,
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
 				62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */,
