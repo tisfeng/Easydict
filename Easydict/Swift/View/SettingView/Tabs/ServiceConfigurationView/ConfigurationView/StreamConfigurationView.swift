@@ -193,7 +193,7 @@ struct StreamConfigurationView: View {
             if showTemperatureSlider {
                 SliderCell(
                     titleKey: "service.configuration.openai.temperature.title",
-                    storedValueKey: service.temperatureKey,
+                    storedValueKey: service.temperatureKey
                 )
             }
         }
