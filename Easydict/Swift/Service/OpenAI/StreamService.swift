@@ -76,6 +76,10 @@ public class StreamService: QueryService {
         return EZServiceUsageStatus(rawValue: value) ?? .default
     }
 
+    public override func configurationListItems() -> Any? {
+        StreamConfigurationView(service: self)
+    }
+
     public override func translate(
         _ text: String,
         from: Language,

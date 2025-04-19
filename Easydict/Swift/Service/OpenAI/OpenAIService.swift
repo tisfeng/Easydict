@@ -49,10 +49,6 @@ class OpenAIService: BaseOpenAIService {
     override var observeKeys: [Defaults.Key<String>] {
         [apiKeyKey, supportedModelsKey]
     }
-
-    override func configurationListItems() -> Any {
-        StreamConfigurationView(service: self)
-    }
 }
 
 // MARK: - OpenAIModel

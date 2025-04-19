@@ -27,10 +27,6 @@ class GroqService: OpenAIService {
         "https://groq.com/"
     }
 
-    public override func configurationListItems() -> Any {
-        StreamConfigurationView(service: self)
-    }
-
     // MARK: Internal
 
     override var defaultModels: [String] {
