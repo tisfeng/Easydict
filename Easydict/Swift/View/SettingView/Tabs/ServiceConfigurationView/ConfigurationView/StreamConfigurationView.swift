@@ -49,10 +49,6 @@ struct StreamConfigurationView: View {
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
 
-        #if DEBUG
-        self.isEditable = isEditable || Defaults[.enableBetaFeature]
-        #endif
-
         self._showCustomPromptTextEditor = .init(service.enableCustomPromptKey)
     }
 
