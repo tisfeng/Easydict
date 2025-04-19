@@ -50,6 +50,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOllama;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypePolishing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeSummary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepSeek;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeGitHub;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;

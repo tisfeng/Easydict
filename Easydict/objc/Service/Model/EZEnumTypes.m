@@ -30,6 +30,7 @@ NSString *const EZServiceTypePolishing = @"Polishing";
 NSString *const EZServiceTypeSummary = @"Summary";
 NSString *const EZServiceTypeDeepSeek = @"DeepSeek";
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
+NSString *const EZServiceTypeGitHub = @"GitHub";
 
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";

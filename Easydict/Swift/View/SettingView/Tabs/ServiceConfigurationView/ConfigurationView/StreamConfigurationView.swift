@@ -28,7 +28,8 @@ struct StreamConfigurationView: View {
         showSentenceToggle: Bool = true,
         showDictionaryToggle: Bool = true,
         showUsageStatusPicker: Bool = true,
-        showThinkTagContent: Bool = true
+        showThinkTagContent: Bool = true,
+        showTemperatureSlider: Bool = true
     ) {
         self.service = service
 
@@ -43,6 +44,7 @@ struct StreamConfigurationView: View {
         self.showDictionaryToggle = showDictionaryToggle
         self.showUsageStatusPicker = showUsageStatusPicker
         self.showThinkTagSection = showThinkTagContent
+        self.showTemperatureSlider = showTemperatureSlider
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -69,6 +71,7 @@ struct StreamConfigurationView: View {
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
+    let showTemperatureSlider: Bool
 
     var isEditable = true
 
@@ -184,6 +187,13 @@ struct StreamConfigurationView: View {
                 ToggleCell(
                     titleKey: "service.configuration.openai.hide_think_tag_content.title",
                     key: service.thinkTagKey
+                )
+            }
+
+            if showTemperatureSlider {
+                SliderCell(
+                    titleKey: "service.configuration.openai.temperature.title",
+                    storedValueKey: service.temperatureKey
                 )
             }
         }

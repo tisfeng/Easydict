@@ -66,7 +66,7 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
-        let query = ChatQuery(messages: chatHistory, model: model, temperature: 0)
+        let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
         let openAI = OpenAI(apiToken: apiKey)
 
         // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
