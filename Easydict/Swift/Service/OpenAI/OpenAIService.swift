@@ -8,7 +8,7 @@
 
 import Defaults
 import Foundation
-import SwiftUI
+import SwiftUICore
 
 // MARK: - OpenAIService
 

@@ -1851,6 +1851,34 @@
         }
       }
     },
+    "gsk_xxxxxxxxxx" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gsk_xxxxxxxxxx"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gsk_xxxxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gsk_xxxxxxxxxx"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gsk_xxxxxxxxxx"
+          }
+        }
+      }
+    },
     "Help" : {
       "localizations" : {
         "sk" : {
