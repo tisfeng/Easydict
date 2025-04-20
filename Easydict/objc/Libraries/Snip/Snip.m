@@ -139,9 +139,9 @@ static Snip *_instance;
 
 - (void)showScreenCaptureAccessAlert {
     NSAlert *alert = [[NSAlert alloc] init];
-    alert.messageText = NSLocalizedString(@"no_screenshot_permission", nil);
+    alert.messageText = NSLocalizedString(@"need_screen_capture_permission", nil);
     alert.informativeText =  NSLocalizedString(@"request_screen_capture_access_description", nil);;
-    [alert addButtonWithTitle:NSLocalizedString(@"go_to_settings", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"open_system_settings", nil)];
     [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
 
     NSModalResponse response = [alert runModal];

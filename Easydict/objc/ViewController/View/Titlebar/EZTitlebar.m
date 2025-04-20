@@ -208,7 +208,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
             ],
             @[
                 @{
-                    @"title" : @"go_to_settings",
+                    @"title" : @"open_app_settings",
                     @"action" : NSStringFromSelector(@selector(goToSettings))
                 }
             ]
@@ -218,7 +218,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
              NSLocalizedString(@"replace_newline_with_space", nil);
              NSLocalizedString(@"remove_code_comment_symbols", nil);
              NSLocalizedString(@"split_words", nil);
-             NSLocalizedString(@"go_to_settings", nil);
+             NSLocalizedString(@"open_app_settings", nil);
              */
         ];
         

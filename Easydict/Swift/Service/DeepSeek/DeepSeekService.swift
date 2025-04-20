@@ -27,10 +27,6 @@ class DeepSeekService: OpenAIService {
         "https://www.deepseek.com/"
     }
 
-    public override func configurationListItems() -> Any {
-        StreamConfigurationView(service: self)
-    }
-
     // MARK: Internal
 
     override var defaultModels: [String] {
