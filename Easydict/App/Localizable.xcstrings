@@ -1792,9 +1792,6 @@
         }
       }
     },
-    "go_to_settings" : {
-
-    },
     "google_translate" : {
       "localizations" : {
         "en" : {
@@ -2887,9 +2884,6 @@
         }
       }
     },
-    "no_screenshot_permission" : {
-
-    },
     "none_window" : {
       "localizations" : {
         "sk" : {
@@ -2992,6 +2986,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama 翻譯"
+          }
+        }
+      }
+    },
+    "open_app_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open App Settings"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť nastavenia aplikácie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开应用设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟應用程式設定"
           }
         }
       }
