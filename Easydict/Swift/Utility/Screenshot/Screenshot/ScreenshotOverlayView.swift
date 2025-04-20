@@ -13,13 +13,8 @@ import SwiftUI
 struct ScreenshotOverlayView: View {
     // MARK: Lifecycle
 
-    init(
-        state: ScreenshotState,
-        onImageCaptured: @escaping (NSImage?) -> ()
-    ) {
+    init(state: ScreenshotState) {
         self.state = state
-        self.onImageCaptured = onImageCaptured
-
         self._backgroundImage = State(initialValue: state.screen.takeScreenshot())
     }
 
@@ -35,23 +30,12 @@ struct ScreenshotOverlayView: View {
             }
         }
         .ignoresSafeArea()
-        .onChange(of: state.isShowingPreview) { showing in
-            if showing {
-                NSLog("Showing preview, take screenshot")
-                // Show preview 1.0s, then take screenshot
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    handleDragEnd()
-                }
-            }
-        }
     }
 
     // MARK: Private
 
     @State private var backgroundImage: NSImage?
     @ObservedObject private var state: ScreenshotState
-
-    private let onImageCaptured: (NSImage?) -> ()
 
     // MARK: Gestures
 
@@ -151,6 +135,9 @@ struct ScreenshotOverlayView: View {
 
     /// Handle drag gesture change
     private func handleDragChange(_ value: DragGesture.Value) {
+        // Cancel any pending preview screenshot if user starts dragging
+        Screenshot.shared.cancelPreviewScreenshotTimer()
+
         let adjustedStartLocation = CGPoint(
             x: value.startLocation.x,
             y: value.startLocation.y
@@ -176,6 +163,9 @@ struct ScreenshotOverlayView: View {
 
     /// Handle drag gesture end
     private func handleDragEnd(_ value: DragGesture.Value? = nil) {
+        // Cancel any pending preview screenshot (might be redundant here but safe)
+        Screenshot.shared.cancelPreviewScreenshotTimer()
+
         state.isTipVisible = false
 
         let selectedRect = state.selectedRect
@@ -183,36 +173,12 @@ struct ScreenshotOverlayView: View {
 
         // Check if selection meets minimum size requirements
         if selectedRect.width > 10, selectedRect.height > 10 {
-            asyncTakeScreenshot(
-                screen: state.screen,
-                rect: selectedRect,
-                completion: onImageCaptured
-            )
+            // Call the centralized screenshot method
+            Screenshot.shared.performScreenshot(screen: state.screen, rect: selectedRect)
         } else {
             NSLog("Screenshot cancelled - Selection too small (minimum: 10x10)")
-            onImageCaptured(nil)
-        }
-    }
-
-    /// Take screenshot of the screen area asynchronously, and save last screenshot rect.
-    private func asyncTakeScreenshot(
-        screen: NSScreen,
-        rect: CGRect,
-        completion: @escaping (NSImage?) -> ()
-    ) {
-        NSLog("Async take screenshot, screen frame: \(screen.frame), rect: \(rect)")
-
-        // Hide selection rectangle, avoid capturing it
-        state.reset()
-
-        // Save last screenshot rect
-        Screenshot.shared.lastScreenshotRect = rect
-        Screenshot.shared.lastScreen = screen
-
-        // Async to wait for UI update
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            let image = screen.takeScreenshot(rect: rect)
-            completion(image)
+            // Cancel the screenshot process directly
+            Screenshot.shared.finishCapture(nil)
         }
     }
 }

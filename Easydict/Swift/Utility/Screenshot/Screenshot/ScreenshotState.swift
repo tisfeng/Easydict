@@ -120,7 +120,9 @@ class ScreenshotState: ObservableObject {
     }
 
     private func removeMonitor() {
-        NSEvent.removeMonitor(mouseMovedMonitor as Any)
-        mouseMovedMonitor = nil
+        if let mouseMovedMonitor {
+            NSEvent.removeMonitor(mouseMovedMonitor)
+            self.mouseMovedMonitor = nil
+        }
     }
 }
