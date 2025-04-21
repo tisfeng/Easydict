@@ -104,6 +104,8 @@ public class StreamService: QueryService {
 
     // MARK: Internal
 
+    let resultUpdateQueue = DispatchQueue(label: "com.izual.Easydict.resultUpdateQueue")
+
     let mustOverride = "This property or method must be overridden by a subclass"
 
     var cancellables: Set<AnyCancellable> = []

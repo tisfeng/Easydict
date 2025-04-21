@@ -27,10 +27,12 @@ extension QueryService: ServiceSecretConfigreValidatable {
          2. if Chinese text length > 5, it won't query dict.
          */
 
+        var hasResumed = false // Add a flag to track if continuation has been resumed
         return await withCheckedContinuation { continuation in
             translate("曾经沧海难为水", from: .simplifiedChinese, to: .english) { result, error in
-                // Only resume when stream is finished
-                if result.isStreamFinished {
+                // Only resume when stream is finished and continuation hasn't been resumed yet
+                if result.isStreamFinished, !hasResumed {
+                    hasResumed = true // Set the flag
                     result.error = QueryError.queryError(from: error)
                     continuation.resume(returning: result)
                 }
