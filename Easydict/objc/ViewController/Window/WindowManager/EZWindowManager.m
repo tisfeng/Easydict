@@ -70,6 +70,23 @@ static EZWindowManager *_instance;
 
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
+
+    NSNotificationCenter *sharedWorkspaceNotificationCenter = NSWorkspace.sharedWorkspace.notificationCenter;
+    [sharedWorkspaceNotificationCenter addObserver:self
+                                          selector:@selector(didActivateApplication:)
+                                              name:NSWorkspaceDidActivateApplicationNotification
+                                            object:nil];
+}
+
+- (void)didActivateApplication:(NSNotification *)notification {
+//    MMLogInfo(@"did activate application: %@", notification);
+
+    /**
+     Fix https://github.com/tisfeng/Easydict/issues/858
+
+     When switching applications by workspace, we need to update the lastFrontmostApplication, avoid restoring it to the  wrong last application.
+     */
+    [self saveFrontmostApplication];
 }
 
 - (void)setupEventMonitor {
@@ -678,7 +695,7 @@ static EZWindowManager *_instance;
     return position;
 }
 
-
+/// Save frontmost application to lastFrontmostApplication, except current application.
 - (void)saveFrontmostApplication {
     NSString *identifier = [[NSBundle mainBundle] bundleIdentifier];
     NSRunningApplication *frontmostApplication = [[NSWorkspace sharedWorkspace] frontmostApplication];
