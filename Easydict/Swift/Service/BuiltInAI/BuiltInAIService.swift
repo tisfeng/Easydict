@@ -50,7 +50,6 @@ class BuiltInAIService: BaseOpenAIService {
             "gemma-2-9b", // gemma2-9b-it, 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD
             "llama-3-70b", // llama3-70b-8192, 30 RPM, 14,400 RPD, 6,000 TPM, 500,000 TPD
             "llama-3.3-70b", // llama-3.3-70b-versatile, 30 RPM, 1,00 RPD, 6,000 TPM, 100,000 TPD
-            "qwen-2.5-32b", // 30 RPM, 1,000 RPD, 6,000 TPM,
 
             // Google free models https://ai.google.dev/gemini-api/docs/models/gemini#gemini-2.0-flash-lite
             "gemini-2.0-flash-lite", // 30 RPM, 1,500 RPD, 1,000,000 TPM
