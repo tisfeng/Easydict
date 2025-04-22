@@ -272,9 +272,9 @@
 		03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */; };
 		03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */; };
 		03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = 03E534BB2CE0D38C00B37264 /* AcknowList */; };
-		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
 		03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F12DB1F5F000268DF0 /* SliderCell.swift */; };
 		03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F42DB21EC200268DF0 /* Double+String.swift */; };
+		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
@@ -820,9 +820,9 @@
 		03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZUtils.m"; sourceTree = "<group>"; };
 		03E3E7C02ADE318800812C84 /* EZQueryMenuTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryMenuTextView.h; sourceTree = "<group>"; };
 		03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryMenuTextView.m; sourceTree = "<group>"; };
-		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
 		03F086F12DB1F5F000268DF0 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		03F086F42DB21EC200268DF0 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
+		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
@@ -2336,20 +2336,20 @@
 			path = EZQueryMenuTextView;
 			sourceTree = "<group>";
 		};
-		03F086F62DB3A93200268DF0 /* Groq */ = {
-			isa = PBXGroup;
-			children = (
-				03F086F72DB3A94600268DF0 /* GroqService.swift */,
-			);
-			path = Groq;
-			sourceTree = "<group>";
-		};
 		03F086F32DB21EAD00268DF0 /* Double */ = {
 			isa = PBXGroup;
 			children = (
 				03F086F42DB21EC200268DF0 /* Double+String.swift */,
 			);
 			path = Double;
+			sourceTree = "<group>";
+		};
+		03F086F62DB3A93200268DF0 /* Groq */ = {
+			isa = PBXGroup;
+			children = (
+				03F086F72DB3A94600268DF0 /* GroqService.swift */,
+			);
+			path = Groq;
 			sourceTree = "<group>";
 		};
 		03F0DB352953424F00EBF9C1 /* EZLog */ = {
@@ -3789,7 +3789,7 @@
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
@@ -3807,7 +3807,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.13.0;
+				MARKETING_VERSION = 2.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "Easydict-debug";
@@ -3834,7 +3834,7 @@
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
@@ -3852,7 +3852,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.13.0;
+				MARKETING_VERSION = 2.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
