@@ -3,13 +3,13 @@
   <channel>
     <title>Easydict</title>
     <item>
-      <title>2.14.0</title>
-      <pubDate>Wed, 23 Apr 2025 00:17:28 +0800</pubDate>
-      <sparkle:version>48</sparkle:version>
-      <sparkle:shortVersionString>2.14.0</sparkle:shortVersionString>
+      <title>2.14.1</title>
+      <pubDate>Thu, 24 Apr 2025 00:03:23 +0800</pubDate>
+      <sparkle:version>49</sparkle:version>
+      <sparkle:shortVersionString>2.14.1</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.14.0</sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.14.0/Easydict.zip" length="26506743" type="application/octet-stream" sparkle:edSignature="Z1YadPfoh+qWoi8uJ0IRNA7c9/BIdGJ7pBNaSnk7m4Fqa+ZFnr7CZDdUL8gW0HUZhd1byQIXsDhQCNzJapO8Bw=="/>
+      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.14.1</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.14.1/Easydict.zip" length="26507932" type="application/octet-stream" sparkle:edSignature="OzSb/jt6y18mbiV8CHlvqGOF6LaELlMb1j2mFEYzwNZq/uyomztyANLhVdBvxfdcy2zxFZ35jUWt0GWrYWT8Aw=="/>
     </item>
     <item>
       <title>2.13.0</title>
