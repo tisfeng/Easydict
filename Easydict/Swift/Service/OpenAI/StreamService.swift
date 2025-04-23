@@ -104,7 +104,8 @@ public class StreamService: QueryService {
 
     // MARK: Internal
 
-    let resultUpdateQueue = DispatchQueue(label: "com.izual.Easydict.resultUpdateQueue")
+    /// A lock for synchronizing access to the 'result' object
+    let updateResultLock = NSLock()
 
     let mustOverride = "This property or method must be overridden by a subclass"
 

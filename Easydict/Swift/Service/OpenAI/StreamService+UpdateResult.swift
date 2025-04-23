@@ -46,68 +46,67 @@ extension StreamService {
         error: Error?,
         completion: @escaping (EZQueryResult) -> ()
     ) {
-        // Read and update result in serial queue
-        resultUpdateQueue.async { [weak self] in
-            guard let self = self else { return }
+        // Acquire the lock before accessing/modifying the shared 'result' state
+        updateResultLock.lock()
+        defer { updateResultLock.unlock() }
 
-            if result.isStreamFinished {
-                cancelStream()
+        if result.isStreamFinished {
+            cancelStream()
 
-                var queryError: QueryError?
+            var queryError: QueryError?
 
-                if let error {
-                    let nsError = error as NSError
-                    if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
-                        // Do not throw error if user cancelled request.
-                    } else {
-                        queryError = .queryError(from: error)
-                    }
-                } else if resultText?.isEmpty ?? true {
-                    // If error is nil but result text is also empty, we should report error.
-                    queryError = .init(type: .noResult)
+            if let error {
+                let nsError = error as NSError
+                if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
+                    // Do not throw error if user cancelled request.
+                } else {
+                    queryError = .queryError(from: error)
                 }
+            } else if resultText?.isEmpty ?? true {
+                // If error is nil but result text is also empty, we should report error.
+                queryError = .init(type: .noResult)
+            }
 
-                completeWithResult(result, error: queryError)
+            completeWithResult(result, error: queryError)
+            return
+        }
+
+        // If error is not nil, means stream is finished.
+        result.isStreamFinished = error != nil
+
+        var finalText = resultText?.trim() ?? ""
+
+        if hideThinkTagContent {
+            finalText = finalText.filterThinkTagContent().trim()
+        }
+
+        let updateCompletion = { [weak result] in
+            guard let result else { return }
+
+            result.translatedResults = [finalText]
+            completeWithResult(result, error: error)
+        }
+
+        switch queryType {
+        case .dictionary:
+            if error != nil {
+                result.showBigWord = false
+                result.translateResultsTopInset = 0
+                updateCompletion()
                 return
             }
 
-            // If error is not nil, means stream is finished.
-            result.isStreamFinished = error != nil
+            result.showBigWord = true
+            result.translateResultsTopInset = 6
+            updateCompletion()
 
-            var finalText = resultText?.trim() ?? ""
+        default:
+            updateCompletion()
+        }
 
-            if hideThinkTagContent {
-                finalText = finalText.filterThinkTagContent().trim()
-            }
-
-            let updateCompletion = { [weak result] in
-                guard let result else { return }
-
-                result.translatedResults = [finalText]
-                completeWithResult(result, error: error)
-            }
-
-            switch queryType {
-            case .dictionary:
-                if error != nil {
-                    result.showBigWord = false
-                    result.translateResultsTopInset = 0
-                    updateCompletion()
-                    return
-                }
-
-                result.showBigWord = true
-                result.translateResultsTopInset = 6
-                updateCompletion()
-
-            default:
-                updateCompletion()
-            }
-
-            func completeWithResult(_ result: EZQueryResult, error: Error?) {
-                result.error = .queryError(from: error)
-                completion(result)
-            }
+        func completeWithResult(_ result: EZQueryResult, error: Error?) {
+            result.error = .queryError(from: error)
+            completion(result)
         }
     }
 }
