@@ -65,8 +65,6 @@ enum GroqModel: String, CaseIterable {
     // Preview Models
     case llama4_maverick_17b =
         "meta-llama/llama-4-maverick-17b-128e-instruct" // 30 RPM, 1,000 RPD, 6,000 TPM
-    case mistral_saba_24b = "mistral-saba-24b" // 30 RPM, 1,000 RPD, 6,000 TPM, 500,000 TPD
-    case qwen_qwq_32b = "qwen-qwq-32b" // 30 RPM, 1,000 RPD, 6,000 TPM
 }
 
 // swiftlint:enable identifier_name
