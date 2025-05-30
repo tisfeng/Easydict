@@ -66,7 +66,7 @@ public final class CaiyunService: QueryService {
             "trans_type": transType.rawValue,
             "media": "text",
             "request_id": "Easydict",
-            "detect": true,
+            "detect": transType.rawValue.hasPrefix("auto"),
         ]
         let headers: HTTPHeaders = [
             "content-type": "application/json",
