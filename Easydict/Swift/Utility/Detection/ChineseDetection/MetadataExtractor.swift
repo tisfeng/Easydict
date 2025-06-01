@@ -36,7 +36,7 @@ class MetadataExtractor {
             switch self {
             case .dynasty: return 1 ... 4
             case .author: return 2 ... 4
-            case .title: return 2 ... 10
+            case .title: return 1 ... 20
             }
         }
     }
@@ -45,7 +45,7 @@ class MetadataExtractor {
 
     /// Extract metadata from line
     func extract() -> (dynasty: String?, author: String?, title: String?) {
-        guard !line.isEmpty, line.count <= 20 else { return (nil, nil, nil) }
+        guard !line.isEmpty else { return (nil, nil, nil) }
 
         // Step 1: Extract formatted text with markers
         extractFormattedText()
