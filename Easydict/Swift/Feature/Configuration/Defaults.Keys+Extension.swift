@@ -159,7 +159,12 @@ extension Defaults.Keys {
     )
 
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
-    static var screenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
+    static var formerFixedScreenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
+
+    static var formerMiniScreenVisibleFrame = Key<CGRect>(
+        "EZConfiguration_kFormerMiniScreenVisibleFrameKey",
+        default: .zero
+    )
 }
 
 extension Defaults.Keys {

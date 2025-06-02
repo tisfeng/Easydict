@@ -30,6 +30,9 @@
 /// The screen that the last mouse clicked on.
 @property (nonatomic, strong, readonly) NSScreen *screen;
 
+/// The window type that is currently showing.
+@property (nonatomic) EZWindowType windowType;
+
 @end
 
 
@@ -249,8 +252,15 @@ static EZWindowManager *_instance;
     _lastPoint = lastPoint;
 
 //    MMLogInfo(@"lastPoint: %@", @(lastPoint));
+//    MMLogInfo(@"screen: %@", @(self.screen.frame));
 
     [EZLayoutManager.shared updateScreen:self.screen];
+}
+
+- (void)setScreenVisibleFrame:(CGRect)screenVisibleFrame {
+    _screenVisibleFrame = screenVisibleFrame;
+
+    [EZLayoutManager.shared updateScreenVisibleFrame:screenVisibleFrame];
 }
 
 #pragma mark - Others
@@ -286,11 +296,12 @@ static EZWindowManager *_instance;
             break;
         }
         case EZWindowTypeFixed: {
-            location = [self getFixedWindowLocation];
+            location = [self getFloatingWindowLocation:Configuration.shared.fixedWindowPosition];
             break;
         }
         case EZWindowTypeMini: {
-            location = [self getMiniWindowLocation];
+//            location = [self getMiniWindowLocation];
+            location = [self getFloatingWindowLocation:Configuration.shared.miniWindowPosition];
             break;
         }
         case EZWindowTypeNone: {
@@ -316,6 +327,7 @@ static EZWindowManager *_instance;
                      queryText:(nullable NSString *)queryText
                      autoQuery:(BOOL)autoQuery
                     actionType:(EZActionType)actionType {
+    self.windowType = windowType;
     CGPoint point = [self floatingWindowLocationWithType:windowType];
     [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType atPoint:point completionHandler:nil];
 }
@@ -445,16 +457,9 @@ static EZWindowManager *_instance;
     [[self currentShowingSettingsWindow] close];
 
     // get safe window position
-
-    CGRect screenVisibleFrame = self.screen.visibleFrame;
-    if (Configuration.shared.fixedWindowPosition == EZShowWindowPositionFormer) {
-        // If fixed window position is former, we need to get the screen frame when fixed window is shown.
-        screenVisibleFrame = Configuration.shared.screenVisibleFrame;
-    }
-
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame
                                                     moveToPoint:point
-                                           inScreenVisibleFrame:screenVisibleFrame];
+                                           inScreenVisibleFrame:self.screenVisibleFrame];
     [window setFrameOrigin:safeLocation];
     window.level = EZFloatingWindowLevel;
 
@@ -643,14 +648,17 @@ static EZWindowManager *_instance;
     return showingPosition;
 }
 
-/// Get fixed window location.
+/// Get floating window location.
 /// !!!: This return value is top-left point.
-- (CGPoint)getFixedWindowLocation {
+- (CGPoint)getFloatingWindowLocation:(EZShowWindowPosition)windowPosition {
     CGPoint position = CGPointZero;
-    EZShowWindowPosition windowPosition = Configuration.shared.fixedWindowPosition;
+    CGRect screenVisibleFrame = self.screen.visibleFrame;
+
+    EZBaseQueryWindow *window = [self windowWithType:self.windowType];
+
     switch (windowPosition) {
         case EZShowWindowPositionRight: {
-            position = [self getFloatingWindowInRightSideOfScreenPoint:self.fixedWindow];
+            position = [self getFloatingWindowInRightSideOfScreenPoint:window];
             break;
         }
         case EZShowWindowPositionMouse: {
@@ -661,13 +669,21 @@ static EZWindowManager *_instance;
             // !!!: origin postion is bottom-left point, we need to convert it to top-left point.
             CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeFixed];
             position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
+
+            if (windowPosition == EZShowWindowPositionFormer) {
+                // If window position is former, we need to get the screen frame when window is shown.
+                screenVisibleFrame = Configuration.shared.formerFixedScreenVisibleFrame;
+            }
             break;
         }
         case EZShowWindowPositionCenter: {
-            position = [self getFloatingWindowInCenterOfScreenPoint:self.fixedWindow];
+            position = [self getFloatingWindowInCenterOfScreenPoint:window];
             break;
         }
     }
+
+    self.screenVisibleFrame = screenVisibleFrame;
+
     return position;
 }
 
