@@ -300,7 +300,6 @@ static EZWindowManager *_instance;
             break;
         }
         case EZWindowTypeMini: {
-//            location = [self getMiniWindowLocation];
             location = [self getFloatingWindowLocation:Configuration.shared.miniWindowPosition];
             break;
         }
