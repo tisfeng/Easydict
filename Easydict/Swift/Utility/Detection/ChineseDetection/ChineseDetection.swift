@@ -172,6 +172,11 @@ class ChineseDetection {
 
     /// Check if a line could be a title or author line based on length and punctuation
     private func isTitleOrAuthorLine(_ line: String) -> Bool {
+        // If line starts with 《 and ends with 》, it's likely a title
+        if line.hasPrefix("《"), line.hasSuffix("》") {
+            return true
+        }
+
         // Title/Author lines should be relatively short
         guard line.count <= 20 else { return false }
 
