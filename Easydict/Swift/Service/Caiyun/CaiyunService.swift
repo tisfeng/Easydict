@@ -41,10 +41,6 @@ public final class CaiyunService: QueryService {
         token != caiyunToken
     }
 
-    public override func autoConvertTraditionalChinese() -> Bool {
-        true
-    }
-
     public override func translate(
         _ text: String,
         from: Language,
