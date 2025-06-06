@@ -11,23 +11,6 @@ import Foundation
 struct CaiyunTranslateType: RawRepresentable {
     static let unsupported = CaiyunTranslateType(rawValue: "unsupported")
 
-    // Align with the web interface https://fanyi.caiyunapp.com/#/
-    static let supportedTypes: [Language: [Language]] = [
-        .simplifiedChinese: [.traditionalChinese, .english, .japanese, .korean, .german, .spanish, .french, .italian, .portuguese, .russian, .turkish, .vietnamese],
-        .traditionalChinese: [.simplifiedChinese, .english, .japanese, .korean, .german, .spanish, .french, .italian, .portuguese, .russian, .turkish, .vietnamese],
-        .english: [.simplifiedChinese, .traditionalChinese],
-        .japanese: [.simplifiedChinese, .traditionalChinese],
-        .korean: [.simplifiedChinese, .traditionalChinese],
-        .german: [.simplifiedChinese, .traditionalChinese],
-        .spanish: [.simplifiedChinese, .traditionalChinese],
-        .french: [.simplifiedChinese, .traditionalChinese],
-        .italian: [.simplifiedChinese, .traditionalChinese],
-        .portuguese: [.simplifiedChinese, .traditionalChinese],
-        .russian: [.simplifiedChinese, .traditionalChinese],
-        .turkish: [.simplifiedChinese, .traditionalChinese],
-        .vietnamese: [.simplifiedChinese, .traditionalChinese],
-    ]
-
     static let supportLanguagesDictionary: [Language: String] = [
         .auto: "auto",
         .simplifiedChinese: "zh",
@@ -48,9 +31,8 @@ struct CaiyunTranslateType: RawRepresentable {
     var rawValue: String
 
     static func transType(from: Language, to: Language) -> CaiyunTranslateType {
-        guard let targetLanguages = supportedTypes[from],
-              targetLanguages.contains(to)
-        else {
+        // Currently Caiyun does not support translating to the same language
+        guard from != to else {
             return .unsupported
         }
 
