@@ -16,7 +16,7 @@ PODS:
   - KVOController (1.2.0)
   - Masonry (1.1.0)
   - ReactiveObjC (3.1.1)
-  - SwiftFormat/CLI (0.55.5)
+  - SwiftFormat/CLI (0.56.3)
   - SwiftLint (0.58.1)
 
 DEPENDENCIES:
@@ -44,9 +44,9 @@ SPEC CHECKSUMS:
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  SwiftFormat: 548c7b221429101546d3caeeeb672f11578df0ad
+  SwiftFormat: 46eb9be6acdde74fcaca9275af5ebddd412e3484
   SwiftLint: 6c8820d22c8f74baadd5684e00bb7356c34610a1
 
 PODFILE CHECKSUM: 746796701dbaa313ed920d3a7bf22a9f97ee87eb
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.16.2
