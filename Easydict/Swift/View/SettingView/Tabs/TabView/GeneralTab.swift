@@ -329,7 +329,6 @@ private struct FirstAndSecondLanguageSettingView: View {
             isPresented: showLanguageDuplicatedAlert,
             presenting: languageDuplicatedAlert
         ) { _ in
-
         } message: { alert in
             Text(alert.description)
         }

@@ -422,8 +422,6 @@ struct YoudaoDictResponseV4: Codable {
 //        case multiple([String])
 //        case none
 //
-//        // MARK: Lifecycle
-//
 //        init(from decoder: Decoder) throws {
 //            let container = try decoder.singleValueContainer()
 //            if let stringValue = try? container.decode(String.self) {
@@ -435,7 +433,7 @@ struct YoudaoDictResponseV4: Codable {
 //            }
 //        }
 //
-//        // MARK: Internal
+//
 //
 //        func encode(to encoder: Encoder) throws {
 //            var container = encoder.singleValueContainer()
