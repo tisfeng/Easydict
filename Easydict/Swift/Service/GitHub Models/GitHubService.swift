@@ -74,8 +74,8 @@ enum GitHubModel: String, CaseIterable {
 
     case cohere_command_a = "cohere-command-a" // Low
 
-    // Mistral Small 3.1
-    case mistral_small_2503 = "mistral-small-2503" // Low
+    // Mistral Medium 3 (25.05)
+    case mistral_small_2503 = "mistral-medium-2505" // Low
 
     case phi_4 = "phi-4" // Low
 }
