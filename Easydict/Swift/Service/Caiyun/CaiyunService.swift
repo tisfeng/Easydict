@@ -41,10 +41,6 @@ public final class CaiyunService: QueryService {
         token != caiyunToken
     }
 
-    public override func autoConvertTraditionalChinese() -> Bool {
-        true
-    }
-
     public override func translate(
         _ text: String,
         from: Language,
@@ -66,7 +62,7 @@ public final class CaiyunService: QueryService {
             "trans_type": transType.rawValue,
             "media": "text",
             "request_id": "Easydict",
-            "detect": true,
+            "detect": transType.rawValue.hasPrefix("auto"),
         ]
         let headers: HTTPHeaders = [
             "content-type": "application/json",
