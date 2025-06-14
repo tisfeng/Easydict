@@ -43,7 +43,7 @@ public final class GeminiService: StreamService {
     }
 
     override var defaultModel: String {
-        GeminiModel.gemini_2_5_flash_preview_04_17.rawValue
+        GeminiModel.gemini_2_5_flash_preview_05_20.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -199,8 +199,8 @@ enum GeminiModel: String, CaseIterable {
     // RPM: Requests per minute, TPM: Tokens per minute
     // RPD: Requests per day, TPD: Tokens per day
 
-    case gemini_2_5_flash_preview_04_17 = "gemini-2.5-flash-preview-04-17" // 10 RPM | 250,000 TPM | 500 RPD
-    case gemini_2_5_pro_exp_03_25 = "gemini-2.5-pro-exp-03-25" // 5 RPM | 1,000,000 TPM | 25 RPD
+    case gemini_2_5_flash_preview_05_20 = "gemini-2.5-flash-preview-05-20" // 10 RPM | 250,000 TPM | 500 RPD
+    case gemini_2_5_pro_preview_06_05 = "gemini-2.5-pro-preview-06-05" // No available for free users now.
 
     case gemini_2_0_flash = "gemini-2.0-flash" // 15 RPM | 1,000,000 TPM | 1500 RPD
     case gemini_2_0_flash_exp = "gemini-2.0-flash-exp" // 10 RPM | 1,000,000 TPM | 1500 RPD
