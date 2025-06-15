@@ -70,6 +70,7 @@ static EZWindowManager *_instance;
     self.offsetPoint = CGPointMake(18, -12);
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
     self.actionType = EZActionTypeInvokeQuery;
+    self.screenVisibleFrame = NSScreen.mainScreen.visibleFrame;
 
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
