@@ -12,7 +12,9 @@
 
 @interface EZLayoutManager ()
 
+/// Minimum window frame size of clicked window
 @property (nonatomic, assign) CGSize minimumWindowSize;
+/// Maximum window frame size of clicked window
 @property (nonatomic, assign) CGSize maximumWindowSize;
 
 @end
@@ -220,12 +222,19 @@ static EZLayoutManager *_instance;
 
                 // Update lastPoint to update current active screen
                 EZWindowManager.shared.lastPoint = fixedWindowCenter;
-                Configuration.shared.screenVisibleFrame = self.screen.visibleFrame;
+                Configuration.shared.formerFixedScreenVisibleFrame = self.screen.visibleFrame;
             }
             break;
         }
         case EZWindowTypeMini:
             self.miniWindowFrame = window.frame;
+
+            if (Configuration.shared.miniWindowPosition == EZShowWindowPositionFormer) {
+                CGPoint fixedWindowCenter = NSMakePoint(NSMidX(windowFrame), NSMidY(windowFrame));
+
+                EZWindowManager.shared.lastPoint = fixedWindowCenter;
+                Configuration.shared.formerMiniScreenVisibleFrame = self.screen.visibleFrame;
+            }
             break;
         default:
             break;
@@ -242,6 +251,10 @@ static EZLayoutManager *_instance;
 //    MMLogInfo(@"update screen: %@", @(screen.visibleFrame));
 
     [self setupMaximumWindowSize:screen];
+}
+
+- (void)updateScreenVisibleFrame:(CGRect)visibleFrame {
+   _screenVisibleFrame = visibleFrame;
 }
 
 @end

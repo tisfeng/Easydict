@@ -13,7 +13,6 @@
 #import "EZSelectLanguageCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
-#import "EZWindowManager.h"
 #import "EZServiceTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
@@ -1606,11 +1605,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
 
-    CGRect screenVisibleFrame = EZLayoutManager.shared.screen.visibleFrame;
-    if (Configuration.shared.fixedWindowPosition == EZShowWindowPositionFormer) {
-        screenVisibleFrame = Configuration.shared.screenVisibleFrame;
-    }
-
+    CGRect screenVisibleFrame = EZLayoutManager.shared.screenVisibleFrame;
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
     // ???: why set window frame will change tableView height?
