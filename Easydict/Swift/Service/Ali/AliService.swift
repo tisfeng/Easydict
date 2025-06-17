@@ -64,53 +64,18 @@ class AliService: QueryService {
             return
         }
 
-        if Defaults[.aliServiceApiTypeKey] == .secretKey {
-            requestByAPI(
-                id: aliAccessKeyId,
-                secret: aliAccessKeySecret,
-                transType: transType,
-                text: text,
-                from: from,
-                to: to,
-                completion: completion
-            )
-        } else { // use web api
-            if hasToken.has {
-                requestByWeb(
-                    transType: transType, text: text, from: from, to: to, completion: completion
-                )
-                return
-            }
-
-            // get web request token
-            let request = AF.request(
-                "https://translate.alibaba.com/api/translate/csrftoken", method: .get
-            )
-            .validate()
-            .responseDecodable(of: AliTokenResponse.self) { [weak self] response in
-                guard let self else { return }
-                switch response.result {
-                case let .success(value):
-                    tokenResponse = value
-                case let .failure(error):
-                    logError("ali translate get token error: \(error)")
-                }
-
-                requestByWeb(
-                    transType: transType, text: text, from: from, to: to, completion: completion
-                )
-            }
-
-            queryModel.setStop({
-                request.cancel()
-            }, serviceType: serviceType().rawValue)
-        }
+        requestByAPI(
+            id: aliAccessKeyId,
+            secret: aliAccessKeySecret,
+            transType: transType,
+            text: text,
+            from: from,
+            to: to,
+            completion: completion
+        )
     }
 
     // MARK: Internal
-
-    private(set) var tokenResponse: AliTokenResponse?
-    private(set) var canWebRetry = true
 
     func hmacSha1(key: String, params: String) -> String? {
         guard let secret = key.data(using: .utf8),
@@ -127,16 +92,6 @@ class AliService: QueryService {
     // MARK: Private
 
     private let dateFormatter = ISO8601DateFormatter()
-
-    private var hasToken: (has: Bool, token: String, parameterName: String) {
-        if let token = tokenResponse?.token, let parameterName = tokenResponse?.parameterName,
-           !token.isEmpty,
-           !parameterName.isEmpty {
-            (true, token, parameterName)
-        } else {
-            (false, "", "")
-        }
-    }
 
     private var aliAccessKeyId: String {
         Defaults[.aliAccessKeyId]
@@ -267,90 +222,6 @@ class AliService: QueryService {
                     )
                 }
             }
-
-        queryModel.setStop({
-            request.cancel()
-        }, serviceType: serviceType().rawValue)
-    }
-
-    /// If there is a token, use the POST method and request with the token as a parameter; otherwise, use the GET method to request.
-    private func requestByWeb(
-        transType: AliTranslateType,
-        text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        var parameters = [
-            "srcLang": transType.sourceLanguage,
-            "tgtLang": transType.targetLanguage,
-            "domain": "general",
-            "query": text,
-        ]
-
-        let hasToken = hasToken
-        if hasToken.has {
-            parameters[hasToken.parameterName] = hasToken.token
-        }
-
-        let request = AF.request(
-            "https://translate.alibaba.com/api/translate/text",
-            method: hasToken.has ? .post : .get,
-            parameters: parameters
-        )
-        .validate()
-        .responseDecodable(of: AliWebResponse.self) { [weak self] response in
-            guard let self else { return }
-            let result = result
-
-            switch response.result {
-            case let .success(value):
-                if value.success, let translateText = value.data?.translateText {
-                    result.translatedResults = [translateText.unescapedXML()]
-                    completion(result, nil)
-                    logInfo("ali web translate success")
-                } else {
-                    let queryError = QueryError(
-                        type: .api,
-                        message: value.code?.stringValue,
-                        errorDataMessage: value.message
-                    )
-                    completion(result, queryError)
-                }
-                canWebRetry = true
-            case let .failure(error):
-                // The result returned when the token expires is HTML.
-                if hasToken.has, error.isResponseSerializationError {
-                    logError("ali web token invaild")
-                    tokenResponse = nil
-                    if canWebRetry {
-                        canWebRetry = false
-                        // Request token again.
-                        translate(text, from: from, to: to, completion: completion)
-                    } else {
-                        requestByWeb(
-                            transType: transType, text: text, from: from, to: to,
-                            completion: completion
-                        )
-                    }
-
-                } else {
-                    var msg: String?
-                    if let data = response.data {
-                        let res = try? JSONDecoder().decode(AliWebResponse.self, from: data)
-                        msg = res?.message
-                    }
-
-                    logError("ali web translate error: \(msg ?? "")")
-                    completion(
-                        result,
-                        QueryError(
-                            type: .api, message: error.localizedDescription, errorDataMessage: msg
-                        )
-                    )
-                }
-            }
-        }
 
         queryModel.setStop({
             request.cancel()
