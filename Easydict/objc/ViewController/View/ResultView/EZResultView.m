@@ -259,7 +259,7 @@
         self.clickArrowBlock(self.result);
     }
 
-    // TODO: add arrow roate animation.
+    // TODO: add arrow rotate animation.
     // [self rotateArrowButton];
 }
 
