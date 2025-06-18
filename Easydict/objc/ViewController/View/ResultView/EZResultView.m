@@ -250,7 +250,7 @@
     MMLogInfo(@"点击 topBarView, show: %@", @(newIsShowing));
 
     if (newIsShowing) {
-        self.result.manulShow = YES;
+        self.result.manualShow = YES;
     }
 
     [self updateArrowButton];
