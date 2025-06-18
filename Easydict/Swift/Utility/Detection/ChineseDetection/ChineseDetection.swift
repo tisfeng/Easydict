@@ -309,12 +309,15 @@ class ChineseDetection {
         var parallelCount = 0
         var totalComparisons = 0
 
-        for i in 0 ..< contentLines.count - 1 {
-            let similarity = compareStructuralPatterns(contentLines[i], contentLines[i + 1])
-            if similarity >= 0.9 {
-                parallelCount += 1
+        // At least two lines are needed to compare for parallel structure
+        if contentLines.count >= 2 {
+            for i in 0 ..< contentLines.count - 1 {
+                let similarity = compareStructuralPatterns(contentLines[i], contentLines[i + 1])
+                if similarity >= 0.9 {
+                    parallelCount += 1
+                }
+                totalComparisons += 1
             }
-            totalComparisons += 1
         }
 
         let parallelRatio =
