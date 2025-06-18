@@ -137,35 +137,10 @@
     NSImage *image = [NSImage imageNamed:@"arrow-down"];
     arrowButton.image = image;
     self.arrowButton.mas_key = @"arrowButton";
-    
-    [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
-        mm_strongify(self);
-        
-        if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
-            MMLogWarn(@"query text is empty");
-            return;
-        }
-        
-        BOOL oldIsShowing = self.result.isShowing;
-        BOOL newIsShowing = !oldIsShowing;
-        self.result.isShowing = newIsShowing;
-        MMLogInfo(@"点击 arrowButton, show: %@", @(newIsShowing));
-        
-        if (newIsShowing) {
-            self.result.manulShow = YES;
-        }
-        
-        [self updateArrowButton];
-        
-        if (self.clickArrowBlock) {
-            self.clickArrowBlock(self.result);
-        }
-        
-        // TODO: add arrow roate animation.
-        
-        //        [self rotateArrowButton];
-    }];
-    
+
+    // Add `handleTopBarTap:` action to arrowButton
+    arrowButton.target = self;
+    arrowButton.action = @selector(handleTopBarTap:);
     
     EZHoverButton *stopButton = [[EZHoverButton alloc] init];
     self.stopButton = stopButton;
@@ -263,8 +238,6 @@
 #pragma mark - Gesture Recognizer Action
 
 - (void)handleTopBarTap:(NSClickGestureRecognizer *)gestureRecognizer {
-    mm_weakify(self);
-    mm_strongify(self);
 
     if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
         MMLogWarn(@"query text is empty");
@@ -286,8 +259,8 @@
         self.clickArrowBlock(self.result);
     }
 
-    // TODO: add arrow roate animation. (Copied from arrowButton's block)
-    //        [self rotateArrowButton];
+    // TODO: add arrow roate animation.
+    // [self rotateArrowButton];
 }
 
 #pragma mark - Setter
