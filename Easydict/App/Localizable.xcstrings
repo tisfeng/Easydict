@@ -23,6 +23,57 @@
         }
       }
     },
+    "setting.general.window.enable_max_height_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit main window maximum height"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限制主窗口最大高度"
+          }
+        }
+      }
+    },
+    "setting.general.window.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口设置"
+          }
+        }
+      }
+    },
+    "setting.general.window.max_height_percentage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum height"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最大高度"
+          }
+        }
+      }
+    },
     "%@ API Key" : {
       "localizations" : {
         "sk" : {
@@ -8980,6 +9031,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有道詞典"
+          }
+        }
+      }
+    },
+    "youdao_entity_translate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao Entity Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道实体翻译"
           }
         }
       }

@@ -103,6 +103,10 @@ class Configuration: NSObject {
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
 
+    // Window Height Limit
+    @DefaultsWrapper(.enableMaxWindowHeightLimit) var enableMaxWindowHeightLimit: Bool
+    @DefaultsWrapper(.maxWindowHeightPercentage) var maxWindowHeightPercentage: Int
+
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
 

@@ -32,6 +32,7 @@ NSString *const EZServiceTypeDeepSeek = @"DeepSeek";
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 NSString *const EZServiceTypeGroq = @"Groq";
 NSString *const EZServiceTypeGitHub = @"GitHub";
+EZServiceType const EZServiceTypeYoudaoEntityTranslate = @"youdaoEntityTranslate";
 
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";

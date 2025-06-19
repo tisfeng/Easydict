@@ -165,6 +165,14 @@ extension Defaults.Keys {
         "EZConfiguration_kFormerMiniScreenVisibleFrameKey",
         default: .zero
     )
+
+    // MARK: - Window Height Limit
+    // Key for enabling/disabling the max window height limit
+    static let enableMaxWindowHeightLimit = Key<Bool>("enableMaxWindowHeightLimit", default: false)
+
+    // Key for storing the selected max window height percentage
+    // Storing as Int (e.g., 50, 80, 100).
+    static let maxWindowHeightPercentage = Key<Int>("maxWindowHeightPercentage", default: 80) // Default to 80%
 }
 
 extension Defaults.Keys {

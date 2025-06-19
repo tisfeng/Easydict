@@ -248,4 +248,13 @@ class YoudaoService: QueryService {
 
         return result
     }
+
+    // New method for entity translation
+    @objc func entityTranslate(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+        // For now, delegate to the existing webTranslate method.
+        // This assumes the general webTranslate can handle entity translation adequately,
+        // or serves as a placeholder until a specific entity API is found.
+        logInfo("Performing entity translation for text: \(text)")
+        return try await webTranslate(text: text, from: from, to: to)
+    }
 }

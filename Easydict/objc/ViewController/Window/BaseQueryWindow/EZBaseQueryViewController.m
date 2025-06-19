@@ -212,6 +212,26 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                       selector:@selector(updateWindowConfiguration:)
                           name:NSNotification.didChangeWindowConfiguration
                         object:nil];
+
+    // Observe for max window height settings changes
+    [defaultCenter addObserver:self
+                     selector:@selector(handleMaxWindowHeightSettingsChanged:)
+                         name:[NotificationName maxWindowHeightSettingsChanged] // Using Swift static property
+                       object:nil];
+}
+
+// MARK: - Max Window Height Settings Changed Notification Handler
+- (void)handleMaxWindowHeightSettingsChanged:(NSNotification *)notification {
+    MMLogInfo(@"Max window height settings changed notification received.");
+    // Apply only to the main window and if it's currently visible
+    if (self.windowType == EZWindowTypeMain && self.view.window.isVisible) {
+        MMLogInfo(@"Main window is visible, re-calculating height.");
+        // Call the existing method to update window height.
+        // Pass NO to lockFlag for potentially smoother animation if safe, or YES if issues.
+        // The original updateWindowHeight calls updateWindowHeightWithLock:YES.
+        // To be consistent and safe, calling updateWindowHeight which then calls updateWindowHeightWithLock:YES.
+        [self updateWindowHeight];
+    }
 }
 
 - (void)updateWindowConfiguration:(NSNotification *)notification {
@@ -288,6 +308,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)dealloc {
     MMLogInfo(@"dealloc: %@", self);
 
+    // Explicitly remove the observer for maxWindowHeightSettingsChanged
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:[NotificationName maxWindowHeightSettingsChanged]
+                                                  object:nil];
+    // The generic removeObserver:self would also work but being explicit is safer.
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
