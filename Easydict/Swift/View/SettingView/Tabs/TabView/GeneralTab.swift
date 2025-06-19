@@ -199,24 +199,6 @@ struct GeneralTab: View {
                 Text("hints_keyboard_shortcuts_font_size")
                     .font(.footnote)
             }
-
-            Section {
-                Toggle("setting.general.window.enable_max_height_limit", isOn: $enableMaxWindowHeightLimit)
-
-                if enableMaxWindowHeightLimit {
-                    Picker("setting.general.window.max_height_percentage", selection: $maxWindowHeightPercentageValue) {
-                        ForEach(MaxWindowHeightPercentageOption.allCases) { option in
-                            Text(option.localizedName).tag(option.rawValue)
-                        }
-                    }
-                    // Optional: Add a brief explanation text as a footer for the picker or section
-                    // Text("setting.general.window.max_height_percentage.hint")
-                    //    .font(.footnote)
-                    //    .foregroundColor(.gray)
-                }
-            } header: {
-                Text("setting.general.window.header") // "Window Settings"
-            }
         }
         .formStyle(.grouped)
         .task {
@@ -277,18 +259,6 @@ struct GeneralTab: View {
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
-
-    // Window Height Limit
-    @Default(.enableMaxWindowHeightLimit) private var enableMaxWindowHeightLimit: Bool = false {
-        didSet {
-            NotificationCenter.default.post(name: .maxWindowHeightSettingsChanged, object: nil)
-        }
-    }
-    @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue: Int = 80 {
-        didSet {
-            NotificationCenter.default.post(name: .maxWindowHeightSettingsChanged, object: nil)
-        }
-    }
 
     @State private var showRefuseAlert = false
     @State private var showHideMenuBarIconAlert = false

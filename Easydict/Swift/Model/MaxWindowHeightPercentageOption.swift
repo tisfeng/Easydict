@@ -10,23 +10,21 @@ import Foundation
 
 enum MaxWindowHeightPercentageOption: Int, CaseIterable, Identifiable {
     case fifty = 50
+    case sixty = 60
+    case seventy = 70
     case eighty = 80
+    case ninety = 90
     case oneHundred = 100
+
+    // MARK: Internal
+
+    static var defaultOption: MaxWindowHeightPercentageOption {
+        .oneHundred
+    }
 
     var id: Int { rawValue }
 
-    var localizedName: String {
-        switch self {
-        case .fifty:
-            return "50%"
-        case .eighty:
-            return "80%"
-        case .oneHundred:
-            return "100%"
-        }
-    }
-
-    static var defaultOption: MaxWindowHeightPercentageOption {
-        .eighty
+    var title: String {
+        "\(rawValue)%"
     }
 }

@@ -48,7 +48,6 @@ static EZServiceTypes *_instance;
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                            EZServiceTypeAppleDictionary, [EZAppleDictionary class],
                                            EZServiceTypeYoudao, [EZYoudaoService class],
-                                           EZServiceTypeYoudaoEntityTranslate, [EZYoudaoEntityTranslateService class],
                                            EZServiceTypeOpenAI, [EZOpenAIService class],
                                            EZServiceTypeDeepSeek, [EZDeepSeekService class],
                                            EZServiceTypeGroq, [EZGroqService class],

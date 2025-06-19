@@ -94,33 +94,26 @@ static EZLayoutManager *_instance;
 }
 
 - (CGSize)maximumWindowSize:(EZWindowType)type {
-    // Get original maximum size from the screen's visible frame
+    // Get maximum size from the screen's visible frame
     // self.maximumWindowSize is already set to self.screen.visibleFrame.size in setupMaximumWindowSize
-    CGFloat originalMaxWidth = self.maximumWindowSize.width;
-    CGFloat originalMaxHeight = self.maximumWindowSize.height;
 
-    if (type == EZWindowTypeMain) {
-        Configuration *config = [Configuration shared];
-        BOOL enableLimit = config.enableMaxWindowHeightLimit;
-        NSInteger percentage = config.maxWindowHeightPercentage;
+    CGFloat maxWidth = self.maximumWindowSize.width;
+    CGFloat maxHeight = self.maximumWindowSize.height;
 
-        if (enableLimit && percentage > 0 && percentage <= 100) {
-            CGFloat calculatedMaxHeight = originalMaxHeight * ((CGFloat)percentage / 100.0);
+    NSInteger percentage = Configuration.shared.maxWindowHeightPercentage;
 
-            // Ensure the calculated height is not less than the minimum window height for this type
-            CGFloat minHeightForType = [self minimumWindowSize:type].height;
-            CGFloat effectiveMaxHeight = MAX(minHeightForType, calculatedMaxHeight);
+    CGFloat calculatedMaxHeight = maxHeight * ((CGFloat)percentage / 100.0);
 
-            // Ensure it does not exceed the original screen height (shouldn't happen if percentage <= 100)
-            effectiveMaxHeight = MIN(effectiveMaxHeight, originalMaxHeight);
+    // Ensure the calculated height is not less than the minimum window height for this type
+    CGFloat minHeightForType = [self minimumWindowSize:type].height;
+    CGFloat effectiveMaxHeight = MAX(minHeightForType, calculatedMaxHeight);
 
-            MMLogInfo(@"Applying max window height limit for Main Window: %.0f%% of %.0f = %.0f (effective: %.0f)", (CGFloat)percentage, originalMaxHeight, calculatedMaxHeight, effectiveMaxHeight);
-            return CGSizeMake(originalMaxWidth, effectiveMaxHeight);
-        }
-    }
+    // Ensure it does not exceed the original screen height (shouldn't happen if percentage <= 100)
+    effectiveMaxHeight = MIN(effectiveMaxHeight, maxHeight);
 
-    // Default behavior for other window types or if limit is disabled/invalid for main window
-    return CGSizeMake(originalMaxWidth, originalMaxHeight);
+    MMLogInfo(@"Applying max window height limit for Main Window: %.0f%% of %.0f = %.0f (effective: %.0f)", (CGFloat)percentage, maxHeight, calculatedMaxHeight, effectiveMaxHeight);
+
+    return CGSizeMake(maxWidth, effectiveMaxHeight);
 }
 
 

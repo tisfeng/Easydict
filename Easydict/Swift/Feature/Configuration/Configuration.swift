@@ -103,8 +103,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
 
-    // Window Height Limit
-    @DefaultsWrapper(.enableMaxWindowHeightLimit) var enableMaxWindowHeightLimit: Bool
+    // Max window height percentage, e.g., 80 means 80% of the screen height
     @DefaultsWrapper(.maxWindowHeightPercentage) var maxWindowHeightPercentage: Int
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool

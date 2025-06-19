@@ -167,12 +167,10 @@ extension Defaults.Keys {
     )
 
     // MARK: - Window Height Limit
-    // Key for enabling/disabling the max window height limit
-    static let enableMaxWindowHeightLimit = Key<Bool>("enableMaxWindowHeightLimit", default: false)
 
-    // Key for storing the selected max window height percentage
+    // Key for storing the selected max window height percentage, default is 100%.
     // Storing as Int (e.g., 50, 80, 100).
-    static let maxWindowHeightPercentage = Key<Int>("maxWindowHeightPercentage", default: 80) // Default to 80%
+    static let maxWindowHeightPercentage = Key<Int>("maxWindowHeightPercentage", default: 100)
 }
 
 extension Defaults.Keys {
