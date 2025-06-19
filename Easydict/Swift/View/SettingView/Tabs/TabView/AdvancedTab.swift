@@ -25,7 +25,7 @@ struct AdvancedTab: View {
                 }
             }
 
-            // Items image color order: blue, green, orange, purple, red, mint
+            // Items image color order: blue, green, orange, purple, red, mint, yellow
             Section {
                 Picker(
                     selection: $defaultTTSServiceType,

@@ -2,8 +2,8 @@
 //  MaxWindowHeightPercentageOption.swift
 //  Easydict
 //
-//  Created by AI Agent on 2024-03-07. // Updated
-//  Copyright © 2024 izual. All rights reserved.
+//  Created by AI Agent on 2025-06-19.
+//  Copyright © 2025 izual. All rights reserved.
 //
 
 import Foundation
