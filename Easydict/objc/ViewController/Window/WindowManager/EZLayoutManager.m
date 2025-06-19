@@ -111,8 +111,6 @@ static EZLayoutManager *_instance;
     // Ensure it does not exceed the original screen height (shouldn't happen if percentage <= 100)
     effectiveMaxHeight = MIN(effectiveMaxHeight, maxHeight);
 
-    MMLogInfo(@"Applying max window height limit for Main Window: %.0f%% of %.0f = %.0f (effective: %.0f)", (CGFloat)percentage, maxHeight, calculatedMaxHeight, effectiveMaxHeight);
-
     return CGSizeMake(maxWidth, effectiveMaxHeight);
 }
 
