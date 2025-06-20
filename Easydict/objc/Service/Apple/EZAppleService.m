@@ -185,30 +185,30 @@ static EZAppleService *_instance;
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, @"auto",
-                                        EZLanguageSimplifiedChinese, @"zh_CN",
-                                        EZLanguageTraditionalChinese, @"zh_TW",
-                                        EZLanguageEnglish, @"en_US",
-                                        EZLanguageJapanese, @"ja_JP",
-                                        EZLanguageKorean, @"ko_KR",
-                                        EZLanguageFrench, @"fr_FR",
-                                        EZLanguageSpanish, @"es_ES",
-                                        EZLanguagePortuguese, @"pt_BR",
-                                        EZLanguageItalian, @"it_IT",
-                                        EZLanguageGerman, @"de_DE",
-                                        EZLanguageRussian, @"ru_RU",
-                                        EZLanguageArabic, @"ar_AE",
-                                        EZLanguageThai, @"th_TH",
-                                        EZLanguagePolish, @"pl_PL",
-                                        EZLanguageTurkish, @"tr_TR",
-                                        EZLanguageIndonesian, @"id_ID",
-                                        EZLanguageVietnamese, @"vi_VN",
-                                        // macOS 14+
-                                        EZLanguageDutch, @"nl_NL",
-                                        EZLanguageUkrainian, @"uk_UA",
-                                        // macOS 15+
-                                        EZLanguageHindi, @"hi_IN",
-                                        nil];
+                                                                        EZLanguageAuto, @"auto",
+                                                                        EZLanguageSimplifiedChinese, @"zh_CN",
+                                                                        EZLanguageTraditionalChinese, @"zh_TW",
+                                                                        EZLanguageEnglish, @"en_US",
+                                                                        EZLanguageJapanese, @"ja_JP",
+                                                                        EZLanguageKorean, @"ko_KR",
+                                                                        EZLanguageFrench, @"fr_FR",
+                                                                        EZLanguageSpanish, @"es_ES",
+                                                                        EZLanguagePortuguese, @"pt_BR",
+                                                                        EZLanguageItalian, @"it_IT",
+                                                                        EZLanguageGerman, @"de_DE",
+                                                                        EZLanguageRussian, @"ru_RU",
+                                                                        EZLanguageArabic, @"ar_AE",
+                                                                        EZLanguageThai, @"th_TH",
+                                                                        EZLanguagePolish, @"pl_PL",
+                                                                        EZLanguageTurkish, @"tr_TR",
+                                                                        EZLanguageIndonesian, @"id_ID",
+                                                                        EZLanguageVietnamese, @"vi_VN",
+                                                                        // macOS 14+
+                                                                        EZLanguageDutch, @"nl_NL",
+                                                                        EZLanguageUkrainian, @"uk_UA",
+                                                                        // macOS 15+
+                                                                        EZLanguageHindi, @"hi_IN",
+                                                                        nil];
 
     return orderedDict;
 }
@@ -218,51 +218,51 @@ static EZAppleService *_instance;
  */
 - (MMOrderedDictionary<EZLanguage, NLLanguage> *)appleLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, NLLanguageUndetermined,                     // uud
-                                        EZLanguageSimplifiedChinese, NLLanguageSimplifiedChinese,   // zh-Hans
-                                        EZLanguageTraditionalChinese, NLLanguageTraditionalChinese, // zh-Hant
-                                        EZLanguageEnglish, NLLanguageEnglish,                       // en
-                                        EZLanguageJapanese, NLLanguageJapanese,                     // ja
-                                        EZLanguageKorean, NLLanguageKorean,
-                                        EZLanguageFrench, NLLanguageFrench,
-                                        EZLanguageSpanish, NLLanguageSpanish,
-                                        EZLanguagePortuguese, NLLanguagePortuguese,
-                                        EZLanguageItalian, NLLanguageItalian,
-                                        EZLanguageGerman, NLLanguageGerman,
-                                        EZLanguageRussian, NLLanguageRussian,
-                                        EZLanguageArabic, NLLanguageArabic,
-                                        EZLanguageSwedish, NLLanguageSwedish,
-                                        EZLanguageRomanian, NLLanguageRomanian,
-                                        EZLanguageThai, NLLanguageThai,
-                                        EZLanguageSlovak, NLLanguageSlovak,
-                                        EZLanguageDutch, NLLanguageDutch,
-                                        EZLanguageHungarian, NLLanguageHungarian,
-                                        EZLanguageGreek, NLLanguageGreek,
-                                        EZLanguageDanish, NLLanguageDanish,
-                                        EZLanguageFinnish, NLLanguageFinnish,
-                                        EZLanguagePolish, NLLanguagePolish,
-                                        EZLanguageCzech, NLLanguageCzech,
-                                        EZLanguageTurkish, NLLanguageTurkish,
-                                        EZLanguageUkrainian, NLLanguageUkrainian,
-                                        EZLanguageBulgarian, NLLanguageBulgarian,
-                                        EZLanguageIndonesian, NLLanguageIndonesian,
-                                        EZLanguageMalay, NLLanguageMalay,
-                                        EZLanguageVietnamese, NLLanguageVietnamese,
-                                        EZLanguagePersian, NLLanguagePersian,
-                                        EZLanguageHindi, NLLanguageHindi,
-                                        EZLanguageTelugu, NLLanguageTelugu,
-                                        EZLanguageTamil, NLLanguageTamil,
-                                        EZLanguageUrdu, NLLanguageUrdu,
-                                        EZLanguageKhmer, NLLanguageKhmer,
-                                        EZLanguageLao, NLLanguageLao,
-                                        EZLanguageBengali, NLLanguageBengali,
-                                        EZLanguageBurmese, NLLanguageBurmese,
-                                        EZLanguageNorwegian, NLLanguageNorwegian,
-                                        EZLanguageCroatian, NLLanguageCroatian,
-                                        EZLanguageMongolian, NLLanguageMongolian, // mn-Mong
-                                        EZLanguageHebrew, NLLanguageHebrew,
-                                        EZLanguageGeorgian, NLLanguageGeorgian,
-                                        nil];
+                                                                        EZLanguageAuto, NLLanguageUndetermined,                     // uud
+                                                                        EZLanguageSimplifiedChinese, NLLanguageSimplifiedChinese,   // zh-Hans
+                                                                        EZLanguageTraditionalChinese, NLLanguageTraditionalChinese, // zh-Hant
+                                                                        EZLanguageEnglish, NLLanguageEnglish,                       // en
+                                                                        EZLanguageJapanese, NLLanguageJapanese,                     // ja
+                                                                        EZLanguageKorean, NLLanguageKorean,
+                                                                        EZLanguageFrench, NLLanguageFrench,
+                                                                        EZLanguageSpanish, NLLanguageSpanish,
+                                                                        EZLanguagePortuguese, NLLanguagePortuguese,
+                                                                        EZLanguageItalian, NLLanguageItalian,
+                                                                        EZLanguageGerman, NLLanguageGerman,
+                                                                        EZLanguageRussian, NLLanguageRussian,
+                                                                        EZLanguageArabic, NLLanguageArabic,
+                                                                        EZLanguageSwedish, NLLanguageSwedish,
+                                                                        EZLanguageRomanian, NLLanguageRomanian,
+                                                                        EZLanguageThai, NLLanguageThai,
+                                                                        EZLanguageSlovak, NLLanguageSlovak,
+                                                                        EZLanguageDutch, NLLanguageDutch,
+                                                                        EZLanguageHungarian, NLLanguageHungarian,
+                                                                        EZLanguageGreek, NLLanguageGreek,
+                                                                        EZLanguageDanish, NLLanguageDanish,
+                                                                        EZLanguageFinnish, NLLanguageFinnish,
+                                                                        EZLanguagePolish, NLLanguagePolish,
+                                                                        EZLanguageCzech, NLLanguageCzech,
+                                                                        EZLanguageTurkish, NLLanguageTurkish,
+                                                                        EZLanguageUkrainian, NLLanguageUkrainian,
+                                                                        EZLanguageBulgarian, NLLanguageBulgarian,
+                                                                        EZLanguageIndonesian, NLLanguageIndonesian,
+                                                                        EZLanguageMalay, NLLanguageMalay,
+                                                                        EZLanguageVietnamese, NLLanguageVietnamese,
+                                                                        EZLanguagePersian, NLLanguagePersian,
+                                                                        EZLanguageHindi, NLLanguageHindi,
+                                                                        EZLanguageTelugu, NLLanguageTelugu,
+                                                                        EZLanguageTamil, NLLanguageTamil,
+                                                                        EZLanguageUrdu, NLLanguageUrdu,
+                                                                        EZLanguageKhmer, NLLanguageKhmer,
+                                                                        EZLanguageLao, NLLanguageLao,
+                                                                        EZLanguageBengali, NLLanguageBengali,
+                                                                        EZLanguageBurmese, NLLanguageBurmese,
+                                                                        EZLanguageNorwegian, NLLanguageNorwegian,
+                                                                        EZLanguageCroatian, NLLanguageCroatian,
+                                                                        EZLanguageMongolian, NLLanguageMongolian, // mn-Mong
+                                                                        EZLanguageHebrew, NLLanguageHebrew,
+                                                                        EZLanguageGeorgian, NLLanguageGeorgian,
+                                                                        nil];
 
     return orderedDict;
 }
@@ -271,55 +271,55 @@ static EZAppleService *_instance;
 /// "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
 - (MMOrderedDictionary *)ocrLanguageDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageSimplifiedChinese, @"zh-Hans",
-                                        EZLanguageTraditionalChinese, @"zh-Hant",
-                                        EZLanguageEnglish, @"en-US",
-                                        EZLanguageJapanese, @"ja-JP",
-                                        EZLanguageKorean, @"ko-KR",
-                                        EZLanguageFrench, @"fr-FR",
-                                        EZLanguageSpanish, @"es-ES",
-                                        EZLanguagePortuguese, @"pt-BR",
-                                        EZLanguageItalian, @"it-IT",
-                                        EZLanguageGerman, @"de-DE",
-                                        EZLanguageRussian, @"ru-RU",
-                                        EZLanguageUkrainian, @"uk-UA",
-                                        EZLanguageThai, @"th-TH",       // macOS 14.5
-                                        EZLanguageVietnamese, @"vi-VT", // macOS 14.5
-                                        nil];
+                                                                        EZLanguageSimplifiedChinese, @"zh-Hans",
+                                                                        EZLanguageTraditionalChinese, @"zh-Hant",
+                                                                        EZLanguageEnglish, @"en-US",
+                                                                        EZLanguageJapanese, @"ja-JP",
+                                                                        EZLanguageKorean, @"ko-KR",
+                                                                        EZLanguageFrench, @"fr-FR",
+                                                                        EZLanguageSpanish, @"es-ES",
+                                                                        EZLanguagePortuguese, @"pt-BR",
+                                                                        EZLanguageItalian, @"it-IT",
+                                                                        EZLanguageGerman, @"de-DE",
+                                                                        EZLanguageRussian, @"ru-RU",
+                                                                        EZLanguageUkrainian, @"uk-UA",
+                                                                        EZLanguageThai, @"th-TH",       // macOS 14.5
+                                                                        EZLanguageVietnamese, @"vi-VT", // macOS 14.5
+                                                                        nil];
     return orderedDict;
 }
 
 // Mostly the same as NLlanguage, from [[NSSpellChecker new] availableLanguages]
 - (MMOrderedDictionary<EZLanguage, NLLanguage> *)spellCheckerLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, @"Multilingual",
-                                        EZLanguageEnglish, @"en", // NLLanguageEnglish
-                                        EZLanguageKorean, @"ko",
-                                        EZLanguageFrench, @"fr",
-                                        EZLanguageSpanish, @"es",
-                                        EZLanguagePortuguese, @"pt_PT",
-                                        EZLanguageItalian, @"it",
-                                        EZLanguageGerman, @"de",
-                                        EZLanguageRussian, @"ru",
-                                        EZLanguageArabic, @"ar",
-                                        EZLanguageSwedish, @"sv",
-                                        EZLanguageRomanian, @"ro",
-                                        EZLanguageDutch, @"nl",
-                                        EZLanguageHungarian, @"hu",
-                                        EZLanguageGreek, @"el",
-                                        EZLanguageDanish, @"da",
-                                        EZLanguageFinnish, @"fi",
-                                        EZLanguagePolish, @"pl",
-                                        EZLanguageCzech, @"ce",
-                                        EZLanguageTurkish, @"tr",
-                                        EZLanguageUkrainian, @"uk",
-                                        EZLanguageBulgarian, @"bg",
-                                        EZLanguageVietnamese, @"vi",
-                                        EZLanguageHindi, @"hi",
-                                        EZLanguageTelugu, @"te",
-                                        EZLanguageNorwegian, @"nb",
-                                        EZLanguageHebrew, @"he",
-                                        nil];
+                                                                        EZLanguageAuto, @"Multilingual",
+                                                                        EZLanguageEnglish, @"en", // NLLanguageEnglish
+                                                                        EZLanguageKorean, @"ko",
+                                                                        EZLanguageFrench, @"fr",
+                                                                        EZLanguageSpanish, @"es",
+                                                                        EZLanguagePortuguese, @"pt_PT",
+                                                                        EZLanguageItalian, @"it",
+                                                                        EZLanguageGerman, @"de",
+                                                                        EZLanguageRussian, @"ru",
+                                                                        EZLanguageArabic, @"ar",
+                                                                        EZLanguageSwedish, @"sv",
+                                                                        EZLanguageRomanian, @"ro",
+                                                                        EZLanguageDutch, @"nl",
+                                                                        EZLanguageHungarian, @"hu",
+                                                                        EZLanguageGreek, @"el",
+                                                                        EZLanguageDanish, @"da",
+                                                                        EZLanguageFinnish, @"fi",
+                                                                        EZLanguagePolish, @"pl",
+                                                                        EZLanguageCzech, @"ce",
+                                                                        EZLanguageTurkish, @"tr",
+                                                                        EZLanguageUkrainian, @"uk",
+                                                                        EZLanguageBulgarian, @"bg",
+                                                                        EZLanguageVietnamese, @"vi",
+                                                                        EZLanguageHindi, @"hi",
+                                                                        EZLanguageTelugu, @"te",
+                                                                        EZLanguageNorwegian, @"nb",
+                                                                        EZLanguageHebrew, @"he",
+                                                                        nil];
 
     return orderedDict;
 }
@@ -341,11 +341,11 @@ static EZAppleService *_instance;
                                             sourceLanguage:from
                                             targetLanguage:to
                                          completionHandler:^(NSString *targetText, NSError *error) {
-                    if (targetText) {
-                        self.result.translatedResults = @[ targetText ];
-                    }
-                    completion(self.result, error);
-                }];
+                                             if (targetText) {
+                                                 self.result.translatedResults = @[ targetText ];
+                                             }
+                                             completion(self.result, error);
+                                         }];
             });
             return;
         }
@@ -406,30 +406,30 @@ static EZAppleService *_instance;
           language:queryModel.queryFromLanguage
         autoDetect:automaticallyDetectsLanguage
         completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        if (hasSpecifiedLanguage || ocrResult.confidence == 1.0 || error) {
-            /**
-             If there is only a QR code in the image, OCR will return error, then try to detect QRCode image.
-             If there is both text and a QR code in the image, the text is recognized first.
-             */
-            if (error) {
-                EZOCRResult *ocrResult = [self getOCRResultFromQRCodeImage:image];
-                if (ocrResult) {
-                    completion(ocrResult, nil);
-                    return;
+            if (hasSpecifiedLanguage || ocrResult.confidence == 1.0 || error) {
+                /**
+                 If there is only a QR code in the image, OCR will return error, then try to detect QRCode image.
+                 If there is both text and a QR code in the image, the text is recognized first.
+                 */
+                if (error) {
+                    EZOCRResult *ocrResult = [self getOCRResultFromQRCodeImage:image];
+                    if (ocrResult) {
+                        completion(ocrResult, nil);
+                        return;
+                    }
                 }
+
+                queryModel.ocrConfidence = ocrResult.confidence;
+                completion(ocrResult, error);
+                return;
             }
 
-            queryModel.ocrConfidence = ocrResult.confidence;
-            completion(ocrResult, error);
-            return;
-        }
-
-        NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
-        [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-            queryModel.ocrConfidence = ocrResult.confidence;
-            completion(ocrResult, error);
+            NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
+            [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+                queryModel.ocrConfidence = ocrResult.confidence;
+                completion(ocrResult, error);
+            }];
         }];
-    }];
 }
 
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
@@ -532,7 +532,7 @@ static EZAppleService *_instance;
     NSMutableArray *needCorrectedLanguages = @[
         EZLanguageEnglish, // si
     ]
-        .mutableCopy;
+                                                 .mutableCopy;
 
     /**
      Fix: cuda was detectde as SimplifiedChinese, --> 粗大 cuda
@@ -788,109 +788,168 @@ static EZAppleService *_instance;
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     MMLogInfo(@"ocr language: %@", preferredLanguage);
 
+    // Validate input parameters
+    if (!image || !completion) {
+        MMLogError(@"Invalid parameters for OCR");
+        if (completion) {
+            EZOCRResult *errorResult = [[EZOCRResult alloc] init];
+            errorResult.from = preferredLanguage ?: EZLanguageAuto;
+            NSError *paramError = [EZQueryError errorWithType:EZQueryErrorTypeParameter
+                                                      message:@"Invalid OCR parameters"];
+            completion(errorResult, paramError);
+        }
+        return;
+    }
+
     self.ocrImage = image;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        // Convert NSImage to CGImage
-        CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
-
-        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-
-        // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
-
-        MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
-        NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
-        NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
-                                                                     preferredLanguages:[self.languageManager preferredLanguages]];
-
-        VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
-        VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
-            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            MMLogInfo(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
-
-            EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
-            ocrResult.from = preferredLanguage;
-
-            if (error) {
+        @autoreleasepool {
+            // Convert NSImage to CGImage with error handling
+            CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+            if (!cgImage) {
+                MMLogError(@"Failed to convert NSImage to CGImage");
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(ocrResult, error);
+                    EZOCRResult *errorResult = [[EZOCRResult alloc] init];
+                    errorResult.from = preferredLanguage;
+                    NSError *imageError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                              message:@"Failed to process image"];
+                    completion(errorResult, imageError);
                 });
                 return;
             }
 
-            BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
-            [self setupOCRResult:ocrResult request:request intelligentJoined:joined];
+            CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-            // Check if OCR result is empty and handle retry logic
-            if (ocrResult.mergedText.length == 0) {
+            // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
+
+            MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
+            NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
+            NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
+                                                                         preferredLanguages:[self.languageManager preferredLanguages]];
+
+            // Create Vision request with proper error handling
+            @try {
+                VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
+
+                __weak typeof(self) weakSelf = self;
+                VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    if (!strongSelf) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            EZOCRResult *errorResult = [[EZOCRResult alloc] init];
+                            errorResult.from = preferredLanguage;
+                            NSError *deallocError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                                        message:@"OCR service was deallocated"];
+                            completion(errorResult, deallocError);
+                        });
+                        return;
+                    }
+
+                    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+                    MMLogInfo(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
+
+                    EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+                    ocrResult.from = preferredLanguage;
+
+                    if (error) {
+                        MMLogError(@"Vision OCR error: %@", error);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completion(ocrResult, error);
+                        });
+                        return;
+                    }
+
+                    // Process OCR results in autoreleasepool for memory management
+                    @autoreleasepool {
+                        BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
+                        [strongSelf setupOCRResult:ocrResult request:request intelligentJoined:joined];
+
+                        // Check if OCR result is empty and handle retry logic
+                        if (ocrResult.mergedText.length == 0) {
+                            /**
+                             !!!: There are some problems with the system OCR.
+                             For example, it may return nil when ocr Japanese text:
+
+                             アイス・スノーセーリング世界選手権大会
+
+                             But if specify Japanese as preferredLanguage, we can get right OCR text, So we need to OCR again.
+                             */
+
+                            // Only retry once with Japanese if the original language was Auto
+                            if ([preferredLanguage isEqualToString:EZLanguageAuto]) {
+                                EZLanguage tryLanguage = EZLanguageJapanese;
+                                [strongSelf ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
+                                return;
+                            } else {
+                                // Create error for empty result
+                                NSError *emptyResultError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                                                message:NSLocalizedString(@"ocr_result_is_empty", nil)];
+
+                                // Reset language to auto if we previously tried Japanese
+                                ocrResult.from = EZLanguageAuto;
+
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    completion(ocrResult, emptyResultError);
+                                });
+                                return;
+                            }
+                        }
+
+                        // Success case - return result
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completion(ocrResult, nil);
+                        });
+                    }
+                }];
+
                 /**
-                 !!!: There are some problems with the system OCR.
-                 For example, it may return nil when ocr Japanese text:
+                 NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:nil];
 
-                 アイス・スノーセーリング世界選手権大会
+                 "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
 
-                 But if specify Japanese as preferredLanguage, we can get right OCR text, So we need to OCR again.
+                 New supported OCR language in macOS 14.5 ?
+                 "th-TH", "vi-VT"
                  */
 
-                // Only retry once with Japanese if the original language was Auto
-                if ([preferredLanguage isEqualToString:EZLanguageAuto]) {
-                    EZLanguage tryLanguage = EZLanguageJapanese;
-                    [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
-                    return;
-                } else {
-                    // Create error for empty result
-                    NSError *emptyResultError = [EZQueryError errorWithType:EZQueryErrorTypeApi
-                                                                    message:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
 
-                    // Reset language to auto if we previously tried Japanese
-                    ocrResult.from = EZLanguageAuto;
-
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(ocrResult, emptyResultError);
-                    });
-                    return;
+                if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
+                    // If has designated ocr language, move it to first priority.
+                    recognitionLanguages = [self updateOCRRecognitionLanguages:recognitionLanguages
+                                                            preferredLanguages:@[ preferredLanguage ]];
                 }
+
+                NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
+                request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
+
+                // TODO: need to test [usesLanguageCorrection] value.
+                // If we use automaticallyDetectsLanguage = YES, means we are not sure about the OCR text language, that we don't need auto correction.
+                request.usesLanguageCorrection = !automaticallyDetectsLanguage; // Default is YES
+
+                // Perform the text-recognition request with error handling
+                NSError *requestError = nil;
+                BOOL success = [requestHandler performRequests:@[ request ] error:&requestError];
+
+                if (!success || requestError) {
+                    MMLogError(@"Failed to perform OCR request: %@", requestError);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        EZOCRResult *errorResult = [[EZOCRResult alloc] init];
+                        errorResult.from = preferredLanguage;
+                        NSError *finalError = requestError ?: [EZQueryError errorWithType:EZQueryErrorTypeApi message:@"OCR request failed"];
+                        completion(errorResult, finalError);
+                    });
+                }
+            } @catch (NSException *exception) {
+                MMLogError(@"OCR exception: %@", exception);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    EZOCRResult *errorResult = [[EZOCRResult alloc] init];
+                    errorResult.from = preferredLanguage;
+                    NSError *exceptionError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                                  message:[NSString stringWithFormat:@"OCR exception: %@", exception.reason]];
+                    completion(errorResult, exceptionError);
+                });
             }
-
-            // Success case - return result
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(ocrResult, nil);
-            });
-        }];
-
-        /**
-         NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:nil];
-
-         "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
-
-         New supported OCR language in macOS 14.5 ?
-         "th-TH", "vi-VT"
-         */
-
-        request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
-
-        if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
-            // If has designated ocr language, move it to first priority.
-            recognitionLanguages = [self updateOCRRecognitionLanguages:recognitionLanguages
-                                                    preferredLanguages:@[ preferredLanguage ]];
-        }
-
-        NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
-        request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
-
-        // TODO: need to test [usesLanguageCorrection] value.
-        // If we use automaticallyDetectsLanguage = YES, means we are not sure about the OCR text language, that we don't need auto correction.
-        request.usesLanguageCorrection = !automaticallyDetectsLanguage; // Default is YES
-
-        // Perform the text-recognition request.
-        NSError *requestError = nil;
-        BOOL success = [requestHandler performRequests:@[ request ] error:&requestError];
-        if (!success && requestError) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                EZOCRResult *errorResult = [[EZOCRResult alloc] init];
-                errorResult.from = preferredLanguage;
-                completion(errorResult, requestError);
-            });
         }
     });
 }
@@ -961,9 +1020,9 @@ static EZAppleService *_instance;
               language:ezLanguage
             autoDetect:YES
             completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-            [results addObject:@{@"ocrResult" : ocrResult ?: [NSNull null], @"error" : error ?: [NSNull null]}];
-            dispatch_group_leave(group);
-        }];
+                [results addObject:@{@"ocrResult" : ocrResult ?: [NSNull null], @"error" : error ?: [NSNull null]}];
+                dispatch_group_leave(group);
+            }];
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
@@ -2130,8 +2189,8 @@ static EZAppleService *_instance;
 }
 
 - (BOOL)isLongLineLength:(CGFloat)lineLength
-           maxLineLength:(CGFloat)maxLineLength
-  greaterRateOfMaxLength:(CGFloat)greaterRateOfMaxLength {
+             maxLineLength:(CGFloat)maxLineLength
+    greaterRateOfMaxLength:(CGFloat)greaterRateOfMaxLength {
     BOOL isLongLine = lineLength >= maxLineLength * greaterRateOfMaxLength;
     return isLongLine;
 }
@@ -2258,7 +2317,6 @@ static EZAppleService *_instance;
 /// Check Chinese language type of text, traditional or simplified.
 /// - !!!: Make sure the text is Chinese.
 - (EZLanguage)chineseLanguageTypeOfText:(NSString *)chineseText {
-
     // Check text is classical Chinese may be not accurate, so now only enable it in beta.
     if (Configuration.shared.beta) {
         // Check if classical Chinese.
