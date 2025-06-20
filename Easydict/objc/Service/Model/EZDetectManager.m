@@ -200,7 +200,7 @@
         }
 
         /**
-         !!!: Even confidence is high, such as confidence is 1.0, that just means the ocr result text is accurate, but the ocr result from langauge may be not accurate, such as 'heel', it may be detected as 'Dutch'. So we need to detect text language again.
+         !!!: Even confidence is high, such as confidence is 1.0, that just means the ocr result text is accurate, but the ocr result from language may be not accurate, such as 'heel', it may be detected as 'Dutch'. So we need to detect text language again.
          */
 
         NSString *ocrText = ocrResult.mergedText;
