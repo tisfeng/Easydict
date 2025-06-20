@@ -577,7 +577,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.inputText = @"";
     }
 
-    // Re-detect langauge when retry.
+    // Re-detect language when retry.
     self.queryModel.detectedLanguage = EZLanguageAuto;
     self.queryModel.needDetectLanguage = YES;
 
