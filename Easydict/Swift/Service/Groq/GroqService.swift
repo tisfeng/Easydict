@@ -8,7 +8,7 @@
 
 import Defaults
 import Foundation
-import SwiftUICore
+import SwiftUI
 
 // MARK: - GroqService
 
