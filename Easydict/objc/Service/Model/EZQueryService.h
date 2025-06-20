@@ -57,7 +57,7 @@ NS_SWIFT_NAME(QueryService)
                         to:(EZLanguage)to
                 completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
-/// Get TTS langauge code.
+/// Get TTS language code.
 /// @param language Text language
 /// @param accent English text tone, such as en-US, en-GB
 - (NSString *)getTTSLanguageCode:(EZLanguage)language accent:(NSString *_Nullable)accent;

@@ -425,7 +425,7 @@ static EZAppleService *_instance;
         }
         
         NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
-        [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+        [self getMostConfidentLanguageOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
             queryModel.ocrConfidence = ocrResult.confidence;
             completion(ocrResult, error);
         }];
@@ -561,7 +561,7 @@ static EZAppleService *_instance;
     return mostConfidentLanguage;
 }
 
-/// Using dictionary to correct text langauge, return YES if corrected successfully.
+/// Using dictionary to correct text language, return YES if corrected successfully.
 - (BOOL)correctTextLanguage:(NSString *)text
          designatedLanguage:(EZLanguage)designatedLanguage
            originalLanguage:(EZLanguage *)originalLanguage {
@@ -920,8 +920,8 @@ static EZAppleService *_instance;
                                                             preferredLanguages:@[ preferredLanguage ]];
                 }
                 
-                NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
-                request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
+                NSArray *appleOCRLanguageCodes = [self appleOCRLanguageCodesWithRecognitionLanguages:recognitionLanguages];
+                request.recognitionLanguages = appleOCRLanguageCodes; // ISO language codes
                 
                 // TODO: need to test [usesLanguageCorrection] value.
                 // If we use automaticallyDetectsLanguage = YES, means we are not sure about the OCR text language, that we don't need auto correction.
@@ -986,19 +986,19 @@ static EZAppleService *_instance;
 }
 
 // return Apple OCR language codes with EZLanguage array.
-- (NSArray<NSString *> *)appleOCRLangaugeCodesWithRecognitionLanguages:(NSArray<EZLanguage> *)languages {
+- (NSArray<NSString *> *)appleOCRLanguageCodesWithRecognitionLanguages:(NSArray<EZLanguage> *)languages {
     NSMutableArray *appleOCRLanguageCodes = [NSMutableArray array];
     for (EZLanguage language in languages) {
-        NSString *appleOCRLangaugeCode = [[self ocrLanguageDictionary] objectForKey:language];
-        if (appleOCRLangaugeCode.length > 0) {
-            [appleOCRLanguageCodes addObject:appleOCRLangaugeCode];
+        NSString *appleOCRLanguageCode = [[self ocrLanguageDictionary] objectForKey:language];
+        if (appleOCRLanguageCode.length > 0) {
+            [appleOCRLanguageCodes addObject:appleOCRLanguageCode];
         }
     }
     return [appleOCRLanguageCodes copy];
 }
 
 
-- (void)getMostConfidentLangaugeOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+- (void)getMostConfidentLanguageOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     /**
      
      苔むした岩に囲まれた滝
@@ -1747,7 +1747,7 @@ static EZAppleService *_instance;
                     needLineBreak = YES;
                 } else {
                     // 翻页, Page turn scenes without line feeds.
-                    BOOL isTurnedPage = [self.languageManager isEnglishLangauge:self.language] && [text isLowercaseFirstChar] && !isPrevEndPunctuationChar;
+                    BOOL isTurnedPage = [self.languageManager isEnglishLanguage:self.language] && [text isLowercaseFirstChar] && !isPrevEndPunctuationChar;
                     if (isTurnedPage) {
                         isNewParagraph = NO;
                         needLineBreak = NO;
@@ -1787,7 +1787,7 @@ static EZAppleService *_instance;
     }
     
     if (!isEqualFontSize || isBigLineSpacing) {
-        if (!isPrevLongText || ([self.languageManager isEnglishLangauge:self.language] && isFirstLetterUpperCase)) {
+        if (!isPrevLongText || ([self.languageManager isEnglishLanguage:self.language] && isFirstLetterUpperCase)) {
             isNewParagraph = YES;
         }
     }
@@ -1929,7 +1929,7 @@ static EZAppleService *_instance;
     BOOL isFirstLetterUpperCase = [text.firstChar isUppercaseLetter];
     
     // For English text
-    if ([self.languageManager isEnglishLangauge:self.language] && isFirstLetterUpperCase) {
+    if ([self.languageManager isEnglishLanguage:self.language] && isFirstLetterUpperCase) {
         if (lineHeightRatio > 0.85) {
             isBigLineSpacing = YES;
         } else {
