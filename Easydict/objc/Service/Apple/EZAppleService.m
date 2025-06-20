@@ -812,13 +812,17 @@ static EZAppleService *_instance;
             ocrResult.from = preferredLanguage;
 
             if (error) {
-                completion(ocrResult, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(ocrResult, error);
+                });
                 return;
             }
 
             BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
             [self setupOCRResult:ocrResult request:request intelligentJoined:joined];
-            if (!error && ocrResult.mergedText.length == 0) {
+
+            // Check if OCR result is empty and handle retry logic
+            if (ocrResult.mergedText.length == 0) {
                 /**
                  !!!: There are some problems with the system OCR.
                  For example, it may return nil when ocr Japanese text:
@@ -828,21 +832,30 @@ static EZAppleService *_instance;
                  But if specify Japanese as preferredLanguage, we can get right OCR text, So we need to OCR again.
                  */
 
+                // Only retry once with Japanese if the original language was Auto
                 if ([preferredLanguage isEqualToString:EZLanguageAuto]) {
                     EZLanguage tryLanguage = EZLanguageJapanese;
                     [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
                     return;
                 } else {
-                    error = [EZQueryError errorWithType:EZQueryErrorTypeApi message:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                    // Create error for empty result
+                    NSError *emptyResultError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                                    message:NSLocalizedString(@"ocr_result_is_empty", nil)];
 
-                    // We try to use Japanese before, but failed, so need to reset to auto.
+                    // Reset language to auto if we previously tried Japanese
                     ocrResult.from = EZLanguageAuto;
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(ocrResult, emptyResultError);
+                    });
+                    return;
                 }
             }
+
+            // Success case - return result
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(ocrResult, error);
+                completion(ocrResult, nil);
             });
-            return;
         }];
 
         /**
@@ -862,7 +875,6 @@ static EZAppleService *_instance;
                                                     preferredLanguages:@[ preferredLanguage ]];
         }
 
-
         NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
         request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
 
@@ -871,7 +883,15 @@ static EZAppleService *_instance;
         request.usesLanguageCorrection = !automaticallyDetectsLanguage; // Default is YES
 
         // Perform the text-recognition request.
-        [requestHandler performRequests:@[ request ] error:nil];
+        NSError *requestError = nil;
+        BOOL success = [requestHandler performRequests:@[ request ] error:&requestError];
+        if (!success && requestError) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                EZOCRResult *errorResult = [[EZOCRResult alloc] init];
+                errorResult.from = preferredLanguage;
+                completion(errorResult, requestError);
+            });
+        }
     });
 }
 
