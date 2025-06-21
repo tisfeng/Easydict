@@ -23,8 +23,28 @@ enum EasydictCmpatibilityEntry {
         EZLog.setupCrashService()
         EZLog.logAppInfo()
 
+        testOCR() // for test
+
         // app launch
         EasydictApp.main()
+    }
+
+    static func testOCR() {
+        Task {
+            let ocrService = AppleOCRService()
+            let image = NSImage(named: "square_menu_bar_icon")?.toCGImage()
+            guard let image else {
+                print("Failed to load image")
+                return
+            }
+
+            let result = try? await ocrService.ocrAsync(cgImage: image)
+            if let result {
+                print("OCR Result: \(result)")
+            } else {
+                print("OCR failed")
+            }
+        }
     }
 }
 
