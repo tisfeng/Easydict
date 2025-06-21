@@ -837,7 +837,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [service.result convertToTraditionalChineseResult];
         }
 
-        BOOL hideResult = !result.manulShow && !result.hasTranslatedResult && result.isWarningErrorType;
+        BOOL hideResult = !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
         if (hideResult) {
             result.isShowing = NO;
         }

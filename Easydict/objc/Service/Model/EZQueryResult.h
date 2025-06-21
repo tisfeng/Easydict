@@ -131,7 +131,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) EZQueryError *error;
 
-@property (nonatomic, assign) BOOL manulShow;
+/// Whether the result is manually expanded by user interaction.
+@property (nonatomic, assign) BOOL manualShow;
 
 /// If (self.hasTranslatedResult || self.error || self.errorMessage.length), then hasShowingResult = YES, that means will show result view.
 @property (readonly, nonatomic, assign) BOOL hasShowingResult;
