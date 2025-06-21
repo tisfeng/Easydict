@@ -24,6 +24,8 @@
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */; };
+		031760EB2E065EF500CE8FD7 /* AppleOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */; };
+		031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
@@ -148,8 +150,8 @@
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039D119829D5E26300C93F46 /* EZAudioUtils.m */; };
 		03A173E72CD120E600791B51 /* SelectedTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03A173E62CD120E600791B51 /* SelectedTextKit */; };
-		03A220062D42414C00788927 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
-		03A220072D42414C00788927 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
+		03A220062D42414C00788927 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		03A220072D42414C00788927 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
@@ -442,6 +444,8 @@
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
 		0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Request.swift"; sourceTree = "<group>"; };
+		031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCRService.swift; sourceTree = "<group>"; };
+		031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+ToCGImage.swift"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
@@ -955,7 +959,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03A220072D42414C00788927 /* BuildFile in Frameworks */,
+				03A220072D42414C00788927 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -964,7 +968,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */,
-				03A220062D42414C00788927 /* BuildFile in Frameworks */,
+				03A220062D42414C00788927 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1116,6 +1120,22 @@
 				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
 			);
 			path = Others;
+			sourceTree = "<group>";
+		};
+		031760E92E065DB300CE8FD7 /* AppleOCRService */ = {
+			isa = PBXGroup;
+			children = (
+				031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */,
+			);
+			path = AppleOCRService;
+			sourceTree = "<group>";
+		};
+		031760EC2E06B99200CE8FD7 /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */,
+			);
+			path = Image;
 			sourceTree = "<group>";
 		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
@@ -1371,8 +1391,9 @@
 		036463682CB62B6600D0D6CC /* Apple */ = {
 			isa = PBXGroup;
 			children = (
-				039785272CC678F400A49087 /* TranslationService */,
 				036463692CB62B8900D0D6CC /* AppleService.swift */,
+				031760E92E065DB300CE8FD7 /* AppleOCRService */,
+				039785272CC678F400A49087 /* TranslationService */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -2778,6 +2799,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				031760EC2E06B99200CE8FD7 /* Image */,
 				03F086F32DB21EAD00268DF0 /* Double */,
 				033EA07C2CFC63A50017F86C /* View */,
 				0340D3922C8EEF4B004C9910 /* Dictionary */,
@@ -3091,9 +3113,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Easydict/Pods-Easydict-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Easydict/Pods-Easydict-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3152,9 +3178,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3286,6 +3316,7 @@
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
+				031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
 				C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */,
@@ -3338,6 +3369,7 @@
 				03779F132BB256B5008D3C42 /* APIKey.swift in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
+				031760EB2E065EF500CE8FD7 /* AppleOCRService.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,

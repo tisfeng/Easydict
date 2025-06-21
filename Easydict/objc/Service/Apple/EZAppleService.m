@@ -788,20 +788,50 @@ static EZAppleService *_instance;
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     MMLogInfo(@"ocr language: %@", preferredLanguage);
     
-    // Validate input parameters
-    if (!image || !completion) {
-        MMLogError(@"Invalid parameters for OCR");
-        if (completion) {
+    self.ocrImage = image;
+    
+    AppleService *appleService = [[AppleService alloc] init];
+    CGImageRef cgImage = image.toCGImage;
+        
+    if (!cgImage) {
+        MMLogError(@"Failed to convert NSImage to CGImage");
+        dispatch_async(dispatch_get_main_queue(), ^{
             EZOCRResult *errorResult = [[EZOCRResult alloc] init];
-            errorResult.from = preferredLanguage ?: EZLanguageAuto;
-            NSError *paramError = [EZQueryError errorWithType:EZQueryErrorTypeParameter
-                                                      message:@"Invalid OCR parameters"];
-            completion(errorResult, paramError);
-        }
+            errorResult.from = preferredLanguage;
+            NSError *imageError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                      message:@"Failed to process image"];
+            completion(errorResult, imageError);
+        });
         return;
     }
+
+    [appleService ocrWithCgImage:cgImage
+               completionHandler:^(NSArray<VNRecognizedTextObservation *> *observations, NSError *error) {
+        MMLogInfo(@"Apple OCR observations: %@, error: %@", observations, error);
+        
+        EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+        ocrResult.from = preferredLanguage;
+        
+        if (error) {
+            completion(ocrResult, error);
+            return;
+        }
+        
+        if (observations.count > 0) {
+            [self setupOCRResult:ocrResult textObservations:observations intelligentJoined:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(ocrResult, nil);
+            });
+        } else {
+            NSError *emptyError = [EZQueryError errorWithType:EZQueryErrorTypeApi
+                                                      message:@"OCR result is empty"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(ocrResult, emptyError);
+            });
+        }
+    }];
     
-    self.ocrImage = image;
+    return;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         @autoreleasepool {
@@ -863,7 +893,7 @@ static EZAppleService *_instance;
                     // Process OCR results in autoreleasepool for memory management
                     @autoreleasepool {
                         BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
-                        [strongSelf setupOCRResult:ocrResult request:request intelligentJoined:joined];
+                        [strongSelf setupOCRResult:ocrResult textObservations:request.results intelligentJoined:joined];
                         
                         // Check if OCR result is empty and handle retry logic
                         if (ocrResult.mergedText.length == 0) {
@@ -1157,7 +1187,7 @@ static EZAppleService *_instance;
 #pragma mark - Join OCR text array
 
 - (void)setupOCRResult:(EZOCRResult *)ocrResult
-               request:(VNRequest *_Nonnull)request
+      textObservations:(NSArray<VNRecognizedTextObservation *> *_Nonnull)textObservations
      intelligentJoined:(BOOL)intelligentJoined {
     EZLanguage language = ocrResult.from;
     
@@ -1176,7 +1206,6 @@ static EZAppleService *_instance;
     CGFloat minLengthOfLine = MAXFLOAT;
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
-    NSArray<VNRecognizedTextObservation *> *textObservations = request.results;
     MMLogInfo(@"\n textObservations: %@", textObservations);
     
     NSInteger lineCount = textObservations.count;

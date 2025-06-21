@@ -8,10 +8,29 @@
 
 import Foundation
 import Translation
+import Vision
 
 // MARK: - AppleService
 
 public class AppleService: QueryService {
+    // MARK: Public
+
+    /// Use Vision to perform OCR on the image data.
+    @objc
+    public func ocr(
+        cgImage: CGImage,
+        completionHandler: @escaping ([VNRecognizedTextObservation], Error?) -> ()
+    ) {
+        ocrService.ocr(cgImage: cgImage, completionHandler: completionHandler)
+    }
+
+    /// Async version for Swift usage
+    public func ocrAsync(cgImage: CGImage) async throws -> String {
+        try await ocrService.ocrAsync(cgImage: cgImage)
+    }
+
+    // MARK: Internal
+
     var supportedLanguages = [Locale.Language]()
 
     @available(macOS 15.0, *)
@@ -27,6 +46,10 @@ public class AppleService: QueryService {
             print("\(language.languageCode!.identifier)_\(language.region!)")
         }
     }
+
+    // MARK: Private
+
+    private let ocrService = AppleOCRService()
 }
 
 @available(macOS 15.0, *)
