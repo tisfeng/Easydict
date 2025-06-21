@@ -289,7 +289,7 @@ NSString *getPartAbbreviation(NSString *part) {
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
     self.isStreamFinished = YES;
-    self.manulShow = NO;
+    self.manualShow = NO;
     self.HTMLString = nil;
     self.copiedText = nil;
     self.didFinishLoadingHTMLBlock = nil;
