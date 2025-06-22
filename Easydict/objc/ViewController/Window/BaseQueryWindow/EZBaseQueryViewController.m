@@ -204,7 +204,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     [defaultCenter addObserver:self
-                      selector:@selector(modifyLanduage:)
+                      selector:@selector(modifyAppLanguage:)
                           name:NSNotification.languagePreferenceChanged
                         object:nil];
 
@@ -212,6 +212,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                       selector:@selector(updateWindowConfiguration:)
                           name:NSNotification.didChangeWindowConfiguration
                         object:nil];
+
+    // Observe for max window height settings changes
+    [defaultCenter addObserver:self
+                     selector:@selector(updateWindowHeight)
+                         name:NSNotification.maxWindowHeightSettingsChanged
+                       object:nil];
 }
 
 - (void)updateWindowConfiguration:(NSNotification *)notification {
@@ -248,7 +254,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self reloadTableViewData:nil];
 }
 
-- (void)modifyLanduage:(NSNotification *)notification {
+- (void)modifyAppLanguage:(NSNotification *)notification {
     [self.tableView reloadData];
 }
 
