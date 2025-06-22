@@ -6471,6 +6471,34 @@
         }
       }
     },
+    "setting.advance.window.max_height_percentage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window Maximum Height Percentage"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximálne percento výšky okna"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口最大高度百分比"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口最大高度百分比"
+          }
+        }
+      }
+    },
     "setting.advance.window.mini_window_position" : {
       "localizations" : {
         "en" : {

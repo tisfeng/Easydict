@@ -25,7 +25,7 @@ struct AdvancedTab: View {
                 }
             }
 
-            // Items image color order: blue, green, orange, purple, red, mint
+            // Items image color order: blue, green, orange, purple, red, mint, yellow
             Section {
                 Picker(
                     selection: $defaultTTSServiceType,
@@ -260,6 +260,25 @@ struct AdvancedTab: View {
                         labelText: "setting.advance.hide_main_window"
                     )
                 }
+
+                Picker(
+                    selection: $maxWindowHeightPercentageValue,
+                    label: AdvancedTabItemView(
+                        color: .yellow,
+                        systemImage: SFSymbol.arrowUpAndDown.rawValue,
+                        labelText: "setting.advance.window.max_height_percentage"
+                    )
+                ) {
+                    ForEach(MaxWindowHeightPercentageOption.allCases) { option in
+                        Text(option.title)
+                            .tag(option)
+                    }
+                    .onChange(of: maxWindowHeightPercentageValue) { _ in
+                        // Post notification when max window height percentage changes
+                        NotificationCenter.default.post(name: .maxWindowHeightSettingsChanged, object: nil)
+                    }
+                }
+
             } header: {
                 Text("setting.advance.window_management.header")
             }
@@ -339,6 +358,8 @@ struct AdvancedTab: View {
     private func getHttpIconColor() -> Color {
         enableHTTPServer ? .green : .red
     }
+
+    @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
 }
 
 #Preview {

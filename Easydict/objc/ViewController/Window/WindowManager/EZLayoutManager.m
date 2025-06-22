@@ -94,17 +94,24 @@ static EZLayoutManager *_instance;
 }
 
 - (CGSize)maximumWindowSize:(EZWindowType)type {
-    switch (type) {
-        case EZWindowTypeMain:
-            return self.maximumWindowSize;
-        case EZWindowTypeFixed:
-            return self.maximumWindowSize;
-        case EZWindowTypeMini: {
-            return self.maximumWindowSize;
-        }
-        default:
-            return self.maximumWindowSize;
-    }
+    // Get maximum size from the screen's visible frame
+    // self.maximumWindowSize is already set to self.screen.visibleFrame.size in setupMaximumWindowSize
+
+    CGFloat maxWidth = self.maximumWindowSize.width;
+    CGFloat maxHeight = self.maximumWindowSize.height;
+
+    NSInteger percentage = Configuration.shared.maxWindowHeightPercentage;
+
+    CGFloat calculatedMaxHeight = maxHeight * ((CGFloat)percentage / 100.0);
+
+    // Ensure the calculated height is not less than the minimum window height for this type
+    CGFloat minHeightForType = [self minimumWindowSize:type].height;
+    CGFloat effectiveMaxHeight = MAX(minHeightForType, calculatedMaxHeight);
+
+    // Ensure it does not exceed the original screen height (shouldn't happen if percentage <= 100)
+    effectiveMaxHeight = MIN(effectiveMaxHeight, maxHeight);
+
+    return CGSizeMake(maxWidth, effectiveMaxHeight);
 }
 
 
