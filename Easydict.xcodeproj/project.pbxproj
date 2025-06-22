@@ -26,6 +26,8 @@
 		0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */; };
 		031760EB2E065EF500CE8FD7 /* AppleOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */; };
 		031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */; };
+		031760F32E07FB2800CE8FD7 /* AppleSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */; };
+		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
@@ -76,7 +78,6 @@
 		03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E072D278872005E56A8 /* YoudaoKey.swift */; };
 		03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E092D281920005E56A8 /* YoudaoService+OCR.swift */; };
 		03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */; };
-		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
 		03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3C2937AF4F00C34C33 /* EZQueryResult.m */; };
@@ -446,6 +447,8 @@
 		0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Request.swift"; sourceTree = "<group>"; };
 		031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCRService.swift; sourceTree = "<group>"; };
 		031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+ToCGImage.swift"; sourceTree = "<group>"; };
+		031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetector.swift; sourceTree = "<group>"; };
+		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
@@ -508,8 +511,6 @@
 		03538E072D278872005E56A8 /* YoudaoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoKey.swift; sourceTree = "<group>"; };
 		03538E092D281920005E56A8 /* YoudaoService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YoudaoService+OCR.swift"; sourceTree = "<group>"; };
 		03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoOCRResponse.swift; sourceTree = "<group>"; };
-		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
-		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
 		03542A332936F70F00C34C33 /* EZLanguageManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageManager.m; sourceTree = "<group>"; };
 		03542A382937AE6400C34C33 /* EZQueryService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryService.h; sourceTree = "<group>"; };
@@ -1138,6 +1139,22 @@
 			path = Image;
 			sourceTree = "<group>";
 		};
+		031760F02E07FB2800CE8FD7 /* AppleLanguageDetector */ = {
+			isa = PBXGroup;
+			children = (
+				031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */,
+			);
+			path = AppleLanguageDetector;
+			sourceTree = "<group>";
+		};
+		031760F22E07FB2800CE8FD7 /* AppleSpeechService */ = {
+			isa = PBXGroup;
+			children = (
+				031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */,
+			);
+			path = AppleSpeechService;
+			sourceTree = "<group>";
+		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1317,8 +1334,6 @@
 			isa = PBXGroup;
 			children = (
 				033C30FD2A74CEB10095926A /* AppleDictionary */,
-				03542A2E293645DF00C34C33 /* EZAppleService.h */,
-				03542A2F293645DF00C34C33 /* EZAppleService.m */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -1391,6 +1406,8 @@
 		036463682CB62B6600D0D6CC /* Apple */ = {
 			isa = PBXGroup;
 			children = (
+				031760F02E07FB2800CE8FD7 /* AppleLanguageDetector */,
+				031760F22E07FB2800CE8FD7 /* AppleSpeechService */,
 				036463692CB62B8900D0D6CC /* AppleService.swift */,
 				031760E92E065DB300CE8FD7 /* AppleOCRService */,
 				039785272CC678F400A49087 /* TranslationService */,
@@ -3466,7 +3483,6 @@
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				032AAA5B2C456F04007996A1 /* routes.swift in Sources */,
 				0AC8A8432B6957B0006DA5CC /* BingService+ConfigurableService.swift in Sources */,
-				03542A30293645DF00C34C33 /* EZAppleService.m in Sources */,
 				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,
 				0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */,
@@ -3477,6 +3493,8 @@
 				9643D9422B6FE4AF000FBEA6 /* Shortcut+Bind.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
+				031760F32E07FB2800CE8FD7 /* AppleSpeechService.swift in Sources */,
+				031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */,
 				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,
 				EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */,
 				96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */,

@@ -7,7 +7,7 @@
 //
 
 #import "EZAudioPlayer.h"
-#import "EZAppleService.h"
+//#import "EZAppleService.h"
 #import <AVFoundation/AVFoundation.h>
 #import "EZQueryService.h"
 #import "EZEnumTypes.h"

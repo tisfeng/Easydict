@@ -13,6 +13,8 @@
 
 @interface EZDetectManager ()
 
+@property (nonatomic, strong) EZAppleService *appleService;
+
 @property (nonatomic, strong) EZGoogleTranslate *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
 @property (nonatomic, strong) EZYoudaoService *youdaoService;

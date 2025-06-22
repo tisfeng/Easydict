@@ -8,14 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryModel.h"
-#import "EZAppleService.h"
+//#import "EZAppleService.h"
+//#import "Easydict-Swift.h"
+#import "EZQueryService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZDetectManager : NSObject
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
-@property (nonatomic, strong) EZAppleService *appleService;
+//@property (nonatomic, strong) EZAppleService *appleService;
 @property (nonatomic, strong) EZQueryService *ocrService;
 
 + (instancetype)managerWithModel:(EZQueryModel *)model;

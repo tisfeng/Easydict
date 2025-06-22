@@ -26,7 +26,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "TTTDictionary.h"
 #import "EZServiceTypes.h"
-#import "EZAppleService.h"
+//#import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
 #import "Easydict-Swift.h"

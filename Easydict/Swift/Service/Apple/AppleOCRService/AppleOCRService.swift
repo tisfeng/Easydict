@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import CoreImage
 import Foundation
 import Vision
 
@@ -15,7 +16,53 @@ import Vision
 public class AppleOCRService: NSObject {
     // MARK: Public
 
-    /// Use Vision to perform OCR on the image data.
+    /// Main OCR method that processes image and returns complete OCR result
+    @objc
+    public func performOCR(
+        image: NSImage,
+        language: Language,
+        autoDetect: Bool,
+        completion: @escaping (EZOCRResult?, Error?) -> ()
+    ) {
+        guard let cgImage = image.toCGImage() else {
+            let error = NSError(
+                domain: "AppleOCRService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Failed to convert NSImage to CGImage"]
+            )
+            completion(nil, error)
+            return
+        }
+
+        ocr(cgImage: cgImage) { [weak self] observations, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+
+            // Create OCR result from observations
+            let ocrResult = EZOCRResult()
+            ocrResult.from = language
+
+            if observations.isEmpty {
+                let emptyError = NSError(
+                    domain: "AppleOCRService",
+                    code: -2,
+                    userInfo: [NSLocalizedDescriptionKey: "OCR result is empty"]
+                )
+                completion(ocrResult, emptyError)
+                return
+            }
+
+            // Process observations into OCR result
+            setupOCRResult(ocrResult, observations: observations, intelligentJoined: true)
+            completion(ocrResult, nil)
+        }
+    }
+
+    /// Use Vision to perform OCR on the CGImage.
     @objc
     public func ocr(
         cgImage: CGImage,
@@ -24,7 +71,7 @@ public class AppleOCRService: NSObject {
         performOCR(on: cgImage, completionHandler: completionHandler)
     }
 
-    /// Async version for Swift usage
+    /// Async version for Swift usage - returns string
     @objc
     public func ocrAsync(cgImage: CGImage) async throws -> String {
         let observations = try await ocr(cgImage: cgImage)
@@ -51,23 +98,61 @@ public class AppleOCRService: NSObject {
         return cgImage
     }
 
+    /// Process observations into structured OCR result
+    func setupOCRResult(
+        _ ocrResult: EZOCRResult,
+        observations: [VNRecognizedTextObservation],
+        intelligentJoined: Bool
+    ) {
+        let recognizedTexts = observations.compactMap { observation in
+            observation.topCandidates(1).first?.string
+        }
+
+        ocrResult.texts = recognizedTexts
+        ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
+        ocrResult.raw = recognizedTexts
+
+        // Calculate confidence
+        if !observations.isEmpty {
+            let totalConfidence = observations.compactMap { observation in
+                observation.topCandidates(1).first?.confidence
+            }.reduce(0, +)
+
+            ocrResult.confidence = CGFloat(Float(totalConfidence) / Float(observations.count))
+        } else {
+            ocrResult.confidence = 0.0
+        }
+    }
+
     /// Perform OCR using Vision framework - callback version
     func performOCR(
         on cgImage: CGImage,
         completionHandler: @escaping ([VNRecognizedTextObservation], Error?) -> ()
     ) {
         let request = VNRecognizeTextRequest { request, error in
-            if let error = error {
-                completionHandler([], error)
+            if let error {
+                DispatchQueue.main.async {
+                    completionHandler([], error)
+                }
                 return
             }
 
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                completionHandler([], nil)
+                DispatchQueue.main.async {
+                    let error = NSError(
+                        domain: "AppleOCRService",
+                        code: -3,
+                        userInfo: [NSLocalizedDescriptionKey: "No text observations found"]
+                    )
+                    completionHandler([], error)
+                }
                 return
             }
 
-            completionHandler(observations, nil)
+            // Complete in the main thread
+            DispatchQueue.main.async {
+                completionHandler(observations, nil)
+            }
         }
 
         // Configure OCR request for better accuracy
@@ -80,7 +165,7 @@ public class AppleOCRService: NSObject {
             request.recognitionLanguages = supportedLanguages
         }
 
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
 
         // Perform request on background queue to avoid blocking
         DispatchQueue.global(qos: .userInitiated).async {

@@ -2907,6 +2907,7 @@
       }
     },
     "ocr_result_is_empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
