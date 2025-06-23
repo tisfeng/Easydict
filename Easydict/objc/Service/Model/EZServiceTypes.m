@@ -10,7 +10,6 @@
 #import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
 #import "EZDeepLTranslate.h"
-//#import "EZAppleService.h"
 #import "EZBingService.h"
 #import "EZAppleDictionary.h"
 #import "EZNiuTransTranslate.h"

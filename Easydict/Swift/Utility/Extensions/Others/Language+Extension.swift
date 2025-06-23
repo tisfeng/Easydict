@@ -97,7 +97,7 @@ extension Language {
 
 extension Language: CustomStringConvertible {
     public var description: String {
-        "\(localizedName)(\(code)"
+        "\(localizedName)(\(code))"
     }
 }
 

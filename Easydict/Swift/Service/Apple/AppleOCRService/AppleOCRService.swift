@@ -25,10 +25,8 @@ public class AppleOCRService: NSObject {
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
         guard let cgImage = image.toCGImage() else {
-            let error = NSError(
-                domain: "AppleOCRService",
-                code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "Failed to convert NSImage to CGImage"]
+            let error = QueryError.error(
+                type: .parameter, message: "Failed to convert NSImage to CGImage"
             )
             completion(nil, error)
             return
@@ -47,17 +45,18 @@ public class AppleOCRService: NSObject {
             ocrResult.from = language
 
             if observations.isEmpty {
-                let emptyError = NSError(
-                    domain: "AppleOCRService",
-                    code: -2,
-                    userInfo: [NSLocalizedDescriptionKey: "OCR result is empty"]
-                )
+                let emptyError = QueryError.error(type: .noResult, message: "OCR result is empty")
                 completion(ocrResult, emptyError)
                 return
             }
 
-            // Process observations into OCR result
-            setupOCRResult(ocrResult, observations: observations, intelligentJoined: true)
+            // Use OCR text processor for intelligent text merging
+            textProcessor.setupOCRResult(
+                ocrResult,
+                observations: observations,
+                ocrImage: image,
+                intelligentJoined: true
+            )
             completion(ocrResult, nil)
         }
     }
@@ -98,32 +97,6 @@ public class AppleOCRService: NSObject {
         return cgImage
     }
 
-    /// Process observations into structured OCR result
-    func setupOCRResult(
-        _ ocrResult: EZOCRResult,
-        observations: [VNRecognizedTextObservation],
-        intelligentJoined: Bool
-    ) {
-        let recognizedTexts = observations.compactMap { observation in
-            observation.topCandidates(1).first?.string
-        }
-
-        ocrResult.texts = recognizedTexts
-        ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
-        ocrResult.raw = recognizedTexts
-
-        // Calculate confidence
-        if !observations.isEmpty {
-            let totalConfidence = observations.compactMap { observation in
-                observation.topCandidates(1).first?.confidence
-            }.reduce(0, +)
-
-            ocrResult.confidence = CGFloat(Float(totalConfidence) / Float(observations.count))
-        } else {
-            ocrResult.confidence = 0.0
-        }
-    }
-
     /// Perform OCR using Vision framework - callback version
     func performOCR(
         on cgImage: CGImage,
@@ -139,11 +112,7 @@ public class AppleOCRService: NSObject {
 
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
                 DispatchQueue.main.async {
-                    let error = NSError(
-                        domain: "AppleOCRService",
-                        code: -3,
-                        userInfo: [NSLocalizedDescriptionKey: "No text observations found"]
-                    )
+                    let error = QueryError.error(type: .noResult, message: "OCR result is empty")
                     completionHandler([], error)
                 }
                 return
@@ -172,12 +141,20 @@ public class AppleOCRService: NSObject {
             do {
                 try requestHandler.perform([request])
             } catch {
-                completionHandler([], error)
+                DispatchQueue.main.async {
+                    let queryError =
+                        QueryError.queryError(from: error, type: .api)
+                            ?? QueryError.error(type: .api, message: "OCR processing failed")
+                    completionHandler([], queryError)
+                }
             }
         }
     }
 
     // MARK: Private
+
+    // OCR text processor for intelligent text merging
+    private let textProcessor = AppleOCRTextProcessor()
 
     /// Perform OCR using Vision framework - async version
     private func performOCRAsync(on cgImage: CGImage) async throws -> [VNRecognizedTextObservation] {

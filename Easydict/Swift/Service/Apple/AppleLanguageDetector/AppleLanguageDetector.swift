@@ -56,7 +56,14 @@ public class AppleLanguageDetector: NSObject {
         let endTime = CFAbsoluteTimeGetCurrent()
 
         if printLog {
-            print("Language probabilities: \(languageProbabilityDict)")
+            // Format language probabilities for better readability
+            let formattedProbabilities =
+                languageProbabilityDict
+                    .sorted { $0.value > $1.value } // Sort by probability descending
+                    .map { "\($0.key.rawValue): \(String(format: "%.3f", $0.value))" }
+                    .joined(separator: "\n")
+
+            print("Language probabilities: \n\(formattedProbabilities)\n")
             print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
             print("Detection cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
         }
@@ -154,32 +161,4 @@ public class AppleLanguageDetector: NSObject {
 
         return language
     }
-
-//    private func languageEnumFromAppleLanguage(_ appleLanguage: NLLanguage?) -> Language {
-//        guard let appleLanguage = appleLanguage else { return .auto }
-//
-//        switch appleLanguage {
-//        case .english: return .english
-//        case .simplifiedChinese: return .simplifiedChinese
-//        case .traditionalChinese: return .traditionalChinese
-//        case .japanese: return .japanese
-//        case .korean: return .korean
-//        case .french: return .french
-//        case .spanish: return .spanish
-//        case .portuguese: return .portuguese
-//        case .italian: return .italian
-//        case .german: return .german
-//        case .russian: return .russian
-//        case .arabic: return .arabic
-//        case .thai: return .thai
-//        case .polish: return .polish
-//        case .turkish: return .turkish
-//        case .indonesian: return .indonesian
-//        case .vietnamese: return .vietnamese
-//        case .dutch: return .dutch
-//        case .ukrainian: return .ukrainian
-//        case .hindi: return .hindi
-//        default: return .auto
-//        }
-//    }
 }

@@ -23,9 +23,9 @@ public class AppleSpeechService: NSObject {
         completion: @escaping (Error?) -> ()
     )
         -> NSSpeechSynthesizer? {
-        print("System speak: \(text) (\(language))")
-
-        let voiceIdentifier = voiceIdentifier(for: language) ?? "com.apple.speech.synthesis.voice.Alex"
+        let voiceIdentifier = voiceIdentifier(for: language) ?? "com.apple.voice.compact.en-US.Samantha"
+        print("Language: \(language), Voice Identifier: \(voiceIdentifier)")
+        print("System speak: \(text)")
 
         let synthesizer = NSSpeechSynthesizer(voice: .init(rawValue: voiceIdentifier))
 
@@ -98,28 +98,6 @@ public class AppleSpeechService: NSObject {
     }
 
     private func localeIdentifier(for language: Language) -> String {
-        switch language {
-        case .english: return "en_US"
-        case .simplifiedChinese: return "zh_CN"
-        case .traditionalChinese: return "zh_TW"
-        case .japanese: return "ja_JP"
-        case .korean: return "ko_KR"
-        case .french: return "fr_FR"
-        case .spanish: return "es_ES"
-        case .portuguese: return "pt_BR"
-        case .italian: return "it_IT"
-        case .german: return "de_DE"
-        case .russian: return "ru_RU"
-        case .arabic: return "ar_AE"
-        case .thai: return "th_TH"
-        case .polish: return "pl_PL"
-        case .turkish: return "tr_TR"
-        case .indonesian: return "id_ID"
-        case .vietnamese: return "vi_VN"
-        case .dutch: return "nl_NL"
-        case .ukrainian: return "uk_UA"
-        case .hindi: return "hi_IN"
-        default: return "en_US"
-        }
+        AppleLanguageMapper.shared.supportedLanguages[language] ?? "en_US"
     }
 }

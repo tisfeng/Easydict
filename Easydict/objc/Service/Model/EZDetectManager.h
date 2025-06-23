@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryModel.h"
-//#import "EZAppleService.h"
-//#import "Easydict-Swift.h"
 #import "EZQueryService.h"
 
 NS_ASSUME_NONNULL_BEGIN
