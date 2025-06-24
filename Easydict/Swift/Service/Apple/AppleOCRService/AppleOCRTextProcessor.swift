@@ -9,14 +9,6 @@
 import Foundation
 import Vision
 
-// MARK: - Constants
-
-private let kLineBreakText = "\n"
-private let kParagraphBreakText = "\n\n"
-private let kIndentationText = ""
-private let kParagraphLineHeightRatio: CGFloat = 1.5
-private let kShortPoetryCharacterCountOfLine = 12
-
 // MARK: - AppleOCRTextProcessor
 
 /// Handles intelligent OCR text processing and merging
@@ -27,7 +19,12 @@ public class AppleOCRTextProcessor: NSObject {
 
     // MARK: - Public Methods
 
-    /// Main method to process OCR observations into structured result
+    /// Process OCR observations into structured result with intelligent text merging
+    /// - Parameters:
+    ///   - ocrResult: The OCR result object to populate
+    ///   - observations: Array of Vision text observations
+    ///   - ocrImage: Source image for OCR processing
+    ///   - intelligentJoined: Whether to apply intelligent text joining algorithms
     @objc
     public func setupOCRResult(
         _ ocrResult: EZOCRResult,
@@ -41,11 +38,24 @@ public class AppleOCRTextProcessor: NSObject {
         // Reset statistics
         resetStatistics()
 
+        print("\nTextObservations: \(observations.formattedDescription)")
+
         let recognizedTexts = observations.compactMap { observation in
-            observation.topCandidates(1).first?.string
+            observation.text
         }
 
-        print("\nTextObservations: \(observations.formattedDescription)")
+        // Set basic OCR result properties
+        ocrResult.texts = recognizedTexts
+        ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
+        ocrResult.raw = recognizedTexts
+
+        // Calculate confidence
+        calculateConfidence(ocrResult, observations: observations)
+
+        // If intelligent joining is not enabled, return simple result
+        if !intelligentJoined {
+            return
+        }
 
         let lineCount = observations.count
         var lineSpacingCount = 0
@@ -67,19 +77,6 @@ public class AppleOCRTextProcessor: NSObject {
             averageLineSpacing = totalLineSpacing / CGFloat(lineSpacingCount)
         }
 
-        // Set basic OCR result properties
-        ocrResult.texts = recognizedTexts
-        ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
-        ocrResult.raw = recognizedTexts
-
-        // Calculate confidence
-        calculateConfidence(ocrResult, observations: observations)
-
-        // If intelligent joining is not enabled, return simple result
-        if !intelligentJoined {
-            return
-        }
-
         print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
 
         // Detect if text is poetry
@@ -97,7 +94,9 @@ public class AppleOCRTextProcessor: NSObject {
 
         // Update OCR result with intelligently merged text
         ocrResult.mergedText = mergedText.trimmingCharacters(in: .whitespacesAndNewlines)
-        ocrResult.texts = ocrResult.mergedText.components(separatedBy: kLineBreakText)
+        ocrResult.texts = ocrResult.mergedText.components(
+            separatedBy: AppleOCRConstants.lineBreakText
+        )
 
         let showMergedText = String(ocrResult.mergedText.prefix(100))
         print(
@@ -133,6 +132,7 @@ public class AppleOCRTextProcessor: NSObject {
 
     // MARK: - Private Methods
 
+    /// Reset all statistical variables to initial values
     private func resetStatistics() {
         minLineHeight = .greatestFiniteMagnitude
         totalLineHeight = 0
@@ -156,6 +156,12 @@ public class AppleOCRTextProcessor: NSObject {
         punctuationMarkCount = 0
     }
 
+    /// Calculate line spacing, height, and positioning statistics for a text observation
+    /// - Parameters:
+    ///   - textObservation: Current text observation to analyze
+    ///   - index: Index of current observation in the array
+    ///   - observations: Complete array of text observations
+    ///   - lineSpacingCount: Inout parameter tracking valid line spacing measurements
     private func calculateLineStatistics(
         _ textObservation: VNRecognizedTextObservation,
         index: Int,
@@ -179,7 +185,7 @@ public class AppleOCRTextProcessor: NSObject {
             let deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height)
 
             // If deltaY too big, it may be paragraph, do not add it
-            if deltaY > 0, deltaY < averageLineHeight * kParagraphLineHeightRatio {
+            if deltaY > 0, deltaY < averageLineHeight * AppleOCRConstants.paragraphLineHeightRatio {
                 totalLineSpacing += deltaY
                 lineSpacingCount += 1
             }
@@ -214,6 +220,10 @@ public class AppleOCRTextProcessor: NSObject {
         averageLineHeight = totalLineHeight / CGFloat(index + 1)
     }
 
+    /// Calculate and set the overall confidence score for OCR result
+    /// - Parameters:
+    ///   - ocrResult: OCR result object to update
+    ///   - observations: Array of text observations with individual confidence scores
     private func calculateConfidence(
         _ ocrResult: EZOCRResult, observations: [VNRecognizedTextObservation]
     ) {
@@ -228,6 +238,9 @@ public class AppleOCRTextProcessor: NSObject {
         }
     }
 
+    /// Detect if the text layout represents poetry based on line characteristics
+    /// - Parameter observations: Array of text observations to analyze
+    /// - Returns: True if text appears to be poetry, false for prose
     private func detectPoetry(observations: [VNRecognizedTextObservation]) -> Bool {
         let lineCount = observations.count
         var longLineCount = 0
@@ -241,7 +254,7 @@ public class AppleOCRTextProcessor: NSObject {
 
         for i in 0 ..< lineCount {
             let observation = observations[i]
-            let text = observation.topCandidates(1).first?.string ?? ""
+            let text = observation.text
 
             totalCharCount += text.count
             totalWordCount += countWords(in: text)
@@ -254,7 +267,7 @@ public class AppleOCRTextProcessor: NSObject {
                 // Check for prose patterns
                 if i > 0 {
                     let prevObservation = observations[i - 1]
-                    let prevText = prevObservation.topCandidates(1).first?.string ?? ""
+                    let prevText = prevObservation.text
                     if isLongTextObservation(prevObservation), !hasEndPunctuationSuffix(prevText) {
                         return false
                     }
@@ -332,6 +345,9 @@ public class AppleOCRTextProcessor: NSObject {
         return true
     }
 
+    /// Sort text observations by vertical position (top to bottom)
+    /// - Parameter observations: Unsorted array of text observations
+    /// - Returns: Array sorted by Y coordinate for proper reading order
     private func sortTextObservations(_ observations: [VNRecognizedTextObservation])
         -> [VNRecognizedTextObservation] {
         // Sort text observations by Y coordinate (top to bottom)
@@ -350,11 +366,14 @@ public class AppleOCRTextProcessor: NSObject {
         }
     }
 
+    /// Perform intelligent text merging based on spatial relationships and context
+    /// - Parameter observations: Sorted array of text observations
+    /// - Returns: Merged text string with appropriate line breaks and spacing
     private func performIntelligentTextMerging(_ observations: [VNRecognizedTextObservation])
         -> String {
         let lineCount = observations.count
         var confidence: Float = 0
-        var mergedText = ""
+        let mergedText = NSMutableString()
 
         for i in 0 ..< lineCount {
             let textObservation = observations[i]
@@ -362,38 +381,101 @@ public class AppleOCRTextProcessor: NSObject {
             confidence += recognizedText?.confidence ?? 0
 
             let recognizedString = recognizedText?.string ?? ""
+            let boundingBox = textObservation.boundingBox
+
+            print("\n\(textObservation)")
 
             if i > 0 {
                 let prevTextObservation = observations[i - 1]
+                let prevBoundingBox = prevTextObservation.boundingBox
 
-                // Create text merger with current statistics
-                let textMerger = AppleOCRTextMerger(
-                    language: language,
-                    isPoetry: isPoetry,
-                    minLineHeight: minLineHeight,
-                    averageLineHeight: averageLineHeight,
-                    maxLongLineTextObservation: maxLongLineTextObservation,
-                    minXLineTextObservation: minXLineTextObservation,
-                    maxLineLength: maxLineLength,
-                    charCountPerLine: charCountPerLine,
-                    ocrImage: ocrImage ?? NSImage(),
-                    languageManager: EZLanguageManager.shared()
+                // Calculate deltaY and deltaX as in original Objective-C code
+                let deltaY =
+                    prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height)
+                let deltaX =
+                    boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width)
+
+                // Determine if this is a new line (same logic as original)
+                var isNewLine = false
+                if deltaY > 0 {
+                    isNewLine = true
+                } else {
+                    if abs(deltaY) < minLineHeight / 2 {
+                        isNewLine = true
+                    }
+                }
+
+                // System deltaX is about 0.05. If the deltaX of two line is too large, it may be a new line.
+                if deltaX > 0.07 {
+                    isNewLine = true
+                }
+
+                var joinedString: String
+
+                // Check if need to handle last dash of text
+                let isNeedHandleLastDashOfText = checkNeedHandleLastDashOfText(
+                    current: textObservation,
+                    previous: prevTextObservation
                 )
 
-                let joinString = textMerger.joinedStringOfTextObservation(
-                    current: textObservation, previous: prevTextObservation
-                )
+                if isNeedHandleLastDashOfText {
+                    joinedString = ""
 
-                mergedText += joinString
+                    // Check if need to remove last dash
+                    let isNeedRemoveLastDashOfText = checkNeedRemoveLastDashOfText(
+                        current: textObservation,
+                        previous: prevTextObservation
+                    )
+                    if isNeedRemoveLastDashOfText {
+                        if mergedText.length > 0 {
+                            mergedText.deleteCharacters(
+                                in: NSRange(location: mergedText.length - 1, length: 1)
+                            )
+                        }
+                    }
+                } else if isNewLine {
+                    // Create text merger with current statistics
+                    let textMerger = AppleOCRTextMerger(
+                        language: language,
+                        isPoetry: isPoetry,
+                        minLineHeight: minLineHeight,
+                        averageLineHeight: averageLineHeight,
+                        maxLongLineTextObservation: maxLongLineTextObservation,
+                        minXLineTextObservation: minXLineTextObservation,
+                        maxLineLength: maxLineLength,
+                        charCountPerLine: charCountPerLine,
+                        ocrImage: ocrImage ?? NSImage(),
+                        languageManager: EZLanguageManager.shared()
+                    )
+
+                    joinedString = textMerger.joinedStringOfTextObservation(
+                        current: textObservation,
+                        previous: prevTextObservation
+                    )
+                } else {
+                    joinedString = " " // if the same line, just join two texts
+                }
+
+                // Store joinedString in observation (mimic original behavior)
+                setJoinedString(for: textObservation, joinedString: joinedString)
+
+                // 1. append joined string
+                mergedText.append(joinedString)
             }
 
-            mergedText += recognizedString
+            // 2. append line text
+            mergedText.append(recognizedString)
         }
 
         // Apply final text processing
-        return replaceSimilarDotSymbol(in: mergedText)
+        return replaceSimilarDotSymbol(in: mergedText as String).trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
     }
 
+    /// Replace similar dot symbols with standardized middle dot character
+    /// - Parameter string: Input string with various dot symbols
+    /// - Returns: String with normalized dot symbols
     private func replaceSimilarDotSymbol(in string: String) -> String {
         // Replace similar dot symbols with standard middle dot
         let charSet = CharacterSet(charactersIn: "⋅•⋅‧∙")
@@ -412,17 +494,26 @@ public class AppleOCRTextProcessor: NSObject {
 
     // MARK: - Basic Helper Methods
 
+    /// Count the number of words in a text string
+    /// - Parameter text: Input text to analyze
+    /// - Returns: Number of words found
     private func countWords(in text: String) -> Int {
         let words = text.components(separatedBy: .whitespacesAndNewlines)
         return words.filter { !$0.isEmpty }.count
     }
 
+    /// Check if text ends with punctuation marks
+    /// - Parameter text: Text string to check
+    /// - Returns: True if text ends with punctuation
     private func hasEndPunctuationSuffix(_ text: String) -> Bool {
         let endPunctuationMarks = CharacterSet(charactersIn: "。！？.,!?;:")
         guard let lastChar = text.last else { return false }
         return String(lastChar).unicodeScalars.allSatisfy { endPunctuationMarks.contains($0) }
     }
 
+    /// Count punctuation marks in text, excluding poetry-specific characters
+    /// - Parameter text: Text string to analyze
+    /// - Returns: Number of punctuation marks found
     private func countPunctuationMarks(in text: String) -> Int {
         let allowedCharacters = ["《", "》", "〔", "〕"] // Poetry-specific characters
         var count = 0
@@ -437,11 +528,17 @@ public class AppleOCRTextProcessor: NSObject {
         return count
     }
 
+    /// Check if a single character is a punctuation mark
+    /// - Parameter char: Single character string to check
+    /// - Returns: True if character is punctuation
     private func isPunctuationCharacter(_ char: String) -> Bool {
         guard char.count == 1, let scalar = char.unicodeScalars.first else { return false }
         return CharacterSet.punctuationCharacters.contains(scalar)
     }
 
+    /// Determine if a text observation represents a long line of text
+    /// - Parameter observation: Text observation to evaluate
+    /// - Returns: True if observation is considered a long line
     private func isLongTextObservation(_ observation: VNRecognizedTextObservation) -> Bool {
         guard let maxObservation = maxLongLineTextObservation else { return false }
 
@@ -450,5 +547,98 @@ public class AppleOCRTextProcessor: NSObject {
 
         // Consider a line "long" if it's more than 85% of the maximum width
         return observationWidth > maxWidth * 0.85
+    }
+
+    // MARK: - Dash Handling Methods
+
+    /// Check if hyphenated word continuation needs special handling
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: True if dash handling is needed
+    private func checkNeedHandleLastDashOfText(
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
+    )
+        -> Bool {
+        let text = current.text
+        let prevText = previous.text
+
+        let maxLineFrameX = previous.boundingBox.maxX
+        let isPrevLongLine = isLongLineLength(maxLineFrameX)
+
+        let isPrevLastDashChar = isLastJoinedDashCharacter(in: text, prevText: prevText)
+        return isPrevLongLine && isPrevLastDashChar
+    }
+
+    /// Check if trailing dash should be removed to join hyphenated words
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: True if dash should be removed
+    private func checkNeedRemoveLastDashOfText(
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
+    )
+        -> Bool {
+        let text = current.text
+        let prevText = previous.text
+
+        guard !prevText.isEmpty else { return false }
+
+        let removedPrevDashText = String(prevText.dropLast())
+        let lastWord =
+            removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
+        let firstWord = text.components(separatedBy: .whitespacesAndNewlines).first ?? ""
+        let newWord = lastWord + firstWord
+
+        // Request-Response, Architec-ture
+        let isLowercaseWord = firstWord.first?.isLowercase ?? false
+        let isSpelledCorrectly = (newWord as NSString).isSpelledCorrectly()
+
+        return isLowercaseWord && isSpelledCorrectly
+    }
+
+    /// Check if text contains a dash character used for word continuation
+    /// - Parameters:
+    ///   - text: Current line text
+    ///   - prevText: Previous line text
+    /// - Returns: True if dash is used for word joining
+    private func isLastJoinedDashCharacter(in text: String, prevText: String) -> Bool {
+        guard !prevText.isEmpty, !text.isEmpty else { return false }
+
+        let prevLastChar = String(prevText.suffix(1))
+        let dashCharacters = ["-", "–", "—"] // EZDashCharacterList equivalent
+
+        guard dashCharacters.contains(prevLastChar) else { return false }
+
+        let removedPrevDashText = String(prevText.dropLast())
+        let lastWord =
+            removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
+
+        let isFirstCharAlphabet = text.first?.isLetter ?? false
+
+        return !lastWord.isEmpty && isFirstCharAlphabet
+    }
+
+    /// Check if line length qualifies as "long" based on maximum line width
+    /// - Parameter lineLength: Width of the line to check
+    /// - Returns: True if line is considered long
+    private func isLongLineLength(_ lineLength: CGFloat) -> Bool {
+        lineLength >= maxLineLength * 0.9
+    }
+
+    /// Store joined string in text observation using associated objects
+    /// - Parameters:
+    ///   - observation: Text observation to store data in
+    ///   - joinedString: String to associate with observation
+    private func setJoinedString(for observation: VNRecognizedTextObservation, joinedString: String) {
+        // Store joined string using associated objects (mimicking original behavior)
+        objc_setAssociatedObject(
+            observation,
+            "joinedString",
+            joinedString,
+            .OBJC_ASSOCIATION_COPY_NONATOMIC
+        )
     }
 }

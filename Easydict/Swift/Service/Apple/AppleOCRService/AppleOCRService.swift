@@ -75,7 +75,7 @@ public class AppleOCRService: NSObject {
     public func ocrAsync(cgImage: CGImage) async throws -> String {
         let observations = try await ocr(cgImage: cgImage)
         let recognizedTexts = observations.compactMap { observation in
-            observation.topCandidates(1).first?.string
+            observation.text
         }
         return recognizedTexts.joined(separator: "\n")
     }
@@ -142,9 +142,7 @@ public class AppleOCRService: NSObject {
                 try requestHandler.perform([request])
             } catch {
                 DispatchQueue.main.async {
-                    let queryError =
-                        QueryError.queryError(from: error, type: .api)
-                            ?? QueryError.error(type: .api, message: "OCR processing failed")
+                    let queryError = QueryError.queryError(from: error, type: .api)
                     completionHandler([], queryError)
                 }
             }

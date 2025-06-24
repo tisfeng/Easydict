@@ -9,12 +9,6 @@
 import Foundation
 import Vision
 
-// MARK: - Constants
-
-private let kLineBreakText = "\n"
-private let kParagraphBreakText = "\n\n"
-private let kShortPoetryCharacterCountOfLine = 12
-
 // MARK: - VNRecognizedTextObservation Extension
 
 extension VNRecognizedTextObservation {
@@ -23,6 +17,7 @@ extension VNRecognizedTextObservation {
         topCandidates(1).first?.string ?? ""
     }
 
+    /// Custom description providing text content and bounding box information
     open override var description: String {
         let boundRect = boundingBox
         return String(
@@ -39,7 +34,7 @@ extension VNRecognizedTextObservation {
 // MARK: - Array Extension for Better Printing
 
 extension Array where Element == VNRecognizedTextObservation {
-    /// Get a nicely formatted string representation of text observations
+    /// Get a nicely formatted string representation of text observations with indexes
     var formattedDescription: String {
         if isEmpty {
             return "[]"
@@ -58,7 +53,7 @@ extension Array where Element == VNRecognizedTextObservation {
         return result
     }
 
-    /// Get just the recognized texts in a clean format
+    /// Extract just the recognized text strings from observations
     var recognizedTexts: [String] {
         map { $0.text }
     }
@@ -66,7 +61,7 @@ extension Array where Element == VNRecognizedTextObservation {
 
 // MARK: - Supporting Types
 
-/// Contains text analysis properties for break type determination
+/// Encapsulates text analysis properties for break type determination
 private struct TextAnalysisContext {
     let isPrevEndPunctuation: Bool
     let isPrevLongText: Bool
@@ -75,7 +70,7 @@ private struct TextAnalysisContext {
     let isBigLineSpacing: Bool
 }
 
-/// Contains text content for analysis
+/// Contains text content for analysis operations
 private struct TextContent {
     let currentText: String
     let previousText: String
@@ -88,8 +83,18 @@ private struct TextContent {
 class AppleOCRTextMerger {
     // MARK: Lifecycle
 
-    // MARK: - Initialization
-
+    /// Initialize text merger with OCR context and analysis parameters
+    /// - Parameters:
+    ///   - language: The detected or specified language for text processing
+    ///   - isPoetry: Whether the text is identified as poetry format
+    ///   - minLineHeight: Minimum line height found in the text
+    ///   - averageLineHeight: Average line height for spacing calculations
+    ///   - maxLongLineTextObservation: Reference observation with maximum line length
+    ///   - minXLineTextObservation: Reference observation with minimum X coordinate
+    ///   - maxLineLength: Maximum line length for comparison
+    ///   - charCountPerLine: Average character count per line
+    ///   - ocrImage: Source image for coordinate calculations
+    ///   - languageManager: Language utility manager
     init(
         language: Language,
         isPoetry: Bool,
@@ -129,6 +134,11 @@ class AppleOCRTextMerger {
 
     // MARK: - Private Methods
 
+    /// Analyze spatial relationship between current and previous text observations
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: Tuple containing line relationship analysis (isNewLine, deltaY, deltaX)
     private func analyzeLineRelationship(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation
@@ -161,6 +171,13 @@ class AppleOCRTextMerger {
         return (isNewLine, deltaY, deltaX)
     }
 
+    /// Determine break type and joining string based on text observations and content
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    ///   - currentText: Text content of current observation
+    ///   - previousText: Text content of previous observation
+    /// - Returns: Tuple containing paragraph/line break decisions and join string
     private func determineBreakType(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation,
@@ -260,6 +277,15 @@ class AppleOCRTextMerger {
         return (isNewParagraph, needLineBreak, joinString)
     }
 
+    /// Handle text merging logic for indented text blocks
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    ///   - context: Text analysis context
+    ///   - isEqualChineseText: Whether texts are equal-length Chinese
+    ///   - isPrevList: Whether previous text is a list item
+    ///   - isList: Whether current text is a list item
+    /// - Returns: Tuple indicating line break and paragraph decisions
     private func handleIndentedText(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation,
@@ -355,6 +381,12 @@ class AppleOCRTextMerger {
         return (needLineBreak, isNewParagraph)
     }
 
+    /// Handle text merging logic for non-indented text blocks
+    /// - Parameters:
+    ///   - observations: Tuple containing current and previous observations
+    ///   - textContent: Text content structure
+    ///   - context: Text analysis context
+    /// - Returns: Tuple with break decisions and optional special join string
     private func handleNonIndentedText(
         observations: (current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation),
         textContent: TextContent,
@@ -420,6 +452,13 @@ class AppleOCRTextMerger {
         return (needLineBreak, isNewParagraph, nil)
     }
 
+    /// Generate final joining string based on break type and text content
+    /// - Parameters:
+    ///   - isNewParagraph: Whether this should be a new paragraph
+    ///   - needLineBreak: Whether a line break is needed
+    ///   - previousText: Previous line text content
+    ///   - currentText: Current line text content
+    /// - Returns: Appropriate joining string
     private func getFinalJoinString(
         isNewParagraph: Bool,
         needLineBreak: Bool,
@@ -428,9 +467,9 @@ class AppleOCRTextMerger {
     )
         -> String {
         if isNewParagraph {
-            return kParagraphBreakText
+            return AppleOCRConstants.paragraphBreakText
         } else if needLineBreak {
-            return kLineBreakText
+            return AppleOCRConstants.lineBreakText
         } else if isPunctuationCharacter(String(previousText.last ?? " ")) {
             return " " // Add space after punctuation
         } else {
@@ -438,6 +477,11 @@ class AppleOCRTextMerger {
         }
     }
 
+    /// Get language-specific text joiner based on current context
+    /// - Parameters:
+    ///   - currentText: Current line text
+    ///   - previousText: Previous line text
+    /// - Returns: Language-appropriate joining string
     private func getLanguageSpecificJoiner(currentText: String, previousText: String) -> String {
         switch language {
         case .simplifiedChinese, .traditionalChinese:
@@ -451,6 +495,11 @@ class AppleOCRTextMerger {
         }
     }
 
+    /// Apply Chinese-specific text joining rules
+    /// - Parameters:
+    ///   - current: Current line text
+    ///   - previous: Previous line text
+    /// - Returns: Chinese-appropriate joining string
     private func applyChineseRules(current: String, previous: String) -> String {
         let prevEndsWithPunctuation = hasEndPunctuationSuffix(previous)
         let currentStartsWithPunctuation =
@@ -463,6 +512,11 @@ class AppleOCRTextMerger {
         return ""
     }
 
+    /// Apply English-specific text joining rules
+    /// - Parameters:
+    ///   - current: Current line text
+    ///   - previous: Previous line text
+    /// - Returns: English-appropriate joining string
     private func applyEnglishRules(current: String, previous: String) -> String {
         let currentStartsWithPunctuation =
             !current.isEmpty && isPunctuationCharacter(String(current.first!))
@@ -479,6 +533,11 @@ class AppleOCRTextMerger {
         return " "
     }
 
+    /// Apply Japanese-specific text joining rules
+    /// - Parameters:
+    ///   - current: Current line text
+    ///   - previous: Previous line text
+    /// - Returns: Japanese-appropriate joining string
     private func applyJapaneseRules(current: String, previous: String) -> String {
         let currentStartsWithPunctuation =
             !current.isEmpty && isPunctuationCharacter(String(current.first!))
@@ -490,6 +549,11 @@ class AppleOCRTextMerger {
         return ""
     }
 
+    /// Apply generic text joining rules for other languages
+    /// - Parameters:
+    ///   - current: Current line text
+    ///   - previous: Previous line text
+    /// - Returns: Generic joining string
     private func applyGenericRules(current: String, previous: String) -> String {
         let currentStartsWithPunctuation =
             !current.isEmpty && isPunctuationCharacter(String(current.first!))
@@ -505,6 +569,11 @@ class AppleOCRTextMerger {
 // MARK: - Helper Methods Extension
 
 extension AppleOCRTextMerger {
+    /// Determine if there is big spacing between two text observations
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: True if spacing is considered large
     private func isBigSpacing(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -546,6 +615,9 @@ extension AppleOCRTextMerger {
         return false
     }
 
+    /// Check if text observation has indentation relative to base line
+    /// - Parameter observation: Text observation to check
+    /// - Returns: True if text appears to be indented
     private func hasTextIndentation(_ observation: VNRecognizedTextObservation) -> Bool {
         guard let minXObservation = minXLineTextObservation else { return false }
 
@@ -557,6 +629,11 @@ extension AppleOCRTextMerger {
         return abs(observationX - minXValue) > threshold
     }
 
+    /// Check if two observations have equal character length and punctuation patterns
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: True if character patterns match
     private func isEqualCharacterLength(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -576,20 +653,34 @@ extension AppleOCRTextMerger {
         return isEqualLength && bothHaveEndPunctuation && isEqualWidth
     }
 
+    /// Detect Chinese poetry pattern based on text characteristics
+    /// - Parameters:
+    ///   - current: Current line text
+    ///   - previous: Previous line text
+    /// - Returns: True if texts match Chinese poetry patterns
     private func isChinesePoetryPattern(current: String, previous: String) -> Bool {
-        if isChineseLanguage(), charCountPerLine < CGFloat(kShortPoetryCharacterCountOfLine) {
-            let currentShort = current.count < kShortPoetryCharacterCountOfLine
-            let previousShort = previous.count < kShortPoetryCharacterCountOfLine
+        if isChineseLanguage(),
+           charCountPerLine < CGFloat(AppleOCRConstants.shortPoetryCharacterCountOfLine) {
+            let currentShort = current.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
+            let previousShort = previous.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
             return currentShort && previousShort
         }
         return false
     }
 
+    /// Check if English text starts with lowercase letter
+    /// - Parameter text: Text to check
+    /// - Returns: True if text starts with lowercase English letter
     private func isEnglishLowercaseStart(_ text: String) -> Bool {
         guard let firstChar = text.first else { return false }
         return isEnglishLanguage() && firstChar.isLowercase && firstChar.isLetter
     }
 
+    /// Compare font sizes between two text observations
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: True if font sizes are approximately equal
     private func checkEqualFontSize(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -615,19 +706,29 @@ extension AppleOCRTextMerger {
         return isEqualFontSize
     }
 
+    /// Check if text starts with uppercase letter
+    /// - Parameter text: Text to analyze
+    /// - Returns: True if first character is uppercase letter
     private func isFirstLetterUppercase(_ text: String) -> Bool {
         guard let firstChar = text.first else { return false }
         return firstChar.isUppercase && firstChar.isLetter
     }
 
+    /// Check if current language is English
+    /// - Returns: True if processing English text
     private func isEnglishLanguage() -> Bool {
         languageManager.isEnglishLanguage(language)
     }
 
+    /// Check if current language is Chinese
+    /// - Returns: True if processing Chinese text
     private func isChineseLanguage() -> Bool {
         languageManager.isChineseLanguage(language)
     }
 
+    /// Check if character is a punctuation mark
+    /// - Parameter char: Single character string
+    /// - Returns: True if character is punctuation
     private func isPunctuationCharacter(_ char: String) -> Bool {
         guard char.count == 1, let scalar = char.unicodeScalars.first else { return false }
         return CharacterSet.punctuationCharacters.contains(scalar)
@@ -637,6 +738,10 @@ extension AppleOCRTextMerger {
 
     /// Main method to get joined string between two text observations
     /// This directly corresponds to joinedStringOfTextObservation in Objective-C
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: Appropriate joining string between the two observations
     func joinedStringOfTextObservation(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation
@@ -696,7 +801,8 @@ extension AppleOCRTextMerger {
          the latter notifies the NFc upon the occurrence of the event
          [2].
          */
-        let isFirstLetterUpperCase = text.first?.isUppercase == true && text.first?.isLetter == true
+        let isFirstLetterUpperCase = text.isFirstLetterUpperCase
+        let isPrevFirstLetterUpperCase = prevText.isFirstLetterUpperCase
 
         // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
 
@@ -755,6 +861,9 @@ extension AppleOCRTextMerger {
                     if isPrevLongText {
                         if isPrevEndPunctuationChar {
                             needLineBreak = true
+                            if isBigLineSpacing {
+                                isNewParagraph = true
+                            }
                         } else {
                             /**
                              V. SECURITY CHALLENGES AND OPPORTUNITIES
@@ -806,6 +915,11 @@ extension AppleOCRTextMerger {
                     } else {
                         if !isEqualX, dx > 0 {
                             needLineBreak = false
+
+                            // If previous line first letter is NOT uppercase, but current line first letter is uppercase, then it is a new paragraph.
+                            if isFirstLetterUpperCase, !isPrevFirstLetterUpperCase {
+                                isNewParagraph = true
+                            }
                         } else {
                             needLineBreak = true
                         }
@@ -831,6 +945,8 @@ extension AppleOCRTextMerger {
                         if isTurnedPage {
                             isNewParagraph = false
                             needLineBreak = false
+                        } else {
+                            needLineBreak = true
                         }
                     }
                 } else {
@@ -924,9 +1040,9 @@ extension AppleOCRTextMerger {
         }
 
         if isNewParagraph {
-            joinedString = kParagraphBreakText
+            joinedString = AppleOCRConstants.paragraphBreakText
         } else if needLineBreak {
-            joinedString = kLineBreakText
+            joinedString = AppleOCRConstants.lineBreakText
         } else if isPunctuationChar(prevLastChar) {
             // if last char is a punctuation mark, then append a space, since ocr will remove white space.
             joinedString = " "
@@ -942,12 +1058,21 @@ extension AppleOCRTextMerger {
 
     // MARK: - Private Helper Methods
 
+    /// Check if text ends with punctuation marks
+    /// - Parameter text: Text to check
+    /// - Returns: True if text ends with punctuation
     private func hasEndPunctuationSuffix(_ text: String) -> Bool {
-        let endPunctuationMarks = CharacterSet(charactersIn: "。！？.,!?;:")
+        let endPunctuationMarks = CharacterSet(charactersIn: "。！？.!?;:")
         guard let lastChar = text.last else { return false }
         return String(lastChar).unicodeScalars.allSatisfy { endPunctuationMarks.contains($0) }
     }
 
+    /// Determine if there is big line spacing between observations
+    /// - Parameters:
+    ///   - current: Current observation
+    ///   - previous: Previous observation
+    ///   - greaterThanLineHeightRatio: Minimum ratio threshold
+    /// - Returns: True if spacing is considered big
     private func isBigSpacingLineOfTextObservation(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation,
@@ -993,12 +1118,20 @@ extension AppleOCRTextMerger {
         return false
     }
 
+    /// Check if observation has indentation
+    /// - Parameter observation: Observation to check
+    /// - Returns: True if observation appears indented
     private func hasIndentationOfTextObservation(_ observation: VNRecognizedTextObservation) -> Bool {
         guard let minXObservation = minXLineTextObservation else { return false }
         let isEqualX = isEqualXOfTextObservation(current: observation, previous: minXObservation)
         return !isEqualX
     }
 
+    /// Determine if text observation represents a long line
+    /// - Parameters:
+    ///   - observation: Text observation to evaluate
+    ///   - isStrict: Whether to use strict evaluation criteria
+    /// - Returns: True if observation is considered a long line
     private func isLongTextObservation(
         _ observation: VNRecognizedTextObservation, isStrict: Bool = false
     )
@@ -1007,6 +1140,11 @@ extension AppleOCRTextMerger {
         return isLongTextObservation(observation, threshold: threshold)
     }
 
+    /// Check if observation is long based on threshold
+    /// - Parameters:
+    ///   - observation: Observation to check
+    ///   - threshold: Threshold value for comparison
+    /// - Returns: True if observation exceeds threshold
     private func isLongTextObservation(
         _ observation: VNRecognizedTextObservation, threshold: CGFloat
     )
@@ -1021,6 +1159,9 @@ extension AppleOCRTextMerger {
         return isLongText
     }
 
+    /// Calculate remaining alphabet count for line length evaluation
+    /// - Parameter observation: Observation to analyze
+    /// - Returns: Estimated remaining character count
     private func remainingAlphabetCountOfTextObservation(_ observation: VNRecognizedTextObservation)
         -> CGFloat {
         guard let maxObservation = maxLongLineTextObservation else { return 0 }
@@ -1034,6 +1175,11 @@ extension AppleOCRTextMerger {
         return difference / singleAlphabetWidth
     }
 
+    /// Calculate threshold for long text determination
+    /// - Parameters:
+    ///   - observation: Text observation context
+    ///   - isStrict: Whether to use strict criteria
+    /// - Returns: Calculated threshold value
     private func longTextAlphabetCountThreshold(
         _ observation: VNRecognizedTextObservation, isStrict: Bool
     )
@@ -1049,13 +1195,16 @@ extension AppleOCRTextMerger {
 
         if !isStrict, languageManager.isChineseLanguage(language) {
             if !isEndPunctuationChar {
-                alphabetCount += 3.5
+                alphabetCount += 0.8
             }
         }
 
         return alphabetCount
     }
 
+    /// Calculate single character width for observation
+    /// - Parameter observation: Text observation to analyze
+    /// - Returns: Estimated width per character
     private func singleAlphabetWidthOfTextObservation(_ observation: VNRecognizedTextObservation)
         -> CGFloat {
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
@@ -1063,6 +1212,11 @@ extension AppleOCRTextMerger {
         return textWidth / CGFloat(observation.text.count)
     }
 
+    /// Check if observations contain equal-length Chinese text
+    /// - Parameters:
+    ///   - current: Current observation
+    ///   - previous: Previous observation
+    /// - Returns: True if both are equal Chinese text
     private func isEqualChineseTextObservation(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -1073,6 +1227,11 @@ extension AppleOCRTextMerger {
         return isEqualLength && languageManager.isChineseLanguage(language)
     }
 
+    /// Check if observations have equal character length patterns
+    /// - Parameters:
+    ///   - current: Current observation
+    ///   - previous: Previous observation
+    /// - Returns: True if character length patterns match
     private func isEqualCharacterLengthTextObservation(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -1088,6 +1247,11 @@ extension AppleOCRTextMerger {
         return isEqual && isEqualLength && isEqualEndSuffix
     }
 
+    /// Check if two observations are geometrically equal
+    /// - Parameters:
+    ///   - current: Current observation
+    ///   - previous: Previous observation
+    /// - Returns: True if observations are similar in position and size
     private func isEqualTextObservation(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -1103,6 +1267,11 @@ extension AppleOCRTextMerger {
         return isEqualX && isEqualLineMaxX
     }
 
+    /// Check if observations have equal X coordinates
+    /// - Parameters:
+    ///   - current: Current observation
+    ///   - previous: Previous observation
+    /// - Returns: True if X coordinates are approximately equal
     private func isEqualXOfTextObservation(
         current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
     )
@@ -1129,6 +1298,11 @@ extension AppleOCRTextMerger {
         return false
     }
 
+    /// Calculate threshold based on alphabet count and observation context
+    /// - Parameters:
+    ///   - alphabetCount: Number of characters to base calculation on
+    ///   - textObservation: Observation for context
+    /// - Returns: Calculated threshold value
     private func getThresholdWithAlphabetCount(
         _ alphabetCount: CGFloat, textObservation: VNRecognizedTextObservation
     )
@@ -1137,6 +1311,9 @@ extension AppleOCRTextMerger {
         return alphabetCount * singleAlphabetWidth
     }
 
+    /// Check if text represents a list item
+    /// - Parameter text: Text to check
+    /// - Returns: True if text starts with list markers
     private func isListTypeFirstWord(_ text: String) -> Bool {
         let listPatterns = [
             "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "•", "-", "*", "a.", "b.", "c.",
@@ -1150,12 +1327,20 @@ extension AppleOCRTextMerger {
         return false
     }
 
+    /// Calculate font size for text observation
+    /// - Parameter observation: Observation to analyze
+    /// - Returns: Estimated font size
     private func fontSizeOfTextObservation(_ observation: VNRecognizedTextObservation) -> CGFloat {
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
         let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
         return fontSizeOfText(observation.text, width: textWidth)
     }
 
+    /// Calculate font size based on text content and width
+    /// - Parameters:
+    ///   - text: Text content
+    ///   - textWidth: Width of the text
+    /// - Returns: Estimated font size
     private func fontSizeOfText(_ text: String, width textWidth: CGFloat) -> CGFloat {
         let systemFontSize = NSFont.systemFontSize
         let font = NSFont.boldSystemFont(ofSize: systemFontSize)
@@ -1169,6 +1354,12 @@ extension AppleOCRTextMerger {
         return fontSize
     }
 
+    /// Check if line length is considered short
+    /// - Parameters:
+    ///   - lineLength: Length to check
+    ///   - maxLineLength: Maximum line length reference
+    ///   - lessRateOfMaxLength: Threshold ratio
+    /// - Returns: True if line is considered short
     private func isShortLineLength(
         _ lineLength: CGFloat, maxLineLength: CGFloat, lessRateOfMaxLength: CGFloat
     )
@@ -1176,23 +1367,38 @@ extension AppleOCRTextMerger {
         lineLength < maxLineLength * lessRateOfMaxLength
     }
 
+    /// Check if ratio between two values exceeds threshold
+    /// - Parameters:
+    ///   - ratio: Minimum ratio threshold
+    ///   - value1: First value
+    ///   - value2: Second value
+    /// - Returns: True if ratio exceeds threshold
     private func isRatioGreaterThan(_ ratio: CGFloat, value1: CGFloat, value2: CGFloat) -> Bool {
         let minValue = min(value1, value2)
         let maxValue = max(value1, value2)
         return (minValue / maxValue) > ratio
     }
 
+    /// Check if text starts with lowercase character
+    /// - Parameter text: Text to check
+    /// - Returns: True if first character is lowercase letter
     private func isLowercaseFirstChar(_ text: String) -> Bool {
         guard let firstChar = text.first else { return false }
         return firstChar.isLowercase && firstChar.isLetter
     }
 
+    /// Check if text represents short Chinese poetry
+    /// - Parameter text: Text to analyze
+    /// - Returns: True if text matches short Chinese poetry patterns
     private func isShortChinesePoetryText(_ text: String) -> Bool {
         languageManager.isChineseLanguage(language)
-            && charCountPerLine < CGFloat(kShortPoetryCharacterCountOfLine)
-            && text.count < kShortPoetryCharacterCountOfLine
+            && charCountPerLine < CGFloat(AppleOCRConstants.shortPoetryCharacterCountOfLine)
+            && text.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
     }
 
+    /// Check if character is punctuation
+    /// - Parameter char: Character to check
+    /// - Returns: True if character is punctuation mark
     private func isPunctuationChar(_ char: String) -> Bool {
         guard char.count == 1, let scalar = char.unicodeScalars.first else { return false }
         return CharacterSet.punctuationCharacters.contains(scalar)
