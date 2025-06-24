@@ -257,10 +257,10 @@ public class AppleOCRTextProcessor: NSObject {
             let text = observation.text
 
             totalCharCount += text.count
-            totalWordCount += countWords(in: text)
+            totalWordCount += text.wordCount
 
             // Check if line ends with punctuation
-            let isEndPunctuationChar = hasEndPunctuationSuffix(text)
+            let isEndPunctuationChar = text.hasEndPunctuationSuffix
             if isEndPunctuationChar {
                 endWithTerminatorCharLineCount += 1
 
@@ -268,7 +268,7 @@ public class AppleOCRTextProcessor: NSObject {
                 if i > 0 {
                     let prevObservation = observations[i - 1]
                     let prevText = prevObservation.text
-                    if isLongTextObservation(prevObservation), !hasEndPunctuationSuffix(prevText) {
+                    if isLongTextObservation(prevObservation), !prevText.hasEndPunctuationSuffix {
                         return false
                     }
                 }
@@ -292,7 +292,7 @@ public class AppleOCRTextProcessor: NSObject {
             }
 
             // Count punctuation marks
-            punctuationMarkCount += countPunctuationMarks(in: text)
+            punctuationMarkCount += text.countPunctuationMarks()
         }
 
         let charCountPerLine = CGFloat(totalCharCount) / CGFloat(lineCount)
@@ -494,48 +494,6 @@ public class AppleOCRTextProcessor: NSObject {
 
     // MARK: - Basic Helper Methods
 
-    /// Count the number of words in a text string
-    /// - Parameter text: Input text to analyze
-    /// - Returns: Number of words found
-    private func countWords(in text: String) -> Int {
-        let words = text.components(separatedBy: .whitespacesAndNewlines)
-        return words.filter { !$0.isEmpty }.count
-    }
-
-    /// Check if text ends with punctuation marks
-    /// - Parameter text: Text string to check
-    /// - Returns: True if text ends with punctuation
-    private func hasEndPunctuationSuffix(_ text: String) -> Bool {
-        let endPunctuationMarks = CharacterSet(charactersIn: "。！？.,!?;:")
-        guard let lastChar = text.last else { return false }
-        return String(lastChar).unicodeScalars.allSatisfy { endPunctuationMarks.contains($0) }
-    }
-
-    /// Count punctuation marks in text, excluding poetry-specific characters
-    /// - Parameter text: Text string to analyze
-    /// - Returns: Number of punctuation marks found
-    private func countPunctuationMarks(in text: String) -> Int {
-        let allowedCharacters = ["《", "》", "〔", "〕"] // Poetry-specific characters
-        var count = 0
-
-        for char in text {
-            let charString = String(char)
-            if !allowedCharacters.contains(charString), isPunctuationCharacter(charString) {
-                count += 1
-            }
-        }
-
-        return count
-    }
-
-    /// Check if a single character is a punctuation mark
-    /// - Parameter char: Single character string to check
-    /// - Returns: True if character is punctuation
-    private func isPunctuationCharacter(_ char: String) -> Bool {
-        guard char.count == 1, let scalar = char.unicodeScalars.first else { return false }
-        return CharacterSet.punctuationCharacters.contains(scalar)
-    }
-
     /// Determine if a text observation represents a long line of text
     /// - Parameter observation: Text observation to evaluate
     /// - Returns: True if observation is considered a long line
@@ -608,7 +566,7 @@ public class AppleOCRTextProcessor: NSObject {
         guard !prevText.isEmpty, !text.isEmpty else { return false }
 
         let prevLastChar = String(prevText.suffix(1))
-        let dashCharacters = ["-", "–", "—"] // EZDashCharacterList equivalent
+        let dashCharacters = ["-", "–", "—"]
 
         guard dashCharacters.contains(prevLastChar) else { return false }
 

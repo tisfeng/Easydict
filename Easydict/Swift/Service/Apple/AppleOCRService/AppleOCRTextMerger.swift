@@ -171,112 +171,6 @@ class AppleOCRTextMerger {
         return (isNewLine, deltaY, deltaX)
     }
 
-    /// Determine break type and joining string based on text observations and content
-    /// - Parameters:
-    ///   - current: Current text observation
-    ///   - previous: Previous text observation
-    ///   - currentText: Text content of current observation
-    ///   - previousText: Text content of previous observation
-    /// - Returns: Tuple containing paragraph/line break decisions and join string
-    private func determineBreakType(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation,
-        currentText: String,
-        previousText: String
-    )
-        -> (isNewParagraph: Bool, needLineBreak: Bool, joinString: String) {
-        // Check text properties (same as original)
-        let analysisContext = TextAnalysisContext(
-            isPrevEndPunctuation: hasEndPunctuationSuffix(previousText),
-            isPrevLongText: isLongTextObservation(previous),
-            hasIndentation: hasTextIndentation(current),
-            hasPrevIndentation: hasTextIndentation(previous),
-            isBigLineSpacing: isBigSpacing(current: current, previous: previous)
-        )
-
-        // Additional properties needed for complex logic
-        let isEqualChineseText = isEqualChineseTextObservation(current: current, previous: previous)
-        let isPrevList = isListTypeFirstWord(previousText)
-        let isList = isListTypeFirstWord(currentText)
-        let isEqualFontSize = checkEqualFontSize(current: current, previous: previous)
-        let isFirstLetterUpperCase = isFirstLetterUppercase(currentText)
-
-        var needLineBreak = false
-        var isNewParagraph = false
-
-        // Apply joining logic based on indentation
-        if analysisContext.hasIndentation {
-            let result = handleIndentedText(
-                current: current,
-                previous: previous,
-                context: analysisContext,
-                isEqualChineseText: isEqualChineseText,
-                isPrevList: isPrevList,
-                isList: isList
-            )
-            needLineBreak = result.needLineBreak
-            isNewParagraph = result.isNewParagraph
-        } else {
-            let textContent = TextContent(currentText: currentText, previousText: previousText)
-            let result = handleNonIndentedText(
-                observations: (current: current, previous: previous),
-                textContent: textContent,
-                context: analysisContext
-            )
-
-            // Handle special return cases
-            if let specialJoinString = result.specialJoinString {
-                return (false, false, specialJoinString)
-            }
-
-            needLineBreak = result.needLineBreak
-            isNewParagraph = result.isNewParagraph
-        }
-
-        // Apply font size and big spacing rules (from original line 1861-1867)
-        if !isEqualFontSize || analysisContext.isBigLineSpacing {
-            if !analysisContext.isPrevLongText || (isEnglishLanguage() && isFirstLetterUpperCase) {
-                isNewParagraph = true
-            }
-        }
-
-        // Apply additional big spacing and uppercase rules (from original line 1869-1871)
-        if analysisContext.isBigLineSpacing, isFirstLetterUpperCase {
-            isNewParagraph = true
-        }
-
-        // Apply Chinese poetry rules
-        if isChinesePoetryPattern(current: currentText, previous: previousText) {
-            needLineBreak = true
-            if analysisContext.isBigLineSpacing {
-                isNewParagraph = true
-            }
-        }
-
-        // Apply list handling rules (from original line 1886-1896)
-        if isPrevList {
-            if isList {
-                needLineBreak = true
-                isNewParagraph = analysisContext.isBigLineSpacing
-            } else {
-                // Means list ends, next is new paragraph
-                if analysisContext.isBigLineSpacing {
-                    isNewParagraph = true
-                }
-            }
-        }
-
-        // Determine final join string
-        let joinString = getFinalJoinString(
-            isNewParagraph: isNewParagraph,
-            needLineBreak: needLineBreak,
-            previousText: previousText,
-            currentText: currentText
-        )
-
-        return (isNewParagraph, needLineBreak, joinString)
-    }
-
     /// Handle text merging logic for indented text blocks
     /// - Parameters:
     ///   - current: Current text observation
@@ -407,7 +301,7 @@ class AppleOCRTextMerger {
                 } else {
                     // Check for page turn scenarios (翻页, Page turn scenes without line feeds)
                     let isTurnedPage =
-                        isEnglishLanguage() && isEnglishLowercaseStart(textContent.currentText)
+                        isEnglishLanguage() && textContent.currentText.isLowercaseFirstChar()
                             && !context.isPrevEndPunctuation
                     if isTurnedPage {
                         isNewParagraph = false
@@ -434,7 +328,7 @@ class AppleOCRTextMerger {
                  人绕湘皋月坠时。斜横花树小，浸愁漪。一春幽事有谁知。东风冷、香远茜裙归。
                  鸥去昔游非。遥怜花可可，梦依依。九疑云杳断魂啼。相思血，都沁绿筠枝。
                  */
-                if context.isPrevEndPunctuation, hasEndPunctuationSuffix(textContent.currentText) {
+                if context.isPrevEndPunctuation, textContent.currentText.hasEndPunctuationSuffix {
                     needLineBreak = true
                 }
             } else {
@@ -451,170 +345,11 @@ class AppleOCRTextMerger {
 
         return (needLineBreak, isNewParagraph, nil)
     }
-
-    /// Generate final joining string based on break type and text content
-    /// - Parameters:
-    ///   - isNewParagraph: Whether this should be a new paragraph
-    ///   - needLineBreak: Whether a line break is needed
-    ///   - previousText: Previous line text content
-    ///   - currentText: Current line text content
-    /// - Returns: Appropriate joining string
-    private func getFinalJoinString(
-        isNewParagraph: Bool,
-        needLineBreak: Bool,
-        previousText: String,
-        currentText: String
-    )
-        -> String {
-        if isNewParagraph {
-            return AppleOCRConstants.paragraphBreakText
-        } else if needLineBreak {
-            return AppleOCRConstants.lineBreakText
-        } else if isPunctuationCharacter(String(previousText.last ?? " ")) {
-            return " " // Add space after punctuation
-        } else {
-            return getLanguageSpecificJoiner(currentText: currentText, previousText: previousText)
-        }
-    }
-
-    /// Get language-specific text joiner based on current context
-    /// - Parameters:
-    ///   - currentText: Current line text
-    ///   - previousText: Previous line text
-    /// - Returns: Language-appropriate joining string
-    private func getLanguageSpecificJoiner(currentText: String, previousText: String) -> String {
-        switch language {
-        case .simplifiedChinese, .traditionalChinese:
-            return applyChineseRules(current: currentText, previous: previousText)
-        case .english:
-            return applyEnglishRules(current: currentText, previous: previousText)
-        case .japanese:
-            return applyJapaneseRules(current: currentText, previous: previousText)
-        default:
-            return applyGenericRules(current: currentText, previous: previousText)
-        }
-    }
-
-    /// Apply Chinese-specific text joining rules
-    /// - Parameters:
-    ///   - current: Current line text
-    ///   - previous: Previous line text
-    /// - Returns: Chinese-appropriate joining string
-    private func applyChineseRules(current: String, previous: String) -> String {
-        let prevEndsWithPunctuation = hasEndPunctuationSuffix(previous)
-        let currentStartsWithPunctuation =
-            !current.isEmpty && isPunctuationCharacter(String(current.first!))
-
-        if prevEndsWithPunctuation || currentStartsWithPunctuation {
-            return ""
-        }
-
-        return ""
-    }
-
-    /// Apply English-specific text joining rules
-    /// - Parameters:
-    ///   - current: Current line text
-    ///   - previous: Previous line text
-    /// - Returns: English-appropriate joining string
-    private func applyEnglishRules(current: String, previous: String) -> String {
-        let currentStartsWithPunctuation =
-            !current.isEmpty && isPunctuationCharacter(String(current.first!))
-
-        if currentStartsWithPunctuation {
-            return ""
-        }
-
-        if previous.hasSuffix("."), current.count <= 3,
-           current.allSatisfy({ $0.isUppercase || $0 == "." }) {
-            return " "
-        }
-
-        return " "
-    }
-
-    /// Apply Japanese-specific text joining rules
-    /// - Parameters:
-    ///   - current: Current line text
-    ///   - previous: Previous line text
-    /// - Returns: Japanese-appropriate joining string
-    private func applyJapaneseRules(current: String, previous: String) -> String {
-        let currentStartsWithPunctuation =
-            !current.isEmpty && isPunctuationCharacter(String(current.first!))
-
-        if hasEndPunctuationSuffix(previous) || currentStartsWithPunctuation {
-            return ""
-        }
-
-        return ""
-    }
-
-    /// Apply generic text joining rules for other languages
-    /// - Parameters:
-    ///   - current: Current line text
-    ///   - previous: Previous line text
-    /// - Returns: Generic joining string
-    private func applyGenericRules(current: String, previous: String) -> String {
-        let currentStartsWithPunctuation =
-            !current.isEmpty && isPunctuationCharacter(String(current.first!))
-
-        if currentStartsWithPunctuation {
-            return ""
-        }
-
-        return " "
-    }
 }
 
 // MARK: - Helper Methods Extension
 
 extension AppleOCRTextMerger {
-    /// Determine if there is big spacing between two text observations
-    /// - Parameters:
-    ///   - current: Current text observation
-    ///   - previous: Previous text observation
-    /// - Returns: True if spacing is considered large
-    private func isBigSpacing(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
-    )
-        -> Bool {
-        let currentBoundingBox = current.boundingBox
-        let previousBoundingBox = previous.boundingBox
-        let lineHeight = currentBoundingBox.size.height
-
-        let deltaY = previousBoundingBox.origin.y - (currentBoundingBox.origin.y + lineHeight)
-        let lineHeightRatio = deltaY / lineHeight
-        let averageLineHeightRatio = deltaY / averageLineHeight
-
-        // Check various spacing conditions
-        if lineHeightRatio > 1.0 || averageLineHeightRatio > 1.0 {
-            return true
-        }
-
-        if lineHeightRatio > 0.6 {
-            let prevText = previous.text
-            if !isLongTextObservation(previous) || hasEndPunctuationSuffix(prevText)
-                || previous === maxLongLineTextObservation {
-                return true
-            }
-        }
-
-        // English specific rules
-        let currentText = current.text
-        if isEnglishLanguage(), isFirstLetterUppercase(currentText) {
-            if lineHeightRatio > 0.85 {
-                return true
-            } else {
-                let prevText = previous.text
-                if lineHeightRatio > 0.6, hasEndPunctuationSuffix(prevText) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
     /// Check if text observation has indentation relative to base line
     /// - Parameter observation: Text observation to check
     /// - Returns: True if text appears to be indented
@@ -635,15 +370,17 @@ extension AppleOCRTextMerger {
     ///   - previous: Previous text observation
     /// - Returns: True if character patterns match
     private func isEqualCharacterLength(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
     )
         -> Bool {
         let currentText = current.text
         let previousText = previous.text
+        let isCurrentEndPunctuationChar = currentText.hasEndPunctuationSuffix
+        let isPreviousEndPunctuationChar = previousText.hasEndPunctuationSuffix
 
         let isEqualLength = currentText.count == previousText.count
-        let bothHaveEndPunctuation =
-            hasEndPunctuationSuffix(currentText) && hasEndPunctuationSuffix(previousText)
+        let bothHaveEndPunctuation = isCurrentEndPunctuationChar && isPreviousEndPunctuationChar
 
         // Additional geometric equality checks
         let currentWidth = current.boundingBox.width
@@ -668,21 +405,14 @@ extension AppleOCRTextMerger {
         return false
     }
 
-    /// Check if English text starts with lowercase letter
-    /// - Parameter text: Text to check
-    /// - Returns: True if text starts with lowercase English letter
-    private func isEnglishLowercaseStart(_ text: String) -> Bool {
-        guard let firstChar = text.first else { return false }
-        return isEnglishLanguage() && firstChar.isLowercase && firstChar.isLetter
-    }
-
     /// Compare font sizes between two text observations
     /// - Parameters:
     ///   - current: Current text observation
     ///   - previous: Previous text observation
     /// - Returns: True if font sizes are approximately equal
     private func checkEqualFontSize(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
     )
         -> Bool {
         let currentFontSize = fontSizeOfTextObservation(current)
@@ -706,14 +436,6 @@ extension AppleOCRTextMerger {
         return isEqualFontSize
     }
 
-    /// Check if text starts with uppercase letter
-    /// - Parameter text: Text to analyze
-    /// - Returns: True if first character is uppercase letter
-    private func isFirstLetterUppercase(_ text: String) -> Bool {
-        guard let firstChar = text.first else { return false }
-        return firstChar.isUppercase && firstChar.isLetter
-    }
-
     /// Check if current language is English
     /// - Returns: True if processing English text
     private func isEnglishLanguage() -> Bool {
@@ -724,14 +446,6 @@ extension AppleOCRTextMerger {
     /// - Returns: True if processing Chinese text
     private func isChineseLanguage() -> Bool {
         languageManager.isChineseLanguage(language)
-    }
-
-    /// Check if character is a punctuation mark
-    /// - Parameter char: Single character string
-    /// - Returns: True if character is punctuation
-    private func isPunctuationCharacter(_ char: String) -> Bool {
-        guard char.count == 1, let scalar = char.unicodeScalars.first else { return false }
-        return CharacterSet.punctuationCharacters.contains(scalar)
     }
 
     // MARK: - Public Methods
@@ -756,10 +470,10 @@ extension AppleOCRTextMerger {
         let prevText = previous.text
         let prevLastChar = String(prevText.suffix(1))
         // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
-        let isPrevEndPunctuationChar = hasEndPunctuationSuffix(prevText)
+        let isPrevEndPunctuationChar = prevText.hasEndPunctuationSuffix
 
         let text = current.text
-        let isEndPunctuationChar = hasEndPunctuationSuffix(text)
+        let isEndPunctuationChar = text.hasEndPunctuationSuffix
 
         let isBigLineSpacing = isBigSpacingLineOfTextObservation(
             current: current,
@@ -774,8 +488,17 @@ extension AppleOCRTextMerger {
 
         let isEqualChineseText = isEqualChineseTextObservation(current: current, previous: previous)
 
-        let isPrevList = isListTypeFirstWord(prevText)
-        let isList = isListTypeFirstWord(text)
+        let isPrevList = prevText.isListTypeFirstWord
+        let isList = text.isListTypeFirstWord
+
+        /**
+         Note: firstChar cannot be non-alphabet, such as '['
+
+         the latter notifies the NFc upon the occurrence of the event
+         [2].
+         */
+        let isFirstLetterUpperCase = text.isFirstLetterUpperCase
+        let isPrevFirstLetterUpperCase = prevText.isFirstLetterUpperCase
 
         let textFontSize = fontSizeOfTextObservation(current)
         let prevTextFontSize = fontSizeOfTextObservation(previous)
@@ -794,15 +517,6 @@ extension AppleOCRTextMerger {
                 "Not equal font size: difference = \(differenceFontSize) (\(prevTextFontSize), \(textFontSize))"
             )
         }
-
-        /**
-         Note: firstChar cannot be non-alphabet, such as '['
-
-         the latter notifies the NFc upon the occurrence of the event
-         [2].
-         */
-        let isFirstLetterUpperCase = text.isFirstLetterUpperCase
-        let isPrevFirstLetterUpperCase = prevText.isFirstLetterUpperCase
 
         // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
 
@@ -941,7 +655,7 @@ extension AppleOCRTextMerger {
                         // 翻页, Page turn scenes without line feeds.
                         let isTurnedPage =
                             languageManager.isEnglishLanguage(language)
-                                && isLowercaseFirstChar(text) && !isPrevEndPunctuationChar
+                                && text.isLowercaseFirstChar && !isPrevEndPunctuationChar
                         if isTurnedPage {
                             isNewParagraph = false
                             needLineBreak = false
@@ -1043,7 +757,7 @@ extension AppleOCRTextMerger {
             joinedString = AppleOCRConstants.paragraphBreakText
         } else if needLineBreak {
             joinedString = AppleOCRConstants.lineBreakText
-        } else if isPunctuationChar(prevLastChar) {
+        } else if prevLastChar.isPunctuationCharacter {
             // if last char is a punctuation mark, then append a space, since ocr will remove white space.
             joinedString = " "
         } else {
@@ -1057,15 +771,6 @@ extension AppleOCRTextMerger {
     }
 
     // MARK: - Private Helper Methods
-
-    /// Check if text ends with punctuation marks
-    /// - Parameter text: Text to check
-    /// - Returns: True if text ends with punctuation
-    private func hasEndPunctuationSuffix(_ text: String) -> Bool {
-        let endPunctuationMarks = CharacterSet(charactersIn: "。！？.!?;:")
-        guard let lastChar = text.last else { return false }
-        return String(lastChar).unicodeScalars.allSatisfy { endPunctuationMarks.contains($0) }
-    }
 
     /// Determine if there is big line spacing between observations
     /// - Parameters:
@@ -1090,6 +795,7 @@ extension AppleOCRTextMerger {
 
         let text = current.text
         let prevText = previous.text
+        let isPrevEndPunctuationChar = prevText.hasEndPunctuationSuffix
 
         // Since line spacing sometimes is too small and imprecise, we do not use it.
         if lineHeightRatio > 1.0 || averageLineHeightRatio > greaterThanLineHeightRatio {
@@ -1098,7 +804,7 @@ extension AppleOCRTextMerger {
 
         if lineHeightRatio > 0.6,
            !isLongTextObservation(previous, isStrict: true)
-           || hasEndPunctuationSuffix(prevText) || previous === maxLongLineTextObservation {
+           || isPrevEndPunctuationChar || previous === maxLongLineTextObservation {
             return true
         }
 
@@ -1109,7 +815,7 @@ extension AppleOCRTextMerger {
             if lineHeightRatio > 0.85 {
                 return true
             } else {
-                if lineHeightRatio > 0.6, hasEndPunctuationSuffix(prevText) {
+                if lineHeightRatio > 0.6, isPrevEndPunctuationChar {
                     return true
                 }
             }
@@ -1191,7 +897,7 @@ extension AppleOCRTextMerger {
         var alphabetCount: CGFloat = isEnglishTypeLanguage ? 15 : 1.5
 
         let text = observation.text
-        let isEndPunctuationChar = hasEndPunctuationSuffix(text)
+        let isEndPunctuationChar = text.hasEndPunctuationSuffix
 
         if !isStrict, languageManager.isChineseLanguage(language) {
             if !isEndPunctuationChar {
@@ -1233,16 +939,20 @@ extension AppleOCRTextMerger {
     ///   - previous: Previous observation
     /// - Returns: True if character length patterns match
     private func isEqualCharacterLengthTextObservation(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
     )
         -> Bool {
         let isEqual = isEqualTextObservation(current: current, previous: previous)
 
         let currentText = current.text
         let previousText = previous.text
+
+        let isCurrentEndPunctuationChar = currentText.hasEndPunctuationSuffix
+        let isPreviousEndPunctuationChar = previousText.hasEndPunctuationSuffix
+
         let isEqualLength = currentText.count == previousText.count
-        let isEqualEndSuffix =
-            hasEndPunctuationSuffix(currentText) && hasEndPunctuationSuffix(previousText)
+        let isEqualEndSuffix = isCurrentEndPunctuationChar && isPreviousEndPunctuationChar
 
         return isEqual && isEqualLength && isEqualEndSuffix
     }
@@ -1311,22 +1021,6 @@ extension AppleOCRTextMerger {
         return alphabetCount * singleAlphabetWidth
     }
 
-    /// Check if text represents a list item
-    /// - Parameter text: Text to check
-    /// - Returns: True if text starts with list markers
-    private func isListTypeFirstWord(_ text: String) -> Bool {
-        let listPatterns = [
-            "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "•", "-", "*", "a.", "b.", "c.",
-        ]
-        let trimmedText = text.trimmingCharacters(in: .whitespaces)
-
-        for pattern in listPatterns where trimmedText.hasPrefix(pattern) {
-            return true
-        }
-
-        return false
-    }
-
     /// Calculate font size for text observation
     /// - Parameter observation: Observation to analyze
     /// - Returns: Estimated font size
@@ -1379,14 +1073,6 @@ extension AppleOCRTextMerger {
         return (minValue / maxValue) > ratio
     }
 
-    /// Check if text starts with lowercase character
-    /// - Parameter text: Text to check
-    /// - Returns: True if first character is lowercase letter
-    private func isLowercaseFirstChar(_ text: String) -> Bool {
-        guard let firstChar = text.first else { return false }
-        return firstChar.isLowercase && firstChar.isLetter
-    }
-
     /// Check if text represents short Chinese poetry
     /// - Parameter text: Text to analyze
     /// - Returns: True if text matches short Chinese poetry patterns
@@ -1394,13 +1080,5 @@ extension AppleOCRTextMerger {
         languageManager.isChineseLanguage(language)
             && charCountPerLine < CGFloat(AppleOCRConstants.shortPoetryCharacterCountOfLine)
             && text.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
-    }
-
-    /// Check if character is punctuation
-    /// - Parameter char: Character to check
-    /// - Returns: True if character is punctuation mark
-    private func isPunctuationChar(_ char: String) -> Bool {
-        guard char.count == 1, let scalar = char.unicodeScalars.first else { return false }
-        return CharacterSet.punctuationCharacters.contains(scalar)
     }
 }
