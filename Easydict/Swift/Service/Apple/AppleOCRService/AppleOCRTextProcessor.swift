@@ -71,10 +71,14 @@ public class AppleOCRTextProcessor: NSObject {
             )
         }
 
+        // Update single alphabet width
+        if let textObservation = maxCharacterCountLineTextObservation {
+            singleAlphabetWidth = textObservation.boundingBox.width / textObservation.text.count.double
+        }
         // Store final calculated values
-        averageLineHeight = totalLineHeight / CGFloat(lineCount)
+        averageLineHeight = totalLineHeight / lineCount.double
         if lineSpacingCount > 0 {
-            averageLineSpacing = totalLineSpacing / CGFloat(lineSpacingCount)
+            averageLineSpacing = totalLineSpacing / lineSpacingCount.double
         }
 
         print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
@@ -108,25 +112,29 @@ public class AppleOCRTextProcessor: NSObject {
 
     private var ocrImage: NSImage?
     private var language: Language = .auto
-    private var minLineHeight: CGFloat = .greatestFiniteMagnitude
-    private var totalLineHeight: CGFloat = 0
-    private var averageLineHeight: CGFloat = 0
+    private var minLineHeight: Double = .greatestFiniteMagnitude
+    private var totalLineHeight: Double = 0
+    private var averageLineHeight: Double = 0
 
     // OCR line spacing may be less than 0
-    private var minLineSpacing: CGFloat = .greatestFiniteMagnitude
-    private var minPositiveLineSpacing: CGFloat = .greatestFiniteMagnitude
-    private var totalLineSpacing: CGFloat = 0
-    private var averageLineSpacing: CGFloat = 0
+    private var minLineSpacing: Double = .greatestFiniteMagnitude
+    private var minPositiveLineSpacing: Double = .greatestFiniteMagnitude
+    private var totalLineSpacing: Double = 0
+    private var averageLineSpacing: Double = 0
 
-    private var minX: CGFloat = .greatestFiniteMagnitude
-    private var maxLineLength: CGFloat = 0
-    private var minLineLength: CGFloat = .greatestFiniteMagnitude
+    // Width of a single alphabet character, maxCharacterCountLineText length / text.count
+    private var singleAlphabetWidth: Double = 0.0
+
+    private var minX: Double = .greatestFiniteMagnitude
+    private var maxLineLength: Double = 0
+    private var minLineLength: Double = .greatestFiniteMagnitude
 
     private var maxLongLineTextObservation: VNRecognizedTextObservation?
     private var minXLineTextObservation: VNRecognizedTextObservation?
+    private var maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
 
     private var isPoetry: Bool = false
-    private var charCountPerLine: CGFloat = 0
+    private var charCountPerLine: Double = 0
     private var totalCharCount: Int = 0
     private var punctuationMarkCount: Int = 0
 
@@ -149,6 +157,7 @@ public class AppleOCRTextProcessor: NSObject {
 
         maxLongLineTextObservation = nil
         minXLineTextObservation = nil
+        maxCharacterCountLineTextObservation = nil
 
         isPoetry = false
         charCountPerLine = 0
@@ -212,12 +221,19 @@ public class AppleOCRTextProcessor: NSObject {
             maxLongLineTextObservation = textObservation
         }
 
+        // Track maximum character count line
+        let currentCharCount = textObservation.text.count
+        if let maxCharObservation = maxCharacterCountLineTextObservation {
+            if currentCharCount > maxCharObservation.text.count {
+                maxCharacterCountLineTextObservation = textObservation
+            }
+        } else {
+            maxCharacterCountLineTextObservation = textObservation
+        }
+
         if lengthOfLine < minLineLength {
             minLineLength = lengthOfLine
         }
-
-        // Update running averages
-        averageLineHeight = totalLineHeight / CGFloat(index + 1)
     }
 
     /// Calculate and set the overall confidence score for OCR result
@@ -231,8 +247,8 @@ public class AppleOCRTextProcessor: NSObject {
             let totalConfidence = observations.compactMap { observation in
                 observation.topCandidates(1).first?.confidence
             }.reduce(0, +)
+            ocrResult.confidence = CGFloat(totalConfidence / Float(observations.count))
 
-            ocrResult.confidence = CGFloat(Float(totalConfidence) / Float(observations.count))
         } else {
             ocrResult.confidence = 0.0
         }
@@ -295,9 +311,9 @@ public class AppleOCRTextProcessor: NSObject {
             punctuationMarkCount += text.countPunctuationMarks()
         }
 
-        let charCountPerLine = CGFloat(totalCharCount) / CGFloat(lineCount)
-        let wordCountPerLine = totalWordCount / lineCount
-        let numberOfPunctuationMarksPerLine = CGFloat(punctuationMarkCount) / CGFloat(lineCount)
+        let charCountPerLine = totalCharCount.double / lineCount.double
+        let wordCountPerLine = totalWordCount.double / lineCount.double
+        let numberOfPunctuationMarksPerLine = punctuationMarkCount.double / lineCount.double
 
         self.charCountPerLine = charCountPerLine
         self.totalCharCount = totalCharCount
@@ -337,7 +353,7 @@ public class AppleOCRTextProcessor: NSObject {
         }
 
         // Too many long lines (prose pattern)
-        let tooManyLongLine = CGFloat(longLineCount) / CGFloat(lineCount) > 0.4
+        let tooManyLongLine = longLineCount.double / lineCount.double > 0.4
         if tooManyLongLine {
             return false
         }
@@ -442,6 +458,7 @@ public class AppleOCRTextProcessor: NSObject {
                         averageLineHeight: averageLineHeight,
                         maxLongLineTextObservation: maxLongLineTextObservation,
                         minXLineTextObservation: minXLineTextObservation,
+                        maxCharacterCountLineTextObservation: maxCharacterCountLineTextObservation,
                         maxLineLength: maxLineLength,
                         charCountPerLine: charCountPerLine,
                         ocrImage: ocrImage ?? NSImage(),
@@ -504,7 +521,21 @@ public class AppleOCRTextProcessor: NSObject {
         let maxWidth = maxObservation.boundingBox.width
 
         // Consider a line "long" if it's more than 85% of the maximum width
-        return observationWidth > maxWidth * 0.85
+        let isLongByWidth = observationWidth > maxWidth * 0.85
+
+        // Also check by character count for better accuracy
+        if let maxCharObservation = maxCharacterCountLineTextObservation {
+            let currentCharCount = observation.text.count.double
+            let maxCharCount = maxCharObservation.text.count.double
+
+            // Consider a line "long" if it has more than 80% of the maximum character count
+            let isLongByCharCount = currentCharCount >= maxCharCount * 0.8
+
+            // Return true if either condition is met
+            return isLongByWidth || isLongByCharCount
+        }
+
+        return isLongByWidth
     }
 
     // MARK: - Dash Handling Methods
@@ -582,7 +613,7 @@ public class AppleOCRTextProcessor: NSObject {
     /// Check if line length qualifies as "long" based on maximum line width
     /// - Parameter lineLength: Width of the line to check
     /// - Returns: True if line is considered long
-    private func isLongLineLength(_ lineLength: CGFloat) -> Bool {
+    private func isLongLineLength(_ lineLength: Double) -> Bool {
         lineLength >= maxLineLength * 0.9
     }
 

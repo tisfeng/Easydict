@@ -66,6 +66,8 @@
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
+		035166F72E0C0FDB004C65BB /* Float+ToCGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */; };
+		035166F92E0C0FF9004C65BB /* Int+ToCGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */; };
 		03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */; };
 		03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */; };
 		03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */; };
@@ -494,6 +496,8 @@
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
 		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
+		035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ToCGFloat.swift"; sourceTree = "<group>"; };
+		035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToCGFloat.swift"; sourceTree = "<group>"; };
 		03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponse.swift; sourceTree = "<group>"; };
 		03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoTranslateResponese.swift; sourceTree = "<group>"; };
 		03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+Dict.swift"; sourceTree = "<group>"; };
@@ -1292,6 +1296,22 @@
 				0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */,
 			);
 			path = GetSelectedText;
+			sourceTree = "<group>";
+		};
+		035166F42E0C0FB8004C65BB /* Int */ = {
+			isa = PBXGroup;
+			children = (
+				035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */,
+			);
+			path = Int;
+			sourceTree = "<group>";
+		};
+		035166F52E0C0FBF004C65BB /* Float */ = {
+			isa = PBXGroup;
+			children = (
+				035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */,
+			);
+			path = Float;
 			sourceTree = "<group>";
 		};
 		03538DF72D265301005E56A8 /* DictJSONExample */ = {
@@ -2803,6 +2823,8 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				035166F52E0C0FBF004C65BB /* Float */,
+				035166F42E0C0FB8004C65BB /* Int */,
 				031760EC2E06B99200CE8FD7 /* Image */,
 				03F086F32DB21EAD00268DF0 /* Double */,
 				033EA07C2CFC63A50017F86C /* View */,
@@ -3306,6 +3328,7 @@
 				0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
+				035166F92E0C0FF9004C65BB /* Int+ToCGFloat.swift in Sources */,
 				62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */,
 				EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */,
 				036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */,
@@ -3353,6 +3376,7 @@
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
 				03F19D802E0938D70046C6F2 /* AppleOCRTextMerger.swift in Sources */,
+				035166F72E0C0FDB004C65BB /* Float+ToCGFloat.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,

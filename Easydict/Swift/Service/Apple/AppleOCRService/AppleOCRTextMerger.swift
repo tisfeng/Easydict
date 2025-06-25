@@ -91,6 +91,7 @@ class AppleOCRTextMerger {
     ///   - averageLineHeight: Average line height for spacing calculations
     ///   - maxLongLineTextObservation: Reference observation with maximum line length
     ///   - minXLineTextObservation: Reference observation with minimum X coordinate
+    ///   - maxCharacterCountLineTextObservation: Reference observation with maximum character count
     ///   - maxLineLength: Maximum line length for comparison
     ///   - charCountPerLine: Average character count per line
     ///   - ocrImage: Source image for coordinate calculations
@@ -98,12 +99,13 @@ class AppleOCRTextMerger {
     init(
         language: Language,
         isPoetry: Bool,
-        minLineHeight: CGFloat,
-        averageLineHeight: CGFloat,
+        minLineHeight: Double,
+        averageLineHeight: Double,
         maxLongLineTextObservation: VNRecognizedTextObservation?,
         minXLineTextObservation: VNRecognizedTextObservation?,
-        maxLineLength: CGFloat,
-        charCountPerLine: CGFloat,
+        maxCharacterCountLineTextObservation: VNRecognizedTextObservation?,
+        maxLineLength: Double,
+        charCountPerLine: Double,
         ocrImage: NSImage,
         languageManager: EZLanguageManager
     ) {
@@ -113,6 +115,7 @@ class AppleOCRTextMerger {
         self.averageLineHeight = averageLineHeight
         self.maxLongLineTextObservation = maxLongLineTextObservation
         self.minXLineTextObservation = minXLineTextObservation
+        self.maxCharacterCountLineTextObservation = maxCharacterCountLineTextObservation
         self.maxLineLength = maxLineLength
         self.charCountPerLine = charCountPerLine
         self.ocrImage = ocrImage
@@ -123,12 +126,13 @@ class AppleOCRTextMerger {
 
     private let language: Language
     private let isPoetry: Bool
-    private let minLineHeight: CGFloat
-    private let averageLineHeight: CGFloat
+    private let minLineHeight: Double
+    private let averageLineHeight: Double
     private let maxLongLineTextObservation: VNRecognizedTextObservation?
     private let minXLineTextObservation: VNRecognizedTextObservation?
-    private let maxLineLength: CGFloat
-    private let charCountPerLine: CGFloat
+    private let maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
+    private let maxLineLength: Double
+    private let charCountPerLine: Double
     private let ocrImage: NSImage
     private let languageManager: EZLanguageManager
 
@@ -143,7 +147,7 @@ class AppleOCRTextMerger {
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation
     )
-        -> (isNewLine: Bool, deltaY: CGFloat, deltaX: CGFloat) {
+        -> (isNewLine: Bool, deltaY: Double, deltaX: Double) {
         let currentBoundingBox = current.boundingBox
         let previousBoundingBox = previous.boundingBox
 
@@ -213,7 +217,9 @@ class AppleOCRTextMerger {
 
             let lineMaxX = current.boundingBox.maxX
             let prevLineMaxX = previous.boundingBox.maxX
-            let isEqualLineMaxX = isRatioGreaterThan(0.95, value1: lineMaxX, value2: prevLineMaxX)
+            let isEqualLineMaxX = isRatioGreaterThan(
+                0.95, value1: lineMaxX, value2: prevLineMaxX
+            )
 
             let isEqualInnerTwoLine = isEqualX && isEqualLineMaxX
 
@@ -360,7 +366,7 @@ extension AppleOCRTextMerger {
         let minXValue = minXObservation.boundingBox.origin.x
 
         // Simple threshold-based indentation detection
-        let threshold: CGFloat = 0.02
+        let threshold = 0.02
         return abs(observationX - minXValue) > threshold
     }
 
@@ -397,7 +403,7 @@ extension AppleOCRTextMerger {
     /// - Returns: True if texts match Chinese poetry patterns
     private func isChinesePoetryPattern(current: String, previous: String) -> Bool {
         if isChineseLanguage(),
-           charCountPerLine < CGFloat(AppleOCRConstants.shortPoetryCharacterCountOfLine) {
+           charCountPerLine < Double(AppleOCRConstants.shortPoetryCharacterCountOfLine) {
             let currentShort = current.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
             let previousShort = previous.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
             return currentShort && previousShort
@@ -420,7 +426,7 @@ extension AppleOCRTextMerger {
 
         let differenceFontSize = abs(currentFontSize - prevFontSize)
         // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
-        var differenceFontThreshold: CGFloat = 5
+        var differenceFontThreshold: Double = 5
         // Chinese fonts seem to be more precise.
         if languageManager.isChineseLanguage(language) {
             differenceFontThreshold = 3
@@ -429,7 +435,7 @@ extension AppleOCRTextMerger {
         let isEqualFontSize = differenceFontSize <= differenceFontThreshold
         if !isEqualFontSize {
             print(
-                "Not equal font size: difference = \(differenceFontSize) (\(prevFontSize), \(currentFontSize))"
+                "Not equal font size: diff = \(differenceFontSize) (\(prevFontSize), \(currentFontSize))"
             )
         }
 
@@ -485,6 +491,7 @@ extension AppleOCRTextMerger {
         let hasIndentation = hasIndentationOfTextObservation(current)
 
         let isPrevLongText = isLongTextObservation(previous, isStrict: false)
+        let isLongText = isLongTextObservation(current, isStrict: false)
 
         let isEqualChineseText = isEqualChineseTextObservation(current: current, previous: previous)
 
@@ -505,7 +512,7 @@ extension AppleOCRTextMerger {
 
         let differenceFontSize = abs(textFontSize - prevTextFontSize)
         // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
-        var differenceFontThreshold: CGFloat = 5
+        var differenceFontThreshold: Double = 5
         // Chinese fonts seem to be more precise.
         if languageManager.isChineseLanguage(language) {
             differenceFontThreshold = 3
@@ -514,7 +521,7 @@ extension AppleOCRTextMerger {
         let isEqualFontSize = differenceFontSize <= differenceFontThreshold
         if !isEqualFontSize {
             print(
-                "Not equal font size: difference = \(differenceFontSize) (\(prevTextFontSize), \(textFontSize))"
+                "Not equal font size: diff = \(differenceFontSize) (\(prevTextFontSize), \(textFontSize))"
             )
         }
 
@@ -555,6 +562,7 @@ extension AppleOCRTextMerger {
 
                 let lineMaxX = current.boundingBox.maxX
                 let prevLineMaxX = previous.boundingBox.maxX
+
                 let isEqualLineMaxX = isRatioGreaterThan(
                     0.95, value1: lineMaxX, value2: prevLineMaxX
                 )
@@ -632,6 +640,11 @@ extension AppleOCRTextMerger {
 
                             // If previous line first letter is NOT uppercase, but current line first letter is uppercase, then it is a new paragraph.
                             if isFirstLetterUpperCase, !isPrevFirstLetterUpperCase {
+                                isNewParagraph = true
+                            }
+
+                            // If current line is a long text, then it is a new paragraph.
+                            if isLongText {
                                 isNewParagraph = true
                             }
                         } else {
@@ -781,7 +794,7 @@ extension AppleOCRTextMerger {
     private func isBigSpacingLineOfTextObservation(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation,
-        greaterThanLineHeightRatio: CGFloat
+        greaterThanLineHeightRatio: Double
     )
         -> Bool {
         let prevBoundingBox = previous.boundingBox
@@ -839,7 +852,8 @@ extension AppleOCRTextMerger {
     ///   - isStrict: Whether to use strict evaluation criteria
     /// - Returns: True if observation is considered a long line
     private func isLongTextObservation(
-        _ observation: VNRecognizedTextObservation, isStrict: Bool = false
+        _ observation: VNRecognizedTextObservation,
+        isStrict: Bool = false
     )
         -> Bool {
         let threshold = longTextAlphabetCountThreshold(observation, isStrict: isStrict)
@@ -852,15 +866,15 @@ extension AppleOCRTextMerger {
     ///   - threshold: Threshold value for comparison
     /// - Returns: True if observation exceeds threshold
     private func isLongTextObservation(
-        _ observation: VNRecognizedTextObservation, threshold: CGFloat
+        _ observation: VNRecognizedTextObservation,
+        threshold: Double
     )
         -> Bool {
         let remainingAlphabetCount = remainingAlphabetCountOfTextObservation(observation)
         let isLongText = remainingAlphabetCount < threshold
         if !isLongText {
-            print(
-                "Not long text, remaining alphabet Count: \(remainingAlphabetCount) (threshold: \(threshold))"
-            )
+            print("Not long text: \(observation)")
+            print("Remaining alphabet count: \(remainingAlphabetCount), threshold: \(threshold)")
         }
         return isLongText
     }
@@ -869,7 +883,7 @@ extension AppleOCRTextMerger {
     /// - Parameter observation: Observation to analyze
     /// - Returns: Estimated remaining character count
     private func remainingAlphabetCountOfTextObservation(_ observation: VNRecognizedTextObservation)
-        -> CGFloat {
+        -> Double {
         guard let maxObservation = maxLongLineTextObservation else { return 0 }
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
@@ -887,14 +901,15 @@ extension AppleOCRTextMerger {
     ///   - isStrict: Whether to use strict criteria
     /// - Returns: Calculated threshold value
     private func longTextAlphabetCountThreshold(
-        _ observation: VNRecognizedTextObservation, isStrict: Bool
+        _ observation: VNRecognizedTextObservation,
+        isStrict: Bool
     )
-        -> CGFloat {
+        -> Double {
         let isEnglishTypeLanguage = languageManager.isLanguageWordsNeedSpace(language)
 
         // For long text, there are up to 15 letters or 2 Chinese characters on the far right.
         // "implementation ," : @"你好"
-        var alphabetCount: CGFloat = isEnglishTypeLanguage ? 15 : 1.5
+        var alphabetCount: Double = isEnglishTypeLanguage ? 15 : 1.5
 
         let text = observation.text
         let isEndPunctuationChar = text.hasEndPunctuationSuffix
@@ -909,13 +924,17 @@ extension AppleOCRTextMerger {
     }
 
     /// Calculate single character width for observation
-    /// - Parameter observation: Text observation to analyze
+    /// - Parameter textObservation: Text observation to analyze
     /// - Returns: Estimated width per character
-    private func singleAlphabetWidthOfTextObservation(_ observation: VNRecognizedTextObservation)
-        -> CGFloat {
+    private func singleAlphabetWidthOfTextObservation(
+        _ textObservation: VNRecognizedTextObservation
+    )
+        -> Double {
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
-        return textWidth / CGFloat(observation.text.count)
+        let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width / scaleFactor
+
+        let textObservation = maxCharacterCountLineTextObservation ?? textObservation
+        return textWidth / textObservation.text.count.double
     }
 
     /// Check if observations contain equal-length Chinese text
@@ -924,7 +943,8 @@ extension AppleOCRTextMerger {
     ///   - previous: Previous observation
     /// - Returns: True if both are equal Chinese text
     private func isEqualChineseTextObservation(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
     )
         -> Bool {
         let isEqualLength = isEqualCharacterLengthTextObservation(
@@ -963,7 +983,8 @@ extension AppleOCRTextMerger {
     ///   - previous: Previous observation
     /// - Returns: True if observations are similar in position and size
     private func isEqualTextObservation(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
     )
         -> Bool {
         let isEqualX = isEqualXOfTextObservation(current: current, previous: previous)
@@ -971,7 +992,7 @@ extension AppleOCRTextMerger {
         let lineMaxX = current.boundingBox.maxX
         let prevLineMaxX = previous.boundingBox.maxX
 
-        let ratio: CGFloat = 0.95
+        let ratio = 0.95
         let isEqualLineMaxX = isRatioGreaterThan(ratio, value1: lineMaxX, value2: prevLineMaxX)
 
         return isEqualX && isEqualLineMaxX
@@ -983,12 +1004,13 @@ extension AppleOCRTextMerger {
     ///   - previous: Previous observation
     /// - Returns: True if X coordinates are approximately equal
     private func isEqualXOfTextObservation(
-        current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
     )
         -> Bool {
         // Simplified implementation based on threshold calculation
-        let alphabetCount: CGFloat = 2
-        let threshold = getThresholdWithAlphabetCount(alphabetCount, textObservation: current) * 0.9
+        let alphabetCount = 1.5
+        let threshold = getThresholdWithAlphabetCount(alphabetCount, textObservation: current)
 
         let lineX = current.boundingBox.origin.x
         let prevLineX = previous.boundingBox.origin.x
@@ -998,14 +1020,24 @@ extension AppleOCRTextMerger {
         let maxLength = ocrImage.size.width * maxLineLength / scaleFactor
         let difference = maxLength * dx
 
-        if (difference > 0 && difference < threshold) || abs(difference) < (threshold / 2) {
+        // dx > 0, means current line may has indentation.
+        if (dx > 0 && difference < threshold) || abs(difference) < (threshold / 2) {
             return true
         }
 
-        print(
-            "Not equalX text: \(current.text)(difference: \(difference), threshold: \(threshold))"
-        )
+        print("Not equalX text: \(current)")
+        print("difference: \(difference), threshold: \(threshold)")
+
         return false
+    }
+
+    /// Calculate font size for text observation
+    /// - Parameter observation: Observation to analyze
+    /// - Returns: Estimated font size
+    private func fontSizeOfTextObservation(_ observation: VNRecognizedTextObservation) -> Double {
+        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
+        let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
+        return fontSizeOfText(observation.text, width: textWidth)
     }
 
     /// Calculate threshold based on alphabet count and observation context
@@ -1014,20 +1046,12 @@ extension AppleOCRTextMerger {
     ///   - textObservation: Observation for context
     /// - Returns: Calculated threshold value
     private func getThresholdWithAlphabetCount(
-        _ alphabetCount: CGFloat, textObservation: VNRecognizedTextObservation
+        _ alphabetCount: Double,
+        textObservation: VNRecognizedTextObservation
     )
-        -> CGFloat {
+        -> Double {
         let singleAlphabetWidth = singleAlphabetWidthOfTextObservation(textObservation)
         return alphabetCount * singleAlphabetWidth
-    }
-
-    /// Calculate font size for text observation
-    /// - Parameter observation: Observation to analyze
-    /// - Returns: Estimated font size
-    private func fontSizeOfTextObservation(_ observation: VNRecognizedTextObservation) -> CGFloat {
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
-        return fontSizeOfText(observation.text, width: textWidth)
     }
 
     /// Calculate font size based on text content and width
@@ -1035,14 +1059,16 @@ extension AppleOCRTextMerger {
     ///   - text: Text content
     ///   - textWidth: Width of the text
     /// - Returns: Estimated font size
-    private func fontSizeOfText(_ text: String, width textWidth: CGFloat) -> CGFloat {
+    private func fontSizeOfText(_ text: String, width textWidth: Double) -> Double {
         let systemFontSize = NSFont.systemFontSize
         let font = NSFont.boldSystemFont(ofSize: systemFontSize)
 
         let width = text.size(withAttributes: [.font: font]).width
 
-        // systemFontSize / width = x / textWidth
-        // x = textWidth * (systemFontSize / width)
+        /**
+         systemFontSize / width = x / textWidth
+         x = textWidth * (systemFontSize / width)
+         */
         let fontSize = textWidth * (systemFontSize / width)
 
         return fontSize
@@ -1055,7 +1081,9 @@ extension AppleOCRTextMerger {
     ///   - lessRateOfMaxLength: Threshold ratio
     /// - Returns: True if line is considered short
     private func isShortLineLength(
-        _ lineLength: CGFloat, maxLineLength: CGFloat, lessRateOfMaxLength: CGFloat
+        _ lineLength: Double,
+        maxLineLength: Double,
+        lessRateOfMaxLength: Double
     )
         -> Bool {
         lineLength < maxLineLength * lessRateOfMaxLength
@@ -1067,7 +1095,7 @@ extension AppleOCRTextMerger {
     ///   - value1: First value
     ///   - value2: Second value
     /// - Returns: True if ratio exceeds threshold
-    private func isRatioGreaterThan(_ ratio: CGFloat, value1: CGFloat, value2: CGFloat) -> Bool {
+    private func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {
         let minValue = min(value1, value2)
         let maxValue = max(value1, value2)
         return (minValue / maxValue) > ratio
@@ -1078,7 +1106,7 @@ extension AppleOCRTextMerger {
     /// - Returns: True if text matches short Chinese poetry patterns
     private func isShortChinesePoetryText(_ text: String) -> Bool {
         languageManager.isChineseLanguage(language)
-            && charCountPerLine < CGFloat(AppleOCRConstants.shortPoetryCharacterCountOfLine)
+            && charCountPerLine < Double(AppleOCRConstants.shortPoetryCharacterCountOfLine)
             && text.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
     }
 }
