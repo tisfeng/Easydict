@@ -51,7 +51,7 @@ class OllamaService: BaseOpenAIService {
     }
 
     override var isSentenceEnabledByDefault: Bool {
-        false
+        true
     }
 
     override var isDictionaryEnabledByDefault: Bool {
