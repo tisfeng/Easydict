@@ -210,6 +210,8 @@
 		03B0233729231FA6001C7E63 /* MMMake.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D829231FA6001C7E63 /* MMMake.m */; };
 		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
+		03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */; };
+		03B17E922E0D30560017350E /* OCRContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B17E912E0D30560017350E /* OCRContext.swift */; };
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
 		03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B63ABE2A86967800E155ED /* CoreServices.framework */; };
@@ -717,6 +719,8 @@
 		03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOrderedDictionary.h; sourceTree = "<group>"; };
 		03B022E329231FA6001C7E63 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		03B022E429231FA6001C7E63 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VNRecognizedTextObservation+Extension.swift"; sourceTree = "<group>"; };
+		03B17E912E0D30560017350E /* OCRContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRContext.swift; sourceTree = "<group>"; };
 		03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonWindow.h; sourceTree = "<group>"; };
 		03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonWindow.m; sourceTree = "<group>"; };
 		03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonViewController.h; sourceTree = "<group>"; };
@@ -1116,7 +1120,9 @@
 				031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */,
 				03F19D7D2E090F390046C6F2 /* AppleOCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* AppleOCRTextMerger.swift */,
+				03B17E912E0D30560017350E /* OCRContext.swift */,
 				032E12492E0AABCC00D2CEDA /* AppleOCRConstants.swift */,
+				03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */,
 			);
 			path = AppleOCRService;
 			sourceTree = "<group>";
@@ -3277,6 +3283,7 @@
 				9643D9392B6F49E0000FBEA6 /* AppShortcutSetting.swift in Sources */,
 				96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */,
 				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
+				03B17E922E0D30560017350E /* OCRContext.swift in Sources */,
 				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */,
@@ -3293,6 +3300,7 @@
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
 				0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */,
 				17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */,
+				03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */,
 				6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */,
 				036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */,
 				0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */,

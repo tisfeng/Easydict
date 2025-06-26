@@ -9,73 +9,6 @@
 import Foundation
 import Vision
 
-// MARK: - VNRecognizedTextObservation Extension
-
-extension VNRecognizedTextObservation {
-    /// A computed property to get the top candidate string, returns empty string if not available.
-    var text: String {
-        topCandidates(1).first?.string ?? ""
-    }
-
-    /// Custom description providing text content and bounding box information
-    open override var description: String {
-        let boundRect = boundingBox
-        return String(
-            format: "Text: \"%@\", { x=%.3f, y=%.3f, width=%.3f, height=%.3f }",
-            text,
-            boundRect.origin.x,
-            boundRect.origin.y,
-            boundRect.size.width,
-            boundRect.size.height
-        )
-    }
-}
-
-// MARK: - Array Extension for Better Printing
-
-extension Array where Element == VNRecognizedTextObservation {
-    /// Get a nicely formatted string representation of text observations with indexes
-    var formattedDescription: String {
-        if isEmpty {
-            return "[]"
-        }
-
-        var result = "[\n"
-        for (index, observation) in enumerated() {
-            result += "  [\(index)] \(observation.description)"
-            if index < count - 1 {
-                result += ",\n"
-            } else {
-                result += "\n"
-            }
-        }
-        result += "]"
-        return result
-    }
-
-    /// Extract just the recognized text strings from observations
-    var recognizedTexts: [String] {
-        map { $0.text }
-    }
-}
-
-// MARK: - Supporting Types
-
-/// Encapsulates text analysis properties for break type determination
-private struct TextAnalysisContext {
-    let isPrevEndPunctuation: Bool
-    let isPrevLongText: Bool
-    let hasIndentation: Bool
-    let hasPrevIndentation: Bool
-    let isBigLineSpacing: Bool
-}
-
-/// Contains text content for analysis operations
-private struct TextContent {
-    let currentText: String
-    let previousText: String
-}
-
 // MARK: - AppleOCRTextMerger
 
 /// Handles intelligent text merging logic for OCR results
@@ -83,334 +16,44 @@ private struct TextContent {
 class AppleOCRTextMerger {
     // MARK: Lifecycle
 
-    /// Initialize text merger with OCR context and analysis parameters
-    /// - Parameters:
-    ///   - language: The detected or specified language for text processing
-    ///   - isPoetry: Whether the text is identified as poetry format
-    ///   - minLineHeight: Minimum line height found in the text
-    ///   - averageLineHeight: Average line height for spacing calculations
-    ///   - maxLongLineTextObservation: Reference observation with maximum line length
-    ///   - minXLineTextObservation: Reference observation with minimum X coordinate
-    ///   - maxCharacterCountLineTextObservation: Reference observation with maximum character count
-    ///   - maxLineLength: Maximum line length for comparison
-    ///   - charCountPerLine: Average character count per line
-    ///   - ocrImage: Source image for coordinate calculations
-    ///   - languageManager: Language utility manager
-    init(
-        language: Language,
-        isPoetry: Bool,
-        minLineHeight: Double,
-        averageLineHeight: Double,
-        maxLongLineTextObservation: VNRecognizedTextObservation?,
-        minXLineTextObservation: VNRecognizedTextObservation?,
-        maxCharacterCountLineTextObservation: VNRecognizedTextObservation?,
-        maxLineLength: Double,
-        charCountPerLine: Double,
-        ocrImage: NSImage,
-        languageManager: EZLanguageManager
-    ) {
-        self.language = language
-        self.isPoetry = isPoetry
-        self.minLineHeight = minLineHeight
-        self.averageLineHeight = averageLineHeight
-        self.maxLongLineTextObservation = maxLongLineTextObservation
-        self.minXLineTextObservation = minXLineTextObservation
-        self.maxCharacterCountLineTextObservation = maxCharacterCountLineTextObservation
-        self.maxLineLength = maxLineLength
-        self.charCountPerLine = charCountPerLine
-        self.ocrImage = ocrImage
-        self.languageManager = languageManager
+    /// Initialize text merger with OCR context
+    /// - Parameter context: OCR context containing all necessary data for text merging
+    init(context: OCRContext) {
+        self.context = context
     }
 
     // MARK: Private
 
-    private let language: Language
-    private let isPoetry: Bool
-    private let minLineHeight: Double
-    private let averageLineHeight: Double
-    private let maxLongLineTextObservation: VNRecognizedTextObservation?
-    private let minXLineTextObservation: VNRecognizedTextObservation?
-    private let maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
-    private let maxLineLength: Double
-    private let charCountPerLine: Double
-    private let ocrImage: NSImage
-    private let languageManager: EZLanguageManager
+    private let context: OCRContext
 
-    // MARK: - Private Methods
+    private var languageManager = EZLanguageManager.shared()
 
-    /// Analyze spatial relationship between current and previous text observations
-    /// - Parameters:
-    ///   - current: Current text observation
-    ///   - previous: Previous text observation
-    /// - Returns: Tuple containing line relationship analysis (isNewLine, deltaY, deltaX)
-    private func analyzeLineRelationship(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> (isNewLine: Bool, deltaY: Double, deltaX: Double) {
-        let currentBoundingBox = current.boundingBox
-        let previousBoundingBox = previous.boundingBox
-
-        let deltaY =
-            previousBoundingBox.origin.y
-                - (currentBoundingBox.origin.y + currentBoundingBox.size.height)
-        let deltaX =
-            currentBoundingBox.origin.x
-                - (previousBoundingBox.origin.x + previousBoundingBox.size.width)
-
-        var isNewLine = false
-
-        // Check Y coordinate for new line
-        if deltaY > 0 {
-            isNewLine = true
-        } else if abs(deltaY) < minLineHeight / 2 {
-            isNewLine = true
-        }
-
-        // Check X coordinate gap for line detection
-        if deltaX > 0.07 {
-            isNewLine = true
-        }
-
-        return (isNewLine, deltaY, deltaX)
+    // Convenience computed properties for easier access
+    private var language: Language { context.language }
+    private var isPoetry: Bool { context.isPoetry }
+    private var minLineHeight: Double { context.minLineHeight }
+    private var averageLineHeight: Double { context.averageLineHeight }
+    private var maxLongLineTextObservation: VNRecognizedTextObservation? {
+        context.maxLongLineTextObservation
     }
 
-    /// Handle text merging logic for indented text blocks
-    /// - Parameters:
-    ///   - current: Current text observation
-    ///   - previous: Previous text observation
-    ///   - context: Text analysis context
-    ///   - isEqualChineseText: Whether texts are equal-length Chinese
-    ///   - isPrevList: Whether previous text is a list item
-    ///   - isList: Whether current text is a list item
-    /// - Returns: Tuple indicating line break and paragraph decisions
-    private func handleIndentedText(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation,
-        context: TextAnalysisContext,
-        isEqualChineseText: Bool,
-        isPrevList: Bool,
-        isList: Bool
-    )
-        -> (needLineBreak: Bool, isNewParagraph: Bool) {
-        var needLineBreak = false
-        var isNewParagraph = false
-
-        let isEqualX = isEqualXOfTextObservation(current: current, previous: previous)
-        let lineX = current.boundingBox.minX
-        let prevLineX = previous.boundingBox.minX
-        let dx = lineX - prevLineX
-
-        if context.hasPrevIndentation {
-            if context.isBigLineSpacing, !context.isPrevLongText, !isPrevList, !isList {
-                isNewParagraph = true
-            }
-
-            // Check for short line conditions
-            let prevLineLength = previous.boundingBox.width
-            let isPrevLessHalfShortLine = isShortLineLength(
-                prevLineLength, maxLineLength: maxLineLength, lessRateOfMaxLength: 0.5
-            )
-            let isPrevShortLine = isShortLineLength(
-                prevLineLength, maxLineLength: maxLineLength, lessRateOfMaxLength: 0.85
-            )
-
-            let lineMaxX = current.boundingBox.maxX
-            let prevLineMaxX = previous.boundingBox.maxX
-            let isEqualLineMaxX = isRatioGreaterThan(
-                0.95, value1: lineMaxX, value2: prevLineMaxX
-            )
-
-            let isEqualInnerTwoLine = isEqualX && isEqualLineMaxX
-
-            if isEqualInnerTwoLine {
-                if isPrevLessHalfShortLine {
-                    needLineBreak = true
-                } else {
-                    if isEqualChineseText {
-                        needLineBreak = true
-                    } else {
-                        needLineBreak = false
-                    }
-                }
-            } else {
-                if context.isPrevLongText {
-                    if context.isPrevEndPunctuation {
-                        needLineBreak = true
-                    } else {
-                        if !isEqualX, dx < 0 {
-                            isNewParagraph = true
-                        } else {
-                            needLineBreak = false
-                        }
-                    }
-                } else {
-                    if context.isPrevEndPunctuation {
-                        if !isEqualX, !isList {
-                            isNewParagraph = true
-                        } else {
-                            needLineBreak = true
-                        }
-                    } else {
-                        if isPrevShortLine {
-                            needLineBreak = true
-                        } else {
-                            needLineBreak = false
-                        }
-                    }
-                }
-            }
-        } else {
-            // Sometimes hasIndentation is a mistake, when prev line is long
-            if context.isPrevLongText {
-                let isEqualFontSize = checkEqualFontSize(current: current, previous: previous)
-                if context.isPrevEndPunctuation || !isEqualFontSize {
-                    isNewParagraph = true
-                } else {
-                    if !isEqualX, dx > 0 {
-                        needLineBreak = false
-                    } else {
-                        needLineBreak = true
-                    }
-                }
-            } else {
-                isNewParagraph = true
-            }
-        }
-
-        return (needLineBreak, isNewParagraph)
+    private var minXLineTextObservation: VNRecognizedTextObservation? {
+        context.minXLineTextObservation
     }
 
-    /// Handle text merging logic for non-indented text blocks
-    /// - Parameters:
-    ///   - observations: Tuple containing current and previous observations
-    ///   - textContent: Text content structure
-    ///   - context: Text analysis context
-    /// - Returns: Tuple with break decisions and optional special join string
-    private func handleNonIndentedText(
-        observations: (current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation),
-        textContent: TextContent,
-        context: TextAnalysisContext
-    )
-        -> (needLineBreak: Bool, isNewParagraph: Bool, specialJoinString: String?) {
-        var needLineBreak = false
-        var isNewParagraph = false
-
-        if context.hasPrevIndentation {
-            needLineBreak = true
-        }
-
-        if context.isBigLineSpacing {
-            if context.isPrevLongText {
-                if isPoetry {
-                    needLineBreak = true
-                } else {
-                    // Check for page turn scenarios (翻页, Page turn scenes without line feeds)
-                    let isTurnedPage =
-                        isEnglishLanguage() && textContent.currentText.isLowercaseFirstChar()
-                            && !context.isPrevEndPunctuation
-                    if isTurnedPage {
-                        isNewParagraph = false
-                        needLineBreak = false
-                        return (needLineBreak, isNewParagraph, " ")
-                    }
-                }
-            } else {
-                if context.isPrevEndPunctuation || context.hasPrevIndentation {
-                    isNewParagraph = true
-                } else {
-                    needLineBreak = true
-                }
-            }
-        } else {
-            if context.isPrevLongText {
-                if context.hasPrevIndentation {
-                    needLineBreak = false
-                }
-
-                /**
-                 Chinese poetry special case
-
-                 人绕湘皋月坠时。斜横花树小，浸愁漪。一春幽事有谁知。东风冷、香远茜裙归。
-                 鸥去昔游非。遥怜花可可，梦依依。九疑云杳断魂啼。相思血，都沁绿筠枝。
-                 */
-                if context.isPrevEndPunctuation, textContent.currentText.hasEndPunctuationSuffix {
-                    needLineBreak = true
-                }
-            } else {
-                needLineBreak = true
-                if context.hasPrevIndentation, !context.isPrevEndPunctuation {
-                    isNewParagraph = true
-                }
-            }
-
-            if isPoetry {
-                needLineBreak = true
-            }
-        }
-
-        return (needLineBreak, isNewParagraph, nil)
+    private var maxCharacterCountLineTextObservation: VNRecognizedTextObservation? {
+        context.maxCharacterCountLineTextObservation
     }
+
+    private var maxLineLength: Double { context.maxLineLength }
+    private var charCountPerLine: Double { context.charCountPerLine }
+    private var ocrImage: NSImage { context.ocrImage }
+    private var singleAlphabetWidth: Double { context.singleAlphabetWidth }
 }
 
 // MARK: - Helper Methods Extension
 
 extension AppleOCRTextMerger {
-    /// Check if text observation has indentation relative to base line
-    /// - Parameter observation: Text observation to check
-    /// - Returns: True if text appears to be indented
-    private func hasTextIndentation(_ observation: VNRecognizedTextObservation) -> Bool {
-        guard let minXObservation = minXLineTextObservation else { return false }
-
-        let observationX = observation.boundingBox.origin.x
-        let minXValue = minXObservation.boundingBox.origin.x
-
-        // Simple threshold-based indentation detection
-        let threshold = 0.02
-        return abs(observationX - minXValue) > threshold
-    }
-
-    /// Check if two observations have equal character length and punctuation patterns
-    /// - Parameters:
-    ///   - current: Current text observation
-    ///   - previous: Previous text observation
-    /// - Returns: True if character patterns match
-    private func isEqualCharacterLength(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
-        let currentText = current.text
-        let previousText = previous.text
-        let isCurrentEndPunctuationChar = currentText.hasEndPunctuationSuffix
-        let isPreviousEndPunctuationChar = previousText.hasEndPunctuationSuffix
-
-        let isEqualLength = currentText.count == previousText.count
-        let bothHaveEndPunctuation = isCurrentEndPunctuationChar && isPreviousEndPunctuationChar
-
-        // Additional geometric equality checks
-        let currentWidth = current.boundingBox.width
-        let previousWidth = previous.boundingBox.width
-        let isEqualWidth = abs(currentWidth - previousWidth) < 0.05
-
-        return isEqualLength && bothHaveEndPunctuation && isEqualWidth
-    }
-
-    /// Detect Chinese poetry pattern based on text characteristics
-    /// - Parameters:
-    ///   - current: Current line text
-    ///   - previous: Previous line text
-    /// - Returns: True if texts match Chinese poetry patterns
-    private func isChinesePoetryPattern(current: String, previous: String) -> Bool {
-        if isChineseLanguage(),
-           charCountPerLine < Double(AppleOCRConstants.shortPoetryCharacterCountOfLine) {
-            let currentShort = current.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
-            let previousShort = previous.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
-            return currentShort && previousShort
-        }
-        return false
-    }
-
     /// Compare font sizes between two text observations
     /// - Parameters:
     ///   - current: Current text observation
@@ -424,22 +67,23 @@ extension AppleOCRTextMerger {
         let currentFontSize = fontSizeOfTextObservation(current)
         let prevFontSize = fontSizeOfTextObservation(previous)
 
-        let differenceFontSize = abs(currentFontSize - prevFontSize)
-        // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
-        var differenceFontThreshold: Double = 5
-        // Chinese fonts seem to be more precise.
-        if languageManager.isChineseLanguage(language) {
-            differenceFontThreshold = 3
-        }
-
-        let isEqualFontSize = differenceFontSize <= differenceFontThreshold
+        let differentFontSize = abs(currentFontSize - prevFontSize)
+        let isEqualFontSize = differentFontSize <= differentFontSizeThreshold(language)
         if !isEqualFontSize {
             print(
-                "Not equal font size: diff = \(differenceFontSize) (\(prevFontSize), \(currentFontSize))"
+                "Not equal font: diff = \(differentFontSize) (\(prevFontSize), \(currentFontSize))"
             )
         }
-
         return isEqualFontSize
+    }
+
+    /// Different font size by language
+    /// - Parameter language: Language of the text
+    /// - Returns: Font size threshold for the given language
+    private func differentFontSizeThreshold(_ language: Language) -> Double {
+        isChineseLanguage()
+            ? AppleOCRConstants.chineseDifferenceFontThreshold
+            : AppleOCRConstants.englishDifferenceFontThreshold
     }
 
     /// Check if current language is English
@@ -467,320 +111,288 @@ extension AppleOCRTextMerger {
         previous: VNRecognizedTextObservation
     )
         -> String {
-        var joinedString = ""
+        // Prepare analysis context
+        let analysisContext = prepareAnalysisContext(current: current, previous: previous)
+
+        // Determine line break and paragraph decisions
+        let (needLineBreak, isNewParagraph) = determineLineBreakAndParagraph(
+            current: current,
+            previous: previous,
+            context: analysisContext
+        )
+
+        // Generate final joined string
+        return generateJoinedString(
+            needLineBreak: needLineBreak,
+            isNewParagraph: isNewParagraph,
+            previousText: previous.text
+        )
+    }
+
+    // MARK: - Helper Methods for Text Analysis
+
+    /// Prepare analysis context for text observation comparison
+    private func prepareAnalysisContext(
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
+    )
+        -> TextAnalysisContext {
+        let prevText = previous.text
+
+        return TextAnalysisContext(
+            isPrevEndPunctuation: prevText.hasEndPunctuationSuffix,
+            isPrevLongText: isLongTextObservation(previous, isStrict: false),
+            hasIndentation: hasIndentationOfTextObservation(current),
+            hasPrevIndentation: hasIndentationOfTextObservation(previous),
+            isBigLineSpacing: isBigSpacingLineOfTextObservation(
+                current: current,
+                previous: previous,
+                greaterThanLineHeightRatio: 1.0
+            )
+        )
+    }
+
+    /// Handle text merging logic for indented text blocks
+    /// - Parameter formattingData: All formatting context data
+    /// - Returns: Tuple indicating line break and paragraph decisions
+    private func handleIndentedText(
+        formattingData: FormattingData
+    )
+        -> (needLineBreak: Bool, isNewParagraph: Bool) {
         var needLineBreak = false
         var isNewParagraph = false
 
-        let prevBoundingBox = previous.boundingBox
-        let prevLineLength = prevBoundingBox.size.width
-        let prevText = previous.text
-        let prevLastChar = String(prevText.suffix(1))
-        // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
-        let isPrevEndPunctuationChar = prevText.hasEndPunctuationSuffix
-
-        let text = current.text
-        let isEndPunctuationChar = text.hasEndPunctuationSuffix
-
-        let isBigLineSpacing = isBigSpacingLineOfTextObservation(
-            current: current,
-            previous: previous,
-            greaterThanLineHeightRatio: 1.0
+        let isEqualX = isEqualXOfTextObservation(
+            current: formattingData.current,
+            previous: formattingData.previous
         )
+        let lineX = formattingData.current.boundingBox.minX
+        let prevLineX = formattingData.previous.boundingBox.minX
+        let dx = lineX - prevLineX
 
-        let hasPrevIndentation = hasIndentationOfTextObservation(previous)
-        let hasIndentation = hasIndentationOfTextObservation(current)
+        if formattingData.context.hasPrevIndentation {
+            if formattingData.context.isBigLineSpacing,
+               !formattingData.context.isPrevLongText,
+               !formattingData.isPrevList,
+               !formattingData.isList {
+                isNewParagraph = true
+            }
 
-        let isPrevLongText = isLongTextObservation(previous, isStrict: false)
-        let isLongText = isLongTextObservation(current, isStrict: false)
-
-        let isEqualChineseText = isEqualChineseTextObservation(current: current, previous: previous)
-
-        let isPrevList = prevText.isListTypeFirstWord
-        let isList = text.isListTypeFirstWord
-
-        /**
-         Note: firstChar cannot be non-alphabet, such as '['
-
-         the latter notifies the NFc upon the occurrence of the event
-         [2].
-         */
-        let isFirstLetterUpperCase = text.isFirstLetterUpperCase
-        let isPrevFirstLetterUpperCase = prevText.isFirstLetterUpperCase
-
-        let textFontSize = fontSizeOfTextObservation(current)
-        let prevTextFontSize = fontSizeOfTextObservation(previous)
-
-        let differenceFontSize = abs(textFontSize - prevTextFontSize)
-        // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
-        var differenceFontThreshold: Double = 5
-        // Chinese fonts seem to be more precise.
-        if languageManager.isChineseLanguage(language) {
-            differenceFontThreshold = 3
-        }
-
-        let isEqualFontSize = differenceFontSize <= differenceFontThreshold
-        if !isEqualFontSize {
-            print(
-                "Not equal font size: diff = \(differenceFontSize) (\(prevTextFontSize), \(textFontSize))"
+            // Check for short line conditions
+            let prevLineLength = formattingData.previous.boundingBox.width
+            let isPrevLessHalfShortLine = isShortLineLength(
+                prevLineLength, maxLineLength: maxLineLength, lessRateOfMaxLength: 0.5
             )
-        }
+            let isPrevShortLine = isShortLineLength(
+                prevLineLength, maxLineLength: maxLineLength, lessRateOfMaxLength: 0.85
+            )
 
-        // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
+            let lineMaxX = formattingData.current.boundingBox.maxX
+            let prevLineMaxX = formattingData.previous.boundingBox.maxX
+            let isEqualLineMaxX = isRatioGreaterThan(
+                0.95, value1: lineMaxX, value2: prevLineMaxX
+            )
 
-        if hasIndentation {
-            let isEqualX = isEqualXOfTextObservation(current: current, previous: previous)
+            let isEqualInnerTwoLine = isEqualX && isEqualLineMaxX
 
-            let lineX = current.boundingBox.minX
-            let prevLineX = previous.boundingBox.minX
-            let dx = lineX - prevLineX
-
-            if hasPrevIndentation {
-                if isBigLineSpacing, !isPrevLongText, !isPrevList, !isList {
-                    isNewParagraph = true
-                }
-
-                /**
-                 Bitcoin: A Peer-to-Peer Electronic Cash System
-
-                 Satoshi Nakamoto
-                 satoshin@gmx.com
-                 www.bitcoin.org
-
-                 Abstract. A purely peer-to-peer version of electronic cash would allow online
-                 payments to be sent directly from one party to another without going through a
-                 */
-                let isPrevLessHalfShortLine = isShortLineLength(
-                    prevLineLength,
-                    maxLineLength: maxLineLength,
-                    lessRateOfMaxLength: 0.5
-                )
-                let isPrevShortLine = isShortLineLength(
-                    prevLineLength,
-                    maxLineLength: maxLineLength,
-                    lessRateOfMaxLength: 0.85
-                )
-
-                let lineMaxX = current.boundingBox.maxX
-                let prevLineMaxX = previous.boundingBox.maxX
-
-                let isEqualLineMaxX = isRatioGreaterThan(
-                    0.95, value1: lineMaxX, value2: prevLineMaxX
-                )
-
-                let isEqualInnerTwoLine = isEqualX && isEqualLineMaxX
-
-                if isEqualInnerTwoLine {
-                    if isPrevLessHalfShortLine {
+            if isEqualInnerTwoLine {
+                if isPrevLessHalfShortLine {
+                    needLineBreak = true
+                } else {
+                    if formattingData.isEqualChineseText {
                         needLineBreak = true
                     } else {
-                        if isEqualChineseText {
-                            needLineBreak = true
-                        } else {
-                            needLineBreak = false
-                        }
-                    }
-                } else {
-                    if isPrevLongText {
-                        if isPrevEndPunctuationChar {
-                            needLineBreak = true
-                            if isBigLineSpacing {
-                                isNewParagraph = true
-                            }
-                        } else {
-                            /**
-                             V. SECURITY CHALLENGES AND OPPORTUNITIES
-                             In the following, we discuss existing security challenges
-                             and shed light on possible security opportunities and research
-                             */
-                            if !isEqualX, dx < 0 {
-                                isNewParagraph = true
-                            } else {
-                                needLineBreak = false
-                            }
-                        }
-                    } else {
-                        if isPrevEndPunctuationChar {
-                            if !isEqualX, !isList {
-                                isNewParagraph = true
-                            } else {
-                                needLineBreak = true
-                            }
-                        } else {
-                            if isPrevShortLine {
-                                needLineBreak = true
-                            } else {
-                                needLineBreak = false
-                            }
-                        }
+                        needLineBreak = false
                     }
                 }
             } else {
-                // Sometimes hasIndentation is a mistake, when prev line is long.
-                /**
-                 当您发现严重的崩溃问题后，通常推荐发布一个新的版本来修复该问题。这样做有以下几
-                 个原因：
-
-                 1. 保持版本控制：通过发布一个新版本，您可以清晰地记录修复了哪些问题。这对于用
-                 户和开发团队来说都是透明和易于管理的。
-                 2. 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样，
-                 用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
-
-                 The problem with this solution is that the fate of  the  entire  money  system depends  on  the
-                 company running the mint, with every transaction having to go through them, just like a bank.
-                 We need a way for the payee to know that the previous owners  did  not  sign   any   earlier
-                 transactions.
-                 */
-
-                if isPrevLongText {
-                    if isPrevEndPunctuationChar || !isEqualFontSize {
-                        isNewParagraph = true
+                if formattingData.context.isPrevLongText {
+                    if formattingData.context.isPrevEndPunctuation {
+                        needLineBreak = true
                     } else {
-                        if !isEqualX, dx > 0 {
-                            needLineBreak = false
-
-                            // If previous line first letter is NOT uppercase, but current line first letter is uppercase, then it is a new paragraph.
-                            if isFirstLetterUpperCase, !isPrevFirstLetterUpperCase {
-                                isNewParagraph = true
-                            }
-
-                            // If current line is a long text, then it is a new paragraph.
-                            if isLongText {
-                                isNewParagraph = true
-                            }
+                        if !isEqualX, dx < 0 {
+                            isNewParagraph = true
                         } else {
-                            needLineBreak = true
+                            needLineBreak = false
                         }
                     }
                 } else {
-                    isNewParagraph = true
+                    if formattingData.context.isPrevEndPunctuation {
+                        if !isEqualX, !formattingData.isList {
+                            isNewParagraph = true
+                        } else {
+                            needLineBreak = true
+                        }
+                    } else {
+                        if isPrevShortLine {
+                            needLineBreak = true
+                        } else {
+                            needLineBreak = false
+                        }
+                    }
                 }
             }
         } else {
-            if hasPrevIndentation {
-                needLineBreak = true
-            }
-
-            if isBigLineSpacing {
-                if isPrevLongText {
-                    if isPoetry {
-                        needLineBreak = true
-                    } else {
-                        // 翻页, Page turn scenes without line feeds.
-                        let isTurnedPage =
-                            languageManager.isEnglishLanguage(language)
-                                && text.isLowercaseFirstChar && !isPrevEndPunctuationChar
-                        if isTurnedPage {
-                            isNewParagraph = false
-                            needLineBreak = false
-                        } else {
-                            needLineBreak = true
-                        }
-                    }
+            // Sometimes hasIndentation is a mistake, when prev line is long
+            if formattingData.context.isPrevLongText {
+                let isEqualFontSize = checkEqualFontSize(
+                    current: formattingData.current,
+                    previous: formattingData.previous
+                )
+                if formattingData.context.isPrevEndPunctuation || !isEqualFontSize {
+                    isNewParagraph = true
                 } else {
-                    if isPrevEndPunctuationChar || hasPrevIndentation {
-                        isNewParagraph = true
+                    if !isEqualX, dx > 0 {
+                        needLineBreak = false
                     } else {
                         needLineBreak = true
                     }
                 }
             } else {
-                if isPrevLongText {
-                    if hasPrevIndentation {
-                        needLineBreak = false
-                    }
-
-                    /**
-                     人绕湘皋月坠时。斜横花树小，浸愁漪。一春幽事有谁知。东风冷、香远茜裙归。
-                     鸥去昔游非。遥怜花可可，梦依依。九疑云杳断魂啼。相思血，都沁绿筠枝。
-                     */
-                    if isPrevEndPunctuationChar, isEndPunctuationChar {
-                        needLineBreak = true
-                    }
-                } else {
-                    needLineBreak = true
-                    if hasPrevIndentation, !isPrevEndPunctuationChar {
-                        isNewParagraph = true
-                    }
-                }
-
-                if isPoetry {
-                    needLineBreak = true
-                }
+                isNewParagraph = true
             }
+        }
+
+        return (needLineBreak, isNewParagraph)
+    }
+
+    /// Apply additional formatting rules for special cases
+    private func applyAdditionalFormattingRules(
+        formattingData: FormattingData,
+        needLineBreak: Bool,
+        isNewParagraph: Bool
+    )
+        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+        var finalNeedLineBreak = needLineBreak
+        var finalIsNewParagraph = isNewParagraph
+
+        // Font size and spacing checks
+        let isEqualFontSize = checkEqualFontSize(
+            current: formattingData.current,
+            previous: formattingData.previous
+        )
+
+        let isFirstLetterUpperCase = formattingData.textContent.currentText.isFirstLetterUpperCase
+        let isBigLineSpacing = formattingData.context.isBigLineSpacing
+        let isPrevEndPunctuation = formattingData.context.isPrevEndPunctuation
+
+        if !isEqualFontSize, isBigLineSpacing {
+            finalIsNewParagraph = true
         }
 
         if !isEqualFontSize || isBigLineSpacing {
-            if !isPrevLongText
-                || (languageManager.isEnglishLanguage(language) && isFirstLetterUpperCase) {
-                isNewParagraph = true
+            if isFirstLetterUpperCase || isPrevEndPunctuation {
+                finalIsNewParagraph = true
             }
         }
 
-        if isBigLineSpacing && isFirstLetterUpperCase {
-            isNewParagraph = true
-        }
-
-        /**
-         https://so.gushiwen.cn/shiwenv_f83627ef2908.aspx
-
-         绣袈裟衣缘
-         长屋〔唐代〕
-
-         山川异域，风月同天。
-         寄诸佛子，共结来缘。
-         */
-        let isShortChinesePoetry = isShortChinesePoetryText(text)
-        let isPrevShortChinesePoetry = isShortChinesePoetryText(prevText)
-
-        /**
-         Chinese poetry needs line break
-
-         《鹧鸪天 · 正月十一日观灯》
-
-         巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
-         花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
-
-         —— 宋 · 姜夔
-         */
-
-        let isChinesePoetryLine =
-            isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry)
-        let shouldWrap = isChinesePoetryLine
-
-        if shouldWrap {
-            needLineBreak = true
-            if isBigLineSpacing {
-                isNewParagraph = true
+        // Chinese poetry handling
+        let poetryResult = handleChinesePoetry(
+            currentText: formattingData.textContent.currentText,
+            previousText: formattingData.textContent.previousText,
+            isEqualChineseText: formattingData.isEqualChineseText,
+            isBigLineSpacing: isBigLineSpacing
+        )
+        if poetryResult.shouldWrap {
+            finalNeedLineBreak = true
+            if poetryResult.isNewParagraph {
+                finalIsNewParagraph = true
             }
         }
 
-        if isPrevList {
-            if isList {
-                needLineBreak = true
-                isNewParagraph = isBigLineSpacing
-            } else {
-                // Means list ends, next is new paragraph.
-                if isBigLineSpacing {
-                    isNewParagraph = true
-                }
-            }
+        // List handling
+        let listResult = handleListFormatting(
+            isPrevList: formattingData.isPrevList,
+            isList: formattingData.isList,
+            isBigLineSpacing: isBigLineSpacing
+        )
+        if listResult.needLineBreak {
+            finalNeedLineBreak = true
+        }
+        if listResult.isNewParagraph {
+            finalIsNewParagraph = true
         }
 
-        if isNewParagraph {
-            joinedString = AppleOCRConstants.paragraphBreakText
-        } else if needLineBreak {
-            joinedString = AppleOCRConstants.lineBreakText
-        } else if prevLastChar.isPunctuationCharacter {
-            // if last char is a punctuation mark, then append a space, since ocr will remove white space.
-            joinedString = " "
+        return (finalNeedLineBreak, finalIsNewParagraph)
+    }
+
+    /// Determine if line break and paragraph break are needed
+    private func determineLineBreakAndParagraph(
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation,
+        context: TextAnalysisContext
+    )
+        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+        var needLineBreak = false
+        var isNewParagraph = false
+
+        let textContent = TextContent(
+            previousText: previous.text,
+            currentText: current.text
+        )
+
+        let isEqualChineseText = isEqualChineseTextObservation(current: current, previous: previous)
+        let isPrevList = previous.text.isListTypeFirstWord
+        let isList = current.text.isListTypeFirstWord
+
+        // Create formatting data
+        let formattingData = FormattingData(
+            current: current,
+            previous: previous,
+            context: context,
+            textContent: textContent,
+            isEqualChineseText: isEqualChineseText,
+            isPrevList: isPrevList,
+            isList: isList
+        )
+
+        // Handle indented text
+        if context.hasIndentation {
+            let result = handleIndentedText(formattingData: formattingData)
+            needLineBreak = result.needLineBreak
+            isNewParagraph = result.isNewParagraph
         } else {
-            // Like Chinese text, don't need space between words if it is not a punctuation mark.
-            if languageManager.isLanguageWordsNeedSpace(language) {
-                joinedString = " "
-            }
+            // Handle non-indented text
+            let result = handleNonIndentedText(
+                observations: (current: current, previous: previous),
+                textContent: textContent,
+                context: context
+            )
+            needLineBreak = result.needLineBreak
+            isNewParagraph = result.isNewParagraph
         }
 
-        return joinedString
+        // Apply additional formatting rules
+        let finalResult = applyAdditionalFormattingRules(
+            formattingData: formattingData,
+            needLineBreak: needLineBreak,
+            isNewParagraph: isNewParagraph
+        )
+
+        return (finalResult.needLineBreak, finalResult.isNewParagraph)
+    }
+
+    /// Generate the final joined string based on formatting decisions
+    private func generateJoinedString(
+        needLineBreak: Bool,
+        isNewParagraph: Bool,
+        previousText: String
+    )
+        -> String {
+        if isNewParagraph {
+            return AppleOCRConstants.paragraphBreakText
+        } else if needLineBreak {
+            return AppleOCRConstants.lineBreakText
+        } else if previousText.hasPunctuationSuffix {
+            // If last char is a punctuation mark, append a space
+            return " "
+        } else {
+            // For languages that need spaces between words
+            if languageManager.isLanguageWordsNeedSpace(language) {
+                return " "
+            }
+            return ""
+        }
     }
 
     // MARK: - Private Helper Methods
@@ -891,7 +503,6 @@ extension AppleOCRTextMerger {
         let maxLength = ocrImage.size.width * maxLineLength / scaleFactor
         let difference = maxLength * dx
 
-        let singleAlphabetWidth = singleAlphabetWidthOfTextObservation(observation)
         return difference / singleAlphabetWidth
     }
 
@@ -921,20 +532,6 @@ extension AppleOCRTextMerger {
         }
 
         return alphabetCount
-    }
-
-    /// Calculate single character width for observation
-    /// - Parameter textObservation: Text observation to analyze
-    /// - Returns: Estimated width per character
-    private func singleAlphabetWidthOfTextObservation(
-        _ textObservation: VNRecognizedTextObservation
-    )
-        -> Double {
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width / scaleFactor
-
-        let textObservation = maxCharacterCountLineTextObservation ?? textObservation
-        return textWidth / textObservation.text.count.double
     }
 
     /// Check if observations contain equal-length Chinese text
@@ -1009,8 +606,7 @@ extension AppleOCRTextMerger {
     )
         -> Bool {
         // Simplified implementation based on threshold calculation
-        let alphabetCount = 1.5
-        let threshold = getThresholdWithAlphabetCount(alphabetCount, textObservation: current)
+        let threshold = singleAlphabetWidth * AppleOCRConstants.indentationCharacterCount
 
         let lineX = current.boundingBox.origin.x
         let prevLineX = previous.boundingBox.origin.x
@@ -1038,20 +634,6 @@ extension AppleOCRTextMerger {
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
         let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
         return fontSizeOfText(observation.text, width: textWidth)
-    }
-
-    /// Calculate threshold based on alphabet count and observation context
-    /// - Parameters:
-    ///   - alphabetCount: Number of characters to base calculation on
-    ///   - textObservation: Observation for context
-    /// - Returns: Calculated threshold value
-    private func getThresholdWithAlphabetCount(
-        _ alphabetCount: Double,
-        textObservation: VNRecognizedTextObservation
-    )
-        -> Double {
-        let singleAlphabetWidth = singleAlphabetWidthOfTextObservation(textObservation)
-        return alphabetCount * singleAlphabetWidth
     }
 
     /// Calculate font size based on text content and width
@@ -1108,5 +690,114 @@ extension AppleOCRTextMerger {
         languageManager.isChineseLanguage(language)
             && charCountPerLine < Double(AppleOCRConstants.shortPoetryCharacterCountOfLine)
             && text.count < AppleOCRConstants.shortPoetryCharacterCountOfLine
+    }
+
+    /// Handle text merging logic for non-indented text blocks
+    private func handleNonIndentedText(
+        observations: (current: VNRecognizedTextObservation, previous: VNRecognizedTextObservation),
+        textContent: TextContent,
+        context: TextAnalysisContext
+    )
+        -> (needLineBreak: Bool, isNewParagraph: Bool, specialJoinString: String?) {
+        var needLineBreak = false
+        var isNewParagraph = false
+
+        if context.hasPrevIndentation {
+            needLineBreak = true
+        }
+
+        if context.isBigLineSpacing {
+            if context.isPrevLongText {
+                if isPoetry {
+                    needLineBreak = true
+                } else {
+                    // Check for page turn scenarios
+                    let isTurnedPage =
+                        isEnglishLanguage() && textContent.currentText.isLowercaseFirstChar
+                            && !context.isPrevEndPunctuation
+                    if isTurnedPage {
+                        isNewParagraph = false
+                        needLineBreak = false
+                        return (needLineBreak, isNewParagraph, " ")
+                    } else {
+                        needLineBreak = true
+                    }
+                }
+            } else {
+                if context.isPrevEndPunctuation || context.hasPrevIndentation {
+                    isNewParagraph = true
+                } else {
+                    needLineBreak = true
+                }
+            }
+        } else {
+            if context.isPrevLongText {
+                if context.hasPrevIndentation {
+                    needLineBreak = false
+                }
+
+                // Chinese poetry special case
+                if context.isPrevEndPunctuation, textContent.currentText.hasEndPunctuationSuffix {
+                    needLineBreak = true
+
+                    // If language is English and current line first letter is NOT uppercase, do not need line break
+                    if isEnglishLanguage(), !textContent.currentText.isFirstLetterUpperCase {
+                        needLineBreak = false
+                    }
+                }
+            } else {
+                needLineBreak = true
+                if context.hasPrevIndentation, !context.isPrevEndPunctuation {
+                    isNewParagraph = true
+                }
+            }
+
+            if isPoetry {
+                needLineBreak = true
+            }
+        }
+
+        return (needLineBreak, isNewParagraph, nil)
+    }
+
+    /// Handle Chinese poetry formatting
+    private func handleChinesePoetry(
+        currentText: String,
+        previousText: String,
+        isEqualChineseText: Bool,
+        isBigLineSpacing: Bool
+    )
+        -> (shouldWrap: Bool, isNewParagraph: Bool) {
+        let isShortChinesePoetry = isShortChinesePoetryText(currentText)
+        let isPrevShortChinesePoetry = isShortChinesePoetryText(previousText)
+
+        let isChinesePoetryLine =
+            isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry)
+        let shouldWrap = isChinesePoetryLine
+        let isNewParagraph = shouldWrap && isBigLineSpacing
+
+        return (shouldWrap, isNewParagraph)
+    }
+
+    /// Handle list formatting
+    private func handleListFormatting(
+        isPrevList: Bool,
+        isList: Bool,
+        isBigLineSpacing: Bool
+    )
+        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+        if isPrevList {
+            if isList {
+                return (needLineBreak: true, isNewParagraph: isBigLineSpacing)
+            } else {
+                // List ends, next is new paragraph if big spacing
+                return (needLineBreak: false, isNewParagraph: isBigLineSpacing)
+            }
+        }
+        if isList {
+            // New list starts
+            return (needLineBreak: true, isNewParagraph: isBigLineSpacing)
+        }
+        return (needLineBreak: false, isNewParagraph: false)
     }
 }

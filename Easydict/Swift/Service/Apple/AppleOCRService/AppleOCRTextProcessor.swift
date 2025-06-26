@@ -29,7 +29,7 @@ public class AppleOCRTextProcessor: NSObject {
     public func setupOCRResult(
         _ ocrResult: EZOCRResult,
         observations: [VNRecognizedTextObservation],
-        ocrImage: NSImage?,
+        ocrImage: NSImage,
         intelligentJoined: Bool
     ) {
         self.ocrImage = ocrImage
@@ -73,7 +73,7 @@ public class AppleOCRTextProcessor: NSObject {
 
         // Update single alphabet width
         if let textObservation = maxCharacterCountLineTextObservation {
-            singleAlphabetWidth = textObservation.boundingBox.width / textObservation.text.count.double
+            singleAlphabetWidth = singleAlphabetWidthOfTextObservation(textObservation)
         }
         // Store final calculated values
         averageLineHeight = totalLineHeight / lineCount.double
@@ -110,7 +110,7 @@ public class AppleOCRTextProcessor: NSObject {
 
     // MARK: Private
 
-    private var ocrImage: NSImage?
+    private var ocrImage = NSImage()
     private var language: Language = .auto
     private var minLineHeight: Double = .greatestFiniteMagnitude
     private var totalLineHeight: Double = 0
@@ -129,6 +129,7 @@ public class AppleOCRTextProcessor: NSObject {
     private var maxLineLength: Double = 0
     private var minLineLength: Double = .greatestFiniteMagnitude
 
+    private var textObservations: [VNRecognizedTextObservation] = []
     private var maxLongLineTextObservation: VNRecognizedTextObservation?
     private var minXLineTextObservation: VNRecognizedTextObservation?
     private var maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
@@ -137,6 +138,24 @@ public class AppleOCRTextProcessor: NSObject {
     private var charCountPerLine: Double = 0
     private var totalCharCount: Int = 0
     private var punctuationMarkCount: Int = 0
+
+    /// Create OCR context for text merging operations
+    private func createOCRContext() -> OCRContext {
+        OCRContext(
+            ocrImage: ocrImage,
+            language: language,
+            isPoetry: isPoetry,
+            singleAlphabetWidth: singleAlphabetWidth,
+            charCountPerLine: charCountPerLine,
+            minLineHeight: minLineHeight,
+            averageLineHeight: averageLineHeight,
+            maxLineLength: maxLineLength,
+            textObservations: textObservations,
+            minXLineTextObservation: minXLineTextObservation,
+            maxCharacterCountLineTextObservation: maxCharacterCountLineTextObservation,
+            maxLongLineTextObservation: maxLongLineTextObservation
+        )
+    }
 
     // MARK: - Private Methods
 
@@ -383,8 +402,6 @@ public class AppleOCRTextProcessor: NSObject {
     }
 
     /// Perform intelligent text merging based on spatial relationships and context
-    /// - Parameter observations: Sorted array of text observations
-    /// - Returns: Merged text string with appropriate line breaks and spacing
     private func performIntelligentTextMerging(_ observations: [VNRecognizedTextObservation])
         -> String {
         let lineCount = observations.count
@@ -397,34 +414,17 @@ public class AppleOCRTextProcessor: NSObject {
             confidence += recognizedText?.confidence ?? 0
 
             let recognizedString = recognizedText?.string ?? ""
-            let boundingBox = textObservation.boundingBox
 
             print("\n\(textObservation)")
 
             if i > 0 {
                 let prevTextObservation = observations[i - 1]
-                let prevBoundingBox = prevTextObservation.boundingBox
 
-                // Calculate deltaY and deltaX as in original Objective-C code
-                let deltaY =
-                    prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height)
-                let deltaX =
-                    boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width)
-
-                // Determine if this is a new line (same logic as original)
-                var isNewLine = false
-                if deltaY > 0 {
-                    isNewLine = true
-                } else {
-                    if abs(deltaY) < minLineHeight / 2 {
-                        isNewLine = true
-                    }
-                }
-
-                // System deltaX is about 0.05. If the deltaX of two line is too large, it may be a new line.
-                if deltaX > 0.07 {
-                    isNewLine = true
-                }
+                // Determine if this is a new line
+                let isNewLine = isNewLineRelativeToPrevious(
+                    current: textObservation,
+                    previous: prevTextObservation
+                )
 
                 var joinedString: String
 
@@ -450,20 +450,9 @@ public class AppleOCRTextProcessor: NSObject {
                         }
                     }
                 } else if isNewLine {
-                    // Create text merger with current statistics
-                    let textMerger = AppleOCRTextMerger(
-                        language: language,
-                        isPoetry: isPoetry,
-                        minLineHeight: minLineHeight,
-                        averageLineHeight: averageLineHeight,
-                        maxLongLineTextObservation: maxLongLineTextObservation,
-                        minXLineTextObservation: minXLineTextObservation,
-                        maxCharacterCountLineTextObservation: maxCharacterCountLineTextObservation,
-                        maxLineLength: maxLineLength,
-                        charCountPerLine: charCountPerLine,
-                        ocrImage: ocrImage ?? NSImage(),
-                        languageManager: EZLanguageManager.shared()
-                    )
+                    // Create text merger with OCR context
+                    let context = createOCRContext()
+                    let textMerger = AppleOCRTextMerger(context: context)
 
                     joinedString = textMerger.joinedStringOfTextObservation(
                         current: textObservation,
@@ -629,5 +618,55 @@ public class AppleOCRTextProcessor: NSObject {
             joinedString,
             .OBJC_ASSOCIATION_COPY_NONATOMIC
         )
+    }
+
+    /// Calculate single character width for observation
+    /// - Parameter textObservation: Text observation to analyze
+    /// - Returns: Estimated width per character
+    private func singleAlphabetWidthOfTextObservation(
+        _ textObservation: VNRecognizedTextObservation
+    )
+        -> Double {
+        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
+        let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width / scaleFactor
+        return textWidth / textObservation.text.count.double
+    }
+
+    /// Determine if current observation represents a new line relative to previous observation
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    /// - Returns: True if current observation is on a new line
+    private func isNewLineRelativeToPrevious(
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation
+    )
+        -> Bool {
+        let currentBoundingBox = current.boundingBox
+        let previousBoundingBox = previous.boundingBox
+
+        let deltaY =
+            previousBoundingBox.origin.y
+                - (currentBoundingBox.origin.y + currentBoundingBox.size.height)
+        let deltaX =
+            currentBoundingBox.origin.x
+                - (previousBoundingBox.origin.x + previousBoundingBox.size.width)
+
+        var isNewLine = false
+
+        // Check Y coordinate for new line
+        if deltaY > 0 {
+            isNewLine = true
+        } else if abs(deltaY) < minLineHeight / 2 {
+            // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
+            isNewLine = true
+        }
+
+        // Check X coordinate gap for line detection
+        if deltaX > 0.07 {
+            isNewLine = true
+        }
+
+        return isNewLine
     }
 }

@@ -49,13 +49,45 @@ extension String {
 
     /// Check if text represents a list item based on common list markers
     var isListTypeFirstWord: Bool {
-        let listPatterns = [
-            "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "•", "-", "*", "a.", "b.", "c.",
-        ]
         let trimmedText = trimmingCharacters(in: .whitespaces)
+        guard !trimmedText.isEmpty else { return false }
 
-        for pattern in listPatterns where trimmedText.hasPrefix(pattern) {
-            return true
+        // Use regex to match various list patterns
+        let patterns = [
+            "^\\d+\\.", // 1. 2. 3. etc.
+            "^\\d+\\)", // 1) 2) 3) etc.
+            "^[a-z]\\.", // a. b. c. etc.
+            "^[A-Z]\\.", // A. B. C. etc.
+            "^[a-z]\\)", // a) b) c) etc.
+            "^[A-Z]\\)", // A) B) C) etc.
+            "^[ivxlcdm]+\\.", // i. ii. iii. iv. v. etc. (Roman numerals)
+            "^[IVXLCDM]+\\.", // I. II. III. IV. V. etc. (Roman numerals)
+            "^•", // Bullet point
+            "^-", // Dash
+            "^\\*", // Asterisk
+            "^§", // Section symbol
+            "^¶", // Paragraph symbol
+            "^►", // Arrow bullet
+            "^▪", // Square bullet
+            "^▫", // Hollow square bullet
+            "^○", // Circle bullet
+            "^●", // Filled circle bullet
+            "^◦", // Small circle bullet
+            "^◾", // Black medium small square
+            "^◽", // White medium small square
+        ]
+
+        for pattern in patterns {
+            do {
+                let regex = try NSRegularExpression(pattern: pattern, options: [])
+                let range = NSRange(location: 0, length: trimmedText.utf16.count)
+                if regex.firstMatch(in: trimmedText, options: [], range: range) != nil {
+                    return true
+                }
+            } catch {
+                // If regex compilation fails, continue to next pattern
+                continue
+            }
         }
 
         return false
