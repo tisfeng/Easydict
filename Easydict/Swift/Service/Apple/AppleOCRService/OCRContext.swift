@@ -27,6 +27,30 @@ struct OCRContext {
     let maxLongLineTextObservation: VNRecognizedTextObservation?
 }
 
+// MARK: - FormattingData
+
+/// Comprehensive formatting data that includes all context needed for text merging
+struct FormattingData {
+    let current: VNRecognizedTextObservation
+    let previous: VNRecognizedTextObservation
+
+    // Text analysis properties
+    let isPrevEndPunctuation: Bool
+    let isPrevLongText: Bool
+    let hasIndentation: Bool
+    let hasPrevIndentation: Bool
+    let isBigLineSpacing: Bool
+
+    // Specific formatting flags
+    let isEqualChineseText: Bool
+    let isPrevList: Bool
+    let isList: Bool
+
+    // Computed text properties for convenience
+    var currentText: String { current.text }
+    var previousText: String { previous.text }
+}
+
 // MARK: - TextAnalysisContext
 
 /// Encapsulates text analysis properties for break type determination
@@ -36,33 +60,4 @@ struct TextAnalysisContext {
     let hasIndentation: Bool
     let hasPrevIndentation: Bool
     let isBigLineSpacing: Bool
-}
-
-// MARK: - TextObservations
-
-struct TextObservations {
-    let previousTextObservation: VNRecognizedTextObservation
-    let currentTextObservation: VNRecognizedTextObservation
-    let nextTextObservation: VNRecognizedTextObservation?
-}
-
-// MARK: - TextContent
-
-/// Contains text content for analysis operations
-struct TextContent {
-    let previousText: String
-    let currentText: String
-}
-
-// MARK: - FormattingData
-
-/// Encapsulates formatting data to reduce parameter count
-struct FormattingData {
-    let current: VNRecognizedTextObservation
-    let previous: VNRecognizedTextObservation
-    let context: TextAnalysisContext
-    let textContent: TextContent
-    let isEqualChineseText: Bool
-    let isPrevList: Bool
-    let isList: Bool
 }
