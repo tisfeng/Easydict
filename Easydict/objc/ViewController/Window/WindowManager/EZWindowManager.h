@@ -34,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// The last point of mouse click, used for record the last point of mouse click.
 @property (nonatomic, assign) CGPoint lastPoint;
 
+/// The screen frame when the floating window should be shown.
+@property (nonatomic) CGRect screenVisibleFrame;
+
 + (instancetype)shared;
 
 

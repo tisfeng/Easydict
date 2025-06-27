@@ -31,7 +31,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 
 @property (nonatomic, assign) BOOL canRetryFetchHost;
 
-@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *langaugeVoices;
+@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *languageVoices;
 
 @end
 
@@ -63,7 +63,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 }
 
 
-+ (MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *)langaugeVoices {
++ (MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *)languageVoices {
     static MMOrderedDictionary *allLanguageVoices;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -481,7 +481,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                            accent:(NSString * _Nullable)accent {
     NSString *voiceRate = @"-10%"; // bing web is -20%
 
-    EZBingLanguageVoice *languageVoice = [[EZBingRequest langaugeVoices] objectForKey:language];
+    EZBingLanguageVoice *languageVoice = [[EZBingRequest languageVoices] objectForKey:language];
 
     /**
      !!!: We need to hanle xml speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters

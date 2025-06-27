@@ -6470,6 +6470,62 @@
         }
       }
     },
+    "setting.advance.window.max_height_percentage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window Maximum Height Percentage"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximálne percento výšky okna"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口最大高度百分比"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口最大高度百分比"
+          }
+        }
+      }
+    },
+    "setting.advance.window.mini_window_position" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini Window Position"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozícia mini okna"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "迷你窗口位置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "迷你視窗位置"
+          }
+        }
+      }
+    },
     "setting.advance.window.mouse_select_translate_window_type" : {
       "localizations" : {
         "en" : {
@@ -7065,7 +7121,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Query Langauge"
+            "value" : "Query Language"
           }
         },
         "sk" : {
