@@ -25,8 +25,3 @@ extension Double {
         String(format: "%.0f", self)
     }
 }
-
-extension Double {
-    var cgFloat: CGFloat { CGFloat(self) }
-    var float: Float { Float(self) }
-}

@@ -29,7 +29,7 @@ struct OCRContext {
 
 // MARK: - OCRLineContext
 
-/// Comprehensive OCR formatting data that includes all context needed for text merging
+/// Comprehensive OCR line context data for text merging
 struct OCRLineContext {
     let current: VNRecognizedTextObservation
     let previous: VNRecognizedTextObservation
@@ -53,7 +53,7 @@ struct OCRLineContext {
 
 // MARK: - OCRConstants
 
-/// Constants used for Apple OCR text processing
+/// Constants used for OCR text processing
 enum OCRConstants {
     static let lineBreakText = "\n"
     static let paragraphBreakText = "\n\n"

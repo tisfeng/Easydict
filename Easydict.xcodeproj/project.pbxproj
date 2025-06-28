@@ -23,7 +23,7 @@
 		030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */; };
-		031760EB2E065EF500CE8FD7 /* AppleOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */; };
+		031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */; };
 		031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */; };
 		031760F32E07FB2800CE8FD7 /* AppleSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */; };
 		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
@@ -65,8 +65,7 @@
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
-		035166F72E0C0FDB004C65BB /* Float+ToCGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */; };
-		035166F92E0C0FF9004C65BB /* Int+ToCGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */; };
+		035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */; };
 		0352AF2F2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF2C2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift */; };
 		0352AF332E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF322E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift */; };
 		0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */; };
@@ -446,7 +445,7 @@
 		030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Request.swift"; sourceTree = "<group>"; };
-		031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCRService.swift; sourceTree = "<group>"; };
+		031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCREngine.swift; sourceTree = "<group>"; };
 		031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+ToCGImage.swift"; sourceTree = "<group>"; };
 		031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetector.swift; sourceTree = "<group>"; };
 		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
@@ -500,8 +499,7 @@
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
 		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
-		035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ToCGFloat.swift"; sourceTree = "<group>"; };
-		035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToCGFloat.swift"; sourceTree = "<group>"; };
+		035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToDouble.swift"; sourceTree = "<group>"; };
 		0352AF2C2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextAnalyzer.swift; sourceTree = "<group>"; };
 		0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDashHandler.swift; sourceTree = "<group>"; };
 		0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRPoetryDetector.swift; sourceTree = "<group>"; };
@@ -1120,10 +1118,10 @@
 			path = Others;
 			sourceTree = "<group>";
 		};
-		031760E92E065DB300CE8FD7 /* AppleOCRService */ = {
+		031760E92E065DB300CE8FD7 /* AppleOCREngine */ = {
 			isa = PBXGroup;
 			children = (
-				031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */,
+				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
 				03F19D7D2E090F390046C6F2 /* AppleOCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* AppleOCRTextMerger.swift */,
 				0352AF2C2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift */,
@@ -1133,7 +1131,7 @@
 				03B17E912E0D30560017350E /* OCRContext.swift */,
 				03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */,
 			);
-			path = AppleOCRService;
+			path = AppleOCREngine;
 			sourceTree = "<group>";
 		};
 		031760EC2E06B99200CE8FD7 /* Image */ = {
@@ -1316,17 +1314,9 @@
 		035166F42E0C0FB8004C65BB /* Int */ = {
 			isa = PBXGroup;
 			children = (
-				035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */,
+				035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */,
 			);
 			path = Int;
-			sourceTree = "<group>";
-		};
-		035166F52E0C0FBF004C65BB /* Float */ = {
-			isa = PBXGroup;
-			children = (
-				035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */,
-			);
-			path = Float;
 			sourceTree = "<group>";
 		};
 		03538DF72D265301005E56A8 /* DictJSONExample */ = {
@@ -1431,7 +1421,7 @@
 				03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */,
 				031760F02E07FB2800CE8FD7 /* AppleLanguageDetector */,
 				031760F22E07FB2800CE8FD7 /* AppleSpeechService */,
-				031760E92E065DB300CE8FD7 /* AppleOCRService */,
+				031760E92E065DB300CE8FD7 /* AppleOCREngine */,
 				039785272CC678F400A49087 /* TranslationService */,
 			);
 			path = Apple;
@@ -2838,7 +2828,6 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				035166F52E0C0FBF004C65BB /* Float */,
 				035166F42E0C0FB8004C65BB /* Int */,
 				031760EC2E06B99200CE8FD7 /* Image */,
 				03F086F32DB21EAD00268DF0 /* Double */,
@@ -3331,7 +3320,7 @@
 				03779F132BB256B5008D3C42 /* APIKey.swift in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
-				031760EB2E065EF500CE8FD7 /* AppleOCRService.swift in Sources */,
+				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
@@ -3344,7 +3333,7 @@
 				0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
-				035166F92E0C0FF9004C65BB /* Int+ToCGFloat.swift in Sources */,
+				035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */,
 				62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */,
 				EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */,
 				036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */,
@@ -3395,7 +3384,6 @@
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
 				03F19D802E0938D70046C6F2 /* AppleOCRTextMerger.swift in Sources */,
-				035166F72E0C0FDB004C65BB /* Float+ToCGFloat.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,

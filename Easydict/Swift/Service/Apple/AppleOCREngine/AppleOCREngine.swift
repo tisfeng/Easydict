@@ -1,5 +1,5 @@
 //
-//  AppleOCRService.swift
+//  AppleOCREngine.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/21.
@@ -10,15 +10,13 @@ import CoreImage
 import Foundation
 import Vision
 
-// MARK: - AppleOCRService
+// MARK: - AppleOCREngine
 
-@objc
-public class AppleOCRService: NSObject {
-    // MARK: Public
+public class AppleOCREngine {
+    // MARK: Internal
 
     /// Main OCR method that processes image and returns complete OCR result
-    @objc
-    public func performOCR(
+    func performOCR(
         image: NSImage,
         language: Language,
         autoDetect: Bool,
@@ -33,9 +31,9 @@ public class AppleOCRService: NSObject {
         }
 
         ocr(cgImage: cgImage) { [weak self] observations, error in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            if let error = error {
+            if let error {
                 completion(nil, error)
                 return
             }
@@ -44,7 +42,7 @@ public class AppleOCRService: NSObject {
             let ocrResult = EZOCRResult()
             ocrResult.from = language
 
-            if observations.isEmpty {
+            guard !observations.isEmpty else {
                 let emptyError = QueryError.error(type: .noResult, message: "OCR result is empty")
                 completion(ocrResult, emptyError)
                 return
@@ -62,8 +60,7 @@ public class AppleOCRService: NSObject {
     }
 
     /// Use Vision to perform OCR on the CGImage.
-    @objc
-    public func ocr(
+    func ocr(
         cgImage: CGImage,
         completionHandler: @escaping ([VNRecognizedTextObservation], Error?) -> ()
     ) {
@@ -71,21 +68,16 @@ public class AppleOCRService: NSObject {
     }
 
     /// Async version for Swift usage - returns string
-    @objc
-    public func ocrAsync(cgImage: CGImage) async throws -> String {
+    func ocrAsync(cgImage: CGImage) async throws -> String {
         let observations = try await ocr(cgImage: cgImage)
-        let recognizedTexts = observations.compactMap { observation in
-            observation.text
-        }
+        let recognizedTexts = observations.compactMap(\.text)
         return recognizedTexts.joined(separator: "\n")
     }
 
     /// Async version for Swift usage - returns observations
-    public func ocr(cgImage: CGImage) async throws -> [VNRecognizedTextObservation] {
+    func ocr(cgImage: CGImage) async throws -> [VNRecognizedTextObservation] {
         try await performOCRAsync(on: cgImage)
     }
-
-    // MARK: Internal
 
     /// Create CGImage from image data
     func createCGImage(from imageData: Data) -> CGImage? {
@@ -158,7 +150,7 @@ public class AppleOCRService: NSObject {
     private func performOCRAsync(on cgImage: CGImage) async throws -> [VNRecognizedTextObservation] {
         try await withCheckedThrowingContinuation { continuation in
             performOCR(on: cgImage) { observations, error in
-                if let error = error {
+                if let error {
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: observations)

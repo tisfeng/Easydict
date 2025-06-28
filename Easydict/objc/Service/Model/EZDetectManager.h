@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZDetectManager : NSObject
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
-//@property (nonatomic, strong) EZAppleService *appleService;
 @property (nonatomic, strong) EZQueryService *ocrService;
 
 + (instancetype)managerWithModel:(EZQueryModel *)model;

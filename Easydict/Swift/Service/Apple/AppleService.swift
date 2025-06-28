@@ -71,7 +71,7 @@ public class AppleService: QueryService {
         let language = queryModel.queryFromLanguage
         let autoDetect = language == .auto
 
-        ocrService.performOCR(
+        ocrEnginee.performOCR(
             image: image,
             language: language,
             autoDetect: autoDetect,
@@ -86,7 +86,7 @@ public class AppleService: QueryService {
 
     /// Async version for Swift usage
     public func ocrAsync(cgImage: CGImage) async throws -> String {
-        try await ocrService.ocrAsync(cgImage: cgImage)
+        try await ocrEnginee.ocrAsync(cgImage: cgImage)
     }
 
     /// Async translation method
@@ -202,7 +202,7 @@ public class AppleService: QueryService {
 
     // MARK: Private
 
-    private let ocrService = AppleOCRService()
+    private let ocrEnginee = AppleOCREngine()
     private let languageMapper = AppleLanguageMapper.shared
     private let languageDetector = AppleLanguageDetector()
     private let speechService = AppleSpeechService()

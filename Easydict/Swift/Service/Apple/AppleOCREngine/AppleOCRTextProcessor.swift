@@ -13,13 +13,11 @@ import Vision
 
 /// Main OCR text processing coordinator that handles the complete OCR text processing pipeline
 /// Ported from EZAppleService setupOCRResult method
-@objc
-public class AppleOCRTextProcessor: NSObject {
-    // MARK: Public
+public class AppleOCRTextProcessor {
+    // MARK: Internal
 
     /// Process OCR observations into structured result with intelligent text merging
-    @objc
-    public func setupOCRResult(
+    func setupOCRResult(
         _ ocrResult: EZOCRResult,
         observations: [VNRecognizedTextObservation],
         ocrImage: NSImage,
@@ -33,9 +31,7 @@ public class AppleOCRTextProcessor: NSObject {
 
         print("\nTextObservations: \(observations.formattedDescription)")
 
-        let recognizedTexts = observations.compactMap { observation in
-            observation.text
-        }
+        let recognizedTexts = observations.compactMap(\.text)
 
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
@@ -46,19 +42,16 @@ public class AppleOCRTextProcessor: NSObject {
         calculateConfidence(ocrResult, observations: observations)
 
         // If intelligent joining is not enabled, return simple result
-        if !intelligentJoined {
-            return
-        }
+        guard intelligentJoined else { return }
 
         let lineCount = observations.count
         var lineSpacingCount = 0
 
         // Calculate line statistics
-        for i in 0 ..< lineCount {
-            let textObservation = observations[i]
+        for (index, textObservation) in observations.enumerated() {
             statisticsCalculator.calculateLineStatistics(
                 textObservation,
-                index: i,
+                index: index,
                 observations: observations,
                 lineSpacingCount: &lineSpacingCount
             )
@@ -109,9 +102,9 @@ public class AppleOCRTextProcessor: NSObject {
 
     private var ocrImage = NSImage()
     private var language: Language = .auto
-    private var languageManager = EZLanguageManager.shared()
+    private let languageManager = EZLanguageManager.shared()
 
-    // Helper components - these replace the previous OCRTextProcessor
+    // Helper components
     private let statisticsCalculator = OCRStatisticsCalculator()
     private let poetryDetector = OCRPoetryDetector()
     private let dashHandler = OCRDashHandler()
@@ -140,14 +133,16 @@ public class AppleOCRTextProcessor: NSObject {
         _ ocrResult: EZOCRResult,
         observations: [VNRecognizedTextObservation]
     ) {
-        if !observations.isEmpty {
-            let totalConfidence = observations.compactMap { observation in
-                observation.topCandidates(1).first?.confidence
-            }.reduce(0, +)
-            ocrResult.confidence = CGFloat(totalConfidence / Float(observations.count))
-        } else {
+        guard !observations.isEmpty else {
             ocrResult.confidence = 0.0
+            return
         }
+
+        let totalConfidence =
+            observations
+                .compactMap { $0.topCandidates(1).first?.confidence }
+                .reduce(0, +)
+        ocrResult.confidence = CGFloat(totalConfidence / Float(observations.count))
     }
 
     /// Sort text observations by vertical position (top to bottom)
@@ -160,32 +155,23 @@ public class AppleOCRTextProcessor: NSObject {
             let y1 = boundingBox1.origin.y
             let y2 = boundingBox2.origin.y
 
-            if y2 - y1 > statisticsCalculator.minLineHeight * 0.8 {
-                return false // obj2 > obj1
-            } else {
-                return true
-            }
+            return y2 - y1 <= statisticsCalculator.minLineHeight * 0.8
         }
     }
 
     /// Perform intelligent text merging based on spatial relationships and context
     private func performIntelligentTextMerging(_ observations: [VNRecognizedTextObservation])
         -> String {
-        let lineCount = observations.count
-        var confidence: Float = 0
-        let mergedText = NSMutableString()
+        var mergedText = ""
 
-        for i in 0 ..< lineCount {
-            let textObservation = observations[i]
+        for (index, textObservation) in observations.enumerated() {
             let recognizedText = textObservation.topCandidates(1).first
-            confidence += recognizedText?.confidence ?? 0
-
             let recognizedString = recognizedText?.string ?? ""
 
             print("\n\(textObservation)")
 
-            if i > 0 {
-                let prevTextObservation = observations[i - 1]
+            if index > 0 {
+                let prevTextObservation = observations[index - 1]
 
                 // Determine if this is a new line
                 let isNewLine = isNewLineRelativeToPrevious(
@@ -210,12 +196,8 @@ public class AppleOCRTextProcessor: NSObject {
                         current: textObservation,
                         previous: prevTextObservation
                     )
-                    if isNeedRemoveLastDashOfText {
-                        if mergedText.length > 0 {
-                            mergedText.deleteCharacters(
-                                in: NSRange(location: mergedText.length - 1, length: 1)
-                            )
-                        }
+                    if isNeedRemoveLastDashOfText, !mergedText.isEmpty {
+                        mergedText.removeLast()
                     }
                 } else if isNewLine {
                     // Create text merger with OCR context
@@ -234,17 +216,15 @@ public class AppleOCRTextProcessor: NSObject {
                 setJoinedString(for: textObservation, joinedString: joinedString)
 
                 // 1. append joined string
-                mergedText.append(joinedString)
+                mergedText += joinedString
             }
 
             // 2. append line text
-            mergedText.append(recognizedString)
+            mergedText += recognizedString
         }
 
         // Apply final text processing
-        return replaceSimilarDotSymbol(in: mergedText as String).trimmingCharacters(
-            in: .whitespacesAndNewlines
-        )
+        return replaceSimilarDotSymbol(in: mergedText).trim()
     }
 
     /// Replace similar dot symbols with standardized middle dot character
@@ -279,22 +259,16 @@ public class AppleOCRTextProcessor: NSObject {
             currentBoundingBox.origin.x
                 - (previousBoundingBox.origin.x + previousBoundingBox.size.width)
 
-        var isNewLine = false
-
         // Check Y coordinate for new line
         if deltaY > 0 {
-            isNewLine = true
+            return true
         } else if abs(deltaY) < statisticsCalculator.minLineHeight / 2 {
             // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
-            isNewLine = true
+            return true
         }
 
         // Check X coordinate gap for line detection
-        if deltaX > 0.07 {
-            isNewLine = true
-        }
-
-        return isNewLine
+        return deltaX > 0.07
     }
 
     /// Store joined string in text observation using associated objects

@@ -1,5 +1,5 @@
 //
-//  Int+ToCGFloat.swift
+//  Int+ToDouble.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/25.
@@ -9,7 +9,5 @@
 import Foundation
 
 extension Int {
-    var cgFloat: CGFloat { CGFloat(self) }
-    var float: Float { Float(self) }
     var double: Double { Double(self) }
 }
