@@ -37,11 +37,11 @@ class AppleOCRTextMerger {
     )
         -> String {
         // Create comprehensive formatting data
-        let formattingData = prepareFormattingData(current: current, previous: previous)
+        let lineContext = prepareLineContext(current: current, previous: previous)
 
         // Determine line break and paragraph decisions
         let (needLineBreak, isNewParagraph) = determineLineBreakAndParagraph(
-            formattingData: formattingData
+            lineContext: lineContext
         )
 
         // Generate final joined string
@@ -67,8 +67,8 @@ class AppleOCRTextMerger {
         languageManager.isEnglishLanguage(language)
     }
 
-    /// Prepare comprehensive formatting data for text analysis
-    private func prepareFormattingData(
+    /// Prepare comprehensive line context for text merging
+    private func prepareLineContext(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation
     )
@@ -98,27 +98,27 @@ class AppleOCRTextMerger {
 
     /// Determine if line break and paragraph break are needed
     private func determineLineBreakAndParagraph(
-        formattingData: OCRLineContext
+        lineContext: OCRLineContext
     )
         -> (needLineBreak: Bool, isNewParagraph: Bool) {
         var needLineBreak = false
         var isNewParagraph = false
 
         // Handle indented text
-        if formattingData.hasIndentation {
-            let result = handleIndentedText(formattingData: formattingData)
+        if lineContext.hasIndentation {
+            let result = handleIndentedText(lineContext: lineContext)
             needLineBreak = result.needLineBreak
             isNewParagraph = result.isNewParagraph
         } else {
             // Handle non-indented text
-            let result = handleNonIndentedText(formattingData: formattingData)
+            let result = handleNonIndentedText(lineContext: lineContext)
             needLineBreak = result.needLineBreak
             isNewParagraph = result.isNewParagraph
         }
 
         // Apply additional formatting rules
         let finalResult = applyAdditionalFormattingRules(
-            formattingData: formattingData,
+            lineContext: lineContext,
             needLineBreak: needLineBreak,
             isNewParagraph: isNewParagraph
         )
@@ -151,7 +151,7 @@ class AppleOCRTextMerger {
 
     /// Apply additional formatting rules for special cases
     private func applyAdditionalFormattingRules(
-        formattingData: OCRLineContext,
+        lineContext: OCRLineContext,
         needLineBreak: Bool,
         isNewParagraph: Bool
     )
@@ -161,27 +161,27 @@ class AppleOCRTextMerger {
 
         // Font size and spacing checks
         let isEqualFontSize = analyzer.checkEqualFontSize(
-            current: formattingData.current,
-            previous: formattingData.previous
+            current: lineContext.current,
+            previous: lineContext.previous
         )
-        let isFirstLetterUpperCase = formattingData.currentText.isFirstLetterUpperCase
+        let isFirstLetterUpperCase = lineContext.currentText.isFirstLetterUpperCase
 
-        if !isEqualFontSize || formattingData.isBigLineSpacing {
-            if !formattingData.isPrevLongText || (isEnglishLanguage() && isFirstLetterUpperCase) {
+        if !isEqualFontSize || lineContext.isBigLineSpacing {
+            if !lineContext.isPrevLongText || (isEnglishLanguage() && isFirstLetterUpperCase) {
                 finalIsNewParagraph = true
             }
         }
 
-        if formattingData.isBigLineSpacing, isFirstLetterUpperCase {
+        if lineContext.isBigLineSpacing, isFirstLetterUpperCase {
             finalIsNewParagraph = true
         }
 
         // Chinese poetry handling
         let poetryResult = analyzer.handleChinesePoetry(
-            currentText: formattingData.currentText,
-            previousText: formattingData.previousText,
-            isEqualChineseText: formattingData.isEqualChineseText,
-            isBigLineSpacing: formattingData.isBigLineSpacing
+            currentText: lineContext.currentText,
+            previousText: lineContext.previousText,
+            isEqualChineseText: lineContext.isEqualChineseText,
+            isBigLineSpacing: lineContext.isBigLineSpacing
         )
         if poetryResult.shouldWrap {
             finalNeedLineBreak = true
@@ -192,9 +192,9 @@ class AppleOCRTextMerger {
 
         // List handling
         let listResult = analyzer.handleListFormatting(
-            isPrevList: formattingData.isPrevList,
-            isList: formattingData.isList,
-            isBigLineSpacing: formattingData.isBigLineSpacing
+            isPrevList: lineContext.isPrevList,
+            isList: lineContext.isList,
+            isBigLineSpacing: lineContext.isBigLineSpacing
         )
         if listResult.needLineBreak {
             finalNeedLineBreak = true
@@ -208,30 +208,30 @@ class AppleOCRTextMerger {
 
     /// Handle text merging logic for indented text blocks
     private func handleIndentedText(
-        formattingData: OCRLineContext
+        lineContext: OCRLineContext
     )
         -> (needLineBreak: Bool, isNewParagraph: Bool) {
         var needLineBreak = false
         var isNewParagraph = false
 
         let isEqualX = isEqualXOfTextObservation(
-            current: formattingData.current,
-            previous: formattingData.previous
+            current: lineContext.current,
+            previous: lineContext.previous
         )
-        let lineX = formattingData.current.boundingBox.minX
-        let prevLineX = formattingData.previous.boundingBox.minX
+        let lineX = lineContext.current.boundingBox.minX
+        let prevLineX = lineContext.previous.boundingBox.minX
         let dx = lineX - prevLineX
 
-        if formattingData.hasPrevIndentation {
-            if formattingData.isBigLineSpacing,
-               !formattingData.isPrevLongText,
-               !formattingData.isPrevList,
-               !formattingData.isList {
+        if lineContext.hasPrevIndentation {
+            if lineContext.isBigLineSpacing,
+               !lineContext.isPrevLongText,
+               !lineContext.isPrevList,
+               !lineContext.isList {
                 isNewParagraph = true
             }
 
             // Check for short line conditions
-            let prevLineLength = formattingData.previous.boundingBox.width
+            let prevLineLength = lineContext.previous.boundingBox.width
             let isPrevLessHalfShortLine = analyzer.isShortLineLength(
                 prevLineLength, maxLineLength: context.maxLineLength, lessRateOfMaxLength: 0.5
             )
@@ -239,8 +239,8 @@ class AppleOCRTextMerger {
                 prevLineLength, maxLineLength: context.maxLineLength, lessRateOfMaxLength: 0.85
             )
 
-            let lineMaxX = formattingData.current.boundingBox.maxX
-            let prevLineMaxX = formattingData.previous.boundingBox.maxX
+            let lineMaxX = lineContext.current.boundingBox.maxX
+            let prevLineMaxX = lineContext.previous.boundingBox.maxX
             let isEqualLineMaxX = isRatioGreaterThan(
                 0.95, value1: lineMaxX, value2: prevLineMaxX
             )
@@ -251,11 +251,11 @@ class AppleOCRTextMerger {
                 if isPrevLessHalfShortLine {
                     needLineBreak = true
                 } else {
-                    needLineBreak = formattingData.isEqualChineseText
+                    needLineBreak = lineContext.isEqualChineseText
                 }
             } else {
-                if formattingData.isPrevLongText {
-                    if formattingData.isPrevEndPunctuation {
+                if lineContext.isPrevLongText {
+                    if lineContext.isPrevEndPunctuation {
                         needLineBreak = true
                     } else {
                         if !isEqualX, dx < 0 {
@@ -265,8 +265,8 @@ class AppleOCRTextMerger {
                         }
                     }
                 } else {
-                    if formattingData.isPrevEndPunctuation {
-                        if !isEqualX, !formattingData.isList {
+                    if lineContext.isPrevEndPunctuation {
+                        if !isEqualX, !lineContext.isList {
                             isNewParagraph = true
                         } else {
                             needLineBreak = true
@@ -278,12 +278,12 @@ class AppleOCRTextMerger {
             }
         } else {
             // Sometimes hasIndentation is a mistake, when prev line is long
-            if formattingData.isPrevLongText {
+            if lineContext.isPrevLongText {
                 let isEqualFontSize = analyzer.checkEqualFontSize(
-                    current: formattingData.current,
-                    previous: formattingData.previous
+                    current: lineContext.current,
+                    previous: lineContext.previous
                 )
-                if formattingData.isPrevEndPunctuation || !isEqualFontSize {
+                if lineContext.isPrevEndPunctuation || !isEqualFontSize {
                     isNewParagraph = true
                 } else {
                     needLineBreak = !(dx > 0 && !isEqualX)
@@ -298,53 +298,53 @@ class AppleOCRTextMerger {
 
     /// Handle text merging logic for non-indented text blocks
     private func handleNonIndentedText(
-        formattingData: OCRLineContext
+        lineContext: OCRLineContext
     )
         -> (needLineBreak: Bool, isNewParagraph: Bool) {
         var needLineBreak = false
         var isNewParagraph = false
 
-        if formattingData.hasPrevIndentation {
+        if lineContext.hasPrevIndentation {
             needLineBreak = true
         }
 
-        if formattingData.isBigLineSpacing {
-            if formattingData.isPrevLongText {
+        if lineContext.isBigLineSpacing {
+            if lineContext.isPrevLongText {
                 if isPoetry {
                     needLineBreak = true
                 } else {
                     // Check for page turn scenarios
                     let isTurnedPage =
-                        isEnglishLanguage() && formattingData.currentText.isLowercaseFirstChar
-                            && !formattingData.isPrevEndPunctuation
+                        isEnglishLanguage() && lineContext.currentText.isLowercaseFirstChar
+                            && !lineContext.isPrevEndPunctuation
                     if !isTurnedPage {
                         needLineBreak = true
                     }
                 }
             } else {
-                if formattingData.isPrevEndPunctuation || formattingData.hasPrevIndentation {
+                if lineContext.isPrevEndPunctuation || lineContext.hasPrevIndentation {
                     isNewParagraph = true
                 } else {
                     needLineBreak = true
                 }
             }
         } else {
-            if formattingData.isPrevLongText {
-                if !formattingData.hasPrevIndentation {
+            if lineContext.isPrevLongText {
+                if !lineContext.hasPrevIndentation {
                     // Chinese poetry special case
-                    if formattingData.isPrevEndPunctuation,
-                       formattingData.currentText.hasEndPunctuationSuffix {
+                    if lineContext.isPrevEndPunctuation,
+                       lineContext.currentText.hasEndPunctuationSuffix {
                         needLineBreak = true
 
                         // If language is English and current line first letter is NOT uppercase, do not need line break
-                        if isEnglishLanguage(), !formattingData.currentText.isFirstLetterUpperCase {
+                        if isEnglishLanguage(), !lineContext.currentText.isFirstLetterUpperCase {
                             needLineBreak = false
                         }
                     }
                 }
             } else {
                 needLineBreak = true
-                if formattingData.hasPrevIndentation, !formattingData.isPrevEndPunctuation {
+                if lineContext.hasPrevIndentation, !lineContext.isPrevEndPunctuation {
                     isNewParagraph = true
                 }
             }

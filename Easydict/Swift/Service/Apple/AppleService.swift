@@ -69,7 +69,7 @@ public class AppleService: QueryService {
         let language = queryModel.queryFromLanguage
 
         ocrEnginee.recognizeText(
-            from: image,
+            image: image,
             language: language,
             completion: completion
         )

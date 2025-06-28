@@ -17,22 +17,17 @@ public class AppleOCREngine {
 
     /// Main OCR method that processes image and returns complete OCR result
     func recognizeText(
-        from image: NSImage,
+        image: NSImage,
         language: Language,
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
         guard let cgImage = image.toCGImage() else {
-            let error = QueryError.error(
-                type: .parameter, message: "Failed to convert NSImage to CGImage"
-            )
+            let error = QueryError.error(type: .parameter, message: "Failed to convert NSImage to CGImage")
             completion(nil, error)
             return
         }
 
-        recognizeTextFromCGImage(
-            cgImage: cgImage,
-            language: language
-        ) { [weak self] observations, error in
+        recognizeTextFromCGImage(cgImage: cgImage, language: language) { [weak self] observations, error in
             guard let self else { return }
 
             if let error {
