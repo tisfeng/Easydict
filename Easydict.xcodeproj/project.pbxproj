@@ -67,6 +67,10 @@
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
 		035166F72E0C0FDB004C65BB /* Float+ToCGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */; };
 		035166F92E0C0FF9004C65BB /* Int+ToCGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */; };
+		0352AF2F2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF2C2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift */; };
+		0352AF332E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF322E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift */; };
+		0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */; };
+		0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */; };
 		03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */; };
 		03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */; };
 		03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */; };
@@ -498,6 +502,10 @@
 		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		035166F62E0C0FDB004C65BB /* Float+ToCGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ToCGFloat.swift"; sourceTree = "<group>"; };
 		035166F82E0C0FF9004C65BB /* Int+ToCGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToCGFloat.swift"; sourceTree = "<group>"; };
+		0352AF2C2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextAnalyzer.swift; sourceTree = "<group>"; };
+		0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDashHandler.swift; sourceTree = "<group>"; };
+		0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRPoetryDetector.swift; sourceTree = "<group>"; };
+		0352AF322E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRStatisticsCalculator.swift; sourceTree = "<group>"; };
 		03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponse.swift; sourceTree = "<group>"; };
 		03538DED2D259280005E56A8 /* YoudaoTranslateResponese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoTranslateResponese.swift; sourceTree = "<group>"; };
 		03538DEF2D259B0A005E56A8 /* EZQueryResult+Dict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+Dict.swift"; sourceTree = "<group>"; };
@@ -1118,6 +1126,10 @@
 				031760EA2E065EF500CE8FD7 /* AppleOCRService.swift */,
 				03F19D7D2E090F390046C6F2 /* AppleOCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* AppleOCRTextMerger.swift */,
+				0352AF2C2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift */,
+				0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */,
+				0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */,
+				0352AF322E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift */,
 				03B17E912E0D30560017350E /* OCRContext.swift */,
 				03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */,
 			);
@@ -3364,6 +3376,9 @@
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
+				0352AF332E0EEE9D00C2D4B1 /* OCRStatisticsCalculator.swift in Sources */,
+				0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */,
+				0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */,
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
 				035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */,
 				03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */,
@@ -3416,6 +3431,7 @@
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
+				0352AF2F2E0EDC4800C2D4B1 /* OCRTextAnalyzer.swift in Sources */,
 				03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				032AAA5B2C456F04007996A1 /* routes.swift in Sources */,
