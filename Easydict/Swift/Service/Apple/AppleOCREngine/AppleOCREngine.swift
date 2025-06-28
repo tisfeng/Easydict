@@ -16,10 +16,9 @@ public class AppleOCREngine {
     // MARK: Internal
 
     /// Main OCR method that processes image and returns complete OCR result
-    func performOCR(
-        image: NSImage,
+    func recognizeText(
+        from image: NSImage,
         language: Language,
-        autoDetect: Bool,
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
         guard let cgImage = image.toCGImage() else {
@@ -30,7 +29,10 @@ public class AppleOCREngine {
             return
         }
 
-        ocr(cgImage: cgImage) { [weak self] observations, error in
+        recognizeTextFromCGImage(
+            cgImage: cgImage,
+            language: language
+        ) { [weak self] observations, error in
             guard let self else { return }
 
             if let error {
@@ -59,39 +61,36 @@ public class AppleOCREngine {
         }
     }
 
-    /// Use Vision to perform OCR on the CGImage.
-    func ocr(
+    /// Recognize text from CGImage with callback
+    func recognizeTextFromCGImage(
         cgImage: CGImage,
+        language: Language = .auto,
         completionHandler: @escaping ([VNRecognizedTextObservation], Error?) -> ()
     ) {
-        performOCR(on: cgImage, completionHandler: completionHandler)
+        performVisionOCR(
+            on: cgImage,
+            language: language,
+            completionHandler: completionHandler
+        )
+    }
+
+    /// Async version for Swift usage - returns observations
+    func recognizeTextAsync(cgImage: CGImage, language: Language = .auto) async throws
+        -> [VNRecognizedTextObservation] {
+        try await performVisionOCRAsync(on: cgImage, language: language)
     }
 
     /// Async version for Swift usage - returns string
-    func ocrAsync(cgImage: CGImage) async throws -> String {
-        let observations = try await ocr(cgImage: cgImage)
+    func recognizeTextAsString(cgImage: CGImage, language: Language = .auto) async throws -> String {
+        let observations = try await recognizeTextAsync(cgImage: cgImage, language: language)
         let recognizedTexts = observations.compactMap(\.text)
         return recognizedTexts.joined(separator: "\n")
     }
 
-    /// Async version for Swift usage - returns observations
-    func ocr(cgImage: CGImage) async throws -> [VNRecognizedTextObservation] {
-        try await performOCRAsync(on: cgImage)
-    }
-
-    /// Create CGImage from image data
-    func createCGImage(from imageData: Data) -> CGImage? {
-        guard let imageSource = CGImageSourceCreateWithData(imageData as CFData, nil),
-              let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
-        else {
-            return nil
-        }
-        return cgImage
-    }
-
     /// Perform OCR using Vision framework - callback version
-    func performOCR(
+    func performVisionOCR(
         on cgImage: CGImage,
+        language: Language = .auto,
         completionHandler: @escaping ([VNRecognizedTextObservation], Error?) -> ()
     ) {
         let request = VNRecognizeTextRequest { request, error in
@@ -116,15 +115,18 @@ public class AppleOCREngine {
             }
         }
 
-        // Configure OCR request for better accuracy
-        request.automaticallyDetectsLanguage = true
-        request.usesLanguageCorrection = true
+        // Determine if we should use automatic language detection
+        let shouldAutoDetect = (language == .auto)
+
+        // Configure OCR request based on language parameter
+        request.automaticallyDetectsLanguage = shouldAutoDetect
+
+        // When using automatic detection, disable language correction since we're uncertain about the language
+        request.usesLanguageCorrection = !shouldAutoDetect
         request.recognitionLevel = .accurate
 
-        // Get supported OCR languages
-        if let supportedLanguages = try? request.supportedRecognitionLanguages() {
-            request.recognitionLanguages = supportedLanguages
-        }
+        let languageMapper = AppleLanguageMapper.shared
+        request.recognitionLanguages = languageMapper.ocrRecognitionLanguages(for: language)
 
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
 
@@ -147,9 +149,10 @@ public class AppleOCREngine {
     private let textProcessor = AppleOCRTextProcessor()
 
     /// Perform OCR using Vision framework - async version
-    private func performOCRAsync(on cgImage: CGImage) async throws -> [VNRecognizedTextObservation] {
+    private func performVisionOCRAsync(on cgImage: CGImage, language: Language = .auto) async throws
+        -> [VNRecognizedTextObservation] {
         try await withCheckedThrowingContinuation { continuation in
-            performOCR(on: cgImage) { observations, error in
+            performVisionOCR(on: cgImage, language: language) { observations, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {

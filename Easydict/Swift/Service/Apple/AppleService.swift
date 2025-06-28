@@ -18,13 +18,11 @@ import Vision
 public class AppleService: QueryService {
     // MARK: Public
 
-    /// Service type identification
     @objc
     public override func serviceType() -> ServiceType {
         .apple
     }
 
-    /// Service name
     @objc
     public override func name() -> String {
         NSLocalizedString("apple_translate", comment: "")
@@ -69,12 +67,10 @@ public class AppleService: QueryService {
     public override func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
         let image = queryModel.ocrImage ?? NSImage()
         let language = queryModel.queryFromLanguage
-        let autoDetect = language == .auto
 
-        ocrEnginee.performOCR(
-            image: image,
+        ocrEnginee.recognizeText(
+            from: image,
             language: language,
-            autoDetect: autoDetect,
             completion: completion
         )
     }
@@ -86,7 +82,7 @@ public class AppleService: QueryService {
 
     /// Async version for Swift usage
     public func ocrAsync(cgImage: CGImage) async throws -> String {
-        try await ocrEnginee.ocrAsync(cgImage: cgImage)
+        try await ocrEnginee.recognizeTextAsString(cgImage: cgImage)
     }
 
     /// Async translation method

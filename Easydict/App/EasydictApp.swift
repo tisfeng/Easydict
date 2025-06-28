@@ -38,7 +38,7 @@ enum EasydictCmpatibilityEntry {
                 return
             }
 
-            let result = try? await ocrEnginee.ocrAsync(cgImage: image)
+            let result = try? await ocrEnginee.recognizeTextAsString(cgImage: image)
             if let result {
                 print("OCR Result: \(result)")
             } else {

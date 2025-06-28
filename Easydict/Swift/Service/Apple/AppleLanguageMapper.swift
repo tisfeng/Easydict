@@ -32,7 +32,7 @@ public class AppleLanguageMapper: NSObject {
         return .english
     }
 
-    /// Convert Language to BCP-47 language code for Translation API
+    /// Convert Language to BCP-47 language code for Apple Translation API
     @objc
     public func languageCode(for language: Language) -> String {
         switch language {
@@ -61,11 +61,104 @@ public class AppleLanguageMapper: NSObject {
         }
     }
 
+    /// Convert an array of `Language` to Apple OCR language codes.
+    public func appleOCRLanguageCodes(for languages: [Language]) -> [String] {
+        var appleOCRLanguageCodes: [String] = []
+        for language in languages {
+            if let appleOCRLanguageCode = ocrLanguageDictionary[language] {
+                appleOCRLanguageCodes.append(appleOCRLanguageCode)
+            }
+        }
+        return appleOCRLanguageCodes
+    }
+
     // MARK: Internal
 
     @objc static let shared = AppleLanguageMapper()
 
+    /// Sort the OCR languages based on user preferences.
+    func sortOCRLanguages(
+        recognitionLanguages: [Language],
+        preferredLanguages: [Language]
+    )
+        -> [Language] {
+        var newRecognitionLanguages = recognitionLanguages
+        for preferredLanguage in preferredLanguages.reversed() {
+            if let index = newRecognitionLanguages.firstIndex(of: preferredLanguage) {
+                newRecognitionLanguages.remove(at: index)
+                newRecognitionLanguages.insert(preferredLanguage, at: 0)
+            }
+        }
+
+        /**
+         Since ocr Chinese mixed with English is not very accurate,
+         we need to move Chinese to the first priority if newRecognitionLanguages first object is English and if user system language contains Chinese.
+
+         风云 wind and clouds 99$ é
+
+         */
+
+        let userPreferredLanguages = EZLanguageManager.shared().preferredLanguages
+
+        // Move Chinese to the first priority if the first language is English and if user system language contains Chinese.
+        if let firstLanguage = newRecognitionLanguages.first, firstLanguage == .english {
+            for language in userPreferredLanguages where language.isKindOfChinese() {
+                if let index = newRecognitionLanguages.firstIndex(of: language) {
+                    newRecognitionLanguages.remove(at: index)
+                    newRecognitionLanguages.insert(language, at: 0)
+                    break
+                }
+            }
+        }
+
+        return newRecognitionLanguages
+    }
+
+    /// Get OCR recognition languages for a specific language.
+    func ocrRecognitionLanguages(for language: Language) -> [String] {
+        let ocrLanguages = Array(ocrLanguageDictionary.keys)
+        let perferredLanguages = EZLanguageManager.shared().preferredLanguages
+
+        var finalRecognitionLanguages = sortOCRLanguages(
+            recognitionLanguages: ocrLanguages,
+            preferredLanguages: perferredLanguages
+        )
+
+        // If language is NOT auto, sort with the specific language first
+        if language != .auto {
+            finalRecognitionLanguages = sortOCRLanguages(
+                recognitionLanguages: finalRecognitionLanguages,
+                preferredLanguages: [language]
+            )
+        }
+
+        // Convert to Apple OCR language codes
+        return finalRecognitionLanguages.compactMap { ocrLanguageDictionary[$0] }
+    }
+
     // MARK: Private
+
+    /// Apple OCR languages are from `request.supportedRecognitionLanguages()`
+    /// Currently 18 languages supported, BCP 47 language code, e.g. "zh-Hans" for Simplified Chinese.
+    private let ocrLanguageDictionary: [Language: String] = [
+        .simplifiedChinese: "zh-Hans",
+        .traditionalChinese: "zh-Hant",
+        .english: "en-US",
+        .japanese: "ja-JP",
+        .korean: "ko-KR",
+        .french: "fr-FR",
+        .spanish: "es-ES",
+        .portuguese: "pt-BR",
+        .italian: "it-IT",
+        .german: "de-DE",
+        .russian: "ru-RU",
+        .ukrainian: "uk-UA",
+        // macOS 14.5
+        .thai: "th-TH",
+        .vietnamese: "vi-VN",
+        // macOS 15+
+        .arabic: "ar-SA",
+    ]
 
     /// Apple Translation Shortcut Language Mapper
     private let languageMap: [Language: String] = [
