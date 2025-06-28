@@ -304,9 +304,7 @@ class AppleOCRTextMerger {
         var needLineBreak = false
         var isNewParagraph = false
 
-        if lineContext.hasPrevIndentation {
-            needLineBreak = true
-        }
+        let isFirstLetterUpperCase = lineContext.currentText.isFirstLetterUpperCase
 
         if lineContext.isBigLineSpacing {
             if lineContext.isPrevLongText {
@@ -337,7 +335,7 @@ class AppleOCRTextMerger {
                         needLineBreak = true
 
                         // If language is English and current line first letter is NOT uppercase, do not need line break
-                        if isEnglishLanguage(), !lineContext.currentText.isFirstLetterUpperCase {
+                        if isEnglishLanguage(), !isFirstLetterUpperCase {
                             needLineBreak = false
                         }
                     }
@@ -351,6 +349,22 @@ class AppleOCRTextMerger {
 
             if isPoetry {
                 needLineBreak = true
+            }
+        }
+
+        /**
+         If text is a letter format, like:
+         ```
+                                    Wednesday, 4 Octobre 1950
+         My dearest Nelson,
+         ```
+         If `distance` > 0.45, means it may need line break, or treat as new paragraph.
+         */
+        if lineContext.isPrevLongText, lineContext.hasPrevIndentation {
+            let dx = lineContext.previous.boundingBox.minX - lineContext.current.boundingBox.minX
+            let distance = dx / context.maxLineLength
+            if distance > 0.45 {
+                isNewParagraph = true
             }
         }
 
