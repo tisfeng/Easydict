@@ -27,7 +27,7 @@ public class AppleOCRTextProcessor {
         language = ocrResult.from
 
         // Reset statistics
-        statisticsCalculator.resetStatistics()
+        analyzer.resetAnalysis()
 
         print("\nTextObservations: \(observations.formattedDescription)")
 
@@ -49,7 +49,7 @@ public class AppleOCRTextProcessor {
 
         // Calculate line statistics
         for (index, textObservation) in observations.enumerated() {
-            statisticsCalculator.calculateLineStatistics(
+            analyzer.analyzeLineLayout(
                 textObservation,
                 index: index,
                 observations: observations,
@@ -58,26 +58,26 @@ public class AppleOCRTextProcessor {
         }
 
         // Update single alphabet width
-        if let textObservation = statisticsCalculator.maxCharacterCountLineTextObservation {
-            statisticsCalculator.singleAlphabetWidth =
-                statisticsCalculator.singleAlphabetWidthOfTextObservation(
+        if let textObservation = analyzer.maxCharacterCountLineTextObservation {
+            analyzer.singleAlphabetWidth =
+                analyzer.analyzeCharacterWidth(
                     textObservation, ocrImage: ocrImage
                 )
         }
 
         // Store final calculated values
-        statisticsCalculator.averageLineHeight =
-            statisticsCalculator.totalLineHeight / lineCount.double
+        analyzer.averageLineHeight =
+            analyzer.totalLineHeight / lineCount.double
         if lineSpacingCount > 0 {
-            statisticsCalculator.averageLineSpacing =
-                statisticsCalculator.totalLineSpacing / lineSpacingCount.double
+            analyzer.averageLineSpacing =
+                analyzer.totalLineSpacing / lineSpacingCount.double
         }
 
         print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
 
         // Detect if text is poetry
-        statisticsCalculator.isPoetry = poetryDetector.detectPoetry(observations: observations)
-        print("isPoetry: \(statisticsCalculator.isPoetry)")
+        analyzer.isPoetry = poetryDetector.detectPoetry(observations: observations)
+        print("isPoetry: \(analyzer.isPoetry)")
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
@@ -105,7 +105,7 @@ public class AppleOCRTextProcessor {
     private let languageManager = EZLanguageManager.shared()
 
     // Helper components
-    private let statisticsCalculator = OCRStatisticsCalculator()
+    private let analyzer = OCRAnalyzer()
     private let poetryDetector = OCRPoetryDetector()
     private let dashHandler = OCRDashHandler()
 
@@ -114,17 +114,17 @@ public class AppleOCRTextProcessor {
         OCRContext(
             ocrImage: ocrImage,
             language: language,
-            isPoetry: statisticsCalculator.isPoetry,
-            singleAlphabetWidth: statisticsCalculator.singleAlphabetWidth,
-            charCountPerLine: statisticsCalculator.charCountPerLine,
-            minLineHeight: statisticsCalculator.minLineHeight,
-            averageLineHeight: statisticsCalculator.averageLineHeight,
-            maxLineLength: statisticsCalculator.maxLineLength,
+            isPoetry: analyzer.isPoetry,
+            singleAlphabetWidth: analyzer.singleAlphabetWidth,
+            charCountPerLine: analyzer.charCountPerLine,
+            minLineHeight: analyzer.minLineHeight,
+            averageLineHeight: analyzer.averageLineHeight,
+            maxLineLength: analyzer.maxLineLength,
             textObservations: [],
-            minXLineTextObservation: statisticsCalculator.minXLineTextObservation,
-            maxCharacterCountLineTextObservation: statisticsCalculator
+            minXLineTextObservation: analyzer.minXLineTextObservation,
+            maxCharacterCountLineTextObservation: analyzer
                 .maxCharacterCountLineTextObservation,
-            maxLongLineTextObservation: statisticsCalculator.maxLongLineTextObservation
+            maxLongLineTextObservation: analyzer.maxLongLineTextObservation
         )
     }
 
@@ -155,7 +155,7 @@ public class AppleOCRTextProcessor {
             let y1 = boundingBox1.origin.y
             let y2 = boundingBox2.origin.y
 
-            return y2 - y1 <= statisticsCalculator.minLineHeight * 0.8
+            return y2 - y1 <= analyzer.minLineHeight * 0.8
         }
     }
 
@@ -185,7 +185,7 @@ public class AppleOCRTextProcessor {
                 let isNeedHandleLastDashOfText = dashHandler.checkNeedHandleLastDashOfText(
                     current: textObservation,
                     previous: prevTextObservation,
-                    maxLineLength: statisticsCalculator.maxLineLength
+                    maxLineLength: analyzer.maxLineLength
                 )
 
                 if isNeedHandleLastDashOfText {
@@ -262,7 +262,7 @@ public class AppleOCRTextProcessor {
         // Check Y coordinate for new line
         if deltaY > 0 {
             return true
-        } else if abs(deltaY) < statisticsCalculator.minLineHeight / 2 {
+        } else if abs(deltaY) < analyzer.minLineHeight / 2 {
             // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
             return true
         }

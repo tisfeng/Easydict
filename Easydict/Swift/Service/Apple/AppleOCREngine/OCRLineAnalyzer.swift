@@ -1,5 +1,5 @@
 //
-//  OCRTextAnalyzer.swift
+//  OCRLineAnalyzer.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/26.
@@ -9,11 +9,11 @@
 import Foundation
 import Vision
 
-// MARK: - OCRTextAnalyzer
+// MARK: - OCRLineAnalyzer
 
-/// Handles text analysis operations for OCR processing
-/// This class contains all the analytical methods for determining text properties and relationships
-class OCRTextAnalyzer {
+/// Handles line-level text analysis operations for OCR processing
+/// This class contains all the analytical methods for determining text line properties and relationships
+class OCRLineAnalyzer {
     // MARK: Lifecycle
 
     init(context: OCRContext) {
@@ -22,14 +22,14 @@ class OCRTextAnalyzer {
 
     // MARK: Internal
 
-    /// Check if observation has indentation
+    /// Check if text observation has indentation relative to the minimum X position
     func hasIndentationOfTextObservation(_ observation: VNRecognizedTextObservation) -> Bool {
         guard let minXObservation = context.minXLineTextObservation else { return false }
         let isEqualX = isEqualXOfTextObservation(current: observation, previous: minXObservation)
         return !isEqualX
     }
 
-    /// Determine if text observation represents a long line
+    /// Determine if text observation represents a long line of text
     func isLongTextObservation(
         _ observation: VNRecognizedTextObservation,
         isStrict: Bool = false
@@ -39,7 +39,7 @@ class OCRTextAnalyzer {
         return isLongTextObservation(observation, threshold: threshold)
     }
 
-    /// Check if observations contain equal-length Chinese text
+    /// Check if two observations contain equal-length Chinese text
     func isEqualChineseTextObservation(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation
@@ -51,7 +51,7 @@ class OCRTextAnalyzer {
         return isEqualLength && languageManager.isChineseLanguage(context.language)
     }
 
-    /// Determine if there is big line spacing between observations
+    /// Analyze if there is significant line spacing between two text observations
     func isBigSpacingLineOfTextObservation(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation,
@@ -98,7 +98,7 @@ class OCRTextAnalyzer {
         return false
     }
 
-    /// Compare font sizes between two text observations
+    /// Analyze and compare font sizes between two text observations
     func checkEqualFontSize(
         current: VNRecognizedTextObservation,
         previous: VNRecognizedTextObservation
@@ -117,14 +117,14 @@ class OCRTextAnalyzer {
         return isEqualFontSize
     }
 
-    /// Check if text represents short Chinese poetry
+    /// Analyze if text represents short Chinese poetry format
     func isShortChinesePoetryText(_ text: String) -> Bool {
         languageManager.isChineseLanguage(context.language)
             && context.charCountPerLine < Double(OCRConstants.shortPoetryCharacterCountOfLine)
             && text.count < OCRConstants.shortPoetryCharacterCountOfLine
     }
 
-    /// Check if line length is considered short
+    /// Analyze if line length is considered short relative to maximum length
     func isShortLineLength(
         _ lineLength: Double,
         maxLineLength: Double,
@@ -134,7 +134,7 @@ class OCRTextAnalyzer {
         lineLength < maxLineLength * lessRateOfMaxLength
     }
 
-    /// Handle Chinese poetry formatting
+    /// Analyze and handle Chinese poetry formatting logic
     func handleChinesePoetry(
         currentText: String,
         previousText: String,
@@ -153,7 +153,7 @@ class OCRTextAnalyzer {
         return (shouldWrap, isNewParagraph)
     }
 
-    /// Handle list formatting
+    /// Analyze and handle list formatting logic
     func handleListFormatting(
         isPrevList: Bool,
         isList: Bool,

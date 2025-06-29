@@ -20,7 +20,6 @@ class AppleOCRTextMerger {
     /// - Parameter context: OCR context containing all necessary data for text merging
     init(context: OCRContext) {
         self.context = context
-        self.analyzer = OCRTextAnalyzer(context: context)
     }
 
     // MARK: Internal
@@ -55,7 +54,6 @@ class AppleOCRTextMerger {
     // MARK: Private
 
     private let context: OCRContext
-    private let analyzer: OCRTextAnalyzer
     private var languageManager = EZLanguageManager.shared()
 
     // Convenience computed properties for easier access
@@ -73,26 +71,10 @@ class AppleOCRTextMerger {
         previous: VNRecognizedTextObservation
     )
         -> OCRLineContext {
-        let prevText = previous.text
-        let isEqualChineseText = analyzer.isEqualChineseTextObservation(
-            current: current, previous: previous
-        )
-
-        return OCRLineContext(
+        OCRLineContext(
             current: current,
             previous: previous,
-            isPrevEndPunctuation: prevText.hasEndPunctuationSuffix,
-            isPrevLongText: analyzer.isLongTextObservation(previous, isStrict: false),
-            hasIndentation: analyzer.hasIndentationOfTextObservation(current),
-            hasPrevIndentation: analyzer.hasIndentationOfTextObservation(previous),
-            isBigLineSpacing: analyzer.isBigSpacingLineOfTextObservation(
-                current: current,
-                previous: previous,
-                greaterThanLineHeightRatio: 1.0
-            ),
-            isEqualChineseText: isEqualChineseText,
-            isPrevList: previous.text.isListTypeFirstWord,
-            isList: current.text.isListTypeFirstWord
+            context: context
         )
     }
 
@@ -160,10 +142,7 @@ class AppleOCRTextMerger {
         var finalIsNewParagraph = isNewParagraph
 
         // Font size and spacing checks
-        let isEqualFontSize = analyzer.checkEqualFontSize(
-            current: lineContext.current,
-            previous: lineContext.previous
-        )
+        let isEqualFontSize = lineContext.isEqualFontSize
         let isFirstLetterUpperCase = lineContext.currentText.isFirstLetterUpperCase
 
         if !isEqualFontSize || lineContext.isBigLineSpacing {
@@ -177,12 +156,7 @@ class AppleOCRTextMerger {
         }
 
         // Chinese poetry handling
-        let poetryResult = analyzer.handleChinesePoetry(
-            currentText: lineContext.currentText,
-            previousText: lineContext.previousText,
-            isEqualChineseText: lineContext.isEqualChineseText,
-            isBigLineSpacing: lineContext.isBigLineSpacing
-        )
+        let poetryResult = lineContext.handleChinesePoetry()
         if poetryResult.shouldWrap {
             finalNeedLineBreak = true
             if poetryResult.isNewParagraph {
@@ -191,11 +165,7 @@ class AppleOCRTextMerger {
         }
 
         // List handling
-        let listResult = analyzer.handleListFormatting(
-            isPrevList: lineContext.isPrevList,
-            isList: lineContext.isList,
-            isBigLineSpacing: lineContext.isBigLineSpacing
-        )
+        let listResult = lineContext.handleListFormatting()
         if listResult.needLineBreak {
             finalNeedLineBreak = true
         }
@@ -231,13 +201,10 @@ class AppleOCRTextMerger {
             }
 
             // Check for short line conditions
-            let prevLineLength = lineContext.previous.boundingBox.width
-            let isPrevLessHalfShortLine = analyzer.isShortLineLength(
-                prevLineLength, maxLineLength: context.maxLineLength, lessRateOfMaxLength: 0.5
+            let isPrevLessHalfShortLine = lineContext.isPrevLessHalfShortLine(
+                maxLineLength: context.maxLineLength
             )
-            let isPrevShortLine = analyzer.isShortLineLength(
-                prevLineLength, maxLineLength: context.maxLineLength, lessRateOfMaxLength: 0.85
-            )
+            let isPrevShortLine = lineContext.isPrevShortLine(maxLineLength: context.maxLineLength)
 
             let lineMaxX = lineContext.current.boundingBox.maxX
             let prevLineMaxX = lineContext.previous.boundingBox.maxX
@@ -255,7 +222,7 @@ class AppleOCRTextMerger {
                 }
             } else {
                 if lineContext.isPrevLongText {
-                    if lineContext.isPrevEndPunctuation {
+                    if lineContext.hasPrevIndentation {
                         needLineBreak = true
                     } else {
                         if !isEqualX, dx < 0 {
@@ -265,7 +232,7 @@ class AppleOCRTextMerger {
                         }
                     }
                 } else {
-                    if lineContext.isPrevEndPunctuation {
+                    if lineContext.hasPrevEndPunctuation {
                         if !isEqualX, !lineContext.isList {
                             isNewParagraph = true
                         } else {
@@ -279,11 +246,8 @@ class AppleOCRTextMerger {
         } else {
             // Sometimes hasIndentation is a mistake, when prev line is long
             if lineContext.isPrevLongText {
-                let isEqualFontSize = analyzer.checkEqualFontSize(
-                    current: lineContext.current,
-                    previous: lineContext.previous
-                )
-                if lineContext.isPrevEndPunctuation || !isEqualFontSize {
+                let isEqualFontSize = lineContext.isEqualFontSize
+                if lineContext.hasPrevEndPunctuation || !isEqualFontSize {
                     isNewParagraph = true
                 } else {
                     needLineBreak = !(dx > 0 && !isEqualX)
@@ -314,13 +278,13 @@ class AppleOCRTextMerger {
                     // Check for page turn scenarios
                     let isTurnedPage =
                         isEnglishLanguage() && lineContext.currentText.isLowercaseFirstChar
-                            && !lineContext.isPrevEndPunctuation
+                            && !lineContext.hasPrevEndPunctuation
                     if !isTurnedPage {
                         needLineBreak = true
                     }
                 }
             } else {
-                if lineContext.isPrevEndPunctuation || lineContext.hasPrevIndentation {
+                if lineContext.hasPrevEndPunctuation || lineContext.hasPrevIndentation {
                     isNewParagraph = true
                 } else {
                     needLineBreak = true
@@ -330,7 +294,7 @@ class AppleOCRTextMerger {
             if lineContext.isPrevLongText {
                 if !lineContext.hasPrevIndentation {
                     // Chinese poetry special case
-                    if lineContext.isPrevEndPunctuation,
+                    if lineContext.hasPrevEndPunctuation,
                        lineContext.currentText.hasEndPunctuationSuffix {
                         needLineBreak = true
 
@@ -342,7 +306,7 @@ class AppleOCRTextMerger {
                 }
             } else {
                 needLineBreak = true
-                if lineContext.hasPrevIndentation, !lineContext.isPrevEndPunctuation {
+                if lineContext.hasPrevIndentation, !lineContext.hasPrevEndPunctuation {
                     isNewParagraph = true
                 }
             }

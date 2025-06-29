@@ -1,5 +1,5 @@
 //
-//  OCRStatisticsCalculator.swift
+//  OCRAnalyzer.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/26.
@@ -9,10 +9,10 @@
 import Foundation
 import Vision
 
-// MARK: - OCRStatisticsCalculator
+// MARK: - OCRAnalyzer
 
-/// Handles statistical calculations for OCR text observations
-class OCRStatisticsCalculator {
+/// Handles statistical analysis and calculations for OCR text observations
+class OCRAnalyzer {
     var minLineHeight: Double = .greatestFiniteMagnitude
     var totalLineHeight: Double = 0
     var averageLineHeight: Double = 0
@@ -36,8 +36,8 @@ class OCRStatisticsCalculator {
     var punctuationMarkCount: Int = 0
     var singleAlphabetWidth: Double = 0.0
 
-    /// Reset all statistical variables to initial values
-    func resetStatistics() {
+    /// Reset all analytical data to initial values
+    func resetAnalysis() {
         minLineHeight = .greatestFiniteMagnitude
         totalLineHeight = 0
         averageLineHeight = 0
@@ -62,8 +62,8 @@ class OCRStatisticsCalculator {
         singleAlphabetWidth = 0.0
     }
 
-    /// Calculate line spacing, height, and positioning statistics
-    func calculateLineStatistics(
+    /// Analyze line spacing, height, and positioning characteristics
+    func analyzeLineLayout(
         _ textObservation: VNRecognizedTextObservation,
         index: Int,
         observations: [VNRecognizedTextObservation],
@@ -126,8 +126,8 @@ class OCRStatisticsCalculator {
         }
     }
 
-    /// Calculate single character width for observation
-    func singleAlphabetWidthOfTextObservation(
+    /// Analyze single character width for text observation
+    func analyzeCharacterWidth(
         _ textObservation: VNRecognizedTextObservation,
         ocrImage: NSImage
     )
