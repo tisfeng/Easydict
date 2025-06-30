@@ -9,6 +9,8 @@
 import Foundation
 import Vision
 
+// MARK: - OCRTextObservationPair (imported from OCRTextObservationPair.swift)
+
 // MARK: - AppleOCRTextMerger
 
 /// Handles intelligent text merging logic for OCR results
@@ -16,49 +18,40 @@ import Vision
 class AppleOCRTextMerger {
     // MARK: Lifecycle
 
-    /// Initialize text merger with OCR context
-    /// - Parameter context: OCR context containing all necessary data for text merging
-    init(context: OCRContext) {
-        self.context = context
+    /// Initialize text merger with OCR metrics
+    /// - Parameter metrics: OCR metrics containing all necessary data for text merging
+    init(metrics: OCRMetrics) {
+        self.metrics = metrics
     }
 
     // MARK: Internal
 
     /// Main method to get joined string between two text observations
     /// This directly corresponds to joinedStringOfTextObservation in Objective-C
-    /// - Parameters:
-    ///   - current: Current text observation
-    ///   - previous: Previous text observation
+    /// - Parameter textObservationPair: Pair containing current and previous text observations
     /// - Returns: Appropriate joining string between the two observations
-    func joinedStringOfTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> String {
+    func joinedString(for textObservationPair: OCRTextObservationPair) -> String {
         // Create comprehensive formatting data
-        let lineContext = prepareLineContext(current: current, previous: previous)
+        let lineContext = prepareLineContext(textObservationPair)
 
-        // Determine line break and paragraph decisions
-        let (needLineBreak, isNewParagraph) = determineLineBreakAndParagraph(
-            lineContext: lineContext
-        )
+        // Determine merge decision
+        let mergeDecision = determineMergeDecision(lineContext: lineContext)
 
         // Generate final joined string
         return generateJoinedString(
-            needLineBreak: needLineBreak,
-            isNewParagraph: isNewParagraph,
-            previousText: previous.text
+            mergeDecision: mergeDecision,
+            previousText: textObservationPair.previous.text
         )
     }
 
     // MARK: Private
 
-    private let context: OCRContext
+    private let metrics: OCRMetrics
     private var languageManager = EZLanguageManager.shared()
 
     // Convenience computed properties for easier access
-    private var language: Language { context.language }
-    private var isPoetry: Bool { context.isPoetry }
+    private var language: Language { metrics.language }
+    private var isPoetry: Bool { metrics.isPoetry }
 
     /// Check if current language is English
     private func isEnglishLanguage() -> Bool {
@@ -67,22 +60,17 @@ class AppleOCRTextMerger {
 
     /// Prepare comprehensive line context for text merging
     private func prepareLineContext(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
+        _ textObservationPair: OCRTextObservationPair
     )
         -> OCRLineContext {
-        OCRLineContext(
-            current: current,
-            previous: previous,
-            context: context
-        )
+        OCRLineContext(pair: textObservationPair, metrics: metrics)
     }
 
-    /// Determine if line break and paragraph break are needed
-    private func determineLineBreakAndParagraph(
+    /// Determine merge decision based on line context
+    private func determineMergeDecision(
         lineContext: OCRLineContext
     )
-        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+        -> OCRMergeDecision {
         var needLineBreak = false
         var isNewParagraph = false
 
@@ -98,26 +86,25 @@ class AppleOCRTextMerger {
             isNewParagraph = result.isNewParagraph
         }
 
-        // Apply additional formatting rules
-        let finalResult = applyAdditionalFormattingRules(
+        // Apply additional merge rules
+        let finalResult = applyAdditionalMergeRules(
             lineContext: lineContext,
             needLineBreak: needLineBreak,
             isNewParagraph: isNewParagraph
         )
 
-        return (finalResult.needLineBreak, finalResult.isNewParagraph)
+        return finalResult
     }
 
-    /// Generate the final joined string based on formatting decisions
+    /// Generate the final joined string based on merge decisions
     private func generateJoinedString(
-        needLineBreak: Bool,
-        isNewParagraph: Bool,
+        mergeDecision: OCRMergeDecision,
         previousText: String
     )
         -> String {
-        if isNewParagraph {
+        if mergeDecision.isNewParagraph {
             return OCRConstants.paragraphBreakText
-        } else if needLineBreak {
+        } else if mergeDecision.needLineBreak {
             return OCRConstants.lineBreakText
         } else if previousText.hasPunctuationSuffix {
             // If last char is a punctuation mark, append a space
@@ -131,13 +118,13 @@ class AppleOCRTextMerger {
         }
     }
 
-    /// Apply additional formatting rules for special cases
-    private func applyAdditionalFormattingRules(
+    /// Apply additional merge rules for special cases
+    private func applyAdditionalMergeRules(
         lineContext: OCRLineContext,
         needLineBreak: Bool,
         isNewParagraph: Bool
     )
-        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+        -> OCRMergeDecision {
         var finalNeedLineBreak = needLineBreak
         var finalIsNewParagraph = isNewParagraph
 
@@ -156,8 +143,8 @@ class AppleOCRTextMerger {
         }
 
         // Chinese poetry handling
-        let poetryResult = lineContext.handleChinesePoetry()
-        if poetryResult.shouldWrap {
+        let poetryResult = lineContext.determineChinesePoetryMerge()
+        if poetryResult.needLineBreak {
             finalNeedLineBreak = true
             if poetryResult.isNewParagraph {
                 finalIsNewParagraph = true
@@ -165,7 +152,7 @@ class AppleOCRTextMerger {
         }
 
         // List handling
-        let listResult = lineContext.handleListFormatting()
+        let listResult = lineContext.determineListMerge()
         if listResult.needLineBreak {
             finalNeedLineBreak = true
         }
@@ -173,21 +160,18 @@ class AppleOCRTextMerger {
             finalIsNewParagraph = true
         }
 
-        return (finalNeedLineBreak, finalIsNewParagraph)
+        return OCRMergeDecision.from(
+            needLineBreak: finalNeedLineBreak,
+            isNewParagraph: finalIsNewParagraph
+        )
     }
 
     /// Handle text merging logic for indented text blocks
-    private func handleIndentedText(
-        lineContext: OCRLineContext
-    )
-        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+    private func handleIndentedText(lineContext: OCRLineContext) -> OCRMergeDecision {
         var needLineBreak = false
         var isNewParagraph = false
 
-        let isEqualX = isEqualXOfTextObservation(
-            current: lineContext.current,
-            previous: lineContext.previous
-        )
+        let isEqualX = isEqualX(lineContext.pair)
         let lineX = lineContext.current.boundingBox.minX
         let prevLineX = lineContext.previous.boundingBox.minX
         let dx = lineX - prevLineX
@@ -202,9 +186,9 @@ class AppleOCRTextMerger {
 
             // Check for short line conditions
             let isPrevLessHalfShortLine = lineContext.isPrevLessHalfShortLine(
-                maxLineLength: context.maxLineLength
+                maxLineLength: metrics.maxLineLength
             )
-            let isPrevShortLine = lineContext.isPrevShortLine(maxLineLength: context.maxLineLength)
+            let isPrevShortLine = lineContext.isPrevShortLine(maxLineLength: metrics.maxLineLength)
 
             let lineMaxX = lineContext.current.boundingBox.maxX
             let prevLineMaxX = lineContext.previous.boundingBox.maxX
@@ -257,14 +241,14 @@ class AppleOCRTextMerger {
             }
         }
 
-        return (needLineBreak, isNewParagraph)
+        return OCRMergeDecision.from(
+            needLineBreak: needLineBreak,
+            isNewParagraph: isNewParagraph
+        )
     }
 
     /// Handle text merging logic for non-indented text blocks
-    private func handleNonIndentedText(
-        lineContext: OCRLineContext
-    )
-        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+    private func handleNonIndentedText(lineContext: OCRLineContext) -> OCRMergeDecision {
         var needLineBreak = false
         var isNewParagraph = false
 
@@ -326,31 +310,30 @@ class AppleOCRTextMerger {
          */
         if lineContext.isPrevLongText, lineContext.hasPrevIndentation {
             let dx = lineContext.previous.boundingBox.minX - lineContext.current.boundingBox.minX
-            let distance = dx / context.maxLineLength
+            let distance = dx / metrics.maxLineLength
             if distance > 0.45 {
                 isNewParagraph = true
             }
         }
 
-        return (needLineBreak, isNewParagraph)
+        return OCRMergeDecision.from(
+            needLineBreak: needLineBreak,
+            isNewParagraph: isNewParagraph
+        )
     }
 
     // MARK: - Helper Methods
 
-    private func isEqualXOfTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
+    private func isEqualX(_ textObservationPair: OCRTextObservationPair) -> Bool {
         // Simplified implementation based on threshold calculation
-        let threshold = context.singleAlphabetWidth * OCRConstants.indentationCharacterCount
+        let threshold = metrics.singleAlphabetWidth * OCRConstants.indentationCharacterCount
 
-        let lineX = current.boundingBox.origin.x
-        let prevLineX = previous.boundingBox.origin.x
+        let lineX = textObservationPair.current.boundingBox.origin.x
+        let prevLineX = textObservationPair.previous.boundingBox.origin.x
         let dx = lineX - prevLineX
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let maxLength = context.ocrImage.size.width * context.maxLineLength / scaleFactor
+        let maxLength = metrics.ocrImage.size.width * metrics.maxLineLength / scaleFactor
         let difference = maxLength * dx
 
         // dx > 0, means current line may has indentation.
@@ -358,7 +341,7 @@ class AppleOCRTextMerger {
             return true
         }
 
-        print("Not equalX text: \(current)")
+        print("Not equalX text: \(textObservationPair.current)")
         print("difference: \(difference), threshold: \(threshold)")
 
         return false

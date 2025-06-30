@@ -27,7 +27,7 @@ public class AppleOCRTextProcessor {
         language = ocrResult.from
 
         // Reset statistics
-        analyzer.resetAnalysis()
+        metrics.resetMetrics()
 
         print("\nTextObservations: \(observations.formattedDescription)")
 
@@ -49,7 +49,7 @@ public class AppleOCRTextProcessor {
 
         // Calculate line statistics
         for (index, textObservation) in observations.enumerated() {
-            analyzer.analyzeLineLayout(
+            metrics.collectLineLayoutMetrics(
                 textObservation,
                 index: index,
                 observations: observations,
@@ -58,26 +58,26 @@ public class AppleOCRTextProcessor {
         }
 
         // Update single alphabet width
-        if let textObservation = analyzer.maxCharacterCountLineTextObservation {
-            analyzer.singleAlphabetWidth =
-                analyzer.analyzeCharacterWidth(
+        if let textObservation = metrics.maxCharacterCountLineTextObservation {
+            metrics.singleAlphabetWidth =
+                metrics.calculateCharacterWidthMetric(
                     textObservation, ocrImage: ocrImage
                 )
         }
 
         // Store final calculated values
-        analyzer.averageLineHeight =
-            analyzer.totalLineHeight / lineCount.double
+        metrics.averageLineHeight =
+            metrics.totalLineHeight / lineCount.double
         if lineSpacingCount > 0 {
-            analyzer.averageLineSpacing =
-                analyzer.totalLineSpacing / lineSpacingCount.double
+            metrics.averageLineSpacing =
+                metrics.totalLineSpacing / lineSpacingCount.double
         }
 
         print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
 
         // Detect if text is poetry
-        analyzer.isPoetry = poetryDetector.detectPoetry(observations: observations)
-        print("isPoetry: \(analyzer.isPoetry)")
+        metrics.isPoetry = poetryDetector.detectPoetry(observations: observations)
+        print("isPoetry: \(metrics.isPoetry)")
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
@@ -105,28 +105,9 @@ public class AppleOCRTextProcessor {
     private let languageManager = EZLanguageManager.shared()
 
     // Helper components
-    private let analyzer = OCRAnalyzer()
+    private let metrics = OCRMetrics()
     private let poetryDetector = OCRPoetryDetector()
     private let dashHandler = OCRDashHandler()
-
-    /// Create OCR context for text merging operations
-    private func createOCRContext() -> OCRContext {
-        OCRContext(
-            ocrImage: ocrImage,
-            language: language,
-            isPoetry: analyzer.isPoetry,
-            singleAlphabetWidth: analyzer.singleAlphabetWidth,
-            charCountPerLine: analyzer.charCountPerLine,
-            minLineHeight: analyzer.minLineHeight,
-            averageLineHeight: analyzer.averageLineHeight,
-            maxLineLength: analyzer.maxLineLength,
-            textObservations: [],
-            minXLineTextObservation: analyzer.minXLineTextObservation,
-            maxCharacterCountLineTextObservation: analyzer
-                .maxCharacterCountLineTextObservation,
-            maxLongLineTextObservation: analyzer.maxLongLineTextObservation
-        )
-    }
 
     /// Calculate and set the overall confidence score for OCR result
     private func calculateConfidence(
@@ -155,7 +136,7 @@ public class AppleOCRTextProcessor {
             let y1 = boundingBox1.origin.y
             let y2 = boundingBox2.origin.y
 
-            return y2 - y1 <= analyzer.minLineHeight * 0.8
+            return y2 - y1 <= metrics.minLineHeight * 0.8
         }
     }
 
@@ -173,41 +154,41 @@ public class AppleOCRTextProcessor {
             if index > 0 {
                 let prevTextObservation = observations[index - 1]
 
-                // Determine if this is a new line
-                let isNewLine = isNewLineRelativeToPrevious(
+                let textObservationPair = OCRTextObservationPair(
                     current: textObservation,
                     previous: prevTextObservation
                 )
 
+                // Determine if this is a new line
+                let isNewLine = isNewLineRelativeToPrevious(textObservationPair)
+
                 var joinedString: String
 
                 // Check if need to handle last dash of text
-                let isNeedHandleLastDashOfText = dashHandler.checkNeedHandleLastDashOfText(
-                    current: textObservation,
-                    previous: prevTextObservation,
-                    maxLineLength: analyzer.maxLineLength
+                let isNeedHandleLastDashOfText = dashHandler.shouldHandleLastDash(
+                    textObservationPair,
+                    maxLineLength: metrics.maxLineLength
                 )
 
                 if isNeedHandleLastDashOfText {
                     joinedString = ""
 
                     // Check if need to remove last dash
-                    let isNeedRemoveLastDashOfText = dashHandler.checkNeedRemoveLastDashOfText(
-                        current: textObservation,
-                        previous: prevTextObservation
+                    let isNeedRemoveLastDashOfText = dashHandler.shouldRemoveLastDash(
+                        textObservationPair
                     )
                     if isNeedRemoveLastDashOfText, !mergedText.isEmpty {
                         mergedText.removeLast()
                     }
                 } else if isNewLine {
-                    // Create text merger with OCR context
-                    let context = createOCRContext()
-                    let textMerger = AppleOCRTextMerger(context: context)
+                    // Update metrics with current context data
+                    metrics.ocrImage = ocrImage
+                    metrics.language = language
 
-                    joinedString = textMerger.joinedStringOfTextObservation(
-                        current: textObservation,
-                        previous: prevTextObservation
-                    )
+                    // Create text merger with OCR metrics
+                    let textMerger = AppleOCRTextMerger(metrics: metrics)
+
+                    joinedString = textMerger.joinedString(for: textObservationPair)
                 } else {
                     joinedString = " " // if the same line, just join two texts
                 }
@@ -245,12 +226,11 @@ public class AppleOCRTextProcessor {
 
     /// Determine if current observation represents a new line relative to previous observation
     private func isNewLineRelativeToPrevious(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
+        _ textObservationPair: OCRTextObservationPair
     )
         -> Bool {
-        let currentBoundingBox = current.boundingBox
-        let previousBoundingBox = previous.boundingBox
+        let currentBoundingBox = textObservationPair.current.boundingBox
+        let previousBoundingBox = textObservationPair.previous.boundingBox
 
         let deltaY =
             previousBoundingBox.origin.y
@@ -262,7 +242,7 @@ public class AppleOCRTextProcessor {
         // Check Y coordinate for new line
         if deltaY > 0 {
             return true
-        } else if abs(deltaY) < analyzer.minLineHeight / 2 {
+        } else if abs(deltaY) < metrics.minLineHeight / 2 {
             // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
             return true
         }

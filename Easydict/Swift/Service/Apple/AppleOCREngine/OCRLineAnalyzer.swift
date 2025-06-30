@@ -16,60 +16,54 @@ import Vision
 class OCRLineAnalyzer {
     // MARK: Lifecycle
 
-    init(context: OCRContext) {
-        self.context = context
+    init(metrics: OCRMetrics) {
+        self.metrics = metrics
     }
 
     // MARK: Internal
 
     /// Check if text observation has indentation relative to the minimum X position
-    func hasIndentationOfTextObservation(_ observation: VNRecognizedTextObservation) -> Bool {
-        guard let minXObservation = context.minXLineTextObservation else { return false }
-        let isEqualX = isEqualXOfTextObservation(current: observation, previous: minXObservation)
+    func hasIndentation(_ observation: VNRecognizedTextObservation) -> Bool {
+        guard let minXObservation = metrics.minXLineTextObservation else { return false }
+        let textObservationPair = OCRTextObservationPair(
+            current: observation, previous: minXObservation
+        )
+        let isEqualX = isEqualX(textObservationPair)
         return !isEqualX
     }
 
     /// Determine if text observation represents a long line of text
-    func isLongTextObservation(
+    func isLongText(
         _ observation: VNRecognizedTextObservation,
         isStrict: Bool = false
     )
         -> Bool {
-        let threshold = longTextAlphabetCountThreshold(observation, isStrict: isStrict)
-        return isLongTextObservation(observation, threshold: threshold)
+        let threshold = longTextThreshold(observation, isStrict: isStrict)
+        return isLongText(observation, threshold: threshold)
     }
 
     /// Check if two observations contain equal-length Chinese text
-    func isEqualChineseTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
-        let isEqualLength = isEqualCharacterLengthTextObservation(
-            current: current, previous: previous
-        )
-        return isEqualLength && languageManager.isChineseLanguage(context.language)
+    func isEqualChineseText(_ pair: OCRTextObservationPair) -> Bool {
+        let isEqualLength = isEqualCharacterLength(pair)
+        return isEqualLength && languageManager.isChineseLanguage(metrics.language)
     }
 
     /// Analyze if there is significant line spacing between two text observations
-    func isBigSpacingLineOfTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation,
+    func isBigLineSpacing(
+        _ pair: OCRTextObservationPair,
         greaterThanLineHeightRatio: Double
     )
         -> Bool {
-        let prevBoundingBox = previous.boundingBox
-        let boundingBox = current.boundingBox
+        let prevBoundingBox = pair.previous.boundingBox
+        let boundingBox = pair.current.boundingBox
         let lineHeight = boundingBox.size.height
 
         // !!!: deltaY may be < 0
         let deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight)
         let lineHeightRatio = deltaY / lineHeight
-        let averageLineHeightRatio = deltaY / context.averageLineHeight
+        let averageLineHeightRatio = deltaY / metrics.averageLineHeight
 
-        let text = current.text
-        let prevText = previous.text
-        let isPrevEndPunctuationChar = prevText.hasEndPunctuationSuffix
+        let isPrevEndPunctuationChar = pair.previous.text.hasEndPunctuationSuffix
 
         // Since line spacing sometimes is too small and imprecise, we do not use it.
         if lineHeightRatio > 1.0 || averageLineHeightRatio > greaterThanLineHeightRatio {
@@ -77,15 +71,16 @@ class OCRLineAnalyzer {
         }
 
         if lineHeightRatio > 0.6,
-           !isLongTextObservation(previous, isStrict: true)
-           || isPrevEndPunctuationChar || previous === context.maxLongLineTextObservation {
+           !isLongText(pair.previous, isStrict: true)
+           || isPrevEndPunctuationChar
+           || pair.previous === metrics.maxLongLineTextObservation {
             return true
         }
 
-        let isFirstLetterUpperCase = text.first?.isUppercase == true && text.first?.isLetter == true
+        let isFirstLetterUpperCase = pair.current.text.isFirstLetterUpperCase
 
         // For English text
-        if languageManager.isEnglishLanguage(context.language), isFirstLetterUpperCase {
+        if languageManager.isEnglishLanguage(metrics.language), isFirstLetterUpperCase {
             if lineHeightRatio > 0.85 {
                 return true
             } else {
@@ -99,33 +94,29 @@ class OCRLineAnalyzer {
     }
 
     /// Analyze and compare font sizes between two text observations
-    func checkEqualFontSize(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
-        let currentFontSize = fontSizeOfTextObservation(current)
-        let prevFontSize = fontSizeOfTextObservation(previous)
+    func isEqualFontSize(_ pair: OCRTextObservationPair) -> Bool {
+        let currentFontSize = fontSize(pair.current)
+        let prevFontSize = fontSize(pair.previous)
 
         let differentFontSize = abs(currentFontSize - prevFontSize)
-        let isEqualFontSize = differentFontSize <= differentFontSizeThreshold(context.language)
-        if !isEqualFontSize {
+        let isEqual = differentFontSize <= fontSizeThreshold(metrics.language)
+        if !isEqual {
             print(
                 "Not equal font: diff = \(differentFontSize) (\(prevFontSize), \(currentFontSize))"
             )
         }
-        return isEqualFontSize
+        return isEqual
     }
 
     /// Analyze if text represents short Chinese poetry format
-    func isShortChinesePoetryText(_ text: String) -> Bool {
-        languageManager.isChineseLanguage(context.language)
-            && context.charCountPerLine < Double(OCRConstants.shortPoetryCharacterCountOfLine)
+    func isShortPoetry(_ text: String) -> Bool {
+        languageManager.isChineseLanguage(metrics.language)
+            && metrics.charCountPerLine < Double(OCRConstants.shortPoetryCharacterCountOfLine)
             && text.count < OCRConstants.shortPoetryCharacterCountOfLine
     }
 
     /// Analyze if line length is considered short relative to maximum length
-    func isShortLineLength(
+    func isShortLine(
         _ lineLength: Double,
         maxLineLength: Double,
         lessRateOfMaxLength: Double
@@ -134,68 +125,70 @@ class OCRLineAnalyzer {
         lineLength < maxLineLength * lessRateOfMaxLength
     }
 
-    /// Analyze and handle Chinese poetry formatting logic
-    func handleChinesePoetry(
-        currentText: String,
-        previousText: String,
+    /// Analyze and determine Chinese poetry merge decision
+    func determineChinesePoetryMerge(
+        _ pair: OCRTextObservationPair,
         isEqualChineseText: Bool,
         isBigLineSpacing: Bool
     )
-        -> (shouldWrap: Bool, isNewParagraph: Bool) {
-        let isShortChinesePoetry = isShortChinesePoetryText(currentText)
-        let isPrevShortChinesePoetry = isShortChinesePoetryText(previousText)
+        -> OCRMergeDecision {
+        let isShortChinesePoetry = isShortPoetry(pair.current.text)
+        let isPrevShortChinesePoetry = isShortPoetry(pair.previous.text)
 
         let isChinesePoetryLine =
             isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry)
         let shouldWrap = isChinesePoetryLine
-        let isNewParagraph = shouldWrap && isBigLineSpacing
 
-        return (shouldWrap, isNewParagraph)
+        if shouldWrap, isBigLineSpacing {
+            return .newParagraph
+        } else if shouldWrap {
+            return .lineBreak
+        } else {
+            return .none
+        }
     }
 
-    /// Analyze and handle list formatting logic
-    func handleListFormatting(
-        isPrevList: Bool,
-        isList: Bool,
+    /// Analyze and determine list merge decision
+    func determineListMerge(
+        _ pair: OCRTextObservationPair,
         isBigLineSpacing: Bool
     )
-        -> (needLineBreak: Bool, isNewParagraph: Bool) {
+        -> OCRMergeDecision {
+        let isPrevList = pair.previous.text.isListTypeFirstWord
+        let isList = pair.current.text.isListTypeFirstWord
+
         if isPrevList {
             if isList {
-                return (needLineBreak: true, isNewParagraph: isBigLineSpacing)
+                return isBigLineSpacing ? .newParagraph : .lineBreak
             } else {
                 // List ends, next is new paragraph if big spacing
-                return (needLineBreak: false, isNewParagraph: isBigLineSpacing)
+                return isBigLineSpacing ? .newParagraph : .none
             }
         }
         if isList {
             // New list starts
-            return (needLineBreak: true, isNewParagraph: isBigLineSpacing)
+            return isBigLineSpacing ? .newParagraph : .lineBreak
         }
-        return (needLineBreak: false, isNewParagraph: false)
+        return .none
     }
 
     // MARK: Private
 
-    private let context: OCRContext
+    private let metrics: OCRMetrics
     private var languageManager = EZLanguageManager.shared()
 
     // MARK: - Helper Methods
 
-    private func isEqualXOfTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
+    private func isEqualX(_ pair: OCRTextObservationPair) -> Bool {
         // Simplified implementation based on threshold calculation
-        let threshold = context.singleAlphabetWidth * OCRConstants.indentationCharacterCount
+        let threshold = metrics.singleAlphabetWidth * OCRConstants.indentationCharacterCount
 
-        let lineX = current.boundingBox.origin.x
-        let prevLineX = previous.boundingBox.origin.x
+        let lineX = pair.current.boundingBox.origin.x
+        let prevLineX = pair.previous.boundingBox.origin.x
         let dx = lineX - prevLineX
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let maxLength = context.ocrImage.size.width * context.maxLineLength / scaleFactor
+        let maxLength = metrics.ocrImage.size.width * metrics.maxLineLength / scaleFactor
         let difference = maxLength * dx
 
         // dx > 0, means current line may has indentation.
@@ -203,18 +196,18 @@ class OCRLineAnalyzer {
             return true
         }
 
-        print("Not equalX text: \(current)")
+        print("Not equalX text: \(pair.current)")
         print("difference: \(difference), threshold: \(threshold)")
 
         return false
     }
 
-    private func isLongTextObservation(
+    private func isLongText(
         _ observation: VNRecognizedTextObservation,
         threshold: Double
     )
         -> Bool {
-        let remainingAlphabetCount = remainingAlphabetCountOfTextObservation(observation)
+        let remainingAlphabetCount = remainingAlphabetCount(observation)
         let isLongText = remainingAlphabetCount < threshold
         if !isLongText {
             print("Not long text: \(observation)")
@@ -223,24 +216,24 @@ class OCRLineAnalyzer {
         return isLongText
     }
 
-    private func remainingAlphabetCountOfTextObservation(_ observation: VNRecognizedTextObservation)
+    private func remainingAlphabetCount(_ observation: VNRecognizedTextObservation)
         -> Double {
-        guard let maxObservation = context.maxLongLineTextObservation else { return 0 }
+        guard let maxObservation = metrics.maxLongLineTextObservation else { return 0 }
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
         let dx = maxObservation.boundingBox.maxX - observation.boundingBox.maxX
-        let maxLength = context.ocrImage.size.width * context.maxLineLength / scaleFactor
+        let maxLength = metrics.ocrImage.size.width * metrics.maxLineLength / scaleFactor
         let difference = maxLength * dx
 
-        return difference / context.singleAlphabetWidth
+        return difference / metrics.singleAlphabetWidth
     }
 
-    private func longTextAlphabetCountThreshold(
+    private func longTextThreshold(
         _ observation: VNRecognizedTextObservation,
         isStrict: Bool
     )
         -> Double {
-        let isEnglishTypeLanguage = languageManager.isLanguageWordsNeedSpace(context.language)
+        let isEnglishTypeLanguage = languageManager.isLanguageWordsNeedSpace(metrics.language)
 
         // For long text, there are up to 15 letters or 2 Chinese characters on the far right.
         // "implementation ," : @"你好"
@@ -249,7 +242,7 @@ class OCRLineAnalyzer {
         let text = observation.text
         let isEndPunctuationChar = text.hasEndPunctuationSuffix
 
-        if !isStrict, languageManager.isChineseLanguage(context.language) {
+        if !isStrict, languageManager.isChineseLanguage(metrics.language) {
             if !isEndPunctuationChar {
                 alphabetCount += 0.8
             }
@@ -258,15 +251,11 @@ class OCRLineAnalyzer {
         return alphabetCount
     }
 
-    private func isEqualCharacterLengthTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
-        let isEqual = isEqualTextObservation(current: current, previous: previous)
+    private func isEqualCharacterLength(_ pair: OCRTextObservationPair) -> Bool {
+        let isEqual = isEqualText(pair)
 
-        let currentText = current.text
-        let previousText = previous.text
+        let currentText = pair.current.text
+        let previousText = pair.previous.text
 
         let isCurrentEndPunctuationChar = currentText.hasEndPunctuationSuffix
         let isPreviousEndPunctuationChar = previousText.hasEndPunctuationSuffix
@@ -277,15 +266,11 @@ class OCRLineAnalyzer {
         return isEqual && isEqualLength && isEqualEndSuffix
     }
 
-    private func isEqualTextObservation(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
-    )
-        -> Bool {
-        let isEqualX = isEqualXOfTextObservation(current: current, previous: previous)
+    private func isEqualText(_ pair: OCRTextObservationPair) -> Bool {
+        let isEqualX = isEqualX(pair)
 
-        let lineMaxX = current.boundingBox.maxX
-        let prevLineMaxX = previous.boundingBox.maxX
+        let lineMaxX = pair.current.boundingBox.maxX
+        let prevLineMaxX = pair.previous.boundingBox.maxX
 
         let ratio = 0.95
         let isEqualLineMaxX = isRatioGreaterThan(ratio, value1: lineMaxX, value2: prevLineMaxX)
@@ -299,14 +284,14 @@ class OCRLineAnalyzer {
         return (minValue / maxValue) > ratio
     }
 
-    private func fontSizeOfTextObservation(_ observation: VNRecognizedTextObservation) -> Double {
+    private func fontSize(_ observation: VNRecognizedTextObservation) -> Double {
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
         let textWidth =
-            observation.boundingBox.size.width * context.ocrImage.size.width / scaleFactor
-        return fontSizeOfText(observation.text, width: textWidth)
+            observation.boundingBox.size.width * metrics.ocrImage.size.width / scaleFactor
+        return fontSize(observation.text, width: textWidth)
     }
 
-    private func fontSizeOfText(_ text: String, width textWidth: Double) -> Double {
+    private func fontSize(_ text: String, width textWidth: Double) -> Double {
         let systemFontSize = NSFont.systemFontSize
         let font = NSFont.boldSystemFont(ofSize: systemFontSize)
 
@@ -321,7 +306,7 @@ class OCRLineAnalyzer {
         return fontSize
     }
 
-    private func differentFontSizeThreshold(_ language: Language) -> Double {
+    private func fontSizeThreshold(_ language: Language) -> Double {
         languageManager.isChineseLanguage(language)
             ? OCRConstants.chineseDifferenceFontThreshold
             : OCRConstants.englishDifferenceFontThreshold

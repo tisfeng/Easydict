@@ -16,16 +16,15 @@ class OCRDashHandler {
     // MARK: Internal
 
     /// Check if hyphenated word continuation needs special handling
-    func checkNeedHandleLastDashOfText(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation,
+    func shouldHandleLastDash(
+        _ textObservationPair: OCRTextObservationPair,
         maxLineLength: Double
     )
         -> Bool {
-        let text = current.text
-        let prevText = previous.text
+        let text = textObservationPair.current.text
+        let prevText = textObservationPair.previous.text
 
-        let maxLineFrameX = previous.boundingBox.maxX
+        let maxLineFrameX = textObservationPair.previous.boundingBox.maxX
         let isPrevLongLine = isLongLineLength(maxLineFrameX, maxLineLength: maxLineLength)
 
         let isPrevLastDashChar = isLastJoinedDashCharacter(in: text, prevText: prevText)
@@ -33,18 +32,18 @@ class OCRDashHandler {
     }
 
     /// Check if trailing dash should be removed to join hyphenated words
-    func checkNeedRemoveLastDashOfText(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation
+    func shouldRemoveLastDash(
+        _ textObservationPair: OCRTextObservationPair
     )
         -> Bool {
-        let text = current.text
-        let prevText = previous.text
+        let text = textObservationPair.current.text
+        let prevText = textObservationPair.previous.text
 
         guard !prevText.isEmpty else { return false }
 
         let removedPrevDashText = String(prevText.dropLast())
-        let lastWord = removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
+        let lastWord =
+            removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
         let firstWord = text.components(separatedBy: .whitespacesAndNewlines).first ?? ""
         let newWord = lastWord + firstWord
 
@@ -66,7 +65,8 @@ class OCRDashHandler {
         guard dashCharacters.contains(prevLastChar) else { return false }
 
         let removedPrevDashText = String(prevText.dropLast())
-        let lastWord = removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
+        let lastWord =
+            removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
 
         let isFirstCharAlphabet = text.first?.isLetter ?? false
 

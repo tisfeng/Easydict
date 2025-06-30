@@ -1,5 +1,5 @@
 //
-//  OCRAnalyzer.swift
+//  OCRMetrics.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/26.
@@ -9,26 +9,43 @@
 import Foundation
 import Vision
 
-// MARK: - OCRAnalyzer
+// MARK: - OCRMetrics
 
-/// Handles statistical analysis and calculations for OCR text observations
-class OCRAnalyzer {
+/// Collects and stores statistical metrics and context data for OCR text observations
+/// This class tracks layout measurements, spacing data, text characteristics, and processing context
+class OCRMetrics {
+    // MARK: - Context Data
+
+    var ocrImage: NSImage = .init()
+    var language: Language = .auto
+    var textObservations: [VNRecognizedTextObservation] = []
+
+    // MARK: - Line Height Metrics
+
     var minLineHeight: Double = .greatestFiniteMagnitude
     var totalLineHeight: Double = 0
     var averageLineHeight: Double = 0
+
+    // MARK: - Line Spacing Metrics
 
     var minLineSpacing: Double = .greatestFiniteMagnitude
     var minPositiveLineSpacing: Double = .greatestFiniteMagnitude
     var totalLineSpacing: Double = 0
     var averageLineSpacing: Double = 0
 
+    // MARK: - Line Position and Length Metrics
+
     var minX: Double = .greatestFiniteMagnitude
     var maxLineLength: Double = 0
     var minLineLength: Double = .greatestFiniteMagnitude
 
+    // MARK: - Key Text Observations
+
     var maxLongLineTextObservation: VNRecognizedTextObservation?
     var minXLineTextObservation: VNRecognizedTextObservation?
     var maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
+
+    // MARK: - Text Analysis Metrics
 
     var isPoetry: Bool = false
     var charCountPerLine: Double = 0
@@ -36,8 +53,14 @@ class OCRAnalyzer {
     var punctuationMarkCount: Int = 0
     var singleAlphabetWidth: Double = 0.0
 
-    /// Reset all analytical data to initial values
-    func resetAnalysis() {
+    /// Reset all metrics data to initial values
+    func resetMetrics() {
+        // Reset context data
+        ocrImage = NSImage()
+        language = .auto
+        textObservations = []
+
+        // Reset metrics data
         minLineHeight = .greatestFiniteMagnitude
         totalLineHeight = 0
         averageLineHeight = 0
@@ -62,8 +85,8 @@ class OCRAnalyzer {
         singleAlphabetWidth = 0.0
     }
 
-    /// Analyze line spacing, height, and positioning characteristics
-    func analyzeLineLayout(
+    /// Collect line spacing, height, and positioning metrics
+    func collectLineLayoutMetrics(
         _ textObservation: VNRecognizedTextObservation,
         index: Int,
         observations: [VNRecognizedTextObservation],
@@ -126,8 +149,8 @@ class OCRAnalyzer {
         }
     }
 
-    /// Analyze single character width for text observation
-    func analyzeCharacterWidth(
+    /// Calculate single character width metric for text observation
+    func calculateCharacterWidthMetric(
         _ textObservation: VNRecognizedTextObservation,
         ocrImage: NSImage
     )
