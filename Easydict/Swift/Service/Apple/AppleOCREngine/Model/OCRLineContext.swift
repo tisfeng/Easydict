@@ -28,7 +28,7 @@ struct OCRLineContext {
         self.analyzer = OCRLineAnalyzer(metrics: metrics)
 
         // Automatically calculate properties using analyzer
-        self.isPrevLongText = analyzer.isLongText(pair.previous, isStrict: false)
+        self.isPrevLongText = analyzer.isLongText(pair.previous)
         self.hasIndentation = analyzer.hasIndentation(pair.current)
         self.hasPrevIndentation = analyzer.hasIndentation(pair.previous)
         self.isBigLineSpacing = analyzer.isBigLineSpacing(pair, greaterThanLineHeightRatio: 1.0)
@@ -58,16 +58,16 @@ struct OCRLineContext {
     var previous: VNRecognizedTextObservation { pair.previous }
 
     /// Whether the current observation represents a list item
-    var isList: Bool { current.text.isListTypeFirstWord }
+    var isList: Bool { current.firstText.isListTypeFirstWord }
 
     /// Whether the previous observation represents a list item
-    var isPrevList: Bool { previous.text.isListTypeFirstWord }
+    var isPrevList: Bool { previous.firstText.isListTypeFirstWord }
 
     /// Text content of the current observation
-    var currentText: String { current.text }
+    var currentText: String { current.firstText }
 
     /// Text content of the previous observation
-    var previousText: String { previous.text }
+    var previousText: String { previous.firstText }
 
     /// Whether the current text starts with an uppercase letter
     var isFirstLetterUpperCase: Bool { currentText.isFirstLetterUpperCase }

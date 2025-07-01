@@ -31,7 +31,7 @@ public class AppleOCRTextProcessor {
 
         print("\nTextObservations: \(observations.formattedDescription)")
 
-        let recognizedTexts = observations.compactMap(\.text)
+        let recognizedTexts = observations.compactMap(\.firstText)
 
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
@@ -55,11 +55,14 @@ public class AppleOCRTextProcessor {
                 observations: observations,
                 lineSpacingCount: &lineSpacingCount
             )
+
+            // Update maximum word length for space-separated languages
+            metrics.updateMaxWordLength(textObservation)
         }
 
-        // Update single alphabet width
+        // Calculate average character width from the line with most characters
         if let textObservation = metrics.maxCharacterCountLineTextObservation {
-            metrics.singleAlphabetWidth =
+            metrics.averageCharacterWidth =
                 metrics.calculateCharacterWidthMetric(
                     textObservation, ocrImage: ocrImage
                 )
@@ -76,7 +79,7 @@ public class AppleOCRTextProcessor {
         print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
 
         // Detect if text is poetry
-        metrics.isPoetry = poetryDetector.detectPoetry(observations: observations)
+        metrics.isPoetry = poetryDetector.detectPoetry()
         print("isPoetry: \(metrics.isPoetry)")
 
         // Sort text observations for proper order
@@ -106,8 +109,8 @@ public class AppleOCRTextProcessor {
 
     // Helper components
     private let metrics = OCRMetrics()
-    private let poetryDetector = OCRPoetryDetector()
-    private let dashHandler = OCRDashHandler()
+    private lazy var poetryDetector = OCRPoetryDetector(metrics: metrics)
+    private lazy var dashHandler = OCRDashHandler(metrics: metrics)
 
     /// Calculate and set the overall confidence score for OCR result
     private func calculateConfidence(
@@ -146,8 +149,7 @@ public class AppleOCRTextProcessor {
         var mergedText = ""
 
         for (index, textObservation) in observations.enumerated() {
-            let recognizedText = textObservation.topCandidates(1).first
-            let recognizedString = recognizedText?.string ?? ""
+            let recognizedText = textObservation.firstText
 
             print("\n\(textObservation)")
 
@@ -164,33 +166,37 @@ public class AppleOCRTextProcessor {
 
                 var joinedString: String
 
-                // Check if need to handle last dash of text
-                let isNeedHandleLastDashOfText = dashHandler.shouldHandleLastDash(
-                    textObservationPair,
-                    maxLineLength: metrics.maxLineLength
-                )
+                // Analyze dash handling for this text pair
+                let dashAction = dashHandler.analyzeDashHandling(textObservationPair)
 
-                if isNeedHandleLastDashOfText {
+                switch dashAction {
+                case .none:
+                    // No dash handling needed, proceed with normal text merging
+                    if isNewLine {
+                        // Update metrics with current context data
+                        metrics.ocrImage = ocrImage
+                        metrics.language = language
+
+                        // Create text merger with OCR metrics
+                        let textMerger = AppleOCRTextMerger(metrics: metrics)
+
+                        joinedString = textMerger.joinedString(for: textObservationPair)
+                    } else {
+                        // If the same line, just join two texts
+                        joinedString = " "
+                    }
+
+                case .keepDashAndJoin:
+                    // Keep the dash, and join the words
                     joinedString = ""
 
-                    // Check if need to remove last dash
-                    let isNeedRemoveLastDashOfText = dashHandler.shouldRemoveLastDash(
-                        textObservationPair
-                    )
-                    if isNeedRemoveLastDashOfText, !mergedText.isEmpty {
+                case .removeDashAndJoin:
+                    // Remove the dash, and join the words
+                    joinedString = ""
+                    if !mergedText.isEmpty {
+                        // Remove last dash from mergedText
                         mergedText.removeLast()
                     }
-                } else if isNewLine {
-                    // Update metrics with current context data
-                    metrics.ocrImage = ocrImage
-                    metrics.language = language
-
-                    // Create text merger with OCR metrics
-                    let textMerger = AppleOCRTextMerger(metrics: metrics)
-
-                    joinedString = textMerger.joinedString(for: textObservationPair)
-                } else {
-                    joinedString = " " // if the same line, just join two texts
                 }
 
                 // Store joinedString in observation (mimic original behavior)
@@ -201,7 +207,7 @@ public class AppleOCRTextProcessor {
             }
 
             // 2. append line text
-            mergedText += recognizedString
+            mergedText += recognizedText
         }
 
         // Apply final text processing

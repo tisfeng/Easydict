@@ -51,7 +51,8 @@ class OCRMetrics {
     var charCountPerLine: Double = 0
     var totalCharCount: Int = 0
     var punctuationMarkCount: Int = 0
-    var singleAlphabetWidth: Double = 0.0
+    var averageCharacterWidth: Double = 0.0
+    var maxWordLength: Int = 0 // Maximum word length (only tracked for space-separated languages)
 
     /// Reset all metrics data to initial values
     func resetMetrics() {
@@ -82,7 +83,8 @@ class OCRMetrics {
         charCountPerLine = 0
         totalCharCount = 0
         punctuationMarkCount = 0
-        singleAlphabetWidth = 0.0
+        averageCharacterWidth = 0.0
+        maxWordLength = 0
     }
 
     /// Collect line spacing, height, and positioning metrics
@@ -135,9 +137,9 @@ class OCRMetrics {
         }
 
         // Track maximum character count line
-        let currentCharCount = textObservation.text.count
+        let currentCharCount = textObservation.firstText.count
         if let maxCharObservation = maxCharacterCountLineTextObservation {
-            if currentCharCount > maxCharObservation.text.count {
+            if currentCharCount > maxCharObservation.firstText.count {
                 maxCharacterCountLineTextObservation = textObservation
             }
         } else {
@@ -157,6 +159,24 @@ class OCRMetrics {
         -> Double {
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
         let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width / scaleFactor
-        return textWidth / textObservation.text.count.double
+        return textWidth / textObservation.firstText.count.double
+    }
+
+    /// Update maximum word length for space-separated languages
+    /// This method should only be called for languages that use spaces between words
+    /// - Parameter textObservation: The text observation to analyze
+    func updateMaxWordLength(_ textObservation: VNRecognizedTextObservation) {
+        let languageManager = EZLanguageManager.shared()
+
+        // Only track word length for languages that use spaces between words
+        guard languageManager.isLanguageWordsNeedSpace(language) else {
+            return
+        }
+
+        let words = textObservation.firstText.wordComponents
+
+        for word in words where word.count > maxWordLength {
+            maxWordLength = word.count
+        }
     }
 }

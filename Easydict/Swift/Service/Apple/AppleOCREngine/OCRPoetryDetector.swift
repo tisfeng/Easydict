@@ -13,48 +13,64 @@ import Vision
 
 /// Handles poetry detection logic for OCR text observations
 class OCRPoetryDetector {
+    // MARK: Lifecycle
+
+    /// Initialize poetry detector with OCR metrics
+    /// - Parameter metrics: OCR metrics containing necessary data for poetry detection
+    init(metrics: OCRMetrics) {
+        self.metrics = metrics
+        self.lineMeasurer = OCRLineMeasurer(metrics: metrics)
+    }
+
     // MARK: Internal
 
     /// Detect if the text layout represents poetry based on line characteristics
-    func detectPoetry(observations: [VNRecognizedTextObservation]) -> Bool {
+    func detectPoetry() -> Bool {
+        let observations = metrics.textObservations
         let lineCount = observations.count
+
+        guard lineCount > 0 else { return false }
+
         var longLineCount = 0
         var continuousLongLineCount = 0
         var maxContinuousLongLineCount = 0
-
-        var totalCharCount = 0
-        var totalWordCount = 0
-        var punctuationMarkCount = 0
         var endWithTerminatorCharLineCount = 0
+
+        // Use pre-calculated metrics when available
+        let punctuationMarkCount = metrics.punctuationMarkCount
+        let charCountPerLine = metrics.charCountPerLine
+
+        // Calculate additional metrics needed for poetry detection
+        var totalWordCount = 0
 
         for i in 0 ..< lineCount {
             let observation = observations[i]
-            let text = observation.text
+            let text = observation.firstText
 
-            totalCharCount += text.count
             totalWordCount += text.wordCount
 
             // Check if line ends with punctuation
-            let isEndPunctuationChar = text.hasEndPunctuationSuffix
-            if isEndPunctuationChar {
+            let hasEndPunctuationSuffix = text.hasEndPunctuationSuffix
+            if hasEndPunctuationSuffix {
                 endWithTerminatorCharLineCount += 1
 
                 // Check for prose patterns
                 if i > 0 {
                     let prevObservation = observations[i - 1]
-                    let prevText = prevObservation.text
-                    if isLongTextObservation(prevObservation), !prevText.hasEndPunctuationSuffix {
+                    let prevText = prevObservation.firstText
+                    if lineMeasurer.isLongLine(prevObservation),
+                       !prevText.hasEndPunctuationSuffix {
                         return false
                     }
                 }
             }
 
             // Check for long lines
-            let isLongLine = isLongTextObservation(observation)
+            let isLongLine = lineMeasurer.isLongLine(observation)
             if isLongLine {
                 longLineCount += 1
 
-                if !isEndPunctuationChar {
+                if !hasEndPunctuationSuffix {
                     continuousLongLineCount += 1
                     if continuousLongLineCount > maxContinuousLongLineCount {
                         maxContinuousLongLineCount = continuousLongLineCount
@@ -65,12 +81,8 @@ class OCRPoetryDetector {
             } else {
                 continuousLongLineCount = 0
             }
-
-            // Count punctuation marks
-            punctuationMarkCount += text.countPunctuationMarks()
         }
 
-        let charCountPerLine = totalCharCount.double / lineCount.double
         let wordCountPerLine = totalWordCount.double / lineCount.double
         let numberOfPunctuationMarksPerLine = punctuationMarkCount.double / lineCount.double
 
@@ -118,10 +130,6 @@ class OCRPoetryDetector {
 
     // MARK: Private
 
-    /// Determine if a text observation represents a long line
-    private func isLongTextObservation(_ observation: VNRecognizedTextObservation) -> Bool {
-        // Simplified version - in real implementation this would need maxLineLength reference
-        let observationWidth = observation.boundingBox.width
-        return observationWidth > 0.85 // Assume 85% of some reference width
-    }
+    private let metrics: OCRMetrics
+    private let lineMeasurer: OCRLineMeasurer
 }

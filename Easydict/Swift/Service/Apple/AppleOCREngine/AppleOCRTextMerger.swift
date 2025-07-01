@@ -40,7 +40,7 @@ class AppleOCRTextMerger {
         // Generate final joined string
         return generateJoinedString(
             mergeDecision: mergeDecision,
-            previousText: textObservationPair.previous.text
+            previousText: textObservationPair.previous.firstText
         )
     }
 
@@ -325,8 +325,8 @@ class AppleOCRTextMerger {
     // MARK: - Helper Methods
 
     private func isEqualX(_ textObservationPair: OCRTextObservationPair) -> Bool {
-        // Simplified implementation based on threshold calculation
-        let threshold = metrics.singleAlphabetWidth * OCRConstants.indentationCharacterCount
+        // Calculate threshold based on average character width and indentation constant
+        let threshold = metrics.averageCharacterWidth * OCRConstants.indentationCharacterCount
 
         let lineX = textObservationPair.current.boundingBox.origin.x
         let prevLineX = textObservationPair.previous.boundingBox.origin.x

@@ -78,7 +78,7 @@ public class AppleOCREngine {
     /// Async version for Swift usage - returns string
     func recognizeTextAsString(cgImage: CGImage, language: Language = .auto) async throws -> String {
         let observations = try await recognizeTextAsync(cgImage: cgImage, language: language)
-        let recognizedTexts = observations.compactMap(\.text)
+        let recognizedTexts = observations.compactMap(\.firstText)
         return recognizedTexts.joined(separator: "\n")
     }
 

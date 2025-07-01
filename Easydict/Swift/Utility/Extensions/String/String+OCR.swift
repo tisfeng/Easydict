@@ -41,10 +41,9 @@ extension String {
         return firstChar.isLowercase && firstChar.isLetter
     }
 
-    /// Count the number of words in the text string
+    /// Count the number of words in the text string, splitting by whitespace and punctuation
     var wordCount: Int {
-        let words = components(separatedBy: .whitespacesAndNewlines)
-        return words.filter { !$0.isEmpty }.count
+        wordComponents.count
     }
 
     /// Check if text represents a list item based on common list markers
@@ -56,6 +55,7 @@ extension String {
         let patterns = [
             "^\\d+\\.", // 1. 2. 3. etc.
             "^\\d+\\)", // 1) 2) 3) etc.
+            "^\\d+\\）", // 1） 2） 3） etc. (Chinese parentheses)
             "^[a-z]\\.", // a. b. c. etc.
             "^[A-Z]\\.", // A. B. C. etc.
             "^[a-z]\\)", // a) b) c) etc.
@@ -81,8 +81,29 @@ extension String {
             do {
                 let regex = try NSRegularExpression(pattern: pattern, options: [])
                 let range = NSRange(location: 0, length: trimmedText.utf16.count)
-                if regex.firstMatch(in: trimmedText, options: [], range: range) != nil {
-                    return true
+                if let match = regex.firstMatch(in: trimmedText, options: [], range: range) {
+                    // Found a list marker, now check what follows
+                    let markerEndIndex = match.range.upperBound
+
+                    // Check if there's content after the marker
+                    guard markerEndIndex < trimmedText.utf16.count else { return false }
+
+                    // Get the substring after the marker
+                    let afterMarkerIndex = trimmedText.index(
+                        trimmedText.startIndex, offsetBy: markerEndIndex
+                    )
+                    let remainingText = String(trimmedText[afterMarkerIndex...])
+
+                    // Find the first non-whitespace character after the marker
+                    let firstNonSpaceChar = remainingText.first { !$0.isWhitespace }
+
+                    // The first non-whitespace character should not be a punctuation mark
+                    if let char = firstNonSpaceChar {
+                        return !String(char).isPunctuationCharacter
+                    }
+
+                    // If no non-whitespace character found after marker, it's not a valid list item
+                    return false
                 }
             } catch {
                 // If regex compilation fails, continue to next pattern
@@ -91,6 +112,27 @@ extension String {
         }
 
         return false
+    }
+
+    /// Get the first word in the string, splitting by whitespace and punctuation
+    var firstWord: String {
+        wordComponents.first ?? ""
+    }
+
+    /// Get the last word in the string, splitting by whitespace and punctuation
+    var lastWord: String {
+        wordComponents.last ?? ""
+    }
+
+    /// Split text into word components, separating by whitespace and punctuation
+    var wordComponents: [String] {
+        // Create a character set that includes whitespace, newlines, and punctuation
+        var separatorSet = CharacterSet.whitespacesAndNewlines
+        separatorSet.formUnion(.punctuationCharacters)
+
+        // Split the string and filter out empty components
+        let components = components(separatedBy: separatorSet)
+        return components.filter { !$0.isEmpty }
     }
 
     /// Count punctuation marks in text, excluding poetry-specific characters

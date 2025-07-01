@@ -41,14 +41,12 @@ public class AppleLanguageDetector: NSObject {
     /// Detect language and return probability dictionary
     @objc
     public func detectLanguageDict(text: String, printLog: Bool) -> [String: NSNumber] {
-        let trimmedText = String(text.prefix(100))
-
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let recognizer = NLLanguageRecognizer()
         recognizer.languageConstraints = designatedLanguages
         recognizer.languageHints = customLanguageHints
-        recognizer.processString(trimmedText)
+        recognizer.processString(text)
 
         let languageProbabilityDict = recognizer.languageHypotheses(withMaximum: 5)
         let dominantLanguage = recognizer.dominantLanguage

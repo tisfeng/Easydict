@@ -29,11 +29,11 @@
 		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
+		031EC682965C7C456F81CDF1 /* OCRMergeDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
 		03220E2A2E11A1A0002C7F3F /* OCRTextObservationPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */; };
-		031EC682965C7C456F81CDF1 /* OCRMergeDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
@@ -45,6 +45,7 @@
 		032AAA592C456F04007996A1 /* configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA542C456F03007996A1 /* configure.swift */; };
 		032AAA5B2C456F04007996A1 /* routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA572C456F03007996A1 /* routes.swift */; };
 		032AAA5D2C45744E007996A1 /* VaporServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032AAA5C2C45744E007996A1 /* VaporServer.swift */; };
+		032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032E7CD02E13CE2100BB8B00 /* OCRLineMeasurer.swift */; };
 		033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */; };
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
 		0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */; };
@@ -453,11 +454,11 @@
 		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
+		031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeDecision.swift; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
 		03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextObservationPair.swift; sourceTree = "<group>"; };
-		031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeDecision.swift; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
 		03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLoadingAnimationView.m; sourceTree = "<group>"; };
 		03262C1A29EEE91700EFECA0 /* EZEnumTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEnumTypes.h; sourceTree = "<group>"; };
@@ -473,6 +474,7 @@
 		032AAA542C456F03007996A1 /* configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = configure.swift; sourceTree = "<group>"; };
 		032AAA572C456F03007996A1 /* routes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = routes.swift; sourceTree = "<group>"; };
 		032AAA5C2C45744E007996A1 /* VaporServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaporServer.swift; sourceTree = "<group>"; };
+		032E7CD02E13CE2100BB8B00 /* OCRLineMeasurer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineMeasurer.swift; sourceTree = "<group>"; };
 		0333639E293A05D200FED9C8 /* EZSelectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageButton.h; sourceTree = "<group>"; };
 		0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageButton.m; sourceTree = "<group>"; };
 		033363A4293C4AFA00FED9C8 /* PrintBeautifulLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintBeautifulLog.h; sourceTree = "<group>"; };
@@ -1132,6 +1134,7 @@
 				03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */,
 				0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */,
 				0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */,
+				032E7CD02E13CE2100BB8B00 /* OCRLineMeasurer.swift */,
 				03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */,
 			);
 			path = AppleOCREngine;
@@ -3426,6 +3429,7 @@
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03F19D7E2E090F390046C6F2 /* AppleOCRTextProcessor.swift in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
+				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
 				033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */,
 				03779F172BB256C5008D3C42 /* URL+Extension.swift in Sources */,
 				0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */,

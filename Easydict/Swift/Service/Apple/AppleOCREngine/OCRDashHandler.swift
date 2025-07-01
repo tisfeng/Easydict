@@ -9,72 +9,111 @@
 import Foundation
 import Vision
 
+// MARK: - DashHandlingAction
+
+/// Represents the action to take when handling dash characters in OCR text
+enum DashHandlingAction {
+    /// No special action needed
+    case none
+
+    /// Keep the dash character as is, and join the words
+    case keepDashAndJoin
+
+    /// Remove the dash, and join the words
+    case removeDashAndJoin
+}
+
 // MARK: - OCRDashHandler
 
-/// Handles dash-related operations for OCR text processing
+/// Handles dash-related operations for OCR text processing.
+///
+/// We have to handle the dash character in OCR text processing, especially when it is used for word continuation. For example, in the text:
+///
+/// ```
+/// little coolness; it comes hotter and hotter, you sleep in beginning of after-
+/// noon. Then I try to work again, but it is hard, because it does not get cooler
+/// ```
 class OCRDashHandler {
-    // MARK: Internal
+    // MARK: Lifecycle
 
-    /// Check if hyphenated word continuation needs special handling
-    func shouldHandleLastDash(
-        _ textObservationPair: OCRTextObservationPair,
-        maxLineLength: Double
-    )
-        -> Bool {
-        let text = textObservationPair.current.text
-        let prevText = textObservationPair.previous.text
-
-        let maxLineFrameX = textObservationPair.previous.boundingBox.maxX
-        let isPrevLongLine = isLongLineLength(maxLineFrameX, maxLineLength: maxLineLength)
-
-        let isPrevLastDashChar = isLastJoinedDashCharacter(in: text, prevText: prevText)
-        return isPrevLongLine && isPrevLastDashChar
+    /// Initialize dash handler with OCR metrics
+    /// - Parameter metrics: OCR metrics containing necessary data for dash handling
+    init(metrics: OCRMetrics) {
+        self.metrics = metrics
+        self.lineMeasurer = OCRLineMeasurer(metrics: metrics)
     }
 
-    /// Check if trailing dash should be removed to join hyphenated words
-    func shouldRemoveLastDash(
-        _ textObservationPair: OCRTextObservationPair
-    )
-        -> Bool {
-        let text = textObservationPair.current.text
-        let prevText = textObservationPair.previous.text
+    // MARK: Internal
 
-        guard !prevText.isEmpty else { return false }
+    /// Analyze dash handling for a text observation pair
+    /// Returns the appropriate action to take for dash processing
+    func analyzeDashHandling(_ pair: OCRTextObservationPair) -> DashHandlingAction {
+        // First check if we have a potential hyphenated word continuation
+        guard hasHyphenatedWordContinuation(pair) else {
+            return .none
+        }
 
-        let removedPrevDashText = String(prevText.dropLast())
-        let lastWord =
-            removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
-        let firstWord = text.components(separatedBy: .whitespacesAndNewlines).first ?? ""
-        let newWord = lastWord + firstWord
+        // Check if the previous line is long enough to warrant dash handling
+        guard lineMeasurer.isLongLine(pair.previous) else {
+            return .none
+        }
 
-        let isLowercaseWord = firstWord.first?.isLowercase ?? false
-        let isSpelledCorrectly = (newWord as NSString).isSpelledCorrectly()
-
-        return isLowercaseWord && isSpelledCorrectly
+        // Check if the joined word would be spelled correctly
+        let joinedWord = createJoinedWord(from: pair)
+        if isSpelledCorrectly(joinedWord) {
+            return .removeDashAndJoin
+        } else {
+            return .keepDashAndJoin
+        }
     }
 
     // MARK: Private
 
-    /// Check if text contains a dash character used for word continuation
-    private func isLastJoinedDashCharacter(in text: String, prevText: String) -> Bool {
-        guard !prevText.isEmpty, !text.isEmpty else { return false }
+    private let metrics: OCRMetrics
+    private let lineMeasurer: OCRLineMeasurer
 
-        let prevLastChar = String(prevText.suffix(1))
-        let dashCharacters = ["-", "–", "—"]
+    /// Characters that can be used for word continuation
+    private let dashCharacters = ["-", "–", "—"]
 
-        guard dashCharacters.contains(prevLastChar) else { return false }
+    /// Check if the text pair represents a hyphenated word continuation
+    private func hasHyphenatedWordContinuation(_ pair: OCRTextObservationPair) -> Bool {
+        let currentText = pair.current.firstText
+        let previousText = pair.previous.firstText
 
-        let removedPrevDashText = String(prevText.dropLast())
-        let lastWord =
-            removedPrevDashText.components(separatedBy: .whitespacesAndNewlines).last ?? ""
+        guard !previousText.isEmpty, !currentText.isEmpty else { return false }
 
-        let isFirstCharAlphabet = text.first?.isLetter ?? false
+        // Check if previous text ends with a dash
+        guard previousTextEndsWithDash(previousText) else { return false }
 
-        return !lastWord.isEmpty && isFirstCharAlphabet
+        // Check if current text starts with a letter (word continuation)
+        guard currentText.first?.isLetter == true else { return false }
+
+        // Check if there's a valid word before the dash
+        let wordBeforeDash = getWordBeforeDash(from: previousText)
+        return !wordBeforeDash.isEmpty
     }
 
-    /// Check if line length qualifies as "long" based on maximum line width
-    private func isLongLineLength(_ lineLength: Double, maxLineLength: Double) -> Bool {
-        lineLength >= maxLineLength * 0.9
+    /// Check if previous text ends with a dash character
+    private func previousTextEndsWithDash(_ text: String) -> Bool {
+        guard let lastChar = text.last else { return false }
+        return dashCharacters.contains(String(lastChar))
+    }
+
+    /// Get the word that appears before the dash in the text
+    private func getWordBeforeDash(from text: String) -> String {
+        let textWithoutDash = String(text.dropLast())
+        return textWithoutDash.lastWord
+    }
+
+    /// Create the joined word by combining the word before dash with the first word of current text
+    private func createJoinedWord(from pair: OCRTextObservationPair) -> String {
+        let wordBeforeDash = getWordBeforeDash(from: pair.previous.firstText)
+        let firstWordOfCurrent = pair.current.firstText.firstWord
+        return wordBeforeDash + firstWordOfCurrent
+    }
+
+    /// Check if a word is spelled correctly
+    private func isSpelledCorrectly(_ word: String) -> Bool {
+        (word as NSString).isSpelledCorrectly()
     }
 }

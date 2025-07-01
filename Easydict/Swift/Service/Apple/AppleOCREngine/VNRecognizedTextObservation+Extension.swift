@@ -12,7 +12,7 @@ import Vision
 
 extension VNRecognizedTextObservation {
     /// A computed property to get the top candidate string, returns empty string if not available.
-    var text: String {
+    var firstText: String {
         topCandidates(1).first?.string ?? ""
     }
 
@@ -21,7 +21,7 @@ extension VNRecognizedTextObservation {
         let boundRect = boundingBox
         return String(
             format: "Text: \"%@\", { x=%.3f, y=%.3f, width=%.3f, height=%.3f }",
-            text,
+            firstText,
             boundRect.origin.x,
             boundRect.origin.y,
             boundRect.size.width,
@@ -54,6 +54,6 @@ extension Array where Element == VNRecognizedTextObservation {
 
     /// Extract just the recognized text strings from observations
     var recognizedTexts: [String] {
-        map { $0.text }
+        map { $0.firstText }
     }
 }
