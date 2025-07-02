@@ -16,6 +16,11 @@ import Vision
 public class AppleOCRTextProcessor {
     // MARK: Internal
 
+    /// Normalize and replace various text symbols for better readability and consistency
+    func normalizeTextSymbols(in string: String) -> String {
+        textNormalizer.normalizeTextSymbols(in: string)
+    }
+
     /// Process OCR observations into structured result with intelligent text merging
     func setupOCRResult(
         _ ocrResult: EZOCRResult,
@@ -23,11 +28,12 @@ public class AppleOCRTextProcessor {
         ocrImage: NSImage,
         intelligentJoined: Bool
     ) {
-        self.ocrImage = ocrImage
-        language = ocrResult.from
-
         // Reset statistics
         metrics.resetMetrics()
+        metrics.language = ocrResult.from
+        metrics.ocrImage = ocrImage
+        metrics.textObservations = observations
+        metrics.ocrImage = ocrImage
 
         print("\nTextObservations: \(observations.formattedDescription)")
 
@@ -103,14 +109,15 @@ public class AppleOCRTextProcessor {
 
     // MARK: Private
 
-    private var ocrImage = NSImage()
-    private var language: Language = .auto
+    //    private var ocrImage = NSImage()
+    //    private var language: Language = .auto
     private let languageManager = EZLanguageManager.shared()
 
     // Helper components
     private let metrics = OCRMetrics()
     private lazy var poetryDetector = OCRPoetryDetector(metrics: metrics)
     private lazy var dashHandler = OCRDashHandler(metrics: metrics)
+    private lazy var textNormalizer = OCRTextNormalizer(metrics: metrics)
 
     /// Calculate and set the overall confidence score for OCR result
     private func calculateConfidence(
@@ -173,10 +180,6 @@ public class AppleOCRTextProcessor {
                 case .none:
                     // No dash handling needed, proceed with normal text merging
                     if isNewLine {
-                        // Update metrics with current context data
-                        metrics.ocrImage = ocrImage
-                        metrics.language = language
-
                         // Create text merger with OCR metrics
                         let textMerger = AppleOCRTextMerger(metrics: metrics)
 
@@ -211,23 +214,7 @@ public class AppleOCRTextProcessor {
         }
 
         // Apply final text processing
-        return replaceSimilarDotSymbol(in: mergedText).trim()
-    }
-
-    /// Replace similar dot symbols with standardized middle dot character
-    private func replaceSimilarDotSymbol(in string: String) -> String {
-        let charSet = CharacterSet(charactersIn: "⋅•⋅‧∙")
-        let components = string.components(separatedBy: charSet)
-
-        if components.count > 1 {
-            let trimmedComponents = components.compactMap { component in
-                let trimmed = component.trimmingCharacters(in: .whitespaces)
-                return trimmed.isEmpty ? nil : trimmed
-            }
-            return trimmedComponents.joined(separator: " · ")
-        }
-
-        return string
+        return normalizeTextSymbols(in: mergedText).trim()
     }
 
     /// Determine if current observation represents a new line relative to previous observation
