@@ -83,13 +83,24 @@ struct AdvancedTab: View {
                         .fixedSize(horizontal: true, vertical: false)
                         .onChange(of: minClassicalChineseTextDetectLength) { newValue in
                             minClassicalChineseTextDetectLength = newValue.filter { $0.isNumber }
-                            logInfo("Min classical Chinese text detect length: \(minClassicalChineseTextDetectLength)")
+                            logInfo(
+                                "Min classical Chinese text detect length: \(minClassicalChineseTextDetectLength)"
+                            )
                         }
                 } label: {
                     AdvancedTabItemView(
                         color: .mint,
                         systemImage: SFSymbol.book.rawValue,
                         labelText: "setting.advance.min_classical_chinese_text_detect_length"
+                    )
+                }
+
+                Toggle(isOn: $enableOCRTextNormalization) {
+                    AdvancedTabItemView(
+                        color: .yellow,
+                        systemImage: SFSymbol.docViewfinder.rawValue,
+                        labelText: "setting.advance.enable_ocr_text_normalization",
+                        subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
                     )
                 }
             }
@@ -275,7 +286,9 @@ struct AdvancedTab: View {
                     }
                     .onChange(of: maxWindowHeightPercentageValue) { _ in
                         // Post notification when max window height percentage changes
-                        NotificationCenter.default.post(name: .maxWindowHeightSettingsChanged, object: nil)
+                        NotificationCenter.default.post(
+                            name: .maxWindowHeightSettingsChanged, object: nil
+                        )
                     }
                 }
 
@@ -326,8 +339,8 @@ struct AdvancedTab: View {
     @Default(.replaceWithTranslationInCompatibilityMode) private
     var replaceWithTranslationInCompatibilityMode
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
-
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
+    @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
 
     // Force get selected text
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText

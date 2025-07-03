@@ -5967,6 +5967,62 @@
         }
       }
     },
+    "setting.advance.enable_ocr_text_normalization" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable OCR Text Format Optimization"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť formátovanie textu OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用 OCR 文本格式优化"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用 OCR 文本格式優化"
+          }
+        }
+      }
+    },
+    "setting.advance.enable_ocr_text_normalization_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The original OCR recognized text format may be incorrect. Enabling this option will optimize the recognized text format."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pôvodný formát rozpoznaného textu OCR môže byť nesprávny. Zapnutím tejto možnosti sa optimalizuje formát rozpoznaného textu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 原始识别文本格式可能有误，开启该选项后，将会对文本进行格式优化处理。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 原始識別文本格式可能有誤，開啟該選項後，將會對文本進行格式優化處理。"
+          }
+        }
+      }
+    },
     "setting.advance.footer.query_text_processing_desc" : {
       "localizations" : {
         "en" : {

@@ -16,11 +16,6 @@ import Vision
 public class AppleOCRTextProcessor {
     // MARK: Internal
 
-    /// Normalize and replace various text symbols for better readability and consistency
-    func normalizeTextSymbols(in string: String) -> String {
-        textNormalizer.normalizeText(string)
-    }
-
     /// Process OCR observations into structured result with intelligent text merging
     func setupOCRResult(
         _ ocrResult: EZOCRResult,
@@ -213,8 +208,11 @@ public class AppleOCRTextProcessor {
             mergedText += recognizedText
         }
 
-        // Apply final text processing
-        return normalizeTextSymbols(in: mergedText).trim()
+        if Configuration.shared.enableOCRTextNormalization {
+            mergedText = textNormalizer.normalizeText(mergedText)
+        }
+
+        return mergedText.trim()
     }
 
     /// Determine if current observation represents a new line relative to previous observation

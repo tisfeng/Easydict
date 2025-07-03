@@ -97,9 +97,11 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
-    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
+    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType:
+        ForceGetSelectedTextType
 
     @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
+    @DefaultsWrapper(.enableOCRTextNormalization) var enableOCRTextNormalization: Bool
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
 
