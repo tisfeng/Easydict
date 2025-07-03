@@ -43,21 +43,21 @@ class OCRLineMeasurer {
         return actualRemainingCharacters < threshold
     }
 
+    // MARK: Private
+
+    private let metrics: OCRMetrics
+    private let languageManager: EZLanguageManager
+
     /// Check if a line observation is considered "long" based on simple length ratio
     /// This is a simplified version for basic length checking
     /// - Parameters:
     ///   - observation: The text observation to check
     ///   - threshold: The threshold ratio (0.0 to 1.0), defaults to 0.9
     /// - Returns: True if the line is considered long according to the threshold
-    func isLongLine(_ observation: VNRecognizedTextObservation, threshold: Double) -> Bool {
+    private func isLongLine(_ observation: VNRecognizedTextObservation, threshold: Double) -> Bool {
         let lineLength = observation.boundingBox.maxX
         return lineLength >= metrics.maxLineLength * threshold
     }
-
-    // MARK: Private
-
-    private let metrics: OCRMetrics
-    private let languageManager: EZLanguageManager
 
     // MARK: - Strategy Implementations
 

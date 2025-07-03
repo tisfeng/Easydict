@@ -14,7 +14,6 @@ import Translation
 /// Tests for Apple translation and language services
 @Suite("Apple Services", .tags(.apple, .integration))
 struct AppleServiceTests {
-
     @available(macOS 15.0, *)
     @Test("Apple Service Language Availability", .tags(.apple))
     func testLanguageAvailability() async {
@@ -34,7 +33,8 @@ struct AppleServiceTests {
         )
 
         #expect(
-            try await translationService.translate(text: "Hello, world!").targetText == "你好，世界！")
+            try await translationService.translate(text: "Hello, world!").targetText == "你好，世界！"
+        )
         #expect(try await translationService.translate(text: "good").targetText == "利益")
 
         let response = try await translationService.translate(

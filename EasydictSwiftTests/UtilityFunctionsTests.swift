@@ -13,7 +13,6 @@ import Testing
 /// Tests for utility functions and helper methods
 @Suite("Utility Functions", .tags(.utilities, .unit))
 struct UtilityFunctionsTests {
-
     @Test("AES Encryption and Decryption", .tags(.utilities))
     func testAES() {
         let text = "123"

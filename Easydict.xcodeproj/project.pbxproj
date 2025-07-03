@@ -134,6 +134,7 @@
 		03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8829D95044005B5A52 /* ToastWindowController.xib */; };
 		03882F9129D95044005B5A52 /* CTCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8929D95044005B5A52 /* CTCommon.m */; };
 		03882F9229D95044005B5A52 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8C29D95044005B5A52 /* Info.plist */; };
+		038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */; };
 		038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038A723F2B62C0B9004995E3 /* String+Regex.swift */; };
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
@@ -369,7 +370,6 @@
 		96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */; };
 		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
 		AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */; };
-		B5BF5B58848046F4B88EADA6 /* LegacyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B528721662B47D0B8F94D26 /* LegacyTests.swift */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */; };
 		C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */; };
@@ -596,6 +596,7 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingChineseTests.swift; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
 		03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationKey.swift; sourceTree = "<group>"; };
@@ -925,7 +926,6 @@
 		6A8C988D2BAC88B500DB835A /* I18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = I18nHelper.swift; sourceTree = "<group>"; };
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
-		6B528721662B47D0B8F94D26 /* LegacyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyTests.swift; sourceTree = "<group>"; };
 		8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRPunctuationTests.swift; sourceTree = "<group>"; };
 		8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtilitiesTests.swift; sourceTree = "<group>"; };
 		894B8BB62D5D989A004B36C1 /* PronunciationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationExtensions.swift; sourceTree = "<group>"; };
@@ -1065,13 +1065,13 @@
 		03022F2F2B370B7100B63209 /* EasydictSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
+				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
 				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
-				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
-				6B528721662B47D0B8F94D26 /* LegacyTests.swift */,
 			);
 			path = EasydictSwiftTests;
 			sourceTree = "<group>";
@@ -3121,7 +3121,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT/$TARGET_NAME\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT\"\n";
 		};
 		0A10B7439899441180660AF2 /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3216,7 +3216,7 @@
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
-				B5BF5B58848046F4B88EADA6 /* LegacyTests.swift in Sources */,
+				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

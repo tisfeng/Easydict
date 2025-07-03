@@ -89,12 +89,16 @@ enum TestSuites {
 ```bash
 # 运行所有 OCR 相关测试
 xcodebuild test -only-testing:EasydictSwiftTests/OCRTextProcessingTests
-
-# 运行标点符号相关测试
 xcodebuild test -only-testing:EasydictSwiftTests/OCRPunctuationTests
 
 # 运行 Apple 服务测试
 xcodebuild test -only-testing:EasydictSwiftTests/AppleServiceTests
+
+# 运行系统工具测试
+xcodebuild test -only-testing:EasydictSwiftTests/SystemUtilitiesTests
+
+# 运行工具函数测试
+xcodebuild test -only-testing:EasydictSwiftTests/UtilityFunctionsTests
 ```
 
 ### 模块化收益

@@ -18,7 +18,7 @@ public class AppleOCRTextProcessor {
 
     /// Normalize and replace various text symbols for better readability and consistency
     func normalizeTextSymbols(in string: String) -> String {
-        textNormalizer.normalizeTextSymbols(in: string)
+        textNormalizer.normalizeText(string)
     }
 
     /// Process OCR observations into structured result with intelligent text merging

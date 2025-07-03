@@ -10,153 +10,93 @@ import Testing
 
 @testable import Easydict
 
+// MARK: - OCRTextProcessingTests
+
 /// Tests for OCR text processing and normalization
-@Suite("OCR Text Processing", .tags(.ocr, .unit))
+@Suite("OCR Processing English Text", .tags(.ocr, .unit))
 struct OCRTextProcessingTests {
+    // MARK: - Tests
+
+    let normalizer = OCRTextNormalizer(language: .english)
 
     @Test("OCR Text Normalizer Spacing", .tags(.ocr))
-    func testOCRTextNormalizerSpacing() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
+    func testOCRTextNormalizerSpacing() {
+        // Combine multiple test cases into one multiline string
+        let testCases = """
+        Hello    world   test
+        Hello , world .Test ; again !
+        The price is 10 . 99 dollars
+        """
 
-        // Test multiple spaces (should be reduced to single space)
-        let multiSpaceText = "Hello    world   test"
-        let normalizedSpaces = normalizer.normalizeTextSymbols(in: multiSpaceText)
-        #expect(normalizedSpaces == "Hello world test")
+        let normalizedText = normalizer.normalizeText(testCases)
 
-        // Test punctuation spacing for English
-        let punctuationText = "Hello , world .Test ; again !"
-        let normalizedPunctuation = normalizer.normalizeTextSymbols(in: punctuationText)
-        #expect(normalizedPunctuation.contains("Hello, world. Test; again!"))
-
-        // Test decimal numbers should not be affected
-        let decimalText = "The price is 10 . 99 dollars"
-        let normalizedDecimal = normalizer.normalizeTextSymbols(in: decimalText)
-        #expect(normalizedDecimal.contains("10.99"))
+        // Check all expected results in the normalized text
+        #expect(normalizedText.contains("Hello world test")) // Multiple spaces reduced
+        #expect(normalizedText.contains("Hello, world. Test; again!")) // Punctuation spacing fixed
+        #expect(normalizedText.contains("10.99")) // Decimal numbers preserved
+        #expect(!normalizedText.contains("    ")) // No multiple spaces anywhere
     }
 
-    @Test("OCR Text Normalization Quotes", .tags(.ocr))
-    func testOCRTextNormalizationQuotes() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
+    @Test("Essential OCR symbol corrections")
+    func testEssentialSymbolCorrections() {
+        // Combine all essential symbol corrections into one test
+        let testCases = """
+        don´t work properly
+        hello—world connection
+        pages 1–10 range
+        test―case scenario
+        wait… for response
+        Item 1 • Item 2 ⋅ Item 3 ∙ Item 4
+        """
 
-        // Test quote normalization
-        let quoteText =
-            "This is a `test´ with \u{201C}quotes\u{201D} and \u{2018}apostrophes\u{2019}"
-        let normalizedQuotes = normalizer.normalizeTextSymbols(in: quoteText)
-        #expect(normalizedQuotes.contains("'test'"))
-        #expect(normalizedQuotes.contains("\"quotes\""))
-        #expect(normalizedQuotes.contains("'apostrophes'"))
+        let normalizedText = normalizer.normalizeText(testCases)
+
+        // Check all expected corrections
+        #expect(normalizedText.contains("don't work")) // Acute accent correction
+        #expect(normalizedText.contains("hello-world")) // Em dash
+        #expect(normalizedText.contains("pages 1-10")) // En dash
+        #expect(normalizedText.contains("test-case")) // Horizontal bar
+        #expect(normalizedText.contains("wait... for")) // Ellipsis normalization
+        #expect(normalizedText.contains("Item 1 · Item 2 · Item 3 · Item 4")) // Dots unified
     }
 
-    @Test("OCR Text Normalization Dashes", .tags(.ocr))
-    func testOCRTextNormalizationDashes() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
-
-        // Test dash normalization
-        let dashText = "This is a test—with different–dashes―here"
-        let normalizedDashes = normalizer.normalizeTextSymbols(in: dashText)
-        #expect(normalizedDashes.contains("test-with"))
-        #expect(normalizedDashes.contains("different-dashes-here"))
-    }
-
-    @Test("OCR Text Normalization Symbols", .tags(.ocr))
-    func testOCRTextNormalizationSymbols() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
-
-        // Test symbol normalization
-        let symbolText = "Temperature is 98° and 2×3÷2 equals 3"
-        let normalizedSymbols = normalizer.normalizeTextSymbols(in: symbolText)
-        #expect(normalizedSymbols.contains("98o"))
-        #expect(normalizedSymbols.contains("2x3/2"))
-    }
-
-    @Test("OCR Text Normalization Dots", .tags(.ocr))
-    func testOCRTextNormalizationDots() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
-
-        // Test various dot symbols
-        let dotText = "Item 1 • Item 2 ⋅ Item 3 ∙ Item 4"
-        let normalizedDots = normalizer.normalizeTextSymbols(in: dotText)
-        #expect(normalizedDots.contains("Item 1 · Item 2 · Item 3 · Item 4"))
-    }
-
-    @Test("OCR Text Normalization Ellipsis", .tags(.ocr))
-    func testOCRTextNormalizationEllipsis() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
-
-        // Test ellipsis normalization
-        let ellipsisText = "Wait… for it"
-        let normalizedEllipsis = normalizer.normalizeTextSymbols(in: ellipsisText)
-        #expect(normalizedEllipsis.contains("Wait... for it"))
-    }
-
-    @Test("OCR Complete Text Normalization", .tags(.ocr, .integration))
-    func testOCRCompleteTextNormalization() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
-
-        // Test complete normalization pipeline
+    @Test("OCR Complete Text Normalization", .tags(.ocr))
+    func testOCRCompleteTextNormalization() {
+        // Comprehensive test with various OCR issues in one multiline string
         let messyText = """
-            This is a   `test´ with   \u{201C}bad quotes\u{201D}   and—dashes…
-            It has multiple    spaces，wrong punctuation；and
-            various•symbols⋅that need∙fixing。
-            """
+        This is a   test´ with   multiple   spaces—and dashes…
+        It has wrong    punctuation；and various•symbols⋅that need∙fixing。
 
-        let cleanText = normalizer.normalizeTextSymbols(in: messyText)
-
-        // The text should be much cleaner now
-        #expect(cleanText.contains("'test'"))
-        #expect(cleanText.contains("\"bad quotes\""))
-        #expect(cleanText.contains("and-dashes..."))
-        #expect(cleanText.contains("spaces, wrong punctuation;"))
-        #expect(cleanText.contains("symbols · that"))
-        #expect(!cleanText.contains("    "))  // No multiple spaces
-    }
-
-    @Test("OCR Paragraph Preservation", .tags(.ocr))
-    func testOCRParagraphPreservation() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
-
-        // Test that paragraph structure is preserved while fixing spacing
-        let paragraphText = """
-            First paragraph with    multiple    spaces.
-
-            Second paragraph also    has   extra   spaces.
+        First paragraph with    multiple    spaces.
 
 
-            Third paragraph   with   lots   of   spaces.
-            """
+        Third paragraph   with   lots   of   spaces.
+        Temperature: 98°F and calculation 2×3=6÷2 result.
+        Code example: `array.map()` and "quoted text" with 'apostrophes'.
+        """
 
-        let normalizedText = normalizer.normalizeTextSymbols(in: paragraphText)
+        let cleanText = normalizer.normalizeText(messyText)
 
-        // Spaces within lines should be normalized
-        #expect(normalizedText.contains("First paragraph with multiple spaces."))
-        #expect(normalizedText.contains("Second paragraph also has extra spaces."))
-        #expect(normalizedText.contains("Third paragraph with lots of spaces."))
+        // Check symbol corrections
+        #expect(cleanText.contains("test'")) // Acute accent fixed
+        #expect(cleanText.contains("spaces-and")) // Dashes normalized
+        #expect(cleanText.contains("dashes...")) // Ellipsis normalized
+        #expect(cleanText.contains("punctuation;")) // Western punctuation for English
+        #expect(cleanText.contains("symbols · that")) // Dots unified
 
-        // But paragraph separation should be preserved (single empty line between paragraphs)
-        let lines = normalizedText.components(separatedBy: "\n")
-        let nonEmptyLines = lines.filter {
-            !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        }
-        #expect(nonEmptyLines.count == 3)  // Should have exactly 3 paragraphs
+        // Check spacing normalization
+        #expect(!cleanText.contains("    ")) // No multiple spaces
+        #expect(cleanText.contains("First paragraph with multiple spaces."))
+        #expect(cleanText.contains("Third paragraph with lots of spaces."))
 
-        // Should have empty lines between paragraphs
-        #expect(normalizedText.contains("spaces.\n\nSecond paragraph"))
-        #expect(normalizedText.contains("spaces.\n\nThird paragraph"))
+        // Check preserved symbols
+        #expect(cleanText.contains("98°F")) // Degree symbol preserved
+        #expect(cleanText.contains("2×3=6÷2")) // Math symbols preserved
+        #expect(cleanText.contains("`array.map()`")) // Backticks preserved
+        #expect(cleanText.contains("\"quoted text\"")) // Quotes preserved
+        #expect(cleanText.contains("'apostrophes'")) // Apostrophes preserved
+
+        // Check paragraph structure preservation
+        #expect(cleanText.contains("spaces.\n\nThird paragraph")) // Paragraph separation maintained
     }
 }

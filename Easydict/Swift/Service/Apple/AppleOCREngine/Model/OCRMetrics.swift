@@ -14,6 +14,17 @@ import Vision
 /// Collects and stores statistical metrics and context data for OCR text observations
 /// This class tracks layout measurements, spacing data, text characteristics, and processing context
 class OCRMetrics {
+    // MARK: Lifecycle
+
+    /// Convenience initializer with language
+    /// - Parameter language: The target language for OCR processing
+    convenience init(language: Language) {
+        self.init()
+        self.language = language
+    }
+
+    // MARK: Internal
+
     // MARK: - Context Data
 
     var ocrImage: NSImage = .init()

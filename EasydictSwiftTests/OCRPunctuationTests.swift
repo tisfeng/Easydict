@@ -13,16 +13,15 @@ import Testing
 /// Tests for OCR punctuation normalization across different languages
 @Suite("OCR Punctuation", .tags(.ocr, .unit))
 struct OCRPunctuationTests {
+    // MARK: - Tests
 
     @Test("OCR Punctuation Normalization English", .tags(.ocr))
-    func testOCRPunctuationNormalizationEnglish() async {
-        let metrics = OCRMetrics()
-        metrics.language = .english
-        let normalizer = OCRTextNormalizer(metrics: metrics)
+    func testOCRPunctuationNormalizationEnglish() {
+        let normalizer = OCRTextNormalizer(language: .english)
 
         // Test Chinese punctuation to English
         let chineseText = "Hello，world。This is a test；right？Yes！"
-        let normalizedText = normalizer.normalizeTextSymbols(in: chineseText)
+        let normalizedText = normalizer.normalizeText(chineseText)
         #expect(normalizedText.contains("Hello,"))
         #expect(normalizedText.contains("world."))
         #expect(normalizedText.contains("test;"))
@@ -31,31 +30,27 @@ struct OCRPunctuationTests {
     }
 
     @Test("OCR Punctuation Normalization Chinese", .tags(.ocr))
-    func testOCRPunctuationNormalizationChinese() async {
-        let metrics = OCRMetrics()
-        metrics.language = .simplifiedChinese
-        let normalizer = OCRTextNormalizer(metrics: metrics)
+    func testOCRPunctuationNormalizationChinese() {
+        let normalizer = OCRTextNormalizer(language: .simplifiedChinese)
 
         // Test English punctuation to Chinese (but preserve decimals)
         let englishText = "你好,世界.这是测试;对吗?是的!价格是10.99元"
-        let normalizedText = normalizer.normalizeTextSymbols(in: englishText)
+        let normalizedText = normalizer.normalizeText(englishText)
         #expect(normalizedText.contains("你好，"))
         #expect(normalizedText.contains("世界。"))
         #expect(normalizedText.contains("测试；"))
         #expect(normalizedText.contains("对吗？"))
         #expect(normalizedText.contains("是的！"))
-        #expect(normalizedText.contains("10.99"))  // Decimal should be preserved
+        #expect(normalizedText.contains("10.99")) // Decimal should be preserved
     }
 
     @Test("OCR Punctuation Normalization Korean", .tags(.ocr))
-    func testOCRPunctuationNormalizationKorean() async {
-        let metrics = OCRMetrics()
-        metrics.language = .korean
-        let normalizer = OCRTextNormalizer(metrics: metrics)
+    func testOCRPunctuationNormalizationKorean() {
+        let normalizer = OCRTextNormalizer(language: .korean)
 
         // Korean should use Western punctuation, not Chinese
         let chineseText = "안녕하세요，세계。테스트입니다；맞나요？네！"
-        let normalizedText = normalizer.normalizeTextSymbols(in: chineseText)
+        let normalizedText = normalizer.normalizeText(chineseText)
         #expect(normalizedText.contains("안녕하세요,"))
         #expect(normalizedText.contains("세계."))
         #expect(normalizedText.contains("테스트입니다;"))
@@ -64,14 +59,12 @@ struct OCRPunctuationTests {
     }
 
     @Test("OCR Punctuation Normalization Japanese", .tags(.ocr))
-    func testOCRPunctuationNormalizationJapanese() async {
-        let metrics = OCRMetrics()
-        metrics.language = .japanese
-        let normalizer = OCRTextNormalizer(metrics: metrics)
+    func testOCRPunctuationNormalizationJapanese() {
+        let normalizer = OCRTextNormalizer(language: .japanese)
 
         // Japanese should use Chinese-style punctuation
         let englishText = "こんにちは,世界.テストです;そうですか?はい!"
-        let normalizedText = normalizer.normalizeTextSymbols(in: englishText)
+        let normalizedText = normalizer.normalizeText(englishText)
         #expect(normalizedText.contains("こんにちは，"))
         #expect(normalizedText.contains("世界。"))
         #expect(normalizedText.contains("テストです；"))
