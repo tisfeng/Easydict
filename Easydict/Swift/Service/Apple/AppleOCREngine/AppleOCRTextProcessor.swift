@@ -85,7 +85,7 @@ public class AppleOCRTextProcessor {
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
-        print("Sorted OCR strings: \(sortedObservations.recognizedTexts)")
+        print("Sorted OCR strings: \(sortedObservations)")
 
         // Perform intelligent text merging
         let mergedText = performIntelligentTextMerging(sortedObservations)
@@ -142,7 +142,18 @@ public class AppleOCRTextProcessor {
             let y1 = boundingBox1.origin.y
             let y2 = boundingBox2.origin.y
 
-            return y2 - y1 <= metrics.minLineHeight * 0.8
+            // Check if they are on the same line (within threshold)
+            let deltaY = abs(y1 - y2)
+            let sameLineThreshold = metrics.minLineHeight * 0.8
+
+            if deltaY <= sameLineThreshold {
+                // Same line: sort by X coordinate (left to right)
+                return boundingBox1.origin.x < boundingBox2.origin.x
+            } else {
+                // Different lines: sort by Y coordinate (top to bottom)
+                // Note: In Vision coordinate system, Y=0 is at bottom, so higher Y means higher position
+                return y1 > y2
+            }
         }
     }
 
