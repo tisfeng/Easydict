@@ -11,16 +11,53 @@ import Vision
 
 // MARK: - OCRLineContext
 
-/// Comprehensive OCR line context data for text merging
+/// Comprehensive analysis context for intelligent OCR text line merging decisions
+///
+/// This sophisticated data structure encapsulates all the analytical results needed to make
+/// informed decisions about how two adjacent text observations should be merged. It serves
+/// as a centralized repository of pre-calculated analysis results, eliminating redundant
+/// calculations and ensuring consistent decision-making across the text processing pipeline.
+///
+/// **Core Analysis Categories:**
+/// - **Spatial Analysis**: Line positioning, indentation, and spacing relationships
+/// - **Content Analysis**: Text length, character patterns, and language-specific characteristics
+/// - **Formatting Detection**: Poetry patterns, list structures, and special content types
+/// - **Context Evaluation**: Relationship patterns between adjacent text observations
+///
+/// **Pre-calculated Properties:**
+/// - `isPrevLongText`: Whether the previous text line fills most of the available space
+/// - `hasIndentation`: Whether the current line is indented relative to the document margin
+/// - `hasPrevIndentation`: Whether the previous line has indentation
+/// - `isBigLineSpacing`: Whether there is significant vertical spacing between the lines
+/// - `isEqualChineseText`: Whether both lines have equal character counts (Chinese poetry indicator)
+///
+/// **Usage Pattern:**
+/// ```swift
+/// let context = OCRLineContext(pair: textPair, metrics: ocrMetrics)
+/// let decision = textMerger.determineMergeDecision(lineContext: context)
+/// ```
+///
+/// Essential for maintaining consistency and performance in complex text merging algorithms.
 struct OCRLineContext {
     // MARK: Lifecycle
 
     // MARK: - Initializer
 
-    /// Create OCRLineContext with automatic analysis
+    /// Create comprehensive OCR line context with automatic analysis
+    ///
+    /// Initializes the context by performing immediate analysis of the text observation pair
+    /// using the provided metrics. All analytical properties are pre-calculated during
+    /// initialization to ensure consistent results and optimal performance.
+    ///
+    /// **Initialization Process:**
+    /// 1. Store the text observation pair for reference
+    /// 2. Create internal line analyzer with provided metrics
+    /// 3. Calculate all spatial and content analysis properties
+    /// 4. Store results for immediate access by decision algorithms
+    ///
     /// - Parameters:
-    ///   - textObservationPair: Pair of current and previous text observations
-    ///   - metrics: OCR metrics for creating internal analyzer
+    ///   - pair: Text observation pair containing current and previous observations
+    ///   - metrics: OCR metrics containing document-wide analysis data and thresholds
     init(pair: OCRTextObservationPair, metrics: OCRMetrics) {
         self.pair = pair
 
@@ -37,16 +74,44 @@ struct OCRLineContext {
 
     // MARK: Internal
 
-    /// Pair of current and previous text observations
+    /// Text observation pair containing current and previous observations
+    ///
+    /// The fundamental data for analysis, containing both the current text observation
+    /// being processed and its immediate predecessor for contextual comparison.
     let pair: OCRTextObservationPair
 
-    // Text analysis properties
+    // MARK: - Spatial Analysis Properties
+
+    /// Whether the previous text line is considered "long" (fills most available space)
+    ///
+    /// Long lines typically indicate continuous prose text that flows naturally to
+    /// the next line, suggesting the text should be merged with minimal separation.
     let isPrevLongText: Bool
+
+    /// Whether the current text line has indentation relative to the document margin
+    ///
+    /// Indentation often indicates special formatting such as paragraph beginnings,
+    /// block quotes, code blocks, or list item continuation.
     let hasIndentation: Bool
+
+    /// Whether the previous text line has indentation relative to the document margin
+    ///
+    /// Previous line indentation provides context for understanding formatting
+    /// patterns and making consistent merging decisions.
     let hasPrevIndentation: Bool
+
+    /// Whether there is significant vertical spacing between the current and previous lines
+    ///
+    /// Large line spacing often indicates paragraph breaks, section divisions,
+    /// or other major content separations that should be preserved.
     let isBigLineSpacing: Bool
 
-    // Specific formatting flags
+    // MARK: - Language-specific Analysis Properties
+
+    /// Whether both text lines have equal character counts (Chinese poetry indicator)
+    ///
+    /// Equal character counts in Chinese text often indicate classical poetry or
+    /// structured verse that requires special formatting preservation.
     let isEqualChineseText: Bool
 
     // MARK: - Convenience Properties

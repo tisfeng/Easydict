@@ -12,7 +12,29 @@ import Vision
 // MARK: - OCRTextProcessor
 
 /// Main OCR text processing coordinator that handles the complete OCR text processing pipeline
-/// Ported from EZAppleService setupOCRResult method
+///
+/// This class serves as the central coordinator for processing raw OCR observations into
+/// intelligently formatted text results. It applies sophisticated algorithms to:
+///
+/// **Core Functionality:**
+/// - **Statistical Analysis**: Calculates line metrics, character widths, and spacing patterns
+/// - **Text Sorting**: Orders text observations correctly (top-to-bottom, left-to-right)
+/// - **Intelligent Merging**: Applies context-aware text joining based on spatial relationships
+/// - **Poetry Detection**: Identifies and preserves poetic text formatting
+/// - **Dash Handling**: Manages hyphenation and line continuation scenarios
+/// - **Text Normalization**: Applies language-specific formatting and error correction
+///
+/// **Processing Pipeline:**
+/// 1. Reset and initialize metrics
+/// 2. Calculate line layout statistics
+/// 3. Detect poetry patterns
+/// 4. Sort observations spatially
+/// 5. Apply intelligent text merging
+/// 6. Normalize final text output
+///
+/// Originally ported from EZAppleService.setupOCRResult method with significant enhancements.
+///
+/// - Note: This class is designed to work with Apple's Vision framework text observations
 public class OCRTextProcessor {
     // MARK: Internal
 

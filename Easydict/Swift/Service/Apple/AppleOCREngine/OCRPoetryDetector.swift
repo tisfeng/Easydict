@@ -11,7 +11,31 @@ import Vision
 
 // MARK: - OCRPoetryDetector
 
-/// Handles poetry detection logic for OCR text observations
+/// Specialized detector for identifying poetic text layouts in OCR results
+///
+/// This intelligent detector analyzes text patterns to identify poetry and verse
+/// structures that require special formatting treatment. Poetry often has unique
+/// characteristics that distinguish it from regular prose text.
+///
+/// **Detection Criteria:**
+/// - **Line Length Patterns**: Short, varied line lengths typical of poetry
+/// - **Character Count Analysis**: Lines with significantly fewer characters than prose
+/// - **Spatial Arrangement**: Irregular line endings and intentional white space
+/// - **Language Context**: Different patterns for different languages (Chinese vs English)
+/// - **Consistency Patterns**: Multiple short lines indicating intentional structure
+///
+/// **Poetry Characteristics Detected:**
+/// - Traditional poetry with regular meter and rhyme
+/// - Free verse with intentional line breaks
+/// - Chinese classical poetry with balanced character counts
+/// - Modern poetry with irregular formatting
+///
+/// **Impact on Text Processing:**
+/// - Preserves intentional line breaks in poetic text
+/// - Prevents unwanted text merging that would destroy poetic structure
+/// - Applies appropriate spacing and formatting for readability
+///
+/// Essential for maintaining the artistic and structural integrity of poetic content.
 class OCRPoetryDetector {
     // MARK: Lifecycle
 
@@ -24,7 +48,37 @@ class OCRPoetryDetector {
 
     // MARK: Internal
 
-    /// Detect if the text layout represents poetry based on line characteristics
+    /// Analyze text layout patterns to determine if content represents poetry
+    ///
+    /// This sophisticated analysis examines multiple characteristics of the text layout
+    /// to make an intelligent determination about whether the content is poetic in nature.
+    /// The detection is crucial for preserving proper formatting in the final output.
+    ///
+    /// **Analysis Process:**
+    /// 1. **Minimum Line Requirements**: Ensures sufficient content for reliable detection
+    /// 2. **Character Count Analysis**: Calculates average characters per line
+    /// 3. **Line Length Patterns**: Examines consistency and variation in line lengths
+    /// 4. **Short Line Detection**: Identifies patterns of intentionally short lines
+    /// 5. **Language-specific Rules**: Applies different thresholds for different languages
+    /// 6. **Long Line Analysis**: Detects patterns of consecutive long lines that indicate prose
+    /// 7. **Punctuation Patterns**: Analyzes ending punctuation frequency
+    /// 8. **Word Density**: Examines word count per line ratios
+    ///
+    /// **Detection Thresholds:**
+    /// - Requires minimum 3 lines for reliable pattern analysis
+    /// - Uses language-specific character count limits
+    /// - Considers percentage of short lines vs total lines
+    /// - Factors in average line length relative to typical prose
+    /// - Analyzes consecutive long line patterns (prose indicator)
+    /// - Evaluates punctuation frequency and patterns
+    ///
+    /// **Language-specific Adaptations:**
+    /// - Chinese: Uses character-based analysis with different thresholds
+    /// - English: Uses word-based analysis with space considerations
+    /// - General: Applies universal patterns for other languages
+    ///
+    /// - Returns: true if text layout indicates poetry, false for regular prose
+    /// - Note: Conservative approach to avoid false positives that could break normal text
     func detectPoetry() -> Bool {
         let observations = metrics.textObservations
         let lineCount = observations.count

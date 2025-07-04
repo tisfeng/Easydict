@@ -12,17 +12,58 @@ import Vision
 
 // MARK: - AppleOCREngine
 
+/// Apple's Vision framework-based OCR engine for text recognition
+///
+/// This class provides a complete OCR solution using Apple's Vision framework,
+/// offering both simple text recognition and intelligent text processing capabilities.
+/// It supports multiple languages and provides both callback-based and async/await APIs.
+///
+/// **Key Features:**
+/// - Multi-language text recognition using Vision framework
+/// - Intelligent text merging and formatting
+/// - Both synchronous and asynchronous APIs
+/// - Automatic language detection support
+/// - High-accuracy text recognition
+///
+/// **Usage Example:**
+/// ```swift
+/// let ocrEngine = AppleOCREngine()
+///
+/// // Callback-based API
+/// ocrEngine.recognizeText(image: image, language: .english) { result, error in
+///     if let result = result {
+///         print("Recognized text: \(result.mergedText)")
+///     }
+/// }
+///
+/// // Async/await API
+/// let text = try await ocrEngine.recognizeTextAsString(cgImage: cgImage, language: .auto)
+/// ```
 public class AppleOCREngine {
     // MARK: Internal
 
     /// Main OCR method that processes image and returns complete OCR result
+    ///
+    /// This is the primary entry point for OCR functionality. It performs text recognition
+    /// on the provided image and applies intelligent text processing to improve readability.
+    ///
+    /// - Parameters:
+    ///   - image: The NSImage containing text to be recognized
+    ///   - language: Target language for OCR recognition (use .auto for automatic detection)
+    ///   - completion: Completion handler called with the OCR result or error
+    ///     - result: Complete OCR result with merged text and individual text components
+    ///     - error: Error that occurred during processing, if any
+    ///
+    /// - Note: The completion handler is always called on the main queue
     func recognizeText(
         image: NSImage,
         language: Language,
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
         guard let cgImage = image.toCGImage() else {
-            let error = QueryError.error(type: .parameter, message: "Failed to convert NSImage to CGImage")
+            let error = QueryError.error(
+                type: .parameter, message: "Failed to convert NSImage to CGImage"
+            )
             completion(nil, error)
             return
         }
@@ -56,7 +97,17 @@ public class AppleOCREngine {
         }
     }
 
-    /// Recognize text from CGImage with callback
+    /// Recognize text from CGImage with raw Vision observations
+    ///
+    /// This method provides direct access to Vision framework text observations
+    /// without additional text processing. Useful when you need raw OCR data.
+    ///
+    /// - Parameters:
+    ///   - cgImage: The CGImage containing text to be recognized
+    ///   - language: Target language for OCR recognition (defaults to .auto)
+    ///   - completionHandler: Handler called with raw text observations or error
+    ///     - observations: Array of VNRecognizedTextObservation from Vision framework
+    ///     - error: Error that occurred during OCR processing, if any
     func recognizeTextFromCGImage(
         cgImage: CGImage,
         language: Language = .auto,
@@ -69,20 +120,56 @@ public class AppleOCREngine {
         )
     }
 
-    /// Async version for Swift usage - returns observations
+    /// Async version for Swift usage - returns raw text observations
+    ///
+    /// Modern async/await API for text recognition that returns raw Vision observations.
+    /// This method is ideal for Swift concurrency patterns and provides fine-grained
+    /// control over OCR results.
+    ///
+    /// - Parameters:
+    ///   - cgImage: The CGImage containing text to be recognized
+    ///   - language: Target language for OCR recognition (defaults to .auto)
+    /// - Returns: Array of VNRecognizedTextObservation containing recognized text and metadata
+    /// - Throws: QueryError if OCR processing fails
     func recognizeTextAsync(cgImage: CGImage, language: Language = .auto) async throws
         -> [VNRecognizedTextObservation] {
         try await performVisionOCRAsync(on: cgImage, language: language)
     }
 
-    /// Async version for Swift usage - returns string
+    /// Async version for Swift usage - returns plain text string
+    ///
+    /// Convenient async/await API that performs OCR and returns a simple string result.
+    /// Text observations are joined with newlines for easy consumption.
+    ///
+    /// - Parameters:
+    ///   - cgImage: The CGImage containing text to be recognized
+    ///   - language: Target language for OCR recognition (defaults to .auto)
+    /// - Returns: Recognized text as a single string with lines separated by newlines
+    /// - Throws: QueryError if OCR processing fails
     func recognizeTextAsString(cgImage: CGImage, language: Language = .auto) async throws -> String {
         let observations = try await recognizeTextAsync(cgImage: cgImage, language: language)
         let recognizedTexts = observations.compactMap(\.firstText)
         return recognizedTexts.joined(separator: "\n")
     }
 
-    /// Perform OCR using Vision framework - callback version
+    /// Perform OCR using Vision framework with callback-based API
+    ///
+    /// Core OCR implementation using Apple's Vision framework. Configures recognition
+    /// parameters based on the target language and performs text recognition on a
+    /// background queue to avoid blocking the main thread.
+    ///
+    /// **Configuration Details:**
+    /// - Uses automatic language detection when language is .auto
+    /// - Disables language correction for automatic detection to improve accuracy
+    /// - Sets recognition level to .accurate for best quality results
+    /// - Maps input language to Vision framework's language codes
+    ///
+    /// - Parameters:
+    ///   - cgImage: The CGImage to perform OCR on
+    ///   - language: Target language for recognition (defaults to .auto)
+    ///   - completionHandler: Handler called with results on main queue
+    ///     - observations: Array of text observations from Vision framework
+    ///     - error: Error that occurred during processing, if any
     func performVisionOCR(
         on cgImage: CGImage,
         language: Language = .auto,
@@ -143,7 +230,16 @@ public class AppleOCREngine {
     // OCR text processor for intelligent text merging
     private let textProcessor = OCRTextProcessor()
 
-    /// Perform OCR using Vision framework - async version
+    /// Perform OCR using Vision framework with async/await API
+    ///
+    /// Internal async wrapper around the callback-based Vision OCR implementation.
+    /// Converts callback-based API to modern Swift concurrency patterns.
+    ///
+    /// - Parameters:
+    ///   - cgImage: The CGImage to perform OCR on
+    ///   - language: Target language for recognition (defaults to .auto)
+    /// - Returns: Array of text observations from Vision framework
+    /// - Throws: QueryError if OCR processing fails
     private func performVisionOCRAsync(on cgImage: CGImage, language: Language = .auto) async throws
         -> [VNRecognizedTextObservation] {
         try await withCheckedThrowingContinuation { continuation in

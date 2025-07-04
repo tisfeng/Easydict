@@ -12,7 +12,26 @@ import Vision
 // MARK: - OCRLineAnalyzer
 
 /// Handles line-level text analysis operations for OCR processing
-/// This class contains all the analytical methods for determining text line properties and relationships
+///
+/// This specialized analyzer provides sophisticated methods for analyzing relationships
+/// between text lines and making intelligent formatting decisions. It serves as the
+/// analytical brain for determining how text observations should be joined together.
+///
+/// **Core Capabilities:**
+/// - **Line Relationship Analysis**: Determines if text observations are on same line or different lines
+/// - **Indentation Detection**: Identifies text indentation patterns for proper formatting
+/// - **Spacing Analysis**: Calculates appropriate spacing between text elements
+/// - **Font Comparison**: Analyzes font size variations for formatting decisions
+/// - **Poetry Recognition**: Detects poetic text patterns requiring special handling
+/// - **List Processing**: Identifies and handles numbered/bulleted list structures
+/// - **Language-aware Processing**: Applies language-specific analysis rules
+///
+/// **Key Algorithms:**
+/// - Spatial relationship analysis using bounding box mathematics
+/// - Dynamic threshold calculation based on text metrics
+/// - Context-aware decision making for text merging
+///
+/// Used extensively by OCRTextMerger for making intelligent text joining decisions.
 class OCRLineAnalyzer {
     // MARK: Lifecycle
 
@@ -24,6 +43,13 @@ class OCRLineAnalyzer {
     // MARK: Internal
 
     /// Check if text observation has indentation relative to the minimum X position
+    ///
+    /// Analyzes whether a text observation is indented by comparing its X position
+    /// against the leftmost text observation in the document. This is crucial for
+    /// detecting paragraph indentation, block quotes, and list structures.
+    ///
+    /// - Parameter observation: The text observation to analyze for indentation
+    /// - Returns: true if the observation is indented, false if aligned with left margin
     func hasIndentation(_ observation: VNRecognizedTextObservation) -> Bool {
         guard let minXObservation = metrics.minXLineTextObservation else { return false }
         let textObservationPair = OCRTextObservationPair(
@@ -119,6 +145,16 @@ class OCRLineAnalyzer {
     }
 
     /// Analyze if line length is considered short relative to maximum length
+    ///
+    /// Determines whether a given line length is considered "short" by comparing it
+    /// against the maximum observed line length with a configurable threshold ratio.
+    /// This analysis is crucial for text formatting decisions and poetry detection.
+    ///
+    /// - Parameters:
+    ///   - lineLength: The length of the line to analyze
+    ///   - maxLineLength: The maximum observed line length in the document
+    ///   - lessRateOfMaxLength: Threshold ratio (0.0-1.0) for considering a line "short"
+    /// - Returns: true if the line is considered short, false otherwise
     func isShortLine(
         _ lineLength: Double,
         maxLineLength: Double,
@@ -129,6 +165,16 @@ class OCRLineAnalyzer {
     }
 
     /// Analyze and determine Chinese poetry merge decision
+    ///
+    /// Applies specialized logic for handling Chinese poetry text that requires
+    /// different formatting rules than regular prose. Chinese poetry often has
+    /// distinctive characteristics that need preservation during text merging.
+    ///
+    /// - Parameters:
+    ///   - pair: Text observation pair containing current and previous observations
+    ///   - isEqualChineseText: Whether the texts have equal character counts (Chinese characteristic)
+    ///   - isBigLineSpacing: Whether there is significant spacing between lines
+    /// - Returns: Merge decision (none, lineBreak, or newParagraph)
     func determineChinesePoetryMerge(
         _ pair: OCRTextObservationPair,
         isEqualChineseText: Bool,
@@ -152,6 +198,21 @@ class OCRLineAnalyzer {
     }
 
     /// Analyze and determine list merge decision
+    ///
+    /// Handles text merging decisions specifically for list-style content such as
+    /// numbered lists, bullet points, and other structured list formats. This
+    /// ensures proper formatting and structure preservation for list items.
+    ///
+    /// **List Detection Patterns:**
+    /// - Numbered lists (1., 2., 3., etc.)
+    /// - Bullet points (•, -, *, etc.)
+    /// - Alphabetic lists (a., b., c., etc.)
+    /// - Roman numerals (i., ii., iii., etc.)
+    ///
+    /// - Parameters:
+    ///   - pair: Text observation pair containing current and previous observations
+    ///   - isBigLineSpacing: Whether there is significant spacing between lines
+    /// - Returns: Merge decision based on list structure requirements
     func determineListMerge(
         _ pair: OCRTextObservationPair,
         isBigLineSpacing: Bool
@@ -175,7 +236,60 @@ class OCRLineAnalyzer {
         return .none
     }
 
-    /// Determine if two text observations are on the same line
+    /// Determine if current observation represents a new line relative to previous observation
+    ///
+    /// Analyzes spatial relationships between two text observations to determine
+    /// if they represent text on different lines or the same line. This is fundamental
+    /// for proper text flow reconstruction from OCR results.
+    ///
+    /// **Analysis Criteria:**
+    /// - Y coordinate differences (vertical separation)
+    /// - X coordinate gaps (horizontal separation)
+    /// - Bounding box overlaps and relationships
+    /// - Minimum line height thresholds
+    ///
+    /// - Parameter textObservationPair: Pair of text observations to analyze
+    /// - Returns: true if the current observation is on a new line, false if same line
+    func isNewLineRelativeToPrevious(
+        _ textObservationPair: OCRTextObservationPair
+    )
+        -> Bool {
+        let currentBoundingBox = textObservationPair.current.boundingBox
+        let previousBoundingBox = textObservationPair.previous.boundingBox
+
+        let deltaY =
+            previousBoundingBox.origin.y
+                - (currentBoundingBox.origin.y + currentBoundingBox.size.height)
+        let deltaX =
+            currentBoundingBox.origin.x
+                - (previousBoundingBox.origin.x + previousBoundingBox.size.width)
+
+        // Check Y coordinate for new line
+        if deltaY > 0 {
+            return true
+        } else if abs(deltaY) < metrics.minLineHeight / 2 {
+            // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
+            return true
+        }
+
+        // Check X coordinate gap for line detection
+        return deltaX > 0.07
+    }
+
+    /// Determine if two text observations are on the same horizontal line
+    ///
+    /// Performs precise same-line detection by comparing the vertical center positions
+    /// of text bounding boxes against a calculated threshold. This is essential for
+    /// proper text ordering and spacing decisions.
+    ///
+    /// **Algorithm:**
+    /// - Calculates center Y coordinates for both observations
+    /// - Compares vertical distance against dynamic threshold
+    /// - Accounts for Vision framework's coordinate system (origin at bottom-left)
+    /// - Uses minimum line height-based threshold for accuracy
+    ///
+    /// - Parameter pair: Pair of text observations to compare
+    /// - Returns: true if observations are on the same line, false otherwise
     func isSameLine(_ pair: OCRTextObservationPair) -> Bool {
         // Box origin at the image's lower-left corner.
         let currentBoundingBox = pair.current.boundingBox
