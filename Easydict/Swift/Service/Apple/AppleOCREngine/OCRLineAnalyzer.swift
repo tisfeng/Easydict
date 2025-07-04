@@ -175,31 +175,18 @@ class OCRLineAnalyzer {
         return .none
     }
 
-    /// Determine if current observation represents a new line relative to previous observation
-    func isNewLineRelativeToPrevious(
-        _ textObservationPair: OCRTextObservationPair
-    )
-        -> Bool {
-        let currentBoundingBox = textObservationPair.current.boundingBox
-        let previousBoundingBox = textObservationPair.previous.boundingBox
+    /// Determine if two text observations are on the same line
+    func isSameLine(_ pair: OCRTextObservationPair) -> Bool {
+        // Box origin at the image's lower-left corner.
+        let currentBoundingBox = pair.current.boundingBox
+        let previousBoundingBox = pair.previous.boundingBox
 
-        let deltaY =
-            previousBoundingBox.origin.y
-                - (currentBoundingBox.origin.y + currentBoundingBox.size.height)
-        let deltaX =
-            currentBoundingBox.origin.x
-                - (previousBoundingBox.origin.x + previousBoundingBox.size.width)
+        // Calculate Y coordinate difference (taking into account coordinate system)
+        let currentCenterY = currentBoundingBox.origin.y - currentBoundingBox.size.height / 2
+        let previousCenterY = previousBoundingBox.origin.y - previousBoundingBox.size.height / 2
+        let deltaY = abs(currentCenterY - previousCenterY)
 
-        // Check Y coordinate for new line
-        if deltaY > 0 {
-            return true
-        } else if abs(deltaY) < metrics.minLineHeight / 2 {
-            // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
-            return true
-        }
-
-        // Check X coordinate gap for line detection
-        return deltaX > 0.07
+        return deltaY <= metrics.sameLineThreshold
     }
 
     // MARK: Private

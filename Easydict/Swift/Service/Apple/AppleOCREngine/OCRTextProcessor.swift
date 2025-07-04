@@ -1,5 +1,5 @@
 //
-//  AppleOCRTextProcessor.swift
+//  OCRTextProcessor.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/22.
@@ -9,11 +9,11 @@
 import Foundation
 import Vision
 
-// MARK: - AppleOCRTextProcessor
+// MARK: - OCRTextProcessor
 
 /// Main OCR text processing coordinator that handles the complete OCR text processing pipeline
 /// Ported from EZAppleService setupOCRResult method
-public class AppleOCRTextProcessor {
+public class OCRTextProcessor {
     // MARK: Internal
 
     /// Process OCR observations into structured result with intelligent text merging
@@ -25,14 +25,17 @@ public class AppleOCRTextProcessor {
     ) {
         // Reset statistics
         metrics.resetMetrics()
+
+        // Setup properties
         metrics.language = ocrResult.from
         metrics.ocrImage = ocrImage
         metrics.textObservations = observations
         metrics.ocrImage = ocrImage
 
-        print("\nTextObservations: \(observations.formattedDescription)")
-
         let recognizedTexts = observations.compactMap(\.firstText)
+
+        print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
+        print("\nOCR objects: \(observations.formattedDescription)")
 
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
@@ -77,15 +80,13 @@ public class AppleOCRTextProcessor {
                 metrics.totalLineSpacing / lineSpacingCount.double
         }
 
-        print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
-
         // Detect if text is poetry
         metrics.isPoetry = poetryDetector.detectPoetry()
         print("isPoetry: \(metrics.isPoetry)")
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
-        print("Sorted OCR strings: \(sortedObservations)")
+        print("Sorted OCR objects: \(sortedObservations.formattedDescription)")
 
         // Perform intelligent text merging
         let mergedText = performIntelligentTextMerging(sortedObservations)
@@ -104,8 +105,6 @@ public class AppleOCRTextProcessor {
 
     // MARK: Private
 
-    //    private var ocrImage = NSImage()
-    //    private var language: Language = .auto
     private let languageManager = EZLanguageManager.shared()
 
     // Helper components
@@ -113,7 +112,7 @@ public class AppleOCRTextProcessor {
     private lazy var poetryDetector = OCRPoetryDetector(metrics: metrics)
     private lazy var dashHandler = OCRDashHandler(metrics: metrics)
     private lazy var textNormalizer = OCRTextNormalizer(metrics: metrics)
-    private lazy var lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
+    private lazy var textMerger = OCRTextMerger(metrics: metrics)
 
     /// Calculate and set the overall confidence score for OCR result
     private func calculateConfidence(
@@ -144,9 +143,8 @@ public class AppleOCRTextProcessor {
 
             // Check if they are on the same line (within threshold)
             let deltaY = abs(y1 - y2)
-            let sameLineThreshold = metrics.minLineHeight * 0.8
 
-            if deltaY <= sameLineThreshold {
+            if deltaY <= metrics.sameLineThreshold {
                 // Same line: sort by X coordinate (left to right)
                 return boundingBox1.origin.x < boundingBox2.origin.x
             } else {
@@ -175,26 +173,15 @@ public class AppleOCRTextProcessor {
                     previous: prevTextObservation
                 )
 
-                // Determine if this is a new line
-                let isNewLine = lineAnalyzer.isNewLineRelativeToPrevious(textObservationPair)
-
-                var joinedString: String
-
                 // Analyze dash handling for this text pair
                 let dashAction = dashHandler.analyzeDashHandling(textObservationPair)
+
+                var joinedString: String
 
                 switch dashAction {
                 case .none:
                     // No dash handling needed, proceed with normal text merging
-                    if isNewLine {
-                        // Create text merger with OCR metrics
-                        let textMerger = AppleOCRTextMerger(metrics: metrics)
-
-                        joinedString = textMerger.joinedString(for: textObservationPair)
-                    } else {
-                        // If the same line, just join two texts
-                        joinedString = " "
-                    }
+                    joinedString = textMerger.joinedString(for: textObservationPair)
 
                 case .keepDashAndJoin:
                     // Keep the dash, and join the words
@@ -210,7 +197,7 @@ public class AppleOCRTextProcessor {
                 }
 
                 // Store joinedString in observation (mimic original behavior)
-                setJoinedString(for: textObservation, joinedString: joinedString)
+                textObservation.joinedString = joinedString
 
                 // 1. append joined string
                 mergedText += joinedString
@@ -225,15 +212,5 @@ public class AppleOCRTextProcessor {
         }
 
         return mergedText.trim()
-    }
-
-    /// Store joined string in text observation using associated objects
-    private func setJoinedString(for observation: VNRecognizedTextObservation, joinedString: String) {
-        objc_setAssociatedObject(
-            observation,
-            "joinedString",
-            joinedString,
-            .OBJC_ASSOCIATION_COPY_NONATOMIC
-        )
     }
 }

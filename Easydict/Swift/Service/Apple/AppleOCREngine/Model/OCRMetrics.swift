@@ -65,6 +65,9 @@ class OCRMetrics {
     var averageCharacterWidth: Double = 0.0
     var maxWordLength: Int = 0 // Maximum word length (only tracked for space-separated languages)
 
+    // The minimum line height for the same line threshold
+    var sameLineThreshold: Double { minLineHeight * 0.8 }
+
     /// Reset all metrics data to initial values
     func resetMetrics() {
         // Reset context data

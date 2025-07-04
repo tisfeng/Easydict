@@ -141,7 +141,7 @@ public class AppleOCREngine {
     // MARK: Private
 
     // OCR text processor for intelligent text merging
-    private let textProcessor = AppleOCRTextProcessor()
+    private let textProcessor = OCRTextProcessor()
 
     /// Perform OCR using Vision framework - async version
     private func performVisionOCRAsync(on cgImage: CGImage, language: Language = .auto) async throws

@@ -30,6 +30,15 @@ extension VNRecognizedTextObservation {
     }
 }
 
+extension VNRecognizedTextObservation {
+    private static var joinedStringKey: UInt8 = 0
+
+    var joinedString: String? {
+        get { objc_getAssociatedObject(self, &Self.joinedStringKey) as? String }
+        set { objc_setAssociatedObject(self, &Self.joinedStringKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC) }
+    }
+}
+
 // MARK: - Array Extension for Better Printing
 
 extension Array where Element == VNRecognizedTextObservation {

@@ -13,10 +13,17 @@ import Vision
 
 /// Encapsulates a pair of text observations (current and previous) for OCR processing
 /// This struct provides convenient access to both observations and their properties
-struct OCRTextObservationPair {
+struct OCRTextObservationPair: CustomStringConvertible {
     /// The current text observation
     let current: VNRecognizedTextObservation
 
     /// The previous text observation
     let previous: VNRecognizedTextObservation
+
+    var description: String {
+        """
+            previous: \(previous)
+            current: \(current)
+        """
+    }
 }

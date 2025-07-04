@@ -70,6 +70,7 @@
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
+		034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034E30992E17809C0079E371 /* OCRTextProcessor.swift */; };
 		035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */; };
 		0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */; };
 		0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */; };
@@ -290,8 +291,7 @@
 		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */; };
-		03F19D7E2E090F390046C6F2 /* AppleOCRTextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7D2E090F390046C6F2 /* AppleOCRTextProcessor.swift */; };
-		03F19D802E0938D70046C6F2 /* AppleOCRTextMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7F2E0938D70046C6F2 /* AppleOCRTextMerger.swift */; };
+		03F19D802E0938D70046C6F2 /* OCRTextMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
@@ -515,6 +515,7 @@
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
 		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
+		034E30992E17809C0079E371 /* OCRTextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessor.swift; sourceTree = "<group>"; };
 		035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToDouble.swift"; sourceTree = "<group>"; };
 		0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDashHandler.swift; sourceTree = "<group>"; };
 		0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRPoetryDetector.swift; sourceTree = "<group>"; };
@@ -855,8 +856,7 @@
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageMapper.swift; sourceTree = "<group>"; };
-		03F19D7D2E090F390046C6F2 /* AppleOCRTextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCRTextProcessor.swift; sourceTree = "<group>"; };
-		03F19D7F2E0938D70046C6F2 /* AppleOCRTextMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCRTextMerger.swift; sourceTree = "<group>"; };
+		03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextMerger.swift; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
 		03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChinseseMarker.swift; sourceTree = "<group>"; };
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
@@ -1149,8 +1149,8 @@
 			children = (
 				03B170982E122CF80021FDE4 /* Model */,
 				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
-				03F19D7D2E090F390046C6F2 /* AppleOCRTextProcessor.swift */,
-				03F19D7F2E0938D70046C6F2 /* AppleOCRTextMerger.swift */,
+				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
+				03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */,
 				03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */,
 				0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */,
 				0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */,
@@ -3430,7 +3430,7 @@
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
-				03F19D802E0938D70046C6F2 /* AppleOCRTextMerger.swift in Sources */,
+				03F19D802E0938D70046C6F2 /* OCRTextMerger.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
@@ -3455,7 +3455,6 @@
 				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
-				03F19D7E2E090F390046C6F2 /* AppleOCRTextProcessor.swift in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
 				033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */,
@@ -3526,6 +3525,7 @@
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
+				034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,

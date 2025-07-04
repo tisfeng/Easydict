@@ -1,5 +1,5 @@
 //
-//  AppleOCRTextMerger.swift
+//  OCRTextMerger.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/6/22.
@@ -9,13 +9,11 @@
 import Foundation
 import Vision
 
-// MARK: - OCRTextObservationPair (imported from OCRTextObservationPair.swift)
-
-// MARK: - AppleOCRTextMerger
+// MARK: - OCRTextMerger
 
 /// Handles intelligent text merging logic for OCR results
 /// This class directly corresponds to the joinedStringOfTextObservation method in EZAppleService.m
-class AppleOCRTextMerger {
+class OCRTextMerger {
     // MARK: Lifecycle
 
     /// Initialize text merger with OCR metrics
@@ -31,7 +29,13 @@ class AppleOCRTextMerger {
     /// - Parameter textObservationPair: Pair containing current and previous text observations
     /// - Returns: Appropriate joining string between the two observations
     func joinedString(for textObservationPair: OCRTextObservationPair) -> String {
-        // Create comprehensive formatting data
+        // If it's the same line, return a space
+        if lineAnalyzer.isSameLine(textObservationPair) {
+            return " "
+        }
+
+        // For new lines, apply the full merge decision logic
+        // Create comprehensive line context
         let lineContext = prepareLineContext(textObservationPair)
 
         // Determine merge decision
@@ -48,14 +52,11 @@ class AppleOCRTextMerger {
 
     private let metrics: OCRMetrics
     private var languageManager = EZLanguageManager.shared()
-
-    // Convenience computed properties for easier access
-    private var language: Language { metrics.language }
-    private var isPoetry: Bool { metrics.isPoetry }
+    private lazy var lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
 
     /// Check if current language is English
     private func isEnglishLanguage() -> Bool {
-        languageManager.isEnglishLanguage(language)
+        languageManager.isEnglishLanguage(metrics.language)
     }
 
     /// Prepare comprehensive line context for text merging
@@ -111,7 +112,7 @@ class AppleOCRTextMerger {
             return " "
         } else {
             // For languages that need spaces between words
-            if languageManager.isLanguageWordsNeedSpace(language) {
+            if languageManager.isLanguageWordsNeedSpace(metrics.language) {
                 return " "
             }
             return ""
@@ -256,7 +257,7 @@ class AppleOCRTextMerger {
 
         if lineContext.isBigLineSpacing {
             if lineContext.isPrevLongText {
-                if isPoetry {
+                if metrics.isPoetry {
                     needLineBreak = true
                 } else {
                     // Check for page turn scenarios
@@ -295,7 +296,7 @@ class AppleOCRTextMerger {
                 }
             }
 
-            if isPoetry {
+            if metrics.isPoetry {
                 needLineBreak = true
             }
         }
