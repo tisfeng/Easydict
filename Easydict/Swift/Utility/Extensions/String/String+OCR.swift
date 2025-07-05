@@ -46,6 +46,12 @@ extension String {
         wordComponents.count
     }
 
+    /// Count the number of English words in the text string.
+    var englishWordCount: Int {
+        let englishWords = wordComponents.filter { $0.isEnglishText }
+        return englishWords.count
+    }
+
     /// Check if text represents a list item based on common list markers
     var isListTypeFirstWord: Bool {
         let trimmedText = trimmingCharacters(in: .whitespaces)

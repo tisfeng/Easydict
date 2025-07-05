@@ -76,7 +76,7 @@ struct AliTranslateType: Equatable {
          https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes
          */
 
-        if from == .mongolian, !to.isKindOfChinese() || to == .mongolian, !from.isKindOfChinese() {
+        if from == .mongolian, !to.isChinese || to == .mongolian, !from.isChinese {
             return .unsupported
         }
 

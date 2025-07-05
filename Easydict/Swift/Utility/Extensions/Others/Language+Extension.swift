@@ -82,14 +82,18 @@ extension Language {
 extension [Language] {
     /// Contains Chinese language,
     func containsChinese() -> Bool {
-        contains { $0.isKindOfChinese() }
+        contains { $0.isChinese }
     }
 }
 
 extension Language {
     /// Is kind of Chinese language, means it is simplifiedChinese, traditionalChinese or classicalChinese.
-    func isKindOfChinese() -> Bool {
+    var isChinese: Bool {
         [.simplifiedChinese, .traditionalChinese, .classicalChinese].contains(self)
+    }
+
+    var isEnglish: Bool {
+        self == .english
     }
 }
 
@@ -122,5 +126,9 @@ extension [Language] {
             orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
         }
         return orderedDict
+    }
+
+    var formattedDescription: String {
+        map { $0.localizedName }.joined(separator: ", ")
     }
 }

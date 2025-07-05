@@ -149,7 +149,7 @@ class YoudaoService: QueryService {
     }
 
     override func getTTSLanguageCode(_ language: Language, accent: String?) -> String {
-        if language.isKindOfChinese() {
+        if language.isChinese {
             return "zh"
         }
         return super.getTTSLanguageCode(language, accent: accent)

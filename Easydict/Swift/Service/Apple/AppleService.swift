@@ -116,27 +116,6 @@ public class AppleService: QueryService {
         )
     }
 
-    /// Language detection
-    @objc
-    public func detectLanguage(
-        text: String,
-        completion: @escaping (Language, Error?) -> ()
-    ) {
-        let detectedLanguage = languageDetector.detectLanguage(text: text)
-        completion(detectedLanguage, nil)
-    }
-
-    /// Text-to-speech functionality
-    @objc
-    public func playAudio(
-        text: String,
-        language: Language,
-        completion: @escaping (Error?) -> ()
-    )
-        -> NSSpeechSynthesizer? {
-        speechService.playAudio(text: text, language: language, completion: completion)
-    }
-
     @objc
     public func detectText(
         _ text: String,
@@ -168,13 +147,7 @@ public class AppleService: QueryService {
     /// Convert NLLanguage to Language enum
     @objc
     public func languageEnum(fromAppleLanguage appleLanguage: NLLanguage) -> Language {
-        languageDetector.languageEnumFromAppleLanguage(appleLanguage)
-    }
-
-    /// Convert Language enum to NLLanguage
-    @objc
-    public func appleLanguage(fromLanguageEnum language: Language) -> NLLanguage {
-        languageMapperToNLLanguage(language)
+        languageMapper.languageEnum(from: appleLanguage)
     }
 
     // MARK: Internal
@@ -205,33 +178,6 @@ public class AppleService: QueryService {
 
     private var translationService: Any? // Use Any to avoid compile-time type checking
 
-    /// Convert Language enum to NLLanguage
-    private func languageMapperToNLLanguage(_ language: Language) -> NLLanguage {
-        switch language {
-        case .english: return .english
-        case .simplifiedChinese: return .simplifiedChinese
-        case .traditionalChinese: return .traditionalChinese
-        case .japanese: return .japanese
-        case .korean: return .korean
-        case .french: return .french
-        case .spanish: return .spanish
-        case .portuguese: return .portuguese
-        case .italian: return .italian
-        case .german: return .german
-        case .russian: return .russian
-        case .arabic: return .arabic
-        case .thai: return .thai
-        case .polish: return .polish
-        case .turkish: return .turkish
-        case .indonesian: return .indonesian
-        case .vietnamese: return .vietnamese
-        case .dutch: return .dutch
-        case .ukrainian: return .ukrainian
-        case .hindi: return .hindi
-        default: return .english
-        }
-    }
-
     @MainActor
     private func getTranslationService() -> Any? {
         if #available(macOS 15.0, *) {
@@ -254,10 +200,15 @@ public class AppleService: QueryService {
         to targetLanguage: Language
     ) async throws
         -> EZQueryResult {
+        guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
+              let toLanguage = languageMapper.supportedLanguages[targetLanguage] else {
+            throw QueryError(type: .parameter, message: "Unsupported language for Apple Translation")
+        }
+
         let parameters = [
             "text": text,
-            "from": languageMapper.appleLanguageCode(for: sourceLanguage),
-            "to": languageMapper.appleLanguageCode(for: targetLanguage),
+            "from": fromLanguage,
+            "to": toLanguage,
         ]
 
         let text = try await AppleScriptTask.runTranslateShortcut(parameters: parameters) ?? ""

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import NaturalLanguage
 
 // MARK: - AppleLanguageMapper
 
@@ -14,25 +15,21 @@ import Foundation
 public class AppleLanguageMapper: NSObject {
     // MARK: Public
 
+    /// Returns a dictionary mapping `Language` to `String` for Apple Translation Shortcut.
     @objc
     public var supportedLanguages: [Language: String] {
         languageMap
     }
 
     @objc
-    public func appleLanguageCode(for language: Language) -> String {
-        languageMap[language] ?? "en_US"
-    }
-
-    @objc
-    public func language(for appleLanguageCode: String) -> Language {
+    public func language(for appleLanguageCode: String) -> Language? {
         for (key, value) in languageMap where value == appleLanguageCode {
             return key
         }
-        return .english
+        return nil
     }
 
-    /// Convert Language to BCP-47 language code for Apple Translation API
+    /// Convert Language to BCP-47 language code for Apple Translation API, supported macOS 15+.
     @objc
     public func languageCode(for language: Language) -> String {
         switch language {
@@ -72,9 +69,92 @@ public class AppleLanguageMapper: NSObject {
         return appleOCRLanguageCodes
     }
 
+    /// Convert NLLanguage to Language enum
+    @objc
+    public func languageEnum(from appleLanguage: NLLanguage) -> Language {
+        for (language, nlLanguage) in appleLanguagesDictionary where nlLanguage == appleLanguage {
+            return language
+        }
+        return .auto
+    }
+
     // MARK: Internal
 
     @objc static let shared = AppleLanguageMapper()
+
+    /// Returns a dictionary mapping `Language` to `NLLanguage` for Natural Language processing
+    ///
+    /// This comprehensive mapping provides conversion between Easydict's internal language
+    /// enumeration and Apple's Natural Language framework language identifiers. The mapping
+    /// follows BCP-47 language tag standards and supports language detection, text processing,
+    /// and linguistic analysis throughout the application.
+    ///
+    /// **Language Tag Format:**
+    /// - Uses standard BCP-47 language tags (e.g., "en" for English, "zh-Hans" for Simplified Chinese)
+    /// - Includes script subtags where necessary (Hans/Hant for Chinese variants)
+    /// - Covers major world languages supported by Apple's Natural Language framework
+    ///
+    /// **Primary Use Cases:**
+    /// - Language detection and identification
+    /// - Text processing and linguistic analysis
+    /// - Natural language understanding features
+    /// - Integration with Apple's ML and NLP frameworks
+    ///
+    /// - Note: Based on the comprehensive language mapping from the original Objective-C implementation
+    @objc
+    var appleLanguagesDictionary: [Language: NLLanguage] {
+        [
+            .auto: .undetermined, // und
+            .simplifiedChinese: .simplifiedChinese, // zh-Hans
+            .traditionalChinese: .traditionalChinese, // zh-Hant
+            .english: .english, // en
+            .japanese: .japanese, // ja
+            .korean: .korean, // ko
+            .french: .french, // fr
+            .spanish: .spanish, // es
+            .portuguese: .portuguese, // pt
+            .italian: .italian, // it
+            .german: .german, // de
+            .russian: .russian, // ru
+            .arabic: .arabic, // ar
+            .swedish: .swedish, // sv
+            .romanian: .romanian, // ro
+            .thai: .thai, // th
+            .slovak: .slovak, // sk
+            .dutch: .dutch, // nl
+            .hungarian: .hungarian, // hu
+            .greek: .greek, // el
+            .danish: .danish, // da
+            .finnish: .finnish, // fi
+            .polish: .polish, // pl
+            .czech: .czech, // cs
+            .turkish: .turkish, // tr
+            .ukrainian: .ukrainian, // uk
+            .bulgarian: .bulgarian, // bg
+            .indonesian: .indonesian, // id
+            .malay: .malay, // ms
+            .vietnamese: .vietnamese, // vi
+            .persian: .persian, // fa
+            .hindi: .hindi, // hi
+            .telugu: .telugu, // te
+            .tamil: .tamil, // ta
+            .urdu: .urdu, // ur
+            .khmer: .khmer, // km
+            .lao: .lao, // lo
+            .bengali: .bengali, // bn
+            .burmese: .burmese, // my
+            .norwegian: .norwegian, // no
+            .croatian: .croatian, // hr
+            .mongolian: .mongolian, // mn
+            .hebrew: .hebrew, // he
+            .georgian: .georgian, // ka
+        ]
+    }
+
+    /// Recognized languages for NLLanguageRecognizer and other NLP tasks.
+    var recognizedLanguages: [NLLanguage] {
+        Array(appleLanguagesDictionary.values)
+    }
 
     /// Sort the OCR languages based on user preferences.
     func sortOCRLanguages(
@@ -102,7 +182,7 @@ public class AppleLanguageMapper: NSObject {
 
         // Move Chinese to the first priority if the first language is English and if user system language contains Chinese.
         if let firstLanguage = newRecognitionLanguages.first, firstLanguage == .english {
-            for language in userPreferredLanguages where language.isKindOfChinese() {
+            for language in userPreferredLanguages where language.isChinese {
                 if let index = newRecognitionLanguages.firstIndex(of: language) {
                     newRecognitionLanguages.remove(at: index)
                     newRecognitionLanguages.insert(language, at: 0)
@@ -117,6 +197,7 @@ public class AppleLanguageMapper: NSObject {
     /// Get OCR recognition languages for a specific language.
     func ocrRecognitionLanguages(for language: Language) -> [String] {
         let ocrLanguages = Array(ocrLanguageDictionary.keys)
+        // User preferred languages
         let perferredLanguages = EZLanguageManager.shared().preferredLanguages
 
         var finalRecognitionLanguages = sortOCRLanguages(
@@ -160,7 +241,7 @@ public class AppleLanguageMapper: NSObject {
         .arabic: "ar-SA",
     ]
 
-    /// Apple Translation Shortcut Language Mapper
+    /// Apple Translation Shortcut supported languages map.
     private let languageMap: [Language: String] = [
         .auto: "auto",
         .simplifiedChinese: "zh_CN",

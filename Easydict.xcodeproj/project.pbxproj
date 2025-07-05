@@ -23,6 +23,9 @@
 		030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */; };
+		0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */; };
+		031258512E18C4EA0072320C /* String+ToChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031258502E18C4EA0072320C /* String+ToChinese.swift */; };
+		031258532E18D2C50072320C /* String+Detect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031258522E18D2C50072320C /* String+Detect.swift */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */; };
 		031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */; };
 		031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */; };
@@ -456,6 +459,9 @@
 		030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextNormalizer.swift; sourceTree = "<group>"; };
+		0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetectorTests.swift; sourceTree = "<group>"; };
+		031258502E18C4EA0072320C /* String+ToChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ToChinese.swift"; sourceTree = "<group>"; };
+		031258522E18D2C50072320C /* String+Detect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Detect.swift"; sourceTree = "<group>"; };
 		0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Request.swift"; sourceTree = "<group>"; };
 		031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCREngine.swift; sourceTree = "<group>"; };
 		031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+ToCGImage.swift"; sourceTree = "<group>"; };
@@ -1066,6 +1072,7 @@
 			isa = PBXGroup;
 			children = (
 				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
+				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
 				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
@@ -1683,6 +1690,8 @@
 				03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */,
 				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
 				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
+				031258502E18C4EA0072320C /* String+ToChinese.swift */,
+				031258522E18D2C50072320C /* String+Detect.swift */,
 			);
 			path = String;
 			sourceTree = "<group>";
@@ -3214,6 +3223,7 @@
 				94F90BEEE04149F988662B80 /* OCRTextProcessingTests.swift in Sources */,
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
+				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
@@ -3227,6 +3237,7 @@
 				EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
+				031258532E18D2C50072320C /* String+Detect.swift in Sources */,
 				0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */,
 				03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */,
 				CA9CF8AB2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift in Sources */,
@@ -3457,6 +3468,7 @@
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
+				031258512E18C4EA0072320C /* String+ToChinese.swift in Sources */,
 				033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */,
 				03779F172BB256C5008D3C42 /* URL+Extension.swift in Sources */,
 				0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */,

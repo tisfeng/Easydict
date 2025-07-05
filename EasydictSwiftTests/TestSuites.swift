@@ -30,6 +30,13 @@ enum TestSuites {
     /// - Purpose: Tests for Apple service integrations
     /// - 含义：这是关于Apple服务的集成测试
 
+    /// Apple Language Detector Tests
+    /// - Location: AppleLanguageDetectorTests.swift
+    /// - Tags: .apple + .unit (功能领域 + 测试类型)
+    /// - Purpose: Tests for Apple language detection with intelligent corrections
+    /// - 含义：这是关于Apple语言检测功能的单元测试
+    /// - Features: Pure language detection, mixed script text, short text edge cases, performance testing
+
     /// System Utilities Tests
     /// - Location: SystemUtilitiesTests.swift
     /// - Tags: .system + .unit (功能领域 + 测试类型)

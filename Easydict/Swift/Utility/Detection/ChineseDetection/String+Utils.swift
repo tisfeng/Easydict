@@ -18,13 +18,6 @@ extension String {
         components(separatedBy: .init(charactersIn: punctuations.joined())).joined()
     }
 
-    /// Remove all standard punctuation characters from text.
-    /// Uses Foundation's punctuation character set.
-    /// - Returns: String with all punctuation removed
-    func removeAllPunctuation() -> String {
-        components(separatedBy: .punctuationCharacters).joined()
-    }
-
     // MARK: - Feature Detection Methods
 
     /// Calculate the ratio of classical Chinese characters in text
@@ -39,7 +32,7 @@ extension String {
 
     /// Calculate the ratio of specific linguistic features in text
     func calculateLinguisticFeatureRatio(for features: [String]) -> Double {
-        let cleanText = removeAllPunctuation().trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanText = removingPunctuationCharacters().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanText.isEmpty else { return 0.0 }
 
         let totalChars = cleanText.count
