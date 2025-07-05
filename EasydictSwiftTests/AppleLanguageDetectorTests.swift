@@ -349,7 +349,7 @@ struct AppleLanguageDetectorTests {
     @Test("Detailed Language Probabilities", .tags(.apple, .unit))
     func testDetailedLanguageProbabilities() {
         // Test that probability distribution makes sense
-        let probabilities = detector.detectLanguageDict(text: "Hello, world!", printLog: false)
+        let probabilities = detector.detectLanguageDict(text: "Hello, world!")
 
         // Should have probabilities
         #expect(!probabilities.isEmpty)
@@ -363,7 +363,7 @@ struct AppleLanguageDetectorTests {
         }
 
         // Test Chinese text probabilities
-        let chineseProbabilities = detector.detectLanguageDict(text: "你好，世界！", printLog: false)
+        let chineseProbabilities = detector.detectLanguageDict(text: "你好，世界！")
 
         #expect(!chineseProbabilities.isEmpty)
 
@@ -379,7 +379,7 @@ struct AppleLanguageDetectorTests {
         // Test the detailed analysis of mixed Chinese-English text
         let mixedText = "欢迎使用 Easydict翻译软件! 这是一个强大的翻译工具, 支持多种服务, 包括Google翻译、DeepL翻译等."
 
-        let result = detector.detectLanguage(text: mixedText, printLog: true) // Enable logging for this test
+        let result = detector.detectLanguage(text: mixedText) // Enable logging for this test
 
         #expect(
             result == .simplifiedChinese,
@@ -447,14 +447,14 @@ struct AppleLanguageDetectorTests {
         let ambiguousText = "favor" // Could be English, Spanish, Portuguese, etc.
 
         // Get the detailed probabilities to see the weight adjustment effect
-        let probabilities = detector.detectLanguageDict(text: ambiguousText, printLog: true)
+        let probabilities = detector.detectLanguageDict(text: ambiguousText)
 
         // Verify that probabilities are returned
         #expect(!probabilities.isEmpty, "Should return language probabilities for ambiguous text")
 
         // The exact behavior depends on user's preferred languages, but we can verify
         // that the system handles the weight correction without crashing
-        let detectedLanguage = detector.detectLanguage(text: ambiguousText, printLog: true)
+        let detectedLanguage = detector.detectLanguage(text: ambiguousText)
         #expect(detectedLanguage != .auto, "Should detect a specific language for ambiguous text")
     }
 
@@ -466,7 +466,7 @@ struct AppleLanguageDetectorTests {
         // Use clear English text that won't be detected as other languages
         let clearEnglishText = "The quick brown fox jumps over the lazy dog"
 
-        let probabilities = detector.detectLanguageDict(text: clearEnglishText, printLog: true)
+        let probabilities = detector.detectLanguageDict(text: clearEnglishText)
 
         // English should be strongly detected
         if let englishProb = probabilities["en"] {
@@ -486,11 +486,11 @@ struct AppleLanguageDetectorTests {
         let mixedText = "苹果 apple iPhone"
 
         // Get probabilities with weight correction
-        let probabilities = detector.detectLanguageDict(text: mixedText, printLog: true)
+        let probabilities = detector.detectLanguageDict(text: mixedText)
         #expect(!probabilities.isEmpty, "Mixed text should return probabilities")
 
         // Final detection should consider both ML detection and user preferences
-        let detectedLanguage = detector.detectLanguage(text: mixedText, printLog: true)
+        let detectedLanguage = detector.detectLanguage(text: mixedText)
         #expect(
             detectedLanguage == .simplifiedChinese,
             "Mixed text with Chinese characters should be detected as Chinese"
@@ -503,7 +503,7 @@ struct AppleLanguageDetectorTests {
         // since it's widely used
 
         let englishText = "Hello world"
-        let probabilities = detector.detectLanguageDict(text: englishText, printLog: true)
+        let probabilities = detector.detectLanguageDict(text: englishText)
 
         // English should be detected with high probability
         if let englishProb = probabilities["en"] {
@@ -523,7 +523,7 @@ struct AppleLanguageDetectorTests {
         // Use very clear Chinese text
         let clearChineseText = "这是一段非常明确的中文文本，没有任何其他语言的混合"
 
-        let probabilities = detector.detectLanguageDict(text: clearChineseText, printLog: true)
+        let probabilities = detector.detectLanguageDict(text: clearChineseText)
 
         // Chinese should be strongly detected regardless of user preferences
         let hasHighChineseProb = probabilities.contains { key, value in

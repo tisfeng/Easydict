@@ -34,8 +34,10 @@ public class AppleService: QueryService {
         languageMapper.supportedLanguages.toMMOrderedDictionary()
     }
 
-    public override func detectText(_ text: String, completion: @escaping (Language, (any Error)?) -> ()) {
-        let language = detectText(text, printLog: true)
+    public override func detectText(
+        _ text: String, completion: @escaping (Language, (any Error)?) -> ()
+    ) {
+        let language = detectText(text)
         completion(language, nil)
     }
 
@@ -64,7 +66,9 @@ public class AppleService: QueryService {
     }
 
     @objc
-    public override func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
+    public override func ocr(
+        _ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()
+    ) {
         let image = queryModel.ocrImage ?? NSImage()
         let language = queryModel.queryFromLanguage
 
@@ -117,30 +121,14 @@ public class AppleService: QueryService {
     }
 
     @objc
-    public func detectText(
-        _ text: String,
-        printLog: Bool = false
-    )
-        -> Language {
-        let detectedLanguage = languageDetector.detectLanguage(text: text, printLog: printLog)
+    public func detectText(_ text: String) -> Language {
+        let detectedLanguage = languageDetector.detectLanguage(text: text)
         return detectedLanguage
-    }
-
-    @objc
-    public func detectText(
-        _ text: String
-    )
-        -> Language {
-        detectText(text, printLog: false)
     }
 
     /// Play text audio using system speech synthesizer
     @objc
-    public func playTextAudio(
-        _ text: String,
-        textLanguage: Language
-    )
-        -> NSSpeechSynthesizer? {
+    public func playTextAudio(_ text: String, textLanguage: Language) -> NSSpeechSynthesizer? {
         speechService.playAudio(text: text, language: textLanguage) { _ in }
     }
 
@@ -201,8 +189,11 @@ public class AppleService: QueryService {
     ) async throws
         -> EZQueryResult {
         guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
-              let toLanguage = languageMapper.supportedLanguages[targetLanguage] else {
-            throw QueryError(type: .parameter, message: "Unsupported language for Apple Translation")
+              let toLanguage = languageMapper.supportedLanguages[targetLanguage]
+        else {
+            throw QueryError(
+                type: .parameter, message: "Unsupported language for Apple Translation"
+            )
         }
 
         let parameters = [

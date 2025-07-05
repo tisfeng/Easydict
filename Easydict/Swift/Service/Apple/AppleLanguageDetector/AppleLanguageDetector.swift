@@ -36,7 +36,7 @@ import NaturalLanguage
 /// let mixed2 = detector.detectLanguage(text: "apple苹果")  // Returns .simplifiedChinese
 ///
 /// // With logging for debugging
-/// let result = detector.detectLanguage(text: "Hello world", printLog: true)
+/// let result = detector.detectLanguage(text: "Hello world")
 /// ```
 ///
 /// **Performance Characteristics:**
@@ -56,30 +56,15 @@ public class AppleLanguageDetector: NSObject {
     /// - Returns: Most likely Language enum value (.auto for empty text)
     @objc
     public func detectLanguage(text: String) -> Language {
-        detectLanguage(text: text, printLog: false)
-    }
-
-    /// Detect language with optional detailed logging for debugging
-    ///
-    /// Extended version with optional logging of probabilities, processing time,
-    /// and decision rationale for debugging purposes.
-    ///
-    /// - Parameters:
-    ///   - text: Text to analyze for language detection
-    ///   - printLog: Whether to output detailed detection information to console
-    /// - Returns: Most likely Language enum value
-    @objc
-    public func detectLanguage(text: String, printLog: Bool) -> Language {
         // Handle empty or whitespace-only text
         if text.isEmpty || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return .auto
         }
 
-        let languageProbabilityDict = detectLanguageDict(text: text, printLog: printLog)
+        let languageProbabilityDict = detectLanguageDict(text: text)
         let mostConfidentLanguage = getMostConfidentLanguage(
             languageProbabilityDict,
-            text: text,
-            printLog: printLog
+            text: text
         )
 
         return mostConfidentLanguage
@@ -90,12 +75,10 @@ public class AppleLanguageDetector: NSObject {
     /// Returns probability distribution from Apple's language detection system.
     /// Useful for debugging detection issues and analyzing confidence levels.
     ///
-    /// - Parameters:
-    ///   - text: Text to analyze for language probabilities
-    ///   - printLog: Whether to output detailed analysis to console
+    /// - Parameter text: Text to analyze for language probabilities
     /// - Returns: Dictionary mapping BCP-47 language codes to probability values (0.0-1.0)
     @objc
-    public func detectLanguageDict(text: String, printLog: Bool) -> [String: NSNumber] {
+    public func detectLanguageDict(text: String) -> [String: NSNumber] {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let recognizer = NLLanguageRecognizer()
@@ -108,11 +91,9 @@ public class AppleLanguageDetector: NSObject {
 
         let endTime = CFAbsoluteTimeGetCurrent()
 
-        if printLog {
-            print("Language probabilities: \(probabilities.prettyPrinted)\n")
-            print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
-            print("Detection cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
-        }
+        print("Language probabilities: \(probabilities.prettyPrinted)\n")
+        print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
+        print("Detection cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
 
         // Convert to String keys for Objective-C compatibility
         var result: [String: NSNumber] = [:]
@@ -125,6 +106,7 @@ public class AppleLanguageDetector: NSObject {
 
     // MARK: Private
 
+    /// Shared language mapper for converting between Apple NLLanguage and Easydict Language enums
     private let languageMapper = AppleLanguageMapper.shared
 
     /// Custom language hints for improving detection accuracy
@@ -220,12 +202,10 @@ public class AppleLanguageDetector: NSObject {
     /// - Parameters:
     ///   - languageProbabilities: Raw probabilities from NL framework
     ///   - text: Original text for pattern analysis
-    ///   - printLog: Whether to output detection details
     /// - Returns: Final detected language after all corrections
     private func getMostConfidentLanguage(
         _ languageProbabilities: [String: NSNumber],
-        text: String,
-        printLog: Bool
+        text: String
     )
         -> Language {
         // Handle empty results (e.g., numeric-only text like "729")
@@ -235,8 +215,7 @@ public class AppleLanguageDetector: NSObject {
 
         // Apply user preferred language weight correction
         let adjustedProbabilities = applyUserPreferredLanguageWeights(
-            to: languageProbabilities,
-            printLog: printLog
+            to: languageProbabilities
         )
 
         // Find the language with highest probability after user preference adjustment
@@ -260,20 +239,25 @@ public class AppleLanguageDetector: NSObject {
             allProbabilities: adjustedProbabilities
         )
 
-        if printLog {
-            print("Final detected text: \(text)")
-            print(
-                "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
-            )
-        }
+        print("Final detected text: \(text)")
+        print(
+            "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
+        )
 
         return detectedLanguage
     }
 
     /// Internal language detection method with recursion depth control
+    ///
+    /// Used by mixed-script analysis for recursive detection of non-English portions.
+    /// Prevents infinite recursion with depth limit.
+    ///
+    /// - Parameters:
+    ///   - text: Text to analyze for language detection
+    ///   - recursionDepth: Current recursion depth (max 2)
+    /// - Returns: Detected language or .auto for empty text
     private func detectLanguageInternal(
         text: String,
-        printLog: Bool,
         recursionDepth: Int
     )
         -> Language {
@@ -282,11 +266,10 @@ public class AppleLanguageDetector: NSObject {
             return .auto
         }
 
-        let languageProbabilityDict = detectLanguageDict(text: text, printLog: printLog)
+        let languageProbabilityDict = detectLanguageDict(text: text)
         let mostConfidentLanguage = getMostConfidentLanguageInternal(
             languageProbabilityDict,
             text: text,
-            printLog: printLog,
             recursionDepth: recursionDepth
         )
 
@@ -294,10 +277,18 @@ public class AppleLanguageDetector: NSObject {
     }
 
     /// Internal method for getting most confident language with recursion depth control
+    ///
+    /// Similar to getMostConfidentLanguage but includes recursion depth tracking
+    /// for mixed-script analysis scenarios.
+    ///
+    /// - Parameters:
+    ///   - languageProbabilities: Raw probabilities from NL framework
+    ///   - text: Original text for pattern analysis
+    ///   - recursionDepth: Current recursion depth
+    /// - Returns: Final detected language after corrections
     private func getMostConfidentLanguageInternal(
         _ languageProbabilities: [String: NSNumber],
         text: String,
-        printLog: Bool,
         recursionDepth: Int
     )
         -> Language {
@@ -308,8 +299,7 @@ public class AppleLanguageDetector: NSObject {
 
         // Apply user preferred language weight correction
         let adjustedProbabilities = applyUserPreferredLanguageWeights(
-            to: languageProbabilities,
-            printLog: printLog
+            to: languageProbabilities
         )
 
         // Find the language with highest probability after user preference adjustment
@@ -334,11 +324,9 @@ public class AppleLanguageDetector: NSObject {
             recursionDepth: recursionDepth
         )
 
-        if printLog {
-            print(
-                "Final detected language: \(detectedLanguage) (confidence: \(String(format: "%.3f", topConfidence)))"
-            )
-        }
+        print(
+            "Final detected language: \(detectedLanguage) (confidence: \(String(format: "%.3f", topConfidence)))"
+        )
 
         return detectedLanguage
     }
@@ -348,21 +336,16 @@ public class AppleLanguageDetector: NSObject {
     /// Only affects languages that appear in detection results, preventing artificial
     /// promotion of undetected languages. Preferred languages get +0.1 to +0.4 boost.
     ///
-    /// - Parameters:
-    ///   - languageProbabilities: Original detection probabilities from Apple NL
-    ///   - printLog: Whether to log the weight adjustment process
+    /// - Parameter languageProbabilities: Original detection probabilities from Apple NL
     /// - Returns: Adjusted probabilities with user preference weights applied
     private func applyUserPreferredLanguageWeights(
-        to languageProbabilities: [String: NSNumber],
-        printLog: Bool
+        to languageProbabilities: [String: NSNumber]
     )
         -> [String: NSNumber] {
         var adjustedProbabilities = languageProbabilities
         let preferredLanguages = EZLanguageManager.shared().preferredLanguages
 
-        if printLog {
-            print("Original probabilities: \(languageProbabilities.prettyPrinted)")
-        }
+        print("Original probabilities: \(languageProbabilities.prettyPrinted)")
 
         // Apply user preferred language weights
         for (index, preferredLanguage) in preferredLanguages.enumerated() {
@@ -400,15 +383,23 @@ public class AppleLanguageDetector: NSObject {
             adjustedProbabilities[NLLanguage.english.rawValue] = NSNumber(value: newProbability)
         }
 
-        if printLog {
-            print("User preferred languages: \(preferredLanguages.prettyPrinted)")
-            print("Adjusted probabilities: \(adjustedProbabilities.prettyPrinted)")
-        }
+        print("User preferred languages: \(preferredLanguages.prettyPrinted)")
+        print("Adjusted probabilities: \(adjustedProbabilities.prettyPrinted)")
 
         return adjustedProbabilities
     }
 
     /// Apply intelligent post-processing corrections for common misdetection cases
+    ///
+    /// Public interface to post-processing pipeline. Delegates to internal method
+    /// with recursion depth tracking.
+    ///
+    /// - Parameters:
+    ///   - detectedLanguage: Language detected by ML system
+    ///   - confidence: Detection confidence score (0.0-1.0)
+    ///   - text: Original input text
+    ///   - allProbabilities: All language probabilities from detection
+    /// - Returns: Corrected language after post-processing
     private func applyPostProcessingCorrections(
         detectedLanguage: Language,
         confidence: Double,
@@ -426,6 +417,19 @@ public class AppleLanguageDetector: NSObject {
     }
 
     /// Simplified post-processing with intelligent language-specific handling
+    ///
+    /// Three-tier priority system for corrections:
+    /// 1. Chinese type verification (simplified vs traditional)
+    /// 2. Mixed content detection and analysis
+    /// 3. Short text and obvious misdetection corrections
+    ///
+    /// - Parameters:
+    ///   - detectedLanguage: Language detected by ML system
+    ///   - confidence: Detection confidence score (0.0-1.0)
+    ///   - text: Original input text
+    ///   - allProbabilities: All language probabilities from detection
+    ///   - recursionDepth: Current recursion depth for mixed-script analysis
+    /// - Returns: Corrected language after all post-processing steps
     private func applyPostProcessingCorrectionsInternal(
         detectedLanguage: Language,
         confidence: Double,
@@ -471,6 +475,12 @@ public class AppleLanguageDetector: NSObject {
     }
 
     /// Detect fallback language for edge cases
+    ///
+    /// Handles scenarios where Apple's NL framework returns empty results,
+    /// typically for numeric-only text or unrecognizable input.
+    ///
+    /// - Parameter text: Input text that failed normal detection
+    /// - Returns: .english as safe fallback for most cases
     private func detectFallbackLanguage(for text: String) -> Language {
         // Check if numeric-only
         if text.trimmingCharacters(in: .whitespacesAndNewlines).isNumericText {
@@ -508,7 +518,8 @@ public class AppleLanguageDetector: NSObject {
             let englishWordCount = text.englishWordCount
 
             let nonEnglishText = removeEnglishCharacters(from: text)
-            let pureWordText = nonEnglishText.removingPunctuationCharacters().removingWhitespaceAndNewlines()
+            let pureWordText = nonEnglishText.removingPunctuationCharacters()
+                .removingWhitespaceAndNewlines()
             let nonEnglishWordCount = pureWordText.count
 
             // If English words are more than non-English, return English
@@ -520,7 +531,7 @@ public class AppleLanguageDetector: NSObject {
 
             if trimmedNonEnglish.count >= 2 {
                 let nonEnglishLanguage = detectLanguageInternal(
-                    text: trimmedNonEnglish, printLog: false, recursionDepth: recursionDepth + 1
+                    text: trimmedNonEnglish, recursionDepth: recursionDepth + 1
                 )
 
                 if nonEnglishLanguage != .english, nonEnglishLanguage != .auto {
@@ -617,6 +628,18 @@ public class AppleLanguageDetector: NSObject {
     }
 
     /// Handle mixed content detection and common misidentifications
+    ///
+    /// Corrects scenarios where mixed-script text is misdetected, particularly:
+    /// - English + Chinese mixed content
+    /// - Chinese content misdetected as other languages
+    /// - Character ratio analysis for dominance determination
+    ///
+    /// - Parameters:
+    ///   - detectedLanguage: Language detected by ML system
+    ///   - text: Input text to analyze
+    ///   - confidence: Detection confidence score
+    ///   - recursionDepth: Current recursion depth
+    /// - Returns: Corrected language if applicable, nil to continue processing
     private func handleMixedContentDetection(
         detectedLanguage: Language,
         text: String,
@@ -652,6 +675,18 @@ public class AppleLanguageDetector: NSObject {
     }
 
     /// Handle corrections for short text and obvious misdetections
+    ///
+    /// Applies conservative corrections for edge cases:
+    /// - Numeric-heavy text → English
+    /// - Short low-confidence Latin text → English (if probability supports it)
+    /// - Very short text → User preferred language or English fallback
+    ///
+    /// - Parameters:
+    ///   - detectedLanguage: Language detected by ML system
+    ///   - text: Input text to analyze
+    ///   - confidence: Detection confidence score
+    ///   - allProbabilities: All language probabilities for fallback analysis
+    /// - Returns: Corrected language if applicable, nil to trust original detection
     private func handleShortTextCorrections(
         detectedLanguage: Language,
         text: String,
@@ -689,7 +724,7 @@ public class AppleLanguageDetector: NSObject {
 }
 
 extension [String: NSNumber] {
-    /// Returns a sortted and pretty-printed string representation of the language probabilities
+    /// Returns a sorted and pretty-printed string representation of the language probabilities
     var prettyPrinted: String {
         let sorttedString = sorted { $0.value.doubleValue > $1.value.doubleValue }
             .map { "\($0.key): \(String(format: "%.3f", $0.value.doubleValue))" }
