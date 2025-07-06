@@ -483,7 +483,7 @@ public class AppleLanguageDetector: NSObject {
     /// - Returns: .english as safe fallback for most cases
     private func detectFallbackLanguage(for text: String) -> Language {
         // Check if numeric-only
-        if text.trimmingCharacters(in: .whitespacesAndNewlines).isNumericText {
+        if text.trimmingCharacters(in: .whitespacesAndNewlines).isNumeric {
             // For numeric text, default to English (simpler and more predictable)
             return .english
         }
@@ -614,7 +614,7 @@ public class AppleLanguageDetector: NSObject {
                 return .simplifiedChinese
             } else {
                 // Could be traditional or ambiguous, check by conversion
-                let simplified = chineseText.toSimplifiedChineseText()
+                let simplified = chineseText.toSimplifiedChinese()
                 return simplified == chineseText ? .simplifiedChinese : .traditionalChinese
             }
         }
