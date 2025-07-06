@@ -27,6 +27,9 @@ extension String {
     /// Check if the string is Chinese text by regex unicode range.
     var isChineseTextByRegex: Bool {
         // Use RegexBuilder to match Chinese characters (CJK Unified Ideographs)
+
+        //  let chineseCharacterRegex = try! Regex(#"\p{Han}+"#)
+
         let chineseCharacterRegex = Regex {
             OneOrMore {
                 CharacterClass("\u{4e00}" ... "\u{9fa5}")
@@ -54,15 +57,19 @@ extension String {
 
     /// Check if string contains only alphabetic characters
     var isLatinText: Bool {
-        let latinTextRegex = Regex {
-            OneOrMore {
-                CharacterClass(
-                    "a" ... "z",
-                    "A" ... "Z",
-                    "\u{00C0}" ... "\u{00FF}" // Latin-1 Supplement (À-ÿ)
-                )
-            }
-        }
+//        let latinTextRegex = Regex {
+//            OneOrMore {
+//                CharacterClass(
+//                    "a" ... "z",
+//                    "A" ... "Z",
+//                    "\u{00C0}" ... "\u{00FF}" // Latin-1 Supplement (À-ÿ)
+//                )
+//            }
+//        }
+
+        // Use Unicode property to match Latin characters
+        let latinTextRegex = try! Regex(#"\p{Latin}+"#)
+
         return wholeMatch(of: latinTextRegex) != nil
     }
 
