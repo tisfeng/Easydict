@@ -50,15 +50,17 @@ public class OCRTextNormalizer {
     /// This is the main entry point that orchestrates all text normalization steps in optimal order
     ///
     /// Processing pipeline:
-    /// 1. Dot symbol normalization - unifies various bullet points and dots
-    /// 2. Common OCR errors - fixes symbol misrecognitions
+    /// 1. Protection - safeguard special content (URLs, decimals, code patterns)
+    /// 2. Dot symbol normalization - unifies various bullet points and dots
     /// 3. Punctuation normalization - ensures language-appropriate punctuation style
     /// 4. Formatting cleanup - fixes line breaks and excessive spacing
-    /// 5. Spacing normalization - cleans up irregular spacing (done last to handle punctuation changes)
+    /// 5. OCR symbol errors - fixes symbol misrecognitions (after punctuation to avoid conflicts)
+    /// 6. Spacing normalization - cleans up irregular spacing (done last to handle all changes)
+    /// 7. Restoration - restore all protected content
     ///
     /// Example transformation:
-    /// Input:  "Hello   •   world，this is a test—with   bad spacing ．"
-    /// Output: "Hello · world, this is a test-with bad spacing."
+    /// Input:  "Hello   •   world，this is a test—with   bad spacing…"
+    /// Output: "Hello · world, this is a test-with bad spacing..."
     public func normalizeText(_ string: String) -> String {
         var normalizedText = string
         print("Before normalization: \n\(normalizedText)")
@@ -70,16 +72,18 @@ public class OCRTextNormalizer {
         // 1. Apply dot symbol normalization (• → ·)
         normalizedText = replaceSimilarDotSymbol(in: normalizedText)
 
-        // 2. Normalize common OCR symbol errors (— → -, ´ → ', … → ...)
-        normalizedText = normalizeCommonOCRErrors(in: normalizedText)
-
-        // 3. Apply punctuation normalization based on language context (，→ , or , → ，)
+        // 2. Apply punctuation normalization based on language context (，→ , or , → ，)
         normalizedText = normalizePunctuation(in: normalizedText)
 
-        // 4. Fix common formatting issues (line breaks, excessive spacing)
+        // 3. Fix common formatting issues (line breaks, excessive spacing)
         normalizedText = normalizeFormatting(in: normalizedText)
 
-        // 5. Normalize spacing issues (after punctuation changes to handle new spacing correctly)
+        // 4. Normalize common OCR symbol errors (— → -, ´ → ', … → ...)
+        // This step comes AFTER punctuation normalization to avoid conflicts
+        // For example: "…" → "..." should not be converted to "。。。" in Chinese mode
+        normalizedText = normalizeCommonOCRErrors(in: normalizedText)
+
+        // 5. Normalize spacing issues (after all content changes to handle spacing correctly)
         normalizedText = normalizeSpacing(in: normalizedText)
 
         // 6. FINALLY: Restore all protected content
@@ -109,7 +113,43 @@ public class OCRTextNormalizer {
     private let languageManager = EZLanguageManager.shared()
 
     /// Protect special content that should never be modified during normalization
-    /// Returns the protected text and a map for restoration
+    ///
+    /// This function identifies and temporarily replaces special content with placeholders to prevent
+    /// unwanted modifications during text normalization steps. It uses sophisticated regex patterns
+    /// to detect various types of content that should remain unchanged.
+    ///
+    /// **Protected Content Types:**
+    /// - **URLs**: `https://example.com` → `〈PROTECTED_0〉`
+    /// - **Domain names**: `google.com` → `〈PROTECTED_1〉`
+    /// - **Email addresses**: `user@domain.com` → `〈PROTECTED_2〉`
+    /// - **File paths**: `C:/Users/file.txt` → `〈PROTECTED_3〉`
+    /// - **Code patterns**: `array.map()` → `〈PROTECTED_4〉`
+    /// - **Decimal numbers**: `10.99` → `〈PROTECTED_5〉`
+    /// - **Ellipsis**: `...` → `〈PROTECTED_6〉`
+    ///
+    /// **Smart Punctuation Handling:**
+    /// The regex patterns exclude trailing punctuation that might be sentence endings:
+    /// - `"Visit https://easydict.app, it's great!"` → URL excludes the comma
+    /// - `"Email me at test@example.com."` → Email excludes the period
+    ///
+    /// **Example Input:**
+    /// ```
+    /// "访问 https://easydict.app, 邮箱 test@example.com. 价格 $10.99, 代码 array.map()."
+    /// ```
+    ///
+    /// **Example Output:**
+    /// ```
+    /// protectedText: "访问 〈PROTECTED_0〉, 邮箱 〈PROTECTED_1〉. 价格 $〈PROTECTED_2〉, 代码 〈PROTECTED_3〉."
+    /// protectionMap: [
+    ///   "〈PROTECTED_0〉": "https://easydict.app",
+    ///   "〈PROTECTED_1〉": "test@example.com",
+    ///   "〈PROTECTED_2〉": "10.99",
+    ///   "〈PROTECTED_3〉": "array.map()"
+    /// ]
+    /// ```
+    ///
+    /// - Parameter text: The original text to scan for special content
+    /// - Returns: A tuple containing the protected text with placeholders and a restoration map
     private func protectSpecialContent(_ text: String) -> (String, [String: String]) {
         var result = text
         var protectionMap: [String: String] = [:]
@@ -119,25 +159,29 @@ public class OCRTextNormalizer {
         var ranges: [Range<String.Index>] = []
 
         // Protect URLs (http://, https://, ftp://, etc.)
-        let urlRegex = /https?:\/\/[^\s\u4e00-\u9fff]+/
+        // Exclude trailing punctuation that might be sentence endings
+        let urlRegex = /https?:\/\/[^\s\u4e00-\u9fff,.;:!?]+/
         for match in text.matches(of: urlRegex) {
             ranges.append(match.range)
         }
 
         // Protect domain names without protocol (e.g., easydict.app, google.com)
-        let domainRegex = /[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?/
+        // Exclude trailing punctuation that might be sentence endings
+        let domainRegex = /[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?![,.;:!?])/
         for match in text.matches(of: domainRegex) {
             ranges.append(match.range)
         }
 
         // Protect email addresses
-        let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
+        // Exclude trailing punctuation that might be sentence endings
+        let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?![,.;:!?])/
         for match in text.matches(of: emailRegex) {
             ranges.append(match.range)
         }
 
         // Protect file paths and extensions
-        let filePathRegex = /[a-zA-Z]:[\\\/][^\s\u4e00-\u9fff]+/
+        // Exclude trailing punctuation that might be sentence endings
+        let filePathRegex = /[a-zA-Z]:[\\\/][^\s\u4e00-\u9fff,.;:!?]+/
         for match in text.matches(of: filePathRegex) {
             ranges.append(match.range)
         }
@@ -187,7 +231,31 @@ public class OCRTextNormalizer {
         return (result, protectionMap)
     }
 
-    /// Restore all protected content from placeholders
+    /// Restore all protected content from placeholders back to original text
+    ///
+    /// This function is the counterpart to `protectSpecialContent`, restoring all placeholder
+    /// tokens back to their original protected content after normalization is complete.
+    ///
+    /// **Example Restoration:**
+    /// ```
+    /// Input text: "访问 〈PROTECTED_0〉，邮箱 〈PROTECTED_1〉。价格 $〈PROTECTED_2〉，代码 〈PROTECTED_3〉。"
+    /// Protection map: [
+    ///   "〈PROTECTED_0〉": "https://easydict.app",
+    ///   "〈PROTECTED_1〉": "test@example.com",
+    ///   "〈PROTECTED_2〉": "10.99",
+    ///   "〈PROTECTED_3〉": "array.map()"
+    /// ]
+    ///
+    /// Output: "访问 https://easydict.app，邮箱 test@example.com。价格 $10.99，代码 array.map()。"
+    /// ```
+    ///
+    /// Note that the surrounding text may have been normalized (e.g., punctuation converted
+    /// to Chinese style), but the protected content remains exactly as it was originally.
+    ///
+    /// - Parameters:
+    ///   - text: Text containing placeholder tokens
+    ///   - protectionMap: Map of placeholders to their original content
+    /// - Returns: Text with all placeholders restored to original content
     private func restoreProtectedContent(_ text: String, _ protectionMap: [String: String])
         -> String {
         var result = text
@@ -287,6 +355,11 @@ public class OCRTextNormalizer {
 
     /// Normalize common OCR recognition errors for symbols
     /// OCR systems frequently misidentify special characters and symbols
+    ///
+    /// This step is performed AFTER punctuation normalization to avoid conflicts:
+    /// - Example: "…" → "..." should not become "。。。" in Chinese mode
+    /// - Ensures dash normalization doesn't interfere with punctuation style choices
+    ///
     /// Only applies essential corrections that are clearly OCR errors, not semantic replacements
     private func normalizeCommonOCRErrors(in string: String) -> String {
         var result = string
@@ -386,31 +459,20 @@ public class OCRTextNormalizer {
 
     /// Normalize punctuation to Chinese style (used by Chinese and Japanese)
     /// Converts half-width Western punctuation to full-width Chinese equivalents
-    /// Carefully preserves decimal numbers to avoid breaking numeric values
+    /// Special content is already protected by the main normalization pipeline
     /// Examples of transformations:
     /// - "你好, 世界." → "你好，世界。"
     /// - "Test; right? Yes!" → "Test；right？Yes！"
     /// - "(括号)" → "（括号）"
-    /// - "Price: 10.99" → "Price：10.99" (decimal preserved)
+    /// - Protected content like URLs, decimals remain unchanged
     private func normalizeToChinesePunctuation(_ text: String) -> String {
         var result = text
 
-        // First, protect English contexts that should not be converted
-        let protectedRanges = findProtectedRanges(in: result)
-
-        // Replace protected content with placeholders (in reverse order to maintain indices)
-        var placeholders: [String: String] = [:]
-        for (index, range) in protectedRanges.enumerated().reversed() {
-            let placeholder = "〈PROTECTED_\(index)〉"
-            let originalContent = String(result[range.1])
-            placeholders[placeholder] = originalContent
-            result.replaceSubrange(range.1, with: placeholder)
-        }
-
-        // Western punctuation → Chinese punctuation mappings with examples
+        // Western punctuation → Chinese punctuation mappings
+        // Special content is already protected in the main pipeline, so we can safely transform
         let punctuationMappings: [String: String] = [
             ",": "，", // Western comma → Chinese comma: "你好, 世界" → "你好，世界"
-            ".": "。", // Western period → Chinese period: "结束." → "结束。" (but preserve decimals)
+            ".": "。", // Western period → Chinese period: "结束." → "结束。"
             ";": "；", // Western semicolon → Chinese semicolon: "第一; 第二" → "第一；第二"
             ":": "：", // Western colon → Chinese colon: "注意: 重要" → "注意：重要"
             "?": "？", // Western question mark → Chinese question mark: "什么?" → "什么？"
@@ -419,89 +481,49 @@ public class OCRTextNormalizer {
             ")": "）", // Western right parenthesis → Chinese: "(说明)" → "（说明）"
         ]
 
+        // Apply punctuation transformations
+        // Protected content (URLs, decimals, code patterns, etc.) is already replaced with placeholders
         for (western, chinese) in punctuationMappings {
-            // Be more careful with period - don't replace if it's part of a decimal number or ellipsis
-            if western == "." {
-                // Protect decimal numbers first, then replace periods, then restore
-                // Example: "End." → "End。" but "10.99" remains "10.99"
-                result.replace(/(\d)\.(\d)/) { match in
-                    "\(match.1)〈DECIMAL〉\(match.2)"
-                }
-
-                // Protect code patterns: array.map, file.txt, 3.14
-                result.replace(/([a-zA-Z0-9_])\.([a-zA-Z0-9_])/) { match in
-                    "\(match.1)〈DOT〉\(match.2)"
-                }
-
-                // Protect ellipsis (three consecutive dots) - this must be done BEFORE converting periods
-                // Example: "wait..." → "wait〈ELLIPSIS〉" to prevent "wait。。。"
-                result.replace("...", with: "〈ELLIPSIS〉")
-
-                // Now safely replace standalone periods
-                result.replace(".", with: chinese)
-
-                // Restore all protected patterns from placeholders
-                result.replace("〈DECIMAL〉", with: ".")
-                result.replace("〈DOT〉", with: ".")
-                result.replace("〈ELLIPSIS〉", with: "...")
-            } else {
-                result.replace(western, with: chinese)
-            }
-        }
-
-        // Restore protected content
-        for (placeholder, original) in placeholders {
-            result.replace(placeholder, with: original)
+            result.replace(western, with: chinese)
         }
 
         return result
     }
 
-    /// Find ranges that should be protected from Chinese punctuation conversion
-    /// These include URLs, email addresses, file paths, and other English-specific content
-    private func findProtectedRanges(in text: String) -> [(Int, Range<String.Index>)] {
-        var ranges: [Range<String.Index>] = []
-
-        // Protect URLs (http://, https://, ftp://, etc.)
-        let urlRegex = /https?:\/\/[^\s\u4e00-\u9fff]+/
-        for match in text.matches(of: urlRegex) {
-            ranges.append(match.range)
-        }
-
-        // Protect domain names without protocol (e.g., easydict.app, google.com)
-        let domainRegex = /[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?/
-        for match in text.matches(of: domainRegex) {
-            ranges.append(match.range)
-        }
-
-        // Protect email addresses
-        let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
-        for match in text.matches(of: emailRegex) {
-            ranges.append(match.range)
-        }
-
-        // Protect file paths and extensions
-        let filePathRegex = /[a-zA-Z]:[\\\/][^\s\u4e00-\u9fff]+/
-        for match in text.matches(of: filePathRegex) {
-            ranges.append(match.range)
-        }
-
-        // Protect programming code patterns (variable.method, object.property)
-        let codeRegex = /[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*/
-        for match in text.matches(of: codeRegex) {
-            ranges.append(match.range)
-        }
-
-        // Merge overlapping ranges and sort
-        let mergedRanges = mergeOverlappingRanges(ranges)
-
-        // Return ranges with indices
-        return mergedRanges.enumerated().map { index, range in
-            (index, range)
-        }
-    }
-
-    /// Merge overlapping ranges to prevent nested placeholders
+    /// Merge overlapping ranges to prevent nested placeholders and ensure clean protection
+    ///
+    /// When multiple regex patterns match overlapping text segments, this function consolidates
+    /// them into non-overlapping ranges to avoid conflicts during placeholder replacement.
+    ///
+    /// **Problem it solves:**
+    /// - `array.map()` matches both code pattern regex and function call regex
+    /// - `test@example.com` might overlap with domain pattern if not handled carefully
+    /// - Without merging, we could get nested placeholders like `〈PROTECTED_1〉PROTECTED_2〉`
+    ///
+    /// **Example:**
+    /// ```
+    /// Input ranges for "Visit test@example.com for array.map() info":
+    /// [
+    ///   6..<21  (test@example.com - email pattern)
+    ///   12..<21 (example.com - domain pattern)
+    ///   26..<37 (array.map() - code pattern)
+    ///   26..<39 (array.map() - function call pattern)
+    /// ]
+    ///
+    /// After merging:
+    /// [
+    ///   6..<21  (test@example.com - merged email/domain)
+    ///   26..<39 (array.map() - merged code/function)
+    /// ]
+    /// ```
+    ///
+    /// **Algorithm:**
+    /// 1. Sort ranges by start position
+    /// 2. Iterate and merge ranges that overlap or touch
+    /// 3. Return consolidated non-overlapping ranges
+    ///
+    /// - Parameter ranges: Array of potentially overlapping string ranges
+    /// - Returns: Array of merged, non-overlapping ranges sorted by position
     private func mergeOverlappingRanges(_ ranges: [Range<String.Index>]) -> [Range<String.Index>] {
         guard !ranges.isEmpty else { return [] }
 

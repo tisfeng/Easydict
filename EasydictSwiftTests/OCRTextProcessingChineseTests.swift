@@ -70,12 +70,14 @@ struct OCRTextProcessingChineseTests {
     @Test("OCR Chinese Symbols", .tags(.ocr))
     func testOCRChineseSymbols() {
         // Test symbol normalization in Chinese context
-        let symbolText = "包含各种符号•如点号⋅和省略号…"
+        let symbolText = "包含各种符号•如点号⋅和省略号… 如：省略...以及中文日常省略号。。。"
         let normalizedText = normalizer.normalizeText(symbolText)
 
         // Check symbol normalization
         #expect(normalizedText.contains("符号 · 如"))
         #expect(normalizedText.contains("点号 · 和"))
         #expect(normalizedText.contains("省略号..."))
+        #expect(normalizedText.contains("省略...以及"))
+        #expect(normalizedText.contains("中文日常省略号。。。"))
     }
 }

@@ -44,6 +44,32 @@ struct OCRPunctuationTests {
         #expect(normalizedText.contains("10.99")) // Decimal should be preserved
     }
 
+    @Test("OCR Chinese Punctuation with Protected Content", .tags(.ocr))
+    func testOCRChinesePunctuationWithProtectedContent() {
+        let normalizer = OCRTextNormalizer(language: .simplifiedChinese)
+
+        // Test that special content is protected during Chinese punctuation conversion
+        let textWithProtectedContent =
+            "访问网站 https://easydict.app, 或者邮箱 test@example.com. 文件在 C:/Users/file.txt, 代码是 array.map()."
+        let normalizedText = normalizer.normalizeText(textWithProtectedContent)
+
+        // URLs should be preserved
+        #expect(normalizedText.contains("https://easydict.app"))
+
+        // Email should be preserved
+        #expect(normalizedText.contains("test@example.com"))
+
+        // File path should be preserved
+        #expect(normalizedText.contains("C:/Users/file.txt"))
+
+        // Function call should be preserved
+        #expect(normalizedText.contains("array.map()"))
+
+        // But surrounding punctuation should be converted to Chinese
+        #expect(normalizedText.contains("，")) // Comma after website
+        #expect(normalizedText.contains("。")) // Period at the end
+    }
+
     @Test("OCR Punctuation Normalization Korean", .tags(.ocr))
     func testOCRPunctuationNormalizationKorean() {
         let normalizer = OCRTextNormalizer(language: .korean)
