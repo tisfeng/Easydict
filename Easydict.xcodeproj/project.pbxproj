@@ -304,6 +304,7 @@
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FDAE932E1A29CB0029369E /* Regex+Common.swift */; };
+		03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FDAE952E1A8A290029369E /* RegexTests.swift */; };
 		03FEF1632D45D5C2002D5F28 /* HostWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FEF1622D45D5C2002D5F28 /* HostWindowManager.swift */; };
 		03FF0D5F2E1959EC00ABBF17 /* String+Removing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF0D5E2E1959EC00ABBF17 /* String+Removing.swift */; };
 		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
@@ -874,6 +875,7 @@
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		03FDAE932E1A29CB0029369E /* Regex+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Common.swift"; sourceTree = "<group>"; };
+		03FDAE952E1A8A290029369E /* RegexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTests.swift; sourceTree = "<group>"; };
 		03FEF1622D45D5C2002D5F28 /* HostWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostWindowManager.swift; sourceTree = "<group>"; };
 		03FF0D5E2E1959EC00ABBF17 /* String+Removing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Removing.swift"; sourceTree = "<group>"; };
 		0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleServiceTests.swift; sourceTree = "<group>"; };
@@ -1083,6 +1085,7 @@
 				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
+				03FDAE952E1A8A290029369E /* RegexTests.swift */,
 			);
 			path = EasydictSwiftTests;
 			sourceTree = "<group>";
@@ -3240,6 +3243,7 @@
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
+				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

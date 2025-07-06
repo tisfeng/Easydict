@@ -155,172 +155,53 @@ public class OCRTextNormalizer {
         var protectionMap: [String: String] = [:]
         var protectionIndex = 0
 
-        // Collect all ranges that need protection
+        // Collect all ranges that need protection using optimized regex patterns
         var ranges: [Range<String.Index>] = []
 
+        // Use regex patterns from Regex+Common.swift for consistency and maintainability
+
         // Protect URLs (http://, https://, ftp://, etc.)
-        // Exclude trailing punctuation that might be sentence endings
-        // Old regex: /https?:\/\/[^\s\u4e00-\u9fff,.;:!?]+/
-        let urlRegex = Regex {
-            "http"
-            Optionally("s")
-            "://"
-            OneOrMore {
-                CharacterClass.anyOf(" \t\n\r\u{4e00}-\u{9fff},.;:!?").inverted
-            }
-        }
-        for match in text.matches(of: urlRegex) {
+        for match in text.matches(of: Regex.url) {
             ranges.append(match.range)
         }
 
-        // Protect domain names without protocol (e.g., easydict.app, google.com, translate.google.com)
-        // Exclude trailing punctuation that might be sentence endings
-        // Old regex: /[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?![,.;:!?])/
-
-        CharacterClass(
-            .word, .anyOf("-"),
-        )
-
-        let domainRegex = Regex {
-            OneOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-")
-                )
-            }
-            "."
-            Repeat(2...) {
-                CharacterClass(.word)
-            }
-            Optionally {
-                "."
-                Repeat(2...) {
-                    CharacterClass(.word)
-                }
-            }
-            NegativeLookahead {
-                CharacterClass.anyOf(",.;:!?")
-            }
-        }
-        for match in text.matches(of: domainRegex) {
+        // Protect domain names without protocol
+        for match in text.matches(of: Regex.domain) {
             ranges.append(match.range)
         }
 
         // Protect email addresses
-        // Exclude trailing punctuation that might be sentence endings
-        // Old regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?![,.;:!?])/
-        let emailRegex = Regex {
-            OneOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._%+-")
-                )
-            }
-            "@"
-            OneOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-")
-                )
-            }
-            "."
-            Repeat(2...) {
-                CharacterClass(.word)
-            }
-            NegativeLookahead {
-                CharacterClass.anyOf(",.;:!?")
-            }
-        }
-        for match in text.matches(of: emailRegex) {
+        for match in text.matches(of: Regex.email) {
             ranges.append(match.range)
         }
 
         // Protect file paths and extensions
-        // Exclude trailing punctuation that might be sentence endings
-        // Old regex: /[a-zA-Z]:[\\\/][^\s\u4e00-\u9fff,.;:!?]+/
-        let filePathRegex = Regex {
-            CharacterClass(.word)
-            ":"
-            CharacterClass.anyOf("\\/")
-            OneOrMore {
-                CharacterClass.anyOf(" \t\n\r\u{4e00}-\u{9fff},.;:!?").inverted
-            }
-        }
-        for match in text.matches(of: filePathRegex) {
+        for match in text.matches(of: Regex.filePath) {
             ranges.append(match.range)
         }
 
-        // Protect programming code patterns (variable.method, object.property)
-        // Old regex: /[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*/
-        let codeRegex = Regex {
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
-            ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
-            }
-            "."
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
-            ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
-            }
-        }
-        for match in text.matches(of: codeRegex) {
+        // Protect programming code patterns
+        for match in text.matches(of: Regex.codePattern) {
             ranges.append(match.range)
         }
 
-        // Protect function call patterns (array.map(), obj.method(), etc.)
-        // Old regex: /[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*\(\)/
-        let functionCallRegex = Regex {
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
-            ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
-            }
-            "."
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
-            ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
-            }
-            "()"
-        }
-        for match in text.matches(of: functionCallRegex) {
+        // Protect function call patterns
+        for match in text.matches(of: Regex.functionCall) {
             ranges.append(match.range)
         }
 
-        // Protect parentheses that are adjacent to alphanumeric characters (function calls, etc.)
-        // Old regex: /[a-zA-Z0-9]\([^)]*\)/
-        let adjacentParenRegex = Regex {
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
-            "("
-            ZeroOrMore {
-                CharacterClass.anyOf(")").inverted
-            }
-            ")"
-        }
-        for match in text.matches(of: adjacentParenRegex) {
+        // Protect parentheses that are adjacent to alphanumeric characters
+        for match in text.matches(of: Regex.adjacentParentheses) {
             ranges.append(match.range)
         }
 
-        // Protect decimal numbers (10.99, 3.14)
-        // Old regex: /\d+\.\d+/
-        let decimalRegex = Regex {
-            OneOrMore(.digit)
-            "."
-            OneOrMore(.digit)
-        }
-        for match in text.matches(of: decimalRegex) {
+        // Protect decimal numbers
+        for match in text.matches(of: Regex.decimal) {
             ranges.append(match.range)
         }
 
-        // Protect ellipsis (...)
-        // Old regex: /\.\.\./
-        let ellipsisRegex = Regex {
-            "..."
-        }
-        for match in text.matches(of: ellipsisRegex) {
+        // Protect ellipsis
+        for match in text.matches(of: Regex.ellipsis) {
             ranges.append(match.range)
         }
 
@@ -383,50 +264,19 @@ public class OCRTextNormalizer {
 
         // Remove multiple consecutive spaces and tabs (but preserve line breaks)
         // Example: "Hello    world   test" → "Hello world test"
-        // Old regex: /[ \t]{2,}/
-        let multipleSpacesRegex = Regex {
-            Repeat(2...) {
-                CharacterClass.anyOf(" \t")
-            }
-        }
-        result.replace(multipleSpacesRegex, with: " ")
+        result.replace(Regex.multipleHorizontalWhitespace, with: " ")
 
         // Fix spacing around punctuation for English-type languages
         if languageManager.isLanguageWordsNeedSpace(metrics.language) {
             // Fix decimal numbers FIRST before other punctuation processing
             // This handles all decimal spacing patterns: "10 . 99", "10. 99", "10 .99" -> "10.99"
-            // Old regex: /(\d)[ \t]*\.[ \t]*(\d)/
-            let decimalSpacingRegex = Regex {
-                Capture {
-                    One(.digit)
-                }
-                ZeroOrMore {
-                    CharacterClass.anyOf(" \t")
-                }
-                "."
-                ZeroOrMore {
-                    CharacterClass.anyOf(" \t")
-                }
-                Capture {
-                    One(.digit)
-                }
-            }
-            result.replace(decimalSpacingRegex) { match in
+            result.replace(Regex.decimalWithSpacing) { match in
                 "\(match.1).\(match.2)"
             }
 
             // Remove spaces before punctuation marks (but not line breaks)
             // Example: "Hello , world ." → "Hello, world."
-            // Old regex: /[ \t]+([,.;:!?])/
-            let spacesBeforePunctuationRegex = Regex {
-                OneOrMore {
-                    CharacterClass.anyOf(" \t")
-                }
-                Capture {
-                    CharacterClass.anyOf(",.;:!?")
-                }
-            }
-            result.replace(spacesBeforePunctuationRegex) { match in
+            result.replace(Regex.whitespaceBeforePunctuation) { match in
                 "\(match.1)"
             }
 
@@ -437,34 +287,15 @@ public class OCRTextNormalizer {
             // 1. Temporarily replace decimal points and ellipsis with placeholders
             // 2. Add spaces after punctuation
             // 3. Restore decimal points and ellipsis
-            // Old regex: /(\d)\.(\d)/
-            let protectDecimalRegex = Regex {
-                Capture {
-                    One(.digit)
-                }
-                "."
-                Capture {
-                    One(.digit)
-                }
-            }
-            result.replace(protectDecimalRegex) { match in
-                "\(match.1)〈DECIMAL〉\(match.2)"
+            result.replace(Regex.decimal) { match in
+                String(match.output).replacingOccurrences(of: ".", with: "〈DECIMAL〉")
             }
 
             // Protect ellipsis (three consecutive dots)
             result.replace("...", with: "〈ELLIPSIS〉")
 
             // Now safely add spaces after punctuation
-            // Old regex: /([,.;:!?])([^\s])/
-            let punctuationSpacingRegex = Regex {
-                Capture {
-                    CharacterClass.anyOf(",.;:!?")
-                }
-                Capture {
-                    CharacterClass(.whitespace).inverted
-                }
-            }
-            result.replace(punctuationSpacingRegex) { match in
+            result.replace(Regex.punctuationWithoutSpace) { match in
                 "\(match.1) \(match.2)"
             }
 
@@ -500,13 +331,7 @@ public class OCRTextNormalizer {
             let result = trimmedComponents.joined(separator: " · ")
 
             // Clean up any double spaces that might have been introduced (preserve line breaks)
-            // Old regex: /[ \t]{2,}/
-            let doubleSpacesRegex = Regex {
-                Repeat(2...) {
-                    CharacterClass.anyOf(" \t")
-                }
-            }
-            return result.replacing(doubleSpacesRegex, with: " ")
+            return result.replacing(Regex.multipleHorizontalWhitespace, with: " ")
         }
 
         return string
@@ -543,19 +368,7 @@ public class OCRTextNormalizer {
         // Handle special cases that need regex patterns
         // Fix common lowercase 'l' misread as 'I' at word boundaries
         // Example: "l think" → "I think", "l am" → "I am"
-        // Old regex: /\bl(?=[ \t]|$|[.,:;!?])/
-        let lowercaseLRegex = Regex {
-            Anchor.wordBoundary
-            "l"
-            Lookahead {
-                ChoiceOf {
-                    CharacterClass.anyOf(" \t")
-                    Anchor.endOfSubject
-                    CharacterClass.anyOf(".,:;!?")
-                }
-            }
-        }
-        result.replace(lowercaseLRegex, with: "I")
+        result.replace(Regex.lowercaseLAsI, with: "I")
 
         return result
     }
@@ -728,13 +541,7 @@ public class OCRTextNormalizer {
 
         // Fix excessive line breaks that OCR sometimes produces
         // Example: "Line1\n\n\n\nLine2" → "Line1\n\nLine2" (max 2 consecutive newlines)
-        // Old regex: /\n{3,}/
-        let excessiveNewlinesRegex = Regex {
-            Repeat(3...) {
-                "\n"
-            }
-        }
-        result.replace(excessiveNewlinesRegex, with: "\n\n")
+        result.replace(Regex.excessiveNewlines, with: "\n\n")
 
         // Normalize different line ending styles to Unix format
         // Example: "Line1\r\nLine2\rLine3" → "Line1\nLine2\nLine3"
@@ -743,21 +550,8 @@ public class OCRTextNormalizer {
 
         // Clean up excessive whitespace at line boundaries
         // Example: "Line1   \n   Line2" → "Line1\nLine2"
-        // Old regex: /\n[ \t]+/ and /[ \t]+\n/
-        let spacesAfterNewlineRegex = Regex {
-            "\n"
-            OneOrMore {
-                CharacterClass.anyOf(" \t")
-            }
-        }
-        let spacesBeforeNewlineRegex = Regex {
-            OneOrMore {
-                CharacterClass.anyOf(" \t")
-            }
-            "\n"
-        }
-        result.replace(spacesAfterNewlineRegex, with: "\n") // Remove spaces/tabs after newlines
-        result.replace(spacesBeforeNewlineRegex, with: "\n") // Remove spaces/tabs before newlines
+        result.replace(Regex.whitespaceAfterNewline, with: "\n") // Remove spaces/tabs after newlines
+        result.replace(Regex.whitespaceBeforeNewline, with: "\n") // Remove spaces/tabs before newlines
 
         return result
     }

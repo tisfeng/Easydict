@@ -9,6 +9,73 @@
 import Foundation
 import RegexBuilder
 
+// MARK: - Common Character Classes for Regex Patterns
+
+extension CharacterClass {
+    /// NOTE: Default `CharacterClass(.word)` includes CJK characters, so it is not suitable for some cases.
+
+    /// ASCII letters (a-z, A-Z)
+    /// Uses range-based syntax for better performance and clarity
+    static let asciiLetters = CharacterClass("a" ... "z", "A" ... "Z")
+
+    /// ASCII digits (0-9)
+    /// Uses range-based syntax for better performance and clarity
+    static let asciiDigits = CharacterClass("0" ... "9")
+
+    /// Underscore character
+    /// Separated for modularity and reusability
+    static let underscore = CharacterClass.anyOf("_")
+
+    /// ASCII word characters (a-z, A-Z, 0-9, _)
+    /// Combines ASCII letters, digits, and underscore - equivalent to \w but restricted to ASCII
+    static let asciiWords = CharacterClass(.asciiLetters, .asciiDigits, .underscore)
+
+    /// ASCII letters and digits (a-z, A-Z, 0-9) - equivalent to \w without underscore
+    /// Useful for identifiers where underscore is not allowed
+    static let asciiAlphanumeric = CharacterClass(.asciiLetters, .asciiDigits)
+
+    /// CJK characters (Chinese, Japanese, Korean)
+    /// Covers CJK Unified Ideographs (U+4E00-U+9FFF) - primarily Chinese characters
+    /// Note: Does not include all CJK ranges (Hiragana, Katakana, Hangul, etc.)
+    static let cjkChars = CharacterClass("\u{4E00}" ... "\u{9FFF}")
+
+    /// Identifier characters (letters, digits, underscore) - equivalent to ASCII \w
+    /// Uses ASCII-only characters to avoid CJK inclusion issues
+    static let identifier = CharacterClass(.asciiWords)
+
+    /// Identifier start characters (letters, underscore)
+    /// Characters that can start an identifier in most programming languages
+    static let identifierStart = CharacterClass(.asciiLetters, .underscore)
+
+    /// Domain name characters (letters, digits, hyphen)
+    /// RFC-compliant domain name character set (ASCII only)
+    static let domainChars = CharacterClass(.asciiLetters, .asciiDigits, .anyOf("-"))
+
+    /// Email local part characters (letters, digits, special chars)
+    /// Common characters allowed in email local part (before @)
+    static let emailLocalChars = CharacterClass(.asciiWords, .anyOf(".+-"))
+
+    /// Email domain characters (letters, digits, dot, hyphen)
+    /// Characters allowed in email domain part (after @)
+    static let emailDomainChars = CharacterClass(.asciiLetters, .asciiDigits, .anyOf(".-"))
+
+    /// Characters to exclude from URLs/paths for OCR text processing
+    /// Includes whitespace, CJK characters, and common punctuation that might end sentences
+    static let urlExcludedChars = CharacterClass(.whitespace, .cjkChars, .anyOf(",.;:!?"))
+
+    /// Common sentence ending punctuation
+    /// Used for text normalization and punctuation handling
+    static let sentenceEnding = CharacterClass.anyOf(",.;:!?")
+
+    /// Horizontal whitespace (space and tab)
+    /// Excludes newlines and other vertical whitespace
+    static let horizontalWhitespace = CharacterClass.anyOf(" \t")
+
+    /// Extended sentence ending punctuation (includes more symbols)
+    /// Broader set of punctuation marks that can end sentences
+    static let extendedSentenceEnding = CharacterClass.anyOf(".,:;!?")
+}
+
 // MARK: - Protection Patterns for OCR Text Processing
 
 extension Regex where Output == Substring {
@@ -26,13 +93,15 @@ extension Regex where Output == Substring {
     // MARK: - URL and Network Patterns
 
     /// Matches URLs with protocol (http://, https://, ftp://, etc.)
-    /// Excludes trailing punctuation that might be sentence endings
+    /// Excludes whitespace, CJK characters, and trailing punctuation for OCR text processing
     ///
     /// **Examples:**
     /// - `https://example.com` ✓
     /// - `http://subdomain.example.co.uk/path` ✓
     /// - `https://example.com,` → matches `https://example.com` (excludes comma)
+    /// - `https://中文域名.测试` ✗ (excludes CJK characters)
     ///
+    /// **Note:** CJK characters are excluded to prevent interference with OCR text processing
     /// **Original regex:** `https?:\/\/[^\s\u4e00-\u9fff,.;:!?]+`
     static var url: Self {
         Regex {
@@ -40,41 +109,46 @@ extension Regex where Output == Substring {
             Optionally("s")
             "://"
             OneOrMore {
-                CharacterClass.anyOf(" \t\n\r\u{4e00}-\u{9fff},.;:!?").inverted
+                CharacterClass(
+                    .whitespace,
+                    CharacterClass(.cjkChars),
+                    .anyOf(",;:!?")
+                ).inverted
             }
         }
     }
 
     /// Matches domain names without protocol (e.g., example.com, subdomain.example.co.uk)
-    /// Excludes trailing punctuation that might be sentence endings
+    /// Supports multiple levels of subdomains
     ///
     /// **Examples:**
     /// - `easydict.app` ✓
     /// - `translate.google.com` ✓
     /// - `example.co.uk` ✓
+    /// - `sub.domain.example.org` ✓
     /// - `google.com.` → matches `google.com` (excludes period)
     ///
-    /// **Original regex:** `[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?![,.;:!?])`
+    /// **Original regex:** `[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}`
     static var domain: Self {
         Regex {
+            Anchor.wordBoundary
+            // First subdomain part
             OneOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-")
-                )
+                CharacterClass.domainChars
             }
-            "."
-            Repeat(2...) {
-                CharacterClass(.word)
-            }
-            Optionally {
+            // Additional subdomain parts (optional, can repeat)
+            ZeroOrMore {
                 "."
-                Repeat(2...) {
-                    CharacterClass(.word)
+                OneOrMore {
+                    CharacterClass.domainChars
                 }
             }
-            NegativeLookahead {
-                CharacterClass.anyOf(",.;:!?")
+            // Final TLD part - must be at least 2 letters
+            "."
+            Repeat(2...) {
+                CharacterClass.asciiLetters
             }
+            Anchor.wordBoundary
         }
     }
 
@@ -86,27 +160,22 @@ extension Regex where Output == Substring {
     /// - `test.email+tag@subdomain.example.co.uk` ✓
     /// - `user@domain.com.` → matches `user@domain.com` (excludes period)
     ///
-    /// **Original regex:** `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?![,.;:!?])`
+    /// **Original regex:** `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`
     static var email: Self {
         Regex {
+            Anchor.wordBoundary
             OneOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._%+-")
-                )
+                CharacterClass.emailLocalChars
             }
             "@"
             OneOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-")
-                )
+                CharacterClass.emailDomainChars
             }
             "."
             Repeat(2...) {
-                CharacterClass(.word)
+                CharacterClass.asciiLetters
             }
-            NegativeLookahead {
-                CharacterClass.anyOf(",.;:!?")
-            }
+            Anchor.wordBoundary
         }
     }
 
@@ -123,11 +192,11 @@ extension Regex where Output == Substring {
     /// **Original regex:** `[a-zA-Z]:[\\\/][^\s\u4e00-\u9fff,.;:!?]+`
     static var filePath: Self {
         Regex {
-            CharacterClass(.word)
+            One(.word) // Single letter for drive
             ":"
             CharacterClass.anyOf("\\/")
             OneOrMore {
-                CharacterClass.anyOf(" \t\n\r\u{4e00}-\u{9fff},.;:!?").inverted
+                CharacterClass.urlExcludedChars.inverted
             }
         }
     }
@@ -144,19 +213,17 @@ extension Regex where Output == Substring {
     /// **Original regex:** `[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*`
     static var codePattern: Self {
         Regex {
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
+            Anchor.wordBoundary
+            CharacterClass.identifierStart
             ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
+                CharacterClass.identifier
             }
             "."
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
+            CharacterClass.identifierStart
             ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
+                CharacterClass.identifier
             }
+            Anchor.wordBoundary
         }
     }
 
@@ -170,18 +237,14 @@ extension Regex where Output == Substring {
     /// **Original regex:** `[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*\(\)`
     static var functionCall: Self {
         Regex {
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
+            CharacterClass.identifierStart
             ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
+                CharacterClass.identifier
             }
             "."
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
+            CharacterClass.identifierStart
             ZeroOrMore {
-                CharacterClass(
-                    .anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-                )
+                CharacterClass.identifier
             }
             "()"
         }
@@ -198,7 +261,7 @@ extension Regex where Output == Substring {
     /// **Original regex:** `[a-zA-Z0-9]\([^)]*\)`
     static var adjacentParentheses: Self {
         Regex {
-            CharacterClass(.anyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
+            CharacterClass.asciiAlphanumeric
             "("
             ZeroOrMore {
                 CharacterClass.anyOf(")").inverted
@@ -235,6 +298,164 @@ extension Regex where Output == Substring {
     static var ellipsis: Self {
         Regex {
             "..."
+        }
+    }
+
+    // MARK: - Spacing and Formatting Patterns
+
+    /// Matches multiple consecutive horizontal whitespace (2 or more spaces/tabs)
+    /// Used for normalizing excessive spacing while preserving line breaks
+    ///
+    /// **Examples:**
+    /// - `"Hello    world"` → matches `"    "` (4 spaces)
+    /// - `"text  \t  more"` → matches `"  \t  "` (mixed spaces/tabs)
+    ///
+    /// **Original regex:** `[ \t]{2,}`
+    static var multipleHorizontalWhitespace: Self {
+        Regex {
+            Repeat(2...) {
+                CharacterClass.horizontalWhitespace
+            }
+        }
+    }
+
+    /// Matches whitespace around decimal points for normalization
+    /// Captures the digits before and after the decimal point
+    ///
+    /// **Examples:**
+    /// - `"10 . 99"` → captures "10" and "99"
+    /// - `"3.14"` → captures "3" and "14"
+    /// - `"0 .5"` → captures "0" and "5"
+    ///
+    /// **Original regex:** `(\d+)[ \t]*\.[ \t]*(\d+)`
+    static var decimalWithSpacing: Regex<(Substring, Substring, Substring)> {
+        Regex<(Substring, Substring, Substring)> {
+            Capture {
+                OneOrMore(.digit)
+            }
+            ZeroOrMore {
+                CharacterClass.horizontalWhitespace
+            }
+            "."
+            ZeroOrMore {
+                CharacterClass.horizontalWhitespace
+            }
+            Capture {
+                OneOrMore(.digit)
+            }
+        }
+    }
+
+    /// Matches whitespace before punctuation marks
+    /// Captures the punctuation for replacement
+    ///
+    /// **Examples:**
+    /// - `"Hello , world"` → captures ","
+    /// - `"Test   !"` → captures "!"
+    ///
+    /// **Original regex:** `[ \t]+([,.;:!?])`
+    static var whitespaceBeforePunctuation: Regex<(Substring, Substring)> {
+        Regex<(Substring, Substring)> {
+            OneOrMore {
+                CharacterClass.horizontalWhitespace
+            }
+            Capture {
+                CharacterClass.sentenceEnding
+            }
+        }
+    }
+
+    /// Matches punctuation followed by non-whitespace (missing space)
+    /// Captures both the punctuation and the following character
+    ///
+    /// **Examples:**
+    /// - `"Hello,world"` → captures "," and "w"
+    /// - `"Test!Now"` → captures "!" and "N"
+    ///
+    /// **Original regex:** `([,.;:!?])([^\s])`
+    static var punctuationWithoutSpace: Regex<(Substring, Substring, Substring)> {
+        Regex<(Substring, Substring, Substring)> {
+            Capture {
+                CharacterClass.sentenceEnding
+            }
+            Capture {
+                CharacterClass(.whitespace).inverted
+            }
+        }
+    }
+
+    /// Matches three or more consecutive newlines
+    /// Used to normalize excessive line breaks
+    ///
+    /// **Examples:**
+    /// - `"Line1\n\n\n\nLine2"` → matches `"\n\n\n\n"`
+    /// - `"Text\n\n\nMore"` → matches `"\n\n\n"`
+    ///
+    /// **Original regex:** `\n{3,}`
+    static var excessiveNewlines: Self {
+        Regex {
+            Repeat(3...) {
+                "\n"
+            }
+        }
+    }
+
+    /// Matches horizontal whitespace after newlines
+    /// Used to clean up indentation artifacts from OCR
+    ///
+    /// **Examples:**
+    /// - `"Line1\n   Line2"` → matches `"\n   "`
+    /// - `"Text\n\t\tMore"` → matches `"\n\t\t"`
+    ///
+    /// **Original regex:** `\n[ \t]+`
+    static var whitespaceAfterNewline: Self {
+        Regex {
+            "\n"
+            OneOrMore {
+                CharacterClass.horizontalWhitespace
+            }
+        }
+    }
+
+    /// Matches horizontal whitespace before newlines
+    /// Used to clean up trailing whitespace
+    ///
+    /// **Examples:**
+    /// - `"Line1   \nLine2"` → matches `"   \n"`
+    /// - `"Text\t\t\nMore"` → matches `"\t\t\n"`
+    ///
+    /// **Original regex:** `[ \t]+\n`
+    static var whitespaceBeforeNewline: Self {
+        Regex {
+            OneOrMore {
+                CharacterClass.horizontalWhitespace
+            }
+            "\n"
+        }
+    }
+
+    // MARK: - OCR Error Patterns
+
+    /// Matches lowercase 'l' at word boundaries that should be 'I'
+    /// Common OCR error where 'I' is misread as 'l'
+    ///
+    /// **Examples:**
+    /// - `"l think"` → matches the 'l' before " think"
+    /// - `"l am"` → matches the 'l' before " am"
+    /// - `"l."` → matches the 'l' before "."
+    ///
+    /// **Original regex:** `\bl(?=[ \t]|$|[.,:;!?])`
+    static var lowercaseLAsI: Self {
+        Regex {
+            Anchor.wordBoundary
+            "l"
+            Lookahead {
+                ChoiceOf {
+                    CharacterClass.horizontalWhitespace
+                    Anchor.endOfSubject
+                    CharacterClass.extendedSentenceEnding
+                }
+            }
         }
     }
 }
