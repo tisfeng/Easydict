@@ -13,7 +13,7 @@ import Testing
 @testable import Easydict
 
 /// Unit tests for common regex patterns defined in Regex+Common.swift
-@Suite("Regex Common Patterns Tests")
+@Suite("Regex Common Patterns Tests", .tags(.utilities, .unit))
 struct RegexTests {
     // MARK: - URL and Network Pattern Tests
 
@@ -381,6 +381,10 @@ struct RegexTests {
         #expect("汉字".contains(regex))
         #expect("简体中文繁體中文".contains(regex))
 
+        // Valid Japanese(Kanji) and Korean(Hanja) text
+        #expect("日本語テスト".contains(regex)) // Japanese Kanji
+        #expect("韓國".contains(regex)) // Korean Hanja
+
         // Invalid patterns
         #expect(!"Hello".contains(regex)) // English text
         #expect(!"123".contains(regex)) // Numbers
@@ -473,5 +477,23 @@ struct RegexTests {
         #expect("-".wholeMatch(of: emailDomainRegex) != nil)
         #expect("_".wholeMatch(of: emailDomainRegex) == nil) // Not allowed in domain
         #expect("+".wholeMatch(of: emailDomainRegex) == nil) // Not allowed in domain
+    }
+
+    @Test("Test NSRegularExpression Regex")
+    func testNSRegularExpressionRegex() {
+        let text = "Hello, 世界! 123 café@#$"
+
+        // \w: Word characters are [\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}].
+        // Docs: https://developer.apple.com/documentation/foundation/nsregularexpression
+        let pattern = "\\w+"
+        let regex = try? NSRegularExpression(pattern: pattern, options: [])
+        let range = NSRange(location: 0, length: text.utf16.count)
+
+        let matches = regex?.matches(in: text, options: [], range: range) ?? []
+        let matchedStrings = matches.map { match in
+            String(text[Range(match.range, in: text)!])
+        }
+        print("Matched strings: \(matchedStrings)") // ["Hello", "世界", "123", "café"]
+        #expect(matchedStrings == ["Hello", "世界", "123", "café"])
     }
 }

@@ -260,6 +260,34 @@
 		03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */; };
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
+		03C3A59A2E1BC8C600B59152 /* OCRImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */; };
+		03C3A5B62E1BFE4900B59152 /* ocr-en-paper-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A62E1BFE4900B59152 /* ocr-en-paper-9.png */; };
+		03C3A5B72E1BFE4900B59152 /* ocr-en-paper-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */; };
+		03C3A5B82E1BFE4900B59152 /* ocr-en-paper-14.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AB2E1BFE4900B59152 /* ocr-en-paper-14.png */; };
+		03C3A5B92E1BFE4900B59152 /* ocr-en-paper-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A42E1BFE4900B59152 /* ocr-en-paper-7.png */; };
+		03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A52E1BFE4900B59152 /* ocr-en-paper-8.png */; };
+		03C3A5BB2E1BFE4900B59152 /* ocr-en-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */; };
+		03C3A5BC2E1BFE4900B59152 /* ocr-zh-text-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */; };
+		03C3A5BD2E1BFE4900B59152 /* ocr-en-paper-0.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */; };
+		03C3A5BE2E1BFE4900B59152 /* ocr-en-paper-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */; };
+		03C3A5BF2E1BFE4900B59152 /* ocr-en-text-reddit.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B02E1BFE4900B59152 /* ocr-en-text-reddit.png */; };
+		03C3A5C02E1BFE4900B59152 /* ocr-en-paper-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */; };
+		03C3A5C12E1BFE4900B59152 /* ocr-zh-text-bitcoin.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B52E1BFE4900B59152 /* ocr-zh-text-bitcoin.png */; };
+		03C3A5C22E1BFE4900B59152 /* ocr-en-text-bitcoin.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AF2E1BFE4900B59152 /* ocr-en-text-bitcoin.png */; };
+		03C3A5C32E1BFE4900B59152 /* ocr-en-paper-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A12E1BFE4900B59152 /* ocr-en-paper-4.png */; };
+		03C3A5C42E1BFE4900B59152 /* ocr-en-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */; };
+		03C3A5C52E1BFE4900B59152 /* ocr-en-text-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */; };
+		03C3A5C62E1BFE4900B59152 /* ocr-ja-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B12E1BFE4900B59152 /* ocr-ja-text-1.png */; };
+		03C3A5C72E1BFE4900B59152 /* ocr-en-list.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59C2E1BFE4900B59152 /* ocr-en-list.png */; };
+		03C3A5C82E1BFE4900B59152 /* ocr-en-letter-338.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59B2E1BFE4900B59152 /* ocr-en-letter-338.png */; };
+		03C3A5C92E1BFE4900B59152 /* ocr-en-paper-13.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AA2E1BFE4900B59152 /* ocr-en-paper-13.png */; };
+		03C3A5CA2E1BFE4900B59152 /* ocr-ja-text-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B22E1BFE4900B59152 /* ocr-ja-text-2.png */; };
+		03C3A5CB2E1BFE4900B59152 /* ocr-en-paper-12.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A92E1BFE4900B59152 /* ocr-en-paper-12.png */; };
+		03C3A5CC2E1BFE4900B59152 /* ocr-en-paper-6.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A32E1BFE4900B59152 /* ocr-en-paper-6.png */; };
+		03C3A5CD2E1BFE4900B59152 /* ocr-en-paper-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A22E1BFE4900B59152 /* ocr-en-paper-5.png */; };
+		03C3A5CE2E1BFE4900B59152 /* ocr-zh-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */; };
+		03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */; };
+		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
 		03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CD01572D24E17C0079D0CB /* YoudaoService.swift */; };
 		03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */; };
@@ -816,6 +844,34 @@
 		03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@3x.png"; sourceTree = "<group>"; };
 		03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZConvenience.h"; sourceTree = "<group>"; };
 		03BFFC7029612E10004E033E /* NSString+EZConvenience.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZConvenience.m"; sourceTree = "<group>"; };
+		03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageTests.swift; sourceTree = "<group>"; };
+		03C3A59B2E1BFE4900B59152 /* ocr-en-letter-338.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-letter-338.png"; sourceTree = "<group>"; };
+		03C3A59C2E1BFE4900B59152 /* ocr-en-list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-list.png"; sourceTree = "<group>"; };
+		03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-0.png"; sourceTree = "<group>"; };
+		03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-1.png"; sourceTree = "<group>"; };
+		03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-2.png"; sourceTree = "<group>"; };
+		03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-3.png"; sourceTree = "<group>"; };
+		03C3A5A12E1BFE4900B59152 /* ocr-en-paper-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-4.png"; sourceTree = "<group>"; };
+		03C3A5A22E1BFE4900B59152 /* ocr-en-paper-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-5.png"; sourceTree = "<group>"; };
+		03C3A5A32E1BFE4900B59152 /* ocr-en-paper-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-6.png"; sourceTree = "<group>"; };
+		03C3A5A42E1BFE4900B59152 /* ocr-en-paper-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-7.png"; sourceTree = "<group>"; };
+		03C3A5A52E1BFE4900B59152 /* ocr-en-paper-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-8.png"; sourceTree = "<group>"; };
+		03C3A5A62E1BFE4900B59152 /* ocr-en-paper-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-9.png"; sourceTree = "<group>"; };
+		03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-10.png"; sourceTree = "<group>"; };
+		03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-11.png"; sourceTree = "<group>"; };
+		03C3A5A92E1BFE4900B59152 /* ocr-en-paper-12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-12.png"; sourceTree = "<group>"; };
+		03C3A5AA2E1BFE4900B59152 /* ocr-en-paper-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-13.png"; sourceTree = "<group>"; };
+		03C3A5AB2E1BFE4900B59152 /* ocr-en-paper-14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-14.png"; sourceTree = "<group>"; };
+		03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-1.png"; sourceTree = "<group>"; };
+		03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-2.png"; sourceTree = "<group>"; };
+		03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-3.png"; sourceTree = "<group>"; };
+		03C3A5AF2E1BFE4900B59152 /* ocr-en-text-bitcoin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-bitcoin.png"; sourceTree = "<group>"; };
+		03C3A5B02E1BFE4900B59152 /* ocr-en-text-reddit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-reddit.png"; sourceTree = "<group>"; };
+		03C3A5B12E1BFE4900B59152 /* ocr-ja-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-1.png"; sourceTree = "<group>"; };
+		03C3A5B22E1BFE4900B59152 /* ocr-ja-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-2.png"; sourceTree = "<group>"; };
+		03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-1.png"; sourceTree = "<group>"; };
+		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
+		03C3A5B52E1BFE4900B59152 /* ocr-zh-text-bitcoin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-bitcoin.png"; sourceTree = "<group>"; };
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
@@ -1077,12 +1133,10 @@
 		03022F2F2B370B7100B63209 /* EasydictSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				03C3A5612E1BB4F400B59152 /* OCRTests */,
 				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
-				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
-				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
-				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
 				03FDAE952E1A8A290029369E /* RegexTests.swift */,
@@ -2295,6 +2349,52 @@
 			path = "cyan-white-icon";
 			sourceTree = "<group>";
 		};
+		03C3A5612E1BB4F400B59152 /* OCRTests */ = {
+			isa = PBXGroup;
+			children = (
+				03C3A5622E1BC78600B59152 /* ocr-images */,
+				03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */,
+				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
+				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
+				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
+			);
+			path = OCRTests;
+			sourceTree = "<group>";
+		};
+		03C3A5622E1BC78600B59152 /* ocr-images */ = {
+			isa = PBXGroup;
+			children = (
+				03C3A59B2E1BFE4900B59152 /* ocr-en-letter-338.png */,
+				03C3A59C2E1BFE4900B59152 /* ocr-en-list.png */,
+				03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */,
+				03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */,
+				03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */,
+				03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */,
+				03C3A5A12E1BFE4900B59152 /* ocr-en-paper-4.png */,
+				03C3A5A22E1BFE4900B59152 /* ocr-en-paper-5.png */,
+				03C3A5A32E1BFE4900B59152 /* ocr-en-paper-6.png */,
+				03C3A5A42E1BFE4900B59152 /* ocr-en-paper-7.png */,
+				03C3A5A52E1BFE4900B59152 /* ocr-en-paper-8.png */,
+				03C3A5A62E1BFE4900B59152 /* ocr-en-paper-9.png */,
+				03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */,
+				03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */,
+				03C3A5A92E1BFE4900B59152 /* ocr-en-paper-12.png */,
+				03C3A5AA2E1BFE4900B59152 /* ocr-en-paper-13.png */,
+				03C3A5AB2E1BFE4900B59152 /* ocr-en-paper-14.png */,
+				03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */,
+				03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */,
+				03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */,
+				03C3A5AF2E1BFE4900B59152 /* ocr-en-text-bitcoin.png */,
+				03C3A5B02E1BFE4900B59152 /* ocr-en-text-reddit.png */,
+				03C3A5B12E1BFE4900B59152 /* ocr-ja-text-1.png */,
+				03C3A5B22E1BFE4900B59152 /* ocr-ja-text-2.png */,
+				03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */,
+				03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */,
+				03C3A5B52E1BFE4900B59152 /* ocr-zh-text-bitcoin.png */,
+			);
+			path = "ocr-images";
+			sourceTree = "<group>";
+		};
 		03CAB9522ADBEF5000DA94A3 /* SystemUtility */ = {
 			isa = PBXGroup;
 			children = (
@@ -3085,6 +3185,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03C3A5B62E1BFE4900B59152 /* ocr-en-paper-9.png in Resources */,
+				03C3A5B72E1BFE4900B59152 /* ocr-en-paper-2.png in Resources */,
+				03C3A5B82E1BFE4900B59152 /* ocr-en-paper-14.png in Resources */,
+				03C3A5B92E1BFE4900B59152 /* ocr-en-paper-7.png in Resources */,
+				03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */,
+				03C3A5BB2E1BFE4900B59152 /* ocr-en-text-3.png in Resources */,
+				03C3A5BC2E1BFE4900B59152 /* ocr-zh-text-2.png in Resources */,
+				03C3A5BD2E1BFE4900B59152 /* ocr-en-paper-0.png in Resources */,
+				03C3A5BE2E1BFE4900B59152 /* ocr-en-paper-11.png in Resources */,
+				03C3A5BF2E1BFE4900B59152 /* ocr-en-text-reddit.png in Resources */,
+				03C3A5C02E1BFE4900B59152 /* ocr-en-paper-1.png in Resources */,
+				03C3A5C12E1BFE4900B59152 /* ocr-zh-text-bitcoin.png in Resources */,
+				03C3A5C22E1BFE4900B59152 /* ocr-en-text-bitcoin.png in Resources */,
+				03C3A5C32E1BFE4900B59152 /* ocr-en-paper-4.png in Resources */,
+				03C3A5C42E1BFE4900B59152 /* ocr-en-text-1.png in Resources */,
+				03C3A5C52E1BFE4900B59152 /* ocr-en-text-2.png in Resources */,
+				03C3A5C62E1BFE4900B59152 /* ocr-ja-text-1.png in Resources */,
+				03C3A5C72E1BFE4900B59152 /* ocr-en-list.png in Resources */,
+				03C3A5C82E1BFE4900B59152 /* ocr-en-letter-338.png in Resources */,
+				03C3A5C92E1BFE4900B59152 /* ocr-en-paper-13.png in Resources */,
+				03C3A5CA2E1BFE4900B59152 /* ocr-ja-text-2.png in Resources */,
+				03C3A5CB2E1BFE4900B59152 /* ocr-en-paper-12.png in Resources */,
+				03C3A5CC2E1BFE4900B59152 /* ocr-en-paper-6.png in Resources */,
+				03C3A5CD2E1BFE4900B59152 /* ocr-en-paper-5.png in Resources */,
+				03C3A5CE2E1BFE4900B59152 /* ocr-zh-text-1.png in Resources */,
+				03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */,
+				03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3238,6 +3365,7 @@
 			files = (
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
 				94F90BEEE04149F988662B80 /* OCRTextProcessingTests.swift in Sources */,
+				03C3A59A2E1BC8C600B59152 /* OCRImageTests.swift in Sources */,
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,

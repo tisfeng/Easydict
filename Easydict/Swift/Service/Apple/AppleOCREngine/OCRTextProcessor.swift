@@ -119,6 +119,10 @@ public class OCRTextProcessor {
             separatedBy: OCRConstants.lineBreakText
         )
 
+        if ocrResult.from == .auto {
+            ocrResult.from = languageDetector.detectLanguage(text: mergedText)
+        }
+
         let showMergedText = String(ocrResult.mergedText.prefix(100))
         print(
             "OCR text (\(ocrResult.from)(\(String(format: "%.2f", ocrResult.confidence))): \(showMergedText)"
@@ -131,6 +135,7 @@ public class OCRTextProcessor {
 
     // Helper components
     private let metrics = OCRMetrics()
+    private let languageDetector = AppleLanguageDetector()
     private lazy var poetryDetector = OCRPoetryDetector(metrics: metrics)
     private lazy var dashHandler = OCRDashHandler(metrics: metrics)
     private lazy var textNormalizer = OCRTextNormalizer(metrics: metrics)

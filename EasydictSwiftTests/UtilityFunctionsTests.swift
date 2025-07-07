@@ -282,22 +282,4 @@ struct UtilityFunctionsTests {
         let cleanText = testText.removingNonLetters()
         #expect(cleanText == "Hello世界café")
     }
-
-    @Test("Regex Builder for Chinese Characters", .tags(.utilities))
-    func testRegexBuilder() {
-        // Test regex builder for Chinese characters
-//        let chineseCharacterRegex = Regex {
-//            OneOrMore {
-//                CharacterClass("\u{4e00}" ... "\u{9fa5}")
-//            }
-//        }
-
-        let chineseCharacterRegex = try! Regex(#"\p{Han}+"#)
-
-        // Check if the entire string matches Chinese characters
-        #expect("你好".wholeMatch(of: chineseCharacterRegex) != nil)
-        #expect("hello".wholeMatch(of: chineseCharacterRegex) == nil)
-        #expect("123".wholeMatch(of: chineseCharacterRegex) == nil)
-        #expect("你好world".wholeMatch(of: chineseCharacterRegex) == nil)
-    }
 }

@@ -427,7 +427,9 @@ public class OCRTextNormalizer {
             "（": "(", // Chinese left parenthesis → Western: "（说明）" → "(说明)"
             "）": ")", // Chinese right parenthesis → Western: "（说明）" → "(说明)"
             "【": "[", // Chinese left bracket → Western: "【重要】" → "[重要]"
+            "［": "[", // Chinese left square bracket → Western: "【重要】" → "[重要]"
             "】": "]", // Chinese right bracket → Western: "【重要】" → "[重要]"
+            "］": "]", // Chinese right square bracket → Western: "【重要】" → "[重要]"
         ]
 
         for (chinese, western) in punctuationMappings {

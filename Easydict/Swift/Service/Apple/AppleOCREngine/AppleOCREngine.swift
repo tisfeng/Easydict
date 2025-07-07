@@ -97,6 +97,37 @@ public class AppleOCREngine {
         }
     }
 
+    /// Async version of recognizeText that returns complete OCR result
+    ///
+    /// Modern async/await API for complete OCR processing. This method performs text recognition
+    /// and applies intelligent text processing to improve readability, same as the callback version
+    /// but with Swift concurrency support.
+    ///
+    /// - Parameters:
+    ///   - image: The NSImage containing text to be recognized
+    ///   - language: Target language for OCR recognition (use .auto for automatic detection)
+    /// - Returns: Complete OCR result with merged text and individual text components
+    /// - Throws: QueryError if OCR processing fails or image conversion fails
+    func recognizeTextAsync(
+        image: NSImage,
+        language: Language
+    ) async throws
+        -> EZOCRResult {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<EZOCRResult, Error>) in
+            recognizeText(image: image, language: language) { result, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let result = result {
+                    continuation.resume(returning: result)
+                } else {
+                    continuation.resume(
+                        throwing: QueryError.error(type: .noResult, message: "No OCR result")
+                    )
+                }
+            }
+        }
+    }
+
     /// Recognize text from CGImage with raw Vision observations
     ///
     /// This method provides direct access to Vision framework text observations

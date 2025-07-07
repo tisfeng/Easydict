@@ -28,16 +28,8 @@ extension String {
     var isChineseTextByRegex: Bool {
         // Use RegexBuilder to match Chinese characters (CJK Unified Ideographs)
 
-        //  let chineseCharacterRegex = try! Regex(#"\p{Han}+"#)
-
-        let chineseCharacterRegex = Regex {
-            OneOrMore {
-                CharacterClass("\u{4e00}" ... "\u{9fa5}")
-            }
-        }
-
         // Check if the entire string matches Chinese characters
-        return wholeMatch(of: chineseCharacterRegex) != nil
+        wholeMatch(of: Regex.chineseText) != nil
     }
 
     /// Check if character is English alphabet (basic Latin only)

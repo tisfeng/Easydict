@@ -12,8 +12,8 @@ import RegexBuilder
 // MARK: - Common Character Classes for Regex Patterns
 
 extension CharacterClass {
-    /// NOTE: Default `CharacterClass(.word)` includes CJK characters, so it is not suitable for some cases.
-
+    /// - Important: Default `CharacterClass(.word)` includes CJK characters, so it is not suitable for some cases.
+    ///
     /// ASCII letters (a-z, A-Z)
     /// Uses range-based syntax for better performance and clarity
     static let asciiLetters = CharacterClass("a" ... "z", "A" ... "Z")
@@ -79,20 +79,29 @@ extension CharacterClass {
 // MARK: - Protection Patterns for OCR Text Processing
 
 extension Regex where Output == Substring {
-    static let chineseTextRegex = try! Regex(#"\p{Han}+"#) // Matches Chinese characters
+//    static let chineseTextRegex = try! Regex(#"\p{Han}+"#) // Matches Chinese characters
 
     // MARK: - General Text Patterns
 
-    /// Precompiled regex that matches one or more Chinese Han characters.
-    /// Usage: `let match = text.wholeMatch(of: .chineseText)`
+    /// Matches Chinese-like text (CJK characters)
+    ///
+    /// Example:
+    /// ```swift
+    /// let match = text.wholeMatch(of: .chineseText)
+    /// ```
+    ///
+    /// - Note: \p{Han} is more wider than \u{4E00}-\u{9FFF}
+    ///
+    /// - SeeAlso: [\p{Script=Han}](https://www.unicode.org/reports/tr18/#General_Category_Property)
+    /// - SeeAlso: [4E00..9FFF](https://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt)
+    /// - SeeAlso: [\p{L} Unicode Regex Expression](https://www.regular-expressions.info/unicode.html)
     static var chineseText: Self {
-        // Literals are compile‑time, `try!` can't actually fail here.
-        try! Regex(#"\p{Han}+"#)
+        /\p{Han}+/ // /[\u{4E00}-\u{9FFF}]+/
     }
 
     // MARK: - URL and Network Patterns
 
-    /// Matches URLs with protocol (http://, https://, ftp://, etc.)
+    /// Matches URLs with protocol (http://, https://, ftp://, etc.).
     /// Excludes whitespace, CJK characters, and trailing punctuation for OCR text processing
     ///
     /// **Examples:**
@@ -103,6 +112,7 @@ extension Regex where Output == Substring {
     ///
     /// **Note:** CJK characters are excluded to prevent interference with OCR text processing
     /// **Original regex:** `https?:\/\/[^\s\u4e00-\u9fff,.;:!?]+`
+    /// - Note: This regex is designed to match URLs that do not contain CJK characters.
     static var url: Self {
         Regex {
             "http"
