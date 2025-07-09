@@ -25,8 +25,7 @@ import RegexBuilder
 ///
 /// Example usage:
 /// ```swift
-/// let metrics = OCRMetrics(language: .english)
-/// let normalizer = OCRTextNormalizer(metrics: metrics)
+/// let normalizer = OCRTextNormalizer(language: .english)
 /// let cleanText = normalizer.normalizeTextSymbols(in: messyOCRText)
 /// ```
 public class OCRTextNormalizer {

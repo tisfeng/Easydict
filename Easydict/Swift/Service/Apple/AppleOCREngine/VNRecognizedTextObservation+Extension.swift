@@ -35,13 +35,22 @@ extension VNRecognizedTextObservation {
     open override var description: String {
         let boundRect = boundingBox
         return String(
-            format: "Text: \"%@\", { x=%.3f, y=%.3f, width=%.3f, height=%.3f }",
+            format: "Text: \"%@\", { x=%.3f, y=%.3f, width=%.3f, height=%.3f }, confidence: %.2f",
             firstText,
             boundRect.origin.x,
             boundRect.origin.y,
             boundRect.size.width,
-            boundRect.size.height
+            boundRect.size.height,
+            confidence
         )
+    }
+
+    var lineHeight: Double {
+        boundingBox.size.height
+    }
+
+    var lineWidth: Double {
+        boundingBox.size.width
     }
 }
 

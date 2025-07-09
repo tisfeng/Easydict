@@ -113,7 +113,7 @@ class OCRTextMerger {
     ///   but provides significantly enhanced decision-making capabilities
     func joinedString(for textObservationPair: OCRTextObservationPair) -> String {
         // If it's the same line, return a space
-        if lineAnalyzer.isSameLine(textObservationPair) {
+        if lineAnalyzer.isSameLine(pair: textObservationPair) {
             return " "
         }
 
@@ -386,7 +386,7 @@ class OCRTextMerger {
         var needLineBreak = false
         var isNewParagraph = false
 
-        let isEqualX = isEqualX(lineContext.pair)
+        let isEqualX = lineAnalyzer.isEqualX(pair: lineContext.pair)
         let lineX = lineContext.current.boundingBox.minX
         let prevLineX = lineContext.previous.boundingBox.minX
         let dx = lineX - prevLineX
@@ -407,7 +407,7 @@ class OCRTextMerger {
 
             let lineMaxX = lineContext.current.boundingBox.maxX
             let prevLineMaxX = lineContext.previous.boundingBox.maxX
-            let isEqualLineMaxX = isRatioGreaterThan(
+            let isEqualLineMaxX = lineAnalyzer.isRatioGreaterThan(
                 0.95, value1: lineMaxX, value2: prevLineMaxX
             )
 
@@ -576,95 +576,5 @@ class OCRTextMerger {
             needLineBreak: needLineBreak,
             isNewParagraph: isNewParagraph
         )
-    }
-
-    // MARK: - Helper Methods
-
-    // MARK: - Spatial Analysis Helper Methods
-
-    /// Determine if two text observations have equivalent horizontal positioning (X coordinates)
-    ///
-    /// This precise spatial analysis method determines whether two text observations are aligned
-    /// horizontally within acceptable tolerance thresholds. The analysis is crucial for detecting
-    /// indentation patterns, paragraph boundaries, and structured content formatting.
-    ///
-    /// **Analysis Method:**
-    /// - Calculates dynamic threshold based on average character width and indentation constants
-    /// - Accounts for screen scaling factors for accurate measurements
-    /// - Applies tolerance ranges for slight positioning variations
-    /// - Uses relative positioning analysis for robust detection
-    ///
-    /// **Threshold Calculation:**
-    /// - Based on `averageCharacterWidth * OCRConstants.indentationCharacterCount`
-    /// - Incorporates screen scaling factor for high-resolution displays
-    /// - Provides half-threshold tolerance for boundary cases
-    /// - Adapts to document-specific character sizing
-    ///
-    /// **Use Cases:**
-    /// - Paragraph indentation detection
-    /// - List item alignment analysis
-    /// - Block quote structure identification
-    /// - Table column alignment recognition
-    ///
-    /// - Parameter textObservationPair: Pair of text observations to compare for X alignment
-    /// - Returns: true if observations are horizontally aligned within tolerance, false otherwise
-    ///
-    /// - Note: Includes debug output for alignment analysis during development
-    private func isEqualX(_ textObservationPair: OCRTextObservationPair) -> Bool {
-        // Calculate threshold based on average character width and indentation constant
-        let threshold = metrics.averageCharacterWidth * OCRConstants.indentationCharacterCount
-
-        let lineX = textObservationPair.current.boundingBox.origin.x
-        let prevLineX = textObservationPair.previous.boundingBox.origin.x
-        let dx = lineX - prevLineX
-
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let maxLength = metrics.ocrImage.size.width * metrics.maxLineLength / scaleFactor
-        let difference = maxLength * dx
-
-        // dx > 0, means current line may has indentation.
-        if (dx > 0 && difference < threshold) || abs(difference) < (threshold / 2) {
-            return true
-        }
-
-        print("Not equalX text: \(textObservationPair.current)")
-        print("difference: \(difference), threshold: \(threshold)")
-
-        return false
-    }
-
-    /// Calculate if the ratio between two values exceeds a specified threshold
-    ///
-    /// This utility method provides robust ratio comparison for spatial and measurement
-    /// analysis throughout the text merging process. It ensures consistent comparison
-    /// logic by always using the smaller value as numerator and larger as denominator.
-    ///
-    /// **Mathematical Approach:**
-    /// - Always calculates `min(value1, value2) / max(value1, value2)`
-    /// - Ensures ratio is always between 0.0 and 1.0
-    /// - Provides symmetric comparison regardless of parameter order
-    /// - Handles edge cases with zero or negative values safely
-    ///
-    /// **Common Use Cases:**
-    /// - Line length similarity analysis (`isEqualLineMaxX`)
-    /// - Font size comparison for typography consistency
-    /// - Spacing ratio analysis for layout decisions
-    /// - Proportional measurement validation
-    ///
-    /// **Example Usage:**
-    /// ```swift
-    /// let isSimilar = isRatioGreaterThan(0.95, value1: line1.width, value2: line2.width)
-    /// // Returns true if lines are within 5% of each other's width
-    /// ```
-    ///
-    /// - Parameters:
-    ///   - ratio: Minimum ratio threshold (0.0 to 1.0) for comparison
-    ///   - value1: First value for ratio calculation
-    ///   - value2: Second value for ratio calculation
-    /// - Returns: true if the ratio of smaller/larger values exceeds the threshold
-    private func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {
-        let minValue = min(value1, value2)
-        let maxValue = max(value1, value2)
-        return (minValue / maxValue) > ratio
     }
 }

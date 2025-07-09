@@ -114,7 +114,8 @@ class OCRLineMeasurer {
     /// - Parameter observation: The text observation to analyze
     /// - Returns: Number of characters that could still fit on the right side of the line
     private func charactersRemainingInLine(_ observation: VNRecognizedTextObservation) -> Double {
-        guard let maxObservation = metrics.maxLongLineTextObservation else {
+        guard let ocrImage = metrics.ocrImage,
+              let maxObservation = metrics.maxLongLineTextObservation else {
             return 0.0
         }
 
@@ -124,7 +125,7 @@ class OCRLineMeasurer {
         let horizontalGap = maxObservation.boundingBox.maxX - observation.boundingBox.maxX
 
         // Convert the gap from normalized coordinates to actual pixel distance
-        let actualLineWidth = metrics.ocrImage.size.width * metrics.maxLineLength / scaleFactor
+        let actualLineWidth = ocrImage.size.width * metrics.maxLineLength / scaleFactor
         let actualGapWidth = actualLineWidth * horizontalGap
 
         // Convert pixel distance to character count using average character width

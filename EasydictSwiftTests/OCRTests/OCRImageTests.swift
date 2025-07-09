@@ -152,7 +152,7 @@ struct OCRImageTests {
 
     @Test("OCR Performance Test", .tags(.ocr, .performance))
     func testOCRPerformance() async throws {
-        guard let image = loadTestImage(named: "ocr-en-text-1.png") else {
+        guard let image = NSImage.loadTestImage(named: "ocr-en-text-1.png") else {
             Issue.record("Failed to load test image")
             return
         }
@@ -171,7 +171,7 @@ struct OCRImageTests {
 
     @Test("Async OCR API Test", .tags(.ocr))
     func testAsyncOCRAPI() async throws {
-        guard let image = loadTestImage(named: "ocr-en-text-1.png") else {
+        guard let image = NSImage.loadTestImage(named: "ocr-en-text-1.png") else {
             Issue.record("Failed to load test image")
             return
         }
@@ -229,7 +229,7 @@ struct OCRImageTests {
         ]
 
         for testCase in testCases {
-            guard let image = loadTestImage(named: testCase.imageName) else {
+            guard let image = NSImage.loadTestImage(named: testCase.imageName) else {
                 Issue.record("Failed to load test image: \(testCase.imageName)")
                 continue
             }
@@ -294,38 +294,7 @@ struct OCRImageTests {
 
     // MARK: Private
 
-    /// Test images directory path
-    ///
-    /// `Bundle(for:)` requires a class (`AnyClass`) argument, but `OCRImageTests`
-    /// is a `struct`.  We introduce a private dummy class `BundleLocator`
-    /// solely to obtain the correct unit‑test bundle.
-    private class BundleLocator {}
-
-    private var testBundle = Bundle(for: BundleLocator.self)
-
     // MARK: - Helper Methods
-
-    /// Load test image from bundle
-    /// - Parameter imageName: Name of the image file in Resources directory
-    /// - Returns: NSImage instance or nil if loading fails
-    private func loadTestImage(named imageName: String) -> NSImage? {
-        guard let imagePath = testBundle.path(
-            forResource: imageName.components(separatedBy: ".").first,
-            ofType: imageName.components(separatedBy: ".").last
-        )
-        else {
-            print("❌ Could not find image path for: \(imageName)")
-            return nil
-        }
-
-        guard let image = NSImage(contentsOfFile: imagePath) else {
-            print("❌ Could not load image from path: \(imagePath)")
-            return nil
-        }
-
-        print("✅ Loaded image: \(imageName) from \(imagePath)")
-        return image
-    }
 
     /// Helper method to test OCR on a single image
     /// - Parameters:
@@ -340,7 +309,7 @@ struct OCRImageTests {
         shouldContain: String? = nil
     ) async throws {
         // Load test image
-        guard let image = loadTestImage(named: imageName) else {
+        guard let image = NSImage.loadTestImage(named: imageName) else {
             Issue.record("Failed to load test image: \(imageName)")
             return
         }

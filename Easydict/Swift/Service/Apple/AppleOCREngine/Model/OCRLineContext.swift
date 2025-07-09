@@ -68,8 +68,8 @@ struct OCRLineContext {
         self.isPrevLongText = analyzer.isLongText(pair.previous)
         self.hasIndentation = analyzer.hasIndentation(pair.current)
         self.hasPrevIndentation = analyzer.hasIndentation(pair.previous)
-        self.isBigLineSpacing = analyzer.isBigLineSpacing(pair, greaterThanLineHeightRatio: 1.0)
-        self.isEqualChineseText = analyzer.isEqualChineseText(pair)
+        self.isBigLineSpacing = analyzer.isBigLineSpacing(pair: pair)
+        self.isEqualChineseText = analyzer.isEqualChineseText(pair: pair)
     }
 
     // MARK: Internal
@@ -147,13 +147,13 @@ struct OCRLineContext {
 
     /// Check if font sizes are equal between current and previous observations
     var isEqualFontSize: Bool {
-        analyzer.isEqualFontSize(pair)
+        analyzer.isEqualFontSize(pair: pair)
     }
 
     /// Determine Chinese poetry merge decision
     func determineChinesePoetryMerge() -> OCRMergeDecision {
         analyzer.determineChinesePoetryMerge(
-            pair,
+            pair: pair,
             isEqualChineseText: isEqualChineseText,
             isBigLineSpacing: isBigLineSpacing
         )
@@ -161,7 +161,7 @@ struct OCRLineContext {
 
     /// Determine list merge decision
     func determineListMerge() -> OCRMergeDecision {
-        analyzer.determineListMerge(pair, isBigLineSpacing: isBigLineSpacing)
+        analyzer.determineListMerge(pair: pair, isBigLineSpacing: isBigLineSpacing)
     }
 
     /// Check if previous line length is short

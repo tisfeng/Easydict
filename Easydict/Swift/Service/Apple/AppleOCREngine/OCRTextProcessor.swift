@@ -25,12 +25,13 @@ import Vision
 /// - **Text Normalization**: Applies language-specific formatting and error correction
 ///
 /// **Processing Pipeline:**
-/// 1. Reset and initialize metrics
-/// 2. Calculate line layout statistics
-/// 3. Detect poetry patterns
-/// 4. Sort observations spatially
-/// 5. Apply intelligent text merging
-/// 6. Normalize final text output
+/// 1. Initialize basic OCR result properties
+/// 2. Calculate confidence scores
+/// 3. Setup comprehensive metrics calculation (集中化处理所有统计指标)
+/// 4. Detect poetry patterns using calculated metrics
+/// 5. Sort observations spatially using enhanced algorithms
+/// 6. Apply intelligent text merging with spatial awareness
+/// 7. Normalize final text output with language-specific rules
 ///
 /// Originally ported from EZAppleService.setupOCRResult method with significant enhancements.
 ///
@@ -39,21 +40,35 @@ public class OCRTextProcessor {
     // MARK: Internal
 
     /// Process OCR observations into structured result with intelligent text merging
+    ///
+    /// This is the main entry point for processing raw Vision framework observations
+    /// into intelligently formatted text. The method handles both simple and advanced
+    /// processing modes, with the advanced mode leveraging comprehensive metrics
+    /// calculation for superior text merging results.
+    ///
+    /// **Simple Mode (intelligentJoined = false):**
+    /// - Basic text extraction and confidence calculation
+    /// - Line-by-line joining with newline separators
+    /// - Minimal processing overhead
+    ///
+    /// **Advanced Mode (intelligentJoined = true):**
+    /// - Comprehensive metrics calculation (集中化指标计算)
+    /// - Poetry detection and preservation
+    /// - Spatial-aware text sorting
+    /// - Intelligent text merging with context awareness
+    /// - Language-specific normalization
+    ///
+    /// - Parameters:
+    ///   - ocrResult: The result object to populate with processed text
+    ///   - observations: Raw text observations from Vision framework
+    ///   - ocrImage: Source image for spatial calculations
+    ///   - intelligentJoined: Whether to enable advanced text processing
     func setupOCRResult(
         _ ocrResult: EZOCRResult,
         observations: [VNRecognizedTextObservation],
         ocrImage: NSImage,
         intelligentJoined: Bool
     ) {
-        // Reset statistics
-        metrics.resetMetrics()
-
-        // Setup properties
-        metrics.language = ocrResult.from
-        metrics.ocrImage = ocrImage
-        metrics.textObservations = observations
-        metrics.ocrImage = ocrImage
-
         let recognizedTexts = observations.compactMap(\.firstText)
 
         print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
@@ -64,47 +79,16 @@ public class OCRTextProcessor {
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
         ocrResult.raw = recognizedTexts
 
-        // Calculate confidence
-        calculateConfidence(ocrResult, observations: observations)
-
         // If intelligent joining is not enabled, return simple result
         guard intelligentJoined else { return }
 
-        let lineCount = observations.count
-        var lineSpacingCount = 0
-
-        // Calculate line statistics
-        for (index, textObservation) in observations.enumerated() {
-            metrics.collectLineLayoutMetrics(
-                textObservation,
-                index: index,
-                observations: observations,
-                lineSpacingCount: &lineSpacingCount
-            )
-
-            // Update maximum word length for space-separated languages
-            metrics.updateMaxWordLength(textObservation)
-        }
-
-        // Calculate average character width from the line with most characters
-        if let textObservation = metrics.maxCharacterCountLineTextObservation {
-            metrics.averageCharacterWidth =
-                metrics.calculateCharacterWidthMetric(
-                    textObservation, ocrImage: ocrImage
-                )
-        }
-
-        // Store final calculated values
-        metrics.averageLineHeight =
-            metrics.totalLineHeight / lineCount.double
-        if lineSpacingCount > 0 {
-            metrics.averageLineSpacing =
-                metrics.totalLineSpacing / lineSpacingCount.double
-        }
-
-        // Detect if text is poetry
-        metrics.isPoetry = poetryDetector.detectPoetry()
-        print("isPoetry: \(metrics.isPoetry)")
+        // Calculate confidence using metrics (both simple and advanced modes)
+        metrics.setupWithOCRData(
+            ocrImage: ocrImage,
+            language: ocrResult.from,
+            observations: observations
+        )
+        ocrResult.confidence = CGFloat(metrics.confidence)
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
@@ -136,48 +120,47 @@ public class OCRTextProcessor {
     // Helper components
     private let metrics = OCRMetrics()
     private let languageDetector = AppleLanguageDetector()
-    private lazy var poetryDetector = OCRPoetryDetector(metrics: metrics)
     private lazy var dashHandler = OCRDashHandler(metrics: metrics)
     private lazy var textNormalizer = OCRTextNormalizer(metrics: metrics)
     private lazy var textMerger = OCRTextMerger(metrics: metrics)
 
-    /// Calculate and set the overall confidence score for OCR result
-    private func calculateConfidence(
-        _ ocrResult: EZOCRResult,
-        observations: [VNRecognizedTextObservation]
-    ) {
-        guard !observations.isEmpty else {
-            ocrResult.confidence = 0.0
-            return
-        }
-
-        let totalConfidence =
-            observations
-                .compactMap { $0.topCandidates(1).first?.confidence }
-                .reduce(0, +)
-        ocrResult.confidence = CGFloat(totalConfidence / Float(observations.count))
-    }
-
-    /// Sort text observations by vertical position (top to bottom)
+    /// Sort text observations by vertical position (top to bottom) and horizontal position (left to right)
+    ///
+    /// Uses the enhanced isSameLine algorithm for accurate same-line detection,
+    /// providing better sorting accuracy than simple threshold-based approaches.
+    ///
+    /// **Sorting Logic:**
+    /// - Groups observations on the same horizontal line using isSameLine analysis
+    /// - Within same line: sorts left to right (X coordinate ascending)
+    /// - Between different lines: sorts top to bottom (Y coordinate descending in Vision system)
+    ///
+    /// **Vision Coordinate System:**
+    /// - Origin at bottom-left (0,0)
+    /// - Y increases upward
+    /// - Higher Y values = visually higher text (earlier in reading order)
+    ///
+    /// - Parameter observations: Array of text observations to sort
+    /// - Returns: Sorted observations in proper reading order
     private func sortTextObservations(_ observations: [VNRecognizedTextObservation])
         -> [VNRecognizedTextObservation] {
-        observations.sorted { obj1, obj2 in
+        // Create line analyzer for same-line detection
+        let lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
+
+        return observations.sorted { obj1, obj2 in
             let boundingBox1 = obj1.boundingBox
             let boundingBox2 = obj2.boundingBox
 
-            let y1 = boundingBox1.origin.y
-            let y2 = boundingBox2.origin.y
+            // Create text observation pair for analysis
+            let pair = OCRTextObservationPair(current: obj2, previous: obj1)
 
-            // Check if they are on the same line (within threshold)
-            let deltaY = abs(y1 - y2)
-
-            if deltaY <= metrics.sameLineThreshold {
+            // Use the enhanced isSameLine algorithm
+            if lineAnalyzer.isSameLine(pair: pair) {
                 // Same line: sort by X coordinate (left to right)
                 return boundingBox1.origin.x < boundingBox2.origin.x
             } else {
                 // Different lines: sort by Y coordinate (top to bottom)
-                // Note: In Vision coordinate system, Y=0 is at bottom, so higher Y means higher position
-                return y1 > y2
+                // In Vision coordinate system, higher Y means higher position (earlier in reading order)
+                return boundingBox1.origin.y > boundingBox2.origin.y
             }
         }
     }

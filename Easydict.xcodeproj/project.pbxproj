@@ -14,6 +14,8 @@
 		03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F182B3591AE00B63209 /* GoogleGenerativeAI */; };
 		03022F1C2B35DEBA00B63209 /* Hue in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1B2B35DEBA00B63209 /* Hue */; };
 		03022F222B36D1A400B63209 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F212B36D1A400B63209 /* SnapKit */; };
+		0305E73E2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E73D2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift */; };
+		0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
@@ -478,6 +480,8 @@
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
 		03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZAnimatedHidden.m"; sourceTree = "<group>"; };
 		03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0305E73D2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzerTests.swift; sourceTree = "<group>"; };
+		0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Test.swift"; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
@@ -1133,6 +1137,7 @@
 		03022F2F2B370B7100B63209 /* EasydictSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				0305E7422E1D2B3E000A23A0 /* Extensions */,
 				03C3A5612E1BB4F400B59152 /* OCRTests */,
 				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
@@ -1142,6 +1147,14 @@
 				03FDAE952E1A8A290029369E /* RegexTests.swift */,
 			);
 			path = EasydictSwiftTests;
+			sourceTree = "<group>";
+		};
+		0305E7422E1D2B3E000A23A0 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		03071E1B2BC03ADE0042CD38 /* TabView */ = {
@@ -2354,6 +2367,7 @@
 			children = (
 				03C3A5622E1BC78600B59152 /* ocr-images */,
 				03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */,
+				0305E73D2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift */,
 				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
 				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
 				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
@@ -3367,8 +3381,10 @@
 				94F90BEEE04149F988662B80 /* OCRTextProcessingTests.swift in Sources */,
 				03C3A59A2E1BC8C600B59152 /* OCRImageTests.swift in Sources */,
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
+				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
+				0305E73E2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,

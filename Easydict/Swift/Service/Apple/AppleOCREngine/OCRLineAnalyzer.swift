@@ -55,7 +55,7 @@ class OCRLineAnalyzer {
         let textObservationPair = OCRTextObservationPair(
             current: observation, previous: minXObservation
         )
-        let isEqualX = isEqualX(textObservationPair)
+        let isEqualX = isEqualX(pair: textObservationPair)
         return !isEqualX
     }
 
@@ -72,58 +72,73 @@ class OCRLineAnalyzer {
     }
 
     /// Check if two observations contain equal-length Chinese text
-    func isEqualChineseText(_ pair: OCRTextObservationPair) -> Bool {
-        let isEqualLength = isEqualCharacterLength(pair)
+    ///
+    /// Analyzes whether two text observations represent Chinese text with equal
+    /// character lengths and consistent formatting. This is particularly useful
+    /// for detecting Chinese poetry patterns and structured content.
+    ///
+    /// **Analysis Criteria:**
+    /// - Current document language is Chinese (Simplified or Traditional)
+    /// - Both observations have equal character count and formatting
+    /// - Consistent punctuation patterns (both end with punctuation or neither do)
+    /// - Basic horizontal alignment validation
+    ///
+    /// **Use Cases:**
+    /// - Chinese poetry detection (classical poems often have equal line lengths)
+    /// - Structured Chinese text identification
+    /// - Traditional document format validation
+    /// - Parallel text analysis
+    ///
+    /// - Parameter pair: Text observation pair to analyze
+    /// - Returns: true if observations contain equal-length Chinese text
+    func isEqualChineseText(pair: OCRTextObservationPair) -> Bool {
+        let isEqualLength = pair.hasEqualCharacterLength
         return isEqualLength && languageManager.isChineseLanguage(metrics.language)
     }
 
     /// Analyze if there is significant line spacing between two text observations
+    ///
+    /// This method determines whether two consecutive text observations have enough
+    /// vertical spacing to be considered as having big line spacing. It uses absolute
+    /// height thresholds rather than ratios for more predictable and consistent behavior.
+    ///
+    /// **Spatial Analysis Approach:**
+    /// - Uses absolute height thresholds for direct comparison
+    /// - Automatically calculates adaptive threshold based on document metrics
+    /// - Pure geometric calculation without text content dependencies
+    /// - More stable than ratio-based approaches for varying text sizes
+    ///
+    /// **Threshold Calculation:**
+    /// - Default: minimum of (averageLineHeight * 1.1, minLineHeight * 1.1, currentLineHeight)
+    /// - Uses 1.1x multiplier to provide reasonable spacing detection sensitivity
+    /// - Considers document-wide metrics for consistency
+    /// - Prevents overly large thresholds from unusually large text
+    ///
+    /// - Parameters:
+    ///   - pair: Text observation pair containing current and previous observations
+    ///   - thresholdGap: Optional absolute height threshold; if nil, calculates adaptive threshold
+    /// - Returns: true if vertical gap exceeds the threshold, false otherwise
     func isBigLineSpacing(
-        _ pair: OCRTextObservationPair,
-        greaterThanLineHeightRatio: Double
+        pair: OCRTextObservationPair,
+        lineSpacingThreshold: Double? = nil
     )
         -> Bool {
-        let prevBoundingBox = pair.previous.boundingBox
-        let boundingBox = pair.current.boundingBox
-        let lineHeight = boundingBox.size.height
+        // Use provided threshold or fall back to metrics default big line spacing threshold
+        let finalThreshold = lineSpacingThreshold ?? metrics.bigLineSpacingThreshold
+        let isBigSpacing = pair.verticalGap > finalThreshold
 
-        // !!!: deltaY may be < 0
-        let deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight)
-        let lineHeightRatio = deltaY / lineHeight
-        let averageLineHeightRatio = deltaY / metrics.averageLineHeight
-
-        let isPrevEndPunctuationChar = pair.previous.firstText.hasEndPunctuationSuffix
-
-        // Since line spacing sometimes is too small and imprecise, we do not use it.
-        if lineHeightRatio > 1.0 || averageLineHeightRatio > greaterThanLineHeightRatio {
-            return true
+        if isBigSpacing {
+            print(
+                "Big line spacing detected, verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString)"
+            )
+            print("Current: \(pair.current)")
         }
 
-        if lineHeightRatio > 0.6,
-           !lineMeasurer.isLongLine(pair.previous)
-           || isPrevEndPunctuationChar
-           || pair.previous === metrics.maxLongLineTextObservation {
-            return true
-        }
-
-        let isFirstLetterUpperCase = pair.current.firstText.isFirstLetterUpperCase
-
-        // For English text
-        if languageManager.isEnglishLanguage(metrics.language), isFirstLetterUpperCase {
-            if lineHeightRatio > 0.85 {
-                return true
-            } else {
-                if lineHeightRatio > 0.6, isPrevEndPunctuationChar {
-                    return true
-                }
-            }
-        }
-
-        return false
+        return isBigSpacing
     }
 
     /// Analyze and compare font sizes between two text observations
-    func isEqualFontSize(_ pair: OCRTextObservationPair) -> Bool {
+    func isEqualFontSize(pair: OCRTextObservationPair) -> Bool {
         let currentFontSize = fontSize(pair.current)
         let prevFontSize = fontSize(pair.previous)
 
@@ -176,7 +191,7 @@ class OCRLineAnalyzer {
     ///   - isBigLineSpacing: Whether there is significant spacing between lines
     /// - Returns: Merge decision (none, lineBreak, or newParagraph)
     func determineChinesePoetryMerge(
-        _ pair: OCRTextObservationPair,
+        pair: OCRTextObservationPair,
         isEqualChineseText: Bool,
         isBigLineSpacing: Bool
     )
@@ -214,7 +229,7 @@ class OCRLineAnalyzer {
     ///   - isBigLineSpacing: Whether there is significant spacing between lines
     /// - Returns: Merge decision based on list structure requirements
     func determineListMerge(
-        _ pair: OCRTextObservationPair,
+        pair: OCRTextObservationPair,
         isBigLineSpacing: Bool
     )
         -> OCRMergeDecision {
@@ -236,82 +251,80 @@ class OCRLineAnalyzer {
         return .none
     }
 
-    /// Determine if current observation represents a new line relative to previous observation
-    ///
-    /// Analyzes spatial relationships between two text observations to determine
-    /// if they represent text on different lines or the same line. This is fundamental
-    /// for proper text flow reconstruction from OCR results.
-    ///
-    /// **Analysis Criteria:**
-    /// - Y coordinate differences (vertical separation)
-    /// - X coordinate gaps (horizontal separation)
-    /// - Bounding box overlaps and relationships
-    /// - Minimum line height thresholds
-    ///
-    /// - Parameter textObservationPair: Pair of text observations to analyze
-    /// - Returns: true if the current observation is on a new line, false if same line
-    func isNewLineRelativeToPrevious(
-        _ textObservationPair: OCRTextObservationPair
-    )
-        -> Bool {
-        let currentBoundingBox = textObservationPair.current.boundingBox
-        let previousBoundingBox = textObservationPair.previous.boundingBox
-
-        let deltaY =
-            previousBoundingBox.origin.y
-                - (currentBoundingBox.origin.y + currentBoundingBox.size.height)
-        let deltaX =
-            currentBoundingBox.origin.x
-                - (previousBoundingBox.origin.x + previousBoundingBox.size.width)
-
-        // Check Y coordinate for new line
-        if deltaY > 0 {
-            return true
-        } else if abs(deltaY) < metrics.minLineHeight / 2 {
-            // Since OCR may have slight overlaps, consider it a new line if deltaY is small.
-            return true
-        }
-
-        // Check X coordinate gap for line detection
-        return deltaX > 0.07
-    }
-
     /// Determine if two text observations are on the same horizontal line
     ///
-    /// Performs precise same-line detection by comparing the vertical center positions
-    /// of text bounding boxes against a calculated threshold. This is essential for
-    /// proper text ordering and spacing decisions.
+    /// Uses vertical gap analysis to determine if two text observations are positioned
+    /// on the same horizontal line. This is more accurate than center-point comparison
+    /// as it accounts for different text heights and overlapping scenarios.
     ///
     /// **Algorithm:**
-    /// - Calculates center Y coordinates for both observations
-    /// - Compares vertical distance against dynamic threshold
-    /// - Accounts for Vision framework's coordinate system (origin at bottom-left)
-    /// - Uses minimum line height-based threshold for accuracy
+    /// - Uses the verticalGap property from OCRTextObservationPair
+    /// - Applies adaptive threshold based on actual text heights
+    /// - Accounts for slight OCR positioning inaccuracies
+    /// - Considers both positive gaps (spacing) and negative gaps (overlap)
+    ///
+    /// **Same Line Criteria:**
+    /// - Very small positive gap (minimal spacing between words)
+    /// - Small negative gap (slight overlap due to OCR inaccuracy)
+    /// - Gap magnitude less than a fraction of the smaller text height
     ///
     /// - Parameter pair: Pair of text observations to compare
     /// - Returns: true if observations are on the same line, false otherwise
-    func isSameLine(_ pair: OCRTextObservationPair) -> Bool {
-        // Box origin at the image's lower-left corner.
-        let currentBoundingBox = pair.current.boundingBox
-        let previousBoundingBox = pair.previous.boundingBox
+    func isSameLine(pair: OCRTextObservationPair) -> Bool {
+        let verticalGap = pair.verticalGap
 
-        // Calculate Y coordinate difference (taking into account coordinate system)
-        let currentCenterY = currentBoundingBox.origin.y - currentBoundingBox.size.height / 2
-        let previousCenterY = previousBoundingBox.origin.y - previousBoundingBox.size.height / 2
-        let deltaY = abs(currentCenterY - previousCenterY)
+        // Calculate adaptive threshold based on actual text heights
+        let currentHeight = pair.current.boundingBox.size.height
+        let previousHeight = pair.previous.boundingBox.size.height
+        let smallerHeight = min(currentHeight, previousHeight)
 
-        return deltaY <= metrics.sameLineThreshold
+        // Use a fraction of the smaller text height as threshold
+        // This is more adaptive than using global minimum line height
+        let adaptiveThreshold = smallerHeight * 0.3 // 30% of smaller text height
+
+        // Also consider a minimum threshold to avoid being too strict with very small text
+        let minimumThreshold = metrics.minPositiveLineSpacing * 0.4 // 40% of minimum line height
+
+        // Use the larger of the two thresholds for better accuracy
+        let threshold = max(adaptiveThreshold, minimumThreshold)
+
+        // Consider same line if gap is within threshold (allowing for slight overlap or minimal spacing)
+        return abs(verticalGap) <= threshold
     }
-
-    // MARK: Private
-
-    private let metrics: OCRMetrics
-    private let lineMeasurer: OCRLineMeasurer
-    private var languageManager = EZLanguageManager.shared()
 
     // MARK: - Helper Methods
 
-    private func isEqualX(_ pair: OCRTextObservationPair) -> Bool {
+    // Determine if two text observations have equivalent horizontal positioning (X coordinates)
+    ///
+    /// This precise spatial analysis method determines whether two text observations are aligned
+    /// horizontally within acceptable tolerance thresholds. The analysis is crucial for detecting
+    /// indentation patterns, paragraph boundaries, and structured content formatting.
+    ///
+    /// **Analysis Method:**
+    /// - Calculates dynamic threshold based on average character width and indentation constants
+    /// - Accounts for screen scaling factors for accurate measurements
+    /// - Applies tolerance ranges for slight positioning variations
+    /// - Uses relative positioning analysis for robust detection
+    ///
+    /// **Threshold Calculation:**
+    /// - Based on `averageCharacterWidth * OCRConstants.indentationCharacterCount`
+    /// - Incorporates screen scaling factor for high-resolution displays
+    /// - Provides half-threshold tolerance for boundary cases
+    /// - Adapts to document-specific character sizing
+    ///
+    /// **Use Cases:**
+    /// - Paragraph indentation detection
+    /// - List item alignment analysis
+    /// - Block quote structure identification
+    /// - Table column alignment recognition
+    ///
+    /// - Parameter pair: Pair of text observations to compare for X alignment
+    /// - Returns: true if observations are horizontally aligned within tolerance, false otherwise
+    func isEqualX(pair: OCRTextObservationPair) -> Bool {
+        guard let ocrImage = metrics.ocrImage else {
+            return false
+        }
+
         // Calculate threshold based on average character width and indentation constant
         let threshold = metrics.averageCharacterWidth * OCRConstants.indentationCharacterCount
 
@@ -320,7 +333,7 @@ class OCRLineAnalyzer {
         let dx = lineX - prevLineX
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let maxLength = metrics.ocrImage.size.width * metrics.maxLineLength / scaleFactor
+        let maxLength = ocrImage.size.width * metrics.maxLineLength / scaleFactor
         let difference = maxLength * dx
 
         // dx > 0, means current line may has indentation.
@@ -334,24 +347,23 @@ class OCRLineAnalyzer {
         return false
     }
 
-    private func isEqualCharacterLength(_ pair: OCRTextObservationPair) -> Bool {
-        let isEqual = isEqualText(pair)
-
-        let currentText = pair.current.firstText
-        let previousText = pair.previous.firstText
-
-        let isCurrentEndPunctuationChar = currentText.hasEndPunctuationSuffix
-        let isPreviousEndPunctuationChar = previousText.hasEndPunctuationSuffix
-
-        let isEqualLength = currentText.count == previousText.count
-        let isEqualEndSuffix = isCurrentEndPunctuationChar && isPreviousEndPunctuationChar
-
-        return isEqual && isEqualLength && isEqualEndSuffix
+    func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {
+        let minValue = min(value1, value2)
+        let maxValue = max(value1, value2)
+        return (minValue / maxValue) > ratio
     }
 
-    private func isEqualText(_ pair: OCRTextObservationPair) -> Bool {
-        let isEqualX = isEqualX(pair)
+    // MARK: Private
 
+    private let metrics: OCRMetrics
+    private let lineMeasurer: OCRLineMeasurer
+    private var languageManager = EZLanguageManager.shared()
+
+    private func isEqualText(pair: OCRTextObservationPair) -> Bool {
+        let isEqualX = isEqualX(pair: pair)
+
+        // Use the new property from OCRTextObservationPair for basic maxX comparison
+        // But still need more sophisticated analysis that requires metrics
         let lineMaxX = pair.current.boundingBox.maxX
         let prevLineMaxX = pair.previous.boundingBox.maxX
 
@@ -361,16 +373,14 @@ class OCRLineAnalyzer {
         return isEqualX && isEqualLineMaxX
     }
 
-    private func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {
-        let minValue = min(value1, value2)
-        let maxValue = max(value1, value2)
-        return (minValue / maxValue) > ratio
-    }
-
     private func fontSize(_ observation: VNRecognizedTextObservation) -> Double {
+        guard let ocrImage = metrics.ocrImage else {
+            return NSFont.systemFontSize
+        }
+
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
         let textWidth =
-            observation.boundingBox.size.width * metrics.ocrImage.size.width / scaleFactor
+            observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
         return fontSize(observation.firstText, width: textWidth)
     }
 

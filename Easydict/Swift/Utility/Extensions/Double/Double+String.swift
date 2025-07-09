@@ -8,11 +8,13 @@
 
 import Foundation
 
+// MARK: - Double Extensions
+
+/// Convert double to string with one decimal place.
+/// - Example:
+///   - 1 -> "1.0"
+///   - 1.234 -> "1.2"
 extension Double {
-    /// Convert double to string with one decimal place.
-    /// - Example:
-    ///   - 1 -> "1.0"
-    ///   - 1.234 -> "1.2"
     var oneDecimalString: String {
         String(format: "%.1f", self)
     }
@@ -21,7 +23,7 @@ extension Double {
         String(format: "%.2f", self)
     }
 
-    var intString: String {
-        String(format: "%.0f", self)
+    var threeDecimalString: String {
+        String(format: "%.3f", self)
     }
 }

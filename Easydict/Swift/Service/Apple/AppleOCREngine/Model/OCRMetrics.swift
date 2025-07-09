@@ -33,9 +33,9 @@ import Vision
 ///
 /// **Usage Pattern:**
 /// ```swift
-/// let metrics = OCRMetrics()
-/// metrics.language = .english
-/// metrics.collectLineLayoutMetrics(observation, index: 0, observations: all, lineSpacingCount: &count)
+/// let metrics = OCRMetrics(language: .english)
+/// // OR
+/// let metrics = OCRMetrics(ocrImage: image, language: .english, textObservations: observations)
 /// let isLongLine = metrics.averageCharacterWidth > 0 && lineMeasurer.isLongLine(observation)
 /// ```
 ///
@@ -43,15 +43,43 @@ import Vision
 class OCRMetrics {
     // MARK: Lifecycle
 
-    /// Initialize OCR metrics with optional language specification
+    /// Initialize OCR metrics with optional context data
     ///
-    /// Creates a new metrics instance with all values reset to initial state.
-    /// If a language is provided, it will be set immediately for language-specific processing.
+    /// Creates a new metrics instance with configurable initial state.
+    /// This convenience initializer can handle various initialization scenarios
+    /// from simple language setup to full OCR processing context.
     ///
-    /// - Parameter language: Target language for OCR processing (defaults to .auto)
-    convenience init(language: Language) {
+    /// - Parameters:
+    ///   - ocrImage: Source image containing text to be processed (optional)
+    ///   - language: Target language for OCR processing (defaults to .auto)
+    ///   - textObservations: Pre-existing text observations to process
+    convenience init(
+        ocrImage: NSImage? = nil,
+        language: Language = .auto,
+        textObservations: [VNRecognizedTextObservation] = []
+    ) {
         self.init()
         self.language = language
+
+        if let ocrImage = ocrImage {
+            self.ocrImage = ocrImage
+        }
+
+        // If no text observations provided, return early
+        guard !textObservations.isEmpty else {
+            return
+        }
+
+        self.textObservations = textObservations
+
+        // If we have both image and observations, perform full setup
+        if let ocrImage {
+            setupWithOCRData(
+                ocrImage: ocrImage,
+                language: language,
+                observations: textObservations
+            )
+        }
     }
 
     // MARK: Internal
@@ -62,7 +90,7 @@ class OCRMetrics {
     ///
     /// The original image containing the text to be processed. Used for spatial
     /// calculations, character width measurements, and layout analysis.
-    var ocrImage: NSImage = .init()
+    var ocrImage: NSImage? = .init()
 
     /// Target language for OCR recognition and text processing
     ///
@@ -98,8 +126,7 @@ class OCRMetrics {
 
     /// Minimum observed spacing between adjacent text lines
     ///
-    /// Used for detecting tight line spacing and understanding document
-    /// layout density. Important for distinguishing normal text from lists.
+    /// - Note: This value may be negative if lines overlap or touch.
     var minLineSpacing: Double = .greatestFiniteMagnitude
 
     /// Minimum positive (non-zero) line spacing value
@@ -199,13 +226,137 @@ class OCRMetrics {
     /// processing decisions, particularly for English and similar languages.
     var maxWordLength: Int = 0
 
-    // MARK: - Calculated Thresholds
-
-    /// Dynamic threshold for same-line detection based on minimum line height
+    /// Overall confidence score for the OCR result
     ///
-    /// Calculated as 80% of the minimum line height to provide robust
-    /// same-line detection that adapts to the document's text characteristics.
-    var sameLineThreshold: Double { minLineHeight * 0.8 }
+    /// Calculated as the average of all individual text observation confidence scores.
+    /// Range: 0.0 to 1.0, where 1.0 indicates maximum confidence.
+    /// Used for assessing the reliability of the OCR recognition results.
+    var confidence: Float = 0.0
+
+    var bigLineSpacingThreshold: Double {
+        min(averageLineHeight, averageLineSpacing * 1.4)
+    }
+
+    // MARK: - Comprehensive Metrics Calculation
+
+    /// Setup metrics with OCR data and calculate comprehensive statistics
+    ///
+    /// This is the primary entry point for initializing OCR metrics with complete context.
+    /// It sets up the language and performs comprehensive metrics calculations in one atomic operation.
+    /// This method replaces all scattered metric calculations previously distributed across the codebase.
+    ///
+    /// **Key Benefits:**
+    /// - Centralized metrics calculation
+    /// - Atomic operation ensuring data consistency
+    /// - Eliminates code duplication
+    /// - Provides comprehensive debug output
+    ///
+    /// **Calculated Metrics:**
+    /// - Line height statistics (min, average, total)
+    /// - Line spacing measurements and patterns
+    /// - Horizontal positioning and line length data
+    /// - Character width calculations from representative lines
+    /// - Word length analysis for space-separated languages
+    /// - Reference observation identification (longest, shortest, etc.)
+    /// - Overall confidence score calculation
+    /// - Poetry detection analysis
+    ///
+    /// - Parameters:
+    ///   - observations: Array of VNRecognizedTextObservation from Vision framework
+    ///   - ocrImage: Source image for character width and spatial calculations
+    ///   - language: Target language for OCR processing and text analysis
+    ///   - detectPoetry: Whether to perform poetry detection (defaults to false)
+    func setupWithOCRData(
+        ocrImage: NSImage,
+        language: Language,
+        observations: [VNRecognizedTextObservation]
+    ) {
+        // Ensure we have clean state
+        resetMetrics()
+
+        // Set basic properties
+        self.ocrImage = ocrImage
+        self.language = language
+        textObservations = observations
+
+        guard !observations.isEmpty else { return }
+
+        let lineCount = observations.count
+        var lineSpacingCount = 0
+
+        // First pass: Process each observation to accumulate baseline metrics
+        for textObservation in observations {
+            processObservationMetrics(textObservation)
+        }
+
+        // Calculate average line height after first pass
+        averageLineHeight = totalLineHeight / lineCount.double
+
+        // Second pass: Analyze spacing between consecutive observations
+        for index in 1 ..< observations.count {
+            let textObservation = observations[index]
+            let prevObservation = observations[index - 1]
+
+            analyzeConsecutiveSpacing(
+                current: textObservation,
+                previous: prevObservation,
+                lineSpacingCount: &lineSpacingCount
+            )
+        }
+
+        if lineSpacingCount > 0 {
+            averageLineSpacing = totalLineSpacing / lineSpacingCount.double
+        }
+
+        // Calculate average character width from the line with most characters
+        if let textObservation = maxCharacterCountLineTextObservation {
+            averageCharacterWidth = computeAverageCharacterWidth(
+                from: textObservation,
+                ocrImage: ocrImage
+            )
+        }
+
+        // Calculate total character count and average per line
+        totalCharCount = observations.map { $0.firstText.count }.reduce(0, +)
+        charCountPerLine = totalCharCount.double / lineCount.double
+
+        // Calculate overall confidence score
+        computeOverallConfidence(from: observations)
+
+        isPoetry = poetryDetector.detectPoetry()
+        print("🎭 Poetry detected: \(isPoetry)")
+
+        // Output comprehensive metrics summary
+        print("📊 OCR Metrics Summary:")
+        print("  - Total observations: \(lineCount)")
+        print("  - Confidence score: \(String(format: "%.3f", confidence))")
+        print(
+            "  - Line height → min: \(String(format: "%.3f", minLineHeight)), avg: \(String(format: "%.3f", averageLineHeight))"
+        )
+        print(
+            "  - Line spacing → min: \(String(format: "%.3f", minLineSpacing)), positive min: \(String(format: "%.3f", minPositiveLineSpacing)), avg: \(String(format: "%.3f", averageLineSpacing))"
+        )
+        print(
+            "  - Big line spacing threshold: \(String(format: "%.3f", bigLineSpacingThreshold))"
+        )
+        print(
+            "  - Line length → min: \(String(format: "%.3f", minLineLength)), max: \(String(format: "%.3f", maxLineLength))"
+        )
+        print(
+            "  - Character metrics → width: \(String(format: "%.3f", averageCharacterWidth)), total: \(totalCharCount)"
+        )
+        print("  - Average chars per line: \(String(format: "%.1f", charCountPerLine))")
+        print("  - Max word length: \(maxWordLength)")
+        print("  - Min X position: \(String(format: "%.3f", minX))")
+    }
+
+    // MARK: Private
+
+    /// Poetry detector for analyzing text patterns and structure
+    ///
+    /// Used internally to determine if the processed text represents poetry
+    /// based on line patterns, spacing, and structural characteristics.
+    private lazy var poetryDetector = OCRPoetryDetector(metrics: self)
 
     /// Reset all metrics data to initial values for new OCR processing session
     ///
@@ -219,7 +370,7 @@ class OCRMetrics {
     /// - Reference observations (longest lines, positions, character counts)
     /// - Content analysis (poetry flags, character metrics, punctuation counts)
     /// - Calculated metrics (averages, character widths, word lengths)
-    func resetMetrics() {
+    private func resetMetrics() {
         // Reset context data
         ocrImage = NSImage()
         language = .auto
@@ -249,42 +400,37 @@ class OCRMetrics {
         punctuationMarkCount = 0
         averageCharacterWidth = 0.0
         maxWordLength = 0
+        confidence = 0.0
     }
 
-    /// Collect line spacing, height, and positioning metrics
-    func collectLineLayoutMetrics(
-        _ textObservation: VNRecognizedTextObservation,
-        index: Int,
-        observations: [VNRecognizedTextObservation],
-        lineSpacingCount: inout Int
-    ) {
+    /// Process individual text observation to accumulate line height and positioning metrics
+    ///
+    /// This method performs the first-pass analysis of each text observation, collecting
+    /// essential metrics including line heights, horizontal positioning, line lengths,
+    /// word length analysis, and identifying key reference observations for later calculations.
+    ///
+    /// **Collected Metrics:**
+    /// - Line height accumulation for average calculation
+    /// - Minimum line height tracking
+    /// - Horizontal positioning (minX, line lengths)
+    /// - Reference observation identification (longest line, leftmost position, max characters)
+    /// - Maximum word length tracking for space-separated languages
+    /// - Debug gap logging for consecutive observations
+    ///
+    /// **Design Note:**
+    /// This method focuses purely on individual observation processing and reference
+    /// tracking. Gap calculations and spacing analysis are handled separately in
+    /// the second pass to ensure all baseline metrics are established first.
+    ///
+    /// - Parameters:
+    ///   - textObservation: The text observation to process
+    private func processObservationMetrics(_ textObservation: VNRecognizedTextObservation) {
         let boundingBox = textObservation.boundingBox
-        let lineHeight = boundingBox.size.height
+        let lineHeight: Double = boundingBox.size.height
         totalLineHeight += lineHeight
 
         if lineHeight < minLineHeight {
             minLineHeight = lineHeight
-        }
-
-        // Calculate line spacing
-        if index > 0 {
-            let prevObservation = observations[index - 1]
-            let prevBoundingBox = prevObservation.boundingBox
-
-            let deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height)
-
-            if deltaY > 0, deltaY < averageLineHeight * OCRConstants.paragraphLineHeightRatio {
-                totalLineSpacing += deltaY
-                lineSpacingCount += 1
-            }
-
-            if deltaY < minLineSpacing {
-                minLineSpacing = deltaY
-            }
-
-            if deltaY > 0, deltaY < minPositiveLineSpacing {
-                minPositiveLineSpacing = deltaY
-            }
         }
 
         // Track x coordinates and line lengths
@@ -313,11 +459,88 @@ class OCRMetrics {
         if lengthOfLine < minLineLength {
             minLineLength = lengthOfLine
         }
+
+        // Update maximum word length for space-separated languages
+        let languageManager = EZLanguageManager.shared()
+        if languageManager.isLanguageWordsNeedSpace(language) {
+            let words = textObservation.firstText.wordComponents
+            for word in words where word.count > maxWordLength {
+                maxWordLength = word.count
+            }
+        }
+
+        // Calculate index for gap logging (only if not the first observation)
+        guard let index = textObservations.firstIndex(of: textObservation), index > 0 else {
+            return
+        }
+
+        let pair = OCRTextObservationPair(
+            current: textObservation,
+            previous: textObservations[index - 1]
+        )
+        let gap = pair.verticalGap
+        let currentText = textObservation.firstText
+
+        print("  [\(index)]: \(currentText), gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)")
     }
 
-    /// Calculate single character width metric for text observation
-    func calculateCharacterWidthMetric(
-        _ textObservation: VNRecognizedTextObservation,
+    /// Analyze spacing between consecutive text observations (second pass)
+    ///
+    /// This method performs sophisticated spacing analysis between consecutive text
+    /// observations using the established baseline metrics from the first pass.
+    /// It employs intelligent filtering to distinguish between normal line spacing
+    /// and paragraph breaks or multi-column layouts.
+    ///
+    /// **Enhanced Algorithm:**
+    /// - Uses established average line height for consistent threshold calculations
+    /// - Applies paragraph break filtering to exclude unusually large gaps
+    /// - Tracks minimum spacing values regardless of filtering decisions
+    /// - Focuses on inter-line spacing rather than intra-paragraph gaps
+    ///
+    /// **Spacing Classification:**
+    /// - Normal line spacing: Positive gaps smaller than paragraph threshold
+    /// - Excluded gaps: Zero/negative gaps, paragraph breaks, multi-column jumps
+    /// - All gaps contribute to minimum spacing tracking for comprehensive analysis
+    ///
+    /// - Parameters:
+    ///   - current: Current text observation
+    ///   - previous: Previous text observation
+    ///   - lineSpacingCount: Reference counter for valid spacing measurements
+    private func analyzeConsecutiveSpacing(
+        current: VNRecognizedTextObservation,
+        previous: VNRecognizedTextObservation,
+        lineSpacingCount: inout Int
+    ) {
+        let pair = OCRTextObservationPair(current: current, previous: previous)
+        let verticalGap = pair.verticalGap
+
+        // Only count spacing between observations that are NOT on the same line
+        // and have reasonable positive spacing (exclude paragraph breaks)
+        if verticalGap > 0, verticalGap < averageLineHeight * OCRConstants.paragraphLineHeightRatio {
+            totalLineSpacing += verticalGap
+            lineSpacingCount += 1
+        }
+
+        if verticalGap < minLineSpacing {
+            minLineSpacing = verticalGap
+        }
+
+        if verticalGap > 0, verticalGap < minPositiveLineSpacing {
+            minPositiveLineSpacing = verticalGap
+        }
+    }
+
+    /// Calculate average character width from text observation dimensions
+    ///
+    /// Computes the average width of characters by dividing the physical text width
+    /// by the character count, accounting for display scaling factors.
+    ///
+    /// - Parameters:
+    ///   - textObservation: Text observation with bounding box and character data
+    ///   - ocrImage: Source image for dimension calculations
+    /// - Returns: Average character width in points
+    private func computeAverageCharacterWidth(
+        from textObservation: VNRecognizedTextObservation,
         ocrImage: NSImage
     )
         -> Double {
@@ -326,21 +549,23 @@ class OCRMetrics {
         return textWidth / textObservation.firstText.count.double
     }
 
-    /// Update maximum word length for space-separated languages
-    /// This method should only be called for languages that use spaces between words
-    /// - Parameter textObservation: The text observation to analyze
-    func updateMaxWordLength(_ textObservation: VNRecognizedTextObservation) {
-        let languageManager = EZLanguageManager.shared()
-
-        // Only track word length for languages that use spaces between words
-        guard languageManager.isLanguageWordsNeedSpace(language) else {
+    /// Compute overall confidence score from text observations
+    ///
+    /// Calculates the average confidence score across all text observations,
+    /// providing a unified measure of OCR recognition reliability for the entire document.
+    ///
+    /// - Parameter observations: Array of text observations with confidence data
+    private func computeOverallConfidence(from observations: [VNRecognizedTextObservation]) {
+        guard !observations.isEmpty else {
+            confidence = 0.0
             return
         }
 
-        let words = textObservation.firstText.wordComponents
+        let totalConfidence =
+            observations
+                .compactMap { $0.topCandidates(1).first?.confidence }
+                .reduce(0, +)
 
-        for word in words where word.count > maxWordLength {
-            maxWordLength = word.count
-        }
+        confidence = totalConfidence / Float(observations.count)
     }
 }
