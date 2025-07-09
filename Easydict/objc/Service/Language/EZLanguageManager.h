@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)containsEnglishInPreferredTwoLanguages;
 - (BOOL)containsChineseInPreferredTwoLanguages;
 
-/// First langauge is simplified Chinese or traditional Chinese.
+/// First language is simplified Chinese or traditional Chinese.
 - (BOOL)isSystemChineseFirstLanguage;
 - (BOOL)isSystemEnglishFirstLanguage;
 
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)isSimplifiedChinese:(EZLanguage)language;
 - (BOOL)isTraditionalChinese:(EZLanguage)language;
-- (BOOL)isEnglishLangauge:(EZLanguage)language;
+- (BOOL)isEnglishLanguage:(EZLanguage)language;
 
 /// Check if language array only contains simplified Chinese or traditional Chinese two languages.
 - (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;

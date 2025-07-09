@@ -287,7 +287,7 @@ static EZLanguageManager *_instance;
     return [language isEqualToString:EZLanguageTraditionalChinese];
 }
 
-- (BOOL)isEnglishLangauge:(EZLanguage)language {
+- (BOOL)isEnglishLanguage:(EZLanguage)language {
     return [language isEqualToString:EZLanguageEnglish];
 }
 

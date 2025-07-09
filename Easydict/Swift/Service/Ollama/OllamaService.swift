@@ -50,14 +50,6 @@ class OllamaService: BaseOpenAIService {
         [supportedModelsKey]
     }
 
-    override var isSentenceEnabledByDefault: Bool {
-        false
-    }
-
-    override var isDictionaryEnabledByDefault: Bool {
-        false
-    }
-
     override var requireAPIKey: Bool {
         false
     }

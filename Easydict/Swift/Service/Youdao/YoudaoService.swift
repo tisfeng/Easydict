@@ -59,10 +59,10 @@ class YoudaoService: QueryService {
      */
     override func wordLink(_ queryModel: EZQueryModel) -> String? {
         let encodedWord = queryModel.queryText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        guard let foreignLangauge = youdaoDictForeignLanguage(queryModel) else {
+        guard let foreignLanguage = youdaoDictForeignLanguage(queryModel) else {
             return link()
         }
-        return "\(kYoudaoDictURL)/result?word=\(encodedWord)&lang=\(foreignLangauge)"
+        return "\(kYoudaoDictURL)/result?word=\(encodedWord)&lang=\(foreignLanguage)"
     }
 
     override func name() -> String {

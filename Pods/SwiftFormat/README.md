@@ -26,6 +26,7 @@ Table of Contents
     - [On CI using Danger](#on-ci-using-danger)
     - [Bazel build](#bazel-build)
     - [Docker](#docker)
+    - [Prerelease Builds](#prerelease-builds)
 - [Configuration](#configuration)
     - [Options](#options)
     - [Rules](#rules)
@@ -73,8 +74,6 @@ That depends - There are several ways you can use SwiftFormat:
 
 Command-line tool
 -------------------
-
-**NOTE:** if you are using any of the following methods to install SwiftFormat on macOS 10.14.3 or earlier and are experiencing a crash on launch, you may need to install the [Swift 5 Runtime Support for Command Line Tools](https://support.apple.com/kb/DL1998). See [known issues](#known-issues) for details.
 
 **Installation:**
 
@@ -460,7 +459,7 @@ jobs:
   Lint:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: SwiftFormat
         run: swiftformat --lint . --reporter github-actions-log
 ```
@@ -521,6 +520,29 @@ Linting example:
 ```bash
 docker run --rm -v /local/source/path:/work ghcr.io/nicklockwood/swiftformat:latest /work --lint
 ```
+
+Prerelease Builds
+-----------------
+
+***Prerelease builds are subject to breaking changes.***
+
+New rules, options, and fixes are merged to the [`develop`](https://github.com/nicklockwood/SwiftFormat/commits/develop/) branch before being incorporated into an official release. You may want to use a prerelease version of SwiftFormat that includes the latest unreleased changes.
+
+**Homebrew:**
+
+The [Homebrew](http://brew.sh/) `--HEAD` option downloads, builds, and installs the latest changes from the `develop` branch. 
+
+You can install a prerelease build via Homebrew by running:
+
+```bash
+$ brew install swiftformat --HEAD
+```
+
+**Nightly Builds:**
+
+Nightly builds of the `develop` branch are available in the [calda/SwiftFormat-nightly](https://github.com/calda/SwiftFormat-nightly) repo. A new release is published every day, unless there have been no changes to `develop` since the last release. You can download executables for the latest nightly release [here](https://github.com/calda/SwiftFormat-nightly/releases/latest).
+
+Commit SHAs on `develop` are unstable since that branch is occasionally rebased, but artifact URLs and tags in [calda/SwiftFormat-nightly](https://github.com/calda/SwiftFormat-nightly) are stable references that can be used from other repos or tools.
 
 Configuration
 -------------
@@ -924,6 +946,13 @@ Q. I don't want to be surprised by new rules added when I upgrade SwiftFormat. H
 
 > A. Yes, the SwiftFormat framework can be included in an app or test target, and used for many kinds of parsing and processing of Swift source code besides formatting. The SwiftFormat framework is available as a [CocoaPod](https://cocoapods.org/pods/SwiftFormat) for easy integration.
 
+*Q. How to create own rule?*
+
+> A. 1) Open `SwiftFormat.xcodeproj`; 2) Add a rule in `Sources/Rules/..`; 3) Add a test in `Tests/Rules/..`; 4) Add an example in `Sources/Examples.swift`; 5) Run all tests.
+
+*Q. How do I run and debug the command line tool in Xcode while developing a new rule?*
+
+> A. You can run the `swiftformat` command line tool via the `Swift Format (Command Line Tool)` scheme, and you can pass in arguments like `/path/to/my/code --config /path/to/my/config` as the `Arguments Passed On Launch` in Xcode's scheme editor. More instructions are available [here](https://github.com/nicklockwood/SwiftFormat/pull/1804#issuecomment-2263079432).
 
 Known issues
 ---------------
