@@ -12,16 +12,34 @@ import RegexBuilder
 // MARK: - String Detection Extensions
 
 extension String {
-    /// Check if the string is Simplified Chinese.
-    /// Characters in the text must be all Simplified Chinese characters, otherwise it will return false.
+    /// Check if the string is predominantly Simplified Chinese.
+    ///
+    /// This method determines if a string is Simplified Chinese based on the proportion of Simplified characters.
+    /// It extracts all Chinese characters and calculates the ratio of Simplified to Traditional characters.
+    /// If the ratio of Simplified characters exceeds a certain threshold (e.g., 80%), the string is considered Simplified Chinese.
+    /// This approach is robust against mixed content with a few Traditional characters.
+    ///
+    /// - Returns: true if the majority of Chinese characters are Simplified, false otherwise.
     var isSimplifiedChinese: Bool {
-        let pureText = removingNonLetters()
-        if !pureText.isChineseTextByRegex {
-            return false
-        }
+        // 1. Extract all Chinese characters from the string.
+        let chineseChars = filter { String($0).isChineseTextByRegex }
+        guard !chineseChars.isEmpty else { return false }
 
-        let simplifiedChinese = pureText.toSimplifiedChinese()
-        return simplifiedChinese == pureText
+        // 2. Count the number of characters that are Traditional.
+        // A character is considered Traditional if it changes when converted to Simplified Chinese.
+        let traditionalCharCount = chineseChars.filter {
+            String($0) != String($0).toSimplifiedChinese()
+        }.count
+
+        // 3. Calculate the number of Simplified characters.
+        let simplifiedCharCount = chineseChars.count - traditionalCharCount
+
+        // 4. Determine if Simplified characters make up the majority.
+        // We use a threshold of 0.8 to be certain.
+        // This means that if more than 80% of the Chinese characters are Simplified,
+        // we classify the text as Simplified Chinese.
+        let simplifiedRatio = Double(simplifiedCharCount) / Double(chineseChars.count)
+        return simplifiedRatio >= 0.8
     }
 
     /// Check if the string is Chinese text by regex unicode range.
