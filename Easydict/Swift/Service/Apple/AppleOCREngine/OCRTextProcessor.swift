@@ -82,6 +82,11 @@ public class OCRTextProcessor {
         // If intelligent joining is not enabled, return simple result
         guard intelligentJoined else { return }
 
+        // Initialize language detection if not already set
+        if ocrResult.from == .auto {
+            ocrResult.from = languageDetector.detectLanguage(text: ocrResult.mergedText)
+        }
+
         // Calculate confidence using metrics (both simple and advanced modes)
         metrics.setupWithOCRData(
             ocrImage: ocrImage,
@@ -102,10 +107,6 @@ public class OCRTextProcessor {
         ocrResult.texts = ocrResult.mergedText.components(
             separatedBy: OCRConstants.lineBreakText
         )
-
-        if ocrResult.from == .auto {
-            ocrResult.from = languageDetector.detectLanguage(text: mergedText)
-        }
 
         let showMergedText = String(ocrResult.mergedText.prefix(100))
         print(

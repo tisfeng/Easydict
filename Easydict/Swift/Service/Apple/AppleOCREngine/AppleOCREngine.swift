@@ -234,8 +234,8 @@ public class AppleOCREngine {
         // Configure OCR request based on language parameter
         request.automaticallyDetectsLanguage = shouldAutoDetect
 
-        // When using automatic detection, disable language correction since we're uncertain about the language
-        request.usesLanguageCorrection = !shouldAutoDetect
+        // Set it to true, correction is useful for some cases.
+        request.usesLanguageCorrection = true
         request.recognitionLevel = .accurate
 
         let languageMapper = AppleLanguageMapper.shared

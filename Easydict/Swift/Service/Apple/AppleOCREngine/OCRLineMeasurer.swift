@@ -87,7 +87,14 @@ class OCRLineMeasurer {
         let actualRemainingCharacters = charactersRemainingInLine(observation)
 
         // Line is considered "long" if remaining space is less than required minimum
-        return actualRemainingCharacters < threshold
+        let isLongLine = actualRemainingCharacters < threshold
+
+        if isLongLine {
+            print("Line is considered long: \(observation)")
+            print("Remaining: \(actualRemainingCharacters), Threshold: \(threshold)")
+        }
+
+        return isLongLine
     }
 
     // MARK: Private

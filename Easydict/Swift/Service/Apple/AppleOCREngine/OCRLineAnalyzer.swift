@@ -93,7 +93,13 @@ class OCRLineAnalyzer {
     /// - Returns: true if observations contain equal-length Chinese text
     func isEqualChineseText(pair: OCRTextObservationPair) -> Bool {
         let isEqualLength = pair.hasEqualCharacterLength
-        return isEqualLength && languageManager.isChineseLanguage(metrics.language)
+        let isEqualChinese = isEqualLength && languageManager.isChineseLanguage(metrics.language)
+
+        if isEqualLength {
+            print("Pair is considered equal Chinese text: \(pair)")
+        }
+
+        return isEqualChinese
     }
 
     /// Analyze if there is significant line spacing between two text observations

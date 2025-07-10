@@ -14,7 +14,6 @@
 		03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F182B3591AE00B63209 /* GoogleGenerativeAI */; };
 		03022F1C2B35DEBA00B63209 /* Hue in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1B2B35DEBA00B63209 /* Hue */; };
 		03022F222B36D1A400B63209 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F212B36D1A400B63209 /* SnapKit */; };
-		0305E73E2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E73D2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift */; };
 		0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
@@ -160,6 +159,7 @@
 		0399C6B829A9F4B800B4AFCC /* EZSchemeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */; };
 		039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 039B694E2A9D9F370063709D /* EZWebViewManager.m */; };
 		039CBE872D9AFBF3009A04DC /* ChineseDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CBE862D9AFBF3009A04DC /* ChineseDetection.swift */; };
+		039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CC6352E1F518A0046DC16 /* OCRTestSample.swift */; };
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
@@ -480,7 +480,6 @@
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
 		03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZAnimatedHidden.m"; sourceTree = "<group>"; };
 		03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0305E73D2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzerTests.swift; sourceTree = "<group>"; };
 		0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Test.swift"; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
@@ -665,6 +664,7 @@
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
 		039B694E2A9D9F370063709D /* EZWebViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewManager.m; sourceTree = "<group>"; };
 		039CBE862D9AFBF3009A04DC /* ChineseDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseDetection.swift; sourceTree = "<group>"; };
+		039CC6352E1F518A0046DC16 /* OCRTestSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSample.swift; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
@@ -2367,7 +2367,7 @@
 			children = (
 				03C3A5622E1BC78600B59152 /* ocr-images */,
 				03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */,
-				0305E73D2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift */,
+				039CC6352E1F518A0046DC16 /* OCRTestSample.swift */,
 				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
 				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
 				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
@@ -3384,10 +3384,10 @@
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
-				0305E73E2E1D221D000A23A0 /* OCRLineAnalyzerTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
+				039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
