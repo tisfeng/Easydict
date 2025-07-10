@@ -588,39 +588,15 @@ public class AppleLanguageDetector: NSObject {
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Determine Chinese type (simplified vs traditional) using character analysis
-    ///
-    /// Uses the `isSimplifiedChinese` extension for accurate detection, with fallback
-    /// to simplified Chinese for ambiguous cases.
-    ///
-    /// Examples: "很棒" → .simplifiedChinese, "開門" → .traditionalChinese
-    ///
-    /// - Parameter text: Text containing Chinese characters
-    /// - Returns: .simplifiedChinese or .traditionalChinese
+    /// Determine Chinese type (simplified,traditional, or classical)
     private func determineChineseType(for text: String) -> Language {
-        // Extract only Chinese characters for analysis
-        let chineseCharacters = text.filter { String($0).isChineseTextByRegex }
-        let chineseText = String(chineseCharacters)
-
-        // Handle edge cases
-        guard !chineseText.isEmpty else {
-            return .simplifiedChinese // Default fallback
-        }
-
-        // For very short Chinese text (1-2 characters), be conservative
-        if chineseText.count <= 2 {
-            // Use the intelligent detection method
-            if chineseText.isSimplifiedChinese() {
-                return .simplifiedChinese
-            } else {
-                // Could be traditional or ambiguous, check by conversion
-                let simplified = chineseText.toSimplifiedChinese()
-                return simplified == chineseText ? .simplifiedChinese : .traditionalChinese
+        if Configuration.shared.beta {
+            if text.isClassicalChinese {
+                return .classicalChinese
             }
         }
 
-        // For longer text, use the robust isSimplifiedChinese method
-        if chineseText.isSimplifiedChinese() {
+        if text.isSimplifiedChinese {
             return .simplifiedChinese
         } else {
             return .traditionalChinese
