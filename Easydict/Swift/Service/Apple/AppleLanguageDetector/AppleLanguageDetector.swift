@@ -43,9 +43,19 @@ import NaturalLanguage
 /// - Minimal overhead over raw Apple detection (~1-2ms additional processing)
 /// - Simplified post-processing pipeline for better maintainability
 /// - Optimized for both short and long text scenarios
-@objc
 public class AppleLanguageDetector: NSObject {
     // MARK: Public
+
+    /// Records Chinese character statistics when English is detected and user prefers Chinese
+    public private(set) var chineseCharacterCount: Int = 0
+    public private(set) var simplifiedCharacterCount: Int = 0
+    public private(set) var traditionalCharacterCount: Int = 0
+    public private(set) var chineseCharacterRatio: Double = 0.0
+
+    public private(set) var isAnalyzed: Bool = false
+    public private(set) var englishCharacterCount: Int = 0
+    public private(set) var englishCharacterRatio: Double = 0.0
+    public private(set) var hasMixedScripts: Bool = false
 
     /// Detect the most likely language of the provided text
     ///
@@ -54,20 +64,10 @@ public class AppleLanguageDetector: NSObject {
     ///
     /// - Parameter text: Text to analyze for language detection
     /// - Returns: Most likely Language enum value (.auto for empty text)
-    @objc
     public func detectLanguage(text: String) -> Language {
-        // Handle empty or whitespace-only text
-        if text.isEmpty || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return .auto
-        }
-
-        let languageProbabilityDict = detectLanguageDict(text: text)
-        let mostConfidentLanguage = getMostConfidentLanguage(
-            languageProbabilityDict,
-            text: text
-        )
-
-        return mostConfidentLanguage
+        // Reset analysis state for each detection
+        resetAnalysis()
+        return detectLanguageInternal(text: text, applyPostProcessing: true)
     }
 
     /// Get detailed language detection probabilities for analysis and debugging
@@ -77,7 +77,6 @@ public class AppleLanguageDetector: NSObject {
     ///
     /// - Parameter text: Text to analyze for language probabilities
     /// - Returns: Dictionary mapping BCP-47 language codes to probability values (0.0-1.0)
-    @objc
     public func detectLanguageDict(text: String) -> [String: NSNumber] {
         let startTime = CFAbsoluteTimeGetCurrent()
 
@@ -102,6 +101,18 @@ public class AppleLanguageDetector: NSObject {
         }
 
         return result
+    }
+
+    /// Reset all analysis statistics
+    public func resetAnalysis() {
+        chineseCharacterCount = 0
+        simplifiedCharacterCount = 0
+        traditionalCharacterCount = 0
+        chineseCharacterRatio = 0.0
+        englishCharacterCount = 0
+        englishCharacterRatio = 0.0
+        hasMixedScripts = false
+        isAnalyzed = false
     }
 
     // MARK: Private
@@ -194,112 +205,31 @@ public class AppleLanguageDetector: NSObject {
         return customHints
     }
 
-    /// Get the most confident language with intelligent post-processing
+    /// Internal unified language detection with configurable post-processing
     ///
-    /// Combines ML probability scores, user preference weighting, and post-processing
-    /// corrections for common misdetection cases.
-    ///
-    /// - Parameters:
-    ///   - languageProbabilities: Raw probabilities from NL framework
-    ///   - text: Original text for pattern analysis
-    /// - Returns: Final detected language after all corrections
-    private func getMostConfidentLanguage(
-        _ languageProbabilities: [String: NSNumber],
-        text: String
-    )
-        -> Language {
-        // Handle empty results (e.g., numeric-only text like "729")
-        guard !languageProbabilities.isEmpty else {
-            return detectFallbackLanguage(for: text)
-        }
-
-        // Apply user preferred language weight correction
-        let adjustedProbabilities = applyUserPreferredLanguageWeights(
-            to: languageProbabilities
-        )
-
-        // Find the language with highest probability after user preference adjustment
-        let sortedLanguages = adjustedProbabilities.sorted {
-            $0.value.doubleValue > $1.value.doubleValue
-        }
-
-        guard let mostConfident = sortedLanguages.first else {
-            return detectFallbackLanguage(for: text)
-        }
-
-        let topConfidence = mostConfident.value.doubleValue
-        let nlLanguage = NLLanguage(rawValue: mostConfident.key)
-        var detectedLanguage = languageMapper.languageEnum(from: nlLanguage)
-
-        // Apply post-processing corrections for common misdetection cases
-        detectedLanguage = applyPostProcessingCorrections(
-            detectedLanguage: detectedLanguage,
-            confidence: topConfidence,
-            text: text,
-            allProbabilities: adjustedProbabilities
-        )
-
-        print("Final detected text: \(text)")
-        print(
-            "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
-        )
-
-        return detectedLanguage
-    }
-
-    /// Internal language detection method with recursion depth control
-    ///
-    /// Used by mixed-script analysis for recursive detection of non-English portions.
-    /// Prevents infinite recursion with depth limit.
+    /// Combines detection logic and optional post-processing corrections.
+    /// Used by both the public interface and internal mixed-content analysis.
     ///
     /// - Parameters:
     ///   - text: Text to analyze for language detection
-    ///   - recursionDepth: Current recursion depth (max 2)
-    /// - Returns: Detected language or .auto for empty text
-    private func detectLanguageInternal(
-        text: String,
-        recursionDepth: Int
-    )
-        -> Language {
+    ///   - applyPostProcessing: Whether to apply post-processing corrections
+    /// - Returns: Detected Language enum value (.auto for empty text)
+    private func detectLanguageInternal(text: String, applyPostProcessing: Bool) -> Language {
         // Handle empty or whitespace-only text
         if text.isEmpty || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return .auto
         }
 
         let languageProbabilityDict = detectLanguageDict(text: text)
-        let mostConfidentLanguage = getMostConfidentLanguageInternal(
-            languageProbabilityDict,
-            text: text,
-            recursionDepth: recursionDepth
-        )
 
-        return mostConfidentLanguage
-    }
-
-    /// Internal method for getting most confident language with recursion depth control
-    ///
-    /// Similar to getMostConfidentLanguage but includes recursion depth tracking
-    /// for mixed-script analysis scenarios.
-    ///
-    /// - Parameters:
-    ///   - languageProbabilities: Raw probabilities from NL framework
-    ///   - text: Original text for pattern analysis
-    ///   - recursionDepth: Current recursion depth
-    /// - Returns: Final detected language after corrections
-    private func getMostConfidentLanguageInternal(
-        _ languageProbabilities: [String: NSNumber],
-        text: String,
-        recursionDepth: Int
-    )
-        -> Language {
         // Handle empty results (e.g., numeric-only text like "729")
-        guard !languageProbabilities.isEmpty else {
+        guard !languageProbabilityDict.isEmpty else {
             return detectFallbackLanguage(for: text)
         }
 
         // Apply user preferred language weight correction
         let adjustedProbabilities = applyUserPreferredLanguageWeights(
-            to: languageProbabilities
+            to: languageProbabilityDict
         )
 
         // Find the language with highest probability after user preference adjustment
@@ -315,17 +245,19 @@ public class AppleLanguageDetector: NSObject {
         let nlLanguage = NLLanguage(rawValue: mostConfident.key)
         var detectedLanguage = languageMapper.languageEnum(from: nlLanguage)
 
-        // Apply post-processing corrections for common misdetection cases
-        detectedLanguage = applyPostProcessingCorrectionsInternal(
-            detectedLanguage: detectedLanguage,
-            confidence: topConfidence,
-            text: text,
-            allProbabilities: adjustedProbabilities,
-            recursionDepth: recursionDepth
-        )
+        // Apply post-processing corrections if requested
+        if applyPostProcessing {
+            detectedLanguage = applyPostProcessingCorrections(
+                detectedLanguage: detectedLanguage,
+                confidence: topConfidence,
+                text: text,
+                allProbabilities: adjustedProbabilities
+            )
+        }
 
+        print("Final detected text: \(text)")
         print(
-            "Final detected language: \(detectedLanguage) (confidence: \(String(format: "%.3f", topConfidence)))"
+            "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
         )
 
         return detectedLanguage
@@ -391,33 +323,6 @@ public class AppleLanguageDetector: NSObject {
 
     /// Apply intelligent post-processing corrections for common misdetection cases
     ///
-    /// Public interface to post-processing pipeline. Delegates to internal method
-    /// with recursion depth tracking.
-    ///
-    /// - Parameters:
-    ///   - detectedLanguage: Language detected by ML system
-    ///   - confidence: Detection confidence score (0.0-1.0)
-    ///   - text: Original input text
-    ///   - allProbabilities: All language probabilities from detection
-    /// - Returns: Corrected language after post-processing
-    private func applyPostProcessingCorrections(
-        detectedLanguage: Language,
-        confidence: Double,
-        text: String,
-        allProbabilities: [String: NSNumber]
-    )
-        -> Language {
-        applyPostProcessingCorrectionsInternal(
-            detectedLanguage: detectedLanguage,
-            confidence: confidence,
-            text: text,
-            allProbabilities: allProbabilities,
-            recursionDepth: 0
-        )
-    }
-
-    /// Simplified post-processing with intelligent language-specific handling
-    ///
     /// Three-tier priority system for corrections:
     /// 1. Chinese type verification (simplified vs traditional)
     /// 2. Mixed content detection and analysis
@@ -428,14 +333,12 @@ public class AppleLanguageDetector: NSObject {
     ///   - confidence: Detection confidence score (0.0-1.0)
     ///   - text: Original input text
     ///   - allProbabilities: All language probabilities from detection
-    ///   - recursionDepth: Current recursion depth for mixed-script analysis
     /// - Returns: Corrected language after all post-processing steps
-    private func applyPostProcessingCorrectionsInternal(
+    private func applyPostProcessingCorrections(
         detectedLanguage: Language,
         confidence: Double,
         text: String,
-        allProbabilities: [String: NSNumber],
-        recursionDepth: Int
+        allProbabilities: [String: NSNumber]
     )
         -> Language {
         let cleanText = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -446,16 +349,18 @@ public class AppleLanguageDetector: NSObject {
         }
 
         // Priority 1: Handle detected Chinese with intelligent verification
-        if detectedLanguage.isChinese {
-            return determineChineseType(for: cleanText)
+        if let chineseLanguageType = determineChineseType(
+            for: cleanText,
+            detectedLanguage: detectedLanguage
+        ) {
+            return chineseLanguageType
         }
 
         // Priority 2: Handle common misdetections with mixed content
-        if let correctedLanguage = handleMixedContentDetection(
+        if let correctedLanguage = handleMixedContent(
             detectedLanguage: detectedLanguage,
             text: cleanText,
-            confidence: confidence,
-            recursionDepth: recursionDepth
+            confidence: confidence
         ) {
             return correctedLanguage
         }
@@ -492,56 +397,52 @@ public class AppleLanguageDetector: NSObject {
         return .english
     }
 
-    /// Analyze mixed script text to determine dominant language
+    /// Handle mixed content detection and script analysis in one unified function
     ///
-    /// Uses character ratio analysis and recursive detection for mixed English + other language scenarios.
+    /// Combines the functionality of handleMixedContentDetection and analyzeMixedScriptText
+    /// to provide comprehensive mixed-content language detection without recursion depth tracking.
     ///
-    /// Examples: "apple苹果" → .simplifiedChinese, "Hello world 中文" → .english
-    private func analyzeMixedScriptText(_ text: String, currentDetection: Language) -> Language {
-        analyzeMixedScriptText(text, currentDetection: currentDetection, recursionDepth: 0)
-    }
-
-    /// Internal method with recursion depth control
-    private func analyzeMixedScriptText(
-        _ text: String, currentDetection: Language, recursionDepth: Int
+    /// - Parameters:
+    ///   - detectedLanguage: Language detected by ML system
+    ///   - text: Input text to analyze
+    ///   - confidence: Detection confidence score
+    /// - Returns: Corrected language if applicable, nil to continue processing
+    private func handleMixedContent(
+        detectedLanguage: Language,
+        text: String,
+        confidence: Double
     )
-        -> Language {
-        // Prevent infinite recursion
-        guard recursionDepth < 2 else {
-            return currentDetection
-        }
+        -> Language? {
+        // Use unified analysis to get comprehensive character statistics
+        analyzeTextCharacterComposition(for: text)
 
-        // If current detection is English but English is not dominant,
-        // try to detect the non-English portion
-        if currentDetection == .english {
-            // Calculate English ratio to determine dominance
-            let englishWordCount = text.englishWordCount
+        // Handle mixed scripts intelligently
+        if hasMixedScripts {
+            if detectedLanguage == .english {
+                // Calculate ratios to determine dominance
+                let englishWordCount = text.englishWordCount
+                let nonEnglishText = removeEnglishCharacters(from: text)
+                let pureWordNonEnglishText = nonEnglishText.removingNonLetters()
+                let nonEnglishWordCount = pureWordNonEnglishText.count
 
-            let nonEnglishText = removeEnglishCharacters(from: text)
-            let pureWordText = nonEnglishText.removingPunctuationCharacters()
-                .removingWhitespaceAndNewlines()
-            let nonEnglishWordCount = pureWordText.count
+                // If English words are more than non-English, or if non-English words are present, return English
+                if englishWordCount > nonEnglishWordCount || nonEnglishWordCount == 0 {
+                    return .english
+                }
 
-            // If English words are more than non-English, return English
-            if englishWordCount > nonEnglishWordCount {
-                return .english
-            }
-
-            let trimmedNonEnglish = nonEnglishText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-            if trimmedNonEnglish.count >= 2 {
+                // Since we have removed English characters, it won't be deteced as English anymore.
+                // Make sure this recursive call will not cause infinite loop.
                 let nonEnglishLanguage = detectLanguageInternal(
-                    text: trimmedNonEnglish, recursionDepth: recursionDepth + 1
+                    text: pureWordNonEnglishText,
+                    applyPostProcessing: true
                 )
-
                 if nonEnglishLanguage != .english, nonEnglishLanguage != .auto {
                     return nonEnglishLanguage
                 }
             }
         }
 
-        // For other cases, trust the original detection
-        return currentDetection
+        return nil
     }
 
     /// Remove English alphabetic characters while preserving other languages
@@ -589,65 +490,35 @@ public class AppleLanguageDetector: NSObject {
     }
 
     /// Determine Chinese type (simplified,traditional, or classical)
-    private func determineChineseType(for text: String) -> Language {
+    private func determineChineseType(
+        for text: String,
+        detectedLanguage: Language
+    )
+        -> Language? {
+        // This function is only used for Chinese text detection
+        if !detectedLanguage.isChinese {
+            return nil
+        }
+
         if Configuration.shared.beta {
             if text.isClassicalChinese {
                 return .classicalChinese
             }
         }
 
-        if text.isSimplifiedChinese {
+        // Record Chinese character statistics if conditions are met
+        analyzeTextCharacterComposition(for: text, detectedLanguage: detectedLanguage)
+
+        if isSimplifiedChinese() {
             return .simplifiedChinese
         } else {
             return .traditionalChinese
         }
     }
 
-    /// Handle mixed content detection and common misidentifications
-    ///
-    /// Corrects scenarios where mixed-script text is misdetected, particularly:
-    /// - English + Chinese mixed content
-    /// - Chinese content misdetected as other languages
-    /// - Character ratio analysis for dominance determination
-    ///
-    /// - Parameters:
-    ///   - detectedLanguage: Language detected by ML system
-    ///   - text: Input text to analyze
-    ///   - confidence: Detection confidence score
-    ///   - recursionDepth: Current recursion depth
-    /// - Returns: Corrected language if applicable, nil to continue processing
-    private func handleMixedContentDetection(
-        detectedLanguage: Language,
-        text: String,
-        confidence: Double,
-        recursionDepth: Int
-    )
-        -> Language? {
-        // Handle mixed scripts intelligently
-        if text.hasMixedScripts, recursionDepth < 2 {
-            return analyzeMixedScriptText(
-                text, currentDetection: detectedLanguage, recursionDepth: recursionDepth
-            )
-        }
-
-        // Handle obvious Chinese content misdetected as other languages
-        if !detectedLanguage.isChinese, detectedLanguage != .japanese, detectedLanguage != .korean {
-            let chineseCharCount = text.filter { String($0).isChineseTextByRegex }.count
-            let englishCharCount = text.filter { String($0).isEnglishAlphabet }.count
-            let totalChars = text.count
-
-            if chineseCharCount > 0, totalChars > 0 {
-                let chineseRatio = Double(chineseCharCount) / Double(totalChars)
-                let englishRatio = Double(englishCharCount) / Double(totalChars)
-
-                // If Chinese content is significant and English is not dominant
-                if chineseRatio >= 0.25, englishRatio <= 0.6 {
-                    return determineChineseType(for: text)
-                }
-            }
-        }
-
-        return nil
+    private func isSimplifiedChinese() -> Bool {
+        let simplifiedRatio = Double(simplifiedCharacterCount) / Double(chineseCharacterCount)
+        return simplifiedRatio >= 0.8
     }
 
     /// Handle corrections for short text and obvious misdetections
@@ -696,6 +567,88 @@ public class AppleLanguageDetector: NSObject {
         }
 
         return nil
+    }
+
+    /// Comprehensive text character analysis with script detection and Chinese statistics
+    ///
+    /// Universal function for analyzing character composition including mixed scripts detection.
+    /// Replaces both hasMixedScripts checking and Chinese character statistics in one pass.
+    /// Updates internal properties when conditions are met. Only runs once per instance.
+    ///
+    /// - Parameters:
+    ///   - text: Text to analyze for character composition
+    ///   - detectedLanguage: Current detected language (optional condition check)
+    private func analyzeTextCharacterComposition(
+        for text: String,
+        detectedLanguage: Language? = nil
+    ) {
+        // Only analyze once per detction call
+        guard !isAnalyzed else { return }
+
+        let totalCharacters = text.count
+        guard totalCharacters > 0 else {
+            isAnalyzed = true
+            return
+        }
+
+        // Single pass character analysis
+        var chineseChars: [Character] = []
+        var hasLatin = false
+        var hasChinese = false
+        var hasOther = false
+
+        for char in text {
+            let charString = String(char)
+
+            if charString.isChineseTextByRegex {
+                chineseChars.append(char)
+                hasChinese = true
+            } else if charString.isEnglishAlphabet {
+                englishCharacterCount += 1
+                hasLatin = true
+            } else if charString.isLatinAlphabet {
+                hasLatin = true
+            } else if char.isLetter {
+                hasOther = true
+            }
+        }
+
+        let chineseCount = chineseChars.count
+        chineseCharacterRatio = Double(chineseCount) / Double(totalCharacters)
+        englishCharacterRatio = Double(englishCharacterCount) / Double(totalCharacters)
+
+        // Mixed scripts detection
+        let scriptCount = [hasLatin, hasChinese, hasOther].filter { $0 }.count
+        hasMixedScripts = scriptCount >= 2
+
+        chineseCharacterCount = chineseCount
+
+        // Count traditional characters (those that change when converted to simplified)
+        traditionalCharacterCount =
+            chineseChars.filter {
+                String($0) != String($0).toSimplifiedChinese()
+            }.count
+
+        // Calculate simplified character count
+        simplifiedCharacterCount = chineseCharacterCount - traditionalCharacterCount
+
+        // Log the statistics for debugging
+        print(
+            "Chinese character stats - Total: \(chineseCharacterCount), Simplified: \(simplifiedCharacterCount), Traditional: \(traditionalCharacterCount)"
+        )
+        print(
+            "Chinese character ratio: \(String(format: "%.3f", chineseCharacterRatio)) (\(String(format: "%.1f", chineseCharacterRatio * 100))%)"
+        )
+
+        if chineseCharacterCount > 0 {
+            let simplifiedRatio =
+                Double(simplifiedCharacterCount) / Double(chineseCharacterCount)
+            print(
+                "Simplified ratio among Chinese chars: \(String(format: "%.3f", simplifiedRatio)) (\(String(format: "%.1f", simplifiedRatio * 100))%)"
+            )
+        }
+
+        isAnalyzed = true
     }
 }
 

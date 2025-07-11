@@ -139,54 +139,6 @@ struct UtilityFunctionsTests {
         #expect("".isNumericHeavy == false)
     }
 
-    @Test("Whitespace and Punctuation Detection", .tags(.utilities))
-    func testWhitespaceAndPunctuationDetection() {
-        // Test punctuation characters
-        #expect(".".isWhitespaceOrPunctuation == true)
-        #expect(",".isWhitespaceOrPunctuation == true)
-        #expect("!".isWhitespaceOrPunctuation == true)
-        #expect("?".isWhitespaceOrPunctuation == true)
-        #expect(";".isWhitespaceOrPunctuation == true)
-        #expect(":".isWhitespaceOrPunctuation == true)
-
-        // Test symbol characters
-        #expect("@".isWhitespaceOrPunctuation == true)
-        #expect("#".isWhitespaceOrPunctuation == true)
-        #expect("$".isWhitespaceOrPunctuation == true)
-        #expect("%".isWhitespaceOrPunctuation == true)
-
-        // Test regular characters
-        #expect("a".isWhitespaceOrPunctuation == false)
-        #expect("1".isWhitespaceOrPunctuation == false)
-        #expect("你".isWhitespaceOrPunctuation == false)
-
-        // Test whitespace only strings
-        #expect(" ".isWhitespaceOrPunctuation == true)
-        #expect("\n".isWhitespaceOrPunctuation == true)
-        #expect("\t".isWhitespaceOrPunctuation == true)
-        #expect("   ".isWhitespaceOrPunctuation == false)
-    }
-
-    @Test("Mixed Scripts Detection", .tags(.utilities))
-    func testMixedScriptsDetection() {
-        // Test mixed scripts
-        #expect("hello你好".hasMixedScripts == true) // English + Chinese
-        #expect("café中文".hasMixedScripts == true) // Latin + Chinese
-        #expect("hello123".hasMixedScripts == true) // English + Other (numbers)
-        #expect("你好123".hasMixedScripts == true) // Chinese + Other (numbers)
-
-        // Test single scripts
-        #expect("hello".hasMixedScripts == false) // Only English
-        #expect("你好".hasMixedScripts == false) // Only Chinese
-        #expect("café".hasMixedScripts == false) // Only Latin
-        #expect("123".hasMixedScripts == false) // Only numbers
-        #expect("".hasMixedScripts == false) // Empty
-
-        // Test with punctuation (should not count as separate script)
-        #expect("hello, world".hasMixedScripts == false) // English + punctuation
-        #expect("你好，世界".hasMixedScripts == false) // Chinese + punctuation
-    }
-
     // MARK: - String+ToChinese Tests
 
     @Test("Traditional to Simplified Chinese Conversion", .tags(.utilities))

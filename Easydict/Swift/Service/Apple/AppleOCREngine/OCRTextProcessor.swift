@@ -79,13 +79,13 @@ public class OCRTextProcessor {
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
         ocrResult.raw = recognizedTexts
 
-        // If intelligent joining is not enabled, return simple result
-        guard intelligentJoined else { return }
-
         // Initialize language detection if not already set
         if ocrResult.from == .auto {
             ocrResult.from = languageDetector.detectLanguage(text: ocrResult.mergedText)
         }
+
+        // If intelligent joining is not enabled, return simple result
+        guard intelligentJoined else { return }
 
         // Calculate confidence using metrics (both simple and advanced modes)
         metrics.setupWithOCRData(
@@ -169,6 +169,7 @@ public class OCRTextProcessor {
     /// Perform intelligent text merging based on spatial relationships and context
     private func performIntelligentTextMerging(_ observations: [VNRecognizedTextObservation])
         -> String {
+        print("Performing intelligent text merging...")
         var mergedText = ""
 
         for (index, textObservation) in observations.enumerated() {
