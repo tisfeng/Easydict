@@ -58,10 +58,10 @@ struct UtilityFunctionsTests {
     func testSimplifiedChineseDetection() {
         // Test simplified Chinese detection
         #expect("你好世界".isSimplifiedChinese == true)
+        #expect("你好world".isSimplifiedChinese == true) // Mixed content, Chinese words > English words
         #expect("开门".isSimplifiedChinese == true)
         #expect("開門".isSimplifiedChinese == false) // Traditional
         #expect("hello".isSimplifiedChinese == false)
-        #expect("你好world".isSimplifiedChinese == false) // Mixed content
         #expect("".isSimplifiedChinese == false)
     }
 
