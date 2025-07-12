@@ -23,7 +23,7 @@ enum EasydictCmpatibilityEntry {
         EZLog.setupCrashService()
         EZLog.logAppInfo()
 
-        testOCR() // for test
+//        testOCR() // for test, remove it later
 
         // app launch
         EasydictApp.main()

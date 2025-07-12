@@ -77,7 +77,7 @@
 #pragma mark -
 
 - (void)ocrAndDetectText:(void (^)(EZQueryModel *_Nonnull, NSError *_Nullable))completion {
-    [self deepOCR:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+    [self ocr:^(EZOCRResult *ocrResult, NSError *error) {
         if (!ocrResult) {
             completion(self.queryModel, error);
             return;

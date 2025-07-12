@@ -244,6 +244,8 @@ public class AppleLanguageMapper: NSObject {
     }
 
     /// Sort the OCR languages based on user preferences.
+    /// The langauges will be sorted such that the preferred languages appear first.
+    /// THe front of languages will be recognized first.
     func sortOCRLanguages(
         recognitionLanguages: [Language],
         preferredLanguages: [Language]
@@ -261,34 +263,24 @@ public class AppleLanguageMapper: NSObject {
          Since ocr Chinese mixed with English is not very accurate,
          we need to move Chinese to the first priority if newRecognitionLanguages first object is English and if user system language contains Chinese.
 
+         ```
          风云 wind and clouds 99$ é
+         ```
 
+         Later: But if the ocr text is English, use Chinese to recognize it, it will be not accurate.
+         It's hard to judge whether the text contains Chinese or not, so it's not suitable to put Chinese to the first priority.
          */
-
-        let userPreferredLanguages = EZLanguageManager.shared().preferredLanguages
-
-        // Move Chinese to the first priority if the first language is English and if user system language contains Chinese.
-        if let firstLanguage = newRecognitionLanguages.first, firstLanguage == .english {
-            for language in userPreferredLanguages where language.isChinese {
-                if let index = newRecognitionLanguages.firstIndex(of: language) {
-                    newRecognitionLanguages.remove(at: index)
-                    newRecognitionLanguages.insert(language, at: 0)
-                    break
-                }
-            }
-        }
 
         return newRecognitionLanguages
     }
 
     /// Get OCR recognition languages for a specific language.
     func ocrRecognitionLanguages(for language: Language) -> [String] {
-        let ocrLanguages = Array(ocrLanguageDictionary.keys)
         // User preferred languages
         let perferredLanguages = EZLanguageManager.shared().preferredLanguages
 
         var finalRecognitionLanguages = sortOCRLanguages(
-            recognitionLanguages: ocrLanguages,
+            recognitionLanguages: sortedOCRLanguages,
             preferredLanguages: perferredLanguages
         )
 
@@ -326,6 +318,28 @@ public class AppleLanguageMapper: NSObject {
         .vietnamese: "vi-VN",
         // macOS 15+
         .arabic: "ar-SA",
+    ]
+
+    /// Sorted OCR languages for Apple OCR recognition.
+    /// - Note: The order of languages is important for recognition accuracy.
+    private let sortedOCRLanguages: [Language] = [
+        .english,
+        .simplifiedChinese,
+        .traditionalChinese,
+        .japanese,
+        .korean,
+        .french,
+        .spanish,
+        .portuguese,
+        .italian,
+        .german,
+        .russian,
+        .ukrainian,
+        // macOS 14.5
+        .thai,
+        .vietnamese,
+        // macOS 15+
+        .arabic,
     ]
 
     /// Apple Translation Shortcut supported languages map.

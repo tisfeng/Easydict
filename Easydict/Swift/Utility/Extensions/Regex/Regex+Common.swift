@@ -79,7 +79,7 @@ extension CharacterClass {
 // MARK: - Protection Patterns for OCR Text Processing
 
 extension Regex where Output == Substring {
-//    static let chineseTextRegex = try! Regex(#"\p{Han}+"#) // Matches Chinese characters
+    //    static let chineseTextRegex = try! Regex(#"\p{Han}+"#) // Matches Chinese characters
 
     // MARK: - General Text Patterns
 
@@ -453,8 +453,12 @@ extension Regex where Output == Substring {
     /// - `"l think"` → matches the 'l' before " think"
     /// - `"l am"` → matches the 'l' before " am"
     /// - `"l."` → matches the 'l' before "."
+    /// - `"l've"` → matches the 'l' before "'ve"
+    /// - `"l'll"` → matches the 'l' before "'ll"
+    /// - `"l'm"` → matches the 'l' before "'m"
+    /// - `"l'd"` → matches the 'l' before "'d"
     ///
-    /// **Original regex:** `\bl(?=[ \t]|$|[.,:;!?])`
+    /// **Original regex:** `\bl(?=[ \t]|$|[.,:;!?]|'(?:ve|ll|m|d))`
     static var lowercaseLAsI: Self {
         Regex {
             Anchor.wordBoundary
@@ -464,6 +468,16 @@ extension Regex where Output == Substring {
                     CharacterClass.horizontalWhitespace
                     Anchor.endOfSubject
                     CharacterClass.extendedSentenceEnding
+                    // Match specific contractions: 've, 'll, 'm, 'd
+                    Regex {
+                        "'"
+                        ChoiceOf {
+                            "ve"
+                            "ll"
+                            "m"
+                            "d"
+                        }
+                    }
                 }
             }
         }

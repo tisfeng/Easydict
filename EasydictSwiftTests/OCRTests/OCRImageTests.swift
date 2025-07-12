@@ -33,7 +33,7 @@ struct OCRImageTests {
 
     @Test("Test", .tags(.ocr))
     func test() async throws {
-//        await testOCR(sample: .enList)
+        await testOCR(sample: .enText1, language: .english)
     }
 
     // MARK: - All OCR Tests
@@ -52,7 +52,7 @@ struct OCRImageTests {
     /// Helper function to run OCR on a given image and compare with expected result.
     ///
     /// - Parameter named: The name of the image file in the test bundle.
-    private func testOCR(sample: OCRTestSample) async {
+    private func testOCR(sample: OCRTestSample, language: Language = .auto) async {
         let imageName = sample.imageName
         // Load test image
         guard let image = NSImage.loadTestImage(named: imageName) else {
@@ -62,9 +62,9 @@ struct OCRImageTests {
 
         do {
             // Perform OCR
-            let result = try await ocrEngine.recognizeTextAsync(image: image, language: .auto)
+            let result = try await ocrEngine.recognizeTextAsync(image: image, language: language)
             print("Testing OCR for image: \(imageName)")
-            print("Merged text: \(result.mergedText.prettyJSONString)")
+            print("Merged text: \(result.mergedText)")
 
             let ocrText = result.mergedText
             let expectedText = sample.expectedText
