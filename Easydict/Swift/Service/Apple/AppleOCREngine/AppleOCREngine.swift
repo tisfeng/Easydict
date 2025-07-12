@@ -92,11 +92,11 @@ public class AppleOCREngine {
                 return
             }
 
-            // If shouldRefineWithDetectedLanguage is false, we skip intelligent text processing.
-            let needIntelligentTextProcessing =
-                language != .auto || !shouldRefineWithDetectedLanguage
+            let needIntelligentTextProcessing = !shouldRefineWithDetectedLanguage || hasValidOCRLanguage(language)
+            print("Performing OCR text processing, intelligent: \(needIntelligentTextProcessing)")
 
             // The text processor analyzes the first pass and determines the detected language.
+            // It will try to detect the `ocrResult.from` language if it is set to .auto.
             textProcessor.setupOCRResult(
                 ocrResult,
                 observations: textObservations,
@@ -107,11 +107,8 @@ public class AppleOCREngine {
             let detectedLanguage = ocrResult.from
 
             // Check if a second, more precise OCR pass is needed.
-            let needsSecondPass =
-                shouldRefineWithDetectedLanguage
-                    && language == .auto
-                    && detectedLanguage != .auto
-                    && detectedLanguage != .unsupported
+            let needsSecondPass = shouldRefineWithDetectedLanguage && hasValidOCRLanguage(detectedLanguage)
+            print("Detected language: \(detectedLanguage), needs second pass: \(needsSecondPass)")
 
             if needsSecondPass {
                 // Perform the second pass with the detected language for better accuracy.
@@ -126,6 +123,11 @@ public class AppleOCREngine {
                 completion(ocrResult, nil)
             }
         }
+    }
+
+    /// Check if the provided language is supported by Vision framework
+    func hasValidOCRLanguage(_ language: Language) -> Bool {
+        language != .auto && languageMapper.isSupportedOCRLanguage(language)
     }
 
     /// Async version of recognizeText that returns complete OCR result
@@ -239,17 +241,13 @@ public class AppleOCREngine {
             }
         }
 
-        // Determine if we should use automatic language detection
-        let shouldAutoDetect = (language == .auto)
-
-        // Configure OCR request based on language parameter
-        request.automaticallyDetectsLanguage = shouldAutoDetect
+        // If language is NOT a valid Apple OCR language, means we should use automatic detection.
+        request.automaticallyDetectsLanguage = !hasValidOCRLanguage(language)
 
         // Set it to true, correction is useful for some cases.
         request.usesLanguageCorrection = true
         request.recognitionLevel = .accurate
 
-        let languageMapper = AppleLanguageMapper.shared
         request.recognitionLanguages = languageMapper.ocrRecognitionLanguages(for: language)
 
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
@@ -271,6 +269,8 @@ public class AppleOCREngine {
 
     // OCR text processor for intelligent text merging
     private let textProcessor = OCRTextProcessor()
+
+    private let languageMapper = AppleLanguageMapper.shared
 
     /// Perform OCR using Vision framework with async/await API
     ///

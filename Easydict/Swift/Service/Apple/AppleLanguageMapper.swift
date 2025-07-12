@@ -58,17 +58,6 @@ public class AppleLanguageMapper: NSObject {
         }
     }
 
-    /// Convert an array of `Language` to Apple OCR language codes.
-    public func appleOCRLanguageCodes(for languages: [Language]) -> [String] {
-        var appleOCRLanguageCodes: [String] = []
-        for language in languages {
-            if let appleOCRLanguageCode = ocrLanguageDictionary[language] {
-                appleOCRLanguageCodes.append(appleOCRLanguageCode)
-            }
-        }
-        return appleOCRLanguageCodes
-    }
-
     /// Convert NLLanguage to Language enum
     @objc
     public func languageEnum(from appleLanguage: NLLanguage) -> Language {
@@ -294,6 +283,21 @@ public class AppleLanguageMapper: NSObject {
 
         // Convert to Apple OCR language codes
         return finalRecognitionLanguages.compactMap { ocrLanguageDictionary[$0] }
+    }
+
+    /// Check if the language is supported by Apple OCR.
+    func isSupportedOCRLanguage(_ language: Language) -> Bool {
+        ocrLanguageDictionary.keys.contains(language)
+    }
+
+    /// Get Language enum for Apple OCR language.
+    /// - Parameter appleLanguage: The BCP-47 language code for Apple OCR.
+    /// - Returns: The corresponding Language enum, or nil if not found.
+    func languageEnum(appleOCRLanguage: String) -> Language? {
+        for (language, code) in ocrLanguageDictionary where code == appleOCRLanguage {
+            return language
+        }
+        return nil
     }
 
     // MARK: Private
