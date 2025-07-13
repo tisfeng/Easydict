@@ -884,8 +884,8 @@ static EZWindowManager *_instance;
 
     // Get image from pasteboard
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSImage *image = [[NSImage alloc] initWithPasteboard:pasteboard];
-
+    NSImage *image = pasteboard.getImage;
+    
     [self showFloatingWindowWithOCRImage:image actionType:EZActionTypePasteboardOCR];
 }
 
