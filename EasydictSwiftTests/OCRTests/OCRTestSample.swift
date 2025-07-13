@@ -87,19 +87,27 @@ enum OCRTestSample: String, CaseIterable {
 
         On behalf of the dev community, we're calling on Unity to reverse the latest in a string of shortsighted decisions that seem to prioritize shareholders over their product's actual users.
 
-        I fucking hate it here. -Aggro Crab
+        I fucking hate it here.
+
+        -Aggro Crab
         """,
 
         enTextBitcoin: """
         Bitcoin: A Peer-to-Peer Electronic Cash System
 
-        Satoshi Nakamoto satoshin@gmx.com www.bitcoin.org
+        Satoshi Nakamoto
+        satoshin@gmx.com
+        www.bitcoin.org
 
-        Abstract. A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main enefits are lost if a trusted third party is still required to prevent double-spending Ve propose a solution to the double-spending problem using a peer-to-peer network The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers. The network itself requires minimal structure. Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.
+        Abstract. A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main enefits are lost if a trusted third party is still required to prevent double-spending Ve propose a solution to the double-spending problem using a peer-to-peer network
+        The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers. The network itself requires minimal structure. Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest
+        proof-of-work chain as proof of what happened while they were gone.
 
         1. Introduction
 
-        Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannot avoid mediating disputes. The cost of mediation increases transaction costs, limiting the minimum practical transaction size and cutting off the possibility for small casual transactions, and there is a broader cost in the loss of ability to make non-reversible payments for nonreversible services. With the possibility of reversal, the need for trust spreads. Merchants must be wary of their customers, hassling them for more information than they would otherwise need. A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties can be avoided in person by using physical currency, but no mechanism exists to make payments over a communications channel without a trusted party. What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly with each other without the need for a trusted third party. Transactions that are computationally impractical to reverse would protect sellers from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed timestamp server to generate computational proof of the chronological order of transactions. The system is secure as long as honest nodes collectively control more CPU power than any cooperating group of attacker nodes.
+        Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannot avoid mediating disputes. The cost of mediation increases transaction costs, limiting the minimum practical transaction size and cutting off the possibility for small casual transactions, and there is a broader cost in the loss of ability to make non-reversible payments for nonreversible services. With the possibility of reversal, the need for trust spreads. Merchants must be wary of their customers, hassling them for more information than they would otherwise need. A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties can be avoided in person by using physical currency, but no mechanism exists to make payments over a communications channel without a trusted party.
+
+        What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly with each other without the need for a trusted third party. Transactions that are computationally impractical to reverse would protect sellers from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed timestamp server to generate computational proof of the chronological order of transactions. The system is secure as long as honest nodes collectively control more CPU power than any cooperating group of attacker nodes.
         """,
 
         enTextReddit: """
@@ -135,7 +143,14 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enTextLetter338: """
-        It is my turn to sue and be sued. I wrote in The Second Sex about whores and prostitutes, and among names of elegant whores of 1900, I gave the name of Cléo de Mérode. Last Sunday. Somebody spoke at the radio, pretending to be me. read this part of the book, and insulted Cléo de Mérode. So now I learn in newspapers and a personal letter that she sues me. And I sue the radio for having used my name. I send you a nice picture of the woman and myself. In fact, I though she was dead since long, which would have made things much easier. Toulouse has got through a desintoxication cure; she is quite different: fair, pink, soft, smiling, dressed in a long white night-gown, looking healthy and sweet. But she spoke for an hour and a half without stopping one second, which means she was not quite normal. She was interesting because she described the way she has been nursed; it seems a terrible thing. It lasted six days. The first they gave her a mild typhoidic fever - a real shock -then every day they doped her in many different ways, pushing long thick needles in her poor flesh and veins, oily things had to go to her brain and give it some grease, for the wine had eaten the grease up, they say. She had to keep a nurse night and day, because she wanted to jump through the window, she had such anguish from lack of wine. Now it seems her brain is little too greasy, that is why she speaks so much. Yours certainly is not. What a brute, not to send a short wire when I ask to you! I very often wait patiently for letters, but this time a letter was surely lost; you never made me wait for weeks, you used to be kinder than that until now. Shall I think you unkind rather than dead? Yea, now I shall, ugly muddy thing. Don't forget anyway to send next letters to the right places: Algiers, Hotel Saint Georges until i1th or 12th March, Gardhaia, Hotel Transatlantique, until 24th March. I cannot help loving you in spite of all. Enjoy yourself, when it is still time to, for within a few months. I'll give you a hard life; I'll punish you with all kinds of tricks. And if you are really too bad, I'll send to you Cléo de Mérode. Anyway, today I kiss you with my own mouth.
+        It is my turn to sue and be sued. I wrote in The Second Sex about whores and prostitutes, and among names of elegant whores of 1900, I gave the name of Cléo de Mérode. Last Sunday. Somebody spoke at the radio, pretending to be me. read this part of the book, and insulted Cléo de Mérode. So now I learn in newspapers and a personal letter that she sues me. And I sue the radio for having used my name. I send you a nice picture of the woman and myself. In fact, I though she was dead since long, which would have made things much easier.
+
+        Toulouse has got through a desintoxication cure; she is quite different: fair, pink, soft, smiling, dressed in a long white night-gown, looking healthy and sweet. But she spoke for an hour and a half without stopping one second, which means she was not quite normal. She was interesting because she described the way she has been nursed; it seems a terrible thing. It lasted six days. The first they gave her a mild typhoidic fever - a real shock
+        -then every day they doped her in many different ways, pushing long thick needles in her poor flesh and veins, oily things had to go to her brain and give it some grease, for the wine had eaten the grease up, they say. She had to keep a nurse night and day, because she wanted to jump through the window, she had such anguish from lack of wine. Now it seems her brain is little too greasy, that is why she speaks so much.
+
+        Yours certainly is not. What a brute, not to send a short wire when I ask to you! I very often wait patiently for letters, but this time a letter was surely lost; you never made me wait for weeks, you used to be kinder than that until now. Shall I think you unkind rather than dead? Yea, now I shall, ugly muddy thing. Don't forget anyway to send next letters to the right places: Algiers, Hotel Saint Georges until i1th or 12th March, Gardhaia, Hotel Transatlantique, until 24th March.
+
+        I cannot help loving you in spite of all. Enjoy yourself, when it is still time to, for within a few months. I'll give you a hard life; I'll punish you with all kinds of tricks. And if you are really too bad, I'll send to you Cléo de Mérode. Anyway, today I kiss you with my own mouth.
 
         Your own Simone
 
@@ -152,13 +167,21 @@ enum OCRTestSample: String, CaseIterable {
 
         I. INTRODUCTION
 
-        'HE emergence of new vertical industries (e.g. , automo-Tie, mariac ring, ex. tian ding stig ene Quality of Service (QoS) requirements (e.g. , ultra-low latency, high reliability, etc. ) pushed mobile network operators to revolutionize their telecommunication networks to support these new use cases [1], [2]. As a result, Fifth Generation (5G) networks have emerged, mainly adding a new radio access technology and moving from legacy hardware equipment to a complete virtualized new Service Based Architecture (SBA). The 5G SBA follows a cloud-native deployment and leverages virtualization technologies for the implementation of its Network Functions (NFs), thus enabling better scalability, flexibility and service management [2]. 5G relies on a standardized set of REpresentational State Transfer (RESTful) Application Programming Interfaces (APls) combined with web-based technologies including the Transport Control Protocol (TCP) /Transport Layer Security (TLS) /Hypertext Transfer Protocol version 2 (HTTP/2) /JavaScript Object Notation (JSON) protocol suit for the communication between its NFs [3]. The use of virtualization technologies for the provisioning and automated management of NFs in the cloud-native deployment adopted for 5G networks, along with APIs and HTTP/2 serves the security-by-design principle that 5G SBA follows [2]. In fact, the 5G SBA introduces new security features to enable resilient and reliable experience for 5G users. These
+        Tie, mariac ring, ex. tian ding stig ene Quality of 'HE emergence of new vertical industries (e.g. , automoService (QoS) requirements (e.g. , ultra-low latency, high reliability, etc. ) pushed mobile network operators to revolutionize their telecommunication networks to support these new use cases [1], [2]. As a result, Fifth Generation (5G) networks have emerged, mainly adding a new radio access technology and moving from legacy hardware equipment to a complete virtualized new Service Based Architecture (SBA).
+
+        The 5G SBA follows a cloud-native deployment and leverages virtualization technologies for the implementation of its Network Functions (NFs), thus enabling better scalability, flexibility and service management [2]. 5G relies on a standardized set of REpresentational State Transfer (RESTful) Application Programming Interfaces (APls) combined with web-based technologies including the Transport Control Protocol (TCP) /Transport Layer Security (TLS) /Hypertext Transfer Protocol version 2 (HTTP/2) /JavaScript Object Notation (JSON) protocol suit for the communication between its NFs [3]. The use of virtualization technologies for the provisioning and automated management of NFs in the cloud-native deployment adopted for 5G networks, along with APIs and HTTP/2 serves the security-by-design principle that 5G SBA follows [2].
+
+        In fact, the 5G SBA introduces new security features to enable resilient and reliable experience for 5G users. These
 
         Nathalie Wehbe and Chadi Assi are with the Concordia University, Hyame Assem Alameddine and Makan Pourzandi are with Ericsson Research, and Elias Bou-Harb is with the University of Texas at San Antonio
         """,
 
         enPaper2: """
-        features include network function registration, discovery and authorization, as well as the protection of the Service-Based Interfaces (SBI) [4]. They are enforced using the harmonized HTTP/2 protocol, employed for signalling between the 5G NFs. The HTTP/2 protocol offers new security opportunities through the introduced 3rd Generation Partnership Project (3GPP) custom HTTP headers as well as through its features ranging from server push capability, stream multiplexing and header compression among others [3], [5], [6]. Although 5G SBA was designed with security in mind, it is of utmost importance to discuss and explore the new security challenges that are introduced in this architecture and its enabling technologies and protocols. Cybersercurity implications of web-based technologies on 5G SBA needs more attention. In fact, [3] presents some HTTP/2 attacks exploiting its features without a thorough discussion on their implications on 5G SBA; while other works [1], [7], [8] only focus on the vulnerabilities brought by virtualization technologies. Motivated by the fact that HTTP/2, APls and JSON are well known to attackers, in this article, we provide a thorough discussion on the possible threats they introduce to 5G SBA with a focus on HTTP/2. First, we introduce SG SBA with a close attention to the security associated with its NF services and their APIs. Then, we discuss the use of HTTP/2 in 5G SBA for fulfilling the need for reduced latency and communication overhead through its features that we expose. We assess the security implications of these features in SG SBA and complement them by a discussion on the HTTP/2 standard and custom headers used for hardening 5G SBA security. Finally, we conclude with some security challenges and opportunities.
+        features include network function registration, discovery and authorization, as well as the protection of the Service-Based Interfaces (SBI) [4]. They are enforced using the harmonized HTTP/2 protocol, employed for signalling between the 5G NFs. The HTTP/2 protocol offers new security opportunities through the introduced 3rd Generation Partnership Project (3GPP) custom HTTP headers as well as through its features ranging from server push capability, stream multiplexing and header compression among others [3], [5], [6].
+
+        Although 5G SBA was designed with security in mind, it is of utmost importance to discuss and explore the new security challenges that are introduced in this architecture and its enabling technologies and protocols. Cybersercurity implications of web-based technologies on 5G SBA needs more attention. In fact, [3] presents some HTTP/2 attacks exploiting its features without a thorough discussion on their implications on 5G SBA; while other works [1], [7], [8] only focus on the vulnerabilities brought by virtualization technologies.
+
+        Motivated by the fact that HTTP/2, APls and JSON are well known to attackers, in this article, we provide a thorough discussion on the possible threats they introduce to 5G SBA with a focus on HTTP/2. First, we introduce SG SBA with a close attention to the security associated with its NF services and their APIs. Then, we discuss the use of HTTP/2 in 5G SBA for fulfilling the need for reduced latency and communication overhead through its features that we expose. We assess the security implications of these features in SG SBA and complement them by a discussion on the HTTP/2 standard and custom headers used for hardening 5G SBA security. Finally, we conclude with some security challenges and opportunities.
 
         I1.5G SERVICE BASED ARCHITECTURE (SBA)
 
@@ -168,11 +191,16 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper3: """
-        To enable the communication between the 5G SBA NFs (also referred to as "5G signalling"), the 3GPP selected the HTTP/2 protocol with JSON as the application layer serialization protocol, which runs over TCP at the transport layer [6]. For added security, the NFs shall support TLS 1.2 and TLS 1.3 [6], [8]. In addition, Restful API is used to invoke 5G services [9J ·
+        To enable the communication between the 5G SBA NFs
+        (also referred to as "5G signalling"), the 3GPP selected the HTTP/2 protocol with JSON as the application layer serialization protocol, which runs over TCP at the transport layer [6]. For added security, the NFs shall support TLS 1.2 and TLS 1.3 [6], [8]. In addition, Restful API is used to invoke 5G services [9J ·
 
         B. HTTP/2 as Signalling Protocol for SG
 
-        Multiple criteria were considered for selecting HTTP/2 as the signalling protocol for G. Despite supporting a large number of transactions per service and responding to low-latency requirements [5], [9], HTTP/2 enables multiple requests and responses over the same TCP connection between a client and a server, hence, supporting bidirectional and reliable communication [5]. This connection at the application-layer running on top of TCP is also known as HTTP/2 connection. When used in 5G SBA, one NF acts as NF Service Consumer (NFc), authorized to access a service of another NF which as is known as NF Service Producer (NFp). As such, HTTP/2 responds to SBIs requirements which include a RequestResponse in which a request for a service is issued by a NFc and a response is provided by a NFp; or Subscribe-Notify in which a NFc subscribes to a certain event of the NFp where the latter notifies the NFc upon the occurrence of the event [2]. HTTP/2 introduces the notion of a stream, which corresponds to an HTTP request/response exchange. An HTTP/2 message is represented by either a request or a response. HTTP/2 messages are composed of HTTP/2 frames. Thus, a stream can be defined as a bidirectional flow of frames [5]. An HTTP/2 frame represents the basic HTTP/2 data unit (i.e. , smallest unit of communication within an HTTP/2 connection) with binary encoding. A frame can be of different types from
+        Multiple criteria were considered for selecting HTTP/2 as the signalling protocol for G. Despite supporting a large number of transactions per service and responding to low-latency requirements [5], [9], HTTP/2 enables multiple requests and responses over the same TCP connection between a client and a server, hence, supporting bidirectional and reliable communication [5]. This connection at the application-layer running on top of TCP is also known as HTTP/2 connection. When used in 5G SBA, one NF acts as NF Service Consumer (NFc), authorized to access a service of another NF which as is known as NF Service Producer (NFp). As such, HTTP/2 responds to SBIs requirements which include a RequestResponse in which a request for a service is issued by a NFc and a response is provided by a NFp; or Subscribe-Notify in which a NFc subscribes to a certain event of the NFp where the latter notifies the NFc upon the occurrence of the event [2].
+
+        HTTP/2 introduces the notion of a stream, which corresponds to an HTTP request/response exchange. An HTTP/2 message is represented by either a request or a response. HTTP/2 messages are composed of HTTP/2 frames. Thus, a stream can be defined as a bidirectional flow of frames [5].
+
+        An HTTP/2 frame represents the basic HTTP/2 data unit (i.e. , smallest unit of communication within an HTTP/2 connection) with binary encoding. A frame can be of different types from
         """,
 
         enPaper4: """
@@ -180,7 +208,9 @@ enum OCRTestSample: String, CaseIterable {
 
         C. SG SBA Signalling
 
-        Signalling through direct communication between 5G NFs is enabled by HTTP/2 while being facilitated by the Network Repository Function (NRF) (Figure 1). Signalling allows NFs to consume services provided by their peers. In fact, a NFp will first register itself to the NRF. This enables the NRF to maintain a NF profile that includes the available NF instances and their services. A NFc can then discover the available NF instances and services by consulting the NRF. Once discovered, a NFc can directly consume authorized services through APIs exposed by a NFp [2]. These APls are standardized by 3GPP and can be either Request-Response or Subscribe-Notify [2]. Signalling through indirect communication between the NFs consumers and producers is also possible through the Service Communication Proxy (SCP) NF (Figure 1) [6]. The SCP can route the requests and responses of service consumers and producers respectively, and offload the service registration and discovery requests to the NRF. Note that the SCP also provides load balancing, overload handling, traffic prioritization and message manipulation functionalities [6], [11].
+        Signalling through direct communication between 5G NFs is enabled by HTTP/2 while being facilitated by the Network Repository Function (NRF) (Figure 1). Signalling allows NFs to consume services provided by their peers. In fact, a NFp will first register itself to the NRF. This enables the NRF to maintain a NF profile that includes the available NF instances and their services. A NFc can then discover the available NF instances and services by consulting the NRF. Once discovered, a NFc can directly consume authorized services through APIs exposed by a NFp [2]. These APls are standardized by 3GPP and can be either Request-Response or Subscribe-Notify [2].
+
+        Signalling through indirect communication between the NFs consumers and producers is also possible through the Service Communication Proxy (SCP) NF (Figure 1) [6]. The SCP can route the requests and responses of service consumers and producers respectively, and offload the service registration and discovery requests to the NRF. Note that the SCP also provides load balancing, overload handling, traffic prioritization and message manipulation functionalities [6], [11].
 
         D. SG SBA Security
 
@@ -188,9 +218,17 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper5: """
-        prevent unauthorized access to their services. 3GPP identified two main security mechanisms: 1) Mutual authentication and transport security: They are enforced through TLS between SBA NEs and between NFNRF during service discovery and registration to mitigate against message spoofing, tampering, repudiation and information disclosure [4], [8]. 2) Authorization of the requests: Access authorization of NFcs to services provided by NFps prevents privilege escalation. It follows a token-based authorization through the NRF using Auth 2.0 [4], [12]. OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited access to an HTTP service on its behalf or on behalf of a resource owner [12]. In 5G SBA, an access token to a certain service is generated by the NRF (OAuth 2.0 authorization server) following a request of a NFc (i.e. , OAuth 2.0 client) to access a service of a NFp (i.e. , OAuth 2.0 resource server) [4]. The token is granted based on authorization rules which can be provided by the NFp during its registration at the NRF and after the mutual authentication between the NRF and the
+        prevent unauthorized access to their services. 3GPP identified two main security mechanisms:
 
-        NFc (using TLS) [8]. Authorization and authentication are applied in non-roaming and in roaming scenarios. Nonetheless, to better protect the 5G network from unauthorized access and attacks that can be performed by outsiders (e.g. , roaming partners, etc. ), a Security Edge Protection Proxy (SEPP) (Figure 1) has been introduced. SEPP acts as a security gateway on the interconnections between roaming partners. It provides application-layer security between NEs associated with roaming partners to enable their secure communication. SEPP functionalities include traffic filtering, end-to-end authentication, confidentiality and integrity protection via signatures and encryption of HTTP/2 messages. SEPP is also responsible of key management mechanisms used to perform the security capability procedures. Finally, the SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
+        1) Mutual authentication and transport security: They are
+
+        enforced through TLS between SBA NEs and between NFNRF during service discovery and registration to mitigate against message spoofing, tampering, repudiation and information disclosure [4], [8].
+
+        2) Authorization of the requests: Access authorization of NFcs to services provided by NFps prevents privilege escalation. It follows a token-based authorization through the NRF using Auth 2.0 [4], [12]. OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited access to an HTTP service on its behalf or on behalf of a resource owner [12]. In 5G SBA, an access token to a certain service is generated by the NRF (OAuth 2.0 authorization server) following a request of a NFc (i.e. , OAuth 2.0 client) to access a service of a NFp (i.e. , OAuth 2.0 resource server) [4]. The token is granted based on authorization rules which can be provided by the NFp during its registration at the NRF and after the mutual authentication between the NRF and the
+
+        NFc (using TLS) [8].
+
+        Authorization and authentication are applied in non-roaming and in roaming scenarios. Nonetheless, to better protect the 5G network from unauthorized access and attacks that can be performed by outsiders (e.g. , roaming partners, etc. ), a Security Edge Protection Proxy (SEPP) (Figure 1) has been introduced. SEPP acts as a security gateway on the interconnections between roaming partners. It provides application-layer security between NEs associated with roaming partners to enable their secure communication. SEPP functionalities include traffic filtering, end-to-end authentication, confidentiality and integrity protection via signatures and encryption of HTTP/2 messages. SEPP is also responsible of key management mechanisms used to perform the security capability procedures. Finally, the SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
 
         III. IMPLICATIONS OF HTTP/2 FEATURES ON 5G SBA
 
@@ -243,12 +281,22 @@ enum OCRTestSample: String, CaseIterable {
         enPaper9: """
         Resource Identifier (URI) (i.e. , target NF service); path includes the path and query parts of the target URI (i.e. , API URI); scheme declares the version of HTTP used (e.g. , http or https) [5], [6]. User-agent header key defines the HTTP/2 client. An HTTP/2 response carries HTTP header response fields (Figure 2) such as: status which carries the HTTP status code, content-type specifies the type of the content returned by the server, content-length determines the length of the content in bytes, and the originating date of the response presented in the date header (5], 16].
 
-        #HTTP Request Header accept-encoding: gzip accept: application/ json: authority: amf.5g.org: 8000: method: POST
-        : path: /namf-comm/v1/ue-contexts/ {ueId) /n1-n2-messages version: HTTP /2.0: scheme: https
+        #HTTP Request Header
+        accept-encoding: gzip
+        accept: application/ json
+        : authority: amf.5g.org: 8000
+        : method: POST
+        : path:
+
+        /namf-comm/v1/ue-contexts/ {ueId) /n1-n2-messages version: HTTP /2.0
+        : scheme: https
         user-agent: SME
 
-        #HTTP Response Header: status: 200 OK
-        content-type: application/ json content-length: 5613 date: Mon, 14 March 2022 09: 44: 16 GMT
+        #HTTP Response Header
+        : status: 200 OK
+        content-type: application/ json
+        content-length: 5613
+        date: Mon, 14 March 2022 09: 44: 16 GMT
 
         Fig. 2: HTTP/2 request and response headers.
 
@@ -256,17 +304,22 @@ enum OCRTestSample: String, CaseIterable {
 
         B. Custom HTTP/2 Headers
 
-        3GPP introduced HTTP/2 custom headers dedicated for 5G SBA. Some of these custom headers are defined to enable load and overload control as they allow sharing of NFs load information [6]. Hereafter, we discuss the importance of these custom headers on 5G SBA security. 1) 3gpp-Sbi-Lci: 3gpp-Sbi-Lci enables a NFp to signal its Load Control Information (LCI) to a NFc either directly or through the NRF during service discovery. This enables the NFc to decide whether or not to select a different NFp, hence, enabling a better load balancing in the network. Figure 3 represents a 3gpp-Sbi-Lci custom header, generated on specific date/time defined in Timestamp, by a NFp, to signal its load level through the Load-Metric to a SCP instance (i.e. , SCP1 specified in SCP-FQDN) [6].
+        3GPP introduced HTTP/2 custom headers dedicated for 5G SBA. Some of these custom headers are defined to enable load and overload control as they allow sharing of NFs load information [6]. Hereafter, we discuss the importance of these custom headers on 5G SBA security.
+
+        1) 3gpp-Sbi-Lci: 3gpp-Sbi-Lci enables a NFp to signal its Load Control Information (LCI) to a NFc either directly or through the NRF during service discovery. This enables the NFc to decide whether or not to select a different NFp, hence, enabling a better load balancing in the network. Figure 3 represents a 3gpp-Sbi-Lci custom header, generated on specific date/time defined in Timestamp, by a NFp, to signal its load level through the Load-Metric to a SCP instance (i.e. , SCP1 specified in SCP-FQDN) [6].
         """,
 
         enPaper10: """
-        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN: scpl.example.com
+        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN:
+        scpl.example.com
 
         Fig. 3: LCI for SCP [6].
 
         2) 3gpp-Sbi-Oci: A NFp/NFc uses the 3gpp-Sbi-Oci custom header to signal its Overload Control Information (OCI) to its peer. Through this header, the overloaded NF instructs its peer to throttle the service/notification requests, in an attempt to reduce its signalling load [6]. Figure 4 depicts a 3gpp-SbiOci header sent by a NFp, identified by its instance ID (1. e. , NF-Instance), asking a NFc to throttle 50% of its requests as determined in Overload-Reduction-Metric. Note that an Overload-Reduction-Metric of "0" indicates that the sender is not overloaded. The 3gpp-Sbi-Oci also includes the Timestamp indicating the time at which it was generated and its validity period identified by Period-of-Validity [6].
 
-        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37 GMT"; Period-of-Validity: 75s; Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
+        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37 GMT"; Period-of-Validity: 75s;
+        Overload-Reduction-Metric: 50%; NE-Instance:
+        54804518-4191-46b3-955c-ac631f953ed8
 
         Fig. 4: OCI for a NF Instance [6].
 
@@ -299,7 +352,9 @@ enum OCRTestSample: String, CaseIterable {
 
         C. API Exploitation
 
-        The reliance of 5G SBA on APIs extends the 5G attack surface to vulnerabilities associated with their exploitation. APIs are exposed to all endpoints within the same PLMN or with roaming partners through the SEPP. DoS attacks can be launched by exploiting the resources an API can consume in case no limits are imposed on the size or the number of those resources [10]. Attackers can exploit HTTP/2 multiplexing feature to overload the NFp with requests exploiting APIs that require heavy resource consumption from the server. The attack can be further exacerbated by a slow-read attack during which the attacker manipulates the flow-control information to keep the NFp resources allocated for those requests for a longer period of time, hence facilitating the DoS. Therefore, proper configuration of HTTP/2 settings such as SETTINGS_MAX_CONCURRENT_STREAMS to limit DoS attacks is also needed. For instance, a network operator can limit the number of maximum concurrent streams that a server allows per connection. This will make a DoS attack costly to the attacker who will need to allocate more resources to establish multiple TCP connections with the server to exhaust it. Further, HTTP/2 with usage of SCP in
+        The reliance of 5G SBA on APIs extends the 5G attack surface to vulnerabilities associated with their exploitation. APIs are exposed to all endpoints within the same PLMN or with roaming partners through the SEPP.
+
+        DoS attacks can be launched by exploiting the resources an API can consume in case no limits are imposed on the size or the number of those resources [10]. Attackers can exploit HTTP/2 multiplexing feature to overload the NFp with requests exploiting APIs that require heavy resource consumption from the server. The attack can be further exacerbated by a slow-read attack during which the attacker manipulates the flow-control information to keep the NFp resources allocated for those requests for a longer period of time, hence facilitating the DoS. Therefore, proper configuration of HTTP/2 settings such as SETTINGS_MAX_CONCURRENT_STREAMS to limit DoS attacks is also needed. For instance, a network operator can limit the number of maximum concurrent streams that a server allows per connection. This will make a DoS attack costly to the attacker who will need to allocate more resources to establish multiple TCP connections with the server to exhaust it. Further, HTTP/2 with usage of SCP in
         """,
 
         enPaper13: """
@@ -315,39 +370,43 @@ enum OCRTestSample: String, CaseIterable {
 
         REFERENCES
 
-        [1] I. Ahmad, S. Shahabuddin, T. Kumar, J. Okwuibe, A. Gurtov, and M. Ylianttila, "Security for 5g and beyond, " IEEE Communications Surveys & Tutorials, vol. 21, no. 4, pp. 3682-3722, 2019.
+        [1] I. Ahmad, S. Shahabuddin, T. Kumar, J. Okwuibe, A. Gurtov, and
+        M. Ylianttila, "Security for 5g and beyond, " IEEE Communications
+        Surveys & Tutorials, vol. 21, no. 4, pp. 3682-3722, 2019.
         """,
 
         enPaper14: """
-        [2] 3GPP, "5G; System architecture for the 5G System: TS 23.501 v. 17.5. 0, " 2022. "Signalling securit)
-
-        13 analysis: Is HITTP/2 secure in S& core network? " in 2018 10m Snermational Conference on Wireless Communications and Signal Processing
-        [4]
-
-        IEEE, 2018, pp. 1-6.
-
-        (WCSP). 3GPP, "5G; Security architecture and procedures for 5G System: TS 33.501 v. 17.5. 0, " 2022. [5] IETF, "Hypertext Transfer Protocol Version 2 (HTTP/2) - RFC 7540, " 2015.
+        [2] 3GPP, "5G; System architecture for the 5G System: TS 23.501 v. 17.5. 0, " 2022.
+        13 analysis: Is HITTP/2 secure in S& core network? " in 2018 10m Snerma- "Signalling securit)
+        tional Conference on Wireless Communications and Signal Processing
+        (WCSP). IEEE, 2018, pp. 1-6.
+        [4] 3GPP, "5G; Security architecture and procedures for 5G System: TS
+        33.501 v. 17.5. 0, " 2022.
+        [5] IETF, "Hypertext Transfer Protocol Version 2 (HTTP/2) - RFC 7540, " 2015.
 
         · 3GPP, "SG; JG System; Technical Realization of Service Based Arc.
 
         ture: Stage 3: 1S 29.500 v17.7. 0 201
 
-        [7] ENISA, "Security In 5G Specifications Controls in 3GPP Security Specifications (5G SA), " 2021. B. Christine Jost, "Security for 5G Service-Based Architecture: 18-March-
-        [Accessed
-        2020, 2022]. [Online]. Available: https://www.ericsson.com/en/blog/2020/
-        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021. R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload [11] Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World Forum (5GWF). IEEE, 2021, pp. 135-140.
+        [7] ENISA, "Security In 5G Specifications Controls in 3GPP Security Specifications (5G SA), " 2021.
+        B. Christine Jost, "Security for 5G Service-Based Architecture:
+        2020, [Accessed 18-March-
+        2022]. [Online]. Available: https://www.ericsson.com/en/blog/2020/
+        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021. [11] R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World
+        Forum (5GWF). IEEE, 2021, pp. 135-140.
 
-        generation web protocol, " 2016. [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information
-        [15]
-
-        Forensics and Security, vol. 15, pp. 1790-1800, 2019. AdaptiveMobile,
-        "A Slice in Time: Slicing Security in 5G Core Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/ network-slicing-security? hsLang=en#download
+        generation web protocol, " 2016.
+        [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information
+        Forensics and Security, vol. 15, pp. 1790-1800, 2019. [15] AdaptiveMobile, "A Slice in Time: Slicing Security in 5G Core
+        Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/
+        network-slicing-security? hsLang=en#download
 
         Nathalie Wehbe received the B.Sc. and M.Sc degree in Software Engineer from the Antonine University, Lebanon, in 2016. She is currently a Ph.D. candidate at Concordia Institute for Information System Engineering, Montreal, QC, Canada. Her current research interests are in the areas of 5G networks, security, anomaly detection and machine learning.
 
         Hyame Assem Alameddine received her Ph.D. degree in Information and Systems Engineering from Concordia University, Canada in 2019. She is currently an experienced researcher at Ericsson, Canada. Her research interests include Network Function Virtualization, network security, 5G, internet of Things, cloud and edge computing.
 
-        Makan Pourzandi is a researcher at Ericsson, Canada. He received his Ph.D. degree in Computer Science from University of Lyon, France and his M.Sc. Degree in Computer Science from École Normale Supérieure de Lyon, France. His current research interests include security, cloud computing, software security engineering, cluster computing, and component-based methods for secure software development.
+        Makan Pourzandi is a researcher at Ericsson, Canada. He received his Ph.D. degree in Computer Science from University of Lyon, France and his M.Sc.
+        Degree in Computer Science from École Normale Supérieure de Lyon, France. His current research interests include security, cloud computing, software security engineering, cluster computing, and component-based methods for secure software development.
 
         Elias Bou-Harb is currently the Director of the Cyber Center for Security and Analytics at the University of Texas at San Antonio, Texas, USA. He is also an Associate Professor at the department of Information Systems and Cyber Security. His research interests are in the areas of cyber forensics, network security, data analytics, and network management.
 
@@ -382,8 +441,14 @@ enum OCRTestSample: String, CaseIterable {
 
         zhText2: """
         盛顿公园散步，那里有一个跳蚤市场。从第五街的公共汽车上，
-        我看到夜幕慢慢地降落到纽约城上。 现在是21点，我只吃了一-小块三明治，从瓦班莎起没有睡
-        觉，绝对是精疲力竭了。我在房间里喝着你的威士忌，给你写 信，但我不能这么早睡觉。在我的周围是纽约，在我的后面是我 们的夏天。我还要下楼去走，还要梦想，直到没有知觉。 我并不悲哀。也许是晕过去了，离开我自己很远，很远，无 法相信你曾经离我那么近。在出发以前，我只想对你说两件事 第一，我还是希望有朝一日再见到你。我愿意，我需要见你。但 是，请你记住，我决不会求你，不是出于自尊，而是因为如果你 不愿意，我们的见面将毫无意义，因此我将等待。如果你希望见 面，就告诉我，我不会因此认为你又爱我，甚至不会认为你希望 与我同床，我们也不必一定要长时间呆在一起，只是在你愿意的 情况下在一起。记住，我将永远希望你向我提出要求。 不，我不相信我们将不再见面。我失去了爱情，这是事实， 是痛苦的。但是我没有失去你。不管怎么说，你满足了我，纳尔 逊，你给我的一切对我是多么珍贵，你也拿不回去给我的一切。 你的温情、你的友谊对我是多么宝贵，在我想到你的时候，我仍 然觉得温暖、幸福，充满了感激之情。我希望这种温情、这种友 谊永存，永远存在。至于我，坦率地说我感到羞耻的意外的真话 是，我还像下飞机投人你那令人失望的怀抱时那样爱你，是全身 心地，是以我的全部的可怜的心爱你，我不可能少一点爱，希望 这不妨碍你，亲爱的，也不要把我们的通信当做苦役，是在你想 写信的时候才写，但你的每封信都会使我幸福的。 是的，言词看来微不足道。我觉得你离我那么近，那么近， 让我走近你。让我同过去一样，让我在自己心里永远那样。
+        我看到夜幕慢慢地降落到纽约城上。
+
+        现在是21点，我只吃了一-小块三明治，从瓦班莎起没有睡
+        觉，绝对是精疲力竭了。我在房间里喝着你的威士忌，给你写信，但我不能这么早睡觉。在我的周围是纽约，在我的后面是我们的夏天。我还要下楼去走，还要梦想，直到没有知觉。
+
+        我并不悲哀。也许是晕过去了，离开我自己很远，很远，无法相信你曾经离我那么近。在出发以前，我只想对你说两件事第一，我还是希望有朝一日再见到你。我愿意，我需要见你。但是，请你记住，我决不会求你，不是出于自尊，而是因为如果你不愿意，我们的见面将毫无意义，因此我将等待。如果你希望见面，就告诉我，我不会因此认为你又爱我，甚至不会认为你希望与我同床，我们也不必一定要长时间呆在一起，只是在你愿意的情况下在一起。记住，我将永远希望你向我提出要求。
+        不，我不相信我们将不再见面。我失去了爱情，这是事实， 是痛苦的。但是我没有失去你。不管怎么说，你满足了我，纳尔逊，你给我的一切对我是多么珍贵，你也拿不回去给我的一切。 你的温情、你的友谊对我是多么宝贵，在我想到你的时候，我仍然觉得温暖、幸福，充满了感激之情。我希望这种温情、这种友谊永存，永远存在。至于我，坦率地说我感到羞耻的意外的真话是，我还像下飞机投人你那令人失望的怀抱时那样爱你，是全身心地，是以我的全部的可怜的心爱你，我不可能少一点爱，希望这不妨碍你，亲爱的，也不要把我们的通信当做苦役，是在你想写信的时候才写，但你的每封信都会使我幸福的。
+        是的，言词看来微不足道。我觉得你离我那么近，那么近， 让我走近你。让我同过去一样，让我在自己心里永远那样。
 
         你的西羹榔
         """,
@@ -391,39 +456,64 @@ enum OCRTestSample: String, CaseIterable {
         zhTextBitcoin: """
         比特币：一种点对点电子货币系统
 
-        Satoshi Nakamoto satoshin@gmx.com www.bitcoin.org
+        Satoshi Nakamoto
+        satoshin@gmx.com
+        www.bitcoin.org
 
-        Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf by @shdxiang， xiaoxiang.io Bill Zhao （billzhao430@live.com）
+        Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf
+        by @shdxiang， xiaoxiang.io
+        Bill Zhao （billzhao430@live.com）
 
-        摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一 方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需 一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们 提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进 一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非 重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证 据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算 力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击 者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和 重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证 据。
+        摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证
+        据。
 
         1．简介
 
-        互联网贸易已经变得几乎完全依赖金融机构作为可信任的第三方来处理电子支付。尽管对 于大部分交易这种系统运行得足够好，但仍需忍受基于信任模型这个固有缺点。由于金融 机构不可避免的需要仲裁纠纷，完全不可撤销的交易实际是做不到的。仲裁成本增加了交 易成本，限制了最小实际交易额度从而杜绝了日常小额交易的可能性，而且由于不支持不 可撤销支付，对不可撤销服务进行支付将需要更大的成本。由于存在交易被撤销的可能 性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要 的信息。一定比例的欺诈被认为是不可避免的。虽可通过当面使用实物货币来避免这些成 本及支付的不确定性，但不存在一个无可信任方而能在通信通道上进行支付的机制。
+        互联网贸易已经变得几乎完全依赖金融机构作为可信任的第三方来处理电子支付。尽管对于大部分交易这种系统运行得足够好，但仍需忍受基于信任模型这个固有缺点。由于金融机构不可避免的需要仲裁纠纷，完全不可撤销的交易实际是做不到的。仲裁成本增加了交易成本，限制了最小实际交易额度从而杜绝了日常小额交易的可能性，而且由于不支持不可撤销支付，对不可撤销服务进行支付将需要更大的成本。由于存在交易被撤销的可能
+        性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要的信息。一定比例的欺诈被认为是不可避免的。虽可通过当面使用实物货币来避免这些成本及支付的不确定性，但不存在一个无可信任方而能在通信通道上进行支付的机制。
 
-        我们需要的是一个基于密码学原理而不是信任的电子支付系统，该系统允许任何有交 易意愿的双方能直接交易而不需要一个可信任的第三方。交易在计算上的不可撤销将保护卖家不被欺诈，用来保护买家的程序化合约机制也应该较容易实现。在这篇论文中，我们 提出一种使用点对点分布式时间戳服务器基于时间的交易序列生成计算上的证据来解决 双重支付问题的方案。只要诚实节点集体控制的 CPU 算力大于任何一个合作攻击节点群的CPU算力，这个系统就是安全的。
+        我们需要的是一个基于密码学原理而不是信任的电子支付系统，该系统允许任何有交易意愿的双方能直接交易而不需要一个可信任的第三方。交易在计算上的不可撤销将保护卖家不被欺诈，用来保护买家的程序化合约机制也应该较容易实现。在这篇论文中，我们提出一种使用点对点分布式时间戳服务器基于时间的交易序列生成计算上的证据来解决双重支付问题的方案。只要诚实节点集体控制的 CPU 算力大于任何一个合作攻击节点群的CPU算力，这个系统就是安全的。
         """,
 
         // ocr japanese text
         jaText1: """
-        いつも応援して下さっているファンの皆様、 そして関係者の皆様へ
+        いつも応援して下さっているファンの皆様、
+        そして関係者の皆様へ
 
-        この度相沢みなみはAV女優として 引退する事をご報告致します。 急なお知らせとなり申し訳ありません。
+        この度相沢みなみはAV女優として
+        引退する事をご報告致します。
+        急なお知らせとなり申し訳ありません。
 
-        引退に至るまでの経緯を正直にお話しさせて頂 きます。 長くなりますが目を通して頂けると幸いです。
-        私はある方にスカウトをされ約7年前に AV業界に入りました。 その方は相沢みなみの生みの親でもあり、 兄のような存在でもあり、そして私にとっては 最愛の相手でもありました。 相沢社長です。 相沢みなみの名前は彼から頂きました。
+        引退に至るまでの経緯を正直にお話しさせて頂きます。
+        長くなりますが目を通して頂けると幸いです。
+        私はある方にスカウトをされ約7年前に
+        AV業界に入りました。
+        その方は相沢みなみの生みの親でもあり、
+        兄のような存在でもあり、そして私にとっては最愛の相手でもありました。
+        相沢社長です。
+        相沢みなみの名前は彼から頂きました。
 
-        相沢社長には夢がありました。 それは単体女優を育てて事務所を大きくする事。 私はその夢に携われたらいいなと思い軽い気持 ちでAV業界に飛び込みました。
+        相沢社長には夢がありました。
+        それは単体女優を育てて事務所を大きくする事。 私はその夢に携われたらいいなと思い軽い気持ちでAV業界に飛び込みました。
         """,
 
         jaText2: """
-        業界の中で盛り上がっていたアダルトオー プンにてアイポケの専属女優としてデビューさ せて頂きました。しかし実際は全然売れません でした。イベントも組めないくらい。 そして契約は切れた。早かった。悔しかった。 悔しく感じたのはやる気が出ていたから。
+        業界の中で盛り上がっていたアダルトオープンにてアイポケの専属女優としてデビューさせて頂きました。しかし実際は全然売れませんでした。イベントも組めないくらい。
+        そして契約は切れた。早かった。悔しかった。
+        悔しく感じたのはやる気が出ていたから。
 
-        そのやる気を出してくれたのはファン皆様の存 在です。初めて自分のファンに会えた日、 とても嬉しかったことは今でも忘れません。 そのファン達に会う為、売れなかった私達はオ フ会を頻繁に開催しました。するといつからか 過去の作品が売れ始め、またアイポケの専属女 優として活動を再開することが出来ました。
+        そのやる気を出してくれたのはファン皆様の存在です。初めて自分のファンに会えた日、
+        とても嬉しかったことは今でも忘れません。
+        そのファン達に会う為、売れなかった私達はオフ会を頻繁に開催しました。するといつからか過去の作品が売れ始め、またアイポケの専属女優として活動を再開することが出来ました。
 
         活動は順調でした。
 
-        ですがデビュー3年目にして、 その相沢社長に病気が見つかりました。 急性白血病です。 正直ドラマでしか知らない病気でした。 こんな身近な人がなるなんて。言葉を失った。 しかし社長は病気と戦い続けた。
+        ですがデビュー3年目にして、
+        その相沢社長に病気が見つかりました。
+        急性白血病です。
+        正直ドラマでしか知らない病気でした。
+        こんな身近な人がなるなんて。言葉を失った。
+        しかし社長は病気と戦い続けた。
         """,
 
         plUnsupportedText1: """
