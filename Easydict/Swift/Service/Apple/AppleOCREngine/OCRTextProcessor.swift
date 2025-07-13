@@ -87,17 +87,16 @@ public class OCRTextProcessor {
         // If intelligent joining is not enabled, return simple result
         guard intelligentJoined else { return }
 
-        // Calculate confidence using metrics (both simple and advanced modes)
-        metrics.setupWithOCRData(
-            ocrImage: ocrImage,
-            language: ocrResult.from,
-            observations: observations
-        )
-        ocrResult.confidence = CGFloat(metrics.confidence)
-
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
         print("Sorted OCR objects: \(sortedObservations.formattedDescription)")
+
+        metrics.setupWithOCRData(
+            ocrImage: ocrImage,
+            language: ocrResult.from,
+            observations: sortedObservations
+        )
+        ocrResult.confidence = CGFloat(metrics.confidence)
 
         // Perform intelligent text merging
         let mergedText = performIntelligentTextMerging(sortedObservations)
@@ -108,9 +107,8 @@ public class OCRTextProcessor {
             separatedBy: OCRConstants.lineBreakText
         )
 
-        let showMergedText = String(ocrResult.mergedText.prefix(100))
         print(
-            "OCR text (\(ocrResult.from)(\(String(format: "%.2f", ocrResult.confidence))): \(showMergedText)"
+            "OCR text (\(ocrResult.from)(\(String(format: "%.2f", ocrResult.confidence))): \(ocrResult.mergedText)"
         )
     }
 
@@ -127,11 +125,11 @@ public class OCRTextProcessor {
 
     /// Sort text observations by vertical position (top to bottom) and horizontal position (left to right)
     ///
-    /// Uses the enhanced isSameLine algorithm for accurate same-line detection,
+    /// Uses the enhanced isNewLine algorithm for accurate line separation detection,
     /// providing better sorting accuracy than simple threshold-based approaches.
     ///
     /// **Sorting Logic:**
-    /// - Groups observations on the same horizontal line using isSameLine analysis
+    /// - Groups observations on the same horizontal line using isNewLine analysis
     /// - Within same line: sorts left to right (X coordinate ascending)
     /// - Between different lines: sorts top to bottom (Y coordinate descending in Vision system)
     ///
@@ -142,20 +140,29 @@ public class OCRTextProcessor {
     ///
     /// - Parameter observations: Array of text observations to sort
     /// - Returns: Sorted observations in proper reading order
+    ///
+    /// - Note: Currently only supports one-page OCR results.
+    /// - TODO: Extend to multi-page OCR results in future versions.
     private func sortTextObservations(_ observations: [VNRecognizedTextObservation])
         -> [VNRecognizedTextObservation] {
         // Create line analyzer for same-line detection
         let lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
 
-        return observations.sorted { obj1, obj2 in
+        // 1. Sort observations by origin.y
+        let sortedObservations = observations.sorted {
+            $0.boundingBox.origin.y > $1.boundingBox.origin.y
+        }
+
+        // 2. Sort observations by origin.x within same line
+        return sortedObservations.sorted { obj1, obj2 in
             let boundingBox1 = obj1.boundingBox
             let boundingBox2 = obj2.boundingBox
 
             // Create text observation pair for analysis
-            let pair = OCRTextObservationPair(current: obj2, previous: obj1)
+            let pair = OCRTextObservationPair(current: obj1, previous: obj2)
 
-            // Use the enhanced isSameLine algorithm
-            if lineAnalyzer.isSameLine(pair: pair) {
+            // Use the enhanced isNewLine algorithm
+            if !lineAnalyzer.isNewLine(pair: pair) {
                 // Same line: sort by X coordinate (left to right)
                 return boundingBox1.origin.x < boundingBox2.origin.x
             } else {

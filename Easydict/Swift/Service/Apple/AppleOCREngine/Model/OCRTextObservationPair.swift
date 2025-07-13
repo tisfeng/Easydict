@@ -31,7 +31,7 @@ import Vision
 /// **Example Usage:**
 /// ```swift
 /// let pair = OCRTextObservationPair(current: currentObs, previous: prevObs)
-/// let isOnSameLine = lineAnalyzer.isSameLine(pair: pair)
+/// let isNewLine = lineAnalyzer.isNewLine(pair: pair)
 /// let joinString = textMerger.joinedString(for: pair)
 /// ```
 ///
@@ -56,7 +56,7 @@ struct OCRTextObservationPair: CustomStringConvertible {
     /// Provides a formatted view of both text observations, useful for debugging
     /// text processing pipelines and understanding spatial relationships.
     var description: String {
-        "previous: \(previous)\ncurrent: \(current)"
+        "\nprevious: \(previous)\ncurrent: \(current)"
     }
 
     /// Calculate vertical gap between two text observation lines

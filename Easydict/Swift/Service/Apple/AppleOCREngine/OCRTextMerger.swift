@@ -111,15 +111,15 @@ class OCRTextMerger {
     ///
     /// - Note: This method directly corresponds to joinedStringOfTextObservation in Objective-C
     ///   but provides significantly enhanced decision-making capabilities
-    func joinedString(for textObservationPair: OCRTextObservationPair) -> String {
+    func joinedString(for pair: OCRTextObservationPair) -> String {
         // If it's the same line, return a space
-        if lineAnalyzer.isSameLine(pair: textObservationPair) {
+        if !lineAnalyzer.isNewLine(pair: pair) {
             return " "
         }
 
         // For new lines, apply the full merge decision logic
         // Create comprehensive line context
-        let lineContext = prepareLineContext(textObservationPair)
+        let lineContext = prepareLineContext(pair: pair)
 
         // Determine merge decision
         let mergeDecision = determineMergeDecision(lineContext: lineContext)
@@ -127,7 +127,7 @@ class OCRTextMerger {
         // Generate final joined string
         return generateJoinedString(
             mergeDecision: mergeDecision,
-            previousText: textObservationPair.previous.firstText
+            previousText: pair.previous.firstText
         )
     }
 
@@ -158,11 +158,8 @@ class OCRTextMerger {
     ///
     /// - Parameter textObservationPair: Pair of text observations to analyze
     /// - Returns: Complete line context with pre-calculated analysis results
-    private func prepareLineContext(
-        _ textObservationPair: OCRTextObservationPair
-    )
-        -> OCRLineContext {
-        OCRLineContext(pair: textObservationPair, metrics: metrics)
+    private func prepareLineContext(pair: OCRTextObservationPair) -> OCRLineContext {
+        OCRLineContext(pair: pair, metrics: metrics)
     }
 
     /// Determine appropriate merge decision based on comprehensive line context analysis
@@ -184,10 +181,7 @@ class OCRTextMerger {
     ///
     /// - Parameter lineContext: Complete line analysis context
     /// - Returns: Optimal merge decision for the text pair
-    private func determineMergeDecision(
-        lineContext: OCRLineContext
-    )
-        -> OCRMergeDecision {
+    private func determineMergeDecision(lineContext: OCRLineContext) -> OCRMergeDecision {
         var needLineBreak = false
         var isNewParagraph = false
 

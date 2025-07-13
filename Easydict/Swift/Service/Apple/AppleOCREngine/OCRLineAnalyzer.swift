@@ -257,26 +257,31 @@ class OCRLineAnalyzer {
         return .none
     }
 
-    /// Determine if two text observations are on the same horizontal line
+    /// Determine if two text observations represent a new line break
     ///
     /// Uses vertical gap analysis to determine if two text observations are positioned
-    /// on the same horizontal line. This is more accurate than center-point comparison
-    /// as it accounts for different text heights and overlapping scenarios.
+    /// on different lines (new line) or the same horizontal line. This method employs
+    /// adaptive thresholding for accurate line break detection across varying text sizes.
     ///
     /// **Algorithm:**
-    /// - Uses the verticalGap property from OCRTextObservationPair
-    /// - Applies adaptive threshold based on actual text heights
-    /// - Accounts for slight OCR positioning inaccuracies
-    /// - Considers both positive gaps (spacing) and negative gaps (overlap)
+    /// - Uses the verticalGap property from OCRTextObservationPair for precise spacing analysis
+    /// - Applies adaptive threshold based on actual text heights for dynamic adjustment
+    /// - Uses the larger of adaptive threshold and minimum threshold for robust detection
+    /// - Accounts for slight OCR positioning inaccuracies and text overlap scenarios
     ///
-    /// **Same Line Criteria:**
-    /// - Very small positive gap (minimal spacing between words)
-    /// - Small negative gap (slight overlap due to OCR inaccuracy)
-    /// - Gap magnitude less than a fraction of the smaller text height
+    /// **New Line Detection Criteria:**
+    /// - Positive vertical gap (clear spacing between lines)
+    /// - Negative gap magnitude exceeding the adaptive threshold (significant overlap)
+    /// - Threshold is calculated as 40% of the larger between smaller text height and average line height
     ///
-    /// - Parameter pair: Pair of text observations to compare
-    /// - Returns: true if observations are on the same line, false otherwise
-    func isSameLine(pair: OCRTextObservationPair) -> Bool {
+    /// **Threshold Calculation:**
+    /// - `adaptiveThreshold = min(currentHeight, previousHeight)` - based on smaller text
+    /// - `minimumThreshold = metrics.averageLineHeight` - document-wide baseline
+    /// - `finalThreshold = max(adaptiveThreshold, minimumThreshold) * 0.4` - 40% safety factor
+    ///
+    /// - Parameter pair: Pair of text observations to analyze for line separation
+    /// - Returns: true if observations represent a new line, false if on the same line
+    func isNewLine(pair: OCRTextObservationPair) -> Bool {
         let verticalGap = pair.verticalGap
 
         // Calculate adaptive threshold based on actual text heights
@@ -286,16 +291,26 @@ class OCRLineAnalyzer {
 
         // Use a fraction of the smaller text height as threshold
         // This is more adaptive than using global minimum line height
-        let adaptiveThreshold = smallerHeight * 0.3 // 30% of smaller text height
+        let adaptiveThreshold = smallerHeight
 
         // Also consider a minimum threshold to avoid being too strict with very small text
-        let minimumThreshold = metrics.minPositiveLineSpacing * 0.4 // 40% of minimum line height
+        let minimumThreshold = metrics.averageLineHeight
 
         // Use the larger of the two thresholds for better accuracy
-        let threshold = max(adaptiveThreshold, minimumThreshold)
+        let threshold = max(adaptiveThreshold, minimumThreshold) * 0.4
 
-        // Consider same line if gap is within threshold (allowing for slight overlap or minimal spacing)
-        return abs(verticalGap) <= threshold
+        // If vertical gap is positive (spacing) or very small negative (slight overlap),
+        // consider it as a new line.
+        let isNewLine = verticalGap > 0 || abs(verticalGap) <= threshold
+
+        if !isNewLine {
+            print(
+                "\nVertical gap: \(verticalGap.threeDecimalString), Threshold: \(threshold.threeDecimalString)"
+            )
+            print("Same line detected: \(pair)")
+        }
+
+        return isNewLine
     }
 
     // MARK: - Helper Methods
