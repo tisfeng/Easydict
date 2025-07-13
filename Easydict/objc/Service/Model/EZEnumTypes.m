@@ -44,6 +44,7 @@ NSString *const EZActionTypeInputQuery = @"input_query";
 NSString *const EZActionTypeOCRQuery = @"ocr_query";
 NSString *const EZActionTypeScreenshotOCR = @"silent_screenshot_ocr";
 NSString *const EZActionTypeInvokeQuery = @"invoke_query";
+NSString *const EZActionTypePasteboardOCR = @"pasteboard_ocr";
 
 NSString *const EZSelectTextTypeAccessibility = @"accessibility_select_text";
 NSString *const EZSelectTextTypeSimulatedKey = @"simulate_key_select_text";

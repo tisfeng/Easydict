@@ -50,6 +50,7 @@ struct MenuItemView: View {
             Divider()
             ocrItem
                 .keyboardShortcut(.silentScreenshotOcr)
+            pasteboardOcrItem
             Divider()
             settingItem
                 .keyboardShortcut(.init(","))
@@ -68,7 +69,8 @@ struct MenuItemView: View {
 
     @ObservedObject private var store = MenuItemStore()
 
-    @State private var currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    @State private var currentVersion =
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
 
     @State private var latestVersion: String?
 
@@ -107,7 +109,9 @@ struct MenuItemView: View {
             Button("Settings...") {
                 logInfo("打开设置")
                 NSApp.activate(ignoringOtherApps: true)
-                NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                NSApplication.shared.sendAction(
+                    Selector(("showSettingsWindow:")), to: nil, from: nil
+                )
             }
         }
     }
@@ -174,6 +178,17 @@ struct MenuItemView: View {
         }
     }
 
+    @ViewBuilder private var pasteboardOcrItem: some View {
+        Button {
+            EZWindowManager.shared().pasteboardOCR()
+        } label: {
+            HStack {
+                Image(systemName: "doc.on.clipboard")
+                Text("menu_pasteboard_OCR")
+            }
+        }
+    }
+
     // MARK: - Setting
 
     @ViewBuilder private var checkUpdateItem: some View {
@@ -216,7 +231,9 @@ struct MenuItemView: View {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH-mm-ss-SSS"
         let dataString = dateFormatter.string(from: Date())
-        let downloadDirectory = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
+        let downloadDirectory = FileManager.default.urls(
+            for: .downloadsDirectory, in: .userDomainMask
+        )[0]
         let zipPath = downloadDirectory.appendingPathComponent("Easydict log \(dataString).zip")
             .path(percentEncoded: false)
         let success = SSZipArchive.createZipFile(

@@ -87,7 +87,10 @@
 - (void)setActionType:(EZActionType)actionType {
     _actionType = actionType;
     
-    if (actionType != EZActionTypeOCRQuery && actionType != EZActionTypeScreenshotOCR) {
+    // Remove OCR image when action type is not OCR related.
+    if (actionType != EZActionTypeOCRQuery
+        && actionType != EZActionTypeScreenshotOCR
+        && actionType != EZActionTypePasteboardOCR) {
         _OCRImage = nil;
     }
 }

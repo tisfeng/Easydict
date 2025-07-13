@@ -2546,6 +2546,34 @@
         }
       }
     },
+    "menu_pasteboard_OCR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasteboard OCR"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR schránky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板 OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪貼簿 OCR"
+          }
+        }
+      }
+    },
     "menu_screenshot_Translate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2907,7 +2935,6 @@
       }
     },
     "ocr_result_is_empty" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

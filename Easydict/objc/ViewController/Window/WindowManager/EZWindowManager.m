@@ -859,22 +859,11 @@ static EZWindowManager *_instance;
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
     [self closeFloatingWindowIfNotPinnedOrMain];
 
-    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-    EZBaseQueryWindow *window = [self windowWithType:windowType];
-    
     [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
-        if (!image) {
-            return;
-        }
-
-        // Reset window height first, avoid being affected by previous window height.
-        [window.queryViewController resetTableView:^{
-            self.actionType = EZActionTypeOCRQuery;
-            [self showFloatingWindowType:windowType queryText:nil];
-            [window.queryViewController startOCRImage:image actionType:self.actionType];
-        }];
+        [self showFloatingWindowWithOCRImage:image actionType:EZActionTypeOCRQuery];
     }];
 }
+
 
 - (void)screenshotOCR {
     MMLogInfo(@"Screenshot and OCR");
@@ -889,6 +878,36 @@ static EZWindowManager *_instance;
         [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType];
     }];
 }
+
+- (void)pasteboardOCR {
+    MMLogInfo(@"Pasteboard OCR");
+
+    // Get image from pasteboard
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSImage *image = [[NSImage alloc] initWithPasteboard:pasteboard];
+
+    [self showFloatingWindowWithOCRImage:image actionType:EZActionTypePasteboardOCR];
+}
+
+- (void)showFloatingWindowWithOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
+    if (!image) {
+        MMLogWarn(@"Image is nil, cannot show OCR window");
+        return;
+    }
+    
+    MMLogInfo(@"Show window with OCR image");
+    
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+    
+    // Reset window height first, avoid being affected by previous window height.
+    [window.queryViewController resetTableView:^{
+        self.actionType = actionType;
+        [self showFloatingWindowType:windowType queryText:nil];
+        [window.queryViewController startOCRImage:image actionType:actionType];
+    }];
+}
+
 
 /**
  * Capture screenshot with options for app restoration

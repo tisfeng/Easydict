@@ -86,12 +86,6 @@ public class AppleOCREngine {
             let ocrResult = EZOCRResult()
             ocrResult.from = language
 
-            guard !textObservations.isEmpty else {
-                let emptyError = QueryError.error(type: .noResult, message: "OCR result is empty")
-                completion(ocrResult, emptyError)
-                return
-            }
-
             let needIntelligentTextProcessing = !shouldRefineWithDetectedLanguage || hasValidOCRLanguage(language)
             print("Performing OCR text processing, intelligent: \(needIntelligentTextProcessing)")
 
@@ -227,9 +221,10 @@ public class AppleOCREngine {
                 return
             }
 
-            guard let observations = request.results as? [VNRecognizedTextObservation] else {
+            guard let observations = request.results as? [VNRecognizedTextObservation], !observations.isEmpty else {
                 DispatchQueue.main.async {
-                    let error = QueryError.error(type: .noResult, message: "OCR result is empty")
+                    let message = String(localized: "ocr_result_is_empty")
+                    let error = QueryError.error(type: .noResult, message: message)
                     completionHandler([], error)
                 }
                 return
