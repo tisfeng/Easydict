@@ -307,6 +307,7 @@ public class AppleLanguageMapper: NSObject {
     private let ocrLanguageDictionary: [Language: String] = [
         .simplifiedChinese: "zh-Hans",
         .traditionalChinese: "zh-Hant",
+        .classicalChinese: "zh-Hans", // Treat as Simplified Chinese for OCR, for `isSupportedOCRLanguage`
         .english: "en-US",
         .japanese: "ja-JP",
         .korean: "ko-KR",
