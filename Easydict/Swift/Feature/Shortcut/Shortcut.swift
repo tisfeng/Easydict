@@ -19,8 +19,10 @@ public enum ShortcutType: String {
     case inputTranslate = "EZInputShortcutKey"
     case snipTranslate = "EZSnipShortcutKey"
     case selectTranslate = "EZSelectionShortcutKey"
-    case silentScreenshotOcr = "EZScreenshotOCRShortcutKey"
     case showMiniWindow = "EZShowMiniShortcutKey"
+    case silentScreenshotOcr = "EZScreenshotOCRShortcutKey"
+    case pasteboardOCR = "EZPasteboardOCRShortcutKey"
+
     // In App
     case clearInput = "EZClearInputShortcutKey"
     case clearAll = "EZClearAllShortcutKey"
@@ -52,6 +54,8 @@ extension ShortcutType {
             "menu_silent_screenshot_OCR"
         case .showMiniWindow:
             "menu_show_mini_window"
+        case .pasteboardOCR:
+            "menu_pasteboard_OCR"
         case .clearInput:
             "shortcut_clear_input"
         case .clearAll:
@@ -156,6 +160,8 @@ extension Shortcut {
         bindingShortcut(keyCombo: Defaults[.screenshotOCRShortcut], type: .silentScreenshotOcr)
         // showMiniWindow
         bindingShortcut(keyCombo: Defaults[.showMiniWindowShortcut], type: .showMiniWindow)
+        // pasteboardOCR
+        bindingShortcut(keyCombo: Defaults[.pasteboardOCRShortcut], type: .pasteboardOCR)
     }
 }
 
@@ -203,6 +209,13 @@ extension Shortcut {
                 target: Shortcut.shared,
                 action: #selector(Shortcut.showMiniFloatingWindow)
             )
+        case .pasteboardOCR:
+            hotKey = HotKey(
+                identifier: type.rawValue,
+                keyCombo: keyCombo,
+                target: Shortcut.shared,
+                action: #selector(Shortcut.pasteboardOCR)
+            )
         default: ()
         }
 
@@ -225,6 +238,8 @@ struct KeyboardShortcut: ViewModifier {
             .selectionShortcut
         case .silentScreenshotOcr:
             .screenshotOCRShortcut
+        case .pasteboardOCR:
+            .pasteboardOCRShortcut
         case .showMiniWindow:
             .showMiniWindowShortcut
         case .clearInput:

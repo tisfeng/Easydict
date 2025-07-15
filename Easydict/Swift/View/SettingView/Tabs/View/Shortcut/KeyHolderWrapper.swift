@@ -126,6 +126,8 @@ extension KeyHolderWrapper {
                 Defaults[.screenshotOCRShortcut]
             case .showMiniWindow:
                 Defaults[.showMiniWindowShortcut]
+            case .pasteboardOCR:
+                Defaults[.pasteboardOCRShortcut]
             case .clearInput:
                 Defaults[.clearInputShortcut]
             case .clearAll:
@@ -174,6 +176,8 @@ extension KeyHolderWrapper {
                 Defaults[.screenshotOCRShortcut] = keyCombo
             case .showMiniWindow:
                 Defaults[.showMiniWindowShortcut] = keyCombo
+            case .pasteboardOCR:
+                Defaults[.pasteboardOCRShortcut] = keyCombo
             case .clearInput:
                 Defaults[.clearInputShortcut] = keyCombo
             case .clearAll:

@@ -102,4 +102,9 @@ extension Shortcut {
     func screenshotOCR() {
         EZWindowManager.shared().screenshotOCR()
     }
+
+    @objc
+    func pasteboardOCR() {
+        EZWindowManager.shared().pasteboardOCR()
+    }
 }

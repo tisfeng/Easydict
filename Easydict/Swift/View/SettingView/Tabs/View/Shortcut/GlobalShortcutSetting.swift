@@ -53,6 +53,7 @@ extension ShortcutTab {
             KeyHolderDataItem(type: .selectTranslate),
             KeyHolderDataItem(type: .showMiniWindow),
             KeyHolderDataItem(type: .silentScreenshotOcr),
+            KeyHolderDataItem(type: .pasteboardOCR),
         ]
     }
 }
