@@ -184,6 +184,31 @@ struct RegexTests {
         #expect(!"10.".contains(regex)) // No digits after decimal
     }
 
+    @Test("Number-like Pattern Matching")
+    func numberLikePattern() {
+        let regex = Regex.numberLikePattern
+
+        // Valid number patterns
+        #expect("10.99".contains(regex)) // Decimal
+        #expect("3.14159".contains(regex)) // Decimal
+        #expect("1.2.3".contains(regex)) // Version number
+        #expect("1.2.3.4".contains(regex)) // IP address or version
+        #expect("2.1.0.beta1".contains(regex)) // Complex version
+        #expect("10.5.7.129".contains(regex)) // IP address
+        #expect("1.0".contains(regex)) // Simple version
+        #expect("123.456.789.012".contains(regex)) // Multi-segment
+        #expect("5.1.2.RELEASE".contains(regex)) // Version with text
+
+        // Invalid patterns
+        #expect(!"10".contains(regex)) // No dots
+        #expect(!".5".contains(regex)) // No digits before first dot
+        #expect(!"10.".contains(regex)) // No content after last dot
+        #expect(!"1..3".contains(regex)) // Empty segment
+        #expect(!"".contains(regex)) // Empty string
+        #expect(!"a.b".contains(regex)) // Starts with letter (not digit)
+        #expect(!"just.letters".contains(regex)) // Only letters, no digits
+    }
+
     @Test("Ellipsis Pattern Matching")
     func ellipsisPattern() {
         let regex = Regex.ellipsis
@@ -246,6 +271,58 @@ struct RegexTests {
             #expect(String(match.2) == "99")
         }
         #expect("abc.def".firstMatch(of: regex) == nil) // Non-digits
+    }
+
+    @Test("Number Pattern With Spacing Matching")
+    func numberPatternWithSpacingPattern() {
+        let regex = Regex.numberPatternWithSpacing
+
+        // Valid patterns that should be normalized
+        let validInputs = [
+            "1 . 2 . 3", // Version with spaces
+            "10.99", // Decimal number
+            "1 .2. 3 . 4", // Mixed spacing
+            "2 .1.0.beta1", // Complex version (more realistic)
+            "192 . 168.1. 1", // IP with spaces
+            "5.1.2.RELEASE", // Version with text
+        ]
+
+        for input in validInputs {
+            #expect(input.contains(regex), "Should match number pattern: '\(input)'")
+        }
+
+        // Invalid patterns
+        let invalidInputs = [
+            "10", // No dots
+            ".5", // No content before first dot
+            "10.", // No content after last dot
+            "1..3", // Empty segment
+            "", // Empty string
+            "a.b", // Starts with letter (not digit)
+            "just.letters", // Only letters, no digits
+        ]
+
+        for input in invalidInputs {
+            #expect(!input.contains(regex), "Should not match: '\(input)'")
+        }
+
+        // Test embedded patterns (should match the number part)
+        let embeddedTests = [
+            ("version.1.2", "1.2"),
+            ("app version 1.2.3 is here", "1.2.3"),
+            ("see version.2.1.0.beta1 for details", "2.1.0.beta1"),
+        ]
+
+        for (input, expectedMatch) in embeddedTests {
+            if let match = input.firstMatch(of: regex) {
+                #expect(
+                    String(match.output) == expectedMatch,
+                    "Should match '\(expectedMatch)' in '\(input)'"
+                )
+            } else {
+                Issue.record("Should find number pattern in: '\(input)'")
+            }
+        }
     }
 
     @Test("Whitespace Before Punctuation Pattern Matching")

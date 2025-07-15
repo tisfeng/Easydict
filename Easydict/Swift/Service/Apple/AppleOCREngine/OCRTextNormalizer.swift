@@ -123,22 +123,33 @@ public class OCRTextNormalizer {
     /// - **Email addresses**: `user@domain.com` → `〈PROTECTED_2〉`
     /// - **File paths**: `C:/Users/file.txt` → `〈PROTECTED_3〉`
     /// - **Code patterns**: `array.map()` → `〈PROTECTED_4〉`
-    /// - **Decimal numbers**: `10.99` → `〈PROTECTED_5〉`
+    /// - **Number patterns**: `10.99`, `1.2.3`, `192.168.1.1` → `〈PROTECTED_5〉`
     /// - **Ellipsis**: `...` → `〈PROTECTED_6〉`
     ///
     /// **Smart Punctuation Handling:**
     /// The regex patterns exclude trailing punctuation that might be sentence endings:
     /// - `"Visit https://easydict.app, it's great!"` → URL excludes the comma
     /// - `"Email me at test@example.com."` → Email excludes the period
+    /// - `"Version 1.2.3, released today."` → Version excludes the comma
     ///
     /// **Example Input:**
     /// ```
-    /// "访问 https://easydict.app, 邮箱 test@example.com. 价格 $10.99, 代码 array.map()."
+    /// "访问 https://easydict.app, 邮箱 test@example.com. 版本 1.2.3, 价格 $10.99, 代码 array.map()."
     /// ```
     ///
     /// **Example Output:**
     /// ```
-    /// protectedText: "访问 〈PROTECTED_0〉, 邮箱 〈PROTECTED_1〉. 价格 $〈PROTECTED_2〉, 代码 〈PROTECTED_3〉."
+    /// protectedText: "访问 〈PROTECTED_0〉, 邮箱 〈PROTECTED_1〉. 版本 〈PROTECTED_2〉, 价格 $〈PROTECTED_3〉, 代码 〈PROTECTED_4〉."
+    /// protectionMap: [
+    ///   "〈PROTECTED_0〉": "https://easydict.app",
+    ///   "〈PROTECTED_1〉": "test@example.com",
+    ///   "〈PROTECTED_2〉": "1.2.3",
+    ///   "〈PROTECTED_3〉": "10.99",
+    ///   "〈PROTECTED_4〉": "array.map()"
+    /// ```
+    ///
+    /// - Parameter text: The original text to scan for special content
+    /// - Returns: A tuple containing the protected text with placeholders and a restoration map
     /// protectionMap: [
     ///   "〈PROTECTED_0〉": "https://easydict.app",
     ///   "〈PROTECTED_1〉": "test@example.com",
@@ -194,8 +205,8 @@ public class OCRTextNormalizer {
             ranges.append(match.range)
         }
 
-        // Protect decimal numbers
-        for match in text.matches(of: Regex.decimal) {
+        // Protect decimal numbers and version numbers
+        for match in text.matches(of: Regex.numberLikePattern) {
             ranges.append(match.range)
         }
 
@@ -267,10 +278,12 @@ public class OCRTextNormalizer {
 
         // Fix spacing around punctuation for English-type languages
         if languageManager.isLanguageWordsNeedSpace(metrics.language) {
-            // Fix decimal numbers FIRST before other punctuation processing
-            // This handles all decimal spacing patterns: "10 . 99", "10. 99", "10 .99" -> "10.99"
-            result.replace(Regex.decimalWithSpacing) { match in
-                "\(match.1).\(match.2)"
+            // Fix number patterns FIRST before other punctuation processing
+            // This handles spacing patterns in decimals, versions, IPs: "1 . 2 . 3", "10 . 99" -> "1.2.3", "10.99"
+            result.replace(Regex.numberPatternWithSpacing) { match in
+                // Remove all whitespace around dots in the matched number pattern
+                String(match.output).replacingOccurrences(of: " ", with: "").replacingOccurrences(
+                    of: "\t", with: "")
             }
 
             // Remove spaces before punctuation marks (but not line breaks)
@@ -279,15 +292,15 @@ public class OCRTextNormalizer {
                 "\(match.1)"
             }
 
-            // Add space after punctuation marks if missing (except for decimals and ellipsis)
+            // Add space after punctuation marks if missing (except for number patterns and ellipsis)
             // Example: "Hello,world.Test" → "Hello, world. Test"
-            // We need to be careful not to add space after decimal points like "10.99" or ellipsis like "..."
+            // We need to be careful not to add space after decimal points like "10.99", version numbers like "1.2.3", or ellipsis like "..."
             // Since Swift Regex doesn't support lookbehind, we use a protect-process-restore approach:
-            // 1. Temporarily replace decimal points and ellipsis with placeholders
+            // 1. Temporarily replace dots in number patterns and ellipsis with placeholders
             // 2. Add spaces after punctuation
-            // 3. Restore decimal points and ellipsis
-            result.replace(Regex.decimal) { match in
-                String(match.output).replacingOccurrences(of: ".", with: "〈DECIMAL〉")
+            // 3. Restore dots in number patterns and ellipsis
+            result.replace(Regex.numberLikePattern) { match in
+                String(match.output).replacingOccurrences(of: ".", with: "〈NUMBERDOT〉")
             }
 
             // Protect ellipsis (three consecutive dots)
@@ -298,8 +311,8 @@ public class OCRTextNormalizer {
                 "\(match.1) \(match.2)"
             }
 
-            // Restore decimal points and ellipsis from placeholders
-            result.replace("〈DECIMAL〉", with: ".")
+            // Restore dots in number patterns and ellipsis from placeholders
+            result.replace("〈NUMBERDOT〉", with: ".")
             result.replace("〈ELLIPSIS〉", with: "...")
         }
 
