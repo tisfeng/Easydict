@@ -7,6 +7,7 @@
 //
 
 import SettingsAccess
+import SFSafeSymbols
 import Sparkle
 import SwiftUI
 import ZipArchive
@@ -136,7 +137,7 @@ struct MenuItemView: View {
             EZWindowManager.shared().snipTranslate()
         } label: {
             HStack {
-                Image(systemName: "camera.viewfinder")
+                Image(systemSymbol: .cameraViewfinder)
                 Text("menu_screenshot_Translate")
             }
         }
@@ -148,7 +149,7 @@ struct MenuItemView: View {
             EZWindowManager.shared().selectTextTranslate()
         } label: {
             HStack {
-                Image(systemName: "highlighter")
+                Image(systemSymbol: .highlighter)
                 Text("menu_selectWord_Translate")
             }
         }
@@ -160,7 +161,7 @@ struct MenuItemView: View {
             EZWindowManager.shared().showMiniFloatingWindow()
         } label: {
             HStack {
-                Image(systemName: "dock.rectangle")
+                Image(systemSymbol: .dockRectangle)
                 Text("menu_show_mini_window")
             }
         }
@@ -172,7 +173,7 @@ struct MenuItemView: View {
             EZWindowManager.shared().screenshotOCR()
         } label: {
             HStack {
-                Image(systemName: "camera.metering.spot")
+                Image(systemSymbol: .cameraMeteringSpot)
                 Text("menu_silent_screenshot_OCR")
             }
         }
@@ -183,7 +184,7 @@ struct MenuItemView: View {
             EZWindowManager.shared().pasteboardOCR()
         } label: {
             HStack {
-                Image(systemName: "doc.on.clipboard")
+                Image(systemSymbol: .listClipboard)
                 Text("menu_pasteboard_OCR")
             }
         }
