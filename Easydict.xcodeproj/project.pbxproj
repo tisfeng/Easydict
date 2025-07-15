@@ -130,6 +130,9 @@
 		03779F1A2BB25797008D3C42 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03779F192BB25797008D3C42 /* OpenAI */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
+		037A9CC52E24A72A00668C49 /* ocr-en-text-list-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC42E24A72A00668C49 /* ocr-en-text-list-2.png */; };
+		037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */; };
+		037A9CC92E24AC3A00668C49 /* ocr-en-text-list-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */; };
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
 		0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0380484A2C4975BD006C6210 /* Encodable+JSON.swift */; };
@@ -627,6 +630,9 @@
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
+		037A9CC42E24A72A00668C49 /* ocr-en-text-list-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-2.png"; sourceTree = "<group>"; };
+		037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-list-1.png"; sourceTree = "<group>"; };
+		037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-3.png"; sourceTree = "<group>"; };
 		0380484A2C4975BD006C6210 /* Encodable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+JSON.swift"; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
@@ -2393,6 +2399,8 @@
 				03D90BC52E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png */,
 				03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */,
 				03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */,
+				037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */,
+				037A9CC42E24A72A00668C49 /* ocr-en-text-list-2.png */,
 				03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */,
 				03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */,
 				03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */,
@@ -2418,6 +2426,7 @@
 				03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */,
 				03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */,
 				03C3A5B52E1BFE4900B59152 /* ocr-zh-text-bitcoin.png */,
+				037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */,
 			);
 			path = "ocr-images";
 			sourceTree = "<group>";
@@ -3231,6 +3240,9 @@
 				03C3A5C52E1BFE4900B59152 /* ocr-en-text-2.png in Resources */,
 				03C3A5C62E1BFE4900B59152 /* ocr-ja-text-1.png in Resources */,
 				03C3A5C72E1BFE4900B59152 /* ocr-en-text-list-1.png in Resources */,
+				037A9CC92E24AC3A00668C49 /* ocr-en-text-list-3.png in Resources */,
+				037A9CC52E24A72A00668C49 /* ocr-en-text-list-2.png in Resources */,
+				037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */,
 				03C3A5C82E1BFE4900B59152 /* ocr-en-text-letter-338.png in Resources */,
 				03C3A5C92E1BFE4900B59152 /* ocr-en-paper-13.png in Resources */,
 				03C3A5CA2E1BFE4900B59152 /* ocr-ja-text-2.png in Resources */,

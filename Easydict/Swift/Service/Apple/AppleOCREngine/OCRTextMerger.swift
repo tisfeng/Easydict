@@ -181,6 +181,8 @@ class OCRTextMerger {
     ///
     /// - Parameter lineContext: Complete line analysis context
     /// - Returns: Optimal merge decision for the text pair
+    ///
+    /// - TODO: This code is too ugly, need to refactor it.
     private func determineMergeDecision(lineContext: OCRLineContext) -> OCRMergeDecision {
         var needLineBreak = false
         var isNewParagraph = false
@@ -331,7 +333,7 @@ class OCRTextMerger {
             finalIsNewParagraph = true
         }
 
-        return OCRMergeDecision.from(
+        return .from(
             needLineBreak: finalNeedLineBreak,
             isNewParagraph: finalIsNewParagraph
         )
@@ -381,10 +383,9 @@ class OCRTextMerger {
         var isNewParagraph = false
 
         let isEqualX = lineAnalyzer.isEqualX(pair: lineContext.pair)
-        let lineX = lineContext.current.boundingBox.minX
-        let prevLineX = lineContext.previous.boundingBox.minX
-        let dx = lineX - prevLineX
+        let dx = lineAnalyzer.characterDifferenceInXPosition(pair: lineContext.pair)
 
+        // If both lines are indented, check their relative positions
         if lineContext.hasPrevIndentation {
             if lineContext.isBigLineSpacing,
                !lineContext.isPrevLongText,
@@ -415,14 +416,14 @@ class OCRTextMerger {
                 }
             } else {
                 if lineContext.isPrevLongText {
-                    if lineContext.hasPrevIndentation {
-                        needLineBreak = true
-                    } else {
-                        if !isEqualX, dx < 0 {
-                            isNewParagraph = true
+                    if !isEqualX, dx < 0 {
+                        if lineContext.isList {
+                            needLineBreak = true
                         } else {
-                            needLineBreak = false
+                            isNewParagraph = true
                         }
+                    } else {
+                        needLineBreak = false
                     }
                 } else {
                     if lineContext.hasPrevEndPunctuation {

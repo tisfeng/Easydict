@@ -42,21 +42,43 @@ class OCRLineAnalyzer {
 
     // MARK: Internal
 
-    /// Check if text observation has indentation relative to the minimum X position
+    /// Check if text observation has indentation relative to the reference observation
     ///
     /// Analyzes whether a text observation is indented by comparing its X position
-    /// against the leftmost text observation in the document. This is crucial for
-    /// detecting paragraph indentation, block quotes, and list structures.
+    /// against a reference observation (typically the leftmost or previous observation).
+    /// Uses precise character-based calculation for accurate indentation detection.
+    ///
+    /// **Indentation Criteria:**
+    /// - Current observation must be positioned to the right of the reference
+    /// - Horizontal offset must be less than the indentation character threshold
+    /// - Uses character-based measurement for consistent detection across different text sizes
+    ///
+    /// **Use Cases:**
+    /// - Paragraph indentation detection
+    /// - List item structure analysis
+    /// - Block quote identification
+    /// - Code block formatting preservation
     ///
     /// - Parameter observation: The text observation to analyze for indentation
     /// - Returns: true if the observation is indented, false if aligned with left margin
     func hasIndentation(_ observation: VNRecognizedTextObservation) -> Bool {
         guard let minXObservation = metrics.minXLineTextObservation else { return false }
+
         let textObservationPair = OCRTextObservationPair(
-            current: observation, previous: minXObservation
+            current: observation,
+            previous: minXObservation
         )
-        let isEqualX = isEqualX(pair: textObservationPair)
-        return !isEqualX
+
+        let characterDifference = characterDifferenceInXPosition(pair: textObservationPair)
+
+        let isIndented = characterDifference > OCRConstants.indentationCharacterCount
+
+        if isIndented {
+            print("\nIndentation detected: \(characterDifference.oneDecimalString) characters")
+            print("Current observation: \(observation)\n")
+        }
+
+        return isIndented
     }
 
     /// Determine if text observation represents a long line of text
@@ -135,9 +157,9 @@ class OCRLineAnalyzer {
 
         if isBigSpacing {
             print(
-                "Big line spacing detected, verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString)"
+                "\nBig line spacing detected, verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString)"
             )
-            print("Current: \(pair.current)")
+            print("Current: \(pair.current)\n")
         }
 
         return isBigSpacing
@@ -218,45 +240,6 @@ class OCRLineAnalyzer {
         }
     }
 
-    /// Analyze and determine list merge decision
-    ///
-    /// Handles text merging decisions specifically for list-style content such as
-    /// numbered lists, bullet points, and other structured list formats. This
-    /// ensures proper formatting and structure preservation for list items.
-    ///
-    /// **List Detection Patterns:**
-    /// - Numbered lists (1., 2., 3., etc.)
-    /// - Bullet points (•, -, *, etc.)
-    /// - Alphabetic lists (a., b., c., etc.)
-    /// - Roman numerals (i., ii., iii., etc.)
-    ///
-    /// - Parameters:
-    ///   - pair: Text observation pair containing current and previous observations
-    ///   - isBigLineSpacing: Whether there is significant spacing between lines
-    /// - Returns: Merge decision based on list structure requirements
-    func determineListMerge(
-        pair: OCRTextObservationPair,
-        isBigLineSpacing: Bool
-    )
-        -> OCRMergeDecision {
-        let isPrevList = pair.previous.firstText.isListTypeFirstWord
-        let isList = pair.current.firstText.isListTypeFirstWord
-
-        if isPrevList {
-            if isList {
-                return isBigLineSpacing ? .newParagraph : .lineBreak
-            } else {
-                // List ends, next is new paragraph if big spacing
-                return isBigLineSpacing ? .newParagraph : .none
-            }
-        }
-        if isList {
-            // New list starts
-            return isBigLineSpacing ? .newParagraph : .lineBreak
-        }
-        return .none
-    }
-
     /// Determine if two text observations represent a new line break
     ///
     /// Uses vertical gap analysis to determine if two text observations are positioned
@@ -315,57 +298,82 @@ class OCRLineAnalyzer {
 
     // MARK: - Helper Methods
 
+    /// Calculate the horizontal difference between two text observations in character units
+    ///
+    /// This function converts the spatial X-coordinate difference between two text observations
+    /// into an equivalent character count. This provides a more intuitive and consistent way
+    /// to measure horizontal spacing and indentation across different text sizes and screen resolutions.
+    ///
+    /// **Calculation Method:**
+    /// - Calculates the raw X-coordinate difference (dx)
+    /// - Converts to screen coordinates using image dimensions and scaling
+    /// - Divides by average character width to get character-equivalent distance
+    ///
+    /// **Return Values:**
+    /// - Positive: current observation is to the right of previous (potential indentation)
+    /// - Negative: current observation is to the left of previous (outdentation)
+    /// - Zero: observations are aligned horizontally
+    ///
+    /// - Parameter pair: Pair of text observations to compare
+    /// - Returns: Horizontal difference in character units (can be positive, negative, or zero)
+    func characterDifferenceInXPosition(pair: OCRTextObservationPair) -> Double {
+        guard let ocrImage = metrics.ocrImage else {
+            return 0.0
+        }
+
+        let currentX = pair.current.boundingBox.origin.x
+        let previousX = pair.previous.boundingBox.origin.x
+        let dx = currentX - previousX
+
+        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
+        let imageWidth = ocrImage.size.width / scaleFactor
+        let pixelDifference = imageWidth * dx
+
+        // Convert pixel difference to character units using average character width
+        let characterDifference = pixelDifference / metrics.averageCharacterWidth
+
+        return characterDifference
+    }
+
     // Determine if two text observations have equivalent horizontal positioning (X coordinates)
     ///
     /// This precise spatial analysis method determines whether two text observations are aligned
-    /// horizontally within acceptable tolerance thresholds. The analysis is crucial for detecting
-    /// indentation patterns, paragraph boundaries, and structured content formatting.
+    /// horizontally within acceptable tolerance thresholds. Uses the new character-based
+    /// calculation for more accurate and consistent alignment detection.
     ///
     /// **Analysis Method:**
-    /// - Calculates dynamic threshold based on average character width and indentation constants
-    /// - Accounts for screen scaling factors for accurate measurements
+    /// - Uses character-based difference calculation for consistent measurement
     /// - Applies tolerance ranges for slight positioning variations
-    /// - Uses relative positioning analysis for robust detection
+    /// - Considers both perfect alignment and small positioning differences as "equal"
     ///
-    /// **Threshold Calculation:**
-    /// - Based on `averageCharacterWidth * OCRConstants.indentationCharacterCount`
-    /// - Incorporates screen scaling factor for high-resolution displays
-    /// - Provides half-threshold tolerance for boundary cases
-    /// - Adapts to document-specific character sizing
+    /// **Alignment Criteria:**
+    /// - Absolute character difference is less than half the indentation threshold (1.0 characters)
+    /// - This provides tolerance for slight OCR positioning inaccuracies
+    /// - Uses character units for consistent behavior across different text sizes
     ///
     /// **Use Cases:**
-    /// - Paragraph indentation detection
+    /// - Paragraph alignment detection
     /// - List item alignment analysis
-    /// - Block quote structure identification
-    /// - Table column alignment recognition
+    /// - Block structure identification
+    /// - Column alignment recognition
     ///
     /// - Parameter pair: Pair of text observations to compare for X alignment
     /// - Returns: true if observations are horizontally aligned within tolerance, false otherwise
     func isEqualX(pair: OCRTextObservationPair) -> Bool {
-        guard let ocrImage = metrics.ocrImage else {
-            return false
+        let characterDifference = characterDifferenceInXPosition(pair: pair)
+
+        // Consider positions "equal" if difference is less than 0.8 * indentation character count
+        let tolerance = OCRConstants.indentationCharacterCount * 0.8
+        let isEqual = abs(characterDifference) < tolerance
+
+        if !isEqual {
+            print("\nNot equalX text: \(pair.current)")
+            print(
+                "Character difference: \(characterDifference.oneDecimalString), tolerance: \(tolerance.oneDecimalString)\n"
+            )
         }
 
-        // Calculate threshold based on average character width and indentation constant
-        let threshold = metrics.averageCharacterWidth * OCRConstants.indentationCharacterCount
-
-        let lineX = pair.current.boundingBox.origin.x
-        let prevLineX = pair.previous.boundingBox.origin.x
-        let dx = lineX - prevLineX
-
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let maxLength = ocrImage.size.width * metrics.maxLineLength / scaleFactor
-        let difference = maxLength * dx
-
-        // dx > 0, means current line may has indentation.
-        if (dx > 0 && difference < threshold) || abs(difference) < (threshold / 2) {
-            return true
-        }
-
-        print("Not equalX text: \(pair.current)")
-        print("difference: \(difference), threshold: \(threshold)")
-
-        return false
+        return isEqual
     }
 
     func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {

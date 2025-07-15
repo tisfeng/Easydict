@@ -90,8 +90,8 @@ class OCRLineMeasurer {
         let isLongLine = actualRemainingCharacters < threshold
 
         if isLongLine {
-            print("Line is considered long: \(observation)")
-            print("Remaining: \(actualRemainingCharacters), Threshold: \(threshold)")
+            print("\nLine is considered long: \(observation)")
+            print("Remaining: \(actualRemainingCharacters), Threshold: \(threshold)\n")
         }
 
         return isLongLine

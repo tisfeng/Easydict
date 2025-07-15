@@ -15,7 +15,7 @@ extension String {
 
     /// Truncate string max lenght to 200.
     func truncated(_ maxLength: Int = 200) -> String {
-        String(prefix(maxLength))
+        String(prefix(maxLength)) + (count > maxLength ? "..." : "")
     }
 
     /// Trim whitespaces and newlines.

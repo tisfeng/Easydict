@@ -60,14 +60,15 @@ struct OCRLineContext {
     ///   - metrics: OCR metrics containing document-wide analysis data and thresholds
     init(pair: OCRTextObservationPair, metrics: OCRMetrics) {
         self.pair = pair
+        self.metrics = metrics
 
         // Create internal analyzer
         self.analyzer = OCRLineAnalyzer(metrics: metrics)
 
         // Automatically calculate properties using analyzer
         self.isPrevLongText = analyzer.isLongText(pair.previous)
-        self.hasIndentation = analyzer.hasIndentation(pair.current)
         self.hasPrevIndentation = analyzer.hasIndentation(pair.previous)
+        self.hasIndentation = analyzer.hasIndentation(pair.current)
         self.isBigLineSpacing = analyzer.isBigLineSpacing(pair: pair)
         self.isEqualChineseText = analyzer.isEqualChineseText(pair: pair)
     }
@@ -159,9 +160,45 @@ struct OCRLineContext {
         )
     }
 
-    /// Determine list merge decision
+    /// Analyze and determine list merge decision
+    ///
+    /// Handles text merging decisions specifically for list-style content such as
+    /// numbered lists, bullet points, and other structured list formats. This
+    /// ensures proper formatting and structure preservation for list items.
+    ///
+    /// **List Detection Patterns:**
+    /// - Numbered lists (1., 2., 3., etc.)
+    /// - Bullet points (•, -, *, etc.)
+    /// - Alphabetic lists (a., b., c., etc.)
+    /// - Roman numerals (i., ii., iii., etc.)
+    ///
+    /// - Parameters:
+    ///   - pair: Text observation pair containing current and previous observations
+    ///   - isBigLineSpacing: Whether there is significant spacing between lines
+    /// - Returns: Merge decision based on list structure requirements
     func determineListMerge() -> OCRMergeDecision {
-        analyzer.determineListMerge(pair: pair, isBigLineSpacing: isBigLineSpacing)
+        let isPrevList = pair.previous.firstText.isListTypeFirstWord
+        let isList = pair.current.firstText.isListTypeFirstWord
+
+        if isPrevList {
+            if isList {
+                return isBigLineSpacing ? .newParagraph : .lineBreak
+            }
+
+            // List ends, next is new paragraph if big spacing
+            return isBigLineSpacing ? .newParagraph : .none
+        }
+
+        if isList {
+            if isPrevLongText {
+                return isBigLineSpacing && hasPrevEndPunctuation ? .lineBreak : .none
+            }
+
+            // New list starts
+            return isBigLineSpacing ? .newParagraph : .lineBreak
+        }
+
+        return .none
     }
 
     /// Check if previous line length is short
@@ -183,4 +220,6 @@ struct OCRLineContext {
 
     // Private analyzer for advanced operations - created internally
     private let analyzer: OCRLineAnalyzer
+
+    private let metrics: OCRMetrics
 }

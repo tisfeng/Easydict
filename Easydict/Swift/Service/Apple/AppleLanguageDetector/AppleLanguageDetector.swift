@@ -255,7 +255,7 @@ public class AppleLanguageDetector: NSObject {
             )
         }
 
-        print("Final detected text: \(text)")
+        print("Final detected text: \(text.truncated())")
         print(
             "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
         )

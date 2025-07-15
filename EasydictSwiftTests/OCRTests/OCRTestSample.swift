@@ -35,12 +35,16 @@ enum OCRTestSample: String, CaseIterable {
     case enPaper14 = "ocr-en-paper-14.png"
 
     case enTextList1 = "ocr-en-text-list-1.png"
+    case enTextList2 = "ocr-en-text-list-2.png"
+    case enTextList3 = "ocr-en-text-list-3.png"
+
     case enTextLetter338 = "ocr-en-text-letter-338.png"
 
     // ocr chinese text
     case zhText1 = "ocr-zh-text-1.png"
     case zhText2 = "ocr-zh-text-2.png"
     case zhTextBitcoin = "ocr-zh-text-bitcoin.png"
+    case zhTextList1 = "ocr-zh-text-list-1.png"
 
     // ocr japanese text
     case jaText1 = "ocr-ja-text-1.png"
@@ -99,9 +103,7 @@ enum OCRTestSample: String, CaseIterable {
         satoshin@gmx.com
         www.bitcoin.org
 
-        Abstract. A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main enefits are lost if a trusted third party is still required to prevent double-spending Ve propose a solution to the double-spending problem using a peer-to-peer network
-        The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers. The network itself requires minimal structure. Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest
-        proof-of-work chain as proof of what happened while they were gone.
+        Abstract. A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main enefits are lost if a trusted third party is still required to prevent double-spending Ve propose a solution to the double-spending problem using a peer-to-peer network The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers. The network itself requires minimal structure. Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.
 
         1. Introduction
 
@@ -130,23 +132,44 @@ enum OCRTestSample: String, CaseIterable {
         I understand all of the rules above and am capable of following them.
 
         The rules are as follows:
-
         1. I am a girl with severe depression and severe anxiety.
-
-        2. I am the second daughter in my family, 10 years younger than my older sister and 2 years younger
-        than my younger brother.
-
-        3. My parents always say I am 3*, and if it weren't for my cuteness
-        when I was young, they would have drowned me or given me
-        away.
+        2. I am the second daughter in my family, 10 years younger than my older sister and 2 years younger than my younger brother.
+        3. My parents always say I am 3*, and if it weren't for my cuteness when I was young, they would have drowned me or given me away.
         4. I am very introverted and have few friends.
+        """,
+
+        enTextList2: """
+        What's Changed
+
+        · fix: change Volcano response Extra type from String to Dictionary by @tisfeng in #863
+        · feat: support auto detection for classical Chinese (Enabled in beta mode) by @tisfeng in #872
+        · fix: activate app after taking screenshot by @tisfeng in #873
+        · feat: add enableDarkOverlay option, default to false by @tisfeng in #874
+        · feat: add GitHub Models service by @tisfeng in #877
+        · feat: add Groq service by @tisfeng in #878
+        · fix: restore wrong last application when switching applications by workspace by @tisfeng in #879
+
+        Full Changelog: 2.13. 0...2.14. 1
+        """,
+
+        enTextList3: """
+        What's Changed
+
+        · fix: change Volcano response Extra type from String to Dictionary by @tisfeng in #863
+        · feat: support auto detection for classical Chinese (Enabled in beta mode) by @tisfeng in #872
+        · fix: activate app after taking screenshot by @tisfeng in #873
+        · feat: add enableDarkOverlay option, default to false by @tisfeng in #874
+        · feat: add GitHub Models service by @tisfeng in #877
+        · feat: add Groq service by @tisfeng in #878
+        · fix: restore wrong last application when switching applications by workspace by @tisteng in #879
+
+        Full Changelog: 2.13. 0...2.14. 1
         """,
 
         enTextLetter338: """
         It is my turn to sue and be sued. I wrote in The Second Sex about whores and prostitutes, and among names of elegant whores of 1900, I gave the name of Cléo de Mérode. Last Sunday. Somebody spoke at the radio, pretending to be me. read this part of the book, and insulted Cléo de Mérode. So now I learn in newspapers and a personal letter that she sues me. And I sue the radio for having used my name. I send you a nice picture of the woman and myself. In fact, I though she was dead since long, which would have made things much easier.
 
-        Toulouse has got through a desintoxication cure; she is quite different: fair, pink, soft, smiling, dressed in a long white night-gown, looking healthy and sweet. But she spoke for an hour and a half without stopping one second, which means she was not quite normal. She was interesting because she described the way she has been nursed; it seems a terrible thing. It lasted six days. The first they gave her a mild typhoidic fever - a real shock
-        -then every day they doped her in many different ways, pushing long thick needles in her poor flesh and veins, oily things had to go to her brain and give it some grease, for the wine had eaten the grease up, they say. She had to keep a nurse night and day, because she wanted to jump through the window, she had such anguish from lack of wine. Now it seems her brain is little too greasy, that is why she speaks so much.
+        Toulouse has got through a desintoxication cure; she is quite different: fair, pink, soft, smiling, dressed in a long white night-gown, looking healthy and sweet. But she spoke for an hour and a half without stopping one second, which means she was not quite normal. She was interesting because she described the way she has been nursed; it seems a terrible thing. It lasted six days. The first they gave her a mild typhoidic fever - a real shock -then every day they doped her in many different ways, pushing long thick needles in her poor flesh and veins, oily things had to go to her brain and give it some grease, for the wine had eaten the grease up, they say. She had to keep a nurse night and day, because she wanted to jump through the window, she had such anguish from lack of wine. Now it seems her brain is little too greasy, that is why she speaks so much.
 
         Yours certainly is not. What a brute, not to send a short wire when I ask to you! I very often wait patiently for letters, but this time a letter was surely lost; you never made me wait for weeks, you used to be kinder than that until now. Shall I think you unkind rather than dead? Yea, now I shall, ugly muddy thing. Don't forget anyway to send next letters to the right places: Algiers, Hotel Saint Georges until i1th or 12th March, Gardhaia, Hotel Transatlantique, until 24th March.
 
@@ -318,11 +341,9 @@ enum OCRTestSample: String, CaseIterable {
         2) 3gpp-Sbi-Oci: A NFp/NFc uses the 3gpp-Sbi-Oci custom header to signal its Overload Control Information (OCI) to its peer. Through this header, the overloaded NF instructs its peer to throttle the service/notification requests, in an attempt to reduce its signalling load [6]. Figure 4 depicts a 3gpp-SbiOci header sent by a NFp, identified by its instance ID (1. e. , NF-Instance), asking a NFc to throttle 50% of its requests as determined in Overload-Reduction-Metric. Note that an Overload-Reduction-Metric of "0" indicates that the sender is not overloaded. The 3gpp-Sbi-Oci also includes the Timestamp indicating the time at which it was generated and its validity period identified by Period-of-Validity [6].
 
         3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37 GMT"; Period-of-Validity: 75s;
-        Overload-Reduction-Metric: 50%; NE-Instance:
-        54804518-4191-46b3-955c-ac631f953ed8
+        Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
 
         Fig. 4: OCI for a NF Instance [6].
-
         3) 3gpp-Sbi-Message-Priority: In contrast to the PRIORITY frame used to determine stream (i.e. , request and response) priority at the connection level, 3GPP introduced the 3gpp-Sbi-Message-Priority to provide the flexibility of assigning a priority for the response that differs of the one assigned to its corresponding request (5], l6]. The primary usage of SBl Message Priority (SMP) is to assist NFp/NFc/proxies when making throttling decision related to an overload control or when routing messages through proxies [6]. For instance, a server may process higher-priority messages first, however, this may block lower-priority messages from ever being handled. In SG SBA, this will result in the messages being retried, and in more traffic than the network usually handles without the use of the SMP mechanism.
 
         C. Security Implications
@@ -370,18 +391,15 @@ enum OCRTestSample: String, CaseIterable {
 
         REFERENCES
 
-        [1] I. Ahmad, S. Shahabuddin, T. Kumar, J. Okwuibe, A. Gurtov, and
-        M. Ylianttila, "Security for 5g and beyond, " IEEE Communications
-        Surveys & Tutorials, vol. 21, no. 4, pp. 3682-3722, 2019.
+        [1] I. Ahmad, S. Shahabuddin, T. Kumar, J. Okwuibe, A. Gurtov, and M. Ylianttila, "Security for 5g and beyond, " IEEE Communications Surveys & Tutorials, vol. 21, no. 4, pp. 3682-3722, 2019.
         """,
 
         enPaper14: """
         [2] 3GPP, "5G; System architecture for the 5G System: TS 23.501 v. 17.5. 0, " 2022.
         13 analysis: Is HITTP/2 secure in S& core network? " in 2018 10m Snerma- "Signalling securit)
-        tional Conference on Wireless Communications and Signal Processing
-        (WCSP). IEEE, 2018, pp. 1-6.
-        [4] 3GPP, "5G; Security architecture and procedures for 5G System: TS
-        33.501 v. 17.5. 0, " 2022.
+
+        tional Conference on Wireless Communications and Signal Processing (WCSP). IEEE, 2018, pp. 1-6.
+        [4] 3GPP, "5G; Security architecture and procedures for 5G System: TS 33.501 v. 17.5. 0, " 2022.
         [5] IETF, "Hypertext Transfer Protocol Version 2 (HTTP/2) - RFC 7540, " 2015.
 
         · 3GPP, "SG; JG System; Technical Realization of Service Based Arc.
@@ -389,17 +407,15 @@ enum OCRTestSample: String, CaseIterable {
         ture: Stage 3: 1S 29.500 v17.7. 0 201
 
         [7] ENISA, "Security In 5G Specifications Controls in 3GPP Security Specifications (5G SA), " 2021.
-        B. Christine Jost, "Security for 5G Service-Based Architecture:
-        2020, [Accessed 18-March-
+        B. Christine Jost, "Security for 5G Service-Based Architecture: 2020, [Accessed 18-March-
+
         2022]. [Online]. Available: https://www.ericsson.com/en/blog/2020/
-        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021. [11] R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World
-        Forum (5GWF). IEEE, 2021, pp. 135-140.
+        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021. [11] R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World Forum (5GWF). IEEE, 2021, pp. 135-140.
 
         generation web protocol, " 2016.
-        [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information
-        Forensics and Security, vol. 15, pp. 1790-1800, 2019. [15] AdaptiveMobile, "A Slice in Time: Slicing Security in 5G Core
-        Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/
-        network-slicing-security? hsLang=en#download
+        [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information Forensics and Security, vol. 15, pp. 1790-1800, 2019. [15] AdaptiveMobile, "A Slice in Time: Slicing Security in 5G Core
+
+        Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/ network-slicing-security? hsLang=en#download
 
         Nathalie Wehbe received the B.Sc. and M.Sc degree in Software Engineer from the Antonine University, Lebanon, in 2016. She is currently a Ph.D. candidate at Concordia Institute for Information System Engineering, Montreal, QC, Canada. Her current research interests are in the areas of 5G networks, security, anomaly detection and machine learning.
 
@@ -447,7 +463,9 @@ enum OCRTestSample: String, CaseIterable {
         觉，绝对是精疲力竭了。我在房间里喝着你的威士忌，给你写信，但我不能这么早睡觉。在我的周围是纽约，在我的后面是我们的夏天。我还要下楼去走，还要梦想，直到没有知觉。
 
         我并不悲哀。也许是晕过去了，离开我自己很远，很远，无法相信你曾经离我那么近。在出发以前，我只想对你说两件事第一，我还是希望有朝一日再见到你。我愿意，我需要见你。但是，请你记住，我决不会求你，不是出于自尊，而是因为如果你不愿意，我们的见面将毫无意义，因此我将等待。如果你希望见面，就告诉我，我不会因此认为你又爱我，甚至不会认为你希望与我同床，我们也不必一定要长时间呆在一起，只是在你愿意的情况下在一起。记住，我将永远希望你向我提出要求。
+
         不，我不相信我们将不再见面。我失去了爱情，这是事实， 是痛苦的。但是我没有失去你。不管怎么说，你满足了我，纳尔逊，你给我的一切对我是多么珍贵，你也拿不回去给我的一切。 你的温情、你的友谊对我是多么宝贵，在我想到你的时候，我仍然觉得温暖、幸福，充满了感激之情。我希望这种温情、这种友谊永存，永远存在。至于我，坦率地说我感到羞耻的意外的真话是，我还像下飞机投人你那令人失望的怀抱时那样爱你，是全身心地，是以我的全部的可怜的心爱你，我不可能少一点爱，希望这不妨碍你，亲爱的，也不要把我们的通信当做苦役，是在你想写信的时候才写，但你的每封信都会使我幸福的。
+
         是的，言词看来微不足道。我觉得你离我那么近，那么近， 让我走近你。让我同过去一样，让我在自己心里永远那样。
 
         你的西羹榔
@@ -473,6 +491,14 @@ enum OCRTestSample: String, CaseIterable {
         性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要的信息。一定比例的欺诈被认为是不可避免的。虽可通过当面使用实物货币来避免这些成本及支付的不确定性，但不存在一个无可信任方而能在通信通道上进行支付的机制。
 
         我们需要的是一个基于密码学原理而不是信任的电子支付系统，该系统允许任何有交易意愿的双方能直接交易而不需要一个可信任的第三方。交易在计算上的不可撤销将保护卖家不被欺诈，用来保护买家的程序化合约机制也应该较容易实现。在这篇论文中，我们提出一种使用点对点分布式时间戳服务器基于时间的交易序列生成计算上的证据来解决双重支付问题的方案。只要诚实节点集体控制的 CPU 算力大于任何一个合作攻击节点群的CPU算力，这个系统就是安全的。
+        """,
+
+        zhTextList1: """
+        当您发现严重的崩溃问题后，通常推荐发布一个新的版本来修复该问题。这样做有以下几个原因：
+
+        1。保持版本控制：通过发布一个新版本，您可以清晰地记录修复了哪些问题。这对于用户和开发团队来说都是透明和易于管理的。
+        2。 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样， 用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
+        因此，建议您在修复严重崩溃问题后发布一个新版本，而不是仅仅在当前版本中修复问题。
         """,
 
         // ocr japanese text

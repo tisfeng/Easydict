@@ -481,7 +481,9 @@ class OCRMetrics {
         let gap = pair.verticalGap
         let currentText = textObservation.firstText
 
-        print("  [\(index)]: \(currentText), gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)")
+        print(
+            "  [\(index)]: \(currentText.prefix(5))... , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
+        )
     }
 
     /// Analyze spacing between consecutive text observations (second pass)

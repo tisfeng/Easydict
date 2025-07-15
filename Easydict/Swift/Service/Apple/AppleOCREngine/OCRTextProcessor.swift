@@ -71,9 +71,6 @@ public class OCRTextProcessor {
     ) {
         let recognizedTexts = observations.compactMap(\.firstText)
 
-        print("Original OCR strings (\(ocrResult.from)): \(recognizedTexts)")
-        print("\nOCR objects: \(observations.formattedDescription)")
-
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
@@ -86,6 +83,8 @@ public class OCRTextProcessor {
 
         // If intelligent joining is not enabled, return simple result
         guard intelligentJoined else { return }
+
+        print("\nOCR objects: \(observations.formattedDescription)")
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
@@ -182,7 +181,7 @@ public class OCRTextProcessor {
         for (index, textObservation) in observations.enumerated() {
             let recognizedText = textObservation.firstText
 
-            print("\n\(textObservation)")
+            print("\nPerforming merging, index: \(index)\n\(textObservation)")
 
             if index > 0 {
                 let prevTextObservation = observations[index - 1]

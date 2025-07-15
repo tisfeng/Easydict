@@ -33,7 +33,7 @@ struct OCRImageTests {
 
     @Test("Test", .tags(.ocr))
     func test() async throws {
-//        await testOCR(sample: .enText2, language: .auto)
+//        await testOCR(sample: .enTextList3, language: .auto)
     }
 
     // MARK: - All OCR Tests
@@ -68,7 +68,10 @@ struct OCRImageTests {
 
             let ocrText = result.mergedText
             let expectedText = sample.expectedText
-            #expect(ocrText == expectedText)
+            #expect(
+                ocrText == expectedText,
+                "Does not match expected image: \(imageName)"
+            )
         } catch {
             Issue.record(
                 "OCR recognition failed for \(sample.imageName): \(error.localizedDescription)"
