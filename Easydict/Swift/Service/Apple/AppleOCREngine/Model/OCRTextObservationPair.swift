@@ -56,7 +56,12 @@ struct OCRTextObservationPair: CustomStringConvertible {
     /// Provides a formatted view of both text observations, useful for debugging
     /// text processing pipelines and understanding spatial relationships.
     var description: String {
-        "\nprevious: \(previous)\ncurrent: \(current)"
+        """
+        ┌───── OCRTextObservationPair ─────┐
+        │ previous: \(previous.firstText)
+        │ current : \(current.firstText)
+        └──────────────────────────────────┘
+        """
     }
 
     /// Calculate vertical gap between two text observation lines

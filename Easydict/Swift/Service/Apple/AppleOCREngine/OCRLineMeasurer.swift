@@ -59,14 +59,14 @@ class OCRLineMeasurer {
     /// **Measurement Strategy:**
     /// - Calculates actual remaining horizontal space in the line
     /// - Converts space to character count using average character width
-    /// - Compares against intelligent threshold based on content analysis
+    /// - For space-separated languages: Compares with next line's first word length
+    /// - For character-based languages: Uses character-based threshold calculations
     /// - Uses document-wide patterns for context-aware decisions
     ///
-    /// **Threshold Calculation:**
-    /// - Default threshold varies by language and content type
-    /// - Space-separated languages (English): Uses word boundary analysis
+    /// **Context-Aware Threshold:**
+    /// - Space-separated languages (English): Uses next line's first word length if available
     /// - Character-based languages (Chinese): Uses character-based calculations
-    /// - Poetry/special content: Applies different thresholds
+    /// - Fallback to smart threshold when next observation is not available
     ///
     /// **Use Cases:**
     /// - Text merging decisions (should lines be joined?)
@@ -76,23 +76,32 @@ class OCRLineMeasurer {
     ///
     /// - Parameters:
     ///   - observation: The text observation to analyze for line length
+    ///   - nextObservation: The next text observation for context-aware analysis (optional)
     ///   - minimumRemainingCharacters: Custom threshold for remaining characters (uses smart default if nil)
     /// - Returns: true if line is considered "long" (little space remaining), false if "short"
     func isLongLine(
         _ observation: VNRecognizedTextObservation,
+        nextObservation: VNRecognizedTextObservation? = nil,
         minimumRemainingCharacters: Double? = nil
     )
         -> Bool {
-        let threshold = minimumRemainingCharacters ?? smartMinimumCharactersThreshold(observation)
+        let threshold =
+            minimumRemainingCharacters
+                ?? smartMinimumCharactersThreshold(
+                    observation,
+                    nextObservation: nextObservation
+                )
         let actualRemainingCharacters = charactersRemainingInLine(observation)
 
         // Line is considered "long" if remaining space is less than required minimum
         let isLongLine = actualRemainingCharacters < threshold
 
-        if isLongLine {
-            print("\nLine is considered long: \(observation)")
-            print("Remaining: \(actualRemainingCharacters), Threshold: \(threshold)\n")
-        }
+        let debugText = observation.firstText.prefix(20)
+        let nextText = nextObservation?.firstText.prefix(20) ?? "N/A"
+
+        print(
+            "🔍 Long line analysis: '\(debugText)...' -> Long: \(isLongLine), Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", threshold)), Next: '\(nextText)...'"
+        )
 
         return isLongLine
     }
@@ -122,7 +131,8 @@ class OCRLineMeasurer {
     /// - Returns: Number of characters that could still fit on the right side of the line
     private func charactersRemainingInLine(_ observation: VNRecognizedTextObservation) -> Double {
         guard let ocrImage = metrics.ocrImage,
-              let maxObservation = metrics.maxLongLineTextObservation else {
+              let maxObservation = metrics.maxLongLineTextObservation
+        else {
             return 0.0
         }
 
@@ -144,21 +154,37 @@ class OCRLineMeasurer {
     /// Calculate the minimum character threshold for considering a line as "long"
     /// Returns the minimum number of characters that should remain for a line to be considered "not long"
     /// - Parameters:
-    ///   - observation: The text observation to analyze
-    /// - Returns: Character count threshold (dynamically calculated based on detected text)
-    private func smartMinimumCharactersThreshold(_ observation: VNRecognizedTextObservation)
+    ///   - observation: The current text observation to analyze
+    ///   - nextObservation: The next text observation for context-aware analysis (optional)
+    /// - Returns: Character count threshold (context-aware calculation based on next line)
+    private func smartMinimumCharactersThreshold(
+        _ observation: VNRecognizedTextObservation,
+        nextObservation: VNRecognizedTextObservation? = nil
+    )
         -> Double {
         let isEnglishTypeLanguage = languageManager.isLanguageWordsNeedSpace(metrics.language)
 
         if isEnglishTypeLanguage {
-            // For space-separated languages, use detected maximum word length as base
-            if metrics.maxWordLength > 0 {
-                // Use actual max word length + buffer for punctuation and spacing
-                return Double(metrics.maxWordLength) + 3.0
-            } else {
-                // Fallback to default if no words detected yet
-                return 15.0
+            // For space-separated languages, use next line's first word length if available
+            if let nextObservation = nextObservation {
+                let nextText = nextObservation.firstText.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                )
+                if !nextText.isEmpty {
+                    let firstWord = nextText.wordComponents.first ?? nextText
+                    let firstWordLength = firstWord.count
+                    // Add buffer for punctuation and spacing (minimum 3 characters)
+                    let threshold = Double(max(firstWordLength, 3)) + 3.0
+
+                    print(
+                        "📝 Using next line first word '\(firstWord)' (length: \(firstWordLength)) -> threshold: \(threshold)"
+                    )
+                    return threshold
+                }
             }
+
+            // Fallback when no next observation or empty text
+            return 10.0 // Conservative default for English
         } else {
             // For non-space languages (Chinese, Japanese, etc.), use character-based threshold
             var minimumCharacters = 1.5

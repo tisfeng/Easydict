@@ -114,6 +114,9 @@ extension KeyHolderWrapper {
             Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
         }
 
+        /// Restore the key combo for the given record view based on the shortcut type.
+        ///
+        /// - TODO: There are too many template code in `restoreKeyCombo` and `storeKeyCombo`, need to refactor.
         func restoreKeyCombo(_ recordView: RecordView) {
             let keyCombo: KeyCombo? = switch type {
             case .inputTranslate:

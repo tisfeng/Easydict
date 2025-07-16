@@ -220,12 +220,6 @@ class OCRMetrics {
     /// for "long line" detection and text merging decisions.
     var averageCharacterWidth: Double = 0.0
 
-    /// Maximum word length observed (tracked for space-separated languages)
-    ///
-    /// Used for understanding text patterns and supporting language-specific
-    /// processing decisions, particularly for English and similar languages.
-    var maxWordLength: Int = 0
-
     /// Overall confidence score for the OCR result
     ///
     /// Calculated as the average of all individual text observation confidence scores.
@@ -346,7 +340,6 @@ class OCRMetrics {
             "  - Character metrics → width: \(String(format: "%.3f", averageCharacterWidth)), total: \(totalCharCount)"
         )
         print("  - Average chars per line: \(String(format: "%.1f", charCountPerLine))")
-        print("  - Max word length: \(maxWordLength)")
         print("  - Min X position: \(String(format: "%.3f", minX))")
     }
 
@@ -399,7 +392,6 @@ class OCRMetrics {
         totalCharCount = 0
         punctuationMarkCount = 0
         averageCharacterWidth = 0.0
-        maxWordLength = 0
         confidence = 0.0
     }
 
@@ -414,7 +406,6 @@ class OCRMetrics {
     /// - Minimum line height tracking
     /// - Horizontal positioning (minX, line lengths)
     /// - Reference observation identification (longest line, leftmost position, max characters)
-    /// - Maximum word length tracking for space-separated languages
     /// - Debug gap logging for consecutive observations
     ///
     /// **Design Note:**
@@ -458,15 +449,6 @@ class OCRMetrics {
 
         if lengthOfLine < minLineLength {
             minLineLength = lengthOfLine
-        }
-
-        // Update maximum word length for space-separated languages
-        let languageManager = EZLanguageManager.shared()
-        if languageManager.isLanguageWordsNeedSpace(language) {
-            let words = textObservation.firstText.wordComponents
-            for word in words where word.count > maxWordLength {
-                maxWordLength = word.count
-            }
         }
 
         // Calculate index for gap logging (only if not the first observation)

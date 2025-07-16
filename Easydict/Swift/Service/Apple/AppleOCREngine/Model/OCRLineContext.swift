@@ -66,7 +66,7 @@ struct OCRLineContext {
         self.analyzer = OCRLineAnalyzer(metrics: metrics)
 
         // Automatically calculate properties using analyzer
-        self.isPrevLongText = analyzer.isLongText(pair.previous)
+        self.isPrevLongText = analyzer.isLongText(pair.previous, nextObservation: pair.current)
         self.hasPrevIndentation = analyzer.hasIndentation(pair.previous)
         self.hasIndentation = analyzer.hasIndentation(pair.current)
         self.isBigLineSpacing = analyzer.isBigLineSpacing(pair: pair)

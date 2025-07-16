@@ -112,7 +112,7 @@ class OCRDashHandler {
         }
 
         // Check if the previous line is long enough to warrant dash handling
-        guard lineMeasurer.isLongLine(pair.previous) else {
+        guard lineMeasurer.isLongLine(pair.previous, nextObservation: pair.current) else {
             return .none
         }
 

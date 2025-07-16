@@ -84,11 +84,13 @@ class OCRLineAnalyzer {
     /// Determine if text observation represents a long line of text
     func isLongText(
         _ observation: VNRecognizedTextObservation,
+        nextObservation: VNRecognizedTextObservation? = nil,
         minimumRemainingCharacters: Double? = nil
     )
         -> Bool {
         lineMeasurer.isLongLine(
             observation,
+            nextObservation: nextObservation,
             minimumRemainingCharacters: minimumRemainingCharacters
         )
     }

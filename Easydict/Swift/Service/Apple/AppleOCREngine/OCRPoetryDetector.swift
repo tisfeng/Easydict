@@ -112,15 +112,19 @@ class OCRPoetryDetector {
                 if i > 0 {
                     let prevObservation = observations[i - 1]
                     let prevText = prevObservation.firstText
-                    if lineMeasurer.isLongLine(prevObservation),
-                       !prevText.hasEndPunctuationSuffix {
+                    let nextObservationForPrev = i < observations.count ? observation : nil
+                    if lineMeasurer.isLongLine(
+                        prevObservation, nextObservation: nextObservationForPrev
+                    ),
+                        !prevText.hasEndPunctuationSuffix {
                         return false
                     }
                 }
             }
 
             // Check for long lines
-            let isLongLine = lineMeasurer.isLongLine(observation)
+            let nextObservation = i + 1 < observations.count ? observations[i + 1] : nil
+            let isLongLine = lineMeasurer.isLongLine(observation, nextObservation: nextObservation)
             if isLongLine {
                 longLineCount += 1
 
