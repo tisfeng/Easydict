@@ -36,7 +36,7 @@ import Vision
 /// ```
 ///
 /// Essential for maintaining contextual awareness throughout the OCR text processing pipeline.
-struct OCRTextObservationPair: CustomStringConvertible {
+struct OCRTextObservationPair: CustomStringConvertible, CustomDebugStringConvertible {
     // MARK: Internal
 
     /// The current text observation being processed
@@ -57,11 +57,16 @@ struct OCRTextObservationPair: CustomStringConvertible {
     /// text processing pipelines and understanding spatial relationships.
     var description: String {
         """
-        ┌───── OCRTextObservationPair ─────┐
-        │ previous: \(previous.firstText)
-        │ current : \(current.firstText)
+
+        ┌───── OCR Text Pair ─────┐
+        │ previous: \(previous)
+        │ current : \(current)
         └──────────────────────────────────┘
         """
+    }
+
+    var debugDescription: String {
+        description
     }
 
     /// Calculate vertical gap between two text observation lines

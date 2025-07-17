@@ -115,5 +115,5 @@ enum OCRConstants {
     static let paragraphLineHeightRatio: Double = 1.5
     static let shortPoetryCharacterCountOfLine = 12
     static let chineseDifferenceFontThreshold: Double = 3.0
-    static let englishDifferenceFontThreshold: Double = 5.0
+    static let englishDifferenceFontThreshold: Double = 4.0
 }

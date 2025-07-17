@@ -302,10 +302,10 @@ class OCRTextMerger {
         var finalIsNewParagraph = isNewParagraph
 
         // Font size and spacing checks
-        let isEqualFontSize = lineContext.isEqualFontSize
+        let isDifferentFontSize = lineContext.isDifferentFontSize
         let isFirstLetterUpperCase = lineContext.currentText.isFirstLetterUpperCase
 
-        if !isEqualFontSize || lineContext.isBigLineSpacing {
+        if isDifferentFontSize || lineContext.isBigLineSpacing {
             if !lineContext.isPrevLongText || (isEnglishLanguage() && isFirstLetterUpperCase) {
                 finalIsNewParagraph = true
             }
@@ -440,8 +440,8 @@ class OCRTextMerger {
         } else {
             // Sometimes hasIndentation is a mistake, when prev line is long
             if lineContext.isPrevLongText {
-                let isEqualFontSize = lineContext.isEqualFontSize
-                if lineContext.hasPrevEndPunctuation || !isEqualFontSize {
+                let isDifferentFontSize = lineContext.isDifferentFontSize
+                if lineContext.hasPrevEndPunctuation || isDifferentFontSize {
                     isNewParagraph = true
                 } else {
                     needLineBreak = !(dx > 0 && !isEqualX)

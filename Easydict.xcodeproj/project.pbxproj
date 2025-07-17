@@ -133,6 +133,7 @@
 		037A9CC52E24A72A00668C49 /* ocr-en-text-list-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC42E24A72A00668C49 /* ocr-en-text-list-2.png */; };
 		037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */; };
 		037A9CC92E24AC3A00668C49 /* ocr-en-text-list-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */; };
+		037A9CCD2E29421D00668C49 /* OCRMergeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */; };
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
 		0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0380484A2C4975BD006C6210 /* Encodable+JSON.swift */; };
@@ -633,6 +634,7 @@
 		037A9CC42E24A72A00668C49 /* ocr-en-text-list-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-2.png"; sourceTree = "<group>"; };
 		037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-list-1.png"; sourceTree = "<group>"; };
 		037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-3.png"; sourceTree = "<group>"; };
+		037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeStrategy.swift; sourceTree = "<group>"; };
 		0380484A2C4975BD006C6210 /* Encodable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+JSON.swift"; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
@@ -2193,6 +2195,7 @@
 				03B170992E122D080021FDE4 /* OCRLineContext.swift */,
 				03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */,
 				031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */,
+				037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3495,6 +3498,7 @@
 				6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */,
 				03B73F7D2D9C51700051CB74 /* ChineseDetection+Lyrics.swift in Sources */,
 				0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */,
+				037A9CCD2E29421D00668C49 /* OCRMergeStrategy.swift in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
 				0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */,

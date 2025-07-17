@@ -114,7 +114,8 @@ class OCRPoetryDetector {
                     let prevText = prevObservation.firstText
                     let nextObservationForPrev = i < observations.count ? observation : nil
                     if lineMeasurer.isLongLine(
-                        prevObservation, nextObservation: nextObservationForPrev
+                        observation: prevObservation,
+                        nextObservation: nextObservationForPrev
                     ),
                         !prevText.hasEndPunctuationSuffix {
                         return false
@@ -124,7 +125,7 @@ class OCRPoetryDetector {
 
             // Check for long lines
             let nextObservation = i + 1 < observations.count ? observations[i + 1] : nil
-            let isLongLine = lineMeasurer.isLongLine(observation, nextObservation: nextObservation)
+            let isLongLine = lineMeasurer.isLongLine(observation: observation, nextObservation: nextObservation)
             if isLongLine {
                 longLineCount += 1
 

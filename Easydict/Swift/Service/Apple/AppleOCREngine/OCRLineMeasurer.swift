@@ -77,31 +77,34 @@ class OCRLineMeasurer {
     /// - Parameters:
     ///   - observation: The text observation to analyze for line length
     ///   - nextObservation: The next text observation for context-aware analysis (optional)
-    ///   - minimumRemainingCharacters: Custom threshold for remaining characters (uses smart default if nil)
+    ///   - comparedObservation: The reference observation to compare against for remaining space (optional)
     /// - Returns: true if line is considered "long" (little space remaining), false if "short"
     func isLongLine(
-        _ observation: VNRecognizedTextObservation,
+        observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil,
-        minimumRemainingCharacters: Double? = nil
+        comparedObservation: VNRecognizedTextObservation? = nil
     )
         -> Bool {
-        let threshold =
-            minimumRemainingCharacters
-                ?? smartMinimumCharactersThreshold(
-                    observation,
-                    nextObservation: nextObservation
-                )
-        let actualRemainingCharacters = charactersRemainingInLine(observation)
+        let threshold = smartMinimumCharactersThreshold(
+            observation,
+            nextObservation: nextObservation
+        )
+        let actualRemainingCharacters = charactersRemainingToReferenceLine(
+            observation: observation,
+            comparedObservation: comparedObservation
+        )
 
         // Line is considered "long" if remaining space is less than required minimum
         let isLongLine = actualRemainingCharacters < threshold
 
         let debugText = observation.firstText.prefix(20)
-        let nextText = nextObservation?.firstText.prefix(20) ?? "N/A"
+        let refText = comparedObservation?.firstText.prefix(20) ?? "Default"
 
-        print(
-            "🔍 Long line analysis: '\(debugText)...' -> Long: \(isLongLine), Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", threshold)), Next: '\(nextText)...'"
-        )
+        if !isLongLine {
+            print(
+                "Short line detected: '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", threshold)), Ref: '\(refText)...'"
+            )
+        }
 
         return isLongLine
     }
@@ -126,23 +129,34 @@ class OCRLineMeasurer {
 
     // MARK: - Helper Methods
 
-    /// Calculate how many characters can still fit in the line compared to the maximum line length
-    /// - Parameter observation: The text observation to analyze
+    /// Calculate how many characters can still fit in the line compared to a reference line length
+    /// - Parameters:
+    ///   - observation: The text observation to analyze
+    ///   - comparedObservation: The reference observation to compare against (optional, defaults to metrics.maxLongLineTextObservation)
     /// - Returns: Number of characters that could still fit on the right side of the line
-    private func charactersRemainingInLine(_ observation: VNRecognizedTextObservation) -> Double {
-        guard let ocrImage = metrics.ocrImage,
-              let maxObservation = metrics.maxLongLineTextObservation
-        else {
+    private func charactersRemainingToReferenceLine(
+        observation: VNRecognizedTextObservation,
+        comparedObservation: VNRecognizedTextObservation? = nil
+    )
+        -> Double {
+        guard let ocrImage = metrics.ocrImage else {
+            return 0.0
+        }
+
+        // Use provided comparedObservation or fall back to metrics default
+        let referenceObservation = comparedObservation ?? metrics.maxLongLineTextObservation
+        guard let referenceObservation = referenceObservation else {
             return 0.0
         }
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
 
-        // Calculate the horizontal distance between current line end and maximum line end
-        let horizontalGap = maxObservation.boundingBox.maxX - observation.boundingBox.maxX
+        // Calculate the horizontal distance between current line end and reference line end
+        let horizontalGap = referenceObservation.boundingBox.maxX - observation.boundingBox.maxX
 
         // Convert the gap from normalized coordinates to actual pixel distance
-        let actualLineWidth = ocrImage.size.width * metrics.maxLineLength / scaleFactor
+        let referenceLineLength = referenceObservation.boundingBox.size.width
+        let actualLineWidth = ocrImage.size.width * referenceLineLength / scaleFactor
         let actualGapWidth = actualLineWidth * horizontalGap
 
         // Convert pixel distance to character count using average character width
@@ -175,10 +189,6 @@ class OCRLineMeasurer {
                     let firstWordLength = firstWord.count
                     // Add buffer for punctuation and spacing (minimum 3 characters)
                     let threshold = Double(max(firstWordLength, 3)) + 3.0
-
-                    print(
-                        "📝 Using next line first word '\(firstWord)' (length: \(firstWordLength)) -> threshold: \(threshold)"
-                    )
                     return threshold
                 }
             }

@@ -228,7 +228,7 @@ class OCRMetrics {
     var confidence: Float = 0.0
 
     var bigLineSpacingThreshold: Double {
-        min(averageLineHeight, averageLineSpacing * 1.4)
+        min(averageLineHeight, minLineHeight * 1.1)
     }
 
     // MARK: - Comprehensive Metrics Calculation
@@ -317,8 +317,8 @@ class OCRMetrics {
         // Calculate overall confidence score
         computeOverallConfidence(from: observations)
 
-        isPoetry = poetryDetector.detectPoetry()
-        print("🎭 Poetry detected: \(isPoetry)")
+//        isPoetry = poetryDetector.detectPoetry()
+//        print("🎭 Poetry detected: \(isPoetry)")
 
         // Output comprehensive metrics summary
         print("📊 OCR Metrics Summary:")
@@ -464,7 +464,7 @@ class OCRMetrics {
         let currentText = textObservation.firstText
 
         print(
-            "  [\(index)]: \(currentText.prefix(5))... , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
+            "  [\(index)]: \(currentText.prefix(20))... , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
         )
     }
 

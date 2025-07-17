@@ -59,14 +59,22 @@ class OCRLineAnalyzer {
     /// - Block quote identification
     /// - Code block formatting preservation
     ///
-    /// - Parameter observation: The text observation to analyze for indentation
+    /// - Parameters:
+    ///   - observation: The text observation to analyze for indentation
+    ///   - comparedObservation: The reference observation to compare against (optional, defaults to metrics.minXLineTextObservation)
     /// - Returns: true if the observation is indented, false if aligned with left margin
-    func hasIndentation(_ observation: VNRecognizedTextObservation) -> Bool {
-        guard let minXObservation = metrics.minXLineTextObservation else { return false }
+    func hasIndentation(
+        observation: VNRecognizedTextObservation,
+        comparedObservation: VNRecognizedTextObservation? = nil
+    )
+        -> Bool {
+        // Use provided comparedObservation or fall back to metrics default
+        let referenceObservation = comparedObservation ?? metrics.minXLineTextObservation
+        guard let referenceObservation = referenceObservation else { return false }
 
         let textObservationPair = OCRTextObservationPair(
             current: observation,
-            previous: minXObservation
+            previous: referenceObservation
         )
 
         let characterDifference = characterDifferenceInXPosition(pair: textObservationPair)
@@ -74,8 +82,10 @@ class OCRLineAnalyzer {
         let isIndented = characterDifference > OCRConstants.indentationCharacterCount
 
         if isIndented {
+            let refText = referenceObservation.firstText.prefix(20)
             print("\nIndentation detected: \(characterDifference.oneDecimalString) characters")
-            print("Current observation: \(observation)\n")
+            print("Current observation: \(observation)")
+            print("Compared against: '\(refText)...'\n")
         }
 
         return isIndented
@@ -83,47 +93,16 @@ class OCRLineAnalyzer {
 
     /// Determine if text observation represents a long line of text
     func isLongText(
-        _ observation: VNRecognizedTextObservation,
+        observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil,
-        minimumRemainingCharacters: Double? = nil
+        comparedObservation: VNRecognizedTextObservation? = nil
     )
         -> Bool {
         lineMeasurer.isLongLine(
-            observation,
+            observation: observation,
             nextObservation: nextObservation,
-            minimumRemainingCharacters: minimumRemainingCharacters
+            comparedObservation: comparedObservation
         )
-    }
-
-    /// Check if two observations contain equal-length Chinese text
-    ///
-    /// Analyzes whether two text observations represent Chinese text with equal
-    /// character lengths and consistent formatting. This is particularly useful
-    /// for detecting Chinese poetry patterns and structured content.
-    ///
-    /// **Analysis Criteria:**
-    /// - Current document language is Chinese (Simplified or Traditional)
-    /// - Both observations have equal character count and formatting
-    /// - Consistent punctuation patterns (both end with punctuation or neither do)
-    /// - Basic horizontal alignment validation
-    ///
-    /// **Use Cases:**
-    /// - Chinese poetry detection (classical poems often have equal line lengths)
-    /// - Structured Chinese text identification
-    /// - Traditional document format validation
-    /// - Parallel text analysis
-    ///
-    /// - Parameter pair: Text observation pair to analyze
-    /// - Returns: true if observations contain equal-length Chinese text
-    func isEqualChineseText(pair: OCRTextObservationPair) -> Bool {
-        let isEqualLength = pair.hasEqualCharacterLength
-        let isEqualChinese = isEqualLength && languageManager.isChineseLanguage(metrics.language)
-
-        if isEqualLength {
-            print("Pair is considered equal Chinese text: \(pair)")
-        }
-
-        return isEqualChinese
     }
 
     /// Analyze if there is significant line spacing between two text observations
@@ -167,19 +146,69 @@ class OCRLineAnalyzer {
         return isBigSpacing
     }
 
-    /// Analyze and compare font sizes between two text observations
-    func isEqualFontSize(pair: OCRTextObservationPair) -> Bool {
+    /// Calculate font size difference between two text observations
+    ///
+    /// - Parameter pair: Text observation pair containing current and previous observations
+    /// - Returns: Absolute difference between the font sizes of the two observations
+    func fontSizeDifference(pair: OCRTextObservationPair) -> Double {
         let currentFontSize = fontSize(pair.current)
         let prevFontSize = fontSize(pair.previous)
+        return abs(currentFontSize - prevFontSize)
+    }
 
-        let differentFontSize = abs(currentFontSize - prevFontSize)
-        let isEqual = differentFontSize <= fontSizeThreshold(metrics.language)
-        if !isEqual {
-            print(
-                "Not equal font: diff = \(differentFontSize) (\(prevFontSize), \(currentFontSize))"
-            )
+    /// Analyze and compare font sizes between two text observations
+    ///
+    /// - Parameters:
+    ///   - pair: Text observation pair containing current and previous observations
+    ///   - fontSizeThreshold: Optional font size difference threshold; if nil, uses language-specific default
+    /// - Returns: true if font sizes are considered different beyond the threshold, false if they are similar
+    func isDifferentFontSize(pair: OCRTextObservationPair, fontSizeThreshold: Double? = nil) -> Bool {
+        let differentFontSize = fontSizeDifference(pair: pair)
+        let threshold = fontSizeThreshold ?? self.fontSizeThreshold(metrics.language)
+        let isDifferent = differentFontSize >= threshold
+
+        if isDifferent {
+            print("\nDifferent font detected: diff = \(differentFontSize), threshold = \(threshold)")
+            print("Pair: \(pair)\n")
         }
-        return isEqual
+        return isDifferent
+    }
+
+    func fontSizeThreshold(_ language: Language) -> Double {
+        languageManager.isChineseLanguage(language)
+            ? OCRConstants.chineseDifferenceFontThreshold
+            : OCRConstants.englishDifferenceFontThreshold
+    }
+
+    /// Check if two observations contain equal-length Chinese text
+    ///
+    /// Analyzes whether two text observations represent Chinese text with equal
+    /// character lengths and consistent formatting. This is particularly useful
+    /// for detecting Chinese poetry patterns and structured content.
+    ///
+    /// **Analysis Criteria:**
+    /// - Current document language is Chinese (Simplified or Traditional)
+    /// - Both observations have equal character count and formatting
+    /// - Consistent punctuation patterns (both end with punctuation or neither do)
+    /// - Basic horizontal alignment validation
+    ///
+    /// **Use Cases:**
+    /// - Chinese poetry detection (classical poems often have equal line lengths)
+    /// - Structured Chinese text identification
+    /// - Traditional document format validation
+    /// - Parallel text analysis
+    ///
+    /// - Parameter pair: Text observation pair to analyze
+    /// - Returns: true if observations contain equal-length Chinese text
+    func isEqualChineseText(pair: OCRTextObservationPair) -> Bool {
+        let isEqualLength = pair.hasEqualCharacterLength
+        let isEqualChinese = isEqualLength && languageManager.isChineseLanguage(metrics.language)
+
+        if isEqualLength {
+            print("Pair is considered equal Chinese text: \(pair)")
+        }
+
+        return isEqualChinese
     }
 
     /// Analyze if text represents short Chinese poetry format
@@ -410,8 +439,7 @@ class OCRLineAnalyzer {
         }
 
         let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let textWidth =
-            observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
+        let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
         return fontSize(observation.firstText, width: textWidth)
     }
 
@@ -422,17 +450,11 @@ class OCRLineAnalyzer {
         let width = text.size(withAttributes: [.font: font]).width
 
         /**
-         systemFontSize / width = x / textWidth
-         x = textWidth * (systemFontSize / width)
+         systemFontSize / width = fontSize / textWidth
+         fontSize = textWidth * (systemFontSize / width)
          */
         let fontSize = textWidth * (systemFontSize / width)
 
         return fontSize
-    }
-
-    private func fontSizeThreshold(_ language: Language) -> Double {
-        languageManager.isChineseLanguage(language)
-            ? OCRConstants.chineseDifferenceFontThreshold
-            : OCRConstants.englishDifferenceFontThreshold
     }
 }

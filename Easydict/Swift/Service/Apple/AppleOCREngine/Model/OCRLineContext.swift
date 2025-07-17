@@ -66,9 +66,12 @@ struct OCRLineContext {
         self.analyzer = OCRLineAnalyzer(metrics: metrics)
 
         // Automatically calculate properties using analyzer
-        self.isPrevLongText = analyzer.isLongText(pair.previous, nextObservation: pair.current)
-        self.hasPrevIndentation = analyzer.hasIndentation(pair.previous)
-        self.hasIndentation = analyzer.hasIndentation(pair.current)
+        self.isPrevLongText = analyzer.isLongText(
+            observation: pair.previous,
+            nextObservation: pair.current
+        )
+        self.hasPrevIndentation = analyzer.hasIndentation(observation: pair.previous)
+        self.hasIndentation = analyzer.hasIndentation(observation: pair.current)
         self.isBigLineSpacing = analyzer.isBigLineSpacing(pair: pair)
         self.isEqualChineseText = analyzer.isEqualChineseText(pair: pair)
     }
@@ -146,9 +149,9 @@ struct OCRLineContext {
 
     // MARK: - Convenience Methods
 
-    /// Check if font sizes are equal between current and previous observations
-    var isEqualFontSize: Bool {
-        analyzer.isEqualFontSize(pair: pair)
+    /// Check if font sizes are different between current and previous observations
+    var isDifferentFontSize: Bool {
+        analyzer.isDifferentFontSize(pair: pair)
     }
 
     /// Determine Chinese poetry merge decision
