@@ -82,7 +82,7 @@ class OCRLineAnalyzer {
         let isIndented = characterDifference > OCRConstants.indentationCharacterCount
 
         if isIndented {
-            let refText = referenceObservation.firstText.prefix(20)
+            let refText = referenceObservation.firstText.prefix20
             print("\nIndentation detected: \(characterDifference.oneDecimalString) characters")
             print("Current observation: \(observation)")
             print("Compared against: '\(refText)...'\n")
@@ -168,7 +168,9 @@ class OCRLineAnalyzer {
         let isDifferent = differentFontSize >= threshold
 
         if isDifferent {
-            print("\nDifferent font detected: diff = \(differentFontSize), threshold = \(threshold)")
+            print(
+                "\nDifferent font detected: diff = \(differentFontSize), threshold = \(threshold)"
+            )
             print("Pair: \(pair)\n")
         }
         return isDifferent
@@ -356,12 +358,12 @@ class OCRLineAnalyzer {
         let previousX = pair.previous.boundingBox.origin.x
         let dx = currentX - previousX
 
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let imageWidth = ocrImage.size.width / scaleFactor
-        let pixelDifference = imageWidth * dx
+        // Vision framework provides normalized coordinates (0-1), multiply by image width to get logical distance
+        let imageWidth = ocrImage.size.width
+        let logicalDifference = imageWidth * dx
 
-        // Convert pixel difference to character units using average character width
-        let characterDifference = pixelDifference / metrics.averageCharacterWidth
+        // Convert logical difference to character units using average character width
+        let characterDifference = logicalDifference / metrics.averageCharacterWidth
 
         return characterDifference
     }
@@ -413,33 +415,74 @@ class OCRLineAnalyzer {
         return (minValue / maxValue) > ratio
     }
 
+    /// Determine if two text observations have equal alignment (both X position and line width)
+    ///
+    /// This method combines horizontal positioning analysis with line width comparison
+    /// to determine if two text observations represent aligned text blocks. It considers
+    /// both the starting position (X coordinate) and ending position (maxX) for comprehensive
+    /// alignment detection.
+    ///
+    /// **Analysis Components:**
+    /// - X-coordinate alignment using character-based tolerance
+    /// - Maximum X-coordinate similarity using ratio-based comparison
+    /// - Combined assessment for overall text alignment
+    ///
+    /// **Use Cases:**
+    /// - Paragraph boundary detection
+    /// - Text block alignment analysis
+    /// - Structured document processing
+    /// - Layout consistency verification
+    ///
+    /// - Parameter pair: Text observation pair to analyze for alignment
+    /// - Returns: true if observations are aligned in both position and width, false otherwise
+    func isEqualAlignment(pair: OCRTextObservationPair) -> Bool {
+        let isEqualX = isEqualX(pair: pair)
+        let isEqualLineMaxX = isEqualMaxX(pair: pair)
+
+        return isEqualX && isEqualLineMaxX
+    }
+
+    /// Check if two text observations have similar maximum X coordinates (line endings)
+    ///
+    /// Analyzes whether two text observations end at approximately the same horizontal
+    /// position by comparing their maximum X coordinates. This is useful for detecting
+    /// text blocks with similar line lengths or right-aligned content.
+    ///
+    /// **Comparison Method:**
+    /// - Uses ratio-based comparison for relative similarity assessment
+    /// - Default threshold of 95% similarity for robust detection
+    /// - Considers the ratio between smaller and larger maxX values
+    ///
+    /// **Use Cases:**
+    /// - Right margin alignment detection
+    /// - Similar line length identification
+    /// - Text block boundary analysis
+    /// - Justified text recognition
+    ///
+    /// - Parameters:
+    ///   - pair: Text observation pair to analyze
+    ///   - ratio: Similarity threshold ratio (default: 0.95)
+    /// - Returns: true if maxX coordinates are similar within the ratio threshold
+    func isEqualMaxX(pair: OCRTextObservationPair, ratio: Double = 0.95) -> Bool {
+        let lineMaxX = pair.current.boundingBox.maxX
+        let prevLineMaxX = pair.previous.boundingBox.maxX
+
+        return isRatioGreaterThan(ratio, value1: lineMaxX, value2: prevLineMaxX)
+    }
+
     // MARK: Private
 
     private let metrics: OCRMetrics
     private let lineMeasurer: OCRLineMeasurer
     private var languageManager = EZLanguageManager.shared()
 
-    private func isEqualText(pair: OCRTextObservationPair) -> Bool {
-        let isEqualX = isEqualX(pair: pair)
-
-        // Use the new property from OCRTextObservationPair for basic maxX comparison
-        // But still need more sophisticated analysis that requires metrics
-        let lineMaxX = pair.current.boundingBox.maxX
-        let prevLineMaxX = pair.previous.boundingBox.maxX
-
-        let ratio = 0.95
-        let isEqualLineMaxX = isRatioGreaterThan(ratio, value1: lineMaxX, value2: prevLineMaxX)
-
-        return isEqualX && isEqualLineMaxX
-    }
-
     private func fontSize(_ observation: VNRecognizedTextObservation) -> Double {
         guard let ocrImage = metrics.ocrImage else {
             return NSFont.systemFontSize
         }
 
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let textWidth = observation.boundingBox.size.width * ocrImage.size.width / scaleFactor
+        // Vision framework provides normalized coordinates, multiply by image size to get logical width
+        let textWidth = observation.boundingBox.size.width * ocrImage.size.width
         return fontSize(observation.firstText, width: textWidth)
     }
 

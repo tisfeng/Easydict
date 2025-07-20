@@ -111,9 +111,12 @@ enum OCRMergeDecision {
 enum OCRConstants {
     static let lineBreakText = "\n"
     static let paragraphBreakText = "\n\n"
-    static let indentationCharacterCount: Double = 2.0
+    static let indentationCharacterCount: Double = 1.8 // <~ 2 characters for indentation
     static let paragraphLineHeightRatio: Double = 1.5
     static let shortPoetryCharacterCountOfLine = 12
+
     static let chineseDifferenceFontThreshold: Double = 3.0
-    static let englishDifferenceFontThreshold: Double = 4.0
+
+    // English text font may be not precise, so use a larger threshold
+    static let englishDifferenceFontThreshold: Double = 5.0
 }

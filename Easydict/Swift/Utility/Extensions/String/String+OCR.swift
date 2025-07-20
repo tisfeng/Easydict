@@ -35,6 +35,11 @@ extension String {
         return String(lastChar).isPunctuationCharacter
     }
 
+    var hasPunctuationPrefix: Bool {
+        guard let firstChar = first else { return false }
+        return String(firstChar).isPunctuationCharacter
+    }
+
     /// Check if text starts with lowercase character
     var isLowercaseFirstChar: Bool {
         guard let firstChar = first else { return false }

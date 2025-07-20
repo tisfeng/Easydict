@@ -25,26 +25,40 @@ import NaturalLanguage
 ///
 /// **Usage:**
 /// ```swift
+/// // Basic usage without debug logs
 /// let detector = AppleLanguageDetector()
-///
-/// // Basic detection
 /// let language = detector.detectLanguage(text: "apple")  // Returns .english instead of .turkish
 /// let chinese = detector.detectLanguage(text: "很棒")    // Returns .simplifiedChinese accurately
+///
+/// // With debug logging enabled for debugging and development
+/// let debugDetector = AppleLanguageDetector(enableDebugLog: true)
+/// let result = debugDetector.detectLanguage(text: "Hello world")  // Prints detailed logs
 ///
 /// // Mixed content handling
 /// let mixed1 = detector.detectLanguage(text: "Hello world with one 中文 word")  // Returns .english
 /// let mixed2 = detector.detectLanguage(text: "apple苹果")  // Returns .simplifiedChinese
-///
-/// // With logging for debugging
-/// let result = detector.detectLanguage(text: "Hello world")
 /// ```
 ///
 /// **Performance Characteristics:**
 /// - Minimal overhead over raw Apple detection (~1-2ms additional processing)
 /// - Simplified post-processing pipeline for better maintainability
 /// - Optimized for both short and long text scenarios
+/// - Optional debug logging with no performance impact when disabled
 public class AppleLanguageDetector: NSObject {
+    // MARK: Lifecycle
+
+    /// Initialize language detector with optional debug logging
+    ///
+    /// - Parameter enableDebugLog: Whether to enable debug logging output (default: false)
+    public init(enableDebugLog: Bool = false) {
+        self.isDebugLogEnabled = enableDebugLog
+        super.init()
+    }
+
     // MARK: Public
+
+    /// Controls whether debug logging is enabled
+    public let isDebugLogEnabled: Bool
 
     /// Records Chinese character statistics when English is detected and user prefers Chinese
     public private(set) var chineseCharacterCount: Int = 0
@@ -90,9 +104,11 @@ public class AppleLanguageDetector: NSObject {
 
         let endTime = CFAbsoluteTimeGetCurrent()
 
-        print("Language probabilities: \(probabilities.prettyPrinted)\n")
-        print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
-        print("Detection cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
+        if isDebugLogEnabled {
+            print("Language probabilities: \(probabilities.prettyPrinted)\n")
+            print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
+            print("Detection cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
+        }
 
         // Convert to String keys for Objective-C compatibility
         var result: [String: NSNumber] = [:]
@@ -255,10 +271,12 @@ public class AppleLanguageDetector: NSObject {
             )
         }
 
-        print("Final detected text: \(text.truncated())")
-        print(
-            "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
-        )
+        if isDebugLogEnabled {
+            print("Final detected text: \(text.prefix200)")
+            print(
+                "Detected language: \(detectedLanguage) (\(String(format: "%.3f", topConfidence)))"
+            )
+        }
 
         return detectedLanguage
     }
@@ -277,7 +295,9 @@ public class AppleLanguageDetector: NSObject {
         var adjustedProbabilities = languageProbabilities
         let preferredLanguages = EZLanguageManager.shared().preferredLanguages
 
-        print("Original probabilities: \(languageProbabilities.prettyPrinted)")
+        if isDebugLogEnabled {
+            print("Original probabilities: \(languageProbabilities.prettyPrinted)")
+        }
 
         // Apply user preferred language weights
         for (index, preferredLanguage) in preferredLanguages.enumerated() {
@@ -315,8 +335,10 @@ public class AppleLanguageDetector: NSObject {
             adjustedProbabilities[NLLanguage.english.rawValue] = NSNumber(value: newProbability)
         }
 
-        print("User preferred languages: \(preferredLanguages.prettyPrinted)")
-        print("Adjusted probabilities: \(adjustedProbabilities.prettyPrinted)")
+        if isDebugLogEnabled {
+            print("User preferred languages: \(preferredLanguages.prettyPrinted)")
+            print("Adjusted probabilities: \(adjustedProbabilities.prettyPrinted)")
+        }
 
         return adjustedProbabilities
     }
@@ -633,19 +655,21 @@ public class AppleLanguageDetector: NSObject {
         simplifiedCharacterCount = chineseCharacterCount - traditionalCharacterCount
 
         // Log the statistics for debugging
-        print(
-            "Chinese character stats - Total: \(chineseCharacterCount), Simplified: \(simplifiedCharacterCount), Traditional: \(traditionalCharacterCount)"
-        )
-        print(
-            "Chinese character ratio: \(String(format: "%.3f", chineseCharacterRatio)) (\(String(format: "%.1f", chineseCharacterRatio * 100))%)"
-        )
-
-        if chineseCharacterCount > 0 {
-            let simplifiedRatio =
-                Double(simplifiedCharacterCount) / Double(chineseCharacterCount)
+        if isDebugLogEnabled {
             print(
-                "Simplified ratio among Chinese chars: \(String(format: "%.3f", simplifiedRatio)) (\(String(format: "%.1f", simplifiedRatio * 100))%)"
+                "Chinese character stats - Total: \(chineseCharacterCount), Simplified: \(simplifiedCharacterCount), Traditional: \(traditionalCharacterCount)"
             )
+            print(
+                "Chinese character ratio: \(String(format: "%.3f", chineseCharacterRatio)) (\(String(format: "%.1f", chineseCharacterRatio * 100))%)"
+            )
+
+            if chineseCharacterCount > 0 {
+                let simplifiedRatio =
+                    Double(simplifiedCharacterCount) / Double(chineseCharacterCount)
+                print(
+                    "Simplified ratio among Chinese chars: \(String(format: "%.3f", simplifiedRatio)) (\(String(format: "%.1f", simplifiedRatio * 100))%)"
+                )
+            }
         }
 
         isAnalyzed = true

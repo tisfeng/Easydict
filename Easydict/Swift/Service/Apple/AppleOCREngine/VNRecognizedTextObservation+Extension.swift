@@ -23,6 +23,11 @@ extension VNRecognizedTextObservation {
         topCandidates(1).first?.string ?? ""
     }
 
+    /// Gets the first 20 characters of the recognized text
+    var prefix20: String {
+        firstText.prefixChars(20)
+    }
+
     /// Enhanced description providing comprehensive observation details
     ///
     /// Overrides the default description to provide human-readable information about
@@ -66,6 +71,9 @@ extension VNRecognizedTextObservation {
     /// Storage key for joined string associated object
     private static var joinedStringKey: UInt8 = 0
 
+    /// Storage key for merge strategy associated object
+    private static var mergeStrategyKey: UInt8 = 0
+
     /// Temporary storage for processed joining string during text merging
     ///
     /// This property allows storing intermediate processing results during the
@@ -78,6 +86,15 @@ extension VNRecognizedTextObservation {
         set {
             objc_setAssociatedObject(
                 self, &Self.joinedStringKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC
+            )
+        }
+    }
+
+    var mergeStrategy: OCRMergeStrategy? {
+        get { objc_getAssociatedObject(self, &Self.mergeStrategyKey) as? OCRMergeStrategy }
+        set {
+            objc_setAssociatedObject(
+                self, &Self.mergeStrategyKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC
             )
         }
     }

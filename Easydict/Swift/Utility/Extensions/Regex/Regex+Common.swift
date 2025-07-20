@@ -298,38 +298,44 @@ extension Regex where Output == Substring {
         }
     }
 
-    /// Matches number-like patterns including decimals, version numbers, and other dot-separated numeric sequences
+    /// Matches number-like patterns including decimals, version numbers, and IP addresses (digits only)
     ///
     /// **Examples:**
     /// - `10.99` ✓ (decimal)
     /// - `3.14159` ✓ (decimal)
     /// - `1.2.3` ✓ (version number)
     /// - `1.2.3.4` ✓ (IP address, version)
-    /// - `2.1.0.beta1` ✓ (complex version)
     /// - `10.5.7.129` ✓ (IP address)
     /// - `1.0` ✓ (simple version)
     /// - `123.456.789.012` ✓ (any dot-separated numbers)
+    /// - `2.1.0.beta1` ✗ (contains letters - excluded)
+    /// - `1.2.alpha` ✗ (contains letters - excluded)
+    /// - `5.1.2.RELEASE` ✗ (contains letters - excluded)
     ///
     /// **Pattern Logic:**
     /// - Must start with one or more digits (not letters)
-    /// - Followed by one or more groups of: dot + alphanumeric segments
-    /// - Supports mixed alphanumeric segments (for beta versions, etc.)
-    /// - Uses word boundaries to ensure complete matches
+    /// - Followed by one or more groups of: dot + digit segments only
+    /// - Only supports numeric segments (letters are excluded)
+    /// - Uses word boundaries to ensure complete matches and prevent partial matching
     ///
-    /// **Original regex equivalent:** `\b\d+(?:\.[a-zA-Z0-9]+)+\b`
+    /// **Original regex equivalent:** `\b\d+(?:\.\d+)+\b`
     static var numberLikePattern: Self {
         Regex {
-            Anchor.wordBoundary
+            ChoiceOf {
+                Anchor.startOfLine
+                CharacterClass.horizontalWhitespace
+            }
             // Must start with digits (not letters)
             OneOrMore(.digit)
-            // Followed by one or more dot-separated alphanumeric segments
+            // Followed by one or more dot-separated digit segments only
             OneOrMore {
                 "."
-                OneOrMore {
-                    CharacterClass(.asciiAlphanumeric)
-                }
+                OneOrMore(.digit)
             }
-            Anchor.wordBoundary
+            ChoiceOf {
+                Anchor.endOfLine
+                CharacterClass.horizontalWhitespace
+            }
         }
     }
 
@@ -391,7 +397,7 @@ extension Regex where Output == Substring {
         }
     }
 
-    /// Matches whitespace around dots in number-like patterns (decimals, versions, IPs)
+    /// Matches whitespace around dots in number-like patterns (decimals, versions, IPs) - digits only
     /// Normalizes spacing between numeric segments
     ///
     /// **Examples:**
@@ -399,20 +405,22 @@ extension Regex where Output == Substring {
     /// - `"10 . 99"` → normalizes to "10.99"
     /// - `"1 .2. 3 . 4"` → normalizes to "1.2.3.4"
     /// - `"192 . 168.1. 1"` → normalizes to "192.168.1.1"
+    /// - `"1 . 2 . beta"` ✗ (contains letters - excluded)
+    /// - `"5 . 1 . 2 . RELEASE"` ✗ (contains letters - excluded)
     ///
     /// **Pattern Logic:**
     /// - Must start with digits (not letters)
-    /// - Followed by one or more: optional whitespace + dot + optional whitespace + alphanumeric segment
-    /// - Supports mixed alphanumeric segments for versions like "1.2.beta"
-    /// - Uses word boundaries for precise matching
+    /// - Followed by one or more: optional whitespace + dot + optional whitespace + digit segments only
+    /// - Only supports numeric segments (letters are excluded)
+    /// - Uses word boundaries for precise matching and prevent partial matching
     ///
-    /// **Original regex equivalent:** `\b\d+(?:[ \t]*\.[ \t]*[a-zA-Z0-9]+)+\b`
+    /// **Original regex equivalent:** `\b\d+(?:[ \t]*\.[ \t]*\d+)+\b`
     static var numberPatternWithSpacing: Self {
         Regex {
             Anchor.wordBoundary
             // Must start with digits (not letters)
             OneOrMore(.digit)
-            // One or more dot-separated segments with optional spacing
+            // One or more dot-separated digit segments with optional spacing
             OneOrMore {
                 ZeroOrMore {
                     CharacterClass.horizontalWhitespace
@@ -421,8 +429,19 @@ extension Regex where Output == Substring {
                 ZeroOrMore {
                     CharacterClass.horizontalWhitespace
                 }
+                OneOrMore(.digit)
+            }
+            // Ensure it doesn't continue with more dot-separated letter segments
+            NegativeLookahead {
+                ZeroOrMore {
+                    CharacterClass.horizontalWhitespace
+                }
+                "."
+                ZeroOrMore {
+                    CharacterClass.horizontalWhitespace
+                }
                 OneOrMore {
-                    CharacterClass(.asciiAlphanumeric)
+                    CharacterClass.asciiLetters
                 }
             }
             Anchor.wordBoundary

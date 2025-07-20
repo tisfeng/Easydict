@@ -86,9 +86,10 @@ class OCRLineMeasurer {
     )
         -> Bool {
         let threshold = smartMinimumCharactersThreshold(
-            observation,
+            observation: observation,
             nextObservation: nextObservation
         )
+
         let actualRemainingCharacters = charactersRemainingToReferenceLine(
             observation: observation,
             comparedObservation: comparedObservation
@@ -97,8 +98,8 @@ class OCRLineMeasurer {
         // Line is considered "long" if remaining space is less than required minimum
         let isLongLine = actualRemainingCharacters < threshold
 
-        let debugText = observation.firstText.prefix(20)
-        let refText = comparedObservation?.firstText.prefix(20) ?? "Default"
+        let debugText = observation.firstText.prefix20
+        let refText = comparedObservation?.firstText.prefix20 ?? "Default"
 
         if !isLongLine {
             print(
@@ -132,7 +133,7 @@ class OCRLineMeasurer {
     /// Calculate how many characters can still fit in the line compared to a reference line length
     /// - Parameters:
     ///   - observation: The text observation to analyze
-    ///   - comparedObservation: The reference observation to compare against (optional, defaults to metrics.maxLongLineTextObservation)
+    ///   - comparedObservation: The reference observation to compare against (optional, defaults to metrics.maxXLineTextObservation)
     /// - Returns: Number of characters that could still fit on the right side of the line
     private func charactersRemainingToReferenceLine(
         observation: VNRecognizedTextObservation,
@@ -144,23 +145,21 @@ class OCRLineMeasurer {
         }
 
         // Use provided comparedObservation or fall back to metrics default
-        let referenceObservation = comparedObservation ?? metrics.maxLongLineTextObservation
+        let referenceObservation = comparedObservation ?? metrics.maxXLineTextObservation
         guard let referenceObservation = referenceObservation else {
             return 0.0
         }
 
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-
         // Calculate the horizontal distance between current line end and reference line end
         let horizontalGap = referenceObservation.boundingBox.maxX - observation.boundingBox.maxX
 
-        // Convert the gap from normalized coordinates to actual pixel distance
+        // Convert the gap from normalized coordinates to logical distance
         let referenceLineLength = referenceObservation.boundingBox.size.width
-        let actualLineWidth = ocrImage.size.width * referenceLineLength / scaleFactor
-        let actualGapWidth = actualLineWidth * horizontalGap
+        let logicalLineWidth = ocrImage.size.width * referenceLineLength
+        let logicalGapWidth = logicalLineWidth * horizontalGap
 
-        // Convert pixel distance to character count using average character width
-        let remainingCharacters = actualGapWidth / metrics.averageCharacterWidth
+        // Convert logical distance to character count using average character width
+        let remainingCharacters = logicalGapWidth / metrics.averageCharacterWidth
 
         return remainingCharacters
     }
@@ -172,7 +171,7 @@ class OCRLineMeasurer {
     ///   - nextObservation: The next text observation for context-aware analysis (optional)
     /// - Returns: Character count threshold (context-aware calculation based on next line)
     private func smartMinimumCharactersThreshold(
-        _ observation: VNRecognizedTextObservation,
+        observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil
     )
         -> Double {
@@ -180,15 +179,21 @@ class OCRLineMeasurer {
 
         if isEnglishTypeLanguage {
             // For space-separated languages, use next line's first word length if available
-            if let nextObservation = nextObservation {
+            if let nextObservation {
                 let nextText = nextObservation.firstText.trimmingCharacters(
                     in: .whitespacesAndNewlines
                 )
                 if !nextText.isEmpty {
-                    let firstWord = nextText.wordComponents.first ?? nextText
-                    let firstWordLength = firstWord.count
-                    // Add buffer for punctuation and spacing (minimum 3 characters)
-                    let threshold = Double(max(firstWordLength, 3)) + 3.0
+                    var threshold = 3.0 // Minimum threshold for English
+
+                    // Count the first word length if next first character is not punctuation
+                    if !nextText.hasPunctuationPrefix {
+                        let firstWord = nextText.wordComponents.first ?? nextText
+                        let firstWordLength = firstWord.count.double
+                        // Add buffer for punctuation and spacing
+                        threshold = firstWordLength + 3.0 // Special case > 2.8
+                    }
+
                     return threshold
                 }
             }

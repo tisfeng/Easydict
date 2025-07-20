@@ -169,11 +169,11 @@ class OCRMetrics {
 
     // MARK: - Reference Text Observations
 
-    /// Text observation with the maximum line length (extends furthest right)
+    /// Text observation with the maximum X coordinate (extends furthest right)
     ///
     /// Used as reference point for character width calculations and relative
     /// line length analysis. Critical for "long line" detection algorithms.
-    var maxLongLineTextObservation: VNRecognizedTextObservation?
+    var maxXLineTextObservation: VNRecognizedTextObservation?
 
     /// Text observation positioned at the minimum X coordinate (leftmost)
     ///
@@ -317,8 +317,8 @@ class OCRMetrics {
         // Calculate overall confidence score
         computeOverallConfidence(from: observations)
 
-//        isPoetry = poetryDetector.detectPoetry()
-//        print("🎭 Poetry detected: \(isPoetry)")
+        //        isPoetry = poetryDetector.detectPoetry()
+        //        print("🎭 Poetry detected: \(isPoetry)")
 
         // Output comprehensive metrics summary
         print("📊 OCR Metrics Summary:")
@@ -383,7 +383,7 @@ class OCRMetrics {
         maxLineLength = 0
         minLineLength = .greatestFiniteMagnitude
 
-        maxLongLineTextObservation = nil
+        maxXLineTextObservation = nil
         minXLineTextObservation = nil
         maxCharacterCountLineTextObservation = nil
 
@@ -434,7 +434,10 @@ class OCRMetrics {
         let lengthOfLine = boundingBox.size.width
         if lengthOfLine > maxLineLength {
             maxLineLength = lengthOfLine
-            maxLongLineTextObservation = textObservation
+        }
+
+        if boundingBox.maxX > maxXLineTextObservation?.boundingBox.maxX ?? 0 {
+            maxXLineTextObservation = textObservation
         }
 
         // Track maximum character count line
@@ -464,7 +467,7 @@ class OCRMetrics {
         let currentText = textObservation.firstText
 
         print(
-            "  [\(index)]: \(currentText.prefix(20))... , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
+            "  [\(index)]: \(currentText.prefix20)... , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
         )
     }
 
@@ -517,7 +520,8 @@ class OCRMetrics {
     /// Calculate average character width from text observation dimensions
     ///
     /// Computes the average width of characters by dividing the physical text width
-    /// by the character count, accounting for display scaling factors.
+    /// by the character count. Since Vision framework provides normalized coordinates,
+    /// we multiply by the image's logical size to get the actual text width.
     ///
     /// - Parameters:
     ///   - textObservation: Text observation with bounding box and character data
@@ -528,8 +532,9 @@ class OCRMetrics {
         ocrImage: NSImage
     )
         -> Double {
-        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 1.0
-        let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width / scaleFactor
+        // Vision framework provides normalized coordinates (0-1), so we multiply by image size
+        // No need for scaleFactor since NSImage.size already gives us the logical size in points
+        let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width
         return textWidth / textObservation.firstText.count.double
     }
 

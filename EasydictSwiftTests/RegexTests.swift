@@ -188,16 +188,14 @@ struct RegexTests {
     func numberLikePattern() {
         let regex = Regex.numberLikePattern
 
-        // Valid number patterns
+        // Valid number patterns (digits only)
         #expect("10.99".contains(regex)) // Decimal
         #expect("3.14159".contains(regex)) // Decimal
         #expect("1.2.3".contains(regex)) // Version number
         #expect("1.2.3.4".contains(regex)) // IP address or version
-        #expect("2.1.0.beta1".contains(regex)) // Complex version
         #expect("10.5.7.129".contains(regex)) // IP address
         #expect("1.0".contains(regex)) // Simple version
         #expect("123.456.789.012".contains(regex)) // Multi-segment
-        #expect("5.1.2.RELEASE".contains(regex)) // Version with text
 
         // Invalid patterns
         #expect(!"10".contains(regex)) // No dots
@@ -207,6 +205,9 @@ struct RegexTests {
         #expect(!"".contains(regex)) // Empty string
         #expect(!"a.b".contains(regex)) // Starts with letter (not digit)
         #expect(!"just.letters".contains(regex)) // Only letters, no digits
+        #expect(!"2.1.0.beta1".contains(regex)) // Contains letters - excluded
+        #expect(!"5.1.2.RELEASE".contains(regex)) // Contains letters - excluded
+        #expect(!"1.2.alpha".contains(regex)) // Contains letters - excluded
     }
 
     @Test("Ellipsis Pattern Matching")
@@ -277,14 +278,12 @@ struct RegexTests {
     func numberPatternWithSpacingPattern() {
         let regex = Regex.numberPatternWithSpacing
 
-        // Valid patterns that should be normalized
+        // Valid patterns that should be normalized (digits only)
         let validInputs = [
             "1 . 2 . 3", // Version with spaces
             "10.99", // Decimal number
             "1 .2. 3 . 4", // Mixed spacing
-            "2 .1.0.beta1", // Complex version (more realistic)
             "192 . 168.1. 1", // IP with spaces
-            "5.1.2.RELEASE", // Version with text
         ]
 
         for input in validInputs {
@@ -300,6 +299,10 @@ struct RegexTests {
             "", // Empty string
             "a.b", // Starts with letter (not digit)
             "just.letters", // Only letters, no digits
+            "2 .1.0.beta1", // Contains letters - excluded
+            "5.1.2.RELEASE", // Contains letters - excluded
+            "1 . 2 . alpha", // Contains letters - excluded
+            "see version.2.1.0.beta1 for details", // Should not match as a whole
         ]
 
         for input in invalidInputs {
@@ -310,7 +313,6 @@ struct RegexTests {
         let embeddedTests = [
             ("version.1.2", "1.2"),
             ("app version 1.2.3 is here", "1.2.3"),
-            ("see version.2.1.0.beta1 for details", "2.1.0.beta1"),
         ]
 
         for (input, expectedMatch) in embeddedTests {

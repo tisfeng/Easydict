@@ -27,7 +27,7 @@ import Foundation
 /// .joinWithNoSpace: "word1-word2"
 /// .joinRemovingDash: "word1word2"
 /// ```
-enum OCRMergeStrategy {
+enum OCRMergeStrategy: CustomStringConvertible {
     /// Intentional line break preservation
     ///
     /// Used when the original document has intentional line breaks that should be
@@ -116,6 +116,21 @@ enum OCRMergeStrategy {
         }
     }
 
+    var description: String {
+        switch self {
+        case .lineBreak:
+            return "lineBreak"
+        case .newParagraph:
+            return "newParagraph"
+        case .joinWithSpace:
+            return "joinWithSpace"
+        case .joinWithNoSpace:
+            return "joinWithNoSpace"
+        case .joinRemovingDash:
+            return "joinRemovingDash"
+        }
+    }
+
     // MARK: - Factory Methods
 
     /// Create merge strategy from legacy OCRMergeDecision
@@ -175,6 +190,30 @@ enum OCRMergeStrategy {
         }
     }
 
+    static func joinWithSpaceOrNot(pair: OCRTextObservationPair) -> OCRMergeStrategy {
+        joinWithSpaceOrNot(
+            firstText: pair.previous.firstText.lastWord,
+            secondText: pair.current.firstText.firstWord
+        )
+    }
+
+    /// Create merge strategy based on language context
+    ///
+    /// - Note: Maybe the joinedText language is different from OCR entire text language.
+    static func joinWithSpaceOrNot(
+        firstText: String,
+        secondText: String,
+    )
+        -> OCRMergeStrategy {
+        let joinedText = firstText + secondText
+        // Determine language context
+        let language = AppleLanguageDetector().detectLanguage(text: joinedText)
+        if EZLanguageManager.shared().isLanguageWordsNeedSpace(language) {
+            return .joinWithSpace
+        }
+        return .joinWithNoSpace
+    }
+
     // MARK: - Output Generation
 
     /// Generate the appropriate separator string for this merge strategy
@@ -206,7 +245,7 @@ enum OCRMergeStrategy {
         case .joinWithSpace, .lineBreak, .newParagraph:
             return firstText + separatorString() + secondText
         case .joinWithNoSpace:
-            return firstText + "-" + secondText
+            return firstText + secondText
         case .joinRemovingDash:
             // Remove trailing dash from first text if present
             let cleanFirstText = firstText.hasSuffix("-") ? String(firstText.dropLast()) : firstText

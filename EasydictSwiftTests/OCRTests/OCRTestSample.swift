@@ -132,6 +132,7 @@ enum OCRTestSample: String, CaseIterable {
         I understand all of the rules above and am capable of following them.
 
         The rules are as follows:
+
         1. I am a girl with severe depression and severe anxiety.
         2. I am the second daughter in my family, 10 years younger than my older sister and 2 years younger than my younger brother.
         3. My parents always say I am 3*, and if it weren't for my cuteness when I was young, they would have drowned me or given me away.
@@ -149,7 +150,7 @@ enum OCRTestSample: String, CaseIterable {
         · feat: add Groq service by @tisfeng in #878
         · fix: restore wrong last application when switching applications by workspace by @tisfeng in #879
 
-        Full Changelog: 2.13. 0...2.14. 1
+        Full Changelog: 2.13.0...2.14.1
         """,
 
         enTextList3: """
@@ -163,7 +164,7 @@ enum OCRTestSample: String, CaseIterable {
         · feat: add Groq service by @tisfeng in #878
         · fix: restore wrong last application when switching applications by workspace by @tisteng in #879
 
-        Full Changelog: 2.13. 0...2.14. 1
+        Full Changelog: 2.13.0...2.14.1
         """,
 
         enTextLetter338: """
@@ -206,7 +207,7 @@ enum OCRTestSample: String, CaseIterable {
 
         Motivated by the fact that HTTP/2, APls and JSON are well known to attackers, in this article, we provide a thorough discussion on the possible threats they introduce to 5G SBA with a focus on HTTP/2. First, we introduce SG SBA with a close attention to the security associated with its NF services and their APIs. Then, we discuss the use of HTTP/2 in 5G SBA for fulfilling the need for reduced latency and communication overhead through its features that we expose. We assess the security implications of these features in SG SBA and complement them by a discussion on the HTTP/2 standard and custom headers used for hardening 5G SBA security. Finally, we conclude with some security challenges and opportunities.
 
-        I1.5G SERVICE BASED ARCHITECTURE (SBA)
+        I1. 5G SERVICE BASED ARCHITECTURE (SBA)
 
         A. Overview
 
@@ -214,16 +215,13 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper3: """
-        To enable the communication between the 5G SBA NFs
-        (also referred to as "5G signalling"), the 3GPP selected the HTTP/2 protocol with JSON as the application layer serialization protocol, which runs over TCP at the transport layer [6]. For added security, the NFs shall support TLS 1.2 and TLS 1.3 [6], [8]. In addition, Restful API is used to invoke 5G services [9J ·
+        To enable the communication between the 5G SBA NFs (also referred to as "5G signalling"), the 3GPP selected the HTTP/2 protocol with JSON as the application layer serialization protocol, which runs over TCP at the transport layer [6]. For added security, the NFs shall support TLS 1.2 and TLS 1.3 [6], [8]. In addition, Restful API is used to invoke 5G services [9J ·
 
         B. HTTP/2 as Signalling Protocol for SG
 
         Multiple criteria were considered for selecting HTTP/2 as the signalling protocol for G. Despite supporting a large number of transactions per service and responding to low-latency requirements [5], [9], HTTP/2 enables multiple requests and responses over the same TCP connection between a client and a server, hence, supporting bidirectional and reliable communication [5]. This connection at the application-layer running on top of TCP is also known as HTTP/2 connection. When used in 5G SBA, one NF acts as NF Service Consumer (NFc), authorized to access a service of another NF which as is known as NF Service Producer (NFp). As such, HTTP/2 responds to SBIs requirements which include a RequestResponse in which a request for a service is issued by a NFc and a response is provided by a NFp; or Subscribe-Notify in which a NFc subscribes to a certain event of the NFp where the latter notifies the NFc upon the occurrence of the event [2].
 
-        HTTP/2 introduces the notion of a stream, which corresponds to an HTTP request/response exchange. An HTTP/2 message is represented by either a request or a response. HTTP/2 messages are composed of HTTP/2 frames. Thus, a stream can be defined as a bidirectional flow of frames [5].
-
-        An HTTP/2 frame represents the basic HTTP/2 data unit (i.e. , smallest unit of communication within an HTTP/2 connection) with binary encoding. A frame can be of different types from
+        HTTP/2 introduces the notion of a stream, which corresponds to an HTTP request/response exchange. An HTTP/2 message is represented by either a request or a response. HTTP/2 messages are composed of HTTP/2 frames. Thus, a stream can be defined as a bidirectional flow of frames [5]. An HTTP/2 frame represents the basic HTTP/2 data unit (i.e. , smallest unit of communication within an HTTP/2 connection) with binary encoding. A frame can be of different types from
         """,
 
         enPaper4: """
@@ -243,13 +241,9 @@ enum OCRTestSample: String, CaseIterable {
         enPaper5: """
         prevent unauthorized access to their services. 3GPP identified two main security mechanisms:
 
-        1) Mutual authentication and transport security: They are
+        1) Mutual authentication and transport security: They are enforced through TLS between SBA NEs and between NFNRF during service discovery and registration to mitigate against message spoofing, tampering, repudiation and information disclosure [4], [8].
 
-        enforced through TLS between SBA NEs and between NFNRF during service discovery and registration to mitigate against message spoofing, tampering, repudiation and information disclosure [4], [8].
-
-        2) Authorization of the requests: Access authorization of NFcs to services provided by NFps prevents privilege escalation. It follows a token-based authorization through the NRF using Auth 2.0 [4], [12]. OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited access to an HTTP service on its behalf or on behalf of a resource owner [12]. In 5G SBA, an access token to a certain service is generated by the NRF (OAuth 2.0 authorization server) following a request of a NFc (i.e. , OAuth 2.0 client) to access a service of a NFp (i.e. , OAuth 2.0 resource server) [4]. The token is granted based on authorization rules which can be provided by the NFp during its registration at the NRF and after the mutual authentication between the NRF and the
-
-        NFc (using TLS) [8].
+        2) Authorization of the requests: Access authorization of NFcs to services provided by NFps prevents privilege escalation. It follows a token-based authorization through the NRF using Auth 2.0 [4], [12]. OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited access to an HTTP service on its behalf or on behalf of a resource owner [12]. In 5G SBA, an access token to a certain service is generated by the NRF (OAuth 2.0 authorization server) following a request of a NFc (i.e. , OAuth 2.0 client) to access a service of a NFp (i.e. , OAuth 2.0 resource server) [4]. The token is granted based on authorization rules which can be provided by the NFp during its registration at the NRF and after the mutual authentication between the NRF and the NFc (using TLS) [8].
 
         Authorization and authentication are applied in non-roaming and in roaming scenarios. Nonetheless, to better protect the 5G network from unauthorized access and attacks that can be performed by outsiders (e.g. , roaming partners, etc. ), a Security Edge Protection Proxy (SEPP) (Figure 1) has been introduced. SEPP acts as a security gateway on the interconnections between roaming partners. It provides application-layer security between NEs associated with roaming partners to enable their secure communication. SEPP functionalities include traffic filtering, end-to-end authentication, confidentiality and integrity protection via signatures and encryption of HTTP/2 messages. SEPP is also responsible of key management mechanisms used to perform the security capability procedures. Finally, the SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
 
@@ -261,8 +255,7 @@ enum OCRTestSample: String, CaseIterable {
         enPaper6: """
         A. Streams Multiplexing
 
-        HTTP/2 streams multiplexing feature allows carrying multiple streams over a single TCP connection [5], thus improving services' latency. In fact, an HTTP/2 client/server can limit the maximum number of concurrent streams over a single TCP connection with its peers using the HTTP/2 SETTINGS_MAX_CONCURRENT_ STREAMS setting. While IETF recommends a minimum value of 100 streams for this setting to benefit from stream multiplexing feature, it does not provide any recommendations on its upper limit which can go up to 2, 147, 483, 647 streams [5]. This allows attackers to exploit stream multiplexing feature through sending as many as 2, 147, 483, 647 streams of computationally expensive requests (i.e. , APIs) towards the NFp and replicate it over multiple TCP connections to scale the attack and cause a Denial of Service
-        (DoS) [13]. Hence, network operators should carefully configure the SETTINGS_MAX_CONCURRENT_STREAMS for their 5G NFs to limit such attack.
+        HTTP/2 streams multiplexing feature allows carrying multiple streams over a single TCP connection [5], thus improving services' latency. In fact, an HTTP/2 client/server can limit the maximum number of concurrent streams over a single TCP connection with its peers using the HTTP/2 SETTINGS_MAX_CONCURRENT_ STREAMS setting. While IETF recommends a minimum value of 100 streams for this setting to benefit from stream multiplexing feature, it does not provide any recommendations on its upper limit which can go up to 2, 147, 483, 647 streams [5]. This allows attackers to exploit stream multiplexing feature through sending as many as 2, 147, 483, 647 streams of computationally expensive requests (i.e. , APIs) towards the NFp and replicate it over multiple TCP connections to scale the attack and cause a Denial of Service (DoS) [13]. Hence, network operators should carefully configure the SETTINGS_MAX_CONCURRENT_STREAMS for their 5G NFs to limit such attack.
 
         B. Flow Control
 
@@ -333,17 +326,22 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper10: """
-        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN:
+        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37
+
+        GMT"; Load-Metric: 25%; SCP-FQDN:
         scpl.example.com
 
         Fig. 3: LCI for SCP [6].
 
         2) 3gpp-Sbi-Oci: A NFp/NFc uses the 3gpp-Sbi-Oci custom header to signal its Overload Control Information (OCI) to its peer. Through this header, the overloaded NF instructs its peer to throttle the service/notification requests, in an attempt to reduce its signalling load [6]. Figure 4 depicts a 3gpp-SbiOci header sent by a NFp, identified by its instance ID (1. e. , NF-Instance), asking a NFc to throttle 50% of its requests as determined in Overload-Reduction-Metric. Note that an Overload-Reduction-Metric of "0" indicates that the sender is not overloaded. The 3gpp-Sbi-Oci also includes the Timestamp indicating the time at which it was generated and its validity period identified by Period-of-Validity [6].
 
-        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37 GMT"; Period-of-Validity: 75s;
+        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37
+
+        GMT"; Period-of-Validity: 75s;
         Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
 
         Fig. 4: OCI for a NF Instance [6].
+
         3) 3gpp-Sbi-Message-Priority: In contrast to the PRIORITY frame used to determine stream (i.e. , request and response) priority at the connection level, 3GPP introduced the 3gpp-Sbi-Message-Priority to provide the flexibility of assigning a priority for the response that differs of the one assigned to its corresponding request (5], l6]. The primary usage of SBl Message Priority (SMP) is to assist NFp/NFc/proxies when making throttling decision related to an overload control or when routing messages through proxies [6]. For instance, a server may process higher-priority messages first, however, this may block lower-priority messages from ever being handled. In SG SBA, this will result in the messages being retried, and in more traffic than the network usually handles without the use of the SMP mechanism.
 
         C. Security Implications
@@ -436,14 +434,12 @@ enum OCRTestSample: String, CaseIterable {
         哈哈哈，特别有意思，没想到这种数学题真的在生活中遇到了
 
         儿子幼儿园要求用现金买东西，挑选-付钱-找钱过程，拍个视频上传
-        正好路过楼下超市我寻思把这个东西做了，然后我就跟老板说，你借
-        我20块钱，我带孩子买个东西模拟一下现金支付，然后钱还你
 
-        老板岁数挺大，五十多岁吧，说行，就给我拿出20块钱，我儿子挑了
-        9块钱东西，付款20，找钱11块
+        正好路过楼下超市我寻思把这个东西做了，然后我就跟老板说，你借我20块钱，我带孩子买个东西模拟一下现金支付，然后钱还你
 
-        然后视频录完了，我就把11块还给了老板，同时扫码支付了9元，谢
-        过之后就要走，老板给我叫住了
+        老板岁数挺大，五十多岁吧，说行，就给我拿出20块钱，我儿子挑了9块钱东西，付款20，找钱11块
+
+        然后视频录完了，我就把11块还给了老板，同时扫码支付了9元，谢过之后就要走，老板给我叫住了
 
         老板：诶，东西你别拿走啊
 
@@ -451,22 +447,19 @@ enum OCRTestSample: String, CaseIterable {
 
         老板：你用我的钱买的啊，我还找你11块钱啊
 
-        然后我就仔细给他解释了一下，他最后还是让我走了，但是他的眼神
-        中还是充满了疑惑，哈哈，突然想起来那个借钱买彩电的故事了
+        然后我就仔细给他解释了一下，他最后还是让我走了，但是他的眼神中还是充满了疑惑，哈哈，突然想起来那个借钱买彩电的故事了
         """,
 
         zhText2: """
-        盛顿公园散步，那里有一个跳蚤市场。从第五街的公共汽车上，
-        我看到夜幕慢慢地降落到纽约城上。
+        盛顿公园散步，那里有一个跳蚤市场。从第五街的公共汽车上，我看到夜幕慢慢地降落到纽约城上。
 
-        现在是21点，我只吃了一-小块三明治，从瓦班莎起没有睡
-        觉，绝对是精疲力竭了。我在房间里喝着你的威士忌，给你写信，但我不能这么早睡觉。在我的周围是纽约，在我的后面是我们的夏天。我还要下楼去走，还要梦想，直到没有知觉。
+        现在是21点，我只吃了一-小块三明治，从瓦班莎起没有睡觉，绝对是精疲力竭了。我在房间里喝着你的威士忌，给你写信，但我不能这么早睡觉。在我的周围是纽约，在我的后面是我们的夏天。我还要下楼去走，还要梦想，直到没有知觉。
 
         我并不悲哀。也许是晕过去了，离开我自己很远，很远，无法相信你曾经离我那么近。在出发以前，我只想对你说两件事第一，我还是希望有朝一日再见到你。我愿意，我需要见你。但是，请你记住，我决不会求你，不是出于自尊，而是因为如果你不愿意，我们的见面将毫无意义，因此我将等待。如果你希望见面，就告诉我，我不会因此认为你又爱我，甚至不会认为你希望与我同床，我们也不必一定要长时间呆在一起，只是在你愿意的情况下在一起。记住，我将永远希望你向我提出要求。
 
-        不，我不相信我们将不再见面。我失去了爱情，这是事实， 是痛苦的。但是我没有失去你。不管怎么说，你满足了我，纳尔逊，你给我的一切对我是多么珍贵，你也拿不回去给我的一切。 你的温情、你的友谊对我是多么宝贵，在我想到你的时候，我仍然觉得温暖、幸福，充满了感激之情。我希望这种温情、这种友谊永存，永远存在。至于我，坦率地说我感到羞耻的意外的真话是，我还像下飞机投人你那令人失望的怀抱时那样爱你，是全身心地，是以我的全部的可怜的心爱你，我不可能少一点爱，希望这不妨碍你，亲爱的，也不要把我们的通信当做苦役，是在你想写信的时候才写，但你的每封信都会使我幸福的。
+        不，我不相信我们将不再见面。我失去了爱情，这是事实，是痛苦的。但是我没有失去你。不管怎么说，你满足了我，纳尔逊，你给我的一切对我是多么珍贵，你也拿不回去给我的一切。你的温情、你的友谊对我是多么宝贵，在我想到你的时候，我仍然觉得温暖、幸福，充满了感激之情。我希望这种温情、这种友谊永存，永远存在。至于我，坦率地说我感到羞耻的意外的真话是，我还像下飞机投人你那令人失望的怀抱时那样爱你，是全身心地，是以我的全部的可怜的心爱你，我不可能少一点爱，希望这不妨碍你，亲爱的，也不要把我们的通信当做苦役，是在你想写信的时候才写，但你的每封信都会使我幸福的。
 
-        是的，言词看来微不足道。我觉得你离我那么近，那么近， 让我走近你。让我同过去一样，让我在自己心里永远那样。
+        是的，言词看来微不足道。我觉得你离我那么近，那么近，让我走近你。让我同过去一样，让我在自己心里永远那样。
 
         你的西羹榔
         """,
@@ -479,25 +472,23 @@ enum OCRTestSample: String, CaseIterable {
         www.bitcoin.org
 
         Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf
+
         by @shdxiang， xiaoxiang.io
         Bill Zhao （billzhao430@live.com）
 
-        摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证
-        据。
+        摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证据。
 
         1．简介
 
-        互联网贸易已经变得几乎完全依赖金融机构作为可信任的第三方来处理电子支付。尽管对于大部分交易这种系统运行得足够好，但仍需忍受基于信任模型这个固有缺点。由于金融机构不可避免的需要仲裁纠纷，完全不可撤销的交易实际是做不到的。仲裁成本增加了交易成本，限制了最小实际交易额度从而杜绝了日常小额交易的可能性，而且由于不支持不可撤销支付，对不可撤销服务进行支付将需要更大的成本。由于存在交易被撤销的可能
-        性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要的信息。一定比例的欺诈被认为是不可避免的。虽可通过当面使用实物货币来避免这些成本及支付的不确定性，但不存在一个无可信任方而能在通信通道上进行支付的机制。
+        互联网贸易已经变得几乎完全依赖金融机构作为可信任的第三方来处理电子支付。尽管对于大部分交易这种系统运行得足够好，但仍需忍受基于信任模型这个固有缺点。由于金融机构不可避免的需要仲裁纠纷，完全不可撤销的交易实际是做不到的。仲裁成本增加了交易成本，限制了最小实际交易额度从而杜绝了日常小额交易的可能性，而且由于不支持不可撤销支付，对不可撤销服务进行支付将需要更大的成本。由于存在交易被撤销的可能性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要的信息。一定比例的欺诈被认为是不可避免的。虽可通过当面使用实物货币来避免这些成本及支付的不确定性，但不存在一个无可信任方而能在通信通道上进行支付的机制。
 
         我们需要的是一个基于密码学原理而不是信任的电子支付系统，该系统允许任何有交易意愿的双方能直接交易而不需要一个可信任的第三方。交易在计算上的不可撤销将保护卖家不被欺诈，用来保护买家的程序化合约机制也应该较容易实现。在这篇论文中，我们提出一种使用点对点分布式时间戳服务器基于时间的交易序列生成计算上的证据来解决双重支付问题的方案。只要诚实节点集体控制的 CPU 算力大于任何一个合作攻击节点群的CPU算力，这个系统就是安全的。
         """,
 
         zhTextList1: """
         当您发现严重的崩溃问题后，通常推荐发布一个新的版本来修复该问题。这样做有以下几个原因：
-
         1。保持版本控制：通过发布一个新版本，您可以清晰地记录修复了哪些问题。这对于用户和开发团队来说都是透明和易于管理的。
-        2。 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样， 用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
+        2。 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样，用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
         因此，建议您在修复严重崩溃问题后发布一个新版本，而不是仅仅在当前版本中修复问题。
         """,
 
@@ -512,6 +503,7 @@ enum OCRTestSample: String, CaseIterable {
 
         引退に至るまでの経緯を正直にお話しさせて頂きます。
         長くなりますが目を通して頂けると幸いです。
+
         私はある方にスカウトをされ約7年前に
         AV業界に入りました。
         その方は相沢みなみの生みの親でもあり、
@@ -520,13 +512,12 @@ enum OCRTestSample: String, CaseIterable {
         相沢みなみの名前は彼から頂きました。
 
         相沢社長には夢がありました。
-        それは単体女優を育てて事務所を大きくする事。 私はその夢に携われたらいいなと思い軽い気持ちでAV業界に飛び込みました。
+        それは単体女優を育てて事務所を大きくする事。私はその夢に携われたらいいなと思い軽い気持ちでAV業界に飛び込みました。
         """,
 
         jaText2: """
         業界の中で盛り上がっていたアダルトオープンにてアイポケの専属女優としてデビューさせて頂きました。しかし実際は全然売れませんでした。イベントも組めないくらい。
-        そして契約は切れた。早かった。悔しかった。
-        悔しく感じたのはやる気が出ていたから。
+        そして契約は切れた。早かった。悔しかった。悔しく感じたのはやる気が出ていたから。
 
         そのやる気を出してくれたのはファン皆様の存在です。初めて自分のファンに会えた日、
         とても嬉しかったことは今でも忘れません。
@@ -538,12 +529,12 @@ enum OCRTestSample: String, CaseIterable {
         その相沢社長に病気が見つかりました。
         急性白血病です。
         正直ドラマでしか知らない病気でした。
-        こんな身近な人がなるなんて。言葉を失った。
-        しかし社長は病気と戦い続けた。
+        こんな身近な人がなるなんて。言葉を失った。しかし社長は病気と戦い続けた。
         """,
 
         plUnsupportedText1: """
         Anseio por te ver, mas, por favor, lembra-te que não vou pedir para te ver.
+
         Não é por orgulho, sabes que não tenho orgulho diante de ti, mas porque, só quando também me quiseres ver, o nosso encontro será significativo.
         """,
     ]
