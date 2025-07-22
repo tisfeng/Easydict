@@ -321,10 +321,6 @@ extension Regex where Output == Substring {
     /// **Original regex equivalent:** `\b\d+(?:\.\d+)+\b`
     static var numberLikePattern: Self {
         Regex {
-            ChoiceOf {
-                Anchor.startOfLine
-                CharacterClass.horizontalWhitespace
-            }
             // Must start with digits (not letters)
             OneOrMore(.digit)
             // Followed by one or more dot-separated digit segments only
@@ -332,9 +328,11 @@ extension Regex where Output == Substring {
                 "."
                 OneOrMore(.digit)
             }
-            ChoiceOf {
-                Anchor.endOfLine
-                CharacterClass.horizontalWhitespace
+            NegativeLookahead {
+                "."
+                OneOrMore {
+                    CharacterClass.asciiAlphanumeric
+                }
             }
         }
     }
@@ -417,7 +415,6 @@ extension Regex where Output == Substring {
     /// **Original regex equivalent:** `\b\d+(?:[ \t]*\.[ \t]*\d+)+\b`
     static var numberPatternWithSpacing: Self {
         Regex {
-            Anchor.wordBoundary
             // Must start with digits (not letters)
             OneOrMore(.digit)
             // One or more dot-separated digit segments with optional spacing
@@ -444,7 +441,6 @@ extension Regex where Output == Substring {
                     CharacterClass.asciiLetters
                 }
             }
-            Anchor.wordBoundary
         }
     }
 

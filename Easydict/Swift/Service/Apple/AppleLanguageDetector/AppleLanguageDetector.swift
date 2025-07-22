@@ -47,11 +47,14 @@ import NaturalLanguage
 public class AppleLanguageDetector: NSObject {
     // MARK: Lifecycle
 
-    /// Initialize language detector with optional debug logging
+    /// Initialize language detector with optional debug logging and classical Chinese detection
     ///
-    /// - Parameter enableDebugLog: Whether to enable debug logging output (default: false)
-    public init(enableDebugLog: Bool = false) {
+    /// - Parameters:
+    ///   - enableDebugLog: Whether to enable debug logging output (default: false)
+    ///   - enableClassicalChineseDetection: Whether to enable classical Chinese detection (default: true)
+    public init(enableDebugLog: Bool = false, enableClassicalChineseDetection: Bool = true) {
         self.isDebugLogEnabled = enableDebugLog
+        self.isClassicalChineseDetectionEnabled = enableClassicalChineseDetection
         super.init()
     }
 
@@ -59,6 +62,8 @@ public class AppleLanguageDetector: NSObject {
 
     /// Controls whether debug logging is enabled
     public let isDebugLogEnabled: Bool
+    /// Controls whether classical Chinese detection is enabled
+    public let isClassicalChineseDetectionEnabled: Bool
 
     /// Records Chinese character statistics when English is detected and user prefers Chinese
     public private(set) var chineseCharacterCount: Int = 0
@@ -522,7 +527,7 @@ public class AppleLanguageDetector: NSObject {
             return nil
         }
 
-        if Configuration.shared.beta {
+        if isClassicalChineseDetectionEnabled, Configuration.shared.beta {
             if text.isClassicalChinese {
                 return .classicalChinese
             }

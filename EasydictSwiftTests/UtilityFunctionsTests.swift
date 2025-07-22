@@ -6,10 +6,10 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import RegexBuilder
 import Testing
 
 @testable import Easydict
-import RegexBuilder
 
 /// Tests for utility functions and helper methods
 @Suite("Utility Functions", .tags(.utilities, .unit))
@@ -233,5 +233,36 @@ struct UtilityFunctionsTests {
         // Test removing all non-letter characters
         let cleanText = testText.removingNonLetters()
         #expect(cleanText == "Hello世界café")
+    }
+
+    // MARK: - List Type Detection Tests
+
+    @Test("List Type Detection", .tags(.utilities))
+    func testListTypeFirstWord() {
+        let trueInputs: [String] = [
+            "1. item",
+            "1) item",
+            "1） item",
+            "a. item",
+            "A) item",
+            "IV. item",
+            "• item",
+            "- item",
+            "* item",
+        ]
+        let falseInputs: [String] = [
+            "•item",
+            "-item",
+            "M. item",
+            "item 1. item",
+            "",
+            "  ",
+        ]
+        for input in trueInputs {
+            #expect(input.isListTypeFirstWord == true, "Failed for input: \(input)")
+        }
+        for input in falseInputs {
+            #expect(input.isListTypeFirstWord == false, "Failed for input: \(input)")
+        }
     }
 }

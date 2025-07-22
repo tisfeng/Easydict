@@ -208,7 +208,7 @@ struct OCRLineContext {
     func isPrevShortLine(maxLineLength: Double, lessRateOfMaxLength: Double = 0.85) -> Bool {
         let prevLineLength = previous.boundingBox.width
         return analyzer.isShortLine(
-            prevLineLength,
+            lineLength: prevLineLength,
             maxLineLength: maxLineLength,
             lessRateOfMaxLength: lessRateOfMaxLength
         )

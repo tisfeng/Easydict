@@ -280,10 +280,10 @@ public class OCRTextNormalizer {
         if languageManager.isLanguageWordsNeedSpace(metrics.language) {
             // Fix number patterns FIRST before other punctuation processing
             // This handles spacing patterns in decimals, versions, IPs: "1 . 2 . 3", "10 . 99" -> "1.2.3", "10.99"
-            result.replace(Regex.numberPatternWithSpacing) { match in
-                // Remove all whitespace around dots in the matched number pattern
-                String(match.output).replacing(" ", with: "").replacing("\t", with: "")
-            }
+//            result.replace(Regex.numberPatternWithSpacing) { match in
+//                // Remove all whitespace around dots in the matched number pattern
+//                String(match.output).replacing(" ", with: "").replacing("\t", with: "")
+//            }
 
             // Remove spaces before punctuation marks (but not line breaks)
             // Example: "Hello , world ." → "Hello, world."

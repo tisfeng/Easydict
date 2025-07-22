@@ -206,8 +206,8 @@ enum OCRMergeStrategy: CustomStringConvertible {
     )
         -> OCRMergeStrategy {
         let joinedText = firstText + secondText
-        // Determine language context
-        let language = AppleLanguageDetector().detectLanguage(text: joinedText)
+        let language = languageDetector.detectLanguage(text: joinedText)
+
         if EZLanguageManager.shared().isLanguageWordsNeedSpace(language) {
             return .joinWithSpace
         }
@@ -251,6 +251,13 @@ enum OCRMergeStrategy: CustomStringConvertible {
             let cleanFirstText = firstText.hasSuffix("-") ? String(firstText.dropLast()) : firstText
             return cleanFirstText + secondText
         }
+    }
+
+    // MARK: Private
+
+    /// Language detector for determining language context of joined text, do not need to detect classical Chinese
+    static private var languageDetector: AppleLanguageDetector {
+        AppleLanguageDetector(enableClassicalChineseDetection: false)
     }
 }
 

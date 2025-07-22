@@ -74,21 +74,30 @@ class OCRLineMeasurer {
     /// - List formatting (preserving list structure)
     /// - Paragraph boundary detection
     ///
+    /// **Confidence Level Impact:**
+    /// - `.high`: 2.0x threshold (more strict, requires more space to be "long")
+    /// - `.medium`: 1.0x threshold (standard detection)
+    /// - `.low`: 0.7x threshold (more lenient, easier to detect as "long")
+    ///
     /// - Parameters:
     ///   - observation: The text observation to analyze for line length
     ///   - nextObservation: The next text observation for context-aware analysis (optional)
     ///   - comparedObservation: The reference observation to compare against for remaining space (optional)
+    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: .medium)
     /// - Returns: true if line is considered "long" (little space remaining), false if "short"
     func isLongLine(
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil,
-        comparedObservation: VNRecognizedTextObservation? = nil
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        confidenceLevel: OCRConfidenceLevel = .medium
     )
         -> Bool {
-        let threshold = smartMinimumCharactersThreshold(
+        let baseThreshold = smartMinimumCharactersThreshold(
             observation: observation,
             nextObservation: nextObservation
         )
+
+        let finalThreshold = baseThreshold / confidenceLevel.thresholdMultiplier
 
         let actualRemainingCharacters = charactersRemainingToReferenceLine(
             observation: observation,
@@ -96,14 +105,14 @@ class OCRLineMeasurer {
         )
 
         // Line is considered "long" if remaining space is less than required minimum
-        let isLongLine = actualRemainingCharacters < threshold
+        let isLongLine = actualRemainingCharacters < finalThreshold
 
         let debugText = observation.firstText.prefix20
         let refText = comparedObservation?.firstText.prefix20 ?? "Default"
 
         if !isLongLine {
             print(
-                "Short line detected: '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", threshold)), Ref: '\(refText)...'"
+                "Short line detected (confidence: \(confidenceLevel)): '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", finalThreshold)) (base: \(String(format: "%.1f", baseThreshold)) × \(confidenceLevel.thresholdMultiplier)), Ref: '\(refText)...'"
             )
         }
 
@@ -114,17 +123,6 @@ class OCRLineMeasurer {
 
     private let metrics: OCRMetrics
     private let languageManager: EZLanguageManager
-
-    /// Check if a line observation is considered "long" based on simple length ratio
-    /// This is a simplified version for basic length checking
-    /// - Parameters:
-    ///   - observation: The text observation to check
-    ///   - threshold: The threshold ratio (0.0 to 1.0), defaults to 0.9
-    /// - Returns: True if the line is considered long according to the threshold
-    private func isLongLine(_ observation: VNRecognizedTextObservation, threshold: Double) -> Bool {
-        let lineLength = observation.boundingBox.maxX
-        return lineLength >= metrics.maxLineLength * threshold
-    }
 
     // MARK: - Strategy Implementations
 
@@ -186,23 +184,21 @@ class OCRLineMeasurer {
                 if !nextText.isEmpty {
                     var threshold = 3.0 // Minimum threshold for English
 
-                    // Count the first word length if next first character is not punctuation
-                    if !nextText.hasPunctuationPrefix {
-                        let firstWord = nextText.wordComponents.first ?? nextText
-                        let firstWordLength = firstWord.count.double
-                        // Add buffer for punctuation and spacing
-                        threshold = firstWordLength + 3.0 // Special case > 2.8
-                    }
+                    // Count the first word length
+                    let firstWord = nextText.wordComponents.first ?? nextText
+                    let firstWordLength = firstWord.count.double
+                    // Add buffer for punctuation and spacing
+                    threshold = firstWordLength + 3.0 // Special case > 2.8
 
                     return threshold
                 }
             }
 
             // Fallback when no next observation or empty text
-            return 10.0 // Conservative default for English
+            return 12.0 // Conservative default for English
         } else {
             // For non-space languages (Chinese, Japanese, etc.), use character-based threshold
-            var minimumCharacters = 1.5
+            var minimumCharacters = 1.6
 
             // Apply language-specific adjustments for Chinese
             if languageManager.isChineseLanguage(metrics.language) {
@@ -212,7 +208,23 @@ class OCRLineMeasurer {
                 // Chinese text without ending punctuation may need slightly more tolerance
                 // to avoid over-aggressive line merging
                 if !hasEndPunctuation {
-                    minimumCharacters += 0.8
+                    minimumCharacters += 0.7
+                }
+
+                /**
+                 易成本，限制了最小实际交易额度从而杜绝了日常小额交易的可能性，而且由于不支持不
+                 可撤销支付，对不可撤销服务进行支付将需要更大的成本。由于存在交易被撤销的可能
+                 性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要
+                 */
+
+                if let nextObservation {
+                    let nextText = nextObservation.firstText
+                    let secondCharIsPunctuation = nextText.dropFirst().first?.isPunctuation ?? false
+
+                    // If next text second character is punctuation, increase threshold
+                    if !nextText.hasPunctuationPrefix, secondCharIsPunctuation {
+                        minimumCharacters += 0.8 // Increase threshold for Chinese with punctuation
+                    }
                 }
             }
 

@@ -9,6 +9,56 @@
 import Foundation
 import Vision
 
+// MARK: - OCRConfidenceLevel
+
+/// Confidence level for OCR analysis thresholds
+///
+/// Different confidence levels adjust detection thresholds to provide more or less
+/// strict analysis depending on the reliability of the OCR data and specific use cases.
+///
+/// **Threshold Multipliers:**
+/// - `.high`: More strict thresholds (1.5x) - requires stronger evidence for detection
+/// - `.medium`: Standard thresholds (1.0x) - balanced detection sensitivity
+/// - `.low`: More lenient thresholds (0.7x) - easier detection with lower confidence data
+/// - `.custom(Double)`: Custom threshold multiplier for precise control
+enum OCRConfidenceLevel {
+    case high
+    case medium
+    case low
+    case custom(Double)
+
+    // MARK: Lifecycle
+
+    /// Initialize confidence level from a numeric multiplier value
+    ///
+    /// Creates a custom confidence level with the exact multiplier value provided.
+    /// This allows for precise threshold control beyond the predefined levels.
+    ///
+    /// **Usage Examples:**
+    /// ```swift
+    /// let customLow = OCRConfidenceLevel(multiplier: 0.5)      // .custom(0.5)
+    /// let customHigh = OCRConfidenceLevel(multiplier: 3.0)     // .custom(3.0)
+    /// let standard = OCRConfidenceLevel(multiplier: 1.0)       // .custom(1.0)
+    /// ```
+    ///
+    /// - Parameter multiplier: The exact threshold multiplier value to use
+    init(multiplier: Double) {
+        self = .custom(multiplier)
+    }
+
+    // MARK: Internal
+
+    /// Threshold multiplier for the confidence level
+    var thresholdMultiplier: Double {
+        switch self {
+        case .high: return 1.5
+        case .medium: return 1.0
+        case .low: return 0.7
+        case let .custom(multiplier): return multiplier
+        }
+    }
+}
+
 // MARK: - OCRLineAnalyzer
 
 /// Handles line-level text analysis operations for OCR processing
@@ -30,6 +80,27 @@ import Vision
 /// - Spatial relationship analysis using bounding box mathematics
 /// - Dynamic threshold calculation based on text metrics
 /// - Context-aware decision making for text merging
+/// - Confidence-based threshold adjustment for varying detection strictness
+///
+/// **Confidence Level Support:**
+/// Many analysis functions support configurable confidence levels:
+/// - `.high`: More strict thresholds (2.0x) - requires stronger evidence
+/// - `.medium`: Standard thresholds (1.0x) - balanced detection (default)
+/// - `.low`: More lenient thresholds (0.7x) - easier detection
+///
+/// **Usage Examples:**
+/// ```swift
+/// let analyzer = OCRLineAnalyzer(metrics: metrics)
+///
+/// // Standard detection (medium confidence)
+/// let isBig = analyzer.isBigLineSpacing(pair: pair)
+///
+/// // High confidence (strict detection)
+/// let isBigStrict = analyzer.isBigLineSpacing(pair: pair, confidenceLevel: .high)
+///
+/// // Low confidence (lenient detection)
+/// let isBigLenient = analyzer.isBigLineSpacing(pair: pair, confidenceLevel: .low)
+/// ```
 ///
 /// Used extensively by OCRTextMerger for making intelligent text joining decisions.
 class OCRLineAnalyzer {
@@ -59,13 +130,20 @@ class OCRLineAnalyzer {
     /// - Block quote identification
     /// - Code block formatting preservation
     ///
+    /// **Confidence Level Impact:**
+    /// - `.high`: 2.0x threshold (more strict, requires larger indentation)
+    /// - `.medium`: 1.0x threshold (standard detection)
+    /// - `.low`: 0.7x threshold (more lenient, detects smaller indentation)
+    ///
     /// - Parameters:
     ///   - observation: The text observation to analyze for indentation
     ///   - comparedObservation: The reference observation to compare against (optional, defaults to metrics.minXLineTextObservation)
+    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: .medium)
     /// - Returns: true if the observation is indented, false if aligned with left margin
     func hasIndentation(
         observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        confidenceLevel: OCRConfidenceLevel = .medium
     )
         -> Bool {
         // Use provided comparedObservation or fall back to metrics default
@@ -78,12 +156,15 @@ class OCRLineAnalyzer {
         )
 
         let characterDifference = characterDifferenceInXPosition(pair: textObservationPair)
-
-        let isIndented = characterDifference > OCRConstants.indentationCharacterCount
+        let baseThreshold = OCRConstants.indentationCharacterCount
+        let finalThreshold = baseThreshold * confidenceLevel.thresholdMultiplier
+        let isIndented = characterDifference > finalThreshold
 
         if isIndented {
             let refText = referenceObservation.firstText.prefix20
-            print("\nIndentation detected: \(characterDifference.oneDecimalString) characters")
+            print(
+                "\nIndentation detected (confidence: \(confidenceLevel)): \(characterDifference.oneDecimalString) > \(finalThreshold.oneDecimalString) (base: \(baseThreshold) × \(confidenceLevel.thresholdMultiplier)) characters"
+            )
             print("Current observation: \(observation)")
             print("Compared against: '\(refText)...'\n")
         }
@@ -92,16 +173,30 @@ class OCRLineAnalyzer {
     }
 
     /// Determine if text observation represents a long line of text
+    ///
+    /// **Confidence Level Impact:**
+    /// - `.high`: 2.0x threshold (more strict, requires more space to be "long")
+    /// - `.medium`: 1.0x threshold (standard detection)
+    /// - `.low`: 0.7x threshold (more lenient, easier to detect as "long")
+    ///
+    /// - Parameters:
+    ///   - observation: Text observation to analyze for line length characteristics
+    ///   - nextObservation: Next text observation for enhanced context analysis (optional)
+    ///   - comparedObservation: The reference observation to compare against (optional)
+    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: .medium)
+    /// - Returns: true if line is considered "long", false if "short"
     func isLongText(
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil,
-        comparedObservation: VNRecognizedTextObservation? = nil
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        confidenceLevel: OCRConfidenceLevel = .medium
     )
         -> Bool {
         lineMeasurer.isLongLine(
             observation: observation,
             nextObservation: nextObservation,
-            comparedObservation: comparedObservation
+            comparedObservation: comparedObservation,
+            confidenceLevel: confidenceLevel
         )
     }
 
@@ -111,34 +206,25 @@ class OCRLineAnalyzer {
     /// vertical spacing to be considered as having big line spacing. It uses absolute
     /// height thresholds rather than ratios for more predictable and consistent behavior.
     ///
-    /// **Spatial Analysis Approach:**
-    /// - Uses absolute height thresholds for direct comparison
-    /// - Automatically calculates adaptive threshold based on document metrics
-    /// - Pure geometric calculation without text content dependencies
-    /// - More stable than ratio-based approaches for varying text sizes
-    ///
-    /// **Threshold Calculation:**
-    /// - Default: minimum of (averageLineHeight * 1.1, minLineHeight * 1.1, currentLineHeight)
-    /// - Uses 1.1x multiplier to provide reasonable spacing detection sensitivity
-    /// - Considers document-wide metrics for consistency
-    /// - Prevents overly large thresholds from unusually large text
-    ///
     /// - Parameters:
     ///   - pair: Text observation pair containing current and previous observations
-    ///   - thresholdGap: Optional absolute height threshold; if nil, calculates adaptive threshold
+    ///   - lineSpacingThreshold: Optional absolute height threshold; if nil, calculates adaptive threshold
+    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: .medium)
     /// - Returns: true if vertical gap exceeds the threshold, false otherwise
     func isBigLineSpacing(
         pair: OCRTextObservationPair,
-        lineSpacingThreshold: Double? = nil
+        lineSpacingThreshold: Double? = nil,
+        confidenceLevel: OCRConfidenceLevel = .medium
     )
         -> Bool {
         // Use provided threshold or fall back to metrics default big line spacing threshold
-        let finalThreshold = lineSpacingThreshold ?? metrics.bigLineSpacingThreshold
+        let baseThreshold = lineSpacingThreshold ?? metrics.bigLineSpacingThreshold
+        let finalThreshold = baseThreshold * confidenceLevel.thresholdMultiplier
         let isBigSpacing = pair.verticalGap > finalThreshold
 
         if isBigSpacing {
             print(
-                "\nBig line spacing detected, verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString)"
+                "\nBig line spacing detected (confidence: \(confidenceLevel)), verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString) (base: \(baseThreshold.threeDecimalString) × \(confidenceLevel.thresholdMultiplier))"
             )
             print("Current: \(pair.current)\n")
         }
@@ -158,18 +244,30 @@ class OCRLineAnalyzer {
 
     /// Analyze and compare font sizes between two text observations
     ///
+    /// **Confidence Level Impact:**
+    /// - `.high`: 2.0x threshold (more strict, requires larger font differences)
+    /// - `.medium`: 1.0x threshold (standard detection)
+    /// - `.low`: 0.7x threshold (more lenient, detects smaller font differences)
+    ///
     /// - Parameters:
     ///   - pair: Text observation pair containing current and previous observations
     ///   - fontSizeThreshold: Optional font size difference threshold; if nil, uses language-specific default
+    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: .medium)
     /// - Returns: true if font sizes are considered different beyond the threshold, false if they are similar
-    func isDifferentFontSize(pair: OCRTextObservationPair, fontSizeThreshold: Double? = nil) -> Bool {
+    func isDifferentFontSize(
+        pair: OCRTextObservationPair,
+        fontSizeThreshold: Double? = nil,
+        confidenceLevel: OCRConfidenceLevel = .medium
+    )
+        -> Bool {
         let differentFontSize = fontSizeDifference(pair: pair)
-        let threshold = fontSizeThreshold ?? self.fontSizeThreshold(metrics.language)
-        let isDifferent = differentFontSize >= threshold
+        let baseThreshold = fontSizeThreshold ?? self.fontSizeThreshold(metrics.language)
+        let finalThreshold = baseThreshold * confidenceLevel.thresholdMultiplier
+        let isDifferent = differentFontSize >= finalThreshold
 
         if isDifferent {
             print(
-                "\nDifferent font detected: diff = \(differentFontSize), threshold = \(threshold)"
+                "\nDifferent font detected (confidence: \(confidenceLevel)): diff = \(differentFontSize), threshold = \(finalThreshold) (base: \(baseThreshold) × \(confidenceLevel.thresholdMultiplier))"
             )
             print("Pair: \(pair)\n")
         }
@@ -220,19 +318,31 @@ class OCRLineAnalyzer {
             && text.count < OCRConstants.shortPoetryCharacterCountOfLine
     }
 
-    /// Analyze if line length is considered short relative to maximum length
-    ///
-    /// Determines whether a given line length is considered "short" by comparing it
-    /// against the maximum observed line length with a configurable threshold ratio.
-    /// This analysis is crucial for text formatting decisions and poetry detection.
+    /// Check if text observation is a short line of text
     ///
     /// - Parameters:
-    ///   - lineLength: The length of the line to analyze
-    ///   - maxLineLength: The maximum observed line length in the document
-    ///   - lessRateOfMaxLength: Threshold ratio (0.0-1.0) for considering a line "short"
-    /// - Returns: true if the line is considered short, false otherwise
+    ///  - observation: Text observation to analyze for line length characteristics
+    ///  - comparedObservation: Optional reference observation to compare against (defaults to metrics.maxLineLengthObservation)
+    ///  - lessRateOfMaxLength: Optional rate of maximum line length to consider as "short" (default: 0.5)
+    func isShortLineText(
+        observation: VNRecognizedTextObservation,
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        lessRateOfMaxLength: Double = 0.5
+    )
+        -> Bool {
+        // Use provided comparedObservation or fall back to metrics default
+        let referenceObservation = comparedObservation ?? metrics.maxLineLengthObservation
+        guard let referenceObservation = referenceObservation else { return false }
+
+        return isShortLine(
+            lineLength: observation.lineWidth,
+            maxLineLength: referenceObservation.lineWidth,
+            lessRateOfMaxLength: lessRateOfMaxLength
+        )
+    }
+
     func isShortLine(
-        _ lineLength: Double,
+        lineLength: Double,
         maxLineLength: Double,
         lessRateOfMaxLength: Double
     )
@@ -392,18 +502,23 @@ class OCRLineAnalyzer {
     ///
     /// - Parameter pair: Pair of text observations to compare for X alignment
     /// - Returns: true if observations are horizontally aligned within tolerance, false otherwise
-    func isEqualX(pair: OCRTextObservationPair) -> Bool {
+    func isEqualX(
+        pair: OCRTextObservationPair,
+        confidenceLevel: OCRConfidenceLevel = .medium
+    )
+        -> Bool {
         let characterDifference = characterDifferenceInXPosition(pair: pair)
 
-        // Consider positions "equal" if difference is less than 0.8 * indentation character count
-        let tolerance = OCRConstants.indentationCharacterCount * 0.8
-        let isEqual = abs(characterDifference) < tolerance
+        // Consider positions "equal" if difference is less than indentation threshold
+        let baseTolerance = OCRConstants.indentationCharacterCount * 0.9
+        let finalTolerance = baseTolerance / confidenceLevel.thresholdMultiplier
+        let isEqual = abs(characterDifference) < finalTolerance
 
         if !isEqual {
-            print("\nNot equalX text: \(pair.current)")
             print(
-                "Character difference: \(characterDifference.oneDecimalString), tolerance: \(tolerance.oneDecimalString)\n"
+                "\nNot equalX text (confidence: \(confidenceLevel)): difference = \(characterDifference.oneDecimalString) >= tolerance \(finalTolerance.oneDecimalString) (base: \(baseTolerance.oneDecimalString) × \(confidenceLevel.thresholdMultiplier))"
             )
+            print("Current: \(pair.current)\n")
         }
 
         return isEqual

@@ -283,9 +283,7 @@ enum OCRTestSample: String, CaseIterable {
 
         5G networks implement tighter security than the general web which reduces the likelihood of HTTP/2 attacks (Table I). Nonetheless, we believe that some of these HTTP/2 attacks are likely to apply to SG networks as they can be exploited by attackers through vulnerabilities related to virtualization technologies [7]. In fact, the move of mobile network operators to the public cloud increases the attack surface through virtualization vulnerabilities (e.g. , CVE-2016-5195, CVE-2019-5736). Similarly, virtualization vulnerabilities and misconfiguration can be exploited by attackers to breach the isolation between 5G network slices through for example a shared NF [15]. In such a scenario, HTTP/2 attacks on the shared NF from one slice can impact the functionality of the other slice. Further, HTTP/2 attacks can be initiated from malicious roaming partner and remain undetected by the filtering techniques at the SEPP [10]. Although they take a new form in HTTP/2, HTTP/2 multiplexing and slow-read attacks common in the Internet, may occur now in 5G networks. In contrast, we envision that stream dependency and prioritization based attacks along with server push and HPACK bomb attacks are less likely to happen in 5G networks as they are highly related to the mobile operators implementation and configuration. For instance, an operator may choose to disable server push functionality, thus preventing its related attack. To the best of our knowledge, the usage of server push has been left by 3GPP to the mobile operator choice. Finally, with the risk of misconfiguration of HTTP/2 settings and its related attacks, intelligent anomaly detection solutions that can detect HTTP/2 attacks to enable automated mitigation measures are needed.
 
-        IV. IMPLICATIONS OF HTTP/2 STANDARD AND CUSTOM
-
-        HEADERS ON 5G SBA
+        IV. IMPLICATIONS OF HTTP/2 STANDARD AND CUSTOM HEADERS ON 5G SBA
 
         HTTP/2 message header is composed of multiple standard and custom header fields that we elucidate and discuss their role in 5G SBA security.
 
@@ -326,19 +324,14 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper10: """
-        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37
-
-        GMT"; Load-Metric: 25%; SCP-FQDN:
+        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN:
         scpl.example.com
 
         Fig. 3: LCI for SCP [6].
 
         2) 3gpp-Sbi-Oci: A NFp/NFc uses the 3gpp-Sbi-Oci custom header to signal its Overload Control Information (OCI) to its peer. Through this header, the overloaded NF instructs its peer to throttle the service/notification requests, in an attempt to reduce its signalling load [6]. Figure 4 depicts a 3gpp-SbiOci header sent by a NFp, identified by its instance ID (1. e. , NF-Instance), asking a NFc to throttle 50% of its requests as determined in Overload-Reduction-Metric. Note that an Overload-Reduction-Metric of "0" indicates that the sender is not overloaded. The 3gpp-Sbi-Oci also includes the Timestamp indicating the time at which it was generated and its validity period identified by Period-of-Validity [6].
 
-        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37
-
-        GMT"; Period-of-Validity: 75s;
-        Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
+        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37 GMT"; Period-of-Validity: 75s; Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
 
         Fig. 4: OCI for a NF Instance [6].
 
@@ -358,8 +351,7 @@ enum OCRTestSample: String, CaseIterable {
 
         A. Broken Service Access Control
 
-        The use of token-based authorization through OAuth 2.0 exposes the 5G network to token tampering attack, allowing attackers to access the services of another NF within the same or different Public Land Mobile Network (PLMN). It also enables them to launch a Dos attack on the NFc by replacing the granted service (i.e. , API) of the NFp in the request with an unavailable one [7]. The risk of gaining unauthorized service access through NF-NRF interface is also possible and can result in the disclosure of sensitive information of a PLMN
-        [10]. A holistic distributed attack detection and network monitoring framework is intrinsic to reveal unauthorized access and alert NFs of tampered tokens that need to be revoked and malicious requests that should be rejected. Further, with the large number of roaming partners that an operator can have, misconfiguration of authorization rules is possible [10). This requires standard contracts and authorization templates to lighten the configuration burden.
+        The use of token-based authorization through OAuth 2.0 exposes the 5G network to token tampering attack, allowing attackers to access the services of another NF within the same or different Public Land Mobile Network (PLMN). It also enables them to launch a Dos attack on the NFc by replacing the granted service (i.e. , API) of the NFp in the request with an unavailable one [7]. The risk of gaining unauthorized service access through NF-NRF interface is also possible and can result in the disclosure of sensitive information of a PLMN [10]. A holistic distributed attack detection and network monitoring framework is intrinsic to reveal unauthorized access and alert NFs of tampered tokens that need to be revoked and malicious requests that should be rejected. Further, with the large number of roaming partners that an operator can have, misconfiguration of authorization rules is possible [10). This requires standard contracts and authorization templates to lighten the configuration burden.
 
         B. Broken Authentication
 
@@ -381,7 +373,9 @@ enum OCRTestSample: String, CaseIterable {
 
         D. HTTP/2 Attacks and Interconnect Security
 
-        HTTP/2 attacks can be left unnoticed by the SEPP at the interconnect network on the N32 interface (Figure 1), if they originated from malicious roaming partners [4], [10]. HTTP/2 filtering at the SEPP aims at blocking 5G interconnect messages based on certain criteria (i.e. , URI, specific IEs, etc. ) to prevent malicious roaming partners from extending their services beyond the roaming agreement. Nonetheless, filtering techniques do not prevent attacks such as HTTP/2 multiplexing attacks in which malicious roaming partners can request legitimate services from a specific NF To counter the above threats, intelligent threat analysis and detection solutions that overcome the limitations of filtering mechanisms and which leverage Machine Learning (ML) and Artificial Intelligence (AI) techniques are needed. They can learn traffic pattern from data collected at filtering nodes such as the SEPP, 5G NFs and other monitoring logs collected from the 5G SBA. Real time or near real time traffic analysis and features extraction at network and application layers while accounting for API calls, IEs, HTTP/2 standards and custom headers are yet to be explored as indicators of compromise that may enhance the detection accuracy of these ML/AI models that yet to be developed. Further, ML/AI solutions need to be complemented with effective incident analysis and response and used to automatically update filtering rules at the SEPP and the 5G SBA firewalls. The proposed security controls should be designed to complement each other in an automated holistic security orchestration and management framework designed and adapted for 5G networks.
+        HTTP/2 attacks can be left unnoticed by the SEPP at the interconnect network on the N32 interface (Figure 1), if they originated from malicious roaming partners [4], [10]. HTTP/2 filtering at the SEPP aims at blocking 5G interconnect messages based on certain criteria (i.e. , URI, specific IEs, etc. ) to prevent malicious roaming partners from extending their services beyond the roaming agreement. Nonetheless, filtering techniques do not prevent attacks such as HTTP/2 multiplexing attacks in which malicious roaming partners can request legitimate services from a specific NF
+
+        To counter the above threats, intelligent threat analysis and detection solutions that overcome the limitations of filtering mechanisms and which leverage Machine Learning (ML) and Artificial Intelligence (AI) techniques are needed. They can learn traffic pattern from data collected at filtering nodes such as the SEPP, 5G NFs and other monitoring logs collected from the 5G SBA. Real time or near real time traffic analysis and features extraction at network and application layers while accounting for API calls, IEs, HTTP/2 standards and custom headers are yet to be explored as indicators of compromise that may enhance the detection accuracy of these ML/AI models that yet to be developed. Further, ML/AI solutions need to be complemented with effective incident analysis and response and used to automatically update filtering rules at the SEPP and the 5G SBA firewalls. The proposed security controls should be designed to complement each other in an automated holistic security orchestration and management framework designed and adapted for 5G networks.
 
         VI. CONCLUSION
 
@@ -393,34 +387,40 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper14: """
-        [2] 3GPP, "5G; System architecture for the 5G System: TS 23.501 v. 17.5. 0, " 2022.
+        [2] 3GPP, "5G; System architecture for the 5G System: TS 23.501 v. 17.5.0, " 2022.
+
         13 analysis: Is HITTP/2 secure in S& core network? " in 2018 10m Snerma- "Signalling securit)
 
         tional Conference on Wireless Communications and Signal Processing (WCSP). IEEE, 2018, pp. 1-6.
-        [4] 3GPP, "5G; Security architecture and procedures for 5G System: TS 33.501 v. 17.5. 0, " 2022.
+
+        [4] 3GPP, "5G; Security architecture and procedures for 5G System: TS
+
+        33.501 v. 17.5.0, " 2022.
+
         [5] IETF, "Hypertext Transfer Protocol Version 2 (HTTP/2) - RFC 7540, " 2015.
 
-        · 3GPP, "SG; JG System; Technical Realization of Service Based Arc.
-
-        ture: Stage 3: 1S 29.500 v17.7. 0 201
+        · 3GPP, "SG; JG System; Technical Realization of Service Based Arc. ture: Stage 3: 1S 29.500 v17.7.0 201
 
         [7] ENISA, "Security In 5G Specifications Controls in 3GPP Security Specifications (5G SA), " 2021.
+
         B. Christine Jost, "Security for 5G Service-Based Architecture: 2020, [Accessed 18-March-
 
         2022]. [Online]. Available: https://www.ericsson.com/en/blog/2020/
-        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021. [11] R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World Forum (5GWF). IEEE, 2021, pp. 135-140.
+
+        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021.
+        [11] R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World Forum (5GWF). IEEE, 2021, pp. 135-140.
 
         generation web protocol, " 2016.
-        [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information Forensics and Security, vol. 15, pp. 1790-1800, 2019. [15] AdaptiveMobile, "A Slice in Time: Slicing Security in 5G Core
 
-        Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/ network-slicing-security? hsLang=en#download
+        [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information Forensics and Security, vol. 15, pp. 1790-1800, 2019.
+
+        [15] AdaptiveMobile, "A Slice in Time: Slicing Security in 5G Core Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/ network-slicing-security? hsLang=en#download
 
         Nathalie Wehbe received the B.Sc. and M.Sc degree in Software Engineer from the Antonine University, Lebanon, in 2016. She is currently a Ph.D. candidate at Concordia Institute for Information System Engineering, Montreal, QC, Canada. Her current research interests are in the areas of 5G networks, security, anomaly detection and machine learning.
 
         Hyame Assem Alameddine received her Ph.D. degree in Information and Systems Engineering from Concordia University, Canada in 2019. She is currently an experienced researcher at Ericsson, Canada. Her research interests include Network Function Virtualization, network security, 5G, internet of Things, cloud and edge computing.
 
-        Makan Pourzandi is a researcher at Ericsson, Canada. He received his Ph.D. degree in Computer Science from University of Lyon, France and his M.Sc.
-        Degree in Computer Science from École Normale Supérieure de Lyon, France. His current research interests include security, cloud computing, software security engineering, cluster computing, and component-based methods for secure software development.
+        Makan Pourzandi is a researcher at Ericsson, Canada. He received his Ph.D. degree in Computer Science from University of Lyon, France and his M.Sc. Degree in Computer Science from École Normale Supérieure de Lyon, France. His current research interests include security, cloud computing, software security engineering, cluster computing, and component-based methods for secure software development.
 
         Elias Bou-Harb is currently the Director of the Cyber Center for Security and Analytics at the University of Texas at San Antonio, Texas, USA. He is also an Associate Professor at the department of Information Systems and Cyber Security. His research interests are in the areas of cyber forensics, network security, data analytics, and network management.
 
@@ -474,6 +474,7 @@ enum OCRTestSample: String, CaseIterable {
         Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf
 
         by @shdxiang， xiaoxiang.io
+
         Bill Zhao （billzhao430@live.com）
 
         摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证据。

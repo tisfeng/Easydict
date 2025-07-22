@@ -67,25 +67,26 @@ extension String {
             "^\\d+\\.", // 1. 2. 3. etc.
             "^\\d+\\)", // 1) 2) 3) etc.
             "^\\d+\\）", // 1） 2） 3） etc. (Chinese parentheses)
-            "^[a-z]\\.", // a. b. c. etc.
-            "^[A-Z]\\.", // A. B. C. etc.
-            "^[a-z]\\)", // a) b) c) etc.
-            "^[A-Z]\\)", // A) B) C) etc.
-            "^[ivxlcdm]+\\.", // i. ii. iii. iv. v. etc. (Roman numerals)
-            "^[IVXLCDM]+\\.", // I. II. III. IV. V. etc. (Roman numerals)
-            "^•", // Bullet point
-            "^-", // Dash
-            "^\\*", // Asterisk
-            "^§", // Section symbol
-            "^¶", // Paragraph symbol
-            "^►", // Arrow bullet
-            "^▪", // Square bullet
-            "^▫", // Hollow square bullet
-            "^○", // Circle bullet
-            "^●", // Filled circle bullet
-            "^◦", // Small circle bullet
-            "^◾", // Black medium small square
-            "^◽", // White medium small square
+            "^[a-g]\\.", // a. b. c. etc.
+            "^[A-G]\\.", // A. B. C. etc.
+            "^[a-g]\\)", // a) b) c) etc.
+            "^[A-G]\\)", // A) B) C) etc.
+            "^[ivx]+\\.", // i. ii. iii. iv. v. etc. (Roman numerals)
+            "^[IVX]+\\.", // I. II. III. IV. V. etc. (Roman numerals)
+            // Require whitespace after marker to treat as list
+            "^•\\s+", // Bullet point
+            "^-\\s+", // Dash
+            "^\\*\\s+", // Asterisk
+            "^§\\s+", // Section symbol
+            "^¶\\s+", // Paragraph symbol
+            "^►\\s+", // Arrow bullet
+            "^▪\\s+", // Square bullet
+            "^▫\\s+", // Hollow square bullet
+            "^○\\s+", // Circle bullet
+            "^●\\s+", // Filled circle bullet
+            "^◦\\s+", // Small circle bullet
+            "^◾\\s+", // Black medium small square
+            "^◽\\s+", // White medium small square
         ]
 
         for pattern in patterns {
@@ -140,6 +141,9 @@ extension String {
         // Create a character set that includes whitespace, newlines, and punctuation
         var separatorSet = CharacterSet.whitespacesAndNewlines
         separatorSet.formUnion(.punctuationCharacters)
+
+        // Remove specific characters that should not be treated as separators
+        separatorSet.remove(charactersIn: "《》〔〕@#•-")
 
         // Split the string and filter out empty components
         let components = components(separatedBy: separatorSet)

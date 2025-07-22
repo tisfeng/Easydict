@@ -395,10 +395,12 @@ class OCRTextMerger {
             }
 
             // Check for short line conditions
-            let isPrevLessHalfShortLine = lineContext.isPrevLessHalfShortLine(
-                maxLineLength: metrics.maxLineLength
+            let isPrevLessHalfShortLine = lineAnalyzer.isShortLineText(
+                observation: lineContext.pair.previous
             )
-            let isPrevShortLine = lineContext.isPrevShortLine(maxLineLength: metrics.maxLineLength)
+            let isPrevShortLine = lineAnalyzer.isShortLineText(
+                observation: lineContext.pair.previous,
+            )
 
             let lineMaxX = lineContext.current.boundingBox.maxX
             let prevLineMaxX = lineContext.previous.boundingBox.maxX
@@ -561,7 +563,7 @@ class OCRTextMerger {
          */
         if lineContext.isPrevLongText, lineContext.hasPrevIndentation {
             let dx = lineContext.previous.boundingBox.minX - lineContext.current.boundingBox.minX
-            let distance = dx / metrics.maxLineLength
+            let distance = dx / (metrics.maxLineLength)
             if distance > 0.45 {
                 isNewParagraph = true
             }

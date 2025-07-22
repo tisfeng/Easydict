@@ -339,6 +339,8 @@ public class OCRTextProcessor {
         }
     }
 
+    // swiftlint:disable function_body_length
+
     /// Determine the optimal merge strategy for a text observation pair
     ///
     /// This method applies comprehensive analysis to determine how two consecutive text
@@ -346,11 +348,12 @@ public class OCRTextProcessor {
     /// to make consistent and intelligent decisions.
     ///
     /// **Analysis Priority Order:**
-    /// 1. **Dash Handling**: Check for hyphenation scenarios first
-    /// 2. **Font Changes**: Detect structural changes (headings, sections)
-    /// 3. **Spacing Analysis**: Identify intentional gaps and line breaks
-    /// 4. **Indentation**: Recognize paragraph structure changes
-    /// 5. **Content Patterns**: Apply language-specific rules
+    /// 1. **Line Continuation**: Check if observations are on the same line
+    /// 2. **Dash Handling**: Check for hyphenation scenarios first
+    /// 3. **Font Changes**: Detect structural changes (headings, sections)
+    /// 4. **Spacing Analysis**: Identify intentional gaps and line breaks
+    /// 5. **Indentation**: Recognize paragraph structure changes
+    /// 6. **Content Patterns**: Apply general text pattern analysis
     ///
     /// - Parameters:
     ///   - pair: Text observation pair to analyze
@@ -363,13 +366,18 @@ public class OCRTextProcessor {
         currentParagraphObservations: [VNRecognizedTextObservation]
     )
         -> OCRMergeStrategy {
-        // Check if this might be a line continuation
+        let currentText = pair.current.firstText
+        let previousText = pair.previous.firstText
+
+        // High priority conditions should be checked first
+
+        // 1. Priority: Check if there two observations are on the same line
         if !lineAnalyzer.isNewLine(pair: pair) {
             print("    🔗 Same line continuation - join with space")
             return .joinWithSpace
         }
 
-        // 1. Priority: Dash handling analysis
+        // 2. Priority: Dash handling analysis
         let dashAction = dashHandler.analyzeDashHandling(pair)
         if dashAction != .none {
             let dashStrategy = OCRMergeStrategy.from(dashAction)
@@ -377,33 +385,160 @@ public class OCRTextProcessor {
             return dashStrategy
         }
 
-        // 2. Priority: Font size changes (structural indicators)
+        // 3. Priority: Font size changes (structural indicators)
         if lineAnalyzer.isDifferentFontSize(pair: pair) {
             print("    🔤 Font size change detected - new paragraph")
             return .newParagraph
         }
 
-        // 3. Priority: Large line spacing (intentional gaps)
-        if lineAnalyzer.isBigLineSpacing(pair: pair) {
-            // Check if this is actually a page continuation
+        let comparedObservation = getComparedObservation(
+            pair: pair,
+            maxXObservation: maxXObservation,
+            currentParagraphObservations: currentParagraphObservations
+        )
 
-            let comparedObservation = getComparedObservation(
-                pair: pair,
-                maxXObservation: maxXObservation,
-                currentParagraphObservations: currentParagraphObservations
+        let isPreviousLongText = lineAnalyzer.isLongText(
+            observation: pair.previous,
+            nextObservation: pair.current,
+            comparedObservation: comparedObservation
+        )
+
+        let hasBigIndentation = lineAnalyzer.hasIndentation(
+            observation: pair.current,
+            comparedObservation: pair.previous,
+            confidenceLevel: .custom(3)
+        )
+
+        if hasBigIndentation {
+            print("    📏 Big indentation detected")
+            if !isPreviousLongText {
+                print("    📏 Big indentation and previous line is not long text - new paragraph")
+                return .newParagraph
+            }
+        }
+
+        let hasHighLevelBigLineSpacing = lineAnalyzer.isBigLineSpacing(
+            pair: pair,
+            confidenceLevel: .high
+        )
+        if hasHighLevelBigLineSpacing, !isPreviousLongText {
+            print("    📏 Big line spacing detected and previous line is not long text - new paragraph")
+            return .newParagraph
+        }
+
+        let isPreviousAbsoluteLongText = lineAnalyzer.isLongText(
+            observation: pair.previous
+        )
+
+        let isCurrentList = currentText.isListTypeFirstWord
+        let isPreviousList = previousText.isListTypeFirstWord
+
+        let mayBeDifferentFontSize = lineAnalyzer.isDifferentFontSize(pair: pair, confidenceLevel: .low)
+        let mayBeBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair, confidenceLevel: .low)
+        let mayBeNewParagraph = mayBeDifferentFontSize || mayBeBigLineSpacing
+
+        let firstObservation = currentParagraphObservations.first!
+        let isFirstObservationList = firstObservation.firstText.isListTypeFirstWord
+
+        let previousHasIndentation = lineAnalyzer.hasIndentation(
+            observation: pair.previous
+        )
+
+        let hasPairIndentation = lineAnalyzer.hasIndentation(
+            observation: pair.current,
+            comparedObservation: pair.previous
+        )
+
+        let firstHasIndentation = (pair.previous == firstObservation)
+            ? previousHasIndentation
+            : lineAnalyzer.hasIndentation(observation: firstObservation)
+
+        let isEqualPairX = lineAnalyzer.isEqualX(pair: pair)
+
+        let hasBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair)
+
+        // Check for list patterns
+        if isCurrentList {
+            print("    📋 List pattern detected")
+
+            // Check if the two list items have the same X coordinate
+            let isEqualFirstLineX = lineAnalyzer.isEqualX(pair:
+                .init(
+                    current: pair.current,
+                    previous: firstObservation
+                )
             )
 
-            let isPreviousLongText = lineAnalyzer.isLongText(
-                observation: pair.previous,
-                nextObservation: pair.current,
-                comparedObservation: comparedObservation
-            )
+            if isFirstObservationList {
+                if hasHighLevelBigLineSpacing {
+                    print("    📋 List pattern with high line spacing - new paragraph")
+                    return .newParagraph
+                }
 
-            let currentText = pair.current.firstText
+                if isEqualFirstLineX {
+                    print("    📋 List pattern with equal X")
+
+                    if hasPairIndentation {
+                        print("    📋 List pattern with equal X and indentation - new paragraph")
+                        return .newParagraph
+                    }
+
+                    if !hasBigLineSpacing {
+                        print("    📋 No big line spacing - line break")
+                        return .lineBreak
+                    }
+                } else {
+                    print("    📋 List pattern with different X - new paragraph")
+                    return .newParagraph
+                }
+
+            } else {
+                if hasPairIndentation, !isEqualFirstLineX {
+                    print("    📋 List pattern with indentation and different X - new paragraph")
+                    return .newParagraph
+                }
+            }
+
+            if !isEqualPairX, firstHasIndentation {
+                print("    📋 List pattern with different X and first observation has indentation - new paragraph")
+                return .newParagraph
+            }
+
+            if lineAnalyzer.isBigLineSpacing(pair: pair, confidenceLevel: .custom(1.1)) {
+                print("    📋 List pattern with big line spacing - new paragraph")
+                return .newParagraph
+            }
+
+            if previousHasIndentation, !isEqualFirstLineX {
+                print("    📋 List pattern with previous indentation - new paragraph")
+                return .newParagraph
+            }
+
+            print("    📋 List pattern - line break")
+            return .lineBreak
+        }
+
+        /**
+         If text is a letter format, like:
+         ```
+                                    Wednesday, 4 Octobre 1950
+         My dearest Nelson,
+         ```
+         If `distance` > 0.45, means it may need line break, or treat as new paragraph.
+         */
+        if isPreviousLongText {
+            let dx = pair.previous.boundingBox.minX - pair.current.boundingBox.minX
+            let distance = dx / metrics.maxLineLength
+            if distance > 0.45 {
+                print("    📄 Letter format detected - new paragraph")
+                return .newParagraph
+            }
+        }
+
+        // 4. Priority: Large line spacing (intentional gaps)
+        if hasBigLineSpacing {
             let isListItem = currentText.isListTypeFirstWord
-
-            let shouldContinuePrevious =
-                isPreviousLongText && currentText.isLowercaseFirstChar && !isListItem
+            let shouldContinuePrevious = isPreviousLongText && currentText.isLowercaseFirstChar && !isListItem
             if shouldContinuePrevious {
                 print("    📄 Page continuation detected - join with space")
                 return .joinWithSpaceOrNot(pair: pair)
@@ -413,86 +548,65 @@ public class OCRTextProcessor {
             }
         }
 
-        let hasIndentation = lineAnalyzer.hasIndentation(
-            observation: pair.current,
-            comparedObservation: pair.previous
-        )
+        if !isEqualPairX {
+            print("    🔗 Different X detected")
 
-        let isPreviousAbsoluteLongText = lineAnalyzer.isLongText(
-            observation: pair.previous,
-        )
-
-        // 4. Priority: Indentation changes (paragraph structure)
-        if hasIndentation {
-            // Check for special cases (lists, continuations)
-            let isPreviousList = pair.previous.firstText.isListTypeFirstWord
-            if isPreviousList, isPreviousAbsoluteLongText {
-                print("    📋 List item with indentation - join with space")
-                return .joinWithSpace
-            } else {
-                print("    🔢 Indentation change - new paragraph")
+            if !isPreviousLongText {
+                print("    🔗 Different X and previous line is not long text - new paragraph")
                 return .newParagraph
             }
-        }
 
-        // 5. Priority: Content pattern analysis
-        return determineGeneralMergeStrategy(
-            pair: pair,
-            maxXObservation: maxXObservation,
-            currentParagraphObservations: currentParagraphObservations
-        )
-    }
+            if !isPreviousAbsoluteLongText {
+                print("    🔗 Previous line is NOT absolute long text")
+                if previousHasIndentation {
+                    print("    🔗 Different X and previous line has indentation - new paragraph")
+                    return .newParagraph
+                }
 
-    /// Determine merge strategy for general (non-Chinese) text patterns
-    private func determineGeneralMergeStrategy(
-        pair: OCRTextObservationPair,
-        maxXObservation: VNRecognizedTextObservation,
-        currentParagraphObservations: [VNRecognizedTextObservation]
-    )
-        -> OCRMergeStrategy {
-        let differentFontSize = lineAnalyzer.fontSizeDifference(pair: pair)
-        let defaultFontSizeThreshold = lineAnalyzer.fontSizeThreshold(metrics.language)
+                if isPreviousList {
+                    print("    🔗 Different X and previous line is a list - new paragraph")
+                    return .newParagraph
+                }
 
-        let verticalGap = pair.verticalGap
-        let defaultVerticalGapThreshold = metrics.bigLineSpacingThreshold
+                if hasBigIndentation {
+                    print("    🔗 Different X and has big indentation - new paragraph")
+                    return .newParagraph
+                }
 
-        let comparedObservation = getComparedObservation(
-            pair: pair,
-            maxXObservation: maxXObservation,
-            currentParagraphObservations: currentParagraphObservations
-        )
+                print("    🔗 Different X and previous line is not absolute long text - line break")
+                return .lineBreak
+            } else {
+                print("    🔗 Previous line is absolute long text")
+                if mayBeNewParagraph {
+                    print("    🔗 May be new paragraph - new paragraph")
+                    return .newParagraph
+                }
 
-        // Use maxXLineTextObservation as reference for long text comparison
-        let isPreviousLongText = lineAnalyzer.isLongText(
-            observation: pair.previous,
-            nextObservation: pair.current,
-            comparedObservation: comparedObservation
-        )
+                print("    🔗 Different X and previous line is absolute long text - join with space or not by language")
+                return .joinWithSpaceOrNot(pair: pair)
+            }
+        } else {
+            print("    🔗 Same X detected")
 
-        let currentText = pair.current.firstText
-        let previousText = pair.previous.firstText
+            if !previousHasIndentation, !isPreviousLongText {
+                print("    🔗 Has no indentation and previous line is not long text")
 
-        let hasPreviousEndPunctuation = previousText.hasEndPunctuationSuffix
+                if mayBeNewParagraph {
+                    print("    🔗 May be new paragraph - new paragraph")
+                    return .newParagraph
+                }
 
-        let isCurrentList = currentText.isListTypeFirstWord
-        let isPreviousList = previousText.isListTypeFirstWord
-
-        // Check if should join with previous line based on text characteristics
-        let shouldJoinWithPreviousLine = isPreviousLongText
-
-        let differentFontSizeRate = differentFontSize / defaultFontSizeThreshold
-        let mayBeDifferentFontSize = differentFontSizeRate > 0.7
-        let mayBeBigLineSpacing = verticalGap / defaultVerticalGapThreshold > 0.75
-        let mayBeNewParagraph = mayBeDifferentFontSize || mayBeBigLineSpacing
-
-        // For Chinese text, we have special handling
-        if metrics.language.isChinese {
-            if lineAnalyzer.isEqualChineseText(pair: pair) {
-                print("    🏮 Equal Chinese text - line break")
                 return .lineBreak
             }
         }
 
+        if isPreviousList {
+            if previousHasIndentation, !isPreviousLongText {
+                return .newParagraph
+            }
+        }
+
+        // 6. Priority: Comprehensive content pattern analysis
         if mayBeNewParagraph {
             print(
                 "\n🔤 May be new paragraph, mayBeBigLineSpacing: \(mayBeBigLineSpacing), mayBeDifferentFontSize: \(mayBeDifferentFontSize)"
@@ -504,7 +618,7 @@ public class OCRTextProcessor {
             }
 
             // If may be new paragraph, and should not join with previous line, means need a paragraph break
-            if !shouldJoinWithPreviousLine {
+            if !isPreviousLongText {
                 print("🔢 May be new paragraph and previous line is not long text - new paragraph")
                 return .newParagraph
             }
@@ -516,7 +630,8 @@ public class OCRTextProcessor {
                 return .newParagraph
             }
 
-            if differentFontSizeRate > 0.5, currentText.isFirstLetterUpperCase {
+            if currentText.isFirstLetterUpperCase,
+               lineAnalyzer.isDifferentFontSize(pair: pair, confidenceLevel: .custom(0.5)) {
                 print(
                     "🔢 May be new paragraph and current line starts with uppercase letter - new paragraph"
                 )
@@ -524,47 +639,36 @@ public class OCRTextProcessor {
             }
         }
 
-        // Check for list patterns
-        if isCurrentList {
-            print("    📋 List pattern detected")
+        let isEqualLineMaxX = lineAnalyzer.isEqualMaxX(pair: pair)
 
-            // Sometimes list may be checked incorrectly, so we check previous line is long text
-            if isPreviousLongText, !hasPreviousEndPunctuation {
-                print("    📋 List continuation - join with space or not by language")
-                return .joinWithSpaceOrNot(pair: pair)
-            }
-
-            print("    📋 List pattern - line break")
-            return .lineBreak
-        }
-
-        let isEqualAlignment = lineAnalyzer.isEqualAlignment(pair: pair)
+        let isEqualAlignment = isEqualPairX && isEqualLineMaxX
 
         if !isPreviousLongText, !isEqualAlignment {
             print("    📝 Previous line is not long text and not equal alignment - line break")
             return .lineBreak
         }
 
-        let isShortLine = lineAnalyzer.isShortLine(
-            pair.current.lineWidth,
-            maxLineLength: metrics.maxLineLength,
-            lessRateOfMaxLength: 0.5
-        )
-        let isPreviousShortLine = lineAnalyzer.isShortLine(
-            pair.previous.lineWidth,
-            maxLineLength: metrics.maxLineLength,
-            lessRateOfMaxLength: 0.5
-        )
+        let isShortLine = lineAnalyzer.isShortLineText(observation: pair.current)
+        let isPreviousShortLine = lineAnalyzer.isShortLineText(observation: pair.previous)
 
         if isShortLine, isPreviousShortLine {
             print("    🎭 Short line pattern - line break")
             return .lineBreak
         }
 
+        // Default merge strategy
         print("    🔗 Default merge - join with space or not by language")
         return .joinWithSpaceOrNot(pair: pair)
     }
 
+    // swiftlint:enable function_body_length
+
+    /// Get the compared observation for the current paragraph.
+    ///
+    /// If the first observation has no indentation, use the maxXLineTextObservation.
+    /// Of if previous observation is the maxXObservation, and it is the first observation,
+    /// use the maxXLineTextObservation as compared observation.
+    /// Else, use the maxXObservation as compared observation.
     private func getComparedObservation(
         pair: OCRTextObservationPair,
         maxXObservation: VNRecognizedTextObservation,
@@ -597,39 +701,6 @@ public class OCRTextProcessor {
         }
 
         return maxXObservation
-    }
-
-    /// Determine merge strategy for Chinese text patterns
-    private func determineChineseMergeStrategy(pair: OCRTextObservationPair) -> OCRMergeStrategy {
-        // Check for equal Chinese text patterns (poetry or structured content)
-        if lineAnalyzer.isEqualChineseText(pair: pair) {
-            print("    🏮 Equal Chinese text - line break")
-            return .lineBreak
-        }
-
-        // Check for short poetry patterns
-        let currentText = pair.current.firstText
-        let previousText = pair.previous.firstText
-
-        if lineAnalyzer.isShortPoetry(currentText), lineAnalyzer.isShortPoetry(previousText) {
-            print("    🎭 Chinese poetry pattern - line break")
-            return .lineBreak
-        }
-
-        // Chinese punctuation-based analysis
-        if previousText.hasEndPunctuationSuffix, !currentText.isEmpty {
-            let firstChar = String(currentText.prefix(1))
-            if firstChar.isChinesePunctuationStart {
-                print("    🔗 Chinese punctuation continuation - join with space")
-                return .joinWithSpace
-            } else {
-                print("    📝 Chinese sentence end - new paragraph")
-                return .newParagraph
-            }
-        }
-
-        print("    🔗 Default Chinese merge - join with space")
-        return .joinWithSpace
     }
 
     /// Update contextual tracking variables based on merge strategy decision

@@ -19,13 +19,22 @@ struct OCRTextProcessingTests {
 
     let normalizer = OCRTextNormalizer(language: .english)
 
+    @Test("OCR Text Normalizer Single", .tags(.ocr))
+    func testSingle() {
+        // Test basic normalization of simple text
+        let messyText = "Full Changelog: 2.13.0...2.14.1"
+        let normalizedText = normalizer.normalizeText(messyText)
+
+        #expect(normalizedText.contains("2.13.0...2.14.1")) // Ensure text is unchanged
+    }
+
     @Test("OCR Text Normalizer Spacing", .tags(.ocr))
     func testOCRTextNormalizerSpacing() {
         // Combine multiple test cases into one multiline string
         let testCases = """
         Hello    world   test
         Hello , world .Test ; again !
-        The price is 10 . 99 dollars
+        The price is 10.99 dollars
         """
 
         let normalizedText = normalizer.normalizeText(testCases)

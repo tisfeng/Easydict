@@ -149,23 +149,7 @@ class OCRMetrics {
 
     // MARK: - Horizontal Position and Length Metrics
 
-    /// Leftmost X coordinate among all text observations
-    ///
-    /// Establishes the document's left margin for indentation analysis
-    /// and relative positioning calculations.
-    var minX: Double = .greatestFiniteMagnitude
-
-    /// Maximum observed line length (rightmost extent)
-    ///
-    /// Defines the document's effective width and serves as reference
-    /// for relative line length calculations and "long line" detection.
-    var maxLineLength: Double = 0
-
-    /// Minimum observed line length
-    ///
-    /// Used for understanding the range of line lengths and detecting
-    /// unusually short lines that may indicate special formatting.
-    var minLineLength: Double = .greatestFiniteMagnitude
+    var maxLineLengthObservation: VNRecognizedTextObservation?
 
     // MARK: - Reference Text Observations
 
@@ -226,6 +210,10 @@ class OCRMetrics {
     /// Range: 0.0 to 1.0, where 1.0 indicates maximum confidence.
     /// Used for assessing the reliability of the OCR recognition results.
     var confidence: Float = 0.0
+
+    var maxLineLength: Double {
+        maxLineLengthObservation?.lineWidth ?? 0.0
+    }
 
     var bigLineSpacingThreshold: Double {
         min(averageLineHeight, minLineHeight * 1.1)
@@ -334,13 +322,13 @@ class OCRMetrics {
             "  - Big line spacing threshold: \(String(format: "%.3f", bigLineSpacingThreshold))"
         )
         print(
-            "  - Line length → min: \(String(format: "%.3f", minLineLength)), max: \(String(format: "%.3f", maxLineLength))"
+            "  - Line length → max: \(String(format: "%.3f", maxLineLength))"
         )
         print(
             "  - Character metrics → width: \(String(format: "%.3f", averageCharacterWidth)), total: \(totalCharCount)"
         )
         print("  - Average chars per line: \(String(format: "%.1f", charCountPerLine))")
-        print("  - Min X position: \(String(format: "%.3f", minX))")
+        print("  - Min X position: \(String(format: "%.3f", minXLineTextObservation?.boundingBox.minX ?? 0))")
     }
 
     // MARK: Private
@@ -379,9 +367,7 @@ class OCRMetrics {
         totalLineSpacing = 0
         averageLineSpacing = 0
 
-        minX = .greatestFiniteMagnitude
-        maxLineLength = 0
-        minLineLength = .greatestFiniteMagnitude
+        maxLineLengthObservation = nil
 
         maxXLineTextObservation = nil
         minXLineTextObservation = nil
@@ -426,14 +412,13 @@ class OCRMetrics {
 
         // Track x coordinates and line lengths
         let x = boundingBox.origin.x
-        if x < minX {
-            minX = x
+        if x < minXLineTextObservation?.boundingBox.minX ?? .greatestFiniteMagnitude {
             minXLineTextObservation = textObservation
         }
 
         let lengthOfLine = boundingBox.size.width
         if lengthOfLine > maxLineLength {
-            maxLineLength = lengthOfLine
+            maxLineLengthObservation = textObservation
         }
 
         if boundingBox.maxX > maxXLineTextObservation?.boundingBox.maxX ?? 0 {
@@ -448,10 +433,6 @@ class OCRMetrics {
             }
         } else {
             maxCharacterCountLineTextObservation = textObservation
-        }
-
-        if lengthOfLine < minLineLength {
-            minLineLength = lengthOfLine
         }
 
         // Calculate index for gap logging (only if not the first observation)
