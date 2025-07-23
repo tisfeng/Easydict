@@ -337,14 +337,10 @@ class OCRTextNormalizer {
         return string
     }
 
-    /// Normalize common OCR recognition errors for symbols
-    /// OCR systems frequently misidentify special characters and symbols
+    /// Normalizes common OCR recognition errors for symbols.
     ///
-    /// This step is performed AFTER punctuation normalization to avoid conflicts:
-    /// - Example: "…" → "..." should not become "。。。" in Chinese mode
-    /// - Ensures dash normalization doesn't interfere with punctuation style choices
-    ///
-    /// Only applies essential corrections that are clearly OCR errors, not semantic replacements
+    /// This step is performed AFTER punctuation normalization to avoid conflicts.
+    /// Only applies essential corrections that are clearly OCR errors, not semantic replacements.
     private func normalizeCommonOCRErrors(in string: String) -> String {
         var result = string
 

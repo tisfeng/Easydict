@@ -11,20 +11,22 @@ import Vision
 
 // MARK: - OCRLineMeasurer
 
-/// A class responsible for measuring line length and determining if a line is "long" or "short".
-///
-/// This class encapsulates the logic for one of the most critical parts of the text merging
-/// process: deciding whether a line of text is long enough to be considered part of a
-/// continuous paragraph. A "long" line suggests that the next line is likely a continuation,
-/// while a "short" line might indicate the end of a paragraph, a heading, or a list item.
-///
-/// ### Key Responsibilities:
-/// - **Long Line Detection**: The primary method, `isLongLine`, determines if a line has
-///   enough text to be considered "long".
-/// - **Context-Aware Thresholds**: It calculates a `smartMinimumCharactersThreshold` that adapts
-///   based on the content of the *next* line, making the detection more robust.
-/// - **Remaining Space Calculation**: It computes how many characters could still fit on a line,
-///   which is the core metric for the long-line decision.
+/**
+ * A class responsible for measuring line length and determining if a line is "long" or "short".
+ *
+ * This class encapsulates the logic for one of the most critical parts of the text merging
+ * process: deciding whether a line of text is long enough to be considered part of a
+ * continuous paragraph. A "long" line suggests that the next line is likely a continuation,
+ * while a "short" line might indicate the end of a paragraph, a heading, or a list item.
+ *
+ * ### Key Responsibilities:
+ * - **Long Line Detection**: The primary method, `isLongLine`, determines if a line has
+ *   enough text to be considered "long".
+ * - **Context-Aware Thresholds**: It calculates a `smartMinimumCharactersThreshold` that adapts
+ *   based on the content of the *next* line, making the detection more robust.
+ * - **Remaining Space Calculation**: It computes how many characters could still fit on a line,
+ *   which is the core metric for the long-line decision.
+ */
 class OCRLineMeasurer {
     // MARK: Lifecycle
 
@@ -37,42 +39,14 @@ class OCRLineMeasurer {
 
     // MARK: Internal
 
-    /// Determine if a text line is considered "long" based on remaining character space analysis
-    ///
-    /// This sophisticated measurement method analyzes how much space remains at the end of a text line
-    /// to determine if it should be considered "long" for text merging purposes. A "long" line typically
-    /// indicates the text continues naturally to the next line, while a "short" line may indicate
-    /// intentional breaks (poetry, lists, paragraphs).
-    ///
-    /// **Measurement Strategy:**
-    /// - Calculates actual remaining horizontal space in the line
-    /// - Converts space to character count using average character width
-    /// - For space-separated languages: Compares with next line's first word length
-    /// - For character-based languages: Uses character-based threshold calculations
-    /// - Uses document-wide patterns for context-aware decisions
-    ///
-    /// **Context-Aware Threshold:**
-    /// - Space-separated languages (English): Uses next line's first word length if available
-    /// - Character-based languages (Chinese): Uses character-based calculations
-    /// - Fallback to smart threshold when next observation is not available
-    ///
-    /// **Use Cases:**
-    /// - Text merging decisions (should lines be joined?)
-    /// - Poetry detection (short lines often indicate intentional breaks)
-    /// - List formatting (preserving list structure)
-    /// - Paragraph boundary detection
-    ///
-    /// **Confidence Level Impact:**
-    /// - `.high`: 2.0x threshold (more strict, requires more space to be "long")
-    /// - `.medium`: 1.0x threshold (standard detection)
-    /// - `.low`: 0.7x threshold (more lenient, easier to detect as "long")
+    /// Determines if a text line is considered "long" based on remaining character space analysis.
     ///
     /// - Parameters:
-    ///   - observation: The text observation to analyze for line length
-    ///   - nextObservation: The next text observation for context-aware analysis (optional)
-    ///   - comparedObservation: The reference observation to compare against for remaining space (optional)
-    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: .medium)
-    /// - Returns: true if line is considered "long" (little space remaining), false if "short"
+    ///   - observation: The text observation to analyze for line length.
+    ///   - nextObservation: The next text observation for context-aware analysis (optional).
+    ///   - comparedObservation: The reference observation to compare against for remaining space (optional).
+    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: `.medium`).
+    /// - Returns: `true` if the line is considered "long" (little space remaining), `false` if "short".
     func isLongLine(
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil,
@@ -116,11 +90,11 @@ class OCRLineMeasurer {
 
     // MARK: - Helper Methods
 
-    /// Calculate how many characters can still fit in the line compared to a reference line length
+    /// Calculates how many characters can still fit in the line compared to a reference line length.
     /// - Parameters:
-    ///   - observation: The text observation to analyze
-    ///   - comparedObservation: The reference observation to compare against (optional, defaults to metrics.maxXLineTextObservation)
-    /// - Returns: Number of characters that could still fit on the right side of the line
+    ///   - observation: The text observation to analyze.
+    ///   - comparedObservation: The reference observation to compare against (optional, defaults to `metrics.maxXLineTextObservation`).
+    /// - Returns: The number of characters that could still fit on the right side of the line.
     private func charactersRemainingToReferenceLine(
         observation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil
@@ -150,12 +124,12 @@ class OCRLineMeasurer {
         return remainingCharacters
     }
 
-    /// Calculate the minimum character threshold for considering a line as "long"
-    /// Returns the minimum number of characters that should remain for a line to be considered "not long"
+    /// Calculates the minimum character threshold for considering a line as "long".
+    ///
     /// - Parameters:
-    ///   - observation: The current text observation to analyze
-    ///   - nextObservation: The next text observation for context-aware analysis (optional)
-    /// - Returns: Character count threshold (context-aware calculation based on next line)
+    ///   - observation: The current text observation to analyze.
+    ///   - nextObservation: The next text observation for context-aware analysis (optional).
+    /// - Returns: The character count threshold (context-aware calculation based on the next line).
     private func smartMinimumCharactersThreshold(
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil

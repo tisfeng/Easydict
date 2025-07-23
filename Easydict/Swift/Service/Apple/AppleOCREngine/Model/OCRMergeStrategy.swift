@@ -10,10 +10,12 @@ import Foundation
 
 // MARK: - OCRMergeStrategy
 
-/// Defines the strategy for merging two consecutive OCR text observations.
-///
-/// Each case represents a specific formatting decision when combining a `previous`
-/// and `current` text observation.
+/**
+ * Defines the strategy for merging two consecutive OCR text observations.
+ *
+ * Each case represents a specific formatting decision when combining a `previous`
+ * and `current` text observation.
+ */
 enum OCRMergeStrategy: CustomStringConvertible {
     /// Represents an intentional line break, such as in poetry or lists.
     /// A single newline character (`\n`) is inserted.
@@ -52,13 +54,9 @@ enum OCRMergeStrategy: CustomStringConvertible {
         }
     }
 
-    /// Create merge strategy from legacy DashHandlingAction
-    ///
-    /// Provides compatibility with existing DashHandlingAction enumeration
-    /// by converting legacy dash actions to the new unified strategy.
-    ///
-    /// - Parameter action: Legacy dash handling action to convert
-    /// - Returns: Corresponding merge strategy
+    /// Creates a merge strategy from a `DashHandlingAction`.
+    /// - Parameter action: The dash handling action to convert.
+    /// - Returns: The corresponding merge strategy.
     static func from(_ action: DashHandlingAction) -> OCRMergeStrategy {
         switch action {
         case .none:
@@ -70,6 +68,9 @@ enum OCRMergeStrategy: CustomStringConvertible {
         }
     }
 
+    /// Determines the appropriate join strategy based on the language context of the joined text.
+    /// - Parameter pair: The text observation pair to analyze.
+    /// - Returns: `.joinWithSpace` for space-separated languages, `.joinWithNoSpace` otherwise.
     static func joinWithSpaceOrNot(pair: OCRTextObservationPair) -> OCRMergeStrategy {
         joinWithSpaceOrNot(
             firstText: pair.previous.firstText.lastWord,
@@ -77,9 +78,11 @@ enum OCRMergeStrategy: CustomStringConvertible {
         )
     }
 
-    /// Create merge strategy based on language context
-    ///
-    /// - Note: Maybe the joinedText language is different from OCR entire text language.
+    /// Determines the appropriate join strategy based on the language context of the joined text.
+    /// - Parameters:
+    ///   - firstText: The first text string.
+    ///   - secondText: The second text string.
+    /// - Returns: `.joinWithSpace` for space-separated languages, `.joinWithNoSpace` otherwise.
     static func joinWithSpaceOrNot(
         firstText: String,
         secondText: String,
@@ -96,9 +99,8 @@ enum OCRMergeStrategy: CustomStringConvertible {
 
     // MARK: - Output Generation
 
-    /// Generate the appropriate separator string for this merge strategy
-    ///
-    /// - Returns: Separator string for text joining
+    /// Generates the appropriate separator string for this merge strategy.
+    /// - Returns: The separator string for text joining.
     func separatorString() -> String {
         switch self {
         case .joinWithSpace:
@@ -114,12 +116,11 @@ enum OCRMergeStrategy: CustomStringConvertible {
         }
     }
 
-    /// Apply the merge strategy to join two text strings
-    ///
+    /// Applies the merge strategy to join two text strings.
     /// - Parameters:
-    ///   - firstText: The first text string
-    ///   - secondText: The second text string
-    /// - Returns: Combined text according to the merge strategy
+    ///   - firstText: The first text string.
+    ///   - secondText: The second text string.
+    /// - Returns: The combined text according to the merge strategy.
     func apply(firstText: String, secondText: String) -> String {
         switch self {
         case .joinWithSpace, .lineBreak, .newParagraph:
@@ -135,7 +136,7 @@ enum OCRMergeStrategy: CustomStringConvertible {
 
     // MARK: Private
 
-    /// Language detector for determining language context of joined text, do not need to detect classical Chinese
+    /// Language detector for determining language context of joined text.
     static private var languageDetector: AppleLanguageDetector {
         AppleLanguageDetector(enableClassicalChineseDetection: false)
     }

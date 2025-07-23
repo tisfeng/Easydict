@@ -12,13 +12,15 @@ import Vision
 
 // MARK: - AppleOCREngine
 
-/// A wrapper around Apple's Vision framework to provide OCR (Optical Character Recognition) services.
-///
-/// This class simplifies the process of recognizing text from an image by encapsulating the setup
-/// and execution of `VNRecognizeTextRequest`. It coordinates the entire OCR pipeline, from handling
-/// the initial image to delegating the final text processing to `OCRTextProcessor`.
-///
-/// It supports both a traditional callback-based API and a modern async/await interface.
+/**
+ * A wrapper around Apple's Vision framework to provide OCR (Optical Character Recognition) services.
+ *
+ * This class simplifies the process of recognizing text from an image by encapsulating the setup
+ * and execution of `VNRecognizeTextRequest`. It coordinates the entire OCR pipeline, from handling
+ * the initial image to delegating the final text processing to `OCRTextProcessor`.
+ *
+ * It supports both a traditional callback-based API and a modern async/await interface.
+ */
 public class AppleOCREngine {
     // MARK: Internal
 
@@ -98,11 +100,18 @@ public class AppleOCREngine {
     }
 
     /// Checks if a given language is a valid and supported language for Vision's OCR.
+    /// - Parameter language: The language to check.
+    /// - Returns: `true` if the language is valid and supported, `false` otherwise.
     func hasValidOCRLanguage(_ language: Language) -> Bool {
         language != .auto && languageMapper.isSupportedOCRLanguage(language)
     }
 
     /// An async/await variant of `recognizeText` that returns a structured `EZOCRResult`.
+    /// - Parameters:
+    ///   - image: The `NSImage` to recognize text from.
+    ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
+    ///   - shouldRefineWithDetectedLanguage: If true, triggers a second pass with the detected language for improved accuracy.
+    /// - Returns: An `EZOCRResult` containing the recognized and processed text.
     func recognizeTextAsync(
         image: NSImage,
         language: Language = .auto,
@@ -129,6 +138,10 @@ public class AppleOCREngine {
     }
 
     /// Performs raw text recognition on a `CGImage` and returns the observations via a completion handler.
+    /// - Parameters:
+    ///   - cgImage: The `CGImage` to perform OCR on.
+    ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
+    ///   - completionHandler: A closure that is called with the recognized text observations or an error.
     func recognizeTextFromCGImage(
         cgImage: CGImage,
         language: Language = .auto,

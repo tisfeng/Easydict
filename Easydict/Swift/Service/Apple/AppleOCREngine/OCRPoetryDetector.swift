@@ -11,21 +11,23 @@ import Vision
 
 // MARK: - OCRPoetryDetector
 
-/// A detector for identifying poetry-like text structures in OCR results.
-///
-/// This class analyzes the layout and content of text observations to determine if they
-/// follow patterns commonly found in poetry. The detection is based on a combination of
-/// line length consistency, alignment, and the number of stanzas (groups of lines).
-///
-/// ### Detection Criteria:
-/// - **Line Length**: Poetry often consists of relatively short lines.
-/// - **Alignment**: Lines in a stanza may share a common left or right alignment.
-/// - **Stanzas**: The presence of distinct groups of lines separated by larger vertical gaps.
+/**
+ * A detector for identifying poetry-like text structures in OCR results.
+ *
+ * This class analyzes the layout and content of text observations to determine if they
+ * follow patterns commonly found in poetry. The detection is based on a combination of
+ * line length consistency, alignment, and the number of stanzas (groups of lines).
+ *
+ * ### Detection Criteria:
+ * - **Line Length**: Poetry often consists of relatively short lines.
+ * - **Alignment**: Lines in a stanza may share a common left or right alignment.
+ * - **Stanzas**: The presence of distinct groups of lines separated by larger vertical gaps.
+ */
 class OCRPoetryDetector {
     // MARK: Lifecycle
 
-    /// Initialize poetry detector with OCR metrics
-    /// - Parameter metrics: OCR metrics containing necessary data for poetry detection
+    /// Initializes the poetry detector with the provided OCR metrics.
+    /// - Parameter metrics: The OCR metrics containing necessary data for poetry detection.
     init(metrics: OCRMetrics) {
         self.metrics = metrics
         self.lineMeasurer = OCRLineMeasurer(metrics: metrics)
@@ -33,37 +35,13 @@ class OCRPoetryDetector {
 
     // MARK: Internal
 
-    /// Analyze text layout patterns to determine if content represents poetry
+    /// Analyzes text layout patterns to determine if content represents poetry.
     ///
     /// This sophisticated analysis examines multiple characteristics of the text layout
     /// to make an intelligent determination about whether the content is poetic in nature.
     /// The detection is crucial for preserving proper formatting in the final output.
     ///
-    /// **Analysis Process:**
-    /// 1. **Minimum Line Requirements**: Ensures sufficient content for reliable detection
-    /// 2. **Character Count Analysis**: Calculates average characters per line
-    /// 3. **Line Length Patterns**: Examines consistency and variation in line lengths
-    /// 4. **Short Line Detection**: Identifies patterns of intentionally short lines
-    /// 5. **Language-specific Rules**: Applies different thresholds for different languages
-    /// 6. **Long Line Analysis**: Detects patterns of consecutive long lines that indicate prose
-    /// 7. **Punctuation Patterns**: Analyzes ending punctuation frequency
-    /// 8. **Word Density**: Examines word count per line ratios
-    ///
-    /// **Detection Thresholds:**
-    /// - Requires minimum 3 lines for reliable pattern analysis
-    /// - Uses language-specific character count limits
-    /// - Considers percentage of short lines vs total lines
-    /// - Factors in average line length relative to typical prose
-    /// - Analyzes consecutive long line patterns (prose indicator)
-    /// - Evaluates punctuation frequency and patterns
-    ///
-    /// **Language-specific Adaptations:**
-    /// - Chinese: Uses character-based analysis with different thresholds
-    /// - English: Uses word-based analysis with space considerations
-    /// - General: Applies universal patterns for other languages
-    ///
-    /// - Returns: true if text layout indicates poetry, false for regular prose
-    /// - Note: Conservative approach to avoid false positives that could break normal text
+    /// - Returns: `true` if text layout indicates poetry, `false` for regular prose.
     func detectPoetry() -> Bool {
         let observations = metrics.textObservations
         let lineCount = observations.count

@@ -80,7 +80,7 @@ public class OCRTextProcessor {
         )
 
         print(
-            "\nOCR text (\(ocrResult.from)(\((String(format: "%.2f", ocrResult.confidence))): \(ocrResult.mergedText)\n"
+            "\nOCR text (\(ocrResult.from), \(String(format: "%.2f", ocrResult.confidence))): \(ocrResult.mergedText)\n"
         )
     }
 
