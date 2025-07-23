@@ -11,10 +11,7 @@ import Vision
 
 // MARK: - DashHandlingAction
 
-/// Represents the strategic action to take when processing dash characters in OCR text
-///
-/// Dash characters in OCR text can serve different purposes and require different handling
-/// strategies depending on their context and intended meaning.
+/// Actions for handling dash characters in OCR text.
 enum DashHandlingAction {
     /// No special dash processing required
     ///
@@ -41,11 +38,7 @@ enum DashHandlingAction {
 
 // MARK: - OCRDashHandler
 
-/// Specialized processor for intelligent dash character handling in OCR text
-///
-/// This sophisticated handler addresses one of the most complex challenges in OCR text
-/// processing: determining when dash characters represent meaningful punctuation versus
-/// typographical artifacts from line-breaking hyphenation.
+/// Handles dash punctuation, differentiating hyphenation artifacts and meaningful dashes.
 ///
 /// **Core Challenge:**
 /// OCR often encounters text where words are hyphenated across line breaks for formatting.
@@ -80,31 +73,10 @@ class OCRDashHandler {
 
     // MARK: Internal
 
-    /// Analyze dash handling for a text observation pair and determine appropriate action
+    /// Decide how to handle dashes between two text observations.
     ///
-    /// This sophisticated analysis determines how to handle dash characters that may represent
-    /// either meaningful punctuation or typographical artifacts from line-breaking hyphenation.
-    /// The decision significantly impacts text readability and correctness.
-    ///
-    /// **Analysis Process:**
-    /// 1. **Hyphenation Detection**: Checks if the text pair represents word continuation
-    /// 2. **Line Length Validation**: Ensures the previous line is long enough to warrant continuation
-    /// 3. **Word Reconstruction**: Creates the potentially joined word for validation
-    /// 4. **Spelling Verification**: Uses spell-checking to determine if the joined word is valid
-    /// 5. **Action Decision**: Returns appropriate handling strategy based on analysis
-    ///
-    /// **Decision Logic:**
-    /// - `.none`: No dash handling needed (no hyphenation detected)
-    /// - `.removeDashAndJoin`: Valid word continuation detected (spell-check passes)
-    /// - `.keepDashAndJoin`: Uncertain case or meaningful dash (spell-check fails)
-    ///
-    /// **Examples:**
-    /// - "under-\nstanding" → `.removeDashAndJoin` → "understanding"
-    /// - "well-\nknown" → `.keepDashAndJoin` → "well-known"
-    /// - "UTF-\n8" → `.keepDashAndJoin` → "UTF-8"
-    ///
-    /// - Parameter pair: Text observation pair containing potential dash continuation
-    /// - Returns: Appropriate dash handling action for the text pair
+    /// - Parameter pair: Pair of previous and current observations.
+    /// - Returns: Dash handling action (.none, .removeDashAndJoin, .keepDashAndJoin).
     func analyzeDashHandling(_ pair: OCRTextObservationPair) -> DashHandlingAction {
         // First check if we have a potential hyphenated word continuation
         guard hasHyphenatedWordContinuation(pair) else {
@@ -112,7 +84,8 @@ class OCRDashHandler {
         }
 
         // Check if the previous line is long enough to warrant dash handling
-        guard lineMeasurer.isLongLine(observation: pair.previous, nextObservation: pair.current) else {
+        guard lineMeasurer.isLongLine(observation: pair.previous, nextObservation: pair.current)
+        else {
             return .none
         }
 

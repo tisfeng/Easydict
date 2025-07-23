@@ -11,24 +11,20 @@ import RegexBuilder
 
 // MARK: - OCRTextNormalizer
 
-/// Handles comprehensive text normalization for OCR results
+/// A class for normalizing recognized OCR text by correcting common errors and standardizing formatting.
 ///
-/// This class addresses common OCR recognition issues by applying systematic corrections:
-/// - **Spacing**: Removes excessive spaces while preserving paragraph structure
-/// - **Punctuation**: Ensures language-appropriate punctuation styles (Western vs Chinese)
-/// - **Symbols**: Normalizes misrecognized special characters and mathematical symbols
-/// - **Formatting**: Fixes line breaks, hyphenation, and text structure issues
+/// This class applies a series of language-specific rules and regular expressions to clean up
+/// the raw text output from the OCR engine. Normalization is a crucial step for improving
+/// the readability and accuracy of the final text, making it more suitable for display or
+/// further processing like translation.
 ///
-/// The normalizer is language-aware and applies different rules based on the detected language:
-/// - Chinese/Japanese: Uses full-width punctuation (，。；：？！)
-/// - English/Korean/Others: Uses half-width punctuation (,.;:?!)
-///
-/// Example usage:
-/// ```swift
-/// let normalizer = OCRTextNormalizer(language: .english)
-/// let cleanText = normalizer.normalizeTextSymbols(in: messyOCRText)
-/// ```
-public class OCRTextNormalizer {
+/// ### Key Normalization Tasks:
+/// - **Whitespace Correction**: Standardizes spacing between words and removes extra spaces.
+/// - **Punctuation Handling**: Corrects spacing around punctuation marks.
+/// - **Number Formatting**: Fixes spacing within numbers (e.g., "1 . 2" -> "1.2").
+/// - **Line Break Unification**: Ensures consistent line endings.
+/// - **Language-Specific Fixes**: Applies rules tailored to the detected language (e.g., handling of Chinese punctuation).
+class OCRTextNormalizer {
     // MARK: Lifecycle
 
     /// Initialize with OCR metrics for language-specific processing
@@ -278,13 +274,6 @@ public class OCRTextNormalizer {
 
         // Fix spacing around punctuation for English-type languages
         if languageManager.isLanguageWordsNeedSpace(metrics.language) {
-            // Fix number patterns FIRST before other punctuation processing
-            // This handles spacing patterns in decimals, versions, IPs: "1 . 2 . 3", "10 . 99" -> "1.2.3", "10.99"
-//            result.replace(Regex.numberPatternWithSpacing) { match in
-//                // Remove all whitespace around dots in the matched number pattern
-//                String(match.output).replacing(" ", with: "").replacing("\t", with: "")
-//            }
-
             // Remove spaces before punctuation marks (but not line breaks)
             // Example: "Hello , world ." → "Hello, world."
             result.replace(Regex.whitespaceBeforePunctuation) { match in

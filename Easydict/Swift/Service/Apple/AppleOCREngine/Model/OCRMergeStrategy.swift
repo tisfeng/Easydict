@@ -10,111 +10,32 @@ import Foundation
 
 // MARK: - OCRMergeStrategy
 
-/// Strategy enumeration for merging two OCR text observations
+/// Defines the strategy for merging two consecutive OCR text observations.
 ///
-/// This enumeration defines how two consecutive OCR text observations should be combined,
-/// addressing both regular text merging and special dash character handling scenarios.
-///
-/// **Core Strategies:**
-/// - **Regular Merging**: Standard text continuation with space or line breaks
-/// - **Dash Handling**: Special processing for hyphenated words across lines
-///
-/// **Examples:**
-/// ```
-/// .joinWithSpace: "word1 word2"
-/// .lineBreak: "word1\nword2"
-/// .newParagraph: "word1\n\nword2"
-/// .joinWithNoSpace: "word1-word2"
-/// .joinRemovingDash: "word1word2"
-/// ```
+/// Each case represents a specific formatting decision when combining a `previous`
+/// and `current` text observation.
 enum OCRMergeStrategy: CustomStringConvertible {
-    /// Intentional line break preservation
-    ///
-    /// Used when the original document has intentional line breaks that should be
-    /// preserved, such as in poetry, lists, or formatted text blocks.
-    ///
-    /// **Output**: "word1\nword2"
+    /// Represents an intentional line break, such as in poetry or lists.
+    /// A single newline character (`\n`) is inserted.
     case lineBreak
 
-    /// Major content division with new paragraph
-    ///
-    /// Used when there is significant content separation requiring paragraph-level
-    /// formatting, such as between different topics or major document sections.
-    ///
-    /// **Output**: "word1\n\nword2"
+    /// Represents a paragraph break.
+    /// Two newline characters (`\n\n`) are inserted to create a visible separation.
     case newParagraph
 
-    /// Normal text continuation with space separation
-    ///
-    /// Used for continuous prose that should flow naturally together.
-    /// This is the most common case for regular paragraph text.
-    /// For English-like languages, this is the default behavior.
-    ///
-    /// **Output**: "word1 word2"
+    /// Joins two observations with a single space.
+    /// This is the default for continuous text in most languages.
     case joinWithSpace
 
-    /// Join text preserving the dash character
-    ///
-    /// Applied when the dash serves a meaningful purpose such as:
-    /// - Compound words (e.g., "well-known")
-    /// - Date ranges (e.g., "2020-2023")
-    /// - Technical terms (e.g., "UTF-8")
-    /// - Languages do not require space between words, such as Chinese, Japanese, etc.
-    ///
-    /// **Output**: "word1-word2"
+    /// Joins two observations with no space in between.
+    /// This is used for languages that do not use spaces, like Chinese and Japanese.
     case joinWithNoSpace
 
-    /// Join text removing the dash character
-    ///
-    /// Used for line-break hyphenation where the dash was inserted
-    /// only for typographical purposes and should be removed:
-    /// - "under-\nstanding" → "understanding"
-    /// - "reconstruct-\ning" → "reconstructing"
-    ///
-    /// **Output**: "word1word2"
+    /// Joins two observations by removing a hyphen from the end of the first one.
+    /// This handles cases where a word is hyphenated across two lines.
     case joinRemovingDash
 
     // MARK: Internal
-
-    /// Determine if any form of line break should be inserted
-    var needsLineBreak: Bool {
-        switch self {
-        case .joinRemovingDash, .joinWithNoSpace, .joinWithSpace:
-            return false
-        case .lineBreak, .newParagraph:
-            return true
-        }
-    }
-
-    /// Determine if a new paragraph should be created
-    var createsNewParagraph: Bool {
-        switch self {
-        case .joinRemovingDash, .joinWithNoSpace, .joinWithSpace, .lineBreak:
-            return false
-        case .newParagraph:
-            return true
-        }
-    }
-
-    /// Determine if dash character should be preserved
-    var preservesDash: Bool {
-        switch self {
-        case .joinRemovingDash, .joinWithSpace, .lineBreak, .newParagraph:
-            return false
-        case .joinWithNoSpace:
-            return true
-        }
-    }
-
-    /// Determine if text should be joined without separator
-    var joinsText: Bool {
-        switch self {
-        case .joinWithSpace, .lineBreak, .newParagraph:
-            return false
-        case .joinRemovingDash, .joinWithNoSpace:
-            return true
-        }
-    }
 
     var description: String {
         switch self {
@@ -131,26 +52,6 @@ enum OCRMergeStrategy: CustomStringConvertible {
         }
     }
 
-    // MARK: - Factory Methods
-
-    /// Create merge strategy from legacy OCRMergeDecision
-    ///
-    /// Provides compatibility with existing OCRMergeDecision enumeration
-    /// by converting legacy merge decisions to the new unified strategy.
-    ///
-    /// - Parameter decision: Legacy merge decision to convert
-    /// - Returns: Corresponding merge strategy
-    static func from(_ decision: OCRMergeDecision) -> OCRMergeStrategy {
-        switch decision {
-        case .none:
-            return .joinWithSpace
-        case .lineBreak:
-            return .lineBreak
-        case .newParagraph:
-            return .newParagraph
-        }
-    }
-
     /// Create merge strategy from legacy DashHandlingAction
     ///
     /// Provides compatibility with existing DashHandlingAction enumeration
@@ -162,27 +63,6 @@ enum OCRMergeStrategy: CustomStringConvertible {
         switch action {
         case .none:
             return .joinWithSpace
-        case .keepDashAndJoin:
-            return .joinWithNoSpace
-        case .removeDashAndJoin:
-            return .joinRemovingDash
-        }
-    }
-
-    /// Create merge strategy from both legacy types
-    ///
-    /// Combines OCRMergeDecision and DashHandlingAction to create a unified strategy.
-    /// If dash handling is needed, it takes priority; otherwise uses merge decision.
-    ///
-    /// - Parameters:
-    ///   - decision: Text merging decision
-    ///   - dashAction: Dash handling action
-    /// - Returns: Unified merge strategy
-    static func from(decision: OCRMergeDecision, dashAction: DashHandlingAction) -> OCRMergeStrategy {
-        // Dash handling takes priority if present
-        switch dashAction {
-        case .none:
-            return from(decision)
         case .keepDashAndJoin:
             return .joinWithNoSpace
         case .removeDashAndJoin:
@@ -261,24 +141,20 @@ enum OCRMergeStrategy: CustomStringConvertible {
     }
 }
 
-// MARK: - Legacy Compatibility Extensions
+// MARK: - OCRConstants
 
-extension OCRMergeDecision {
-    /// Convert to unified merge strategy
-    ///
-    /// Provides easy migration path from legacy OCRMergeDecision
-    /// to the new unified OCRMergeStrategy enumeration.
-    var toMergeStrategy: OCRMergeStrategy {
-        OCRMergeStrategy.from(self)
-    }
-}
+/// Constants used for OCR text processing
+enum OCRConstants {
+    static let lineBreakText = "\n"
+    static let paragraphBreakText = "\n\n"
 
-extension DashHandlingAction {
-    /// Convert to unified merge strategy
-    ///
-    /// Provides easy migration path from legacy DashHandlingAction
-    /// to the new unified OCRMergeStrategy enumeration.
-    var toMergeStrategy: OCRMergeStrategy {
-        OCRMergeStrategy.from(self)
-    }
+    /// Default is 1.8 characters for indentation, should be less than 2 characters
+    static let indentationCharacterCount: Double = 1.8
+    static let paragraphLineHeightRatio: Double = 1.5
+    static let shortPoetryCharacterCountOfLine = 12
+
+    static let chineseDifferenceFontThreshold: Double = 3.0
+
+    /// 5.0 for English text font, may be not precise, so use a larger threshold
+    static let englishDifferenceFontThreshold: Double = 5.0
 }

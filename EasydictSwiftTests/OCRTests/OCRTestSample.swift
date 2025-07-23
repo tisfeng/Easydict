@@ -324,8 +324,7 @@ enum OCRTestSample: String, CaseIterable {
         """,
 
         enPaper10: """
-        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN:
-        scpl.example.com
+        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN: scpl.example.com
 
         Fig. 3: LCI for SCP [6].
 

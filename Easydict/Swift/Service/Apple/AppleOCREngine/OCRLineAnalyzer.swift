@@ -11,16 +11,11 @@ import Vision
 
 // MARK: - OCRConfidenceLevel
 
-/// Confidence level for OCR analysis thresholds
-///
-/// Different confidence levels adjust detection thresholds to provide more or less
-/// strict analysis depending on the reliability of the OCR data and specific use cases.
-///
-/// **Threshold Multipliers:**
-/// - `.high`: More strict thresholds (1.5x) - requires stronger evidence for detection
-/// - `.medium`: Standard thresholds (1.0x) - balanced detection sensitivity
-/// - `.low`: More lenient thresholds (0.7x) - easier detection with lower confidence data
-/// - `.custom(Double)`: Custom threshold multiplier for precise control
+/// Levels controlling threshold multipliers in OCR analysis.
+/// - high: 1.5x strict
+/// - medium: 1.0x default
+/// - low: 0.7x lenient
+/// - custom(Value): user-defined multiplier
 enum OCRConfidenceLevel {
     case high
     case medium
@@ -61,48 +56,22 @@ enum OCRConfidenceLevel {
 
 // MARK: - OCRLineAnalyzer
 
-/// Handles line-level text analysis operations for OCR processing
+/// A class dedicated to analyzing the spatial and layout relationships between lines of OCR text.
 ///
-/// This specialized analyzer provides sophisticated methods for analyzing relationships
-/// between text lines and making intelligent formatting decisions. It serves as the
-/// analytical brain for determining how text observations should be joined together.
+/// `OCRLineAnalyzer` provides a suite of methods to determine how text observations are
+/// positioned relative to one another. It is a key component in the text merging process,
+/// responsible for identifying indentation, line breaks, font size changes, and other
+/// layout features that guide formatting decisions.
 ///
-/// **Core Capabilities:**
-/// - **Line Relationship Analysis**: Determines if text observations are on same line or different lines
-/// - **Indentation Detection**: Identifies text indentation patterns for proper formatting
-/// - **Spacing Analysis**: Calculates appropriate spacing between text elements
-/// - **Font Comparison**: Analyzes font size variations for formatting decisions
-/// - **Poetry Recognition**: Detects poetic text patterns requiring special handling
-/// - **List Processing**: Identifies and handles numbered/bulleted list structures
-/// - **Language-aware Processing**: Applies language-specific analysis rules
+/// ### Key Analysis Capabilities:
+/// - **Indentation Detection**: Determines if a line is indented relative to a reference line.
+/// - **Line Spacing Analysis**: Checks for large vertical gaps that may indicate paragraph breaks.
+/// - **Font Size Comparison**: Identifies changes in font size between lines.
+/// - **Alignment Checks**: Verifies if lines share the same starting (`isEqualX`) or ending (`isEqualMaxX`) horizontal positions.
+/// - **Line Length Analysis**: Classifies lines as "long" or "short" based on their width relative to the document's maximum line length.
 ///
-/// **Key Algorithms:**
-/// - Spatial relationship analysis using bounding box mathematics
-/// - Dynamic threshold calculation based on text metrics
-/// - Context-aware decision making for text merging
-/// - Confidence-based threshold adjustment for varying detection strictness
-///
-/// **Confidence Level Support:**
-/// Many analysis functions support configurable confidence levels:
-/// - `.high`: More strict thresholds (2.0x) - requires stronger evidence
-/// - `.medium`: Standard thresholds (1.0x) - balanced detection (default)
-/// - `.low`: More lenient thresholds (0.7x) - easier detection
-///
-/// **Usage Examples:**
-/// ```swift
-/// let analyzer = OCRLineAnalyzer(metrics: metrics)
-///
-/// // Standard detection (medium confidence)
-/// let isBig = analyzer.isBigLineSpacing(pair: pair)
-///
-/// // High confidence (strict detection)
-/// let isBigStrict = analyzer.isBigLineSpacing(pair: pair, confidenceLevel: .high)
-///
-/// // Low confidence (lenient detection)
-/// let isBigLenient = analyzer.isBigLineSpacing(pair: pair, confidenceLevel: .low)
-/// ```
-///
-/// Used extensively by OCRTextMerger for making intelligent text joining decisions.
+/// The analyzer uses `OCRMetrics` to access document-wide statistics, ensuring that its
+/// decisions are context-aware and consistent.
 class OCRLineAnalyzer {
     // MARK: Lifecycle
 
@@ -123,17 +92,6 @@ class OCRLineAnalyzer {
     /// - Current observation must be positioned to the right of the reference
     /// - Horizontal offset must be less than the indentation character threshold
     /// - Uses character-based measurement for consistent detection across different text sizes
-    ///
-    /// **Use Cases:**
-    /// - Paragraph indentation detection
-    /// - List item structure analysis
-    /// - Block quote identification
-    /// - Code block formatting preservation
-    ///
-    /// **Confidence Level Impact:**
-    /// - `.high`: 2.0x threshold (more strict, requires larger indentation)
-    /// - `.medium`: 1.0x threshold (standard detection)
-    /// - `.low`: 0.7x threshold (more lenient, detects smaller indentation)
     ///
     /// - Parameters:
     ///   - observation: The text observation to analyze for indentation
@@ -173,11 +131,6 @@ class OCRLineAnalyzer {
     }
 
     /// Determine if text observation represents a long line of text
-    ///
-    /// **Confidence Level Impact:**
-    /// - `.high`: 2.0x threshold (more strict, requires more space to be "long")
-    /// - `.medium`: 1.0x threshold (standard detection)
-    /// - `.low`: 0.7x threshold (more lenient, easier to detect as "long")
     ///
     /// - Parameters:
     ///   - observation: Text observation to analyze for line length characteristics
@@ -243,11 +196,6 @@ class OCRLineAnalyzer {
     }
 
     /// Analyze and compare font sizes between two text observations
-    ///
-    /// **Confidence Level Impact:**
-    /// - `.high`: 2.0x threshold (more strict, requires larger font differences)
-    /// - `.medium`: 1.0x threshold (standard detection)
-    /// - `.low`: 0.7x threshold (more lenient, detects smaller font differences)
     ///
     /// - Parameters:
     ///   - pair: Text observation pair containing current and previous observations
@@ -348,39 +296,6 @@ class OCRLineAnalyzer {
     )
         -> Bool {
         lineLength < maxLineLength * lessRateOfMaxLength
-    }
-
-    /// Analyze and determine Chinese poetry merge decision
-    ///
-    /// Applies specialized logic for handling Chinese poetry text that requires
-    /// different formatting rules than regular prose. Chinese poetry often has
-    /// distinctive characteristics that need preservation during text merging.
-    ///
-    /// - Parameters:
-    ///   - pair: Text observation pair containing current and previous observations
-    ///   - isEqualChineseText: Whether the texts have equal character counts (Chinese characteristic)
-    ///   - isBigLineSpacing: Whether there is significant spacing between lines
-    /// - Returns: Merge decision (none, lineBreak, or newParagraph)
-    func determineChinesePoetryMerge(
-        pair: OCRTextObservationPair,
-        isEqualChineseText: Bool,
-        isBigLineSpacing: Bool
-    )
-        -> OCRMergeDecision {
-        let isShortChinesePoetry = isShortPoetry(pair.current.firstText)
-        let isPrevShortChinesePoetry = isShortPoetry(pair.previous.firstText)
-
-        let isChinesePoetryLine =
-            isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry)
-        let shouldWrap = isChinesePoetryLine
-
-        if shouldWrap, isBigLineSpacing {
-            return .newParagraph
-        } else if shouldWrap {
-            return .lineBreak
-        } else {
-            return .none
-        }
     }
 
     /// Determine if two text observations represent a new line break

@@ -34,7 +34,6 @@
 		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
-		031EC682965C7C456F81CDF1 /* OCRMergeDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
@@ -226,7 +225,6 @@
 		03B0233729231FA6001C7E63 /* MMMake.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D829231FA6001C7E63 /* MMMake.m */; };
 		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
-		03B1709A2E122D080021FDE4 /* OCRLineContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B170992E122D080021FDE4 /* OCRLineContext.swift */; };
 		03B1709C2E12385F0021FDE4 /* OCRMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */; };
 		03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */; };
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
@@ -509,7 +507,6 @@
 		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
-		031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeDecision.swift; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
@@ -790,7 +787,6 @@
 		03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOrderedDictionary.h; sourceTree = "<group>"; };
 		03B022E329231FA6001C7E63 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		03B022E429231FA6001C7E63 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		03B170992E122D080021FDE4 /* OCRLineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineContext.swift; sourceTree = "<group>"; };
 		03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMetrics.swift; sourceTree = "<group>"; };
 		03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VNRecognizedTextObservation+Extension.swift"; sourceTree = "<group>"; };
 		03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonWindow.h; sourceTree = "<group>"; };
@@ -2192,9 +2188,7 @@
 			isa = PBXGroup;
 			children = (
 				03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */,
-				03B170992E122D080021FDE4 /* OCRLineContext.swift */,
 				03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */,
-				031EC681965C7C456F81CDF1 /* OCRMergeDecision.swift */,
 				037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */,
 			);
 			path = Model;
@@ -3436,7 +3430,6 @@
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */,
 				03220E2A2E11A1A0002C7F3F /* OCRTextObservationPair.swift in Sources */,
-				031EC682965C7C456F81CDF1 /* OCRMergeDecision.swift in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
@@ -3462,7 +3455,6 @@
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				27FE98092B3DD536000AD654 /* SettingView.swift in Sources */,
-				03B1709A2E122D080021FDE4 /* OCRLineContext.swift in Sources */,
 				03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,

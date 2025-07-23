@@ -11,31 +11,16 @@ import Vision
 
 // MARK: - OCRPoetryDetector
 
-/// Specialized detector for identifying poetic text layouts in OCR results
+/// A detector for identifying poetry-like text structures in OCR results.
 ///
-/// This intelligent detector analyzes text patterns to identify poetry and verse
-/// structures that require special formatting treatment. Poetry often has unique
-/// characteristics that distinguish it from regular prose text.
+/// This class analyzes the layout and content of text observations to determine if they
+/// follow patterns commonly found in poetry. The detection is based on a combination of
+/// line length consistency, alignment, and the number of stanzas (groups of lines).
 ///
-/// **Detection Criteria:**
-/// - **Line Length Patterns**: Short, varied line lengths typical of poetry
-/// - **Character Count Analysis**: Lines with significantly fewer characters than prose
-/// - **Spatial Arrangement**: Irregular line endings and intentional white space
-/// - **Language Context**: Different patterns for different languages (Chinese vs English)
-/// - **Consistency Patterns**: Multiple short lines indicating intentional structure
-///
-/// **Poetry Characteristics Detected:**
-/// - Traditional poetry with regular meter and rhyme
-/// - Free verse with intentional line breaks
-/// - Chinese classical poetry with balanced character counts
-/// - Modern poetry with irregular formatting
-///
-/// **Impact on Text Processing:**
-/// - Preserves intentional line breaks in poetic text
-/// - Prevents unwanted text merging that would destroy poetic structure
-/// - Applies appropriate spacing and formatting for readability
-///
-/// Essential for maintaining the artistic and structural integrity of poetic content.
+/// ### Detection Criteria:
+/// - **Line Length**: Poetry often consists of relatively short lines.
+/// - **Alignment**: Lines in a stanza may share a common left or right alignment.
+/// - **Stanzas**: The presence of distinct groups of lines separated by larger vertical gaps.
 class OCRPoetryDetector {
     // MARK: Lifecycle
 

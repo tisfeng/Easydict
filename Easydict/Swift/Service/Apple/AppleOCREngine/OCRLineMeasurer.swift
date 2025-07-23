@@ -11,32 +11,20 @@ import Vision
 
 // MARK: - OCRLineMeasurer
 
-/// Specialized measurement system for analyzing text line characteristics in OCR processing
+/// A class responsible for measuring line length and determining if a line is "long" or "short".
 ///
-/// This centralized measurement system provides comprehensive analysis of text line properties,
-/// serving as the authoritative source for all line-length-related decisions in the OCR pipeline.
-/// It consolidates complex measurement logic and provides consistent metrics across all components.
+/// This class encapsulates the logic for one of the most critical parts of the text merging
+/// process: deciding whether a line of text is long enough to be considered part of a
+/// continuous paragraph. A "long" line suggests that the next line is likely a continuation,
+/// while a "short" line might indicate the end of a paragraph, a heading, or a list item.
 ///
-/// **Core Measurements:**
-/// - **Line Length Analysis**: Determines if lines are "long" or "short" relative to available space
-/// - **Remaining Space Calculation**: Measures how much space is left on each line
-/// - **Character Capacity**: Estimates how many more characters could fit on a line
-/// - **Relative Length Comparison**: Compares lines against maximum observed lengths
-/// - **Language-specific Metrics**: Applies different measurement rules for different languages
-///
-/// **Use Cases:**
-/// - Poetry detection (short lines often indicate poetic structure)
-/// - Text merging decisions (long lines may need different treatment)
-/// - Layout analysis (understanding document structure)
-/// - Quality assessment (very short lines may indicate OCR issues)
-///
-/// **Measurement Approach:**
-/// - Uses character width calculations for precise space estimation
-/// - Considers document-wide patterns for relative measurements
-/// - Applies language-specific thresholds and rules
-/// - Provides both absolute and relative measurement metrics
-///
-/// Essential for making intelligent decisions about text layout and formatting preservation.
+/// ### Key Responsibilities:
+/// - **Long Line Detection**: The primary method, `isLongLine`, determines if a line has
+///   enough text to be considered "long".
+/// - **Context-Aware Thresholds**: It calculates a `smartMinimumCharactersThreshold` that adapts
+///   based on the content of the *next* line, making the detection more robust.
+/// - **Remaining Space Calculation**: It computes how many characters could still fit on a line,
+///   which is the core metric for the long-line decision.
 class OCRLineMeasurer {
     // MARK: Lifecycle
 

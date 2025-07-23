@@ -9,548 +9,339 @@
 import Foundation
 import Vision
 
-// MARK: - OCRTextMerger
-
-/// Intelligent text merging engine for OCR results with context-aware formatting decisions
-///
-/// This sophisticated text merging system serves as the core decision-making engine for combining
-/// adjacent OCR text observations into coherent, well-formatted text output. It applies advanced
-/// algorithms to analyze spatial relationships, content patterns, and formatting cues to make
-/// intelligent decisions about how text should be joined together.
-///
-/// **Core Responsibilities:**
-/// - **Spatial Analysis**: Analyzes positioning, alignment, and spacing between text observations
-/// - **Context-Aware Merging**: Makes intelligent decisions based on text content and layout patterns
-/// - **Format Preservation**: Maintains original document structure (poetry, lists, paragraphs)
-/// - **Language Adaptation**: Applies language-specific rules for optimal text reconstruction
-/// - **Typography Intelligence**: Handles punctuation, capitalization, and special formatting
-///
-/// **Key Algorithms:**
-/// - **Same-Line Detection**: Identifies text that belongs on the same horizontal line
-/// - **Indentation Analysis**: Handles indented text blocks with appropriate formatting
-/// - **Poetry Recognition**: Preserves poetic structure and intentional line breaks
-/// - **List Processing**: Maintains list formatting and hierarchical structures
-/// - **Paragraph Detection**: Identifies paragraph boundaries and major content divisions
-///
-/// **Decision Matrix:**
-/// The merger evaluates multiple factors to determine the optimal joining strategy:
-/// - Line spacing and positioning relationships
-/// - Text indentation patterns and alignment
-/// - Font size variations and typography changes
-/// - Punctuation patterns and sentence boundaries
-/// - Language-specific formatting requirements
-/// - Content type recognition (prose, poetry, lists, etc.)
-///
-/// **Output Strategies:**
-/// - **Space Join**: Normal word separation for continuous text
-/// - **Line Break**: Single line break for intentional text structure
-/// - **Paragraph Break**: Double line break for major content divisions
-/// - **No Separation**: Direct concatenation for character-based languages
-///
-/// **Example Transformations:**
-/// ```
-/// Input:  ["Hello", "world", "today"]  →  Output: "Hello world today"
-/// Input:  ["Roses are red", "Violets blue"]  →  Output: "Roses are red\nViolets blue"
-/// Input:  ["Chapter 1", "", "Once upon"]  →  Output: "Chapter 1\n\nOnce upon"
-/// ```
-///
-/// Originally corresponds to the joinedStringOfTextObservation method in EZAppleService.m
-/// but significantly enhanced with modern Swift architecture and advanced decision algorithms.
+/**
+ * An intelligent text merging engine for OCR results.
+ *
+ * This class takes a list of sorted `VNRecognizedTextObservation` objects and merges them
+ * into a single, well-formatted string. It uses a context-aware approach to decide
+ * whether to join lines with a space, a line break, or a new paragraph, and handles
+ * special cases like hyphenated words and lists.
+ */
 class OCRTextMerger {
     // MARK: Lifecycle
 
-    /// Initialize intelligent text merger with comprehensive OCR metrics
-    ///
-    /// Creates a new text merger instance equipped with document-wide statistical data
-    /// and analysis capabilities. The provided metrics serve as the foundation for all
-    /// spatial calculations, threshold determinations, and formatting decisions.
-    ///
-    /// - Parameter metrics: Complete OCR metrics containing document analysis data,
-    ///   including line measurements, character statistics, spatial relationships,
-    ///   and language-specific processing parameters
     init(metrics: OCRMetrics) {
         self.metrics = metrics
     }
 
     // MARK: Internal
 
-    /// Generate optimal joining string for adjacent text observations
+    /// Merges sorted OCR observations into a single formatted string.
     ///
-    /// This is the primary entry point for text merging operations, orchestrating a sophisticated
-    /// analysis pipeline to determine the most appropriate way to join two adjacent text observations.
-    /// The method applies intelligent decision-making based on spatial relationships, content analysis,
-    /// and document structure recognition.
+    /// This is the main entry point for the text merging process. It orchestrates
+    /// the analysis of merge strategies and their application to produce the final output.
     ///
-    /// **Analysis Pipeline:**
-    /// 1. **Same-Line Detection**: Quick check for horizontal text alignment
-    /// 2. **Context Preparation**: Comprehensive analysis of spatial and content relationships
-    /// 3. **Decision Making**: Advanced algorithms evaluate multiple formatting factors
-    /// 4. **String Generation**: Produces appropriate joining string based on decision
-    ///
-    /// **Decision Factors Evaluated:**
-    /// - Spatial positioning and alignment patterns
-    /// - Line spacing and indentation characteristics
-    /// - Text content patterns and punctuation
-    /// - Font size variations and typography changes
-    /// - Language-specific formatting requirements
-    /// - Document structure recognition (poetry, lists, paragraphs)
-    ///
-    /// **Output Types:**
-    /// - `" "`: Space separation for normal text continuation
-    /// - `"\n"`: Single line break for structured text (poetry, lists)
-    /// - `"\n\n"`: Paragraph break for major content divisions
-    /// - `""`: No separation for character-based languages
-    ///
-    /// **Performance Optimization:**
-    /// - Fast-path for same-line detection (most common case)
-    /// - Lazy initialization of analysis components
-    /// - Cached calculations for repeated operations
-    ///
-    /// - Parameter textObservationPair: Adjacent text observation pair for analysis
-    /// - Returns: Optimal joining string for the text pair based on comprehensive analysis
-    ///
-    /// - Note: This method directly corresponds to joinedStringOfTextObservation in Objective-C
-    ///   but provides significantly enhanced decision-making capabilities
-    func joinedString(for pair: OCRTextObservationPair) -> String {
-        // If it's the same line, return a space
-        if !lineAnalyzer.isNewLine(pair: pair) {
-            return " "
+    /// - Parameter sortedObservations: An array of `VNRecognizedTextObservation` sorted in reading order.
+    /// - Returns: A single string representing the merged and formatted text.
+    func performIntelligentTextMerging(_ sortedObservations: [VNRecognizedTextObservation])
+        -> String {
+        // Analyze merge strategies for sorted observations.
+        let mergeStrategies = analyzeMergeStrategies(observations: sortedObservations)
+
+        // Apply merge strategies to generate the final text.
+        let mergedText = applyMergeStrategies(
+            observations: sortedObservations,
+            strategies: mergeStrategies
+        )
+
+        for (index, observation) in sortedObservations.enumerated() {
+            // The merge strategy starts from the second observation.
+            // `mergeStrategy` was set in `analyzeMergeStrategies`.
+            if let mergeStrategy = observation.mergeStrategy {
+                print(" [\(index)]: strategy: \(mergeStrategy), \(observation.prefix20)")
+            }
         }
 
-        // For new lines, apply the full merge decision logic
-        // Create comprehensive line context
-        let lineContext = prepareLineContext(pair: pair)
-
-        // Determine merge decision
-        let mergeDecision = determineMergeDecision(lineContext: lineContext)
-
-        // Generate final joined string
-        return generateJoinedString(
-            mergeDecision: mergeDecision,
-            previousText: pair.previous.firstText
-        )
+        return mergedText
     }
 
     // MARK: Private
 
     private let metrics: OCRMetrics
-    private var languageManager = EZLanguageManager.shared()
     private lazy var lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
+    private lazy var dashHandler = OCRDashHandler(metrics: metrics)
+    private lazy var textNormalizer = OCRTextNormalizer(metrics: metrics)
 
-    // MARK: - Analysis Helper Methods
+    // MARK: - Merge Strategy Analysis
 
-    /// Check if current processing language is English for language-specific formatting rules
-    ///
-    /// Provides a convenient way to check for English language context, which requires
-    /// specific formatting rules such as capitalization-based sentence detection,
-    /// space-separated words, and punctuation handling patterns.
-    ///
-    /// - Returns: true if the current language is English, false otherwise
-    private func isEnglishLanguage() -> Bool {
-        languageManager.isEnglishLanguage(metrics.language)
-    }
+    /// Determines the merge strategy for each pair of adjacent OCR observations.
+    /// - Parameter observations: The sorted observations to analyze.
+    /// - Returns: An array of `OCRMergeStrategy` corresponding to each observation pair.
+    @discardableResult
+    private func analyzeMergeStrategies(
+        observations: [VNRecognizedTextObservation]
+    )
+        -> [OCRMergeStrategy] {
+        // At least two observations are needed to form a pair.
+        guard observations.count > 1 else { return [] }
 
-    /// Prepare comprehensive line context for text merging analysis
-    ///
-    /// Creates a complete analysis context containing all necessary data for making
-    /// intelligent text merging decisions. This centralized preparation ensures
-    /// consistent analysis across all merging operations.
-    ///
-    /// - Parameter textObservationPair: Pair of text observations to analyze
-    /// - Returns: Complete line context with pre-calculated analysis results
-    private func prepareLineContext(pair: OCRTextObservationPair) -> OCRLineContext {
-        OCRLineContext(pair: pair, metrics: metrics)
-    }
+        var mergeStrategies: [OCRMergeStrategy] = []
 
-    /// Determine appropriate merge decision based on comprehensive line context analysis
-    ///
-    /// This is the core decision-making method that orchestrates the entire text merging
-    /// analysis pipeline. It processes the line context through multiple specialized
-    /// handlers to determine the optimal way to join text observations.
-    ///
-    /// **Decision Process:**
-    /// 1. **Indentation Analysis**: Handle indented vs non-indented text differently
-    /// 2. **Context-specific Processing**: Apply specialized rules based on text characteristics
-    /// 3. **Additional Rule Application**: Apply final refinements and edge case handling
-    /// 4. **Decision Synthesis**: Combine all analysis results into final merge decision
-    ///
-    /// **Decision Types:**
-    /// - `.none`: Join with space (normal text continuation)
-    /// - `.lineBreak`: Insert line break (preserve line structure)
-    /// - `.newParagraph`: Insert paragraph break (major content division)
-    ///
-    /// - Parameter lineContext: Complete line analysis context
-    /// - Returns: Optimal merge decision for the text pair
-    ///
-    /// - TODO: This code is too ugly, need to refactor it.
-    private func determineMergeDecision(lineContext: OCRLineContext) -> OCRMergeDecision {
-        var needLineBreak = false
-        var isNewParagraph = false
+        // Dynamic tracking for context-aware decisions.
+        var currentParagraphObservations: [VNRecognizedTextObservation] = [observations[0]]
 
-        // Handle indented text
-        if lineContext.hasIndentation {
-            let result = handleIndentedText(lineContext: lineContext)
-            needLineBreak = result.needLineBreak
-            isNewParagraph = result.isNewParagraph
-        } else {
-            // Handle non-indented text
-            let result = handleNonIndentedText(lineContext: lineContext)
-            needLineBreak = result.needLineBreak
-            isNewParagraph = result.isNewParagraph
+        // Reference for the observation with the maximum X-coordinate in the current context.
+        var maxXLineTextObservation = observations[0]
+
+        print("🔤 Starting OCR merge strategy analysis for \(observations.count) observations")
+
+        // Process each observation starting from the second one.
+        for i in 1 ..< observations.count {
+            let current = observations[i]
+            let previous = observations[i - 1]
+            let pair = OCRTextObservationPair(current: current, previous: previous)
+
+            print("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
+            print("  Previous: \(previous.firstText.prefix20)...")
+            print("  Current:  \(current.firstText.prefix20)...")
+
+            // Perform a comprehensive analysis to determine the merge strategy.
+            let mergeStrategy = determineMergeStrategy(
+                pair: pair,
+                maxXObservation: maxXLineTextObservation,
+                currentParagraphObservations: currentParagraphObservations
+            )
+
+            mergeStrategies.append(mergeStrategy)
+            current.mergeStrategy = mergeStrategy
+
+            // Update context based on the strategy decision.
+            updateContextualTracking(
+                strategy: mergeStrategy,
+                currentObservation: current,
+                currentParagraphObservations: &currentParagraphObservations,
+                maxXObservation: &maxXLineTextObservation
+            )
+
+            print("  📝 Strategy: \(mergeStrategy)")
         }
 
-        // Apply additional merge rules
-        let finalResult = applyAdditionalMergeRules(
-            lineContext: lineContext,
-            needLineBreak: needLineBreak,
-            isNewParagraph: isNewParagraph
-        )
-
-        return finalResult
+        print("✅ Merge strategy analysis complete: \(mergeStrategies.count) strategies determined")
+        return mergeStrategies
     }
 
-    /// Generate the final joined string based on merge decision and contextual analysis
-    ///
-    /// Translates the strategic merge decision into the actual string that will join the text
-    /// observations. This method applies language-specific rules, punctuation handling,
-    /// and formatting preferences to produce the optimal joining string.
-    ///
-    /// **String Generation Logic:**
-    /// - **New Paragraph**: Returns paragraph break text (typically "\n\n")
-    /// - **Line Break**: Returns single line break text (typically "\n")
-    /// - **Punctuation Context**: Adds space after punctuation for readability
-    /// - **Language Adaptation**: Applies space rules based on language characteristics
-    /// - **Default Handling**: No separation for languages that don't require word spacing
-    ///
-    /// **Language-Specific Behavior:**
-    /// - **Space-separated languages** (English, French, etc.): Add spaces between words
-    /// - **Character-based languages** (Chinese, Japanese): No automatic spacing
-    /// - **Mixed scripts**: Intelligent detection and appropriate handling
+    /// Applies the determined strategies to produce the final merged text.
     ///
     /// - Parameters:
-    ///   - mergeDecision: Strategic decision about how to merge the text observations
-    ///   - previousText: Text content of the previous observation for context analysis
-    /// - Returns: Appropriately formatted joining string for the specific context
-    private func generateJoinedString(
-        mergeDecision: OCRMergeDecision,
-        previousText: String
+    ///   - observations: The original sorted observations.
+    ///   - strategies: The merge strategies for each adjacent pair.
+    /// - Returns: The final merged and formatted text.
+    private func applyMergeStrategies(
+        observations: [VNRecognizedTextObservation],
+        strategies: [OCRMergeStrategy]
     )
         -> String {
-        if mergeDecision.isNewParagraph {
-            return OCRConstants.paragraphBreakText
-        } else if mergeDecision.needLineBreak {
-            return OCRConstants.lineBreakText
-        } else if previousText.hasPunctuationSuffix {
-            // If last char is a punctuation mark, append a space
-            return " "
-        } else {
-            // For languages that need spaces between words
-            if languageManager.isLanguageWordsNeedSpace(metrics.language) {
-                return " "
-            }
-            return ""
+        guard !observations.isEmpty else { return "" }
+        guard observations.count == strategies.count + 1 else {
+            print(
+                "⚠️ Warning: Observations count (\(observations.count)) != strategies count + 1 (\(strategies.count + 1))"
+            )
+            return observations.map(\.firstText).joined(separator: " ")
         }
+
+        print("🔧 Applying merge strategies to \(observations.count) observations")
+
+        var mergedText = ""
+
+        // Start with the text of the first observation.
+        var currentText = observations[0].firstText
+        print("📝 Starting with: '\(currentText.prefix20)...'")
+
+        // Apply each strategy to the subsequent observations.
+        for (index, strategy) in strategies.enumerated() {
+            let nextObservation = observations[index + 1]
+            let nextText = nextObservation.firstText
+
+            print("\n📋 Applying strategy [\(index)]: \(strategy)")
+            print("  Current: '\(currentText.suffix20)...'")
+            print("  Next: '\(nextText.prefix20)...'")
+
+            // Apply the strategy to combine the current and next text.
+            let combinedText = strategy.apply(firstText: currentText, secondText: nextText)
+            currentText = combinedText
+
+            print("  Result: '\(combinedText.suffix(40))...'")
+        }
+
+        mergedText = currentText
+
+        // Apply text normalization if the feature is enabled.
+        if Configuration.shared.enableOCRTextNormalization {
+            print("🔧 Applying text normalization...")
+            mergedText = textNormalizer.normalizeText(mergedText)
+        }
+
+        let finalText = mergedText.trim()
+        print("✅ Merge complete. Final length: \(finalText.count) characters")
+
+        return finalText
     }
 
-    /// Apply comprehensive additional merge rules for edge cases and special formatting
+    // swiftlint:disable function_body_length
+
+    /// Determines the merge strategy between two adjacent text observations.
     ///
-    /// This advanced rule application system handles complex scenarios that require
-    /// additional analysis beyond the basic indentation and spacing logic. It serves
-    /// as the final decision refinement layer, ensuring optimal text formatting for
-    /// specialized content types and edge cases.
-    ///
-    /// **Advanced Rule Categories:**
-    ///
-    /// **1. Typography and Font Analysis:**
-    /// - Font size variation detection and handling
-    /// - Capitalization pattern analysis for sentence boundaries
-    /// - Mixed typography formatting preservation
-    ///
-    /// **2. Spacing and Layout Refinement:**
-    /// - Big line spacing analysis for paragraph detection
-    /// - Long text line pattern recognition
-    /// - Visual spacing correlation with content structure
-    ///
-    /// **3. Specialized Content Handling:**
-    /// - Chinese poetry structure preservation
-    /// - List formatting and hierarchy maintenance
-    /// - Special document structure recognition
-    ///
-    /// **4. Language-Specific Enhancements:**
-    /// - English capitalization rules for sentence boundaries
-    /// - Character-based language formatting preferences
-    /// - Mixed-language document handling
-    ///
-    /// **Rule Priority System:**
-    /// - Content-specific rules (poetry, lists) take precedence
-    /// - Typography rules override basic spacing decisions
-    /// - Language rules provide final formatting adjustments
-    /// - Default rules ensure consistent fallback behavior
+    /// This function analyzes various factors like line breaks, hyphenation, font size, indentation,
+    /// line spacing, and list formatting to decide whether to join text with a space, a line break,
+    /// a new paragraph, or handle hyphenated words.
     ///
     /// - Parameters:
-    ///   - lineContext: Complete line analysis context with pre-calculated properties
-    ///   - needLineBreak: Initial line break decision from basic analysis
-    ///   - isNewParagraph: Initial paragraph break decision from basic analysis
-    /// - Returns: Final merge decision with all advanced rules applied
-    private func applyAdditionalMergeRules(
-        lineContext: OCRLineContext,
-        needLineBreak: Bool,
-        isNewParagraph: Bool
+    ///   - pair: The current and previous observations to compare.
+    ///   - maxXObservation: The observation with the rightmost boundary in the current paragraph, used for layout context.
+    ///   - currentParagraphObservations: All observations belonging to the current paragraph.
+    /// - Returns: The most appropriate `OCRMergeStrategy` for the given pair.
+    private func determineMergeStrategy(
+        pair: OCRTextObservationPair,
+        maxXObservation: VNRecognizedTextObservation,
+        currentParagraphObservations: [VNRecognizedTextObservation]
     )
-        -> OCRMergeDecision {
-        var finalNeedLineBreak = needLineBreak
-        var finalIsNewParagraph = isNewParagraph
+        -> OCRMergeStrategy {
+        // High-priority conditions should be checked first.
 
-        // Font size and spacing checks
-        let isDifferentFontSize = lineContext.isDifferentFontSize
-        let isFirstLetterUpperCase = lineContext.currentText.isFirstLetterUpperCase
-
-        if isDifferentFontSize || lineContext.isBigLineSpacing {
-            if !lineContext.isPrevLongText || (isEnglishLanguage() && isFirstLetterUpperCase) {
-                finalIsNewParagraph = true
-            }
+        // 1. Priority: Check if the two observations are on the same line.
+        if !lineAnalyzer.isNewLine(pair: pair) {
+            print("    🔗 Same line continuation - join with space")
+            return .joinWithSpace
         }
 
-        if lineContext.isBigLineSpacing, isFirstLetterUpperCase {
-            finalIsNewParagraph = true
+        // 2. Priority: Analyze dash handling for hyphenated words.
+        let dashAction = dashHandler.analyzeDashHandling(pair)
+        if dashAction != .none {
+            let dashStrategy = OCRMergeStrategy.from(dashAction)
+            print("    🔗 Dash strategy: \(dashStrategy)")
+            return dashStrategy
         }
 
-        // Chinese poetry handling
-        let poetryResult = lineContext.determineChinesePoetryMerge()
-        if poetryResult.needLineBreak {
-            finalNeedLineBreak = true
-            if poetryResult.isNewParagraph {
-                finalIsNewParagraph = true
-            }
+        // 3. Priority: Detect font size changes, which often indicate structural breaks.
+        if lineAnalyzer.isDifferentFontSize(pair: pair) {
+            print("    🔤 Font size change detected - new paragraph")
+            return .newParagraph
         }
 
-        // List handling
-        let listResult = lineContext.determineListMerge()
-        if listResult.needLineBreak {
-            finalNeedLineBreak = true
-        }
-        if listResult.isNewParagraph {
-            finalIsNewParagraph = true
-        }
-
-        return .from(
-            needLineBreak: finalNeedLineBreak,
-            isNewParagraph: finalIsNewParagraph
+        let comparedObservation = getComparedObservation(
+            pair: pair,
+            maxXObservation: maxXObservation,
+            currentParagraphObservations: currentParagraphObservations
         )
-    }
 
-    /// Handle specialized text merging logic for indented text blocks and structured content
-    ///
-    /// This sophisticated handler manages the complex formatting requirements of indented text,
-    /// which often represents structured content such as paragraphs, block quotes, code blocks,
-    /// list items, or nested document elements. The analysis considers both current and previous
-    /// line indentation patterns to make contextually appropriate formatting decisions.
-    ///
-    /// **Indentation Analysis Categories:**
-    ///
-    /// **1. Mutual Indentation Scenarios:**
-    /// - Both lines indented: Analyze consistency and spacing patterns
-    /// - Uniform indentation: Preserve structure while managing line breaks
-    /// - Variable indentation: Detect hierarchy changes and structure shifts
-    ///
-    /// **2. Single Line Indentation:**
-    /// - Current line indented, previous normal: New block detection
-    /// - Previous line indented, current normal: Block termination handling
-    /// - Indentation level changes: Hierarchy structure preservation
-    ///
-    /// **3. Content-Specific Rules:**
-    /// - Long line continuation: Smart wrapping within indented blocks
-    /// - Short line handling: Preserve intentional structure breaks
-    /// - Punctuation context: Sentence boundaries within blocks
-    /// - Equal line lengths: Detect structured content (tables, poetry)
-    ///
-    /// **4. Special Case Handling:**
-    /// - Letter format detection: Handle specific indentation patterns
-    /// - List item continuation: Maintain list structure integrity
-    /// - Code block preservation: Respect technical content formatting
-    /// - Quote block handling: Preserve quotation structure
-    ///
-    /// **Decision Logic:**
-    /// - Analyzes horizontal positioning deltas for structure understanding
-    /// - Considers line length ratios for content type detection
-    /// - Evaluates punctuation patterns for boundary identification
-    /// - Applies language-specific indentation conventions
-    ///
-    /// - Parameter lineContext: Complete line analysis context with indentation data
-    /// - Returns: Optimal merge decision for indented text structure preservation
-    private func handleIndentedText(lineContext: OCRLineContext) -> OCRMergeDecision {
-        var needLineBreak = false
-        var isNewParagraph = false
+        let current = pair.current
+        let previous = pair.previous
 
-        let isEqualX = lineAnalyzer.isEqualX(pair: lineContext.pair)
-        let dx = lineAnalyzer.characterDifferenceInXPosition(pair: lineContext.pair)
+        let hasBigIndentation = lineAnalyzer.hasIndentation(
+            observation: current,
+            comparedObservation: previous,
+            confidenceLevel: .custom(3)
+        )
 
-        // If both lines are indented, check their relative positions
-        if lineContext.hasPrevIndentation {
-            if lineContext.isBigLineSpacing,
-               !lineContext.isPrevLongText,
-               !lineContext.isPrevList,
-               !lineContext.isList {
-                isNewParagraph = true
-            }
+        let isPreviousLongText = lineAnalyzer.isLongText(
+            observation: previous,
+            nextObservation: current,
+            comparedObservation: comparedObservation
+        )
 
-            // Check for short line conditions
-            let isPrevLessHalfShortLine = lineAnalyzer.isShortLineText(
-                observation: lineContext.pair.previous
-            )
-            let isPrevShortLine = lineAnalyzer.isShortLineText(
-                observation: lineContext.pair.previous,
-            )
-
-            let lineMaxX = lineContext.current.boundingBox.maxX
-            let prevLineMaxX = lineContext.previous.boundingBox.maxX
-            let isEqualLineMaxX = lineAnalyzer.isRatioGreaterThan(
-                0.95, value1: lineMaxX, value2: prevLineMaxX
-            )
-
-            let isEqualInnerTwoLine = isEqualX && isEqualLineMaxX
-
-            if isEqualInnerTwoLine {
-                if isPrevLessHalfShortLine {
-                    needLineBreak = true
-                } else {
-                    needLineBreak = lineContext.isEqualChineseText
-                }
-            } else {
-                if lineContext.isPrevLongText {
-                    if !isEqualX, dx < 0 {
-                        if lineContext.isList {
-                            needLineBreak = true
-                        } else {
-                            isNewParagraph = true
-                        }
-                    } else {
-                        needLineBreak = false
-                    }
-                } else {
-                    if lineContext.hasPrevEndPunctuation {
-                        if !isEqualX, !lineContext.isList {
-                            isNewParagraph = true
-                        } else {
-                            needLineBreak = true
-                        }
-                    } else {
-                        needLineBreak = isPrevShortLine
-                    }
-                }
-            }
-        } else {
-            // Sometimes hasIndentation is a mistake, when prev line is long
-            if lineContext.isPrevLongText {
-                let isDifferentFontSize = lineContext.isDifferentFontSize
-                if lineContext.hasPrevEndPunctuation || isDifferentFontSize {
-                    isNewParagraph = true
-                } else {
-                    needLineBreak = !(dx > 0 && !isEqualX)
-                }
-            } else {
-                isNewParagraph = true
+        if hasBigIndentation {
+            print("    📏 Big indentation detected")
+            if !isPreviousLongText {
+                print("    📏 Big indentation and previous line is not long text - new paragraph")
+                return .newParagraph
             }
         }
 
-        return OCRMergeDecision.from(
-            needLineBreak: needLineBreak,
-            isNewParagraph: isNewParagraph
+        let hasVeryBigLineSpacing = lineAnalyzer.isBigLineSpacing(
+            pair: pair,
+            confidenceLevel: .high
         )
-    }
+        if hasVeryBigLineSpacing, !isPreviousLongText {
+            print(
+                "    📏 Big line spacing detected and previous line is not long text - new paragraph"
+            )
+            return .newParagraph
+        }
 
-    /// Handle text merging logic for non-indented text blocks and standard document flow
-    ///
-    /// This handler manages the formatting requirements for regular document text that follows
-    /// standard layout patterns without special indentation. It focuses on maintaining natural
-    /// text flow while detecting and preserving important structural elements such as paragraph
-    /// boundaries, sentence breaks, and content transitions.
-    ///
-    /// **Primary Analysis Areas:**
-    ///
-    /// **1. Line Spacing Analysis:**
-    /// - **Big Spacing Detection**: Identifies significant vertical gaps indicating structure breaks
-    /// - **Standard Spacing**: Handles normal line-to-line text continuation
-    /// - **Tight Spacing**: Manages closely spaced text while preserving readability
-    ///
-    /// **2. Content Flow Management:**
-    /// - **Long Line Continuation**: Smart handling of text that flows naturally to next line
-    /// - **Short Line Processing**: Detects intentional breaks vs. formatting artifacts
-    /// - **Page Turn Detection**: Identifies text continuation across page boundaries
-    ///
-    /// **3. Document Structure Recognition:**
-    /// - **Paragraph Boundaries**: Detects natural paragraph divisions
-    /// - **Poetry Handling**: Preserves poetic structure in non-indented verse
-    /// - **Letter Format**: Handles correspondence and formal document structures
-    ///
-    /// **4. Language-Specific Processing:**
-    /// - **English Rules**: Capitalization-based sentence boundary detection
-    /// - **Punctuation Analysis**: Uses punctuation patterns for structure identification
-    /// - **Character-based Languages**: Applies appropriate spacing and flow rules
-    ///
-    /// **5. Special Cases:**
-    /// - **Mixed Content**: Handles transitions between different content types
-    /// - **Typography Changes**: Responds to font and style variations
-    /// - **Spacing Anomalies**: Manages unusual spacing patterns intelligently
-    ///
-    /// **Decision Framework:**
-    /// - Prioritizes natural reading flow for standard text
-    /// - Preserves intentional structure breaks
-    /// - Maintains paragraph integrity
-    /// - Adapts to language-specific formatting conventions
-    ///
-    /// - Parameter lineContext: Complete line analysis context for non-indented text
-    /// - Returns: Optimal merge decision for natural document flow preservation
-    private func handleNonIndentedText(lineContext: OCRLineContext) -> OCRMergeDecision {
-        var needLineBreak = false
-        var isNewParagraph = false
+        let currentText = current.firstText
+        let previousText = previous.firstText
 
-        let isFirstLetterUpperCase = lineContext.currentText.isFirstLetterUpperCase
+        let isCurrentList = currentText.isListTypeFirstWord
+        let isPreviousList = previousText.isListTypeFirstWord
 
-        if lineContext.isBigLineSpacing {
-            if lineContext.isPrevLongText {
-                if metrics.isPoetry {
-                    needLineBreak = true
-                } else {
-                    // Check for page turn scenarios
-                    let isTurnedPage =
-                        isEnglishLanguage() && lineContext.currentText.isLowercaseFirstChar
-                            && !lineContext.hasPrevEndPunctuation
-                    if !isTurnedPage {
-                        needLineBreak = true
+        let firstObservation = currentParagraphObservations.first!
+        let previousHasIndentation = lineAnalyzer.hasIndentation(observation: previous)
+        let isEqualPairX = lineAnalyzer.isEqualX(pair: pair)
+        let hasBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair)
+
+        // Check for list patterns.
+        if isCurrentList {
+            print("    📋 List pattern detected")
+
+            // Check if the two list items have the same X coordinate.
+            let isEqualFirstLineX = lineAnalyzer.isEqualX(
+                pair:
+                .init(
+                    current: current,
+                    previous: firstObservation
+                )
+            )
+
+            let isFirstObservationList = firstObservation.firstText.isListTypeFirstWord
+
+            let hasPairIndentation = lineAnalyzer.hasIndentation(
+                observation: current,
+                comparedObservation: previous
+            )
+
+            if isFirstObservationList {
+                if hasVeryBigLineSpacing {
+                    print("    📋 List pattern with high line spacing - new paragraph")
+                    return .newParagraph
+                }
+
+                if isEqualFirstLineX {
+                    print("    📋 List pattern with equal X")
+
+                    if hasPairIndentation {
+                        print("    📋 List pattern with equal X and indentation - new paragraph")
+                        return .newParagraph
                     }
+
+                    if !hasBigLineSpacing {
+                        print("    📋 No big line spacing - line break")
+                        return .lineBreak
+                    }
+                } else {
+                    print("    📋 List pattern with different X - new paragraph")
+                    return .newParagraph
                 }
             } else {
-                if lineContext.hasPrevEndPunctuation || lineContext.hasPrevIndentation {
-                    isNewParagraph = true
-                } else {
-                    needLineBreak = true
-                }
-            }
-        } else {
-            if lineContext.isPrevLongText {
-                if !lineContext.hasPrevIndentation {
-                    // Chinese poetry special case
-                    if lineContext.hasPrevEndPunctuation,
-                       lineContext.currentText.hasEndPunctuationSuffix {
-                        needLineBreak = true
-
-                        // If language is English and current line first letter is NOT uppercase, do not need line break
-                        if isEnglishLanguage(), !isFirstLetterUpperCase {
-                            needLineBreak = false
-                        }
-                    }
-                }
-            } else {
-                needLineBreak = true
-                if lineContext.hasPrevIndentation, !lineContext.hasPrevEndPunctuation {
-                    isNewParagraph = true
+                if hasPairIndentation, !isEqualFirstLineX {
+                    print("    📋 List pattern with indentation and different X - new paragraph")
+                    return .newParagraph
                 }
             }
 
-            if metrics.isPoetry {
-                needLineBreak = true
+            let firstHasIndentation =
+                (previous == firstObservation)
+                    ? previousHasIndentation
+                    : lineAnalyzer.hasIndentation(observation: firstObservation)
+
+            if !isEqualPairX, firstHasIndentation {
+                print(
+                    "    📋 List pattern with different X and first observation has indentation - new paragraph"
+                )
+                return .newParagraph
             }
+
+            if lineAnalyzer.isBigLineSpacing(pair: pair, confidenceLevel: .custom(1.1)) {
+                print("    📋 List pattern with big line spacing - new paragraph")
+                return .newParagraph
+            }
+
+            if previousHasIndentation, !isEqualFirstLineX {
+                print("    📋 List pattern with previous indentation - new paragraph")
+                return .newParagraph
+            }
+
+            print("    📋 List pattern - line break")
+            return .lineBreak
         }
 
         /**
@@ -561,17 +352,226 @@ class OCRTextMerger {
          ```
          If `distance` > 0.45, means it may need line break, or treat as new paragraph.
          */
-        if lineContext.isPrevLongText, lineContext.hasPrevIndentation {
-            let dx = lineContext.previous.boundingBox.minX - lineContext.current.boundingBox.minX
-            let distance = dx / (metrics.maxLineLength)
+        if isPreviousLongText {
+            let dx = previous.boundingBox.minX - current.boundingBox.minX
+            let distance = dx / metrics.maxLineLength
             if distance > 0.45 {
-                isNewParagraph = true
+                print("    📄 Letter format detected - new paragraph")
+                return .newParagraph
             }
         }
 
-        return OCRMergeDecision.from(
-            needLineBreak: needLineBreak,
-            isNewParagraph: isNewParagraph
+        // 4. Priority: Large line spacing often indicates intentional gaps.
+        if hasBigLineSpacing {
+            let isListItem = currentText.isListTypeFirstWord
+            let shouldContinuePrevious =
+                isPreviousLongText && currentText.isLowercaseFirstChar && !isListItem
+            if shouldContinuePrevious {
+                print("    📄 Page continuation detected - join with space")
+                return .joinWithSpaceOrNot(pair: pair)
+            } else {
+                print("    📏 Big line spacing - new paragraph")
+                return .newParagraph
+            }
+        }
+
+        let mayBeDifferentFontSize = lineAnalyzer.isDifferentFontSize(
+            pair: pair, confidenceLevel: .low
         )
+        let mayBeBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair, confidenceLevel: .low)
+        let mayBeNewParagraph = mayBeDifferentFontSize || mayBeBigLineSpacing
+
+        if !isEqualPairX {
+            print("    🔗 Different X detected")
+
+            if !isPreviousLongText {
+                print("    🔗 Different X and previous line is not long text - new paragraph")
+                return .newParagraph
+            }
+
+            let isPreviousAbsoluteLongText = lineAnalyzer.isLongText(observation: previous)
+
+            if !isPreviousAbsoluteLongText {
+                print("    🔗 Previous line is NOT absolute long text")
+                if previousHasIndentation {
+                    print("    🔗 Different X and previous line has indentation - new paragraph")
+                    return .newParagraph
+                }
+
+                if isPreviousList {
+                    print("    🔗 Different X and previous line is a list - new paragraph")
+                    return .newParagraph
+                }
+
+                if hasBigIndentation {
+                    print("    🔗 Different X and has big indentation - new paragraph")
+                    return .newParagraph
+                }
+
+                print("    🔗 Different X and previous line is not absolute long text - line break")
+                return .lineBreak
+            } else {
+                print("    🔗 Previous line is absolute long text")
+                if mayBeNewParagraph {
+                    print("    🔗 May be new paragraph - new paragraph")
+                    return .newParagraph
+                }
+
+                print(
+                    "    🔗 Different X and previous line is absolute long text - join with space or not by language"
+                )
+                return .joinWithSpaceOrNot(pair: pair)
+            }
+        } else {
+            print("    🔗 Same X detected")
+
+            if !previousHasIndentation, !isPreviousLongText {
+                print("    🔗 Has no indentation and previous line is not long text")
+
+                if mayBeNewParagraph {
+                    print("    🔗 May be new paragraph - new paragraph")
+                    return .newParagraph
+                }
+
+                return .lineBreak
+            }
+        }
+
+        if isPreviousList {
+            print("    🔗 Previous line is a list")
+            if previousHasIndentation, !isPreviousLongText {
+                print("    🔗 Previous line has indentation and is not long text - new paragraph")
+                return .newParagraph
+            }
+
+            if mayBeNewParagraph {
+                print(
+                    "🔢 May be new paragraph and previous line is a list - new paragraph"
+                )
+                return .newParagraph
+            }
+        }
+
+        // 6. Priority: Comprehensive content pattern analysis.
+        if mayBeNewParagraph {
+            print(
+                "\n🔤 May be new paragraph, mayBeBigLineSpacing: \(mayBeBigLineSpacing), mayBeDifferentFontSize: \(mayBeDifferentFontSize)"
+            )
+
+            if mayBeBigLineSpacing, mayBeDifferentFontSize {
+                print("    📏 Big line spacing and different font size - new paragraph")
+                return .newParagraph
+            }
+
+            // If it might be a new paragraph and should not join with the previous line,
+            // it indicates a paragraph break is needed.
+            if !isPreviousLongText {
+                print("🔢 May be new paragraph and previous line is not long text - new paragraph")
+                return .newParagraph
+            }
+
+            if currentText.isFirstLetterUpperCase,
+               lineAnalyzer.isDifferentFontSize(pair: pair, confidenceLevel: .custom(0.5)) {
+                print(
+                    "🔢 May be new paragraph and current line starts with uppercase letter - new paragraph"
+                )
+                return .newParagraph
+            }
+        }
+
+        let isShortLine = lineAnalyzer.isShortLineText(observation: current)
+        let isPreviousShortLine = lineAnalyzer.isShortLineText(observation: previous)
+
+        if isShortLine, isPreviousShortLine {
+            print("    🎭 Short line pattern - line break")
+            return .lineBreak
+        }
+
+        // Default merge strategy.
+        print("    🔗 Default merge - join with space or not by language")
+        return .joinWithSpaceOrNot(pair: pair)
+    }
+
+    // swiftlint:enable function_body_length
+
+    /// Selects the appropriate reference observation for indentation and alignment checks.
+    ///
+    /// This logic determines whether to compare the current observation against the paragraph's
+    /// rightmost observation (`maxXObservation`) or the globally rightmost observation
+    /// (`metrics.maxXLineTextObservation`), depending on the paragraph's structure.
+    ///
+    /// - Parameters:
+    ///   - pair: The current and previous observations.
+    ///   - maxXObservation: The rightmost observation in the current paragraph.
+    ///   - currentParagraphObservations: All observations in the current paragraph.
+    /// - Returns: The observation to be used as a reference for comparison.
+    private func getComparedObservation(
+        pair: OCRTextObservationPair,
+        maxXObservation: VNRecognizedTextObservation,
+        currentParagraphObservations: [VNRecognizedTextObservation]
+    )
+        -> VNRecognizedTextObservation {
+        guard let firstObservation = currentParagraphObservations.first,
+              let maxXLineTextObservation = metrics.maxXLineTextObservation
+        else {
+            print("    📏 No maxXLineTextObservation available, using maxXObservation")
+            return maxXObservation
+        }
+
+        // If the first observation has indentation, it signifies a new paragraph.
+        // We need to check if the entire paragraph maintains this indentation.
+        let isFirstObservationHasIndentation = lineAnalyzer.hasIndentation(
+            observation: firstObservation
+        )
+
+        if !isFirstObservationHasIndentation {
+            print("    📏 First observation has no indentation, using maxXLineTextObservation")
+            return maxXLineTextObservation
+        }
+
+        // If the previous observation is the rightmost one in the paragraph and also the first,
+        // use the global `maxXLineTextObservation` as the reference.
+        if pair.previous == maxXObservation, maxXObservation == firstObservation {
+            print("    📏 Using maxXLineTextObservation as compared observation")
+            return maxXLineTextObservation
+        }
+
+        return maxXObservation
+    }
+
+    /// Updates the paragraph context after a merge strategy has been determined.
+    ///
+    /// Based on the applied strategy, this function either resets the context for a new paragraph
+    /// or extends the current paragraph with the new observation.
+    ///
+    /// - Parameters:
+    ///   - strategy: The merge strategy that was applied.
+    ///   - currentObservation: The observation that was just processed.
+    ///   - currentParagraphObservations: An in-out reference to the list of observations in the current paragraph.
+    ///   - maxXObservation: An in-out reference to the rightmost observation in the current paragraph.
+    private func updateContextualTracking(
+        strategy: OCRMergeStrategy,
+        currentObservation: VNRecognizedTextObservation,
+        currentParagraphObservations: inout [VNRecognizedTextObservation],
+        maxXObservation: inout VNRecognizedTextObservation
+    ) {
+        switch strategy {
+        case .newParagraph:
+            // Start a new paragraph, resetting the tracking variables.
+            currentParagraphObservations = [currentObservation]
+            maxXObservation = currentObservation
+
+        case .joinRemovingDash, .joinWithNoSpace, .joinWithSpace, .lineBreak:
+            // Continue the current paragraph and update tracking.
+            currentParagraphObservations.append(currentObservation)
+
+            // Update maxXObservation if the current one has a larger X-coordinate.
+            let currentMaxX = currentObservation.boundingBox.maxX
+            let maxX = maxXObservation.boundingBox.maxX
+
+            if currentMaxX > maxX {
+                maxXObservation = currentObservation
+            }
+        }
     }
 }
