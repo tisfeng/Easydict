@@ -211,6 +211,11 @@ class OCRTextNormalizer {
             ranges.append(match.range)
         }
 
+        // Protect list markers with dot (e.g., 1. item, a. item) to prevent normalization altering list numbers
+        for match in text.matches(of: Regex.listWithDotPattern) {
+            ranges.append(match.range)
+        }
+
         // Merge overlapping ranges and sort
         let mergedRanges = mergeOverlappingRanges(ranges)
 
