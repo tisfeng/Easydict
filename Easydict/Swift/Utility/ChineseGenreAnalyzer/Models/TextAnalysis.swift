@@ -1,5 +1,5 @@
 //
-//  ChineseAnalysis.swift
+//  TextAnalysis.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/4/2.
@@ -11,7 +11,7 @@ import Foundation
 // MARK: - ChineseAnalysis
 
 /// Analysis result for Chinese text detection
-class ChineseAnalysis: Codable {
+public class TextAnalysis: Codable {
     // MARK: Lifecycle
 
     // MARK: - Initialization
@@ -22,7 +22,7 @@ class ChineseAnalysis: Codable {
         phraseInfo: PhraseInfo,
         punctInfo: PunctuationInfo,
         lingInfo: LinguisticInfo,
-        genre: Genre = .modern
+        genre: Genre = .plain
     ) {
         self.textInfo = textInfo
         self.metadata = metadata
@@ -132,12 +132,18 @@ class ChineseAnalysis: Codable {
     /// - `prose`: Classical prose 古文
     /// - `poetry`: Classical poetry 古诗
     /// - `lyric`: Classical lyric 古词
-    /// - `modern`: Modern Chinese 现代汉语
+    /// - `plain`: Plain text 普通文本
     enum Genre: String, Codable {
         case prose
         case poetry
         case lyric
-        case modern
+        case plain
+
+        // MARK: Internal
+
+        var isClassical: Bool {
+            self != .plain
+        }
     }
 
     let textInfo: TextInfo
@@ -145,5 +151,5 @@ class ChineseAnalysis: Codable {
     let phraseInfo: PhraseInfo
     let punctInfo: PunctuationInfo
     let lingInfo: LinguisticInfo
-    var genre: Genre = .modern
+    var genre: Genre = .plain
 }

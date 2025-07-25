@@ -162,7 +162,7 @@
 		0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */; };
 		0399C6B829A9F4B800B4AFCC /* EZSchemeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */; };
 		039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 039B694E2A9D9F370063709D /* EZWebViewManager.m */; };
-		039CBE872D9AFBF3009A04DC /* ChineseDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CBE862D9AFBF3009A04DC /* ChineseDetection.swift */; };
+		039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CBE862D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift */; };
 		039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CC6352E1F518A0046DC16 /* OCRTestSample.swift */; };
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
@@ -305,7 +305,7 @@
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
-		03D5C4C82D9D1EE70054D0D4 /* ChineseAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C72D9D1EE70054D0D4 /* ChineseAnalysis.swift */; };
+		03D5C4C82D9D1EE70054D0D4 /* TextAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */; };
 		03D5C4CA2D9D455E0054D0D4 /* ChineseDetection+Prose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */; };
 		03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */; };
 		03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */; };
@@ -671,7 +671,7 @@
 		0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSchemeParser.m; sourceTree = "<group>"; };
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
 		039B694E2A9D9F370063709D /* EZWebViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewManager.m; sourceTree = "<group>"; };
-		039CBE862D9AFBF3009A04DC /* ChineseDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseDetection.swift; sourceTree = "<group>"; };
+		039CBE862D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseGenreAnalyzer.swift; sourceTree = "<group>"; };
 		039CC6352E1F518A0046DC16 /* OCRTestSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSample.swift; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
@@ -902,7 +902,7 @@
 		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
 		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
 		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
-		03D5C4C72D9D1EE70054D0D4 /* ChineseAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseAnalysis.swift; sourceTree = "<group>"; };
+		03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAnalysis.swift; sourceTree = "<group>"; };
 		03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Prose.swift"; sourceTree = "<group>"; };
 		03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataExtractor.swift; sourceTree = "<group>"; };
 		03D5FCFD2A5EF4E400AD26BE /* EZDeviceSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeviceSystemInfo.h; sourceTree = "<group>"; };
@@ -1856,7 +1856,7 @@
 		03ADCACA2DA7C2B700ACB756 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				03D5C4C72D9D1EE70054D0D4 /* ChineseAnalysis.swift */,
+				03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */,
 				03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */,
 			);
 			path = Models;
@@ -2600,19 +2600,11 @@
 			path = EZLog;
 			sourceTree = "<group>";
 		};
-		03F2815A2D98E50600AE518C /* Detection */ = {
-			isa = PBXGroup;
-			children = (
-				03F2815B2D98E52200AE518C /* ChineseDetection */,
-			);
-			path = Detection;
-			sourceTree = "<group>";
-		};
-		03F2815B2D98E52200AE518C /* ChineseDetection */ = {
+		03F2815B2D98E52200AE518C /* ChineseGenreAnalyzer */ = {
 			isa = PBXGroup;
 			children = (
 				03ADCACA2DA7C2B700ACB756 /* Models */,
-				039CBE862D9AFBF3009A04DC /* ChineseDetection.swift */,
+				039CBE862D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift */,
 				03B73F7A2D9C51580051CB74 /* ChineseDetection+Poetry.swift */,
 				03B73F7C2D9C51700051CB74 /* ChineseDetection+Lyrics.swift */,
 				03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */,
@@ -2620,7 +2612,7 @@
 				03F2815E2D9A323700AE518C /* String+Utils.swift */,
 				03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */,
 			);
-			path = ChineseDetection;
+			path = ChineseGenreAnalyzer;
 			sourceTree = "<group>";
 		};
 		03FDAE922E1A29B70029369E /* Regex */ = {
@@ -2994,7 +2986,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				03F2815A2D98E50600AE518C /* Detection */,
+				03F2815B2D98E52200AE518C /* ChineseGenreAnalyzer */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				0346F3D12CAECB38006A6CDF /* GetSelectedText */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
@@ -3435,7 +3427,7 @@
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
-				03D5C4C82D9D1EE70054D0D4 /* ChineseAnalysis.swift in Sources */,
+				03D5C4C82D9D1EE70054D0D4 /* TextAnalysis.swift in Sources */,
 				0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */,
@@ -3447,7 +3439,7 @@
 				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
 				036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */,
 				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
-				039CBE872D9AFBF3009A04DC /* ChineseDetection.swift in Sources */,
+				039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */,

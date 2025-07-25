@@ -1,5 +1,5 @@
 //
-//  ChineseDetection.swift
+//  ChineseGenreAnalyzer.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/4/1.
@@ -9,9 +9,9 @@
 import Defaults
 import Foundation
 
-// MARK: - ChineseDetection
+// MARK: - ChineseGenreAnalyzer
 
-class ChineseDetection {
+class ChineseGenreAnalyzer {
     // MARK: Lifecycle
 
     // MARK: - Initialization
@@ -26,12 +26,12 @@ class ChineseDetection {
 
     let originalText: String
 
-    var analysis: ChineseAnalysis?
+    var analysis: TextAnalysis?
 
     // MARK: - Public Methods
 
     /// Detect the type of Chinese text and return analysis result
-    func detect() -> ChineseAnalysis {
+    func detect() -> TextAnalysis {
         logInfo("\nStarting Chinese text detection...")
 
         // Return cached analysis if available
@@ -48,7 +48,7 @@ class ChineseDetection {
             logInfo(
                 "Text count (\(newAnalysis.textInfo.characterCount)) is less than \(minClassicalChineseTextDetectLength), skipping classical detection."
             )
-            newAnalysis.genre = .modern
+            newAnalysis.genre = .plain
             analysis = newAnalysis
             return newAnalysis
         }
@@ -72,7 +72,7 @@ class ChineseDetection {
     // MARK: - Structure Analysis Core
 
     /// Analyze the structure and return analysis result
-    private func analyzeStructure(_ text: String) -> ChineseAnalysis {
+    private func analyzeStructure(_ text: String) -> TextAnalysis {
         // 1. Split text into lines
         let lines = text.splitTextIntoLines()
 
@@ -95,7 +95,7 @@ class ChineseDetection {
         }
 
         // 6. Create TextInfo
-        let textInfo = ChineseAnalysis.TextInfo(
+        let textInfo = TextAnalysis.TextInfo(
             rawText: text,
             processedText: content,
             lines: lines,
@@ -103,7 +103,7 @@ class ChineseDetection {
         )
 
         // 7. Assemble final analysis object
-        return ChineseAnalysis(
+        return TextAnalysis(
             textInfo: textInfo,
             metadata: metadata,
             phraseInfo: phraseInfo,
@@ -117,7 +117,7 @@ class ChineseDetection {
     /// Find title and author in classical Chinese text
     /// - Parameter lines: Array of text lines
     /// - Returns: Metadata information containing title, author, dynasty and their indices
-    private func findTitleAndAuthor(in lines: [String]) -> ChineseAnalysis.Metadata? {
+    private func findTitleAndAuthor(in lines: [String]) -> TextAnalysis.Metadata? {
         guard lines.count >= 2 else { return nil }
 
         // Skip metadata detection for prose-like text without punctuation early on
@@ -161,7 +161,7 @@ class ChineseDetection {
             return nil
         }
 
-        return ChineseAnalysis.Metadata(
+        return TextAnalysis.Metadata(
             title: title,
             author: author,
             dynasty: dynasty,
@@ -270,7 +270,7 @@ class ChineseDetection {
     }
 
     /// Determine content lines by removing metadata if found
-    private func determineContentLines(from lines: [String], metadata: ChineseAnalysis.Metadata?)
+    private func determineContentLines(from lines: [String], metadata: TextAnalysis.Metadata?)
         -> [String] {
         guard let metadata = metadata else {
             return lines // No metadata found, return original lines
@@ -285,27 +285,27 @@ class ChineseDetection {
     // MARK: - Content Analysis Helpers
 
     /// Analyze punctuation statistics in text
-    private func analyzePunctuation(_ text: String) -> ChineseAnalysis.PunctuationInfo {
+    private func analyzePunctuation(_ text: String) -> TextAnalysis.PunctuationInfo {
         let totalCount = text.count
         let punctCount = text.filter { $0.isPunctuation }.count
         let punctRatio = Double(punctCount) / Double(totalCount)
 
-        return ChineseAnalysis.PunctuationInfo(
+        return TextAnalysis.PunctuationInfo(
             count: punctCount,
             ratio: punctRatio
         )
     }
 
     /// Analyze linguistic features (classical/modern ratios)
-    private func analyzeLinguisticFeatures(_ text: String) -> ChineseAnalysis.LinguisticInfo {
-        ChineseAnalysis.LinguisticInfo(
+    private func analyzeLinguisticFeatures(_ text: String) -> TextAnalysis.LinguisticInfo {
+        TextAnalysis.LinguisticInfo(
             classicalRatio: text.calculateClassicalChineseMarkerRatio(),
             modernRatio: text.calculateModernChineseMarkerRatio()
         )
     }
 
     /// Analyze phrase structure including parallel structure and phrase lengths
-    private func analyzePhraseStructure(_ contentLines: [String]) -> ChineseAnalysis.PhraseInfo {
+    private func analyzePhraseStructure(_ contentLines: [String]) -> TextAnalysis.PhraseInfo {
         var parallelCount = 0
         var totalComparisons = 0
 
@@ -335,7 +335,7 @@ class ChineseDetection {
         let minLength = phraseLengths.min() ?? 0
         let isUniform = Set(phraseLengths).count == 1
 
-        return ChineseAnalysis.PhraseInfo(
+        return TextAnalysis.PhraseInfo(
             phrases: phrases,
             averageLength: avgLength,
             maxLength: maxLength,
@@ -348,9 +348,9 @@ class ChineseDetection {
     // MARK: - Genre Determination
 
     /// Determine the genre of the text based on analysis results
-    private func determineGenre(for analysis: ChineseAnalysis) -> ChineseAnalysis.Genre {
+    private func determineGenre(for analysis: TextAnalysis) -> TextAnalysis.Genre {
         if analysis.lingInfo.hasHighModernRatio() {
-            return .modern
+            return .plain
         }
         if isClassicalPoetry(analysis) {
             return .poetry
@@ -361,6 +361,6 @@ class ChineseDetection {
         if isClassicalProse(analysis) {
             return .prose
         }
-        return .modern // Default to modern if no classical type matches
+        return .plain // Default to modern if no classical type matches
     }
 }

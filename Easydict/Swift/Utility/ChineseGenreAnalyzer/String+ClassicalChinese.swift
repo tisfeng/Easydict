@@ -23,7 +23,7 @@ extension String {
     /// This includes detecting classical poetry (格律诗), ci (词), and classical prose.
     /// - Returns: True if text is classical Chinese, false otherwise.
     var isClassicalChinese: Bool {
-        let chineseText = ChineseDetection(text: self)
-        return chineseText.detect().genre != .modern
+        let genreAnalyzer = ChineseGenreAnalyzer(text: self)
+        return genreAnalyzer.detect().genre.isClassical
     }
 }

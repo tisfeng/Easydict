@@ -134,12 +134,20 @@ public class AppleLanguageDetector: NSObject {
         englishCharacterRatio = 0.0
         hasMixedScripts = false
         isAnalyzed = false
+        chineseGenreAnalyzer = nil
+    }
+
+    public func getTextAnalysis() -> TextAnalysis? {
+        chineseGenreAnalyzer?.analysis
     }
 
     // MARK: Private
 
     /// Shared language mapper for converting between Apple NLLanguage and Easydict Language enums
     private let languageMapper = AppleLanguageMapper.shared
+
+    /// Chinese text detection utility for classical Chinese analysis
+    private var chineseGenreAnalyzer: ChineseGenreAnalyzer?
 
     /// Custom language hints for improving detection accuracy
     ///
@@ -528,7 +536,14 @@ public class AppleLanguageDetector: NSObject {
         }
 
         if isClassicalChineseDetectionEnabled, Configuration.shared.beta {
-            if text.isClassicalChinese {
+            // Initialize ChineseDetection if not already created
+            if chineseGenreAnalyzer == nil {
+                chineseGenreAnalyzer = ChineseGenreAnalyzer(text: text)
+            }
+
+            // Use ChineseDetection to analyze if it's classical Chinese
+            let analysis = chineseGenreAnalyzer!.detect()
+            if analysis.genre != .plain {
                 return .classicalChinese
             }
         }

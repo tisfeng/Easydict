@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension ChineseDetection {
+extension ChineseGenreAnalyzer {
     /// Detect if the text is Chinese classical Lyrics (词)
-    func isClassicalLyrics(_ analysis: ChineseAnalysis) -> Bool {
+    func isClassicalLyrics(_ analysis: TextAnalysis) -> Bool {
         logInfo("\n----- Classical Lyrics Detection -----")
 
         if analysis.textInfo.characterCount < 10, analysis.phraseInfo.phrases.count < 2 {
@@ -58,7 +58,7 @@ extension ChineseDetection {
     ///   - tunePattern: Tuple containing the tune pattern and expected count
     /// - Returns: True if character count matches within tolerance
     func matchesCiTuneCharacterCounts(
-        _ analysis: ChineseAnalysis,
+        _ analysis: TextAnalysis,
         tunePattern: (pattern: String, count: [Int])
     )
         -> Bool {

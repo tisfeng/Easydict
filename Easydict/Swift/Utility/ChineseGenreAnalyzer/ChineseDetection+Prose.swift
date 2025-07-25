@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension ChineseDetection {
+extension ChineseGenreAnalyzer {
     ///  Detect if the text is classical Prose.
-    func isClassicalProse(_ analysis: ChineseAnalysis) -> Bool {
+    func isClassicalProse(_ analysis: TextAnalysis) -> Bool {
         logInfo("\n ------ detecting classical prose ------")
 
         if analysis.textInfo.characterCount < 10 || analysis.phraseInfo.phrases.count < 2 {

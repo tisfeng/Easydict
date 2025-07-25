@@ -247,15 +247,26 @@ class OCRTextMerger {
             }
         }
 
+        let isPoetry = metrics.isPoetry
+
         let hasVeryBigLineSpacing = lineAnalyzer.isBigLineSpacing(
             pair: pair,
             confidenceLevel: .high
         )
-        if hasVeryBigLineSpacing, !isPreviousLongText {
-            print(
-                "    📏 Big line spacing detected and previous line is not long text - new paragraph"
-            )
-            return .newParagraph
+        if hasVeryBigLineSpacing {
+            print("    📏 Very big line spacing detected")
+            if !isPreviousLongText {
+                print(
+                    "    📏 Previous line is not long text - new paragraph"
+                )
+                return .newParagraph
+            }
+
+            if isPoetry {
+                print("    📏 Poetry detected - new paragraph")
+
+                return .newParagraph
+            }
         }
 
         let currentText = current.firstText
@@ -367,6 +378,11 @@ class OCRTextMerger {
             let shouldContinuePrevious =
                 isPreviousLongText && currentText.isLowercaseFirstChar && !isListItem
             if shouldContinuePrevious {
+                if isPoetry {
+                    print("    📄 Poetry detecte - line break")
+                    return .lineBreak
+                }
+
                 print("    📄 Page continuation detected - join with space")
                 return .joinWithSpaceOrNot(pair: pair)
             } else {
@@ -484,6 +500,11 @@ class OCRTextMerger {
 
         if isShortLine, isPreviousShortLine {
             print("    🎭 Short line pattern - line break")
+            return .lineBreak
+        }
+
+        if isPoetry {
+            print("    🎭 Poetry detected - line break")
             return .lineBreak
         }
 

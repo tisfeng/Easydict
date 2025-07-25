@@ -11,18 +11,16 @@ import Vision
 
 // MARK: - OCRPoetryDetector
 
-/**
- * A detector for identifying poetry-like text structures in OCR results.
- *
- * This class analyzes the layout and content of text observations to determine if they
- * follow patterns commonly found in poetry. The detection is based on a combination of
- * line length consistency, alignment, and the number of stanzas (groups of lines).
- *
- * ### Detection Criteria:
- * - **Line Length**: Poetry often consists of relatively short lines.
- * - **Alignment**: Lines in a stanza may share a common left or right alignment.
- * - **Stanzas**: The presence of distinct groups of lines separated by larger vertical gaps.
- */
+/// A detector for identifying poetry-like text structures in OCR results.
+///
+/// This class analyzes the layout and content of text observations to determine if they
+/// follow patterns commonly found in poetry. The detection is based on a combination of
+/// line length consistency, alignment, and the number of stanzas (groups of lines).
+///
+/// ### Detection Criteria:
+/// - **Line Length**: Poetry often consists of relatively short lines.
+/// - **Alignment**: Lines in a stanza may share a common left or right alignment.
+/// - **Stanzas**: The presence of distinct groups of lines separated by larger vertical gaps.
 class OCRPoetryDetector {
     // MARK: Lifecycle
 
@@ -53,7 +51,7 @@ class OCRPoetryDetector {
         var maxContinuousLongLineCount = 0
         var endWithTerminatorCharLineCount = 0
 
-        // Use pre-calculated metrics when available
+        // Use pre-calculated metrics from OCRMetrics when available
         let punctuationMarkCount = metrics.punctuationMarkCount
         let charCountPerLine = metrics.charCountPerLine
 
@@ -88,7 +86,9 @@ class OCRPoetryDetector {
 
             // Check for long lines
             let nextObservation = i + 1 < observations.count ? observations[i + 1] : nil
-            let isLongLine = lineMeasurer.isLongLine(observation: observation, nextObservation: nextObservation)
+            let isLongLine = lineMeasurer.isLongLine(
+                observation: observation, nextObservation: nextObservation
+            )
             if isLongLine {
                 longLineCount += 1
 
@@ -105,6 +105,7 @@ class OCRPoetryDetector {
             }
         }
 
+        // Calculate averages after processing all lines
         let wordCountPerLine = totalWordCount.double / lineCount.double
         let numberOfPunctuationMarksPerLine = punctuationMarkCount.double / lineCount.double
 

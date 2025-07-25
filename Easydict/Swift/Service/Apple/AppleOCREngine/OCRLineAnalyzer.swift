@@ -230,15 +230,6 @@ class OCRLineAnalyzer {
         return isEqualChinese
     }
 
-    /// Checks if the given text represents a short Chinese poetry format.
-    /// - Parameter text: The text string to analyze.
-    /// - Returns: `true` if the text is considered short Chinese poetry, `false` otherwise.
-    func isShortPoetry(_ text: String) -> Bool {
-        languageManager.isChineseLanguage(metrics.language)
-            && metrics.charCountPerLine < Double(OCRConstants.shortPoetryCharacterCountOfLine)
-            && text.count < OCRConstants.shortPoetryCharacterCountOfLine
-    }
-
     /// Checks if a text observation is a short line of text.
     ///
     /// - Parameters:

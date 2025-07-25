@@ -64,59 +64,59 @@ class OCRMetrics {
     // MARK: - Line & Spacing Metrics
 
     /// The minimum line height observed across all text observations.
-    var minLineHeight: Double = .greatestFiniteMagnitude
+    private(set) var minLineHeight: Double = .greatestFiniteMagnitude
 
     /// The cumulative total of all line heights, used for calculating the average.
-    var totalLineHeight: Double = 0
+    private(set) var totalLineHeight: Double = 0
 
     /// The calculated average line height across the document.
-    var averageLineHeight: Double = 0
+    private(set) var averageLineHeight: Double = 0
 
     /// The minimum spacing observed between adjacent lines (can be negative if lines overlap).
-    var minLineSpacing: Double = .greatestFiniteMagnitude
+    private(set) var minLineSpacing: Double = .greatestFiniteMagnitude
 
     /// The minimum positive (non-zero) spacing between lines.
-    var minPositiveLineSpacing: Double = .greatestFiniteMagnitude
+    private(set) var minPositiveLineSpacing: Double = .greatestFiniteMagnitude
 
     /// The cumulative total of all line spacings, used for calculating the average.
-    var totalLineSpacing: Double = 0
+    private(set) var totalLineSpacing: Double = 0
 
     /// The calculated average spacing between text lines.
-    var averageLineSpacing: Double = 0
+    private(set) var averageLineSpacing: Double = 0
 
     // MARK: - Reference Observations
 
     /// The observation with the greatest width.
-    var maxLineLengthObservation: VNRecognizedTextObservation?
+    private(set) var maxLineLengthObservation: VNRecognizedTextObservation?
 
     /// The observation that extends furthest to the right (has the maximum `maxX` coordinate).
-    var maxXLineTextObservation: VNRecognizedTextObservation?
+    private(set) var maxXLineTextObservation: VNRecognizedTextObservation?
 
     /// The observation that starts furthest to the left (has the minimum `minX` coordinate).
-    var minXLineTextObservation: VNRecognizedTextObservation?
+    private(set) var minXLineTextObservation: VNRecognizedTextObservation?
 
     /// The observation that contains the most characters.
-    var maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
+    private(set) var maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
 
     // MARK: - Content & Confidence Metrics
 
     /// A flag indicating if the document content is likely poetry.
-    var isPoetry: Bool = false
+    private(set) var isPoetry: Bool = false
 
     /// The average number of characters per line.
-    var charCountPerLine: Double = 0
+    private(set) var charCountPerLine: Double = 0
 
     /// The total number of characters across all observations.
-    var totalCharCount: Int = 0
+    private(set) var totalCharCount: Int = 0
 
     /// The total count of punctuation marks found in the text.
-    var punctuationMarkCount: Int = 0
+    private(set) var punctuationMarkCount: Int = 0
 
     /// The calculated average width of a single character.
-    var averageCharacterWidth: Double = 0.0
+    private(set) var averageCharacterWidth: Double = 0.0
 
     /// The overall confidence score of the OCR results, averaged from all observations.
-    var confidence: Float = 0.0
+    private(set) var confidence: Float = 0.0
 
     /// The calculated maximum line length (width) from the `maxLineLengthObservation`.
     var maxLineLength: Double {
@@ -182,8 +182,7 @@ class OCRMetrics {
             )
         }
 
-        // Calculate total character count and average per line
-        totalCharCount = observations.map { $0.firstText.count }.reduce(0, +)
+        // Calculate character count per line average
         charCountPerLine = totalCharCount.double / lineCount.double
 
         // Calculate overall confidence score
@@ -209,10 +208,15 @@ class OCRMetrics {
             "  - Line length → max: \(String(format: "%.3f", maxLineLength))"
         )
         print(
-            "  - Character metrics → width: \(String(format: "%.3f", averageCharacterWidth)), total: \(totalCharCount)"
+            "  - Character metrics → total: \(totalCharCount), avg per line: \(String(format: "%.2f", charCountPerLine))"
         )
-        print("  - Average chars per line: \(String(format: "%.1f", charCountPerLine))")
-        print("  - Min X position: \(String(format: "%.3f", minXLineTextObservation?.boundingBox.minX ?? 0))")
+        print(
+            "  - Punctuation marks: \(punctuationMarkCount), avg per line: \(String(format: "%.2f", Double(punctuationMarkCount) / Double(lineCount)))"
+        )
+
+        print(
+            "  - Min X position: \(String(format: "%.3f", minXLineTextObservation?.boundingBox.minX ?? 0))"
+        )
     }
 
     // MARK: Private
@@ -247,8 +251,8 @@ class OCRMetrics {
         charCountPerLine = 0
         totalCharCount = 0
         punctuationMarkCount = 0
-        averageCharacterWidth = 0.0
-        confidence = 0.0
+        averageCharacterWidth = 0
+        confidence = 0
     }
 
     /// Performs a first-pass analysis on an observation to collect baseline metrics like line height and position.
@@ -285,6 +289,12 @@ class OCRMetrics {
         } else {
             maxCharacterCountLineTextObservation = textObservation
         }
+
+        // Calculate character and punctuation metrics
+        let text = textObservation.firstText
+        totalCharCount += text.count
+        let linePunctuationCount = text.filter { $0.isPunctuation }.count
+        punctuationMarkCount += linePunctuationCount
 
         // Calculate index for gap logging (only if not the first observation)
         guard let index = textObservations.firstIndex(of: textObservation), index > 0 else {
