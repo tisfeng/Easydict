@@ -152,9 +152,15 @@ enum OCRConstants {
     /// Default is 1.8 characters for indentation, should be less than 2 characters
     static let indentationCharacterCount: Double = 1.8
     static let paragraphLineHeightRatio: Double = 1.5
-    static let shortPoetryCharacterCountOfLine = 12
 
-    static let chineseDifferenceFontThreshold: Double = 3.0
+    /// Default is 12.0, for Chinese poetry
+    static let poetryCharacterCountOfLine = 12.0
+
+    /// Default is 7.0, for English poetry
+    static let poetryWordCountOfLine = 7.0
+
+    /// Increased from 3.0 to 3.5 for better Chinese text detection
+    static let chineseDifferenceFontThreshold: Double = 3.5
 
     /// 5.0 for English text font, may be not precise, so use a larger threshold
     static let englishDifferenceFontThreshold: Double = 5.0

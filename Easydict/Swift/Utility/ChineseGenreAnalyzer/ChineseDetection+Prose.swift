@@ -1,5 +1,5 @@
 //
-//  ChineseDetection+Prose.swift
+//  ChineseGenreAnalyzer+Prose.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/4/2.

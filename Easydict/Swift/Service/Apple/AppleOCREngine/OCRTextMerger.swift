@@ -145,22 +145,15 @@ class OCRTextMerger {
 
         // Start with the text of the first observation.
         var currentText = observations[0].firstText
-        print("📝 Starting with: '\(currentText.prefix20)...'")
 
         // Apply each strategy to the subsequent observations.
         for (index, strategy) in strategies.enumerated() {
             let nextObservation = observations[index + 1]
             let nextText = nextObservation.firstText
 
-            print("\n📋 Applying strategy [\(index)]: \(strategy)")
-            print("  Current: '\(currentText.suffix20)...'")
-            print("  Next: '\(nextText.prefix20)...'")
-
             // Apply the strategy to combine the current and next text.
             let combinedText = strategy.apply(firstText: currentText, secondText: nextText)
             currentText = combinedText
-
-            print("  Result: '\(combinedText.suffix(40))...'")
         }
 
         mergedText = currentText
@@ -255,18 +248,24 @@ class OCRTextMerger {
         )
         if hasVeryBigLineSpacing {
             print("    📏 Very big line spacing detected")
+
+            if isPoetry {
+                print("    📏 Very big line spacing in poetry - line break")
+
+                return .newParagraph
+            }
+
             if !isPreviousLongText {
                 print(
                     "    📏 Previous line is not long text - new paragraph"
                 )
                 return .newParagraph
             }
+        }
 
-            if isPoetry {
-                print("    📏 Poetry detected - new paragraph")
-
-                return .newParagraph
-            }
+        if isPoetry {
+            print("    🎭 Poetry detected - line break")
+            return .lineBreak
         }
 
         let currentText = current.firstText
@@ -374,15 +373,15 @@ class OCRTextMerger {
 
         // 4. Priority: Large line spacing often indicates intentional gaps.
         if hasBigLineSpacing {
+            if isPoetry {
+                print("    📄 Big line spacing in poetry - line break")
+                return .lineBreak
+            }
+
             let isListItem = currentText.isListTypeFirstWord
             let shouldContinuePrevious =
                 isPreviousLongText && currentText.isLowercaseFirstChar && !isListItem
             if shouldContinuePrevious {
-                if isPoetry {
-                    print("    📄 Poetry detecte - line break")
-                    return .lineBreak
-                }
-
                 print("    📄 Page continuation detected - join with space")
                 return .joinWithSpaceOrNot(pair: pair)
             } else {
@@ -396,6 +395,11 @@ class OCRTextMerger {
         )
         let mayBeBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair, confidenceLevel: .low)
         let mayBeNewParagraph = mayBeDifferentFontSize || mayBeBigLineSpacing
+        if mayBeNewParagraph {
+            print(
+                "    🔤 May be new paragraph detected: mayBeBigLineSpacing: \(mayBeBigLineSpacing), mayBeDifferentFontSize: \(mayBeDifferentFontSize)"
+            )
+        }
 
         if !isEqualPairX {
             print("    🔗 Different X detected")
@@ -500,11 +504,6 @@ class OCRTextMerger {
 
         if isShortLine, isPreviousShortLine {
             print("    🎭 Short line pattern - line break")
-            return .lineBreak
-        }
-
-        if isPoetry {
-            print("    🎭 Poetry detected - line break")
             return .lineBreak
         }
 

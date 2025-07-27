@@ -541,9 +541,9 @@ public class AppleLanguageDetector: NSObject {
                 chineseGenreAnalyzer = ChineseGenreAnalyzer(text: text)
             }
 
-            // Use ChineseDetection to analyze if it's classical Chinese
+            // Use ChineseGenreAnalyzer to analyze if it's classical Chinese
             let analysis = chineseGenreAnalyzer!.detect()
-            if analysis.genre != .plain {
+            if analysis.genre.isClassical {
                 return .classicalChinese
             }
         }

@@ -59,7 +59,7 @@ class OCRLineMeasurer {
             nextObservation: nextObservation
         )
 
-        let finalThreshold = baseThreshold / confidenceLevel.thresholdMultiplier
+        let finalThreshold = baseThreshold / confidenceLevel.multiplier
 
         let actualRemainingCharacters = charactersRemainingToReferenceLine(
             observation: observation,
@@ -74,7 +74,7 @@ class OCRLineMeasurer {
 
         if !isLongLine {
             print(
-                "Short line detected (confidence: \(confidenceLevel)): '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", finalThreshold)) (base: \(String(format: "%.1f", baseThreshold)) × \(confidenceLevel.thresholdMultiplier)), Ref: '\(refText)...'"
+                "Short line detected (confidence: \(confidenceLevel)): '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", finalThreshold)) (base: \(String(format: "%.1f", baseThreshold)) × \(confidenceLevel.multiplier)), Ref: '\(refText)...'"
             )
         }
 

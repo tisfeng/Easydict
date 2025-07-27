@@ -1,5 +1,5 @@
 //
-//  ChineseDetection+Lyrics.swift
+//  ChineseGenreAnalyzer+Lyrics.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/4/2.

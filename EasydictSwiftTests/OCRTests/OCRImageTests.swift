@@ -29,19 +29,59 @@ struct OCRImageTests {
     /// OCR engine instance for testing
     let ocrEngine = AppleOCREngine()
 
-    // MARK: - English Text Tests
+    // MARK: - Just one test
 
-    @Test("Test", .tags(.ocr))
+    @Test("One Test", .tags(.ocr))
     func test() async throws {
         //        await testOCR(sample: .zhText1, language: .auto)
     }
 
     // MARK: - All OCR Tests
 
-    @Test("All OCR Tests", .tags(.ocr))
+    @Test(
+        "All OCR Tests",
+        .tags(.ocr),
+        .disabled("This test runs all OCR images, which can take a long time to complete. ")
+    )
     func testAllOCRImages() async throws {
         for sample in OCRTestSample.allCases {
             await testOCR(sample: sample)
+        }
+    }
+
+    // MARK: - English Text Tests
+
+    @Test("English OCR Test", .tags(.ocr))
+    func testEnglishOCR() async throws {
+        for sample in OCRTestSample.englishCases {
+            await testOCR(sample: sample, language: .english)
+        }
+    }
+
+    // MARK: - Chinese Text Tests
+
+    @Test("Chinese OCR Test", .tags(.ocr))
+    func testChineseOCR() async throws {
+        for sample in OCRTestSample.chineseCases {
+            await testOCR(sample: sample, language: .simplifiedChinese)
+        }
+    }
+
+    // MARK: - Japanese Text Tests
+
+    @Test("Japanese OCR Test", .tags(.ocr))
+    func testJapaneseOCR() async throws {
+        for sample in OCRTestSample.japaneseCases {
+            await testOCR(sample: sample, language: .japanese)
+        }
+    }
+
+    // MARK: - Other Language Tests
+
+    @Test("Other Language OCR Test", .tags(.ocr))
+    func testOtherLanguageOCR() async throws {
+        for sample in OCRTestSample.otherLanguageCases {
+            await testOCR(sample: sample, language: .auto)
         }
     }
 

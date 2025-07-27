@@ -103,9 +103,6 @@ class OCRMetrics {
     /// A flag indicating if the document content is likely poetry.
     private(set) var isPoetry: Bool = false
 
-    /// The average number of characters per line.
-    private(set) var charCountPerLine: Double = 0
-
     /// The total number of characters across all observations.
     private(set) var totalCharCount: Int = 0
 
@@ -117,6 +114,11 @@ class OCRMetrics {
 
     /// The overall confidence score of the OCR results, averaged from all observations.
     private(set) var confidence: Float = 0.0
+
+    /// The average number of characters per line.
+    var charCountPerLine: Double {
+        totalCharCount.double / textObservations.count.double
+    }
 
     /// The calculated maximum line length (width) from the `maxLineLengthObservation`.
     var maxLineLength: Double {
@@ -182,9 +184,6 @@ class OCRMetrics {
             )
         }
 
-        // Calculate character count per line average
-        charCountPerLine = totalCharCount.double / lineCount.double
-
         // Calculate overall confidence score
         computeOverallConfidence(from: observations)
 
@@ -248,7 +247,6 @@ class OCRMetrics {
         maxCharacterCountLineTextObservation = nil
 
         isPoetry = false
-        charCountPerLine = 0
         totalCharCount = 0
         punctuationMarkCount = 0
         averageCharacterWidth = 0

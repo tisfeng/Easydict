@@ -52,6 +52,8 @@ type_name:
 identifier_name:
   min_length: 2
   max_length: 50
+  allowed_symbols:
+    - "_" # Enable underscore in identifier names, like gpt_4o
   excluded: # excluded via string array
     - id
     - URL

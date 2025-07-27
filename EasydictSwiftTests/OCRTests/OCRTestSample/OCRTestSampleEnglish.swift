@@ -1,8 +1,8 @@
 //
-//  OCRTestSample.swift
+//  OCRTestSampleEnglish.swift
 //  EasydictSwiftTests
 //
-//  Created by tisfeng on 2025/7/10.
+//  Created by tisfeng on 2025/7/27.
 //  Copyright © 2025 izual. All rights reserved.
 //
 
@@ -10,65 +10,22 @@ import Foundation
 
 // swiftlint:disable line_length
 
-/// Enum representing the OCR test samples.
-/// This provides a type-safe way to access test data, including the image name and the expected OCR text result.
-enum OCRTestSample: String, CaseIterable {
-    case enText1 = "ocr-en-text-1.png"
-    case enText2 = "ocr-en-text-2.png"
-    case enTextBitcoin = "ocr-en-text-bitcoin.png"
-    case enTextReddit = "ocr-en-text-reddit.png"
+/// English OCR test samples
+extension OCRTestSample {
+    // MARK: - English Text Cases
 
-    // ocr english paper 1-14
-    case enPaper1 = "ocr-en-paper-1.png"
-    case enPaper2 = "ocr-en-paper-2.png"
-    case enPaper3 = "ocr-en-paper-3.png"
-    case enPaper4 = "ocr-en-paper-4.png"
-    case enPaper5 = "ocr-en-paper-5.png"
-    case enPaper6 = "ocr-en-paper-6.png"
-    case enPaper7 = "ocr-en-paper-7.png"
-    case enPaper8 = "ocr-en-paper-8.png"
-    case enPaper9 = "ocr-en-paper-9.png"
-    case enPaper10 = "ocr-en-paper-10.png"
-    case enPaper11 = "ocr-en-paper-11.png"
-    case enPaper12 = "ocr-en-paper-12.png"
-    case enPaper13 = "ocr-en-paper-13.png"
-    case enPaper14 = "ocr-en-paper-14.png"
+    static let englishCases: [OCRTestSample] = [
+        .enText1, .enText2, .enTextBitcoin, .enTextReddit,
+        .enTextList1, .enTextList2, .enTextList3, .enTextLetter338,
+        .enPaper1, .enPaper2, .enPaper3, .enPaper4, .enPaper5, .enPaper6, .enPaper7,
+        .enPaper8, .enPaper9, .enPaper10, .enPaper11, .enPaper12, .enPaper13, .enPaper14,
+        .enPoetry8,
+    ]
 
-    case enTextList1 = "ocr-en-text-list-1.png"
-    case enTextList2 = "ocr-en-text-list-2.png"
-    case enTextList3 = "ocr-en-text-list-3.png"
+    // MARK: - English Expected Results
 
-    case enTextLetter338 = "ocr-en-text-letter-338.png"
-
-    // ocr chinese text
-    case zhText1 = "ocr-zh-text-1.png"
-    case zhText2 = "ocr-zh-text-2.png"
-    case zhTextBitcoin = "ocr-zh-text-bitcoin.png"
-    case zhTextList1 = "ocr-zh-text-list-1.png"
-
-    // ocr japanese text
-    case jaText1 = "ocr-ja-text-1.png"
-    case jaText2 = "ocr-ja-text-2.png"
-
-    // For unsupported languages, we use automatically detected language, so result is not guaranteed.
-    case plUnsupportedText1 = "ocr-pl-unsupported-text-1.png"
-
-    // MARK: Internal
-
-    /// The name of the image file for the test case.
-    var imageName: String {
-        rawValue
-    }
-
-    /// The expected text content after OCR processing.
-    var expectedText: String {
-        Self.expectedResults[self] ?? ""
-    }
-
-    // MARK: Private
-
-    /// A dictionary holding the raw test data.
-    private static let expectedResults: [OCRTestSample: String] = [
+    /// Expected results for English OCR test samples
+    static let englishExpectedResults: [OCRTestSample: String] = [
         // ocr english text
         enText1: """
         4 cars leave Haifa together and arrive in Aviv after two hours. Explain briefly how long would it take for 8 cars?
@@ -426,116 +383,37 @@ enum OCRTestSample: String, CaseIterable {
         Chadi Assi is a professor at Concordia University, holding a university research chair. His research interests are in the areas of networks, cyber security and cyber threat intelligence, and 5G technologies. He received his PhD from CUNY where his thesis was a recipient of the prestigious Mina Rees Dissertation Award. He is a fellow of the IEEE.
         """,
 
-        // ocr chinese text
-        zhText1: """
-        ？ 今天我把超市老板cpu干烧了
+        .enPoetry8: """
+        I Pass by in Silence
 
-        哈哈哈，特别有意思，没想到这种数学题真的在生活中遇到了
+        I talk to the birds as they sing for tomorrow,
+        the larks and the sparrows that spring from the corn,
+        the chaffinch and linnet that sing in the bush,
+        till the zephyr-like breezes all bid me to hush;
+        then silent I go and in fancy I steal,
+        a kiss from the lips of a name I conceal;
+        but should Imeet her I've cherished for years,
+        I pass by in silence, in fondness and tears.
 
-        儿子幼儿园要求用现金买东西，挑选-付钱-找钱过程，拍个视频上传
+        yes, I pass her in silence and say not a word,
+        and the noise of my footsteps may scarcely be heard;
+        I scarcely presume to cast on her my eye,
+        and then for a week I do nothing but sigh.
+        if Ilook on a wild flower i see her face there,
+        there it is in its beauty, all radiant and fair;
+        and should she pass by, I've nothing to say,
+        we are both of silent and have our own way.
 
-        正好路过楼下超市我寻思把这个东西做了，然后我就跟老板说，你借我20块钱，我带孩子买个东西模拟一下现金支付，然后钱还你
+        I talk to the birds, the wind and the rain,
+        my love to my dear one i never explain;
+        I talk to the flowers which are growing all wild,
+        as if one was herself and the other her child;
+        I utter sweet words in my fanciful way,
+        but if she comes by I've nothing to say;
+        to look for a kiss I would if I dare,
+        but I feel myself lost when near to my fair.
 
-        老板岁数挺大，五十多岁吧，说行，就给我拿出20块钱，我儿子挑了9块钱东西，付款20，找钱11块
-
-        然后视频录完了，我就把11块还给了老板，同时扫码支付了9元，谢过之后就要走，老板给我叫住了
-
-        老板：诶，东西你别拿走啊
-
-        我：啊？我付钱啦，扫码付的
-
-        老板：你用我的钱买的啊，我还找你11块钱啊
-
-        然后我就仔细给他解释了一下，他最后还是让我走了，但是他的眼神中还是充满了疑惑，哈哈，突然想起来那个借钱买彩电的故事了
-        """,
-
-        zhText2: """
-        盛顿公园散步，那里有一个跳蚤市场。从第五街的公共汽车上，我看到夜幕慢慢地降落到纽约城上。
-
-        现在是21点，我只吃了一-小块三明治，从瓦班莎起没有睡觉，绝对是精疲力竭了。我在房间里喝着你的威士忌，给你写信，但我不能这么早睡觉。在我的周围是纽约，在我的后面是我们的夏天。我还要下楼去走，还要梦想，直到没有知觉。
-
-        我并不悲哀。也许是晕过去了，离开我自己很远，很远，无法相信你曾经离我那么近。在出发以前，我只想对你说两件事第一，我还是希望有朝一日再见到你。我愿意，我需要见你。但是，请你记住，我决不会求你，不是出于自尊，而是因为如果你不愿意，我们的见面将毫无意义，因此我将等待。如果你希望见面，就告诉我，我不会因此认为你又爱我，甚至不会认为你希望与我同床，我们也不必一定要长时间呆在一起，只是在你愿意的情况下在一起。记住，我将永远希望你向我提出要求。
-
-        不，我不相信我们将不再见面。我失去了爱情，这是事实，是痛苦的。但是我没有失去你。不管怎么说，你满足了我，纳尔逊，你给我的一切对我是多么珍贵，你也拿不回去给我的一切。你的温情、你的友谊对我是多么宝贵，在我想到你的时候，我仍然觉得温暖、幸福，充满了感激之情。我希望这种温情、这种友谊永存，永远存在。至于我，坦率地说我感到羞耻的意外的真话是，我还像下飞机投人你那令人失望的怀抱时那样爱你，是全身心地，是以我的全部的可怜的心爱你，我不可能少一点爱，希望这不妨碍你，亲爱的，也不要把我们的通信当做苦役，是在你想写信的时候才写，但你的每封信都会使我幸福的。
-
-        是的，言词看来微不足道。我觉得你离我那么近，那么近，让我走近你。让我同过去一样，让我在自己心里永远那样。
-
-        你的西羹榔
-        """,
-
-        zhTextBitcoin: """
-        比特币：一种点对点电子货币系统
-
-        Satoshi Nakamoto
-        satoshin@gmx.com
-        www.bitcoin.org
-
-        Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf
-
-        by @shdxiang， xiaoxiang.io
-
-        Bill Zhao （billzhao430@live.com）
-
-        摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证据。
-
-        1．简介
-
-        互联网贸易已经变得几乎完全依赖金融机构作为可信任的第三方来处理电子支付。尽管对于大部分交易这种系统运行得足够好，但仍需忍受基于信任模型这个固有缺点。由于金融机构不可避免的需要仲裁纠纷，完全不可撤销的交易实际是做不到的。仲裁成本增加了交易成本，限制了最小实际交易额度从而杜绝了日常小额交易的可能性，而且由于不支持不可撤销支付，对不可撤销服务进行支付将需要更大的成本。由于存在交易被撤销的可能性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要的信息。一定比例的欺诈被认为是不可避免的。虽可通过当面使用实物货币来避免这些成本及支付的不确定性，但不存在一个无可信任方而能在通信通道上进行支付的机制。
-
-        我们需要的是一个基于密码学原理而不是信任的电子支付系统，该系统允许任何有交易意愿的双方能直接交易而不需要一个可信任的第三方。交易在计算上的不可撤销将保护卖家不被欺诈，用来保护买家的程序化合约机制也应该较容易实现。在这篇论文中，我们提出一种使用点对点分布式时间戳服务器基于时间的交易序列生成计算上的证据来解决双重支付问题的方案。只要诚实节点集体控制的 CPU 算力大于任何一个合作攻击节点群的CPU算力，这个系统就是安全的。
-        """,
-
-        zhTextList1: """
-        当您发现严重的崩溃问题后，通常推荐发布一个新的版本来修复该问题。这样做有以下几个原因：
-        1.保持版本控制：通过发布一个新版本，您可以清晰地记录修复了哪些问题。这对于用户和开发团队来说都是透明和易于管理的。
-        2. 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样，用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
-        因此，建议您在修复严重崩溃问题后发布一个新版本，而不是仅仅在当前版本中修复问题。
-        """,
-
-        // ocr japanese text
-        jaText1: """
-        いつも応援して下さっているファンの皆様、
-        そして関係者の皆様へ
-
-        この度相沢みなみはAV女優として
-        引退する事をご報告致します。
-        急なお知らせとなり申し訳ありません。
-
-        引退に至るまでの経緯を正直にお話しさせて頂きます。
-        長くなりますが目を通して頂けると幸いです。
-
-        私はある方にスカウトをされ約7年前に
-        AV業界に入りました。
-        その方は相沢みなみの生みの親でもあり、
-        兄のような存在でもあり、そして私にとっては最愛の相手でもありました。
-        相沢社長です。
-        相沢みなみの名前は彼から頂きました。
-
-        相沢社長には夢がありました。
-        それは単体女優を育てて事務所を大きくする事。私はその夢に携われたらいいなと思い軽い気持ちでAV業界に飛び込みました。
-        """,
-
-        jaText2: """
-        業界の中で盛り上がっていたアダルトオープンにてアイポケの専属女優としてデビューさせて頂きました。しかし実際は全然売れませんでした。イベントも組めないくらい。
-        そして契約は切れた。早かった。悔しかった。悔しく感じたのはやる気が出ていたから。
-
-        そのやる気を出してくれたのはファン皆様の存在です。初めて自分のファンに会えた日、
-        とても嬉しかったことは今でも忘れません。
-        そのファン達に会う為、売れなかった私達はオフ会を頻繁に開催しました。するといつからか過去の作品が売れ始め、またアイポケの専属女優として活動を再開することが出来ました。
-
-        活動は順調でした。
-
-        ですがデビュー3年目にして、
-        その相沢社長に病気が見つかりました。
-        急性白血病です。
-        正直ドラマでしか知らない病気でした。
-        こんな身近な人がなるなんて。言葉を失った。しかし社長は病気と戦い続けた。
-        """,
-
-        plUnsupportedText1: """
-        Anseio por te ver, mas, por favor, lembra-te que não vou pedir para te ver.
-
-        Não é por orgulho, sabes que não tenho orgulho diante de ti, mas porque, só quando também me quiseres ver, o nosso encontro será significativo.
+        -- John Clare
         """,
     ]
 }

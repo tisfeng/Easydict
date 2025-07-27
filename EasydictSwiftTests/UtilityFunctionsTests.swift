@@ -265,4 +265,29 @@ struct UtilityFunctionsTests {
             #expect(input.isListTypeFirstWord == false, "Failed for input: \(input)")
         }
     }
+
+    @Test("Word Components Extraction", .tags(.utilities))
+    func testWordComponentsExtraction() {
+        let testCases: [(input: String, expected: [String])] = [
+            ("hello world", ["hello", "world"]),
+            ("你好世界", ["你", "好", "世", "界"]),
+            ("包括Google翻译、DeepL翻译等", ["包", "括", "Google", "翻", "译", "DeepL", "翻", "译", "等"]),
+            ("hello你好world", ["hello", "你", "好", "world"]),
+            ("123apple香蕉!", ["123apple", "香", "蕉"]),
+            ("Mix中英文Text测试", ["Mix", "中", "英", "文", "Text", "测", "试"]),
+            ("@tisfeng #Easydict", ["@tisfeng", "#Easydict"]),
+            ("\"Hello\"!", ["\"Hello\""]),
+            ("hi-hello.world", ["hi-hello", "world"]),
+            ("   ,.!?", []),
+            ("", []),
+        ]
+
+        for (index, testCase) in testCases.enumerated() {
+            let result = testCase.input.wordComponents
+            #expect(
+                result == testCase.expected,
+                "Failed at case \(index + 1): got \(result), expected \(testCase.expected)"
+            )
+        }
+    }
 }

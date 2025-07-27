@@ -304,6 +304,8 @@ static EZLanguageManager *_instance;
 }
 
 /// Determines if words in a given language are typically separated by spaces.
+///
+/// Such as English, French, etc. where words are separated by spaces.
 - (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
     // A language needs spaces between words if it's NOT a script that omits word spaces.
     return ![self.languagesWithoutWordSpaces containsObject:language];

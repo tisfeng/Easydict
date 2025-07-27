@@ -22,7 +22,7 @@ extension String {
     /// - Returns: true if the majority of Chinese characters are Simplified, false otherwise.
     var isSimplifiedChinese: Bool {
         // 1. Extract all Chinese characters from the string.
-        let chineseChars = filter { String($0).isChineseTextByRegex }
+        let chineseChars = chineseChars
         guard !chineseChars.isEmpty else { return false }
 
         // 2. Count the number of characters that are Traditional.
@@ -40,6 +40,29 @@ extension String {
         // we classify the text as Simplified Chinese.
         let simplifiedRatio = Double(simplifiedCharCount) / Double(chineseChars.count)
         return simplifiedRatio >= 0.8
+    }
+
+    /// Check if the string is predominantly Chinese text, Chinese chars >= 50%
+    var isChinese: Bool {
+        let chineseChars = chineseChars
+        guard !chineseChars.isEmpty else { return false }
+
+        let chineseCharCount = chineseChars.count
+        let totalCharCount = count
+
+        // Check if at least 50% of characters are Chinese
+        let chineseRatio = Double(chineseCharCount) / Double(totalCharCount)
+        return chineseRatio >= 0.5
+    }
+
+    /// Chinese-only characters extracted from the string.
+    var chineseChars: String {
+        filter { String($0).isChineseTextByRegex }
+    }
+
+    /// Non-Chinese characters extracted from the string.
+    var nonChineseChars: String {
+        filter { !String($0).isChineseTextByRegex }
     }
 
     /// Check if the string is Chinese text by regex unicode range.

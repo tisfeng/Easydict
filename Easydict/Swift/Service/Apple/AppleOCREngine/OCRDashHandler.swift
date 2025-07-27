@@ -74,9 +74,18 @@ class OCRDashHandler {
             return .none
         }
 
+        // Chinese does not require special dash handling, so return none
+        let isLatinText = EZLanguageManager.shared().isLanguageWordsNeedSpace(metrics.language)
+        guard isLatinText else {
+            return .none
+        }
+
         // Check if the previous line is long enough to warrant dash handling
-        guard lineMeasurer.isLongLine(observation: pair.previous, nextObservation: pair.current)
-        else {
+        let isPreviousLineLongEnough = lineMeasurer.isLongLine(
+            observation: pair.previous,
+            nextObservation: pair.current
+        )
+        guard isPreviousLineLongEnough else {
             return .none
         }
 

@@ -38,7 +38,7 @@ enum OCRConfidenceLevel {
     // MARK: Internal
 
     /// The numerical multiplier associated with the confidence level.
-    var thresholdMultiplier: Double {
+    var multiplier: Double {
         switch self {
         case .high: return 1.5
         case .medium: return 1.0
@@ -104,13 +104,13 @@ class OCRLineAnalyzer {
 
         let characterDifference = characterDifferenceInXPosition(pair: textObservationPair)
         let baseThreshold = OCRConstants.indentationCharacterCount
-        let finalThreshold = baseThreshold * confidenceLevel.thresholdMultiplier
+        let finalThreshold = baseThreshold * confidenceLevel.multiplier
         let isIndented = characterDifference > finalThreshold
 
         if isIndented {
             let refText = referenceObservation.firstText.prefix20
             print(
-                "\nIndentation detected (confidence: \(confidenceLevel)): \(characterDifference.oneDecimalString) > \(finalThreshold.oneDecimalString) (base: \(baseThreshold) × \(confidenceLevel.thresholdMultiplier)) characters"
+                "\nIndentation detected (confidence: \(confidenceLevel)): \(characterDifference.oneDecimalString) > \(finalThreshold.oneDecimalString) (base: \(baseThreshold) × \(confidenceLevel.multiplier)) characters"
             )
             print("Current observation: \(observation)")
             print("Compared against: '\(refText)...'\n")
@@ -157,12 +157,12 @@ class OCRLineAnalyzer {
         -> Bool {
         // Use provided threshold or fall back to metrics default big line spacing threshold
         let baseThreshold = lineSpacingThreshold ?? metrics.bigLineSpacingThreshold
-        let finalThreshold = baseThreshold * confidenceLevel.thresholdMultiplier
+        let finalThreshold = baseThreshold * confidenceLevel.multiplier
         let isBigSpacing = pair.verticalGap > finalThreshold
 
         if isBigSpacing {
             print(
-                "\nBig line spacing detected (confidence: \(confidenceLevel)), verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString) (base: \(baseThreshold.threeDecimalString) × \(confidenceLevel.thresholdMultiplier))"
+                "\nBig line spacing detected (confidence: \(confidenceLevel)), verticalGap: \(pair.verticalGap.threeDecimalString) > \(finalThreshold.threeDecimalString) (base: \(baseThreshold.threeDecimalString) × \(confidenceLevel.multiplier))"
             )
             print("Current: \(pair.current)\n")
         }
@@ -194,12 +194,12 @@ class OCRLineAnalyzer {
         -> Bool {
         let differentFontSize = fontSizeDifference(pair: pair)
         let baseThreshold = fontSizeThreshold ?? self.fontSizeThreshold(metrics.language)
-        let finalThreshold = baseThreshold * confidenceLevel.thresholdMultiplier
+        let finalThreshold = baseThreshold * confidenceLevel.multiplier
         let isDifferent = differentFontSize >= finalThreshold
 
         if isDifferent {
             print(
-                "\nDifferent font detected (confidence: \(confidenceLevel)): diff = \(differentFontSize), threshold = \(finalThreshold) (base: \(baseThreshold) × \(confidenceLevel.thresholdMultiplier))"
+                "\nDifferent font detected (confidence: \(confidenceLevel)): diff = \(differentFontSize), threshold = \(finalThreshold) (base: \(baseThreshold) × \(confidenceLevel.multiplier))"
             )
             print("Pair: \(pair)\n")
         }
@@ -346,12 +346,12 @@ class OCRLineAnalyzer {
 
         // Consider positions "equal" if difference is less than indentation threshold
         let baseTolerance = OCRConstants.indentationCharacterCount * 0.9
-        let finalTolerance = baseTolerance / confidenceLevel.thresholdMultiplier
+        let finalTolerance = baseTolerance / confidenceLevel.multiplier
         let isEqual = abs(characterDifference) < finalTolerance
 
         if !isEqual {
             print(
-                "\nNot equalX text (confidence: \(confidenceLevel)): difference = \(characterDifference.oneDecimalString) >= tolerance \(finalTolerance.oneDecimalString) (base: \(baseTolerance.oneDecimalString) × \(confidenceLevel.thresholdMultiplier))"
+                "\nNot equalX text (confidence: \(confidenceLevel)): difference = \(characterDifference.oneDecimalString) >= tolerance \(finalTolerance.oneDecimalString) (base: \(baseTolerance.oneDecimalString) × \(confidenceLevel.multiplier))"
             )
             print("Current: \(pair.current)\n")
         }

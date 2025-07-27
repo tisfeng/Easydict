@@ -53,7 +53,6 @@ class OpenAIService: BaseOpenAIService {
 
 // MARK: - OpenAIModel
 
-// swiftlint:disable identifier_name
 enum OpenAIModel: String, CaseIterable {
     // Models: https://platform.openai.com/docs/models
     // Pricing https://platform.openai.com/docs/pricing
@@ -68,5 +67,3 @@ enum OpenAIModel: String, CaseIterable {
     case gpt_4o = "gpt-4o" // gpt-4o-2024-08-06  Input: $2.5 | Output: $10
     case gpt_4o_mini = "gpt-4o-mini" // gpt-4o-mini-2024-07-18  Input: $0.15 | Output: $0.6
 }
-
-// swiftlint:enable identifier_name
