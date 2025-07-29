@@ -254,7 +254,7 @@ class OCRLineAnalyzer {
     ///  - comparedObservation: Optional reference observation to compare against (defaults to `metrics.maxLineLengthObservation`).
     ///  - lessRateOfMaxLength: Optional rate of maximum line length to consider as "short" (default: 0.5).
     /// - Returns: `true` if the line is considered short, `false` otherwise.
-    func isShortLineText(
+    func isShortLine(
         observation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil,
         lessRateOfMaxLength: Double = 0.5
@@ -264,27 +264,11 @@ class OCRLineAnalyzer {
         let referenceObservation = comparedObservation ?? metrics.maxLineLengthObservation
         guard let referenceObservation = referenceObservation else { return false }
 
-        return isShortLine(
-            lineLength: observation.lineWidth,
-            maxLineLength: referenceObservation.lineWidth,
-            lessRateOfMaxLength: lessRateOfMaxLength
-        )
-    }
+        let lineWidth = observation.lineWidth
+        let comparedLineWidth = referenceObservation.lineWidth
+        let isShort = lineWidth < (comparedLineWidth * lessRateOfMaxLength)
 
-    /// Checks if a given line length is considered short relative to a maximum line length.
-    ///
-    /// - Parameters:
-    ///   - lineLength: The length of the line to check.
-    ///   - maxLineLength: The maximum reference line length.
-    ///   - lessRateOfMaxLength: The ratio below which the line is considered short.
-    /// - Returns: `true` if the line is short, `false` otherwise.
-    func isShortLine(
-        lineLength: Double,
-        maxLineLength: Double,
-        lessRateOfMaxLength: Double
-    )
-        -> Bool {
-        lineLength < maxLineLength * lessRateOfMaxLength
+        return isShort
     }
 
     /// Determines if two text observations represent a new line break.

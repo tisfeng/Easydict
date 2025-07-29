@@ -10,11 +10,19 @@ import Foundation
 
 extension String {
     /// Check if the string starts with a capital letter
-    var isFirstLetterUpperCase: Bool {
-        guard let firstCharacter = first else {
+    var isFirstCharUppercase: Bool {
+        guard let firstChar = first else {
             return false
         }
-        return firstCharacter.isUppercase && firstCharacter.isLetter
+        return firstChar.isUppercase && firstChar.isLetter
+    }
+
+    /// Check if the string starts with a lowercase letter
+    var isFirstCharLowercase: Bool {
+        guard let firstChar = first else {
+            return false
+        }
+        return firstChar.isLowercase && firstChar.isLetter
     }
 
     /// Check if text ends with end punctuation marks
@@ -38,12 +46,6 @@ extension String {
     var hasPunctuationPrefix: Bool {
         guard let firstChar = first else { return false }
         return String(firstChar).isPunctuationCharacter
-    }
-
-    /// Check if text starts with lowercase character
-    var isLowercaseFirstChar: Bool {
-        guard let firstChar = first else { return false }
-        return firstChar.isLowercase && firstChar.isLetter
     }
 
     /// Count the number of words in the text string, splitting by whitespace and punctuation
