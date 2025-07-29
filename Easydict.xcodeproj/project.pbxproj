@@ -56,6 +56,22 @@
 		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
 		0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */; };
 		033870B62E0437FE007E154C /* MaxWindowHeightPercentageOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033870B52E0437FE007E154C /* MaxWindowHeightPercentageOption.swift */; };
+		0338977A2E37809C00CCFF99 /* ocr-zh-poetry-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897792E37809C00CCFF99 /* ocr-zh-poetry-9.png */; };
+		033897862E386F8C00CCFF99 /* ocr-zh-poetry-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897852E386F8C00CCFF99 /* ocr-zh-poetry-7.png */; };
+		0338979F2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 0338979C2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-8.png */; };
+		033897A02E38B5E700CCFF99 /* ocr-zh-classical-lyrics-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897962E38B5E700CCFF99 /* ocr-zh-classical-lyrics-2.png */; };
+		033897A12E38B5E700CCFF99 /* ocr-zh-classical-lyrics-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897972E38B5E700CCFF99 /* ocr-zh-classical-lyrics-3.png */; };
+		033897A22E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */; };
+		033897A32E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png in Resources */ = {isa = PBXBuildFile; fileRef = 0338979A2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png */; };
+		033897A42E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897982E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png */; };
+		033897A52E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 0338979B2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png */; };
+		033897A62E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */; };
+		033897A82E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897952E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png */; };
+		033897AA2E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897A92E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png */; };
+		033897B22E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033897B12E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift */; };
+		033897B62E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */; };
+		033897B72E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */; };
+		033897B82E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */; };
 		033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033A8EAD2BDFE09B00030C08 /* String+Extension.swift */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
@@ -77,15 +93,15 @@
 		034227DA2E36379900325B47 /* ocr-zh-poetry-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227D42E36379900325B47 /* ocr-zh-poetry-5.png */; };
 		034227DB2E36379900325B47 /* ocr-zh-poetry-6.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227D52E36379900325B47 /* ocr-zh-poetry-6.png */; };
 		034227E02E366EA400325B47 /* ocr-zh-poetry-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227DE2E366EA400325B47 /* ocr-zh-poetry-8.png */; };
-		034227E12E366EA400325B47 /* ocr-zh-poetry-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227DC2E366EA400325B47 /* ocr-zh-poetry-7.png */; };
 		034227E32E366EB000325B47 /* ocr-en-poetry-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227E22E366EB000325B47 /* ocr-en-poetry-8.png */; };
 		034227E82E36747A00325B47 /* OCRTestSampleEnglish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E52E36747A00325B47 /* OCRTestSampleEnglish.swift */; };
 		034227E92E36747A00325B47 /* OCRTestSampleJapanese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E62E36747A00325B47 /* OCRTestSampleJapanese.swift */; };
 		034227EA2E36747A00325B47 /* OCRTestSampleChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E42E36747A00325B47 /* OCRTestSampleChinese.swift */; };
 		034227EB2E36747A00325B47 /* OCRTestSampleOther.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E72E36747A00325B47 /* OCRTestSampleOther.swift */; };
 		034227EE2E367B5100325B47 /* ocr-zh-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227ED2E367B5100325B47 /* ocr-zh-text-3.png */; };
-		034227F02E36844700325B47 /* ocr-zh-poetry-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227EF2E36844700325B47 /* ocr-zh-poetry-9.png */; };
 		034227F22E36891A00325B47 /* ocr-zh-poetry-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */; };
+		034227F42E37144200325B47 /* ocr-zh-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F32E37144200325B47 /* ocr-zh-poetry-11.png */; };
+		034227F62E37145200325B47 /* ocr-ru-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F52E37145200325B47 /* ocr-ru-poetry-11.png */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
@@ -553,6 +569,22 @@
 		0333FDA52A035D5700891515 /* NSString+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZChineseText.m"; sourceTree = "<group>"; };
 		0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceUsageStatus.swift; sourceTree = "<group>"; };
 		033870B52E0437FE007E154C /* MaxWindowHeightPercentageOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxWindowHeightPercentageOption.swift; sourceTree = "<group>"; };
+		033897792E37809C00CCFF99 /* ocr-zh-poetry-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-9.png"; sourceTree = "<group>"; };
+		033897852E386F8C00CCFF99 /* ocr-zh-poetry-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-7.png"; sourceTree = "<group>"; };
+		033897952E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-1.png"; sourceTree = "<group>"; };
+		033897962E38B5E700CCFF99 /* ocr-zh-classical-lyrics-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-2.png"; sourceTree = "<group>"; };
+		033897972E38B5E700CCFF99 /* ocr-zh-classical-lyrics-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-3.png"; sourceTree = "<group>"; };
+		033897982E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-4.png"; sourceTree = "<group>"; };
+		0338979A2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-6.png"; sourceTree = "<group>"; };
+		0338979B2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-7.png"; sourceTree = "<group>"; };
+		0338979C2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-8.png"; sourceTree = "<group>"; };
+		0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-9.png"; sourceTree = "<group>"; };
+		0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-10.png"; sourceTree = "<group>"; };
+		033897A92E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-5.png"; sourceTree = "<group>"; };
+		033897B12E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleClassicalChinese.swift; sourceTree = "<group>"; };
+		033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-1.png"; sourceTree = "<group>"; };
+		033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-2.png"; sourceTree = "<group>"; };
+		033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-3.png"; sourceTree = "<group>"; };
 		033A8EAD2BDFE09B00030C08 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		033B7132293CE2430096E2DF /* EZWebViewTranslator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewTranslator.h; sourceTree = "<group>"; };
 		033B7133293CE2430096E2DF /* EZWebViewTranslator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewTranslator.m; sourceTree = "<group>"; };
@@ -576,7 +608,6 @@
 		034227D32E36379900325B47 /* ocr-zh-poetry-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-4.png"; sourceTree = "<group>"; };
 		034227D42E36379900325B47 /* ocr-zh-poetry-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-5.png"; sourceTree = "<group>"; };
 		034227D52E36379900325B47 /* ocr-zh-poetry-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-6.png"; sourceTree = "<group>"; };
-		034227DC2E366EA400325B47 /* ocr-zh-poetry-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-7.png"; sourceTree = "<group>"; };
 		034227DE2E366EA400325B47 /* ocr-zh-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-8.png"; sourceTree = "<group>"; };
 		034227E22E366EB000325B47 /* ocr-en-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-poetry-8.png"; sourceTree = "<group>"; };
 		034227E42E36747A00325B47 /* OCRTestSampleChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleChinese.swift; sourceTree = "<group>"; };
@@ -584,8 +615,9 @@
 		034227E62E36747A00325B47 /* OCRTestSampleJapanese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleJapanese.swift; sourceTree = "<group>"; };
 		034227E72E36747A00325B47 /* OCRTestSampleOther.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleOther.swift; sourceTree = "<group>"; };
 		034227ED2E367B5100325B47 /* ocr-zh-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-3.png"; sourceTree = "<group>"; };
-		034227EF2E36844700325B47 /* ocr-zh-poetry-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-9.png"; sourceTree = "<group>"; };
 		034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-10.png"; sourceTree = "<group>"; };
+		034227F32E37144200325B47 /* ocr-zh-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-11.png"; sourceTree = "<group>"; };
+		034227F52E37145200325B47 /* ocr-ru-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ru-poetry-11.png"; sourceTree = "<group>"; };
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
@@ -1456,6 +1488,7 @@
 			children = (
 				039CC6352E1F518A0046DC16 /* OCRTestSample.swift */,
 				034227E42E36747A00325B47 /* OCRTestSampleChinese.swift */,
+				033897B12E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift */,
 				034227E52E36747A00325B47 /* OCRTestSampleEnglish.swift */,
 				034227E62E36747A00325B47 /* OCRTestSampleJapanese.swift */,
 				034227E72E36747A00325B47 /* OCRTestSampleOther.swift */,
@@ -2424,8 +2457,8 @@
 		03C3A5612E1BB4F400B59152 /* OCRTests */ = {
 			isa = PBXGroup;
 			children = (
-				03C3A5622E1BC78600B59152 /* ocr-images */,
 				034227EC2E36748300325B47 /* OCRTestSample */,
+				03C3A5622E1BC78600B59152 /* ocr-images */,
 				03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */,
 				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
 				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
@@ -2438,6 +2471,7 @@
 			isa = PBXGroup;
 			children = (
 				03D90BC52E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png */,
+				034227F52E37145200325B47 /* ocr-ru-poetry-11.png */,
 				03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */,
 				03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */,
 				037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */,
@@ -2476,10 +2510,24 @@
 				034227D32E36379900325B47 /* ocr-zh-poetry-4.png */,
 				034227D42E36379900325B47 /* ocr-zh-poetry-5.png */,
 				034227D52E36379900325B47 /* ocr-zh-poetry-6.png */,
-				034227DC2E366EA400325B47 /* ocr-zh-poetry-7.png */,
+				033897852E386F8C00CCFF99 /* ocr-zh-poetry-7.png */,
 				034227DE2E366EA400325B47 /* ocr-zh-poetry-8.png */,
-				034227EF2E36844700325B47 /* ocr-zh-poetry-9.png */,
+				033897792E37809C00CCFF99 /* ocr-zh-poetry-9.png */,
 				034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */,
+				034227F32E37144200325B47 /* ocr-zh-poetry-11.png */,
+				033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */,
+				033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */,
+				033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */,
+				033897952E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png */,
+				033897962E38B5E700CCFF99 /* ocr-zh-classical-lyrics-2.png */,
+				033897972E38B5E700CCFF99 /* ocr-zh-classical-lyrics-3.png */,
+				033897982E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png */,
+				033897A92E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png */,
+				0338979A2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png */,
+				0338979B2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png */,
+				0338979C2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-8.png */,
+				0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */,
+				0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */,
 			);
 			path = "ocr-images";
 			sourceTree = "<group>";
@@ -3269,7 +3317,11 @@
 			files = (
 				03C3A5B62E1BFE4900B59152 /* ocr-en-paper-9.png in Resources */,
 				03C3A5B72E1BFE4900B59152 /* ocr-en-paper-2.png in Resources */,
+				033897B62E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png in Resources */,
+				033897B72E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png in Resources */,
+				033897B82E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png in Resources */,
 				03C3A5B82E1BFE4900B59152 /* ocr-en-paper-14.png in Resources */,
+				033897AA2E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png in Resources */,
 				03C3A5B92E1BFE4900B59152 /* ocr-en-paper-7.png in Resources */,
 				03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */,
 				03C3A5BB2E1BFE4900B59152 /* ocr-en-text-3.png in Resources */,
@@ -3288,10 +3340,18 @@
 				03C3A5C62E1BFE4900B59152 /* ocr-ja-text-1.png in Resources */,
 				03C3A5C72E1BFE4900B59152 /* ocr-en-text-list-1.png in Resources */,
 				037A9CC92E24AC3A00668C49 /* ocr-en-text-list-3.png in Resources */,
+				0338979F2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-8.png in Resources */,
+				033897A02E38B5E700CCFF99 /* ocr-zh-classical-lyrics-2.png in Resources */,
+				033897A12E38B5E700CCFF99 /* ocr-zh-classical-lyrics-3.png in Resources */,
+				033897A22E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png in Resources */,
+				033897A32E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png in Resources */,
+				033897A42E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png in Resources */,
+				033897A52E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png in Resources */,
+				033897A62E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png in Resources */,
+				033897A82E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png in Resources */,
 				037A9CC52E24A72A00668C49 /* ocr-en-text-list-2.png in Resources */,
 				037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */,
 				03C3A5C82E1BFE4900B59152 /* ocr-en-text-letter-338.png in Resources */,
-				034227F02E36844700325B47 /* ocr-zh-poetry-9.png in Resources */,
 				03C3A5C92E1BFE4900B59152 /* ocr-en-paper-13.png in Resources */,
 				03C3A5CA2E1BFE4900B59152 /* ocr-ja-text-2.png in Resources */,
 				03C3A5CB2E1BFE4900B59152 /* ocr-en-paper-12.png in Resources */,
@@ -3300,13 +3360,16 @@
 				034227D72E36379900325B47 /* ocr-zh-poetry-3.png in Resources */,
 				034227D82E36379900325B47 /* ocr-zh-poetry-1.png in Resources */,
 				034227D92E36379900325B47 /* ocr-zh-poetry-4.png in Resources */,
+				0338977A2E37809C00CCFF99 /* ocr-zh-poetry-9.png in Resources */,
+				034227F42E37144200325B47 /* ocr-zh-poetry-11.png in Resources */,
 				034227DA2E36379900325B47 /* ocr-zh-poetry-5.png in Resources */,
 				034227DB2E36379900325B47 /* ocr-zh-poetry-6.png in Resources */,
 				03C3A5CC2E1BFE4900B59152 /* ocr-en-paper-6.png in Resources */,
 				03C3A5CD2E1BFE4900B59152 /* ocr-en-paper-5.png in Resources */,
 				03C3A5CE2E1BFE4900B59152 /* ocr-zh-text-1.png in Resources */,
+				034227F62E37145200325B47 /* ocr-ru-poetry-11.png in Resources */,
 				034227E02E366EA400325B47 /* ocr-zh-poetry-8.png in Resources */,
-				034227E12E366EA400325B47 /* ocr-zh-poetry-7.png in Resources */,
+				033897862E386F8C00CCFF99 /* ocr-zh-poetry-7.png in Resources */,
 				03D90BC62E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png in Resources */,
 				03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */,
 				03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */,
@@ -3473,6 +3536,7 @@
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
 				039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
+				033897B22E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift in Sources */,
 				034227E82E36747A00325B47 /* OCRTestSampleEnglish.swift in Sources */,
 				034227E92E36747A00325B47 /* OCRTestSampleJapanese.swift in Sources */,
 				034227EA2E36747A00325B47 /* OCRTestSampleChinese.swift in Sources */,

@@ -18,8 +18,8 @@ extension OCRTestSample {
         .zhText1, .zhText2, .zhText3,
         .zhTextBitcoin,
         .zhTextList1,
-        .zhPoetry1, .zhPoetry2, .zhPoetry3, .zhPoetry4, .zhPoetry5,
-        .zhPoetry6, .zhPoetry7, .zhPoetry8, .zhPoetry9, .zhPoetry10,
+        .zhPoetry1, .zhPoetry2, .zhPoetry3, .zhPoetry4, .zhPoetry5, .zhPoetry6, .zhPoetry7, .zhPoetry8,
+        .zhPoetry9, .zhPoetry10, .zhPoetry11,
     ]
 
     // MARK: - Chinese Expected Results
@@ -212,6 +212,7 @@ extension OCRTestSample {
         这是一片落叶飘零的树林，
         每一片叶子标记着一种欢喜，
         现在都枯黄地堆积在内心。
+
         有一种欢喜是青春的爱情，
         那是遥远天边的灿烂的流星，
         有的不知去向，永远消逝了，
@@ -221,10 +222,12 @@ extension OCRTestSample {
         茂盛的花不知道还有秋季，
         社会的格局代替了血的沸腾，
         生活的冷风把热情铸为实际。
+
         另一种欢喜是迷人的理想，
         它使我在荆棘之途走得够远，
         为理想而痛苦并不可怕，
         可怕的是看它终于成笑谈。
+
         只有痛苦还在，它是日常生活
         每天在惩罚自己过去的傲慢，
         那绚烂的天空都受到谴责，
@@ -234,6 +237,8 @@ extension OCRTestSample {
         我知道它以我的苦汁为营养，
         它的碧绿是对我无情的嘲弄，
         我诅咒它每一片叶的滋长。
+
+        1976年3月
         """,
 
         zhPoetry8: """
@@ -272,21 +277,21 @@ extension OCRTestSample {
         .zhPoetry9: """
         《与你同行》
 
-        我一直想要和你一起走上那条美丽的山路
+        我一直想要和你一起 走上那条美丽的山路
         有柔风有白云有你在我身旁
         倾听我快乐和感激的心
 
-        我的要求其实很微小只要有过那样的一个夏日
+        我的要求其实很微小 只要有过那样的一个夏日
         只要走过那样的一次
 
-        而朝我迎来的日复以夜劫都是一些不被料到的安排
+        而朝我迎来的日复以夜却都是一些不被料到的安排
         还有那麽多琐碎的错误将我们慢慢地慢慢地隔开
         让今夜的我终於明白
 
-        所有的悲欢都已成灰烬任世间哪一条路我都不能
+        所有的悲欢都已成灰烬 任世间哪一条路我都不能
         与你同行
 
-        席慕容
+        -席慕容
         """,
 
         zhPoetry10: """
@@ -313,6 +318,23 @@ extension OCRTestSample {
         我是有过蓝色的血，星球底世系。
 
         --穆旦
+        """,
+
+        zhPoetry11: """
+        《一只孤独的船》
+
+        一只船孤独地航行在海上，
+        它既不寻求幸福，
+        也不逃避幸福，
+        它只是向前航行，
+        底下是沉静碧蓝的大海，
+        而头顶是金色的太阳。
+        将要直面的，
+        与已成过往的，
+        较之深埋于它内心的
+        皆为微沫。
+
+        莱蒙托夫（柴静译）
         """,
     ]
 }

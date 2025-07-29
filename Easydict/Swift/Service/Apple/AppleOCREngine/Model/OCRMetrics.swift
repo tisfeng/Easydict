@@ -115,6 +115,15 @@ class OCRMetrics {
     /// The overall confidence score of the OCR results, averaged from all observations.
     private(set) var confidence: Float = 0.0
 
+    var genre: Genre = .plain {
+        didSet {
+            // If the genre is classical poetry, set the isPoetry flag to true.
+            if genre == .poetry {
+                isPoetry = true
+            }
+        }
+    }
+
     /// The average number of characters per line.
     var charCountPerLine: Double {
         totalCharCount.double / textObservations.count.double
@@ -126,8 +135,11 @@ class OCRMetrics {
     }
 
     /// A calculated threshold for what is considered a "big" line spacing, useful for detecting paragraph breaks.
+    ///
+    /// Maybe text has a big average line spacing, but we want to detect paragraph breaks
+    /// that are larger than the average line spacing.
     var bigLineSpacingThreshold: Double {
-        min(averageLineHeight, minLineHeight * 1.1)
+        max(min(averageLineHeight, minLineHeight * 1.1), averageLineSpacing)
     }
 
     // MARK: - Metrics Calculation
@@ -241,7 +253,6 @@ class OCRMetrics {
         averageLineSpacing = 0
 
         maxLineLengthObservation = nil
-
         maxXLineTextObservation = nil
         minXLineTextObservation = nil
         maxCharacterCountLineTextObservation = nil
@@ -251,6 +262,8 @@ class OCRMetrics {
         punctuationMarkCount = 0
         averageCharacterWidth = 0
         confidence = 0
+
+        genre = .plain
     }
 
     /// Performs a first-pass analysis on an observation to collect baseline metrics like line height and position.
@@ -290,9 +303,18 @@ class OCRMetrics {
 
         // Calculate character and punctuation metrics
         let text = textObservation.firstText
-        totalCharCount += text.count
-        let linePunctuationCount = text.filter { $0.isPunctuation }.count
+
+        // Count ellipses ("...") and standalone punctuation marks properly
+        let ellipsisRegex = Regex.ellipsis
+        let ellipsisCount = text.matches(of: ellipsisRegex).count
+        let remainingText = text.replacing(ellipsisRegex, with: "")
+
+        let otherPunctuationsCount = remainingText.filter { $0.isPunctuation }.count
+        let linePunctuationCount = ellipsisCount + otherPunctuationsCount
+
         punctuationMarkCount += linePunctuationCount
+
+        totalCharCount += text.count - linePunctuationCount
 
         // Calculate index for gap logging (only if not the first observation)
         guard let index = textObservations.firstIndex(of: textObservation), index > 0 else {
@@ -322,8 +344,13 @@ class OCRMetrics {
 
         // Only count spacing between observations that are NOT on the same line
         // and have reasonable positive spacing (exclude paragraph breaks)
-        if verticalGap > 0, verticalGap < averageLineHeight * OCRConstants.paragraphLineHeightRatio {
-            totalLineSpacing += verticalGap
+        if verticalGap > 0 {
+            var lineSpacing = verticalGap
+            let heightRatio = OCRConstants.paragraphLineHeightRatio
+            if verticalGap / averageLineHeight > heightRatio {
+                lineSpacing = averageLineHeight * heightRatio
+            }
+            totalLineSpacing += lineSpacing
             lineSpacingCount += 1
         }
 

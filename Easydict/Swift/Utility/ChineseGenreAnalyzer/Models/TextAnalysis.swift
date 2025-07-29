@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - ChineseAnalysis
+// MARK: - TextAnalysis
 
 /// Analysis result for Chinese text detection
 public class TextAnalysis: Codable {
@@ -126,30 +126,34 @@ public class TextAnalysis: Codable {
         let parallelRatio: Double
     }
 
-    // MARK: - Genre
-
-    /// The type of classical text
-    /// - `prose`: Classical prose 古文
-    /// - `poetry`: Classical poetry 古诗
-    /// - `lyric`: Classical lyric 古词
-    /// - `plain`: Plain text 普通文本
-    enum Genre: String, Codable {
-        case prose
-        case poetry
-        case lyric
-        case plain
-
-        // MARK: Internal
-
-        var isClassical: Bool {
-            self != .plain
-        }
-    }
-
     let textInfo: TextInfo
     let metadata: Metadata?
     let phraseInfo: PhraseInfo
     let punctInfo: PunctuationInfo
     let lingInfo: LinguisticInfo
     var genre: Genre = .plain
+}
+
+// MARK: - Genre
+
+/// The type of classical text
+/// - `prose`: Classical prose 古文
+/// - `poetry`: Classical poetry 古诗
+/// - `lyrics`: Classical lyrics 古词
+/// - `plain`: Plain text 普通文本
+enum Genre: String, Codable {
+    case prose
+    case poetry
+    case lyrics
+    case plain
+
+    // MARK: Internal
+
+    var isClassical: Bool {
+        self != .plain
+    }
+
+    var isPoetryLyric: Bool {
+        self == .poetry || self == .lyrics
+    }
 }

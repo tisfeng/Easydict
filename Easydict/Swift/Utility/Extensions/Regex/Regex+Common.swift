@@ -343,10 +343,15 @@ extension Regex where Output == Substring {
     /// - `...` ✓
     /// - `待续...` (contains ellipsis) ✓
     ///
-    /// **Original regex:** `\.\.\.`
+    /// **Original regex:** `\.{3}|…`
     static var ellipsis: Self {
         Regex {
-            "..."
+            ChoiceOf {
+                // Matches three consecutive dots
+                "..."
+                // Matches ellipsis character (U+2026) …
+                "\u{2026}"
+            }
         }
     }
 

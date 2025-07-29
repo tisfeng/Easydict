@@ -36,7 +36,7 @@ class MetadataExtractor {
             switch self {
             case .dynasty: return 1 ... 4
             case .author: return 2 ... 4
-            case .title: return 1 ... 20
+            case .title: return 1 ... 30
             }
         }
     }
@@ -194,6 +194,8 @@ class MetadataExtractor {
             "·\(dynasty)·",
             "\(dynasty)·",
             "·\(dynasty)",
+            "•\(dynasty)",
+            "\(dynasty)•",
             "\(dynasty)代·",
             "·\(dynasty)代",
         ]

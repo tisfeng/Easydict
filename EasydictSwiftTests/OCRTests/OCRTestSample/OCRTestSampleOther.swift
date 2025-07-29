@@ -16,6 +16,7 @@ extension OCRTestSample {
 
     static let otherLanguageCases: [OCRTestSample] = [
         .plUnsupportedText1,
+        .ruPoetry11,
     ]
 
     // MARK: - Other Language Expected Results
@@ -27,6 +28,23 @@ extension OCRTestSample {
         Anseio por te ver, mas, por favor, lembra-te que não vou pedir para te ver.
 
         Não é por orgulho, sabes que não tenho orgulho diante de ti, mas porque, só quando também me quiseres ver, o nosso encontro será significativo.
+        """,
+
+        ruPoetry11: """
+        Парус
+
+        Белеет парус одинокий
+        В тумане моря голубом! ...
+        Что ищет он в стране далекой?
+        Что кинул он в краю родном? ...
+        Играют волны - ветер свищет,
+        И мачта гнется и скрыпит...
+        Увы, - он счастия не ищет
+        И не от счастия бежит!
+        Под ним струя светлей лазури,
+        Над ним луч солнца золотой...
+        А он, мятежный, просит бури,
+        Как будто в бурях есть покой!
         """,
     ]
 }

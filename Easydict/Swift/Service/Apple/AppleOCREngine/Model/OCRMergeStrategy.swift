@@ -151,12 +151,14 @@ enum OCRConstants {
 
     /// Default is 1.8 characters for indentation, should be less than 2 characters
     static let indentationCharacterCount: Double = 1.8
-    static let paragraphLineHeightRatio: Double = 1.5
+
+    /// Default is 2.0 lines for paragraph break
+    static let paragraphLineHeightRatio: Double = 1.2
 
     /// Default is 12.0, for Chinese poetry
     static let poetryCharacterCountOfLine = 12.0
 
-    /// Default is 7.0, for English poetry
+    /// Default is 7.0, for English poetry. 《I Pass by in Silence》 is 9.2 characters per line,
     static let poetryWordCountOfLine = 7.0
 
     /// Increased from 3.0 to 3.5 for better Chinese text detection

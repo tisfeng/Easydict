@@ -312,7 +312,9 @@ class ChineseGenreAnalyzer {
         // At least two lines are needed to compare for parallel structure
         if contentLines.count >= 2 {
             for i in 0 ..< contentLines.count - 1 {
-                let similarity = compareStructuralPatterns(contentLines[i], contentLines[i + 1])
+                let line1 = contentLines[i]
+                let line2 = contentLines[i + 1]
+                let similarity = line1.structuralSimilarityScore(to: line2)
                 if similarity >= 0.9 {
                     parallelCount += 1
                 }
@@ -348,7 +350,7 @@ class ChineseGenreAnalyzer {
     // MARK: - Genre Determination
 
     /// Determine the genre of the text based on analysis results
-    private func determineGenre(for analysis: TextAnalysis) -> TextAnalysis.Genre {
+    private func determineGenre(for analysis: TextAnalysis) -> Genre {
         if analysis.lingInfo.hasHighModernRatio() {
             return .plain
         }
@@ -356,7 +358,7 @@ class ChineseGenreAnalyzer {
             return .poetry
         }
         if isClassicalLyrics(analysis) {
-            return .lyric
+            return .lyrics
         }
         if isClassicalProse(analysis) {
             return .prose

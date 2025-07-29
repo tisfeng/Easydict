@@ -33,7 +33,7 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-        //        await testOCR(sample: .zhText1, language: .auto)
+//        await testOCR(sample: .zhClassicalPoetry3, language: .auto)
     }
 
     // MARK: - All OCR Tests
@@ -64,6 +64,15 @@ struct OCRImageTests {
     func testChineseOCR() async throws {
         for sample in OCRTestSample.chineseCases {
             await testOCR(sample: sample, language: .simplifiedChinese)
+        }
+    }
+
+    // MARK: - Classical Chinese Text Tests
+
+    @Test("Classical Chinese OCR Test", .tags(.ocr))
+    func testClassicalChineseOCR() async throws {
+        for sample in OCRTestSample.classicalChineseCases {
+            await testOCR(sample: sample, language: .classicalChinese)
         }
     }
 

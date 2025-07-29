@@ -53,6 +53,7 @@ enum OCRTestSample: String, CaseIterable {
     case zhTextBitcoin = "ocr-zh-text-bitcoin.png"
     case zhTextList1 = "ocr-zh-text-list-1.png"
 
+    // Chinese modern poetry
     case zhPoetry1 = "ocr-zh-poetry-1.png"
     case zhPoetry2 = "ocr-zh-poetry-2.png"
     case zhPoetry3 = "ocr-zh-poetry-3.png"
@@ -63,6 +64,24 @@ enum OCRTestSample: String, CaseIterable {
     case zhPoetry8 = "ocr-zh-poetry-8.png"
     case zhPoetry9 = "ocr-zh-poetry-9.png"
     case zhPoetry10 = "ocr-zh-poetry-10.png"
+    case zhPoetry11 = "ocr-zh-poetry-11.png"
+
+    // Classical Chinese poetry
+    case zhClassicalPoetry1 = "ocr-zh-classical-poetry-1.png"
+    case zhClassicalPoetry2 = "ocr-zh-classical-poetry-2.png"
+    case zhClassicalPoetry3 = "ocr-zh-classical-poetry-3.png"
+
+    // Classical Chinese lyrics
+    case zhClassicalLyrics1 = "ocr-zh-classical-lyrics-1.png"
+    case zhClassicalLyrics2 = "ocr-zh-classical-lyrics-2.png"
+    case zhClassicalLyrics3 = "ocr-zh-classical-lyrics-3.png"
+    case zhClassicalLyrics4 = "ocr-zh-classical-lyrics-4.png"
+    case zhClassicalLyrics5 = "ocr-zh-classical-lyrics-5.png"
+    case zhClassicalLyrics6 = "ocr-zh-classical-lyrics-6.png"
+    case zhClassicalLyrics7 = "ocr-zh-classical-lyrics-7.png"
+    case zhClassicalLyrics8 = "ocr-zh-classical-lyrics-8.png"
+    case zhClassicalLyrics9 = "ocr-zh-classical-lyrics-9.png"
+    case zhClassicalLyrics10 = "ocr-zh-classical-lyrics-10.png"
 
     // MARK: - Japanese Text Cases
 
@@ -71,6 +90,10 @@ enum OCRTestSample: String, CaseIterable {
     case jaText2 = "ocr-ja-text-2.png"
 
     // MARK: - Other Language Cases
+
+    case ruPoetry11 = "ocr-ru-poetry-11.png" // Russian poetry
+
+    // MARK: Unsupported Languages
 
     // For unsupported languages, we use automatically detected language, so result is not guaranteed.
     case plUnsupportedText1 = "ocr-pl-unsupported-text-1.png"
@@ -86,6 +109,7 @@ enum OCRTestSample: String, CaseIterable {
         // Merge all language-specific expected results
         results.merge(englishExpectedResults) { _, new in new }
         results.merge(chineseExpectedResults) { _, new in new }
+        results.merge(classicalChineseExpectedResults) { _, new in new }
         results.merge(japaneseExpectedResults) { _, new in new }
         results.merge(otherLanguageExpectedResults) { _, new in new }
 

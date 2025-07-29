@@ -73,6 +73,7 @@ extension String {
             "^[A-G]\\)", // A) B) C) etc.
             "^[ivx]+\\.", // i. ii. iii. iv. v. etc. (Roman numerals)
             "^[IVX]+\\.", // I. II. III. IV. V. etc. (Roman numerals)
+
             // Require whitespace after marker to treat as list
             "^•\\s+", // Bullet point
             "^-\\s+", // Dash
@@ -87,6 +88,8 @@ extension String {
             "^◦\\s+", // Small circle bullet
             "^◾\\s+", // Black medium small square
             "^◽\\s+", // White medium small square
+
+            "^\\[\\d+\\]\\s+", // [1] [2] [3] with space after
         ]
 
         for pattern in patterns {

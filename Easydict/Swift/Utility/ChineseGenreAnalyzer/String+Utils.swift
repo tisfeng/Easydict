@@ -128,3 +128,36 @@ extension String {
         return phrases
     }
 }
+
+extension String {
+    /// Calculates a similarity score between the structural patterns of two lines of text.
+    ///
+    /// This includes both punctuation and non-punctuation characters. The score is computed
+    /// based on character-by-character comparison, where:
+    /// - Matching non-punctuation characters count as a match
+    /// - Identical punctuation characters in the same positions also count as a match
+    ///
+    /// - Parameter text: The text line to compare against
+    /// - Returns: A similarity score ranging from 0.0 to 1.0, where 1.0 indicates identical structure
+    func structuralSimilarityScore(to text: String) -> Double {
+        let minCount = min(count, text.count)
+        guard minCount > 0 else { return 0 }
+
+        var matchCount = 0
+        let pairs = zip(prefix(minCount), text.prefix(minCount))
+
+        for (char1, char2) in pairs {
+            // If both characters are not punctuation, count as a match
+            if !char1.isPunctuation, !char2.isPunctuation {
+                matchCount += 1
+            } else if char1.isPunctuation, char2.isPunctuation, char1 == char2 {
+                // If both characters are punctuation, and they are the same, count as a match
+                matchCount += 1
+            }
+        }
+
+        let maxCount = max(count, text.count)
+
+        return Double(matchCount) / Double(maxCount)
+    }
+}

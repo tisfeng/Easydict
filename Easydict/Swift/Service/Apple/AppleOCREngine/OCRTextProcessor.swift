@@ -50,9 +50,12 @@ public class OCRTextProcessor {
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
         ocrResult.raw = recognizedTexts
 
+        var genre = Genre.plain
+
         // Initialize language detection if not already set
         if ocrResult.from == .auto {
             ocrResult.from = languageDetector.detectLanguage(text: ocrResult.mergedText)
+            genre = languageDetector.getTextAnalysis()?.genre ?? .plain
         }
 
         // If intelligent joining is not enabled, return simple result
@@ -70,6 +73,12 @@ public class OCRTextProcessor {
             observations: sortedObservations
         )
         ocrResult.confidence = CGFloat(metrics.confidence)
+
+        // If text language is classical Chinese, update metrics genre.
+        // Later, we can use this to determine if the text is poetry.
+        if ocrResult.from == .classicalChinese {
+            metrics.genre = genre
+        }
 
         let mergedText = textMerger.performIntelligentTextMerging(sortedObservations)
 

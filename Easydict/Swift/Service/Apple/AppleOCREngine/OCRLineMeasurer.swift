@@ -45,13 +45,13 @@ class OCRLineMeasurer {
     ///   - observation: The text observation to analyze for line length.
     ///   - nextObservation: The next text observation for context-aware analysis (optional).
     ///   - comparedObservation: The reference observation to compare against for remaining space (optional).
-    ///   - confidenceLevel: Detection confidence level affecting threshold strictness (default: `.medium`).
+    ///   - confidence: Detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if the line is considered "long" (little space remaining), `false` if "short".
     func isLongLine(
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation? = nil,
         comparedObservation: VNRecognizedTextObservation? = nil,
-        confidenceLevel: OCRConfidenceLevel = .medium
+        confidence: OCRConfidenceLevel = .medium
     )
         -> Bool {
         let baseThreshold = smartMinimumCharactersThreshold(
@@ -59,7 +59,7 @@ class OCRLineMeasurer {
             nextObservation: nextObservation
         )
 
-        let finalThreshold = baseThreshold / confidenceLevel.multiplier
+        let finalThreshold = baseThreshold / confidence.multiplier
 
         let actualRemainingCharacters = charactersRemainingToReferenceLine(
             observation: observation,
@@ -74,7 +74,7 @@ class OCRLineMeasurer {
 
         if !isLongLine {
             print(
-                "Short line detected (confidence: \(confidenceLevel)): '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", finalThreshold)) (base: \(String(format: "%.1f", baseThreshold)) × \(confidenceLevel.multiplier)), Ref: '\(refText)...'"
+                "Short line detected (confidence: \(confidence)): '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", finalThreshold)) (base: \(String(format: "%.1f", baseThreshold)) × \(confidence.multiplier)), Ref: '\(refText)...'"
             )
         }
 

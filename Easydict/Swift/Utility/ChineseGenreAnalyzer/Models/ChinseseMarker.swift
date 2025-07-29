@@ -20,9 +20,9 @@ enum ChinseseMarker {
         // Common line separators
         static let lineSeparators = ["\n", "。", "，", "？", "！", "；", "、"]
 
-        /// Meta characters for titles and authors
+        /// Meta characters for titles, authors and dynasties.
         static let metaPunctuationCharacters = [
-            "《", "》", "—", "·", "-", "〔", "〕", "#",
+            "《", "》", "—", "•", "·", "-", "〔", "〕", "#",
         ]
 
         static let bracketPairs = [

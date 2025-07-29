@@ -281,13 +281,15 @@ extension OCRTestSample {
         """,
 
         enPaper10: """
-        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37 GMT"; Load-Metric: 25%; SCP-FQDN: scpl.example.com
+        3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37
+        GMT"; Load-Metric: 25%; SCP-FQDN: scpl.example.com
 
         Fig. 3: LCI for SCP [6].
 
         2) 3gpp-Sbi-Oci: A NFp/NFc uses the 3gpp-Sbi-Oci custom header to signal its Overload Control Information (OCI) to its peer. Through this header, the overloaded NF instructs its peer to throttle the service/notification requests, in an attempt to reduce its signalling load [6]. Figure 4 depicts a 3gpp-SbiOci header sent by a NFp, identified by its instance ID (1. e. , NF-Instance), asking a NFc to throttle 50% of its requests as determined in Overload-Reduction-Metric. Note that an Overload-Reduction-Metric of "0" indicates that the sender is not overloaded. The 3gpp-Sbi-Oci also includes the Timestamp indicating the time at which it was generated and its validity period identified by Period-of-Validity [6].
 
-        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37 GMT"; Period-of-Validity: 75s; Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
+        3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37
+        GMT"; Period-of-Validity: 75s; Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
 
         Fig. 4: OCI for a NF Instance [6].
 
