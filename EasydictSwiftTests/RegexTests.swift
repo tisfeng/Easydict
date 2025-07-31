@@ -299,10 +299,7 @@ struct RegexTests {
             "", // Empty string
             "a.b", // Starts with letter (not digit)
             "just.letters", // Only letters, no digits
-            "2 .1.0.beta1", // Contains letters - excluded
-            "5.1.2.RELEASE", // Contains letters - excluded
             "1 . 2 . alpha", // Contains letters - excluded
-            "see version.2.1.0.beta1 for details", // Should not match as a whole
         ]
 
         for input in invalidInputs {

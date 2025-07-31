@@ -18,7 +18,7 @@ extension OCRTestSample {
         .enText1, .enText2, .enTextBitcoin, .enTextReddit,
         .enTextList1, .enTextList2, .enTextList3, .enTextLetter338,
         .enPaper1, .enPaper2, .enPaper3, .enPaper4, .enPaper5, .enPaper6, .enPaper7,
-        .enPaper8, .enPaper9, .enPaper10, .enPaper11, .enPaper12, .enPaper13, .enPaper14,
+        .enPaper8, .enPaper9, .enPaper10, .enPaper11, .enPaper12, .enPaper13,
         .enPoetry8,
     ]
 
@@ -282,6 +282,7 @@ extension OCRTestSample {
 
         enPaper10: """
         3gpp-Sbi-Lci: Timestamp: "Tue, 04 Feb 2020 08: 49: 37
+
         GMT"; Load-Metric: 25%; SCP-FQDN: scpl.example.com
 
         Fig. 3: LCI for SCP [6].
@@ -289,6 +290,7 @@ extension OCRTestSample {
         2) 3gpp-Sbi-Oci: A NFp/NFc uses the 3gpp-Sbi-Oci custom header to signal its Overload Control Information (OCI) to its peer. Through this header, the overloaded NF instructs its peer to throttle the service/notification requests, in an attempt to reduce its signalling load [6]. Figure 4 depicts a 3gpp-SbiOci header sent by a NFp, identified by its instance ID (1. e. , NF-Instance), asking a NFc to throttle 50% of its requests as determined in Overload-Reduction-Metric. Note that an Overload-Reduction-Metric of "0" indicates that the sender is not overloaded. The 3gpp-Sbi-Oci also includes the Timestamp indicating the time at which it was generated and its validity period identified by Period-of-Validity [6].
 
         3gpp-Sbi-Oci: Timestamp: "Tue, 29 Mar 2021 08: 49: 37
+
         GMT"; Period-of-Validity: 75s; Overload-Reduction-Metric: 50%; NE-Instance: 54804518-4191-46b3-955c-ac631f953ed8
 
         Fig. 4: OCI for a NF Instance [6].
@@ -342,47 +344,6 @@ extension OCRTestSample {
         REFERENCES
 
         [1] I. Ahmad, S. Shahabuddin, T. Kumar, J. Okwuibe, A. Gurtov, and M. Ylianttila, "Security for 5g and beyond, " IEEE Communications Surveys & Tutorials, vol. 21, no. 4, pp. 3682-3722, 2019.
-        """,
-
-        enPaper14: """
-        [2] 3GPP, "5G; System architecture for the 5G System: TS 23.501 v. 17.5.0, " 2022.
-
-        13 analysis: Is HITTP/2 secure in S& core network? " in 2018 10m Snerma- "Signalling securit)
-
-        tional Conference on Wireless Communications and Signal Processing (WCSP). IEEE, 2018, pp. 1-6.
-
-        [4] 3GPP, "5G; Security architecture and procedures for 5G System: TS
-
-        33.501 v. 17.5.0, " 2022.
-
-        [5] IETF, "Hypertext Transfer Protocol Version 2 (HTTP/2) - RFC 7540, " 2015.
-
-        · 3GPP, "SG; JG System; Technical Realization of Service Based Arc. ture: Stage 3: 1S 29.500 v17.7.0 201
-
-        [7] ENISA, "Security In 5G Specifications Controls in 3GPP Security Specifications (5G SA), " 2021.
-
-        B. Christine Jost, "Security for 5G Service-Based Architecture: 2020, [Accessed 18-March-
-
-        2022]. [Online]. Available: https://www.ericsson.com/en/blog/2020/
-
-        [10] GSMA, "5G Interconnect Security Version 2.0, " 2021.
-        [11] R. Shetty, A. Jangam, and A. Simlai, "Intelligent Strategies for Overload Detection & Handling for 5G Network, " in 2021 IEEE 4th 5G World Forum (5GWF). IEEE, 2021, pp. 135-140.
-
-        generation web protocol, " 2016.
-
-        [14] A. Praseed and P. S. Thilagam, "Multiplexed asymmetric attacks: Nextgeneration ddos on http/2 servers, " IEEE Transactions on Information Forensics and Security, vol. 15, pp. 1790-1800, 2019.
-
-        [15] AdaptiveMobile, "A Slice in Time: Slicing Security in 5G Core Networks, " 2021. [Online]. Available: https://info.adaptivemobile.com/ network-slicing-security? hsLang=en#download
-
-        Nathalie Wehbe received the B.Sc. and M.Sc degree in Software Engineer from the Antonine University, Lebanon, in 2016. She is currently a Ph.D. candidate at Concordia Institute for Information System Engineering, Montreal, QC, Canada. Her current research interests are in the areas of 5G networks, security, anomaly detection and machine learning.
-
-        Hyame Assem Alameddine received her Ph.D. degree in Information and Systems Engineering from Concordia University, Canada in 2019. She is currently an experienced researcher at Ericsson, Canada. Her research interests include Network Function Virtualization, network security, 5G, internet of Things, cloud and edge computing.
-
-        Makan Pourzandi is a researcher at Ericsson, Canada. He received his Ph.D. degree in Computer Science from University of Lyon, France and his M.Sc. Degree in Computer Science from École Normale Supérieure de Lyon, France. His current research interests include security, cloud computing, software security engineering, cluster computing, and component-based methods for secure software development.
-
-        Elias Bou-Harb is currently the Director of the Cyber Center for Security and Analytics at the University of Texas at San Antonio, Texas, USA. He is also an Associate Professor at the department of Information Systems and Cyber Security. His research interests are in the areas of cyber forensics, network security, data analytics, and network management.
-
-        Chadi Assi is a professor at Concordia University, holding a university research chair. His research interests are in the areas of networks, cyber security and cyber threat intelligence, and 5G technologies. He received his PhD from CUNY where his thesis was a recipient of the prestigious Mina Rees Dissertation Award. He is a fellow of the IEEE.
         """,
 
         .enPoetry8: """

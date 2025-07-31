@@ -206,8 +206,8 @@ class OCRTextNormalizer {
             ranges.append(match.range)
         }
 
-        // Protect ellipsis
-        for match in text.matches(of: Regex.ellipsis) {
+        // Protect ellipsis three consecutive dots only
+        for match in text.matches(of: Regex.threeDots) {
             ranges.append(match.range)
         }
 

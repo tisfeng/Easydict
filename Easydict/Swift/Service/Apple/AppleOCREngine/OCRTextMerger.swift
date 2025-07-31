@@ -90,8 +90,8 @@ class OCRTextMerger {
             let pair = OCRTextObservationPair(current: current, previous: previous)
 
             print("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
-            print("  Previous: \(previous.firstText.prefix20)...")
-            print("  Current:  \(current.firstText.prefix20)...")
+            print("  Previous: \(previous.firstText.prefix20)")
+            print("  Current:  \(current.firstText.prefix20)")
 
             // Perform a comprehensive analysis to determine the merge strategy.
             let mergeStrategy = determineMergeStrategy(
@@ -203,45 +203,40 @@ class OCRTextMerger {
             return dashStrategy
         }
 
+        // 3. Priority: Detect font size changes, which often indicate structural breaks.
+        if lineAnalyzer.isDifferentFontSize(pair: pair) {
+            print("    🔤 Font size change detected")
+            return .newParagraph
+        }
+
+        // The first observation in the current paragraph, used to determine indentation and alignment.
+        let firstObservation = currentParagraphObservations.first!
+        let isFirstHasIndentation = lineAnalyzer.hasIndentation(
+            observation: firstObservation
+        )
+
         let current = pair.current
         let previous = pair.previous
 
         let currentText = current.firstText
         let previousText = previous.firstText
 
-        // 3. Priority: Detect font size changes, which often indicate structural breaks.
-        if lineAnalyzer.isDifferentFontSize(pair: pair) {
-            print("    🔤 Font size change detected")
-
-            // If text is too short, font size may be inaccurate
-            // Punctuation marks may be also detected as different font size, so remove them.
-            let removedPunctuationText = currentText.removingPunctuationCharacters()
-            if removedPunctuationText.count >= 3 {
-                print("    🔤 Font size change and text length is sufficient - new paragraph")
-                return .newParagraph
-            }
-        }
-
         let hasBigIndentation = lineAnalyzer.hasIndentation(
             observation: current,
             comparedObservation: previous,
-            confidence: .custom(3.0)
+            confidence: .custom(2.0)
         )
 
-        let comparedObservation = getComparedObservation(
-            pair: pair,
-            maxXObservation: maxXObservation,
-            currentParagraphObservations: currentParagraphObservations
-        )
+        let comparedObservation = isFirstHasIndentation ? maxXObservation : metrics.maxXObservation
 
+        /// Relative long, means previous line is long text compared to comparedObservation
         let isPreviousLongText = lineAnalyzer.isLongText(
             observation: previous,
             nextObservation: current,
             comparedObservation: comparedObservation
         )
 
-        // 4. Priority: Check for big indentation.
-        // This is often used to indicate new paragraphs or sections.
+        // 4. Priority: Check for big indentation, used to indicate new paragraphs.
         if hasBigIndentation {
             print("    📏 Big indentation detected")
             if !isPreviousLongText {
@@ -269,6 +264,11 @@ class OCRTextMerger {
                 print("    📏 Previous line is not long text - new paragraph")
                 return .newParagraph
             }
+
+            if previousText.hasEndPunctuationSuffix, !currentText.isFirstCharLowercase {
+                print("    📏 Previous line ends with punctuation and current starts with uppercase - new paragraph")
+                return .newParagraph
+            }
         }
 
         // 6. Priority: For other poetry cases, just line breaks.
@@ -280,8 +280,10 @@ class OCRTextMerger {
         let isCurrentList = currentText.isListTypeFirstWord
         let isPreviousList = previousText.isListTypeFirstWord
 
-        let firstObservation = currentParagraphObservations.first!
-        let previousHasIndentation = lineAnalyzer.hasIndentation(observation: previous)
+        let isPrevHasIndentation = (previous == firstObservation)
+            ? isFirstHasIndentation
+            : lineAnalyzer.hasIndentation(observation: previous)
+
         let isEqualPairX = lineAnalyzer.isEqualX(pair: pair)
         let hasBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair)
 
@@ -294,14 +296,10 @@ class OCRTextMerger {
         if isCurrentList {
             print("    📋 List pattern detected")
 
-            // Check if the two list items have the same X coordinate.
-            let isEqualFirstLineX = lineAnalyzer.isEqualX(
-                pair:
-                .init(
-                    current: current,
-                    previous: firstObservation
-                )
-            )
+            let firstPair = OCRTextObservationPair(current: current, previous: firstObservation)
+
+            /// If current list line X is equal to first observation X
+            let isEqualFirstLineX = lineAnalyzer.isEqualX(pair: firstPair)
 
             let isFirstObservationList = firstObservation.firstText.isListTypeFirstWord
 
@@ -334,24 +332,14 @@ class OCRTextMerger {
                 }
             }
 
-            let firstHasIndentation =
-                (previous == firstObservation)
-                    ? previousHasIndentation
-                    : lineAnalyzer.hasIndentation(observation: firstObservation)
-
-            if !isEqualPairX, firstHasIndentation {
+            if !isEqualPairX, isFirstHasIndentation {
                 print(
                     "    📋 List pattern with different X and first observation has indentation - new paragraph"
                 )
                 return .newParagraph
             }
 
-            if lineAnalyzer.isBigLineSpacing(pair: pair, confidence: .custom(1.1)) {
-                print("    📋 List pattern with big line spacing - new paragraph")
-                return .newParagraph
-            }
-
-            if previousHasIndentation, !isEqualFirstLineX {
+            if isPrevHasIndentation, !isEqualFirstLineX {
                 print("    📋 List pattern with previous indentation - new paragraph")
                 return .newParagraph
             }
@@ -360,15 +348,20 @@ class OCRTextMerger {
             return .lineBreak
         }
 
-        // Special case: For letter formats.
-
         /**
-         If text is a letter format, like:
+         Special case:
+
+         If text is a letter format, we may need new paragraph when the distance between
+         previous and current line is too far.
+
+         If `distance` > 0.45, means it may need line break, or treat as new paragraph.
+
+         Example:
+
          ```
                                     Wednesday, 4 Octobre 1950
          My dearest Nelson,
          ```
-         If `distance` > 0.45, means it may need line break, or treat as new paragraph.
          */
         if isPreviousLongText {
             let dx = previous.boundingBox.minX - current.boundingBox.minX
@@ -381,15 +374,8 @@ class OCRTextMerger {
 
         // 8. Priority: Large line spacing often indicates intentional gaps.
         if hasBigLineSpacing {
-            if isPoetry {
-                print("    📄 Big line spacing in poetry - line break")
-                return .lineBreak
-            }
-
-            let isListItem = currentText.isListTypeFirstWord
-            let shouldContinuePrevious =
-                isPreviousLongText && currentText.isFirstCharLowercase && !isListItem
-            if shouldContinuePrevious {
+            let shouldJoin = isPreviousLongText && currentText.isFirstCharLowercase && !isCurrentList
+            if shouldJoin {
                 print("    📄 Page continuation detected - join with space")
                 return .joinWithSpaceOrNot(pair: pair)
             } else {
@@ -398,9 +384,7 @@ class OCRTextMerger {
             }
         }
 
-        let mayBeDifferentFontSize = lineAnalyzer.isDifferentFontSize(
-            pair: pair, confidence: .low
-        )
+        let mayBeDifferentFontSize = lineAnalyzer.isDifferentFontSize(pair: pair, confidence: .low)
         let mayBeBigLineSpacing = lineAnalyzer.isBigLineSpacing(pair: pair, confidence: .low)
         let mayBeNewParagraph = mayBeDifferentFontSize || mayBeBigLineSpacing
         if mayBeNewParagraph {
@@ -418,11 +402,14 @@ class OCRTextMerger {
 
         // Special case: Classical Chinese long text with end punctuation.
         if metrics.language == .classicalChinese {
-            if isPreviousLongText, previousText.hasEndPunctuationSuffix {
+            if isPreviousLongText, previousText.hasEndPunctuationSuffix,
+               !isPrevHasIndentation, isEqualPairX {
                 print("    🎭 Classical Chinese long text with end punctuation - line break")
                 return .lineBreak
             }
         }
+
+        let isPrevAbsoluteLongText = lineAnalyzer.isLongText(observation: previous, nextObservation: current)
 
         // 9. Priority: Check for different X coordinates.
         if !isEqualPairX {
@@ -433,11 +420,9 @@ class OCRTextMerger {
                 return .newParagraph
             }
 
-            let isPreviousAbsoluteLongText = lineAnalyzer.isLongText(observation: previous)
-
-            if !isPreviousAbsoluteLongText {
+            if !isPrevAbsoluteLongText {
                 print("    🔗 Previous line is NOT absolute long text")
-                if previousHasIndentation {
+                if isPrevHasIndentation {
                     print("    🔗 Different X and previous line has indentation - new paragraph")
                     return .newParagraph
                 }
@@ -455,20 +440,57 @@ class OCRTextMerger {
                 print("    🔗 Different X and previous line is not absolute long text - line break")
                 return .lineBreak
             } else {
-                // If previous is a list, current line may have indentation. We need to exclude this case.
+                // Different X, and previous line is absolute long text
+
+                /**
+                 Special case:
+
+                 If different X, previous line is a list and long, current line has pair indentation,
+                 it may be not a new paragraph.
+
+                 Example:
+
+                 ```
+                 The rules are as follows:
+
+                 1. I am a girl with severe depression
+                    and severe anxiety.
+                 2. I am the second daughter in my
+                    family, 10 years younger than my
+                 ```
+                 */
+
                 if hasPairIndentation, !isPreviousList {
+                    // return lineBreakOrParagraph(mayBeNewParagraph)
                     print(
-                        "   🔗 Previous line is absolute long and NOT list, and has pair indentation"
+                        "    🔗 Has pair indentation, previous line is absolute long and NOT list - new paragraph"
                     )
-                    if mayBeNewParagraph {
-                        print(
-                            "    🔗 Different X, has pair indentation and may be new paragraph - new paragraph"
-                        )
-                        return .newParagraph
-                    }
-                    print("    🔗 Different X and has pair indentation - line break")
-                    return .lineBreak
+                    return .newParagraph
                 }
+
+                /**
+                 Special case:
+
+                 If has different X,  previous and current line both have indentation,
+                 we should not join them, because it may be a new paragraph.
+
+                 Example:
+
+                 ```
+                                V. SECURITY CHALLENGES AND OPPORTUNITIES
+                    In the following, we discuss existing security challenges
+                 and shed light on possible security opportunities and research
+                 ```
+                 */
+
+                let hasIndentation = lineAnalyzer.hasIndentation(observation: current)
+                if hasIndentation, isPrevHasIndentation, !hasPairIndentation {
+                    print(
+                        "    🔗 Different X, previous and current line both have indentation - new paragraph"
+                    )
+                    return .newParagraph
+                }
+
                 print(
                     "    🔗 Different X and previous line is absolute long text - join with space or not by language"
                 )
@@ -476,25 +498,44 @@ class OCRTextMerger {
             }
         } else {
             print("    🔗 Same X detected")
-            if !previousHasIndentation, !isPreviousLongText {
-                print("    🔗 Has no indentation and previous line is not long text")
 
-                if mayBeNewParagraph {
-                    print("    🔗 Same X and may be new paragraph - new paragraph")
+            /**
+             Special case: Check if need new paragraph when previous is a list.
+
+             ```
+                   III. IMPLICATIONS OF HTTP/2 FEATURES ON 5G SBA
+                   HTTP/2 introduces multiple features that we explore
+             hereafter and discuss the security impact of their possible
+             ```
+             */
+            if isPreviousList {
+                if mayBeNewParagraph, !currentText.isFirstCharLowercase {
+                    print(
+                        "  📋 Previous is list and may be new paragraph, and current is not lowercase - new paragraph"
+                    )
                     return .newParagraph
                 }
-
-                return .lineBreak
             }
-        }
 
-        // Special case: Check if need new paragraph when previous is a list.
-        if isPreviousList {
-            if mayBeNewParagraph, !currentText.isFirstCharLowercase {
-                print(
-                    "  📋 Previous is list and may be new paragraph, and current text is not lowercase - new paragraph"
-                )
-                return .newParagraph
+            if !isPreviousLongText {
+                print("    🔗 Previous line is not long text - line break or new paragraph")
+                return lineBreakOrParagraph(mayBeNewParagraph)
+            } else {
+                // If previous line is the first observation, cuase isPreviousLongText is always true.
+                let shouldLineBreak = previous == firstObservation && !isPrevHasIndentation && !isPrevAbsoluteLongText
+                if shouldLineBreak {
+                    print("    🔗 Previous is first observation and short - line break or new paragraph")
+                    return lineBreakOrParagraph(mayBeNewParagraph)
+                }
+
+                let isShortLine = lineAnalyzer.isShortLine(observation: current)
+                let isPreviousShortLine = lineAnalyzer.isShortLine(observation: previous)
+
+                // Special case: Check for short lines.
+                if isShortLine, isPreviousShortLine {
+                    print("    🎭 Short line pattern - line break")
+                    return .lineBreak
+                }
             }
         }
 
@@ -504,15 +545,6 @@ class OCRTextMerger {
             return .newParagraph
         }
 
-        let isShortLine = lineAnalyzer.isShortLine(observation: current)
-        let isPreviousShortLine = lineAnalyzer.isShortLine(observation: previous)
-
-        // Special case: Check for short lines.
-        if isShortLine, isPreviousShortLine {
-            print("    🎭 Short line pattern - line break")
-            return .lineBreak
-        }
-
         // Default merge strategy.
         print("    🔗 Default merge - join with space or not by language")
         return .joinWithSpaceOrNot(pair: pair)
@@ -520,49 +552,9 @@ class OCRTextMerger {
 
     // swiftlint:enable function_body_length
 
-    /// Selects the appropriate reference observation for indentation and alignment checks.
-    ///
-    /// This logic determines whether to compare the current observation against the paragraph's
-    /// rightmost observation (`maxXObservation`) or the globally rightmost observation
-    /// (`metrics.maxXLineTextObservation`), depending on the paragraph's structure.
-    ///
-    /// - Parameters:
-    ///   - pair: The current and previous observations.
-    ///   - maxXObservation: The rightmost observation in the current paragraph.
-    ///   - currentParagraphObservations: All observations in the current paragraph.
-    /// - Returns: The observation to be used as a reference for comparison.
-    private func getComparedObservation(
-        pair: OCRTextObservationPair,
-        maxXObservation: VNRecognizedTextObservation,
-        currentParagraphObservations: [VNRecognizedTextObservation]
-    )
-        -> VNRecognizedTextObservation {
-        guard let firstObservation = currentParagraphObservations.first,
-              let maxXLineTextObservation = metrics.maxXLineTextObservation
-        else {
-            print("    📏 No maxXLineTextObservation available, using maxXObservation")
-            return maxXObservation
-        }
-
-        // If the first observation has indentation, it signifies a new paragraph.
-        // We need to check if the entire paragraph maintains this indentation.
-        let isFirstObservationHasIndentation = lineAnalyzer.hasIndentation(
-            observation: firstObservation
-        )
-
-        if !isFirstObservationHasIndentation {
-            print("    📏 First observation has no indentation, using maxXLineTextObservation")
-            return maxXLineTextObservation
-        }
-
-        // If the previous observation is the rightmost one in the paragraph and also the first,
-        // use the global `maxXLineTextObservation` as the reference.
-        if pair.previous == maxXObservation, maxXObservation == firstObservation {
-            print("    📏 Using maxXLineTextObservation as compared observation")
-            return maxXLineTextObservation
-        }
-
-        return maxXObservation
+    /// Determines whether to use a line break or start a new paragraph based on the context.
+    private func lineBreakOrParagraph(_ shouldStartNewParagraph: Bool) -> OCRMergeStrategy {
+        shouldStartNewParagraph ? .newParagraph : .lineBreak
     }
 
     /// Updates the paragraph context after a merge strategy has been determined.
@@ -582,12 +574,12 @@ class OCRTextMerger {
         maxXObservation: inout VNRecognizedTextObservation
     ) {
         switch strategy {
-        case .newParagraph:
+        case .lineBreak, .newParagraph:
             // Start a new paragraph, resetting the tracking variables.
             currentParagraphObservations = [currentObservation]
             maxXObservation = currentObservation
 
-        case .joinRemovingDash, .joinWithNoSpace, .joinWithSpace, .lineBreak:
+        case .joinRemovingDash, .joinWithNoSpace, .joinWithSpace:
             // Continue the current paragraph and update tracking.
             currentParagraphObservations.append(currentObservation)
 

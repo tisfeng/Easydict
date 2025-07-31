@@ -347,12 +347,30 @@ extension Regex where Output == Substring {
     static var ellipsis: Self {
         Regex {
             ChoiceOf {
-                // Matches three consecutive dots
-                "..."
-                // Matches ellipsis character (U+2026) …
-                "\u{2026}"
+                Regex.threeDots
+                Regex.unicodeEllipsisChar
             }
         }
+    }
+
+    /// Matches three consecutive dots (standard ASCII ellipsis)
+    ///
+    /// **Examples:**
+    /// - `...` ✓
+    /// - `待续...` ✓
+    static var threeDots: Self {
+        Regex {
+            "..."
+        }
+    }
+
+    /// Matches the Unicode ellipsis character (U+2026)
+    ///
+    /// **Examples:**
+    /// - `…` ✓
+    /// - `待续…` ✓
+    static var unicodeEllipsisChar: Self {
+        /\u{2026}/
     }
 
     // MARK: - Spacing and Formatting Patterns

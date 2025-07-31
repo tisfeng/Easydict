@@ -49,6 +49,7 @@ enum OCRTestSample: String, CaseIterable {
     case zhText1 = "ocr-zh-text-1.png"
     case zhText2 = "ocr-zh-text-2.png"
     case zhText3 = "ocr-zh-text-3.png"
+    case zhText4 = "ocr-zh-text-4.png"
 
     case zhTextBitcoin = "ocr-zh-text-bitcoin.png"
     case zhTextList1 = "ocr-zh-text-list-1.png"
@@ -82,6 +83,7 @@ enum OCRTestSample: String, CaseIterable {
     case zhClassicalLyrics8 = "ocr-zh-classical-lyrics-8.png"
     case zhClassicalLyrics9 = "ocr-zh-classical-lyrics-9.png"
     case zhClassicalLyrics10 = "ocr-zh-classical-lyrics-10.png"
+    case zhClassicalLyrics11 = "ocr-zh-classical-lyrics-11.png"
 
     // MARK: - Japanese Text Cases
 

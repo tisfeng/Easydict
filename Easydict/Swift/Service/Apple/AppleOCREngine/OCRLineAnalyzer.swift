@@ -102,7 +102,7 @@ class OCRLineAnalyzer {
     )
         -> Bool {
         // Use provided comparedObservation or fall back to metrics default
-        let referenceObservation = comparedObservation ?? metrics.minXLineTextObservation
+        let referenceObservation = comparedObservation ?? metrics.minXObservation
         guard let referenceObservation = referenceObservation else { return false }
 
         let textObservationPair = OCRTextObservationPair(
@@ -110,7 +110,7 @@ class OCRLineAnalyzer {
             previous: referenceObservation
         )
 
-        let characterDifference = characterDifferenceInXPosition(pair: textObservationPair)
+        let characterDifference = lineMeasurer.characterDifferenceInXPosition(pair: textObservationPair)
         let baseThreshold = OCRConstants.indentationCharacterCount
         let finalThreshold = baseThreshold * confidence.multiplier
         let isIndented = characterDifference > finalThreshold
@@ -178,15 +178,6 @@ class OCRLineAnalyzer {
         return isBigSpacing
     }
 
-    /// Calculates the absolute font size difference between two text observations.
-    /// - Parameter pair: The text observation pair containing current and previous observations.
-    /// - Returns: The absolute difference between the font sizes of the two observations.
-    func fontSizeDifference(pair: OCRTextObservationPair) -> Double {
-        let currentFontSize = fontSize(pair.current)
-        let prevFontSize = fontSize(pair.previous)
-        return abs(currentFontSize - prevFontSize)
-    }
-
     /// Analyzes and compares font sizes between two text observations.
     ///
     /// - Parameters:
@@ -200,8 +191,13 @@ class OCRLineAnalyzer {
         confidence: OCRConfidenceLevel = .medium
     )
         -> Bool {
-        let differentFontSize = fontSizeDifference(pair: pair)
-        let baseThreshold = fontSizeThreshold ?? self.fontSizeThreshold(metrics.language)
+        // If text is too short, font size may be inaccurate.
+        guard hasEnoughTextLength(pair: pair) else {
+            return false
+        }
+
+        let differentFontSize = lineMeasurer.fontSizeDifference(pair: pair)
+        let baseThreshold = fontSizeThreshold ?? lineMeasurer.fontSizeThreshold(metrics.language)
         let finalThreshold = baseThreshold * confidence.multiplier
         let isDifferent = differentFontSize >= finalThreshold
 
@@ -214,13 +210,13 @@ class OCRLineAnalyzer {
         return isDifferent
     }
 
-    /// Returns the font size threshold based on the specified language.
-    /// - Parameter language: The language to determine the threshold for.
-    /// - Returns: The font size difference threshold for the given language.
-    func fontSizeThreshold(_ language: Language) -> Double {
-        languageManager.isChineseLanguage(language)
-            ? OCRConstants.chineseDifferenceFontThreshold
-            : OCRConstants.englishDifferenceFontThreshold
+    func fontSizeDifference(pair: OCRTextObservationPair) -> Double {
+        // If text is too short, font size may be inaccurate.
+        guard hasEnoughTextLength(pair: pair) else {
+            return 0.0
+        }
+
+        return lineMeasurer.fontSizeDifference(pair: pair)
     }
 
     /// Checks if two observations are considered equal Chinese text.
@@ -261,7 +257,7 @@ class OCRLineAnalyzer {
     )
         -> Bool {
         // Use provided comparedObservation or fall back to metrics default
-        let referenceObservation = comparedObservation ?? metrics.maxLineLengthObservation
+        let referenceObservation = comparedObservation ?? metrics.maxLengthObservation
         guard let referenceObservation = referenceObservation else { return false }
 
         let lineWidth = observation.lineWidth
@@ -307,48 +303,6 @@ class OCRLineAnalyzer {
         return isNewLine
     }
 
-    // MARK: - Helper Methods
-
-    /// Determines if two text observations have equal alignment (both minX and maxX coordinates).
-    func isEqualAlignment(pair: OCRTextObservationPair, confidence: OCRConfidenceLevel = .medium) -> Bool {
-        let isEqualMinX = isEqualX(pair: pair, comparison: .minX, confidence: confidence)
-        let isEqualMaxX = isEqualX(pair: pair, comparison: .maxX, confidence: confidence)
-        return isEqualMinX && isEqualMaxX
-    }
-
-    /// Calculates the horizontal difference between two text observations in character units.
-    ///
-    /// - Parameters:
-    ///   - pair: The pair of text observations to compare.
-    ///   - comparison: The X position comparison type (minX or maxX). Default is .minX.
-    /// - Returns: The horizontal difference in character units (can be positive, negative, or zero).
-    func characterDifferenceInXPosition(pair: OCRTextObservationPair, comparison: XComparisonType = .minX) -> Double {
-        guard let ocrImage = metrics.ocrImage else {
-            return 0.0
-        }
-
-        let currentX: CGFloat
-        let previousX: CGFloat
-        switch comparison {
-        case .minX:
-            currentX = pair.current.boundingBox.minX
-            previousX = pair.previous.boundingBox.minX
-        case .maxX:
-            currentX = pair.current.boundingBox.maxX
-            previousX = pair.previous.boundingBox.maxX
-        }
-        let dx = currentX - previousX
-
-        // Vision framework provides normalized coordinates (0-1), multiply by image width to get logical distance
-        let imageWidth = ocrImage.size.width
-        let logicalDifference = imageWidth * dx
-
-        // Convert logical difference to character units using average character width
-        let characterDifference = logicalDifference / metrics.averageCharacterWidth
-
-        return characterDifference
-    }
-
     /// Determines if two text observations have equivalent horizontal positioning (X coordinates).
     ///
     /// - Parameters:
@@ -361,7 +315,7 @@ class OCRLineAnalyzer {
         confidence: OCRConfidenceLevel = .medium
     )
         -> Bool {
-        let characterDifference = characterDifferenceInXPosition(pair: pair, comparison: comparison)
+        let characterDifference = lineMeasurer.characterDifferenceInXPosition(pair: pair, comparison: comparison)
 
         // Consider positions "equal" if difference is less than indentation threshold
         let baseTolerance = OCRConstants.indentationCharacterCount * 0.9
@@ -378,13 +332,19 @@ class OCRLineAnalyzer {
         return isEqual
     }
 
+    // MARK: Private
+
+    private let metrics: OCRMetrics
+    private let lineMeasurer: OCRLineMeasurer
+    private var languageManager = EZLanguageManager.shared()
+
     /// Determines if `value1` is greater than `value2` by a given `ratio`.
     /// - Parameters:
     ///   - ratio: The minimum similarity ratio (0.0-1.0).
     ///   - value1: The first value to compare.
     ///   - value2: The second value to compare.
     /// - Returns: `true` if `value1` is greater than `value2` by the ratio, `false` otherwise.
-    func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {
+    private func isRatioGreaterThan(_ ratio: Double, value1: Double, value2: Double) -> Bool {
         let minValue = min(value1, value2)
         let maxValue = max(value1, value2)
         return (minValue / maxValue) > ratio
@@ -396,49 +356,44 @@ class OCRLineAnalyzer {
     ///   - pair: The text observation pair to analyze.
     ///   - ratio: The similarity threshold ratio (default: 0.95).
     /// - Returns: `true` if maxX coordinates are similar within the ratio threshold, `false` otherwise.
-    func isEqualMaxX(pair: OCRTextObservationPair, ratio: Double = 0.95) -> Bool {
+    private func isEqualMaxX(pair: OCRTextObservationPair, ratio: Double = 0.95) -> Bool {
         let lineMaxX = pair.current.boundingBox.maxX
         let prevLineMaxX = pair.previous.boundingBox.maxX
 
         return isRatioGreaterThan(ratio, value1: lineMaxX, value2: prevLineMaxX)
     }
 
-    // MARK: Private
-
-    private let metrics: OCRMetrics
-    private let lineMeasurer: OCRLineMeasurer
-    private var languageManager = EZLanguageManager.shared()
-
-    /// Calculates the font size of a given text observation.
-    /// - Parameter observation: The text observation.
-    /// - Returns: The calculated font size.
-    private func fontSize(_ observation: VNRecognizedTextObservation) -> Double {
-        guard let ocrImage = metrics.ocrImage else {
-            return NSFont.systemFontSize
-        }
-
-        // Vision framework provides normalized coordinates, multiply by image size to get logical width
-        let textWidth = observation.boundingBox.size.width * ocrImage.size.width
-        return fontSize(observation.firstText, width: textWidth)
+    /// Determines if two text observations have equal alignment (both minX and maxX coordinates).
+    private func isEqualAlignment(pair: OCRTextObservationPair, confidence: OCRConfidenceLevel = .medium) -> Bool {
+        let isEqualMinX = isEqualX(pair: pair, comparison: .minX, confidence: confidence)
+        let isEqualMaxX = isEqualX(pair: pair, comparison: .maxX, confidence: confidence)
+        return isEqualMinX && isEqualMaxX
     }
 
-    /// Calculates the font size of a text string given its width.
-    /// - Parameters:
-    ///   - text: The text string.
-    ///   - textWidth: The width of the text.
-    /// - Returns: The calculated font size.
-    private func fontSize(_ text: String, width textWidth: Double) -> Double {
-        let systemFontSize = NSFont.systemFontSize
-        let font = NSFont.boldSystemFont(ofSize: systemFontSize)
+    /// Check if pair has enough text length excluding punctuation and symbols.
+    private func hasEnoughTextLength(
+        pair: OCRTextObservationPair,
+        minLength: Int = 3
+    )
+        -> Bool {
+        // If text is too short, font size may be inaccurate.
+        // Punctuation marks may be also detected as different font size, so remove them.
+        let text1 = pair.previous.firstText.removingNonLetters()
+        let text2 = pair.current.firstText.removingNonLetters()
+        return text1.count >= minLength && text2.count >= minLength
+    }
 
-        let width = text.size(withAttributes: [.font: font]).width
-
-        /**
-         systemFontSize / width = fontSize / textWidth
-         fontSize = textWidth * (systemFontSize / width)
-         */
-        let fontSize = textWidth * (systemFontSize / width)
-
-        return fontSize
+    /// Check if observation has enough text length exluding punctuation and symbols.
+    ///
+    /// - Important: This is used to ensure that short text observations do not affect font size calculations.
+    private func hasEnoughTextLength(
+        observation: VNRecognizedTextObservation,
+        minLength: Int = 3
+    )
+        -> Bool {
+        // If text is too short, font size may be inaccurate.
+        // Punctuation marks may be also detected as different font size, so remove them.
+        let text = observation.firstText.removingPunctuationCharacters().removingSymbols().trim()
+        return text.count >= minLength
     }
 }

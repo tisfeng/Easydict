@@ -68,7 +68,7 @@
 		033897A62E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */; };
 		033897A82E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897952E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png */; };
 		033897AA2E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897A92E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png */; };
-		033897B22E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033897B12E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift */; };
+		033897B22E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033897B12E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift */; };
 		033897B62E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */; };
 		033897B72E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */; };
 		033897B82E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */; };
@@ -94,10 +94,10 @@
 		034227DB2E36379900325B47 /* ocr-zh-poetry-6.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227D52E36379900325B47 /* ocr-zh-poetry-6.png */; };
 		034227E02E366EA400325B47 /* ocr-zh-poetry-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227DE2E366EA400325B47 /* ocr-zh-poetry-8.png */; };
 		034227E32E366EB000325B47 /* ocr-en-poetry-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227E22E366EB000325B47 /* ocr-en-poetry-8.png */; };
-		034227E82E36747A00325B47 /* OCRTestSampleEnglish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E52E36747A00325B47 /* OCRTestSampleEnglish.swift */; };
-		034227E92E36747A00325B47 /* OCRTestSampleJapanese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E62E36747A00325B47 /* OCRTestSampleJapanese.swift */; };
-		034227EA2E36747A00325B47 /* OCRTestSampleChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E42E36747A00325B47 /* OCRTestSampleChinese.swift */; };
-		034227EB2E36747A00325B47 /* OCRTestSampleOther.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E72E36747A00325B47 /* OCRTestSampleOther.swift */; };
+		034227E82E36747A00325B47 /* OCRTestSample+English.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E52E36747A00325B47 /* OCRTestSample+English.swift */; };
+		034227E92E36747A00325B47 /* OCRTestSample+Japanese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E62E36747A00325B47 /* OCRTestSample+Japanese.swift */; };
+		034227EA2E36747A00325B47 /* OCRTestSample+Chinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E42E36747A00325B47 /* OCRTestSample+Chinese.swift */; };
+		034227EB2E36747A00325B47 /* OCRTestSample+Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034227E72E36747A00325B47 /* OCRTestSample+Other.swift */; };
 		034227EE2E367B5100325B47 /* ocr-zh-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227ED2E367B5100325B47 /* ocr-zh-text-3.png */; };
 		034227F22E36891A00325B47 /* ocr-zh-poetry-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */; };
 		034227F42E37144200325B47 /* ocr-zh-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F32E37144200325B47 /* ocr-zh-poetry-11.png */; };
@@ -300,7 +300,6 @@
 		03C3A59A2E1BC8C600B59152 /* OCRImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */; };
 		03C3A5B62E1BFE4900B59152 /* ocr-en-paper-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A62E1BFE4900B59152 /* ocr-en-paper-9.png */; };
 		03C3A5B72E1BFE4900B59152 /* ocr-en-paper-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */; };
-		03C3A5B82E1BFE4900B59152 /* ocr-en-paper-14.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AB2E1BFE4900B59152 /* ocr-en-paper-14.png */; };
 		03C3A5B92E1BFE4900B59152 /* ocr-en-paper-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A42E1BFE4900B59152 /* ocr-en-paper-7.png */; };
 		03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A52E1BFE4900B59152 /* ocr-en-paper-8.png */; };
 		03C3A5BB2E1BFE4900B59152 /* ocr-en-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */; };
@@ -365,6 +364,8 @@
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
+		03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */; };
+		03F670472E3B392100EA682B /* ocr-zh-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670462E3B392100EA682B /* ocr-zh-text-4.png */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
@@ -581,7 +582,7 @@
 		0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-9.png"; sourceTree = "<group>"; };
 		0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-10.png"; sourceTree = "<group>"; };
 		033897A92E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-5.png"; sourceTree = "<group>"; };
-		033897B12E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleClassicalChinese.swift; sourceTree = "<group>"; };
+		033897B12E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+ClassicalChinese.swift"; sourceTree = "<group>"; };
 		033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-1.png"; sourceTree = "<group>"; };
 		033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-2.png"; sourceTree = "<group>"; };
 		033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-3.png"; sourceTree = "<group>"; };
@@ -610,10 +611,10 @@
 		034227D52E36379900325B47 /* ocr-zh-poetry-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-6.png"; sourceTree = "<group>"; };
 		034227DE2E366EA400325B47 /* ocr-zh-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-8.png"; sourceTree = "<group>"; };
 		034227E22E366EB000325B47 /* ocr-en-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-poetry-8.png"; sourceTree = "<group>"; };
-		034227E42E36747A00325B47 /* OCRTestSampleChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleChinese.swift; sourceTree = "<group>"; };
-		034227E52E36747A00325B47 /* OCRTestSampleEnglish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleEnglish.swift; sourceTree = "<group>"; };
-		034227E62E36747A00325B47 /* OCRTestSampleJapanese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleJapanese.swift; sourceTree = "<group>"; };
-		034227E72E36747A00325B47 /* OCRTestSampleOther.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSampleOther.swift; sourceTree = "<group>"; };
+		034227E42E36747A00325B47 /* OCRTestSample+Chinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+Chinese.swift"; sourceTree = "<group>"; };
+		034227E52E36747A00325B47 /* OCRTestSample+English.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+English.swift"; sourceTree = "<group>"; };
+		034227E62E36747A00325B47 /* OCRTestSample+Japanese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+Japanese.swift"; sourceTree = "<group>"; };
+		034227E72E36747A00325B47 /* OCRTestSample+Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+Other.swift"; sourceTree = "<group>"; };
 		034227ED2E367B5100325B47 /* ocr-zh-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-3.png"; sourceTree = "<group>"; };
 		034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-10.png"; sourceTree = "<group>"; };
 		034227F32E37144200325B47 /* ocr-zh-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-11.png"; sourceTree = "<group>"; };
@@ -936,7 +937,6 @@
 		03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-11.png"; sourceTree = "<group>"; };
 		03C3A5A92E1BFE4900B59152 /* ocr-en-paper-12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-12.png"; sourceTree = "<group>"; };
 		03C3A5AA2E1BFE4900B59152 /* ocr-en-paper-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-13.png"; sourceTree = "<group>"; };
-		03C3A5AB2E1BFE4900B59152 /* ocr-en-paper-14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-14.png"; sourceTree = "<group>"; };
 		03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-1.png"; sourceTree = "<group>"; };
 		03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-2.png"; sourceTree = "<group>"; };
 		03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-3.png"; sourceTree = "<group>"; };
@@ -1003,6 +1003,8 @@
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
+		03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-11.png"; sourceTree = "<group>"; };
+		03F670462E3B392100EA682B /* ocr-zh-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-4.png"; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
@@ -1305,9 +1307,9 @@
 				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */,
 				03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */,
+				032E7CD02E13CE2100BB8B00 /* OCRLineMeasurer.swift */,
 				0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */,
 				0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */,
-				032E7CD02E13CE2100BB8B00 /* OCRLineMeasurer.swift */,
 				0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */,
 				03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */,
 			);
@@ -1487,11 +1489,11 @@
 			isa = PBXGroup;
 			children = (
 				039CC6352E1F518A0046DC16 /* OCRTestSample.swift */,
-				034227E42E36747A00325B47 /* OCRTestSampleChinese.swift */,
-				033897B12E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift */,
-				034227E52E36747A00325B47 /* OCRTestSampleEnglish.swift */,
-				034227E62E36747A00325B47 /* OCRTestSampleJapanese.swift */,
-				034227E72E36747A00325B47 /* OCRTestSampleOther.swift */,
+				034227E42E36747A00325B47 /* OCRTestSample+Chinese.swift */,
+				033897B12E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift */,
+				034227E52E36747A00325B47 /* OCRTestSample+English.swift */,
+				034227E62E36747A00325B47 /* OCRTestSample+Japanese.swift */,
+				034227E72E36747A00325B47 /* OCRTestSample+Other.swift */,
 			);
 			path = OCRTestSample;
 			sourceTree = "<group>";
@@ -2490,7 +2492,6 @@
 				03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */,
 				03C3A5A92E1BFE4900B59152 /* ocr-en-paper-12.png */,
 				03C3A5AA2E1BFE4900B59152 /* ocr-en-paper-13.png */,
-				03C3A5AB2E1BFE4900B59152 /* ocr-en-paper-14.png */,
 				03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */,
 				03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */,
 				03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */,
@@ -2502,6 +2503,7 @@
 				03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */,
 				03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */,
 				034227ED2E367B5100325B47 /* ocr-zh-text-3.png */,
+				03F670462E3B392100EA682B /* ocr-zh-text-4.png */,
 				03C3A5B52E1BFE4900B59152 /* ocr-zh-text-bitcoin.png */,
 				037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */,
 				034227D02E36379900325B47 /* ocr-zh-poetry-1.png */,
@@ -2528,6 +2530,7 @@
 				0338979C2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-8.png */,
 				0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */,
 				0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */,
+				03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */,
 			);
 			path = "ocr-images";
 			sourceTree = "<group>";
@@ -3320,7 +3323,6 @@
 				033897B62E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png in Resources */,
 				033897B72E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png in Resources */,
 				033897B82E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png in Resources */,
-				03C3A5B82E1BFE4900B59152 /* ocr-en-paper-14.png in Resources */,
 				033897AA2E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png in Resources */,
 				03C3A5B92E1BFE4900B59152 /* ocr-en-paper-7.png in Resources */,
 				03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */,
@@ -3332,6 +3334,7 @@
 				03C3A5BE2E1BFE4900B59152 /* ocr-en-paper-11.png in Resources */,
 				03C3A5BF2E1BFE4900B59152 /* ocr-en-text-reddit.png in Resources */,
 				03C3A5C02E1BFE4900B59152 /* ocr-en-paper-1.png in Resources */,
+				03F670472E3B392100EA682B /* ocr-zh-text-4.png in Resources */,
 				03C3A5C12E1BFE4900B59152 /* ocr-zh-text-bitcoin.png in Resources */,
 				03C3A5C22E1BFE4900B59152 /* ocr-en-text-bitcoin.png in Resources */,
 				03C3A5C32E1BFE4900B59152 /* ocr-en-paper-4.png in Resources */,
@@ -3347,6 +3350,7 @@
 				033897A32E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png in Resources */,
 				033897A42E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png in Resources */,
 				033897A52E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png in Resources */,
+				03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */,
 				033897A62E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png in Resources */,
 				033897A82E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png in Resources */,
 				037A9CC52E24A72A00668C49 /* ocr-en-text-list-2.png in Resources */,
@@ -3536,11 +3540,11 @@
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
 				039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
-				033897B22E38CD8700CCFF99 /* OCRTestSampleClassicalChinese.swift in Sources */,
-				034227E82E36747A00325B47 /* OCRTestSampleEnglish.swift in Sources */,
-				034227E92E36747A00325B47 /* OCRTestSampleJapanese.swift in Sources */,
-				034227EA2E36747A00325B47 /* OCRTestSampleChinese.swift in Sources */,
-				034227EB2E36747A00325B47 /* OCRTestSampleOther.swift in Sources */,
+				033897B22E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift in Sources */,
+				034227E82E36747A00325B47 /* OCRTestSample+English.swift in Sources */,
+				034227E92E36747A00325B47 /* OCRTestSample+Japanese.swift in Sources */,
+				034227EA2E36747A00325B47 /* OCRTestSample+Chinese.swift in Sources */,
+				034227EB2E36747A00325B47 /* OCRTestSample+Other.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

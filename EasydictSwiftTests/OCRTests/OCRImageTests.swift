@@ -36,19 +36,6 @@ struct OCRImageTests {
 //        await testOCR(sample: .zhClassicalPoetry3, language: .auto)
     }
 
-    // MARK: - All OCR Tests
-
-    @Test(
-        "All OCR Tests",
-        .tags(.ocr),
-        .disabled("This test runs all OCR images, which can take a long time to complete. ")
-    )
-    func testAllOCRImages() async throws {
-        for sample in OCRTestSample.allCases {
-            await testOCR(sample: sample)
-        }
-    }
-
     // MARK: - English Text Tests
 
     @Test("English OCR Test", .tags(.ocr))
@@ -91,6 +78,19 @@ struct OCRImageTests {
     func testOtherLanguageOCR() async throws {
         for sample in OCRTestSample.otherLanguageCases {
             await testOCR(sample: sample, language: .auto)
+        }
+    }
+
+    // MARK: - All OCR Tests
+
+    @Test(
+        "All OCR Tests",
+        .tags(.ocr),
+        .disabled("This test runs all OCR images, which can take a long time to complete. ")
+    )
+    func testAllOCRImages() async throws {
+        for sample in OCRTestSample.allCases {
+            await testOCR(sample: sample)
         }
     }
 

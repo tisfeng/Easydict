@@ -35,6 +35,25 @@ class OCRPoetryDetector {
             return false
         }
 
+        // Use metrics wordCountPerLine to determine if it is poetry-like
+        let isPunctuationPerLineLikePoetry = metrics.punctuationMarkCountPerLine <= 2.5
+        if !isPunctuationPerLineLikePoetry {
+            print("❌ Not poetry-like based on punctuation marks per line.")
+            return false
+        }
+
+        // Use metrics charCountPerLine to determine if it is poetry-like
+        let isCharCountPerLineLikePoetry = matchesPoetryPattern(
+            wordCountPerLine: 0,
+            charCountPerLine: metrics.charCountPerLine,
+            confidence: .custom(2.0)
+        )
+
+        if !isCharCountPerLineLikePoetry {
+            print("❌ Not poetry-like based on overall character count.")
+            return false
+        }
+
         var endPunctuationCount = 0
         var suffixPunctuationCount = 0
         var noPunctuationLineCount = 0
@@ -76,9 +95,7 @@ class OCRPoetryDetector {
             let wordCount = text.wordCount
             totalWordCount += wordCount
 
-            print(
-                "📄 Line \(i): '\(text.prefix20)' (words: \(wordCount), chars: \(lineCharCount))"
-            )
+//            print("📄 Line \(i): '\(text.prefix20)' (words: \(wordCount), chars: \(lineCharCount))")
 
             if let last = text.last, let scalar = last.unicodeScalars.first {
                 if punctuationSet.contains(scalar) {
@@ -117,9 +134,7 @@ class OCRPoetryDetector {
                         )
 
                         if isLongLine {
-                            print(
-                                "❓ Previous line is a long list line, maybe not poetry"
-                            )
+                            print("❓ Previous line is a long list line, maybe not poetry")
                             return false
                         }
                     }

@@ -277,8 +277,9 @@ struct UtilityFunctionsTests {
             ("Mix中英文Text测试", ["Mix", "中", "英", "文", "Text", "测", "试"]),
             ("@tisfeng #Easydict", ["@tisfeng", "#Easydict"]),
             ("\"Hello\"!", ["\"Hello\""]),
-            ("hi-hello.world", ["hi-hello", "world"]),
-            ("   ,.!?", []),
+            ("hi-hello, world", ["hi-hello", "world"]),
+            ("scpl.example.com", ["scpl.example.com"]),
+            ("   ,!?", []),
             ("", []),
         ]
 

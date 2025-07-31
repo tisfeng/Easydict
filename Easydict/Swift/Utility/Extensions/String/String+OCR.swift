@@ -151,6 +151,7 @@ extension String {
     ///
     /// - Examples:
     ///   - `"Hello, world!"` → `["Hello", "world"]`
+    ///   - `"scpl.example.com"` → `["scpl.example.com"]`
     ///   - `"包括Google翻译、DeepL翻译等"` → `["包", "括", "Google", "翻", "译", "DeepL", "翻", "译", "等"]`
     var wordComponents: [String] {
         // Create a character set that includes whitespace, newlines, and punctuation
@@ -158,7 +159,7 @@ extension String {
         separatorSet.formUnion(.punctuationCharacters)
 
         // Exclude specific characters that are considered as a part of the word
-        separatorSet.remove(charactersIn: "@#•-\"")
+        separatorSet.remove(charactersIn: "@#•\"-.")
 
         var components: [String] = []
         var currentWord = ""

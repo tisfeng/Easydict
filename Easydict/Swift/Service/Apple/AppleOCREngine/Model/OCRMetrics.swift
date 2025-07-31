@@ -87,16 +87,16 @@ class OCRMetrics {
     // MARK: - Reference Observations
 
     /// The observation with the greatest width.
-    private(set) var maxLineLengthObservation: VNRecognizedTextObservation?
+    private(set) var maxLengthObservation: VNRecognizedTextObservation?
 
     /// The observation that extends furthest to the right (has the maximum `maxX` coordinate).
-    private(set) var maxXLineTextObservation: VNRecognizedTextObservation?
+    private(set) var maxXObservation: VNRecognizedTextObservation?
 
     /// The observation that starts furthest to the left (has the minimum `minX` coordinate).
-    private(set) var minXLineTextObservation: VNRecognizedTextObservation?
+    private(set) var minXObservation: VNRecognizedTextObservation?
 
     /// The observation that contains the most characters.
-    private(set) var maxCharacterCountLineTextObservation: VNRecognizedTextObservation?
+    private(set) var maxCharacterCountObservation: VNRecognizedTextObservation?
 
     // MARK: - Content & Confidence Metrics
 
@@ -129,9 +129,14 @@ class OCRMetrics {
         totalCharCount.double / textObservations.count.double
     }
 
-    /// The calculated maximum line length (width) from the `maxLineLengthObservation`.
+    /// The average number of punctuation marks per line.
+    var punctuationMarkCountPerLine: Double {
+        punctuationMarkCount.double / textObservations.count.double
+    }
+
+    /// The calculated maximum line length (width) from the `maxLengthObservation`.
     var maxLineLength: Double {
-        maxLineLengthObservation?.lineWidth ?? 0.0
+        maxLengthObservation?.lineWidth ?? 0.0
     }
 
     /// A calculated threshold for what is considered a "big" line spacing, useful for detecting paragraph breaks.
@@ -189,7 +194,7 @@ class OCRMetrics {
         }
 
         // Calculate average character width from the line with most characters
-        if let textObservation = maxCharacterCountLineTextObservation {
+        if let textObservation = maxCharacterCountObservation {
             averageCharacterWidth = computeAverageCharacterWidth(
                 from: textObservation,
                 ocrImage: ocrImage
@@ -226,7 +231,7 @@ class OCRMetrics {
         )
 
         print(
-            "  - Min X position: \(String(format: "%.3f", minXLineTextObservation?.boundingBox.minX ?? 0))"
+            "  - Min X position: \(String(format: "%.3f", minXObservation?.boundingBox.minX ?? 0))"
         )
     }
 
@@ -252,10 +257,10 @@ class OCRMetrics {
         totalLineSpacing = 0
         averageLineSpacing = 0
 
-        maxLineLengthObservation = nil
-        maxXLineTextObservation = nil
-        minXLineTextObservation = nil
-        maxCharacterCountLineTextObservation = nil
+        maxLengthObservation = nil
+        maxXObservation = nil
+        minXObservation = nil
+        maxCharacterCountObservation = nil
 
         isPoetry = false
         totalCharCount = 0
@@ -278,27 +283,27 @@ class OCRMetrics {
 
         // Track x coordinates and line lengths
         let x = boundingBox.origin.x
-        if x < minXLineTextObservation?.boundingBox.minX ?? .greatestFiniteMagnitude {
-            minXLineTextObservation = textObservation
+        if x < minXObservation?.boundingBox.minX ?? .greatestFiniteMagnitude {
+            minXObservation = textObservation
         }
 
         let lengthOfLine = boundingBox.size.width
         if lengthOfLine > maxLineLength {
-            maxLineLengthObservation = textObservation
+            maxLengthObservation = textObservation
         }
 
-        if boundingBox.maxX > maxXLineTextObservation?.boundingBox.maxX ?? 0 {
-            maxXLineTextObservation = textObservation
+        if boundingBox.maxX > maxXObservation?.boundingBox.maxX ?? 0 {
+            maxXObservation = textObservation
         }
 
         // Track maximum character count line
         let currentCharCount = textObservation.firstText.count
-        if let maxCharObservation = maxCharacterCountLineTextObservation {
+        if let maxCharObservation = maxCharacterCountObservation {
             if currentCharCount > maxCharObservation.firstText.count {
-                maxCharacterCountLineTextObservation = textObservation
+                maxCharacterCountObservation = textObservation
             }
         } else {
-            maxCharacterCountLineTextObservation = textObservation
+            maxCharacterCountObservation = textObservation
         }
 
         // Calculate character and punctuation metrics
@@ -329,7 +334,7 @@ class OCRMetrics {
         let currentText = textObservation.firstText
 
         print(
-            "  [\(index)]: \(currentText.prefix20)... , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
+            "  [\(index)]: \(currentText.prefix20) , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
         )
     }
 
@@ -372,7 +377,17 @@ class OCRMetrics {
         // Vision framework provides normalized coordinates (0-1), so we multiply by image size
         // No need for scaleFactor since NSImage.size already gives us the logical size in points
         let textWidth = textObservation.boundingBox.size.width * ocrImage.size.width
-        return textWidth / textObservation.firstText.count.double
+        var charCount = textObservation.firstText.count.double
+
+        // If text last char is punctuation, only count 0.5 char
+        if let lastChar = textObservation.firstText.last,
+           lastChar.isPunctuation {
+            charCount -= 0.5
+        }
+
+        charCount = max(1, charCount) // Avoid negative
+
+        return textWidth / charCount
     }
 
     /// Calculates the overall confidence score by averaging the confidence of all observations.

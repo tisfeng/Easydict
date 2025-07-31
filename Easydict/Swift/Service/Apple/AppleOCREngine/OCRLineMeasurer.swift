@@ -81,10 +81,131 @@ class OCRLineMeasurer {
         return isLongLine
     }
 
+    /// Computes the average character width based on a given pair observation.
+    ///
+    /// - TODO: If pair observations font is different, we should only use the current observation.
+    func computeAverageCharWidth(
+        currentObservation: VNRecognizedTextObservation,
+        anotherObservation: VNRecognizedTextObservation,
+        ocrImage: NSImage? = nil,
+        allowDifferentFontSize: Bool = false
+    )
+        -> Double {
+        let currentAverageCharWidth = computeAverageCharWidth(
+            observation: currentObservation,
+            ocrImage: ocrImage
+        )
+
+        let pair = OCRTextObservationPair(current: currentObservation, previous: anotherObservation)
+        let differentFontSize = fontSizeDifference(pair: pair)
+        // If font sizes are significantly different, use the current observation only
+        if !allowDifferentFontSize, differentFontSize > 1.5 {
+            return currentAverageCharWidth
+        }
+
+        let anotherAverageCharWidth = computeAverageCharWidth(
+            observation: anotherObservation,
+            ocrImage: ocrImage
+        )
+
+        // Average the widths of both observations
+        let averageWidth = (currentAverageCharWidth + anotherAverageCharWidth) / 2.0
+        return averageWidth
+    }
+
+    /// Calculates the horizontal difference between two text observations in character units.
+    ///
+    /// - Parameters:
+    ///   - pair: The pair of text observations to compare.
+    ///   - comparison: The X position comparison type (minX or maxX). Default is .minX.
+    /// - Returns: The horizontal difference in character units (can be positive, negative, or zero).
+    func characterDifferenceInXPosition(
+        pair: OCRTextObservationPair,
+        comparison: XComparisonType = .minX
+    )
+        -> Double {
+        guard let ocrImage = metrics.ocrImage else {
+            return 0.0
+        }
+
+        let current = pair.current
+        let previous = pair.previous
+
+        let currentX: CGFloat
+        let previousX: CGFloat
+        switch comparison {
+        case .minX:
+            currentX = current.boundingBox.minX
+            previousX = previous.boundingBox.minX
+        case .maxX:
+            currentX = current.boundingBox.maxX
+            previousX = previous.boundingBox.maxX
+        }
+        let dx = currentX - previousX
+
+        // Vision framework provides normalized coordinates (0-1), multiply by image width to get logical distance
+        let imageWidth = ocrImage.size.width
+        let logicalDifference = imageWidth * dx
+
+        // For checking X position difference, do not need to check font size
+        let averageCharacterWidth = computeAverageCharWidth(
+            currentObservation: current,
+            anotherObservation: previous,
+            allowDifferentFontSize: true
+        )
+
+        // Convert logical difference to character units using average character width
+        let characterDifference = logicalDifference / averageCharacterWidth
+
+        return characterDifference
+    }
+
+    /// Calculates the absolute font size difference between two text observations.
+    /// - Parameter pair: The text observation pair containing current and previous observations.
+    /// - Returns: The absolute difference between the font sizes of the two observations.
+    func fontSizeDifference(pair: OCRTextObservationPair) -> Double {
+        let currentFontSize = fontSize(pair.current)
+        let prevFontSize = fontSize(pair.previous)
+        return abs(currentFontSize - prevFontSize)
+    }
+
+    /// Returns the font size threshold based on the specified language.
+    /// - Parameter language: The language to determine the threshold for.
+    /// - Returns: The font size difference threshold for the given language.
+    func fontSizeThreshold(_ language: Language) -> Double {
+        languageManager.isChineseLanguage(language)
+            ? OCRConstants.chineseDifferenceFontThreshold
+            : OCRConstants.englishDifferenceFontThreshold
+    }
+
     // MARK: Private
 
     private let metrics: OCRMetrics
     private let languageManager: EZLanguageManager
+
+    /// Computes the average character width based on a given text observation.
+    private func computeAverageCharWidth(
+        observation: VNRecognizedTextObservation,
+        ocrImage: NSImage? = nil
+    )
+        -> Double {
+        let ocrImage = ocrImage ?? metrics.ocrImage!
+
+        // Vision framework provides normalized coordinates (0-1), so we multiply by image size
+        // No need for scaleFactor since NSImage.size already gives us the logical size in points
+        let textWidth = observation.boundingBox.size.width * ocrImage.size.width
+        var charCount = observation.firstText.count.double
+
+        // If text last char is punctuation, only count 0.5 char
+        if let lastChar = observation.firstText.last,
+           lastChar.isPunctuation {
+            charCount -= 0.5
+        }
+
+        charCount = max(1, charCount) // Avoid negative
+
+        return textWidth / charCount
+    }
 
     // MARK: - Strategy Implementations
 
@@ -105,7 +226,7 @@ class OCRLineMeasurer {
         }
 
         // Use provided comparedObservation or fall back to metrics default
-        let referenceObservation = comparedObservation ?? metrics.maxXLineTextObservation
+        let referenceObservation = comparedObservation ?? metrics.maxXObservation
         guard let referenceObservation = referenceObservation else {
             return 0.0
         }
@@ -118,8 +239,13 @@ class OCRLineMeasurer {
         let logicalLineWidth = ocrImage.size.width * referenceLineLength
         let logicalGapWidth = logicalLineWidth * horizontalGap
 
+        let averageCharacterWidth = computeAverageCharWidth(
+            currentObservation: observation,
+            anotherObservation: referenceObservation,
+        )
+
         // Convert logical distance to character count using average character width
-        let remainingCharacters = logicalGapWidth / metrics.averageCharacterWidth
+        let remainingCharacters = logicalGapWidth / averageCharacterWidth
 
         return remainingCharacters
     }
@@ -192,5 +318,42 @@ class OCRLineMeasurer {
 
             return minimumCharacters
         }
+    }
+
+    /// Calculates the font size of a given text observation.
+    /// - Parameter observation: The text observation.
+    /// - Returns: The calculated font size.
+    private func fontSize(_ observation: VNRecognizedTextObservation) -> Double {
+        guard let ocrImage = metrics.ocrImage else {
+            return NSFont.systemFontSize
+        }
+
+        // Vision framework provides normalized coordinates, multiply by image size to get logical width
+        let textWidth = observation.boundingBox.size.width * ocrImage.size.width
+        return fontSize(observation.firstText, width: textWidth)
+    }
+
+    /// Estimates the font size of a string based on its actual width and system font proportions.
+    /// - Parameters:
+    ///   - text: The text string to measure.
+    ///   - textWidth: The width of the text (in points).
+    /// - Returns: An estimated font size that would fit the given width.
+    private func fontSize(_ text: String, width textWidth: Double) -> Double {
+        let systemFontSize = NSFont.systemFontSize
+        guard !text.isEmpty else { return systemFontSize }
+
+        let font = NSFont.systemFont(ofSize: systemFontSize)
+        let renderedWidth = text.size(withAttributes: [.font: font]).width
+        guard renderedWidth > 0 else { return systemFontSize }
+
+        /**
+         Use proportional scaling to estimate the actual font size:
+
+         systemFontSize / renderedWidth = fontSize / textWidth
+         fontSize = textWidth * (systemFontSize / renderedWidth)
+         */
+
+        let fontSize = textWidth * (systemFontSize / renderedWidth)
+        return fontSize
     }
 }

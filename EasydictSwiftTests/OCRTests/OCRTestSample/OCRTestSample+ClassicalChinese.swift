@@ -16,6 +16,7 @@ extension OCRTestSample {
 
         .zhClassicalLyrics1, .zhClassicalLyrics2, .zhClassicalLyrics3, .zhClassicalLyrics4, .zhClassicalLyrics5,
         .zhClassicalLyrics6, .zhClassicalLyrics7, .zhClassicalLyrics8, .zhClassicalLyrics9, .zhClassicalLyrics10,
+        .zhClassicalLyrics11,
     ]
 
     static let classicalChineseExpectedResults: [OCRTestSample: String] = [
@@ -136,6 +137,15 @@ extension OCRTestSample {
         淮左名都，竹西佳处，解鞍少驻初程。过春风十里，尽荠麦青青。自胡马窥江去后，废池乔木，犹厌言兵。渐黄昏、清角吹寒，都在空城。
 
         杜郎俊赏，算而今，重到须惊。纵豆蔻词工，青楼梦好，难赋深情。二十四桥仍在，波心荡，冷月无声。念桥边红药，年年知为谁生？
+        """,
+        .zhClassicalLyrics11: """
+        暗香
+
+        宋 · 姜䕫
+
+        旧时月色，算几番照我，梅边吹笛？唤起玉人，不管清寒与攀摘。何逊而今渐老，都忘却春风词笔。但怪得竹外疏花，香冷入瑶席。
+
+        江国，正寂寂，叹寄与路遥，夜雪初积。翠尊易泣，红萼无言耿相忆。长记曾携手处，干树压、西湖寒碧。又片片、吹尽也，几时见得？
         """,
     ]
 }
