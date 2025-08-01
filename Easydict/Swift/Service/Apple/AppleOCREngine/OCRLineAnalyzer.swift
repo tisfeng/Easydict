@@ -128,16 +128,9 @@ class OCRLineAnalyzer {
     }
 
     /// Determines if a text observation represents a long line of text.
-    ///
-    /// - Parameters:
-    ///   - observation: The text observation to analyze for line length characteristics.
-    ///   - nextObservation: The next text observation for enhanced context analysis (optional).
-    ///   - comparedObservation: The reference observation to compare against (optional).
-    ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
-    /// - Returns: `true` if the line is considered "long", `false` if "short".
     func isLongText(
         observation: VNRecognizedTextObservation,
-        nextObservation: VNRecognizedTextObservation? = nil,
+        nextObservation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil,
         confidence: OCRConfidenceLevel = .medium
     )
@@ -188,11 +181,12 @@ class OCRLineAnalyzer {
     func isDifferentFontSize(
         pair: OCRTextObservationPair,
         fontSizeThreshold: Double? = nil,
-        confidence: OCRConfidenceLevel = .medium
+        confidence: OCRConfidenceLevel = .medium,
+        checkTextLength: Bool = true
     )
         -> Bool {
         // If text is too short, font size may be inaccurate.
-        guard hasEnoughTextLength(pair: pair) else {
+        if checkTextLength, !hasEnoughTextLength(pair: pair) {
             return false
         }
 
@@ -210,9 +204,14 @@ class OCRLineAnalyzer {
         return isDifferent
     }
 
-    func fontSizeDifference(pair: OCRTextObservationPair) -> Double {
+    /// Calculates the font size difference between two text observations.
+    func fontSizeDifference(
+        pair: OCRTextObservationPair,
+        checkTextLength: Bool = true
+    )
+        -> Double {
         // If text is too short, font size may be inaccurate.
-        guard hasEnoughTextLength(pair: pair) else {
+        if checkTextLength, !hasEnoughTextLength(pair: pair) {
             return 0.0
         }
 

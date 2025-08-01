@@ -132,6 +132,9 @@
 		03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A482937B5CF00C34C33 /* EZGoogleTranslate.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
+		035451012E3C601100BAA8E5 /* OCRMergeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */; };
+		035451032E3C60D600BAA8E5 /* OCRConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035451022E3C60D600BAA8E5 /* OCRConstants.swift */; };
+		035451052E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */; };
 		0354E9202D3601500050E5BE /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 0354E91F2D3601500050E5BE /* AsyncAlgorithms */; };
 		035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */; };
 		0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357B9592C04387D00A48CB0 /* TextEditorCell.swift */; };
@@ -659,6 +662,9 @@
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
 		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
+		035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeContext.swift; sourceTree = "<group>"; };
+		035451022E3C60D600BAA8E5 /* OCRConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRConstants.swift; sourceTree = "<group>"; };
+		035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeAnalyzer.swift; sourceTree = "<group>"; };
 		035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+DictV4.swift"; sourceTree = "<group>"; };
 		0357B9592C04387D00A48CB0 /* TextEditorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorCell.swift; sourceTree = "<group>"; };
 		035E37E52A0953120061DFAF /* EZToast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZToast.h; sourceTree = "<group>"; };
@@ -1306,6 +1312,8 @@
 				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
 				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */,
+				035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */,
+				035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */,
 				03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */,
 				032E7CD02E13CE2100BB8B00 /* OCRLineMeasurer.swift */,
 				0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */,
@@ -2269,6 +2277,7 @@
 				03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */,
 				03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */,
 				037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */,
+				035451022E3C60D600BAA8E5 /* OCRConstants.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3650,10 +3659,12 @@
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
 				032AAA5D2C45744E007996A1 /* VaporServer.swift in Sources */,
 				276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */,
+				035451052E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift in Sources */,
 				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */,
 				0AC8A8392B666F07006DA5CC /* CaiyunService+ConfigurableService.swift in Sources */,
+				035451032E3C60D600BAA8E5 /* OCRConstants.swift in Sources */,
 				27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */,
 				9643D9392B6F49E0000FBEA6 /* AppShortcutSetting.swift in Sources */,
 				96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */,
@@ -3679,6 +3690,7 @@
 				036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */,
 				0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
+				035451012E3C601100BAA8E5 /* OCRMergeContext.swift in Sources */,
 				0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */,
 				9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */,
 				0340D38E2C8EEEA2004C9910 /* AppleScriptTask.swift in Sources */,

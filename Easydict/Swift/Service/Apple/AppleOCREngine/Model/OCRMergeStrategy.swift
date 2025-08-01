@@ -68,11 +68,11 @@ enum OCRMergeStrategy: CustomStringConvertible {
         }
     }
 
-    /// Determines the appropriate join strategy based on the language context of the joined text.
+    /// Determines the appropriate merge strategy based on the language context of the joined text.
     /// - Parameter pair: The text observation pair to analyze.
     /// - Returns: `.joinWithSpace` for space-separated languages, `.joinWithNoSpace` otherwise.
-    static func joinWithSpaceOrNot(pair: OCRTextObservationPair) -> OCRMergeStrategy {
-        joinWithSpaceOrNot(
+    static func mergeStrategy(for pair: OCRTextObservationPair) -> OCRMergeStrategy {
+        mergeStrategy(
             firstText: pair.previous.firstText.lastWord,
             secondText: pair.current.firstText.firstWord
         )
@@ -83,7 +83,7 @@ enum OCRMergeStrategy: CustomStringConvertible {
     ///   - firstText: The first text string.
     ///   - secondText: The second text string.
     /// - Returns: `.joinWithSpace` for space-separated languages, `.joinWithNoSpace` otherwise.
-    static func joinWithSpaceOrNot(
+    static func mergeStrategy(
         firstText: String,
         secondText: String,
     )
@@ -140,30 +140,4 @@ enum OCRMergeStrategy: CustomStringConvertible {
     static private var languageDetector: AppleLanguageDetector {
         AppleLanguageDetector(enableClassicalChineseDetection: false)
     }
-}
-
-// MARK: - OCRConstants
-
-/// Constants used for OCR text processing
-enum OCRConstants {
-    static let lineBreakText = "\n"
-    static let paragraphBreakText = "\n\n"
-
-    /// Default is 1.8 characters for indentation, should be less than 2 characters
-    static let indentationCharacterCount: Double = 1.8
-
-    /// Default is 2.0 lines for paragraph break
-    static let paragraphLineHeightRatio: Double = 1.2
-
-    /// Default is 12.0, for Chinese poetry
-    static let poetryCharacterCountOfLine = 12.0
-
-    /// Default is 7.0, for English poetry. 《I Pass by in Silence》 is 9.2 characters per line,
-    static let poetryWordCountOfLine = 7.0
-
-    /// Increased from 3.0 to 3.5 for better Chinese text detection
-    static let chineseDifferenceFontThreshold: Double = 3.5
-
-    /// 5.0 for English text font, may be not precise, so use a larger threshold
-    static let englishDifferenceFontThreshold: Double = 5.0
 }

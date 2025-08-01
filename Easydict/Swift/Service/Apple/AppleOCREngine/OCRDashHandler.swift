@@ -98,6 +98,15 @@ class OCRDashHandler {
         }
     }
 
+    func dashMergeStrategy(_ pair: OCRTextObservationPair) -> OCRMergeStrategy? {
+        let dashAction = analyzeDashHandling(pair)
+        if dashAction != .none {
+            let dashStrategy = OCRMergeStrategy.from(dashAction)
+            return dashStrategy
+        }
+        return nil
+    }
+
     // MARK: Private
 
     private let metrics: OCRMetrics

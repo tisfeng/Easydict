@@ -43,13 +43,13 @@ class OCRLineMeasurer {
     ///
     /// - Parameters:
     ///   - observation: The text observation to analyze for line length.
-    ///   - nextObservation: The next text observation for context-aware analysis (optional).
+    ///   - nextObservation: The next text observation for context-aware analysis.
     ///   - comparedObservation: The reference observation to compare against for remaining space (optional).
     ///   - confidence: Detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if the line is considered "long" (little space remaining), `false` if "short".
     func isLongLine(
         observation: VNRecognizedTextObservation,
-        nextObservation: VNRecognizedTextObservation? = nil,
+        nextObservation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil,
         confidence: OCRConfidenceLevel = .medium
     )
@@ -254,34 +254,29 @@ class OCRLineMeasurer {
     ///
     /// - Parameters:
     ///   - observation: The current text observation to analyze.
-    ///   - nextObservation: The next text observation for context-aware analysis (optional).
+    ///   - nextObservation: The next text observation for context-aware analysis.
     /// - Returns: The character count threshold (context-aware calculation based on the next line).
     private func smartMinimumCharactersThreshold(
         observation: VNRecognizedTextObservation,
-        nextObservation: VNRecognizedTextObservation? = nil
+        nextObservation: VNRecognizedTextObservation
     )
         -> Double {
         let isEnglishTypeLanguage = languageManager.isLanguageWordsNeedSpace(metrics.language)
 
         if isEnglishTypeLanguage {
             // For space-separated languages, use next line's first word length if available
-            if let nextObservation {
-                let nextText = nextObservation.firstText.trimmingCharacters(
-                    in: .whitespacesAndNewlines
-                )
-                if !nextText.isEmpty {
-                    var threshold = 3.0 // Minimum threshold for English
+            let nextText = nextObservation.firstText.trim()
+            if !nextText.isEmpty {
+                var threshold = 3.0 // Minimum threshold for English
 
-                    // Count the first word length
-                    let firstWord = nextText.wordComponents.first ?? nextText
-                    let firstWordLength = firstWord.count.double
-                    // Add buffer for punctuation and spacing
-                    threshold = firstWordLength + 3.0 // Special case > 2.8
+                // Count the first word length
+                let firstWord = nextText.wordComponents.first ?? nextText
+                let firstWordLength = firstWord.count.double
+                // Add buffer for punctuation and spacing
+                threshold = firstWordLength + 3.0 // Special case > 2.8
 
-                    return threshold
-                }
+                return threshold
             }
-
             // Fallback when no next observation or empty text
             return 12.0 // Conservative default for English
         } else {
@@ -305,14 +300,12 @@ class OCRLineMeasurer {
                  性，对于信任的需求将更广泛。商家必须警惕他们的客户，麻烦他们提供更多他本不需要
                  */
 
-                if let nextObservation {
-                    let nextText = nextObservation.firstText
-                    let secondCharIsPunctuation = nextText.dropFirst().first?.isPunctuation ?? false
+                let nextText = nextObservation.firstText
+                let secondCharIsPunctuation = nextText.dropFirst().first?.isPunctuation ?? false
 
-                    // If next text second character is punctuation, increase threshold
-                    if !nextText.hasPunctuationPrefix, secondCharIsPunctuation {
-                        minimumCharacters += 0.8 // Increase threshold for Chinese with punctuation
-                    }
+                // If next text second character is punctuation, increase threshold
+                if !nextText.hasPunctuationPrefix, secondCharIsPunctuation {
+                    minimumCharacters += 0.8 // Increase threshold for Chinese with punctuation
                 }
             }
 

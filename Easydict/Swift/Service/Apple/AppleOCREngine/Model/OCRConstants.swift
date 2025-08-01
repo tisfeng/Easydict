@@ -1,0 +1,35 @@
+//
+//  OCRConstants.swift
+//  Easydict
+//
+//  Created by tisfeng on 2025/8/1.
+//  Copyright © 2025 izual. All rights reserved.
+//
+
+import Foundation
+
+// MARK: - OCRConstants
+
+/// Constants used for OCR text processing
+enum OCRConstants {
+    static let lineBreakText = "\n"
+    static let paragraphBreakText = "\n\n"
+
+    /// Default is 1.8 characters for indentation, should be less than 2 characters
+    static let indentationCharacterCount: Double = 1.8
+
+    /// Default is 2.0 lines for paragraph break
+    static let paragraphLineHeightRatio: Double = 1.2
+
+    /// Default is 12.0, for Chinese poetry
+    static let poetryCharacterCountOfLine = 12.0
+
+    /// Default is 7.0, for English poetry. 《I Pass by in Silence》 is 9.2 characters per line,
+    static let poetryWordCountOfLine = 7.0
+
+    /// Increased from 3.5 to 4.0 for better Chinese text detection
+    static let chineseDifferenceFontThreshold: Double = 4.0
+
+    /// 5.5 for English text font, may be not precise, so use a larger threshold
+    static let englishDifferenceFontThreshold: Double = 5.5
+}
