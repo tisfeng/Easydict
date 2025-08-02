@@ -61,11 +61,11 @@ public class OCRTextProcessor {
         // If intelligent joining is not enabled, return simple result
         guard intelligentJoined else { return }
 
-        print("\nOCR objects: \(observations.formattedDescription)")
+//        print("\nOCR objects: \(observations.formattedDescription)")
 
         // Sort text observations for proper order
         let sortedObservations = sortTextObservations(observations)
-        print("Sorted OCR objects: \(sortedObservations.formattedDescription)")
+//        print("Sorted OCR objects: \(sortedObservations.formattedDescription)")
 
         metrics.setupWithOCRData(
             ocrImage: ocrImage,

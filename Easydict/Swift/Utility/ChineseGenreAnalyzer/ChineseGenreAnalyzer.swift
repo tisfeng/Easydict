@@ -41,7 +41,7 @@ class ChineseGenreAnalyzer {
         }
 
         let newAnalysis = analyzeStructure(originalText)
-        log("Text analysis: \(newAnalysis.prettyJSONString)")
+//        log("Text analysis: \(newAnalysis.prettyJSONString)")
 
         // Check if the text is too short for classical Chinese detection
         guard newAnalysis.textInfo.characterCount >= minClassicalChineseTextDetectLength else {
