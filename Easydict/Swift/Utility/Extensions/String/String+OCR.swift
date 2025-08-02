@@ -159,7 +159,7 @@ extension String {
         separatorSet.formUnion(.punctuationCharacters)
 
         // Exclude specific characters that are considered as a part of the word
-        separatorSet.remove(charactersIn: "@#•\"-.")
+        separatorSet.remove(charactersIn: "@#/•\"-.")
 
         var components: [String] = []
         var currentWord = ""

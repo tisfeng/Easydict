@@ -348,12 +348,12 @@ class OCRMetrics {
         let verticalGap = pair.verticalGap
 
         // Only count spacing between observations that are NOT on the same line
-        // and have reasonable positive spacing (exclude paragraph breaks)
+        // and have reasonable positive spacing (exclude too large gaps).
         if verticalGap > 0 {
             var lineSpacing = verticalGap
-            let heightRatio = OCRConstants.paragraphLineHeightRatio
-            if verticalGap / averageLineHeight > heightRatio {
-                lineSpacing = averageLineHeight * heightRatio
+            let maxRatio = OCRConstants.maxLineSpacingHeightRatio
+            if verticalGap / averageLineHeight > maxRatio {
+                lineSpacing = averageLineHeight * maxRatio
             }
             totalLineSpacing += lineSpacing
             lineSpacingCount += 1

@@ -18,8 +18,10 @@ enum OCRConstants {
     /// Default is 1.8 characters for indentation, should be less than 2 characters
     static let indentationCharacterCount: Double = 1.8
 
-    /// Default is 2.0 lines for paragraph break
-    static let paragraphLineHeightRatio: Double = 1.2
+    /// Maximum ratio of line spacing to line height for normal text layout.
+    /// Used to cap excessively large gaps when calculating average line spacing.
+    /// Default is 1.2 (120% of line height)
+    static let maxLineSpacingHeightRatio: Double = 1.2
 
     /// Default is 12.0, for Chinese poetry
     static let poetryCharacterCountOfLine = 12.0

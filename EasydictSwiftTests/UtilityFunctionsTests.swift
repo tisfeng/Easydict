@@ -279,6 +279,7 @@ struct UtilityFunctionsTests {
             ("\"Hello\"!", ["\"Hello\""]),
             ("hi-hello, world", ["hi-hello", "world"]),
             ("scpl.example.com", ["scpl.example.com"]),
+            ("mechanism/protocol", ["mechanism/protocol"]),
             ("   ,!?", []),
             ("", []),
         ]

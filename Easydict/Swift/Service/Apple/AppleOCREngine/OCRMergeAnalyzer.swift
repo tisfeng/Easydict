@@ -33,7 +33,7 @@ class OCRMergeAnalyzer {
         if let strategy = dashJoinStrategy() {
             return strategy
         }
-        if let strategy = fontSizeChangeStrategy() {
+        if let strategy = bigFontSizeChangeStrategy() {
             return strategy
         }
         if let strategy = indentationStrategy() {
@@ -90,8 +90,8 @@ class OCRMergeAnalyzer {
     }
 
     /// 3. Font size change strategy
-    private func fontSizeChangeStrategy() -> OCRMergeStrategy? {
-        if context.isDifferentFontSize {
+    private func bigFontSizeChangeStrategy() -> OCRMergeStrategy? {
+        if context.hasBigDifferentFontSize {
             print("    🔤 Font size change detected")
             return .newParagraph
         }
@@ -218,7 +218,8 @@ class OCRMergeAnalyzer {
     /// 8. Big line spacing strategy
     private func bigLineSpacingStrategy() -> OCRMergeStrategy? {
         if context.hasBigLineSpacing {
-            let shouldJoin = context.isPreviousLongText && context.isFirstCharLowercase && !context.isCurrentList
+            let shouldJoin =
+                context.isPreviousLongText && context.isFirstCharLowercase && !context.isCurrentList
             if shouldJoin {
                 print("    📄 Page continuation detected - join with space")
                 return .mergeStrategy(for: context.pair)
@@ -387,7 +388,7 @@ class OCRMergeAnalyzer {
 
     /// 12. Big line spacing & font size change together
     private func bigLineSpacingAndFontSizeStrategy() -> OCRMergeStrategy? {
-        if context.mayBeBigLineSpacing, context.mayBeDifferentFontSize {
+        if context.hasBigLineSpacingRelaxed, context.hasDifferentFontSizeRelaxed {
             print("    📏 Big line spacing and different font size - new paragraph")
             return .newParagraph
         }

@@ -46,7 +46,7 @@ class OCRPoetryDetector {
         let isCharCountPerLineLikePoetry = matchesPoetryPattern(
             wordCountPerLine: 0,
             charCountPerLine: metrics.charCountPerLine,
-            confidence: .custom(2.0)
+            confidence: .custom(2.2)
         )
 
         if !isCharCountPerLineLikePoetry {
@@ -68,8 +68,6 @@ class OCRPoetryDetector {
             let text = observation.firstText
 
             var punctuationSet = CharacterSet.punctuationCharacters
-            punctuationSet.formUnion(.symbols)
-
             // Remove common poetry punctuation marks
             punctuationSet.remove(charactersIn: "《》一•·-#—")
 
@@ -94,8 +92,6 @@ class OCRPoetryDetector {
 
             let wordCount = text.wordCount
             totalWordCount += wordCount
-
-//            print("📄 Line \(i): '\(text.prefix20)' (words: \(wordCount), chars: \(lineCharCount))")
 
             if let last = text.last, let scalar = last.unicodeScalars.first {
                 if punctuationSet.contains(scalar) {
@@ -206,6 +202,20 @@ class OCRPoetryDetector {
 
         print("\n🔍 Poetry Detection Rules:")
 
+        /*
+         Poetry Detection Rule Summary:
+         =============================
+         Rule 1: Character count validation (>= 2 chars per line)
+         Rule 2: Punctuation density check (<= 2 marks per line)
+         Rule 3: Poetry pattern matching (word/char count thresholds)
+         Rule 4: Low punctuation density with 1.0x multiplier
+         Rule 5: High end punctuation ratio with 1.5x multiplier
+         Rule 6: High punctuation suffix ratio with 1.5x multiplier
+         Rule 7: High no-punctuation line ratio with 1.5x multiplier
+         Rule 8: Very low punctuation density with 1.5x multiplier
+         Rule 9: Combined criteria with 1.5x multiplier
+         */
+
         // Rule 1: Single character per line (like vertical poetry)
         if charCountPerLine < 2 {
             print(
@@ -218,7 +228,7 @@ class OCRPoetryDetector {
         )
 
         // Rule 2: Too many punctuation marks per line
-        if punctuationPerLine >= 2.0 {
+        if punctuationPerLine > 2.0 {
             print(
                 "❌ Rule 2: Too many punctuation marks per line (\(String(format: "%.2f", punctuationPerLine)))"
             )
@@ -253,7 +263,7 @@ class OCRPoetryDetector {
             print("📝 Poetry-like multiplier 1.0 detected")
             if punctuationPerLine <= 1.5 {
                 print(
-                    "✅ Rule: Low punctuation density, \(String(format: "%.2f", punctuationPerLine)) - POETRY DETECTED"
+                    "✅ Rule 4: Low punctuation density (\(String(format: "%.2f", punctuationPerLine)))"
                 )
                 return true
             }
@@ -269,28 +279,38 @@ class OCRPoetryDetector {
             print("📝 Poetry-like multiplier 1.5 detected")
             if endPunctuationRatio >= 0.8 {
                 print(
-                    "✅ Rule: High end punctuation ratio (\(String(format: "%.1f", endPunctuationRatio * 100))%) - POETRY DETECTED"
+                    "✅ Rule 5: High end punctuation ratio (\(String(format: "%.1f", endPunctuationRatio * 100))%)"
                 )
                 return true
             }
 
             if suffixPunctuationRatio >= 0.8 {
                 print(
-                    "✅ Rule: High punctuation suffix ratio (\(String(format: "%.1f", suffixPunctuationRatio * 100))%) - POETRY DETECTED"
+                    "✅ Rule 6: High punctuation suffix ratio (\(String(format: "%.1f", suffixPunctuationRatio * 100))%)"
                 )
                 return true
             }
 
             if noPunctuationLineRatio >= 0.9 {
                 print(
-                    "✅ Rule: High no punctuation line ratio (\(String(format: "%.1f", noPunctuationLineRatio * 100))%) - POETRY DETECTED"
+                    "✅ Rule 7: High no punctuation line ratio (\(String(format: "%.1f", noPunctuationLineRatio * 100))%)"
                 )
                 return true
             }
 
             if punctuationPerLine <= 0.1 {
                 print(
-                    "✅ Rule: Very low punctuation density (\(String(format: "%.2f", punctuationPerLine)) - POETRY DETECTED"
+                    "✅ Rule 8: Very low punctuation density (\(String(format: "%.2f", punctuationPerLine)))"
+                )
+                return true
+            }
+
+            if endPunctuationRatio == 0,
+               suffixPunctuationRatio < 0.2,
+               noPunctuationLineRatio > 0.8,
+               punctuationPerLine < 0.2 {
+                print(
+                    "✅ Rule 9: No end punctuation, low suffix punctuation, high no-punctuation ratio, low punctuation density"
                 )
                 return true
             }

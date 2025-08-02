@@ -178,7 +178,7 @@ class OCRLineAnalyzer {
     ///   - fontSizeThreshold: Optional font size difference threshold; if `nil`, uses language-specific default.
     ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if font sizes are considered different beyond the threshold, `false` if they are similar.
-    func isDifferentFontSize(
+    func hasDifferentFontSize(
         pair: OCRTextObservationPair,
         fontSizeThreshold: Double? = nil,
         confidence: OCRConfidenceLevel = .medium,

@@ -31,6 +31,8 @@ struct OCRMergeContext {
 
     // MARK: Internal
 
+    // MARK: - Indentation Properties
+
     lazy var isFirstHasIndentation: Bool = {
         guard let first = firstObservation else { return false }
         return lineAnalyzer.hasIndentation(observation: first)
@@ -75,12 +77,22 @@ struct OCRMergeContext {
         lineAnalyzer.isBigLineSpacing(pair: pair, confidence: .high)
     }()
 
-    lazy var mayBeBigLineSpacing: Bool = {
+    lazy var hasBigLineSpacingRelaxed: Bool = {
         lineAnalyzer.isBigLineSpacing(pair: pair, confidence: .low)
     }()
 
-    lazy var mayBeDifferentFontSize: Bool = {
-        lineAnalyzer.isDifferentFontSize(pair: pair, confidence: .custom(0.8))
+    // MARK: - Font Size Properties
+
+    lazy var hasDifferentFontSize: Bool = {
+        lineAnalyzer.hasDifferentFontSize(pair: pair)
+    }()
+
+    lazy var hasBigDifferentFontSize: Bool = {
+        lineAnalyzer.hasDifferentFontSize(pair: pair, confidence: .high)
+    }()
+
+    lazy var hasDifferentFontSizeRelaxed: Bool = {
+        lineAnalyzer.hasDifferentFontSize(pair: pair, confidence: .low)
     }()
 
     // MARK: - Text Length Properties
@@ -163,13 +175,8 @@ struct OCRMergeContext {
     // MARK: - Combined Logic Properties
 
     lazy var mayBeNewParagraph: Bool = {
-        mayBeDifferentFontSize || mayBeBigLineSpacing
-    }()
-
-    // MARK: - Font Size Properties
-
-    lazy var isDifferentFontSize: Bool = {
-        lineAnalyzer.isDifferentFontSize(pair: pair)
+        // Different font size may be not precise, so use a medium threshold
+        hasBigLineSpacingRelaxed || hasDifferentFontSize
     }()
 
     let pair: OCRTextObservationPair
