@@ -339,6 +339,8 @@
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
+		03D486502E3F2021009313B3 /* Regex+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4864F2E3F2021009313B3 /* Regex+List.swift */; };
+		03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D486522E3F2190009313B3 /* ListRegexTests.swift */; };
 		03D5C4C82D9D1EE70054D0D4 /* TextAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */; };
 		03D5C4CA2D9D455E0054D0D4 /* ChineseDetection+Prose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */; };
 		03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */; };
@@ -972,6 +974,8 @@
 		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
 		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
 		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
+		03D4864F2E3F2021009313B3 /* Regex+List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+List.swift"; sourceTree = "<group>"; };
+		03D486522E3F2190009313B3 /* ListRegexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRegexTests.swift; sourceTree = "<group>"; };
 		03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAnalysis.swift; sourceTree = "<group>"; };
 		03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Prose.swift"; sourceTree = "<group>"; };
 		03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataExtractor.swift; sourceTree = "<group>"; };
@@ -1217,6 +1221,7 @@
 		03022F2F2B370B7100B63209 /* EasydictSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				03D486512E3F211C009313B3 /* RegexTests */,
 				0305E7422E1D2B3E000A23A0 /* Extensions */,
 				03C3A5612E1BB4F400B59152 /* OCRTests */,
 				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
@@ -1224,7 +1229,6 @@
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
-				03FDAE952E1A8A290029369E /* RegexTests.swift */,
 			);
 			path = EasydictSwiftTests;
 			sourceTree = "<group>";
@@ -2624,6 +2628,15 @@
 			path = WindowManager;
 			sourceTree = "<group>";
 		};
+		03D486512E3F211C009313B3 /* RegexTests */ = {
+			isa = PBXGroup;
+			children = (
+				03FDAE952E1A8A290029369E /* RegexTests.swift */,
+				03D486522E3F2190009313B3 /* ListRegexTests.swift */,
+			);
+			path = RegexTests;
+			sourceTree = "<group>";
+		};
 		03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -2735,6 +2748,7 @@
 			isa = PBXGroup;
 			children = (
 				03FDAE932E1A29CB0029369E /* Regex+Common.swift */,
+				03D4864F2E3F2021009313B3 /* Regex+List.swift */,
 			);
 			path = Regex;
 			sourceTree = "<group>";
@@ -3538,6 +3552,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
+				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				94F90BEEE04149F988662B80 /* OCRTextProcessingTests.swift in Sources */,
 				03C3A59A2E1BC8C600B59152 /* OCRImageTests.swift in Sources */,
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
@@ -3622,6 +3637,7 @@
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */,
 				03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */,
+				03D486502E3F2021009313B3 /* Regex+List.swift in Sources */,
 				03D9D6FD2D8C0DA6009E0CEC /* Screenshot.swift in Sources */,
 				03FEF1632D45D5C2002D5F28 /* HostWindowManager.swift in Sources */,
 				033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */,

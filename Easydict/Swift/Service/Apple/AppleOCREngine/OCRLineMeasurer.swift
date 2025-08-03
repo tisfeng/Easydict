@@ -74,7 +74,7 @@ class OCRLineMeasurer {
 
         if !isLongLine {
             print(
-                "Short line detected (confidence: \(confidence)): '\(debugText)...' -> Remaining: \(String(format: "%.1f", actualRemainingCharacters)), Threshold: \(String(format: "%.1f", finalThreshold)) (base: \(String(format: "%.1f", baseThreshold)) × \(confidence.multiplier)), Ref: '\(refText)...'"
+                "Short line detected (confidence: \(confidence)): '\(debugText)...' -> Remaining: \(actualRemainingCharacters.string1f)), Threshold: \(finalThreshold.string1f) (base: \(baseThreshold)) × \(confidence.multiplier)), Ref: '\(refText)...'"
             )
         }
 

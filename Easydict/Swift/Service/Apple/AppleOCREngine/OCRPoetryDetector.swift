@@ -116,7 +116,7 @@ class OCRPoetryDetector {
                     longLineCount += 1
 
                     let prevText = prevObservation.firstText
-                    if prevText.isListTypeFirstWord {
+                    if prevText.hasListPrefix {
                         print("Previous line is a list line, maybe not poetry")
 
                         if hasEndPunctuationSuffix {
@@ -179,25 +179,25 @@ class OCRPoetryDetector {
         print("  - Lines: \(lineCount)")
 
         print(
-            "  - Total char count: \(totalCharCount), chars per line: \(String(format: "%.2f", charCountPerLine))"
+            "  - Total char count: \(totalCharCount), chars per line: \(charCountPerLine.string2f))"
         )
         print(
-            "  - Total words: \(totalWordCount), words per line: \(String(format: "%.2f", wordCountPerLine))"
+            "  - Total words: \(totalWordCount), words per line: \(wordCountPerLine.string2f))"
         )
         print(
-            "  - Punctuation marks count: \(punctuationMarkCount), punctuation per line: \(String(format: "%.2f", punctuationPerLine))"
+            "  - Punctuation marks count: \(punctuationMarkCount), punctuation per line: \(punctuationPerLine.string2f))"
         )
         print(
-            "  - Lines ending with punctuation: \(endPunctuationCount)/\(lineCount) = \(String(format: "%.2f", endPunctuationRatio))"
+            "  - Lines ending with punctuation: \(endPunctuationCount)/\(lineCount) = \(endPunctuationRatio.string2f)"
         )
         print(
-            "  - Punctuation suffix ratio: \(suffixPunctuationCount)/\(lineCount) = \(String(format: "%.2f", suffixPunctuationRatio))"
+            "  - Punctuation suffix ratio: \(suffixPunctuationCount)/\(lineCount) = \(suffixPunctuationRatio.string2f)"
         )
         print(
-            "  - No punctuation lines: \(noPunctuationLineCount)/\(lineCount) = \(String(format: "%.2f", noPunctuationLineRatio))"
+            "  - No punctuation lines: \(noPunctuationLineCount)/\(lineCount) = \(noPunctuationLineRatio.string2f)"
         )
         print(
-            "  - Long lines: \(longLineCount)/\(lineCount) = \(String(format: "%.2f", longLineRatio))"
+            "  - Long lines: \(longLineCount)/\(lineCount) = \(longLineRatio.string2f)"
         )
 
         print("\n🔍 Poetry Detection Rules:")
@@ -219,23 +219,23 @@ class OCRPoetryDetector {
         // Rule 1: Single character per line (like vertical poetry)
         if charCountPerLine < 2 {
             print(
-                "❌ Rule 1: Too few characters per line (\(String(format: "%.2f", charCountPerLine)) < 2)"
+                "❌ Rule 1: Too few characters per line (\(charCountPerLine.string2f) < 2)"
             )
             return false
         }
         print(
-            "✅ Rule 1: Sufficient characters per line (\(String(format: "%.2f", charCountPerLine)) >= 2)"
+            "✅ Rule 1: Sufficient characters per line (\(charCountPerLine.string2f) >= 2)"
         )
 
         // Rule 2: Too many punctuation marks per line
         if punctuationPerLine > 2.0 {
             print(
-                "❌ Rule 2: Too many punctuation marks per line (\(String(format: "%.2f", punctuationPerLine)))"
+                "❌ Rule 2: Too many punctuation marks per line (\(punctuationPerLine.string2f))"
             )
             return false
         }
         print(
-            "✅ Rule 2: Reasonable punctuation density (\(String(format: "%.2f", punctuationPerLine)) <= 2)"
+            "✅ Rule 2: Reasonable punctuation density (\(punctuationPerLine.string2f) <= 2)"
         )
 
         let matchesPoetryPattern2_0 = matchesPoetryPattern(
@@ -247,7 +247,7 @@ class OCRPoetryDetector {
         // Rule 3: Poetry-like word and character counts match
         if !matchesPoetryPattern2_0 {
             print(
-                "❌ Rule 3: Not poetry-like enough: \(String(format: "%.2f", wordCountPerLine)) words, \(String(format: "%.2f", charCountPerLine)) chars"
+                "❌ Rule 3: Not poetry-like enough: \(wordCountPerLine.string2f) words, \(charCountPerLine.string2f) chars"
             )
             return false
         }
@@ -263,7 +263,7 @@ class OCRPoetryDetector {
             print("📝 Poetry-like multiplier 1.0 detected")
             if punctuationPerLine <= 1.5 {
                 print(
-                    "✅ Rule 4: Low punctuation density (\(String(format: "%.2f", punctuationPerLine)))"
+                    "✅ Rule 4: Low punctuation density (\(punctuationPerLine.string1f) <= 1.5)"
                 )
                 return true
             }
@@ -279,28 +279,28 @@ class OCRPoetryDetector {
             print("📝 Poetry-like multiplier 1.5 detected")
             if endPunctuationRatio >= 0.8 {
                 print(
-                    "✅ Rule 5: High end punctuation ratio (\(String(format: "%.1f", endPunctuationRatio * 100))%)"
+                    "✅ Rule 5: High end punctuation ratio (\(endPunctuationRatio.string2f) >= 0.8"
                 )
                 return true
             }
 
             if suffixPunctuationRatio >= 0.8 {
                 print(
-                    "✅ Rule 6: High punctuation suffix ratio (\(String(format: "%.1f", suffixPunctuationRatio * 100))%)"
+                    "✅ Rule 6: High punctuation suffix ratio (\(suffixPunctuationRatio.string2f) >= 0.8"
                 )
                 return true
             }
 
             if noPunctuationLineRatio >= 0.9 {
                 print(
-                    "✅ Rule 7: High no punctuation line ratio (\(String(format: "%.1f", noPunctuationLineRatio * 100))%)"
+                    "✅ Rule 7: High no punctuation line ratio (\(noPunctuationLineRatio.string2f) >= 0.9"
                 )
                 return true
             }
 
             if punctuationPerLine <= 0.1 {
                 print(
-                    "✅ Rule 8: Very low punctuation density (\(String(format: "%.2f", punctuationPerLine)))"
+                    "✅ Rule 8: Very low punctuation density (\(punctuationPerLine.string2f) <= 0.1)"
                 )
                 return true
             }
@@ -339,8 +339,8 @@ class OCRPoetryDetector {
             print(
                 """
                 📝 Line is poetry-like:
-                words \(wordCountPerLine.twoDecimalString) <= \(wordCountThreshold.twoDecimalString),
-                chars \(charCountPerLine.twoDecimalString) <= \(charCountThreshold.twoDecimalString),
+                words \(wordCountPerLine.string2f) <= \(wordCountThreshold.string2f),
+                chars \(charCountPerLine.string2f) <= \(charCountThreshold.string2f),
                 confidence: \(confidence)
                 """
             )

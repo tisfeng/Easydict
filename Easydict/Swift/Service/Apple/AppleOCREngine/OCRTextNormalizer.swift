@@ -58,7 +58,7 @@ class OCRTextNormalizer {
     /// Output: "Hello · world, this is a test-with bad spacing..."
     public func normalizeText(_ string: String) -> String {
         var normalizedText = string
-        print("Before normalization: \n\(normalizedText)")
+//        print("Before normalization: \n\(normalizedText)")
 
         // 0. FIRST: Protect special content that should never be modified
         let (protectedText, protectionMap) = protectSpecialContent(normalizedText)
@@ -84,7 +84,7 @@ class OCRTextNormalizer {
         // 6. FINALLY: Restore all protected content
         normalizedText = restoreProtectedContent(normalizedText, protectionMap)
 
-        print("After normalization: \n\(normalizedText)")
+//        print("After normalization: \n\(normalizedText)")
 
         return normalizedText
     }

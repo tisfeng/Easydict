@@ -88,7 +88,7 @@ struct OCRMergeContext {
     }()
 
     lazy var hasBigDifferentFontSize: Bool = {
-        lineAnalyzer.hasDifferentFontSize(pair: pair, confidence: .high)
+        lineAnalyzer.hasDifferentFontSize(pair: pair, confidence: .custom(2.0))
     }()
 
     lazy var hasDifferentFontSizeRelaxed: Bool = {
@@ -129,15 +129,15 @@ struct OCRMergeContext {
     // MARK: - Content Type Properties
 
     lazy var isCurrentList: Bool = {
-        currentText.isListTypeFirstWord
+        currentText.hasListPrefix
     }()
 
     lazy var isPreviousList: Bool = {
-        previousText.isListTypeFirstWord
+        previousText.hasListPrefix
     }()
 
     lazy var isFirstObservationList: Bool = {
-        firstObservation?.firstText.isListTypeFirstWord ?? false
+        firstObservation?.firstText.hasListPrefix ?? false
     }()
 
     // MARK: - Text Analysis Properties

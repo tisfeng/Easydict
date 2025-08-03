@@ -118,7 +118,7 @@ class OCRLineAnalyzer {
         if isIndented {
             let refText = referenceObservation.firstText.prefix20
             print(
-                "\nIndentation detected (confidence: \(confidence)): \(characterDifference.oneDecimalString) > \(finalThreshold.oneDecimalString) (base: \(baseThreshold) × \(confidence.multiplier)) characters"
+                "\nIndentation detected (confidence: \(confidence)): \(characterDifference.string1f) > \(finalThreshold.string1f) (base: \(baseThreshold) × \(confidence.multiplier)) characters"
             )
             print("Current observation: \(observation)")
             print("Compared against: '\(refText)...'\n")
@@ -163,7 +163,7 @@ class OCRLineAnalyzer {
 
         if isBigSpacing {
             print(
-                "\nBig line spacing detected (confidence: \(confidence)), gap = \(pair.verticalGap.threeDecimalString), threshold = \(threshold.threeDecimalString), gapRatio = \(gapRatio.threeDecimalString) > \(confidence.multiplier)"
+                "\nBig line spacing detected (confidence: \(confidence)), gap = \(pair.verticalGap.string3f), threshold = \(threshold.string3f), gapRatio = \(gapRatio.string3f) > \(confidence.multiplier)"
             )
             print("Current: \(pair.current)\n")
         }
@@ -197,7 +197,7 @@ class OCRLineAnalyzer {
 
         if isDifferent {
             print(
-                "\nDifferent font detected (confidence: \(confidence)): diff = \(differentFontSize), threshold = \(finalThreshold) (base: \(baseThreshold) × \(confidence.multiplier))"
+                "\nDifferent font detected (confidence: \(confidence)): diff = \(differentFontSize.string1f), threshold = \(finalThreshold) (base: \(baseThreshold) × \(confidence.multiplier))"
             )
             print("Pair: \(pair)\n")
         }
@@ -236,7 +236,7 @@ class OCRLineAnalyzer {
 
         let isEqualChinese = equalStructure && equalAlignment && hasEndPunctuationSuffix
         if isEqualChinese {
-            print("\nEqual Chinese text detected: similarity = \(similarity.threeDecimalString)\n")
+            print("\nEqual Chinese text detected: similarity = \(similarity.string2f)\n")
         }
 
         return isEqualChinese
@@ -294,7 +294,7 @@ class OCRLineAnalyzer {
 
         if !isNewLine {
             print(
-                "\nVertical gap: \(verticalGap.threeDecimalString), Threshold: \(threshold.threeDecimalString)"
+                "\nVertical gap: \(verticalGap.string2f), Threshold: \(threshold.string2f)"
             )
             print("Same line detected: \(pair)")
         }
@@ -323,7 +323,7 @@ class OCRLineAnalyzer {
 
         if !isEqual {
             print(
-                "\nNot equalX text (confidence: \(confidence), comparison: \(comparison): difference = \(characterDifference.oneDecimalString) >= tolerance \(finalTolerance.oneDecimalString) (base: \(baseTolerance.oneDecimalString) × \(confidence.multiplier))"
+                "\nNot equalX text (confidence: \(confidence), comparison: \(comparison): difference = \(characterDifference.string1f) >= tolerance \(finalTolerance.string1f) (base: \(baseTolerance.string1f) × \(confidence.multiplier))"
             )
             print("Current: \(pair.current)\n")
         }

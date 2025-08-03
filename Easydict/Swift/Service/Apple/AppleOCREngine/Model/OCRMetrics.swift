@@ -144,7 +144,7 @@ class OCRMetrics {
     /// Maybe text has a big average line spacing, but we want to detect paragraph breaks
     /// that are larger than the average line spacing.
     var bigLineSpacingThreshold: Double {
-        max(min(averageLineHeight, minLineHeight * 1.1), averageLineSpacing)
+        max(min(averageLineHeight, minLineHeight * 1.1), averageLineSpacing * 1.1)
     }
 
     // MARK: - Metrics Calculation
@@ -320,22 +320,6 @@ class OCRMetrics {
         punctuationMarkCount += linePunctuationCount
 
         totalCharCount += text.count - linePunctuationCount
-
-        // Calculate index for gap logging (only if not the first observation)
-        guard let index = textObservations.firstIndex(of: textObservation), index > 0 else {
-            return
-        }
-
-        let pair = OCRTextObservationPair(
-            current: textObservation,
-            previous: textObservations[index - 1]
-        )
-        let gap = pair.verticalGap
-        let currentText = textObservation.firstText
-
-        print(
-            "  [\(index)]: \(currentText.prefix20) , gap: \(gap.threeDecimalString), height: \(lineHeight.threeDecimalString)"
-        )
     }
 
     /// Performs a second-pass analysis to calculate the spacing between consecutive lines.

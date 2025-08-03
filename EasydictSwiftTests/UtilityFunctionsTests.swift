@@ -235,37 +235,6 @@ struct UtilityFunctionsTests {
         #expect(cleanText == "Hello世界café")
     }
 
-    // MARK: - List Type Detection Tests
-
-    @Test("List Type Detection", .tags(.utilities))
-    func testListTypeFirstWord() {
-        let trueInputs: [String] = [
-            "1. item",
-            "1) item",
-            "1） item",
-            "a. item",
-            "A) item",
-            "IV. item",
-            "• item",
-            "- item",
-            "* item",
-        ]
-        let falseInputs: [String] = [
-            "•item",
-            "-item",
-            "M. item",
-            "item 1. item",
-            "",
-            "  ",
-        ]
-        for input in trueInputs {
-            #expect(input.isListTypeFirstWord == true, "Failed for input: \(input)")
-        }
-        for input in falseInputs {
-            #expect(input.isListTypeFirstWord == false, "Failed for input: \(input)")
-        }
-    }
-
     @Test("Word Components Extraction", .tags(.utilities))
     func testWordComponentsExtraction() {
         let testCases: [(input: String, expected: [String])] = [

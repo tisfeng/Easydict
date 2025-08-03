@@ -55,14 +55,14 @@ struct SliderCell: View {
             ) {
                 Text(titleKey)
             } minimumValueLabel: {
-                Text(minValue.oneDecimalString)
+                Text(minValue.string1f)
                     .font(.body)
             } maximumValueLabel: {
-                Text(maxValue.oneDecimalString)
+                Text(maxValue.string1f)
                     .font(.body)
             }
 
-            Text(value.oneDecimalString)
+            Text(value.string1f)
                 .frame(width: 40, alignment: .trailing)
         }
         .padding(10)

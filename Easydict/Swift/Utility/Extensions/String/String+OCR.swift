@@ -60,75 +60,12 @@ extension String {
     }
 
     /// Check if text represents a list item based on common list markers
-    var isListTypeFirstWord: Bool {
+    var hasListPrefix: Bool {
         let trimmedText = trimmingCharacters(in: .whitespaces)
         guard !trimmedText.isEmpty else { return false }
 
-        // Use regex to match various list patterns
-        let patterns = [
-            "^\\d+\\.", // 1. 2. 3. etc.
-            "^\\d+\\)", // 1) 2) 3) etc.
-            "^\\d+\\）", // 1） 2） 3） etc. (Chinese parentheses)
-            "^[a-g]\\.", // a. b. c. etc.
-            "^[A-G]\\.", // A. B. C. etc.
-            "^[a-g]\\)", // a) b) c) etc.
-            "^[A-G]\\)", // A) B) C) etc.
-            "^[ivx]+\\.", // i. ii. iii. iv. v. etc. (Roman numerals)
-            "^[IVX]+\\.", // I. II. III. IV. V. etc. (Roman numerals)
-
-            // Require whitespace after marker to treat as list
-            "^•\\s+", // Bullet point
-            "^-\\s+", // Dash
-            "^\\*\\s+", // Asterisk
-            "^§\\s+", // Section symbol
-            "^¶\\s+", // Paragraph symbol
-            "^►\\s+", // Arrow bullet
-            "^▪\\s+", // Square bullet
-            "^▫\\s+", // Hollow square bullet
-            "^○\\s+", // Circle bullet
-            "^●\\s+", // Filled circle bullet
-            "^◦\\s+", // Small circle bullet
-            "^◾\\s+", // Black medium small square
-            "^◽\\s+", // White medium small square
-
-            "^\\[\\d+\\]\\s+", // [1] [2] [3] with space after
-        ]
-
-        for pattern in patterns {
-            do {
-                let regex = try NSRegularExpression(pattern: pattern, options: [])
-                let range = NSRange(location: 0, length: trimmedText.utf16.count)
-                if let match = regex.firstMatch(in: trimmedText, options: [], range: range) {
-                    // Found a list marker, now check what follows
-                    let markerEndIndex = match.range.upperBound
-
-                    // Check if there's content after the marker
-                    guard markerEndIndex < trimmedText.utf16.count else { return false }
-
-                    // Get the substring after the marker
-                    let afterMarkerIndex = trimmedText.index(
-                        trimmedText.startIndex, offsetBy: markerEndIndex
-                    )
-                    let remainingText = String(trimmedText[afterMarkerIndex...])
-
-                    // Find the first non-whitespace character after the marker
-                    let firstNonSpaceChar = remainingText.first { !$0.isWhitespace }
-
-                    // The first non-whitespace character should not be a punctuation mark
-                    if let char = firstNonSpaceChar {
-                        return !String(char).isPunctuationCharacter
-                    }
-
-                    // If no non-whitespace character found after marker, it's not a valid list item
-                    return false
-                }
-            } catch {
-                // If regex compilation fails, continue to next pattern
-                continue
-            }
-        }
-
-        return false
+        // Use the comprehensive list marker pattern from Regex+List
+        return trimmedText.contains(Regex.listMarkerPattern)
     }
 
     /// Get the first word in the string, splitting by whitespace and punctuation

@@ -15,15 +15,29 @@ import Foundation
 ///   - 1 -> "1.0"
 ///   - 1.234 -> "1.2"
 extension Double {
-    var oneDecimalString: String {
+    var string1f: String {
         String(format: "%.1f", self)
     }
 
-    var twoDecimalString: String {
+    var string2f: String {
         String(format: "%.2f", self)
     }
 
-    var threeDecimalString: String {
+    var string3f: String {
+        String(format: "%.3f", self)
+    }
+}
+
+extension CGFloat {
+    var string1f: String {
+        String(format: "%.1f", self)
+    }
+
+    var string2f: String {
+        String(format: "%.2f", self)
+    }
+
+    var string3f: String {
         String(format: "%.3f", self)
     }
 }
