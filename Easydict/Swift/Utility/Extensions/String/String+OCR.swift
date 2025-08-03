@@ -55,11 +55,11 @@ extension String {
 
     /// Count the number of English words in the text string.
     var englishWordCount: Int {
-        let englishWords = wordComponents.filter { $0.isEnglishText }
+        let englishWords = wordComponents.filter { $0.removingNonLetters().isEnglishText }
         return englishWords.count
     }
 
-    /// Check if text represents a list item based on common list markers
+    /// Check if text represents a list item based on common list markers, e.g., "1.", "a)", "•", etc.
     var hasListPrefix: Bool {
         let trimmedText = trimmingCharacters(in: .whitespaces)
         guard !trimmedText.isEmpty else { return false }

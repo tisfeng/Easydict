@@ -308,10 +308,6 @@ public class AppleLanguageDetector: NSObject {
         var adjustedProbabilities = languageProbabilities
         let preferredLanguages = EZLanguageManager.shared().preferredLanguages
 
-        if isDebugLogEnabled {
-            print("Original probabilities: \(languageProbabilities.prettyPrinted)")
-        }
-
         // Apply user preferred language weights
         for (index, preferredLanguage) in preferredLanguages.enumerated() {
             // Convert to Apple NLLanguage
