@@ -31,22 +31,19 @@ class OCRTextMerger {
     ///
     /// - Parameter sortedObservations: An array of `VNRecognizedTextObservation` sorted in reading order.
     /// - Returns: A single string representing the merged and formatted text.
-    func performIntelligentTextMerging(_ sortedObservations: [VNRecognizedTextObservation])
+    func performSmartMerging(_ sortedObservations: [VNRecognizedTextObservation])
         -> String {
         // Analyze merge strategies for sorted observations.
         let mergeStrategies = analyzeMergeStrategies(observations: sortedObservations)
 
         // Apply merge strategies to generate the final text.
-        let mergedText = applyMergeStrategies(
-            observations: sortedObservations,
-            strategies: mergeStrategies
-        )
+        let mergedText = applyMergeStrategies(observations: sortedObservations, strategies: mergeStrategies)
 
         for (index, observation) in sortedObservations.enumerated() {
             // The merge strategy starts from the second observation.
             // `mergeStrategy` was set in `analyzeMergeStrategies`.
             if let mergeStrategy = observation.mergeStrategy {
-                print(" [\(index)]: strategy: \(mergeStrategy), \(observation.prefix20)")
+                log(" [\(index)]: strategy: \(mergeStrategy), \(observation.prefix20)")
             }
         }
 
@@ -79,7 +76,7 @@ class OCRTextMerger {
         // Reference for the observation with the maximum X-coordinate in the current context.
         var maxXLineTextObservation = observations[0]
 
-        print("🔤 Starting OCR merge strategy analysis for \(observations.count) observations")
+        log("🔤 Starting OCR merge strategy analysis for \(observations.count) observations")
 
         // Process each observation starting from the second one.
         for i in 1 ..< observations.count {
@@ -87,9 +84,9 @@ class OCRTextMerger {
             let previous = observations[i - 1]
             let pair = OCRTextObservationPair(current: current, previous: previous)
 
-            print("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
-            print("  Previous: \(previous.firstText.prefix20)")
-            print("  Current:  \(current.firstText.prefix20)")
+            log("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
+            log("  Previous: \(previous.firstText.prefix20)")
+            log("  Current:  \(current.firstText.prefix20)")
 
             // Perform a comprehensive analysis to determine the merge strategy.
             let mergeStrategy = determineMergeStrategy(
@@ -109,10 +106,10 @@ class OCRTextMerger {
                 rightmostObservation: &maxXLineTextObservation
             )
 
-            print("  📝 Strategy: \(mergeStrategy)")
+            log("  📝 Strategy: \(mergeStrategy)")
         }
 
-        print("✅ Merge strategy analysis complete: \(mergeStrategies.count) strategies determined")
+        log("✅ Merge strategy analysis complete: \(mergeStrategies.count) strategies determined")
         return mergeStrategies
     }
 
@@ -129,13 +126,13 @@ class OCRTextMerger {
         -> String {
         guard !observations.isEmpty else { return "" }
         guard observations.count == strategies.count + 1 else {
-            print(
+            log(
                 "⚠️ Warning: Observations count (\(observations.count)) != strategies count + 1 (\(strategies.count + 1))"
             )
             return observations.map(\.firstText).joined(separator: " ")
         }
 
-        print("🔧 Applying merge strategies to \(observations.count) observations")
+        log("🔧 Applying merge strategies to \(observations.count) observations")
 
         var mergedText = ""
 
@@ -156,12 +153,12 @@ class OCRTextMerger {
 
         // Apply text normalization if the feature is enabled.
         if Configuration.shared.enableOCRTextNormalization {
-            print("🔧 Applying text normalization...")
+            log("🔧 Applying text normalization...")
             mergedText = textNormalizer.normalizeText(mergedText)
         }
 
         let finalText = mergedText.trim()
-        print("✅ Merge complete. Final length: \(finalText.count) characters")
+        log("✅ Merge complete. Final length: \(finalText.count) characters")
 
         return finalText
     }

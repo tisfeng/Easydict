@@ -35,15 +35,15 @@ public class AppleOCREngine {
     /// - Parameters:
     ///   - image: The `NSImage` to recognize text from.
     ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
-    ///   - shouldRefineWithDetectedLanguage: If true, triggers a second pass with the detected language for improved accuracy.
+    ///   - refineWithDetectedLang: If true, triggers a second pass with the detected language for improved accuracy.
     ///   - completion: A closure that is called on the main queue with the `EZOCRResult` or an error.
     func recognizeText(
         image: NSImage,
         language: Language = .auto,
-        shouldRefineWithDetectedLanguage: Bool = true,
+        refineWithDetectedLanguage: Bool = true,
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
-        print("Recognizing text in image with language: \(language)")
+        log("Recognizing text in image with language: \(language)")
         guard let cgImage = image.toCGImage() else {
             let error = QueryError.error(
                 type: .parameter, message: "Failed to convert NSImage to CGImage"
@@ -52,9 +52,14 @@ public class AppleOCREngine {
             return
         }
 
+        let startTime = CFAbsoluteTimeGetCurrent()
+
         // Perform the first OCR pass. If language is .auto, this pass will detect the language.
         recognizeTextFromCGImage(cgImage: cgImage, language: language) { [weak self] textObservations, error in
             guard let self else { return }
+
+            let elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
+            log("OCR cost time: \(elapsedTime.string2f) seconds")
 
             if let error {
                 completion(nil, error)
@@ -64,9 +69,8 @@ public class AppleOCREngine {
             let ocrResult = EZOCRResult()
             ocrResult.from = language
 
-            let needIntelligentTextProcessing =
-                !shouldRefineWithDetectedLanguage || hasValidOCRLanguage(language)
-            print("Performing OCR text processing, intelligent: \(needIntelligentTextProcessing)")
+            let smartMerging = !refineWithDetectedLanguage || hasValidOCRLanguage(language)
+            log("Performing OCR text processing, intelligent: \(smartMerging)")
 
             // The text processor analyzes the first pass and determines the detected language.
             // It will try to detect the `ocrResult.from` language if it is set to .auto.
@@ -74,22 +78,23 @@ public class AppleOCREngine {
                 ocrResult,
                 observations: textObservations,
                 ocrImage: image,
-                intelligentJoined: needIntelligentTextProcessing
+                smartMerging: smartMerging
             )
 
             let detectedLanguage = ocrResult.from
 
             // Check if a second, more precise OCR pass is needed.
-            let needsSecondPass =
-                shouldRefineWithDetectedLanguage && hasValidOCRLanguage(detectedLanguage)
-            print("Detected language: \(detectedLanguage), needs second pass: \(needsSecondPass)")
+            // If detectedLanguage is NOT a valid OCR language, like Portuguese, we don't need a second pass.
+            let needsSecondPass = !smartMerging && hasValidOCRLanguage(detectedLanguage)
+
+            log("Detected language: \(detectedLanguage), needs second pass: \(needsSecondPass)")
 
             if needsSecondPass {
                 // Perform the second pass with the detected language for better accuracy.
                 recognizeText(
                     image: image,
                     language: detectedLanguage,
-                    shouldRefineWithDetectedLanguage: false,
+                    refineWithDetectedLanguage: false,
                     completion: completion
                 )
             } else {
@@ -110,19 +115,19 @@ public class AppleOCREngine {
     /// - Parameters:
     ///   - image: The `NSImage` to recognize text from.
     ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
-    ///   - shouldRefineWithDetectedLanguage: If true, triggers a second pass with the detected language for improved accuracy.
+    ///   - refineWithDetectedLanguage: If true, triggers a second pass with the detected language for improved accuracy.
     /// - Returns: An `EZOCRResult` containing the recognized and processed text.
     func recognizeTextAsync(
         image: NSImage,
         language: Language = .auto,
-        shouldRefineWithDetectedLanguage: Bool = true
+        refineWithDetectedLanguage: Bool = true
     ) async throws
         -> EZOCRResult {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<EZOCRResult, Error>) in
             recognizeText(
                 image: image,
                 language: language,
-                shouldRefineWithDetectedLanguage: shouldRefineWithDetectedLanguage
+                refineWithDetectedLanguage: refineWithDetectedLanguage
             ) { result, error in
                 if let error {
                     continuation.resume(throwing: error)

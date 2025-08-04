@@ -106,9 +106,9 @@ enum OCRMergeStrategy: CustomStringConvertible {
         case .joinWithSpace:
             return " "
         case .lineBreak:
-            return OCRConstants.lineBreakText
+            return OCRConstants.lineSeparator
         case .newParagraph:
-            return OCRConstants.paragraphBreakText
+            return OCRConstants.paragraphSeparator
         case .joinWithNoSpace:
             return "-"
         case .joinRemovingDash:

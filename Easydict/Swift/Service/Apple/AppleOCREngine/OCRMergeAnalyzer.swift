@@ -221,7 +221,7 @@ class OCRMergeAnalyzer {
             let shouldJoin =
                 context.isPreviousLongText && context.isFirstCharLowercase && !context.isCurrentList
             if shouldJoin {
-                print("    📄 Page continuation detected - join with space")
+                print("    📄 Page continuation detected - join pair")
                 return .mergeStrategy(for: context.pair)
             } else {
                 print("    📏 Big line spacing - new paragraph")
@@ -287,6 +287,33 @@ class OCRMergeAnalyzer {
                 /**
                  Special case:
 
+                  If different X, previous line is absolute long,
+                  pair has no different font size, and pair has the same centerX,
+                  it may be a title or section header, we should join them.
+
+                  Example:
+
+                  ```
+                         A Security Assessment of HTTP/2 Usage in 5G
+                                 Service Based Architecture
+                  ```
+                  */
+
+                let shouldJoin = context.isEqualPairCenterX
+                    && !context.previousTextHasEndPunctuation
+                    && !context.hasDifferentFontSizeRelaxed
+                    && !context.hasBigLineSpacingRelaxed
+                    && !context.isCurrentList
+                    && context.hasPairIndentation
+
+                if shouldJoin {
+                    print("🔗 Center X is equal, and has no different font size - join pair")
+                    return .mergeStrategy(for: context.pair)
+                }
+
+                /**
+                 Special case:
+
                  If different X, previous line is a list and long, current line has pair indentation,
                  it may be not a new paragraph.
 
@@ -304,7 +331,7 @@ class OCRMergeAnalyzer {
 
                 if context.hasPairIndentation, !context.isPreviousList {
                     print(
-                        "    🔗 Has pair indentation, previous line is absolute long and NOT list - new paragraph"
+                        "🔗 Has pair indentation, previous line is absolute long and NOT list - new paragraph"
                     )
                     return .newParagraph
                 }
@@ -326,13 +353,12 @@ class OCRMergeAnalyzer {
 
                 if context.hasIndentation, context.isPrevHasIndentation, !context.hasPairIndentation {
                     print(
-                        "    🔗 Different X, previous and current line both have indentation - new paragraph"
+                        "🔗 Different X, previous and current line both have indentation - new paragraph"
                     )
                     return .newParagraph
                 }
-                print(
-                    "    🔗 Different X and previous line is absolute long text - join with space or not by language"
-                )
+
+                print("    🔗 Different X and previous line is absolute long text - join pair")
                 return .mergeStrategy(for: context.pair)
             }
         }

@@ -19,6 +19,9 @@ enum OCRTestSample: String, CaseIterable {
     case enTextBitcoin = "ocr-en-text-bitcoin.png"
     case enTextReddit = "ocr-en-text-reddit.png"
 
+    /// Entire English page of paper with two culoumns.
+    case enPaper0 = "ocr-en-paper-0.png"
+
     // ocr english paper 1-14
     case enPaper1 = "ocr-en-paper-1.png"
     case enPaper2 = "ocr-en-paper-2.png"
@@ -53,6 +56,7 @@ enum OCRTestSample: String, CaseIterable {
 
     case zhTextBitcoin = "ocr-zh-text-bitcoin.png"
     case zhTextList1 = "ocr-zh-text-list-1.png"
+    case zhTextTwoColums1 = "ocr-zh-text-two-columns-1.png"
 
     // Chinese modern poetry
     case zhPoetry1 = "ocr-zh-poetry-1.png"

@@ -58,7 +58,7 @@ class OCRTextNormalizer {
     /// Output: "Hello · world, this is a test-with bad spacing..."
     public func normalizeText(_ string: String) -> String {
         var normalizedText = string
-//        print("Before normalization: \n\(normalizedText)")
+        //        print("Before normalization: \n\(normalizedText)")
 
         // 0. FIRST: Protect special content that should never be modified
         let (protectedText, protectionMap) = protectSpecialContent(normalizedText)
@@ -84,7 +84,7 @@ class OCRTextNormalizer {
         // 6. FINALLY: Restore all protected content
         normalizedText = restoreProtectedContent(normalizedText, protectionMap)
 
-//        print("After normalization: \n\(normalizedText)")
+        //        print("After normalization: \n\(normalizedText)")
 
         return normalizedText
     }
@@ -312,34 +312,22 @@ class OCRTextNormalizer {
         return result
     }
 
-    /// Replace similar dot symbols with standardized middle dot character
-    /// OCR often misidentifies various dot-like symbols, this unifies them for consistency
-    /// Handles various dot-like symbols that OCR might recognize incorrectly
+    /// Replaces various dot-like symbols with a standardized middle dot ("·").
+    ///
+    /// OCR engines often misrecognize different kinds of dot-like characters, such as:
+    /// - Bullet points (•)
+    /// - Mathematical dots (⋅, ∙)
+    /// - Circle symbols (●, ○)
+    ///
+    /// This function unifies those symbols into a consistent form to improve downstream processing and display.
+    ///
+    /// ### Examples:
+    /// - `"Item 1 • Item 2"` → `"Item 1 · Item 2"`
+    /// - `"A ⋅ B ∙ C"` → `"A · B · C"`
+    /// - `"List ○ First ● Second"` → `"List · First · Second"`
     private func replaceSimilarDotSymbol(in string: String) -> String {
-        // Define the character set for various dot-like symbols that OCR commonly confuses
-        // Examples of transformations:
-        // "Item 1 • Item 2" → "Item 1 · Item 2" (bullet point)
-        // "A ⋅ B ∙ C" → "A · B · C" (mathematical dots)
-        // "List ○ First ● Second" → "List · First · Second" (circle symbols)
-        let dotLikeCharacters = "⋅•‧∙⋄◦∘○●"
-        let charSet = CharacterSet(charactersIn: dotLikeCharacters)
-        let components = string.components(separatedBy: charSet)
-
-        // Only proceed if we found dot-like symbols to replace
-        if components.count > 1 {
-            let trimmedComponents = components.compactMap { component in
-                let trimmed = component.trimmingCharacters(in: .whitespaces)
-                return trimmed.isEmpty ? nil : trimmed
-            }
-
-            // Use middle dot (·) as the standard separator for better readability
-            let result = trimmedComponents.joined(separator: " · ")
-
-            // Clean up any double spaces that might have been introduced (preserve line breaks)
-            return result.replacing(Regex.multipleHorizontalWhitespace, with: " ")
-        }
-
-        return string
+        let components = string.components(separatedBy: CharacterSet.dotLikeCharacters)
+        return components.joined(separator: " · ")
     }
 
     /// Normalizes common OCR recognition errors for symbols.

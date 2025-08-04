@@ -113,7 +113,7 @@ class OCRLineMeasurer {
         return averageWidth
     }
 
-    /// Calculates the horizontal difference between two text observations in character units.
+    /// Calculates the horizontal difference between two text observations in character units. currentX - previousX
     ///
     /// - Parameters:
     ///   - pair: The pair of text observations to compare.
@@ -140,6 +140,9 @@ class OCRLineMeasurer {
         case .maxX:
             currentX = current.boundingBox.maxX
             previousX = previous.boundingBox.maxX
+        case .centerX:
+            currentX = current.boundingBox.midX
+            previousX = previous.boundingBox.midX
         }
         let dx = currentX - previousX
 

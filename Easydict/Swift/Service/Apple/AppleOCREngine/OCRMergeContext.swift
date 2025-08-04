@@ -95,6 +95,10 @@ struct OCRMergeContext {
         lineAnalyzer.hasDifferentFontSize(pair: pair, confidence: .low)
     }()
 
+    lazy var isEqualPairCenterX: Bool = {
+        lineAnalyzer.isEqualCenterX(pair: pair)
+    }()
+
     // MARK: - Text Length Properties
 
     lazy var comparedObservation: VNRecognizedTextObservation = {

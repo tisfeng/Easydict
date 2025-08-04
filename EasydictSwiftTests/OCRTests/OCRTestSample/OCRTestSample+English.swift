@@ -17,6 +17,7 @@ extension OCRTestSample {
     static let englishCases: [OCRTestSample] = [
         .enText1, .enText2, .enTextBitcoin, .enTextReddit,
         .enTextList1, .enTextList2, .enTextList3, .enTextLetter338,
+        .enPaper0,
         .enPaper1, .enPaper2, .enPaper3, .enPaper4, .enPaper5, .enPaper6, .enPaper7,
         .enPaper8, .enPaper9, .enPaper10, .enPaper11, .enPaper12, .enPaper13,
         .enPoetry8,
@@ -138,6 +139,38 @@ extension OCRTestSample {
         p.s. I bought two glass-swords for my home. Very beautiful.
 
         338
+        """,
+
+        enPaper0: """
+        A Security Assessment of HTTP/2 Usage in 5G Service Based Architecture
+
+        Nathalie Wehbe, Hyame Assem Alameddine, Makan Pourzandi, Elias Bou-Harb, and Chadi Assi
+
+        Abstract-Fifth Generation (5G) networks are designed to bring enhanced network operational efficiencies to serve a wide range of emerging services. Towards this purpose, 5G adopts a Service Based Architecture (SBA) that features web-based technologies such as the Hypertext Transfer Protocol version 2 (HTTP/2) used for signalling and Application Programming Interfaces (APIs) for service delivery. Several works in the literature reported that the shift towards the aforementioned technologies brings potential cybersecurity challenges to the 5G network. In this article, we discuss different security features introduced by 5G SBA and explore these security challenges and their solutions in this new architecture. We carefully examine HTTP/2 features, standard and custom headers and discuss their security implications in 5G SBA. We comment on the applicability of some known HTTP/2 attacks in 5G SBA in light of the standardized APIs and discuss the security opportunities and research directions brought by this protocol and its related technologies.
+
+        Index Terms-5G security, HTTP/2, Service Based Architecture, Application programming interface, OAuth 2.0
+
+        I. INTRODUCTION
+
+        Tie, marface in, e. etica ding stieg en Quality of 1 HE emergence of new vertical industries (e.g. , automoService (QoS) requirements (e.g. , ultra-low latency, high reliability, etc. ) pushed mobile network operators to revolutionize their telecommunication networks to support these new use cases [1], [2]. As a result, Fifth Generation (5G) networks have emerged, mainly adding a new radio access technology and moving from legacy hardware equipment to a complete virtualized new Service Based Architecture (SBA).
+
+        The 5G SBA follows a cloud-native deployment and leverages virtualization technologies for the implementation of its Network Functions (NFs), thus enabling better scalability, flexibility and service management [2]. 5G relies on a standardized set of REpresentational State Transfer (RESTful) Application Programming Interfaces (APIs) combined with web-based technologies including the Transport Control Protocol (TCP) /Transport Layer Security (TLS) /Hypertext Transfer Protocol version 2 (HTTP/2) /JavaScript Object Notation (JSON) protocol suit for the communication between its NFs [3]. The use of virtualization technologies for the provisioning and automated management of NFs in the cloud-native deployment adopted for 5G networks, along with APIs and HTTP/2 serves the security-by-design principle that 5G SBA follows [2].
+
+        In fact, the 5G SBA introduces new security features to enable resilient and reliable experience for 5G users. These
+
+        Nathalie Wehbe and Chadi Assi are with the Concordia University, Hyame Assem Alameddine and Makan Pourzandi are with Ericsson Research, and Elias Bou-Harb is with the University of Texas at San Antonio
+
+        features include network function registration, discovery and authorization, as well as the protection of the Service-Based Interfaces (SBI) [4]. They are enforced using the harmonized HTTP/2 protocol, employed for signalling between the 5G NFs. The HTTP/2 protocol offers new security opportunities through the introduced 3rd Generation Partnership Project (3GPP) custom HTTP headers as well as through its features ranging from server push capability, stream multiplexing and header compression among others [3], [5], [6].
+
+        Although 5G SBA was designed with security in mind, it is of utmost importance to discuss and explore the new security challenges that are introduced in this architecture and its enabling technologies and protocols. Cybersercurity implications of web-based technologies on 5G SBA needs more attention. In fact, [3] presents some HTTP/2 attacks exploiting its features without a thorough discussion on their implications on 5G SBA; while other works [1], [7], [8] only focus on the vulnerabilities brought by virtualization technologies.
+
+        Motivated by the fact that HTTP/2, APIs and JSON are well known to attackers, in this article, we provide a thorough discussion on the possible threats they introduce to 5G SBA with a focus on HTTP/2. First, we introduce 5G SBA with a close attention to the security associated with its NF services and their APIs. Then, we discuss the use of HTTP/2 in 5G SBA for fulfilling the need for reduced latency and communication overhead through its features that we expose. We assess the security implications of these features in 5G SBA and complement them by a discussion on the HTTP/2 standard and custom headers used for hardening 5G SBA security. Finally, we conclude with some security challenges and opportunities.
+
+        II. 5G SERVICE BASED ARCHITECTURE (SBA)
+
+        A. Overview
+
+        5G networks revolutionized the telecommunication architecture by adopting a cloud-native, service-driven deployment promoting enhanced network operational efficiencies. The 5G SBA (Figure 1) enables a granular design and delivery of 5G network functionality through a decoupling of User Plane (UP) and Control Plane (CP), hence, providing independent scalability and flexible deployments [2], [9]. The UP and CP consist of multiple interconnected NFs, each providing a set of "services". Examples of such services include service registration, authorization and discovery [9]. The 5G CP is defined by a SBA. The interactions between the CP NFs are enabled by a service-based representation in which the SBIs can be easily extended without the need to introduce new reference points.
         """,
 
         // ocr english paper 1-14

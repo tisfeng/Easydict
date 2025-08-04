@@ -54,13 +54,19 @@ class OCRPoetryDetector {
             return false
         }
 
+        // Early detection: Check for prose patterns
+        if hasProsePattern() {
+            print("❌ Detected prose pattern, not poetry.")
+            return false
+        }
+
         var endPunctuationCount = 0
         var suffixPunctuationCount = 0
         var noPunctuationLineCount = 0
         var totalWordCount = 0
         var longLineCount = 0
 
-        var punctuationMarkCount = 0
+        var punctuationCount = 0
         var totalCharCount = 0
 
         for i in 0 ..< lineCount {
@@ -84,7 +90,7 @@ class OCRPoetryDetector {
             if linePunctuationCount == 0 {
                 noPunctuationLineCount += 1
             } else {
-                punctuationMarkCount += linePunctuationCount
+                punctuationCount += linePunctuationCount
             }
 
             let lineCharCount = text.count - linePunctuationCount
@@ -156,7 +162,7 @@ class OCRPoetryDetector {
 
                         if !prevHasPunctuationSuffix, !matchesPoetryPattern {
                             print(
-                                "❓ Current line has end punctuation, previous line is long without punctuation suffix"
+                                "❓ Current line has end punctuation, previous is long without punctuation suffix"
                             )
                             print("❓ And not matching poetry pattern, maybe not poetry")
                             return false
@@ -167,7 +173,7 @@ class OCRPoetryDetector {
         }
 
         let wordCountPerLine = totalWordCount.double / lineCount.double
-        let punctuationPerLine = punctuationMarkCount.double / lineCount.double
+        let punctuationPerLine = punctuationCount.double / lineCount.double
         let charCountPerLine = totalCharCount.double / lineCount.double
 
         let endPunctuationRatio = endPunctuationCount.double / lineCount.double
@@ -176,29 +182,25 @@ class OCRPoetryDetector {
         let longLineRatio = longLineCount.double / lineCount.double
 
         print("\n📊 Poetry Analysis Summary:")
-        print("  - Lines: \(lineCount)")
+        print("- Lines: \(lineCount)")
 
         print(
-            "  - Total char count: \(totalCharCount), chars per line: \(charCountPerLine.string2f))"
+            "- Total char count: \(totalCharCount), chars per line: \(charCountPerLine.string2f))"
+        )
+        print("- Total words: \(totalWordCount), words per line: \(wordCountPerLine.string2f))")
+        print(
+            "- Punctuation marks count: \(punctuationCount), per line: \(punctuationPerLine.string2f))"
         )
         print(
-            "  - Total words: \(totalWordCount), words per line: \(wordCountPerLine.string2f))"
+            "- Lines ending with punctuation: \(endPunctuationCount)/\(lineCount) = \(endPunctuationRatio.string2f)"
         )
         print(
-            "  - Punctuation marks count: \(punctuationMarkCount), punctuation per line: \(punctuationPerLine.string2f))"
+            "- Punctuation suffix ratio: \(suffixPunctuationCount)/\(lineCount) = \(suffixPunctuationRatio.string2f)"
         )
         print(
-            "  - Lines ending with punctuation: \(endPunctuationCount)/\(lineCount) = \(endPunctuationRatio.string2f)"
+            "- No punctuation lines: \(noPunctuationLineCount)/\(lineCount) = \(noPunctuationLineRatio.string2f)"
         )
-        print(
-            "  - Punctuation suffix ratio: \(suffixPunctuationCount)/\(lineCount) = \(suffixPunctuationRatio.string2f)"
-        )
-        print(
-            "  - No punctuation lines: \(noPunctuationLineCount)/\(lineCount) = \(noPunctuationLineRatio.string2f)"
-        )
-        print(
-            "  - Long lines: \(longLineCount)/\(lineCount) = \(longLineRatio.string2f)"
-        )
+        print("- Long lines: \(longLineCount)/\(lineCount) = \(longLineRatio.string2f)")
 
         print("\n🔍 Poetry Detection Rules:")
 
@@ -218,25 +220,17 @@ class OCRPoetryDetector {
 
         // Rule 1: Single character per line (like vertical poetry)
         if charCountPerLine < 2 {
-            print(
-                "❌ Rule 1: Too few characters per line (\(charCountPerLine.string2f) < 2)"
-            )
+            print("❌ Rule 1: Too few characters per line (\(charCountPerLine.string2f) < 2)")
             return false
         }
-        print(
-            "✅ Rule 1: Sufficient characters per line (\(charCountPerLine.string2f) >= 2)"
-        )
+        print("✅ Rule 1: Sufficient characters per line (\(charCountPerLine.string2f) >= 2)")
 
         // Rule 2: Too many punctuation marks per line
         if punctuationPerLine > 2.0 {
-            print(
-                "❌ Rule 2: Too many punctuation marks per line (\(punctuationPerLine.string2f))"
-            )
+            print("❌ Rule 2: Too many punctuation marks per line (\(punctuationPerLine.string2f))")
             return false
         }
-        print(
-            "✅ Rule 2: Reasonable punctuation density (\(punctuationPerLine.string2f) <= 2)"
-        )
+        print("✅ Rule 2: Reasonable punctuation density (\(punctuationPerLine.string2f) <= 2)")
 
         let matchesPoetryPattern2_0 = matchesPoetryPattern(
             wordCountPerLine: wordCountPerLine,
@@ -262,9 +256,7 @@ class OCRPoetryDetector {
         if matchesPoetryPattern1_0 {
             print("📝 Poetry-like multiplier 1.0 detected")
             if punctuationPerLine <= 1.5 {
-                print(
-                    "✅ Rule 4: Low punctuation density (\(punctuationPerLine.string1f) <= 1.5)"
-                )
+                print("✅ Rule 4: Low punctuation density (\(punctuationPerLine.string1f) <= 1.5)")
                 return true
             }
         }
@@ -278,30 +270,22 @@ class OCRPoetryDetector {
         if matchesPoetryPattern1_5 {
             print("📝 Poetry-like multiplier 1.5 detected")
             if endPunctuationRatio >= 0.8 {
-                print(
-                    "✅ Rule 5: High end punctuation ratio (\(endPunctuationRatio.string2f) >= 0.8"
-                )
+                print("✅ Rule 5: High end punctuation ratio (\(endPunctuationRatio.string2f) >= 0.8")
                 return true
             }
 
             if suffixPunctuationRatio >= 0.8 {
-                print(
-                    "✅ Rule 6: High punctuation suffix ratio (\(suffixPunctuationRatio.string2f) >= 0.8"
-                )
+                print("✅ Rule 6: High punctuation suffix ratio (\(suffixPunctuationRatio.string2f) >= 0.8")
                 return true
             }
 
             if noPunctuationLineRatio >= 0.9 {
-                print(
-                    "✅ Rule 7: High no punctuation line ratio (\(noPunctuationLineRatio.string2f) >= 0.9"
-                )
+                print("✅ Rule 7: High no punctuation line ratio (\(noPunctuationLineRatio.string2f) >= 0.9")
                 return true
             }
 
             if punctuationPerLine <= 0.1 {
-                print(
-                    "✅ Rule 8: Very low punctuation density (\(punctuationPerLine.string2f) <= 0.1)"
-                )
+                print("✅ Rule 8: Very low punctuation density (\(punctuationPerLine.string2f) <= 0.1)")
                 return true
             }
 
@@ -345,6 +329,58 @@ class OCRPoetryDetector {
                 """
             )
             return true
+        }
+        return false
+    }
+
+    /// Detects prose patterns that indicate the text is not poetry.
+    ///
+    /// Specifically looks for cases where:
+    /// 1. A line ends with punctuation (sentence end)
+    /// 2. Followed by an uppercase letter (new sentence start)
+    /// 3. But the next line starts with lowercase (continuation of broken sentence)
+    ///
+    /// Example:
+    /// ```
+    /// travel the same distance. This is
+    /// because the time it takes for a given
+    /// ```
+    private func hasProsePattern() -> Bool {
+        let observations = metrics.textObservations
+        let lineCount = observations.count
+
+        guard lineCount >= 2 else { return false }
+
+        var prosePatternCount = 0
+
+        for i in 0 ..< (lineCount - 1) {
+            let currentLine = observations[i].firstText.trimmingCharacters(in: .whitespaces)
+            let nextLine = observations[i + 1].firstText.trimmingCharacters(in: .whitespaces)
+
+            guard !currentLine.isEmpty, !nextLine.isEmpty else { continue }
+
+            // Check if current line contains end punctuation in the middle
+            if currentLine.hasEndPunctuationInMiddle {
+                // Find the position of end punctuation marks in the current line
+
+                for (index, char) in currentLine.enumerated() {
+                    let charString = String(char)
+
+                    // If this character is an end punctuation mark
+                    if charString.isEndPunctuation {
+                        // Check if there's a next character that is uppercase (new sentence)
+                        let remainingText = String(currentLine.dropFirst(index + 1)).trim()
+                        if remainingText.isFirstCharUppercase {
+                            // Check if next line starts with lowercase
+                            if nextLine.isFirstCharLowercase {
+                                prosePatternCount += 1
+                                print("🔍 Found prose pattern: \"\(currentLine)\" -> \"\(nextLine)\"")
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
         }
         return false
     }

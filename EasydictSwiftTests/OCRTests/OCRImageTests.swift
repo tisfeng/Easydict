@@ -33,7 +33,38 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-//        await testOCR(sample: .zhClassicalPoetry3, language: .auto)
+        await testOCR(sample: .enPaper1, language: .auto) // Cost 2.7s
+    }
+
+    // MARK: - Performance Tests
+
+    // Test one ocr performance test
+    @Test("OCR Performance Test One", .tags(.ocr, .performance))
+    func testOCRPerformanceOne() async throws {
+        // One time cost: 2.17s
+//        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 6.0)
+
+        // One time cost: 1.30s
+        await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 4.0)
+    }
+
+    @Test(
+        "OCR Performance Test",
+        .tags(.ocr, .performance),
+        .disabled("OCR performance test should run independently, since it may fail due to other tests interference.")
+    )
+    func testOCRPerformance() async throws {
+        // Average 3 time cost: 2.26s
+        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.5)
+
+        // Average 3 time cost: 1.28s
+        await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
+
+        // Average 3 time cost: 3.83s
+        await measureOCRPerformance(sample: .enPaper0, language: .auto, expectedCost: 4.0)
+
+        // Average 3 time cost: 2.28s
+        await measureOCRPerformance(sample: .enPaper0, language: .english, expectedCost: 2.5)
     }
 
     // MARK: - English Text Tests
@@ -98,6 +129,74 @@ struct OCRImageTests {
 
     // MARK: - Helper Functions
 
+    /// Measure OCR performance for a given image with detailed timing information
+    ///
+    /// - Parameters:
+    ///   - sample: The test sample image to process
+    ///   - language: The target language for OCR recognition
+    ///   - iterations: Number of iterations to run for averaging (default: 3)
+    ///   - expectedCost: Expected average time for recognition in seconds
+    private func measureOCRPerformance(
+        sample: OCRTestSample,
+        language: Language = .auto,
+        iterations: Int = 3,
+        expectedCost: TimeInterval
+    ) async {
+        let imageName = sample.imageName
+
+        // Load test image
+        guard let image = NSImage.loadTestImage(named: imageName) else {
+            Issue.record("Failed to load test image: \(imageName)")
+            return
+        }
+
+        var totalTime: TimeInterval = 0
+        var results: [String] = []
+
+        log("\n🚀 OCR Performance Test")
+        log("📷 Image: \(imageName)")
+        log("🌐 Language: \(language)")
+        log("🔄 Iterations: \(iterations)")
+        log("─────────────────────────────────")
+
+        for i in 1 ... iterations {
+            let startTime = CFAbsoluteTimeGetCurrent()
+
+            do {
+                let result = try await ocrEngine.recognizeTextAsync(
+                    image: image,
+                    language: language
+                )
+                let endTime = CFAbsoluteTimeGetCurrent()
+                let executionTime = endTime - startTime
+
+                totalTime += executionTime
+                results.append(result.mergedText)
+
+                log("📊 Iteration \(i): \(String(format: "%.3f", executionTime))s")
+
+            } catch {
+                Issue.record(
+                    "OCR recognition failed in iteration \(i): \(error.localizedDescription)"
+                )
+                return
+            }
+        }
+
+        let averageTime = totalTime / Double(iterations)
+        #expect(
+            averageTime < expectedCost,
+            "Average time \(averageTime.string3f)s exceeds expected \(expectedCost)s"
+        )
+
+        log("─────────────────────────────────")
+        log("⏱️  Total Time: \(String(format: "%.3f", totalTime))s")
+        log("📈 Average Time: \(averageTime.string3f) < \(expectedCost)s")
+
+        log("📝 Result Preview: \(results.first?.prefix(100) ?? "No result")...")
+        log("─────────────────────────────────\n")
+    }
+
     /// Helper function to run OCR on a given image and compare with expected result.
     ///
     /// - Parameter named: The name of the image file in the test bundle.
@@ -112,8 +211,8 @@ struct OCRImageTests {
         do {
             // Perform OCR
             let result = try await ocrEngine.recognizeTextAsync(image: image, language: language)
-            print("Testing OCR for image: \(imageName)")
-            print("Merged text: \(result.mergedText)")
+            log("Testing OCR for image: \(imageName)")
+            log("Merged text: \(result.mergedText)")
 
             let ocrText = result.mergedText
             let expectedText = sample.expectedText

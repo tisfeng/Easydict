@@ -12,8 +12,8 @@ import Foundation
 
 /// Constants used for OCR text processing
 enum OCRConstants {
-    static let lineBreakText = "\n"
-    static let paragraphBreakText = "\n\n"
+    static let lineSeparator = "\n"
+    static let paragraphSeparator = "\n\n"
 
     /// Default is 1.8 characters for indentation, should be less than 2 characters
     static let indentationCharacterCount: Double = 1.8

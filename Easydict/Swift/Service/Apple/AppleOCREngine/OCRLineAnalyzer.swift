@@ -54,6 +54,7 @@ enum OCRConfidenceLevel {
 enum XComparisonType {
     case minX
     case maxX
+    case centerX
 }
 
 // MARK: - OCRLineAnalyzer
@@ -94,11 +95,13 @@ class OCRLineAnalyzer {
     ///   - observation: The text observation to analyze for indentation.
     ///   - comparedObservation: The reference observation to compare against (optional, defaults to `metrics.minXLineTextObservation`).
     ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
+    ///   - positiveIndent: Whether to consider positive indentation (true, default) or negative indentation (false).
     /// - Returns: `true` if the observation is indented, `false` if aligned with the left margin.
     func hasIndentation(
         observation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil,
-        confidence: OCRConfidenceLevel = .medium
+        confidence: OCRConfidenceLevel = .medium,
+        positiveIndent: Bool = true
     )
         -> Bool {
         // Use provided comparedObservation or fall back to metrics default
@@ -113,12 +116,15 @@ class OCRLineAnalyzer {
         let characterDifference = lineMeasurer.characterDifferenceInXPosition(pair: textObservationPair)
         let baseThreshold = OCRConstants.indentationCharacterCount
         let finalThreshold = baseThreshold * confidence.multiplier
-        let isIndented = characterDifference > finalThreshold
+        let isIndented = positiveIndent
+            ? (characterDifference > finalThreshold)
+            : (characterDifference < -finalThreshold)
 
         if isIndented {
             let refText = referenceObservation.firstText.prefix20
+            let direction = positiveIndent ? "positive" : "negative"
             print(
-                "\nIndentation detected (confidence: \(confidence)): \(characterDifference.string1f) > \(finalThreshold.string1f) (base: \(baseThreshold) × \(confidence.multiplier)) characters"
+                "\nIndentation detected (\(direction), confidence: \(confidence)): \(characterDifference.string1f) > \(finalThreshold.string1f) (base: \(baseThreshold) × \(confidence.multiplier)) characters"
             )
             print("Current observation: \(observation)")
             print("Compared against: '\(refText)...'\n")
@@ -329,6 +335,16 @@ class OCRLineAnalyzer {
         }
 
         return isEqual
+    }
+
+    func isEqualCenterX(
+        pair: OCRTextObservationPair,
+        confidence: OCRConfidenceLevel = .medium
+    )
+        -> Bool {
+        // Compare minX and maxX positions to determine center alignment
+        let isEqualCenterX = isEqualX(pair: pair, comparison: .centerX, confidence: confidence)
+        return isEqualCenterX
     }
 
     // MARK: Private

@@ -27,9 +27,27 @@ extension String {
 
     /// Check if text ends with end punctuation marks
     var hasEndPunctuationSuffix: Bool {
-        let endPunctuationMarks = CharacterSet(charactersIn: "。！？.!?;:")
         guard let lastChar = last else { return false }
-        return String(lastChar).unicodeScalars.allSatisfy { endPunctuationMarks.contains($0) }
+        return String(lastChar).isEndPunctuation
+    }
+
+    /// Check if text contains end punctuation marks in the middle (not at the end)
+    var hasEndPunctuationInMiddle: Bool {
+        guard count > 1 else { return false }
+
+        // Check all characters except the last one
+        let middleText = String(dropLast())
+
+        for char in middleText where String(char).isEndPunctuation {
+            return true
+        }
+
+        return false
+    }
+
+    var isEndPunctuation: Bool {
+        guard count == 1, let scalar = unicodeScalars.first else { return false }
+        return CharacterSet.endPunctuationMarks.contains(scalar)
     }
 
     /// Check if a single character string is a punctuation mark
