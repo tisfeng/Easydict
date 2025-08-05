@@ -9,74 +9,14 @@
 import Foundation
 import Vision
 
-// MARK: - OCRConfidenceLevel
-
-/**
- * Defines various confidence levels for OCR analysis thresholds.
- *
- * These levels adjust detection thresholds to provide more or less strict analysis
- * depending on the reliability of the OCR data and specific use cases.
- */
-enum OCRConfidenceLevel {
-    /// High confidence level, applies a 1.5x multiplier to thresholds (more strict).
-    case high
-    /// Medium confidence level, applies a 1.0x multiplier to thresholds (default).
-    case medium
-    /// Low confidence level, applies a 0.7x multiplier to thresholds (more lenient).
-    case low
-    /// Custom confidence level, allows a user-defined multiplier.
-    case custom(Double)
-
-    // MARK: Lifecycle
-
-    /// Initializes a custom confidence level with a specific multiplier value.
-    /// - Parameter multiplier: The exact threshold multiplier value to use.
-    init(multiplier: Double) {
-        self = .custom(multiplier)
-    }
-
-    // MARK: Internal
-
-    /// The numerical multiplier associated with the confidence level.
-    var multiplier: Double {
-        switch self {
-        case .high: return 1.5
-        case .medium: return 1.0
-        case .low: return 0.7
-        case let .custom(multiplier): return multiplier
-        }
-    }
-}
-
-// MARK: - XComparisonType
-
-/// Represents the type of X position comparison for text observations.
-enum XComparisonType {
-    case minX
-    case maxX
-    case centerX
-}
-
 // MARK: - OCRLineAnalyzer
 
-/**
- * A class dedicated to analyzing the spatial and layout relationships between lines of OCR text.
- *
- * `OCRLineAnalyzer` provides a suite of methods to determine how text observations are
- * positioned relative to one another. It is a key component in the text merging process,
- * responsible for identifying indentation, line breaks, font size changes, and other
- * layout features that guide formatting decisions.
- *
- * ### Key Analysis Capabilities:
- * - **Indentation Detection**: Determines if a line is indented relative to a reference line.
- * - **Line Spacing Analysis**: Checks for large vertical gaps that may indicate paragraph breaks.
- * - **Font Size Comparison**: Identifies changes in font size between lines.
- * - **Alignment Checks**: Verifies if lines share the same starting (`isEqualX`) or ending (`isEqualMaxX`) horizontal positions.
- * - **Line Length Analysis**: Classifies lines as "long" or "short" based on their width relative to the document's maximum line length.
- *
- * The analyzer uses `OCRMetrics` to access document-wide statistics, ensuring that its
- * decisions are context-aware and consistent.
- */
+/// A class dedicated to analyzing the spatial and layout relationships between lines of OCR text.
+///
+/// `OCRLineAnalyzer` provides a suite of methods to determine how text observations are
+/// positioned relative to one another. It is a key component in the text merging process,
+/// responsible for identifying indentation, line breaks, font size changes, and other
+/// layout features that guide formatting decisions.
 class OCRLineAnalyzer {
     // MARK: Lifecycle
 
@@ -93,44 +33,152 @@ class OCRLineAnalyzer {
     ///
     /// - Parameters:
     ///   - observation: The text observation to analyze for indentation.
-    ///   - comparedObservation: The reference observation to compare against (optional, defaults to `metrics.minXLineTextObservation`).
+    ///   - compared: The reference observation to compare against (optional, defaults to `metrics.minXLineTextObservation`).
     ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
-    ///   - positiveIndent: Whether to consider positive indentation (true, default) or negative indentation (false).
-    /// - Returns: `true` if the observation is indented, `false` if aligned with the left margin.
+    ///   - indentationType: The type of indentation to check for (default: `.positive`).
+    ///   - xComparison: The type of X position comparison to perform (default: `.minX`).
+    /// - Returns: `true` if the observation has the specified type of indentation, `false` otherwise.
     func hasIndentation(
         observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
-        confidence: OCRConfidenceLevel = .medium,
-        positiveIndent: Bool = true
+        compared comparedObservation: VNRecognizedTextObservation? = nil,
+        confidence: ConfidenceLevel = .medium,
+        indentationType: IndentationType = .positive,
+        xComparison: XComparisonType = .minX
     )
         -> Bool {
         // Use provided comparedObservation or fall back to metrics default
-        let referenceObservation = comparedObservation ?? metrics.minXObservation
-        guard let referenceObservation = referenceObservation else { return false }
-
-        let textObservationPair = OCRTextObservationPair(
-            current: observation,
-            previous: referenceObservation
-        )
-
-        let characterDifference = lineMeasurer.characterDifferenceInXPosition(pair: textObservationPair)
-        let baseThreshold = OCRConstants.indentationCharacterCount
-        let finalThreshold = baseThreshold * confidence.multiplier
-        let isIndented = positiveIndent
-            ? (characterDifference > finalThreshold)
-            : (characterDifference < -finalThreshold)
-
-        if isIndented {
-            let refText = referenceObservation.firstText.prefix20
-            let direction = positiveIndent ? "positive" : "negative"
-            print(
-                "\nIndentation detected (\(direction), confidence: \(confidence)): \(characterDifference.string1f) > \(finalThreshold.string1f) (base: \(baseThreshold) × \(confidence.multiplier)) characters"
-            )
-            print("Current observation: \(observation)")
-            print("Compared against: '\(refText)...'\n")
+        guard let comparedObservation = comparedObservation ?? metrics.minXObservation else {
+            return false
         }
 
-        return isIndented
+        let indentationInfo = analyzeIndentationInfo(
+            observation: observation,
+            compared: comparedObservation,
+            confidence: confidence,
+            xComparison: xComparison
+        )
+
+        let hasRequestedIndentation = indentationInfo.matches(indentationType)
+
+        if hasRequestedIndentation {
+            print("\nIndentation detected: \(indentationInfo)")
+            print("\nCurrent observation: \(observation)")
+            print("Compared against: \(comparedObservation)\n")
+        }
+
+        return hasRequestedIndentation
+    }
+
+    /// Convenience method to check for positive indentation.
+    func hasPositiveIndentation(
+        observation: VNRecognizedTextObservation,
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        confidence: ConfidenceLevel = .medium,
+        xComparison: XComparisonType = .minX
+    )
+        -> Bool {
+        hasIndentation(
+            observation: observation,
+            compared: comparedObservation,
+            confidence: confidence,
+            indentationType: .positive,
+            xComparison: xComparison
+        )
+    }
+
+    /// Convenience method to check for negative indentation.
+    func hasNegativeIndentation(
+        observation: VNRecognizedTextObservation,
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        confidence: ConfidenceLevel = .medium,
+        xComparison: XComparisonType = .minX
+    )
+        -> Bool {
+        hasIndentation(
+            observation: observation,
+            compared: comparedObservation,
+            confidence: confidence,
+            indentationType: .negative,
+            xComparison: xComparison
+        )
+    }
+
+    /// Convenience method to check for no indentation (aligned).
+    func hasNoIndentation(
+        observation: VNRecognizedTextObservation,
+        compared: VNRecognizedTextObservation? = nil,
+        confidence: ConfidenceLevel = .medium,
+        xComparison: XComparisonType = .minX
+    )
+        -> Bool {
+        hasIndentation(
+            observation: observation,
+            compared: compared,
+            confidence: confidence,
+            indentationType: .none,
+            xComparison: xComparison
+        )
+    }
+
+    /// Returns the full indentation analysis result for detailed inspection.
+    ///
+    /// - Parameters:
+    ///   - observation: The text observation to analyze for indentation.
+    ///   - comparedObservation: The reference observation to compare against (optional, defaults to `metrics.minXObservation`).
+    ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
+    ///   - xComparison: The type of X position comparison to perform (default: `.minX`).
+    /// - Returns: An `IndentationInfo` containing all analysis details, or `nil` if no comparison observation is available.
+    func getIndentationAnalysis(
+        observation: VNRecognizedTextObservation,
+        comparedObservation: VNRecognizedTextObservation? = nil,
+        confidence: ConfidenceLevel = .medium,
+        xComparison: XComparisonType = .minX
+    )
+        -> IndentationInfo? {
+        guard let comparedObservation = comparedObservation ?? metrics.minXObservation else {
+            return nil
+        }
+
+        return analyzeIndentationInfo(
+            observation: observation,
+            compared: comparedObservation,
+            confidence: confidence,
+            xComparison: xComparison
+        )
+    }
+
+    /// Determines if two text observations have equivalent horizontal positioning (X coordinates).
+    ///
+    /// - Parameters:
+    ///   - pair: The pair of text observations to compare for X alignment.
+    ///   - comparison: The type of X position comparison to perform (default: `.minX`).
+    ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
+    /// - Returns: `true` if observations are horizontally aligned within tolerance, `false` otherwise.
+    func isEqualX(
+        pair: OCRTextObservationPair,
+        xComparison: XComparisonType = .minX,
+        confidence: ConfidenceLevel = .medium
+    )
+        -> Bool {
+        // Use hasNoIndentation to check if there's no significant difference
+        // If there's no indentation, then the X positions are considered equal
+        hasNoIndentation(
+            observation: pair.current,
+            compared: pair.previous,
+            confidence: confidence,
+            xComparison: xComparison
+        )
+    }
+
+    /// Checks if two text observations have equivalent center X positions.
+    func isEqualCenterX(
+        pair: OCRTextObservationPair,
+        confidence: ConfidenceLevel = .medium
+    )
+        -> Bool {
+        // Compare minX and maxX positions to determine center alignment
+        let isEqualCenterX = isEqualX(pair: pair, xComparison: .centerX, confidence: confidence)
+        return isEqualCenterX
     }
 
     /// Determines if a text observation represents a long line of text.
@@ -138,7 +186,7 @@ class OCRLineAnalyzer {
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil,
-        confidence: OCRConfidenceLevel = .medium
+        confidence: ConfidenceLevel = .medium
     )
         -> Bool {
         lineMeasurer.isLongLine(
@@ -159,7 +207,7 @@ class OCRLineAnalyzer {
     func isBigLineSpacing(
         pair: OCRTextObservationPair,
         lineSpacingThreshold: Double? = nil,
-        confidence: OCRConfidenceLevel = .medium
+        confidence: ConfidenceLevel = .medium
     )
         -> Bool {
         // Use provided threshold or fall back to metrics default big line spacing threshold
@@ -187,7 +235,7 @@ class OCRLineAnalyzer {
     func hasDifferentFontSize(
         pair: OCRTextObservationPair,
         fontSizeThreshold: Double? = nil,
-        confidence: OCRConfidenceLevel = .medium,
+        confidence: ConfidenceLevel = .medium,
         checkTextLength: Bool = true
     )
         -> Bool {
@@ -282,11 +330,11 @@ class OCRLineAnalyzer {
         // Calculate adaptive threshold based on actual text heights
         let currentHeight = pair.current.boundingBox.size.height
         let previousHeight = pair.previous.boundingBox.size.height
-        let smallerHeight = min(currentHeight, previousHeight)
+        let averageHeight = (currentHeight + previousHeight) / 2
 
         // Use a fraction of the smaller text height as threshold
         // This is more adaptive than using global minimum line height
-        let adaptiveThreshold = smallerHeight
+        let adaptiveThreshold = averageHeight
 
         // Also consider a minimum threshold to avoid being too strict with very small text
         let minimumThreshold = metrics.averageLineHeight
@@ -306,45 +354,6 @@ class OCRLineAnalyzer {
         }
 
         return isNewLine
-    }
-
-    /// Determines if two text observations have equivalent horizontal positioning (X coordinates).
-    ///
-    /// - Parameters:
-    ///   - pair: The pair of text observations to compare for X alignment.
-    ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
-    /// - Returns: `true` if observations are horizontally aligned within tolerance, `false` otherwise.
-    func isEqualX(
-        pair: OCRTextObservationPair,
-        comparison: XComparisonType = .minX,
-        confidence: OCRConfidenceLevel = .medium
-    )
-        -> Bool {
-        let characterDifference = lineMeasurer.characterDifferenceInXPosition(pair: pair, comparison: comparison)
-
-        // Consider positions "equal" if difference is less than indentation threshold
-        let baseTolerance = OCRConstants.indentationCharacterCount * 0.9
-        let finalTolerance = baseTolerance / confidence.multiplier
-        let isEqual = abs(characterDifference) < finalTolerance
-
-        if !isEqual {
-            print(
-                "\nNot equalX text (confidence: \(confidence), comparison: \(comparison): difference = \(characterDifference.string1f) >= tolerance \(finalTolerance.string1f) (base: \(baseTolerance.string1f) × \(confidence.multiplier))"
-            )
-            print("Current: \(pair.current)\n")
-        }
-
-        return isEqual
-    }
-
-    func isEqualCenterX(
-        pair: OCRTextObservationPair,
-        confidence: OCRConfidenceLevel = .medium
-    )
-        -> Bool {
-        // Compare minX and maxX positions to determine center alignment
-        let isEqualCenterX = isEqualX(pair: pair, comparison: .centerX, confidence: confidence)
-        return isEqualCenterX
     }
 
     // MARK: Private
@@ -379,9 +388,12 @@ class OCRLineAnalyzer {
     }
 
     /// Determines if two text observations have equal alignment (both minX and maxX coordinates).
-    private func isEqualAlignment(pair: OCRTextObservationPair, confidence: OCRConfidenceLevel = .medium) -> Bool {
-        let isEqualMinX = isEqualX(pair: pair, comparison: .minX, confidence: confidence)
-        let isEqualMaxX = isEqualX(pair: pair, comparison: .maxX, confidence: confidence)
+    private func isEqualAlignment(
+        pair: OCRTextObservationPair, confidence: ConfidenceLevel = .medium
+    )
+        -> Bool {
+        let isEqualMinX = isEqualX(pair: pair, xComparison: .minX, confidence: confidence)
+        let isEqualMaxX = isEqualX(pair: pair, xComparison: .maxX, confidence: confidence)
         return isEqualMinX && isEqualMaxX
     }
 
@@ -410,5 +422,47 @@ class OCRLineAnalyzer {
         // Punctuation marks may be also detected as different font size, so remove them.
         let text = observation.firstText.removingPunctuationCharacters().removingSymbols().trim()
         return text.count >= minLength
+    }
+
+    /// Analyzes the indentation info between two text observations.
+    ///
+    /// - Parameters:
+    ///   - observation: The text observation to analyze for indentation.
+    ///   - compared: The reference observation to compare against.
+    ///   - confidence: The detection confidence level affecting threshold strictness.
+    ///   - xComparison: The type of X position comparison to perform.
+    /// - Returns: An `IndentationInfo` containing the analysis results and intermediate values.
+    private func analyzeIndentationInfo(
+        observation: VNRecognizedTextObservation,
+        compared comparedObservation: VNRecognizedTextObservation,
+        confidence: ConfidenceLevel = .medium,
+        xComparison: XComparisonType = .minX
+    )
+        -> IndentationInfo {
+        let pair = OCRTextObservationPair(current: observation, previous: comparedObservation)
+        let characterDifference = lineMeasurer.characterDifferenceInXPosition(
+            pair: pair,
+            xComparison: xComparison
+        )
+        let baseThreshold = OCRConstants.indentationCharacterCount
+        let finalThreshold = baseThreshold * confidence.multiplier
+
+        let indentationType: IndentationType
+        if characterDifference > finalThreshold {
+            indentationType = .positive
+        } else if characterDifference < -finalThreshold {
+            indentationType = .negative
+        } else {
+            indentationType = .none
+        }
+
+        return IndentationInfo(
+            indentationType: indentationType,
+            characterDifference: characterDifference,
+            baseThreshold: baseThreshold,
+            finalThreshold: finalThreshold,
+            confidence: confidence,
+            xComparison: xComparison
+        )
     }
 }

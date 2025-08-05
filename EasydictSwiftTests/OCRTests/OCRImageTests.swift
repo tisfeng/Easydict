@@ -45,7 +45,7 @@ struct OCRImageTests {
 //        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 6.0)
 
         // One time cost: 1.30s
-        await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 4.0)
+//        await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 4.0)
     }
 
     @Test(

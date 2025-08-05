@@ -45,6 +45,9 @@ public class OCRTextProcessor {
     ) {
         let recognizedTexts = observations.compactMap(\.firstText)
 
+        // Reset metrics for new processing
+        metrics.resetMetrics()
+
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")

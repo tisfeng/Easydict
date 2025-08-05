@@ -51,7 +51,7 @@ class OCRLineMeasurer {
         observation: VNRecognizedTextObservation,
         nextObservation: VNRecognizedTextObservation,
         comparedObservation: VNRecognizedTextObservation? = nil,
-        confidence: OCRConfidenceLevel = .medium
+        confidence: ConfidenceLevel = .medium
     )
         -> Bool {
         let baseThreshold = smartMinimumCharactersThreshold(
@@ -109,8 +109,8 @@ class OCRLineMeasurer {
         )
 
         // Average the widths of both observations
-        let averageWidth = (currentAverageCharWidth + anotherAverageCharWidth) / 2.0
-        return averageWidth
+        let averageCharWidth = (currentAverageCharWidth + anotherAverageCharWidth) / 2.0
+        return averageCharWidth
     }
 
     /// Calculates the horizontal difference between two text observations in character units. currentX - previousX
@@ -121,7 +121,7 @@ class OCRLineMeasurer {
     /// - Returns: The horizontal difference in character units (can be positive, negative, or zero).
     func characterDifferenceInXPosition(
         pair: OCRTextObservationPair,
-        comparison: XComparisonType = .minX
+        xComparison: XComparisonType = .minX
     )
         -> Double {
         guard let ocrImage = metrics.ocrImage else {
@@ -133,7 +133,7 @@ class OCRLineMeasurer {
 
         let currentX: CGFloat
         let previousX: CGFloat
-        switch comparison {
+        switch xComparison {
         case .minX:
             currentX = current.boundingBox.minX
             previousX = previous.boundingBox.minX

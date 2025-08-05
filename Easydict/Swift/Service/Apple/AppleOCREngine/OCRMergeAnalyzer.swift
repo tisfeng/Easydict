@@ -33,24 +33,28 @@ class OCRMergeAnalyzer {
         if let strategy = dashJoinStrategy() {
             return strategy
         }
+
         if let strategy = bigFontSizeChangeStrategy() {
             return strategy
         }
-        if let strategy = indentationStrategy() {
+        if let strategy = bigIndentationStrategy() {
             return strategy
         }
-        if let strategy = poetryAndBigLineSpacingStrategy() {
+
+        if let strategy = letterFormatStrategy() {
+            return strategy
+        }
+
+        if let strategy = bigLineSpacingStrategy() {
+            return strategy
+        }
+        if let strategy = poetryStrategy() {
             return strategy
         }
         if let strategy = listStrategy() {
             return strategy
         }
-        if let strategy = letterFormatStrategy() {
-            return strategy
-        }
-        if let strategy = bigLineSpacingStrategy() {
-            return strategy
-        }
+
         if let strategy = chinesePairStrategy() {
             return strategy
         }
@@ -99,7 +103,7 @@ class OCRMergeAnalyzer {
     }
 
     /// 4. Indentation strategy
-    private func indentationStrategy() -> OCRMergeStrategy? {
+    private func bigIndentationStrategy() -> OCRMergeStrategy? {
         if context.hasBigIndentation {
             print("    📏 Big indentation detected")
             if !context.isPreviousLongText {
@@ -110,33 +114,80 @@ class OCRMergeAnalyzer {
         return nil
     }
 
-    /// 5. Poetry and big line spacing strategy
-    private func poetryAndBigLineSpacingStrategy() -> OCRMergeStrategy? {
-        if context.hasVeryBigLineSpacing {
-            print("    📏 Very big line spacing detected")
-            if context.isPoetry {
-                print("    📏 Very big line spacing in poetry - line break")
+    /// 5. Letter format strategy (distance too far)
+    private func letterFormatStrategy() -> OCRMergeStrategy? {
+        /**
+         Special case:
+
+         If text is a letter format, we may need new paragraph when the distance between
+         previous and current line is too far.
+
+         If `distance` > 0.45, means it may need line break, or treat as new paragraph.
+
+         Example:
+
+         ```
+                                    Wednesday, 4 Octobre 1950
+         My dearest Nelson,
+         ```
+         */
+
+        if context.isPreviousLongText {
+            if context.distanceXRatio > 0.45 {
+                print("    📄 Letter format detected - new paragraph")
                 return .newParagraph
             }
-            if !context.isPreviousLongText {
+        }
+        return nil
+    }
+
+    /// 6. Big line spacing strategy
+    private func bigLineSpacingStrategy() -> OCRMergeStrategy? {
+        let isFirstCharLowercase = context.isFirstCharLowercase
+        let isPreviousLongText = context.isPreviousLongText
+
+        if context.hasVeryBigLineSpacing {
+            print("    📏 Very big line spacing detected")
+            if !isPreviousLongText {
                 print("    📏 Previous line is not long text - new paragraph")
                 return .newParagraph
             }
-            if context.previousTextHasEndPunctuation, !context.isFirstCharLowercase {
+            if context.previousTextHasEndPunctuation, !isFirstCharLowercase {
                 print(
                     "    📏 Previous line ends with punctuation and current starts with uppercase - new paragraph"
                 )
                 return .newParagraph
             }
         }
-        if context.isPoetry {
-            print("    🎭 Poetry detected - line break")
-            return .lineBreak
+
+        if context.hasBigLineSpacing {
+            let shouldJoin = isPreviousLongText && isFirstCharLowercase && !context.isCurrentList
+            if shouldJoin {
+                print("    📄 Page continuation detected - join pair")
+                return .mergeStrategy(for: context.pair)
+            } else {
+                if context.isCurrentList, context.isFirstObservationList {
+                    print("    📋 List pattern continuation - line break")
+                    return .lineBreak
+                }
+                print("    📏 Big line spacing - new paragraph")
+                return .newParagraph
+            }
         }
         return nil
     }
 
-    /// 6. List strategy
+    /// 7. Poetry strategy
+    private func poetryStrategy() -> OCRMergeStrategy? {
+        if context.isPoetry {
+            print("    🎭 Poetry detected - line break or new paragraph")
+            let shouldStartNewParagraph = context.hasBigDifferentX || context.hasBigLineSpacing
+            return lineBreakOrParagraph(shouldStartNewParagraph)
+        }
+        return nil
+    }
+
+    /// 8. List strategy
     private func listStrategy() -> OCRMergeStrategy? {
         if context.isCurrentList {
             print("    📋 List pattern detected")
@@ -184,49 +235,6 @@ class OCRMergeAnalyzer {
             }
             print("    📋 List pattern - line break")
             return .lineBreak
-        }
-        return nil
-    }
-
-    /// 7. Letter format strategy (distance too far)
-    private func letterFormatStrategy() -> OCRMergeStrategy? {
-        /**
-         Special case:
-
-         If text is a letter format, we may need new paragraph when the distance between
-         previous and current line is too far.
-
-         If `distance` > 0.45, means it may need line break, or treat as new paragraph.
-
-         Example:
-
-         ```
-                                    Wednesday, 4 Octobre 1950
-         My dearest Nelson,
-         ```
-         */
-
-        if context.isPreviousLongText {
-            if context.distanceXRatio > 0.45 {
-                print("    📄 Letter format detected - new paragraph")
-                return .newParagraph
-            }
-        }
-        return nil
-    }
-
-    /// 8. Big line spacing strategy
-    private func bigLineSpacingStrategy() -> OCRMergeStrategy? {
-        if context.hasBigLineSpacing {
-            let shouldJoin =
-                context.isPreviousLongText && context.isFirstCharLowercase && !context.isCurrentList
-            if shouldJoin {
-                print("    📄 Page continuation detected - join pair")
-                return .mergeStrategy(for: context.pair)
-            } else {
-                print("    📏 Big line spacing - new paragraph")
-                return .newParagraph
-            }
         }
         return nil
     }
@@ -299,12 +307,13 @@ class OCRMergeAnalyzer {
                   ```
                   */
 
-                let shouldJoin = context.isEqualPairCenterX
-                    && !context.previousTextHasEndPunctuation
-                    && !context.hasDifferentFontSizeRelaxed
-                    && !context.hasBigLineSpacingRelaxed
-                    && !context.isCurrentList
-                    && context.hasPairIndentation
+                let shouldJoin =
+                    context.isEqualPairCenterX
+                        && !context.previousTextHasEndPunctuation
+                        && !context.hasDifferentFontSizeRelaxed
+                        && !context.hasBigLineSpacingRelaxed
+                        && !context.isCurrentList
+                        && context.hasPairIndentation
 
                 if shouldJoin {
                     print("🔗 Center X is equal, and has no different font size - join pair")

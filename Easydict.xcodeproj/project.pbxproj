@@ -370,6 +370,10 @@
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */; };
 		03F46BE52E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F46BE42E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png */; };
+		03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */; };
+		03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */; };
+		03F46BEB2E41E6C600D35EF6 /* ocr-zh-poetry-12.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F46BEA2E41E6C600D35EF6 /* ocr-zh-poetry-12.png */; };
+		03F46BED2E426F8300D35EF6 /* ocr-zh-poetry-13.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */; };
 		03F670472E3B392100EA682B /* ocr-zh-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670462E3B392100EA682B /* ocr-zh-text-4.png */; };
@@ -1015,6 +1019,10 @@
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
 		03F46BE42E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-two-columns-1.png"; sourceTree = "<group>"; };
+		03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidenceLevel.swift; sourceTree = "<group>"; };
+		03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationInfo.swift; sourceTree = "<group>"; };
+		03F46BEA2E41E6C600D35EF6 /* ocr-zh-poetry-12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-12.png"; sourceTree = "<group>"; };
+		03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-13.png"; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-11.png"; sourceTree = "<group>"; };
@@ -2286,6 +2294,8 @@
 				03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */,
 				037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */,
 				035451022E3C60D600BAA8E5 /* OCRConstants.swift */,
+				03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */,
+				03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2535,6 +2545,8 @@
 				033897792E37809C00CCFF99 /* ocr-zh-poetry-9.png */,
 				034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */,
 				034227F32E37144200325B47 /* ocr-zh-poetry-11.png */,
+				03F46BEA2E41E6C600D35EF6 /* ocr-zh-poetry-12.png */,
+				03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */,
 				033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */,
 				033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */,
 				033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */,
@@ -3378,6 +3390,7 @@
 				03C3A5C42E1BFE4900B59152 /* ocr-en-text-1.png in Resources */,
 				03C3A5C52E1BFE4900B59152 /* ocr-en-text-2.png in Resources */,
 				03C3A5C62E1BFE4900B59152 /* ocr-ja-text-1.png in Resources */,
+				03F46BED2E426F8300D35EF6 /* ocr-zh-poetry-13.png in Resources */,
 				03C3A5C72E1BFE4900B59152 /* ocr-en-text-list-1.png in Resources */,
 				03F46BE52E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png in Resources */,
 				037A9CC92E24AC3A00668C49 /* ocr-en-text-list-3.png in Resources */,
@@ -3391,6 +3404,7 @@
 				03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */,
 				033897A62E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png in Resources */,
 				033897A82E38B5E700CCFF99 /* ocr-zh-classical-lyrics-1.png in Resources */,
+				03F46BEB2E41E6C600D35EF6 /* ocr-zh-poetry-12.png in Resources */,
 				037A9CC52E24A72A00668C49 /* ocr-en-text-list-2.png in Resources */,
 				037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */,
 				03C3A5C82E1BFE4900B59152 /* ocr-en-text-letter-338.png in Resources */,
@@ -3706,6 +3720,7 @@
 				03D90F8F2CCA451200EE4E84 /* WindowConfigurationView.swift in Sources */,
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
 				03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */,
+				03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
@@ -3823,6 +3838,7 @@
 				03BE26EB2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m in Sources */,
 				03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */,
 				0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */,
+				03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */,
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
 				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,

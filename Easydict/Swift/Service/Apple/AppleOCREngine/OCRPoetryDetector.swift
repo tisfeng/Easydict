@@ -157,10 +157,12 @@ class OCRPoetryDetector {
                         let matchesPoetryPattern = matchesPoetryPattern(
                             wordCountPerLine: prevText.wordCount.double,
                             charCountPerLine: prevText.count.double,
-                            confidence: .custom(1.0)
+                            confidence: .custom(1.5)
                         )
 
                         if !prevHasPunctuationSuffix, !matchesPoetryPattern {
+                            print("prevText: \(prevText)")
+                            print("currentText: \(text)")
                             print(
                                 "❓ Current line has end punctuation, previous is long without punctuation suffix"
                             )
@@ -313,7 +315,7 @@ class OCRPoetryDetector {
     private func matchesPoetryPattern(
         wordCountPerLine: Double,
         charCountPerLine: Double,
-        confidence: OCRConfidenceLevel = .custom(1.0)
+        confidence: ConfidenceLevel = .custom(1.0)
     )
         -> Bool {
         let wordCountThreshold = OCRConstants.poetryWordCountOfLine * confidence.multiplier
@@ -352,6 +354,7 @@ class OCRPoetryDetector {
         guard lineCount >= 2 else { return false }
 
         var prosePatternCount = 0
+        var endPunctuationInMiddleCount = 0
 
         for i in 0 ..< (lineCount - 1) {
             let currentLine = observations[i].firstText.trimmingCharacters(in: .whitespaces)
@@ -361,6 +364,8 @@ class OCRPoetryDetector {
 
             // Check if current line contains end punctuation in the middle
             if currentLine.hasEndPunctuationInMiddle {
+                endPunctuationInMiddleCount += 1
+
                 // Find the position of end punctuation marks in the current line
 
                 for (index, char) in currentLine.enumerated() {

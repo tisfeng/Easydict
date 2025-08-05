@@ -48,19 +48,16 @@ struct OCRMergeContext {
         lineAnalyzer.isEqualX(pair: pair)
     }()
 
+    lazy var hasBigDifferentX: Bool = {
+        !lineAnalyzer.hasNoIndentation(observation: current, compared: previous, confidence: .high)
+    }()
+
     lazy var hasBigIndentation: Bool = {
-        lineAnalyzer.hasIndentation(
-            observation: current,
-            comparedObservation: previous,
-            confidence: .custom(2.0)
-        )
+        lineAnalyzer.hasIndentation(observation: current, compared: previous, confidence: .high)
     }()
 
     lazy var hasPairIndentation: Bool = {
-        lineAnalyzer.hasIndentation(
-            observation: current,
-            comparedObservation: previous
-        )
+        lineAnalyzer.hasIndentation(observation: current, compared: previous)
     }()
 
     lazy var hasIndentation: Bool = {

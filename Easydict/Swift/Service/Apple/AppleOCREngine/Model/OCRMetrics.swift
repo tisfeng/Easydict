@@ -235,13 +235,8 @@ class OCRMetrics {
         )
     }
 
-    // MARK: Private
-
-    /// A detector for identifying poetry-like text structures.
-    private lazy var poetryDetector = OCRPoetryDetector(metrics: self)
-
     /// Resets all metrics to their default initial values.
-    private func resetMetrics() {
+    func resetMetrics() {
         // Reset context data
         ocrImage = NSImage()
         language = .auto
@@ -270,6 +265,11 @@ class OCRMetrics {
 
         genre = .plain
     }
+
+    // MARK: Private
+
+    /// A detector for identifying poetry-like text structures.
+    private lazy var poetryDetector = OCRPoetryDetector(metrics: self)
 
     /// Performs a first-pass analysis on an observation to collect baseline metrics like line height and position.
     private func processObservationMetrics(_ textObservation: VNRecognizedTextObservation) {

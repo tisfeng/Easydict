@@ -70,6 +70,8 @@ enum OCRTestSample: String, CaseIterable {
     case zhPoetry9 = "ocr-zh-poetry-9.png"
     case zhPoetry10 = "ocr-zh-poetry-10.png"
     case zhPoetry11 = "ocr-zh-poetry-11.png"
+    case zhPoetry12 = "ocr-zh-poetry-12.png"
+    case zhPoetry13 = "ocr-zh-poetry-13.png"
 
     // Classical Chinese poetry
     case zhClassicalPoetry1 = "ocr-zh-classical-poetry-1.png"
