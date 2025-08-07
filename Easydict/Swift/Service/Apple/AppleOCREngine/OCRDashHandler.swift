@@ -9,49 +9,26 @@
 import Foundation
 import Vision
 
-// MARK: - DashHandlingAction
-
-/**
- * Defines actions for handling dash characters in OCR text.
- *
- * Dash characters in OCR text can serve different purposes and require different handling
- * strategies depending on their context and intended meaning.
- */
-enum DashHandlingAction {
-    /// No special dash processing required.
-    /// Used when the dash is not part of a word continuation scenario,
-    /// or when normal text merging rules should apply.
-    case none
-
-    /// Preserve the dash character and join adjacent words.
-    /// Applied when the dash serves a meaningful purpose such as:
-    /// - Compound words (e.g., "well-known")
-    /// - Date ranges (e.g., "2020-2023")
-    /// - Technical terms (e.g., "UTF-8")
-    case keepDashAndJoin
-
-    /// Remove the dash and seamlessly join the words.
-    /// Used for line-break hyphenation where the dash was inserted
-    /// only for typographical purposes and should be removed:
-    /// - "under-\nstanding" → "understanding"
-    /// - "reconstruct-\ning" → "reconstructing"
-    case removeDashAndJoin
-}
-
 // MARK: - OCRDashHandler
 
-/**
- * A specialized handler for intelligently processing dash characters in OCR text.
- *
- * ### Example Scenarios:
- * ```
- * Input:  "recon-\nstruction"  → Output: "reconstruction" (remove dash)
- * Input:  "state-of-the-art"   → Output: "state-of-the-art" (keep dash)
- * Input:  "twenty-first"       → Output: "twenty-first" (keep dash)
- * ```
- *
- * Essential for producing clean, readable text from complex document layouts.
- */
+/// A specialized handler for intelligently processing dash characters in OCR text.
+///
+/// ### Three Primary Dash Scenarios:
+/// ```
+/// 1. Line-break hyphenation (joinRemovingDash):
+///    Input:  "recon-\nstruction"  → Output: "reconstruction"
+///    The dash was inserted for typographical line breaking and should be removed.
+///
+/// 2. Compound words (joinWithNoSpace):
+///    Input:  "state-of-\nthe-art"   → Output: "state-of-the-art"
+///    The dash is meaningful and should be preserved without spacing.
+///
+/// 3. Separated dash (joinWithSpace):
+///    Input:  "true or -\nfalse"   → Output: "true or - false"
+///    The dash stands alone and needs spaces around it for proper formatting.
+/// ```
+///
+/// Essential for producing clean, readable text from complex document layouts.
 class OCRDashHandler {
     // MARK: Lifecycle
 
@@ -64,47 +41,9 @@ class OCRDashHandler {
 
     // MARK: Internal
 
-    /// Decides how to handle dashes between two text observations.
-    ///
-    /// - Parameter pair: The pair of previous and current observations.
-    /// - Returns: The appropriate dash handling action (`.none`, `.removeDashAndJoin`, or `.keepDashAndJoin`).
-    func analyzeDashHandling(_ pair: OCRTextObservationPair) -> DashHandlingAction {
-        // First check if we have a potential hyphenated word continuation
-        guard hasHyphenatedWordContinuation(pair) else {
-            return .none
-        }
-
-        // Chinese does not require special dash handling, so return none
-        let isLatinText = EZLanguageManager.shared().isLanguageWordsNeedSpace(metrics.language)
-        guard isLatinText else {
-            return .none
-        }
-
-        // Check if the previous line is long enough to warrant dash handling
-        let isPreviousLineLongEnough = lineMeasurer.isLongLine(
-            observation: pair.previous,
-            nextObservation: pair.current
-        )
-        guard isPreviousLineLongEnough else {
-            return .none
-        }
-
-        // Check if the joined word would be spelled correctly
-        let joinedWord = createJoinedWord(from: pair)
-        if isSpelledCorrectly(joinedWord) {
-            return .removeDashAndJoin
-        } else {
-            return .keepDashAndJoin
-        }
-    }
-
+    /// Dash merge strategy for OCR text observations.
     func dashMergeStrategy(_ pair: OCRTextObservationPair) -> OCRMergeStrategy? {
-        let dashAction = analyzeDashHandling(pair)
-        if dashAction != .none {
-            let dashStrategy = OCRMergeStrategy.from(dashAction)
-            return dashStrategy
-        }
-        return nil
+        analyzeDashHandling(pair)
     }
 
     // MARK: Private
@@ -115,24 +54,74 @@ class OCRDashHandler {
     /// Characters that can be used for word continuation.
     private let dashCharacters = ["-", "–", "—"]
 
-    /// Checks if the text pair represents a hyphenated word continuation.
+    /// Analyzes dash handling and determines the appropriate merge strategy.
+    ///
+    /// - Parameter pair: The pair of previous and current observations.
+    /// - Returns: The appropriate OCR merge strategy for dash handling, or `nil` if no special dash handling is needed.
+    private func analyzeDashHandling(_ pair: OCRTextObservationPair) -> OCRMergeStrategy? {
+        // First check if we have a potential dash-related scenario
+        guard hasDashScenario(pair) else {
+            return nil
+        }
+
+        // Chinese and other non-space languages handle dashes differently
+        let isLatinText = EZLanguageManager.shared().isLanguageWordsNeedSpace(metrics.language)
+        guard isLatinText else {
+            return nil
+        }
+
+        // Check if the previous line is long enough to warrant dash handling
+        let isPreviousLineLongEnough = lineMeasurer.isLongLine(
+            observation: pair.previous,
+            nextObservation: pair.current
+        )
+        guard isPreviousLineLongEnough else {
+            return nil
+        }
+
+        // Determine the specific dash scenario
+        return determineDashMergeStrategy(for: pair)
+    }
+
+    /// Checks if the text pair represents any dash-related scenario.
     /// - Parameter pair: The text observation pair.
-    /// - Returns: `true` if it's a hyphenated word continuation, `false` otherwise.
-    private func hasHyphenatedWordContinuation(_ pair: OCRTextObservationPair) -> Bool {
+    /// - Returns: `true` if there's a dash scenario to handle, `false` otherwise.
+    private func hasDashScenario(_ pair: OCRTextObservationPair) -> Bool {
         let currentText = pair.current.firstText
         let previousText = pair.previous.firstText
 
         guard !previousText.isEmpty, !currentText.isEmpty else { return false }
 
-        // Check if previous text ends with a dash
-        guard previousTextEndsWithDash(previousText) else { return false }
+        // Check if previous text ends with a dash or current text starts with a dash
+        return previousTextEndsWithDash(previousText) || currentText.first == "-"
+    }
 
-        // Check if current text starts with a letter (word continuation)
-        guard currentText.first?.isLetter == true else { return false }
+    /// Determines the specific merge strategy for the dash scenario.
+    /// - Parameter pair: The text observation pair.
+    /// - Returns: The appropriate OCRMergeStrategy.
+    private func determineDashMergeStrategy(for pair: OCRTextObservationPair) -> OCRMergeStrategy {
+        let previousText = pair.previous.firstText
+        let currentText = pair.current.firstText
 
-        // Check if there's a valid word before the dash
-        let wordBeforeDash = getWordBeforeDash(from: previousText)
-        return !wordBeforeDash.isEmpty
+        // Scenario 1: Line-break hyphenation (e.g., "recon-\nstruction")
+        if previousTextEndsWithDash(previousText), currentText.first?.isLetter == true {
+            let wordBeforeDash = getWordBeforeDash(from: previousText)
+            if !wordBeforeDash.isEmpty {
+                let joinedWord = createJoinedWord(from: pair)
+                if isSpelledCorrectly(joinedWord) {
+                    return .joinRemovingDash
+                }
+            }
+        }
+
+        // Scenario 2: Separated dash (e.g., "true or -\nfalse", "true or\n- false")
+        if previousText.hasSuffix(" -") || currentText.hasPrefix("- ") {
+            return .joinWithSpace
+        }
+
+        // Scenario 3: Compound words (default case for meaningful dashes)
+        // This includes cases like "state-of-\nthe-art" where the dash should be preserved
+        return .joinWithNoSpace
     }
 
     /// Checks if the previous text ends with a dash character.

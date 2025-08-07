@@ -46,17 +46,11 @@ class OCRPoetryDetector {
         let isCharCountPerLineLikePoetry = matchesPoetryPattern(
             wordCountPerLine: 0,
             charCountPerLine: metrics.charCountPerLine,
-            confidence: .custom(2.2)
+            confidence: .custom(2.5)
         )
 
         if !isCharCountPerLineLikePoetry {
             print("❌ Not poetry-like based on overall character count.")
-            return false
-        }
-
-        // Early detection: Check for prose patterns
-        if hasProsePattern() {
-            print("❌ Detected prose pattern, not poetry.")
             return false
         }
 
@@ -71,7 +65,7 @@ class OCRPoetryDetector {
 
         for i in 0 ..< lineCount {
             let observation = observations[i]
-            let text = observation.firstText
+            let currentText = observation.firstText
 
             var punctuationSet = CharacterSet.punctuationCharacters
             // Remove common poetry punctuation marks
@@ -79,8 +73,8 @@ class OCRPoetryDetector {
 
             // Count ellipses ("...") and standalone punctuation marks properly
             let ellipsisRegex = Regex.ellipsis
-            let ellipsisCount = text.matches(of: ellipsisRegex).count
-            let remainingText = text.replacing(ellipsisRegex, with: "")
+            let ellipsisCount = currentText.matches(of: ellipsisRegex).count
+            let remainingText = currentText.replacing(ellipsisRegex, with: "")
 
             let otherPunctuationsCount = remainingText.unicodeScalars
                 .filter { punctuationSet.contains($0) }
@@ -93,25 +87,65 @@ class OCRPoetryDetector {
                 punctuationCount += linePunctuationCount
             }
 
-            let lineCharCount = text.count - linePunctuationCount
+            let lineCharCount = currentText.count - linePunctuationCount
             totalCharCount += lineCharCount
 
-            let wordCount = text.wordCount
+            let wordCount = currentText.wordCount
             totalWordCount += wordCount
 
-            if let last = text.last, let scalar = last.unicodeScalars.first {
+            if let last = currentText.last, let scalar = last.unicodeScalars.first {
                 if punctuationSet.contains(scalar) {
                     suffixPunctuationCount += 1
                 }
             }
 
-            let hasEndPunctuationSuffix = text.hasEndPunctuationSuffix
+            let hasEndPunctuationSuffix = currentText.hasEndPunctuationSuffix
             if hasEndPunctuationSuffix {
                 endPunctuationCount += 1
             }
 
             if i > 0 {
                 let prevObservation = observations[i - 1]
+                let prevText = prevObservation.firstText
+                let isPrevFirstCharLowercase = prevText.isFirstCharLowercase
+                let prevHasPunctuationSuffix = prevText.last?.isPunctuation ?? false
+                let isFirstCharLowercase = currentText.isFirstCharLowercase
+
+                // Early check for prose patterns
+
+                /**
+                    Check for prose patterns in the previous line and the current line.
+
+                    Specifically looks for cases where:
+                    1. Previous line has end punctuation in the middle (sentence end)
+                    2. Followed by an uppercase letter (new sentence start)
+                    3. But the current line starts with lowercase (continuation of broken sentence)
+
+                    Example:
+                    ```
+                    travel the same distance. This is
+                    because the time it takes for a given
+                    ```
+                 */
+
+                if prevText.hasEndPunctuationInMiddle {
+                    // Find the position of end punctuation marks in the previous line
+                    for (index, char) in prevText.enumerated() {
+                        let charString = String(char)
+                        if charString.isEndPunctuation {
+                            // Check if there's a current character that is uppercase (new sentence)
+                            let remainingText = String(prevText.dropFirst(index + 1)).trim()
+                            if remainingText.isFirstCharUppercase {
+                                // Check if current line starts with lowercase
+                                if currentText.isFirstCharLowercase {
+                                    print("🔍 Found prose pattern: \"\(prevText)\" -> \"\(currentText)\"")
+                                    return false
+                                }
+                            }
+                        }
+                    }
+                }
+
                 let isPrevLineLong = lineMeasurer.isLongLine(
                     observation: prevObservation,
                     nextObservation: observation
@@ -121,39 +155,69 @@ class OCRPoetryDetector {
                 if isPrevLineLong {
                     longLineCount += 1
 
-                    let prevText = prevObservation.firstText
+                    /**
+                     Check for special list case:
+
+                     ```
+                     · fix: change Volcano response Extra type
+                        from String to Dictionary by @tisfeng in
+                        #863
+                     · feat: support auto detection for classical
+                        Chinese (Enabled in beta mode) by
+                        @tisfeng in #872
+                     ```
+                     */
+
                     if prevText.hasListPrefix {
-                        print("Previous line is a list line, maybe not poetry")
+                        if !prevHasPunctuationSuffix, isFirstCharLowercase {
+                            print("🔍 Detected special list case: previous list is long, current starts with lowercase")
+                            print("❓ Maybe not poetry, returning false")
+                            print("prevText: \(prevText)")
+                            print("currentText: \(currentText)")
 
-                        if hasEndPunctuationSuffix {
-                            print("❓ Current line ends with punctuation, maybe not poetry")
-                            return false
-                        }
-
-                        let isLongLine = lineMeasurer.isLongLine(
-                            observation: prevObservation,
-                            nextObservation: observation
-                        )
-
-                        if isLongLine {
-                            print("❓ Previous line is a long list line, maybe not poetry")
                             return false
                         }
                     }
 
-                    /**
-                     If current line ends with punctuation, and previous line is long without punctuation suffix,
-                     then it is maybe not poetry.
-
-                     Example:
-
-                     10月1日 | 星期日 | 国庆节
-
-                     只要我们展现意志，大自然会为我们找到出
-                     路。
-                     */
+                    // If current line has end punctuation suffix
                     if hasEndPunctuationSuffix {
-                        let prevHasPunctuationSuffix = prevText.last?.isPunctuation ?? false
+                        /**
+                         Check for English prose patterns:
+
+                         If the previous line first character is lowercase,
+                         and previous is long without punctuation suffix,
+                         and the current line has end punctuation,
+                         then it is maybe not poetry.
+
+                          ```
+                          Apply computer vision algorithms to
+                          perform a variety of tasks on input
+                          images and videos.
+                          ```
+                          */
+
+                        if !prevHasPunctuationSuffix, isPrevFirstCharLowercase {
+                            print("🔍 Detected English prose pattern:")
+                            print("❓ Previous line is long, starts with lowercase, current has end punctuation")
+                            print("❓ Maybe not poetry, returning false")
+                            print("prevText: \(prevText)")
+                            print("currentText: \(currentText)")
+
+                            return false
+                        }
+
+                        /**
+                         If current line ends with punctuation, and previous line is long
+                         without punctuation suffix, then it is maybe not poetry.
+
+                         Example:
+
+                         10月1日 | 星期日 | 国庆节
+
+                         只要我们展现意志，大自然会为我们找到出
+                         路。
+                         */
+
                         let matchesPoetryPattern = matchesPoetryPattern(
                             wordCountPerLine: prevText.wordCount.double,
                             charCountPerLine: prevText.count.double,
@@ -162,7 +226,7 @@ class OCRPoetryDetector {
 
                         if !prevHasPunctuationSuffix, !matchesPoetryPattern {
                             print("prevText: \(prevText)")
-                            print("currentText: \(text)")
+                            print("currentText: \(currentText)")
                             print(
                                 "❓ Current line has end punctuation, previous is long without punctuation suffix"
                             )
@@ -205,20 +269,6 @@ class OCRPoetryDetector {
         print("- Long lines: \(longLineCount)/\(lineCount) = \(longLineRatio.string2f)")
 
         print("\n🔍 Poetry Detection Rules:")
-
-        /*
-         Poetry Detection Rule Summary:
-         =============================
-         Rule 1: Character count validation (>= 2 chars per line)
-         Rule 2: Punctuation density check (<= 2 marks per line)
-         Rule 3: Poetry pattern matching (word/char count thresholds)
-         Rule 4: Low punctuation density with 1.0x multiplier
-         Rule 5: High end punctuation ratio with 1.5x multiplier
-         Rule 6: High punctuation suffix ratio with 1.5x multiplier
-         Rule 7: High no-punctuation line ratio with 1.5x multiplier
-         Rule 8: Very low punctuation density with 1.5x multiplier
-         Rule 9: Combined criteria with 1.5x multiplier
-         */
 
         // Rule 1: Single character per line (like vertical poetry)
         if charCountPerLine < 2 {
@@ -331,61 +381,6 @@ class OCRPoetryDetector {
                 """
             )
             return true
-        }
-        return false
-    }
-
-    /// Detects prose patterns that indicate the text is not poetry.
-    ///
-    /// Specifically looks for cases where:
-    /// 1. A line ends with punctuation (sentence end)
-    /// 2. Followed by an uppercase letter (new sentence start)
-    /// 3. But the next line starts with lowercase (continuation of broken sentence)
-    ///
-    /// Example:
-    /// ```
-    /// travel the same distance. This is
-    /// because the time it takes for a given
-    /// ```
-    private func hasProsePattern() -> Bool {
-        let observations = metrics.textObservations
-        let lineCount = observations.count
-
-        guard lineCount >= 2 else { return false }
-
-        var prosePatternCount = 0
-        var endPunctuationInMiddleCount = 0
-
-        for i in 0 ..< (lineCount - 1) {
-            let currentLine = observations[i].firstText.trimmingCharacters(in: .whitespaces)
-            let nextLine = observations[i + 1].firstText.trimmingCharacters(in: .whitespaces)
-
-            guard !currentLine.isEmpty, !nextLine.isEmpty else { continue }
-
-            // Check if current line contains end punctuation in the middle
-            if currentLine.hasEndPunctuationInMiddle {
-                endPunctuationInMiddleCount += 1
-
-                // Find the position of end punctuation marks in the current line
-
-                for (index, char) in currentLine.enumerated() {
-                    let charString = String(char)
-
-                    // If this character is an end punctuation mark
-                    if charString.isEndPunctuation {
-                        // Check if there's a next character that is uppercase (new sentence)
-                        let remainingText = String(currentLine.dropFirst(index + 1)).trim()
-                        if remainingText.isFirstCharUppercase {
-                            // Check if next line starts with lowercase
-                            if nextLine.isFirstCharLowercase {
-                                prosePatternCount += 1
-                                print("🔍 Found prose pattern: \"\(currentLine)\" -> \"\(nextLine)\"")
-                                return true
-                            }
-                        }
-                    }
-                }
-            }
         }
         return false
     }

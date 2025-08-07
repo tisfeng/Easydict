@@ -15,6 +15,8 @@ enum OCRTestSample: String, CaseIterable {
 
     case enText1 = "ocr-en-text-1.png"
     case enText2 = "ocr-en-text-2.png"
+    case enText3 = "ocr-en-text-3.png"
+    case enText4 = "ocr-en-text-4.png"
 
     case enTextBitcoin = "ocr-en-text-bitcoin.png"
     case enTextReddit = "ocr-en-text-reddit.png"

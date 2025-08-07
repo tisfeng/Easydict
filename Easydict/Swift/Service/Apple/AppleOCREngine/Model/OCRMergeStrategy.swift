@@ -10,12 +10,10 @@ import Foundation
 
 // MARK: - OCRMergeStrategy
 
-/**
- * Defines the strategy for merging two consecutive OCR text observations.
- *
- * Each case represents a specific formatting decision when combining a `previous`
- * and `current` text observation.
- */
+/// Defines the strategy for merging two consecutive OCR text observations.
+///
+/// Each case represents a specific formatting decision when combining a `previous`
+/// and `current` text observation.
 enum OCRMergeStrategy: CustomStringConvertible {
     /// Represents an intentional line break, such as in poetry or lists.
     /// A single newline character (`\n`) is inserted.
@@ -51,20 +49,6 @@ enum OCRMergeStrategy: CustomStringConvertible {
             return "joinWithNoSpace"
         case .joinRemovingDash:
             return "joinRemovingDash"
-        }
-    }
-
-    /// Creates a merge strategy from a `DashHandlingAction`.
-    /// - Parameter action: The dash handling action to convert.
-    /// - Returns: The corresponding merge strategy.
-    static func from(_ action: DashHandlingAction) -> OCRMergeStrategy {
-        switch action {
-        case .none:
-            return .joinWithSpace
-        case .keepDashAndJoin:
-            return .joinWithNoSpace
-        case .removeDashAndJoin:
-            return .joinRemovingDash
         }
     }
 
@@ -110,7 +94,7 @@ enum OCRMergeStrategy: CustomStringConvertible {
         case .newParagraph:
             return OCRConstants.paragraphSeparator
         case .joinWithNoSpace:
-            return "-"
+            return ""
         case .joinRemovingDash:
             return ""
         }

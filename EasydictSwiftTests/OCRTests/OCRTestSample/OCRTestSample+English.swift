@@ -53,6 +53,29 @@ extension OCRTestSample {
 
         -Aggro Crab
         """,
+        enText3: """
+        We are writing to notify you that, pursuant to orders by the Chinese government, your app will be made unavailable on the China App Store because it includes content that is illegal in China. As you may know, the government has been tightening regulations associated with deep synthesis technologies (DST) and generative Al services, including ChatGPT. DST must fulfill permitting requirements to operate in China, including securing a license from the Ministry of Industry and Information Technology (MIIT). Based on our review, your app is associated with ChatGPT, which does not have requisite permits to operate in China.
+        """,
+        enText4: """
+        Vision
+
+        Apply computer vision algorithms to perform a variety of tasks on input images and videos.
+
+        Overview
+
+        The Vision framework combines machine learning technologies and Swift's concurrency features to perform computer vision tasks in your app. Use the Vision framework to analyze images for a variety of purposes:
+        · Tracking human and animal body poses or the trajectory of an object
+        · Recognizing text in 18 different languages
+        · Detecting faces and face landmarks, such as eyes, nose, and mouth
+        · Performing hand tracking to enable new device interactions
+        · Calculating an aesthetics score to determine how memorable a photo is
+
+        To begin using the framework, you create a request for the type of analysis you want to do. Each request conforms to the VisionRequest protocol. You then perform the request to get an observation object - or an array of observations - with the analysis details for the request. There are more than 25 requests available to choose from. Vision also allows the use of custom Core ML models for tasks like classification or object detection.
+
+        Note Starting in iOS 18.0, the Vision framework provides a new Swift-only API. See Original Objective-C and Swift API to view the original API.
+
+        Open in Developer Documentation
+        """,
 
         enTextBitcoin: """
         Bitcoin: A Peer-to-Peer Electronic Cash System
@@ -128,7 +151,7 @@ extension OCRTestSample {
         enTextLetter338: """
         It is my turn to sue and be sued. I wrote in The Second Sex about whores and prostitutes, and among names of elegant whores of 1900, I gave the name of Cléo de Mérode. Last Sunday. Somebody spoke at the radio, pretending to be me. read this part of the book, and insulted Cléo de Mérode. So now I learn in newspapers and a personal letter that she sues me. And I sue the radio for having used my name. I send you a nice picture of the woman and myself. In fact, I though she was dead since long, which would have made things much easier.
 
-        Toulouse has got through a desintoxication cure; she is quite different: fair, pink, soft, smiling, dressed in a long white night-gown, looking healthy and sweet. But she spoke for an hour and a half without stopping one second, which means she was not quite normal. She was interesting because she described the way she has been nursed; it seems a terrible thing. It lasted six days. The first they gave her a mild typhoidic fever - a real shock -then every day they doped her in many different ways, pushing long thick needles in her poor flesh and veins, oily things had to go to her brain and give it some grease, for the wine had eaten the grease up, they say. She had to keep a nurse night and day, because she wanted to jump through the window, she had such anguish from lack of wine. Now it seems her brain is little too greasy, that is why she speaks so much.
+        Toulouse has got through a desintoxication cure; she is quite different: fair, pink, soft, smiling, dressed in a long white night-gown, looking healthy and sweet. But she spoke for an hour and a half without stopping one second, which means she was not quite normal. She was interesting because she described the way she has been nursed; it seems a terrible thing. It lasted six days. The first they gave her a mild typhoidic fever - a real shock-then every day they doped her in many different ways, pushing long thick needles in her poor flesh and veins, oily things had to go to her brain and give it some grease, for the wine had eaten the grease up, they say. She had to keep a nurse night and day, because she wanted to jump through the window, she had such anguish from lack of wine. Now it seems her brain is little too greasy, that is why she speaks so much.
 
         Yours certainly is not. What a brute, not to send a short wire when I ask to you! I very often wait patiently for letters, but this time a letter was surely lost; you never made me wait for weeks, you used to be kinder than that until now. Shall I think you unkind rather than dead? Yea, now I shall, ugly muddy thing. Don't forget anyway to send next letters to the right places: Algiers, Hotel Saint Georges until i1th or 12th March, Gardhaia, Hotel Transatlantique, until 24th March.
 

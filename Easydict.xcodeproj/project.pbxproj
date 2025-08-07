@@ -34,6 +34,7 @@
 		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
+		0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 032041192E43BEB50065A05B /* ocr-en-text-4.png */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
@@ -551,6 +552,7 @@
 		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
+		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
@@ -2522,6 +2524,7 @@
 				03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */,
 				03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */,
 				03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */,
+				032041192E43BEB50065A05B /* ocr-en-text-4.png */,
 				03C3A5AF2E1BFE4900B59152 /* ocr-en-text-bitcoin.png */,
 				03C3A5B02E1BFE4900B59152 /* ocr-en-text-reddit.png */,
 				034227E22E366EB000325B47 /* ocr-en-poetry-8.png */,
@@ -3386,6 +3389,7 @@
 				03F670472E3B392100EA682B /* ocr-zh-text-4.png in Resources */,
 				03C3A5C12E1BFE4900B59152 /* ocr-zh-text-bitcoin.png in Resources */,
 				03C3A5C22E1BFE4900B59152 /* ocr-en-text-bitcoin.png in Resources */,
+				0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */,
 				03C3A5C32E1BFE4900B59152 /* ocr-en-paper-4.png in Resources */,
 				03C3A5C42E1BFE4900B59152 /* ocr-en-text-1.png in Resources */,
 				03C3A5C52E1BFE4900B59152 /* ocr-en-text-2.png in Resources */,
