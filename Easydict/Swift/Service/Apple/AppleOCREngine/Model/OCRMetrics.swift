@@ -64,7 +64,7 @@ class OCRMetrics {
     // MARK: - Line & Spacing Metrics
 
     /// The minimum line height observed across all text observations.
-    private(set) var minLineHeight: Double = .greatestFiniteMagnitude
+    private(set) var minLineHeight: Double = 1.0
 
     /// The cumulative total of all line heights, used for calculating the average.
     private(set) var totalLineHeight: Double = 0
@@ -73,10 +73,10 @@ class OCRMetrics {
     private(set) var averageLineHeight: Double = 0
 
     /// The minimum spacing observed between adjacent lines (can be negative if lines overlap).
-    private(set) var minLineSpacing: Double = .greatestFiniteMagnitude
+    private(set) var minLineSpacing: Double = 1.0
 
     /// The minimum positive (non-zero) spacing between lines.
-    private(set) var minPositiveLineSpacing: Double = .greatestFiniteMagnitude
+    private(set) var minPositiveLineSpacing: Double = 1.0
 
     /// The cumulative total of all line spacings, used for calculating the average.
     private(set) var totalLineSpacing: Double = 0
@@ -243,12 +243,12 @@ class OCRMetrics {
         textObservations = []
 
         // Reset metrics data
-        minLineHeight = .greatestFiniteMagnitude
+        minLineHeight = 1.0
         totalLineHeight = 0
         averageLineHeight = 0
 
-        minLineSpacing = .greatestFiniteMagnitude
-        minPositiveLineSpacing = .greatestFiniteMagnitude
+        minLineSpacing = 1.0
+        minPositiveLineSpacing = 1.0
         totalLineSpacing = 0
         averageLineSpacing = 0
 
