@@ -36,6 +36,7 @@
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 032041192E43BEB50065A05B /* ocr-en-text-4.png */; };
 		0320411C2E44989D0065A05B /* PoetryStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320411B2E44989D0065A05B /* PoetryStatistics.swift */; };
+		0320411E2E44DABA0065A05B /* ocr-ja-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
@@ -555,6 +556,7 @@
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
 		0320411B2E44989D0065A05B /* PoetryStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoetryStatistics.swift; sourceTree = "<group>"; };
+		0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-3.png"; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
@@ -2533,6 +2535,7 @@
 				034227E22E366EB000325B47 /* ocr-en-poetry-8.png */,
 				03C3A5B12E1BFE4900B59152 /* ocr-ja-text-1.png */,
 				03C3A5B22E1BFE4900B59152 /* ocr-ja-text-2.png */,
+				0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */,
 				03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */,
 				03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */,
 				034227ED2E367B5100325B47 /* ocr-zh-text-3.png */,
@@ -3391,6 +3394,7 @@
 				03C3A5C02E1BFE4900B59152 /* ocr-en-paper-1.png in Resources */,
 				03F670472E3B392100EA682B /* ocr-zh-text-4.png in Resources */,
 				03C3A5C12E1BFE4900B59152 /* ocr-zh-text-bitcoin.png in Resources */,
+				0320411E2E44DABA0065A05B /* ocr-ja-text-3.png in Resources */,
 				03C3A5C22E1BFE4900B59152 /* ocr-en-text-bitcoin.png in Resources */,
 				0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */,
 				03C3A5C32E1BFE4900B59152 /* ocr-en-paper-4.png in Resources */,

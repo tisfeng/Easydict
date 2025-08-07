@@ -98,6 +98,7 @@ enum OCRTestSample: String, CaseIterable {
     // ocr japanese text
     case jaText1 = "ocr-ja-text-1.png"
     case jaText2 = "ocr-ja-text-2.png"
+    case jaText3 = "ocr-ja-text-3.png"
 
     // MARK: - Other Language Cases
 

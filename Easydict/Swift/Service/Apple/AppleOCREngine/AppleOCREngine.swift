@@ -12,15 +12,13 @@ import Vision
 
 // MARK: - AppleOCREngine
 
-/**
- * A wrapper around Apple's Vision framework to provide OCR (Optical Character Recognition) services.
- *
- * This class simplifies the process of recognizing text from an image by encapsulating the setup
- * and execution of `VNRecognizeTextRequest`. It coordinates the entire OCR pipeline, from handling
- * the initial image to delegating the final text processing to `OCRTextProcessor`.
- *
- * It supports both a traditional callback-based API and a modern async/await interface.
- */
+/// A wrapper around Apple's Vision framework to provide OCR (Optical Character Recognition) services.
+///
+/// This class simplifies the process of recognizing text from an image by encapsulating the setup
+/// and execution of `VNRecognizeTextRequest`. It coordinates the entire OCR pipeline, from handling
+/// the initial image to delegating the final text processing to `OCRTextProcessor`.
+///
+/// It supports both a traditional callback-based API and a modern async/await interface.
 public class AppleOCREngine {
     // MARK: Internal
 
@@ -186,7 +184,9 @@ public class AppleOCREngine {
         language: Language = .auto,
         completionHandler: @escaping ([VNRecognizedTextObservation], Error?) -> ()
     ) {
-        let request = VNRecognizeTextRequest { request, error in
+        let request = VNRecognizeTextRequest { [weak self] request, error in
+            guard let self = self else { return }
+
             if let error {
                 DispatchQueue.main.async {
                     completionHandler([], error)
@@ -194,9 +194,20 @@ public class AppleOCREngine {
                 return
             }
 
-            guard let observations = request.results as? [VNRecognizedTextObservation],
-                  !observations.isEmpty
-            else {
+            let observations = request.results as! [VNRecognizedTextObservation]
+            if observations.isEmpty {
+                log("No text recognized in the image.")
+
+                // For some special cases, it is empty when text is Japanese.
+                // So we can try to use Japanese for recognition.
+                if language == .auto {
+                    log("Retrying OCR with Japanese language.")
+                    performVisionOCR(
+                        on: cgImage, language: .japanese, completionHandler: completionHandler
+                    )
+                    return
+                }
+
                 DispatchQueue.main.async {
                     let message = String(localized: "ocr_result_is_empty")
                     let error = QueryError.error(type: .noResult, message: message)

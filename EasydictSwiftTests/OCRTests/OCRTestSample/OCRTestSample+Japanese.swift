@@ -8,14 +8,12 @@
 
 import Foundation
 
-// swiftlint:disable line_length
-
 /// Japanese OCR test samples
 extension OCRTestSample {
     // MARK: - Japanese Text Cases
 
     static let japaneseCases: [OCRTestSample] = [
-        .jaText1, .jaText2,
+        .jaText1, .jaText2, .jaText3,
     ]
 
     // MARK: - Japanese Expected Results
@@ -62,12 +60,8 @@ extension OCRTestSample {
         こんな身近な人がなるなんて。言葉を失った。しかし社長は病気と戦い続けた。
         """,
 
-        plUnsupportedText1: """
-        Anseio por te ver, mas, por favor, lembra-te que não vou pedir para te ver.
-
-        Não é por orgulho, sabes que não tenho orgulho diante de ti, mas porque, só quando também me quiseres ver, o nosso encontro será significativo.
+        jaText3: """
+        弘前ねぷたまつり開催中
         """,
     ]
 }
-
-// swiftlint:enable line_length
