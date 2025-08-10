@@ -60,7 +60,7 @@ public class AppleOCREngine {
             guard let self else { return }
 
             elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-            log("Recognize observations \(observations.count)(\(language)), cost time: \(elapsedTime.string2f) seconds")
+            log("Recognize count \(observations.count) \(language), cost time: \(elapsedTime.string2f) seconds")
 
             if let error {
                 completion(nil, error)
@@ -99,7 +99,7 @@ public class AppleOCREngine {
 
             if smartMerging {
                 elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-                log("OCR completion cost time: \(elapsedTime.string2f) seconds")
+                log("OCR completion (\(language)) cost time: \(elapsedTime.string2f) seconds")
 
                 DispatchQueue.main.async {
                     completion(ocrResult, nil)
@@ -115,7 +115,9 @@ public class AppleOCREngine {
 
             if let croppedImage {
                 log("Attempting OCR optimization with cropped image")
-                let croppedImagePath = OCRConstants.ocrImageDirectoryURL.appending(path: "ocr_cropped_image.png")
+                let croppedImagePath = OCRConstants.ocrImageDirectoryURL.appending(
+                    path: "ocr_cropped_image.png"
+                )
                 croppedImage.mm_writeToFile(asPNG: croppedImagePath.path())
             }
 
@@ -127,9 +129,9 @@ public class AppleOCREngine {
 
                 startTime = CFAbsoluteTimeGetCurrent()
 
-                let mostConfidentResult = try await getMostConfidentLanguageOCRResult(
-                    image: ocrImage,
-                    languageProbabilities: rawLanguageProbabilities
+                let mostConfidentResult = try await selectBestOCRResult(
+                    from: ocrImage,
+                    candidates: rawLanguageProbabilities
                 )
 
                 elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
@@ -313,101 +315,79 @@ public class AppleOCREngine {
         language != .auto && languageMapper.isSupportedOCRLanguage(language)
     }
 
-    /// Runs OCR for multiple candidate languages concurrently and returns the most confident result.
+    /// Performs multi-language OCR and selects the best result using trusted candidate filtering.
     /// - Parameters:
-    ///   - image: Source image to OCR.
-    ///   - languageProbabilities: Candidate languages with their probabilities, higher means more likely.
-    /// - Returns: The best `EZOCRResult` determined by confidence, with tie-breaking via language re-detection.
-    private func getMostConfidentLanguageOCRResult(
-        image: NSImage,
-        languageProbabilities: [NLLanguage: Double]
+    ///   - image: Source image for OCR
+    ///   - languageProbabilities: Candidate languages with detection probabilities
+    /// - Returns: Best OCR result based on language consistency and confidence
+    private func selectBestOCRResult(
+        from image: NSImage,
+        candidates languageProbabilities: [NLLanguage: Double]
     ) async throws
         -> EZOCRResult {
-        log(
-            "Getting most confident OCR result from candidate languages: \(languageProbabilities.prettyPrinted)"
+        log("Selecting best OCR from candidates: \(languageProbabilities.prettyPrinted)")
+
+        // Run concurrent OCR for all candidates
+        let results = try await performConcurrentOCR(
+            image: image, candidates: languageProbabilities
         )
 
-        // 1) Order candidates by probability (desc)
-        let sortedLanguages = languageProbabilities.sorted { $0.value > $1.value }.map { $0.key }
+        // Filter trusted results and select best
+        return selectTrustedResult(from: results)
+    }
 
-        struct CandidateResult {
-            let language: Language
-            let result: EZOCRResult?
-            let error: Error?
-        }
+    /// Runs OCR concurrently for all candidate languages
+    private func performConcurrentOCR(image: NSImage, candidates: [NLLanguage: Double]) async throws -> [EZOCRResult] {
+        let sortedLanguages = candidates.sorted { $0.value > $1.value }.map { $0.key }
 
-        // 2) Run OCR for each candidate concurrently
-        let results: [CandidateResult] = await withTaskGroup(of: CandidateResult.self) { group in
+        let results = await withTaskGroup(of: EZOCRResult?.self) { group in
             for nlLanguage in sortedLanguages {
                 let language = languageMapper.languageEnum(from: nlLanguage)
-                // Skip if the language is not supported
-                if language == .auto {
-                    continue
-                }
+                guard language != .auto else { continue }
 
                 group.addTask { [weak self] in
-                    guard let self else {
-                        return CandidateResult(
-                            language: language,
-                            result: nil,
-                            error: QueryError.error(type: .api, message: "Engine released")
-                        )
-                    }
-                    do {
-                        // We do a single pass per language; the confidence is produced by our processor
-                        let res = try await recognizeTextAsync(
-                            image: image,
-                            language: language,
-                        )
-                        return CandidateResult(language: language, result: res, error: nil)
-                    } catch {
-                        return CandidateResult(language: language, result: nil, error: error)
-                    }
+                    try? await self?.recognizeTextAsync(image: image, language: language)
                 }
             }
-            var collected: [CandidateResult] = []
-            for await item in group {
-                collected.append(item)
+
+            var collected: [EZOCRResult] = []
+            for await result in group {
+                if let result {
+                    collected.append(result)
+                }
             }
             return collected
         }
 
-        // 3) Keep successful results
-        let successful = results.compactMap { $0.result }
-        if successful.isEmpty {
-            // If all failed, bubble up the first error or produce a generic one
-            if let firstError = results.first?.error { throw firstError }
+        guard !results.isEmpty else {
             throw QueryError.error(
                 type: .noResult, message: "No OCR results for candidate languages"
             )
         }
 
-        // 4) Build a trusted set: language detection of merged text matches candidate.from
-        var trusted: [EZOCRResult] = []
-        trusted.reserveCapacity(successful.count)
-        for candidate in successful {
+        return results
+    }
+
+    /// Selects the best result using trusted candidate filtering
+    private func selectTrustedResult(from results: [EZOCRResult]) -> EZOCRResult {
+        // Build trusted results (language detection matches OCR language)
+        let trusted = results.compactMap { candidate -> EZOCRResult? in
             let detected = languageDetector.detectLanguage(text: candidate.mergedText)
+            guard detected == candidate.from else { return nil }
+
+            // Boost confidence for high language detection confidence
             let nlLanguage = languageMapper.appleLanguagesDictionary[detected] ?? .undetermined
             let languageConfidence = languageDetector.rawLanguageProbabilities[nlLanguage] ?? 0.0
 
-            if detected == candidate.from {
-                trusted.append(candidate)
-
-                // If the detected language confidence is high, we can boost the candidate's confidence.
-                if languageConfidence >= 0.9 {
-                    candidate.confidence += languageConfidence
-                }
+            if languageConfidence >= 0.9 {
+                candidate.confidence += languageConfidence
             }
+
+            return candidate
         }
 
-        // 5) Prefer trusted results; sort by confidence (desc) and pick first
-        if !trusted.isEmpty {
-            let bestTrusted = trusted.sorted { $0.confidence > $1.confidence }.first!
-            return bestTrusted
-        }
-
-        // 6) Fallback: if none are trusted, use highest confidence as before
-        let bestByConfidence = successful.sorted { $0.confidence > $1.confidence }.first!
-        return bestByConfidence
+        // Return best trusted result, or fallback to highest confidence
+        let candidates = trusted.isEmpty ? results : trusted
+        return candidates.max { $0.confidence < $1.confidence }!
     }
 }
