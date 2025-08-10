@@ -11,31 +11,35 @@
 @implementation NSAttributedString (MM)
 
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font {
-    if (!text.length || !font) {
+    if (!text || !font) {
         NSAssert(0, @"mm_attributedStringWithString: 参数不对");
         return nil;
     }
 
-    NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:text
-                                                                 attributes:@{
-                                                                     NSFontAttributeName : font,
-                                                                 }];
-    return attStr;
+    return [self mm_attributedStringWithString:text attributes:@{NSFontAttributeName : font}];
 }
 
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font color:(NSColor *)color {
-    if (!text.length || !font || !color) {
+    if (!text || !font || !color) {
         NSAssert(0, @"mm_attributedStringWithString: 参数不对");
         return nil;
     }
 
-    NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:text
-                                                                 attributes:@{
+    return [self mm_attributedStringWithString:text attributes:@{
         NSFontAttributeName : font,
         NSForegroundColorAttributeName : color,
     }];
-    return attStr;
 }
+
+/// Private helper method
++ (NSAttributedString *)mm_attributedStringWithString:(NSString *)text attributes:(NSDictionary *)attributes {
+    if (!text || !attributes || attributes.count == 0) {
+        return nil;
+    }
+
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
 
 // Get attribute string width.
 - (CGFloat)mm_getTextWidth {
