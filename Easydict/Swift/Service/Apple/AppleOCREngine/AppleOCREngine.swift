@@ -38,10 +38,12 @@ public class AppleOCREngine {
     func recognizeText(
         image: NSImage,
         language: Language = .auto,
-        refineWithDetectedLanguage: Bool = true,
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
-        log("Recognizing text in image with language: \(language)")
+        log("Recognizing text in image with language: \(language), image size: \(image.size)")
+
+        var startTime = CFAbsoluteTimeGetCurrent()
+        // cost time: ~0.02 seconds
         guard let cgImage = image.toCGImage() else {
             let error = QueryError.error(
                 type: .parameter, message: "Failed to convert NSImage to CGImage"
@@ -49,15 +51,16 @@ public class AppleOCREngine {
             completion(nil, error)
             return
         }
+        var elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("Image converted to CGImage, cost time: \(elapsedTime.string2f) seconds")
 
-        let startTime = CFAbsoluteTimeGetCurrent()
+        startTime = CFAbsoluteTimeGetCurrent()
 
-        // Perform the first OCR pass. If language is .auto, this pass will detect the language.
-        recognizeTextFromCGImage(cgImage: cgImage, language: language) { [weak self] textObservations, error in
+        recognizeTextFromCGImage(cgImage: cgImage, language: language) { [weak self] observations, error in
             guard let self else { return }
 
-            let elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-            log("OCR cost time: \(elapsedTime.string2f) seconds")
+            elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
+            log("Recognize observations \(observations.count)(\(language)), cost time: \(elapsedTime.string2f) seconds")
 
             if let error {
                 completion(nil, error)
@@ -67,46 +70,76 @@ public class AppleOCREngine {
             let ocrResult = EZOCRResult()
             ocrResult.from = language
 
-            let smartMerging = !refineWithDetectedLanguage || hasValidOCRLanguage(language)
+            let mergedText = observations.mergedText
+            let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
+            let rawLanguageProbabilities = languageDetector.rawLanguageProbabilities
+            let textAnalysis = languageDetector.getTextAnalysis()
+
+            if language == .auto {
+                ocrResult.from = detectedLanguage
+            }
+
+            // If OCR text is long enough, consider its detected language confident.
+            // If text is too short, we need to recognize it with the all candidate languages.
+            let confidentOCRTextLanguage = mergedText.count > 50 ? true : false
+            let hasDesignatedLanguage = language != .auto
+
+            let smartMerging = hasDesignatedLanguage || confidentOCRTextLanguage
             log("Performing OCR text processing, intelligent: \(smartMerging)")
 
-            // The text processor analyzes the first pass and determines the detected language.
-            // It will try to detect the `ocrResult.from` language if it is set to .auto.
             textProcessor.setupOCRResult(
                 ocrResult,
-                observations: textObservations,
+                observations: observations,
                 ocrImage: image,
-                smartMerging: smartMerging
+                smartMerging: smartMerging,
+                textAnalysis: textAnalysis
             )
 
-            let detectedLanguage = ocrResult.from
+            log("Detected languages: \(rawLanguageProbabilities.prettyPrinted)")
 
-            // Check if a second, more precise OCR pass is needed.
-            // If detectedLanguage is NOT a valid OCR language, like Portuguese, we don't need a second pass.
-            let needsSecondPass = !smartMerging && hasValidOCRLanguage(detectedLanguage)
+            if smartMerging {
+                elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
+                log("OCR completion cost time: \(elapsedTime.string2f) seconds")
 
-            log("Detected language: \(detectedLanguage), needs second pass: \(needsSecondPass)")
+                DispatchQueue.main.async {
+                    completion(ocrResult, nil)
+                }
+                return
+            }
 
-            if needsSecondPass {
-                // Perform the second pass with the detected language for better accuracy.
-                recognizeText(
-                    image: image,
-                    language: detectedLanguage,
-                    refineWithDetectedLanguage: false,
-                    completion: completion
+            // Check if image cropping optimization would improve accuracy
+            let croppedImage = textProcessor.getCroppedImageIfNeeded(
+                observations: observations,
+                ocrImage: image
+            )
+
+            if let croppedImage {
+                log("Attempting OCR optimization with cropped image")
+                let croppedImagePath = OCRConstants.ocrImageDirectoryURL.appending(path: "ocr_cropped_image.png")
+                croppedImage.mm_writeToFile(asPNG: croppedImagePath.path())
+            }
+
+            // If we reach here, we need to run OCR for multiple candidate languages.
+            Task { [weak self] in
+                guard let self else { return }
+
+                let ocrImage = croppedImage ?? image
+
+                startTime = CFAbsoluteTimeGetCurrent()
+
+                let mostConfidentResult = try await getMostConfidentLanguageOCRResult(
+                    image: ocrImage,
+                    languageProbabilities: rawLanguageProbabilities
                 )
-            } else {
-                // If no second pass is needed, complete with the first result.
-                completion(ocrResult, nil)
+
+                elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
+                log("Get most confident OCR cost time: \(elapsedTime.string2f) seconds")
+
+                await MainActor.run {
+                    completion(mostConfidentResult, nil)
+                }
             }
         }
-    }
-
-    /// Checks if a given language is a valid and supported language for Vision's OCR.
-    /// - Parameter language: The language to check.
-    /// - Returns: `true` if the language is valid and supported, `false` otherwise.
-    func hasValidOCRLanguage(_ language: Language) -> Bool {
-        language != .auto && languageMapper.isSupportedOCRLanguage(language)
     }
 
     /// An async/await variant of `recognizeText` that returns a structured `EZOCRResult`.
@@ -118,14 +151,12 @@ public class AppleOCREngine {
     func recognizeTextAsync(
         image: NSImage,
         language: Language = .auto,
-        refineWithDetectedLanguage: Bool = true
     ) async throws
         -> EZOCRResult {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<EZOCRResult, Error>) in
             recognizeText(
                 image: image,
                 language: language,
-                refineWithDetectedLanguage: refineWithDetectedLanguage
             ) { result, error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -198,8 +229,14 @@ public class AppleOCREngine {
             if observations.isEmpty {
                 log("No text recognized in the image.")
 
-                // For some special cases, it is empty when text is Japanese.
-                // So we can try to use Japanese for recognition.
+                /**
+                 For some strange reasons, the following text cannot be recognized when using automatic language detection,
+                 but can be recognized when explicitly specifying Japanese.
+
+                  -----------------------------------------------------------
+                 ｜ アイス・スノーセーリング世界選手権大会                         ｜
+                  -----------------------------------------------------------
+                 */
                 if language == .auto {
                     log("Retrying OCR with Japanese language.")
                     performVisionOCR(
@@ -254,6 +291,9 @@ public class AppleOCREngine {
     /// A mapper to convert between Easydict's `Language` enum and Apple's language identifiers.
     private let languageMapper = AppleLanguageMapper.shared
 
+    /// Language detector used for tie-breaking when confidences are equal.
+    private let languageDetector = AppleLanguageDetector()
+
     /// An internal async wrapper around the callback-based `performVisionOCR` method.
     private func performVisionOCRAsync(on cgImage: CGImage, language: Language = .auto) async throws
         -> [VNRecognizedTextObservation] {
@@ -266,5 +306,108 @@ public class AppleOCREngine {
                 }
             }
         }
+    }
+
+    /// Checks if a given language is a valid and supported language for Vision's OCR.
+    private func hasValidOCRLanguage(_ language: Language) -> Bool {
+        language != .auto && languageMapper.isSupportedOCRLanguage(language)
+    }
+
+    /// Runs OCR for multiple candidate languages concurrently and returns the most confident result.
+    /// - Parameters:
+    ///   - image: Source image to OCR.
+    ///   - languageProbabilities: Candidate languages with their probabilities, higher means more likely.
+    /// - Returns: The best `EZOCRResult` determined by confidence, with tie-breaking via language re-detection.
+    private func getMostConfidentLanguageOCRResult(
+        image: NSImage,
+        languageProbabilities: [NLLanguage: Double]
+    ) async throws
+        -> EZOCRResult {
+        log(
+            "Getting most confident OCR result from candidate languages: \(languageProbabilities.prettyPrinted)"
+        )
+
+        // 1) Order candidates by probability (desc)
+        let sortedLanguages = languageProbabilities.sorted { $0.value > $1.value }.map { $0.key }
+
+        struct CandidateResult {
+            let language: Language
+            let result: EZOCRResult?
+            let error: Error?
+        }
+
+        // 2) Run OCR for each candidate concurrently
+        let results: [CandidateResult] = await withTaskGroup(of: CandidateResult.self) { group in
+            for nlLanguage in sortedLanguages {
+                let language = languageMapper.languageEnum(from: nlLanguage)
+                // Skip if the language is not supported
+                if language == .auto {
+                    continue
+                }
+
+                group.addTask { [weak self] in
+                    guard let self else {
+                        return CandidateResult(
+                            language: language,
+                            result: nil,
+                            error: QueryError.error(type: .api, message: "Engine released")
+                        )
+                    }
+                    do {
+                        // We do a single pass per language; the confidence is produced by our processor
+                        let res = try await recognizeTextAsync(
+                            image: image,
+                            language: language,
+                        )
+                        return CandidateResult(language: language, result: res, error: nil)
+                    } catch {
+                        return CandidateResult(language: language, result: nil, error: error)
+                    }
+                }
+            }
+            var collected: [CandidateResult] = []
+            for await item in group {
+                collected.append(item)
+            }
+            return collected
+        }
+
+        // 3) Keep successful results
+        let successful = results.compactMap { $0.result }
+        if successful.isEmpty {
+            // If all failed, bubble up the first error or produce a generic one
+            if let firstError = results.first?.error { throw firstError }
+            throw QueryError.error(
+                type: .noResult, message: "No OCR results for candidate languages"
+            )
+        }
+
+        // 4) Build a trusted set: language detection of merged text matches candidate.from
+        var trusted: [EZOCRResult] = []
+        trusted.reserveCapacity(successful.count)
+        for candidate in successful {
+            let detected = languageDetector.detectLanguage(text: candidate.mergedText)
+            let nlLanguage = languageMapper.appleLanguagesDictionary[detected] ?? .undetermined
+            let languageConfidence = languageDetector.rawLanguageProbabilities[nlLanguage] ?? 0.0
+
+            if detected == candidate.from {
+                trusted.append(candidate)
+
+                // If the detected language confidence is high, we can boost the candidate's confidence.
+                if languageConfidence >= 0.9 {
+                    candidate.confidence += languageConfidence
+                }
+            }
+        }
+
+        // 5) Prefer trusted results; sort by confidence (desc) and pick first
+        if !trusted.isEmpty {
+            let bestTrusted = trusted.sorted { $0.confidence > $1.confidence }.first!
+            return bestTrusted
+        }
+
+        // 6) Fallback: if none are trusted, use highest confidence as before
+        let bestByConfidence = successful.sorted { $0.confidence > $1.confidence }.first!
+        return bestByConfidence
     }
 }

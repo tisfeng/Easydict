@@ -11,17 +11,14 @@ import NaturalLanguage
 
 // MARK: - AppleLanguageMapper
 
-@objc
 public class AppleLanguageMapper: NSObject {
     // MARK: Public
 
     /// Returns a dictionary mapping `Language` to `String` for Apple Translation Shortcut.
-    @objc
     public var supportedLanguages: [Language: String] {
         languageMap
     }
 
-    @objc
     public func language(for appleLanguageCode: String) -> Language? {
         for (key, value) in languageMap where value == appleLanguageCode {
             return key
@@ -30,7 +27,6 @@ public class AppleLanguageMapper: NSObject {
     }
 
     /// Convert Language to BCP-47 language code for Apple Translation API, supported macOS 15+.
-    @objc
     public func languageCode(for language: Language) -> String {
         switch language {
         case .auto: return "und"
@@ -59,7 +55,6 @@ public class AppleLanguageMapper: NSObject {
     }
 
     /// Convert NLLanguage to Language enum
-    @objc
     public func languageEnum(from appleLanguage: NLLanguage) -> Language {
         for (language, nlLanguage) in appleLanguagesDictionary where nlLanguage == appleLanguage {
             return language
@@ -69,7 +64,7 @@ public class AppleLanguageMapper: NSObject {
 
     // MARK: Internal
 
-    @objc static let shared = AppleLanguageMapper()
+    static let shared = AppleLanguageMapper()
 
     /// Returns a dictionary mapping `Language` to `NLLanguage` for Natural Language processing
     ///
@@ -90,7 +85,6 @@ public class AppleLanguageMapper: NSObject {
     /// - Integration with Apple's ML and NLP frameworks
     ///
     /// - Note: Based on the comprehensive language mapping from the original Objective-C implementation
-    @objc
     var appleLanguagesDictionary: [Language: NLLanguage] {
         [
             .auto: .undetermined, // und

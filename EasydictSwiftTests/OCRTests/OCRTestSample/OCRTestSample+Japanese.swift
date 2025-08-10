@@ -13,7 +13,7 @@ extension OCRTestSample {
     // MARK: - Japanese Text Cases
 
     static let japaneseCases: [OCRTestSample] = [
-        .jaText1, .jaText2, .jaText3,
+        .jaText1, .jaText2, .jaText3, .jaText4,
     ]
 
     // MARK: - Japanese Expected Results
@@ -62,6 +62,10 @@ extension OCRTestSample {
 
         jaText3: """
         弘前ねぷたまつり開催中
+        """,
+
+        jaText4: """
+        今日は世界自然保護デー
         """,
     ]
 }

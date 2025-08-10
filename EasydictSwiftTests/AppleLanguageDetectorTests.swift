@@ -355,11 +355,8 @@ struct AppleLanguageDetectorTests {
         #expect(!probabilities.isEmpty)
 
         // English should have high probability
-        if let englishProb = probabilities["en"] {
-            #expect(
-                englishProb.doubleValue > 0.5,
-                "English should have high probability for English text"
-            )
+        if let englishProb = probabilities[.english] {
+            #expect(englishProb > 0.5, "English should have high probability for English text")
         }
 
         // Test Chinese text probabilities
@@ -369,7 +366,7 @@ struct AppleLanguageDetectorTests {
 
         // Should have Chinese variant with high probability
         let hasHighChineseProb = chineseProbabilities.contains { key, value in
-            (key == "zh-Hans" || key == "zh-Hant") && value.doubleValue > 0.5
+            key == .simplifiedChinese && value > 0.5
         }
         #expect(hasHighChineseProb, "Chinese text should have high Chinese probability")
     }
@@ -469,11 +466,8 @@ struct AppleLanguageDetectorTests {
         let probabilities = detector.detectLanguageDict(text: clearEnglishText)
 
         // English should be strongly detected
-        if let englishProb = probabilities["en"] {
-            #expect(
-                englishProb.doubleValue > 0.7,
-                "Clear English text should have high English probability"
-            )
+        if let englishProb = probabilities[.english] {
+            #expect(englishProb > 0.7, "Clear English text should have high English probability")
         }
 
         // Verify final detection is English
@@ -506,9 +500,9 @@ struct AppleLanguageDetectorTests {
         let probabilities = detector.detectLanguageDict(text: englishText)
 
         // English should be detected with high probability
-        if let englishProb = probabilities["en"] {
+        if let englishProb = probabilities[.english] {
             #expect(
-                englishProb.doubleValue > 0.5,
+                englishProb > 0.5,
                 "English should have high probability even without preference boost"
             )
         }
@@ -527,7 +521,7 @@ struct AppleLanguageDetectorTests {
 
         // Chinese should be strongly detected regardless of user preferences
         let hasHighChineseProb = probabilities.contains { key, value in
-            (key == "zh-Hans" || key == "zh-Hant") && value.doubleValue > 0.8
+            key == .simplifiedChinese && value > 0.8
         }
         #expect(hasHighChineseProb, "Clear Chinese text should maintain high Chinese probability")
 

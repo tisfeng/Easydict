@@ -33,38 +33,20 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-        await testOCR(sample: .enPaper1, language: .auto) // Cost 2.7s
+        await testOCR(sample: .enPaper1, language: .auto)
     }
 
-    // MARK: - Performance Tests
+    // MARK: - Test auto language OCR
 
-    // Test one ocr performance test
-    @Test("OCR Performance Test One", .tags(.ocr, .performance))
-    func testOCRPerformanceOne() async throws {
-        // One time cost: 2.17s
-//        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 6.0)
-
-        // One time cost: 1.30s
-//        await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 4.0)
-    }
-
-    @Test(
-        "OCR Performance Test",
-        .tags(.ocr, .performance),
-        .disabled("OCR performance test should run independently, since it may fail due to other tests interference.")
-    )
-    func testOCRPerformance() async throws {
-        // Average 3 time cost: 2.26s
-        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.5)
-
-        // Average 3 time cost: 1.28s
-        await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
-
-        // Average 3 time cost: 3.83s
-        await measureOCRPerformance(sample: .enPaper0, language: .auto, expectedCost: 4.0)
-
-        // Average 3 time cost: 2.28s
-        await measureOCRPerformance(sample: .enPaper0, language: .english, expectedCost: 2.5)
+    @Test("Auto Language OCR Test", .tags(.ocr))
+    func testAutoLanguageOCR() async throws {
+        let samples: [OCRTestSample] = [
+            .jaText3,
+            .jaText4,
+        ]
+        for sample in samples {
+            await testOCR(sample: sample, language: .auto)
+        }
     }
 
     // MARK: - English Text Tests
@@ -112,6 +94,35 @@ struct OCRImageTests {
         }
     }
 
+    // MARK: - Performance Tests
+
+    // Test one ocr performance test
+    @Test("OCR Performance Test One", .tags(.ocr, .performance))
+    func testOCRPerformanceOne() async throws {
+        // One time cost 2.17s but 3.26s in whole test suite
+        //        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 3.5)
+
+        // One time cost 1.30s but 2.89s in whole test suite
+        //        await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 3.0)
+    }
+
+    @Test(
+        "OCR Performance Test",
+        .tags(.ocr, .performance),
+        .disabled("OCR performance test should run independently, since it may fail due to other tests interference.")
+    )
+    func testOCRPerformance() async throws {
+        // Cost time: 1.92s
+        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.0)
+        // Cost time: 1.32s
+        await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
+
+        // Cost time: 2.49s
+        await measureOCRPerformance(sample: .enPaper0, language: .auto, expectedCost: 3.0)
+        // Cost time: 2.36s
+        await measureOCRPerformance(sample: .enPaper0, language: .english, expectedCost: 2.5)
+    }
+
     // MARK: - All OCR Tests
 
     @Test(
@@ -139,7 +150,7 @@ struct OCRImageTests {
     private func measureOCRPerformance(
         sample: OCRTestSample,
         language: Language = .auto,
-        iterations: Int = 3,
+        iterations: Int = 1,
         expectedCost: TimeInterval
     ) async {
         let imageName = sample.imageName
@@ -190,6 +201,9 @@ struct OCRImageTests {
         )
 
         log("─────────────────────────────────")
+        log("📷 Image: \(imageName)")
+        log("🌐 Language: \(language)")
+
         log("⏱️  Total Time: \(String(format: "%.3f", totalTime))s")
         log("📈 Average Time: \(averageTime.string3f) < \(expectedCost)s")
 

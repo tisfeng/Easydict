@@ -34,4 +34,21 @@ enum OCRConstants {
 
     /// 5.5 for English text font, may be not precise, so use a larger threshold
     static let englishDifferenceFontThreshold: Double = 5.5
+
+    /// Root directory for logs: ~/Library/Caches/com.izual.Easydic/MMLogs
+    static var rootLogDirectoryURL: URL = {
+        let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        // Append the bundle identifier to ensure uniqueness, even if sandbox is disabled
+        let identifier = Bundle.main.bundleIdentifier!
+        let path = cachesDirectory.appending(path: "\(identifier)/MMLogs")
+        try? FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+        return path
+    }()
+
+    /// Directory for OCR images: ~/Library/Caches/com.izual.Easydic/MMLogs/Image
+    static var ocrImageDirectoryURL: URL {
+        let directory = rootLogDirectoryURL.appendingPathComponent("Image")
+        try? FileManager.default.createDirectory(atPath: directory.path, withIntermediateDirectories: true)
+        return URL(fileURLWithPath: directory.path())
+    }
 }

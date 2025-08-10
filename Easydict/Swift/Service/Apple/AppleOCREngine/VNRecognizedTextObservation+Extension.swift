@@ -142,4 +142,9 @@ extension Array where Element == VNRecognizedTextObservation {
     var recognizedTexts: [String] {
         map { $0.firstText }
     }
+
+    /// Merges all recognized text strings into a single string, just joining with "\n"
+    var mergedText: String {
+        recognizedTexts.joined(separator: "\n")
+    }
 }

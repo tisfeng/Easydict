@@ -76,6 +76,9 @@ public class AppleLanguageDetector: NSObject {
     public private(set) var englishCharacterRatio: Double = 0.0
     public private(set) var hasMixedScripts: Bool = false
 
+    public private(set) var rawLanguageProbabilities: [NLLanguage: Double] = [:]
+    public private(set) var adjustedLanguageProbabilities: [NLLanguage: Double] = [:]
+
     /// Detect the most likely language of the provided text
     ///
     /// Primary interface for language detection with intelligent corrections
@@ -96,7 +99,7 @@ public class AppleLanguageDetector: NSObject {
     ///
     /// - Parameter text: Text to analyze for language probabilities
     /// - Returns: Dictionary mapping BCP-47 language codes to probability values (0.0-1.0)
-    public func detectLanguageDict(text: String) -> [String: NSNumber] {
+    public func detectLanguageDict(text: String) -> [NLLanguage: Double] {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let recognizer = NLLanguageRecognizer()
@@ -104,7 +107,7 @@ public class AppleLanguageDetector: NSObject {
         recognizer.languageHints = customLanguageHints
         recognizer.processString(text)
 
-        let probabilities = recognizer.languageHypotheses(withMaximum: 10)
+        let probabilities = recognizer.languageHypotheses(withMaximum: 5)
         let dominantLanguage = recognizer.dominantLanguage
 
         let endTime = CFAbsoluteTimeGetCurrent()
@@ -112,16 +115,10 @@ public class AppleLanguageDetector: NSObject {
         if isDebugLogEnabled {
             print("Language probabilities: \(probabilities.prettyPrinted)\n")
             print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
-            print("Detection cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
+            print("Detection cost time: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
         }
 
-        // Convert to String keys for Objective-C compatibility
-        var result: [String: NSNumber] = [:]
-        for (key, value) in probabilities {
-            result[key.rawValue] = NSNumber(value: value)
-        }
-
-        return result
+        return probabilities
     }
 
     /// Reset all analysis statistics
@@ -135,6 +132,9 @@ public class AppleLanguageDetector: NSObject {
         hasMixedScripts = false
         isAnalyzed = false
         chineseGenreAnalyzer = nil
+
+        rawLanguageProbabilities = [:]
+        adjustedLanguageProbabilities = [:]
     }
 
     public func getTextAnalysis() -> TextAnalysis? {
@@ -249,29 +249,29 @@ public class AppleLanguageDetector: NSObject {
             return .auto
         }
 
-        let languageProbabilityDict = detectLanguageDict(text: text)
+        rawLanguageProbabilities = detectLanguageDict(text: text)
 
         // Handle empty results (e.g., numeric-only text like "729")
-        guard !languageProbabilityDict.isEmpty else {
+        guard !rawLanguageProbabilities.isEmpty else {
             return detectFallbackLanguage(for: text)
         }
 
         // Apply user preferred language weight correction
-        let adjustedProbabilities = applyUserPreferredLanguageWeights(
-            to: languageProbabilityDict
+        adjustedLanguageProbabilities = applyUserPreferredLanguageWeights(
+            to: rawLanguageProbabilities
         )
 
         // Find the language with highest probability after user preference adjustment
-        let sortedLanguages = adjustedProbabilities.sorted {
-            $0.value.doubleValue > $1.value.doubleValue
+        let sortedLanguages = adjustedLanguageProbabilities.sorted {
+            $0.value > $1.value
         }
 
         guard let mostConfident = sortedLanguages.first else {
             return detectFallbackLanguage(for: text)
         }
 
-        let topConfidence = mostConfident.value.doubleValue
-        let nlLanguage = NLLanguage(rawValue: mostConfident.key)
+        let topConfidence = mostConfident.value
+        let nlLanguage = mostConfident.key
         var detectedLanguage = languageMapper.languageEnum(from: nlLanguage)
 
         // Apply post-processing corrections if requested
@@ -280,7 +280,7 @@ public class AppleLanguageDetector: NSObject {
                 detectedLanguage: detectedLanguage,
                 confidence: topConfidence,
                 text: text,
-                allProbabilities: adjustedProbabilities
+                allProbabilities: adjustedLanguageProbabilities
             )
         }
 
@@ -302,9 +302,9 @@ public class AppleLanguageDetector: NSObject {
     /// - Parameter languageProbabilities: Original detection probabilities from Apple NL
     /// - Returns: Adjusted probabilities with user preference weights applied
     private func applyUserPreferredLanguageWeights(
-        to languageProbabilities: [String: NSNumber]
+        to languageProbabilities: [NLLanguage: Double]
     )
-        -> [String: NSNumber] {
+        -> [NLLanguage: Double] {
         var adjustedProbabilities = languageProbabilities
         let preferredLanguages = EZLanguageManager.shared().preferredLanguages
 
@@ -312,7 +312,7 @@ public class AppleLanguageDetector: NSObject {
         for (index, preferredLanguage) in preferredLanguages.enumerated() {
             // Convert to Apple NLLanguage
             guard let nlLanguage = languageMapper.appleLanguagesDictionary[preferredLanguage],
-                  let originalProbability = languageProbabilities[nlLanguage.rawValue]
+                  let originalProbability = languageProbabilities[nlLanguage]
             else {
                 continue // Only boost languages that were actually detected
             }
@@ -332,16 +332,16 @@ public class AppleLanguageDetector: NSObject {
             }
 
             // Apply the weight boost
-            let newProbability = originalProbability.doubleValue + weightBoost
-            adjustedProbabilities[nlLanguage.rawValue] = NSNumber(value: newProbability)
+            let newProbability = originalProbability + weightBoost
+            adjustedProbabilities[nlLanguage] = newProbability
         }
 
         // Add English boost if not in user preferences (widely used language)
         if !preferredLanguages.contains(.english),
-           let englishProbability = languageProbabilities[NLLanguage.english.rawValue] {
+           let englishProbability = languageProbabilities[.english] {
             let englishBoost = 0.2
-            let newProbability = englishProbability.doubleValue + englishBoost
-            adjustedProbabilities[NLLanguage.english.rawValue] = NSNumber(value: newProbability)
+            let newProbability = englishProbability + englishBoost
+            adjustedProbabilities[.english] = newProbability
         }
 
         if isDebugLogEnabled {
@@ -369,7 +369,7 @@ public class AppleLanguageDetector: NSObject {
         detectedLanguage: Language,
         confidence: Double,
         text: String,
-        allProbabilities: [String: NSNumber]
+        allProbabilities: [NLLanguage: Double]
     )
         -> Language {
         let cleanText = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -556,7 +556,7 @@ public class AppleLanguageDetector: NSObject {
 
     private func isSimplifiedChinese() -> Bool {
         let simplifiedRatio = Double(simplifiedCharacterCount) / Double(chineseCharacterCount)
-        return simplifiedRatio >= 0.8
+        return simplifiedRatio >= 0.9
     }
 
     /// Handle corrections for short text and obvious misdetections
@@ -576,7 +576,7 @@ public class AppleLanguageDetector: NSObject {
         detectedLanguage: Language,
         text: String,
         confidence: Double,
-        allProbabilities: [String: NSNumber]
+        allProbabilities: [NLLanguage: Double]
     )
         -> Language? {
         // Handle numeric-heavy text
@@ -586,8 +586,8 @@ public class AppleLanguageDetector: NSObject {
 
         // Handle short text with low confidence
         if confidence < 0.5, text.count <= 10, text.isLatinText {
-            if let englishProb = allProbabilities[NLLanguage.english.rawValue],
-               englishProb.doubleValue > 0.1 {
+            if let englishProb = allProbabilities[.english],
+               englishProb > 0.1 {
                 return .english
             }
         }
@@ -692,16 +692,6 @@ public class AppleLanguageDetector: NSObject {
     }
 }
 
-extension [String: NSNumber] {
-    /// Returns a sorted and pretty-printed string representation of the language probabilities
-    var prettyPrinted: String {
-        let sorttedString = sorted { $0.value.doubleValue > $1.value.doubleValue }
-            .map { "\($0.key): \(String(format: "%.3f", $0.value.doubleValue))" }
-            .joined(separator: "\n")
-        return "\n" + sorttedString
-    }
-}
-
 // MARK: - Pretty print for [NLLanguage: Double]
 
 extension [NLLanguage: Double] {
@@ -711,5 +701,15 @@ extension [NLLanguage: Double] {
             result[pair.key.rawValue] = NSNumber(value: pair.value)
         }
         return stringDict.prettyPrinted
+    }
+}
+
+extension [String: NSNumber] {
+    /// Returns a sorted and pretty-printed string representation of the language probabilities
+    var prettyPrinted: String {
+        let sorttedString = sorted { $0.value.doubleValue > $1.value.doubleValue }
+            .map { "\($0.key): \(String(format: "%.3f", $0.value.doubleValue))" }
+            .joined(separator: "\n")
+        return "\n" + sorttedString
     }
 }

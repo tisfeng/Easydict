@@ -37,6 +37,7 @@
 		0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 032041192E43BEB50065A05B /* ocr-en-text-4.png */; };
 		0320411C2E44989D0065A05B /* PoetryStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320411B2E44989D0065A05B /* PoetryStatistics.swift */; };
 		0320411E2E44DABA0065A05B /* ocr-ja-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */; };
+		032041202E478BD20065A05B /* ocr-ja-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411F2E478BD20065A05B /* ocr-ja-text-4.png */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
@@ -557,6 +558,7 @@
 		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
 		0320411B2E44989D0065A05B /* PoetryStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoetryStatistics.swift; sourceTree = "<group>"; };
 		0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-3.png"; sourceTree = "<group>"; };
+		0320411F2E478BD20065A05B /* ocr-ja-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-4.png"; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
@@ -2536,6 +2538,7 @@
 				03C3A5B12E1BFE4900B59152 /* ocr-ja-text-1.png */,
 				03C3A5B22E1BFE4900B59152 /* ocr-ja-text-2.png */,
 				0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */,
+				0320411F2E478BD20065A05B /* ocr-ja-text-4.png */,
 				03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */,
 				03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */,
 				034227ED2E367B5100325B47 /* ocr-zh-text-3.png */,
@@ -3410,6 +3413,7 @@
 				033897A12E38B5E700CCFF99 /* ocr-zh-classical-lyrics-3.png in Resources */,
 				033897A22E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png in Resources */,
 				033897A32E38B5E700CCFF99 /* ocr-zh-classical-lyrics-6.png in Resources */,
+				032041202E478BD20065A05B /* ocr-ja-text-4.png in Resources */,
 				033897A42E38B5E700CCFF99 /* ocr-zh-classical-lyrics-4.png in Resources */,
 				033897A52E38B5E700CCFF99 /* ocr-zh-classical-lyrics-7.png in Resources */,
 				03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */,

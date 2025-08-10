@@ -37,11 +37,13 @@ public class OCRTextProcessor {
     ///   - observations: The raw `VNRecognizedTextObservation` array from the Vision framework.
     ///   - ocrImage: The source image, used for spatial calculations.
     ///   - smartMerging: A flag to enable the advanced text processing pipeline.
+    ///   - textAnalysis: Pre-computed text analysis containing genre information (optional)
     func setupOCRResult(
         _ ocrResult: EZOCRResult,
         observations: [VNRecognizedTextObservation],
         ocrImage: NSImage,
-        smartMerging: Bool
+        smartMerging: Bool,
+        textAnalysis: TextAnalysis?
     ) {
         let recognizedTexts = observations.compactMap(\.firstText)
 
@@ -53,18 +55,10 @@ public class OCRTextProcessor {
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
         ocrResult.raw = recognizedTexts
 
-        var genre = Genre.plain
-
-        // Initialize language detection if not already set
-        if ocrResult.from == .auto {
-            ocrResult.from = languageDetector.detectLanguage(text: ocrResult.mergedText)
-            genre = languageDetector.getTextAnalysis()?.genre ?? .plain
-        }
+        log("\nOriginal OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)")
 
         // If intelligent joining is not enabled, return simple result
         guard smartMerging else { return }
-
-        log("\nOCR objects: \(observations.formattedDescription)")
 
         // Step 1: Detect sections by analyzing spatial distribution
         let sections = detectSections(observations: observations)
@@ -73,6 +67,8 @@ public class OCRTextProcessor {
         for section in sections {
             log("\nSection observations (\(section.count)): \(section.formattedDescription)")
         }
+
+        let startTime = CFAbsoluteTimeGetCurrent()
 
         // Step 2: Process each section independently
         var allMergedTexts: [String] = []
@@ -92,10 +88,13 @@ public class OCRTextProcessor {
             allMergedTexts.append(sectionMergedText)
         }
 
+        let elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("Total text merging cost time \(elapsedTime.string2f) seconds with \(observations.count) objects")
+
         // If text language is classical Chinese, update metrics genre.
         // Later, we can use this to determine if the text is poetry.
         if ocrResult.from == .classicalChinese {
-            metrics.genre = genre
+            metrics.genre = textAnalysis?.genre ?? .plain
         }
 
         // Combine all section texts
@@ -113,10 +112,45 @@ public class OCRTextProcessor {
         )
     }
 
+    /// Checks if the given observations suggest that image cropping would improve OCR accuracy.
+    ///
+    /// - Parameters:
+    ///   - observations: Text observations from OCR
+    ///   - ocrImage: The original image
+    /// - Returns: A cropped image if optimization is recommended, nil otherwise
+    func getCroppedImageIfNeeded(
+        observations: [VNRecognizedTextObservation],
+        ocrImage: NSImage
+    )
+        -> NSImage? {
+        guard !observations.isEmpty else { return nil }
+
+        // Calculate the bounding box that contains all text
+        let textBoundingBox = calculateTextBoundingBox(observations: observations)
+        let textArea = textBoundingBox.width * textBoundingBox.height
+
+        // Total image area in normalized coordinates is 1.0 (1.0 * 1.0)
+
+        log("Text area: \(textArea.string3f)")
+
+        let threshold = 0.5
+        // Check if text area is less than 60% of image area
+        if textArea < threshold {
+            log(
+                "Text area is too small (\(textArea.string2f) < \(threshold.string2f)), creating cropped image for optimization"
+            )
+            return cropImageToTextRegion(image: ocrImage, textBoundingBox: textBoundingBox)
+        } else {
+            log(
+                "Text area is sufficient (\(textArea.string2f) >= \(threshold.string2f)), no cropping needed"
+            )
+            return nil
+        }
+    }
+
     // MARK: Private
 
     private let metrics = OCRMetrics()
-    private let languageDetector = AppleLanguageDetector()
     private lazy var textMerger = OCRTextMerger(metrics: metrics)
     private lazy var lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
 
@@ -275,5 +309,78 @@ public class OCRTextProcessor {
                 return boundingBox1.origin.y > boundingBox2.origin.y
             }
         }
+    }
+
+    /// Calculates the bounding box that contains all text observations.
+    /// - Parameter observations: Array of text observations
+    /// - Returns: CGRect in Vision coordinate system (0,0 at bottom-left, normalized coordinates)
+    private func calculateTextBoundingBox(observations: [VNRecognizedTextObservation]) -> CGRect {
+        guard let firstObservation = observations.first else {
+            return CGRect.zero
+        }
+
+        var minX = firstObservation.boundingBox.minX
+        var maxX = firstObservation.boundingBox.maxX
+        var minY = firstObservation.boundingBox.minY
+        var maxY = firstObservation.boundingBox.maxY
+
+        for observation in observations.dropFirst() {
+            let box = observation.boundingBox
+            minX = min(minX, box.minX)
+            maxX = max(maxX, box.maxX)
+            minY = min(minY, box.minY)
+            maxY = max(maxY, box.maxY)
+        }
+
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+
+    /// Crops the image to focus on the text region with some padding.
+    /// - Parameters:
+    ///   - image: The original image
+    ///   - textBoundingBox: The bounding box containing all text (in Vision coordinates)
+    /// - Returns: The cropped image, or nil if cropping fails
+    private func cropImageToTextRegion(image: NSImage, textBoundingBox: CGRect) -> NSImage? {
+        let imageSize = image.size
+        let imageWidth = imageSize.width
+        let imageHeight = imageSize.height
+
+        // Convert Vision coordinates to image coordinates
+        // Vision: (0,0) at bottom-left, Y increases upward
+        // NSImage: (0,0) at bottom-left, Y increases upward (same as Vision)
+        let padding: CGFloat = 0.15 // 10% padding on each side
+
+        // Calculate padded region in Vision coordinates
+        let paddedMinX = max(0, textBoundingBox.minX - padding)
+        let paddedMaxX = min(1, textBoundingBox.maxX + padding)
+        let paddedMinY = max(0, textBoundingBox.minY - padding)
+        let paddedMaxY = min(1, textBoundingBox.maxY + padding)
+
+        // Convert to NSImage coordinates (points, not pixels)
+        let cropMinX = paddedMinX * imageWidth
+        let cropMaxX = paddedMaxX * imageWidth
+        let cropMinY = paddedMinY * imageHeight
+        let cropMaxY = paddedMaxY * imageHeight
+
+        let cropWidth = cropMaxX - cropMinX
+        let cropHeight = cropMaxY - cropMinY
+        let cropOrigin = NSPoint(x: cropMinX, y: cropMinY)
+        let cropSize = NSSize(width: cropWidth, height: cropHeight)
+
+        let cropRect = NSRect(origin: cropOrigin, size: cropSize)
+        let destRect = NSRect(origin: .zero, size: cropSize)
+
+        log("Cropping image from \(imageSize) to region: \(cropRect)")
+        log("Original text bounding box (Vision coords): \(textBoundingBox)")
+
+        // Create a new NSImage with the cropped size
+        let croppedImage = NSImage(size: cropSize)
+        croppedImage.lockFocus()
+        image.draw(in: destRect, from: cropRect, operation: .copy, fraction: 1.0)
+        croppedImage.unlockFocus()
+
+        log("Cropped image size: \(croppedImage.size)")
+
+        return croppedImage
     }
 }
