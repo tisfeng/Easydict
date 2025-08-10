@@ -32,13 +32,13 @@ enum EasydictCmpatibilityEntry {
     static func testOCR() {
         Task {
             let ocrEnginee = AppleOCREngine()
-            let image = NSImage(named: "square_menu_bar_icon")?.toCGImage()
+            let image = NSImage(named: "square_menu_bar_icon")
             guard let image else {
                 print("Failed to load image")
                 return
             }
 
-            let result = try? await ocrEnginee.recognizeTextAsString(cgImage: image)
+            let result = try? await ocrEnginee.recognizeText(image: image)
             if let result {
                 print("OCR Result: \(result)")
             } else {

@@ -174,7 +174,7 @@ struct OCRImageTests {
             let startTime = CFAbsoluteTimeGetCurrent()
 
             do {
-                let result = try await ocrEngine.recognizeTextAsync(
+                let result = try await ocrEngine.recognizeText(
                     image: image,
                     language: language
                 )
@@ -224,7 +224,7 @@ struct OCRImageTests {
 
         do {
             // Perform OCR
-            let result = try await ocrEngine.recognizeTextAsync(image: image, language: language)
+            let result = try await ocrEngine.recognizeText(image: image, language: language)
             log("Testing OCR for image: \(imageName)")
             log("Merged text: \(result.mergedText)")
 

@@ -66,9 +66,7 @@ public class AppleService: QueryService {
     }
 
     @objc
-    public override func ocr(
-        _ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()
-    ) {
+    public override func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
         let image = queryModel.ocrImage ?? NSImage()
         let language = queryModel.queryFromLanguage
 
@@ -82,11 +80,6 @@ public class AppleService: QueryService {
     public override func autoConvertTraditionalChinese() -> Bool {
         // Since Apple system translation not support zh-hans <--> zh-hant, so we need to convert it manually.
         true
-    }
-
-    /// Async version for Swift usage
-    public func ocrAsync(cgImage: CGImage) async throws -> String {
-        try await ocrEnginee.recognizeTextAsString(cgImage: cgImage)
     }
 
     /// Async translation method
