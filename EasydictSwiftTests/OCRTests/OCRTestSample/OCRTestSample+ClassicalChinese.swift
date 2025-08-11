@@ -13,7 +13,6 @@ import Foundation
 extension OCRTestSample {
     static let classicalChineseCases: [OCRTestSample] = [
         .zhClassicalPoetry1, .zhClassicalPoetry2, .zhClassicalPoetry3,
-
         .zhClassicalLyrics1, .zhClassicalLyrics2, .zhClassicalLyrics3, .zhClassicalLyrics4, .zhClassicalLyrics5,
         .zhClassicalLyrics6, .zhClassicalLyrics7, .zhClassicalLyrics8, .zhClassicalLyrics9, .zhClassicalLyrics10,
         .zhClassicalLyrics11,

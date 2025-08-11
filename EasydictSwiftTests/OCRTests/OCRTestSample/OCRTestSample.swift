@@ -17,6 +17,7 @@ enum OCRTestSample: String, CaseIterable {
     case enText2 = "ocr-en-text-2.png"
     case enText3 = "ocr-en-text-3.png"
     case enText4 = "ocr-en-text-4.png"
+    case enText5 = "ocr-en-text-5.png"
 
     case enTextBitcoin = "ocr-en-text-bitcoin.png"
     case enTextReddit = "ocr-en-text-reddit.png"
@@ -105,10 +106,11 @@ enum OCRTestSample: String, CaseIterable {
 
     case ruPoetry11 = "ocr-ru-poetry-11.png" // Russian poetry
 
+    case plText1 = "ocr-pl-text-1.png"
+
     // MARK: Unsupported Languages
 
     // For unsupported languages, we use automatically detected language, so result is not guaranteed.
-    case plUnsupportedText1 = "ocr-pl-unsupported-text-1.png"
 
     // MARK: Internal
 

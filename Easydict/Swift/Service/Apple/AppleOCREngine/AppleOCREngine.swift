@@ -48,7 +48,7 @@ public class AppleOCREngine {
             )
         }
 
-        var startTime = CFAbsoluteTimeGetCurrent()
+        let startTime = CFAbsoluteTimeGetCurrent()
 
         // Perform Vision OCR
         let observations = try await performVisionOCRAsync(on: cgImage, language: language)
@@ -61,8 +61,9 @@ public class AppleOCREngine {
 
         let mergedText = observations.mergedText
         let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
-        let rawLanguageProbabilities = languageDetector.rawLanguageProbabilities
+        let rawProbabilities = languageDetector.rawProbabilities
         let textAnalysis = languageDetector.getTextAnalysis()
+        log("Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)")
 
         if language == .auto {
             ocrResult.from = detectedLanguage
@@ -70,10 +71,10 @@ public class AppleOCREngine {
 
         // If OCR text is long enough, consider its detected language confident.
         // If text is too short, we need to recognize it with all candidate languages.
-        let confidentOCRTextLanguage = mergedText.count > 50
+        let hasEnoughLength = mergedText.count > 50
         let hasDesignatedLanguage = language != .auto
-
-        let smartMerging = hasDesignatedLanguage || confidentOCRTextLanguage
+        let smartMerging = hasDesignatedLanguage || hasEnoughLength || hasDominantLanguage(in: rawProbabilities)
+        log("Merged text count: \(mergedText.count)")
         log("Performing OCR text processing, smart merging: \(smartMerging)")
 
         textProcessor.setupOCRResult(
@@ -105,14 +106,15 @@ public class AppleOCREngine {
         // If we reach here, we need to run OCR for multiple candidate languages.
         let ocrImage = croppedImage ?? image
 
-        startTime = CFAbsoluteTimeGetCurrent()
+        let startSelectTime = CFAbsoluteTimeGetCurrent()
 
         let mostConfidentResult = try await selectBestOCRResult(
             from: ocrImage,
-            candidates: rawLanguageProbabilities
+            candidates: rawProbabilities
         )
 
-        log("Get most confident OCR cost time: \(startTime.elapsedTimeString) seconds")
+        log("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
+        log("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
     }
@@ -213,11 +215,15 @@ public class AppleOCREngine {
                 continuation.resume(returning: results)
             }
 
+            let enableAutoDetect = !hasValidOCRLanguage(language)
+            log("Performing Vision with language: \(language), auto detect: \(enableAutoDetect)")
+
             // Configure Vision request
-            request.automaticallyDetectsLanguage = !hasValidOCRLanguage(language)
-            request.usesLanguageCorrection = true
             request.recognitionLevel = .accurate
             request.recognitionLanguages = languageMapper.ocrRecognitionLanguages(for: language)
+            // Correction is usually useful
+            request.usesLanguageCorrection = true
+            request.automaticallyDetectsLanguage = enableAutoDetect
 
             let requestHandler = VNImageRequestHandler(cgImage: cgImage)
 
@@ -236,7 +242,7 @@ public class AppleOCREngine {
 
     /// Checks if a given language is a valid and supported language for Vision's OCR.
     private func hasValidOCRLanguage(_ language: Language) -> Bool {
-        language != .auto && languageMapper.isSupportedOCRLanguage(language)
+        languageMapper.isSupportedOCRLanguage(language)
     }
 
     /// Performs multi-language OCR and selects the best result using trusted candidate filtering.
@@ -302,7 +308,7 @@ public class AppleOCREngine {
 
             // Boost confidence for high language detection confidence
             let nlLanguage = languageMapper.appleLanguagesDictionary[detected] ?? .undetermined
-            let languageConfidence = languageDetector.rawLanguageProbabilities[nlLanguage] ?? 0.0
+            let languageConfidence = languageDetector.rawProbabilities[nlLanguage] ?? 0.0
 
             if languageConfidence >= 0.9 {
                 candidate.confidence += languageConfidence
@@ -314,5 +320,37 @@ public class AppleOCREngine {
         // Return best trusted result, or fallback to highest confidence
         let candidates = trusted.isEmpty ? results : trusted
         return candidates.max { $0.confidence < $1.confidence }!
+    }
+
+    /// Determines if there is a dominant language in the raw probabilities.
+    ///
+    /// A language is considered dominant if:
+    /// 1. Its probability is greater than 0.95
+    /// 2. The difference between the highest and second highest probability is greater than 0.9
+    ///
+    /// - Parameter rawProbabilities: Dictionary of language probabilities from language detection
+    /// - Returns: True if there is a dominant language, false otherwise
+    private func hasDominantLanguage(in rawProbabilities: [NLLanguage: Double]) -> Bool {
+        let minDominantProbability = 0.95
+        let minProbabilityGap = 0.9
+
+        guard rawProbabilities.count >= 2 else {
+            // If there's only one language or none, check if it's above the dominant threshold
+            return rawProbabilities.values.first ?? 0 > minDominantProbability
+        }
+
+        // Sort probabilities in descending order
+        let sortedProbabilities = rawProbabilities.values.sorted(by: >)
+
+        let highest = sortedProbabilities[0]
+        let secondHighest = sortedProbabilities[1]
+
+        // Check both conditions for dominant language
+        let hasDominant = highest > minDominantProbability && (highest - secondHighest) > minProbabilityGap
+        log(
+            "Has dominant language: \(hasDominant), highest: \(highest.string2f), second highest: \(secondHighest.string2f)"
+        )
+
+        return hasDominant
     }
 }

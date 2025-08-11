@@ -76,8 +76,8 @@ public class AppleLanguageDetector: NSObject {
     public private(set) var englishCharacterRatio: Double = 0.0
     public private(set) var hasMixedScripts: Bool = false
 
-    public private(set) var rawLanguageProbabilities: [NLLanguage: Double] = [:]
-    public private(set) var adjustedLanguageProbabilities: [NLLanguage: Double] = [:]
+    public private(set) var rawProbabilities: [NLLanguage: Double] = [:]
+    public private(set) var adjustedProbabilities: [NLLanguage: Double] = [:]
 
     /// Detect the most likely language of the provided text
     ///
@@ -131,8 +131,8 @@ public class AppleLanguageDetector: NSObject {
         isAnalyzed = false
         chineseGenreAnalyzer = nil
 
-        rawLanguageProbabilities = [:]
-        adjustedLanguageProbabilities = [:]
+        rawProbabilities = [:]
+        adjustedProbabilities = [:]
     }
 
     public func getTextAnalysis() -> TextAnalysis? {
@@ -247,20 +247,20 @@ public class AppleLanguageDetector: NSObject {
             return .auto
         }
 
-        rawLanguageProbabilities = detectLanguageDict(text: text)
+        rawProbabilities = detectLanguageDict(text: text)
 
         // Handle empty results (e.g., numeric-only text like "729")
-        guard !rawLanguageProbabilities.isEmpty else {
+        guard !rawProbabilities.isEmpty else {
             return detectFallbackLanguage(for: text)
         }
 
         // Apply user preferred language weight correction
-        adjustedLanguageProbabilities = applyUserPreferredLanguageWeights(
-            to: rawLanguageProbabilities
+        adjustedProbabilities = applyUserPreferredLanguageWeights(
+            to: rawProbabilities
         )
 
         // Find the language with highest probability after user preference adjustment
-        let sortedLanguages = adjustedLanguageProbabilities.sorted {
+        let sortedLanguages = adjustedProbabilities.sorted {
             $0.value > $1.value
         }
 
@@ -278,7 +278,7 @@ public class AppleLanguageDetector: NSObject {
                 detectedLanguage: detectedLanguage,
                 confidence: topConfidence,
                 text: text,
-                allProbabilities: adjustedLanguageProbabilities
+                allProbabilities: adjustedProbabilities
             )
         }
 

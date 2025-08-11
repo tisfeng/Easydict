@@ -24,10 +24,10 @@ enum OCRConstants {
     static let maxLineSpacingHeightRatio: Double = 1.2
 
     /// Default is 12.0, for Chinese poetry
-    static let poetryCharacterCountOfLine = 12.0
+    static let maxPoetryCharsPerLine = 12.0
 
     /// Default is 7.0, for English poetry. 《I Pass by in Silence》 is 9.2 characters per line,
-    static let poetryWordCountOfLine = 7.0
+    static let maxPoetryWordsPerLine = 7.0 // 7.0 * 1.5 > 9.2
 
     /// Increased from 3.5 to 4.0 for better Chinese text detection
     static let chineseDifferenceFontThreshold: Double = 4.0

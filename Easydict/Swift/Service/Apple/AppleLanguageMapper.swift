@@ -126,7 +126,7 @@ public class AppleLanguageMapper: NSObject {
             .lao: .lao, // lo
             .bengali: .bengali, // bn
             .burmese: .burmese, // my
-            .norwegian: .norwegian, // no
+            .norwegian: .norwegian, // nb
             .croatian: .croatian, // hr
             .mongolian: .mongolian, // mn
             .hebrew: .hebrew, // he

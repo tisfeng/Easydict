@@ -47,6 +47,6 @@ extension CFAbsoluteTime {
     /// Returns a string representing the elapsed time since this CFAbsoluteTime value.
     var elapsedTimeString: String {
         let elapsedTime = CFAbsoluteTimeGetCurrent() - self
-        return elapsedTime.string2f
+        return elapsedTime.string3f
     }
 }

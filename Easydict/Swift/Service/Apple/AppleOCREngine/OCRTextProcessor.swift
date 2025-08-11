@@ -88,9 +88,7 @@ public class OCRTextProcessor {
             allMergedTexts.append(sectionMergedText)
         }
 
-        log(
-            "Total text merging cost time \(startTime.elapsedTimeString) seconds with \(observations.count) objects"
-        )
+        log("Merge all sections cost time \(startTime.elapsedTimeString) seconds, \(observations.count) objects")
 
         // If text language is classical Chinese, update metrics genre.
         // Later, we can use this to determine if the text is poetry.
@@ -104,13 +102,9 @@ public class OCRTextProcessor {
 
         // Update OCR result with intelligently merged text
         ocrResult.mergedText = finalMergedText.trimmingCharacters(in: .whitespacesAndNewlines)
-        ocrResult.texts = ocrResult.mergedText.components(
-            separatedBy: OCRConstants.lineSeparator
-        )
+        ocrResult.texts = ocrResult.mergedText.components(separatedBy: OCRConstants.lineSeparator)
 
-        log(
-            "\nOCR text (\(ocrResult.from), \(ocrResult.confidence.string2f)): \(ocrResult.mergedText)\n"
-        )
+        log("\nOCR text (\(ocrResult.from), \(ocrResult.confidence.string2f)): \(ocrResult.mergedText)\n")
     }
 
     /// Checks if the given observations suggest that image cropping would improve OCR accuracy.
@@ -130,21 +124,19 @@ public class OCRTextProcessor {
         let textBoundingBox = calculateTextBoundingBox(observations: observations)
         let textArea = textBoundingBox.width * textBoundingBox.height
 
+        let threshold = 0.5
+
         // Total image area in normalized coordinates is 1.0 (1.0 * 1.0)
 
-        log("Text area: \(textArea.string3f)")
+        log("Text bounding box (Vision coords): \(textBoundingBox)")
+        log("Text area: \(textArea.string3f), threshold: \(threshold.string2f)")
 
-        let threshold = 0.5
-        // Check if text area is less than 60% of image area
+        // Check if text area is less than threshold
         if textArea < threshold {
-            log(
-                "Text area is too small (\(textArea.string2f) < \(threshold.string2f)), creating cropped image for optimization"
-            )
+            log("Text area is less than threshold, cropping needed")
             return cropImageToTextRegion(image: ocrImage, textBoundingBox: textBoundingBox)
         } else {
-            log(
-                "Text area is sufficient (\(textArea.string2f) >= \(threshold.string2f)), no cropping needed"
-            )
+            log("Text area is sufficient, no cropping needed")
             return nil
         }
     }
@@ -372,7 +364,6 @@ public class OCRTextProcessor {
         let destRect = NSRect(origin: .zero, size: cropSize)
 
         log("Cropping image from \(imageSize) to region: \(cropRect)")
-        log("Original text bounding box (Vision coords): \(textBoundingBox)")
 
         // Create a new NSImage with the cropped size
         let croppedImage = NSImage(size: cropSize)

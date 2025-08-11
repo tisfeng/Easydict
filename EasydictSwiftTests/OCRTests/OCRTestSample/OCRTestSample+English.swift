@@ -15,8 +15,9 @@ extension OCRTestSample {
     // MARK: - English Text Cases
 
     static let englishCases: [OCRTestSample] = [
-        .enText1, .enText2, .enTextBitcoin, .enTextReddit,
-        .enTextList1, .enTextList2, .enTextList3, .enTextLetter338,
+        .enText1, .enText2, .enText3, .enText4, .enText5,
+        .enTextBitcoin, .enTextReddit, .enTextLetter338,
+        .enTextList1, .enTextList2, .enTextList3,
         .enPaper0,
         .enPaper1, .enPaper2, .enPaper3, .enPaper4, .enPaper5, .enPaper6, .enPaper7,
         .enPaper8, .enPaper9, .enPaper10, .enPaper11, .enPaper12, .enPaper13,
@@ -75,6 +76,17 @@ extension OCRTestSample {
         Note Starting in iOS 18.0, the Vision framework provides a new Swift-only API. See Original Objective-C and Swift API to view the original API.
 
         Open in Developer Documentation
+        """,
+        enText5: """
+        "The best recent book on China, on China and America, and, arguably, the best book of the year flat out. " -TYLER COWEN
+
+        China's Quest
+        to Engineer
+        the Future
+
+        BREAKNECK
+
+        DAN WANG
         """,
 
         enTextBitcoin: """

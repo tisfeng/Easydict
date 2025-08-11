@@ -15,7 +15,7 @@ extension OCRTestSample {
     // MARK: - Other Language Cases
 
     static let otherLanguageCases: [OCRTestSample] = [
-        .plUnsupportedText1,
+        .plText1,
         .ruPoetry11,
     ]
 
@@ -23,8 +23,7 @@ extension OCRTestSample {
 
     /// Expected results for other language OCR test samples
     static let otherLanguageExpectedResults: [OCRTestSample: String] = [
-        // For unsupported languages, we use automatically detected language, so result is not guaranteed.
-        plUnsupportedText1: """
+        plText1: """
         Anseio por te ver, mas, por favor, lembra-te que não vou pedir para te ver.
 
         Não é por orgulho, sabes que não tenho orgulho diante de ti, mas porque, só quando também me quiseres ver, o nosso encontro será significativo.

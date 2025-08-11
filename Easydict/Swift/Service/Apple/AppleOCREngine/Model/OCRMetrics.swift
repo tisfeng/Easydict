@@ -130,7 +130,7 @@ class OCRMetrics {
     }
 
     /// The average number of punctuation marks per line.
-    var punctuationMarkCountPerLine: Double {
+    var punctuationCountPerLine: Double {
         punctuationMarkCount.double / textObservations.count.double
     }
 

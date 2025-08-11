@@ -331,6 +331,7 @@
 		03C3A5CE2E1BFE4900B59152 /* ocr-zh-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */; };
 		03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */; };
 		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
+		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
 		03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CD01572D24E17C0079D0CB /* YoudaoService.swift */; };
 		03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */; };
@@ -350,7 +351,7 @@
 		03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */; };
 		03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
-		03D90BC62E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03D90BC52E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png */; };
+		03D90BC62E22A4A2005C1BBB /* ocr-pl-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */; };
 		03D90F8F2CCA451200EE4E84 /* WindowConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D90F8E2CCA451200EE4E84 /* WindowConfigurationView.swift */; };
 		03D9D6F72D8AB0C8009E0CEC /* ScreenshotState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9D6F62D8AB0C8009E0CEC /* ScreenshotState.swift */; };
 		03D9D6FB2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9D6FA2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift */; };
@@ -969,6 +970,7 @@
 		03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-1.png"; sourceTree = "<group>"; };
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3A5B52E1BFE4900B59152 /* ocr-zh-text-bitcoin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-bitcoin.png"; sourceTree = "<group>"; };
+		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
@@ -997,7 +999,7 @@
 		03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeviceSystemInfo.m; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
-		03D90BC52E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-pl-unsupported-text-1.png"; sourceTree = "<group>"; };
+		03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-pl-text-1.png"; sourceTree = "<group>"; };
 		03D90F8E2CCA451200EE4E84 /* WindowConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationView.swift; sourceTree = "<group>"; };
 		03D9D6F62D8AB0C8009E0CEC /* ScreenshotState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotState.swift; sourceTree = "<group>"; };
 		03D9D6FA2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screenshot+EventMonitor.swift"; sourceTree = "<group>"; };
@@ -2508,7 +2510,7 @@
 		03C3A5622E1BC78600B59152 /* ocr-images */ = {
 			isa = PBXGroup;
 			children = (
-				03D90BC52E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png */,
+				03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */,
 				034227F52E37145200325B47 /* ocr-ru-poetry-11.png */,
 				03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */,
 				03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */,
@@ -2532,6 +2534,7 @@
 				03C3A5AD2E1BFE4900B59152 /* ocr-en-text-2.png */,
 				03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */,
 				032041192E43BEB50065A05B /* ocr-en-text-4.png */,
+				03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */,
 				03C3A5AF2E1BFE4900B59152 /* ocr-en-text-bitcoin.png */,
 				03C3A5B02E1BFE4900B59152 /* ocr-en-text-reddit.png */,
 				034227E22E366EB000325B47 /* ocr-en-poetry-8.png */,
@@ -3437,11 +3440,12 @@
 				034227DB2E36379900325B47 /* ocr-zh-poetry-6.png in Resources */,
 				03C3A5CC2E1BFE4900B59152 /* ocr-en-paper-6.png in Resources */,
 				03C3A5CD2E1BFE4900B59152 /* ocr-en-paper-5.png in Resources */,
+				03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */,
 				03C3A5CE2E1BFE4900B59152 /* ocr-zh-text-1.png in Resources */,
 				034227F62E37145200325B47 /* ocr-ru-poetry-11.png in Resources */,
 				034227E02E366EA400325B47 /* ocr-zh-poetry-8.png in Resources */,
 				033897862E386F8C00CCFF99 /* ocr-zh-poetry-7.png in Resources */,
-				03D90BC62E22A4A2005C1BBB /* ocr-pl-unsupported-text-1.png in Resources */,
+				03D90BC62E22A4A2005C1BBB /* ocr-pl-text-1.png in Resources */,
 				03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */,
 				03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */,
 			);

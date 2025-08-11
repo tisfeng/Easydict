@@ -54,19 +54,20 @@ class OCRPoetryDetector {
     /// - Returns: `true` if content passes initial checks, `false` if it's clearly not poetry.
     private func performEarlyValidation() -> Bool {
         // Use metrics wordCountPerLine to determine if it is poetry-like
-        let isPunctuationPerLineLikePoetry = metrics.punctuationMarkCountPerLine <= 2.5
-        if !isPunctuationPerLineLikePoetry {
+        let isPunctuationsLikePoetry = metrics.punctuationCountPerLine <= 2.5
+        if !isPunctuationsLikePoetry {
+            print("Too many punctuation per line (\(metrics.punctuationCountPerLine.string2f) > 2.5)")
             return debugEarlyFailure(reason: "Not poetry-like based on punctuation marks per line.")
         }
 
         // Use metrics charCountPerLine to determine if it is poetry-like
-        let isCharCountPerLineLikePoetry = matchesPoetryPattern(
-            wordCountPerLine: 0,
+        let isMatchesPoetryPattern = matchesPoetryPattern(
             charCountPerLine: metrics.charCountPerLine,
             confidence: .custom(2.5)
         )
 
-        if !isCharCountPerLineLikePoetry {
+        if !isMatchesPoetryPattern {
+            print("Not matching poetry char pattern: \(metrics.charCountPerLine.string2f) <= 2.5*X")
             return debugEarlyFailure(reason: "Not poetry-like based on overall character count.")
         }
 
@@ -87,6 +88,17 @@ class OCRPoetryDetector {
         for i in 0 ..< lineCount {
             let observation = observations[i]
             let currentText = observation.firstText
+
+            // Check for mid-sentence punctuation prose pattern
+            if hasMidSentencePunctuation(in: currentText) {
+                debugNonPoetryPattern(
+                    pattern: "mid-sentence punctuation",
+                    reason: "Line has mid-sentence punctuation followed by uppercase letter",
+                    prevText: "",
+                    currentText: currentText
+                )
+                return nil
+            }
 
             // Analyze punctuation for current line
             let punctuationInfo = analyzePunctuationInLine(currentText)
@@ -175,6 +187,36 @@ class OCRPoetryDetector {
         return PoetryPunctuationInLine(count: totalCount, hasSuffix: hasSuffix)
     }
 
+    /// Checks if a line of text has mid-sentence punctuation patterns that indicate prose.
+    ///
+    /// Specifically looks for cases where:
+    /// 1. End punctuation appears in the middle of the line (sentence end)
+    /// 2. Followed by the first letter character being uppercase (new sentence start)
+    ///
+    /// Example:
+    /// ```
+    /// travel the same distance. This is
+    /// ```
+    ///
+    /// - Parameter text: The text to analyze
+    /// - Returns: `true` if mid-sentence punctuation pattern is detected, `false` otherwise
+    private func hasMidSentencePunctuation(in text: String) -> Bool {
+        // Find the position of end punctuation marks in the text
+        for (index, char) in text.enumerated() {
+            let charString = String(char)
+            if charString.isEndPunctuation {
+                // Check if the first letter character after punctuation is uppercase
+                let remainingText = String(text.dropFirst(index + 1))
+                let firstLetter = remainingText.first { $0.isLetter }
+                if let firstLetter, firstLetter.isUppercase {
+                    return true // Mid-sentence punctuation pattern detected
+                }
+            }
+        }
+
+        return false
+    }
+
     /// Checks for prose patterns in long lines.
     /// - Parameters:
     ///   - prevText: Previous line text
@@ -191,44 +233,6 @@ class OCRPoetryDetector {
         let isPrevLastCharUppercase = prevText.isFirstCharUppercase
         let prevHasPunctuationSuffix = prevText.last?.isPunctuation ?? false
         let isFirstCharLowercase = currentText.isFirstCharLowercase
-
-        /**
-            Check for prose patterns in the previous line and the current line.
-
-            Specifically looks for cases where:
-            1. Previous line has end punctuation in the middle (sentence end)
-            2. Followed by an uppercase letter (new sentence start)
-            3. But the current line starts with lowercase (continuation of broken sentence)
-
-            Example:
-            ```
-            travel the same distance. This is
-            because the time it takes for a given
-            ```
-         */
-
-        if prevText.hasEndPunctuationInMiddle {
-            // Find the position of end punctuation marks in the previous line
-            for (index, char) in prevText.enumerated() {
-                let charString = String(char)
-                if charString.isEndPunctuation {
-                    // Check if there's a current character that is uppercase (new sentence)
-                    let remainingText = String(prevText.dropFirst(index + 1)).trim()
-                    if remainingText.isFirstCharUppercase {
-                        if currentText.isFirstCharLowercase {
-                            debugNonPoetryPattern(
-                                pattern: "mid-sentence punctuation",
-                                reason:
-                                "Previous has mid-sentence punctuation followed by uppercase, current starts with lowercase",
-                                prevText: prevText,
-                                currentText: currentText
-                            )
-                            return true // Prose pattern detected
-                        }
-                    }
-                }
-            }
-        }
 
         // If current line has end punctuation suffix
         if hasEndPunctuationSuffix {
@@ -248,8 +252,8 @@ class OCRPoetryDetector {
 
             if !prevHasPunctuationSuffix, isPrevFirstCharLowercase || isPrevLastCharUppercase {
                 debugNonPoetryPattern(
-                    pattern: "English prose pattern",
-                    reason: "Previous line is long, starts with lowercase, current has end punctuation",
+                    pattern: "Long English prose pattern",
+                    reason: "Previous starts with lowercase or uppercase, current has end punctuation",
                     prevText: prevText,
                     currentText: currentText
                 )
@@ -277,8 +281,7 @@ class OCRPoetryDetector {
             if !prevHasPunctuationSuffix, !matchesPoetryPattern {
                 debugNonPoetryPattern(
                     pattern: "long line prose pattern",
-                    reason:
-                    "Current has end punctuation, previous is long without punctuation suffix and not matching poetry pattern",
+                    reason: "Current has end punctuation, previous is long without punctuation suffix",
                     prevText: prevText,
                     currentText: currentText
                 )
@@ -466,20 +469,28 @@ class OCRPoetryDetector {
 
     /// Checks if the line matches the poetry pattern based on word and character counts.
     private func matchesPoetryPattern(
-        wordCountPerLine: Double,
+        wordCountPerLine: Double? = nil,
         charCountPerLine: Double,
         confidence: ConfidenceLevel = .custom(1.0)
     )
         -> Bool {
-        let wordCountThreshold = OCRConstants.poetryWordCountOfLine * confidence.multiplier
-        let charCountThreshold = OCRConstants.poetryCharacterCountOfLine * confidence.multiplier
+        guard let wordCountPerLine else {
+            print("📝 No word count available, assuming poetry-like")
+            return true
+        }
 
-        if wordCountPerLine <= wordCountThreshold || charCountPerLine <= charCountThreshold {
+        let maxPoetryWords = OCRConstants.maxPoetryWordsPerLine * confidence.multiplier
+        let maxPoetryChars = OCRConstants.maxPoetryCharsPerLine * confidence.multiplier
+
+        let matchesWordCount = wordCountPerLine <= maxPoetryWords
+        let matchesCharCount = charCountPerLine <= maxPoetryChars
+
+        if matchesWordCount || matchesCharCount {
             print(
                 """
                 📝 Line is poetry-like:
-                words \(wordCountPerLine.string2f) <= \(wordCountThreshold.string2f),
-                chars \(charCountPerLine.string2f) <= \(charCountThreshold.string2f),
+                words \(wordCountPerLine.string2f) <= \(maxPoetryWords.string2f),
+                chars \(charCountPerLine.string2f) <= \(maxPoetryChars.string2f),
                 confidence: \(confidence)
                 """
             )
