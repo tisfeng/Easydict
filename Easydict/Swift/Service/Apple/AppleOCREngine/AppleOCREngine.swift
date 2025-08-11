@@ -41,8 +41,6 @@ public class AppleOCREngine {
         -> EZOCRResult {
         log("Recognizing text in image with language: \(language), image size: \(image.size)")
 
-        var startTime = CFAbsoluteTimeGetCurrent()
-
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {
             throw QueryError.error(
@@ -50,18 +48,13 @@ public class AppleOCREngine {
             )
         }
 
-        var elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("Image converted to CGImage, cost time: \(elapsedTime.string2f) seconds")
-
-        startTime = CFAbsoluteTimeGetCurrent()
+        var startTime = CFAbsoluteTimeGetCurrent()
 
         // Perform Vision OCR
         let observations = try await performVisionOCRAsync(on: cgImage, language: language)
 
-        elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-        log(
-            "Recognize count \(observations.count) \(language), cost time: \(elapsedTime.string2f) seconds"
-        )
+        log("Recognize observations count: \(observations.count) (\(language))")
+        log("Cost time: \(startTime.elapsedTimeString) seconds")
 
         let ocrResult = EZOCRResult()
         ocrResult.from = language
@@ -81,7 +74,7 @@ public class AppleOCREngine {
         let hasDesignatedLanguage = language != .auto
 
         let smartMerging = hasDesignatedLanguage || confidentOCRTextLanguage
-        log("Performing OCR text processing, intelligent: \(smartMerging)")
+        log("Performing OCR text processing, smart merging: \(smartMerging)")
 
         textProcessor.setupOCRResult(
             ocrResult,
@@ -91,11 +84,8 @@ public class AppleOCREngine {
             textAnalysis: textAnalysis
         )
 
-        log("Detected languages: \(rawLanguageProbabilities.prettyPrinted)")
-
         if smartMerging {
-            elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-            log("OCR completion (\(language)) cost time: \(elapsedTime.string2f) seconds")
+            log("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
             return ocrResult
         }
 
@@ -106,7 +96,6 @@ public class AppleOCREngine {
         )
 
         if let croppedImage {
-            log("Attempting OCR optimization with cropped image")
             let croppedImagePath = OCRConstants.ocrImageDirectoryURL.appending(
                 path: "ocr_cropped_image.png"
             )
@@ -123,8 +112,7 @@ public class AppleOCREngine {
             candidates: rawLanguageProbabilities
         )
 
-        elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("Get most confident OCR cost time: \(elapsedTime.string2f) seconds")
+        log("Get most confident OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
     }
@@ -297,7 +285,9 @@ public class AppleOCREngine {
         }
 
         guard !results.isEmpty else {
-            throw QueryError.error(type: .noResult, message: String(localized: "ocr_result_is_empty"))
+            throw QueryError.error(
+                type: .noResult, message: String(localized: "ocr_result_is_empty")
+            )
         }
 
         return results

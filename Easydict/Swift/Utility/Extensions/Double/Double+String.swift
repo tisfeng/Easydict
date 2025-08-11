@@ -41,3 +41,12 @@ extension CGFloat {
         String(format: "%.3f", self)
     }
 }
+
+/// Extension to get the elapsed time string from a CFAbsoluteTime value.
+extension CFAbsoluteTime {
+    /// Returns a string representing the elapsed time since this CFAbsoluteTime value.
+    var elapsedTimeString: String {
+        let elapsedTime = CFAbsoluteTimeGetCurrent() - self
+        return elapsedTime.string2f
+    }
+}

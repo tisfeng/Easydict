@@ -88,8 +88,9 @@ public class OCRTextProcessor {
             allMergedTexts.append(sectionMergedText)
         }
 
-        let elapsedTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("Total text merging cost time \(elapsedTime.string2f) seconds with \(observations.count) objects")
+        log(
+            "Total text merging cost time \(startTime.elapsedTimeString) seconds with \(observations.count) objects"
+        )
 
         // If text language is classical Chinese, update metrics genre.
         // Later, we can use this to determine if the text is poetry.

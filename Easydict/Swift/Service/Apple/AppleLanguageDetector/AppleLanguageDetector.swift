@@ -110,12 +110,10 @@ public class AppleLanguageDetector: NSObject {
         let probabilities = recognizer.languageHypotheses(withMaximum: 5)
         let dominantLanguage = recognizer.dominantLanguage
 
-        let endTime = CFAbsoluteTimeGetCurrent()
-
         if isDebugLogEnabled {
             print("Language probabilities: \(probabilities.prettyPrinted)\n")
             print("Dominant language: \(dominantLanguage?.rawValue ?? "nil")")
-            print("Detection cost time: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
+            print("Detection cost time: \(startTime.elapsedTimeString)")
         }
 
         return probabilities
