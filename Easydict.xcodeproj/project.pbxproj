@@ -187,6 +187,10 @@
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
+		039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223B92E4B41950052F695 /* OCRDebugView.swift */; };
+		039223BD2E4B41950052F695 /* OCRDebugWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BA2E4B41950052F695 /* OCRDebugWindowManager.swift */; };
+		039223BE2E4B41950052F695 /* OCRTextResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BB2E4B41950052F695 /* OCRTextResultsView.swift */; };
+		039223C02E4B61980052F695 /* OCRImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BF2E4B61980052F695 /* OCRImageView.swift */; };
 		03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
@@ -736,6 +740,10 @@
 		038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingChineseTests.swift; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
+		039223B92E4B41950052F695 /* OCRDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDebugView.swift; sourceTree = "<group>"; };
+		039223BA2E4B41950052F695 /* OCRDebugWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDebugWindowManager.swift; sourceTree = "<group>"; };
+		039223BB2E4B41950052F695 /* OCRTextResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextResultsView.swift; sourceTree = "<group>"; };
+		039223BF2E4B61980052F695 /* OCRImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageView.swift; sourceTree = "<group>"; };
 		03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationKey.swift; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
@@ -1334,6 +1342,7 @@
 		031760E92E065DB300CE8FD7 /* AppleOCREngine */ = {
 			isa = PBXGroup;
 			children = (
+				039223B82E4B41770052F695 /* View */,
 				03B170982E122CF80021FDE4 /* Model */,
 				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
 				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
@@ -1898,6 +1907,17 @@
 				038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */,
 			);
 			path = AppKit;
+			sourceTree = "<group>";
+		};
+		039223B82E4B41770052F695 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				039223BA2E4B41950052F695 /* OCRDebugWindowManager.swift */,
+				039223B92E4B41950052F695 /* OCRDebugView.swift */,
+				039223BF2E4B61980052F695 /* OCRImageView.swift */,
+				039223BB2E4B41950052F695 /* OCRTextResultsView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		0396D612292CBDFD006A11D9 /* Storage */ = {
@@ -3733,6 +3753,7 @@
 				03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */,
 				03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
+				039223C02E4B61980052F695 /* OCRImageView.swift in Sources */,
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
@@ -3932,6 +3953,9 @@
 				034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
+				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,
+				039223BD2E4B41950052F695 /* OCRDebugWindowManager.swift in Sources */,
+				039223BE2E4B41950052F695 /* OCRTextResultsView.swift in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
 				03B73F7B2D9C51580051CB74 /* ChineseDetection+Poetry.swift in Sources */,

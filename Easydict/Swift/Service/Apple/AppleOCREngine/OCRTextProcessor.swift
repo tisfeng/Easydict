@@ -72,6 +72,7 @@ public class OCRTextProcessor {
 
         // Step 2: Process each section independently
         var allMergedTexts: [String] = []
+        var sectionMergedTexts: [String] = []
 
         for (index, section) in sections.enumerated() {
             log("\nProcessing section \(index + 1) with \(section.count) observations")
@@ -86,9 +87,23 @@ public class OCRTextProcessor {
             let sectionMergedText = textMerger.performSmartMerging(section)
             log("\nMerged section [\(index + 1)]: \(sectionMergedText)")
             allMergedTexts.append(sectionMergedText)
+            sectionMergedTexts.append(sectionMergedText)
         }
 
-        log("Merge all sections cost time \(startTime.elapsedTimeString) seconds, \(observations.count) objects")
+        // Show OCR debug window for analysis (only in debug builds)
+        #if DEBUG
+        Task { @MainActor in
+            showOCRDebugWindow(
+                image: ocrImage,
+                sections: sections,
+                sectionMergedTexts: sectionMergedTexts
+            )
+        }
+        #endif
+
+        log(
+            "Merge all sections cost time \(startTime.elapsedTimeString) seconds, \(observations.count) objects"
+        )
 
         // If text language is classical Chinese, update metrics genre.
         // Later, we can use this to determine if the text is poetry.
@@ -104,7 +119,9 @@ public class OCRTextProcessor {
         ocrResult.mergedText = finalMergedText.trimmingCharacters(in: .whitespacesAndNewlines)
         ocrResult.texts = ocrResult.mergedText.components(separatedBy: OCRConstants.lineSeparator)
 
-        log("\nOCR text (\(ocrResult.from), \(ocrResult.confidence.string2f)): \(ocrResult.mergedText)\n")
+        log(
+            "\nOCR text (\(ocrResult.from), \(ocrResult.confidence.string2f)): \(ocrResult.mergedText)\n"
+        )
     }
 
     /// Checks if the given observations suggest that image cropping would improve OCR accuracy.
