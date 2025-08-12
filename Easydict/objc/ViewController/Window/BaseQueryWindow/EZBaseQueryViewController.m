@@ -503,7 +503,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
 
     self.queryModel.actionType = actionType;
-    self.queryModel.OCRImage = image;
+    self.queryModel.ocrImage = image;
 
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
@@ -573,19 +573,24 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
-- (void)retryQuery {
-    MMLogInfo(@"retry query");
+- (void)retryQueryWithLanguage:(EZLanguage)language {
+    MMLogInfo(@"Retry query with language: %@", language);
 
     [self.audioPlayer stop];
 
-    // Reset query view height.
-    if (self.queryModel.OCRImage) {
+    // Reset query view height if we are retrying OCR query
+    if (self.queryModel.ocrImage) {
         self.inputText = @"";
     }
-
-    // Re-detect language when retry.
-    self.queryModel.detectedLanguage = EZLanguageAuto;
-    self.queryModel.needDetectLanguage = YES;
+    
+    // If has designated language, we don't need to detect language again.
+    if (language == EZLanguageAuto) {
+        self.queryModel.detectedLanguage = EZLanguageAuto;
+        self.queryModel.needDetectLanguage = YES;
+    } else {
+        self.queryModel.detectedLanguage = language;
+        self.queryModel.needDetectLanguage = NO;
+    }
 
     [self closeAllResultView:^{
         [self startQueryWithType:self.queryModel.actionType];
@@ -608,7 +613,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
     self.inputText = @"";
-    self.queryModel.OCRImage = nil;
+    self.queryModel.ocrImage = nil;
     [self.queryView setAlertTextHidden:YES];
 
     [self.audioPlayer stop];
@@ -770,8 +775,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)startQueryWithType:(EZActionType)actionType {
-    NSImage *ocrImage = self.queryModel.OCRImage;
-    if (actionType == EZActionTypeOCRQuery && ocrImage) {
+    NSImage *ocrImage = self.queryModel.ocrImage;
+    
+    if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR)) {
         [self startOCRImage:ocrImage actionType:actionType];
     } else {
         [self startQueryText:self.inputText actionType:actionType];
@@ -919,7 +925,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             self.queryModel.userSourceLanguage = from;
             self.queryModel.userTargetLanguage = to;
 
-            [self retryQuery];
+            [self retryQueryWithLanguage:EZLanguageAuto];
         }];
         return selectLanguageCell;
     }
@@ -1437,7 +1443,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         EZLanguage detectedLanguage = self.queryModel.detectedLanguage;
         if (![detectedLanguage isEqualToString:language]) {
             self.queryModel.detectedLanguage = language;
-            [self retryQuery];
+            [self retryQueryWithLanguage:language];
 
             [self updateSelectLanguageCell];
 

@@ -69,7 +69,7 @@ static EZWindowManager *_instance;
 - (void)setup {
     self.offsetPoint = CGPointMake(18, -12);
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
-    self.actionType = EZActionTypeInvokeQuery;
+    self.actionType = EZActionTypeNone;
     self.screenVisibleFrame = NSScreen.mainScreen.visibleFrame;
 
     self.eventMonitor = [EZEventMonitor shared];
@@ -379,7 +379,6 @@ static EZWindowManager *_instance;
 
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
-        [queryViewController updateActionType:self.actionType];
         [self showFloatingWindow:window atPoint:newPoint];
 
         if (completionHandler) {
@@ -608,8 +607,8 @@ static EZWindowManager *_instance;
         position.y = position.y - 8;
     }
 
-    // If input query, just show mini window, then show window at last position.
-    if (self.actionType == EZActionTypeInputQuery) {
+    // If action none, just show mini window, then show window at last position.
+    if (self.actionType == EZActionTypeNone) {
         CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeMini];
         position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
     }
@@ -834,7 +833,7 @@ static EZWindowManager *_instance;
         queryText = @"";
     }
 
-    self.actionType = EZActionTypeInputQuery;
+    self.actionType = EZActionTypeNone;
     [self showFloatingWindowType:windowType queryText:queryText];
 }
 
@@ -849,7 +848,7 @@ static EZWindowManager *_instance;
         return;
     }
 
-    self.actionType = EZActionTypeInputQuery;
+    self.actionType = EZActionTypeNone;
     [self showFloatingWindowType:windowType queryText:nil];
 }
 
@@ -967,8 +966,7 @@ static EZWindowManager *_instance;
     }
 
     if ([[NSApplication sharedApplication] keyWindow] == self.floatingWindow) {
-        // 执行重试
-        [self.floatingWindow.queryViewController retryQuery];
+        [self.floatingWindow.queryViewController retryQueryWithLanguage:EZLanguageAuto];
     }
 }
 

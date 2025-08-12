@@ -1511,14 +1511,6 @@
 			path = AppleScript;
 			sourceTree = "<group>";
 		};
-		0340D39C2C951839004C9910 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				0340D39D2C951850004C9910 /* QueryError.swift */,
-			);
-			path = Error;
-			sourceTree = "<group>";
-		};
 		034227EC2E36748300325B47 /* OCRTestSample */ = {
 			isa = PBXGroup;
 			children = (
@@ -3174,7 +3166,7 @@
 		EA9943E12B534C2900EE7B97 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0340D39C2C951839004C9910 /* Error */,
+				0340D39D2C951850004C9910 /* QueryError.swift */,
 				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
 				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
 				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,

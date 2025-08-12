@@ -167,7 +167,7 @@
 }
 
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSImage *image = self.queryModel.OCRImage;
+    NSImage *image = self.queryModel.ocrImage;
     if (!image) {
         EZQueryError *error = [EZQueryError errorWithType:EZQueryErrorTypeParameter message: @"ocr image cannot be nil"];
         completion(nil, error);

@@ -34,7 +34,7 @@ extension VNRecognizedTextObservation {
     /// both the recognized text content and its spatial positioning. Useful for
     /// debugging OCR results and understanding text layout.
     ///
-    /// **Format**: `Text: "content", { x=0.123, y=0.456, width=0.789, height=0.012 }`
+    /// **Format**: `Text: "content", { x=0.123, y=0.456, width=0.789, height=0.012 }, confidence: 0.98`
     ///
     /// - Returns: Formatted string containing text and bounding box coordinates
     open override var description: String {

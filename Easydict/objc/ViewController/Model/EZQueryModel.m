@@ -37,7 +37,7 @@
         }];
         
         self.detectedLanguage = EZLanguageAuto;
-        self.actionType = EZActionTypeInputQuery;
+        self.actionType = EZActionTypeNone;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
         self.needDetectLanguage = YES;
         self.showAutoLanguage = NO;
@@ -55,7 +55,7 @@
     model.userSourceLanguage = _userSourceLanguage;
     model.userTargetLanguage = _userTargetLanguage;
     model.detectedLanguage = _detectedLanguage;
-    model.OCRImage = _OCRImage;
+    model.ocrImage = _ocrImage;
     model.queryViewHeight = _queryViewHeight;
     model.audioURL = _audioURL;
     model.needDetectLanguage = _needDetectLanguage;
@@ -87,19 +87,14 @@
 - (void)setActionType:(EZActionType)actionType {
     _actionType = actionType;
     
-    // Remove OCR image when action type is not OCR related.
-    if (actionType != EZActionTypeOCRQuery
-        && actionType != EZActionTypeScreenshotOCR
-        && actionType != EZActionTypePasteboardOCR) {
-        _OCRImage = nil;
-    }
-}
-
-- (void)setOCRImage:(NSImage *)ocrImage {
-    _OCRImage = ocrImage;
+    BOOL isOCRAction = (actionType == EZActionTypeOCRQuery
+                          || actionType == EZActionTypeScreenshotOCR
+                          || actionType == EZActionTypePasteboardOCR
+                          || actionType == EZActionTypeNone);
     
-    if (ocrImage) {
-        _actionType = EZActionTypeOCRQuery;
+    // Remove OCR image when action type is not OCR related.
+    if (!isOCRAction) {
+        _ocrImage = nil;
     }
 }
 
