@@ -15,12 +15,11 @@ import Vision
 struct OCRImageView: View {
     let image: NSImage
     let sections: [[VNRecognizedTextObservation]]
-    let selectedSectionIndex: Int?
-    let onSectionTapped: (Int) -> ()
+    @Binding var selectedIndex: Int?
 
     var body: some View {
         VStack {
-            Text("OCR Image with Bounding Boxes")
+            Text(verbatim: "OCR Image with Bounding Boxes")
                 .font(.headline)
                 .padding(.top)
 
@@ -34,10 +33,9 @@ struct OCRImageView: View {
                     // Overlay with bounding boxes
                     OCRBoundingBoxOverlay(
                         sections: sections,
-                        selectedSectionIndex: selectedSectionIndex,
+                        selectedIndex: $selectedIndex,
                         imageSize: image.size,
-                        viewSize: geometry.size,
-                        onSectionTapped: onSectionTapped
+                        viewSize: geometry.size
                     )
                 }
             }
@@ -54,10 +52,9 @@ struct OCRBoundingBoxOverlay: View {
     // MARK: Internal
 
     let sections: [[VNRecognizedTextObservation]]
-    let selectedSectionIndex: Int?
+    @Binding var selectedIndex: Int?
     let imageSize: CGSize
     let viewSize: CGSize
-    let onSectionTapped: (Int) -> ()
 
     var body: some View {
         ZStack {
@@ -70,8 +67,8 @@ struct OCRBoundingBoxOverlay: View {
 
                 // Draw section bounding boxes (red for unselected, orange for selected)
                 for (sectionIndex, section) in sections.enumerated() {
-                    let sectionBoundingBox = calculateSectionBoundingBox(section: section)
-                    let isSelected = selectedSectionIndex == sectionIndex
+                    let sectionBoundingBox = section.calculateSectionBoundingBox()
+                    let isSelected = selectedIndex == sectionIndex
 
                     drawSectionBoundingBox(
                         context: context,
@@ -106,14 +103,14 @@ struct OCRBoundingBoxOverlay: View {
                     .onTapGesture { location in
                         // Find which section was tapped based on coordinates
                         for (sectionIndex, section) in sections.enumerated() {
-                            let sectionBoundingBox = calculateSectionBoundingBox(section: section)
+                            let sectionBoundingBox = section.calculateSectionBoundingBox()
                             let displayRect = convertVisionRectToDisplayRect(
                                 sectionBoundingBox, imageDisplayInfo: imageDisplayInfo
                             )
 
                             if displayRect.contains(location) {
                                 print("Tapped section \(sectionIndex) at \(location)") // Debug print
-                                onSectionTapped(sectionIndex)
+                                selectedIndex = sectionIndex
                                 return
                             }
                         }
@@ -152,27 +149,6 @@ struct OCRBoundingBoxOverlay: View {
         )
 
         return ImageDisplayInfo(size: displaySize, offset: displayOffset)
-    }
-
-    private func calculateSectionBoundingBox(section: [VNRecognizedTextObservation]) -> CGRect {
-        guard let firstObservation = section.first else {
-            return CGRect.zero
-        }
-
-        var minX = firstObservation.boundingBox.minX
-        var maxX = firstObservation.boundingBox.maxX
-        var minY = firstObservation.boundingBox.minY
-        var maxY = firstObservation.boundingBox.maxY
-
-        for observation in section.dropFirst() {
-            let box = observation.boundingBox
-            minX = min(minX, box.minX)
-            maxX = max(maxX, box.maxX)
-            minY = min(minY, box.minY)
-            maxY = max(maxY, box.maxY)
-        }
-
-        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
 
     private func drawSectionBoundingBox(

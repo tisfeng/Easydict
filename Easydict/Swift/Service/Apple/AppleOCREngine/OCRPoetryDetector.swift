@@ -24,7 +24,7 @@ class OCRPoetryDetector {
     func detectPoetry() -> Bool {
         print("📝 Start detecting poetry...")
 
-        let observations = metrics.textObservations
+        let observations = metrics.observations
         let lineCount = observations.count
 
         // Ensure there are at least two lines of text to analyze

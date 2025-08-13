@@ -59,7 +59,7 @@ public class AppleOCREngine {
         let ocrResult = EZOCRResult()
         ocrResult.from = language
 
-        let mergedText = observations.mergedText
+        let mergedText = observations.simpleMergedText
         let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
         let rawProbabilities = languageDetector.rawProbabilities
         let textAnalysis = languageDetector.getTextAnalysis()

@@ -29,18 +29,14 @@ struct OCRDebugView: View {
             OCRImageView(
                 image: viewModel.image,
                 sections: viewModel.sections,
-                selectedSectionIndex: viewModel.selectedSectionIndex,
-                onSectionTapped: { sectionIndex in
-                    viewModel.selectedSectionIndex = sectionIndex
-                }
+                selectedIndex: $viewModel.selectedSectionIndex
             )
-            .frame(minWidth: 400)
+            .frame(minWidth: 500)
 
             // Right side: Text analysis results
             OCRTextResultsView(
                 sections: viewModel.sections,
-                sectionMergedTexts: viewModel.sectionMergedTexts,
-                selectedSectionIndex: $viewModel.selectedSectionIndex
+                selectedIndex: $viewModel.selectedSectionIndex
             )
             .frame(minWidth: 300)
         }
@@ -56,11 +52,11 @@ class OCRDebugViewModel: ObservableObject {
     // MARK: Lifecycle
 
     init(
-        image: NSImage, sections: [[VNRecognizedTextObservation]], sectionMergedTexts: [String] = []
+        image: NSImage,
+        sections: [[VNRecognizedTextObservation]]
     ) {
         self.image = image
         self.sections = sections
-        self.sectionMergedTexts = sectionMergedTexts
 
         // Default to first section if available
         if !sections.isEmpty {
@@ -72,16 +68,12 @@ class OCRDebugViewModel: ObservableObject {
 
     @Published var image: NSImage
     @Published var sections: [[VNRecognizedTextObservation]]
-    @Published var sectionMergedTexts: [String]
     @Published var selectedSectionIndex: Int?
 
     /// Update the data without recreating the view
-    func updateData(
-        image: NSImage, sections: [[VNRecognizedTextObservation]], sectionMergedTexts: [String] = []
-    ) {
+    func updateData(image: NSImage, sections: [[VNRecognizedTextObservation]]) {
         self.image = image
         self.sections = sections
-        self.sectionMergedTexts = sectionMergedTexts
 
         // Reset to first section or stay within bounds
         if !sections.isEmpty {
@@ -97,10 +89,7 @@ class OCRDebugViewModel: ObservableObject {
 #Preview {
     let mockImage = NSImage(size: NSSize(width: 100, height: 100))
     let mockSections: [[VNRecognizedTextObservation]] = []
-    let mockSectionMergedTexts: [String] = []
-    let viewModel = OCRDebugViewModel(
-        image: mockImage, sections: mockSections, sectionMergedTexts: mockSectionMergedTexts
-    )
+    let viewModel = OCRDebugViewModel(image: mockImage, sections: mockSections)
 
     return OCRDebugView(viewModel: viewModel)
         .frame(width: 1000, height: 700)

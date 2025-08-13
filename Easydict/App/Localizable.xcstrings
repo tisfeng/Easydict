@@ -23,16 +23,6 @@
         }
       }
     },
-    "[%lld] \"%@\"" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "[%1$lld] \"%2$@\""
-          }
-        }
-      }
-    },
     "%@ API Key" : {
       "localizations" : {
         "sk" : {
@@ -54,12 +44,6 @@
           }
         }
       }
-    },
-    "%lld sections detected" : {
-
-    },
-    "%lld text observations" : {
-
     },
     "advanced" : {
       "localizations" : {
@@ -2731,9 +2715,6 @@
         }
       }
     },
-    "Merged Text:" : {
-
-    },
     "mini_window" : {
       "localizations" : {
         "en" : {
@@ -2952,12 +2933,6 @@
           }
         }
       }
-    },
-    "OCR Analysis Results" : {
-
-    },
-    "OCR Image with Bounding Boxes" : {
-
     },
     "ocr_result_is_empty" : {
       "localizations" : {
@@ -4049,9 +4024,6 @@
           }
         }
       }
-    },
-    "Section %lld" : {
-
     },
     "select_query_text_when_window_activate" : {
       "extractionState" : "manual",
@@ -8463,9 +8435,6 @@
           }
         }
       }
-    },
-    "Text Observations:" : {
-
     },
     "timeout_error" : {
       "localizations" : {

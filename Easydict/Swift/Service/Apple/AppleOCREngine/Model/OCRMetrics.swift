@@ -36,7 +36,7 @@ class OCRMetrics {
             return
         }
 
-        self.textObservations = textObservations
+        self.observations = textObservations
 
         // If we have both image and observations, perform full setup
         if let ocrImage {
@@ -59,7 +59,7 @@ class OCRMetrics {
     var language: Language = .auto
 
     /// The complete array of text observations from the Vision framework.
-    var textObservations: [VNRecognizedTextObservation] = []
+    var observations: [VNRecognizedTextObservation] = []
 
     // MARK: - Line & Spacing Metrics
 
@@ -126,12 +126,12 @@ class OCRMetrics {
 
     /// The average number of characters per line.
     var charCountPerLine: Double {
-        totalCharCount.double / textObservations.count.double
+        totalCharCount.double / observations.count.double
     }
 
     /// The average number of punctuation marks per line.
     var punctuationCountPerLine: Double {
-        punctuationMarkCount.double / textObservations.count.double
+        punctuationMarkCount.double / observations.count.double
     }
 
     /// The calculated maximum line length (width) from the `maxLengthObservation`.
@@ -162,7 +162,7 @@ class OCRMetrics {
         // Set basic properties
         self.ocrImage = ocrImage
         self.language = language
-        textObservations = observations
+        self.observations = observations
 
         guard !observations.isEmpty else { return }
 
@@ -240,7 +240,7 @@ class OCRMetrics {
         // Reset context data
         ocrImage = NSImage()
         language = .auto
-        textObservations = []
+        observations = []
 
         // Reset metrics data
         minLineHeight = 1.0

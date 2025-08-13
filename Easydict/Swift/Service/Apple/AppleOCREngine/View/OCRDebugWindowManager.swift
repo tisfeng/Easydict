@@ -32,27 +32,19 @@ class OCRDebugWindowManager: ObservableObject {
     /// - Parameters:
     ///   - image: The OCR source image
     ///   - sections: Array of sections containing VNRecognizedTextObservation arrays
-    ///   - sectionMergedTexts: Array of merged text for each section
     func showDebugWindow(
         image: NSImage,
-        sections: [[VNRecognizedTextObservation]],
-        sectionMergedTexts: [String] = []
+        sections: [[VNRecognizedTextObservation]]
     ) {
         if let existingWindow = debugWindow, existingWindow.isVisible {
             // Update existing window data
             if let viewModel = currentViewModel {
-                viewModel.updateData(
-                    image: image, sections: sections, sectionMergedTexts: sectionMergedTexts
-                )
+                viewModel.updateData(image: image, sections: sections)
             }
             existingWindow.orderFrontRegardless()
         } else {
             // Create new window with new ViewModel
-            let viewModel = OCRDebugViewModel(
-                image: image,
-                sections: sections,
-                sectionMergedTexts: sectionMergedTexts
-            )
+            let viewModel = OCRDebugViewModel(image: image, sections: sections)
             currentViewModel = viewModel
 
             let debugView = OCRDebugView(viewModel: viewModel)
@@ -110,16 +102,10 @@ class OCRDebugWindowManager: ObservableObject {
 /// - Parameters:
 ///   - image: The OCR source image
 ///   - sections: Array of sections containing VNRecognizedTextObservation arrays
-///   - sectionMergedTexts: Array of merged text for each section
 @MainActor
 func showOCRDebugWindow(
     image: NSImage,
-    sections: [[VNRecognizedTextObservation]],
-    sectionMergedTexts: [String] = []
+    sections: [[VNRecognizedTextObservation]]
 ) {
-    OCRDebugWindowManager.shared.showDebugWindow(
-        image: image,
-        sections: sections,
-        sectionMergedTexts: sectionMergedTexts
-    )
+    OCRDebugWindowManager.shared.showDebugWindow(image: image, sections: sections)
 }

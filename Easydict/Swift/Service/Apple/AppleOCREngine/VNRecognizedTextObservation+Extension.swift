@@ -28,6 +28,10 @@ extension VNRecognizedTextObservation {
         firstText.prefixChars(20)
     }
 
+    var prefix30: String {
+        firstText.prefixChars(30)
+    }
+
     /// Enhanced description providing comprehensive observation details
     ///
     /// Overrides the default description to provide human-readable information about
@@ -59,37 +63,19 @@ extension VNRecognizedTextObservation {
     }
 }
 
-/// Associated object storage for temporary processing data
-///
-/// This extension provides a mechanism to temporarily store processing-related data
-/// with VNRecognizedTextObservation instances during OCR text processing pipeline.
-/// Uses Objective-C associated objects for dynamic property addition.
-///
-/// - Warning: This is intended for temporary storage during processing and should
-///   not be relied upon for long-term data persistence.
-extension VNRecognizedTextObservation {
-    /// Storage key for joined string associated object
-    private static var joinedStringKey: UInt8 = 0
+// MARK: - VNRecognizedTextObservation associated merge strategy
 
+extension VNRecognizedTextObservation {
     /// Storage key for merge strategy associated object
     private static var mergeStrategyKey: UInt8 = 0
 
-    /// Temporary storage for processed joining string during text merging
+    /// Merge strategy associated with this observation, e.g. "\n", "\n\n", " ", etc.
     ///
-    /// This property allows storing intermediate processing results during the
-    /// OCR text merging pipeline. The value represents how this observation
-    /// should be joined with adjacent text.
+    /// This property allows associating a specific merge strategy with the observation,
+    /// which can be used later during the text merging process to determine how this
+    /// observation should be combined with others.
     ///
-    /// - Note: Uses OBJC_ASSOCIATION_COPY_NONATOMIC for thread-safe string copying
-    var joinedString: String? {
-        get { objc_getAssociatedObject(self, &Self.joinedStringKey) as? String }
-        set {
-            objc_setAssociatedObject(
-                self, &Self.joinedStringKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC
-            )
-        }
-    }
-
+    /// - Note: The first index observation don't have a merge strategy.
     var mergeStrategy: OCRMergeStrategy? {
         get { objc_getAssociatedObject(self, &Self.mergeStrategyKey) as? OCRMergeStrategy }
         set {
@@ -100,10 +86,60 @@ extension VNRecognizedTextObservation {
     }
 }
 
+// MARK: - [VNRecognizedTextObservation] associated merged text
+
+extension [VNRecognizedTextObservation] {
+    /// Storage key for merged text associated object
+    private static var mergedTextKey: UInt8 = 0
+
+    /// Merged text associated with this array of observations
+    ///
+    /// This property allows associating a single merged text string with the entire
+    /// array of observations, which can be used later to retrieve the combined text
+    /// without needing to reprocess the observations.
+    var mergedText: String? {
+        get { objc_getAssociatedObject(self, &Self.mergedTextKey) as? String }
+        set {
+            objc_setAssociatedObject(
+                self, &Self.mergedTextKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+    }
+}
+
 // MARK: - Array Extension for Enhanced Debugging
 
 /// Debugging utilities for arrays of VNRecognizedTextObservation
-extension Array where Element == VNRecognizedTextObservation {
+extension [VNRecognizedTextObservation] {
+    /// Calculate the bounding box that contains all text observations in the array
+    ///
+    /// This method computes the minimum bounding rectangle that encompasses all the
+    /// individual text observation bounding boxes. Useful for grouping observations
+    /// into sections and understanding the overall layout structure.
+    ///
+    /// - Returns: CGRect in Vision coordinate system (0,0 at bottom-left, normalized coordinates)
+    ///           Returns CGRect.zero if the array is empty
+    func calculateSectionBoundingBox() -> CGRect {
+        guard let firstObservation = first else {
+            return CGRect.zero
+        }
+
+        var minX = firstObservation.boundingBox.minX
+        var maxX = firstObservation.boundingBox.maxX
+        var minY = firstObservation.boundingBox.minY
+        var maxY = firstObservation.boundingBox.maxY
+
+        for observation in dropFirst() {
+            let box = observation.boundingBox
+            minX = Swift.min(minX, box.minX)
+            maxX = Swift.max(maxX, box.maxX)
+            minY = Swift.min(minY, box.minY)
+            maxY = Swift.max(maxY, box.maxY)
+        }
+
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+
     /// Generate a comprehensive formatted description of all text observations
     ///
     /// Creates a well-formatted, indexed list of all text observations in the array,
@@ -138,13 +174,13 @@ extension Array where Element == VNRecognizedTextObservation {
         return result
     }
 
-    /// Extract just the recognized text strings from observations
-    var recognizedTexts: [String] {
-        map { $0.firstText }
+    /// Merges all recognized text strings into a single string, just simply joining with "\n"
+    var simpleMergedText: String {
+        recognizedTexts.joined(separator: "\n")
     }
 
-    /// Merges all recognized text strings into a single string, just joining with "\n"
-    var mergedText: String {
-        recognizedTexts.joined(separator: "\n")
+    /// Extract all the recognized text strings from observations
+    var recognizedTexts: [String] {
+        map { $0.firstText }
     }
 }

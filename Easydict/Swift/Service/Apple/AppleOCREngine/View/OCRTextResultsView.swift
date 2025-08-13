@@ -16,19 +16,18 @@ struct OCRTextResultsView: View {
     // MARK: Internal
 
     let sections: [[VNRecognizedTextObservation]]
-    let sectionMergedTexts: [String]
-    @Binding var selectedSectionIndex: Int?
+    @Binding var selectedIndex: Int?
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 12) {
                 // Header
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("OCR Analysis Results")
+                    Text(verbatim: "OCR Analysis Results")
                         .font(.title2)
                         .fontWeight(.semibold)
 
-                    Text("\(sections.count) sections detected")
+                    Text(verbatim: "\(sections.count) sections detected")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -36,16 +35,15 @@ struct OCRTextResultsView: View {
 
                 // Section cards
                 ForEach(Array(sections.enumerated()), id: \.offset) { index, section in
-                    let sectionMergedText =
-                        index < sectionMergedTexts.count ? sectionMergedTexts[index] : ""
+                    let mergedText = section.mergedText ?? ""
                     OCRSectionCard(
                         sectionIndex: index,
                         observations: section,
-                        sectionMergedText: sectionMergedText,
-                        isSelected: selectedSectionIndex == index,
-                        isExpanded: selectedSectionIndex == index
+                        mergedText: mergedText,
+                        isSelected: selectedIndex == index,
+                        isExpanded: selectedIndex == index
                     ) {
-                        selectedSectionIndex = index
+                        selectedIndex = index
                     }
                     .padding(.horizontal)
                 }
@@ -61,7 +59,7 @@ struct OCRTextResultsView: View {
 struct OCRSectionCard: View {
     let sectionIndex: Int
     let observations: [VNRecognizedTextObservation]
-    let sectionMergedText: String
+    let mergedText: String
     let isSelected: Bool
     let isExpanded: Bool
     let onTap: () -> ()
@@ -70,12 +68,12 @@ struct OCRSectionCard: View {
         VStack(alignment: .leading, spacing: 8) {
             // Header
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Section \(sectionIndex + 1)")
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(verbatim: "Section \(sectionIndex + 1)")
                         .font(.headline)
                         .fontWeight(.medium)
 
-                    Text("\(observations.count) text observations")
+                    Text(verbatim: "\(observations.count) text observations")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -84,67 +82,59 @@ struct OCRSectionCard: View {
 
                 // Preview text
                 if let firstObs = observations.first {
-                    Text(firstObs.prefix20)
+                    Text(firstObs.prefix30)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .lineLimit(1)
                 }
             }
             .contentShape(Rectangle())
-            .onTapGesture {
-                onTap()
-            }
+            .onTapGesture(perform: onTap)
 
             // Expanded content
             if isExpanded {
                 Divider()
 
                 // Section merged text (if available)
-                if !sectionMergedText.isEmpty {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Merged Text:")
+                if !mergedText.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(verbatim: "Merged Text:")
                             .font(.subheadline)
                             .fontWeight(.medium)
 
-                        Text(sectionMergedText)
+                        Text(mergedText)
                             .font(.body)
-                            .padding(8)
-                            .background(Color.gray.opacity(0.1))
+                            .padding(10)
+                            .background(Color.blue.opacity(0.1))
                             .cornerRadius(6)
                             .textSelection(.enabled)
                     }
-                    .padding(.top, 4)
+                    .padding(.horizontal, 8)
 
                     Divider()
                 }
 
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Text Observations:")
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(verbatim: "Text Observations:")
                         .font(.subheadline)
                         .fontWeight(.medium)
 
-                    ForEach(Array(observations.enumerated()), id: \.offset) { index, observation in
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("[\(index)] \"\(observation.firstText)\"")
+                    VStack(alignment: .leading, spacing: 2) {
+                        ForEach(Array(observations.enumerated()), id: \.offset) { index, observation in
+                            Text(verbatim: "[\(index)] \"\(observation.firstText)\"")
                                 .font(.system(.caption, design: .monospaced))
                                 .textSelection(.enabled)
                         }
-                        .padding(.leading, 8)
                     }
+                    .padding(.leading, 10)
                 }
                 .padding(.top, 4)
             }
         }
         .padding()
-        .background(
+        .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .foregroundStyle(isSelected ? Color.blue.opacity(0.1) : Color.clear)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 1)
-        )
+                .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 1)
+        }
     }
 }
-
-// MARK: - Preview

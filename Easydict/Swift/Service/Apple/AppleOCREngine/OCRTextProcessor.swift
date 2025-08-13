@@ -53,7 +53,6 @@ public class OCRTextProcessor {
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
-        ocrResult.raw = recognizedTexts
 
         log("\nOriginal OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)")
 
@@ -62,6 +61,7 @@ public class OCRTextProcessor {
 
         // Step 1: Detect sections by analyzing spatial distribution
         let sections = detectSections(observations: observations)
+        ocrResult.raw = sections
 
         log("\nDetected sections count: \(sections.count)")
         for section in sections {
@@ -72,9 +72,8 @@ public class OCRTextProcessor {
 
         // Step 2: Process each section independently
         var allMergedTexts: [String] = []
-        var sectionMergedTexts: [String] = []
 
-        for (index, section) in sections.enumerated() {
+        for (index, var section) in sections.enumerated() {
             log("\nProcessing section \(index + 1) with \(section.count) observations")
             metrics.setupWithOCRData(
                 ocrImage: ocrImage,
@@ -86,24 +85,21 @@ public class OCRTextProcessor {
             // Perform intelligent text merging for this section
             let sectionMergedText = textMerger.performSmartMerging(section)
             log("\nMerged section [\(index + 1)]: \(sectionMergedText)")
+
+            section.mergedText = sectionMergedText
             allMergedTexts.append(sectionMergedText)
-            sectionMergedTexts.append(sectionMergedText)
         }
 
         // Show OCR debug window for analysis (only in debug builds)
         #if DEBUG
-        Task { @MainActor in
-            showOCRDebugWindow(
-                image: ocrImage,
-                sections: sections,
-                sectionMergedTexts: sectionMergedTexts
-            )
+        if Configuration.shared.beta {
+            Task { @MainActor in
+                showOCRDebugWindow(image: ocrImage, sections: sections)
+            }
         }
         #endif
 
-        log(
-            "Merge all sections cost time \(startTime.elapsedTimeString) seconds, \(observations.count) objects"
-        )
+        log("Merge \(observations.count) sections cost time \(startTime.elapsedTimeString) seconds")
 
         // If text language is classical Chinese, update metrics genre.
         // Later, we can use this to determine if the text is poetry.
@@ -138,7 +134,7 @@ public class OCRTextProcessor {
         guard !observations.isEmpty else { return nil }
 
         // Calculate the bounding box that contains all text
-        let textBoundingBox = calculateTextBoundingBox(observations: observations)
+        let textBoundingBox = observations.calculateSectionBoundingBox()
         let textArea = textBoundingBox.width * textBoundingBox.height
 
         let threshold = 0.5
@@ -319,30 +315,6 @@ public class OCRTextProcessor {
                 return boundingBox1.origin.y > boundingBox2.origin.y
             }
         }
-    }
-
-    /// Calculates the bounding box that contains all text observations.
-    /// - Parameter observations: Array of text observations
-    /// - Returns: CGRect in Vision coordinate system (0,0 at bottom-left, normalized coordinates)
-    private func calculateTextBoundingBox(observations: [VNRecognizedTextObservation]) -> CGRect {
-        guard let firstObservation = observations.first else {
-            return CGRect.zero
-        }
-
-        var minX = firstObservation.boundingBox.minX
-        var maxX = firstObservation.boundingBox.maxX
-        var minY = firstObservation.boundingBox.minY
-        var maxY = firstObservation.boundingBox.maxY
-
-        for observation in observations.dropFirst() {
-            let box = observation.boundingBox
-            minX = min(minX, box.minX)
-            maxX = max(maxX, box.maxX)
-            minY = min(minY, box.minY)
-            maxY = max(maxY, box.maxY)
-        }
-
-        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
 
     /// Crops the image to focus on the text region with some padding.
