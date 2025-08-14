@@ -41,6 +41,8 @@ public class AppleOCREngine {
         -> EZOCRResult {
         log("Recognizing text in image with language: \(language), image size: \(image.size)")
 
+        image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
+
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {
             throw QueryError.error(
@@ -97,10 +99,7 @@ public class AppleOCREngine {
         )
 
         if let croppedImage {
-            let croppedImagePath = OCRConstants.ocrImageDirectoryURL.appending(
-                path: "ocr_cropped_image.png"
-            )
-            croppedImage.mm_writeToFile(asPNG: croppedImagePath.path())
+            croppedImage.mm_writeToFile(asPNG: OCRConstants.ocrCroppedImageFileURL.path())
         }
 
         // If we reach here, we need to run OCR for multiple candidate languages.

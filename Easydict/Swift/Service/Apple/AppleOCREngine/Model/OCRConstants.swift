@@ -45,10 +45,20 @@ enum OCRConstants {
         return path
     }()
 
-    /// Directory for OCR images: ~/Library/Caches/com.izual.Easydic/MMLogs/Image
-    static var ocrImageDirectoryURL: URL {
+    /// Directory for images: ~/Library/Caches/com.izual.Easydic/MMLogs/Image
+    static var imageDirectoryURL: URL {
         let directory = rootLogDirectoryURL.appendingPathComponent("Image")
         try? FileManager.default.createDirectory(atPath: directory.path, withIntermediateDirectories: true)
         return URL(fileURLWithPath: directory.path())
+    }
+
+    /// File for snip image: ~/Library/Caches/com.izual.Easydic/MMLogs/Image/snip_image.png
+    static var snipImageFileURL: URL {
+        imageDirectoryURL.appendingPathComponent("snip_image.png")
+    }
+
+    /// File for crop image: ~/Library/Caches/com.izual.Easydic/MMLogs/Image/ocr_cropped_image.png
+    static var ocrCroppedImageFileURL: URL {
+        imageDirectoryURL.appendingPathComponent("ocr_cropped_image.png")
     }
 }
