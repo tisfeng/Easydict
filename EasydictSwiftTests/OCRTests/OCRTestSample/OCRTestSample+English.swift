@@ -73,7 +73,9 @@ extension OCRTestSample {
 
         To begin using the framework, you create a request for the type of analysis you want to do. Each request conforms to the VisionRequest protocol. You then perform the request to get an observation object - or an array of observations - with the analysis details for the request. There are more than 25 requests available to choose from. Vision also allows the use of custom Core ML models for tasks like classification or object detection.
 
-        Note Starting in iOS 18.0, the Vision framework provides a new Swift-only API. See Original Objective-C and Swift API to view the original API.
+        Note
+
+        Starting in iOS 18.0, the Vision framework provides a new Swift-only API. See Original Objective-C and Swift API to view the original API.
 
         Open in Developer Documentation
         """,

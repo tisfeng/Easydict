@@ -89,9 +89,9 @@ class ChineseGenreAnalyzer {
         let punctInfo = analyzePunctuation(content)
         let lingInfo = analyzeLinguisticFeatures(content)
 
-        // 5. Calculate character count
+        // 5. Calculate character count, excluding whitespace and newline characters
         let characterCount = phraseInfo.phrases.reduce(0) {
-            $0 + $1.filter { !$0.isWhitespace }.count
+            $0 + $1.filter { !$0.isWhitespace && !$0.isNewline }.count
         }
 
         // 6. Create TextInfo

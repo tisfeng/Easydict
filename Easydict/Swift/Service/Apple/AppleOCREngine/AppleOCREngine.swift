@@ -65,10 +65,6 @@ public class AppleOCREngine {
         let textAnalysis = languageDetector.getTextAnalysis()
         log("Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)")
 
-        if language == .auto {
-            ocrResult.from = detectedLanguage
-        }
-
         // If OCR text is long enough, consider its detected language confident.
         // If text is too short, we need to recognize it with all candidate languages.
         let hasEnoughLength = mergedText.count > 50
@@ -82,8 +78,12 @@ public class AppleOCREngine {
             observations: observations,
             ocrImage: image,
             smartMerging: smartMerging,
-            textAnalysis: textAnalysis
+            textAnalysis: textAnalysis,
         )
+
+        if language == .auto {
+            ocrResult.from = detectedLanguage
+        }
 
         if smartMerging {
             log("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")

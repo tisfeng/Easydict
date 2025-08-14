@@ -1,5 +1,5 @@
 //
-//  OCRDebugWindowManager.swift
+//  OCRWindowManager.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/8/12.
@@ -10,41 +10,32 @@ import AppKit
 import SwiftUI
 import Vision
 
-// MARK: - OCRDebugWindowManager
+// MARK: - OCRWindowManager
 
 /// Manager for creating and displaying OCR debug windows
 @MainActor
-class OCRDebugWindowManager: ObservableObject {
-    // MARK: Lifecycle
-
-    private init() {}
-
+class OCRWindowManager: ObservableObject {
     // MARK: Internal
 
-    static let shared = OCRDebugWindowManager()
-
-    /// Returns true if the debug window is currently open
-    var isDebugWindowOpen: Bool {
-        debugWindow != nil && debugWindow?.isVisible == true
-    }
+    static let shared = OCRWindowManager()
 
     /// Shows the OCR debug window with the provided data
     /// - Parameters:
     ///   - image: The OCR source image
-    ///   - sections: Array of sections containing VNRecognizedTextObservation arrays
-    func showDebugWindow(
+    ///   - ocrSections: Array of OCR sections containing observations, merged text, and language
+    func showWindow(
         image: NSImage,
-        sections: [[VNRecognizedTextObservation]]
+        ocrSections: [OCRSection]
     ) {
-        if let existingWindow = debugWindow, existingWindow.isVisible {
+        if let existingWindow = ocrWindow {
             // Update existing window data
             if let viewModel = currentViewModel {
-                viewModel.updateData(image: image, sections: sections)
+                viewModel.updateData(image: image, ocrSections: ocrSections)
             }
             existingWindow.orderFrontRegardless()
         } else {
             // Create new window with new ViewModel
-            let viewModel = OCRDebugViewModel(image: image, sections: sections)
+            let viewModel = OCRDebugViewModel(image: image, sections: ocrSections)
             currentViewModel = viewModel
 
             let debugView = OCRDebugView(viewModel: viewModel)
@@ -78,34 +69,20 @@ class OCRDebugWindowManager: ObservableObject {
             window.isReleasedWhenClosed = false
 
             // Store reference and show
-            debugWindow = window
+            ocrWindow = window
             window.orderFrontRegardless()
         }
     }
 
     /// Closes the debug window if it's currently open
-    func closeDebugWindow() {
-        debugWindow?.close()
-        debugWindow = nil
+    func closeOCRWindow() {
+        ocrWindow?.close()
+        ocrWindow = nil
         currentViewModel = nil
     }
 
     // MARK: Private
 
-    private var debugWindow: NSWindow?
+    private var ocrWindow: NSWindow?
     private var currentViewModel: OCRDebugViewModel?
-}
-
-// MARK: - Global Function for Easy Access
-
-/// Global function to easily show OCR debug window from anywhere in the app
-/// - Parameters:
-///   - image: The OCR source image
-///   - sections: Array of sections containing VNRecognizedTextObservation arrays
-@MainActor
-func showOCRDebugWindow(
-    image: NSImage,
-    sections: [[VNRecognizedTextObservation]]
-) {
-    OCRDebugWindowManager.shared.showDebugWindow(image: image, sections: sections)
 }

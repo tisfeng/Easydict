@@ -93,17 +93,15 @@ extension OCRTestSample {
         """,
 
         zhTextBitcoin: """
-        比特币：一种点对点电子货币系统
+        比特币: 一种点对点电子货币系统
 
         Satoshi Nakamoto
         satoshin@gmx.com
         www.bitcoin.org
 
-        Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf
+        Translated into Simplified Chinese from bitcoin.org/bitcoin.pdf by@shdxiang, xiaoxiang.io
 
-        by @shdxiang， xiaoxiang.io
-
-        Bill Zhao （billzhao430@live.com）
+        Bill Zhao (billzhao430@live.com)
 
         摘要：一种完全的点对点电子货币应当允许在线支付从一方直接发送到另一方，而不需要通过一个金融机构。数字签名提供了部分解决方案，但如果仍需一个可信任的第三方来防止双重支付，那就失去了电子货币的主要优点。我们提出一种使用点对点网络解决双重支付问题的方案。该网络通过将交易哈希进一条持续增长的基于哈希的工作量证明链来给交易打上时间戳，形成一条除非重做工作量证明否则不能更改的记录。最长的链不仅是被见证事件序列的证据，而且也是它本身是由最大CPU 算力池产生的证据。只要多数的CPU算力被不打算联合攻击网络的节点控制，这些节点就将生成最长的链并超过攻击者。这种网络本身只需极简的架构。信息将被尽力广播，节点可以随时离开和重新加入网络，只需接受最长的工作量证明链作为它们离开时发生事件的证据。
 

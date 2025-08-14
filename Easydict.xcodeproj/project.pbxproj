@@ -188,10 +188,11 @@
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
 		039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223B92E4B41950052F695 /* OCRDebugView.swift */; };
-		039223BD2E4B41950052F695 /* OCRDebugWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BA2E4B41950052F695 /* OCRDebugWindowManager.swift */; };
+		039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BA2E4B41950052F695 /* OCRWindowManager.swift */; };
 		039223BE2E4B41950052F695 /* OCRTextResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BB2E4B41950052F695 /* OCRTextResultsView.swift */; };
 		039223C02E4B61980052F695 /* OCRImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BF2E4B61980052F695 /* OCRImageView.swift */; };
 		03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */; };
+		039307902E4DA4F10041EC34 /* OCRSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0393078F2E4DA4F10041EC34 /* OCRSection.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
@@ -741,10 +742,11 @@
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
 		039223B92E4B41950052F695 /* OCRDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDebugView.swift; sourceTree = "<group>"; };
-		039223BA2E4B41950052F695 /* OCRDebugWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDebugWindowManager.swift; sourceTree = "<group>"; };
+		039223BA2E4B41950052F695 /* OCRWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindowManager.swift; sourceTree = "<group>"; };
 		039223BB2E4B41950052F695 /* OCRTextResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextResultsView.swift; sourceTree = "<group>"; };
 		039223BF2E4B61980052F695 /* OCRImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageView.swift; sourceTree = "<group>"; };
 		03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationKey.swift; sourceTree = "<group>"; };
+		0393078F2E4DA4F10041EC34 /* OCRSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSection.swift; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -1912,7 +1914,7 @@
 		039223B82E4B41770052F695 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				039223BA2E4B41950052F695 /* OCRDebugWindowManager.swift */,
+				039223BA2E4B41950052F695 /* OCRWindowManager.swift */,
 				039223B92E4B41950052F695 /* OCRDebugView.swift */,
 				039223BF2E4B61980052F695 /* OCRImageView.swift */,
 				039223BB2E4B41950052F695 /* OCRTextResultsView.swift */,
@@ -2316,6 +2318,7 @@
 				03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */,
 				037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */,
 				035451022E3C60D600BAA8E5 /* OCRConstants.swift */,
+				0393078F2E4DA4F10041EC34 /* OCRSection.swift */,
 				03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */,
 				03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */,
 				0320411B2E44989D0065A05B /* PoetryStatistics.swift */,
@@ -3954,7 +3957,7 @@
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,
-				039223BD2E4B41950052F695 /* OCRDebugWindowManager.swift in Sources */,
+				039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */,
 				039223BE2E4B41950052F695 /* OCRTextResultsView.swift in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
@@ -3978,6 +3981,7 @@
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022E829231FA6001C7E63 /* entry.m in Sources */,
+				039307902E4DA4F10041EC34 /* OCRSection.swift in Sources */,
 				03538E022D26D705005E56A8 /* YoudaoService+Dict.swift in Sources */,
 				030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */,
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,

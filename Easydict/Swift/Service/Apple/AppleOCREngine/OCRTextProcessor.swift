@@ -37,7 +37,6 @@ public class OCRTextProcessor {
     ///   - observations: The raw `VNRecognizedTextObservation` array from the Vision framework.
     ///   - ocrImage: The source image, used for spatial calculations.
     ///   - smartMerging: A flag to enable the advanced text processing pipeline.
-    ///   - textAnalysis: Pre-computed text analysis containing genre information (optional)
     func setupOCRResult(
         _ ocrResult: EZOCRResult,
         observations: [VNRecognizedTextObservation],
@@ -53,6 +52,7 @@ public class OCRTextProcessor {
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
         ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
+        ocrResult.raw = observations
 
         log("\nOriginal OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)")
 
@@ -61,9 +61,8 @@ public class OCRTextProcessor {
 
         // Step 1: Detect sections by analyzing spatial distribution
         let sections = detectSections(observations: observations)
-        ocrResult.raw = sections
-
         log("\nDetected sections count: \(sections.count)")
+
         for section in sections {
             log("\nSection observations (\(section.count)): \(section.formattedDescription)")
         }
@@ -72,40 +71,62 @@ public class OCRTextProcessor {
 
         // Step 2: Process each section independently
         var allMergedTexts: [String] = []
+        var ocrSections: [OCRSection] = []
 
         for (index, var section) in sections.enumerated() {
-            log("\nProcessing section \(index + 1) with \(section.count) observations")
+            var language = ocrResult.from
+            // If has no designated language, detect it automatically.
+            if language == .auto {
+                // If text analysis is classical poetry or lyric, set language to classical Chinese.
+                if let genre = textAnalysis?.genre, genre.isPoetryLyric {
+                    log("Text analysis genre: \(genre)")
+                    language = .classicalChinese
+                } else {
+                    language = languageDetector.detectLanguage(text: section.simpleMergedText)
+                    log("Detected language: \(language)")
+                }
+            }
+
+            log("\nProcessing section \(index + 1) with \(section.count) observations (\(language)")
+
+            // If text language is classical Chinese, update metrics genre.
+            // Later, we can use this to determine if the text is poetry.
+            if language == .classicalChinese {
+                metrics.genre = textAnalysis?.genre ?? .plain
+            }
+
             metrics.setupWithOCRData(
                 ocrImage: ocrImage,
-                language: ocrResult.from,
+                language: language,
                 observations: section
             )
             ocrResult.confidence = CGFloat(metrics.confidence)
 
             // Perform intelligent text merging for this section
-            let sectionMergedText = textMerger.performSmartMerging(section)
-            log("\nMerged section [\(index + 1)]: \(sectionMergedText)")
+            let mergedText = textMerger.performSmartMerging(section)
+            log("\nMerged section [\(index + 1)]: \(mergedText)")
 
-            section.mergedText = sectionMergedText
-            allMergedTexts.append(sectionMergedText)
+            section.mergedText = mergedText
+            allMergedTexts.append(mergedText)
+
+            let ocrSection = OCRSection(
+                observations: section,
+                mergedText: mergedText,
+                language: language
+            )
+            ocrSections.append(ocrSection)
         }
 
         // Show OCR debug window for analysis (only in debug builds)
         #if DEBUG
         if Configuration.shared.beta {
             Task { @MainActor in
-                showOCRDebugWindow(image: ocrImage, sections: sections)
+                OCRWindowManager.shared.showWindow(image: ocrImage, ocrSections: ocrSections)
             }
         }
         #endif
 
         log("Merge \(observations.count) sections cost time \(startTime.elapsedTimeString) seconds")
-
-        // If text language is classical Chinese, update metrics genre.
-        // Later, we can use this to determine if the text is poetry.
-        if ocrResult.from == .classicalChinese {
-            metrics.genre = textAnalysis?.genre ?? .plain
-        }
 
         // Combine all section texts
         let finalMergedText = allMergedTexts.joined(separator: OCRConstants.paragraphSeparator)
@@ -160,6 +181,8 @@ public class OCRTextProcessor {
     private lazy var textMerger = OCRTextMerger(metrics: metrics)
     private lazy var lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
 
+    private let languageDetector = AppleLanguageDetector()
+
     /// Detects sections and groups text observations by spatial regions.
     ///
     /// Handles complex document layouts with vertical sections that may have different column counts:
@@ -208,25 +231,23 @@ public class OCRTextProcessor {
         var bands: [[VNRecognizedTextObservation]] = []
         var currentBand: [VNRecognizedTextObservation] = []
 
-        let avgHeight =
-            observations.map { $0.boundingBox.height }.reduce(0, +) / CGFloat(observations.count)
-        let bandThreshold = avgHeight * 3.0 // Significant vertical gap indicates new section
+        let avgHeight = observations.map { $0.boundingBox.height }.reduce(0, +) / observations.count.double
 
         for (index, observation) in sortedByY.enumerated() {
-            if index == 0 {
-                currentBand.append(observation)
-            } else {
-                let previousY = sortedByY[index - 1].boundingBox.origin.y
-                let currentY = observation.boundingBox.origin.y
-                let verticalGap = previousY - currentY // Gap between previous and current
+            if index > 0 {
+                let pair = OCRTextObservationPair(current: observation, previous: sortedByY[index - 1])
+                let isBigGap = pair.verticalGap / avgHeight > 1.5
 
-                if verticalGap > bandThreshold {
-                    // Large vertical gap - start new band
+                // Large vertical gap - start new band
+                if isBigGap {
                     if !currentBand.isEmpty {
                         bands.append(currentBand)
                         currentBand = []
                     }
                 }
+                currentBand.append(observation)
+            } else {
+                // First observation, just add it to the current band
                 currentBand.append(observation)
             }
         }

@@ -33,7 +33,7 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-        await testOCR(sample: .enPaper1, language: .auto)
+        await testOCR(sample: .zhTextBitcoin, language: .auto)
     }
 
     // MARK: - Test auto language OCR
@@ -63,7 +63,11 @@ struct OCRImageTests {
     @Test("Chinese OCR Test", .tags(.ocr))
     func testChineseOCR() async throws {
         for sample in OCRTestSample.chineseCases {
-            await testOCR(sample: sample, language: .simplifiedChinese)
+            // Note: We should use .auto for most cases, especially for mixed language text.
+            // OCR image may contain many sections with different languages,
+            // use .auto to let OCR engine detect each section's language automatically.
+            // .zhTextBitcoin is a mixed language text, so we use .auto here.
+            await testOCR(sample: sample, language: .auto)
         }
     }
 

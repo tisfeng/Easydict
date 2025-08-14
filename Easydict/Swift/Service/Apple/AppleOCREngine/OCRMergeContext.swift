@@ -75,7 +75,7 @@ struct OCRMergeContext {
     }()
 
     lazy var hasBigLineSpacingRelaxed: Bool = {
-        lineAnalyzer.isBigLineSpacing(pair: pair, confidence: .low)
+        lineAnalyzer.isBigLineSpacing(pair: pair, confidence: .custom(0.65))
     }()
 
     // MARK: - Font Size Properties
