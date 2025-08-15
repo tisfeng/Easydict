@@ -37,7 +37,7 @@ struct OCRTextResultsView: View {
                 ForEach(Array(ocrSections.enumerated()), id: \.offset) { index, section in
                     OCRSectionCard(
                         sectionIndex: index,
-                        ocrSections: section,
+                        ocrSection: section,
                         isSelected: selectedIndex == index,
                         isExpanded: selectedIndex == index
                     ) {
@@ -56,7 +56,7 @@ struct OCRTextResultsView: View {
 /// Card view for displaying information about a single OCR section
 struct OCRSectionCard: View {
     let sectionIndex: Int
-    let ocrSections: OCRSection
+    let ocrSection: OCRSection
     let isSelected: Bool
     let isExpanded: Bool
     let onTap: () -> ()
@@ -72,7 +72,7 @@ struct OCRSectionCard: View {
                             .fontWeight(.medium)
 
                         // Language badge
-                        Text(verbatim: ocrSections.language.description)
+                        Text(verbatim: ocrSection.detectedLanguage.description)
                             .font(.caption)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -81,7 +81,7 @@ struct OCRSectionCard: View {
                             .cornerRadius(4)
                     }
 
-                    Text(verbatim: "\(ocrSections.observations.count) text observations")
+                    Text(verbatim: "\(ocrSection.observations.count) text observations")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -89,7 +89,7 @@ struct OCRSectionCard: View {
                 Spacer()
 
                 // Preview text
-                if let firstObs = ocrSections.observations.first {
+                if let firstObs = ocrSection.observations.first {
                     Text(firstObs.prefix30)
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -104,13 +104,13 @@ struct OCRSectionCard: View {
                 Divider()
 
                 // Section merged text
-                if !ocrSections.mergedText.isEmpty {
+                if !ocrSection.mergedText.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(verbatim: "Merged Text:")
                             .font(.subheadline)
                             .fontWeight(.semibold)
 
-                        Text(ocrSections.mergedText)
+                        Text(ocrSection.mergedText)
                             .font(.system(size: 14)) // Font.body is 13 pt
                             .padding(10)
                             .background(Color.blue.opacity(0.2))
@@ -128,7 +128,7 @@ struct OCRSectionCard: View {
                         .fontWeight(.medium)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        ForEach(Array(ocrSections.observations.enumerated()), id: \.offset) { index, observation in
+                        ForEach(Array(ocrSection.observations.enumerated()), id: \.offset) { index, observation in
                             Text(verbatim: "[\(index)] \"\(observation.firstText)\"")
                                 .font(.system(.caption, design: .monospaced))
                                 .textSelection(.enabled)

@@ -120,11 +120,6 @@ struct OCRImageTests {
         await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.0)
         // Cost time: 1.32s
         await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
-
-        // Cost time: 2.49s
-        await measureOCRPerformance(sample: .enPaper0, language: .auto, expectedCost: 3.0)
-        // Cost time: 2.36s
-        await measureOCRPerformance(sample: .enPaper0, language: .english, expectedCost: 2.5)
     }
 
     // MARK: - All OCR Tests

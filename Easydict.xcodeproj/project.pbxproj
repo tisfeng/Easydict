@@ -41,7 +41,7 @@
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
-		03220E2A2E11A1A0002C7F3F /* OCRTextObservationPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */; };
+		03220E2A2E11A1A0002C7F3F /* OCRObservationPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
@@ -81,6 +81,9 @@
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
+		033E8A0B2E4E5318008A7110 /* ocr-en-text-two-columns-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */; };
+		033E8A0F2E4F53B9008A7110 /* OCRSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A0E2E4F53B9008A7110 /* OCRSection.swift */; };
+		033E8A112E4F79E6008A7110 /* OCRSectionMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A102E4F79E6008A7110 /* OCRSectionMerger.swift */; };
 		033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EA07D2CFC66380017F86C /* View+Builder.swift */; };
 		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
 		0340D38E2C8EEEA2004C9910 /* AppleScriptTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */; };
@@ -192,7 +195,6 @@
 		039223BE2E4B41950052F695 /* OCRTextResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BB2E4B41950052F695 /* OCRTextResultsView.swift */; };
 		039223C02E4B61980052F695 /* OCRImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BF2E4B61980052F695 /* OCRImageView.swift */; };
 		03926A732CCD3A8500511C01 /* ServiceConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */; };
-		039307902E4DA4F10041EC34 /* OCRSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0393078F2E4DA4F10041EC34 /* OCRSection.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
@@ -269,7 +271,6 @@
 		03B0233729231FA6001C7E63 /* MMMake.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D829231FA6001C7E63 /* MMMake.m */; };
 		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
-		03B1709C2E12385F0021FDE4 /* OCRMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */; };
 		03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */; };
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
@@ -316,7 +317,7 @@
 		03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A52E1BFE4900B59152 /* ocr-en-paper-8.png */; };
 		03C3A5BB2E1BFE4900B59152 /* ocr-en-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5AE2E1BFE4900B59152 /* ocr-en-text-3.png */; };
 		03C3A5BC2E1BFE4900B59152 /* ocr-zh-text-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */; };
-		03C3A5BD2E1BFE4900B59152 /* ocr-en-paper-0.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */; };
+		03C3A5BD2E1BFE4900B59152 /* ocr-en-text-two-columns-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59D2E1BFE4900B59152 /* ocr-en-text-two-columns-1.png */; };
 		03C3A5BE2E1BFE4900B59152 /* ocr-en-paper-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */; };
 		03C3A5BF2E1BFE4900B59152 /* ocr-en-text-reddit.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5B02E1BFE4900B59152 /* ocr-en-text-reddit.png */; };
 		03C3A5C02E1BFE4900B59152 /* ocr-en-paper-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */; };
@@ -568,7 +569,7 @@
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
-		03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextObservationPair.swift; sourceTree = "<group>"; };
+		03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRObservationPair.swift; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
 		03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLoadingAnimationView.m; sourceTree = "<group>"; };
 		03262C1A29EEE91700EFECA0 /* EZEnumTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEnumTypes.h; sourceTree = "<group>"; };
@@ -619,6 +620,9 @@
 		033C30FB2A7409C40095926A /* TTTDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTDictionary.m; sourceTree = "<group>"; };
 		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
+		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
+		033E8A0E2E4F53B9008A7110 /* OCRSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSection.swift; sourceTree = "<group>"; };
+		033E8A102E4F79E6008A7110 /* OCRSectionMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSectionMerger.swift; sourceTree = "<group>"; };
 		033EA07D2CFC66380017F86C /* View+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Builder.swift"; sourceTree = "<group>"; };
 		033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceGetSelectedTextType.swift; sourceTree = "<group>"; };
 		0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleScriptTask.swift; sourceTree = "<group>"; };
@@ -746,7 +750,6 @@
 		039223BB2E4B41950052F695 /* OCRTextResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextResultsView.swift; sourceTree = "<group>"; };
 		039223BF2E4B61980052F695 /* OCRImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageView.swift; sourceTree = "<group>"; };
 		03926A722CCD3A8500511C01 /* ServiceConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationKey.swift; sourceTree = "<group>"; };
-		0393078F2E4DA4F10041EC34 /* OCRSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSection.swift; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -885,7 +888,6 @@
 		03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOrderedDictionary.h; sourceTree = "<group>"; };
 		03B022E329231FA6001C7E63 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		03B022E429231FA6001C7E63 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMetrics.swift; sourceTree = "<group>"; };
 		03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VNRecognizedTextObservation+Extension.swift"; sourceTree = "<group>"; };
 		03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonWindow.h; sourceTree = "<group>"; };
 		03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonWindow.m; sourceTree = "<group>"; };
@@ -956,7 +958,7 @@
 		03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageTests.swift; sourceTree = "<group>"; };
 		03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-letter-338.png"; sourceTree = "<group>"; };
 		03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-1.png"; sourceTree = "<group>"; };
-		03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-0.png"; sourceTree = "<group>"; };
+		03C3A59D2E1BFE4900B59152 /* ocr-en-text-two-columns-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-1.png"; sourceTree = "<group>"; };
 		03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-1.png"; sourceTree = "<group>"; };
 		03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-2.png"; sourceTree = "<group>"; };
 		03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-paper-3.png"; sourceTree = "<group>"; };
@@ -1349,6 +1351,7 @@
 				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
 				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */,
+				033E8A102E4F79E6008A7110 /* OCRSectionMerger.swift */,
 				035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */,
 				035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */,
 				03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */,
@@ -2314,11 +2317,10 @@
 		03B170982E122CF80021FDE4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				03B1709B2E12385F0021FDE4 /* OCRMetrics.swift */,
-				03220E292E11A1A0002C7F3F /* OCRTextObservationPair.swift */,
+				033E8A0E2E4F53B9008A7110 /* OCRSection.swift */,
+				03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */,
 				037A9CCC2E29421D00668C49 /* OCRMergeStrategy.swift */,
 				035451022E3C60D600BAA8E5 /* OCRConstants.swift */,
-				0393078F2E4DA4F10041EC34 /* OCRSection.swift */,
 				03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */,
 				03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */,
 				0320411B2E44989D0065A05B /* PoetryStatistics.swift */,
@@ -2531,7 +2533,8 @@
 				03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */,
 				037A9CC82E24AC3A00668C49 /* ocr-en-text-list-3.png */,
 				037A9CC42E24A72A00668C49 /* ocr-en-text-list-2.png */,
-				03C3A59D2E1BFE4900B59152 /* ocr-en-paper-0.png */,
+				03C3A59D2E1BFE4900B59152 /* ocr-en-text-two-columns-1.png */,
+				033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */,
 				03C3A59E2E1BFE4900B59152 /* ocr-en-paper-1.png */,
 				03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */,
 				03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */,
@@ -3408,7 +3411,7 @@
 				03C3A5BB2E1BFE4900B59152 /* ocr-en-text-3.png in Resources */,
 				03C3A5BC2E1BFE4900B59152 /* ocr-zh-text-2.png in Resources */,
 				034227EE2E367B5100325B47 /* ocr-zh-text-3.png in Resources */,
-				03C3A5BD2E1BFE4900B59152 /* ocr-en-paper-0.png in Resources */,
+				03C3A5BD2E1BFE4900B59152 /* ocr-en-text-two-columns-1.png in Resources */,
 				034227F22E36891A00325B47 /* ocr-zh-poetry-10.png in Resources */,
 				03C3A5BE2E1BFE4900B59152 /* ocr-en-paper-11.png in Resources */,
 				03C3A5BF2E1BFE4900B59152 /* ocr-en-text-reddit.png in Resources */,
@@ -3450,6 +3453,7 @@
 				034227D82E36379900325B47 /* ocr-zh-poetry-1.png in Resources */,
 				034227D92E36379900325B47 /* ocr-zh-poetry-4.png in Resources */,
 				0338977A2E37809C00CCFF99 /* ocr-zh-poetry-9.png in Resources */,
+				033E8A0B2E4E5318008A7110 /* ocr-en-text-two-columns-2.png in Resources */,
 				034227F42E37144200325B47 /* ocr-zh-poetry-11.png in Resources */,
 				034227DA2E36379900325B47 /* ocr-zh-poetry-5.png in Resources */,
 				034227DB2E36379900325B47 /* ocr-zh-poetry-6.png in Resources */,
@@ -3648,7 +3652,7 @@
 				CA9CF8AB2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift in Sources */,
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */,
-				03220E2A2E11A1A0002C7F3F /* OCRTextObservationPair.swift in Sources */,
+				03220E2A2E11A1A0002C7F3F /* OCRObservationPair.swift in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
@@ -3769,6 +3773,7 @@
 				03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */,
 				6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */,
 				036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */,
+				033E8A112E4F79E6008A7110 /* OCRSectionMerger.swift in Sources */,
 				0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				035451012E3C601100BAA8E5 /* OCRMergeContext.swift in Sources */,
@@ -3945,7 +3950,6 @@
 				0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */,
 				03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
-				03B1709C2E12385F0021FDE4 /* OCRMetrics.swift in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
@@ -3981,7 +3985,7 @@
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022E829231FA6001C7E63 /* entry.m in Sources */,
-				039307902E4DA4F10041EC34 /* OCRSection.swift in Sources */,
+				033E8A0F2E4F53B9008A7110 /* OCRSection.swift in Sources */,
 				03538E022D26D705005E56A8 /* YoudaoService+Dict.swift in Sources */,
 				030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */,
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,

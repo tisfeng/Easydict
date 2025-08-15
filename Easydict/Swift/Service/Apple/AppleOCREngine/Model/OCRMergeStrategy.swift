@@ -55,7 +55,7 @@ enum OCRMergeStrategy: CustomStringConvertible {
     /// Determines the appropriate merge strategy based on the language context of the joined text.
     /// - Parameter pair: The text observation pair to analyze.
     /// - Returns: `.joinWithSpace` for space-separated languages, `.joinWithNoSpace` otherwise.
-    static func mergeStrategy(for pair: OCRTextObservationPair) -> OCRMergeStrategy {
+    static func mergeStrategy(for pair: OCRObservationPair) -> OCRMergeStrategy {
         mergeStrategy(
             firstText: pair.previous.firstText.lastWord,
             secondText: pair.current.firstText.firstWord

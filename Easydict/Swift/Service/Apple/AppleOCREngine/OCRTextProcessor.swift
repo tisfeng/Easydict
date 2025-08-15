@@ -20,9 +20,10 @@ import Vision
 /// ### Processing Pipeline:
 /// 1.  **Language Detection**: Determines the language of the recognized text.
 /// 2.  **Spatial Sorting**: Orders observations into a logical reading order using `sortTextObservations`.
-/// 3.  **Metrics Calculation**: Initializes `OCRMetrics` to analyze the document's structure.
-/// 4.  **Text Merging**: Delegates to `OCRTextMerger` to perform the context-aware merging.
-/// 5.  **Result Finalization**: Populates the `EZOCRResult` with the final text.
+/// 3.  **Metrics Calculation**: Initializes `OCRSectionMetrics` to analyze the document's structure.
+/// 4.  **Text Merging**: Delegates to `OCRTextMerger` to perform intra-section text merging.
+/// 5.  **Section Merging**: Uses `OCRSectionMerger` to merge text between sections.
+/// 6.  **Result Finalization**: Populates the `EZOCRResult` with the final text.
 public class OCRTextProcessor {
     // MARK: Internal
 
@@ -45,9 +46,6 @@ public class OCRTextProcessor {
         textAnalysis: TextAnalysis?
     ) {
         let recognizedTexts = observations.compactMap(\.firstText)
-
-        // Reset metrics for new processing
-        metrics.resetMetrics()
 
         // Set basic OCR result properties
         ocrResult.texts = recognizedTexts
@@ -72,6 +70,7 @@ public class OCRTextProcessor {
         // Step 2: Process each section independently
         var allMergedTexts: [String] = []
         var ocrSections: [OCRSection] = []
+        var totalConfidence = 0.0
 
         for (index, var section) in sections.enumerated() {
             var language = ocrResult.from
@@ -89,56 +88,66 @@ public class OCRTextProcessor {
 
             log("\nProcessing section \(index + 1) with \(section.count) observations (\(language)")
 
+            // Create metrics instance for this section
+            let ocrSection = OCRSection()
+
             // If text language is classical Chinese, update metrics genre.
             // Later, we can use this to determine if the text is poetry.
             if language == .classicalChinese {
-                metrics.genre = textAnalysis?.genre ?? .plain
+                ocrSection.genre = textAnalysis?.genre ?? .plain
             }
 
-            metrics.setupWithOCRData(
+            ocrSection.setupWithOCRData(
                 ocrImage: ocrImage,
                 language: language,
                 observations: section
             )
-            ocrResult.confidence = CGFloat(metrics.confidence)
 
-            // Perform intelligent text merging for this section
-            let mergedText = textMerger.performSmartMerging(section)
+            // Accumulate confidence for overall result
+            totalConfidence += Double(ocrSection.confidence)
+
+            // Create text merger with section-specific metrics for intra-section merging
+            let sectionTextMerger = OCRTextMerger(metrics: ocrSection)
+
+            // Perform intelligent text merging within this section
+            let mergedText = sectionTextMerger.performSmartMerging()
             log("\nMerged section [\(index + 1)]: \(mergedText)")
 
             section.mergedText = mergedText
             allMergedTexts.append(mergedText)
 
-            let ocrSection = OCRSection(
-                observations: section,
-                mergedText: mergedText,
-                language: language
-            )
+            // Set the section results in the metrics object
+            ocrSection.setSectionResults(mergedText: mergedText, detectedLanguage: language)
             ocrSections.append(ocrSection)
         }
+
+        // Calculate average confidence across all sections
+        let averageConfidence = sections.isEmpty ? 0.0 : totalConfidence / Double(sections.count)
+        ocrResult.confidence = CGFloat(averageConfidence)
+
+        log("Merge \(sections.count) sections cost time \(startTime.elapsedTimeString) seconds")
+
+        // Combine all section texts with intelligent merging between sections
+        let finalMergedText = sectionMerger.mergeSections(ocrSections).trim()
+
+        // Update OCR result with intelligently merged text
+        ocrResult.mergedText = finalMergedText
+        ocrResult.texts = ocrResult.mergedText.components(separatedBy: OCRConstants.lineSeparator)
+
+        log("\nOCR text (\(ocrResult.from), \(averageConfidence.string2f)): \(finalMergedText)\n")
 
         // Show OCR debug window for analysis (only in debug builds)
         #if DEBUG
         if Configuration.shared.beta {
             Task { @MainActor in
-                OCRWindowManager.shared.showWindow(image: ocrImage, ocrSections: ocrSections)
+                OCRWindowManager.shared.showWindow(
+                    image: ocrImage,
+                    ocrSections: ocrSections,
+                    mergedText: finalMergedText
+                )
             }
         }
         #endif
-
-        log("Merge \(observations.count) sections cost time \(startTime.elapsedTimeString) seconds")
-
-        // Combine all section texts
-        let finalMergedText = allMergedTexts.joined(separator: OCRConstants.paragraphSeparator)
-        log("\nFinal merged text: \(finalMergedText)")
-
-        // Update OCR result with intelligently merged text
-        ocrResult.mergedText = finalMergedText.trimmingCharacters(in: .whitespacesAndNewlines)
-        ocrResult.texts = ocrResult.mergedText.components(separatedBy: OCRConstants.lineSeparator)
-
-        log(
-            "\nOCR text (\(ocrResult.from), \(ocrResult.confidence.string2f)): \(ocrResult.mergedText)\n"
-        )
     }
 
     /// Checks if the given observations suggest that image cropping would improve OCR accuracy.
@@ -177,11 +186,8 @@ public class OCRTextProcessor {
 
     // MARK: Private
 
-    private let metrics = OCRMetrics()
-    private lazy var textMerger = OCRTextMerger(metrics: metrics)
-    private lazy var lineAnalyzer = OCRLineAnalyzer(metrics: metrics)
-
     private let languageDetector = AppleLanguageDetector()
+    private let sectionMerger = OCRSectionMerger()
 
     /// Detects sections and groups text observations by spatial regions.
     ///
@@ -231,19 +237,17 @@ public class OCRTextProcessor {
         var bands: [[VNRecognizedTextObservation]] = []
         var currentBand: [VNRecognizedTextObservation] = []
 
-        let avgHeight = observations.map { $0.boundingBox.height }.reduce(0, +) / observations.count.double
+        let averageHeight = observations.averageHeight
 
         for (index, observation) in sortedByY.enumerated() {
             if index > 0 {
-                let pair = OCRTextObservationPair(current: observation, previous: sortedByY[index - 1])
-                let isBigGap = pair.verticalGap / avgHeight > 1.5
+                let pair = OCRObservationPair(current: observation, previous: sortedByY[index - 1])
+                let isBigGap = pair.verticalGap / averageHeight > 1.5
 
                 // Large vertical gap - start new band
-                if isBigGap {
-                    if !currentBand.isEmpty {
-                        bands.append(currentBand)
-                        currentBand = []
-                    }
+                if isBigGap, !currentBand.isEmpty {
+                    bands.append(currentBand)
+                    currentBand = []
                 }
                 currentBand.append(observation)
             } else {
@@ -324,8 +328,9 @@ public class OCRTextProcessor {
             let boundingBox2 = obj2.boundingBox
 
             // Create text observation pair for line analysis
-            let pair = OCRTextObservationPair(current: obj1, previous: obj2)
+            let pair = OCRObservationPair(current: obj1, previous: obj2)
 
+            let lineAnalyzer = OCRLineAnalyzer(metrics: OCRSection())
             // Use the enhanced isNewLine algorithm to determine if they're on the same line
             if !lineAnalyzer.isNewLine(pair: pair) {
                 // Same line: sort by X coordinate (left to right)

@@ -23,7 +23,8 @@ enum OCRTestSample: String, CaseIterable {
     case enTextReddit = "ocr-en-text-reddit.png"
 
     /// Entire English page of paper with two culoumns.
-    case enPaper0 = "ocr-en-paper-0.png"
+    case enTextTwoColumns1 = "ocr-en-text-two-columns-1.png"
+    case enTextTwoColumns2 = "ocr-en-text-two-columns-2.png"
 
     // ocr english paper 1-14
     case enPaper1 = "ocr-en-paper-1.png"

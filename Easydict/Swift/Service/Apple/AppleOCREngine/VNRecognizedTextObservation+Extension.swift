@@ -140,6 +140,25 @@ extension [VNRecognizedTextObservation] {
         return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
 
+    /// Get maxX coordinate of all text observations in the array
+    var maxX: Double {
+        guard let firstObservation = first else { return 0.0 }
+        return reduce(firstObservation.boundingBox.minX) { Swift.max($0, $1.boundingBox.maxX) }
+    }
+
+    /// Get minX coordinate of all text observations in the array
+    var minX: Double {
+        guard let firstObservation = first else { return 0.0 }
+        return reduce(firstObservation.boundingBox.maxX) { Swift.min($0, $1.boundingBox.minX) }
+    }
+
+    /// Calculate the average height of all text observations in the array
+    var averageHeight: Double {
+        guard !isEmpty else { return 0.0 }
+        let totalHeight = reduce(0) { $0 + $1.boundingBox.height }
+        return totalHeight / Double(count)
+    }
+
     /// Generate a comprehensive formatted description of all text observations
     ///
     /// Creates a well-formatted, indexed list of all text observations in the array,

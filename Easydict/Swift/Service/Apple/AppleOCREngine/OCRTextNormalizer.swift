@@ -28,14 +28,14 @@ class OCRTextNormalizer {
     // MARK: Lifecycle
 
     /// Initialize with OCR metrics for language-specific processing
-    init(metrics: OCRMetrics) {
+    init(metrics: OCRSection) {
         self.metrics = metrics
     }
 
     /// Convenience initializer for testing with just a language
     /// - Parameter language: The target language for text normalization
     convenience init(language: Language) {
-        let metrics = OCRMetrics(language: language)
+        let metrics = OCRSection(language: language)
         self.init(metrics: metrics)
     }
 
@@ -91,7 +91,7 @@ class OCRTextNormalizer {
 
     // MARK: Internal
 
-    let metrics: OCRMetrics
+    let metrics: OCRSection
 
     var language: Language {
         get {

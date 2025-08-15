@@ -18,7 +18,7 @@ import Vision
 class OCRTextMerger {
     // MARK: Lifecycle
 
-    init(metrics: OCRMetrics) {
+    init(metrics: OCRSection) {
         self.metrics = metrics
     }
 
@@ -28,16 +28,19 @@ class OCRTextMerger {
     ///
     /// This is the main entry point for the text merging process. It orchestrates
     /// the analysis of merge strategies and their application to produce the final output.
+    /// The observations are retrieved from the metrics object passed during initialization.
     ///
-    /// - Parameter sortedObservations: An array of `VNRecognizedTextObservation` sorted in reading order.
     /// - Returns: A single string representing the merged and formatted text.
-    func performSmartMerging(_ sortedObservations: [VNRecognizedTextObservation])
-        -> String {
+    func performSmartMerging() -> String {
+        let sortedObservations = metrics.observations
+
         // Analyze merge strategies for sorted observations.
         let mergeStrategies = analyzeMergeStrategies(observations: sortedObservations)
 
         // Apply merge strategies to generate the final text.
-        let mergedText = applyMergeStrategies(observations: sortedObservations, strategies: mergeStrategies)
+        let mergedText = applyMergeStrategies(
+            observations: sortedObservations, strategies: mergeStrategies
+        )
 
         for (index, observation) in sortedObservations.enumerated() {
             // The merge strategy starts from the second observation.
@@ -52,7 +55,7 @@ class OCRTextMerger {
 
     // MARK: Private
 
-    private let metrics: OCRMetrics
+    private let metrics: OCRSection
     private lazy var textNormalizer = OCRTextNormalizer(metrics: metrics)
 
     // MARK: - Merge Strategy Analysis
@@ -82,7 +85,7 @@ class OCRTextMerger {
         for i in 1 ..< observations.count {
             let current = observations[i]
             let previous = observations[i - 1]
-            let pair = OCRTextObservationPair(current: current, previous: previous)
+            let pair = OCRObservationPair(current: current, previous: previous)
 
             log("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
             log("  Previous: \(previous.firstText.prefix20)")
@@ -175,7 +178,7 @@ class OCRTextMerger {
     ///   - currentParagraphObservations: All observations belonging to the current paragraph.
     /// - Returns: The most appropriate `OCRMergeStrategy` for the given pair.
     private func determineMergeStrategy(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         maxXObservation: VNRecognizedTextObservation,
         paragraphObservations: [VNRecognizedTextObservation]
     )

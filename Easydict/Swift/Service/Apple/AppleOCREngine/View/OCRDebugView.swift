@@ -29,18 +29,43 @@ struct OCRDebugView: View {
             OCRImageView(
                 image: viewModel.image,
                 sections: viewModel.ocrSections.map { $0.observations },
-                selectedIndex: $viewModel.selectedSectionIndex
+                selectedIndex: $viewModel.selectedIndex
             )
-            .frame(minWidth: 450)
+            .frame(minWidth: 400)
 
-            // Right side: Text analysis results
+            // Middle: Text analysis results
             OCRTextResultsView(
                 ocrSections: viewModel.ocrSections,
-                selectedIndex: $viewModel.selectedSectionIndex
+                selectedIndex: $viewModel.selectedIndex
             )
-            .frame(minWidth: 350)
+            .frame(minWidth: 300)
+
+            // Right side: All Merged Text
+            VStack(alignment: .leading, spacing: 12) {
+                Text(verbatim: "All Merged Text")
+                    .font(.headline)
+                    .padding(.horizontal)
+
+                ScrollView {
+                    Text(viewModel.mergedText)
+                        .font(.system(.body, design: .monospaced))
+                        .textSelection(.enabled)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .background(Color(NSColor.textBackgroundColor))
+                .cornerRadius(8)
+                .padding(.horizontal)
+            }
+            .frame(minWidth: 300)
+            .padding(.vertical)
         }
-        .frame(minWidth: 800, minHeight: 600)
+        .frame(
+            minWidth: 1000,
+            maxWidth: .infinity,
+            minHeight: 600,
+            maxHeight: .infinity
+        )
     }
 }
 
@@ -53,14 +78,16 @@ class OCRDebugViewModel: ObservableObject {
 
     init(
         image: NSImage,
-        sections: [OCRSection]
+        ocrSections: [OCRSection],
+        mergedText: String
     ) {
         self.image = image
-        self.ocrSections = sections
+        self.ocrSections = ocrSections
+        self.mergedText = mergedText
 
         // Default to first section if available
-        if !sections.isEmpty {
-            self.selectedSectionIndex = 0
+        if !ocrSections.isEmpty {
+            self.selectedIndex = 0
         }
     }
 
@@ -68,18 +95,20 @@ class OCRDebugViewModel: ObservableObject {
 
     @Published var image: NSImage
     @Published var ocrSections: [OCRSection]
-    @Published var selectedSectionIndex: Int?
+    @Published var selectedIndex: Int?
+    @Published var mergedText: String
 
     /// Update the data without recreating the view
-    func updateData(image: NSImage, ocrSections: [OCRSection]) {
+    func updateData(image: NSImage, ocrSections: [OCRSection], mergedText: String) {
         self.image = image
         self.ocrSections = ocrSections
+        self.mergedText = mergedText
 
         // Reset to first section or stay within bounds
         if !ocrSections.isEmpty {
-            selectedSectionIndex = 0
+            selectedIndex = 0
         } else {
-            selectedSectionIndex = -1
+            selectedIndex = -1
         }
     }
 }
@@ -88,9 +117,11 @@ class OCRDebugViewModel: ObservableObject {
 
 #Preview {
     let mockImage = NSImage(size: NSSize(width: 100, height: 100))
-    let mockSections: [OCRSection] = []
-    let viewModel = OCRDebugViewModel(image: mockImage, sections: mockSections)
+    let mockSectionMetrics: [OCRSection] = []
+    let viewModel = OCRDebugViewModel(
+        image: mockImage, ocrSections: mockSectionMetrics, mergedText: "Sample merged text"
+    )
 
     return OCRDebugView(viewModel: viewModel)
-        .frame(width: 1000, height: 700)
+        .frame(width: 1200, height: 800)
 }

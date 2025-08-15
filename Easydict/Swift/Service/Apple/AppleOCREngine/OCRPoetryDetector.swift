@@ -13,7 +13,7 @@ import Vision
 class OCRPoetryDetector {
     // MARK: Lifecycle
 
-    init(metrics: OCRMetrics) {
+    init(metrics: OCRSection) {
         self.metrics = metrics
         self.lineMeasurer = OCRLineMeasurer(metrics: metrics)
     }
@@ -47,7 +47,7 @@ class OCRPoetryDetector {
 
     // MARK: Private
 
-    private let metrics: OCRMetrics
+    private let metrics: OCRSection
     private let lineMeasurer: OCRLineMeasurer
 
     /// Performs early validation checks to quickly filter out non-poetry content.

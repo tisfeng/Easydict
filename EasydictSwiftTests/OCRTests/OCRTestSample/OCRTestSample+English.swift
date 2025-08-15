@@ -18,7 +18,7 @@ extension OCRTestSample {
         .enText1, .enText2, .enText3, .enText4, .enText5,
         .enTextBitcoin, .enTextReddit, .enTextLetter338,
         .enTextList1, .enTextList2, .enTextList3,
-        .enPaper0,
+        .enTextTwoColumns1, .enTextTwoColumns2,
         .enPaper1, .enPaper2, .enPaper3, .enPaper4, .enPaper5, .enPaper6, .enPaper7,
         .enPaper8, .enPaper9, .enPaper10, .enPaper11, .enPaper12, .enPaper13,
         .enPoetry8,
@@ -178,7 +178,7 @@ extension OCRTestSample {
         338
         """,
 
-        enPaper0: """
+        enTextTwoColumns1: """
         A Security Assessment of HTTP/2 Usage in 5G Service Based Architecture
 
         Nathalie Wehbe, Hyame Assem Alameddine, Makan Pourzandi, Elias Bou-Harb, and Chadi Assi
@@ -208,6 +208,31 @@ extension OCRTestSample {
         A. Overview
 
         5G networks revolutionized the telecommunication architecture by adopting a cloud-native, service-driven deployment promoting enhanced network operational efficiencies. The 5G SBA (Figure 1) enables a granular design and delivery of 5G network functionality through a decoupling of User Plane (UP) and Control Plane (CP), hence, providing independent scalability and flexible deployments [2], [9]. The UP and CP consist of multiple interconnected NFs, each providing a set of "services". Examples of such services include service registration, authorization and discovery [9]. The 5G CP is defined by a SBA. The interactions between the CP NFs are enabled by a service-based representation in which the SBIs can be easily extended without the need to introduce new reference points.
+        """,
+
+        enTextTwoColumns2: """
+        C. Stream Dependency and Prioritization
+
+        HTTP/2 carries a dependency-based prioritization feature that allows a client to assign a priority for each stream through a PRIORITY frame. Stream priority determines the order at which the client wants its streams to be processed [5]. A client can also specify dependency between streams that will be expressed in a dependency tree at the server. It can assign weights to dependent streams to dictate to the server the relative proportion of available resources that it has to allocate them [5]. The dependency-based prioritization feature was introduced with the intention of improving user experience. However, since no limit was set in RFC 7540 [5] on the size of the dependency tree, a NFp which naively trusts a NFc may be deceived to build a dependency tree that will consume its memory and CPU, thus causing a DoS on the NFp [3], [13]. The exploitation of this feature can be partially limited in 5G SBA by configuring the size of dependency tree at NFp for each TCP connection.
+
+        D. Header Compression
+
+        HTTP/2 introduces header compression through the HPACK protocol to reduce the request size by eliminating redundant header fields across multiplexed streams, which leads to lower bandwidth utilization [5]. HTTP/2 request and response header metadata are compressed using HPACK through: (1) encoding the transmitted header fields to reduce their individual transfer size; (2) maintaining an HPACK static table that holds a predefined static list of headers; (3) updating and maintaining an HPACK dynamic table that holds a dynamic list of headers [5]. It is used as a cache for each connection direction separately. The sender can signal to the receiver what values to insert in the dynamic table, hence, it can refer to their locations in subsequent streams. The size of the dynamic table is restricted to limit the memory requirement on the decoder side, however, the size of the header value field inside this table is not constrained [5], [13]. The lack of restriction on the size of the header value creates a vulnerability that can be exploited to launch an HPACK Bomb attack [13]. An attacker can generate a first stream with a large header (i.e. , of size equal to the dynamic table of its peer), then open new streams over the same connection that reference the same header. Decompressing the large header for each subsequent stream causes memory exhaustion, and hence a DoS on the server [13]. Limiting the header value in the dynamic table can potentially prevent the HPACK Bomb attack.
+
+        E. Server Push
+
+        The server push uses the PUSH_PROMISE frame to enable the server to send inline resources to the client without an explicit request for each resource [5]. This feature improves the client's experience by reducing the load time and workload, however, it places the burden on the server. The server push feature, combined with the multiplexing feature can be misused to launch a Distributed Denial of Service (DDoS) attack against an HTTP/2 server. A malicious client can force a server to serve a high number of simultaneous requests, each of which has multiple associated inline resources that the server needs to push [14]. This leads to a flooding attack which affects the server egress bandwidth and nearby routers, thus resulting in a DoS attack at the network layer as well [14]. The server push feature may not always be advantageous as it can use an excess of bandwidth to push unneeded assets. Mobile operators have to carefully assess the need for enabling this feature in their 5G networks as bandwidth and connection stability are crucial to meet the QoS requirements of their services.
+
+        F. Discussion
+
+        5G networks implement tighter security than the general web which reduces the likelihood of HTTP/2 attacks (Table I). Nonetheless, we believe that some of these HTTP/2 attacks are likely to apply to SG networks as they can be exploited by attackers through vulnerabilities related to virtualization technologies [7]. In fact, the move of mobile network operators to the public cloud increases the attack surface through virtualization vulnerabilities (e.g. , CVE-2016-5195, CVE-2019-5736). Similarly, virtualization vulnerabilities and misconfiguration can be exploited by attackers to breach the isolation between 5G network slices through for example a shared NF [15]. In such a scenario, HTTP/2 attacks on the shared NF from one slice can impact the functionality of the other slice. Further, HTTP/2 attacks can be initiated from malicious roaming partner and remain undetected by the filtering techniques at the SEPP [10]. Although they take a new form in HTTP/2, HTTP/2 multiplexing and slow-read attacks common in the Internet, may occur now in 5G networks. In contrast, we envision that stream dependency and prioritization based attacks along with server push and HPACK bomb attacks are less likely to happen in 5G networks as they are highly related to the mobile operators implementation and configuration. For instance, an operator may choose to disable server push functionality, thus preventing its related attack. To the best of our knowledge, the usage of server push has been left by 3GPP to the mobile operator choice. Finally, with the risk of misconfiguration of HTTP/2 settings and its related attacks, intelligent anomaly detection solutions that can detect HTTP/2 attacks to enable automated mitigation measures are needed.
+
+        IV. IMPLICATIONS OF HTTP/2 STANDARD AND CUSTOM HEADERS ON 5G SBA
+
+        HTTP/2 message header is composed of multiple standard and custom header fields that we elucidate and discuss their role in 5G SBA security.
+
+        A. Standard HTTP/2 Headers
+        The standard HTTP/2 header fields are used in both requests and responses. The request sent to the HTTP/2 server includes a list of header fields that identify the client. Figure 2 includes some of these standard headers: accept-encoding specifies the used data encoding; accept determines the content type the client is able to handle; authority defines the Fully Qualified Domain Name (FQDN) or IP address of the target Uniform
         """,
 
         // ocr english paper 1-14

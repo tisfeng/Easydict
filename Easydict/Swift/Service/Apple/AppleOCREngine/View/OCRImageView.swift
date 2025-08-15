@@ -158,11 +158,11 @@ struct OCRBoundingBoxOverlay: View {
         isSelected: Bool
     ) {
         let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
+        let strokeWidth = 3.0
 
         if isSelected {
             // Selected: draw thick orange border with slight background highlight
             let orangeColor = Color.orange
-            let strokeWidth = 3.0
 
             // Draw a slight background highlight
             context.fill(
@@ -181,7 +181,7 @@ struct OCRBoundingBoxOverlay: View {
             context.stroke(
                 Path(rect),
                 with: .color(.red),
-                lineWidth: 2.0
+                lineWidth: strokeWidth
             )
         }
     }

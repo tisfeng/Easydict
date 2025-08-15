@@ -34,7 +34,7 @@ class OCRDashHandler {
 
     /// Initializes the dash handler with the provided OCR metrics.
     /// - Parameter metrics: The OCR metrics containing necessary data for dash handling.
-    init(metrics: OCRMetrics) {
+    init(metrics: OCRSection) {
         self.metrics = metrics
         self.lineMeasurer = OCRLineMeasurer(metrics: metrics)
     }
@@ -42,13 +42,13 @@ class OCRDashHandler {
     // MARK: Internal
 
     /// Dash merge strategy for OCR text observations.
-    func dashMergeStrategy(_ pair: OCRTextObservationPair) -> OCRMergeStrategy? {
+    func dashMergeStrategy(_ pair: OCRObservationPair) -> OCRMergeStrategy? {
         analyzeDashHandling(pair)
     }
 
     // MARK: Private
 
-    private let metrics: OCRMetrics
+    private let metrics: OCRSection
     private let lineMeasurer: OCRLineMeasurer
 
     /// Characters that can be used for word continuation.
@@ -58,7 +58,7 @@ class OCRDashHandler {
     ///
     /// - Parameter pair: The pair of previous and current observations.
     /// - Returns: The appropriate OCR merge strategy for dash handling, or `nil` if no special dash handling is needed.
-    private func analyzeDashHandling(_ pair: OCRTextObservationPair) -> OCRMergeStrategy? {
+    private func analyzeDashHandling(_ pair: OCRObservationPair) -> OCRMergeStrategy? {
         // First check if we have a potential dash-related scenario
         guard hasDashScenario(pair) else {
             return nil
@@ -86,7 +86,7 @@ class OCRDashHandler {
     /// Checks if the text pair represents any dash-related scenario.
     /// - Parameter pair: The text observation pair.
     /// - Returns: `true` if there's a dash scenario to handle, `false` otherwise.
-    private func hasDashScenario(_ pair: OCRTextObservationPair) -> Bool {
+    private func hasDashScenario(_ pair: OCRObservationPair) -> Bool {
         let currentText = pair.current.firstText
         let previousText = pair.previous.firstText
 
@@ -99,7 +99,7 @@ class OCRDashHandler {
     /// Determines the specific merge strategy for the dash scenario.
     /// - Parameter pair: The text observation pair.
     /// - Returns: The appropriate OCRMergeStrategy.
-    private func determineDashMergeStrategy(for pair: OCRTextObservationPair) -> OCRMergeStrategy {
+    private func determineDashMergeStrategy(for pair: OCRObservationPair) -> OCRMergeStrategy {
         let previousText = pair.previous.firstText
         let currentText = pair.current.firstText
 
@@ -143,7 +143,7 @@ class OCRDashHandler {
     /// Creates the joined word by combining the word before the dash with the first word of the current text.
     /// - Parameter pair: The text observation pair.
     /// - Returns: The combined word.
-    private func createJoinedWord(from pair: OCRTextObservationPair) -> String {
+    private func createJoinedWord(from pair: OCRObservationPair) -> String {
         let wordBeforeDash = getWordBeforeDash(from: pair.previous.firstText)
         let firstWordOfCurrent = pair.current.firstText.firstWord
         return wordBeforeDash + firstWordOfCurrent

@@ -32,7 +32,7 @@ class OCRLineMeasurer {
 
     /// Initialize with OCR metrics
     /// - Parameter metrics: OCR metrics containing necessary data for line measurement
-    init(metrics: OCRMetrics) {
+    init(metrics: OCRSection) {
         self.metrics = metrics
         self.languageManager = EZLanguageManager.shared()
     }
@@ -96,7 +96,7 @@ class OCRLineMeasurer {
             ocrImage: ocrImage
         )
 
-        let pair = OCRTextObservationPair(current: currentObservation, previous: anotherObservation)
+        let pair = OCRObservationPair(current: currentObservation, previous: anotherObservation)
         let differentFontSize = fontSizeDifference(pair: pair)
         // If font sizes are significantly different, use the current observation only
         if !allowDifferentFontSize, differentFontSize > 1.5 {
@@ -120,7 +120,7 @@ class OCRLineMeasurer {
     ///   - comparison: The X position comparison type (minX or maxX). Default is .minX.
     /// - Returns: The horizontal difference in character units (can be positive, negative, or zero).
     func characterDifferenceInXPosition(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         xComparison: XComparisonType = .minX
     )
         -> Double {
@@ -166,7 +166,7 @@ class OCRLineMeasurer {
     /// Calculates the absolute font size difference between two text observations.
     /// - Parameter pair: The text observation pair containing current and previous observations.
     /// - Returns: The absolute difference between the font sizes of the two observations.
-    func fontSizeDifference(pair: OCRTextObservationPair) -> Double {
+    func fontSizeDifference(pair: OCRObservationPair) -> Double {
         let currentFontSize = fontSize(pair.current)
         let prevFontSize = fontSize(pair.previous)
         return abs(currentFontSize - prevFontSize)
@@ -183,7 +183,7 @@ class OCRLineMeasurer {
 
     // MARK: Private
 
-    private let metrics: OCRMetrics
+    private let metrics: OCRSection
     private let languageManager: EZLanguageManager
 
     /// Computes the average character width based on a given text observation.
@@ -192,7 +192,9 @@ class OCRLineMeasurer {
         ocrImage: NSImage? = nil
     )
         -> Double {
-        let ocrImage = ocrImage ?? metrics.ocrImage!
+        guard let ocrImage = ocrImage ?? metrics.ocrImage else {
+            return 5.0 // Default average width if no image available
+        }
 
         // Vision framework provides normalized coordinates (0-1), so we multiply by image size
         // No need for scaleFactor since NSImage.size already gives us the logical size in points
@@ -236,19 +238,15 @@ class OCRLineMeasurer {
 
         // Calculate the horizontal distance between current line end and reference line end
         let horizontalGap = referenceObservation.boundingBox.maxX - observation.boundingBox.maxX
+        let logicalGapWidth = ocrImage.size.width * horizontalGap
 
-        // Convert the gap from normalized coordinates to logical distance
-        let referenceLineLength = referenceObservation.boundingBox.size.width
-        let logicalLineWidth = ocrImage.size.width * referenceLineLength
-        let logicalGapWidth = logicalLineWidth * horizontalGap
-
-        let averageCharacterWidth = computeAverageCharWidth(
+        let averageCharWidth = computeAverageCharWidth(
             currentObservation: observation,
             anotherObservation: referenceObservation,
         )
 
         // Convert logical distance to character count using average character width
-        let remainingCharacters = logicalGapWidth / averageCharacterWidth
+        let remainingCharacters = logicalGapWidth / averageCharWidth
 
         return remainingCharacters
     }

@@ -22,7 +22,7 @@ class OCRLineAnalyzer {
 
     /// Initializes the line analyzer with the provided OCR metrics.
     /// - Parameter metrics: The OCR metrics containing document-wide analysis data.
-    init(metrics: OCRMetrics) {
+    init(metrics: OCRSection) {
         self.metrics = metrics
         self.lineMeasurer = OCRLineMeasurer(metrics: metrics)
     }
@@ -155,7 +155,7 @@ class OCRLineAnalyzer {
     ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if observations are horizontally aligned within tolerance, `false` otherwise.
     func isEqualX(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         xComparison: XComparisonType = .minX,
         confidence: ConfidenceLevel = .medium
     )
@@ -172,7 +172,7 @@ class OCRLineAnalyzer {
 
     /// Checks if two text observations have equivalent center X positions.
     func isEqualCenterX(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         confidence: ConfidenceLevel = .medium
     )
         -> Bool {
@@ -205,7 +205,7 @@ class OCRLineAnalyzer {
     ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if the vertical gap exceeds the threshold, `false` otherwise.
     func isBigLineSpacing(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         lineSpacingThreshold: Double? = nil,
         confidence: ConfidenceLevel = .medium
     )
@@ -233,7 +233,7 @@ class OCRLineAnalyzer {
     ///   - confidence: The detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if font sizes are considered different beyond the threshold, `false` if they are similar.
     func hasDifferentFontSize(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         fontSizeThreshold: Double? = nil,
         confidence: ConfidenceLevel = .medium,
         checkTextLength: Bool = true
@@ -260,7 +260,7 @@ class OCRLineAnalyzer {
 
     /// Calculates the font size difference between two text observations.
     func fontSizeDifference(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         checkTextLength: Bool = true
     )
         -> Double {
@@ -273,7 +273,7 @@ class OCRLineAnalyzer {
     }
 
     /// Checks if two observations are considered equal Chinese text.
-    func isEqualChinesePair(_ pair: OCRTextObservationPair) -> Bool {
+    func isEqualChinesePair(_ pair: OCRObservationPair) -> Bool {
         // Only analyze if the language is Chinese
         guard languageManager.isChineseLanguage(metrics.language) else {
             return false
@@ -324,7 +324,7 @@ class OCRLineAnalyzer {
     ///
     /// - Parameter pair: The pair of text observations to analyze for line separation.
     /// - Returns: `true` if observations represent a new line, `false` if on the same line.
-    func isNewLine(pair: OCRTextObservationPair) -> Bool {
+    func isNewLine(pair: OCRObservationPair) -> Bool {
         let verticalGap = pair.verticalGap
 
         // Calculate adaptive threshold based on actual text heights
@@ -358,7 +358,7 @@ class OCRLineAnalyzer {
 
     // MARK: Private
 
-    private let metrics: OCRMetrics
+    private let metrics: OCRSection
     private let lineMeasurer: OCRLineMeasurer
     private var languageManager = EZLanguageManager.shared()
 
@@ -380,7 +380,7 @@ class OCRLineAnalyzer {
     ///   - pair: The text observation pair to analyze.
     ///   - ratio: The similarity threshold ratio (default: 0.95).
     /// - Returns: `true` if maxX coordinates are similar within the ratio threshold, `false` otherwise.
-    private func isEqualMaxX(pair: OCRTextObservationPair, ratio: Double = 0.95) -> Bool {
+    private func isEqualMaxX(pair: OCRObservationPair, ratio: Double = 0.95) -> Bool {
         let lineMaxX = pair.current.boundingBox.maxX
         let prevLineMaxX = pair.previous.boundingBox.maxX
 
@@ -389,7 +389,7 @@ class OCRLineAnalyzer {
 
     /// Determines if two text observations have equal alignment (both minX and maxX coordinates).
     private func isEqualAlignment(
-        pair: OCRTextObservationPair, confidence: ConfidenceLevel = .medium
+        pair: OCRObservationPair, confidence: ConfidenceLevel = .medium
     )
         -> Bool {
         let isEqualMinX = isEqualX(pair: pair, xComparison: .minX, confidence: confidence)
@@ -399,7 +399,7 @@ class OCRLineAnalyzer {
 
     /// Check if pair has enough text length excluding punctuation and symbols.
     private func hasEnoughTextLength(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         minLength: Int = 3
     )
         -> Bool {
@@ -439,7 +439,7 @@ class OCRLineAnalyzer {
         xComparison: XComparisonType = .minX
     )
         -> IndentationInfo {
-        let pair = OCRTextObservationPair(current: observation, previous: comparedObservation)
+        let pair = OCRObservationPair(current: observation, previous: comparedObservation)
         let characterDifference = lineMeasurer.characterDifferenceInXPosition(
             pair: pair,
             xComparison: xComparison

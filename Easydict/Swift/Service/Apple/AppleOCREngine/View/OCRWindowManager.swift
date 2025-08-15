@@ -23,33 +23,37 @@ class OCRWindowManager: ObservableObject {
     /// - Parameters:
     ///   - image: The OCR source image
     ///   - ocrSections: Array of OCR sections containing observations, merged text, and language
+    ///   - mergedText: The final merged text from all sections
     func showWindow(
         image: NSImage,
-        ocrSections: [OCRSection]
+        ocrSections: [OCRSection],
+        mergedText: String
     ) {
         if let existingWindow = ocrWindow {
             // Update existing window data
             if let viewModel = currentViewModel {
-                viewModel.updateData(image: image, ocrSections: ocrSections)
+                viewModel.updateData(image: image, ocrSections: ocrSections, mergedText: mergedText)
             }
             existingWindow.orderFrontRegardless()
         } else {
             // Create new window with new ViewModel
-            let viewModel = OCRDebugViewModel(image: image, sections: ocrSections)
+            let viewModel = OCRDebugViewModel(
+                image: image,
+                ocrSections: ocrSections,
+                mergedText: mergedText
+            )
             currentViewModel = viewModel
 
             let debugView = OCRDebugView(viewModel: viewModel)
             let hostingController = NSHostingController(rootView: debugView)
 
-            // Calculate window size based on screen height
             let screen = NSScreen.main ?? NSScreen.screens.first!
             let screenVisibleFrame = screen.visibleFrame
-            let windowSize = screenVisibleFrame.height
 
-            // Create the window
+            // Create the window to fill the visible screen area
             let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: windowSize, height: windowSize),
-                styleMask: [.titled, .closable, .resizable, .miniaturizable],
+                contentRect: screenVisibleFrame,
+                styleMask: [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false
             )
@@ -57,20 +61,13 @@ class OCRWindowManager: ObservableObject {
             window.title = "OCR Debug Preview"
             window.contentViewController = hostingController
 
-            // Force set the window frame to our desired size and position
-            let desiredFrame = NSRect(
-                x: screenVisibleFrame.origin.x,
-                y: 0,
-                width: windowSize * 1.2,
-                height: windowSize
-            )
-            window.setFrame(desiredFrame, display: true)
-
+            // Ensure the window fills the visible frame
+            window.setFrame(screenVisibleFrame, display: true)
             window.isReleasedWhenClosed = false
 
             // Store reference and show
             ocrWindow = window
-            window.orderFrontRegardless()
+            window.makeKeyAndOrderFront(nil)
         }
     }
 

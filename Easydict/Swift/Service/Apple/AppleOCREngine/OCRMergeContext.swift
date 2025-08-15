@@ -15,10 +15,10 @@ struct OCRMergeContext {
     // MARK: Lifecycle
 
     init(
-        pair: OCRTextObservationPair,
+        pair: OCRObservationPair,
         maxXObservation: VNRecognizedTextObservation,
         paragraphObservations: [VNRecognizedTextObservation],
-        metrics: OCRMetrics
+        metrics: OCRSection
     ) {
         self.pair = pair
         self.maxXObservation = maxXObservation
@@ -169,7 +169,7 @@ struct OCRMergeContext {
 
     lazy var isEqualFirstLineX: Bool = {
         guard let first = firstObservation else { return false }
-        let firstPair = OCRTextObservationPair(current: current, previous: first)
+        let firstPair = OCRObservationPair(current: current, previous: first)
         return lineAnalyzer.isEqualX(pair: firstPair)
     }()
 
@@ -180,7 +180,7 @@ struct OCRMergeContext {
         hasBigLineSpacingRelaxed || hasDifferentFontSize
     }()
 
-    let pair: OCRTextObservationPair
+    let pair: OCRObservationPair
 
     var isNewLine: Bool {
         lineAnalyzer.isNewLine(pair: pair)
@@ -212,7 +212,7 @@ struct OCRMergeContext {
 
     // MARK: Private
 
-    private let metrics: OCRMetrics
+    private let metrics: OCRSection
     private let maxXObservation: VNRecognizedTextObservation
     private let paragraphObservations: [VNRecognizedTextObservation]
 
