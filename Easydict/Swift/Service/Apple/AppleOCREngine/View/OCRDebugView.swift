@@ -34,34 +34,21 @@ struct OCRDebugView: View {
             .frame(minWidth: 400)
 
             // Middle: Text analysis results
-            OCRTextResultsView(
+            OCRSectionView(
                 ocrSections: viewModel.ocrSections,
                 selectedIndex: $viewModel.selectedIndex
             )
             .frame(minWidth: 300)
 
             // Right side: All Merged Text
-            VStack(alignment: .leading, spacing: 12) {
-                Text(verbatim: "All Merged Text")
-                    .font(.headline)
-                    .padding(.horizontal)
-
-                ScrollView {
-                    Text(viewModel.mergedText)
-                        .font(.system(.body, design: .monospaced))
-                        .textSelection(.enabled)
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .background(Color(NSColor.textBackgroundColor))
-                .cornerRadius(8)
-                .padding(.horizontal)
-            }
-            .frame(minWidth: 300)
-            .padding(.vertical)
+            OCRMergedTextView(
+                ocrSections: viewModel.ocrSections,
+                mergedText: viewModel.mergedText
+            )
+            .frame(minWidth: 400)
         }
         .frame(
-            minWidth: 1000,
+            minWidth: 1100,
             maxWidth: .infinity,
             minHeight: 600,
             maxHeight: .infinity

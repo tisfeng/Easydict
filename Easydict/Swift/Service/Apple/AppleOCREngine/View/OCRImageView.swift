@@ -39,7 +39,7 @@ struct OCRImageView: View {
                     )
                 }
             }
-            .border(Color.gray, width: 1)
+            .border(Color.gray.opacity(0.5), width: 1)
             .padding()
         }
     }

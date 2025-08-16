@@ -9,10 +9,10 @@
 import SwiftUI
 import Vision
 
-// MARK: - OCRTextResultsView
+// MARK: - OCRSectionView
 
 /// View for displaying OCR text analysis results
-struct OCRTextResultsView: View {
+struct OCRSectionView: View {
     // MARK: Internal
 
     let ocrSections: [OCRSection]
@@ -111,9 +111,9 @@ struct OCRSectionCard: View {
                             .fontWeight(.semibold)
 
                         Text(ocrSection.mergedText)
-                            .font(.system(size: 14)) // Font.body is 13 pt
+                            .font(.body)
                             .padding(10)
-                            .background(Color.blue.opacity(0.2))
+                            .background(Color.gray.opacity(0.1))
                             .cornerRadius(6)
                             .textSelection(.enabled)
                     }
@@ -130,7 +130,7 @@ struct OCRSectionCard: View {
                     VStack(alignment: .leading, spacing: 2) {
                         ForEach(Array(ocrSection.observations.enumerated()), id: \.offset) { index, observation in
                             Text(verbatim: "[\(index)] \"\(observation.firstText)\"")
-                                .font(.system(.caption, design: .monospaced))
+                                .font(.system(.caption))
                                 .textSelection(.enabled)
                         }
                     }
