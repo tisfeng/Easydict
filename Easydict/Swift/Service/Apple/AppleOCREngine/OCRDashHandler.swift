@@ -65,7 +65,7 @@ class OCRDashHandler {
         }
 
         // Chinese and other non-space languages handle dashes differently
-        let isLatinText = EZLanguageManager.shared().isLanguageWordsNeedSpace(metrics.language)
+        let isLatinText = metrics.language.requiresWordSpacing
         guard isLatinText else {
             return nil
         }

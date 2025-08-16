@@ -29,13 +29,7 @@ class OCRWindowManager: ObservableObject {
         ocrSections: [OCRSection],
         mergedText: String
     ) {
-        if let existingWindow = ocrWindow {
-            // Update existing window data
-            if let viewModel = currentViewModel {
-                viewModel.updateData(image: image, ocrSections: ocrSections, mergedText: mergedText)
-            }
-            existingWindow.orderFrontRegardless()
-        } else {
+        if ocrWindow == nil {
             // Create new window with new ViewModel
             let viewModel = OCRDebugViewModel(
                 image: image,
@@ -68,6 +62,11 @@ class OCRWindowManager: ObservableObject {
             // Store reference and show
             ocrWindow = window
             window.makeKeyAndOrderFront(nil)
+        } else {
+            // Update existing window data
+            if let viewModel = currentViewModel {
+                viewModel.updateData(image: image, ocrSections: ocrSections, mergedText: mergedText)
+            }
         }
     }
 

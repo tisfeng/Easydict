@@ -32,6 +32,14 @@ extension Language: CaseIterable {
     }
 }
 
+// MARK: - Language + CustomStringConvertible
+
+extension Language: CustomStringConvertible {
+    public var description: String {
+        "\(localizedName)(\(code))"
+    }
+}
+
 extension Language {
     public var model: EZLanguageModel {
         EZLanguageModel.allLanguagesDict().object(forKey: rawValue as NSString)
@@ -77,16 +85,7 @@ extension Language {
     public var localeLanguage: Locale.Language {
         .init(identifier: code)
     }
-}
 
-extension [Language] {
-    /// Contains Chinese language,
-    func containsChinese() -> Bool {
-        contains { $0.isChinese }
-    }
-}
-
-extension Language {
     /// Is kind of Chinese language, means it is simplifiedChinese, traditionalChinese or classicalChinese.
     var isChinese: Bool {
         [.simplifiedChinese, .traditionalChinese, .classicalChinese].contains(self)
@@ -95,13 +94,9 @@ extension Language {
     var isEnglish: Bool {
         self == .english
     }
-}
 
-// MARK: - Language + CustomStringConvertible
-
-extension Language: CustomStringConvertible {
-    public var description: String {
-        "\(localizedName)(\(code))"
+    var requiresWordSpacing: Bool {
+        EZLanguageManager.shared().isLanguageWordsNeedSpace(self)
     }
 }
 
@@ -119,6 +114,11 @@ extension [Language: String] {
 }
 
 extension [Language] {
+    /// Contains Chinese language,
+    func containsChinese() -> Bool {
+        contains { $0.isChinese }
+    }
+
     /// Convert Language array to MMOrderedDictionary, dict value is the same as key
     func toMMOrderedDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()

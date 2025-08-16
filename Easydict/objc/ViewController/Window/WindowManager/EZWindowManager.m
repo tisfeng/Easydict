@@ -882,11 +882,28 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Pasteboard OCR");
 
     // Get image from pasteboard
+    NSImage *image = NSPasteboard.generalPasteboard.getImage;
+    if (!image) {
+        MMLogWarn(@"No image in pasteboard");
+        return;
+    }
+        
+    AppleOCREngine *appleOCREngine = [AppleOCREngine new];
+    [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
+            
+    }];
+}
+
+- (void)pasteboardTranslate {
+    MMLogInfo(@"Pasteboard OCR");
+
+    // Get image from pasteboard
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.getImage;
     
     [self showFloatingWindowWithOCRImage:image actionType:EZActionTypePasteboardOCR];
 }
+
 
 - (void)showFloatingWindowWithOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
     if (!image) {

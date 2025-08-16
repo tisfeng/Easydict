@@ -19,7 +19,8 @@ import Foundation
 /// the initial image to delegating the final text processing to `OCRTextProcessor`.
 ///
 /// It supports both a traditional callback-based API and a modern async/await interface.
-public class AppleOCREngine {
+@objc
+public class AppleOCREngine: NSObject {
     // MARK: Internal
 
     /// Performs text recognition on a given image using async/await.
@@ -34,20 +35,14 @@ public class AppleOCREngine {
     ///   - image: The `NSImage` to recognize text from.
     ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
     /// - Returns: An `EZOCRResult` containing the recognized and processed text.
-    func recognizeText(
-        image: NSImage,
-        language: Language = .auto
-    ) async throws
-        -> EZOCRResult {
+    func recognizeText(image: NSImage, language: Language = .auto) async throws -> EZOCRResult {
         log("Recognizing text in image with language: \(language), image size: \(image.size)")
 
         image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
 
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {
-            throw QueryError.error(
-                type: .parameter, message: "Failed to convert NSImage to CGImage"
-            )
+            throw QueryError.error(type: .parameter, message: "Failed to convert NSImage to CGImage")
         }
 
         let startTime = CFAbsoluteTimeGetCurrent()
@@ -92,23 +87,12 @@ public class AppleOCREngine {
             return ocrResult
         }
 
-        // Check if image cropping optimization would improve accuracy
-        let croppedImage = textProcessor.getCroppedImageIfNeeded(
-            observations: observations,
-            ocrImage: image
-        )
-
-        if let croppedImage {
-            croppedImage.mm_writeToFile(asPNG: OCRConstants.ocrCroppedImageFileURL.path())
-        }
-
         // If we reach here, we need to run OCR for multiple candidate languages.
-        let ocrImage = croppedImage ?? image
 
         let startSelectTime = CFAbsoluteTimeGetCurrent()
 
         let mostConfidentResult = try await selectBestOCRResult(
-            from: ocrImage,
+            from: image,
             candidates: rawProbabilities
         )
 
@@ -116,6 +100,20 @@ public class AppleOCREngine {
         log("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
+    }
+
+    @objc
+    func showOCRWindow(image: NSImage, language: Language = .auto) async throws {
+        let result = try await recognizeText(image: image, language: language)
+        let mergedText = result.mergedText
+
+        Task { @MainActor in
+            OCRWindowManager.shared.showWindow(
+                image: image,
+                ocrSections: textProcessor.ocrSections,
+                mergedText: mergedText
+            )
+        }
     }
 
     /// Callback-based text recognition for backward compatibility.

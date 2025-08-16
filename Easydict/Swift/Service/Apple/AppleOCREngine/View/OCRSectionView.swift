@@ -41,7 +41,8 @@ struct OCRSectionView: View {
                         isSelected: selectedIndex == index,
                         isExpanded: selectedIndex == index
                     ) {
-                        selectedIndex = index
+                        // Toggle expansion: if already selected, deselect; otherwise select
+                        selectedIndex = (selectedIndex == index) ? nil : index
                     }
                     .padding(.horizontal)
                 }
@@ -90,7 +91,11 @@ struct OCRSectionCard: View {
 
                 // Preview text
                 if let firstObs = ocrSection.observations.first {
-                    Text(firstObs.prefix30)
+                    let previewText =
+                        ocrSection.language.requiresWordSpacing
+                            ? firstObs.prefix30
+                            : firstObs.prefix20
+                    Text(previewText)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .lineLimit(1)

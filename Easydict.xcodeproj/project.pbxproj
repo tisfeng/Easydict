@@ -29,7 +29,7 @@
 		031258532E18D2C50072320C /* String+Detect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031258522E18D2C50072320C /* String+Detect.swift */; };
 		0315D3E02C4E64A500AC0442 /* QueryService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */; };
 		031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */; };
-		031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */; };
+		031760EE2E06B9C700CE8FD7 /* NSImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+Extension.swift */; };
 		031760F32E07FB2800CE8FD7 /* AppleSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */; };
 		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
@@ -558,7 +558,7 @@
 		031258522E18D2C50072320C /* String+Detect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Detect.swift"; sourceTree = "<group>"; };
 		0315D3DF2C4E64A500AC0442 /* QueryService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryService+Request.swift"; sourceTree = "<group>"; };
 		031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCREngine.swift; sourceTree = "<group>"; };
-		031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+ToCGImage.swift"; sourceTree = "<group>"; };
+		031760ED2E06B9C700CE8FD7 /* NSImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Extension.swift"; sourceTree = "<group>"; };
 		031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetector.swift; sourceTree = "<group>"; };
 		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
@@ -1369,7 +1369,7 @@
 		031760EC2E06B99200CE8FD7 /* Image */ = {
 			isa = PBXGroup;
 			children = (
-				031760ED2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift */,
+				031760ED2E06B9C700CE8FD7 /* NSImage+Extension.swift */,
 			);
 			path = Image;
 			sourceTree = "<group>";
@@ -3737,7 +3737,7 @@
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
-				031760EE2E06B9C700CE8FD7 /* NSImage+ToCGImage.swift in Sources */,
+				031760EE2E06B9C700CE8FD7 /* NSImage+Extension.swift in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
 				C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */,

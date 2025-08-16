@@ -75,7 +75,7 @@ enum OCRMergeStrategy: CustomStringConvertible {
         let joinedText = firstText + secondText
         let language = languageDetector.detectLanguage(text: joinedText)
 
-        if EZLanguageManager.shared().isLanguageWordsNeedSpace(language) {
+        if language.requiresWordSpacing {
             return .joinWithSpace
         }
         return .joinWithNoSpace

@@ -31,7 +31,7 @@ extension NSPasteboard {
          */
 
         let availableTypes = types ?? []
-        print("Available pasteboard types: \(availableTypes)\n")
+//        print("Available pasteboard types: \(availableTypes)\n")
 
         // 1. Check if there are file URLs in the pasteboard (highest priority)
         if let fileURLs = readObjects(forClasses: [NSURL.self], options: nil) as? [URL],

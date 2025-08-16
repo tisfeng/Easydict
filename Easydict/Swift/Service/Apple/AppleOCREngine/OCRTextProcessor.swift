@@ -27,6 +27,8 @@ import Vision
 public class OCRTextProcessor {
     // MARK: Internal
 
+    private(set) var ocrSections: [OCRSection] = []
+
     /// Processes raw OCR observations to produce a structured `EZOCRResult`.
     ///
     /// This is the main entry point for the processor. It takes the raw observations and, if
@@ -121,6 +123,8 @@ public class OCRTextProcessor {
             ocrSections.append(ocrSection)
         }
 
+        self.ocrSections = ocrSections
+
         // Calculate average confidence across all sections
         let averageConfidence = sections.isEmpty ? 0.0 : totalConfidence / Double(sections.count)
         ocrResult.confidence = CGFloat(averageConfidence)
@@ -135,53 +139,6 @@ public class OCRTextProcessor {
         ocrResult.texts = ocrResult.mergedText.components(separatedBy: OCRConstants.lineSeparator)
 
         log("\nOCR text (\(ocrResult.from), \(averageConfidence.string2f)): \(finalMergedText)\n")
-
-        // Show OCR debug window for analysis (only in debug builds)
-        #if DEBUG
-        if Configuration.shared.beta {
-            Task { @MainActor in
-                OCRWindowManager.shared.showWindow(
-                    image: ocrImage,
-                    ocrSections: ocrSections,
-                    mergedText: finalMergedText
-                )
-            }
-        }
-        #endif
-    }
-
-    /// Checks if the given observations suggest that image cropping would improve OCR accuracy.
-    ///
-    /// - Parameters:
-    ///   - observations: Text observations from OCR
-    ///   - ocrImage: The original image
-    /// - Returns: A cropped image if optimization is recommended, nil otherwise
-    func getCroppedImageIfNeeded(
-        observations: [VNRecognizedTextObservation],
-        ocrImage: NSImage
-    )
-        -> NSImage? {
-        guard !observations.isEmpty else { return nil }
-
-        // Calculate the bounding box that contains all text
-        let textBoundingBox = observations.calculateSectionBoundingBox()
-        let textArea = textBoundingBox.width * textBoundingBox.height
-
-        let threshold = 0.5
-
-        // Total image area in normalized coordinates is 1.0 (1.0 * 1.0)
-
-        log("Text bounding box (Vision coords): \(textBoundingBox)")
-        log("Text area: \(textArea.string3f), threshold: \(threshold.string2f)")
-
-        // Check if text area is less than threshold
-        if textArea < threshold {
-            log("Text area is less than threshold, cropping needed")
-            return cropImageToTextRegion(image: ocrImage, textBoundingBox: textBoundingBox)
-        } else {
-            log("Text area is sufficient, no cropping needed")
-            return nil
-        }
     }
 
     // MARK: Private
@@ -341,53 +298,5 @@ public class OCRTextProcessor {
                 return boundingBox1.origin.y > boundingBox2.origin.y
             }
         }
-    }
-
-    /// Crops the image to focus on the text region with some padding.
-    /// - Parameters:
-    ///   - image: The original image
-    ///   - textBoundingBox: The bounding box containing all text (in Vision coordinates)
-    /// - Returns: The cropped image, or nil if cropping fails
-    private func cropImageToTextRegion(image: NSImage, textBoundingBox: CGRect) -> NSImage? {
-        let imageSize = image.size
-        let imageWidth = imageSize.width
-        let imageHeight = imageSize.height
-
-        // Convert Vision coordinates to image coordinates
-        // Vision: (0,0) at bottom-left, Y increases upward
-        // NSImage: (0,0) at bottom-left, Y increases upward (same as Vision)
-        let padding: CGFloat = 0.15 // 10% padding on each side
-
-        // Calculate padded region in Vision coordinates
-        let paddedMinX = max(0, textBoundingBox.minX - padding)
-        let paddedMaxX = min(1, textBoundingBox.maxX + padding)
-        let paddedMinY = max(0, textBoundingBox.minY - padding)
-        let paddedMaxY = min(1, textBoundingBox.maxY + padding)
-
-        // Convert to NSImage coordinates (points, not pixels)
-        let cropMinX = paddedMinX * imageWidth
-        let cropMaxX = paddedMaxX * imageWidth
-        let cropMinY = paddedMinY * imageHeight
-        let cropMaxY = paddedMaxY * imageHeight
-
-        let cropWidth = cropMaxX - cropMinX
-        let cropHeight = cropMaxY - cropMinY
-        let cropOrigin = NSPoint(x: cropMinX, y: cropMinY)
-        let cropSize = NSSize(width: cropWidth, height: cropHeight)
-
-        let cropRect = NSRect(origin: cropOrigin, size: cropSize)
-        let destRect = NSRect(origin: .zero, size: cropSize)
-
-        log("Cropping image from \(imageSize) to region: \(cropRect)")
-
-        // Create a new NSImage with the cropped size
-        let croppedImage = NSImage(size: cropSize)
-        croppedImage.lockFocus()
-        image.draw(in: destRect, from: cropRect, operation: .copy, fraction: 1.0)
-        croppedImage.unlockFocus()
-
-        log("Cropped image size: \(croppedImage.size)")
-
-        return croppedImage
     }
 }
