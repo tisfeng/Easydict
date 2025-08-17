@@ -34,7 +34,7 @@ class GitHubService: OpenAIService {
     }
 
     override var defaultModel: String {
-        GitHubModel.gpt_4_1_mini.rawValue
+        GitHubModel.gpt_5_mini.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -53,6 +53,10 @@ enum GitHubModel: String, CaseIterable {
     // Models: https://github.com/marketplace?type=models
     // Rate limit: https://docs.github.com/zh/github-models/prototyping-with-ai-models#rate-limits
 
+    case gpt_5 = "gpt-5" // Custom
+    case gpt_5_mini = "gpt-5-mini" // Custom
+    case gpt_5_nano = "gpt-5-nano" // Custom
+
     case gpt_4_1 = "gpt-4.1" // Rate limit tier: High: 10 RPM | 50 RPD
     case gpt_4_1_mini = "gpt-4.1-mini" // Low: 15 RPM | 150 RPD
     case gpt_4_1_nano = "gpt-4.1-nano" // Low
@@ -65,19 +69,7 @@ enum GitHubModel: String, CaseIterable {
      case o4_mini = "o4-mini" // Custom
      */
 
-    case gpt_4o = "gpt-4o" // High
-    case gpt_4o_mini = "gpt-4o-mini" // Low
-
     case deepseek_v3_0324 = "deepseek-v3-0324" // High
-
-    case llama_4_maverick_17b_128e_instruct_fp8 = "llama-4-maverick-17b-128e-instruct-fp8" // High
-
-    case cohere_command_a = "cohere-command-a" // Low
-
-    // Mistral Medium 3 (25.05)
-    case mistral_small_2503 = "mistral-medium-2505" // Low
-
-    case phi_4 = "phi-4" // Low
 }
 
 // swiftlint:enable identifier_name
