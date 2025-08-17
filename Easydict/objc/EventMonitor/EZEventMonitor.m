@@ -191,9 +191,16 @@ static EZEventMonitor *_instance = nil;
         }
         return event;
     }];
+    [self addGlobalMonitor:Configuration.shared.autoSelectText];
+}
 
+- (void)addGlobalMonitor:(BOOL)isAutoSelectTextEnabled {
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate;
+    NSEventMask maskWhenAutoSelectTextEnabled = NSEventMaskScrollWheel | NSEventMaskMouseMoved;
+    if (isAutoSelectTextEnabled) {
+        eventMask |= maskWhenAutoSelectTextEnabled;
+    }
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         [self handleMonitorEvent:event];
