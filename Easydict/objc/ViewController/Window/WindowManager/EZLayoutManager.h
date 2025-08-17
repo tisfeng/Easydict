@@ -23,6 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// The screen where the last mouse click occurred, updated by EZWindowManager's lastPoint.
 @property (nonatomic, strong, readonly) NSScreen *screen;
 
+/// The screen frame when the floating window should be shown.
+@property (nonatomic, readonly) CGRect screenVisibleFrame;
+
 
 + (instancetype)shared;
 
@@ -38,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
 
 - (void)updateScreen:(NSScreen *)screen;
+
+- (void)updateScreenVisibleFrame:(CGRect)visibleFrame;
 
 @end
 

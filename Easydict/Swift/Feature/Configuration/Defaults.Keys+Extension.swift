@@ -76,6 +76,10 @@ extension Defaults.Keys {
         "EZConfiguration_kShowFixedWindowPositionKey",
         default: .right
     )
+    static let miniWindowPosition = Key<EZShowWindowPosition>(
+        "EZConfiguration_kShowMiniWindowPositionKey",
+        default: .mouse
+    )
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
         default: .fixed
@@ -155,7 +159,18 @@ extension Defaults.Keys {
     )
 
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
-    static var screenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
+    static var formerFixedScreenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
+
+    static var formerMiniScreenVisibleFrame = Key<CGRect>(
+        "EZConfiguration_kFormerMiniScreenVisibleFrameKey",
+        default: .zero
+    )
+
+    // MARK: - Window Height Limit
+
+    // Key for storing the selected max window height percentage, default is 100%.
+    // Storing as Int (e.g., 50, 80, 100).
+    static let maxWindowHeightPercentage = Key<Int>("maxWindowHeightPercentage", default: 100)
 }
 
 extension Defaults.Keys {

@@ -23,7 +23,10 @@ extension Encodable {
 
     /// Print pretty JSON string. `NSString` allows you to pretty print newline instead of `\n`, https://stackoverflow.com/a/68760531/8378840
     var prettyJSONString: NSString {
-        toJSONString(outputFormatting: .customized)! as NSString
+        if let jsonString = toJSONString(outputFormatting: .customized) {
+            return jsonString as NSString
+        }
+        return "{}" as NSString
     }
 
     var jsonData: Data? {

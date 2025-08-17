@@ -595,6 +595,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4",  // Sublime Text
             @"com.microsoft.Word", // Word
+            @"com.microsoft.Powerpoint", // Powerpoint, Fix https://github.com/tisfeng/Easydict/issues/868#issuecomment-2832027942
 
             @"com.tencent.xinWeChat",     // WeChat
             @"com.readdle.PDFExpert-Mac", // PDF Expert

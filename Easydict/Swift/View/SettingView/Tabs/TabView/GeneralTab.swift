@@ -74,15 +74,13 @@ struct GeneralTab: View {
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
-                if autoPlayAudio {
-                    Picker(
-                        "setting.general.voice.english_pronunciation",
-                        selection: $pronunciation
-                    ) {
-                        ForEach(EnglishPronunciation.allCases, id: \.rawValue) { option in
-                            Text(option.localizedStringResource)
-                                .tag(option)
-                        }
+                Picker(
+                    "setting.general.voice.english_pronunciation",
+                    selection: $pronunciation
+                ) {
+                    ForEach(EnglishPronunciation.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
                     }
                 }
             } header: {
@@ -329,7 +327,6 @@ private struct FirstAndSecondLanguageSettingView: View {
             isPresented: showLanguageDuplicatedAlert,
             presenting: languageDuplicatedAlert
         ) { _ in
-
         } message: { alert in
             Text(alert.description)
         }

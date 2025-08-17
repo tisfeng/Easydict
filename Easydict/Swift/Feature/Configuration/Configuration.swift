@@ -61,6 +61,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType:
         EZWindowType
     @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
+    @DefaultsWrapper(.miniWindowPosition) var miniWindowPosition: EZShowWindowPosition
     @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
     @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
 
@@ -99,7 +100,11 @@ class Configuration: NSObject {
     @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
 
     @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
-    @DefaultsWrapper(.screenVisibleFrame) var screenVisibleFrame: CGRect
+    @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
+    @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
+
+    // Max window height percentage, e.g., 80 means 80% of the screen height
+    @DefaultsWrapper(.maxWindowHeightPercentage) var maxWindowHeightPercentage: Int
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
