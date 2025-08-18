@@ -196,7 +196,7 @@ static EZEventMonitor *_instance = nil;
 
 - (void)addGlobalMonitor:(BOOL)isAutoSelectTextEnabled {
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskRightMouseDown | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate;
     NSEventMask maskWhenAutoSelectTextEnabled = NSEventMaskScrollWheel | NSEventMaskMouseMoved;
     if (isAutoSelectTextEnabled) {
         eventMask |= maskWhenAutoSelectTextEnabled;
