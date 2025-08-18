@@ -42,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
+- (void)addGlobalMonitor:(BOOL)isAutoSelectTextEnabled;
 
 - (void)start;
 - (void)stop;

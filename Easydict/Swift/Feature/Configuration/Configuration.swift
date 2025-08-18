@@ -407,6 +407,7 @@ extension Configuration {
     }
 
     fileprivate func didSetAutoSelectText() {
+        EZEventMonitor.shared().addGlobalMonitor(autoSelectText)
         logSettings(["auto_select_sext": autoSelectText])
     }
 
