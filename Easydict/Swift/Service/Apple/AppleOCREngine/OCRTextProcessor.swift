@@ -22,7 +22,7 @@ import Vision
 /// 2.  **Spatial Sorting**: Orders observations into a logical reading order using `sortTextObservations`.
 /// 3.  **Metrics Calculation**: Initializes `OCRSectionMetrics` to analyze the document's structure.
 /// 4.  **Text Merging**: Delegates to `OCRTextMerger` to perform intra-section text merging.
-/// 5.  **Section Merging**: Uses `OCRSectionMerger` to merge text between sections.
+/// 5.  **Section Merging**: Uses `OCRBandMerger` to merge text between sections.
 /// 6.  **Result Finalization**: Populates the `EZOCRResult` with the final text.
 public class OCRTextProcessor {
     // MARK: Internal
@@ -122,7 +122,7 @@ public class OCRTextProcessor {
                 totalConfidence += Double(ocrSection.confidence)
 
                 // Create text merger with section-specific metrics for intra-section merging
-                let sectionTextMerger = OCRTextMerger(metrics: ocrSection)
+                let sectionTextMerger = OCRSectionMerger(section: ocrSection)
 
                 // Perform intelligent text merging within this section
                 let mergedText = sectionTextMerger.performSmartMerging()
@@ -153,16 +153,8 @@ public class OCRTextProcessor {
         var mergedBandTexts: [String] = []
 
         for (bandIndex, band) in processedBands.enumerated() {
-            let bandText: String
-
-            if band.sections.count == 1 {
-                // Single section in this band
-                bandText = band.sections[0].mergedText
-            } else {
-                // Multiple sections - merge them as parallel columns
-                bandText = sectionMerger.mergeBands(band.sections).trim()
-            }
-
+            let bandMerger = OCRBandMerger(band: band)
+            let bandText = bandMerger.performSmartMerging()
             log("\nMerged band [\(bandIndex + 1)]: \(bandText)")
             mergedBandTexts.append(bandText)
         }
@@ -184,7 +176,6 @@ public class OCRTextProcessor {
     // MARK: Private
 
     private let languageDetector = AppleLanguageDetector()
-    private let sectionMerger = OCRSectionMerger()
 
     /// Detects sections and groups text observations by spatial regions.
     ///

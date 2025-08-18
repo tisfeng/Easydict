@@ -2,228 +2,242 @@
 //  OCRSectionMerger.swift
 //  Easydict
 //
-//  Created by tisfeng on 2025/8/15.
+//  Created by tisfeng on 2025/6/22.
 //  Copyright © 2025 izual. All rights reserved.
 //
 
 import Foundation
+import Vision
 
-// MARK: - OCRSectionMerger
-
+/// An intelligent section merging engine for OCR results.
+///
+/// This class takes a single OCR section containing multiple `VNRecognizedTextObservation` objects
+/// and merges them into a single, well-formatted string. It uses a context-aware approach to decide
+/// whether to join observations with a space, a line break, or a new paragraph, and handles
+/// special cases like hyphenated words and lists.
+///
+/// This is the counterpart to `OCRBandMerger` which handles merging multiple sections within a band.
+/// `OCRSectionMerger` focuses on intra-section merging of individual text observations.
 class OCRSectionMerger {
-    // MARK: Internal
+    // MARK: Lifecycle
 
-    /// Merges multiple OCR sections into a single formatted string.
-    ///
-    /// This method analyzes the spatial layout of sections to determine appropriate merge strategies
-    /// and applies them to produce the final merged text.
-    ///
-    /// - Parameter ocrSections: Array of OCR sections with spatial information and merged text
-    /// - Returns: Final merged text with appropriate formatting
-    func mergeSections(_ ocrSections: [OCRSection]) -> String {
-        guard ocrSections.count > 1 else {
-            // Single section - return its merged text
-            return ocrSections.first?.mergedText ?? ""
-        }
-
-        // Analyze section merge strategies
-        let sectionMergeStrategies = analyzeSectionMergeStrategies(ocrSections: ocrSections)
-
-        // Apply section merge strategies to generate the final text
-        let mergedText = applySectionMergeStrategies(
-            ocrSections: ocrSections,
-            strategies: sectionMergeStrategies
-        )
-
-        return mergedText
+    init(section: OCRSection) {
+        self.section = section
     }
 
-    /// Merges multiple OCR bands (columns) within a horizontal band into a single formatted string.
+    // MARK: Internal
+
+    /// Merges text observations within a single OCR section into a formatted string.
     ///
-    /// This method is specifically designed for merging side-by-side bands (columns) within the same
-    /// horizontal region. It assumes the bands are spatially adjacent horizontally and applies
-    /// appropriate merge strategies for column-based layouts.
+    /// This is the main entry point for the section merging process. It orchestrates
+    /// the analysis of merge strategies and their application to produce the final output.
+    /// The observations are retrieved from the section object passed during initialization.
     ///
-    /// - Parameter ocrBands: Array of OCR sections representing bands/columns within a horizontal region
-    /// - Returns: Final merged text with appropriate formatting for horizontal layout
-    func mergeBands(_ ocrBands: [OCRSection]) -> String {
-        guard ocrBands.count > 1 else {
-            // Single band - return its merged text
-            return ocrBands.first?.mergedText ?? ""
-        }
+    /// This method handles intra-section merging, analyzing spatial relationships and content
+    /// patterns between individual text observations to determine optimal joining strategies.
+    ///
+    /// - Returns: A single string representing the merged and formatted text for this section.
+    func performSmartMerging() -> String {
+        let sortedObservations = section.observations
 
-        log("🔤 Starting OCR band merge for \(ocrBands.count) bands in horizontal layout")
+        // Analyze merge strategies for sorted observations.
+        let mergeStrategies = analyzeMergeStrategies(observations: sortedObservations)
 
-        // For bands within the same horizontal region, we primarily use side-by-side merge strategies
-        var bandMergeStrategies: [OCRMergeStrategy] = []
-
-        // Process each band starting from the second one
-        for i in 1 ..< ocrBands.count {
-            let currentBand = ocrBands[i]
-            let previousBand = ocrBands[i - 1]
-
-            log("\n📋 Analyzing band pair [\(i - 1) → \(i)]:")
-            log("  Previous band text: \(previousBand.mergedText.prefix(20))")
-            log("  Current band text:  \(currentBand.mergedText.prefix(20))")
-
-            // Determine merge strategy for side-by-side bands
-            let mergeStrategy = determineSideBySideMergeStrategy(
-                currentSection: currentBand,
-                previousSection: previousBand
-            )
-
-            bandMergeStrategies.append(mergeStrategy)
-            log("  📝 Band [\(i)] Strategy: \(mergeStrategy)")
-        }
-
-        // Apply band merge strategies to generate the final text
-        let mergedText = applySectionMergeStrategies(
-            ocrSections: ocrBands,
-            strategies: bandMergeStrategies
+        // Apply merge strategies to generate the final text.
+        let mergedText = applyMergeStrategies(
+            observations: sortedObservations, strategies: mergeStrategies
         )
 
-        log("🏁 Band merge complete.")
+        for (index, observation) in sortedObservations.enumerated() {
+            // The merge strategy starts from the second observation.
+            // `mergeStrategy` was set in `analyzeMergeStrategies`.
+            if let mergeStrategy = observation.mergeStrategy {
+                log(" [\(index)]: strategy: \(mergeStrategy), \(observation.prefix20)")
+            }
+        }
+
         return mergedText
     }
 
     // MARK: Private
 
-    /// Determines the merge strategy for each pair of adjacent OCR sections.
-    ///
-    /// For each pair of sections, this method analyzes the relationship between the last observation
-    /// of the previous section and the first observation of the current section to determine the
-    /// appropriate merge strategy. All OCRMergeStrategy cases except lineBreak can be used between sections.
-    ///
-    /// - Parameter sections: The sections to analyze.
-    /// - Returns: An array of `OCRMergeStrategy` corresponding to each section pair.
+    private let section: OCRSection
+    private lazy var textNormalizer = OCRTextNormalizer(metrics: section)
+
+    // MARK: - Merge Strategy Analysis
+
+    /// Determines the merge strategy for each pair of adjacent OCR observations.
+    /// - Parameter observations: The sorted observations to analyze.
+    /// - Returns: An array of `OCRMergeStrategy` corresponding to each observation pair.
     @discardableResult
-    private func analyzeSectionMergeStrategies(ocrSections: [OCRSection]) -> [OCRMergeStrategy] {
-        // At least two sections are needed to form a pair
-        guard ocrSections.count > 1 else { return [] }
-
-        var sectionMergeStrategies: [OCRMergeStrategy] = []
-
-        log("🔤 Starting OCR section merge strategy analysis for \(ocrSections.count) sections")
-
-        // Process each section starting from the second one
-        for i in 1 ..< ocrSections.count {
-            let currentSection = ocrSections[i]
-            let previousSection = ocrSections[i - 1]
-
-            log("\n📋 Analyzing section pair [\(i - 1) → \(i)]:")
-            log("  Previous section text: \(previousSection.mergedText.prefix(20))")
-            log("  Current section text:  \(currentSection.mergedText.prefix(20))")
-
-            // Default merge strategy for vertical section pairs
-            var mergeStrategy = OCRMergeStrategy.newParagraph
-
-            // Check if two sections are multi-column
-            let currentMinX = currentSection.observations.minX
-            let previousMaxX = previousSection.observations.maxX
-            if currentMinX > previousMaxX {
-                log("  Sections appear to be multi-column layout")
-                // Determine merge strategy for side-by-side sections
-                mergeStrategy = determineSideBySideMergeStrategy(
-                    currentSection: currentSection,
-                    previousSection: previousSection
-                )
-            }
-            sectionMergeStrategies.append(mergeStrategy)
-
-            log("  📝 Section [\(i)] Strategy: \(mergeStrategy)")
-        }
-
-        log("🏁 Section merge strategy complete.")
-        return sectionMergeStrategies
-    }
-
-    /// Determines the appropriate merge strategy between two side-by-side sections.
-    ///
-    /// This method is specifically for sections that are positioned horizontally adjacent to each other
-    /// (multi-column layout). It analyzes content patterns and linguistic context to determine
-    /// whether sections should be joined with space, no space, or handle hyphenated words.
-    /// Note: This function is only called for side-by-side sections, not vertically stacked ones.
-    private func determineSideBySideMergeStrategy(
-        currentSection: OCRSection,
-        previousSection: OCRSection
+    private func analyzeMergeStrategies(
+        observations: [VNRecognizedTextObservation]
     )
-        -> OCRMergeStrategy {
-        // Get the last observation from previous section and first from current section
-        guard let previous = previousSection.observations.last,
-              let current = currentSection.observations.first
-        else {
-            log("    Warning: Missing observations, using newParagraph strategy")
-            return .newParagraph
+        -> [OCRMergeStrategy] {
+        // At least two observations are needed to form a pair.
+        guard observations.count > 1 else { return [] }
+
+        var mergeStrategies: [OCRMergeStrategy] = []
+
+        // Dynamic tracking for context-aware decisions.
+        var paragraphObservations: [VNRecognizedTextObservation] = [observations[0]]
+
+        // Reference for the observation with the maximum X-coordinate in the current context.
+        var maxXLineTextObservation = observations[0]
+
+        log("🔤 Starting OCR section merge strategy analysis for \(observations.count) observations")
+
+        // Process each observation starting from the second one.
+        for i in 1 ..< observations.count {
+            let current = observations[i]
+            let previous = observations[i - 1]
+            let pair = OCRObservationPair(current: current, previous: previous)
+
+            log("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
+            log("  Previous: \(previous.firstText.prefix20)")
+            log("  Current:  \(current.firstText.prefix20)")
+
+            // Perform a comprehensive analysis to determine the merge strategy.
+            let mergeStrategy = determineMergeStrategy(
+                pair: pair,
+                maxXObservation: maxXLineTextObservation,
+                paragraphObservations: paragraphObservations
+            )
+
+            mergeStrategies.append(mergeStrategy)
+            current.mergeStrategy = mergeStrategy
+
+            // Update context based on the strategy decision.
+            updateParagraphContext(
+                appliedStrategy: mergeStrategy,
+                observation: current,
+                paragraphObservations: &paragraphObservations,
+                rightmostObservation: &maxXLineTextObservation
+            )
+
+            log("  📝 Strategy: \(mergeStrategy)")
         }
 
-        let previousText = previous.firstText
-        let currentText = current.firstText
-        let pair = OCRObservationPair(current: current, previous: previous)
-
-        log("  Analyzing side-by-side section pair:")
-        log("    Previous: '\(previousText)'")
-        log("    Current: '\(currentText)'")
-
-        // Use the current section's metrics for analysis
-        let dashHandler = OCRDashHandler(metrics: previousSection)
-
-        // Check for hyphenated words first (highest priority)
-        if let strategy = dashHandler.dashMergeStrategy(pair) {
-            log("    Detected hyphenated word, using joinRemovingDash")
-            return strategy
-        }
-
-        let lineAnalyzer = OCRLineAnalyzer(metrics: previousSection)
-        let isLongText = lineAnalyzer.isLongText(
-            observation: previous,
-            nextObservation: current,
+        log(
+            "✅ Section merge strategy analysis complete: \(mergeStrategies.count) strategies determined"
         )
-        if !isLongText {
-            log("    Short text detected, using newParagraph strategy")
-            return .newParagraph
-        }
-
-        if previousText.hasEndPunctuationSuffix {
-            log("    Previous text ends with punctuation, using newParagraph strategy")
-            return .newParagraph
-        }
-
-        return .mergeStrategy(for: pair)
+        return mergeStrategies
     }
 
-    /// Applies section merge strategies to generate the final merged text.
-    private func applySectionMergeStrategies(
-        ocrSections: [OCRSection],
+    /// Applies the determined strategies to produce the final merged text.
+    ///
+    /// - Parameters:
+    ///   - observations: The original sorted observations.
+    ///   - strategies: The merge strategies for each adjacent pair.
+    /// - Returns: The final merged and formatted text.
+    private func applyMergeStrategies(
+        observations: [VNRecognizedTextObservation],
         strategies: [OCRMergeStrategy]
     )
         -> String {
-        guard !ocrSections.isEmpty else { return "" }
-        guard ocrSections.count == strategies.count + 1 else {
+        guard !observations.isEmpty else { return "" }
+        guard observations.count == strategies.count + 1 else {
             log(
-                "⚠️ Warning: Sections count (\(ocrSections.count)) != strategies count + 1 (\(strategies.count + 1))"
+                "⚠️ Warning: Observations count (\(observations.count)) != strategies count + 1 (\(strategies.count + 1))"
             )
-            return ocrSections.map(\.mergedText).joined(
-                separator: OCRConstants.paragraphSeparator
-            )
+            return observations.map(\.firstText).joined(separator: " ")
         }
 
-        log("🔧 Applying section merge strategies to \(ocrSections.count) sections")
+        log("🔧 Applying merge strategies to \(observations.count) observations within section")
 
-        var result = ocrSections[0].mergedText
+        var mergedText = ""
 
-        // Apply each strategy to merge the subsequent section
+        // Start with the text of the first observation.
+        var currentText = observations[0].firstText
+
+        // Apply each strategy to the subsequent observations.
         for (index, strategy) in strategies.enumerated() {
-            let nextSectionText = ocrSections[index + 1].mergedText
+            let nextObservation = observations[index + 1]
+            let nextText = nextObservation.firstText
 
-            // Use the strategy's apply method to merge texts
-            result = strategy.apply(firstText: result, secondText: nextSectionText)
-
-            log("  Applied \(strategy) between sections \(index) and \(index + 1)")
+            // Apply the strategy to combine the current and next text.
+            let combinedText = strategy.apply(firstText: currentText, secondText: nextText)
+            currentText = combinedText
         }
 
-        let finalText = result.trimmingCharacters(in: .whitespacesAndNewlines)
+        mergedText = currentText
 
-        log("🎯 Final section merged text: \(finalText.prefix(20))...")
+        // Apply text normalization if the feature is enabled.
+        if Configuration.shared.enableOCRTextNormalization {
+            log("🔧 Applying text normalization...")
+            mergedText = textNormalizer.normalizeText(mergedText)
+        }
+
+        let finalText = mergedText.trim()
+        log("✅ Section merge complete. Final length: \(finalText.count) characters")
+
         return finalText
+    }
+
+    /// Determines the merge strategy between two adjacent text observations within a section.
+    ///
+    /// This function analyzes various factors like line breaks, hyphenation, font size, indentation,
+    /// line spacing, and list formatting to decide whether to join text with a space, a line break,
+    /// a new paragraph, or handle hyphenated words.
+    ///
+    /// This method focuses on intra-section analysis, considering the spatial and contextual
+    /// relationships between observations within the same section boundaries.
+    ///
+    /// - Parameters:
+    ///   - pair: The current and previous observations to compare.
+    ///   - maxXObservation: The observation with the rightmost boundary in the current paragraph, used for layout context.
+    ///   - currentParagraphObservations: All observations belonging to the current paragraph.
+    /// - Returns: The most appropriate `OCRMergeStrategy` for the given pair.
+    private func determineMergeStrategy(
+        pair: OCRObservationPair,
+        maxXObservation: VNRecognizedTextObservation,
+        paragraphObservations: [VNRecognizedTextObservation]
+    )
+        -> OCRMergeStrategy {
+        // Create context object to reduce code duplication
+        let context = OCRMergeContext(
+            pair: pair,
+            maxXObservation: maxXObservation,
+            paragraphObservations: paragraphObservations,
+            metrics: section
+        )
+
+        // Create analyzer with context and delegate the strategy determination
+        let analyzer = OCRMergeAnalyzer(context: context)
+        return analyzer.determineMergeStrategy()
+    }
+
+    /// Updates the paragraph tracking context based on the applied merge strategy.
+    ///
+    /// When a line break or new paragraph strategy is applied, this method resets the tracking
+    /// to start a new paragraph context. For joining strategies, it extends the current
+    /// paragraph with the new observation and updates the rightmost boundary reference.
+    ///
+    /// - Parameters:
+    ///   - appliedStrategy: The merge strategy that was applied to the current observation pair.
+    ///   - observation: The current observation being processed.
+    ///   - paragraphObservations: In-out array tracking all observations in the current paragraph.
+    ///   - rightmostObservation: In-out reference to the observation with the rightmost boundary in the current paragraph.
+    private func updateParagraphContext(
+        appliedStrategy: OCRMergeStrategy,
+        observation: VNRecognizedTextObservation,
+        paragraphObservations: inout [VNRecognizedTextObservation],
+        rightmostObservation: inout VNRecognizedTextObservation
+    ) {
+        switch appliedStrategy {
+        case .lineBreak, .newParagraph:
+            // Start a new paragraph, resetting the tracking context.
+            paragraphObservations = [observation]
+            rightmostObservation = observation
+
+        case .joinRemovingDash, .joinWithNoSpace, .joinWithSpace:
+            // Continue the current paragraph and update tracking.
+            paragraphObservations.append(observation)
+
+            // Update rightmost observation if current one extends further right.
+            if observation.boundingBox.maxX > rightmostObservation.boundingBox.maxX {
+                rightmostObservation = observation
+            }
+        }
     }
 }

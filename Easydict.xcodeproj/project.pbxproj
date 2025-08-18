@@ -85,7 +85,7 @@
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
 		033E8A0B2E4E5318008A7110 /* ocr-en-text-two-columns-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */; };
 		033E8A0F2E4F53B9008A7110 /* OCRSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A0E2E4F53B9008A7110 /* OCRSection.swift */; };
-		033E8A112E4F79E6008A7110 /* OCRSectionMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A102E4F79E6008A7110 /* OCRSectionMerger.swift */; };
+		033E8A112E4F79E6008A7110 /* OCRBandMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A102E4F79E6008A7110 /* OCRBandMerger.swift */; };
 		033E8A132E502E2D008A7110 /* OCRMergedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A122E502E2D008A7110 /* OCRMergedTextView.swift */; };
 		033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EA07D2CFC66380017F86C /* View+Builder.swift */; };
 		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
@@ -378,7 +378,7 @@
 		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */; };
-		03F19D802E0938D70046C6F2 /* OCRTextMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */; };
+		03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
@@ -627,7 +627,7 @@
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
 		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
 		033E8A0E2E4F53B9008A7110 /* OCRSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSection.swift; sourceTree = "<group>"; };
-		033E8A102E4F79E6008A7110 /* OCRSectionMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSectionMerger.swift; sourceTree = "<group>"; };
+		033E8A102E4F79E6008A7110 /* OCRBandMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRBandMerger.swift; sourceTree = "<group>"; };
 		033E8A122E502E2D008A7110 /* OCRMergedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergedTextView.swift; sourceTree = "<group>"; };
 		033EA07D2CFC66380017F86C /* View+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Builder.swift"; sourceTree = "<group>"; };
 		033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceGetSelectedTextType.swift; sourceTree = "<group>"; };
@@ -1041,7 +1041,7 @@
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageMapper.swift; sourceTree = "<group>"; };
-		03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextMerger.swift; sourceTree = "<group>"; };
+		03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSectionMerger.swift; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
 		03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChinseseMarker.swift; sourceTree = "<group>"; };
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
@@ -1357,8 +1357,8 @@
 				03B170982E122CF80021FDE4 /* Model */,
 				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
 				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
-				03F19D7F2E0938D70046C6F2 /* OCRTextMerger.swift */,
-				033E8A102E4F79E6008A7110 /* OCRSectionMerger.swift */,
+				03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */,
+				033E8A102E4F79E6008A7110 /* OCRBandMerger.swift */,
 				035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */,
 				035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */,
 				03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */,
@@ -3792,7 +3792,7 @@
 				03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */,
 				6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */,
 				036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */,
-				033E8A112E4F79E6008A7110 /* OCRSectionMerger.swift in Sources */,
+				033E8A112E4F79E6008A7110 /* OCRBandMerger.swift in Sources */,
 				0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				035451012E3C601100BAA8E5 /* OCRMergeContext.swift in Sources */,
@@ -3876,7 +3876,7 @@
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
-				03F19D802E0938D70046C6F2 /* OCRTextMerger.swift in Sources */,
+				03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
