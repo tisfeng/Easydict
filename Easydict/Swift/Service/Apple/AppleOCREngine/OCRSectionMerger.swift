@@ -38,6 +38,54 @@ class OCRSectionMerger {
         return mergedText
     }
 
+    /// Merges multiple OCR bands (columns) within a horizontal band into a single formatted string.
+    ///
+    /// This method is specifically designed for merging side-by-side bands (columns) within the same
+    /// horizontal region. It assumes the bands are spatially adjacent horizontally and applies
+    /// appropriate merge strategies for column-based layouts.
+    ///
+    /// - Parameter ocrBands: Array of OCR sections representing bands/columns within a horizontal region
+    /// - Returns: Final merged text with appropriate formatting for horizontal layout
+    func mergeBands(_ ocrBands: [OCRSection]) -> String {
+        guard ocrBands.count > 1 else {
+            // Single band - return its merged text
+            return ocrBands.first?.mergedText ?? ""
+        }
+
+        log("🔤 Starting OCR band merge for \(ocrBands.count) bands in horizontal layout")
+
+        // For bands within the same horizontal region, we primarily use side-by-side merge strategies
+        var bandMergeStrategies: [OCRMergeStrategy] = []
+
+        // Process each band starting from the second one
+        for i in 1 ..< ocrBands.count {
+            let currentBand = ocrBands[i]
+            let previousBand = ocrBands[i - 1]
+
+            log("\n📋 Analyzing band pair [\(i - 1) → \(i)]:")
+            log("  Previous band text: \(previousBand.mergedText.prefix(20))")
+            log("  Current band text:  \(currentBand.mergedText.prefix(20))")
+
+            // Determine merge strategy for side-by-side bands
+            let mergeStrategy = determineSideBySideMergeStrategy(
+                currentSection: currentBand,
+                previousSection: previousBand
+            )
+
+            bandMergeStrategies.append(mergeStrategy)
+            log("  📝 Band [\(i)] Strategy: \(mergeStrategy)")
+        }
+
+        // Apply band merge strategies to generate the final text
+        let mergedText = applySectionMergeStrategies(
+            ocrSections: ocrBands,
+            strategies: bandMergeStrategies
+        )
+
+        log("🏁 Band merge complete.")
+        return mergedText
+    }
+
     // MARK: Private
 
     /// Determines the merge strategy for each pair of adjacent OCR sections.

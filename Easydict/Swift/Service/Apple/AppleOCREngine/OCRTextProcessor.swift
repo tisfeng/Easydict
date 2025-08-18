@@ -27,7 +27,7 @@ import Vision
 public class OCRTextProcessor {
     // MARK: Internal
 
-    private(set) var ocrSections: [OCRSection] = []
+    private(set) var bands: [OCRBand] = []
 
     /// Processes raw OCR observations to produce a structured `EZOCRResult`.
     ///
@@ -60,79 +60,119 @@ public class OCRTextProcessor {
         guard smartMerging else { return }
 
         // Step 1: Detect sections by analyzing spatial distribution
-        let sections = detectSections(observations: observations)
-        log("\nDetected sections count: \(sections.count)")
+        let bands = detectBands(observations: observations)
 
-        for section in sections {
-            log("\nSection observations (\(section.count)): \(section.formattedDescription)")
-        }
+        let totalBands = bands.reduce(0) { $0 + $1.sections.count }
+        log("\nDetected \(bands.count) horizontal bands with \(totalBands) total sections")
 
         let startTime = CFAbsoluteTimeGetCurrent()
 
-        // Step 2: Process each section independently
-        var allMergedTexts: [String] = []
-        var ocrSections: [OCRSection] = []
+        // Step 2: Process each horizontal band independently
+        var processedBands: [OCRBand] = []
         var totalConfidence = 0.0
 
-        for (index, var section) in sections.enumerated() {
-            var language = ocrResult.from
-            // If has no designated language, detect it automatically.
-            if language == .auto {
-                // If text analysis is classical poetry or lyric, set language to classical Chinese.
-                if let genre = textAnalysis?.genre, genre.isPoetryLyric {
-                    log("Text analysis genre: \(genre)")
-                    language = .classicalChinese
-                } else {
-                    language = languageDetector.detectLanguage(text: section.simpleMergedText)
-                    log("Detected language: \(language)")
+        for (index, band) in bands.enumerated() {
+            log("\nProcessing band \(index + 1) with \(band.sections.count) sections")
+
+            var processedSections: [OCRSection] = []
+
+            // Process each section within this horizontal band
+            for (sIndex, section) in band.sections.enumerated() {
+                let observations = section.observations
+
+                log(
+                    "\nSection observations (\(observations.count)): \(observations.formattedDescription)"
+                )
+
+                var language = ocrResult.from
+                // If has no designated language, detect it automatically.
+                if language == .auto {
+                    // If text analysis is classical poetry or lyric, set language to classical Chinese.
+                    if let genre = textAnalysis?.genre, genre.isPoetryLyric {
+                        log("Text analysis genre: \(genre)")
+                        language = .classicalChinese
+                    } else {
+                        language = languageDetector.detectLanguage(
+                            text: observations.simpleMergedText
+                        )
+                        log("Detected language: \(language)")
+                    }
                 }
+
+                log(
+                    "\nProcessing section \(index + 1).\(sIndex + 1) with \(observations.count) observations (\(language)"
+                )
+
+                // Create metrics instance for this section
+                let ocrSection = OCRSection()
+
+                // If text language is classical Chinese, update metrics genre.
+                // Later, we can use this to determine if the text is poetry.
+                if language == .classicalChinese {
+                    ocrSection.genre = textAnalysis?.genre ?? .plain
+                }
+
+                ocrSection.setupWithOCRData(
+                    ocrImage: ocrImage,
+                    language: language,
+                    observations: observations
+                )
+
+                // Accumulate confidence for overall result
+                totalConfidence += Double(ocrSection.confidence)
+
+                // Create text merger with section-specific metrics for intra-section merging
+                let sectionTextMerger = OCRTextMerger(metrics: ocrSection)
+
+                // Perform intelligent text merging within this section
+                let mergedText = sectionTextMerger.performSmartMerging()
+                log("\nMerged section [\(index + 1).\(sIndex + 1)]: \(mergedText)")
+
+                // Set the section results in the metrics object
+                ocrSection.setSectionResults(mergedText: mergedText, detectedLanguage: language)
+                processedSections.append(ocrSection)
             }
 
-            log("\nProcessing section \(index + 1) with \(section.count) observations (\(language)")
-
-            // Create metrics instance for this section
-            let ocrSection = OCRSection()
-
-            // If text language is classical Chinese, update metrics genre.
-            // Later, we can use this to determine if the text is poetry.
-            if language == .classicalChinese {
-                ocrSection.genre = textAnalysis?.genre ?? .plain
-            }
-
-            ocrSection.setupWithOCRData(
-                ocrImage: ocrImage,
-                language: language,
-                observations: section
-            )
-
-            // Accumulate confidence for overall result
-            totalConfidence += Double(ocrSection.confidence)
-
-            // Create text merger with section-specific metrics for intra-section merging
-            let sectionTextMerger = OCRTextMerger(metrics: ocrSection)
-
-            // Perform intelligent text merging within this section
-            let mergedText = sectionTextMerger.performSmartMerging()
-            log("\nMerged section [\(index + 1)]: \(mergedText)")
-
-            section.mergedText = mergedText
-            allMergedTexts.append(mergedText)
-
-            // Set the section results in the metrics object
-            ocrSection.setSectionResults(mergedText: mergedText, detectedLanguage: language)
-            ocrSections.append(ocrSection)
+            // Create processed band with updated sections
+            let processedBand = OCRBand(sections: processedSections)
+            processedBands.append(processedBand)
         }
 
-        self.ocrSections = ocrSections
+        // Store processed bands for later access
+        self.bands = processedBands
 
         // Calculate average confidence across all sections
-        let averageConfidence = sections.isEmpty ? 0.0 : totalConfidence / Double(sections.count)
+        let totalSectionCount = processedBands.reduce(0) { $0 + $1.sections.count }
+        let averageConfidence =
+            totalSectionCount == 0 ? 0.0 : totalConfidence / Double(totalSectionCount)
         ocrResult.confidence = CGFloat(averageConfidence)
 
-        log("Merge \(sections.count) sections cost time \(startTime.elapsedTimeString) seconds")
+        log("Merge \(totalSectionCount) sections cost time \(startTime.elapsedTimeString) seconds")
 
-        // Combine all section texts with intelligent merging between sections
-        let finalMergedText = sectionMerger.mergeSections(ocrSections).trim()
+        // Step 3: Merge sections within each band, then merge bands
+        var mergedBandTexts: [String] = []
+
+        for (bandIndex, band) in processedBands.enumerated() {
+            let bandText: String
+
+            if band.sections.count == 1 {
+                // Single section in this band
+                bandText = band.sections[0].mergedText
+            } else {
+                // Multiple sections - merge them as parallel columns
+                bandText = sectionMerger.mergeBands(band.sections).trim()
+            }
+
+            log("\nMerged band [\(bandIndex + 1)]: \(bandText)")
+            mergedBandTexts.append(bandText)
+        }
+
+        // Step 4: Combine all bands with new paragraph separation
+        let finalMergedText =
+            mergedBandTexts
+                .filter { !$0.isEmpty }
+                .joined(separator: OCRMergeStrategy.newParagraph.separatorString())
+                .trim()
 
         // Update OCR result with intelligently merged text
         ocrResult.mergedText = finalMergedText
@@ -158,31 +198,38 @@ public class OCRTextProcessor {
     /// 3. Merging results while maintaining reading order
     ///
     /// - Parameter observations: All text observations.
-    /// - Returns: Array of sections, each containing observations for that section, ordered for proper reading flow.
-    private func detectSections(
+    /// - Returns: Array of OCRHorizontalBands, each containing bands for that horizontal region.
+    private func detectBands(
         observations: [VNRecognizedTextObservation],
         maxColumns: Int = 2
     )
-        -> [[VNRecognizedTextObservation]] {
+        -> [OCRBand] {
         guard !observations.isEmpty else { return [] }
 
         // Step 1: Group observations into horizontal bands
-        let horizontalBands = groupIntoHorizontalBands(observations)
-        log("\nDetected \(horizontalBands.count) horizontal bands")
+        let horizontalBandGroups = groupIntoHorizontalBands(observations)
+        log("\nDetected \(horizontalBandGroups.count) horizontal band groups")
 
-        // Step 2: Analyze each band to determine its column structure
-        var allSections: [[VNRecognizedTextObservation]] = []
+        // Step 2: Analyze each band group to determine its column structure
+        var allHorizontalBands: [OCRBand] = []
 
-        for band in horizontalBands {
-            let bandSections = analyzeColumnStructure(in: band, maxColumns: maxColumns)
-            allSections.append(contentsOf: bandSections)
+        for bandGroup in horizontalBandGroups {
+            let bandSections = analyzeColumnStructure(in: bandGroup, maxColumns: maxColumns)
+
+            // Convert each section to an OCRBand and create OCRHorizontalBands
+            let ocrBands = bandSections.compactMap { section -> OCRSection? in
+                guard !section.isEmpty else { return nil }
+                // Step 3: Sort each section's observations for reading order
+                let sortedObservations = sortTextObservations(section)
+                return OCRSection(observations: sortedObservations)
+            }
+
+            if !ocrBands.isEmpty {
+                allHorizontalBands.append(OCRBand(sections: ocrBands))
+            }
         }
 
-        // Step 3: Sort each section's observations for reading order
-        allSections = allSections.map { sortTextObservations($0) }
-
-        // Remove empty sections
-        return allSections.filter { !$0.isEmpty }
+        return allHorizontalBands
     }
 
     /// Groups observations into horizontal bands based on Y-coordinate proximity.

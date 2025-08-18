@@ -61,6 +61,7 @@ enum OCRTestSample: String, CaseIterable {
     case zhTextBitcoin = "ocr-zh-text-bitcoin.png"
     case zhTextList1 = "ocr-zh-text-list-1.png"
     case zhTextTwoColums1 = "ocr-zh-text-two-columns-1.png"
+    case zhTextTwoColums2 = "ocr-zh-text-two-columns-2.png"
 
     // Chinese modern poetry
     case zhPoetry1 = "ocr-zh-poetry-1.png"

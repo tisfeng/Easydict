@@ -14,7 +14,7 @@ import SwiftUI
 struct OCRMergedTextView: View {
     // MARK: Internal
 
-    let ocrSections: [OCRSection]
+    let bands: [OCRBand]
     let mergedText: String
 
     var body: some View {
@@ -30,7 +30,7 @@ struct OCRMergedTextView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }
-            .background(Color(NSColor.textBackgroundColor))
+            .background(Color(nsColor: .textBackgroundColor))
             .cornerRadius(8)
             .padding(.horizontal)
         }
@@ -48,7 +48,10 @@ struct OCRMergedTextView: View {
 
         var searchStartIndex = attributedString.startIndex
 
-        for (sectionIndex, section) in ocrSections.enumerated() {
+        // Get all sections from bands
+        let allSections = bands.flatMap { $0.sections }
+
+        for (sectionIndex, section) in allSections.enumerated() {
             let colorIndex = sectionIndex % sectionColors.count
             let sectionColor = sectionColors[colorIndex]
             let sectionText = section.mergedText
@@ -70,10 +73,10 @@ struct OCRMergedTextView: View {
 // MARK: - Preview
 
 #Preview {
-    let mockSections: [OCRSection] = []
+    let mockBands: [OCRBand] = []
 
     return OCRMergedTextView(
-        ocrSections: mockSections,
+        bands: mockBands,
         mergedText: "Sample merged text for preview"
     )
     .frame(width: 400, height: 600)

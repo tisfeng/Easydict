@@ -22,18 +22,18 @@ class OCRWindowManager: ObservableObject {
     /// Shows the OCR debug window with the provided data
     /// - Parameters:
     ///   - image: The OCR source image
-    ///   - ocrSections: Array of OCR sections containing observations, merged text, and language
-    ///   - mergedText: The final merged text from all sections
+    ///   - bands: Array of OCR bands containing sections with observations, merged text, and language
+    ///   - mergedText: The final merged text from all bands
     func showWindow(
         image: NSImage,
-        ocrSections: [OCRSection],
+        bands: [OCRBand],
         mergedText: String
     ) {
         if ocrWindow == nil {
             // Create new window with new ViewModel
             let viewModel = OCRDebugViewModel(
                 image: image,
-                ocrSections: ocrSections,
+                bands: bands,
                 mergedText: mergedText
             )
             currentViewModel = viewModel
@@ -65,7 +65,11 @@ class OCRWindowManager: ObservableObject {
         } else {
             // Update existing window data
             if let viewModel = currentViewModel {
-                viewModel.updateData(image: image, ocrSections: ocrSections, mergedText: mergedText)
+                viewModel.updateData(
+                    image: image,
+                    bands: bands,
+                    mergedText: mergedText
+                )
             }
         }
     }

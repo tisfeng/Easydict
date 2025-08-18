@@ -28,21 +28,21 @@ struct OCRDebugView: View {
             // Left side: Image with overlay
             OCRImageView(
                 image: viewModel.image,
-                sections: viewModel.ocrSections.map { $0.observations },
+                bands: viewModel.bands,
                 selectedIndex: $viewModel.selectedIndex
             )
             .frame(minWidth: 400)
 
-            // Middle: Text analysis results
-            OCRSectionView(
-                ocrSections: viewModel.ocrSections,
+            // Middle: Band analysis results
+            OCRBandView(
+                bands: viewModel.bands,
                 selectedIndex: $viewModel.selectedIndex
             )
             .frame(minWidth: 300)
 
             // Right side: All Merged Text
             OCRMergedTextView(
-                ocrSections: viewModel.ocrSections,
+                bands: viewModel.bands,
                 mergedText: viewModel.mergedText
             )
             .frame(minWidth: 400)
@@ -56,57 +56,13 @@ struct OCRDebugView: View {
     }
 }
 
-// MARK: - OCRDebugViewModel
-
-/// ViewModel for OCR debug data
-@MainActor
-class OCRDebugViewModel: ObservableObject {
-    // MARK: Lifecycle
-
-    init(
-        image: NSImage,
-        ocrSections: [OCRSection],
-        mergedText: String
-    ) {
-        self.image = image
-        self.ocrSections = ocrSections
-        self.mergedText = mergedText
-
-        // Default to first section if available
-        if !ocrSections.isEmpty {
-            self.selectedIndex = 0
-        }
-    }
-
-    // MARK: Internal
-
-    @Published var image: NSImage
-    @Published var ocrSections: [OCRSection]
-    @Published var selectedIndex: Int?
-    @Published var mergedText: String
-
-    /// Update the data without recreating the view
-    func updateData(image: NSImage, ocrSections: [OCRSection], mergedText: String) {
-        self.image = image
-        self.ocrSections = ocrSections
-        self.mergedText = mergedText
-
-        // Reset to first section or stay within bounds
-        if !ocrSections.isEmpty {
-            selectedIndex = 0
-        } else {
-            selectedIndex = -1
-        }
-    }
-}
-
 // MARK: - Preview
 
 #Preview {
     let mockImage = NSImage(size: NSSize(width: 100, height: 100))
-    let mockSectionMetrics: [OCRSection] = []
+    let mockBands: [OCRBand] = []
     let viewModel = OCRDebugViewModel(
-        image: mockImage, ocrSections: mockSectionMetrics, mergedText: "Sample merged text"
+        image: mockImage, bands: mockBands, mergedText: "Sample merged text"
     )
 
     return OCRDebugView(viewModel: viewModel)

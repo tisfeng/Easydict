@@ -42,7 +42,9 @@ public class AppleOCREngine: NSObject {
 
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {
-            throw QueryError.error(type: .parameter, message: "Failed to convert NSImage to CGImage")
+            throw QueryError.error(
+                type: .parameter, message: "Failed to convert NSImage to CGImage"
+            )
         }
 
         let startTime = CFAbsoluteTimeGetCurrent()
@@ -60,13 +62,16 @@ public class AppleOCREngine: NSObject {
         let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
         let rawProbabilities = languageDetector.rawProbabilities
         let textAnalysis = languageDetector.getTextAnalysis()
-        log("Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)")
+        log(
+            "Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)"
+        )
 
         // If OCR text is long enough, consider its detected language confident.
         // If text is too short, we need to recognize it with all candidate languages.
         let hasEnoughLength = mergedText.count > 50
         let hasDesignatedLanguage = language != .auto
-        let smartMerging = hasDesignatedLanguage || hasEnoughLength || hasDominantLanguage(in: rawProbabilities)
+        let smartMerging =
+            hasDesignatedLanguage || hasEnoughLength || hasDominantLanguage(in: rawProbabilities)
         log("Merged text count: \(mergedText.count)")
         log("Performing OCR text processing, smart merging: \(smartMerging)")
 
@@ -110,13 +115,13 @@ public class AppleOCREngine: NSObject {
         Task { @MainActor in
             OCRWindowManager.shared.showWindow(
                 image: image,
-                ocrSections: textProcessor.ocrSections,
+                bands: textProcessor.bands,
                 mergedText: mergedText
             )
         }
     }
 
-    /// Callback-based text recognition for backward compatibility.
+    /// Callback-based text recognition api
     func recognizeText(
         image: NSImage,
         language: Language = .auto,
@@ -343,7 +348,8 @@ public class AppleOCREngine: NSObject {
         let secondHighest = sortedProbabilities[1]
 
         // Check both conditions for dominant language
-        let hasDominant = highest > minDominantProbability && (highest - secondHighest) > minProbabilityGap
+        let hasDominant =
+            highest > minDominantProbability && (highest - secondHighest) > minProbabilityGap
         log(
             "Has dominant language: \(hasDominant), highest: \(highest.string2f), second highest: \(secondHighest.string2f)"
         )

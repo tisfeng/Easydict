@@ -9,6 +9,12 @@
 import Foundation
 import Vision
 
+// MARK: - OCRBand
+
+struct OCRBand {
+    let sections: [OCRSection]
+}
+
 // MARK: - OCRSection
 
 /// A comprehensive data structure that holds metrics, statistics, and processed results for a section of OCR observations.
@@ -29,17 +35,13 @@ class OCRSection {
     ) {
         self.init()
         self.language = language
-
-        if let ocrImage = ocrImage {
-            self.ocrImage = ocrImage
-        }
+        self.ocrImage = ocrImage
+        self.observations = observations
 
         // If no text observations provided, return early
         guard !observations.isEmpty else {
             return
         }
-
-        self.observations = observations
 
         // If we have both image and observations, perform full setup
         if let ocrImage {

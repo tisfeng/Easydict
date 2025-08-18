@@ -16,7 +16,7 @@ extension OCRTestSample {
 
     static let chineseCases: [OCRTestSample] = [
         .zhText1, .zhText2, .zhText3, .zhText4,
-        .zhTextBitcoin, .zhTextList1, .zhTextTwoColums1,
+        .zhTextBitcoin, .zhTextList1, .zhTextTwoColums1, .zhTextTwoColums2,
         .zhPoetry1, .zhPoetry2, .zhPoetry3, .zhPoetry4, .zhPoetry5, .zhPoetry6, .zhPoetry7, .zhPoetry8,
         .zhPoetry9, .zhPoetry10, .zhPoetry11, .zhPoetry12, .zhPoetry13,
     ]
@@ -131,6 +131,26 @@ extension OCRTestSample {
         写日记是一种方法。长期以来，与另一个人的每一次会面都是一种冲突。我感觉太多，太敏感。甚至最简单的谈话，我都会回味得精疲力竭。而最厉害的一次冲突一直使我不能自拔，折磨他人，也折磨自己。我所作的每首诗，写的每本书，都是为了一个目的-寻觅自己的思想，了解自己所处的位置。我所发现的并不能使我改变。我像一台不胜任的机器，在关键时出了故障，戛然而止：“不行了！”或者更糟，迁怒于有些无辜之人。
 
         《种梦根深》的出版让我结交了许多朋友。人们喜爱这本书，因而称我是一位亲密的朋友，这就比较难以作复。我开始无意中认识到这本书造成了一种错觉。我这里生活中的痛苦，因它而起的恼怒，很难提到。但愿现在我能穿破岩层，进入最底层，那里狂啸怒吼永不止息。我独身自处，大概不为什么，为的是我是一个不可救药的人，一种脾气让我离群索居。这种脾气，我本来可以利用，可从来也没有学会去利用。一句话、一个眼神、一个阴雨天，或者贪杯太多都会影响我的情绪。我需要孤独，同时又有一种恐惧。突然进入一种巨大的空虚寂
+        """,
+
+        zhTextTwoColums2: """
+        绿艳闲且静，红衣浅复深。
+        花心愁欲断，春色岂知心。
+
+        红豆生南国，春来发几枝。
+        愿君多采撷，此物最相思。
+
+        心同流水净，身与白云轻。
+        寂寂深山暮，微闻钟磬声。
+
+        春日在天涯，天涯日又斜。
+        莺啼如有泪，为湿最高花。
+
+        沅湘流不尽，屈子怨何深。
+        日暮秋风起，萧萧枫树林。
+
+        莫道萤光小，犹怀照夜心。
+        清风不识字，何故乱翻书。
         """,
 
         zhPoetry1: """
