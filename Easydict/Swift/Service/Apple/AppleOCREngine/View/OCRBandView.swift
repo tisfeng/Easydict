@@ -35,7 +35,8 @@ struct OCRBandView: View {
                 .padding(.horizontal)
 
                 // Band cards
-                ForEach(Array(bands.enumerated()), id: \.offset) { bandIndex, band in
+                ForEach(bands.indices, id: \.self) { bandIndex in
+                    let band = bands[bandIndex]
                     let bandStartIndex = calculateBandStartIndex(bandIndex: bandIndex)
 
                     OCRBandCard(
@@ -95,11 +96,7 @@ struct OCRBandCard: View {
 
                 Spacer()
 
-                Button(action: {
-                    withAnimation(.easeInOut(duration: .ocrDuration)) {
-                        isExpanded.toggle()
-                    }
-                }) {
+                Button(action: toggleExpansion) {
                     Image(systemSymbol: .chevronRight)
                         .font(.headline)
                         .frame(width: 20, height: 20)
@@ -107,24 +104,23 @@ struct OCRBandCard: View {
                         .animation(.easeInOut(duration: .ocrDuration), value: isExpanded)
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 10)
             .padding(.vertical, 12)
             .background(Color.green.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            .onTapGesture(perform: toggleExpansion)
 
             // Sections (when expanded)
             if isExpanded {
-                ForEach(Array(band.sections.enumerated()), id: \.offset) { sectionIndex, section in
+                ForEach(band.sections.indices, id: \.self) { sectionIndex in
+                    let section = band.sections[sectionIndex]
                     let globalSectionIndex = bandStartIndex + sectionIndex
                     let isSelected = selectedSectionIndex == globalSectionIndex
 
                     OCRSectionCard(
                         sectionIndex: globalSectionIndex,
                         ocrSection: section,
-                        isSelected: isSelected,
-                        isExpanded: isSelected,
-                        bandIndex: bandIndex,
-                        localSectionIndex: sectionIndex
+                        isSelected: isSelected
                     ) {
                         withAnimation(.easeInOut(duration: .ocrDuration)) {
                             onSectionTap(sectionIndex)
@@ -154,6 +150,13 @@ struct OCRBandCard: View {
     // MARK: Private
 
     @State private var isExpanded = true
+
+    /// Toggles the expansion state of the band card
+    private func toggleExpansion() {
+        withAnimation(.easeInOut(duration: .ocrDuration)) {
+            isExpanded.toggle()
+        }
+    }
 }
 
 // MARK: - OCRSectionCard
@@ -166,17 +169,11 @@ struct OCRSectionCard: View {
         sectionIndex: Int,
         ocrSection: OCRSection,
         isSelected: Bool,
-        isExpanded: Bool,
-        bandIndex: Int? = nil,
-        localSectionIndex: Int? = nil,
         onTap: @escaping () -> ()
     ) {
         self.sectionIndex = sectionIndex
         self.ocrSection = ocrSection
         self.isSelected = isSelected
-        self.isExpanded = isExpanded
-        self.bandIndex = bandIndex
-        self.localSectionIndex = localSectionIndex
         self.onTap = onTap
     }
 
@@ -185,9 +182,6 @@ struct OCRSectionCard: View {
     let sectionIndex: Int
     let ocrSection: OCRSection
     let isSelected: Bool
-    let isExpanded: Bool
-    let bandIndex: Int?
-    let localSectionIndex: Int?
     let onTap: () -> ()
 
     var body: some View {
@@ -201,7 +195,7 @@ struct OCRSectionCard: View {
                     HStack {
                         Text(verbatim: "Section \(sectionIndex + 1)")
                             .font(.subheadline)
-                            .fontWeight(.medium)
+                            .fontWeight(.semibold)
 
                         // Language badge
                         Text(verbatim: ocrSection.detectedLanguage.description)
@@ -232,18 +226,21 @@ struct OCRSectionCard: View {
                         .lineLimit(1)
                 }
             }
-            .contentShape(Rectangle())
+            .padding(.vertical, 6)
+            .padding(.horizontal, 10)
+            .background(Color.gray.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
             .onTapGesture(perform: onTap)
 
-            if isExpanded {
-                Divider()
+            if isSelected {
+                Divider().padding(.vertical, 4)
 
                 // Section merged text
                 if !ocrSection.mergedText.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(verbatim: "Merged Text:")
                             .font(.subheadline)
-                            .fontWeight(.semibold)
+                            .fontWeight(.medium)
 
                         Text(ocrSection.mergedText)
                             .font(.body)
@@ -252,9 +249,9 @@ struct OCRSectionCard: View {
                             .cornerRadius(6)
                             .textSelection(.enabled)
                     }
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, 10)
 
-                    Divider()
+                    Divider().padding(.vertical, 4)
                 }
 
                 // Section text observations
@@ -264,7 +261,8 @@ struct OCRSectionCard: View {
                         .fontWeight(.medium)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        ForEach(Array(observations.enumerated()), id: \.offset) { index, observation in
+                        ForEach(observations.indices, id: \.self) { index in
+                            let observation = observations[index]
                             Text(verbatim: "[\(index)] \"\(observation.firstText)\"")
                                 .font(.system(.caption))
                                 .textSelection(.enabled)
@@ -272,18 +270,20 @@ struct OCRSectionCard: View {
                     }
                     .padding(.leading, 10)
                 }
-                .padding(.top, 4)
+                .padding(.vertical, 4)
+                .padding(.horizontal, 10)
             }
         }
-        .padding()
+        .padding(8)
         .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 1)
+                .stroke(isSelected ? Color.blue : Color.gray.opacity(0.3), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
     }
 }
 
 extension Double {
+    /// Duration for OCR animations
     static let ocrDuration: Double = 0.15
 }

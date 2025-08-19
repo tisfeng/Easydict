@@ -38,6 +38,10 @@ public class AppleOCREngine: NSObject {
     func recognizeText(image: NSImage, language: Language = .auto) async throws -> EZOCRResult {
         log("Recognizing text in image with language: \(language), image size: \(image.size)")
 
+        guard image.isValid else {
+            throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
+        }
+
         image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
 
         // Convert NSImage to CGImage

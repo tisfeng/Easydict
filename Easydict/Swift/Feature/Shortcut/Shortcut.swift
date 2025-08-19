@@ -20,7 +20,7 @@ public enum ShortcutType: String {
     case snipTranslate = "EZSnipShortcutKey"
     case selectTranslate = "EZSelectionShortcutKey"
     case showMiniWindow = "EZShowMiniShortcutKey"
-    case silentScreenshotOcr = "EZScreenshotOCRShortcutKey"
+    case silentScreenshotOCR = "EZScreenshotOCRShortcutKey"
     case pasteboardOCR = "EZPasteboardOCRShortcutKey"
 
     // In App
@@ -50,7 +50,7 @@ extension ShortcutType {
             "menu_screenshot_Translate"
         case .selectTranslate:
             "menu_selectWord_Translate"
-        case .silentScreenshotOcr:
+        case .silentScreenshotOCR:
             "menu_silent_screenshot_OCR"
         case .showMiniWindow:
             "menu_show_mini_window"
@@ -157,7 +157,7 @@ extension Shortcut {
         // selectTranslate
         bindingShortcut(keyCombo: Defaults[.selectionShortcut], type: .selectTranslate)
         // silentScreenshotOcr
-        bindingShortcut(keyCombo: Defaults[.screenshotOCRShortcut], type: .silentScreenshotOcr)
+        bindingShortcut(keyCombo: Defaults[.screenshotOCRShortcut], type: .silentScreenshotOCR)
         // showMiniWindow
         bindingShortcut(keyCombo: Defaults[.showMiniWindowShortcut], type: .showMiniWindow)
         // pasteboardOCR
@@ -195,12 +195,12 @@ extension Shortcut {
                 target: Shortcut.shared,
                 action: #selector(Shortcut.selectTextTranslate)
             )
-        case .silentScreenshotOcr:
+        case .silentScreenshotOCR:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
                 target: Shortcut.shared,
-                action: #selector(Shortcut.screenshotOCR)
+                action: #selector(Shortcut.silentScreenshotOCR)
             )
         case .showMiniWindow:
             hotKey = HotKey(
@@ -236,7 +236,7 @@ struct KeyboardShortcut: ViewModifier {
             .snipShortcut
         case .selectTranslate:
             .selectionShortcut
-        case .silentScreenshotOcr:
+        case .silentScreenshotOCR:
             .screenshotOCRShortcut
         case .pasteboardOCR:
             .pasteboardOCRShortcut

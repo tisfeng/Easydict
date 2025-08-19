@@ -83,7 +83,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)didActivateApplication:(NSNotification *)notification {
-//    MMLogInfo(@"did activate application: %@", notification);
+    //    MMLogInfo(@"did activate application: %@", notification);
 
     /**
      Fix https://github.com/tisfeng/Easydict/issues/858
@@ -252,8 +252,8 @@ static EZWindowManager *_instance;
 - (void)setLastPoint:(CGPoint)lastPoint {
     _lastPoint = lastPoint;
 
-//    MMLogInfo(@"lastPoint: %@", @(lastPoint));
-//    MMLogInfo(@"screen: %@", @(self.screen.frame));
+    //    MMLogInfo(@"lastPoint: %@", @(lastPoint));
+    //    MMLogInfo(@"screen: %@", @(self.screen.frame));
 
     [EZLayoutManager.shared updateScreen:self.screen];
 }
@@ -854,7 +854,7 @@ static EZWindowManager *_instance;
 
 - (void)snipTranslate {
     MMLogInfo(@"snipTranslate");
-    
+
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
     [self closeFloatingWindowIfNotPinnedOrMain];
 
@@ -863,20 +863,33 @@ static EZWindowManager *_instance;
     }];
 }
 
-
-- (void)screenshotOCR {
-    MMLogInfo(@"Screenshot and OCR");
+/// Silent screenshot and OCR, without showing floating window.
+- (void)silentScreenshotOCR {
+    MMLogInfo(@"Silent screenshot and OCR");
 
     [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
         if (!image) {
             return;
         }
 
-        // Just OCR image, don't show floating window.
         self.actionType = EZActionTypeScreenshotOCR;
         [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType];
     }];
 }
+
+- (void)screenshotOCR {
+    MMLogInfo(@"Screenshot OCR");
+
+    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+        AppleOCREngine *appleOCREngine = [AppleOCREngine new];
+        [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
+            if (error) {
+                MMLogError(@"OCR Preview failed: %@", error.localizedDescription);
+            }
+        }];
+    }];
+}
+
 
 - (void)pasteboardOCR {
     MMLogInfo(@"Pasteboard OCR");
@@ -887,12 +900,13 @@ static EZWindowManager *_instance;
         MMLogWarn(@"No image in pasteboard");
         return;
     }
-        
+
     AppleOCREngine *appleOCREngine = [AppleOCREngine new];
     [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
-            
+
     }];
 }
+
 
 - (void)pasteboardTranslate {
     MMLogInfo(@"Pasteboard OCR");
@@ -900,7 +914,7 @@ static EZWindowManager *_instance;
     // Get image from pasteboard
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.getImage;
-    
+
     [self showFloatingWindowWithOCRImage:image actionType:EZActionTypePasteboardOCR];
 }
 
@@ -910,12 +924,12 @@ static EZWindowManager *_instance;
         MMLogWarn(@"Image is nil, cannot show OCR window");
         return;
     }
-    
+
     MMLogInfo(@"Show window with OCR image");
-    
+
     EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-    
+
     // Reset window height first, avoid being affected by previous window height.
     [window.queryViewController resetTableView:^{
         self.actionType = actionType;
@@ -930,7 +944,7 @@ static EZWindowManager *_instance;
  * @param restorePreviousApp Whether to restore the previous application after capture
  * @param imageHandler Block to handle the captured image
  */
-- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp 
+- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp
                            completion:(void (^)(NSImage *_Nullable image))imageHandler {
     MMLogInfo(@"Starting capture");
 
@@ -947,6 +961,9 @@ static EZWindowManager *_instance;
     void (^captureCompletion)(NSImage *_Nullable) = ^(NSImage *_Nullable image) {
         if (!image) {
             MMLogWarn(@"Failed to capture screenshot");
+            if (imageHandler) {
+                imageHandler(nil);
+            }
             return;
         }
 

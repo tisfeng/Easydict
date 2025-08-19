@@ -25,9 +25,11 @@ struct OCRImageView: View {
 
             ZStack {
                 // Base image
+                // Note: padding() will disturb observation bounding boxes
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .border(Color.gray.opacity(0.5))
 
                 // Overlay with bounding boxes
                 OCRBoundingBoxOverlay(
@@ -36,7 +38,8 @@ struct OCRImageView: View {
                     imageSize: image.size
                 )
             }
-            .border(Color.gray.opacity(0.5), width: 1)
+            .background(.gray.opacity(0.15)) // Image background may be white, so use a light gray
+            .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding()
         }
     }
@@ -57,25 +60,26 @@ struct OCRBoundingBoxOverlay: View {
             // Canvas for drawing bounding boxes
             Canvas { context, size in
                 // Calculate the actual image display area within the view
-                let imageDisplayInfo = calculateImageDisplayInfo(
-                    viewSize: size, imageSize: imageSize
-                )
-
-                // Draw band bounding boxes (orange for bands)
-                for band in bands {
-                    let bandBoundingBox = band.sections.flatMap { $0.observations }
-                        .calculateSectionBoundingBox()
-                    drawBandBoundingBox(
-                        context: context,
-                        boundingBox: bandBoundingBox,
-                        imageDisplayInfo: imageDisplayInfo
-                    )
-                }
+                let imageDisplayInfo = calculateImageDisplayInfo(viewSize: size, imageSize: imageSize)
 
                 // Get all sections from bands
                 let allSections = bands.flatMap { $0.sections }
 
-                // Draw section bounding boxes (green for unselected, orange for selected)
+                // Draw bounding boxes order: observations, sections, bands
+                // The border behind will cover the front one
+
+                // Draw individual text observation bounding boxes (blue)
+                for section in allSections {
+                    for observation in section.observations {
+                        drawTextObservationBoundingBox(
+                            context: context,
+                            observation: observation,
+                            imageDisplayInfo: imageDisplayInfo
+                        )
+                    }
+                }
+
+                // Draw section bounding boxes
                 for (sectionIndex, section) in allSections.enumerated() {
                     let sectionBoundingBox = section.observations.calculateSectionBoundingBox()
                     let isSelected = selectedIndex == sectionIndex
@@ -88,15 +92,15 @@ struct OCRBoundingBoxOverlay: View {
                     )
                 }
 
-                // Draw individual text observation bounding boxes (blue)
-                for section in allSections {
-                    for observation in section.observations {
-                        drawTextObservationBoundingBox(
-                            context: context,
-                            observation: observation,
-                            imageDisplayInfo: imageDisplayInfo
-                        )
-                    }
+                // Draw band bounding boxes
+                for band in bands {
+                    let observations = band.sections.flatMap { $0.observations }
+                    let bandBoundingBox = observations.calculateSectionBoundingBox()
+                    drawBandBoundingBox(
+                        context: context,
+                        boundingBox: bandBoundingBox,
+                        imageDisplayInfo: imageDisplayInfo
+                    )
                 }
             }
 
@@ -116,14 +120,13 @@ struct OCRBoundingBoxOverlay: View {
                     .onTapGesture { location in
                         // Find which section was tapped based on coordinates
                         for (sectionIndex, section) in allSections.enumerated() {
-                            let sectionBoundingBox = section.observations
-                                .calculateSectionBoundingBox()
+                            let sectionBoundingBox = section.observations.calculateSectionBoundingBox()
                             let displayRect = convertVisionRectToDisplayRect(
                                 sectionBoundingBox, imageDisplayInfo: imageDisplayInfo
                             )
 
                             if displayRect.contains(location) {
-                                print("Tapped section \(sectionIndex) at \(location)") // Debug print
+                                print("Tapped section \(sectionIndex) at \(location)")
 
                                 withAnimation(.easeInOut(duration: .ocrDuration)) {
                                     selectedIndex = sectionIndex
@@ -131,7 +134,7 @@ struct OCRBoundingBoxOverlay: View {
                                 return
                             }
                         }
-                        print("Tapped outside sections at \(location)") // Debug print
+                        print("Tapped outside sections at \(location)")
                     }
             }
         }
@@ -168,73 +171,6 @@ struct OCRBoundingBoxOverlay: View {
         return ImageDisplayInfo(size: displaySize, offset: displayOffset)
     }
 
-    private func drawSectionBoundingBox(
-        context: GraphicsContext,
-        boundingBox: CGRect,
-        imageDisplayInfo: ImageDisplayInfo,
-        isSelected: Bool
-    ) {
-        let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
-        let strokeWidth = 3.0
-
-        if isSelected {
-            // Selected: draw thick orange border with slight background highlight
-            let orangeColor = Color.orange
-
-            // Draw a slight background highlight
-            context.fill(
-                Path(rect),
-                with: .color(orangeColor.opacity(0.15))
-            )
-
-            // Draw the border
-            context.stroke(
-                Path(rect),
-                with: .color(orangeColor),
-                lineWidth: strokeWidth
-            )
-        } else {
-            // Unselected: draw thin green border
-            context.stroke(
-                Path(rect),
-                with: .color(.green),
-                lineWidth: strokeWidth
-            )
-        }
-    }
-
-    private func drawBandBoundingBox(
-        context: GraphicsContext,
-        boundingBox: CGRect,
-        imageDisplayInfo: ImageDisplayInfo
-    ) {
-        let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
-        let strokeWidth = 4.0
-
-        // Draw thick orange border for bands
-        context.stroke(
-            Path(rect),
-            with: .color(.orange),
-            lineWidth: strokeWidth
-        )
-    }
-
-    private func drawTextObservationBoundingBox(
-        context: GraphicsContext,
-        observation: VNRecognizedTextObservation,
-        imageDisplayInfo: ImageDisplayInfo
-    ) {
-        let rect = convertVisionRectToDisplayRect(
-            observation.boundingBox, imageDisplayInfo: imageDisplayInfo
-        )
-
-        context.stroke(
-            Path(rect),
-            with: .color(.blue),
-            lineWidth: 1.0
-        )
-    }
-
     private func convertVisionRectToDisplayRect(
         _ visionRect: CGRect, imageDisplayInfo: ImageDisplayInfo
     )
@@ -253,6 +189,78 @@ struct OCRBoundingBoxOverlay: View {
             y: displayY,
             width: displayWidth,
             height: displayHeight
+        )
+    }
+
+    // MARK: - Drawing Functions
+
+    /// Draw band bounding box with a thick green border
+    private func drawBandBoundingBox(
+        context: GraphicsContext,
+        boundingBox: CGRect,
+        imageDisplayInfo: ImageDisplayInfo
+    ) {
+        let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
+        let strokeWidth = 4.0
+
+        // Draw thick red border for bands
+        context.stroke(
+            Path(rect),
+            with: .color(.red),
+            lineWidth: strokeWidth
+        )
+    }
+
+    /// Draw section bounding box with different styles based on selection state
+    private func drawSectionBoundingBox(
+        context: GraphicsContext,
+        boundingBox: CGRect,
+        imageDisplayInfo: ImageDisplayInfo,
+        isSelected: Bool
+    ) {
+        let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
+        let strokeWidth = 3.0
+
+        if isSelected {
+            // Selected: draw thick orange border with slight background highlight
+            let selectedColor = Color.orange
+
+            // Draw a slight background highlight
+            context.fill(
+                Path(rect),
+                with: .color(selectedColor.opacity(0.15)) // orange is a good fill color
+            )
+
+            // Draw the border
+            context.stroke(
+                Path(rect),
+                with: .color(selectedColor),
+                lineWidth: strokeWidth
+            )
+        } else {
+            // Unselected: draw thin green border
+            context.stroke(
+                Path(rect),
+                with: .color(.green),
+                lineWidth: strokeWidth
+            )
+        }
+    }
+
+    /// Draw individual text observation bounding box with a blue border
+    private func drawTextObservationBoundingBox(
+        context: GraphicsContext,
+        observation: VNRecognizedTextObservation,
+        imageDisplayInfo: ImageDisplayInfo
+    ) {
+        let rect = convertVisionRectToDisplayRect(
+            observation.boundingBox, imageDisplayInfo: imageDisplayInfo
+        )
+
+        context.stroke(
+            Path(rect),
+            with: .color(.blue),
+            lineWidth: 1.0
         )
     }
 }

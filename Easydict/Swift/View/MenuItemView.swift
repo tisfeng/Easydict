@@ -40,26 +40,26 @@ struct MenuItemView: View {
         Group {
             versionItem
             Divider()
-            inputItem
-                .keyboardShortcut(.inputTranslate)
-            screenshotItem
-                .keyboardShortcut(.snipTranslate)
-            selectWordItem
-                .keyboardShortcut(.selectTranslate)
-            miniWindowItem
-                .keyboardShortcut(.showMiniWindow)
+            inputItem.keyboardShortcut(.inputTranslate)
+            screenshotItem.keyboardShortcut(.snipTranslate)
+            selectWordItem.keyboardShortcut(.selectTranslate)
+            miniWindowItem.keyboardShortcut(.showMiniWindow)
+
             Divider()
-            ocrItem
-                .keyboardShortcut(.silentScreenshotOcr)
-            pasteboardOcrItem
+
+            silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
+            screenshotOCRItem
+            pasteboardOCRItem
+
             Divider()
-            settingItem
-                .keyboardShortcut(.init(","))
+
+            settingItem.keyboardShortcut(.init(","))
             checkUpdateItem
             helpItem
+
             Divider()
-            quitItem
-                .keyboardShortcut(.init("q"))
+
+            quitItem.keyboardShortcut(.init("q"))
         }
         .task {
             latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
@@ -101,14 +101,14 @@ struct MenuItemView: View {
             SettingsLink {
                 Text("Settings...")
             } preAction: {
-                logInfo("打开设置")
+                logInfo("Open App Settings")
                 NSApp.activate(ignoringOtherApps: true)
             } postAction: {
                 // nothing to do
             }
         } else {
             Button("Settings...") {
-                logInfo("打开设置")
+                logInfo("Open App Settings")
                 NSApp.activate(ignoringOtherApps: true)
                 NSApplication.shared.sendAction(
                     Selector(("showSettingsWindow:")), to: nil, from: nil
@@ -121,7 +121,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var inputItem: some View {
         Button {
-            logInfo("输入翻译")
+            logInfo("Input Translate")
             EZWindowManager.shared().inputTranslate()
         } label: {
             HStack {
@@ -133,7 +133,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var screenshotItem: some View {
         Button {
-            logInfo("截图翻译")
+            logInfo("Screenshot Translate")
             EZWindowManager.shared().snipTranslate()
         } label: {
             HStack {
@@ -145,7 +145,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var selectWordItem: some View {
         Button {
-            logInfo("划词翻译")
+            logInfo("Select Text Translate")
             EZWindowManager.shared().selectTextTranslate()
         } label: {
             HStack {
@@ -157,7 +157,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var miniWindowItem: some View {
         Button {
-            logInfo("显示迷你窗口")
+            logInfo("Show Mini Window")
             EZWindowManager.shared().showMiniFloatingWindow()
         } label: {
             HStack {
@@ -167,10 +167,10 @@ struct MenuItemView: View {
         }
     }
 
-    @ViewBuilder private var ocrItem: some View {
+    @ViewBuilder private var silentScreenshotOCRItem: some View {
         Button {
-            logInfo("静默截图OCR")
-            EZWindowManager.shared().screenshotOCR()
+            logInfo("Silent Screenshot OCR")
+            EZWindowManager.shared().silentScreenshotOCR()
         } label: {
             HStack {
                 Image(systemSymbol: .cameraMeteringSpot)
@@ -179,7 +179,18 @@ struct MenuItemView: View {
         }
     }
 
-    @ViewBuilder private var pasteboardOcrItem: some View {
+    @ViewBuilder private var screenshotOCRItem: some View {
+        Button {
+            EZWindowManager.shared().screenshotOCR()
+        } label: {
+            HStack {
+                Image(systemSymbol: .rectangleAndPencilAndEllipsis)
+                Text("menu_screenshot_OCR")
+            }
+        }
+    }
+
+    @ViewBuilder private var pasteboardOCRItem: some View {
         Button {
             EZWindowManager.shared().pasteboardOCR()
         } label: {
@@ -194,14 +205,14 @@ struct MenuItemView: View {
 
     @ViewBuilder private var checkUpdateItem: some View {
         Button("check_updates") {
-            logInfo("检查更新")
+            logInfo("Check Updates")
             Configuration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 
     @ViewBuilder private var quitItem: some View {
         Button("quit") {
-            logInfo("退出应用")
+            logInfo("Quit Application")
             NSApplication.shared.terminate(nil)
         }
     }
@@ -209,6 +220,7 @@ struct MenuItemView: View {
     @ViewBuilder private var helpItem: some View {
         Menu("Help") {
             Button("Feedback") {
+                logInfo("Open Feedback")
                 guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
                     return
                 }
@@ -218,7 +230,7 @@ struct MenuItemView: View {
                 exportLogAction()
             }
             Button("Log Directory") {
-                logInfo("日志目录")
+                logInfo("Open Log Directory")
                 let logPath = MMManagerForLog.rootLogDirectory() ?? ""
                 let directoryURL = URL(fileURLWithPath: logPath)
                 NSWorkspace.shared.open(directoryURL)
@@ -227,7 +239,7 @@ struct MenuItemView: View {
     }
 
     private func exportLogAction() {
-        logInfo("导出日志")
+        logInfo("Export Log")
         let logPath = MMManagerForLog.rootLogDirectory() ?? ""
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH-mm-ss-SSS"
@@ -245,7 +257,7 @@ struct MenuItemView: View {
         if success {
             NSWorkspace.shared.selectFile(zipPath, inFileViewerRootedAtPath: "")
         } else {
-            logError("导出日志失败")
+            logError("Export log failed")
         }
     }
 }

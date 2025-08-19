@@ -2574,6 +2574,35 @@
         }
       }
     },
+    "menu_screenshot_OCR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screenshot OCR"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR snímka obrazovky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图 OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "螢幕截圖 OCR"
+          }
+        }
+      }
+    },
     "menu_screenshot_Translate" : {
       "extractionState" : "manual",
       "localizations" : {

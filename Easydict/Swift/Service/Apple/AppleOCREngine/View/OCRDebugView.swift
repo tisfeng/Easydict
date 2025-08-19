@@ -31,7 +31,7 @@ struct OCRDebugView: View {
                 bands: viewModel.bands,
                 selectedIndex: $viewModel.selectedIndex
             )
-            .frame(minWidth: 400)
+            .frame(minWidth: 500)
 
             // Middle: Band analysis results
             OCRBandView(
@@ -48,7 +48,7 @@ struct OCRDebugView: View {
             .frame(minWidth: 400)
         }
         .frame(
-            minWidth: 1100,
+            minWidth: 1200,
             maxWidth: .infinity,
             minHeight: 600,
             maxHeight: .infinity

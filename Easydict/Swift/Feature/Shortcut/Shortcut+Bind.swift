@@ -99,8 +99,8 @@ extension Shortcut {
     }
 
     @objc
-    func screenshotOCR() {
-        EZWindowManager.shared().screenshotOCR()
+    func silentScreenshotOCR() {
+        EZWindowManager.shared().silentScreenshotOCR()
     }
 
     @objc

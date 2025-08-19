@@ -47,109 +47,213 @@ public class OCRTextProcessor {
         smartMerging: Bool,
         textAnalysis: TextAnalysis?
     ) {
-        let recognizedTexts = observations.compactMap(\.firstText)
-
         // Set basic OCR result properties
-        ocrResult.texts = recognizedTexts
-        ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
-        ocrResult.raw = observations
+        updateOCRResult(ocrResult, observations: observations)
 
         log("\nOriginal OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)")
 
         // If intelligent joining is not enabled, return simple result
         guard smartMerging else { return }
 
-        // Step 1: Detect sections by analyzing spatial distribution
-        let bands = detectBands(observations: observations)
+        // Perform intelligent merging pipeline
+        performIntelligentMerging(
+            ocrResult,
+            observations: observations,
+            ocrImage: ocrImage,
+            textAnalysis: textAnalysis
+        )
+    }
 
-        let totalBands = bands.reduce(0) { $0 + $1.sections.count }
-        log("\nDetected \(bands.count) horizontal bands with \(totalBands) total sections")
+    // MARK: Private
 
+    private let languageDetector = AppleLanguageDetector()
+
+    /// Performs the intelligent merging pipeline for enhanced OCR processing.
+    private func performIntelligentMerging(
+        _ ocrResult: EZOCRResult,
+        observations: [VNRecognizedTextObservation],
+        ocrImage: NSImage,
+        textAnalysis: TextAnalysis?
+    ) {
         let startTime = CFAbsoluteTimeGetCurrent()
 
-        // Step 2: Process each horizontal band independently
+        // Step 1: Detect and process bands
+        let detectedBands = detectBands(observations)
+        let totalSections = detectedBands.reduce(0) { $0 + $1.sections.count }
+        log(
+            "\nDetected \(detectedBands.count) horizontal bands with \(totalSections) total sections"
+        )
+
+        // Step 2: Process all bands and sections
+        let (processedBands, totalConfidence) = processBands(
+            detectedBands,
+            ocrResult: ocrResult,
+            ocrImage: ocrImage,
+            textAnalysis: textAnalysis
+        )
+
+        // Step 3: Store results and calculate confidence
+        bands = processedBands
+        let averageConfidence = calculateAverageConfidence(
+            processedBands, totalConfidence: totalConfidence
+        )
+        log("Merge \(totalSections) sections cost time \(startTime.elapsedTimeString) seconds")
+
+        // Step 4: Merge bands and finalize result
+        let finalMergedText = mergeBandsToFinalText(processedBands)
+        updateOCRResult(ocrResult, mergedText: finalMergedText, confidence: averageConfidence)
+    }
+
+    /// Processes all bands and their sections to create processed OCRBand objects.
+    private func processBands(
+        _ bands: [OCRBand],
+        ocrResult: EZOCRResult,
+        ocrImage: NSImage,
+        textAnalysis: TextAnalysis?
+    )
+        -> (processedBands: [OCRBand], totalConfidence: Double) {
         var processedBands: [OCRBand] = []
         var totalConfidence = 0.0
 
-        for (index, band) in bands.enumerated() {
-            log("\nProcessing band \(index + 1) with \(band.sections.count) sections")
+        for (bandIndex, band) in bands.enumerated() {
+            log("\nProcessing band \(bandIndex + 1) with \(band.sections.count) sections")
 
-            var processedSections: [OCRSection] = []
+            let (processedSections, bandConfidence) = processSectionsInBand(
+                band,
+                bandIndex: bandIndex,
+                ocrResult: ocrResult,
+                ocrImage: ocrImage,
+                textAnalysis: textAnalysis
+            )
 
-            // Process each section within this horizontal band
-            for (sIndex, section) in band.sections.enumerated() {
-                let observations = section.observations
-
-                log(
-                    "\nSection observations (\(observations.count)): \(observations.formattedDescription)"
-                )
-
-                var language = ocrResult.from
-                // If has no designated language, detect it automatically.
-                if language == .auto {
-                    // If text analysis is classical poetry or lyric, set language to classical Chinese.
-                    if let genre = textAnalysis?.genre, genre.isPoetryLyric {
-                        log("Text analysis genre: \(genre)")
-                        language = .classicalChinese
-                    } else {
-                        language = languageDetector.detectLanguage(
-                            text: observations.simpleMergedText
-                        )
-                        log("Detected language: \(language)")
-                    }
-                }
-
-                log(
-                    "\nProcessing section \(index + 1).\(sIndex + 1) with \(observations.count) observations (\(language)"
-                )
-
-                // Create metrics instance for this section
-                let ocrSection = OCRSection()
-
-                // If text language is classical Chinese, update metrics genre.
-                // Later, we can use this to determine if the text is poetry.
-                if language == .classicalChinese {
-                    ocrSection.genre = textAnalysis?.genre ?? .plain
-                }
-
-                ocrSection.setupWithOCRData(
-                    ocrImage: ocrImage,
-                    language: language,
-                    observations: observations
-                )
-
-                // Accumulate confidence for overall result
-                totalConfidence += Double(ocrSection.confidence)
-
-                // Create text merger with section-specific metrics for intra-section merging
-                let sectionTextMerger = OCRSectionMerger(section: ocrSection)
-
-                // Perform intelligent text merging within this section
-                let mergedText = sectionTextMerger.performSmartMerging()
-                log("\nMerged section [\(index + 1).\(sIndex + 1)]: \(mergedText)")
-
-                // Set the section results in the metrics object
-                ocrSection.setSectionResults(mergedText: mergedText, detectedLanguage: language)
-                processedSections.append(ocrSection)
-            }
-
-            // Create processed band with updated sections
-            let processedBand = OCRBand(sections: processedSections)
-            processedBands.append(processedBand)
+            totalConfidence += bandConfidence
+            processedBands.append(OCRBand(sections: processedSections))
         }
 
-        // Store processed bands for later access
-        self.bands = processedBands
+        return (processedBands, totalConfidence)
+    }
 
-        // Calculate average confidence across all sections
+    /// Processes all sections within a single band.
+    private func processSectionsInBand(
+        _ band: OCRBand,
+        bandIndex: Int,
+        ocrResult: EZOCRResult,
+        ocrImage: NSImage,
+        textAnalysis: TextAnalysis?
+    )
+        -> (processedSections: [OCRSection], bandConfidence: Double) {
+        var processedSections: [OCRSection] = []
+        var bandConfidence = 0.0
+
+        for (sectionIndex, section) in band.sections.enumerated() {
+            let observations = section.observations
+
+            log(
+                "\nSection observations (\(observations.count)): \(observations.formattedDescription)"
+            )
+
+            let language = detectLanguageForSection(
+                observations: observations,
+                ocrResult: ocrResult,
+                textAnalysis: textAnalysis
+            )
+
+            log(
+                "\nProcessing section \(bandIndex + 1).\(sectionIndex + 1) with \(observations.count) observations (\(language)"
+            )
+
+            let ocrSection = createAndSetupOCRSection(
+                observations: observations,
+                language: language,
+                ocrImage: ocrImage,
+                textAnalysis: textAnalysis
+            )
+
+            let mergedText = performSectionMerging(
+                ocrSection,
+                bandIndex: bandIndex,
+                sectionIndex: sectionIndex
+            )
+            ocrSection.setSectionResults(mergedText: mergedText, detectedLanguage: language)
+
+            bandConfidence += Double(ocrSection.confidence)
+            processedSections.append(ocrSection)
+        }
+
+        return (processedSections, bandConfidence)
+    }
+
+    /// Detects the appropriate language for a section.
+    private func detectLanguageForSection(
+        observations: [VNRecognizedTextObservation],
+        ocrResult: EZOCRResult,
+        textAnalysis: TextAnalysis?
+    )
+        -> Language {
+        var language = ocrResult.from
+        guard language == .auto else { return language }
+
+        // Check for classical poetry/lyric genre
+        if let genre = textAnalysis?.genre, genre.isPoetryLyric {
+            log("Text analysis genre: \(genre)")
+            return .classicalChinese
+        }
+
+        // Auto-detect language
+        language = languageDetector.detectLanguage(text: observations.simpleMergedText)
+        log("Detected language: \(language)")
+        return language
+    }
+
+    /// Creates and configures an OCRSection instance.
+    private func createAndSetupOCRSection(
+        observations: [VNRecognizedTextObservation],
+        language: Language,
+        ocrImage: NSImage,
+        textAnalysis: TextAnalysis?
+    )
+        -> OCRSection {
+        let ocrSection = OCRSection()
+
+        // Set genre for classical Chinese
+        if language == .classicalChinese {
+            ocrSection.genre = textAnalysis?.genre ?? .plain
+        }
+
+        ocrSection.setupWithOCRData(
+            ocrImage: ocrImage,
+            language: language,
+            observations: observations
+        )
+
+        return ocrSection
+    }
+
+    /// Performs text merging within a single section.
+    private func performSectionMerging(
+        _ section: OCRSection,
+        bandIndex: Int,
+        sectionIndex: Int
+    )
+        -> String {
+        let sectionTextMerger = OCRSectionMerger(section: section)
+        let mergedText = sectionTextMerger.performSmartMerging()
+        log("\nMerged section [\(bandIndex + 1).\(sectionIndex + 1)]: \(mergedText)")
+        return mergedText
+    }
+
+    /// Calculates average confidence across all processed sections.
+    private func calculateAverageConfidence(
+        _ processedBands: [OCRBand],
+        totalConfidence: Double
+    )
+        -> Double {
         let totalSectionCount = processedBands.reduce(0) { $0 + $1.sections.count }
-        let averageConfidence =
-            totalSectionCount == 0 ? 0.0 : totalConfidence / Double(totalSectionCount)
-        ocrResult.confidence = CGFloat(averageConfidence)
+        return totalSectionCount == 0 ? 0.0 : totalConfidence / Double(totalSectionCount)
+    }
 
-        log("Merge \(totalSectionCount) sections cost time \(startTime.elapsedTimeString) seconds")
-
-        // Step 3: Merge sections within each band, then merge bands
+    /// Merges all processed bands into final text.
+    private func mergeBandsToFinalText(_ processedBands: [OCRBand]) -> String {
         var mergedBandTexts: [String] = []
 
         for (bandIndex, band) in processedBands.enumerated() {
@@ -159,23 +263,43 @@ public class OCRTextProcessor {
             mergedBandTexts.append(bandText)
         }
 
-        // Step 4: Combine all bands with new paragraph separation
         let finalMergedText =
             mergedBandTexts
                 .filter { !$0.isEmpty }
                 .joined(separator: OCRMergeStrategy.newParagraph.separatorString())
                 .trim()
 
-        // Update OCR result with intelligently merged text
-        ocrResult.mergedText = finalMergedText
-        ocrResult.texts = ocrResult.mergedText.components(separatedBy: OCRConstants.lineSeparator)
-
-        log("\nOCR text (\(ocrResult.from), \(averageConfidence.string2f)): \(finalMergedText)\n")
+        return finalMergedText
     }
 
-    // MARK: Private
+    /// Updates OCR result with text data and optional confidence.
+    private func updateOCRResult(
+        _ ocrResult: EZOCRResult,
+        observations: [VNRecognizedTextObservation]? = nil,
+        mergedText: String? = nil,
+        confidence: Double? = nil
+    ) {
+        if let observations {
+            // Basic setup mode: set up initial properties from raw observations
+            let recognizedTexts = observations.compactMap(\.firstText)
+            ocrResult.texts = recognizedTexts
+            ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
+            ocrResult.raw = observations
+        }
 
-    private let languageDetector = AppleLanguageDetector()
+        if let mergedText {
+            // Finalization mode: update with processed text and confidence
+            ocrResult.mergedText = mergedText
+            ocrResult.texts = mergedText.components(separatedBy: OCRConstants.lineSeparator)
+
+            if let confidence {
+                ocrResult.confidence = CGFloat(confidence)
+                log("\nOCR text (\(ocrResult.from), \(confidence.string2f)): \(mergedText)\n")
+            }
+        }
+    }
+
+    // MARK: - Band Detection
 
     /// Detects sections and groups text observations by spatial regions.
     ///
@@ -191,7 +315,7 @@ public class OCRTextProcessor {
     /// - Parameter observations: All text observations.
     /// - Returns: Array of OCRHorizontalBands, each containing bands for that horizontal region.
     private func detectBands(
-        observations: [VNRecognizedTextObservation],
+        _ observations: [VNRecognizedTextObservation],
         maxColumns: Int = 2
     )
         -> [OCRBand] {

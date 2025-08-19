@@ -125,7 +125,7 @@ extension KeyHolderWrapper {
                 Defaults[.snipShortcut]
             case .selectTranslate:
                 Defaults[.selectionShortcut]
-            case .silentScreenshotOcr:
+            case .silentScreenshotOCR:
                 Defaults[.screenshotOCRShortcut]
             case .showMiniWindow:
                 Defaults[.showMiniWindowShortcut]
@@ -175,7 +175,7 @@ extension KeyHolderWrapper {
                 Defaults[.snipShortcut] = keyCombo
             case .selectTranslate:
                 Defaults[.selectionShortcut] = keyCombo
-            case .silentScreenshotOcr:
+            case .silentScreenshotOCR:
                 Defaults[.screenshotOCRShortcut] = keyCombo
             case .showMiniWindow:
                 Defaults[.showMiniWindowShortcut] = keyCombo
