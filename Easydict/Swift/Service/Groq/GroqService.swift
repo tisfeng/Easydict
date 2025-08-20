@@ -59,10 +59,13 @@ enum GroqModel: String, CaseIterable {
     // Pricing: https://groq.com/pricing/
 
     // Production Models
-    case gemma2_9b = "gemma2-9b-it" // 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD
-    case llama3_70b = "llama3-70b-8192" // 30 RPM, 14,400 RPD, 6,000 TPM, 500,000 TPD
+    case gemma2_9b = "gemma2-9b-it" // 30 RPM, 14.4k RPD, 15k TPM, 500k TPD
+    case llama3_70b = "llama3-70b-8192" // 30 RPM, 14.4k RPD, 6k TPM, 500k TPD
 
     // Preview Models
+    case gpt_oss_120b = "openai/gpt-oss-120b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
+    case gpt_oss_20b = "openai/gpt-oss-20b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
+
     case llama4_maverick_17b =
         "meta-llama/llama-4-maverick-17b-128e-instruct" // 30 RPM, 1,000 RPD, 6,000 TPM
 }

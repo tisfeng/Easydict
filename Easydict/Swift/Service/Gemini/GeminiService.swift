@@ -199,13 +199,10 @@ enum GeminiModel: String, CaseIterable {
     // RPM: Requests per minute
     // TPM: Tokens per minute
     // RPD: Requests per day
-    // TPD: Tokens per day
 
-    case gemini_2_5_flash = "gemini-2.5-flash" // 10 RPM | 250,000 TPM | 500 RPD
-    case gemini_2_5_pro = "gemini-2.5-pro" // No available for `Free Tier` users now.
-
-    case gemini_2_0_flash = "gemini-2.0-flash" // 15 RPM | 1,000,000 TPM | 1500 RPD
-    case gemini_2_0_flash_lite = "gemini-2.0-flash-lite" // 30 RPM | 1,000,000 TPM | 1500 RPD
+    case gemini_2_5_pro = "gemini-2.5-pro" // 5 RPM | 250,000 TPM | 100 RPD
+    case gemini_2_5_flash = "gemini-2.5-flash" // 10 RPM | 250,000 TPM | 250 RPD
+    case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // 15 RPM | 250,000 TPM | 1000 RPD
 }
 
 // swiftlint:enable identifier_name
