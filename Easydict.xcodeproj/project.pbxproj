@@ -383,6 +383,7 @@
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */; };
+		03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */; };
 		03F46BE52E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F46BE42E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png */; };
 		03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */; };
 		03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */; };
@@ -1046,6 +1047,7 @@
 		03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChinseseMarker.swift; sourceTree = "<group>"; };
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
+		03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindow.swift; sourceTree = "<group>"; };
 		03F46BE42E40F70100D35EF6 /* ocr-zh-text-two-columns-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-two-columns-1.png"; sourceTree = "<group>"; };
 		03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidenceLevel.swift; sourceTree = "<group>"; };
 		03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationInfo.swift; sourceTree = "<group>"; };
@@ -1933,6 +1935,7 @@
 			isa = PBXGroup;
 			children = (
 				039223BA2E4B41950052F695 /* OCRWindowManager.swift */,
+				03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */,
 				039223B92E4B41950052F695 /* OCRDebugView.swift */,
 				039223BF2E4B61980052F695 /* OCRImageView.swift */,
 				039223BB2E4B41950052F695 /* OCRBandView.swift */,
@@ -3916,6 +3919,7 @@
 				6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
 				03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */,
+				03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				032AAA5B2C456F04007996A1 /* routes.swift in Sources */,
 				0AC8A8432B6957B0006DA5CC /* BingService+ConfigurableService.swift in Sources */,

@@ -147,6 +147,9 @@ extension Defaults.Keys {
     static var enableOCRTextNormalization = Key<Bool>(
         "enableOCRTextNormalization", default: false
     )
+    static var showOCRMenuItems = Key<Bool>(
+        "showOCRMenuItems", default: false
+    )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength", default: "10"

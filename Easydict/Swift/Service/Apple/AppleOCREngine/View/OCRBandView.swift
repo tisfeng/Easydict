@@ -25,8 +25,7 @@ struct OCRBandView: View {
                 // Header
                 VStack(alignment: .leading, spacing: 8) {
                     Text(verbatim: "OCR Band Analysis")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(.headline)
 
                     Text(verbatim: "\(bands.count) bands detected")
                         .font(.subheadline)

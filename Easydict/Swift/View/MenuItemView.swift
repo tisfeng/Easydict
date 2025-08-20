@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Defaults
 import SettingsAccess
 import SFSafeSymbols
 import Sparkle
@@ -48,8 +49,12 @@ struct MenuItemView: View {
             Divider()
 
             silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
-            screenshotOCRItem
-            pasteboardOCRItem
+
+            if showOCRMenuItems {
+                screenshotOCRItem
+                pasteboardOCRItem
+                showOCRWindowItem
+            }
 
             Divider()
 
@@ -69,6 +74,7 @@ struct MenuItemView: View {
     // MARK: Private
 
     @ObservedObject private var store = MenuItemStore()
+    @Default(.showOCRMenuItems) private var showOCRMenuItems
 
     @State private var currentVersion =
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -102,14 +108,14 @@ struct MenuItemView: View {
                 Text("Settings...")
             } preAction: {
                 logInfo("Open App Settings")
-                NSApp.activate(ignoringOtherApps: true)
+                NSApplication.shared.activateApp()
             } postAction: {
                 // nothing to do
             }
         } else {
             Button("Settings...") {
                 logInfo("Open App Settings")
-                NSApp.activate(ignoringOtherApps: true)
+                NSApplication.shared.activateApp()
                 NSApplication.shared.sendAction(
                     Selector(("showSettingsWindow:")), to: nil, from: nil
                 )
@@ -184,7 +190,7 @@ struct MenuItemView: View {
             EZWindowManager.shared().screenshotOCR()
         } label: {
             HStack {
-                Image(systemSymbol: .rectangleAndPencilAndEllipsis)
+                Image(systemSymbol: .cameraMeteringMultispot)
                 Text("menu_screenshot_OCR")
             }
         }
@@ -197,6 +203,19 @@ struct MenuItemView: View {
             HStack {
                 Image(systemSymbol: .listClipboard)
                 Text("menu_pasteboard_OCR")
+            }
+        }
+    }
+
+    @ViewBuilder private var showOCRWindowItem: some View {
+        Button {
+            logInfo("Show OCR Window")
+            // Simply show the OCR window without updating data
+            OCRWindowManager.shared.showWindow()
+        } label: {
+            HStack {
+                Image(systemSymbol: .textAndCommandMacwindow)
+                Text("menu_show_ocr_window")
             }
         }
     }

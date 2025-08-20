@@ -15,20 +15,12 @@ import Foundation
 class OCRDebugViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(
-        image: NSImage,
-        bands: [OCRBand],
-        mergedText: String
-    ) {
+    init(image: NSImage, bands: [OCRBand], mergedText: String, isPinned: Bool = false) {
         self.image = image
         self.bands = bands
         self.mergedText = mergedText
-
-        // Default to first section if available
-        let totalSections = bands.flatMap { $0.sections }.count
-        if totalSections > 0 {
-            self.selectedIndex = 0
-        }
+        self.isPinned = isPinned
+        self.selectedIndex = bands.isEmpty ? nil : 0
     }
 
     // MARK: Internal
@@ -37,6 +29,18 @@ class OCRDebugViewModel: ObservableObject {
     @Published var bands: [OCRBand]
     @Published var selectedIndex: Int?
     @Published var mergedText: String
+
+    /// Callback for pin state changes - allows external components to respond
+    var onPinStateChanged: ((Bool) -> ())?
+
+    @Published var isPinned: Bool = false {
+        didSet {
+            // Only notify if the value actually changed
+            if oldValue != isPinned {
+                onPinStateChanged?(isPinned)
+            }
+        }
+    }
 
     /// Update the data without recreating the view
     func updateData(image: NSImage, bands: [OCRBand], mergedText: String) {
@@ -51,5 +55,11 @@ class OCRDebugViewModel: ObservableObject {
         } else {
             selectedIndex = nil
         }
+        // Note: isPinned state is preserved during data updates
+    }
+
+    /// Toggle the pin state
+    func togglePinState() {
+        isPinned.toggle()
     }
 }
