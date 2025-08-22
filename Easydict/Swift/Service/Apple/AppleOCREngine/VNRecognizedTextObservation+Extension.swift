@@ -203,3 +203,58 @@ extension [VNRecognizedTextObservation] {
         map { $0.firstText }
     }
 }
+
+// MARK: - Conversion to EZRecognizedTextObservation
+
+extension VNRecognizedTextObservation {
+    /// Converts this VNRecognizedTextObservation to unified EZRecognizedTextObservation format.
+    ///
+    /// This method provides a convenient way to convert legacy Vision API observations
+    /// to the unified format used throughout the application.
+    ///
+    /// - Returns: EZRecognizedTextObservation for consistent processing, or nil if no candidates
+    func toEZRecognizedTextObservation() -> EZRecognizedTextObservation? {
+        guard let topCandidate = topCandidates(1).first else {
+            return nil
+        }
+
+        // Get bounding box coordinates
+        let boundingBox = boundingBox
+
+        // Convert to corner points (Vision coordinates are normalized)
+        let topLeft = CGPoint(x: boundingBox.minX, y: boundingBox.maxY)
+        let topRight = CGPoint(x: boundingBox.maxX, y: boundingBox.maxY)
+        let bottomLeft = CGPoint(x: boundingBox.minX, y: boundingBox.minY)
+        let bottomRight = CGPoint(x: boundingBox.maxX, y: boundingBox.minY)
+
+        // Create EZRecognizedText candidates
+        let ezCandidates = topCandidates(3).map { candidate in
+            EZRecognizedText(
+                string: candidate.string,
+                confidence: candidate.confidence
+            )
+        }
+
+        return EZRecognizedTextObservation(
+            topLeft: topLeft,
+            topRight: topRight,
+            bottomRight: bottomRight,
+            bottomLeft: bottomLeft,
+            uuid: UUID(),
+            confidence: topCandidate.confidence,
+            topCandidates: ezCandidates
+        )
+    }
+}
+
+extension [VNRecognizedTextObservation] {
+    /// Converts array of VNRecognizedTextObservation to unified EZRecognizedTextObservation format.
+    ///
+    /// This method provides a convenient way to convert arrays of legacy Vision API observations
+    /// to the unified format used throughout the application.
+    ///
+    /// - Returns: Array of EZRecognizedTextObservation for consistent processing
+    func toEZRecognizedTextObservations() -> [EZRecognizedTextObservation] {
+        compactMap { $0.toEZRecognizedTextObservation() }
+    }
+}

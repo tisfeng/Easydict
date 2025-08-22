@@ -11,7 +11,7 @@ import Vision
 
 /// An intelligent section merging engine for OCR results.
 ///
-/// This class takes a single OCR section containing multiple `VNRecognizedTextObservation` objects
+/// This class takes a single OCR section containing multiple `EZRecognizedTextObservation` objects
 /// and merges them into a single, well-formatted string. It uses a context-aware approach to decide
 /// whether to join observations with a space, a line break, or a new paragraph, and handles
 /// special cases like hyphenated words and lists.
@@ -71,7 +71,7 @@ class OCRSectionMerger {
     /// - Returns: An array of `OCRMergeStrategy` corresponding to each observation pair.
     @discardableResult
     private func analyzeMergeStrategies(
-        observations: [VNRecognizedTextObservation]
+        observations: [EZRecognizedTextObservation]
     )
         -> [OCRMergeStrategy] {
         // At least two observations are needed to form a pair.
@@ -80,7 +80,7 @@ class OCRSectionMerger {
         var mergeStrategies: [OCRMergeStrategy] = []
 
         // Dynamic tracking for context-aware decisions.
-        var paragraphObservations: [VNRecognizedTextObservation] = [observations[0]]
+        var paragraphObservations: [EZRecognizedTextObservation] = [observations[0]]
 
         // Reference for the observation with the maximum X-coordinate in the current context.
         var maxXLineTextObservation = observations[0]
@@ -89,7 +89,7 @@ class OCRSectionMerger {
 
         // Process each observation starting from the second one.
         for i in 1 ..< observations.count {
-            let current = observations[i]
+            var current = observations[i]
             let previous = observations[i - 1]
             let pair = OCRObservationPair(current: current, previous: previous)
 
@@ -131,7 +131,7 @@ class OCRSectionMerger {
     ///   - strategies: The merge strategies for each adjacent pair.
     /// - Returns: The final merged and formatted text.
     private func applyMergeStrategies(
-        observations: [VNRecognizedTextObservation],
+        observations: [EZRecognizedTextObservation],
         strategies: [OCRMergeStrategy]
     )
         -> String {
@@ -190,8 +190,8 @@ class OCRSectionMerger {
     /// - Returns: The most appropriate `OCRMergeStrategy` for the given pair.
     private func determineMergeStrategy(
         pair: OCRObservationPair,
-        maxXObservation: VNRecognizedTextObservation,
-        paragraphObservations: [VNRecognizedTextObservation]
+        maxXObservation: EZRecognizedTextObservation,
+        paragraphObservations: [EZRecognizedTextObservation]
     )
         -> OCRMergeStrategy {
         // Create context object to reduce code duplication
@@ -220,9 +220,9 @@ class OCRSectionMerger {
     ///   - rightmostObservation: In-out reference to the observation with the rightmost boundary in the current paragraph.
     private func updateParagraphContext(
         appliedStrategy: OCRMergeStrategy,
-        observation: VNRecognizedTextObservation,
-        paragraphObservations: inout [VNRecognizedTextObservation],
-        rightmostObservation: inout VNRecognizedTextObservation
+        observation: EZRecognizedTextObservation,
+        paragraphObservations: inout [EZRecognizedTextObservation],
+        rightmostObservation: inout EZRecognizedTextObservation
     ) {
         switch appliedStrategy {
         case .lineBreak, .newParagraph:

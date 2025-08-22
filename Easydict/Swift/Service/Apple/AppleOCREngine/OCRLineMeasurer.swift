@@ -48,9 +48,9 @@ class OCRLineMeasurer {
     ///   - confidence: Detection confidence level affecting threshold strictness (default: `.medium`).
     /// - Returns: `true` if the line is considered "long" (little space remaining), `false` if "short".
     func isLongLine(
-        observation: VNRecognizedTextObservation,
-        nextObservation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        nextObservation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium
     )
         -> Bool {
@@ -85,8 +85,8 @@ class OCRLineMeasurer {
     ///
     /// - TODO: If pair observations font is different, we should only use the current observation.
     func computeAverageCharWidth(
-        currentObservation: VNRecognizedTextObservation,
-        anotherObservation: VNRecognizedTextObservation,
+        currentObservation: EZRecognizedTextObservation,
+        anotherObservation: EZRecognizedTextObservation,
         ocrImage: NSImage? = nil,
         allowDifferentFontSize: Bool = false
     )
@@ -188,7 +188,7 @@ class OCRLineMeasurer {
 
     /// Computes the average character width based on a given text observation.
     private func computeAverageCharWidth(
-        observation: VNRecognizedTextObservation,
+        observation: EZRecognizedTextObservation,
         ocrImage: NSImage? = nil
     )
         -> Double {
@@ -222,8 +222,8 @@ class OCRLineMeasurer {
     ///   - comparedObservation: The reference observation to compare against (optional, defaults to `metrics.maxXLineTextObservation`).
     /// - Returns: The number of characters that could still fit on the right side of the line.
     private func charactersRemainingToReferenceLine(
-        observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil
+        observation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil
     )
         -> Double {
         guard let ocrImage = metrics.ocrImage else {
@@ -258,8 +258,8 @@ class OCRLineMeasurer {
     ///   - nextObservation: The next text observation for context-aware analysis.
     /// - Returns: The character count threshold (context-aware calculation based on the next line).
     private func smartMinimumCharactersThreshold(
-        observation: VNRecognizedTextObservation,
-        nextObservation: VNRecognizedTextObservation
+        observation: EZRecognizedTextObservation,
+        nextObservation: EZRecognizedTextObservation
     )
         -> Double {
         let isEnglishTypeLanguage = languageManager.isLanguageWordsNeedSpace(metrics.language)
@@ -317,7 +317,7 @@ class OCRLineMeasurer {
     /// Calculates the font size of a given text observation.
     /// - Parameter observation: The text observation.
     /// - Returns: The calculated font size.
-    private func fontSize(_ observation: VNRecognizedTextObservation) -> Double {
+    private func fontSize(_ observation: EZRecognizedTextObservation) -> Double {
         guard let ocrImage = metrics.ocrImage else {
             return NSFont.systemFontSize
         }

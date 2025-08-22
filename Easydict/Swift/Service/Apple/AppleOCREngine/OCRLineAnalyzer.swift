@@ -39,8 +39,8 @@ class OCRLineAnalyzer {
     ///   - xComparison: The type of X position comparison to perform (default: `.minX`).
     /// - Returns: `true` if the observation has the specified type of indentation, `false` otherwise.
     func hasIndentation(
-        observation: VNRecognizedTextObservation,
-        compared comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        compared comparedObservation: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium,
         indentationType: IndentationType = .positive,
         xComparison: XComparisonType = .minX
@@ -71,8 +71,8 @@ class OCRLineAnalyzer {
 
     /// Convenience method to check for positive indentation.
     func hasPositiveIndentation(
-        observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium,
         xComparison: XComparisonType = .minX
     )
@@ -88,8 +88,8 @@ class OCRLineAnalyzer {
 
     /// Convenience method to check for negative indentation.
     func hasNegativeIndentation(
-        observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium,
         xComparison: XComparisonType = .minX
     )
@@ -105,8 +105,8 @@ class OCRLineAnalyzer {
 
     /// Convenience method to check for no indentation (aligned).
     func hasNoIndentation(
-        observation: VNRecognizedTextObservation,
-        compared: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        compared: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium,
         xComparison: XComparisonType = .minX
     )
@@ -129,8 +129,8 @@ class OCRLineAnalyzer {
     ///   - xComparison: The type of X position comparison to perform (default: `.minX`).
     /// - Returns: An `IndentationInfo` containing all analysis details, or `nil` if no comparison observation is available.
     func getIndentationAnalysis(
-        observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium,
         xComparison: XComparisonType = .minX
     )
@@ -183,9 +183,9 @@ class OCRLineAnalyzer {
 
     /// Determines if a text observation represents a long line of text.
     func isLongText(
-        observation: VNRecognizedTextObservation,
-        nextObservation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        nextObservation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil,
         confidence: ConfidenceLevel = .medium
     )
         -> Bool {
@@ -304,8 +304,8 @@ class OCRLineAnalyzer {
     ///  - lessRateOfMaxLength: Optional rate of maximum line length to consider as "short" (default: 0.5).
     /// - Returns: `true` if the line is considered short, `false` otherwise.
     func isShortLine(
-        observation: VNRecognizedTextObservation,
-        comparedObservation: VNRecognizedTextObservation? = nil,
+        observation: EZRecognizedTextObservation,
+        comparedObservation: EZRecognizedTextObservation? = nil,
         lessRateOfMaxLength: Double = 0.5
     )
         -> Bool {
@@ -414,7 +414,7 @@ class OCRLineAnalyzer {
     ///
     /// - Important: This is used to ensure that short text observations do not affect font size calculations.
     private func hasEnoughTextLength(
-        observation: VNRecognizedTextObservation,
+        observation: EZRecognizedTextObservation,
         minLength: Int = 3
     )
         -> Bool {
@@ -433,8 +433,8 @@ class OCRLineAnalyzer {
     ///   - xComparison: The type of X position comparison to perform.
     /// - Returns: An `IndentationInfo` containing the analysis results and intermediate values.
     private func analyzeIndentationInfo(
-        observation: VNRecognizedTextObservation,
-        compared comparedObservation: VNRecognizedTextObservation,
+        observation: EZRecognizedTextObservation,
+        compared comparedObservation: EZRecognizedTextObservation,
         confidence: ConfidenceLevel = .medium,
         xComparison: XComparisonType = .minX
     )

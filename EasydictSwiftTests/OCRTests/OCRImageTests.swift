@@ -33,7 +33,7 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-        await testOCR(sample: .zhTextBitcoin, language: .auto)
+        await testOCR(sample: .zhTextBitcoin, language: .simplifiedChinese)
     }
 
     // MARK: - Test auto language OCR

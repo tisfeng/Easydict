@@ -16,8 +16,8 @@ struct OCRMergeContext {
 
     init(
         pair: OCRObservationPair,
-        maxXObservation: VNRecognizedTextObservation,
-        paragraphObservations: [VNRecognizedTextObservation],
+        maxXObservation: EZRecognizedTextObservation,
+        paragraphObservations: [EZRecognizedTextObservation],
         metrics: OCRSection
     ) {
         self.pair = pair
@@ -98,7 +98,7 @@ struct OCRMergeContext {
 
     // MARK: - Text Length Properties
 
-    lazy var comparedObservation: VNRecognizedTextObservation = {
+    lazy var comparedObservation: EZRecognizedTextObservation = {
         isFirstHasIndentation ? maxXObservation : metrics.maxXObservation!
     }()
 
@@ -186,11 +186,11 @@ struct OCRMergeContext {
         lineAnalyzer.isNewLine(pair: pair)
     }
 
-    var current: VNRecognizedTextObservation {
+    var current: EZRecognizedTextObservation {
         pair.current
     }
 
-    var previous: VNRecognizedTextObservation {
+    var previous: EZRecognizedTextObservation {
         pair.previous
     }
 
@@ -202,7 +202,7 @@ struct OCRMergeContext {
         previous.firstText
     }
 
-    var firstObservation: VNRecognizedTextObservation? {
+    var firstObservation: EZRecognizedTextObservation? {
         paragraphObservations.first
     }
 
@@ -213,8 +213,8 @@ struct OCRMergeContext {
     // MARK: Private
 
     private let metrics: OCRSection
-    private let maxXObservation: VNRecognizedTextObservation
-    private let paragraphObservations: [VNRecognizedTextObservation]
+    private let maxXObservation: EZRecognizedTextObservation
+    private let paragraphObservations: [EZRecognizedTextObservation]
 
     private let lineAnalyzer: OCRLineAnalyzer
     private let dashHandler: OCRDashHandler

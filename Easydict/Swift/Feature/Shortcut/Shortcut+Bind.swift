@@ -105,6 +105,6 @@ extension Shortcut {
 
     @objc
     func pasteboardOCR() {
-        EZWindowManager.shared().pasteboardOCR()
+        AppleOCREngine().pasteboardOCR()
     }
 }

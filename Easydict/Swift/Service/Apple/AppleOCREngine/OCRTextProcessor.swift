@@ -13,7 +13,7 @@ import Vision
 
 /// The main coordinator for the OCR text processing pipeline.
 ///
-/// This class orchestrates the process of converting raw `VNRecognizedTextObservation` objects
+/// This class orchestrates the process of converting raw `EZRecognizedTextObservation` objects
 /// into a final, intelligently formatted text string. It manages the overall workflow, delegating
 /// specific tasks to other specialized components.
 ///
@@ -29,33 +29,35 @@ public class OCRTextProcessor {
 
     private(set) var bands: [OCRBand] = []
 
-    /// Processes raw OCR observations to produce a structured `EZOCRResult`.
+    /// Processes raw OCR observations to produce a structured `EZOCRResult` (Unified API version).
     ///
-    /// This is the main entry point for the processor. It takes the raw observations and, if
-    /// `intelligentJoined` is enabled, orchestrates a full pipeline of sorting, metrics analysis,
-    /// and intelligent merging. Otherwise, it performs a simple text join.
+    /// This is the unified entry point for the processor that works with `EZRecognizedTextObservation`.
+    /// It provides the same functionality as the legacy version but uses the unified observation format.
     ///
     /// - Parameters:
     ///   - ocrResult: The result object to be populated.
-    ///   - observations: The raw `VNRecognizedTextObservation` array from the Vision framework.
+    ///   - observations: The unified `EZRecognizedTextObservation` array from the unified Vision API.
     ///   - ocrImage: The source image, used for spatial calculations.
     ///   - smartMerging: A flag to enable the advanced text processing pipeline.
+    ///   - textAnalysis: Optional text analysis data for enhanced processing.
+    ///   - legacyObservations: Optional legacy observations for intelligent processing pipeline.
     func setupOCRResult(
         _ ocrResult: EZOCRResult,
-        observations: [VNRecognizedTextObservation],
+        observations: [EZRecognizedTextObservation],
         ocrImage: NSImage,
         smartMerging: Bool,
         textAnalysis: TextAnalysis?
     ) {
-        // Set basic OCR result properties
+        // Set basic OCR result properties using unified observations
         updateOCRResult(ocrResult, observations: observations)
 
-        log("\nOriginal OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)")
+        log(
+            "\nOriginal unified OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)"
+        )
 
         // If intelligent joining is not enabled, return simple result
         guard smartMerging else { return }
 
-        // Perform intelligent merging pipeline
         performIntelligentMerging(
             ocrResult,
             observations: observations,
@@ -71,7 +73,7 @@ public class OCRTextProcessor {
     /// Performs the intelligent merging pipeline for enhanced OCR processing.
     private func performIntelligentMerging(
         _ ocrResult: EZOCRResult,
-        observations: [VNRecognizedTextObservation],
+        observations: [EZRecognizedTextObservation],
         ocrImage: NSImage,
         textAnalysis: TextAnalysis?
     ) {
@@ -185,7 +187,7 @@ public class OCRTextProcessor {
 
     /// Detects the appropriate language for a section.
     private func detectLanguageForSection(
-        observations: [VNRecognizedTextObservation],
+        observations: [EZRecognizedTextObservation],
         ocrResult: EZOCRResult,
         textAnalysis: TextAnalysis?
     )
@@ -207,7 +209,7 @@ public class OCRTextProcessor {
 
     /// Creates and configures an OCRSection instance.
     private func createAndSetupOCRSection(
-        observations: [VNRecognizedTextObservation],
+        observations: [EZRecognizedTextObservation],
         language: Language,
         ocrImage: NSImage,
         textAnalysis: TextAnalysis?
@@ -272,19 +274,25 @@ public class OCRTextProcessor {
         return finalMergedText
     }
 
-    /// Updates OCR result with text data and optional confidence.
+    /// Updates OCR result with unified observation data and optional confidence.
     private func updateOCRResult(
         _ ocrResult: EZOCRResult,
-        observations: [VNRecognizedTextObservation]? = nil,
+        observations: [EZRecognizedTextObservation]? = nil,
         mergedText: String? = nil,
         confidence: Double? = nil
     ) {
         if let observations {
-            // Basic setup mode: set up initial properties from raw observations
-            let recognizedTexts = observations.compactMap(\.firstText)
+            // Basic setup mode: set up initial properties from unified observations
+            let recognizedTexts = observations.map(\.firstText)
             ocrResult.texts = recognizedTexts
             ocrResult.mergedText = recognizedTexts.joined(separator: "\n")
             ocrResult.raw = observations
+
+            // Calculate average confidence from unified observations
+            if !observations.isEmpty {
+                let totalConfidence = observations.reduce(0.0) { $0 + Double($1.confidence) }
+                ocrResult.confidence = CGFloat(totalConfidence / Double(observations.count))
+            }
         }
 
         if let mergedText {
@@ -315,7 +323,7 @@ public class OCRTextProcessor {
     /// - Parameter observations: All text observations.
     /// - Returns: Array of OCRHorizontalBands, each containing bands for that horizontal region.
     private func detectBands(
-        _ observations: [VNRecognizedTextObservation],
+        _ observations: [EZRecognizedTextObservation],
         maxColumns: Int = 2
     )
         -> [OCRBand] {
@@ -348,20 +356,20 @@ public class OCRTextProcessor {
     }
 
     /// Groups observations into horizontal bands based on Y-coordinate proximity.
-    private func groupIntoHorizontalBands(_ observations: [VNRecognizedTextObservation])
-        -> [[VNRecognizedTextObservation]] {
+    private func groupIntoHorizontalBands(_ observations: [EZRecognizedTextObservation])
+        -> [[EZRecognizedTextObservation]] {
         // Sort by Y-coordinate (top to bottom in Vision coordinates - higher Y = higher position)
         let sortedByY = observations.sorted { $0.boundingBox.origin.y > $1.boundingBox.origin.y }
 
-        var bands: [[VNRecognizedTextObservation]] = []
-        var currentBand: [VNRecognizedTextObservation] = []
+        var bands: [[EZRecognizedTextObservation]] = []
+        var currentBand: [EZRecognizedTextObservation] = []
 
         let averageHeight = observations.averageHeight
 
         for (index, observation) in sortedByY.enumerated() {
             if index > 0 {
                 let pair = OCRObservationPair(current: observation, previous: sortedByY[index - 1])
-                let isBigGap = pair.verticalGap / averageHeight > 1.5
+                let isBigGap = pair.verticalGap / averageHeight > 1.45
 
                 // Large vertical gap - start new band
                 if isBigGap, !currentBand.isEmpty {
@@ -384,8 +392,8 @@ public class OCRTextProcessor {
     }
 
     /// Analyzes the column structure within a horizontal band.
-    private func analyzeColumnStructure(in band: [VNRecognizedTextObservation], maxColumns: Int)
-        -> [[VNRecognizedTextObservation]] {
+    private func analyzeColumnStructure(in band: [EZRecognizedTextObservation], maxColumns: Int)
+        -> [[EZRecognizedTextObservation]] {
         guard !band.isEmpty else { return [] }
 
         for observation in band {
@@ -408,12 +416,12 @@ public class OCRTextProcessor {
     /// - TODO: This method currently uses a simple X-coordinate thresholding approach.
     /// It can be enhanced with more sophisticated clustering algorithms if needed.
     /// Maybe later we can support more than 2 columns.
-    private func detectMultiColumnStructure(in band: [VNRecognizedTextObservation], maxColumns: Int)
-        -> [[VNRecognizedTextObservation]] {
+    private func detectMultiColumnStructure(in band: [EZRecognizedTextObservation], maxColumns: Int)
+        -> [[EZRecognizedTextObservation]] {
         guard !band.isEmpty else { return [] }
 
         // Initialize columns array
-        var columns: [[VNRecognizedTextObservation]] = Array(repeating: [], count: maxColumns)
+        var columns: [[EZRecognizedTextObservation]] = Array(repeating: [], count: maxColumns)
 
         // Group observations into columns based on X-coordinate position
         for observation in band {
@@ -435,10 +443,10 @@ public class OCRTextProcessor {
     /// - Top-to-bottom, left-to-right reading order
     /// - Uses line analysis to determine same-line vs different-line text
     ///
-    /// - Parameter observations: The unsorted array of `VNRecognizedTextObservation` from a single section.
+    /// - Parameter observations: The unsorted array of `EZRecognizedTextObservation` from a single section.
     /// - Returns: A sorted array of observations within the section.
-    private func sortTextObservations(_ observations: [VNRecognizedTextObservation])
-        -> [VNRecognizedTextObservation] {
+    private func sortTextObservations(_ observations: [EZRecognizedTextObservation])
+        -> [EZRecognizedTextObservation] {
         guard !observations.isEmpty else { return observations }
 
         // Sort within section: top-to-bottom, then left-to-right for same line

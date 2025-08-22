@@ -11,6 +11,7 @@ import SettingsAccess
 import SFSafeSymbols
 import Sparkle
 import SwiftUI
+import Vision
 import ZipArchive
 
 // MARK: - MenuItemStore
@@ -198,7 +199,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var pasteboardOCRItem: some View {
         Button {
-            EZWindowManager.shared().pasteboardOCR()
+            AppleOCREngine().pasteboardOCR()
         } label: {
             HStack {
                 Image(systemSymbol: .listClipboard)
@@ -277,6 +278,61 @@ struct MenuItemView: View {
             NSWorkspace.shared.selectFile(zipPath, inFileViewerRootedAtPath: "")
         } else {
             logError("Export log failed")
+        }
+    }
+
+    private func ocr(image: NSImage) {
+        // Get the CGImage on which to perform requests.
+        guard let cgImage = image.toCGImage() else { return }
+
+        // Create a new image-request handler.
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+
+        let recognizeTextHandler = { (request: VNRequest, error: Error?) in
+            if let error {
+                print("Error recognizing text: \(error)")
+                return
+            }
+
+            // Get the results from the request.
+            guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                print("No text recognized.")
+                return
+            }
+
+            // Process the recognized text observations.
+            for observation in observations {
+                if let topCandidate = observation.topCandidates(1).first {
+                    print("Recognized text: \(topCandidate.string)")
+                }
+            }
+        }
+        DispatchQueue.global(qos: .userInitiated).async {
+            // Create a new request to recognize text.
+            let request = VNRecognizeTextRequest(completionHandler: recognizeTextHandler)
+            request.usesLanguageCorrection = true
+            request.recognitionLevel = .accurate
+            request.recognitionLanguages = [
+                "zh-Hans",
+                "zh-Hant",
+                "en-US",
+                "ja-JP",
+                "fr-FR",
+                "de-DE",
+                "es-ES",
+                "pt-BR",
+                "it-IT",
+                "ko-KR",
+                "ru-RU",
+                "uk-UA",
+            ]
+
+            do {
+                // Perform the text-recognition request.
+                try requestHandler.perform([request])
+            } catch {
+                print("Unable to perform the requests: \(error).")
+            }
         }
     }
 }

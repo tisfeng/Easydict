@@ -250,7 +250,7 @@ struct OCRBoundingBoxOverlay: View {
     /// Draw individual text observation bounding box with a blue border
     private func drawTextObservationBoundingBox(
         context: GraphicsContext,
-        observation: VNRecognizedTextObservation,
+        observation: EZRecognizedTextObservation,
         imageDisplayInfo: ImageDisplayInfo
     ) {
         let rect = convertVisionRectToDisplayRect(

@@ -226,120 +226,44 @@ public class AppleLanguageMapper: NSObject {
         return customHints
     }
 
-    /// Sort the OCR languages based on user preferences.
-    /// The langauges will be sorted such that the preferred languages appear first.
-    /// THe front of languages will be recognized first.
-    func sortOCRLanguages(
-        recognitionLanguages: [Language],
-        preferredLanguages: [Language]
-    )
-        -> [Language] {
-        var newRecognitionLanguages = recognitionLanguages
-        for preferredLanguage in preferredLanguages.reversed() {
-            if let index = newRecognitionLanguages.firstIndex(of: preferredLanguage) {
-                newRecognitionLanguages.remove(at: index)
-                newRecognitionLanguages.insert(preferredLanguage, at: 0)
-            }
-        }
-
-        /**
-         Since ocr Chinese mixed with English is not very accurate,
-         we need to move Chinese to the first priority if newRecognitionLanguages first object is English and if user system language contains Chinese.
-
-         ```
-         风云 wind and clouds 99$ é
-         ```
-
-         Later: But if the ocr text is English, use Chinese to recognize it, it will be not accurate.
-         It's hard to judge whether the text contains Chinese or not, so it's not suitable to put Chinese to the first priority.
-         */
-
-        return newRecognitionLanguages
-    }
-
     /// Get OCR recognition languages for a specific language.
-    func ocrRecognitionLanguages(for language: Language) -> [String] {
-        // User preferred languages
-        let perferredLanguages = EZLanguageManager.shared().preferredLanguages
-
-        var finalRecognitionLanguages = sortOCRLanguages(
-            recognitionLanguages: sortedOCRLanguages,
-            preferredLanguages: perferredLanguages
-        )
-
-        // If language is NOT auto, sort with the specific language first
-        if language != .auto {
-            finalRecognitionLanguages = sortOCRLanguages(
-                recognitionLanguages: finalRecognitionLanguages,
-                preferredLanguages: [language]
-            )
-        }
+    func ocrRecognitionLanguageStrings(for language: Language, isModernOCR: Bool = false)
+        -> [String] {
+        let languages = sortedOCRRecognitionLanguages(for: language, isModernOCR: isModernOCR)
+        let dictionary = ocrLanguageDictionary(isModernOCR: isModernOCR)
 
         // Convert to Apple OCR language codes
-        return finalRecognitionLanguages.compactMap { ocrLanguageDictionary[$0] }
+        return languages.compactMap { dictionary[$0] }
+    }
+
+    func ocrRecognitionLocaleLanguages(for language: Language, isModernOCR: Bool = false) -> [Locale
+        .Language
+    ] {
+        let languages = sortedOCRRecognitionLanguages(for: language, isModernOCR: isModernOCR)
+
+        // Convert to Locale.Language
+        return languages.compactMap { $0.localeLanguage }
     }
 
     /// Check if the language is supported by Apple OCR.
-    func isSupportedOCRLanguage(_ language: Language) -> Bool {
-        ocrLanguageDictionary.keys.contains(language)
+    func isSupportedOCRLanguage(_ language: Language, isModernOCR: Bool = false) -> Bool {
+        let dictionary = ocrLanguageDictionary(isModernOCR: isModernOCR)
+        return dictionary.keys.contains(language)
     }
 
     /// Get Language enum for Apple OCR language.
     /// - Parameter appleLanguage: The BCP-47 language code for Apple OCR.
+    /// - Parameter isModernOCR: Whether to check in modern OCR language mappings
     /// - Returns: The corresponding Language enum, or nil if not found.
-    func languageEnum(appleOCRLanguage: String) -> Language? {
-        for (language, code) in ocrLanguageDictionary where code == appleOCRLanguage {
+    func languageEnum(appleOCRLanguage: String, isModernOCR: Bool = false) -> Language? {
+        let dictionary = ocrLanguageDictionary(isModernOCR: isModernOCR)
+        for (language, code) in dictionary where code == appleOCRLanguage {
             return language
         }
         return nil
     }
 
     // MARK: Private
-
-    /// Apple OCR languages are from `request.supportedRecognitionLanguages()`
-    /// Currently 18 languages supported, BCP 47 language code, e.g. "zh-Hans" for Simplified Chinese.
-    private let ocrLanguageDictionary: [Language: String] = [
-        .simplifiedChinese: "zh-Hans",
-        .traditionalChinese: "zh-Hant",
-        .classicalChinese: "zh-Hans", // Treat as Simplified Chinese for OCR, for `isSupportedOCRLanguage`
-        .english: "en-US",
-        .japanese: "ja-JP",
-        .korean: "ko-KR",
-        .french: "fr-FR",
-        .spanish: "es-ES",
-        .portuguese: "pt-BR",
-        .italian: "it-IT",
-        .german: "de-DE",
-        .russian: "ru-RU",
-        .ukrainian: "uk-UA",
-        // macOS 14.5
-        .thai: "th-TH",
-        .vietnamese: "vi-VN",
-        // macOS 15+
-        .arabic: "ar-SA",
-    ]
-
-    /// Sorted OCR languages for Apple OCR recognition.
-    /// - Note: The order of languages is important for recognition accuracy.
-    private let sortedOCRLanguages: [Language] = [
-        .english,
-        .simplifiedChinese,
-        .traditionalChinese,
-        .japanese,
-        .korean,
-        .french,
-        .spanish,
-        .portuguese,
-        .italian,
-        .german,
-        .russian,
-        .ukrainian,
-        // macOS 14.5
-        .thai,
-        .vietnamese,
-        // macOS 15+
-        .arabic,
-    ]
 
     /// Apple Translation Shortcut supported languages map.
     private let languageMap: [Language: String] = [
@@ -367,4 +291,147 @@ public class AppleLanguageMapper: NSObject {
         // macOS 15+
         .hindi: "hi_IN",
     ]
+
+    /// Apple OCR languages mapping from Language enum to BCP-47 language codes.
+    /// - Parameter isModernOCR: Whether to include languages for modern OCR API (macOS 15.0+)
+    /// - Returns: Dictionary mapping Language to BCP-47 language code
+    private func ocrLanguageDictionary(isModernOCR: Bool = false) -> [Language: String] {
+        var dictionary: [Language: String] = [
+            // Base languages supported in legacy OCR
+            .simplifiedChinese: "zh-Hans",
+            .traditionalChinese: "zh-Hant",
+            .classicalChinese: "zh-Hans", // Treat as Simplified Chinese for OCR, for `isSupportedOCRLanguage`
+            .english: "en-US",
+            .japanese: "ja-JP",
+            .korean: "ko-KR",
+            .french: "fr-FR",
+            .spanish: "es-ES",
+            .portuguese: "pt-BR",
+            .italian: "it-IT",
+            .german: "de-DE",
+            .russian: "ru-RU",
+            .ukrainian: "uk-UA",
+            // macOS 14.5
+            .thai: "th-TH",
+            .vietnamese: "vi-VN",
+            // macOS 15+
+            .arabic: "ar-SA",
+        ]
+
+        if isModernOCR {
+            // Additional languages in modern OCR API (macOS 15.0+)
+            dictionary.merge([
+                .turkish: "tr-TR",
+                .indonesian: "id-ID",
+                .czech: "cs-CZ",
+                .danish: "da-DK",
+                .dutch: "nl-NL",
+                .norwegian: "no-NO",
+                .malay: "ms-MY",
+                .polish: "pl-PL",
+                .romanian: "ro-RO",
+                .swedish: "sv-SE",
+            ]) { _, new in new }
+        }
+
+        return dictionary
+    }
+
+    /// Returns sorted OCR languages for Apple OCR recognition.
+    /// - Parameter isModernOCR: Whether to return languages for modern OCR API (macOS 15.0+) which supports more languages
+    /// - Note: The order of languages is important for recognition accuracy.
+    private func sortedOCRLanguages(isModernOCR: Bool = false) -> [Language] {
+        // Base languages supported in legacy OCR (macOS 14.x and earlier)
+        var languages: [Language] = [
+            .english,
+            .simplifiedChinese,
+            .traditionalChinese,
+            .classicalChinese,
+            .japanese,
+            .korean,
+            .french,
+            .spanish,
+            .portuguese,
+            .italian,
+            .german,
+            .russian,
+            .ukrainian,
+            // macOS 14.5
+            .thai,
+            .vietnamese,
+            // macOS 15+
+            .arabic,
+        ]
+
+        if isModernOCR {
+            // Additional languages in modern OCR API (macOS 15.0+)
+            languages.append(contentsOf: [
+                .turkish,
+                .indonesian,
+                .czech,
+                .danish,
+                .dutch,
+                .norwegian,
+                .malay,
+                .polish,
+                .romanian,
+                .swedish,
+            ])
+        }
+
+        return languages
+    }
+
+    /// Get sorted OCR recognition languages for a specific language.
+    private func sortedOCRRecognitionLanguages(for language: Language, isModernOCR: Bool = false)
+        -> [Language] {
+        // User preferred languages
+        let perferredLanguages = EZLanguageManager.shared().preferredLanguages
+
+        var finalRecognitionLanguages = sortOCRLanguages(
+            recognitionLanguages: sortedOCRLanguages(isModernOCR: isModernOCR),
+            preferredLanguages: perferredLanguages
+        )
+
+        // If language is NOT auto, sort with the specific language first
+        if language != .auto {
+            finalRecognitionLanguages = sortOCRLanguages(
+                recognitionLanguages: finalRecognitionLanguages,
+                preferredLanguages: [language]
+            )
+        }
+
+        return finalRecognitionLanguages
+    }
+
+    /// Sort the OCR languages based on user preferences.
+    /// The langauges will be sorted such that the preferred languages appear first.
+    /// THe front of languages will be recognized first.
+    private func sortOCRLanguages(
+        recognitionLanguages: [Language],
+        preferredLanguages: [Language]
+    )
+        -> [Language] {
+        var newRecognitionLanguages = recognitionLanguages
+        for preferredLanguage in preferredLanguages.reversed() {
+            if let index = newRecognitionLanguages.firstIndex(of: preferredLanguage) {
+                newRecognitionLanguages.remove(at: index)
+                newRecognitionLanguages.insert(preferredLanguage, at: 0)
+            }
+        }
+
+        /**
+         Since ocr Chinese mixed with English is not very accurate,
+         we need to move Chinese to the first priority if newRecognitionLanguages first object is English and if user system language contains Chinese.
+
+         ```
+         风云 wind and clouds 99$ é
+         ```
+
+         Later: But if the ocr text is English, use Chinese to recognize it, it will be not accurate.
+         It's hard to judge whether the text contains Chinese or not, so it's not suitable to put Chinese to the first priority.
+         */
+
+        return newRecognitionLanguages
+    }
 }

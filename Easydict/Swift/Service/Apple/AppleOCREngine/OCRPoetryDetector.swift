@@ -75,7 +75,7 @@ class OCRPoetryDetector {
     }
 
     /// Analyzes text observations to collect statistics for poetry detection.
-    private func analyzeTextStatistics(observations: [VNRecognizedTextObservation])
+    private func analyzeTextStatistics(observations: [EZRecognizedTextObservation])
         -> PoetryStatistics? {
         let lineCount = observations.count
         var endPunctuationCount = 0

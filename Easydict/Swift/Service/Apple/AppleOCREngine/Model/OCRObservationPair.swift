@@ -11,7 +11,7 @@ import Vision
 
 // MARK: - OCRTextObservationPair
 
-/// A structure that encapsulates a pair of consecutive `VNRecognizedTextObservation` objects for analysis.
+/// A structure that encapsulates a pair of consecutive `EZRecognizedTextObservation` objects for analysis.
 ///
 /// This struct simplifies the process of comparing two adjacent text observations by providing
 /// convenient access to the `current` and `previous` observations, along with computed
@@ -20,10 +20,10 @@ struct OCRObservationPair: CustomStringConvertible, CustomDebugStringConvertible
     // MARK: Internal
 
     /// The current text observation being analyzed.
-    let current: VNRecognizedTextObservation
+    let current: EZRecognizedTextObservation
 
     /// The text observation that immediately precedes the `current` one.
-    let previous: VNRecognizedTextObservation
+    let previous: EZRecognizedTextObservation
 
     /// A debug-friendly description of the text observation pair.
     var description: String {

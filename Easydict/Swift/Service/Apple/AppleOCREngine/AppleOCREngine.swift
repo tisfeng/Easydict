@@ -53,8 +53,8 @@ public class AppleOCREngine: NSObject {
 
         let startTime = CFAbsoluteTimeGetCurrent()
 
-        // Perform Vision OCR
-        let observations = try await performVisionOCRAsync(on: cgImage, language: language)
+        // Perform Vision OCR using unified API
+        let observations = try await performVisionOCR(on: cgImage, language: language)
 
         log("Recognize observations count: \(observations.count) (\(language))")
         log("Cost time: \(startTime.elapsedTimeString) seconds")
@@ -76,7 +76,7 @@ public class AppleOCREngine: NSObject {
         let hasDesignatedLanguage = language != .auto
         let smartMerging =
             hasDesignatedLanguage || hasEnoughLength || hasDominantLanguage(in: rawProbabilities)
-        log("Merged text count: \(mergedText.count)")
+        log("Merged text char count: \(mergedText.count)")
         log("Performing OCR text processing, smart merging: \(smartMerging)")
 
         textProcessor.setupOCRResult(
@@ -109,6 +109,15 @@ public class AppleOCREngine: NSObject {
         log("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
+    }
+
+    func pasteboardOCR() {
+        logInfo("Pasteboard OCR")
+        if let image = NSPasteboard.general.getImage() {
+            Task {
+                try await showOCRWindow(image: image)
+            }
+        }
     }
 
     @objc
@@ -145,6 +154,56 @@ public class AppleOCREngine: NSObject {
         }
     }
 
+    /// Unified OCR method that returns EZRecognizedTextObservation for consistent processing.
+    ///
+    /// This method demonstrates how to use the unified API that automatically selects
+    /// between modern and legacy Vision APIs based on system availability.
+    ///
+    /// **Example Usage:**
+    /// ```swift
+    /// let engine = AppleOCREngine()
+    /// let observations = try await engine.recognizeTextUnified(image: image, language: .auto)
+    /// let mergedText = observations.simpleMergedText
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - image: The `NSImage` to recognize text from.
+    ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
+    /// - Returns: Array of `EZRecognizedTextObservation` containing unified recognition results.
+    func recognizeTextUnified(image: NSImage, language: Language = .auto) async throws
+        -> [EZRecognizedTextObservation] {
+        log(
+            "Recognizing text using unified API with language: \(language), image size: \(image.size)"
+        )
+
+        guard image.isValid else {
+            throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
+        }
+
+        // Convert NSImage to CGImage
+        guard let cgImage = image.toCGImage() else {
+            throw QueryError.error(
+                type: .parameter, message: "Failed to convert NSImage to CGImage"
+            )
+        }
+
+        let startTime = CFAbsoluteTimeGetCurrent()
+
+        // Use the unified API that automatically selects the best available Vision API
+        let observations = try await performVisionOCR(on: cgImage, language: language)
+
+        log("Unified OCR recognized \(observations.count) text observations (\(language))")
+        log("Unified OCR cost time: \(startTime.elapsedTimeString) seconds")
+
+        // Log sample of recognized text for debugging
+        if !observations.isEmpty {
+            let sampleTexts = observations.prefix(3).map { $0.prefix30 }
+            log("Sample recognized texts: \(sampleTexts)")
+        }
+
+        return observations
+    }
+
     // MARK: Private
 
     /// The text processor responsible for sorting, merging, and normalizing the OCR results.
@@ -165,10 +224,11 @@ public class AppleOCREngine: NSObject {
     ///   - cgImage: The `CGImage` to perform OCR on.
     ///   - language: The preferred `Language` for recognition. If not a valid OCR language, defaults to automatic detection.
     /// - Returns: Array of `VNRecognizedTextObservation` objects containing recognition results.
-    private func performVisionOCRAsync(on cgImage: CGImage, language: Language = .auto) async throws
+    private func performLegacyVisionOCR(on cgImage: CGImage, language: Language = .auto)
+        async throws
         -> [VNRecognizedTextObservation] {
         // Try primary OCR first
-        let observations = try await performSingleVisionOCR(on: cgImage, language: language)
+        let observations = try await performSingleLegacyVisionOCR(on: cgImage, language: language)
 
         /**
          Handle Japanese retry logic if needed.
@@ -183,14 +243,14 @@ public class AppleOCREngine: NSObject {
 
         if observations.isEmpty, language == .auto {
             log("No text recognized with auto language, retrying with Japanese.")
-            return try await performSingleVisionOCR(on: cgImage, language: .japanese)
+            return try await performSingleLegacyVisionOCR(on: cgImage, language: .japanese)
         }
 
         return observations
     }
 
     /// Performs a single Vision OCR request without retry logic
-    private func performSingleVisionOCR(on cgImage: CGImage, language: Language) async throws
+    private func performSingleLegacyVisionOCR(on cgImage: CGImage, language: Language) async throws
         -> [VNRecognizedTextObservation] {
         try await withCheckedThrowingContinuation { continuation in
             let request = VNRecognizeTextRequest { request, error in
@@ -226,7 +286,7 @@ public class AppleOCREngine: NSObject {
 
             // Configure Vision request
             request.recognitionLevel = .accurate
-            request.recognitionLanguages = languageMapper.ocrRecognitionLanguages(for: language)
+            request.recognitionLanguages = languageMapper.ocrRecognitionLanguageStrings(for: language)
             // Correction is usually useful
             request.usesLanguageCorrection = true
             request.automaticallyDetectsLanguage = enableAutoDetect
@@ -247,8 +307,8 @@ public class AppleOCREngine: NSObject {
     }
 
     /// Checks if a given language is a valid and supported language for Vision's OCR.
-    private func hasValidOCRLanguage(_ language: Language) -> Bool {
-        languageMapper.isSupportedOCRLanguage(language)
+    private func hasValidOCRLanguage(_ language: Language, isModernOCR: Bool = false) -> Bool {
+        languageMapper.isSupportedOCRLanguage(language, isModernOCR: isModernOCR)
     }
 
     /// Performs multi-language OCR and selects the best result using trusted candidate filtering.
@@ -359,5 +419,96 @@ public class AppleOCREngine: NSObject {
         )
 
         return hasDominant
+    }
+
+    // MARK: - Unified API Implementation
+
+    /// Performs text recognition using the best available API and returns unified results.
+    ///
+    /// This method automatically chooses between the modern RecognizeTextRequest API (macOS 15.0+)
+    /// and the legacy VNRecognizeTextRequest API, then converts the results to a unified
+    /// `EZRecognizedTextObservation` format for consistent processing.
+    ///
+    /// - Parameters:
+    ///   - cgImage: The `CGImage` to perform OCR on.
+    ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
+    /// - Returns: Array of `EZRecognizedTextObservation` objects containing unified recognition results.
+    private func performVisionOCR(on cgImage: CGImage, language: Language = .auto) async throws
+        -> [EZRecognizedTextObservation] {
+        if #available(macOS 15.0, *) {
+            log("Using modern RecognizeTextRequest API")
+            let modernObservations = try await performModernVisionOCR(
+                on: cgImage, language: language
+            )
+            return modernObservations.toEZRecognizedTextObservations()
+        } else {
+            log("Using legacy VNRecognizeTextRequest API")
+            let legacyObservations = try await performLegacyVisionOCR(
+                on: cgImage, language: language
+            )
+            return legacyObservations.toEZRecognizedTextObservations()
+        }
+    }
+
+    // MARK: - Modern API Implementation (macOS 15.0+)
+
+    @available(macOS 15.0, *)
+    private func performModernVisionOCR(on cgImage: CGImage, language: Language = .auto)
+        async throws
+        -> [RecognizedTextObservation] {
+        // Try primary OCR first
+        let observations = try await performSingleModernVisionOCR(on: cgImage, language: language)
+
+        if observations.isEmpty, language == .auto {
+            log("No text recognized with auto language, retrying with Japanese.")
+            return try await performSingleModernVisionOCR(on: cgImage, language: .japanese)
+        }
+
+        return observations
+    }
+
+    /// Performs a single Vision OCR request using the modern async API (macOS 15.0+)
+    @available(macOS 15.0, *)
+    private func performSingleModernVisionOCR(on cgImage: CGImage, language: Language = .auto)
+        async throws
+        -> [RecognizedTextObservation] {
+        let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
+        log("Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)")
+
+        // Create the modern RecognizeTextRequest
+        var request = RecognizeTextRequest()
+
+        // Configure recognition settings
+        request.recognitionLevel = .accurate
+        request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(for: language, isModernOCR: true)
+        request.usesLanguageCorrection = true
+        request.automaticallyDetectsLanguage = enableAutoDetect
+
+        do {
+            // Perform OCR using the new async API - returns [RecognizedText]
+            let recognizedTexts = try await request.perform(on: cgImage)
+
+            if recognizedTexts.isEmpty {
+                log("No text recognized in the image with language: \(language)")
+
+                // For empty results, don't throw error - let caller handle retry logic
+                if language == .auto {
+                    // Return empty array, caller will handle Japanese retry
+                    return []
+                } else {
+                    // For specific language, throw error
+                    let message = String(localized: "ocr_result_is_empty")
+                    throw QueryError.error(type: .noResult, message: message)
+                }
+            }
+
+            return recognizedTexts
+
+        } catch {
+            throw QueryError.queryError(from: error, type: .api)
+                ?? QueryError.error(
+                    type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
+                )
+        }
     }
 }

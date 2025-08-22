@@ -890,24 +890,6 @@ static EZWindowManager *_instance;
     }];
 }
 
-
-- (void)pasteboardOCR {
-    MMLogInfo(@"Pasteboard OCR");
-
-    // Get image from pasteboard
-    NSImage *image = NSPasteboard.generalPasteboard.getImage;
-    if (!image) {
-        MMLogWarn(@"No image in pasteboard");
-        return;
-    }
-
-    AppleOCREngine *appleOCREngine = [AppleOCREngine new];
-    [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
-
-    }];
-}
-
-
 - (void)pasteboardTranslate {
     MMLogInfo(@"Pasteboard OCR");
 

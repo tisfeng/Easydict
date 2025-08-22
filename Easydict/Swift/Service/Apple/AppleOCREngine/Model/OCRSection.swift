@@ -31,7 +31,7 @@ class OCRSection {
     convenience init(
         ocrImage: NSImage? = nil,
         language: Language = .auto,
-        observations: [VNRecognizedTextObservation] = []
+        observations: [EZRecognizedTextObservation] = []
     ) {
         self.init()
         self.language = language
@@ -64,7 +64,7 @@ class OCRSection {
     var language: Language = .auto
 
     /// The complete array of text observations from the Vision framework.
-    var observations: [VNRecognizedTextObservation] = []
+    var observations: [EZRecognizedTextObservation] = []
 
     // MARK: - Line & Spacing Metrics
 
@@ -92,16 +92,16 @@ class OCRSection {
     // MARK: - Reference Observations
 
     /// The observation with the greatest width.
-    private(set) var maxLengthObservation: VNRecognizedTextObservation?
+    private(set) var maxLengthObservation: EZRecognizedTextObservation?
 
     /// The observation that extends furthest to the right (has the maximum `maxX` coordinate).
-    private(set) var maxXObservation: VNRecognizedTextObservation?
+    private(set) var maxXObservation: EZRecognizedTextObservation?
 
     /// The observation that starts furthest to the left (has the minimum `minX` coordinate).
-    private(set) var minXObservation: VNRecognizedTextObservation?
+    private(set) var minXObservation: EZRecognizedTextObservation?
 
     /// The observation that contains the most characters.
-    private(set) var maxCharacterCountObservation: VNRecognizedTextObservation?
+    private(set) var maxCharacterCountObservation: EZRecognizedTextObservation?
 
     // MARK: - Content & Confidence Metrics
 
@@ -167,7 +167,7 @@ class OCRSection {
     func setupWithOCRData(
         ocrImage: NSImage,
         language: Language,
-        observations: [VNRecognizedTextObservation]
+        observations: [EZRecognizedTextObservation]
     ) {
         // Ensure we have clean state
         resetMetrics()
@@ -300,7 +300,7 @@ class OCRSection {
     private lazy var poetryDetector = OCRPoetryDetector(metrics: self)
 
     /// Performs a first-pass analysis on an observation to collect baseline metrics like line height and position.
-    private func processObservationMetrics(_ textObservation: VNRecognizedTextObservation) {
+    private func processObservationMetrics(_ textObservation: EZRecognizedTextObservation) {
         let boundingBox = textObservation.boundingBox
         let lineHeight: Double = boundingBox.size.height
         totalLineHeight += lineHeight
@@ -352,8 +352,8 @@ class OCRSection {
 
     /// Performs a second-pass analysis to calculate the spacing between consecutive lines.
     private func analyzeConsecutiveSpacing(
-        current: VNRecognizedTextObservation,
-        previous: VNRecognizedTextObservation,
+        current: EZRecognizedTextObservation,
+        previous: EZRecognizedTextObservation,
         lineSpacingCount: inout Int
     ) {
         let pair = OCRObservationPair(current: current, previous: previous)
@@ -382,7 +382,7 @@ class OCRSection {
 
     /// Computes the average character width based on a given text observation.
     private func computeAverageCharacterWidth(
-        from textObservation: VNRecognizedTextObservation,
+        from textObservation: EZRecognizedTextObservation,
         ocrImage: NSImage
     )
         -> Double {
@@ -403,7 +403,7 @@ class OCRSection {
     }
 
     /// Calculates the overall confidence score by averaging the confidence of all observations.
-    private func computeOverallConfidence(from observations: [VNRecognizedTextObservation]) {
+    private func computeOverallConfidence(from observations: [EZRecognizedTextObservation]) {
         guard !observations.isEmpty else {
             confidence = 0.0
             return
@@ -411,7 +411,7 @@ class OCRSection {
 
         let totalConfidence =
             observations
-                .compactMap { $0.topCandidates(1).first?.confidence }
+                .compactMap { $0.confidence }
                 .reduce(0, +)
 
         confidence = totalConfidence / Float(observations.count)
