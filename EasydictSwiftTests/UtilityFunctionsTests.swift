@@ -3,7 +3,7 @@
 //  EasydictSwiftTests
 //
 //  Created by AI Assistant on 2025/7/3.
-//  Copyright © 2024 izual. All rights reserved.
+//  Copyright © 2025 izual. All rights reserved.
 //
 
 import RegexBuilder
