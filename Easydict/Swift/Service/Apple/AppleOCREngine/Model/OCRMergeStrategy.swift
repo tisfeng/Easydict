@@ -69,7 +69,7 @@ enum OCRMergeStrategy: CustomStringConvertible {
     /// - Returns: `.joinWithSpace` for space-separated languages, `.joinWithNoSpace` otherwise.
     static func mergeStrategy(
         firstText: String,
-        secondText: String,
+        secondText: String
     )
         -> OCRMergeStrategy {
         let joinedText = firstText + secondText
