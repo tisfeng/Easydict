@@ -157,13 +157,11 @@ public class AppleLanguageMapper: NSObject {
             .japanese: 0.8, // 門 Reduced from 1.2: Should detect `Traditional Chinese` properly
             .korean: 0.7, // Increased from 0.6: Should detect Korean properly
 
-            // Major European languages
-            // Note: Weights for Romance languages are reduced to avoid misidentifying
-            // English text with special characters (e.g., "é") as Portuguese/Spanish.
-            .french: 0.5, // Reduced from 0.8
-            .spanish: 0.5, // Reduced from 0.8
-            .italian: 0.4, // Reduced from 0.7
-            .portuguese: 0.4, // Reduced from 0.7
+            // Major European languages (often confused with each other)
+            .french: 0.8, // Increased from 0.5: Better French detection
+            .spanish: 0.8, // Increased from 0.5: Better Spanish detection
+            .italian: 0.6, // Reduced from 0.7 (come)
+            .portuguese: 0.7, // Increased from 0.4: Better Portuguese detection
             .german: 0.6, // Increased from 0.3: Better German detection
             .dutch: 0.4, // Increased from 0.25: Better Dutch detection
 

@@ -103,8 +103,8 @@ public class AppleLanguageDetector: NSObject {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let recognizer = NLLanguageRecognizer()
-        recognizer.languageConstraints = AppleLanguageMapper.shared.recognizedLanguages
-        recognizer.languageHints = customLanguageHints
+        recognizer.languageConstraints = languageMapper.recognizedLanguages
+        recognizer.languageHints = languageMapper.customLanguageHints
         recognizer.processString(text)
 
         let probabilities = recognizer.languageHypotheses(withMaximum: 5)
@@ -146,91 +146,6 @@ public class AppleLanguageDetector: NSObject {
 
     /// Chinese text detection utility for classical Chinese analysis
     private var chineseGenreAnalyzer: ChineseGenreAnalyzer?
-
-    /// Custom language hints for improving detection accuracy
-    ///
-    /// Combines base probability weights with user preference boost.
-    /// High weights for common/misdetected languages, lower for distinct patterns.
-    /// User preferred languages get +1.0 boost for better UX.
-    /// - Helps with "apple" → "en" instead of "tr" problem
-    private var customLanguageHints: [NLLanguage: Double] {
-        // Base language weights optimized for balanced accuracy
-        var customHints: [NLLanguage: Double] = [
-            // High priority languages (commonly misdetected or very frequent)
-            .english: 2.0, // Reduced from 3.0: Still boosted but not overwhelming
-            .simplifiedChinese: 1.5, // Reduced from 2.5: Still prioritized
-            .traditionalChinese: 1.0, // Keep as reference point
-
-            // Major Asian languages
-            .japanese: 0.8, // 門 Reduced from 1.2: Should detect `Traditional Chinese` properly
-            .korean: 0.7, // Increased from 0.6: Should detect Korean properly
-
-            // Major European languages (often confused with each other)
-            .french: 0.8, // Increased from 0.5: Better French detection
-            .spanish: 0.8, // Increased from 0.5: Better Spanish detection
-            .italian: 0.7, // Increased from 0.4: Better Italian detection
-            .portuguese: 0.7, // Increased from 0.4: Better Portuguese detection
-            .german: 0.6, // Increased from 0.3: Better German detection
-            .dutch: 0.4, // Increased from 0.25: Better Dutch detection
-
-            // Other European languages
-            .russian: 0.8, // Increased from 0.4: Cyrillic script
-            .polish: 0.4, // Increased from 0.2: Latin script but distinct
-            .czech: 0.3, // Increased from 0.15: Latin script but distinct
-            .turkish: 0.08, // Further reduced from 0.2: Often causes false positives
-            .catalan: 0.1, // Reduced from 0.15: Often confused with Spanish/French
-
-            // Middle Eastern and others
-            .arabic: 0.3, // Distinct script
-            .persian: 0.2, // Similar to Arabic but less common
-            .thai: 0.3, // Distinct script
-            .vietnamese: 0.25, // Latin script with diacritics
-            .hindi: 0.2, // Devanagari script
-
-            // Nordic languages
-            .swedish: 0.15,
-            .danish: 0.15,
-            .norwegian: 0.15,
-            .finnish: 0.1, // Different language family
-
-            // Less common but supported
-            .ukrainian: 0.3, // Cyrillic, similar to Russian
-            .bulgarian: 0.15, // Cyrillic
-            .romanian: 0.2, // Romance language
-            .hungarian: 0.05, // Reduced: Unique language family but often causes false positives
-            .greek: 0.2, // Distinct script
-            .slovak: 0.05, // Reduced: Similar to Czech, often causes false positives
-            .croatian: 0.1, // Reduced: Latin script, can cause confusion
-            .indonesian: 0.1, // Reduced: Latin script, can be confused with English
-            .malay: 0.08, // Reduced: Similar to Indonesian
-        ]
-
-        // Get user preferred languages and boost their weights
-        let preferredLanguages = EZLanguageManager.shared().preferredLanguages
-        let preferredNLLanguages = preferredLanguages.compactMap { language in
-            languageMapper.appleLanguagesDictionary[language]
-        }
-
-        // Boost preferred languages
-        for preferredLanguage in preferredNLLanguages {
-            if let currentWeight = customHints[preferredLanguage] {
-                // Add boost based on current weight tier
-                let boost: Double = currentWeight >= 2.0 ? 1.5 : 1.0
-                customHints[preferredLanguage] = currentWeight + boost
-            } else {
-                // New preferred language not in base hints
-                customHints[preferredLanguage] = 1.0
-            }
-        }
-
-        // Set default weight for any remaining supported languages
-        let supportedLanguages = languageMapper.recognizedLanguages
-        for language in supportedLanguages where !customHints.keys.contains(language) {
-            customHints[language] = 0.05 // Lower default to avoid false positives
-        }
-
-        return customHints
-    }
 
     /// Internal unified language detection with configurable post-processing
     ///
