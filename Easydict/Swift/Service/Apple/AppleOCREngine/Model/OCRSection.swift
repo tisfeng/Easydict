@@ -157,7 +157,7 @@ class OCRSection {
     /// Maybe text has a big average line spacing, but we want to detect paragraph breaks
     /// that are larger than the average line spacing.
     var bigLineSpacingThreshold: Double {
-        max(min(averageLineHeight, minLineHeight * 1.1), averageLineSpacing * 1.1)
+        max(min(averageLineHeight, minLineHeight * 1.1), averageLineSpacing * 1.2)
     }
 
     // MARK: - Metrics Calculation

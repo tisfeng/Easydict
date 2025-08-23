@@ -107,7 +107,7 @@ class OCRWindowManager {
 
         NSApplication.shared.activateApp()
         window.makeKeyAndOrderFront(nil)
-        window.level = .floating
+        window.level = .normal
 
         logInfo("OCR window isKey: \(window.isKeyWindow)")
         logInfo("OCR window isVisible: \(window.isVisible)")

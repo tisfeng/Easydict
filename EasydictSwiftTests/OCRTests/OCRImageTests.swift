@@ -15,6 +15,8 @@ import Testing
 
 /// Tests for AppleOCREngine using real test images
 ///
+/// - NOTE: These tests samples are tested sucessfully on macOS 15.0+, may not work on earlier versions.
+///
 /// These tests validate the OCR functionality against a comprehensive collection of
 /// test images covering different languages, text types, and document formats.
 /// The test images are located in the ocr-images directory and include:
@@ -33,7 +35,7 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-        await testOCR(sample: .zhTextBitcoin, language: .simplifiedChinese)
+        await testOCR(sample: .zhTextBitcoin, language: .auto)
     }
 
     // MARK: - Test auto language OCR
