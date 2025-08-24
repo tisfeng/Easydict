@@ -41,11 +41,13 @@ struct MenuItemView: View {
         // Button 和Label的systemImage是不会渲染的
         Group {
             versionItem
+
             Divider()
+
             inputItem.keyboardShortcut(.inputTranslate)
             screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
-            pasteboardTranslateItem
+            pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
             miniWindowItem.keyboardShortcut(.showMiniWindow)
 
             Divider()
@@ -170,7 +172,10 @@ struct MenuItemView: View {
         } label: {
             HStack {
                 Image(systemSymbol: .docOnClipboard)
-                Text("menu_pasteboard_translate")
+                let title = LocalizedStringKey(
+                    ShortcutType.pasteboardTranslate.localizedStringKey()
+                )
+                Text(title)
             }
         }
     }

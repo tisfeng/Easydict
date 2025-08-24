@@ -21,7 +21,7 @@ public enum ShortcutType: String {
     case selectTranslate = "EZSelectionShortcutKey"
     case showMiniWindow = "EZShowMiniShortcutKey"
     case silentScreenshotOCR = "EZScreenshotOCRShortcutKey"
-    case pasteboardOCR = "EZPasteboardOCRShortcutKey"
+    case pasteboardTranslate = "EZPasteboardTranslateShortcutKey"
 
     // In App
     case clearInput = "EZClearInputShortcutKey"
@@ -52,10 +52,10 @@ extension ShortcutType {
             "menu_selectWord_Translate"
         case .silentScreenshotOCR:
             "menu_silent_screenshot_OCR"
+        case .pasteboardTranslate:
+            "menu_pasteboard_translate" // Fix Localizable warning: NSLocalizedString(@"menu_pasteboard_translate", nil);
         case .showMiniWindow:
             "menu_show_mini_window"
-        case .pasteboardOCR:
-            "menu_pasteboard_OCR"
         case .clearInput:
             "shortcut_clear_input"
         case .clearAll:
@@ -160,8 +160,8 @@ extension Shortcut {
         bindingShortcut(keyCombo: Defaults[.screenshotOCRShortcut], type: .silentScreenshotOCR)
         // showMiniWindow
         bindingShortcut(keyCombo: Defaults[.showMiniWindowShortcut], type: .showMiniWindow)
-        // pasteboardOCR
-        bindingShortcut(keyCombo: Defaults[.pasteboardOCRShortcut], type: .pasteboardOCR)
+        // pasteboardTranslate
+        bindingShortcut(keyCombo: Defaults[.pasteboardTranslateShortcut], type: .pasteboardTranslate)
     }
 }
 
@@ -173,48 +173,51 @@ extension Shortcut {
             return
         }
         var hotKey: HotKey?
+
+        let windowManager = EZWindowManager.shared()
+
         switch type {
         case .inputTranslate:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
-                target: Shortcut.shared,
-                action: #selector(Shortcut.inputTranslate)
+                target: windowManager,
+                action: #selector(windowManager.inputTranslate)
             )
         case .snipTranslate:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
-                target: Shortcut.shared,
-                action: #selector(Shortcut.snipTranslate)
+                target: windowManager,
+                action: #selector(windowManager.snipTranslate)
             )
         case .selectTranslate:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
-                target: Shortcut.shared,
-                action: #selector(Shortcut.selectTextTranslate)
+                target: windowManager,
+                action: #selector(windowManager.selectTextTranslate)
             )
         case .silentScreenshotOCR:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
-                target: Shortcut.shared,
-                action: #selector(Shortcut.silentScreenshotOCR)
+                target: windowManager,
+                action: #selector(windowManager.silentScreenshotOCR)
             )
         case .showMiniWindow:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
-                target: Shortcut.shared,
-                action: #selector(Shortcut.showMiniFloatingWindow)
+                target: windowManager,
+                action: #selector(windowManager.showMiniFloatingWindow)
             )
-        case .pasteboardOCR:
+        case .pasteboardTranslate:
             hotKey = HotKey(
                 identifier: type.rawValue,
                 keyCombo: keyCombo,
-                target: Shortcut.shared,
-                action: #selector(Shortcut.pasteboardOCR)
+                target: windowManager,
+                action: #selector(windowManager.pasteboardTranslate)
             )
         default: ()
         }
@@ -229,50 +232,51 @@ struct KeyboardShortcut: ViewModifier {
     // MARK: Lifecycle
 
     init(type: ShortcutType) {
-        let key: Defaults.Key<KeyCombo?> = switch type {
-        case .inputTranslate:
-            .inputShortcut
-        case .snipTranslate:
-            .snipShortcut
-        case .selectTranslate:
-            .selectionShortcut
-        case .silentScreenshotOCR:
-            .screenshotOCRShortcut
-        case .pasteboardOCR:
-            .pasteboardOCRShortcut
-        case .showMiniWindow:
-            .showMiniWindowShortcut
-        case .clearInput:
-            .clearInputShortcut
-        case .clearAll:
-            .clearAllShortcut
-        case .copy:
-            .copyShortcut
-        case .copyFirstResult:
-            .copyFirstResultShortcut
-        case .focus:
-            .focusShortcut
-        case .play:
-            .playShortcut
-        case .retry:
-            .retryShortcut
-        case .toggle:
-            .toggleShortcut
-        case .pin:
-            .pinShortcut
-        case .hide:
-            .hideShortcut
-        case .increaseFontSize:
-            .increaseFontSize
-        case .decreaseFontSize:
-            .decreaseFontSize
-        case .google:
-            .googleShortcut
-        case .eudic:
-            .eudicShortcut
-        case .appleDic:
-            .appleDictionaryShortcut
-        }
+        let key: Defaults.Key<KeyCombo?> =
+            switch type {
+            case .inputTranslate:
+                .inputShortcut
+            case .snipTranslate:
+                .snipShortcut
+            case .selectTranslate:
+                .selectionShortcut
+            case .silentScreenshotOCR:
+                .screenshotOCRShortcut
+            case .pasteboardTranslate:
+                .pasteboardTranslateShortcut
+            case .showMiniWindow:
+                .showMiniWindowShortcut
+            case .clearInput:
+                .clearInputShortcut
+            case .clearAll:
+                .clearAllShortcut
+            case .copy:
+                .copyShortcut
+            case .copyFirstResult:
+                .copyFirstResultShortcut
+            case .focus:
+                .focusShortcut
+            case .play:
+                .playShortcut
+            case .retry:
+                .retryShortcut
+            case .toggle:
+                .toggleShortcut
+            case .pin:
+                .pinShortcut
+            case .hide:
+                .hideShortcut
+            case .increaseFontSize:
+                .increaseFontSize
+            case .decreaseFontSize:
+                .decreaseFontSize
+            case .google:
+                .googleShortcut
+            case .eudic:
+                .eudicShortcut
+            case .appleDic:
+                .appleDictionaryShortcut
+            }
 
         _shortcut = .init(key)
     }
