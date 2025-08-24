@@ -84,7 +84,7 @@ public class AppleOCREngine: NSObject {
             observations: observations,
             ocrImage: image,
             smartMerging: smartMerging,
-            textAnalysis: textAnalysis,
+            textAnalysis: textAnalysis
         )
 
         if language == .auto {
@@ -286,7 +286,9 @@ public class AppleOCREngine: NSObject {
 
             // Configure Vision request
             request.recognitionLevel = .accurate
-            request.recognitionLanguages = languageMapper.ocrRecognitionLanguageStrings(for: language)
+            request.recognitionLanguages = languageMapper.ocrRecognitionLanguageStrings(
+                for: language
+            )
             // Correction is usually useful
             request.usesLanguageCorrection = true
             request.automaticallyDetectsLanguage = enableAutoDetect
@@ -336,9 +338,18 @@ public class AppleOCREngine: NSObject {
     private func performConcurrentOCR(image: NSImage, candidates: [NLLanguage: Double]) async throws
         -> [EZOCRResult] {
         let sortedLanguages = candidates.sorted { $0.value > $1.value }.map { $0.key }
-
-        let results = await withTaskGroup(of: EZOCRResult?.self) { group in
-            for nlLanguage in sortedLanguages {
+            /**
+             We don't nedd ChildTaskResult type annotation anymore with Swift 6.1+
+             But we still keep it for compatibility with older Swift versions for now.
+             We can remove it when we drop support for older Swift versions.
+             
+             Refer: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0442-allow-taskgroup-childtaskresult-type-to-be-inferred.md
+             
+             The same as `Trailing Comma in Function Call Argument Lists` proposal:
+             https://github.com/swiftlang/swift-evolution/blob/main/proposals/0439-trailing-comma-lists.md
+             */
+            let results = await withTaskGroup(of: EZOCRResult?.self) { group in
+                for nlLanguage in sortedLanguages {
                 let language = languageMapper.languageEnum(from: nlLanguage)
                 guard language != .auto else { continue }
 
@@ -473,14 +484,18 @@ public class AppleOCREngine: NSObject {
         async throws
         -> [RecognizedTextObservation] {
         let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
-        log("Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)")
+        log(
+            "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
+        )
 
         // Create the modern RecognizeTextRequest
         var request = RecognizeTextRequest()
 
         // Configure recognition settings
         request.recognitionLevel = .accurate
-        request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(for: language, isModernOCR: true)
+        request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
+            for: language, isModernOCR: true
+        )
         request.usesLanguageCorrection = true
         request.automaticallyDetectsLanguage = enableAutoDetect
 

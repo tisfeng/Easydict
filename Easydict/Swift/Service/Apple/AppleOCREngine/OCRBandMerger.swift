@@ -115,7 +115,7 @@ class OCRBandMerger {
         let lineAnalyzer = OCRLineAnalyzer(metrics: previousSection)
         let isLongText = lineAnalyzer.isLongText(
             observation: previous,
-            nextObservation: current,
+            nextObservation: current
         )
         if !isLongText {
             log("    Short text detected, using newParagraph strategy")
