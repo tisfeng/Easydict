@@ -616,7 +616,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "截图 OCR 后自动查询"
+            "value" : "图片 OCR 后自动查询"
           }
         },
         "zh-Hant" : {
@@ -2570,6 +2570,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "剪貼簿 OCR"
+          }
+        }
+      }
+    },
+    "menu_pasteboard_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasteboard Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad schránky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪貼簿翻譯"
           }
         }
       }
@@ -6107,62 +6135,6 @@
         }
       }
     },
-    "setting.advance.show_ocr_menu_items" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show OCR Menu Items"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zobraziť položky OCR menu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示 OCR 菜单项"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示 OCR 選單項目"
-          }
-        }
-      }
-    },
-    "setting.advance.show_ocr_menu_items_desc" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show OCR-related menu items (Screenshot OCR, Pasteboard OCR, OCR Window) in the menu bar."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zobrazovať položky súvisiace s OCR (Snímka OCR, Schránka OCR, OCR okno) v menu lište."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在菜单栏中显示 OCR 相关的菜单项（截图 OCR、剪贴板 OCR、OCR 窗口）。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在選單列中顯示 OCR 相關的選單項目（截圖 OCR、剪貼簿 OCR、OCR 視窗）。"
-          }
-        }
-      }
-    },
     "setting.advance.footer.query_text_processing_desc" : {
       "localizations" : {
         "en" : {
@@ -6607,6 +6579,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果在某些應用程式中使用「以翻譯取代」功能失敗，請嘗試開啟相容模式，此模式會使用拷貝 + 貼上來確保成功取代。"
+          }
+        }
+      }
+    },
+    "setting.advance.show_ocr_menu_items" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show OCR Menu Items"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť položky OCR menu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 OCR 菜单项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示 OCR 選單項目"
+          }
+        }
+      }
+    },
+    "setting.advance.show_ocr_menu_items_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show OCR-related menu items (Screenshot OCR, Pasteboard OCR, OCR Window) in the menu bar."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazovať položky súvisiace s OCR (Snímka OCR, Schránka OCR, OCR okno) v menu lište."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在菜单栏中显示 OCR 相关的菜单项（截图 OCR、剪贴板 OCR、OCR 窗口）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在選單列中顯示 OCR 相關的選單項目（截圖 OCR、剪貼簿 OCR、OCR 視窗）。"
           }
         }
       }

@@ -890,14 +890,26 @@ static EZWindowManager *_instance;
     }];
 }
 
+/// Translate text from pasteboard, support both image and text.
 - (void)pasteboardTranslate {
-    MMLogInfo(@"Pasteboard OCR");
+    MMLogInfo(@"Pasteboard Translate");
 
-    // Get image from pasteboard
+    self.actionType = EZActionTypePasteboardTranslate;
+
+    // Try to read image from pasteboard first.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSImage *image = pasteboard.getImage;
+    NSImage *image = pasteboard.readImage;
+    if (image) {
+        [self showFloatingWindowWithOCRImage:image actionType:self.actionType];
+        return;
+    }
 
-    [self showFloatingWindowWithOCRImage:image actionType:EZActionTypePasteboardOCR];
+    // If no image, read string from pasteboard.
+    NSString *text = pasteboard.readString;
+    if (text.length > 0) {
+        EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+        [self showFloatingWindowType:windowType queryText:text];
+    }
 }
 
 

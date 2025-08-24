@@ -10,6 +10,14 @@ import CoreGraphics
 import Foundation
 
 extension NSPasteboard {
+    /// Get text from pasteboard
+    @objc
+    func readString() -> String? {
+        string(forType: .string)
+    }
+
+    // MARK: - Get Image from Pasteboard
+
     /// Gets an image from the pasteboard, correctly handling both
     /// image data and file copies (e.g., from Finder).
     ///
@@ -19,7 +27,7 @@ extension NSPasteboard {
     ///
     /// - Returns: An `NSImage` object if a valid image could be retrieved, otherwise `nil`.
     @objc
-    func getImage() -> NSImage? {
+    func readImage() -> NSImage? {
         print("=== NSPasteboard.getImage() Debug ===")
 
         /**

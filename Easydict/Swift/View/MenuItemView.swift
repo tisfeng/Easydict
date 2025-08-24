@@ -45,6 +45,7 @@ struct MenuItemView: View {
             inputItem.keyboardShortcut(.inputTranslate)
             screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
+            pasteboardTranslateItem
             miniWindowItem.keyboardShortcut(.showMiniWindow)
 
             Divider()
@@ -158,6 +159,18 @@ struct MenuItemView: View {
             HStack {
                 Image(systemSymbol: .highlighter)
                 Text("menu_selectWord_Translate")
+            }
+        }
+    }
+
+    @ViewBuilder private var pasteboardTranslateItem: some View {
+        Button {
+            logInfo("Pasteboard Translate")
+            EZWindowManager.shared().pasteboardTranslate()
+        } label: {
+            HStack {
+                Image(systemSymbol: .docOnClipboard)
+                Text("menu_pasteboard_translate")
             }
         }
     }

@@ -48,6 +48,7 @@ NSString *const EZActionTypeOCRQuery = @"ocr_query";
 NSString *const EZActionTypeScreenshotOCR = @"silent_screenshot_ocr";
 NSString *const EZActionTypeInvokeQuery = @"invoke_query";
 NSString *const EZActionTypePasteboardOCR = @"pasteboard_ocr";
+NSString *const EZActionTypePasteboardTranslate = @"pasteboard_translate";
 
 #pragma mark - EZSelectTextType
 NSString *const EZSelectTextTypeAccessibility = @"accessibility_select_text";
