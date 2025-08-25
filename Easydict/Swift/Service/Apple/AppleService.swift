@@ -99,7 +99,6 @@ public class AppleService: QueryService {
                     targetLanguage: targetLanguage
                 )
 
-                let result = EZQueryResult()
                 result.translatedResults = [translatedText]
                 return result
             }
