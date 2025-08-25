@@ -1,5 +1,5 @@
 //
-//  Shortcut+Validator.swift
+//  ShortcutManager+Validator.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/1/29.
@@ -12,7 +12,7 @@ import KeyHolder
 import Magnet
 import Sauce
 
-extension Shortcut {
+extension ShortcutManager {
     static func validateShortcut(_ keyCombo: KeyCombo) -> Bool {
         validateShortcutConfictBySystem(keyCombo) ||
             validateShortcutConfictByMenuItem(keyCombo) ||
@@ -22,7 +22,7 @@ extension Shortcut {
 
 // validate shortcut used by system
 // ref: https://github.com/cocoabits/MASShortcut/blob/6f2603c6b6cc18f64a799e5d2c9d3bbc467c413a/Framework/Model/MASShortcutValidator.m#L94
-extension Shortcut {
+extension ShortcutManager {
     static func validateShortcutConfictBySystem(_ keyCombo: KeyCombo) -> Bool {
         systemUsedShortcut().contains(keyCombo)
     }
@@ -50,10 +50,10 @@ extension Shortcut {
 }
 
 // validate shortcut used by menuItem
-extension Shortcut {
+extension ShortcutManager {
     static func validateShortcutConfictByMenuItem(_ keyCombo: KeyCombo) -> Bool {
         if let item = menuItemUsedShortcut(keyCombo) {
-            Shortcut.shared.confictMenuItem = item
+            ShortcutManager.shared.confictMenuItem = item
             return true
         } else {
             return false
@@ -87,7 +87,7 @@ extension Shortcut {
 
 // validate shortcut used by custom
 // ref: https://support.apple.com/zh-cn/HT201236
-extension Shortcut {
+extension ShortcutManager {
     static func validateShortcutConfictByCustom(_: KeyCombo) -> Bool {
         false
     }

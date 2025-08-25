@@ -13,11 +13,11 @@ import SwiftUI
 struct MainMenuShortcutCommandDataItem: Identifiable {
     // MARK: Public
 
-    public var id: String { type.localizedStringKey() }
+    public var id: String { action.rawValue }
 
     // MARK: Internal
 
-    var type: ShortcutType
+    var action: ShortcutAction
 }
 
 // MARK: - MainMenuShortcutCommandItem
@@ -30,44 +30,44 @@ struct MainMenuShortcutCommandItem: View {
     // MARK: Internal
 
     var body: some View {
-        Button(LocalizedStringKey(dataItem.type.localizedStringKey())) {
-            switch dataItem.type {
+        Button(LocalizedStringKey(dataItem.action.localizedStringKey())) {
+            switch dataItem.action {
             case .clearInput:
-                Shortcut.shared.clearInput()
+                ShortcutManager.shared.clearInput()
             case .clearAll:
-                Shortcut.shared.clearAll()
+                ShortcutManager.shared.clearAll()
             case .copy:
-                Shortcut.shared.shortcutCopy()
+                ShortcutManager.shared.shortcutCopy()
             case .copyFirstResult:
-                Shortcut.shared.shortcutCopyFirstResult()
+                ShortcutManager.shared.shortcutCopyFirstResult()
             case .focus:
-                Shortcut.shared.shortcutFocus()
+                ShortcutManager.shared.shortcutFocus()
             case .play:
-                Shortcut.shared.shortcutPlay()
+                ShortcutManager.shared.shortcutPlay()
             case .retry:
-                Shortcut.shared.shortcutRetry()
+                ShortcutManager.shared.shortcutRetry()
             case .toggle:
-                Shortcut.shared.shortcutToggle()
+                ShortcutManager.shared.shortcutToggle()
             case .pin:
-                Shortcut.shared.shortcutPin()
+                ShortcutManager.shared.shortcutPin()
             case .hide:
-                Shortcut.shared.shortcutHide()
+                ShortcutManager.shared.shortcutHide()
             case .increaseFontSize:
-                Shortcut.shared.increaseFontSize()
+                ShortcutManager.shared.increaseFontSize()
             case .decreaseFontSize:
-                Shortcut.shared.decreaseFontSize()
+                ShortcutManager.shared.decreaseFontSize()
             case .google:
-                Shortcut.shared.shortcutGoogle()
+                ShortcutManager.shared.shortcutGoogle()
             case .eudic:
-                Shortcut.shared.shortcutEudic()
+                ShortcutManager.shared.shortcutEudic()
             case .appleDic:
-                Shortcut.shared.shortcutAppleDic()
+                ShortcutManager.shared.shortcutAppleDic()
             default: ()
             }
         }
-        .keyboardShortcut(dataItem.type)
+        .keyboardShortcut(dataItem.action)
 
-        if dataItem.type == .toggle || dataItem.type == .decreaseFontSize {
+        if dataItem.action == .toggle || dataItem.action == .decreaseFontSize {
             Divider()
         }
     }

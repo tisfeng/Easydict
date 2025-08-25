@@ -1,5 +1,5 @@
 //
-//  Shortcut+Menu.swift
+//  ShortcutManager+Menu.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/2/7.
@@ -8,8 +8,9 @@
 
 import SwiftUI
 
-extension Shortcut {
-    func updateMenu(_ type: ShortcutType) { // update shortcut menu
+extension ShortcutManager {
+    /// Update shortcut menu
+    func updateMenu(_ type: ShortcutAction) {
         let shortcutTitle = String(localized: LocalizedStringResource(stringLiteral: type.localizedStringKey()))
         let menuTitle = String(localized: LocalizedStringResource(stringLiteral: "shortcut"))
         let shortcutMenu = NSApp.mainMenu?.items.first(where: { $0.title == menuTitle })

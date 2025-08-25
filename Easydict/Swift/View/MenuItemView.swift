@@ -14,22 +14,6 @@ import SwiftUI
 import Vision
 import ZipArchive
 
-// MARK: - MenuItemStore
-
-final class MenuItemStore: ObservableObject {
-    // MARK: Lifecycle
-
-    init() {
-        Configuration.shared.updater
-            .publisher(for: \.canCheckForUpdates)
-            .assign(to: &$canCheckForUpdates)
-    }
-
-    // MARK: Internal
-
-    @Published var canCheckForUpdates = false
-}
-
 // MARK: - MenuItemView
 
 struct MenuItemView: View {
@@ -78,6 +62,7 @@ struct MenuItemView: View {
     // MARK: Private
 
     @ObservedObject private var store = MenuItemStore()
+
     @Default(.showOCRMenuItems) private var showOCRMenuItems
 
     @State private var currentVersion =
@@ -97,6 +82,47 @@ struct MenuItemView: View {
         }
     }
 
+    // MARK: - Menu Items
+
+    @ViewBuilder var inputItem: some View {
+        menuItem(for: .inputTranslate)
+    }
+
+    @ViewBuilder private var screenshotItem: some View {
+        menuItem(for: .snipTranslate)
+    }
+
+    @ViewBuilder private var selectWordItem: some View {
+        menuItem(for: .selectTranslate)
+    }
+
+    @ViewBuilder private var pasteboardTranslateItem: some View {
+        menuItem(for: .pasteboardTranslate)
+    }
+
+    @ViewBuilder private var miniWindowItem: some View {
+        menuItem(for: .showMiniWindow)
+    }
+
+    @ViewBuilder private var silentScreenshotOCRItem: some View {
+        menuItem(for: .silentScreenshotOCR)
+    }
+
+    @ViewBuilder private var screenshotOCRItem: some View {
+        menuItem(for: .screenshotOCR)
+    }
+
+    @ViewBuilder private var pasteboardOCRItem: some View {
+        menuItem(for: .pasteboardOCR)
+    }
+
+    @ViewBuilder private var showOCRWindowItem: some View {
+        menuItem(for: .showOCRWindow)
+    }
+
+    // MARK: - Other Items
+
+    /// Version item
     @ViewBuilder private var versionItem: some View {
         Button(versionString) {
             guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/releases") else {
@@ -106,10 +132,12 @@ struct MenuItemView: View {
         }
     }
 
+    /// Settings item
     @ViewBuilder private var settingItem: some View {
+        let titleKey = LocalizedStringKey("Settings...")
         if #available(macOS 14.0, *) {
             SettingsLink {
-                Text("Settings...")
+                Text(titleKey)
             } preAction: {
                 logInfo("Open App Settings")
                 NSApplication.shared.activateApp()
@@ -117,9 +145,11 @@ struct MenuItemView: View {
                 // nothing to do
             }
         } else {
-            Button("Settings...") {
+            Button(titleKey) {
                 logInfo("Open App Settings")
                 NSApplication.shared.activateApp()
+
+                // Refer https://stackoverflow.com/a/77265223/8378840
                 NSApplication.shared.sendAction(
                     Selector(("showSettingsWindow:")), to: nil, from: nil
                 )
@@ -127,120 +157,7 @@ struct MenuItemView: View {
         }
     }
 
-    // MARK: - List of functions
-
-    @ViewBuilder private var inputItem: some View {
-        Button {
-            logInfo("Input Translate")
-            EZWindowManager.shared().inputTranslate()
-        } label: {
-            HStack {
-                Image(systemName: "keyboard")
-                Text("menu_input_translate")
-            }
-        }
-    }
-
-    @ViewBuilder private var screenshotItem: some View {
-        Button {
-            logInfo("Screenshot Translate")
-            EZWindowManager.shared().snipTranslate()
-        } label: {
-            HStack {
-                Image(systemSymbol: .cameraViewfinder)
-                Text("menu_screenshot_Translate")
-            }
-        }
-    }
-
-    @ViewBuilder private var selectWordItem: some View {
-        Button {
-            logInfo("Select Text Translate")
-            EZWindowManager.shared().selectTextTranslate()
-        } label: {
-            HStack {
-                Image(systemSymbol: .highlighter)
-                Text("menu_selectWord_Translate")
-            }
-        }
-    }
-
-    @ViewBuilder private var pasteboardTranslateItem: some View {
-        Button {
-            logInfo("Pasteboard Translate")
-            EZWindowManager.shared().pasteboardTranslate()
-        } label: {
-            HStack {
-                Image(systemSymbol: .docOnClipboard)
-                let title = LocalizedStringKey(
-                    ShortcutType.pasteboardTranslate.localizedStringKey()
-                )
-                Text(title)
-            }
-        }
-    }
-
-    @ViewBuilder private var miniWindowItem: some View {
-        Button {
-            logInfo("Show Mini Window")
-            EZWindowManager.shared().showMiniFloatingWindow()
-        } label: {
-            HStack {
-                Image(systemSymbol: .dockRectangle)
-                Text("menu_show_mini_window")
-            }
-        }
-    }
-
-    @ViewBuilder private var silentScreenshotOCRItem: some View {
-        Button {
-            logInfo("Silent Screenshot OCR")
-            EZWindowManager.shared().silentScreenshotOCR()
-        } label: {
-            HStack {
-                Image(systemSymbol: .cameraMeteringSpot)
-                Text("menu_silent_screenshot_OCR")
-            }
-        }
-    }
-
-    @ViewBuilder private var screenshotOCRItem: some View {
-        Button {
-            EZWindowManager.shared().screenshotOCR()
-        } label: {
-            HStack {
-                Image(systemSymbol: .cameraMeteringMultispot)
-                Text("menu_screenshot_OCR")
-            }
-        }
-    }
-
-    @ViewBuilder private var pasteboardOCRItem: some View {
-        Button {
-            AppleOCREngine().pasteboardOCR()
-        } label: {
-            HStack {
-                Image(systemSymbol: .listClipboard)
-                Text("menu_pasteboard_OCR")
-            }
-        }
-    }
-
-    @ViewBuilder private var showOCRWindowItem: some View {
-        Button {
-            logInfo("Show OCR Window")
-            // Simply show the OCR window without updating data
-            OCRWindowManager.shared.showWindow()
-        } label: {
-            HStack {
-                Image(systemSymbol: .textAndCommandMacwindow)
-                Text("menu_show_ocr_window")
-            }
-        }
-    }
-
-    // MARK: - Setting
-
+    /// Check Updates item
     @ViewBuilder private var checkUpdateItem: some View {
         Button("check_updates") {
             logInfo("Check Updates")
@@ -248,6 +165,7 @@ struct MenuItemView: View {
         }.disabled(!store.canCheckForUpdates)
     }
 
+    /// Quit item
     @ViewBuilder private var quitItem: some View {
         Button("quit") {
             logInfo("Quit Application")
@@ -255,6 +173,7 @@ struct MenuItemView: View {
         }
     }
 
+    /// Help item
     @ViewBuilder private var helpItem: some View {
         Menu("Help") {
             Button("Feedback") {
@@ -275,6 +194,8 @@ struct MenuItemView: View {
             }
         }
     }
+
+    // MARK: - Actions
 
     private func exportLogAction() {
         logInfo("Export Log")
@@ -298,61 +219,76 @@ struct MenuItemView: View {
             logError("Export log failed")
         }
     }
+}
 
-    private func ocr(image: NSImage) {
-        // Get the CGImage on which to perform requests.
-        guard let cgImage = image.toCGImage() else { return }
+// MARK: - MenuItemView Extensions
 
-        // Create a new image-request handler.
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+extension MenuItemView {
+    /// Create a menu item from ShortcutAction configuration
+    fileprivate func menuItem(for shortcutType: ShortcutAction) -> some View {
+        MenuItemBuilder(
+            data: MenuItemData(
+                icon: shortcutType.icon,
+                titleKey: shortcutType.localizedStringKey(),
+                action: shortcutType.executeAction
+            )
+        )
+    }
+}
 
-        let recognizeTextHandler = { (request: VNRequest, error: Error?) in
-            if let error {
-                print("Error recognizing text: \(error)")
-                return
-            }
+// MARK: - MenuItemData
 
-            // Get the results from the request.
-            guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                print("No text recognized.")
-                return
-            }
+/// Data structure for menu items
+private struct MenuItemData {
+    // MARK: Lifecycle
 
-            // Process the recognized text observations.
-            for observation in observations {
-                if let topCandidate = observation.topCandidates(1).first {
-                    print("Recognized text: \(topCandidate.string)")
-                }
-            }
-        }
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Create a new request to recognize text.
-            let request = VNRecognizeTextRequest(completionHandler: recognizeTextHandler)
-            request.usesLanguageCorrection = true
-            request.recognitionLevel = .accurate
-            request.recognitionLanguages = [
-                "zh-Hans",
-                "zh-Hant",
-                "en-US",
-                "ja-JP",
-                "fr-FR",
-                "de-DE",
-                "es-ES",
-                "pt-BR",
-                "it-IT",
-                "ko-KR",
-                "ru-RU",
-                "uk-UA",
-            ]
+    init(icon: SFSymbol, titleKey: String, action: @escaping () -> ()) {
+        self.icon = icon
+        self.titleKey = titleKey
+        self.action = action
+    }
 
-            do {
-                // Perform the text-recognition request.
-                try requestHandler.perform([request])
-            } catch {
-                print("Unable to perform the requests: \(error).")
+    // MARK: Internal
+
+    let icon: SFSymbol
+    let titleKey: String
+    let action: () -> ()
+}
+
+// MARK: - MenuItemBuilder
+
+/// Builder for creating consistent menu items
+private struct MenuItemBuilder: View {
+    let data: MenuItemData
+
+    var body: some View {
+        let titleKey = data.titleKey
+        Button {
+            logInfo("Menu Action: \(titleKey)")
+            data.action()
+        } label: {
+            HStack {
+                Image(systemSymbol: data.icon)
+                Text(LocalizedStringKey(titleKey))
             }
         }
     }
+}
+
+// MARK: - MenuItemStore
+
+final class MenuItemStore: ObservableObject {
+    // MARK: Lifecycle
+
+    init() {
+        Configuration.shared.updater
+            .publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
+    }
+
+    // MARK: Internal
+
+    @Published var canCheckForUpdates = false
 }
 
 #Preview {

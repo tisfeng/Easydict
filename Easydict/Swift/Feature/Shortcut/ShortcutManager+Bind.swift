@@ -1,5 +1,5 @@
 //
-//  Shortcut+Bind.swift
+//  ShortcutManager+Bind.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/2/4.
@@ -7,7 +7,7 @@
 //
 
 // App shortcut binding func
-extension Shortcut {
+extension ShortcutManager {
     func clearInput() {
         EZWindowManager.shared().clearInput()
     }

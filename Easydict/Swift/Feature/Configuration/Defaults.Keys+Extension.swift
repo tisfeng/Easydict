@@ -339,11 +339,16 @@ extension Defaults.Keys {
     static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder")
     static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
-    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
+    // Note: This key value is not suitable for renaming, because it is used in old versions.
+    static let silentScreenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
     static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
     static let pasteboardTranslateShortcut = Key<KeyCombo?>(
         "EZPasteboardTranslateShortcutKey_keyHolder"
     )
+
+    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey2_keyHolder")
+    static let pasteboardOCRShortcut = Key<KeyCombo?>("EZPasteboardOCRShortcutKey_keyHolder")
+    static let showOCRWindowShortcut = Key<KeyCombo?>("EZShowOCRWindowShortcutKey_keyHolder")
 
     // App
     static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder")

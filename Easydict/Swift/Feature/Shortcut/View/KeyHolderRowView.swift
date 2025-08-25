@@ -11,7 +11,7 @@ struct KeyHolderRowView: View {
     // MARK: Public
 
     @State public var title: String
-    @State public var type: ShortcutType
+    @State public var type: ShortcutAction
     @Binding public var confictAlterMessage: ShortcutConfictAlertMessage
 
     // MARK: Internal

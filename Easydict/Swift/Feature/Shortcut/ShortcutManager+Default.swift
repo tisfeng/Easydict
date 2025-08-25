@@ -1,5 +1,5 @@
 //
-//  Shortcut+Default.swift
+//  ShortcutManager+Default.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/2/5.
@@ -9,24 +9,22 @@
 import Defaults
 import Magnet
 
-extension Shortcut {
-    // set defalut for app shortcut
-    func setDefaultForShortcut() {
-        setDefaultForGlobalShortcut()
-        setDefaultForAppShortcut()
+extension ShortcutManager {
+    // Set defalut hotkey for global and app
+    func setDefaultShortcuts() {
+        setDefaultGlobalShortcuts()
+        setDefaultAppShortcuts()
     }
 
-    private func setDefaultForGlobalShortcut() {
+    private func setDefaultGlobalShortcuts() {
         Defaults[.inputShortcut] = KeyCombo(key: .a, cocoaModifiers: .option)
         Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
         Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
         Defaults[.showMiniWindowShortcut] = KeyCombo(key: .f, cocoaModifiers: .option)
-        Defaults[.screenshotOCRShortcut] = KeyCombo(key: .s, cocoaModifiers: [.option, .shift])
+        Defaults[.silentScreenshotOCRShortcut] = KeyCombo(key: .s, cocoaModifiers: [.option, .shift])
     }
 
-    private func setDefaultForAppShortcut() {
-        setDefaultForGlobalShortcut()
-
+    private func setDefaultAppShortcuts() {
         Defaults[.clearInputShortcut] = KeyCombo(key: .k, cocoaModifiers: .command)
         Defaults[.clearAllShortcut] = KeyCombo(key: .k, cocoaModifiers: [.command, .shift])
         Defaults[.copyShortcut] = KeyCombo(key: .c, cocoaModifiers: [.command, .shift])

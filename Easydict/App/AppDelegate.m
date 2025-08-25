@@ -19,7 +19,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
 
-    [Shortcut setupShortcut];
+    [ShortcutManager.shared setupShortcut];
 
     [EZWindowManager.shared showMainWindowIfNeeded];
     
