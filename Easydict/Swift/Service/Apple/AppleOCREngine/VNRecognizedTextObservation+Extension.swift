@@ -229,10 +229,7 @@ extension VNRecognizedTextObservation {
 
         // Create EZRecognizedText candidates
         let ezCandidates = topCandidates(3).map { candidate in
-            EZRecognizedText(
-                string: candidate.string,
-                confidence: candidate.confidence
-            )
+            EZRecognizedText(string: candidate.string, confidence: candidate.confidence)
         }
 
         return EZRecognizedTextObservation(
@@ -240,7 +237,7 @@ extension VNRecognizedTextObservation {
             topRight: topRight,
             bottomRight: bottomRight,
             bottomLeft: bottomLeft,
-            uuid: UUID(),
+            uuid: uuid,
             confidence: topCandidate.confidence,
             topCandidates: ezCandidates
         )

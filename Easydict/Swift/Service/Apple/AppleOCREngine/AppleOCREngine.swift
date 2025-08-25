@@ -154,56 +154,6 @@ public class AppleOCREngine: NSObject {
         }
     }
 
-    /// Unified OCR method that returns EZRecognizedTextObservation for consistent processing.
-    ///
-    /// This method demonstrates how to use the unified API that automatically selects
-    /// between modern and legacy Vision APIs based on system availability.
-    ///
-    /// **Example Usage:**
-    /// ```swift
-    /// let engine = AppleOCREngine()
-    /// let observations = try await engine.recognizeTextUnified(image: image, language: .auto)
-    /// let mergedText = observations.simpleMergedText
-    /// ```
-    ///
-    /// - Parameters:
-    ///   - image: The `NSImage` to recognize text from.
-    ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
-    /// - Returns: Array of `EZRecognizedTextObservation` containing unified recognition results.
-    func recognizeTextUnified(image: NSImage, language: Language = .auto) async throws
-        -> [EZRecognizedTextObservation] {
-        log(
-            "Recognizing text using unified API with language: \(language), image size: \(image.size)"
-        )
-
-        guard image.isValid else {
-            throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
-        }
-
-        // Convert NSImage to CGImage
-        guard let cgImage = image.toCGImage() else {
-            throw QueryError.error(
-                type: .parameter, message: "Failed to convert NSImage to CGImage"
-            )
-        }
-
-        let startTime = CFAbsoluteTimeGetCurrent()
-
-        // Use the unified API that automatically selects the best available Vision API
-        let observations = try await performVisionOCR(on: cgImage, language: language)
-
-        log("Unified OCR recognized \(observations.count) text observations (\(language))")
-        log("Unified OCR cost time: \(startTime.elapsedTimeString) seconds")
-
-        // Log sample of recognized text for debugging
-        if !observations.isEmpty {
-            let sampleTexts = observations.prefix(3).map { $0.prefix30 }
-            log("Sample recognized texts: \(sampleTexts)")
-        }
-
-        return observations
-    }
-
     // MARK: Private
 
     /// The text processor responsible for sorting, merging, and normalizing the OCR results.
@@ -224,6 +174,8 @@ public class AppleOCREngine: NSObject {
     ///   - cgImage: The `CGImage` to perform OCR on.
     ///   - language: The preferred `Language` for recognition. If not a valid OCR language, defaults to automatic detection.
     /// - Returns: Array of `VNRecognizedTextObservation` objects containing recognition results.
+    ///
+    /// - Warning: Call this function on macOS 15.0+ will crash https://github.com/tisfeng/Easydict/issues/915
     private func performLegacyVisionOCR(on cgImage: CGImage, language: Language = .auto)
         async throws
         -> [VNRecognizedTextObservation] {
