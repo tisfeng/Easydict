@@ -9,14 +9,16 @@
 import Defaults
 import Magnet
 
+// MARK: - ShortcutManager + Defaults Settings
+
 extension ShortcutManager {
-    // Set defalut hotkey for global and app
-    func setDefaultShortcuts() {
-        setDefaultGlobalShortcuts()
-        setDefaultAppShortcuts()
+    // Set defalut hotkeys for global and app
+    func setDefaultShortcutKeys() {
+        setDefaultGlobalShortcutKeys()
+        setDefaultAppShortcutKeys()
     }
 
-    private func setDefaultGlobalShortcuts() {
+    private func setDefaultGlobalShortcutKeys() {
         Defaults[.inputShortcut] = KeyCombo(key: .a, cocoaModifiers: .option)
         Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
         Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
@@ -24,7 +26,7 @@ extension ShortcutManager {
         Defaults[.silentScreenshotOCRShortcut] = KeyCombo(key: .s, cocoaModifiers: [.option, .shift])
     }
 
-    private func setDefaultAppShortcuts() {
+    private func setDefaultAppShortcutKeys() {
         Defaults[.clearInputShortcut] = KeyCombo(key: .k, cocoaModifiers: .command)
         Defaults[.clearAllShortcut] = KeyCombo(key: .k, cocoaModifiers: [.command, .shift])
         Defaults[.copyShortcut] = KeyCombo(key: .c, cocoaModifiers: [.command, .shift])
@@ -40,5 +42,47 @@ extension ShortcutManager {
         Defaults[.googleShortcut] = KeyCombo(key: .return, cocoaModifiers: .command)
         Defaults[.eudicShortcut] = KeyCombo(key: .return, cocoaModifiers: [.command, .shift])
         Defaults[.appleDictionaryShortcut] = KeyCombo(key: .d, cocoaModifiers: [.command, .shift])
+    }
+}
+
+// MARK: - ShortcutManager + GlobalShortcut
+
+extension ShortcutManager {
+    /// Setup global shortcut actions
+    func setupGlobalShortcutActions() {
+        let globalActions: [ShortcutAction] = [
+            .inputTranslate,
+            .snipTranslate,
+            .selectTranslate,
+            .pasteboardTranslate,
+            .showMiniWindow,
+            .silentScreenshotOCR,
+        ]
+
+        for action in globalActions {
+            if let key = action.defaultsKey {
+                let keyCombo = Defaults[key]
+                bindingShortcutAction(keyCombo: keyCombo, action: action)
+            }
+        }
+    }
+
+    /// Bind default shortcut action
+    func bindingShortcutAction(keyCombo: KeyCombo?, action: ShortcutAction) {
+        HotKeyCenter.shared.unregisterHotKey(with: action.rawValue)
+        guard let keyCombo else {
+            return
+        }
+
+        let hotKey = HotKey(
+            identifier: action.rawValue,
+            keyCombo: keyCombo
+        ) { _ in
+            Task { @MainActor in
+                action.executeAction()
+            }
+        }
+
+        hotKey.register()
     }
 }

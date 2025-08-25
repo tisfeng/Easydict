@@ -14,17 +14,33 @@ import SwiftUI
 // MARK: - ShortcutModifier
 
 struct ShortcutModifier: ViewModifier {
+    let action: ShortcutAction
+
+    func body(content: Content) -> some View {
+        if let defaultsKey = action.defaultsKey {
+            ShortcutModifierWithKey(content: content, defaultsKey: defaultsKey)
+        } else {
+            content
+        }
+    }
+}
+
+// MARK: - ShortcutModifierWithKey
+
+struct ShortcutModifierWithKey<Content: View>: View {
     // MARK: Lifecycle
 
-    init(action: ShortcutAction) {
-        _shortcutKey = .init(action.defaultsKey)
+    init(content: Content, defaultsKey: Defaults.Key<KeyCombo?>) {
+        self.content = content
+        _shortcutKey = .init(defaultsKey)
     }
 
     // MARK: Internal
 
+    let content: Content
     @Default var shortcutKey: KeyCombo?
 
-    func body(content: Content) -> some View {
+    var body: some View {
         if let shortcutKey {
             content
                 .keyboardShortcut(
@@ -47,25 +63,18 @@ struct ShortcutModifier: ViewModifier {
     }
 
     private func fetchShortcutKeyEventModifiers(_ keyCombo: KeyCombo) -> EventModifiers {
-        var modifiers: EventModifiers = []
+        let modifierMappings: [(NSEvent.ModifierFlags, EventModifiers)] = [
+            (.command, .command),
+            (.control, .control),
+            (.option, .option),
+            (.shift, .shift),
+        ]
 
-        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.command) {
-            modifiers.update(with: EventModifiers.command)
+        return modifierMappings.reduce(into: EventModifiers()) { result, mapping in
+            if keyCombo.keyEquivalentModifierMask.contains(mapping.0) {
+                result.update(with: mapping.1)
+            }
         }
-
-        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.control) {
-            modifiers.update(with: EventModifiers.control)
-        }
-
-        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.option) {
-            modifiers.update(with: EventModifiers.option)
-        }
-
-        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.shift) {
-            modifiers.update(with: EventModifiers.shift)
-        }
-
-        return modifiers
     }
 }
 

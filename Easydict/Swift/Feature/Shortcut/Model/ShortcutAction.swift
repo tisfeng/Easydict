@@ -14,36 +14,40 @@ import SFSafeSymbols
 // MARK: - ShortcutAction
 
 /// Enum representing different application actions that can be triggered by shortcuts
-public enum ShortcutAction: String {
-    // Global shortcut
-    case inputTranslate = "EZInputShortcutKey"
-    case snipTranslate = "EZSnipShortcutKey"
-    case selectTranslate = "EZSelectionShortcutKey"
-    case showMiniWindow = "EZShowMiniShortcutKey"
-    case silentScreenshotOCR = "EZSilentScreenshotOCRShortcutKey"
-    case pasteboardTranslate = "EZPasteboardTranslateShortcutKey"
+public enum ShortcutAction: String, Identifiable {
+    // Global shortcuts
+    case inputTranslate
+    case snipTranslate
+    case selectTranslate
+    case showMiniWindow
+    case pasteboardTranslate
+    case silentScreenshotOCR
 
     // OCR specific shortcuts
-    case screenshotOCR = "EZScreenshotOCRShortcutKey"
-    case pasteboardOCR = "EZPasteboardOCRShortcutKey"
-    case showOCRWindow = "EZShowOCRWindowShortcutKey"
+    case screenshotOCR
+    case pasteboardOCR
+    case showOCRWindow
 
-    // In App shortcut
-    case clearInput = "EZClearInputShortcutKey"
-    case clearAll = "EZClearAllShortcutKey"
-    case copy = "EZCopyShortcutKey"
-    case copyFirstResult = "EZCopyFirstResultShortcutKey"
-    case focus = "EZFocusShortcutKey"
-    case play = "EZPlayShortcutKey"
-    case retry = "EZRetryShortcutKey"
-    case toggle = "EZToggleShortcutKey"
-    case pin = "EZPinShortcutKey"
-    case hide = "EZHideShortcutKey"
-    case increaseFontSize = "EZIncreaseFontSizeShortcutKey"
-    case decreaseFontSize = "EZDecreaseFontSizeShortcutKey"
-    case google = "EZGoogleShortcutKey"
-    case eudic = "EZEudicShortcutKey"
-    case appleDic = "EZAppleDicShortcutKey"
+    // In App shortcuts
+    case clearInput
+    case clearAll
+    case copy
+    case copyFirstResult
+    case focus
+    case play
+    case retry
+    case toggle
+    case pin
+    case hide
+    case increaseFontSize
+    case decreaseFontSize
+    case google
+    case eudic
+    case appleDic
+
+    // MARK: Public
+
+    public var id: String { rawValue }
 }
 
 extension ShortcutAction {
@@ -53,6 +57,7 @@ extension ShortcutAction {
             ?? ActionConfiguration(
                 titleKey: "unknown",
                 icon: .questionmark,
+                defaultsKey: nil,
                 action: {}
             )
     }
@@ -71,8 +76,8 @@ extension ShortcutAction {
     }
 
     /// Get the Defaults.Key for this shortcut action
-    var defaultsKey: Defaults.Key<KeyCombo?> {
-        Self.defaultsKeyMappings[self] ?? .inputShortcut // fallback to a safe default
+    var defaultsKey: Defaults.Key<KeyCombo?>? {
+        configuration.defaultsKey
     }
 }
 
@@ -88,31 +93,37 @@ extension ShortcutAction {
             .inputTranslate: ActionConfiguration(
                 titleKey: "menu_input_translate",
                 icon: .keyboard,
+                defaultsKey: .inputShortcut,
                 action: { windowManager.inputTranslate() }
             ),
             .snipTranslate: ActionConfiguration(
                 titleKey: "menu_screenshot_Translate",
                 icon: .cameraViewfinder,
+                defaultsKey: .snipShortcut,
                 action: { windowManager.snipTranslate() }
             ),
             .selectTranslate: ActionConfiguration(
                 titleKey: "menu_selectWord_Translate",
                 icon: .highlighter,
+                defaultsKey: .selectionShortcut,
                 action: { windowManager.selectTextTranslate() }
             ),
             .silentScreenshotOCR: ActionConfiguration(
                 titleKey: "menu_silent_screenshot_OCR",
                 icon: .cameraMeteringSpot,
+                defaultsKey: .screenshotOCRShortcut,
                 action: { windowManager.silentScreenshotOCR() }
             ),
             .pasteboardTranslate: ActionConfiguration(
                 titleKey: "menu_pasteboard_translate",
                 icon: .docOnClipboard,
+                defaultsKey: .pasteboardTranslateShortcut,
                 action: { windowManager.pasteboardTranslate() }
             ),
             .showMiniWindow: ActionConfiguration(
                 titleKey: "menu_show_mini_window",
                 icon: .dockRectangle,
+                defaultsKey: .showMiniWindowShortcut,
                 action: { windowManager.showMiniFloatingWindow() }
             ),
 
@@ -120,16 +131,19 @@ extension ShortcutAction {
             .screenshotOCR: ActionConfiguration(
                 titleKey: "menu_screenshot_OCR",
                 icon: .cameraMeteringMultispot,
+                defaultsKey: .screenshotOCRShortcut,
                 action: { windowManager.screenshotOCR() }
             ),
             .pasteboardOCR: ActionConfiguration(
                 titleKey: "menu_pasteboard_OCR",
                 icon: .listClipboard,
+                defaultsKey: .pasteboardOCRShortcut,
                 action: { AppleOCREngine().pasteboardOCR() }
             ),
             .showOCRWindow: ActionConfiguration(
                 titleKey: "menu_show_ocr_window",
                 icon: .textAndCommandMacwindow,
+                defaultsKey: .showOCRWindowShortcut,
                 action: { OCRWindowManager.shared.showWindow() }
             ),
 
@@ -137,125 +151,110 @@ extension ShortcutAction {
             .clearInput: ActionConfiguration(
                 titleKey: "shortcut_clear_input",
                 icon: .deleteBackward,
-                action: { /* Add action if needed */ }
+                defaultsKey: .clearInputShortcut,
+                action: { windowManager.clearInput() }
             ),
             .clearAll: ActionConfiguration(
                 titleKey: "shortcut_clear_all",
                 icon: .clearFill,
-                action: { /* Add action if needed */ }
+                defaultsKey: .clearAllShortcut,
+                action: { windowManager.clearAll() }
             ),
             .copy: ActionConfiguration(
                 titleKey: "shortcut_copy",
                 icon: .docOnDoc,
-                action: { /* Add action if needed */ }
+                defaultsKey: .copyShortcut,
+                action: { windowManager.copyQueryText() }
             ),
             .copyFirstResult: ActionConfiguration(
                 titleKey: "shortcut_copy_first_translated_text",
                 icon: .docOnClipboard,
-                action: { /* Add action if needed */ }
+                defaultsKey: .copyFirstResultShortcut,
+                action: { windowManager.copyFirstTranslatedText() }
             ),
             .focus: ActionConfiguration(
                 titleKey: "shortcut_focus",
                 icon: .cursorarrowRays,
-                action: { /* Add action if needed */ }
+                defaultsKey: .focusShortcut,
+                action: { windowManager.focusInputTextView() }
             ),
             .play: ActionConfiguration(
                 titleKey: "shortcut_play",
                 icon: .playFill,
-                action: { /* Add action if needed */ }
+                defaultsKey: .playShortcut,
+                action: { windowManager.playOrStopQueryTextAudio() }
             ),
             .retry: ActionConfiguration(
                 titleKey: "retry",
                 icon: .arrowClockwise,
-                action: { /* Add action if needed */ }
+                defaultsKey: .retryShortcut,
+                action: { windowManager.rerty() }
             ),
             .toggle: ActionConfiguration(
                 titleKey: "toggle_languages",
                 icon: .arrowLeftArrowRight,
-                action: { /* Add action if needed */ }
+                defaultsKey: .toggleShortcut,
+                action: { windowManager.toggleTranslationLanguages() }
             ),
             .pin: ActionConfiguration(
                 titleKey: "pin",
                 icon: .pin,
-                action: { /* Add action if needed */ }
+                defaultsKey: .pinShortcut,
+                action: { windowManager.pin() }
             ),
             .hide: ActionConfiguration(
                 titleKey: "hide",
                 icon: .eyeSlash,
-                action: { /* Add action if needed */ }
+                defaultsKey: .hideShortcut,
+                action: { windowManager.closeWindowOrExitSreenshot() }
             ),
             .increaseFontSize: ActionConfiguration(
                 titleKey: "shortcut_increase_font",
                 icon: .textformatAlt,
-                action: { /* Add action if needed */ }
+                defaultsKey: .increaseFontSize,
+                action: {
+                    if Configuration.shared.fontSizeIndex < Configuration.shared.fontSizes.count - 1 {
+                        Configuration.shared.fontSizeIndex += 1
+                    }
+                }
             ),
             .decreaseFontSize: ActionConfiguration(
                 titleKey: "shortcut_decrease_font",
                 icon: .textformatAlt,
-                action: { /* Add action if needed */ }
+                defaultsKey: .decreaseFontSize,
+                action: {
+                    if Configuration.shared.fontSizeIndex > 0 {
+                        Configuration.shared.fontSizeIndex -= 1
+                    }
+                }
             ),
             .google: ActionConfiguration(
                 titleKey: "open_in_google",
                 icon: .magnifyingglass,
-                action: { /* Add action if needed */ }
+                defaultsKey: .googleShortcut,
+                action: {
+                    let window = windowManager.floatingWindow
+                    window?.titleBar.googleButton.openLink()
+                }
             ),
             .eudic: ActionConfiguration(
                 titleKey: "open_in_eudic",
                 icon: .bookClosed,
-                action: { /* Add action if needed */ }
+                defaultsKey: .eudicShortcut,
+                action: {
+                    let window = windowManager.floatingWindow
+                    window?.titleBar.eudicButton.openLink()
+                }
             ),
             .appleDic: ActionConfiguration(
                 titleKey: "open_in_apple_dictionary",
                 icon: .book,
-                action: { /* Add action if needed */ }
+                defaultsKey: .appleDictionaryShortcut,
+                action: {
+                    let window = windowManager.floatingWindow
+                    window?.titleBar.appleDictionaryButton.openLink()
+                }
             ),
         ]
     }()
-
-    /// Mapping from ShortcutAction to corresponding Defaults.Key
-    fileprivate static let defaultsKeyMappings: [ShortcutAction: Defaults.Key<KeyCombo?>] = [
-        .inputTranslate: .inputShortcut,
-        .snipTranslate: .snipShortcut,
-        .selectTranslate: .selectionShortcut,
-        .silentScreenshotOCR: .screenshotOCRShortcut,
-        .pasteboardTranslate: .pasteboardTranslateShortcut,
-        .showMiniWindow: .showMiniWindowShortcut,
-        .screenshotOCR: .screenshotOCRShortcut,
-        .pasteboardOCR: .pasteboardOCRShortcut,
-        .showOCRWindow: .showOCRWindowShortcut,
-        .clearInput: .clearInputShortcut,
-        .clearAll: .clearAllShortcut,
-        .copy: .copyShortcut,
-        .copyFirstResult: .copyFirstResultShortcut,
-        .focus: .focusShortcut,
-        .play: .playShortcut,
-        .retry: .retryShortcut,
-        .toggle: .toggleShortcut,
-        .pin: .pinShortcut,
-        .hide: .hideShortcut,
-        .increaseFontSize: .increaseFontSize,
-        .decreaseFontSize: .decreaseFontSize,
-        .google: .googleShortcut,
-        .eudic: .eudicShortcut,
-        .appleDic: .appleDictionaryShortcut,
-    ]
-}
-
-// MARK: - ActionConfiguration
-
-/// Configuration for shortcut types including icon, title, and action
-struct ActionConfiguration {
-    // MARK: Lifecycle
-
-    init(titleKey: String, icon: SFSymbol, action: @MainActor @escaping () -> ()) {
-        self.titleKey = titleKey
-        self.icon = icon
-        self.action = action
-    }
-
-    // MARK: Internal
-
-    let titleKey: String
-    let icon: SFSymbol
-    let action: @MainActor () -> ()
 }

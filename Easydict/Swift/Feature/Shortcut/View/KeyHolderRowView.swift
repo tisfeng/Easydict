@@ -11,7 +11,7 @@ struct KeyHolderRowView: View {
     // MARK: Public
 
     @State public var title: String
-    @State public var type: ShortcutAction
+    @State public var action: ShortcutAction
     @Binding public var confictAlterMessage: ShortcutConfictAlertMessage
 
     // MARK: Internal
@@ -20,7 +20,7 @@ struct KeyHolderRowView: View {
         HStack {
             Text(LocalizedStringKey(title))
             Spacer()
-            KeyHolderWrapper(shortcutType: type, confictAlterMessage: $confictAlterMessage).frame(
+            KeyHolderWrapper(shortcutType: action, confictAlterMessage: $confictAlterMessage).frame(
                 width: 180,
                 height: 26
             )

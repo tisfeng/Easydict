@@ -12,45 +12,6 @@ import KeyHolder
 import Magnet
 import SwiftUI
 
-// MARK: - DefaultsKeyWrapper
-
-/// A wrapper to handle type-erased access to Defaults.Key<KeyCombo?>
-private struct DefaultsKeyWrapper {
-    // MARK: Lifecycle
-
-    init(_ key: Defaults.Key<KeyCombo?>) {
-        self.getter = { Defaults[key] }
-        self.setter = { Defaults[key] = $0 }
-    }
-
-    // MARK: Internal
-
-    func getValue() -> KeyCombo? {
-        getter()
-    }
-
-    func setValue(_ value: KeyCombo?) {
-        setter(value)
-    }
-
-    // MARK: Private
-
-    private let getter: () -> KeyCombo?
-    private let setter: (KeyCombo?) -> ()
-}
-
-// MARK: - KeyHolderDataItem
-
-public struct KeyHolderDataItem: Identifiable {
-    // MARK: Public
-
-    public var id: String { type.rawValue }
-
-    // MARK: Internal
-
-    var type: ShortcutAction
-}
-
 // MARK: - KeyHolderWrapper
 
 struct KeyHolderWrapper: NSViewRepresentable {
@@ -94,8 +55,10 @@ extension KeyHolderWrapper {
     class Coordinator: NSObject, RecordViewDelegate {
         // MARK: Lifecycle
 
-        init(shortcutType: ShortcutAction, confictAlterMessage: Binding<ShortcutConfictAlertMessage>) {
-            self.type = shortcutType
+        init(
+            shortcutType: ShortcutAction, confictAlterMessage: Binding<ShortcutConfictAlertMessage>
+        ) {
+            self.action = shortcutType
             _confictAlterMessage = confictAlterMessage
         }
 
@@ -135,22 +98,22 @@ extension KeyHolderWrapper {
                         message: message
                     )
                     recordView.clear()
-                    HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
+                    HotKeyCenter.shared.unregisterHotKey(with: action.rawValue)
                     return
                 }
             } else {
                 // clear shortcut
-                ShortcutManager.shared.updateMenu(type)
+                ShortcutManager.shared.updateMenu(action)
             }
             storeKeyCombo(with: keyCombo)
-            ShortcutManager.shared.bindingShortcut(keyCombo: keyCombo, type: type)
+            ShortcutManager.shared.bindingShortcutAction(keyCombo: keyCombo, action: action)
         }
 
         /// Restore the key combo for the given record view based on the shortcut type.
         func restoreKeyCombo(_ recordView: RecordView) {
             let keyCombo = getKeyCombo()
             recordView.keyCombo = keyCombo
-            ShortcutManager.shared.bindingShortcut(keyCombo: keyCombo, type: type)
+            ShortcutManager.shared.bindingShortcutAction(keyCombo: keyCombo, action: action)
         }
 
         /// Store the key combo for the shortcut type.
@@ -160,7 +123,7 @@ extension KeyHolderWrapper {
 
         // MARK: Private
 
-        private var type: ShortcutAction
+        private var action: ShortcutAction
 
         /// Mapping from ShortcutType to corresponding Defaults.Key
         private var shortcutTypeToDefaultsKey: [ShortcutAction: DefaultsKeyWrapper] {
@@ -193,14 +156,41 @@ extension KeyHolderWrapper {
 
         /// Get the current key combo for the shortcut type.
         private func getKeyCombo() -> KeyCombo? {
-            guard let defaultsKey = shortcutTypeToDefaultsKey[type] else { return nil }
+            guard let defaultsKey = shortcutTypeToDefaultsKey[action] else { return nil }
             return defaultsKey.getValue()
         }
 
         /// Set the key combo for the shortcut type.
         private func setKeyCombo(_ keyCombo: KeyCombo?) {
-            guard let defaultsKey = shortcutTypeToDefaultsKey[type] else { return }
+            guard let defaultsKey = shortcutTypeToDefaultsKey[action] else { return }
             defaultsKey.setValue(keyCombo)
         }
     }
+}
+
+// MARK: - DefaultsKeyWrapper
+
+/// A wrapper to handle type-erased access to Defaults.Key<KeyCombo?>
+private struct DefaultsKeyWrapper {
+    // MARK: Lifecycle
+
+    init(_ key: Defaults.Key<KeyCombo?>) {
+        self.getter = { Defaults[key] }
+        self.setter = { Defaults[key] = $0 }
+    }
+
+    // MARK: Internal
+
+    func getValue() -> KeyCombo? {
+        getter()
+    }
+
+    func setValue(_ value: KeyCombo?) {
+        setter(value)
+    }
+
+    // MARK: Private
+
+    private let getter: () -> KeyCombo?
+    private let setter: (KeyCombo?) -> ()
 }

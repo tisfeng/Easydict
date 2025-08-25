@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+
 extension ShortcutTab {
     struct GlobalShortcutSettingView: View {
         // MARK: Internal
@@ -17,14 +18,15 @@ extension ShortcutTab {
             let showAlter = Binding<Bool>(
                 get: {
                     !confictAlterMessage.message.isEmpty
-                }, set: { _ in
+                },
+                set: { _ in
                 }
             )
             Section {
-                ForEach(shortcutDataList) { item in
+                ForEach(shortcutDataList) { action in
                     KeyHolderRowView(
-                        title: item.type.localizedStringKey(),
-                        type: item.type,
+                        title: action.localizedStringKey(),
+                        action: action,
                         confictAlterMessage: $confictAlterMessage
                     )
                 }
@@ -47,13 +49,13 @@ extension ShortcutTab {
 
         // MARK: Private
 
-        @State private var shortcutDataList = [
-            KeyHolderDataItem(type: .inputTranslate),
-            KeyHolderDataItem(type: .snipTranslate),
-            KeyHolderDataItem(type: .selectTranslate),
-            KeyHolderDataItem(type: .pasteboardTranslate),
-            KeyHolderDataItem(type: .showMiniWindow),
-            KeyHolderDataItem(type: .silentScreenshotOCR),
+        @State private var shortcutDataList: [ShortcutAction] = [
+            .inputTranslate,
+            .snipTranslate,
+            .selectTranslate,
+            .pasteboardTranslate,
+            .showMiniWindow,
+            .silentScreenshotOCR,
         ]
     }
 }
