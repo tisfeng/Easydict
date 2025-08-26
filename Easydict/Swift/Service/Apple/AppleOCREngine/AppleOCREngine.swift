@@ -398,7 +398,10 @@ public class AppleOCREngine: NSObject {
     /// - Returns: Array of `EZRecognizedTextObservation` objects containing unified recognition results.
     private func performVisionOCR(on cgImage: CGImage, language: Language = .auto) async throws
         -> [EZRecognizedTextObservation] {
-        if #available(macOS 15.0, *) {
+        // `performModernVisionOCR` is supported on macOS 15.0+, but it seems not working in actual tests.
+        // So we only use it on macOS 26.0+ for now.
+        // Fix https://github.com/tisfeng/Easydict/pull/950#issuecomment-3222553146
+        if #available(macOS 26.0, *) {
             log("Using modern RecognizeTextRequest API")
             let modernObservations = try await performModernVisionOCR(
                 on: cgImage, language: language
