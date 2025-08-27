@@ -44,9 +44,12 @@ class ChineseGenreAnalyzer {
 //        log("Text analysis: \(newAnalysis.prettyJSONString)")
 
         // Check if the text is too short for classical Chinese detection
-        guard newAnalysis.textInfo.characterCount >= minClassicalChineseTextDetectLength else {
+        let minLength = minUserClassicalChineseLength
+        let charCount = newAnalysis.textInfo.characterCount
+        let phraseCount = newAnalysis.phraseInfo.phrases.count
+        guard charCount >= minLength, phraseCount >= 4 else {
             logInfo(
-                "Text count (\(newAnalysis.textInfo.characterCount)) is less than \(minClassicalChineseTextDetectLength), skipping classical detection."
+                "Text count (\(charCount)) is less than \(minLength), or phrase count (\(phraseCount)) is less than 4, skipping classical Chinese detection."
             )
             newAnalysis.genre = .plain
             analysis = newAnalysis
@@ -62,9 +65,9 @@ class ChineseGenreAnalyzer {
 
     // MARK: Private
 
-    /// Minimum length for classical Chinese text detection, default is 10
-    private var minClassicalChineseTextDetectLength: Int {
-        let minLength = 10
+    /// Minimum length for classical Chinese text detection, default is 20
+    private var minUserClassicalChineseLength: Int {
+        let minLength = SharedConstants.minClassicalChineseLength
         let length = Int(Defaults[.minClassicalChineseTextDetectLength]) ?? minLength
         return max(length, minLength)
     }
@@ -326,7 +329,8 @@ class ChineseGenreAnalyzer {
             totalComparisons > 0 ? Double(parallelCount) / Double(totalComparisons) : 0.0
 
         // Split content lines into phrases, omitting empty subsequences
-        let phrases = contentLines.joined(separator: "\n").splitIntoShortPhrases(omittingEmptySubsequences: true)
+        let phrases = contentLines.joined(separator: "\n").splitIntoShortPhrases(
+            omittingEmptySubsequences: true)
         let phraseLengths = phrases.map { $0.filter { !$0.isWhitespace }.count }
 
         // Guard against division by zero if there are no phrases

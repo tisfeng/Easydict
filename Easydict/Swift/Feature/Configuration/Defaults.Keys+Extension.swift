@@ -152,7 +152,8 @@ extension Defaults.Keys {
     )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
-        "minClassicalChineseTextDetectLength", default: "10"
+        "minClassicalChineseTextDetectLength",
+        default: "\(SharedConstants.minClassicalChineseLength)"
     )
 
     static let enableForceGetSelectedText = Key<Bool>(
@@ -340,7 +341,9 @@ extension Defaults.Keys {
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
     static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
-    static let pasteboardTranslateShortcut = Key<KeyCombo?>("EZPasteboardTranslateShortcutKey_keyHolder")
+    static let pasteboardTranslateShortcut = Key<KeyCombo?>(
+        "EZPasteboardTranslateShortcutKey_keyHolder"
+    )
 
     // App
     static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder")

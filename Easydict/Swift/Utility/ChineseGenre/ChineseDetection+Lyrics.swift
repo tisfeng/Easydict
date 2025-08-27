@@ -13,11 +13,6 @@ extension ChineseGenreAnalyzer {
     func isClassicalLyrics(_ analysis: TextAnalysis) -> Bool {
         logInfo("\n----- Classical Lyrics Detection -----")
 
-        if analysis.textInfo.characterCount < 10, analysis.phraseInfo.phrases.count < 2 {
-            logInfo("Text is too short to be considered classical lyrics.")
-            return false
-        }
-
         // Check if we have a valid tune pattern from title
         if let title = analysis.metadata?.title,
            let pattern = hasCiTunePattern(in: title) {

@@ -8,18 +8,12 @@
 
 import Foundation
 
-// MARK: - Constants
+// MARK: - SharedConstants
 
-@objcMembers
-class Constants: NSObject {
+enum SharedConstants {
     // Easydict translate shortcut name.
     static let easydictTranslateShortcutName = "Easydict-Translate-V1.2.0"
-}
 
-extension String {
-    // Acknowledgements window id.
-    static let acknowledgementsWindowId = "setting.about.acknowledgements"
-
-    // About window id.
-    static let aboutWindowId = "setting.about"
+    /// Minimum length for classical Chinese text detection, default is 20
+    static let minClassicalChineseLength = 20
 }

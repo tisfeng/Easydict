@@ -1749,12 +1749,12 @@
 			path = CustomButton;
 			sourceTree = "<group>";
 		};
-		03714B8E2C17FCAD00BB4459 /* Constants */ = {
+		03714B8E2C17FCAD00BB4459 /* SharedConstants */ = {
 			isa = PBXGroup;
 			children = (
 				0340D39A2C93DC1B004C9910 /* Constants.swift */,
 			);
-			path = Constants;
+			path = SharedConstants;
 			sourceTree = "<group>";
 		};
 		0371A4FF2DB128E50097D4A1 /* GitHub Models */ = {
@@ -2805,7 +2805,7 @@
 			path = EZLog;
 			sourceTree = "<group>";
 		};
-		03F2815B2D98E52200AE518C /* ChineseGenreAnalyzer */ = {
+		03F2815B2D98E52200AE518C /* ChineseGenre */ = {
 			isa = PBXGroup;
 			children = (
 				03ADCACA2DA7C2B700ACB756 /* Models */,
@@ -2817,7 +2817,7 @@
 				03F2815E2D9A323700AE518C /* String+Utils.swift */,
 				03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */,
 			);
-			path = ChineseGenreAnalyzer;
+			path = ChineseGenre;
 			sourceTree = "<group>";
 		};
 		03F2F08B2E4074F400496F71 /* CharacterSet */ = {
@@ -3201,13 +3201,13 @@
 			isa = PBXGroup;
 			children = (
 				03F2F08B2E4074F400496F71 /* CharacterSet */,
-				03F2815B2D98E52200AE518C /* ChineseGenreAnalyzer */,
+				03F2815B2D98E52200AE518C /* ChineseGenre */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				0346F3D12CAECB38006A6CDF /* GetSelectedText */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 				96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */,
-				03714B8E2C17FCAD00BB4459 /* Constants */,
+				03714B8E2C17FCAD00BB4459 /* SharedConstants */,
 				0340D3972C91D4A3004C9910 /* AppleScript */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 				03538DF12D25AAD1005E56A8 /* CookieManager.swift */,
