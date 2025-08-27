@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType;
 
-- (void)retryQuery;
+- (void)retryQueryWithLanguage:(EZLanguage)language;
 
 - (void)clearInput;
 - (void)clearAll;

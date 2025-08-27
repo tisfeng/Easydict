@@ -57,6 +57,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # Set specific Xcode version 16.4
+    # macos-15-Readme https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
+    # Default Xcode on macOS 15 Sequoia will be set to Xcode 16.4 on August, 25 
+    # https://github.com/actions/runner-images/issues/12751
+    - name: Select Xcode version
+      if: matrix.language == 'swift'
+      run: sudo xcode-select -s "/Applications/Xcode_16.4.app"
+
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3

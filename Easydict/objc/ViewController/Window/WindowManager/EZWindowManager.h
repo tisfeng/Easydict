@@ -46,7 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)selectTextTranslate;
 - (void)showMiniFloatingWindow;
 - (void)snipTranslate;
+- (void)silentScreenshotOCR;
 - (void)screenshotOCR;
+- (void)pasteboardTranslate;
 
 #pragma mark - Application Shorcut
 

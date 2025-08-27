@@ -48,7 +48,6 @@ class GitHubService: OpenAIService {
 
 // MARK: - GitHubModel
 
-// swiftlint:disable identifier_name
 enum GitHubModel: String, CaseIterable {
     // Models: https://github.com/marketplace?type=models
     // Rate limit: https://docs.github.com/zh/github-models/prototyping-with-ai-models#rate-limits
@@ -71,5 +70,3 @@ enum GitHubModel: String, CaseIterable {
 
     case deepseek_v3_0324 = "deepseek-v3-0324" // High
 }
-
-// swiftlint:enable identifier_name

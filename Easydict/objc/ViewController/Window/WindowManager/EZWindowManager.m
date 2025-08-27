@@ -69,7 +69,7 @@ static EZWindowManager *_instance;
 - (void)setup {
     self.offsetPoint = CGPointMake(18, -12);
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
-    self.actionType = EZActionTypeInvokeQuery;
+    self.actionType = EZActionTypeNone;
     self.screenVisibleFrame = NSScreen.mainScreen.visibleFrame;
 
     self.eventMonitor = [EZEventMonitor shared];
@@ -83,7 +83,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)didActivateApplication:(NSNotification *)notification {
-//    MMLogInfo(@"did activate application: %@", notification);
+    //    MMLogInfo(@"did activate application: %@", notification);
 
     /**
      Fix https://github.com/tisfeng/Easydict/issues/858
@@ -252,8 +252,8 @@ static EZWindowManager *_instance;
 - (void)setLastPoint:(CGPoint)lastPoint {
     _lastPoint = lastPoint;
 
-//    MMLogInfo(@"lastPoint: %@", @(lastPoint));
-//    MMLogInfo(@"screen: %@", @(self.screen.frame));
+    //    MMLogInfo(@"lastPoint: %@", @(lastPoint));
+    //    MMLogInfo(@"screen: %@", @(self.screen.frame));
 
     [EZLayoutManager.shared updateScreen:self.screen];
 }
@@ -379,7 +379,6 @@ static EZWindowManager *_instance;
 
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
-        [queryViewController updateActionType:self.actionType];
         [self showFloatingWindow:window atPoint:newPoint];
 
         if (completionHandler) {
@@ -608,8 +607,8 @@ static EZWindowManager *_instance;
         position.y = position.y - 8;
     }
 
-    // If input query, just show mini window, then show window at last position.
-    if (self.actionType == EZActionTypeInputQuery) {
+    // If action none, just show mini window, then show window at last position.
+    if (self.actionType == EZActionTypeNone) {
         CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeMini];
         position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
     }
@@ -834,7 +833,7 @@ static EZWindowManager *_instance;
         queryText = @"";
     }
 
-    self.actionType = EZActionTypeInputQuery;
+    self.actionType = EZActionTypeNone;
     [self showFloatingWindowType:windowType queryText:queryText];
 }
 
@@ -849,53 +848,97 @@ static EZWindowManager *_instance;
         return;
     }
 
-    self.actionType = EZActionTypeInputQuery;
+    self.actionType = EZActionTypeNone;
     [self showFloatingWindowType:windowType queryText:nil];
 }
 
 - (void)snipTranslate {
     MMLogInfo(@"snipTranslate");
-    
+
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
     [self closeFloatingWindowIfNotPinnedOrMain];
 
-    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-    EZBaseQueryWindow *window = [self windowWithType:windowType];
-    
     [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
-        if (!image) {
-            return;
-        }
-
-        // Reset window height first, avoid being affected by previous window height.
-        [window.queryViewController resetTableView:^{
-            self.actionType = EZActionTypeOCRQuery;
-            [self showFloatingWindowType:windowType queryText:nil];
-            [window.queryViewController startOCRImage:image actionType:self.actionType];
-        }];
+        [self showFloatingWindowWithOCRImage:image actionType:EZActionTypeOCRQuery];
     }];
 }
 
-- (void)screenshotOCR {
-    MMLogInfo(@"Screenshot and OCR");
+/// Silent screenshot and OCR, without showing floating window.
+- (void)silentScreenshotOCR {
+    MMLogInfo(@"Silent screenshot and OCR");
 
     [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
         if (!image) {
             return;
         }
 
-        // Just OCR image, don't show floating window.
         self.actionType = EZActionTypeScreenshotOCR;
         [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType];
     }];
 }
+
+- (void)screenshotOCR {
+    MMLogInfo(@"Screenshot OCR");
+
+    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+        AppleOCREngine *appleOCREngine = [AppleOCREngine new];
+        [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
+            if (error) {
+                MMLogError(@"OCR Preview failed: %@", error.localizedDescription);
+            }
+        }];
+    }];
+}
+
+/// Translate text from pasteboard, support both image and text.
+- (void)pasteboardTranslate {
+    MMLogInfo(@"Pasteboard Translate");
+
+    self.actionType = EZActionTypePasteboardTranslate;
+
+    // Try to read image from pasteboard first.
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSImage *image = pasteboard.readImage;
+    if (image) {
+        [self showFloatingWindowWithOCRImage:image actionType:self.actionType];
+        return;
+    }
+
+    // If no image, read string from pasteboard.
+    NSString *text = pasteboard.readString;
+    if (text.length > 0) {
+        EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+        [self showFloatingWindowType:windowType queryText:text];
+    }
+}
+
+
+- (void)showFloatingWindowWithOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
+    if (!image) {
+        MMLogWarn(@"Image is nil, cannot show OCR window");
+        return;
+    }
+
+    MMLogInfo(@"Show window with OCR image");
+
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+
+    // Reset window height first, avoid being affected by previous window height.
+    [window.queryViewController resetTableView:^{
+        self.actionType = actionType;
+        [self showFloatingWindowType:windowType queryText:nil];
+        [window.queryViewController startOCRImage:image actionType:actionType];
+    }];
+}
+
 
 /**
  * Capture screenshot with options for app restoration
  * @param restorePreviousApp Whether to restore the previous application after capture
  * @param imageHandler Block to handle the captured image
  */
-- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp 
+- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp
                            completion:(void (^)(NSImage *_Nullable image))imageHandler {
     MMLogInfo(@"Starting capture");
 
@@ -912,6 +955,9 @@ static EZWindowManager *_instance;
     void (^captureCompletion)(NSImage *_Nullable) = ^(NSImage *_Nullable image) {
         if (!image) {
             MMLogWarn(@"Failed to capture screenshot");
+            if (imageHandler) {
+                imageHandler(nil);
+            }
             return;
         }
 
@@ -948,8 +994,7 @@ static EZWindowManager *_instance;
     }
 
     if ([[NSApplication sharedApplication] keyWindow] == self.floatingWindow) {
-        // 执行重试
-        [self.floatingWindow.queryViewController retryQuery];
+        [self.floatingWindow.queryViewController retryQueryWithLanguage:EZLanguageAuto];
     }
 }
 

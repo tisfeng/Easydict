@@ -144,6 +144,12 @@ extension Defaults.Keys {
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
     )
+    static var enableOCRTextNormalization = Key<Bool>(
+        "enableOCRTextNormalization", default: false
+    )
+    static var showOCRMenuItems = Key<Bool>(
+        "showOCRMenuItems", default: false
+    )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength", default: "10"
@@ -159,7 +165,9 @@ extension Defaults.Keys {
     )
 
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
-    static var formerFixedScreenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
+    static var formerFixedScreenVisibleFrame = Key<CGRect>(
+        "EZConfiguration_kScreenVisibleFrameKey", default: .zero
+    )
 
     static var formerMiniScreenVisibleFrame = Key<CGRect>(
         "EZConfiguration_kFormerMiniScreenVisibleFrameKey",
@@ -332,6 +340,7 @@ extension Defaults.Keys {
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
     static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
+    static let pasteboardTranslateShortcut = Key<KeyCombo?>("EZPasteboardTranslateShortcutKey_keyHolder")
 
     // App
     static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder")

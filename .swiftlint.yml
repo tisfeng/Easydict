@@ -32,7 +32,7 @@ opt_in_rules:
   # - force_unwrapping
 
 line_length:
-  warning: 120
+  warning: 140
   ignores_comments: true
   ignores_interpolated_strings: true
 function_body_length:
@@ -52,6 +52,8 @@ type_name:
 identifier_name:
   min_length: 2
   max_length: 50
+  allowed_symbols:
+    - "_" # Enable underscore in identifier names, like gpt_4o
   excluded: # excluded via string array
     - id
     - URL

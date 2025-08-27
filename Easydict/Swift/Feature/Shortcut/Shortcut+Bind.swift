@@ -75,31 +75,3 @@ extension Shortcut {
         window?.titleBar.appleDictionaryButton.openLink()
     }
 }
-
-// global shortcut binding func
-extension Shortcut {
-    @objc
-    func selectTextTranslate() {
-        EZWindowManager.shared().selectTextTranslate()
-    }
-
-    @objc
-    func snipTranslate() {
-        EZWindowManager.shared().snipTranslate()
-    }
-
-    @objc
-    func inputTranslate() {
-        EZWindowManager.shared().inputTranslate()
-    }
-
-    @objc
-    func showMiniFloatingWindow() {
-        EZWindowManager.shared().showMiniFloatingWindow()
-    }
-
-    @objc
-    func screenshotOCR() {
-        EZWindowManager.shared().screenshotOCR()
-    }
-}

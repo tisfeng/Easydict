@@ -20,3 +20,14 @@ extension [String: Any] {
         return components.map { "\($0)=\($1)" }.joined(separator: "&")
     }
 }
+
+extension Dictionary {
+    /// Convert dictionary to a pretty-printed JSON string
+    var prettyPrinted: NSString {
+        let jsonData = try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted])
+        guard let data = jsonData, let jsonString = String(data: data, encoding: .utf8) else {
+            return "{}"
+        }
+        return jsonString as NSString
+    }
+}

@@ -33,17 +33,6 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0313F86C2AD5577400A5CFB0"
-               BuildableName = "EasydictTests.xctest"
-               BlueprintName = "EasydictTests"
-               ReferencedContainer = "container:Easydict.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "03022F2D2B370B7100B63209"
                BuildableName = "EasydictSwiftTests.xctest"
                BlueprintName = "EasydictSwiftTests"

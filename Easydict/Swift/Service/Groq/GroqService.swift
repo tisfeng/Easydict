@@ -53,7 +53,6 @@ class GroqService: OpenAIService {
 
 // MARK: - GroqModel
 
-// swiftlint:disable identifier_name
 enum GroqModel: String, CaseIterable {
     // Docs: https://console.groq.com/docs/models
     // Pricing: https://groq.com/pricing/
@@ -69,5 +68,3 @@ enum GroqModel: String, CaseIterable {
     case llama4_maverick_17b =
         "meta-llama/llama-4-maverick-17b-128e-instruct" // 30 RPM, 1,000 RPD, 6,000 TPM
 }
-
-// swiftlint:enable identifier_name

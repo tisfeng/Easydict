@@ -97,7 +97,7 @@ extension YoudaoService {
                 logInfo("Using OCR translation result directly")
                 ocrSuccess(ocrResult, false)
 
-                let queryResult = EZQueryResult()
+                let queryResult = result
                 queryResult.queryText = ocrResult.mergedText
                 queryResult.from = ocrResult.from
                 queryResult.to = ocrResult.to

@@ -25,7 +25,7 @@ struct AdvancedTab: View {
                 }
             }
 
-            // Items image color order: blue, green, orange, purple, red, mint, yellow
+            // Items image color order: blue, green, orange, purple, red, mint, yellow, cyan
             Section {
                 Picker(
                     selection: $defaultTTSServiceType,
@@ -78,18 +78,40 @@ struct AdvancedTab: View {
                 }
 
                 LabeledContent {
-                    TextField("", text: $minClassicalChineseTextDetectLength, prompt: Text(verbatim: "10"))
-                        .frame(width: 100)
-                        .fixedSize(horizontal: true, vertical: false)
-                        .onChange(of: minClassicalChineseTextDetectLength) { newValue in
-                            minClassicalChineseTextDetectLength = newValue.filter { $0.isNumber }
-                            logInfo("Min classical Chinese text detect length: \(minClassicalChineseTextDetectLength)")
-                        }
+                    TextField(
+                        "", text: $minClassicalChineseTextDetectLength, prompt: Text(verbatim: "10")
+                    )
+                    .frame(width: 100)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .onChange(of: minClassicalChineseTextDetectLength) { newValue in
+                        minClassicalChineseTextDetectLength = newValue.filter { $0.isNumber }
+                        logInfo(
+                            "Min classical Chinese text detect length: \(minClassicalChineseTextDetectLength)"
+                        )
+                    }
                 } label: {
                     AdvancedTabItemView(
                         color: .mint,
                         systemImage: SFSymbol.book.rawValue,
                         labelText: "setting.advance.min_classical_chinese_text_detect_length"
+                    )
+                }
+
+                Toggle(isOn: $enableOCRTextNormalization) {
+                    AdvancedTabItemView(
+                        color: .yellow,
+                        systemImage: SFSymbol.docViewfinder.rawValue,
+                        labelText: "setting.advance.enable_ocr_text_normalization",
+                        subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
+                    )
+                }
+
+                Toggle(isOn: $showOCRMenuItems) {
+                    AdvancedTabItemView(
+                        color: .cyan,
+                        systemImage: SFSymbol.textAndCommandMacwindow.rawValue,
+                        labelText: "setting.advance.show_ocr_menu_items",
+                        subtitleText: "setting.advance.show_ocr_menu_items_desc"
                     )
                 }
             }
@@ -275,7 +297,9 @@ struct AdvancedTab: View {
                     }
                     .onChange(of: maxWindowHeightPercentageValue) { _ in
                         // Post notification when max window height percentage changes
-                        NotificationCenter.default.post(name: .maxWindowHeightSettingsChanged, object: nil)
+                        NotificationCenter.default.post(
+                            name: .maxWindowHeightSettingsChanged, object: nil
+                        )
                     }
                 }
 
@@ -326,8 +350,9 @@ struct AdvancedTab: View {
     @Default(.replaceWithTranslationInCompatibilityMode) private
     var replaceWithTranslationInCompatibilityMode
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
-
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
+    @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
+    @Default(.showOCRMenuItems) private var showOCRMenuItems
 
     // Force get selected text
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText

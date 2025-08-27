@@ -76,9 +76,9 @@ extension YoudaoService {
 
         var foreignLanguage: String?
 
-        if fromLanguage.isKindOfChinese() {
+        if fromLanguage.isChinese {
             foreignLanguage = languageCode(forLanguage: toLanguage)
-        } else if toLanguage.isKindOfChinese() {
+        } else if toLanguage.isChinese {
             foreignLanguage = languageCode(forLanguage: fromLanguage)
         }
 

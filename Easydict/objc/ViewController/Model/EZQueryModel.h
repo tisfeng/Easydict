@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 // TODO: This dict may be need to be stored in NSUserDefaults.
 @property (nonatomic, strong) NSMutableDictionary<NSString *, EZLanguage> *specifiedTextLanguageDict;
 
-@property (nonatomic, strong, nullable) NSImage *OCRImage;
+@property (nonatomic, strong, nullable) NSImage *ocrImage;
 @property (nonatomic, copy, nullable) NSString *audioURL;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;

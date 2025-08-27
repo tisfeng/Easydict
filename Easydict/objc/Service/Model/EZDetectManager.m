@@ -13,6 +13,8 @@
 
 @interface EZDetectManager ()
 
+@property (nonatomic, strong) EZAppleService *appleService;
+
 @property (nonatomic, strong) EZGoogleTranslate *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
 @property (nonatomic, strong) EZYoudaoService *youdaoService;
@@ -75,7 +77,7 @@
 #pragma mark -
 
 - (void)ocrAndDetectText:(void (^)(EZQueryModel *_Nonnull, NSError *_Nullable))completion {
-    [self deepOCR:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+    [self ocr:^(EZOCRResult *ocrResult, NSError *error) {
         if (!ocrResult) {
             completion(self.queryModel, error);
             return;
@@ -165,7 +167,7 @@
 }
 
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSImage *image = self.queryModel.OCRImage;
+    NSImage *image = self.queryModel.ocrImage;
     if (!image) {
         EZQueryError *error = [EZQueryError errorWithType:EZQueryErrorTypeParameter message: @"ocr image cannot be nil"];
         completion(nil, error);

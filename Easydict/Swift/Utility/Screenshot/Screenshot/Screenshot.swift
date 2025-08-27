@@ -142,11 +142,7 @@ class Screenshot: NSObject {
          key down events (like ESC to cancel) might not be received
          if another application was active when the screenshot started.
          */
-        if #available(macOS 14.0, *) {
-            NSApplication.shared.activate()
-        } else {
-            NSApplication.shared.activate(ignoringOtherApps: true)
-        }
+        NSApplication.shared.activateApp()
     }
 
     private func createOverlayWindow(for screen: NSScreen) {

@@ -616,7 +616,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "截图 OCR 后自动查询"
+            "value" : "图片 OCR 后自动查询"
           }
         },
         "zh-Hant" : {
@@ -2546,6 +2546,91 @@
         }
       }
     },
+    "menu_pasteboard_OCR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasteboard OCR"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR schránky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板 OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪貼簿 OCR"
+          }
+        }
+      }
+    },
+    "menu_pasteboard_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasteboard Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad schránky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪貼簿翻譯"
+          }
+        }
+      }
+    },
+    "menu_screenshot_OCR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screenshot OCR"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR snímka obrazovky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图 OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "螢幕截圖 OCR"
+          }
+        }
+      }
+    },
     "menu_screenshot_Translate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2627,6 +2712,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示迷你視窗"
+          }
+        }
+      }
+    },
+    "menu_show_ocr_window" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show OCR Window"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť OCR okno"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 OCR 窗口"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示 OCR 視窗"
           }
         }
       }
@@ -5966,6 +6079,62 @@
         }
       }
     },
+    "setting.advance.enable_ocr_text_normalization" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable OCR Text Format Optimization"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť formátovanie textu OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用 OCR 文本格式优化"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用 OCR 文本格式優化"
+          }
+        }
+      }
+    },
+    "setting.advance.enable_ocr_text_normalization_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The original OCR recognized text format may be incorrect. Enabling this option will optimize the recognized text format."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pôvodný formát rozpoznaného textu OCR môže byť nesprávny. Zapnutím tejto možnosti sa optimalizuje formát rozpoznaného textu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 原始识别文本格式可能有误，开启该选项后，将会对文本进行格式优化处理。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 原始識別文本格式可能有誤，開啟該選項後，將會對文本進行格式優化處理。"
+          }
+        }
+      }
+    },
     "setting.advance.footer.query_text_processing_desc" : {
       "localizations" : {
         "en" : {
@@ -6410,6 +6579,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果在某些應用程式中使用「以翻譯取代」功能失敗，請嘗試開啟相容模式，此模式會使用拷貝 + 貼上來確保成功取代。"
+          }
+        }
+      }
+    },
+    "setting.advance.show_ocr_menu_items" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show OCR Menu Items"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť položky OCR menu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 OCR 菜单项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示 OCR 選單項目"
+          }
+        }
+      }
+    },
+    "setting.advance.show_ocr_menu_items_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show OCR-related menu items (Screenshot OCR, Pasteboard OCR, OCR Window) in the menu bar."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazovať položky súvisiace s OCR (Snímka OCR, Schránka OCR, OCR okno) v menu lište."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在菜单栏中显示 OCR 相关的菜单项（截图 OCR、剪贴板 OCR、OCR 窗口）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在選單列中顯示 OCR 相關的選單項目（截圖 OCR、剪貼簿 OCR、OCR 視窗）。"
           }
         }
       }

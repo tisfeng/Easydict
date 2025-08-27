@@ -13,9 +13,28 @@ extension String {
         (self as NSString).boolValue
     }
 
-    /// Truncate string max lenght to 200.
-    func truncated(_ maxLength: Int = 200) -> String {
-        String(prefix(maxLength))
+    func prefixChars(_ maxLength: Int = 200) -> String {
+        String(prefix(maxLength)) + (count > maxLength ? "..." : "")
+    }
+
+    var prefix20: String {
+        prefixChars(20)
+    }
+
+    var prefix200: String {
+        prefixChars(200)
+    }
+
+    func suffixChars(_ maxLength: Int = 200) -> String {
+        (count > maxLength ? "..." : "") + String(suffix(maxLength))
+    }
+
+    var suffix20: String {
+        suffixChars(20)
+    }
+
+    var suffix200: String {
+        suffixChars(200)
     }
 
     /// Trim whitespaces and newlines.

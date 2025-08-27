@@ -191,7 +191,6 @@ public final class GeminiService: StreamService {
 
 // MARK: - GeminiModel
 
-// swiftlint:disable identifier_name
 enum GeminiModel: String, CaseIterable {
     // Docs: https://ai.google.dev/gemini-api/docs/models
     // Rate limits: https://ai.google.dev/gemini-api/docs/rate-limits
@@ -204,5 +203,3 @@ enum GeminiModel: String, CaseIterable {
     case gemini_2_5_flash = "gemini-2.5-flash" // 10 RPM | 250,000 TPM | 250 RPD
     case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // 15 RPM | 250,000 TPM | 1000 RPD
 }
-
-// swiftlint:enable identifier_name

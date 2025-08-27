@@ -74,7 +74,6 @@ class BuiltInAIService: BaseOpenAIService {
 
 // MARK: - GLMModel
 
-// swiftlint:disable identifier_name
 enum GLMModel: String, CaseIterable {
     // zhipu free model https://docs.bigmodel.cn/cn/guide/start/model-overview
     // rate-limits: https://www.bigmodel.cn/usercenter/proj-mgmt/rate-limits
@@ -89,5 +88,3 @@ enum GLMModel: String, CaseIterable {
     case glm_4_flash_250414 = "glm-4-flash-250414" // 128K context, 16k output, 30 QoS
     case glm_4_flash = "glm-4-flash" // glm-4-flash, 128K context, 4k output, 200 QoS
 }
-
-// swiftlint:enable identifier_name
