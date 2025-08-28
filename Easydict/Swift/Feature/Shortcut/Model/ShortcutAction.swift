@@ -54,7 +54,7 @@ extension ShortcutAction {
     /// Get configuration for the shortcut type
     var configuration: ActionConfiguration {
         Self.configurations[self]
-            ?? ActionConfiguration(
+            ?? .init(
                 titleKey: "unknown",
                 icon: .questionmark,
                 defaultsKey: nil,
@@ -90,37 +90,37 @@ extension ShortcutAction {
 
         return [
             // Global shortcuts
-            .inputTranslate: ActionConfiguration(
+            .inputTranslate: .init(
                 titleKey: "menu_input_translate",
                 icon: .keyboard,
                 defaultsKey: .inputShortcut,
                 action: { windowManager.inputTranslate() }
             ),
-            .snipTranslate: ActionConfiguration(
+            .snipTranslate: .init(
                 titleKey: "menu_screenshot_Translate",
                 icon: .cameraViewfinder,
                 defaultsKey: .snipShortcut,
                 action: { windowManager.snipTranslate() }
             ),
-            .selectTranslate: ActionConfiguration(
+            .selectTranslate: .init(
                 titleKey: "menu_selectWord_Translate",
                 icon: .highlighter,
                 defaultsKey: .selectionShortcut,
                 action: { windowManager.selectTextTranslate() }
             ),
-            .silentScreenshotOCR: ActionConfiguration(
+            .silentScreenshotOCR: .init(
                 titleKey: "menu_silent_screenshot_OCR",
                 icon: .cameraMeteringSpot,
                 defaultsKey: .screenshotOCRShortcut,
                 action: { windowManager.silentScreenshotOCR() }
             ),
-            .pasteboardTranslate: ActionConfiguration(
+            .pasteboardTranslate: .init(
                 titleKey: "menu_pasteboard_translate",
                 icon: .docOnClipboard,
                 defaultsKey: .pasteboardTranslateShortcut,
                 action: { windowManager.pasteboardTranslate() }
             ),
-            .showMiniWindow: ActionConfiguration(
+            .showMiniWindow: .init(
                 titleKey: "menu_show_mini_window",
                 icon: .dockRectangle,
                 defaultsKey: .showMiniWindowShortcut,
@@ -128,19 +128,19 @@ extension ShortcutAction {
             ),
 
             // OCR specific shortcuts
-            .screenshotOCR: ActionConfiguration(
+            .screenshotOCR: .init(
                 titleKey: "menu_screenshot_OCR",
                 icon: .cameraMeteringMultispot,
                 defaultsKey: .screenshotOCRShortcut,
                 action: { windowManager.screenshotOCR() }
             ),
-            .pasteboardOCR: ActionConfiguration(
+            .pasteboardOCR: .init(
                 titleKey: "menu_pasteboard_OCR",
                 icon: .listClipboard,
                 defaultsKey: .pasteboardOCRShortcut,
                 action: { AppleOCREngine().pasteboardOCR() }
             ),
-            .showOCRWindow: ActionConfiguration(
+            .showOCRWindow: .init(
                 titleKey: "menu_show_ocr_window",
                 icon: .textAndCommandMacwindow,
                 defaultsKey: .showOCRWindowShortcut,
@@ -148,67 +148,67 @@ extension ShortcutAction {
             ),
 
             // In App shortcuts
-            .clearInput: ActionConfiguration(
+            .clearInput: .init(
                 titleKey: "shortcut_clear_input",
                 icon: .deleteBackward,
                 defaultsKey: .clearInputShortcut,
                 action: { windowManager.clearInput() }
             ),
-            .clearAll: ActionConfiguration(
+            .clearAll: .init(
                 titleKey: "shortcut_clear_all",
                 icon: .clearFill,
                 defaultsKey: .clearAllShortcut,
                 action: { windowManager.clearAll() }
             ),
-            .copy: ActionConfiguration(
+            .copy: .init(
                 titleKey: "shortcut_copy",
                 icon: .docOnDoc,
                 defaultsKey: .copyShortcut,
                 action: { windowManager.copyQueryText() }
             ),
-            .copyFirstResult: ActionConfiguration(
+            .copyFirstResult: .init(
                 titleKey: "shortcut_copy_first_translated_text",
                 icon: .docOnClipboard,
                 defaultsKey: .copyFirstResultShortcut,
                 action: { windowManager.copyFirstTranslatedText() }
             ),
-            .focus: ActionConfiguration(
+            .focus: .init(
                 titleKey: "shortcut_focus",
                 icon: .cursorarrowRays,
                 defaultsKey: .focusShortcut,
                 action: { windowManager.focusInputTextView() }
             ),
-            .play: ActionConfiguration(
+            .play: .init(
                 titleKey: "shortcut_play",
                 icon: .playFill,
                 defaultsKey: .playShortcut,
                 action: { windowManager.playOrStopQueryTextAudio() }
             ),
-            .retry: ActionConfiguration(
+            .retry: .init(
                 titleKey: "retry",
                 icon: .arrowClockwise,
                 defaultsKey: .retryShortcut,
                 action: { windowManager.rerty() }
             ),
-            .toggle: ActionConfiguration(
+            .toggle: .init(
                 titleKey: "toggle_languages",
                 icon: .arrowLeftArrowRight,
                 defaultsKey: .toggleShortcut,
                 action: { windowManager.toggleTranslationLanguages() }
             ),
-            .pin: ActionConfiguration(
+            .pin: .init(
                 titleKey: "pin",
                 icon: .pin,
                 defaultsKey: .pinShortcut,
                 action: { windowManager.pin() }
             ),
-            .hide: ActionConfiguration(
+            .hide: .init(
                 titleKey: "hide",
                 icon: .eyeSlash,
                 defaultsKey: .hideShortcut,
                 action: { windowManager.closeWindowOrExitSreenshot() }
             ),
-            .increaseFontSize: ActionConfiguration(
+            .increaseFontSize: .init(
                 titleKey: "shortcut_increase_font",
                 icon: .textformatAlt,
                 defaultsKey: .increaseFontSize,
@@ -218,7 +218,7 @@ extension ShortcutAction {
                     }
                 }
             ),
-            .decreaseFontSize: ActionConfiguration(
+            .decreaseFontSize: .init(
                 titleKey: "shortcut_decrease_font",
                 icon: .textformatAlt,
                 defaultsKey: .decreaseFontSize,
@@ -228,7 +228,7 @@ extension ShortcutAction {
                     }
                 }
             ),
-            .google: ActionConfiguration(
+            .google: .init(
                 titleKey: "open_in_google",
                 icon: .magnifyingglass,
                 defaultsKey: .googleShortcut,
@@ -237,7 +237,7 @@ extension ShortcutAction {
                     window?.titleBar.googleButton.openLink()
                 }
             ),
-            .eudic: ActionConfiguration(
+            .eudic: .init(
                 titleKey: "open_in_eudic",
                 icon: .bookClosed,
                 defaultsKey: .eudicShortcut,
@@ -246,7 +246,7 @@ extension ShortcutAction {
                     window?.titleBar.eudicButton.openLink()
                 }
             ),
-            .appleDic: ActionConfiguration(
+            .appleDic: .init(
                 titleKey: "open_in_apple_dictionary",
                 icon: .book,
                 defaultsKey: .appleDictionaryShortcut,

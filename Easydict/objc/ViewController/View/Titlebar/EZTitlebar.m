@@ -212,14 +212,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
                     @"action" : NSStringFromSelector(@selector(goToSettings))
                 }
             ]
-            /**
-             Just fix localization warning.
-             
-             NSLocalizedString(@"replace_newline_with_space", nil);
-             NSLocalizedString(@"remove_code_comment_symbols", nil);
-             NSLocalizedString(@"split_words", nil);
-             NSLocalizedString(@"open_app_settings", nil);
-             */
         ];
         
         for (NSArray *section in menuSections) {
