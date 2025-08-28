@@ -859,7 +859,8 @@ static EZWindowManager *_instance;
     [self closeFloatingWindowIfNotPinnedOrMain];
 
     [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
-        [self showFloatingWindowWithOCRImage:image actionType:EZActionTypeOCRQuery];
+        BOOL autoQuery = [Configuration.shared autoQueryOCRText];
+        [self showFloatingWindowWithOCRImage:image actionType:EZActionTypeOCRQuery autoQuery:autoQuery];
     }];
 }
 
@@ -873,7 +874,7 @@ static EZWindowManager *_instance;
         }
 
         self.actionType = EZActionTypeScreenshotOCR;
-        [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType];
+        [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType autoQuery:NO];
     }];
 }
 
@@ -895,25 +896,28 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Pasteboard Translate");
 
     self.actionType = EZActionTypePasteboardTranslate;
+    BOOL autoQuery = [Configuration.shared autoQueryPastedText];
 
     // Try to read image from pasteboard first.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.readImage;
     if (image) {
-        [self showFloatingWindowWithOCRImage:image actionType:self.actionType];
+        [self showFloatingWindowWithOCRImage:image actionType:self.actionType autoQuery:autoQuery];
         return;
     }
 
     // If no image, read string from pasteboard.
-    NSString *text = pasteboard.readString;
-    if (text.length > 0) {
+    NSString *queryText = pasteboard.readString;
+    if (queryText.length > 0) {
         EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-        [self showFloatingWindowType:windowType queryText:text];
+        [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:self.actionType];
     }
 }
 
 
-- (void)showFloatingWindowWithOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
+- (void)showFloatingWindowWithOCRImage:(NSImage *)image
+                            actionType:(EZActionType)actionType
+                             autoQuery:(BOOL)autoQuery {
     if (!image) {
         MMLogWarn(@"Image is nil, cannot show OCR window");
         return;
@@ -928,7 +932,7 @@ static EZWindowManager *_instance;
     [window.queryViewController resetTableView:^{
         self.actionType = actionType;
         [self showFloatingWindowType:windowType queryText:nil];
-        [window.queryViewController startOCRImage:image actionType:actionType];
+        [window.queryViewController startOCRImage:image actionType:actionType autoQuery:autoQuery];
     }];
 }
 

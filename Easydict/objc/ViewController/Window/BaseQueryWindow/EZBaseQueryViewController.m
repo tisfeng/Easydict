@@ -87,6 +87,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, assign) NSInteger selectLanguageCellIndex; // 0 or 1
 @property (nonatomic, assign) NSInteger tipsCellIndex;           // 0 or 1 or 2
 
+@property (nonatomic, strong) Configuration *config;
+
 @end
 
 @implementation EZBaseQueryViewController
@@ -134,6 +136,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
+    self.config = Configuration.shared;
 
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
 
@@ -187,7 +190,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                           name:NSViewBoundsDidChangeNotification
                         object:[self.scrollView contentView]];
 
-    //    ???: FIX [dcs_error] kDCSActiveDictionariesChangedDistributedNotification catched, but it seems does not work.
+    // ???: FIX [dcs_error] kDCSActiveDictionariesChangedDistributedNotification catched, but it seems does not work.
     [defaultCenter addObserver:self
                       selector:@selector(activeDictionariesChanged:)
                           name:kDCSActiveDictionariesChangedDistributedNotification
@@ -228,10 +231,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     self.queryModel.queryViewHeight = [self miniQueryViewHeight];
 
-    self.isInputFieldCellVisible = [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible
-                                                                        windowType:self.windowType];
-    self.isSelectLanguageCellVisible = [Configuration.shared showInputTextFieldWithKey:WindowConfigurationKeySelectLanguageCellVisible
-                                                                            windowType:self.windowType];
+    self.isInputFieldCellVisible = [self.config showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible
+                                         windowType:self.windowType];
+    self.isSelectLanguageCellVisible = [self.config showInputTextFieldWithKey:WindowConfigurationKeySelectLanguageCellVisible
+                                         windowType:self.windowType];
 
     self.inputFieldCellIndex = 0;
 
@@ -263,7 +266,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *services = [NSMutableArray array];
 
     self.youdaoService = nil;
-    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
 
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
@@ -429,7 +432,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (EZQueryService *)defaultTTSService {
-    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
         _defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
     }
@@ -499,7 +502,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return YES;
 }
 
-- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
+- (void)startOCRImage:(NSImage *)image
+           actionType:(EZActionType)actionType
+            autoQuery:(BOOL)autoQuery {
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
 
     self.queryModel.actionType = actionType;
@@ -552,7 +557,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
 
-            if (Configuration.shared.autoCopyOCRText) {
+            if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];
             }
 
@@ -565,8 +570,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
 
-            BOOL autoSnipTranslate = Configuration.shared.autoQueryOCRText;
-            if (autoSnipTranslate && queryModel.autoQuery) {
+            if (autoQuery) {
                 [self startQueryText];
             }
         }
@@ -604,7 +608,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSApp activateIgnoringOtherApps:YES];
 
         [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
-        if (Configuration.shared.selectQueryTextWhenWindowActivate) {
+        if (self.config.selectQueryTextWhenWindowActivate) {
             self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
         }
     }
@@ -669,7 +673,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If query text is an English word, use Youdao TTS to play.
         EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
-        NSString *accent = Configuration.shared.pronunciation == EnglishPronunciationUk ? @"uk" : @"us";
+        NSString *accent = self.config.pronunciation == EnglishPronunciationUk ? @"uk" : @"us";
 
         [self.audioPlayer playTextAudio:queryText
                                language:textLanguage
@@ -778,7 +782,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSImage *ocrImage = self.queryModel.ocrImage;
     
     if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR)) {
-        [self startOCRImage:ocrImage actionType:actionType];
+        BOOL autoQuery = self.config.autoCopyOCRText || self.config.autoQueryPastedText || self.queryModel.autoQuery;
+        [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
     } else {
         [self startQueryText:self.inputText actionType:actionType];
     }
@@ -1411,12 +1416,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
-        mm_strongify(self);
-        [self detectQueryText:^(NSString *_Nonnull language) {
-            if ([Configuration.shared autoQueryPastedText]) {
-                [self startQueryWithType:EZActionTypeInputQuery];
-            }
-        }];
+        [EZWindowManager.shared pasteboardTranslate];
     }];
 
     [queryView setPlayAudioBlock:^(NSString *text) {
@@ -1684,7 +1684,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Auto play English word
 
 - (void)autoPlayEnglishWordAudio {
-    if (!Configuration.shared.autoPlayAudio) {
+    if (!self.config.autoPlayAudio) {
         return;
     }
 
@@ -1701,7 +1701,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Auto copy translated text.
 - (void)autoCopyTranslatedTextOfService:(EZQueryService *)service {
-    if (![Configuration.shared autoCopyFirstTranslatedText]) {
+    if (![self.config autoCopyFirstTranslatedText]) {
         service.autoCopyTranslatedTextBlock = nil;
         return;
     }
