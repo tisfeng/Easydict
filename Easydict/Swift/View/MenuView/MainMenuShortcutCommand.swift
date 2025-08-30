@@ -24,21 +24,21 @@ extension EasydictMainMenu {
         // MARK: Private
 
         @State private var appShortcutCommandList = [
-            MainMenuShortcutCommandDataItem(type: .clearInput),
-            MainMenuShortcutCommandDataItem(type: .clearAll),
-            MainMenuShortcutCommandDataItem(type: .copy),
-            MainMenuShortcutCommandDataItem(type: .copyFirstResult),
-            MainMenuShortcutCommandDataItem(type: .focus),
-            MainMenuShortcutCommandDataItem(type: .play),
-            MainMenuShortcutCommandDataItem(type: .retry),
-            MainMenuShortcutCommandDataItem(type: .toggle),
-            MainMenuShortcutCommandDataItem(type: .pin),
-            MainMenuShortcutCommandDataItem(type: .hide),
-            MainMenuShortcutCommandDataItem(type: .increaseFontSize),
-            MainMenuShortcutCommandDataItem(type: .decreaseFontSize),
-            MainMenuShortcutCommandDataItem(type: .google),
-            MainMenuShortcutCommandDataItem(type: .eudic),
-            MainMenuShortcutCommandDataItem(type: .appleDic),
+            MainMenuShortcutCommandDataItem(action: .clearInput),
+            MainMenuShortcutCommandDataItem(action: .clearAll),
+            MainMenuShortcutCommandDataItem(action: .copy),
+            MainMenuShortcutCommandDataItem(action: .copyFirstResult),
+            MainMenuShortcutCommandDataItem(action: .focus),
+            MainMenuShortcutCommandDataItem(action: .play),
+            MainMenuShortcutCommandDataItem(action: .retry),
+            MainMenuShortcutCommandDataItem(action: .toggle),
+            MainMenuShortcutCommandDataItem(action: .pin),
+            MainMenuShortcutCommandDataItem(action: .hide),
+            MainMenuShortcutCommandDataItem(action: .increaseFontSize),
+            MainMenuShortcutCommandDataItem(action: .decreaseFontSize),
+            MainMenuShortcutCommandDataItem(action: .google),
+            MainMenuShortcutCommandDataItem(action: .eudic),
+            MainMenuShortcutCommandDataItem(action: .appleDic),
         ]
     }
 }

@@ -13,11 +13,11 @@ import SwiftUI
 struct MainMenuShortcutCommandDataItem: Identifiable {
     // MARK: Public
 
-    public var id: String { type.localizedStringKey() }
+    public var id: String { action.rawValue }
 
     // MARK: Internal
 
-    var type: ShortcutType
+    var action: ShortcutAction
 }
 
 // MARK: - MainMenuShortcutCommandItem
@@ -30,44 +30,12 @@ struct MainMenuShortcutCommandItem: View {
     // MARK: Internal
 
     var body: some View {
-        Button(LocalizedStringKey(dataItem.type.localizedStringKey())) {
-            switch dataItem.type {
-            case .clearInput:
-                Shortcut.shared.clearInput()
-            case .clearAll:
-                Shortcut.shared.clearAll()
-            case .copy:
-                Shortcut.shared.shortcutCopy()
-            case .copyFirstResult:
-                Shortcut.shared.shortcutCopyFirstResult()
-            case .focus:
-                Shortcut.shared.shortcutFocus()
-            case .play:
-                Shortcut.shared.shortcutPlay()
-            case .retry:
-                Shortcut.shared.shortcutRetry()
-            case .toggle:
-                Shortcut.shared.shortcutToggle()
-            case .pin:
-                Shortcut.shared.shortcutPin()
-            case .hide:
-                Shortcut.shared.shortcutHide()
-            case .increaseFontSize:
-                Shortcut.shared.increaseFontSize()
-            case .decreaseFontSize:
-                Shortcut.shared.decreaseFontSize()
-            case .google:
-                Shortcut.shared.shortcutGoogle()
-            case .eudic:
-                Shortcut.shared.shortcutEudic()
-            case .appleDic:
-                Shortcut.shared.shortcutAppleDic()
-            default: ()
-            }
+        Button(LocalizedStringKey(dataItem.action.localizedStringKey())) {
+            dataItem.action.executeAction()
         }
-        .keyboardShortcut(dataItem.type)
+        .keyboardShortcut(dataItem.action)
 
-        if dataItem.type == .toggle || dataItem.type == .decreaseFontSize {
+        if dataItem.action == .toggle || dataItem.action == .decreaseFontSize {
             Divider()
         }
     }

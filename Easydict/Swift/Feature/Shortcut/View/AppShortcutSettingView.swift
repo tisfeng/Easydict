@@ -7,26 +7,29 @@
 //
 
 import SwiftUI
+
 extension ShortcutTab {
     struct AppShortcutSettingView: View {
-        @State private var shortcutDataList = [
-            KeyHolderDataItem(type: .clearInput),
-            KeyHolderDataItem(type: .clearAll),
-            KeyHolderDataItem(type: .copy),
-            KeyHolderDataItem(type: .copyFirstResult),
-            KeyHolderDataItem(type: .focus),
-            KeyHolderDataItem(type: .play),
-            KeyHolderDataItem(type: .retry),
-            KeyHolderDataItem(type: .toggle),
-            KeyHolderDataItem(type: .pin),
-            KeyHolderDataItem(type: .hide),
-            KeyHolderDataItem(type: .increaseFontSize),
-            KeyHolderDataItem(type: .decreaseFontSize),
-            KeyHolderDataItem(type: .google),
-            KeyHolderDataItem(type: .eudic),
-            KeyHolderDataItem(type: .appleDic),
+        @State private var shortcutDataList: [ShortcutAction] = [
+            .clearInput,
+            .clearAll,
+            .copy,
+            .copyFirstResult,
+            .focus,
+            .play,
+            .retry,
+            .toggle,
+            .pin,
+            .hide,
+            .increaseFontSize,
+            .decreaseFontSize,
+            .google,
+            .eudic,
+            .appleDic,
         ]
+
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
+
         var body: some View {
             let showAlter = Binding<Bool>(
                 get: {
@@ -34,11 +37,12 @@ extension ShortcutTab {
                 },
                 set: { _ in }
             )
+
             Section {
-                ForEach(shortcutDataList) { item in
+                ForEach(shortcutDataList) { action in
                     KeyHolderRowView(
-                        title: item.type.localizedStringKey(),
-                        type: item.type,
+                        title: action.localizedStringKey(),
+                        action: action,
                         confictAlterMessage: $confictAlterMessage
                     )
                 }
