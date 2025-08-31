@@ -52,10 +52,13 @@ class ActionManager: NSObject {
 
     /// Common method to execute text replacement actions
     private func executeTextReplacementAction(_ type: ProcessingType) async {
-        guard let queryText = await systemUtility.getFocusedTextFieldText() else {
+        guard let textFieldInfo = await systemUtility.getFocusedTextFieldInfo() else {
             return
         }
 
+        logInfo("Focused Text Field Info: \(textFieldInfo)")
+
+        let queryText = textFieldInfo.focusedText
         let queryModel = try? await EZDetectManager().detectText(queryText)
         guard let detectedLanguage = queryModel?.detectedLanguage,
               let targetLanguage = queryModel?.queryTargetLanguage
@@ -64,33 +67,34 @@ class ActionManager: NSObject {
             return
         }
 
-        let selectedText = await EZEventMonitor.shared().getSelectedText()
-        var request: TranslationRequest
+        var request = TranslationRequest(
+            text: queryText,
+            sourceLanguage: detectedLanguage.code,
+            targetLanguage: targetLanguage.code,
+            serviceType: ""
+        )
 
         switch type {
         case .translate:
-            request = .init(
-                text: queryText,
-                sourceLanguage: detectedLanguage.code,
-                targetLanguage: targetLanguage.code,
-                serviceType: translateService.serviceType().rawValue
+            request.serviceType = translateService.serviceType().rawValue
+
+            await performStreamingService(
+                request: request,
+                textFieldInfo: textFieldInfo
             )
-            await performServiceQuery(request: request, selectedText: selectedText)
         case .polish:
-            request = .init(
-                text: queryText,
-                sourceLanguage: detectedLanguage.code,
-                targetLanguage: targetLanguage.code,
-                serviceType: polishService.serviceType().rawValue
+            request.serviceType = polishService.serviceType().rawValue
+            await performStreamingService(
+                request: request,
+                textFieldInfo: textFieldInfo
             )
-            await performServiceQuery(request: request, selectedText: selectedText)
         }
     }
 
-    /// Common method to perform stream translation/polishing and replace text
-    private func performServiceQuery(
+    /// Perform translation or polishing using a streaming service
+    private func performStreamingService(
         request: TranslationRequest,
-        selectedText: String?,
+        textFieldInfo: TextFieldInfo
     ) async {
         guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
             logError("Service type \(request.serviceType) not found")
@@ -104,24 +108,81 @@ class ActionManager: NSObject {
 
         do {
             let contentStream = try await streamService.contentStreamTranslate(request: request)
-            var result = ""
-            for try await content in contentStream {
-                result += content
-            }
-            await replaceText(result, selectedText: selectedText)
+            await replaceTextWithStream(contentStream, textFieldInfo: textFieldInfo)
         } catch {
             logError("stream failed: \(error.localizedDescription)")
         }
     }
 
-    /// Replace text based on selection state
-    private func replaceText(_ resultText: String, selectedText: String?) async {
-        if let selectedText, !selectedText.trim().isEmpty {
-            // Has selected text, use copy and paste for replacement
-            await SharedUtilities.copyTextAndPaste(resultText)
+    /// Replace text with streaming data
+    /// - Parameters:
+    ///   - contentStream: AsyncThrowingStream of text content
+    ///   - textFieldInfo: Information about the text field
+    private func replaceTextWithStream(
+        _ contentStream: AsyncThrowingStream<String, Error>,
+        textFieldInfo: TextFieldInfo
+    ) async {
+        logInfo("Starting streaming text replacement with: \(textFieldInfo)")
+
+        if textFieldInfo.isSupportedAXElement {
+            // Streaming replacement for supported text fields
+            await performStreamingReplacement(contentStream, textFieldInfo: textFieldInfo)
         } else {
-            // No selected text, replace the whole text field content
-            systemUtility.replaceFocusedTextFieldText(with: resultText)
+            // Animated copy-paste replacement for non-AX supported fields
+            await performAnimatedCopyPasteReplacement(contentStream, textFieldInfo: textFieldInfo)
         }
+    }
+
+    /// Perform streaming replacement for supported text fields
+    private func performStreamingReplacement(
+        _ contentStream: AsyncThrowingStream<String, Error>,
+        textFieldInfo: TextFieldInfo
+    ) async {
+        do {
+            var currentRange = textFieldInfo.selectedRange
+            for try await content in contentStream {
+                if let range = currentRange {
+                    // Replace at the specific range
+                    systemUtility.replaceFocusedTextFieldText(
+                        with: content, range: range
+                    )
+                    // Update range for next replacement (cursor position)
+                    currentRange = CFRange(location: range.location, length: 0)
+                }
+            }
+        } catch {
+            logError("Streaming replacement failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Perform animated copy-paste replacement for non-AX supported text fields
+    private func performAnimatedCopyPasteReplacement(
+        _ contentStream: AsyncThrowingStream<String, Error>,
+        textFieldInfo: TextFieldInfo
+    ) async {
+        // Make sure there is selected text to replace
+        guard let selectedText = textFieldInfo.selectedText, !selectedText.isEmpty else {
+            logInfo("No selected text, skipping animated copy-paste replacement")
+            return
+        }
+
+        do {
+            // Stream content and perform animated replacement in real-time
+            for try await content in contentStream {
+                await SharedUtilities.copyTextAndPaste(content)
+
+                // Small delay to allow paste operation to complete
+                await Task.sleep(seconds: 0.05)
+            }
+        } catch {
+            logError("Animated copy-paste replacement failed: \(error.localizedDescription)")
+        }
+    }
+}
+
+extension Task where Success == Never, Failure == Never {
+    /// Sleep for given seconds within a Task
+    static func sleep(seconds: TimeInterval) async {
+        try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 }

@@ -56,4 +56,27 @@ extension StreamService {
             }
         }
     }
+
+    /// Stream translation with cumulative text
+    func textStreamTranslate(request: TranslationRequest) async throws
+        -> AsyncThrowingStream<String, Error> {
+        let chatStream = try await streamTranslate(request: request)
+
+        return AsyncThrowingStream<String, Error> { continuation in
+            Task {
+                do {
+                    var result = ""
+                    for try await chatResult in chatStream {
+                        if let content = chatResult.content {
+                            result += content
+                            continuation.yield(result)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
 }

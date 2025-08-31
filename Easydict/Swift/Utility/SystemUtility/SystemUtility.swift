@@ -8,6 +8,7 @@
 
 import AXSwift
 import Foundation
+import KeySender
 
 // MARK: - SystemUtility
 
@@ -50,41 +51,89 @@ class SystemUtility {
         await EZEventMonitor.shared().getSelectedText()
     }
 
-    /// Get text from current focused text field
+    /// Post Command + A to select all text in current focused text field
+    func postSelectAllEvent() {
+        let sender = KeySender(key: .a, modifiers: .command)
+        sender.sendGlobally()
+    }
+
+    /// Get comprehensive information from current focused text field
     ///
-    /// This method intelligently determines what text to return from focused text field:
-    /// 1. If not a text field or error → returns nil
-    /// 2. If there is selected text → returns selected text
-    /// 3. If no text is selected → returns all text in the field
-    func getFocusedTextFieldText() async -> String? {
+    /// - Returns: TextFieldInfo containing text, range, and selected text
+    func getFocusedTextFieldInfo() async -> TextFieldInfo? {
         // 1. Ensure focused element is a text field
         guard let element = focusedTextFiledElement() else {
             logInfo("Current focused element is not a text field")
             return nil
         }
 
-        // 2. Try to get selected text first
-        // Since `element.selectedText` may not work for some apps, e.g. VSCode
-        // So we use `getSelectedText` to get selected text.
-        if let selectedText = await getSelectedText(), !selectedText.isEmpty {
-            return selectedText
+        // 2. Get full text from the text field
+        guard let fullText = element.value else {
+            logInfo("Failed to get text from focused element")
+            return nil
         }
 
-        // 3. If no selected text, get all text
-        return element.value
+        // 3. Try to get selected text and range
+        let selectedText = await getSelectedText()
+        let selectedRange = element.selectedRange
+
+        return TextFieldInfo(
+            text: fullText,
+            selectedRange: selectedRange,
+            selectedText: selectedText?.isEmpty == false ? selectedText : nil
+        )
     }
 
     /// Replace text in current focused text field, use AXSwift API
     func replaceFocusedTextFieldText(with text: String) {
+        replaceFocusedTextFieldText(with: text, range: nil)
+    }
+
+    /// Replace text in current focused text field with optional range support
+    /// - Parameters:
+    ///   - text: The replacement text
+    ///   - range: Optional CFRange for partial replacement. If nil, replaces entire content
+    func replaceFocusedTextFieldText(with text: String, range: CFRange?) {
         guard let element = focusedTextFiledElement() else {
             logInfo("Current focused element is not a text field")
             return
         }
 
         do {
-            try element.setAttribute(.value, value: text)
+            if range != nil {
+                // Partial replacement using selectedTextRange
+//                try element.setAttribute(.selectedTextRange, value: range)
+                try element.setAttribute(.selectedText, value: text)
+            } else {
+                // Full replacement
+                try element.setAttribute(.value, value: text)
+            }
         } catch {
             logError("Failed to replace text field text: \(error)")
+        }
+    }
+
+    /// Get the current selected range in the focused text field
+    func getFocusedTextFieldSelectedRange() -> CFRange? {
+        guard let element = focusedTextFiledElement() else {
+            logInfo("Current focused element is not a text field")
+            return nil
+        }
+
+        return element.selectedRange
+    }
+
+    /// Replace selected text in the focused text field
+    func replaceSelectedText(with text: String) {
+        guard let element = focusedTextFiledElement() else {
+            logInfo("Current focused element is not a text field")
+            return
+        }
+
+        do {
+            try element.setAttribute(.selectedText, value: text)
+        } catch {
+            logError("Failed to replace selected text: \(error)")
         }
     }
 
@@ -165,16 +214,7 @@ extension UIElement {
         try? attribute(.selectedText)
     }
 
-    var selectedRange: NSRange? {
-        if let cfRange: CFRange = try? attribute(.selectedTextRange) {
-            return NSRange(cfRange)
-        }
-        return nil
-    }
-}
-
-extension NSRange {
-    init(_ cfRange: CFRange) {
-        self.init(location: cfRange.location, length: cfRange.length)
+    var selectedRange: CFRange? {
+        try? attribute(.selectedTextRange)
     }
 }
