@@ -55,18 +55,18 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (AFHTTPSessionManager *)htmlSession {
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
-
+        
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
          @"10_15_0) AppleWebKit/537.36 (KHTML, like "
          @"Gecko) Chrome/77.0.3865.120 Safari/537.36"
                  forHTTPHeaderField:@"User-Agent"];
         htmlSession.requestSerializer = requestSerializer;
-
+        
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
         htmlSession.responseSerializer = responseSerializer;
-
+        
         _htmlSession = htmlSession;
     }
     return _htmlSession;
@@ -75,7 +75,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (AFHTTPSessionManager *)jsonSession {
     if (!_jsonSession) {
         AFHTTPSessionManager *jsonSession = [AFHTTPSessionManager manager];
-
+        
         AFHTTPRequestSerializer *requestSerializer =
         [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
@@ -83,13 +83,13 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
          @"Gecko) Chrome/77.0.3865.120 Safari/537.36"
                  forHTTPHeaderField:@"User-Agent"];
         jsonSession.requestSerializer = requestSerializer;
-
+        
         AFJSONResponseSerializer *responseSerializer =
         [AFJSONResponseSerializer serializer];
         responseSerializer.acceptableContentTypes =
         [NSSet setWithObjects:@"application/json", nil];
         jsonSession.responseSerializer = responseSerializer;
-
+        
         _jsonSession = jsonSession;
     }
     return _jsonSession;
@@ -101,7 +101,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     return EZServiceTypeGoogle;
 }
 
-- (EZQueryTextType)queryTextType {
+- (EZQueryTextType)supportedQueryType {
     return EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
 }
 

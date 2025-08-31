@@ -31,6 +31,8 @@ NS_SWIFT_NAME(QueryService)
 
 @property (nonatomic, assign) BOOL enabledAutoQuery;
 
+@property (nonatomic, assign) EZQueryTextType queryType;
+
 @property (nonatomic, assign) EZWindowType windowType;
 
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
@@ -110,7 +112,7 @@ NS_SWIFT_NAME(QueryService)
 - (EZServiceUsageStatus)serviceUsageStatus;
 
 /// Query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
-- (EZQueryTextType)queryTextType;
+- (EZQueryTextType)supportedQueryType;
 
 /// Intelligent query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
 - (EZQueryTextType)intelligentQueryTextType;

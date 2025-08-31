@@ -295,7 +295,7 @@ userInfo:nil]
     return EZServiceUsageStatusDefault;
 }
 
-- (EZQueryTextType)queryTextType {
+- (EZQueryTextType)supportedQueryType {
     return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
 }
 

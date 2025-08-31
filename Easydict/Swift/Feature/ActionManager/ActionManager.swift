@@ -132,7 +132,8 @@ class ActionManager: NSObject {
             text: queryText,
             sourceLanguage: detectedLanguage.code,
             targetLanguage: targetLanguage.code,
-            serviceType: ""
+            serviceType: "",
+            queryType: .translation
         )
 
         // Set service type based on processing type

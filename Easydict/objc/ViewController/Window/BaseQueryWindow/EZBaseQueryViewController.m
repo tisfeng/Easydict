@@ -815,7 +815,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
-        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.queryTextType != EZQueryTextTypeNone;
+        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
         if (!enableAutoQuery) {
             MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;

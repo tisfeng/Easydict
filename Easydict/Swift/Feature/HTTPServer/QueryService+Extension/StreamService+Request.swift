@@ -10,8 +10,31 @@ import Foundation
 import OpenAI
 
 extension StreamService {
+    /// Stream translation content only
+    func contentStreamTranslate(request: TranslationRequest) async throws
+        -> AsyncThrowingStream<String, Error> {
+        let chatStream = try await streamTranslate(request: request)
+
+        return AsyncThrowingStream<String, Error> { continuation in
+            Task {
+                do {
+                    for try await chatResult in chatStream {
+                        if let content = chatResult.content {
+                            continuation.yield(content)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+
     func streamTranslate(request: TranslationRequest) async throws
         -> AsyncThrowingStream<ChatStreamResult, Error> {
+        queryType = request.queryType
+
         let text = request.text
         var from = Language.auto
         let to = Language.language(fromCode: request.targetLanguage)
@@ -34,49 +57,5 @@ extension StreamService {
         }
 
         return chatStreamTranslate(text, from: from, to: to)
-    }
-
-    /// Stream translation content only
-    func contentStreamTranslate(request: TranslationRequest) async throws
-        -> AsyncThrowingStream<String, Error> {
-        let chatStream = try await streamTranslate(request: request)
-
-        return AsyncThrowingStream<String, Error> { continuation in
-            Task {
-                do {
-                    for try await chatResult in chatStream {
-                        if let content = chatResult.content {
-                            continuation.yield(content)
-                        }
-                    }
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
-    }
-
-    /// Stream translation with cumulative text
-    func textStreamTranslate(request: TranslationRequest) async throws
-        -> AsyncThrowingStream<String, Error> {
-        let chatStream = try await streamTranslate(request: request)
-
-        return AsyncThrowingStream<String, Error> { continuation in
-            Task {
-                do {
-                    var result = ""
-                    for try await chatResult in chatStream {
-                        if let content = chatResult.content {
-                            result += content
-                            continuation.yield(result)
-                        }
-                    }
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
     }
 }
