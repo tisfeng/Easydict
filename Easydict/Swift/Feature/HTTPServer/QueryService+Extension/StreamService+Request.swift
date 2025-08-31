@@ -35,4 +35,25 @@ extension StreamService {
 
         return chatStreamTranslate(text, from: from, to: to)
     }
+
+    /// Stream translation content only
+    func contentStreamTranslate(request: TranslationRequest) async throws
+        -> AsyncThrowingStream<String, Error> {
+        let chatStream = try await streamTranslate(request: request)
+
+        return AsyncThrowingStream<String, Error> { continuation in
+            Task {
+                do {
+                    for try await chatResult in chatStream {
+                        if let content = chatResult.content {
+                            continuation.yield(content)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
 }

@@ -200,11 +200,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                                object:nil
                                 queue:NSOperationQueue.mainQueue
                            usingBlock:^(NSNotification *_Nonnull notification) {
-        mm_strongify(self);
-        [self reloadTableViewData:^{
-            [self updateTableViewHeight];
-        }];
-    }];
+                               mm_strongify(self);
+                               [self reloadTableViewData:^{
+                                   [self updateTableViewHeight];
+                               }];
+                           }];
 
     [defaultCenter addObserver:self
                       selector:@selector(modifyAppLanguage:)
@@ -218,9 +218,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     // Observe for max window height settings changes
     [defaultCenter addObserver:self
-                     selector:@selector(updateWindowHeight)
-                         name:NSNotification.maxWindowHeightSettingsChanged
-                       object:nil];
+                      selector:@selector(updateWindowHeight)
+                          name:NSNotification.maxWindowHeightSettingsChanged
+                        object:nil];
 }
 
 - (void)updateWindowConfiguration:(NSNotification *)notification {
@@ -232,9 +232,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.queryViewHeight = [self miniQueryViewHeight];
 
     self.isInputFieldCellVisible = [self.config showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible
-                                         windowType:self.windowType];
+                                                               windowType:self.windowType];
     self.isSelectLanguageCellVisible = [self.config showInputTextFieldWithKey:WindowConfigurationKeySelectLanguageCellVisible
-                                         windowType:self.windowType];
+                                                                   windowType:self.windowType];
 
     self.inputFieldCellIndex = 0;
 
@@ -586,7 +586,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (self.queryModel.ocrImage) {
         self.inputText = @"";
     }
-    
+
     // If has designated language, we don't need to detect language again.
     if (language == EZLanguageAuto) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
@@ -780,7 +780,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.ocrImage;
-    
+
     if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR)) {
         BOOL autoQuery = self.config.autoCopyOCRText || self.config.autoQueryPastedText || self.queryModel.autoQuery;
         [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
@@ -838,7 +838,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"service: %@, query error: %@", service.serviceType ,error);
+            MMLogError(@"service: %@, query error: %@", service.serviceType, error);
         }
         result.error = [EZQueryError queryErrorFrom:error];
 
@@ -1722,8 +1722,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (BOOL)isCustomTipsType {
     return self.tipsCellType == EZTipsCellTypeErrorTips ||
-    self.tipsCellType == EZTipsCellTypeInfoTips ||
-    self.tipsCellType == EZTipsCellTypeWarnTips;
+        self.tipsCellType == EZTipsCellTypeInfoTips ||
+        self.tipsCellType == EZTipsCellTypeWarnTips;
 }
 
 - (BOOL)isInputFieldCellAtRow:(NSInteger)row {

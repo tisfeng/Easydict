@@ -345,6 +345,12 @@ extension Defaults.Keys {
     static let pasteboardTranslateShortcut = Key<KeyCombo?>(
         "EZPasteboardTranslateShortcutKey_keyHolder"
     )
+    static let translateAndReplaceShortcut = Key<KeyCombo?>(
+        "EZTranslateAndReplaceShortcutKey_keyHolder"
+    )
+    static let polishAndReplaceShortcut = Key<KeyCombo?>(
+        "EZPolishAndReplaceShortcutKey_keyHolder"
+    )
 
     static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey2_keyHolder")
     static let pasteboardOCRShortcut = Key<KeyCombo?>("EZPasteboardOCRShortcutKey_keyHolder")
