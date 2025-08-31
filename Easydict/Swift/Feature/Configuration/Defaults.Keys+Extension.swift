@@ -165,6 +165,11 @@ extension Defaults.Keys {
         default: .menuBarActionCopy
     )
 
+    static let autoSelectAllTextFieldText = Key<Bool>(
+        "EZConfiguration_kAutoSelectAllTextFieldText",
+        default: true
+    )
+
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
     static var formerFixedScreenVisibleFrame = Key<CGRect>(
         "EZConfiguration_kScreenVisibleFrameKey", default: .zero

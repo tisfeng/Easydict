@@ -2604,35 +2604,6 @@
         }
       }
     },
-    "menu_translate_and_replace" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Translate and Replace"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preložiť a nahradiť"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "翻译并替换"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "翻譯並替換"
-          }
-        }
-      }
-    },
     "menu_polish_and_replace" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2832,6 +2803,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "靜默螢幕截圖 OCR"
+          }
+        }
+      }
+    },
+    "menu_translate_and_replace" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate and Replace"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preložiť a nahradiť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译并替换"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯並替換"
           }
         }
       }
@@ -5833,6 +5833,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "離線翻譯需要在設備上下載語言，可通過“系統設置”管理下載語言。"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_select_all_text_field_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Select All Text"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky vybrať celý text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动选中所有文本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動選取所有文本"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_select_all_text_field_text_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If no text is currently selected in the text field, automatically select all text content during translate and replace operations"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ak nie je v poli aktuálne vybraný žiadny text, automaticky vybrať všetok obsah textu pri prekladových a nahrádzacích operáciách"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果当前输入框中未选中文本，在翻译并替换操作时，允许自动全选文本内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果當前輸入框中未選中文本，在翻譯並替換操作時，允許自動全選文本內容"
           }
         }
       }

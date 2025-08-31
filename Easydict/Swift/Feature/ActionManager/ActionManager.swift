@@ -8,6 +8,7 @@
 
 import AppKit
 import AXSwift
+import Defaults
 import Foundation
 
 // MARK: - ActionManager
@@ -50,23 +51,83 @@ class ActionManager: NSObject {
 
     private let systemUtility = SystemUtility.shared
 
+    // MARK: - Core Action Methods
+
     /// Common method to execute text replacement actions
     private func executeTextReplacementAction(_ type: ProcessingType) async {
         guard let textFieldInfo = await systemUtility.getFocusedTextFieldInfo() else {
             return
         }
-
         logInfo("Focused Text Field Info: \(textFieldInfo)")
 
+        // Process auto-selection and get updated text field info
+        guard let textFieldInfo = await processAutoTextSelection(for: textFieldInfo) else {
+            return
+        }
+        logInfo("Text Field Info after Auto-Selection: \(textFieldInfo)")
+
+        // Prepare translation request
+        guard let request = await prepareTranslationRequest(
+            from: textFieldInfo,
+            type: type
+        )
+        else {
+            return
+        }
+
+        // Execute the streaming service
+        await performStreamingService(
+            request: request,
+            textFieldInfo: textFieldInfo
+        )
+    }
+
+    // MARK: - Helper Methods
+
+    /// Process automatic text selection based on user settings and return updated text field info
+    /// - Parameter textFieldInfo: Information about the current text field
+    /// - Returns: Updated TextFieldInfo after processing auto-selection, or nil if processing fails
+    private func processAutoTextSelection(for textFieldInfo: TextFieldInfo) async -> TextFieldInfo? {
+        let autoSelectEnabled = Defaults[.autoSelectAllTextFieldText]
+        let selectedText = textFieldInfo.selectedText ?? ""
+
+        guard autoSelectEnabled, selectedText.isEmpty else {
+            return textFieldInfo
+        }
+
+        // Send Cmd+A to select all text in the field
+        systemUtility.selectAll()
+
+        // Small delay to allow selection to complete
+        await Task.sleep(seconds: 0.1)
+
+        logInfo("Auto-selected all text content in field")
+
+        return await systemUtility.getFocusedTextFieldInfo()
+    }
+
+    /// Prepare translation request from text field information
+    /// - Parameters:
+    ///   - textFieldInfo: Information about the current text field
+    ///   - type: The type of processing (translate or polish)
+    /// - Returns: A configured TranslationRequest or nil if preparation fails
+    private func prepareTranslationRequest(
+        from textFieldInfo: TextFieldInfo,
+        type: ProcessingType
+    ) async
+        -> TranslationRequest? {
         let queryText = textFieldInfo.focusedText
+
+        // Detect language and target
         let queryModel = try? await EZDetectManager().detectText(queryText)
         guard let detectedLanguage = queryModel?.detectedLanguage,
               let targetLanguage = queryModel?.queryTargetLanguage
         else {
             logError("Failed to detect target language, skipping \(type) and replace")
-            return
+            return nil
         }
 
+        // Create base request
         var request = TranslationRequest(
             text: queryText,
             sourceLanguage: detectedLanguage.code,
@@ -74,22 +135,18 @@ class ActionManager: NSObject {
             serviceType: ""
         )
 
+        // Set service type based on processing type
         switch type {
         case .translate:
             request.serviceType = translateService.serviceType().rawValue
-
-            await performStreamingService(
-                request: request,
-                textFieldInfo: textFieldInfo
-            )
         case .polish:
             request.serviceType = polishService.serviceType().rawValue
-            await performStreamingService(
-                request: request,
-                textFieldInfo: textFieldInfo
-            )
         }
+
+        return request
     }
+
+    // MARK: - Streaming Service Methods
 
     /// Perform translation or polishing using a streaming service
     private func performStreamingService(
@@ -113,6 +170,8 @@ class ActionManager: NSObject {
             logError("stream failed: \(error.localizedDescription)")
         }
     }
+
+    // MARK: - Text Replacement Methods
 
     /// Replace text with streaming data
     /// - Parameters:
@@ -141,6 +200,8 @@ class ActionManager: NSObject {
         do {
             var currentRange = textFieldInfo.selectedRange
             for try await content in contentStream {
+                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+
                 if let range = currentRange {
                     // Replace at the specific range
                     systemUtility.replaceFocusedTextFieldText(
@@ -160,15 +221,11 @@ class ActionManager: NSObject {
         _ contentStream: AsyncThrowingStream<String, Error>,
         textFieldInfo: TextFieldInfo
     ) async {
-        // Make sure there is selected text to replace
-        guard let selectedText = textFieldInfo.selectedText, !selectedText.isEmpty else {
-            logInfo("No selected text, skipping animated copy-paste replacement")
-            return
-        }
-
         do {
             // Stream content and perform animated replacement in real-time
             for try await content in contentStream {
+                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+
                 await SharedUtilities.copyTextAndPaste(content)
 
                 // Small delay to allow paste operation to complete
@@ -179,6 +236,8 @@ class ActionManager: NSObject {
         }
     }
 }
+
+// MARK: - Task Extensions
 
 extension Task where Success == Never, Failure == Never {
     /// Sleep for given seconds within a Task

@@ -52,7 +52,7 @@ class SystemUtility {
     }
 
     /// Post Command + A to select all text in current focused text field
-    func postSelectAllEvent() {
+    func selectAll() {
         let sender = KeySender(key: .a, modifiers: .command)
         sender.sendGlobally()
     }
