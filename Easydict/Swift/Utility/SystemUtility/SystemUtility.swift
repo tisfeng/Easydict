@@ -62,7 +62,7 @@ class SystemUtility {
     /// - Returns: TextFieldInfo containing text, range, and selected text
     func getFocusedTextFieldInfo() async -> TextFieldInfo? {
         // 1. Ensure focused element is a text field
-        guard let element = focusedTextFiledElement() else {
+        guard let element = focusedTextFieldElement() else {
             logInfo("Current focused element is not a text field")
             return nil
         }
@@ -94,7 +94,7 @@ class SystemUtility {
     ///   - text: The replacement text
     ///   - range: Optional CFRange for partial replacement. If nil, replaces entire content
     func replaceFocusedTextFieldText(with text: String, range: CFRange?) {
-        guard let element = focusedTextFiledElement() else {
+        guard let element = focusedTextFieldElement() else {
             logInfo("Current focused element is not a text field")
             return
         }
@@ -115,7 +115,7 @@ class SystemUtility {
 
     /// Get the current selected range in the focused text field
     func getFocusedTextFieldSelectedRange() -> CFRange? {
-        guard let element = focusedTextFiledElement() else {
+        guard let element = focusedTextFieldElement() else {
             logInfo("Current focused element is not a text field")
             return nil
         }
@@ -125,7 +125,7 @@ class SystemUtility {
 
     /// Replace selected text in the focused text field
     func replaceSelectedText(with text: String) {
-        guard let element = focusedTextFiledElement() else {
+        guard let element = focusedTextFieldElement() else {
             logInfo("Current focused element is not a text field")
             return
         }
@@ -140,7 +140,7 @@ class SystemUtility {
     // MARK: Private
 
     /// Get the currently focused text field element, use AXSwift API
-    private func focusedTextFiledElement() -> UIElement? {
+    private func focusedTextFieldElement() -> UIElement? {
         guard let focusedUIElement = frontmostAppElement?.focusedUIElement else {
             logInfo("No focused UI element found")
             return nil
@@ -161,7 +161,7 @@ class SystemUtility {
     }
 
     /// Get the currently focused text field element, use system AXUIElement API
-    private func focusedTextFiledElement2() -> AXUIElement? {
+    private func focusedTextFieldElement2() -> AXUIElement? {
         let systemWideElement = AXUIElementCreateSystemWide()
         var focusedElementRef: CFTypeRef?
 

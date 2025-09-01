@@ -26,9 +26,12 @@ NS_SWIFT_NAME(QueryService)
 
 /// In the settings page, whether the service is enabled or not.
 @property (nonatomic, assign) BOOL enabled;
+
 /// In the query page, whether to allow this service query.
 @property (nonatomic, assign) BOOL enabledQuery;
 
+/// In the query page, whether to enable auto query for this service.
+/// If user close this service manually, it will be disabled.
 @property (nonatomic, assign) BOOL enabledAutoQuery;
 
 @property (nonatomic, assign) EZQueryTextType queryType;

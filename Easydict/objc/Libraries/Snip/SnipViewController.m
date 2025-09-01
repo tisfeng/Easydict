@@ -126,9 +126,9 @@
     // 坐标 尺寸
     self.focusView.locationTextField.stringValue = [NSString stringWithFormat:@"坐标: (%.0f, %.0f)", mouseLocation.x, windowFrame.size.height - mouseLocation.y];
     if (self.isStart) {
-        self.focusView.sizeTextFiled.stringValue = [NSString stringWithFormat:@"尺寸: (%.0f, %.0f)", self.targetRect.size.width, self.targetRect.size.height];
+        self.focusView.sizeTextField.stringValue = [NSString stringWithFormat:@"尺寸: (%.0f, %.0f)", self.targetRect.size.width, self.targetRect.size.height];
     } else {
-        self.focusView.sizeTextFiled.stringValue = @"尺寸: (0, 0)";
+        self.focusView.sizeTextField.stringValue = @"尺寸: (0, 0)";
     }
 
     // 图像
