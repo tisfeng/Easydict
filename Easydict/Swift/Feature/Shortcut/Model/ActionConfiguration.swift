@@ -26,11 +26,7 @@ struct ActionConfiguration {
         self.titleKey = titleKey
         self.icon = icon
         self.defaultsKey = defaultsKey
-        self.action = {
-            Task { @MainActor in
-                await action()
-            }
-        }
+        self.action = action
     }
 
     // MARK: Internal

@@ -40,7 +40,8 @@ class SystemUtility {
         [
             kAXTextFieldRole,
             kAXTextAreaRole,
-            kAXComboBoxRole,
+            kAXTextAreaRole,
+            kAXComboBoxRole, // Safari: Google search field
             kAXSearchFieldSubrole,
             kAXPopUpButtonRole,
             kAXMenuRole,
@@ -73,6 +74,8 @@ class SystemUtility {
             return nil
         }
 
+        logInfo("TextField role: \(element.roleValue ?? "unknown")")
+
         // 3. Try to get selected text and range
         let selectedText = await getSelectedText()
         let selectedRange = element.selectedRange
@@ -95,7 +98,6 @@ class SystemUtility {
     ///   - range: Optional CFRange for partial replacement. If nil, replaces entire content
     func replaceFocusedTextFieldText(with text: String, range: CFRange?) {
         guard let element = focusedTextFieldElement() else {
-            logInfo("Current focused element is not a text field")
             return
         }
 
@@ -116,7 +118,6 @@ class SystemUtility {
     /// Get the current selected range in the focused text field
     func getFocusedTextFieldSelectedRange() -> CFRange? {
         guard let element = focusedTextFieldElement() else {
-            logInfo("Current focused element is not a text field")
             return nil
         }
 
@@ -126,7 +127,6 @@ class SystemUtility {
     /// Replace selected text in the focused text field
     func replaceSelectedText(with text: String) {
         guard let element = focusedTextFieldElement() else {
-            logInfo("Current focused element is not a text field")
             return
         }
 
@@ -151,13 +151,13 @@ class SystemUtility {
             return nil
         }
 
-        logInfo("Focused UI Element Role: \(roleValue)")
-
         if textFieldRoles.contains(roleValue) {
             return focusedUIElement
-        } else {
-            return nil
         }
+
+        logInfo("Focused UI element not a text field role: \(roleValue)")
+
+        return nil
     }
 
     /// Get the currently focused text field element, use system AXUIElement API
@@ -186,8 +186,6 @@ class SystemUtility {
             logError("Failed to get role attribute, error: \(roleError)")
             return nil
         }
-
-        logInfo("Focused UI Element Role: \(roleValue)")
 
         if textFieldRoles.contains(roleValue) {
             return focusedElement

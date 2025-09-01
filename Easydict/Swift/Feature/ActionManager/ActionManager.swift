@@ -182,8 +182,6 @@ class ActionManager: NSObject {
         _ contentStream: AsyncThrowingStream<String, Error>,
         textFieldInfo: TextFieldInfo
     ) async {
-        logInfo("Starting streaming text replacement with: \(textFieldInfo)")
-
         if textFieldInfo.isSupportedAXElement {
             // Streaming replacement for supported text fields
             await performStreamingReplacement(contentStream, textFieldInfo: textFieldInfo)
@@ -198,10 +196,12 @@ class ActionManager: NSObject {
         _ contentStream: AsyncThrowingStream<String, Error>,
         textFieldInfo: TextFieldInfo
     ) async {
+        logInfo("Performing streaming replacement for AX supported text field")
+
         do {
             var currentRange = textFieldInfo.selectedRange
             for try await content in contentStream {
-                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+//                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
 
                 if let range = currentRange {
                     // Replace at the specific range
@@ -222,10 +222,12 @@ class ActionManager: NSObject {
         _ contentStream: AsyncThrowingStream<String, Error>,
         textFieldInfo: TextFieldInfo
     ) async {
+        logInfo("Performing animated copy-paste replacement for non-AX supported text field")
+
         do {
             // Stream content and perform animated replacement in real-time
             for try await content in contentStream {
-                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+//                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
 
                 await SharedUtilities.copyTextAndPaste(content)
 
