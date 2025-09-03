@@ -74,7 +74,7 @@ class YoudaoService: QueryService {
     }
 
     // TODO: add configuration UI
-    override func queryTextType() -> EZQueryTextType {
+    override func supportedQueryType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
         let isTranslationEnabled = Defaults[translationKey].boolValue

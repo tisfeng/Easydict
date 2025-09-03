@@ -78,7 +78,7 @@ static EZAppleDictionary *_instance;
     return EZServiceTypeAppleDictionary;
 }
 
-- (EZQueryTextType)queryTextType {
+- (EZQueryTextType)supportedQueryType {
     return EZQueryTextTypeDictionary | EZQueryTextTypeSentence;
 }
 

@@ -21,7 +21,7 @@ extension YoudaoService {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
-        guard queryTextType().contains(.dictionary) else {
+        guard supportedQueryType().contains(.dictionary) else {
             throw QueryError(type: .unsupportedQueryType)
         }
 
@@ -94,7 +94,7 @@ extension YoudaoService {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
 
-        guard queryTextType().contains(.dictionary) else {
+        guard supportedQueryType().contains(.dictionary) else {
             throw QueryError(type: .unsupportedQueryType)
         }
 

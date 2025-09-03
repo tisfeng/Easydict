@@ -21,7 +21,7 @@ struct ActionConfiguration {
         titleKey: String,
         icon: SFSymbol,
         defaultsKey: Defaults.Key<KeyCombo?>? = nil,
-        action: @MainActor @escaping () -> ()
+        action: @MainActor @escaping () async -> ()
     ) {
         self.titleKey = titleKey
         self.icon = icon
@@ -34,5 +34,5 @@ struct ActionConfiguration {
     let titleKey: String
     let icon: SFSymbol
     let defaultsKey: Defaults.Key<KeyCombo?>?
-    let action: @MainActor () -> ()
+    let action: @MainActor () async -> ()
 }

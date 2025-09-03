@@ -54,6 +54,8 @@ extension ShortcutTab {
             .snipTranslate,
             .selectTranslate,
             .pasteboardTranslate,
+            .translateAndReplace,
+            .polishAndReplace,
             .showMiniWindow,
             .silentScreenshotOCR,
         ]

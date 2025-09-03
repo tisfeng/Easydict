@@ -19,7 +19,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableBetaFeature) {
                     AdvancedTabItemView(
                         color: .blue,
-                        systemImage: SFSymbol.hammerFill.rawValue,
+                        icon: .hammerFill,
                         labelText: "setting.advance.enable_beta_feature"
                     )
                 }
@@ -31,7 +31,7 @@ struct AdvancedTab: View {
                     selection: $defaultTTSServiceType,
                     label: AdvancedTabItemView(
                         color: .blue,
-                        systemImage: SFSymbol.ellipsisBubbleFill.rawValue,
+                        icon: .ellipsisBubbleFill,
                         labelText: "setting.advance.default_tts_service"
                     )
                 ) {
@@ -43,7 +43,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $disableTipsView) {
                     AdvancedTabItemView(
                         color: .green,
-                        systemImage: SFSymbol.lightbulbFill.rawValue,
+                        icon: .lightbulbFill,
                         labelText: "setting.advance.disable_tips_view"
                     )
                 }
@@ -51,7 +51,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableYoudaoOCR) {
                     AdvancedTabItemView(
                         color: .orange,
-                        systemImage: SFSymbol.circleRectangleFilledPatternDiagonalline.rawValue,
+                        icon: .circleRectangleFilledPatternDiagonalline,
                         labelText: "setting.advance.youdao_ocr",
                         subtitleText: "setting.advance.youdao_ocr_desc"
                     )
@@ -59,7 +59,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
                     AdvancedTabItemView(
                         color: .purple,
-                        systemImage: SFSymbol.arrowForwardSquare.rawValue,
+                        icon: .arrowForwardSquare,
                         labelText: "setting.advance.replace_with_translation",
                         subtitleText: "setting.advance.replace_with_translation_desc"
                     )
@@ -70,7 +70,7 @@ struct AdvancedTab: View {
                     Toggle(isOn: $enableLocalAppleTranslation) {
                         AdvancedTabItemView(
                             color: .red,
-                            systemImage: SFSymbol.appleLogo.rawValue,
+                            icon: .appleLogo,
                             labelText: "setting.advance.apple_offline_translation",
                             subtitleText: "setting.advance.apple_offline_translation_desc"
                         )
@@ -94,7 +94,7 @@ struct AdvancedTab: View {
                 } label: {
                     AdvancedTabItemView(
                         color: .mint,
-                        systemImage: SFSymbol.book.rawValue,
+                        icon: .book,
                         labelText: "setting.advance.min_classical_chinese_text_detect_length"
                     )
                 }
@@ -102,7 +102,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableOCRTextNormalization) {
                     AdvancedTabItemView(
                         color: .yellow,
-                        systemImage: SFSymbol.docViewfinder.rawValue,
+                        icon: .docViewfinder,
                         labelText: "setting.advance.enable_ocr_text_normalization",
                         subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
                     )
@@ -111,9 +111,18 @@ struct AdvancedTab: View {
                 Toggle(isOn: $showOCRMenuItems) {
                     AdvancedTabItemView(
                         color: .cyan,
-                        systemImage: SFSymbol.textAndCommandMacwindow.rawValue,
+                        icon: .textAndCommandMacwindow,
                         labelText: "setting.advance.show_ocr_menu_items",
                         subtitleText: "setting.advance.show_ocr_menu_items_desc"
+                    )
+                }
+
+                Toggle(isOn: $autoSelectAllTextFieldText) {
+                    AdvancedTabItemView(
+                        color: .indigo,
+                        icon: .checkmarkSquare,
+                        labelText: "setting.advance.auto_select_all_text_field_text",
+                        subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
                     )
                 }
             }
@@ -123,7 +132,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableForceGetSelectedText) {
                     AdvancedTabItemView(
                         color: .blue,
-                        systemImage: SFSymbol.characterCursorIbeam.rawValue,
+                        icon: .characterCursorIbeam,
                         labelText: "setting.advance.enable_force_get_selected_text",
                         subtitleText: "setting.advance.enable_force_get_selected_text_desc"
                     )
@@ -133,7 +142,7 @@ struct AdvancedTab: View {
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
                         color: .green,
-                        systemImage: SFSymbol.highlighter.rawValue,
+                        icon: .highlighter,
                         labelText: "setting.advance.force_get_selected_text_type"
                     )
                 ) {
@@ -151,7 +160,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $autoSelectText) {
                     AdvancedTabItemView(
                         color: .blue,
-                        systemImage: SFSymbol.cursorarrowRays.rawValue,
+                        icon: .cursorarrowRays,
                         labelText: "setting.advance.auto_show_query_icon"
                     )
                 }
@@ -159,7 +168,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $clickQuery) {
                     AdvancedTabItemView(
                         color: .green,
-                        systemImage: SFSymbol.cursorarrowClick.rawValue,
+                        icon: .cursorarrowClick,
                         labelText: "setting.advance.click_icon_query_info"
                     )
                 }
@@ -167,7 +176,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $adjustPopButtonOrigin) {
                     AdvancedTabItemView(
                         color: .orange,
-                        systemImage: SFSymbol.arrowUpAndDownAndArrowLeftAndRight.rawValue,
+                        icon: .arrowUpAndDownAndArrowLeftAndRight,
                         labelText: "setting.advance.mouse_query.adjust_pop_button_origin"
                     )
                 }
@@ -180,21 +189,21 @@ struct AdvancedTab: View {
                 Toggle(isOn: $replaceNewlineWithSpace) {
                     AdvancedTabItemView(
                         color: .blue,
-                        systemImage: SFSymbol.arrowForwardSquare.rawValue,
+                        icon: .arrowForwardSquare,
                         labelText: "setting.advance.automatically_replace_newline_with_space"
                     )
                 }
                 Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
                     AdvancedTabItemView(
                         color: .green,
-                        systemImage: SFSymbol.chevronLeftForwardslashChevronRight.rawValue,
+                        icon: .chevronLeftForwardslashChevronRight,
                         labelText: "setting.advance.automatically_remove_code_comment_symbols"
                     )
                 }
                 Toggle(isOn: $automaticWordSegmentation) {
                     AdvancedTabItemView(
                         color: .purple,
-                        systemImage: SFSymbol.textWordSpacing.rawValue,
+                        icon: .textWordSpacing,
                         labelText: "setting.advance.automatically_split_words"
                     )
                 }
@@ -217,7 +226,7 @@ struct AdvancedTab: View {
                     selection: $mouseSelectTranslateWindowType,
                     label: AdvancedTabItemView(
                         color: .blue,
-                        systemImage: SFSymbol.cursorarrowRays.rawValue,
+                        icon: .cursorarrowRays,
                         labelText: "setting.advance.window.mouse_select_translate_window_type"
                     )
                 ) {
@@ -231,7 +240,7 @@ struct AdvancedTab: View {
                     selection: $shortcutSelectTranslateWindowType,
                     label: AdvancedTabItemView(
                         color: .green,
-                        systemImage: SFSymbol.keyboardFill.rawValue,
+                        icon: .keyboardFill,
                         labelText: "setting.advance.window.shortcut_select_translate_window_type"
                     )
                 ) {
@@ -245,7 +254,7 @@ struct AdvancedTab: View {
                     selection: $fixedWindowPosition,
                     label: AdvancedTabItemView(
                         color: .orange,
-                        systemImage: SFSymbol.textAndCommandMacwindow.rawValue,
+                        icon: .textAndCommandMacwindow,
                         labelText: "setting.advance.window.fixed_window_position"
                     )
                 ) {
@@ -259,7 +268,7 @@ struct AdvancedTab: View {
                     selection: $miniWindowPosition,
                     label: AdvancedTabItemView(
                         color: .purple,
-                        systemImage: SFSymbol.macwindow.rawValue,
+                        icon: .macwindow,
                         labelText: "setting.advance.window.mini_window_position"
                     )
                 ) {
@@ -272,7 +281,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $pinWindowWhenDisplayed) {
                     AdvancedTabItemView(
                         color: .red,
-                        systemImage: SFSymbol.pinFill.rawValue,
+                        icon: .pinFill,
                         labelText: "setting.advance.pin_window_when_showing"
                     )
                 }
@@ -280,7 +289,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $hideMainWindow) {
                     AdvancedTabItemView(
                         color: .mint,
-                        systemImage: SFSymbol.eyeSlashFill.rawValue,
+                        icon: .eyeSlashFill,
                         labelText: "setting.advance.hide_main_window"
                     )
                 }
@@ -289,7 +298,7 @@ struct AdvancedTab: View {
                     selection: $maxWindowHeightPercentageValue,
                     label: AdvancedTabItemView(
                         color: .yellow,
-                        systemImage: SFSymbol.arrowUpAndDown.rawValue,
+                        icon: .arrowUpAndDown,
                         labelText: "setting.advance.window.max_height_percentage"
                     )
                 ) {
@@ -314,7 +323,7 @@ struct AdvancedTab: View {
                 Toggle(isOn: $enableHTTPServer) {
                     AdvancedTabItemView(
                         color: getHttpIconColor(),
-                        systemImage: SFSymbol.network.rawValue,
+                        icon: .network,
                         labelText: "setting.advance.enable_http_server"
                     )
                 }
@@ -330,7 +339,7 @@ struct AdvancedTab: View {
                 } label: {
                     AdvancedTabItemView(
                         color: getHttpIconColor(),
-                        systemImage: SFSymbol.externaldriveConnectedToLineBelow.rawValue,
+                        icon: .externaldriveConnectedToLineBelow,
                         labelText: "setting.advance.http_port",
                         subtitleText: "setting.advance.http_port_desc"
                     )
@@ -355,6 +364,7 @@ struct AdvancedTab: View {
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems
+    @Default(.autoSelectAllTextFieldText) private var autoSelectAllTextFieldText
 
     // Force get selected text
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText

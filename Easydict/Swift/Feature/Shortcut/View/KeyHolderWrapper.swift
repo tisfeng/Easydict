@@ -134,6 +134,8 @@ extension KeyHolderWrapper {
                 .silentScreenshotOCR: DefaultsKeyWrapper(.silentScreenshotOCRShortcut),
                 .showMiniWindow: DefaultsKeyWrapper(.showMiniWindowShortcut),
                 .pasteboardTranslate: DefaultsKeyWrapper(.pasteboardTranslateShortcut),
+                .translateAndReplace: DefaultsKeyWrapper(.translateAndReplaceShortcut),
+                .polishAndReplace: DefaultsKeyWrapper(.polishAndReplaceShortcut),
                 .clearInput: DefaultsKeyWrapper(.clearInputShortcut),
                 .clearAll: DefaultsKeyWrapper(.clearAllShortcut),
                 .copy: DefaultsKeyWrapper(.copyShortcut),

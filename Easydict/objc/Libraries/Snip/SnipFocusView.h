@@ -17,7 +17,7 @@ DefineMethodMMMake_h(SnipFocusView, view);
 
 @property (nonatomic, strong) NSImageView *imageView;
 @property (nonatomic, strong) NSTextField *locationTextField;
-@property (nonatomic, strong) NSTextField *sizeTextFiled;
+@property (nonatomic, strong) NSTextField *sizeTextField;
 
 - (CGSize)expectSize;
 
