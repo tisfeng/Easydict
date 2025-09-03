@@ -96,9 +96,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
-    @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
-    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType:
-        ForceGetSelectedTextType
+    @DefaultsWrapper(.enableCompatibilityReplace) var enableCompatibilityReplace: Bool
+    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
 
     @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
     @DefaultsWrapper(.enableOCRTextNormalization) var enableOCRTextNormalization: Bool

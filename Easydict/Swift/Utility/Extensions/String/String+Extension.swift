@@ -54,8 +54,8 @@ extension String {
         return String(dropFirst(prefix.count))
     }
 
-    /// Copy to clipboard
-    func copyToClipboard() {
+    /// Copy string to pasteboard.
+    func copyToPasteboard() {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(self, forType: .string)

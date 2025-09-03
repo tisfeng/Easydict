@@ -10,16 +10,14 @@ import CoreGraphics
 import Foundation
 
 extension NSPasteboard {
-    /// Get text from pasteboard
+    /// A convenience property to get and set string content on the pasteboard.
     @objc
-    func readString() -> String? {
-        string(forType: .string)
-    }
-
-    /// Set string to pasteboard safely
-    func setString(_ string: String) {
-        clearContents()
-        setString(string, forType: .string)
+    var string: String {
+        get { string(forType: .string) ?? "" }
+        set {
+            clearContents()
+            setString(newValue, forType: .string)
+        }
     }
 
     // MARK: - Get Image from Pasteboard
@@ -33,7 +31,7 @@ extension NSPasteboard {
     ///
     /// - Returns: An `NSImage` object if a valid image could be retrieved, otherwise `nil`.
     @objc
-    func readImage() -> NSImage? {
+    var image: NSImage? {
         print("=== NSPasteboard.getImage() Debug ===")
 
         /**

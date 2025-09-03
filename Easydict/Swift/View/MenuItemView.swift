@@ -32,8 +32,8 @@ struct MenuItemView: View {
             screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
             pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
-            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
             polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
+            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
             miniWindowItem.keyboardShortcut(.showMiniWindow)
 
             Divider()

@@ -900,14 +900,14 @@ static EZWindowManager *_instance;
 
     // Try to read image from pasteboard first.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSImage *image = pasteboard.readImage;
+    NSImage *image = pasteboard.image;
     if (image) {
         [self showFloatingWindowWithOCRImage:image actionType:self.actionType autoQuery:autoQuery];
         return;
     }
 
     // If no image, read string from pasteboard.
-    NSString *queryText = pasteboard.readString;
+    NSString *queryText = pasteboard.string;
     if (queryText.length > 0) {
         EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
         [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:self.actionType];

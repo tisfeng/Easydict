@@ -142,7 +142,7 @@ func routes(_ app: Application) throws {
 
     /// Get selected text
     app.get("selectedText") { _ async throws -> GetSelectedTextResponse in
-        let selectedText = try await getSelectedText()
+        let selectedText = try await SelectedTextManager.shared.getSelectedText()
         return GetSelectedTextResponse(selectedText: selectedText)
     }
 }

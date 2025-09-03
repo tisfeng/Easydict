@@ -34,6 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^leftMouseDownBlock)(CGPoint clickPoint);
 @property (nonatomic, copy) void (^rightMouseDownBlock)(CGPoint clickPoint);
 
+/// When isMuting, we should not read alert volume, avoid reading this value incorrectly.
+/// - Note: If `isMutingAlertVolume` is YES, it cannot select text with shortcut in short time
+@property (nonatomic, assign) BOOL isMutingAlertVolume;
+
 + (instancetype)shared;
 
 /// Use Accessibility to get selected text first, if failed, use shortcut.

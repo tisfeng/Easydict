@@ -11,8 +11,9 @@
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 #import "EZLocalStorage.h"
-#import "EZSystemUtility.h"
 #import "Easydict-Swift.h"
+
+@import SelectedTextKit;
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
@@ -53,8 +54,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 // We need to store the alert volume, because the volume will be set to 0 when using Cmd+C to get selected text.
 @property (nonatomic, assign) NSInteger currentAlertVolume;
-// When isMuting, we should not read alert volume, avoid reading this value incorrectly.
-@property (nonatomic, assign) BOOL isMutingAlertVolume;
 
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
@@ -273,7 +272,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 #pragma mark - Get selected text.
 
 - (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable))completion {
-    [self getSelectedText:NO completion:completion];
+    [self getSelectedText:NO completion:^(NSString *text) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(text);
+        });
+    }];
 }
 
 /// Use Accessibility to get selected text first, if failed, use AppleScript and Cmd+C.
@@ -284,8 +287,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     self.selectedTextEditable = NO;
 
     // Use Accessibility first
-    [SharedUtilities getSelectedTextByAXUIWithCompletion:^(NSString *_Nullable text, AXError axError) {
+    [STKSelectedTextManager.shared getSelectedTextByAXWithCompletionHandler:^(NSString *text, NSError *error) {
+        AXError axError = (AXError)error.code;
         self.selectTextType = EZSelectTextTypeAccessibility;
+        
 
         // If selected text frame is invalid, ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
@@ -300,7 +305,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                 [self monitorCGEventTap];
             }
 
-            self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
+            self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
             completion(text);
             return;
         }
@@ -380,18 +385,23 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     }
 }
 
-/// Get selected text by simulated key Cmd+C, and mute alert volume.
+/// Get selected text by simulated key Cmd+C, and mute alert volume temporarily to avoid alert sound.
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
-    MMLogInfo(@"Get selected text by simulated key");
+    MMLogInfo(@"Get selected text by simulated key.");
+    MMLogInfo(@"isMutingAlertVolume: %@", self.isMutingAlertVolume ? @"YES" : @"NO");
 
     self.selectTextType = EZSelectTextTypeSimulatedKey;
 
-    // Do not mute alert volume if already muting, avoid getting muted volume 0, since this method may be called multiple times when dragging window.
+    // Do not mute alert volume if already muting, avoid getting muted volume 0,
+    // since this method may be called multiple times when dragging window.
     if (!self.isMutingAlertVolume) {
         self.isMutingAlertVolume = YES;
 
+        MMLogInfo(@"Mute alert volume to avoid alert sound when using Cmd+C to get selected text");
+        
         // First, mute alert volume to avoid alert.
         [AppleScriptTask muteAlertVolumeWithCompletionHandler:^(NSInteger volume, NSError *error) {
+            MMLogInfo(@"Mute alert volume to: %@", @(volume));
             if (error) {
                 MMLogError(@"Failed to mute alert volume: %@", error);
             } else {
@@ -399,7 +409,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             }
 
             // After muting alert volume, get selected text by simulated key.
-            [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
+            [STKSelectedTextManager.shared getSelectedTextByShortcutWithCompletionHandler:^(NSString *selectedText) {
                 MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
                 completion(selectedText);
             }];
@@ -418,7 +428,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
 
-    [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:completion];
+    [STKSelectedTextManager.shared getSelectedTextByMenuActionWithCompletionHandler:completion];
 }
 
 /// Get selected text by simulated key first, if failed, use menu bar action copy.
@@ -457,7 +467,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
 
         // If the frontmost app has no copy menu item, try to use simulated key to get selected text.
-        if (![SharedUtilities hasCopyMenuItem]) {
+        if (![EZSystemUtility.shared hasCopyMenuItem]) {
             MMLogError(@"Get selected text by menu bar action copy is empty, try to use simulated key");
             [self getSelectedTextBySimulatedKey:completion];
         } else {
@@ -468,7 +478,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)updateSelectedTextEditableState {
-    self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
+    self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 }
 
 - (BOOL)useAccessibilityForFirstTime {
@@ -511,7 +521,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
             self.isPopButtonVisible = YES;
 
-            [self handleSelectedText:text];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self handleSelectedText:text];
+            });
         }];
     }
 }
@@ -645,19 +657,34 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 #pragma mark - Delay to recover volume
 
 - (void)delayRecoverVolume {
-    [self performSelector:@selector(recoverVolume) withObject:nil afterDelay:kDelayRecoverVolumeTime];
+    MMLogInfo(@"Delay recover volume, currentAlertVolume: %@", @(self.currentAlertVolume));
+
+    // Ensure this is called on the main thread, since performSelector:afterDelay: requires a running RunLoop
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSelector:@selector(recoverVolume) withObject:nil afterDelay:kDelayRecoverVolumeTime];
+    });
 }
 
 - (void)cancelDelayRecoverVolume {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(recoverVolume) object:nil];
+    MMLogInfo(@"Cancel delay recover volume");
+
+    // Ensure cancellation happens on the main thread where the delayed task was scheduled
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(recoverVolume) object:nil];
+    });
 }
 
 - (void)recoverVolume {
+    MMLogInfo(@"Recover alert volume: %@", @(self.currentAlertVolume));
     [AppleScriptTask setAlertVolume:self.currentAlertVolume completionHandler:^(NSError *error) {
-        self.isMutingAlertVolume = NO;
-        if (error) {
-            MMLogError(@"Failed to recover alert volume: %@", error.localizedDescription);
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.isMutingAlertVolume = NO;
+            if (error) {
+                MMLogError(@"Failed to recover alert volume: %@", error.localizedDescription);
+            } else {
+                MMLogInfo(@"Recover alert volume success");
+            }
+        });
     }];
 }
 

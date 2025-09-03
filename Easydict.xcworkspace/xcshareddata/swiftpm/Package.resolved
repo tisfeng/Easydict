@@ -301,8 +301,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/SelectedTextKit.git",
       "state" : {
-        "revision" : "b9ad84483511429cb4f36986a46e1465c544eb77",
-        "version" : "1.1.0"
+        "revision" : "986c0a47686a161103711128814154e1cff5cbd3",
+        "version" : "2.3.0"
       }
     },
     {

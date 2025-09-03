@@ -66,6 +66,9 @@
 		0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */; };
 		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
 		0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */; };
+		0337D3CA2E66AA5000B08437 /* SystemUtility+AX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3C92E66AA5000B08437 /* SystemUtility+AX.swift */; };
+		0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */; };
+		0337D3CE2E66AC3F00B08437 /* SystemUtility+AppleScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */; };
 		033870B62E0437FE007E154C /* MaxWindowHeightPercentageOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033870B52E0437FE007E154C /* MaxWindowHeightPercentageOption.swift */; };
 		0338977A2E37809C00CCFF99 /* ocr-zh-poetry-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897792E37809C00CCFF99 /* ocr-zh-poetry-9.png */; };
 		033897862E386F8C00CCFF99 /* ocr-zh-poetry-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897852E386F8C00CCFF99 /* ocr-zh-poetry-7.png */; };
@@ -117,7 +120,6 @@
 		034227F62E37145200325B47 /* ocr-ru-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F52E37145200325B47 /* ocr-ru-poetry-11.png */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
-		0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */; };
 		034B471B2E23E3AF00C1428D /* NSPasteboard+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034B471A2E23E3AF00C1428D /* NSPasteboard+Extension.swift */; };
 		034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034E30992E17809C0079E371 /* OCRTextProcessor.swift */; };
 		035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */; };
@@ -199,6 +201,7 @@
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
+		03916D712E68154F007E50D7 /* Task+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03916D702E68154F007E50D7 /* Task+Extension.swift */; };
 		039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223B92E4B41950052F695 /* OCRDebugView.swift */; };
 		039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BA2E4B41950052F695 /* OCRWindowManager.swift */; };
 		039223BE2E4B41950052F695 /* OCRBandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BB2E4B41950052F695 /* OCRBandView.swift */; };
@@ -352,7 +355,6 @@
 		03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */; };
 		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
 		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
-		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
 		03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CD01572D24E17C0079D0CB /* YoudaoService.swift */; };
 		03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */; };
 		03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF5E632C39B2310058F9DB /* OllamaModel.swift */; };
@@ -613,6 +615,9 @@
 		0333FDA42A035D5700891515 /* NSString+EZChineseText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZChineseText.h"; sourceTree = "<group>"; };
 		0333FDA52A035D5700891515 /* NSString+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZChineseText.m"; sourceTree = "<group>"; };
 		0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceUsageStatus.swift; sourceTree = "<group>"; };
+		0337D3C92E66AA5000B08437 /* SystemUtility+AX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+AX.swift"; sourceTree = "<group>"; };
+		0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Shortcut.swift"; sourceTree = "<group>"; };
+		0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+AppleScript.swift"; sourceTree = "<group>"; };
 		033870B52E0437FE007E154C /* MaxWindowHeightPercentageOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxWindowHeightPercentageOption.swift; sourceTree = "<group>"; };
 		033897792E37809C00CCFF99 /* ocr-zh-poetry-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-9.png"; sourceTree = "<group>"; };
 		033897852E386F8C00CCFF99 /* ocr-zh-poetry-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-7.png"; sourceTree = "<group>"; };
@@ -668,7 +673,6 @@
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
-		0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		034B471A2E23E3AF00C1428D /* NSPasteboard+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPasteboard+Extension.swift"; sourceTree = "<group>"; };
 		034E30992E17809C0079E371 /* OCRTextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessor.swift; sourceTree = "<group>"; };
 		035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToDouble.swift"; sourceTree = "<group>"; };
@@ -765,6 +769,7 @@
 		038A9BCA2E59B4EC00D08B57 /* ocr-en-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-poetry-8.png"; sourceTree = "<group>"; };
 		038A9BCC2E59B62C00D08B57 /* ocr-en-text-list-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-3.png"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
+		03916D702E68154F007E50D7 /* Task+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Extension.swift"; sourceTree = "<group>"; };
 		039223B92E4B41950052F695 /* OCRDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDebugView.swift; sourceTree = "<group>"; };
 		039223BA2E4B41950052F695 /* OCRWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindowManager.swift; sourceTree = "<group>"; };
 		039223BB2E4B41950052F695 /* OCRBandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRBandView.swift; sourceTree = "<group>"; };
@@ -1008,8 +1013,6 @@
 		03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-1.png"; sourceTree = "<group>"; };
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
-		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
-		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
 		03CD01572D24E17C0079D0CB /* YoudaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoService.swift; sourceTree = "<group>"; };
 		03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screenshot+UserDefaults.swift"; sourceTree = "<group>"; };
@@ -1583,14 +1586,6 @@
 			path = OCRTestSample;
 			sourceTree = "<group>";
 		};
-		0346F3D12CAECB38006A6CDF /* GetSelectedText */ = {
-			isa = PBXGroup;
-			children = (
-				0346F3D22CAECB4C006A6CDF /* SharedUtilities.swift */,
-			);
-			path = GetSelectedText;
-			sourceTree = "<group>";
-		};
 		034B47192E23E39800C1428D /* NSPasteboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -1909,7 +1904,6 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */,
 				03F0DB352953424F00EBF9C1 /* EZLog */,
@@ -1957,6 +1951,14 @@
 				038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */,
 			);
 			path = AppKit;
+			sourceTree = "<group>";
+		};
+		03916D6F2E68153F007E50D7 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				03916D702E68154F007E50D7 /* Task+Extension.swift */,
+			);
+			path = Task;
 			sourceTree = "<group>";
 		};
 		039223B82E4B41770052F695 /* View */ = {
@@ -2447,6 +2449,9 @@
 			isa = PBXGroup;
 			children = (
 				03BBC8152E62062100CFC582 /* SystemUtility.swift */,
+				0337D3C92E66AA5000B08437 /* SystemUtility+AX.swift */,
+				0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */,
+				0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */,
 				03A91F142E63E1FB00896B17 /* TextFieldInfo.swift */,
 			);
 			path = SystemUtility;
@@ -2662,15 +2667,6 @@
 				03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */,
 			);
 			path = "ocr-images";
-			sourceTree = "<group>";
-		};
-		03CAB9522ADBEF5000DA94A3 /* SystemUtility */ = {
-			isa = PBXGroup;
-			children = (
-				03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */,
-				03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */,
-			);
-			path = SystemUtility;
 			sourceTree = "<group>";
 		};
 		03CD01582D24E17C0079D0CB /* Youdao */ = {
@@ -3242,7 +3238,6 @@
 				03F2F08B2E4074F400496F71 /* CharacterSet */,
 				03F2815B2D98E52200AE518C /* ChineseGenre */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
-				0346F3D12CAECB38006A6CDF /* GetSelectedText */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 				96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */,
@@ -3270,6 +3265,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				03916D6F2E68153F007E50D7 /* Task */,
 				034B47192E23E39800C1428D /* NSPasteboard */,
 				03FDAE922E1A29B70029369E /* Regex */,
 				035166F42E0C0FB8004C65BB /* Int */,
@@ -3789,6 +3785,7 @@
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,
 				40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
+				0337D3CA2E66AA5000B08437 /* SystemUtility+AX.swift in Sources */,
 				03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */,
 				039785282CC678F400A49087 /* TranslationManager.swift in Sources */,
 				039785292CC678F400A49087 /* TranslationService.swift in Sources */,
@@ -3813,6 +3810,7 @@
 				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */,
+				0337D3CE2E66AC3F00B08437 /* SystemUtility+AppleScript.swift in Sources */,
 				0AC8A8392B666F07006DA5CC /* CaiyunService+ConfigurableService.swift in Sources */,
 				035451032E3C60D600BAA8E5 /* OCRConstants.swift in Sources */,
 				27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */,
@@ -3863,6 +3861,7 @@
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
 				03779F132BB256B5008D3C42 /* APIKey.swift in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
+				03916D712E68154F007E50D7 /* Task+Extension.swift in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
 				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
@@ -3927,6 +3926,7 @@
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
+				0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */,
 				03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */,
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
@@ -3940,7 +3940,6 @@
 				03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */,
 				0340D39B2C93DC1B004C9910 /* Constants.swift in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
-				03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */,
 				03BDA7C32A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m in Sources */,
 				03BB2DF329F6350200447EDD /* EZCopyButton.m in Sources */,
 				03BDA7BB2A26DA280079D04F /* XPMArgsKonstants.m in Sources */,
@@ -4021,7 +4020,6 @@
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				03A00D882E616D56001A4D82 /* ActionManager.swift in Sources */,
 				03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */,
-				0346F3D32CAECB4C006A6CDF /* SharedUtilities.swift in Sources */,
 				03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
@@ -4490,7 +4488,7 @@
 			repositoryURL = "https://github.com/tisfeng/SelectedTextKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 2.0.0;
 			};
 		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {

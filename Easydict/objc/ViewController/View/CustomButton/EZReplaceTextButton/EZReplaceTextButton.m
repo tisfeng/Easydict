@@ -11,6 +11,8 @@
 #import "EZLog.h"
 #import "Easydict-Swift.h"
 
+@import SelectedTextKit;
+
 @implementation EZReplaceTextButton
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
@@ -39,7 +41,7 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
     NSString *textLengthRange = [EZLog textLengthRange:replacementString];
-    BOOL useCompatibilityMode = Configuration.shared.replaceWithTranslationInCompatibilityMode;
+    BOOL useCompatibilityMode = Configuration.shared.enableCompatibilityReplace;
 
     NSDictionary *parameters = @{
         @"floating_window_type" : @(EZWindowManager.shared.floatingWindowType),
@@ -91,8 +93,10 @@
 - (void)replaceSelectedTextByKey:(NSString *)replacementString {
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app);
-
-    [SharedUtilities copyTextAndPaste:replacementString completionHandler:^{
+    
+    [STKSelectedTextManager.shared copyTextAndPaste:replacementString
+                                 preservePasteboard:YES
+                                  completionHandler:^{
         MMLogInfo(@"End replace selected text by key");
     }];
 }

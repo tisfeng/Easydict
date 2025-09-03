@@ -115,7 +115,7 @@ extension ShortcutAction {
             .silentScreenshotOCR: .init(
                 titleKey: "menu_silent_screenshot_OCR",
                 icon: .cameraMeteringSpot,
-                defaultsKey: .screenshotOCRShortcut,
+                defaultsKey: .silentScreenshotOCRShortcut,
                 action: { windowManager.silentScreenshotOCR() }
             ),
             .pasteboardTranslate: .init(
@@ -124,17 +124,17 @@ extension ShortcutAction {
                 defaultsKey: .pasteboardTranslateShortcut,
                 action: { windowManager.pasteboardTranslate() }
             ),
-            .translateAndReplace: .init(
-                titleKey: "menu_translate_and_replace",
-                icon: .arrowLeftArrowRightSquare,
-                defaultsKey: .translateAndReplaceShortcut,
-                action: { await ActionManager.shared.translateAndReplace() }
-            ),
             .polishAndReplace: .init(
                 titleKey: "menu_polish_and_replace",
                 icon: .wandAndStars,
                 defaultsKey: .polishAndReplaceShortcut,
                 action: { await ActionManager.shared.polishAndReplace() }
+            ),
+            .translateAndReplace: .init(
+                titleKey: "menu_translate_and_replace",
+                icon: .arrowLeftArrowRightSquare,
+                defaultsKey: .translateAndReplaceShortcut,
+                action: { await ActionManager.shared.translateAndReplace() }
             ),
             .showMiniWindow: .init(
                 titleKey: "menu_show_mini_window",
