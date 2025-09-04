@@ -22,20 +22,25 @@ class SystemUtility: NSObject {
 
     /// Select all text using the specified operation set.
     func selectAll(using operationSet: TextStrategySet) async {
+        logInfo("Select all using operation set: \(operationSet)")
+
+        func selectAllInNonBrowser() async {
+            if operationSet.contains(.shortcut) {
+                await selectAllByShortcut()
+            } else if operationSet.contains(.accessibility) {
+                selectAllByAX()
+            }
+        }
+
         if operationSet.contains(.appleScript) {
             do {
                 try await selectAllByAppleScript()
             } catch {
-                if operationSet.contains(.shortcut) {
-                    logError("Select all by AppleScript failed: \(error), fallback to shortcut")
-                    await selectAllByShortcut()
-                } else if operationSet.contains(.accessibility) {
-                    logError("Select all by AppleScript failed: \(error), fallback to AX")
-                    selectAllByAX()
-                } else {
-                    logError("Select all by AppleScript failed: \(error), no fallback available")
-                }
+                logError("Select all by AppleScript failed: \(error), fallback to other methods")
+                await selectAllInNonBrowser()
             }
+        } else {
+            await selectAllInNonBrowser()
         }
     }
 
@@ -48,20 +53,23 @@ class SystemUtility: NSObject {
     /// - Important: This function may be called many times in streaming mode,
     ///              so we pass the operation set as parameter to avoid repeated checks.
     func insertText(_ text: String, using operationSet: TextStrategySet) async {
+        func insertTextInNonBrowser() async {
+            if operationSet.contains(.shortcut) {
+                await insertTextByShortcut(text)
+            } else if operationSet.contains(.accessibility) {
+                insertTextByAX(text)
+            }
+        }
+
         if operationSet.contains(.appleScript) {
             do {
                 try await insertTextByAppleScript(text)
             } catch {
-                if operationSet.contains(.shortcut) {
-                    logError("Insert text by AppleScript failed: \(error), fallback to shortcut")
-                    await insertTextByShortcut(text)
-                } else if operationSet.contains(.accessibility) {
-                    logError("Insert text by AppleScript failed: \(error), fallback to AX")
-                    insertTextByAX(text)
-                } else {
-                    logError("Insert text by AppleScript failed: \(error), no fallback available")
-                }
+                logError("Insert text by AppleScript failed: \(error), fallback to other methods")
+                await insertTextInNonBrowser()
             }
+        } else {
+            await insertTextInNonBrowser()
         }
     }
 

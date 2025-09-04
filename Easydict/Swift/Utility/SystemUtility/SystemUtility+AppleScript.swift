@@ -21,7 +21,9 @@ extension SystemUtility {
         // Try to select all text
         let success = try await AppleScriptTask.selectAllInputTextInBrowser(frontmostAppBundleID)
         if !success {
-            throw QueryError(type: .appleScript, message: "Failed to select all text using AppleScript")
+            let errorMessage = "Failed to select all text using AppleScript in app: \(frontmostAppBundleID)"
+            logError(errorMessage)
+            throw QueryError(type: .appleScript, message: errorMessage)
         }
     }
 
@@ -29,7 +31,9 @@ extension SystemUtility {
     func insertTextByAppleScript(_ text: String) async throws {
         let success = try await AppleScriptTask.insertTextInBrowser(text, bundleID: frontmostAppBundleID)
         if !success {
-            throw QueryError(type: .appleScript, message: "Failed to insert text using AppleScript")
+            let errorMessage = "Failed to insert text using AppleScript in app: \(frontmostAppBundleID)"
+            logError(errorMessage)
+            throw QueryError(type: .appleScript, message: errorMessage)
         }
     }
 }
