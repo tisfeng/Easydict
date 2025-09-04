@@ -14,45 +14,54 @@ import Foundation
 class SystemUtility: NSObject {
     @objc static let shared = SystemUtility()
 
+    /// Get selected text from current focused application
+    /// Just a wrapper of EZEventMonitor method
     func getSelectedText() async -> String? {
         await EZEventMonitor.shared().getSelectedText()
     }
 
-    /// Select all text in the currently focused text field.
-    func selectAll() async {
-        if shouldUseAppleScript {
-            await selectAllByAppleScript()
-        } else if isSupportedAX {
-            selectAllByAX()
-        } else {
-            // Fallback to hotkey
-            await selectAllByShortcut()
+    /// Select all text using the specified operation set.
+    func selectAll(using operationSet: TextStrategySet) async {
+        if operationSet.contains(.appleScript) {
+            do {
+                try await selectAllByAppleScript()
+            } catch {
+                if operationSet.contains(.shortcut) {
+                    logError("Select all by AppleScript failed: \(error), fallback to shortcut")
+                    await selectAllByShortcut()
+                } else if operationSet.contains(.accessibility) {
+                    logError("Select all by AppleScript failed: \(error), fallback to AX")
+                    selectAllByAX()
+                } else {
+                    logError("Select all by AppleScript failed: \(error), no fallback available")
+                }
+            }
         }
     }
 
-    /// Insert text into the currently focused text field.
+    /// Insert text using the specified operation set.
+    ///
+    /// - Parameters:
+    ///   - text: The text to insert
+    ///   - operationSet: The set of available operation types, will use the highest priority one
     ///
     /// - Important: This function may be called many times in streaming mode,
-    /// check `shouldUseAppleScript` and `isSupportedAX` cost time, so we pass it as parameter.
-    ///
-    /// - Note: This function checks if the current application is a supported browser and uses AppleScript if so.
-    ///         If not, it checks if the Accessibility API can be used.
-    ///         If neither method is available, it falls back to using hotkeys and clipboard.
-    func insertText(
-        _ text: String,
-        shouldUseAppleScript: Bool,
-        isSupportedAX: Bool
-    ) async {
-        if shouldUseAppleScript {
-            // Use browser-specific AppleScript
-            await insertTextByAppleScript(text)
-        } else if isSupportedAX {
-            // Use Accessibility API
-            insertTextByAX(text)
-        } else {
-            // We protect the clipboard content manually before and after streaming insert text
-            // because the insertTextByHotkey may be called many times in streaming mode.
-            await insertTextByShortcut(text, preservePasteboard: false)
+    ///              so we pass the operation set as parameter to avoid repeated checks.
+    func insertText(_ text: String, using operationSet: TextStrategySet) async {
+        if operationSet.contains(.appleScript) {
+            do {
+                try await insertTextByAppleScript(text)
+            } catch {
+                if operationSet.contains(.shortcut) {
+                    logError("Insert text by AppleScript failed: \(error), fallback to shortcut")
+                    await insertTextByShortcut(text)
+                } else if operationSet.contains(.accessibility) {
+                    logError("Insert text by AppleScript failed: \(error), fallback to AX")
+                    insertTextByAX(text)
+                } else {
+                    logError("Insert text by AppleScript failed: \(error), no fallback available")
+                }
+            }
         }
     }
 
@@ -88,5 +97,25 @@ class SystemUtility: NSObject {
             logError("Error getting focused text field info: \(error)")
             return nil
         }
+    }
+
+    /// Get text strategy set based on current application context
+    func textStrategySet(
+        shouldUseAppleScript: Bool,
+        enableCompatibilityMode: Bool,
+        isSupportedAX: Bool
+    )
+        -> TextStrategySet {
+        var operationSet: TextStrategySet = []
+        if isSupportedAX {
+            operationSet.insert(.accessibility)
+        }
+        if enableCompatibilityMode {
+            operationSet.insert(.shortcut)
+        }
+        if shouldUseAppleScript {
+            operationSet.insert(.appleScript)
+        }
+        return operationSet
     }
 }

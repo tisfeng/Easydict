@@ -606,11 +606,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (self.queryView.window == self.baseQueryWindow) {
         // Need to activate the current application first.
         [NSApp activateIgnoringOtherApps:YES];
-
-        [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
-        if (self.config.selectQueryTextWhenWindowActivate) {
-            self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
-        }
+        
+        // Delay to make textView the first responder.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+            if (self.config.selectQueryTextWhenWindowActivate) {
+                self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
+            }
+        });
     }
 }
 

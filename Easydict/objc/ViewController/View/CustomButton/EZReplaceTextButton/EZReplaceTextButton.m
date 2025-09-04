@@ -35,6 +35,9 @@
     self.toolTip = [NSString stringWithFormat:@"%@", action];
 }
 
+/// Replace selected text in the frontmost application.
+///
+/// - TODO: Replace this method with new insert api.
 - (void)replaceSelectedText:(NSString *)replacementString {
     [EZWindowManager.shared activeLastFrontmostApplication];
 
@@ -94,9 +97,10 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app);
     
-    [STKSelectedTextManager.shared copyTextAndPaste:replacementString
-                                 preservePasteboard:YES
-                                  completionHandler:^{
+    [STKPasteboardManager.shared pasteText:replacementString
+                         restorePasteboard:NO
+                           restoreInterval: 0
+                           completionHandler:^{
         MMLogInfo(@"End replace selected text by key");
     }];
 }

@@ -7,10 +7,8 @@
 //
 
 import AppKit
-import AXSwift
 import Defaults
 import Foundation
-import SelectedTextKit
 
 // MARK: - ActionManager
 
@@ -68,11 +66,8 @@ class ActionManager: NSObject {
         logInfo("Text Field Info after Auto-Selection: \(textFieldInfo)")
 
         // Prepare translation request
-        guard let request = await prepareTranslationRequest(
-            from: textFieldInfo,
-            type: type
-        )
-        else {
+        let queryText = textFieldInfo.focusedText
+        guard let request = await prepareTranslationRequest(queryText: queryText, type: type) else {
             return
         }
 
@@ -85,6 +80,22 @@ class ActionManager: NSObject {
 
     // MARK: - Helper Methods
 
+    /// Determine the appropriate text strategy set based on the text field info and user settings
+    private func textStrategySet(for textFieldInfo: TextFieldInfo) -> TextStrategySet {
+        let isSupportedAX = textFieldInfo.isSupportedAXElement
+        let enableCompatibilityMode = Defaults[.enableCompatibilityReplace]
+
+        let isBrowser = AppleScriptTask.isBrowserSupportingAppleScript(frontmostAppBundleID)
+        let preferAppleScriptAPI = Defaults[.preferAppleScriptAPI]
+        let shouldUseAppleScript = isBrowser && preferAppleScriptAPI
+
+        return systemUtility.textStrategySet(
+            shouldUseAppleScript: shouldUseAppleScript,
+            enableCompatibilityMode: enableCompatibilityMode,
+            isSupportedAX: isSupportedAX
+        )
+    }
+
     /// Process automatic text selection based on user settings and return updated text field info
     /// - Parameter textFieldInfo: Information about the current text field
     /// - Returns: Updated TextFieldInfo after processing auto-selection, or nil if processing fails
@@ -96,8 +107,8 @@ class ActionManager: NSObject {
             return textFieldInfo
         }
 
-        // Send Cmd+A to select all text in the field
-        await systemUtility.selectAll()
+        let textStrategy = textStrategySet(for: textFieldInfo)
+        await systemUtility.selectAll(using: textStrategy)
 
         logInfo("Auto-selected all text content in field")
 
@@ -113,12 +124,10 @@ class ActionManager: NSObject {
     ///   - type: The type of processing (translate or polish)
     /// - Returns: A configured TranslationRequest or nil if preparation fails
     private func prepareTranslationRequest(
-        from textFieldInfo: TextFieldInfo,
+        queryText: String,
         type: ProcessingType
     ) async
         -> TranslationRequest? {
-        let queryText = textFieldInfo.focusedText
-
         // Detect language and target
         let queryModel = try? await EZDetectManager().detectText(queryText)
         guard let detectedLanguage = queryModel?.detectedLanguage,
@@ -180,43 +189,39 @@ class ActionManager: NSObject {
     ) async {
         logInfo("Replacing text with streaming content")
 
-        let isSupportedAX = textFieldInfo.isSupportedAXElement
-        let shouldUseAppleScript = systemUtility.shouldUseAppleScript
-
         // For avoding polluting user pasteboard content, we need to save and restore it when AX is not supported.
         let pasteboard = NSPasteboard.general
         var snapshotItems: [NSPasteboardItem]?
 
+        let isSupportedAX = textFieldInfo.isSupportedAXElement
         if !isSupportedAX {
             snapshotItems = await pasteboard.backupItems()
-            logInfo("Saved current pasteboard contents: \(pasteboard.string)")
-            await Task.sleep(seconds: 0.1) // Small delay to ensure pasteboard is ready
         }
 
         do {
+            let textStrategy = textStrategySet(for: textFieldInfo)
+
             /**
              - Note:
              For GitHub web text area, if select all and insert empty string,
              it will clear the text area and lose focus.
              So we do not insert empty string.
              */
+
+            var reuslt = ""
             for try await content in contentStream where !content.isEmpty {
 //                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
 
-                await systemUtility.insertText(
-                    content,
-                    shouldUseAppleScript: shouldUseAppleScript,
-                    isSupportedAX: isSupportedAX
-                )
+                reuslt += content
+                await systemUtility.insertText(content, using: textStrategy)
             }
+            logInfo("Final replacement result: \(reuslt.prettyJSONString)")
         } catch {
             logError("Streaming replacement failed: \(error)")
         }
 
         if let snapshotItems, !isSupportedAX {
-            await Task.sleep(seconds: 0.1) // Small delay to ensure pasteboard is ready
-            _ = await pasteboard.restoreItems(snapshotItems)
-            logInfo("Restored original pasteboard contents: \(pasteboard.string)")
+            await pasteboard.restoreItems(snapshotItems)
         }
     }
 }

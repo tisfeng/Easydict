@@ -7,42 +7,29 @@
 //
 
 import Defaults
-import Foundation
+
+/// Frontmost application bundle identifier
+var frontmostAppBundleID: String {
+    NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? ""
+}
 
 extension SystemUtility {
-    var frontmostAppBundleID: String {
-        NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? ""
-    }
-
-    var shouldUseAppleScript: Bool {
-        let isBrowser = AppleScriptTask.isBrowserSupportingAppleScript(frontmostAppBundleID)
-        return isBrowser && Defaults[.preferAppleScriptAPI]
-    }
-
     /// Select all text using AppleScript in browser
-    func selectAllByAppleScript() async {
+    func selectAllByAppleScript() async throws {
         logInfo("Select all text using AppleScript")
 
-        do {
-            // Try to select all text
-            let success = try await AppleScriptTask.selectAllInputTextInBrowser(frontmostAppBundleID)
-            if !success {
-                logInfo("Failed to select all text using AppleScript")
-            }
-        } catch {
-            logError("Error selecting all text using AppleScript: \(error)")
+        // Try to select all text
+        let success = try await AppleScriptTask.selectAllInputTextInBrowser(frontmostAppBundleID)
+        if !success {
+            throw QueryError(type: .appleScript, message: "Failed to select all text using AppleScript")
         }
     }
 
     /// Insert text using AppleScript in browser
-    func insertTextByAppleScript(_ text: String) async {
-        do {
-            let success = try await AppleScriptTask.insertTextInBrowser(text, bundleID: frontmostAppBundleID)
-            if !success {
-                logInfo("Failed to insert text using AppleScript")
-            }
-        } catch {
-            logError("Error inserting text using AppleScript: \(error)")
+    func insertTextByAppleScript(_ text: String) async throws {
+        let success = try await AppleScriptTask.insertTextInBrowser(text, bundleID: frontmostAppBundleID)
+        if !success {
+            throw QueryError(type: .appleScript, message: "Failed to insert text using AppleScript")
         }
     }
 }

@@ -289,8 +289,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     // Use Accessibility first
     [STKSelectedTextManager.shared getSelectedTextByAXWithCompletionHandler:^(NSString *text, NSError *error) {
         AXError axError = (AXError)error.code;
-        self.selectTextType = EZSelectTextTypeAccessibility;
         
+        self.selectTextType = EZSelectTextTypeAccessibility;
+        self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 
         // If selected text frame is invalid, ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
@@ -305,7 +306,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                 [self monitorCGEventTap];
             }
 
-            self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
             completion(text);
             return;
         }
