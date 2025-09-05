@@ -11,6 +11,8 @@ import Foundation
 extension QueryService {
     /// Translate request, if source language is auto or nil, will detect source language first.
     func translate(request: TranslationRequest) async throws -> EZQueryResult {
+        queryType = request.queryType
+
         let text = request.text
         var from = Language.auto
         let to = Language.language(fromCode: request.targetLanguage)

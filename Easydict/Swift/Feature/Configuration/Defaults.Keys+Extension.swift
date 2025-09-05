@@ -165,6 +165,11 @@ extension Defaults.Keys {
         default: .menuBarActionCopy
     )
 
+    static let autoSelectAllTextFieldText = Key<Bool>(
+        "EZConfiguration_kAutoSelectAllTextFieldText",
+        default: true
+    )
+
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
     static var formerFixedScreenVisibleFrame = Key<CGRect>(
         "EZConfiguration_kScreenVisibleFrameKey", default: .zero
@@ -344,6 +349,12 @@ extension Defaults.Keys {
     static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
     static let pasteboardTranslateShortcut = Key<KeyCombo?>(
         "EZPasteboardTranslateShortcutKey_keyHolder"
+    )
+    static let translateAndReplaceShortcut = Key<KeyCombo?>(
+        "EZTranslateAndReplaceShortcutKey_keyHolder"
+    )
+    static let polishAndReplaceShortcut = Key<KeyCombo?>(
+        "EZPolishAndReplaceShortcutKey_keyHolder"
     )
 
     static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey2_keyHolder")

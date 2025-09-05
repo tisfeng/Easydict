@@ -124,7 +124,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return EZServiceTypeBaidu;
 }
 
-- (EZQueryTextType)queryTextType {
+- (EZQueryTextType)supportedQueryType {
     EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
     EZQueryTextType type = [Configuration.shared queryTextTypeForServiceType:self.serviceType];
 

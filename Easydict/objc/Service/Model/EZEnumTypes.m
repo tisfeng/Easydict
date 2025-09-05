@@ -49,6 +49,8 @@ NSString *const EZActionTypeScreenshotOCR = @"silent_screenshot_ocr";
 NSString *const EZActionTypeInvokeQuery = @"invoke_query";
 NSString *const EZActionTypePasteboardOCR = @"pasteboard_ocr";
 NSString *const EZActionTypePasteboardTranslate = @"pasteboard_translate";
+NSString *const EZActionTypeTranslateAndReplace = @"translate_and_replace";
+NSString *const EZActionTypePolishAndReplace = @"polish_and_replace";
 
 #pragma mark - EZSelectTextType
 NSString *const EZSelectTextTypeAccessibility = @"accessibility_select_text";

@@ -137,4 +137,8 @@ extension ChatStreamResult {
             ]
         )
     }
+
+    var content: String? {
+        choices.first?.delta.content
+    }
 }

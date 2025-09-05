@@ -50,7 +50,7 @@ public class StreamService: QueryService {
         return supportedLanguages.toMMOrderedDictionary()
     }
 
-    public override func queryTextType() -> EZQueryTextType {
+    public override func supportedQueryType() -> EZQueryTextType {
         var typeOptions: EZQueryTextType = []
 
         let isTranslationEnabled = Defaults[translationKey].boolValue
@@ -92,7 +92,7 @@ public class StreamService: QueryService {
         Task {
             do {
                 try await throttleUpdateResultText(
-                    textStream, queryType: queryTextType(), error: nil
+                    textStream, queryType: supportedQueryType(), error: nil
                 ) { result in
                     completion(result, result.error)
                 }
@@ -316,7 +316,12 @@ public class StreamService: QueryService {
 
     /// Get query type by text and from && to language.
     func queryType(text: String, from: Language, to: Language) -> EZQueryTextType {
-        let enableDictionary = queryTextType().contains(.dictionary)
+        // If queryType has been set, use it directly.
+        if !queryType.isEmpty {
+            return queryType
+        }
+
+        let enableDictionary = supportedQueryType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
             isQueryDictionary = (text as NSString).shouldQueryDictionary(
@@ -327,7 +332,7 @@ public class StreamService: QueryService {
             }
         }
 
-        let enableSentence = queryTextType().contains(.sentence)
+        let enableSentence = supportedQueryType().contains(.sentence)
         var isQueryEnglishSentence = false
         if !isQueryDictionary, enableSentence {
             let isEnglishText = from == .english

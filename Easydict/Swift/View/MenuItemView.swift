@@ -32,6 +32,8 @@ struct MenuItemView: View {
             screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
             pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
+            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
+            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
             miniWindowItem.keyboardShortcut(.showMiniWindow)
 
             Divider()
@@ -98,6 +100,14 @@ struct MenuItemView: View {
 
     @ViewBuilder private var pasteboardTranslateItem: some View {
         menuItem(for: .pasteboardTranslate)
+    }
+
+    @ViewBuilder private var translateAndReplaceItem: some View {
+        menuItem(for: .translateAndReplace)
+    }
+
+    @ViewBuilder private var polishAndReplaceItem: some View {
+        menuItem(for: .polishAndReplace)
     }
 
     @ViewBuilder private var miniWindowItem: some View {

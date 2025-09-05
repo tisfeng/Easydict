@@ -88,6 +88,8 @@ FOUNDATION_EXPORT EZActionType const EZActionTypeScreenshotOCR;
 FOUNDATION_EXPORT EZActionType const EZActionTypeInvokeQuery;
 FOUNDATION_EXPORT EZActionType const EZActionTypePasteboardOCR;
 FOUNDATION_EXPORT EZActionType const EZActionTypePasteboardTranslate;
+FOUNDATION_EXPORT EZActionType const EZActionTypeTranslateAndReplace;
+FOUNDATION_EXPORT EZActionType const EZActionTypePolishAndReplace;
 
 
 typedef NSString *EZSelectTextType NS_STRING_ENUM;
