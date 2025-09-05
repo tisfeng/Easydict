@@ -9,6 +9,7 @@
 import AppKit
 import Defaults
 import Foundation
+import SelectedTextKit
 
 // MARK: - ActionManager
 

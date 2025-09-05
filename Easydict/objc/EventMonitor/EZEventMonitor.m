@@ -285,9 +285,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
 
     self.selectedTextEditable = NO;
-
+    
     // Use Accessibility first
-    [STKSelectedTextManager.shared getSelectedTextByAXWithCompletionHandler:^(NSString *text, NSError *error) {
+    [STKSelectedTextManager.shared getSelectedTextWithStrategy:EZTextStrategyAccessibility completionHandler:^(NSString *text, NSError *error) {
         AXError axError = (AXError)error.code;
         
         self.selectTextType = EZSelectTextTypeAccessibility;
@@ -407,9 +407,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             } else {
                 self.currentAlertVolume = volume;
             }
-
+            
             // After muting alert volume, get selected text by simulated key.
-            [STKSelectedTextManager.shared getSelectedTextByShortcutWithCompletionHandler:^(NSString *selectedText) {
+            [STKSelectedTextManager.shared getSelectedTextWithStrategy:EZTextStrategyShortcut completionHandler:^(NSString *selectedText, NSError *error) {
                 MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
                 completion(selectedText);
             }];
@@ -428,7 +428,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
 
-    [STKSelectedTextManager.shared getSelectedTextByMenuActionWithCompletionHandler:completion];
+    [STKSelectedTextManager.shared getSelectedTextWithStrategy:EZTextStrategyMenuAction completionHandler:completion];
 }
 
 /// Get selected text by simulated key first, if failed, use menu bar action copy.

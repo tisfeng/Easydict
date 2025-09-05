@@ -397,7 +397,7 @@
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */; };
 		03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */; };
-		03F3711C2E698A68006B86F8 /* TextStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F3711B2E698A68006B86F8 /* TextStrategy.swift */; };
+		03F4142E2E6B251000FF1994 /* SystemUtility+MenuAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */; };
 		03F44F2B2E57813B003C2EA3 /* RecognizedTextObservation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F44F2A2E57813B003C2EA3 /* RecognizedTextObservation+Extension.swift */; };
 		03F44F2D2E578A58003C2EA3 /* EZRecognizedTextObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F44F2C2E578A58003C2EA3 /* EZRecognizedTextObservation.swift */; };
 		03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */; };
@@ -1070,7 +1070,7 @@
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
 		03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindow.swift; sourceTree = "<group>"; };
-		03F3711B2E698A68006B86F8 /* TextStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStrategy.swift; sourceTree = "<group>"; };
+		03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+MenuAction.swift"; sourceTree = "<group>"; };
 		03F44F2A2E57813B003C2EA3 /* RecognizedTextObservation+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecognizedTextObservation+Extension.swift"; sourceTree = "<group>"; };
 		03F44F2C2E578A58003C2EA3 /* EZRecognizedTextObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZRecognizedTextObservation.swift; sourceTree = "<group>"; };
 		03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidenceLevel.swift; sourceTree = "<group>"; };
@@ -2452,10 +2452,10 @@
 			children = (
 				03BBC8152E62062100CFC582 /* SystemUtility.swift */,
 				0337D3C92E66AA5000B08437 /* SystemUtility+AX.swift */,
+				03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */,
 				0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */,
 				0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */,
 				03A91F142E63E1FB00896B17 /* TextFieldInfo.swift */,
-				03F3711B2E698A68006B86F8 /* TextStrategy.swift */,
 			);
 			path = SystemUtility;
 			sourceTree = "<group>";
@@ -3800,6 +3800,7 @@
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
+				03F4142E2E6B251000FF1994 /* SystemUtility+MenuAction.swift in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				031760EE2E06B9C700CE8FD7 /* NSImage+Extension.swift in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
@@ -3955,7 +3956,6 @@
 				0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */,
 				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,
-				03F3711C2E698A68006B86F8 /* TextStrategy.swift in Sources */,
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
@@ -4491,8 +4491,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tisfeng/SelectedTextKit.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {

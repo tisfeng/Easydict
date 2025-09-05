@@ -7,12 +7,17 @@
 //
 
 import Foundation
+import SelectedTextKit
 
 // MARK: - SystemUtility
 
 @objc(EZSystemUtility)
 class SystemUtility: NSObject {
     @objc static let shared = SystemUtility()
+
+    let axManager = AXManager.shared
+    let pasteboardManager = PasteboardManager.shared
+    let selectedTextManager = SelectedTextManager.shared
 
     /// Get selected text from current focused application
     /// Just a wrapper of EZEventMonitor method
@@ -25,7 +30,9 @@ class SystemUtility: NSObject {
         logInfo("Select all using operation set: \(operationSet)")
 
         func selectAllInNonBrowser() async {
-            if operationSet.contains(.shortcut) {
+            if operationSet.contains(.menuAction) {
+                await selectAllByMenuAction()
+            } else if operationSet.contains(.shortcut) {
                 await selectAllByShortcut()
             } else if operationSet.contains(.accessibility) {
                 selectAllByAX()
@@ -54,7 +61,9 @@ class SystemUtility: NSObject {
     ///              so we pass the operation set as parameter to avoid repeated checks.
     func insertText(_ text: String, using operationSet: TextStrategySet) async {
         func insertTextInNonBrowser() async {
-            if operationSet.contains(.shortcut) {
+            if operationSet.contains(.menuAction) {
+                await insertTextByMenuAction(text)
+            } else if operationSet.contains(.shortcut) {
                 await insertTextByShortcut(text)
             } else if operationSet.contains(.accessibility) {
                 insertTextByAX(text)
@@ -119,6 +128,7 @@ class SystemUtility: NSObject {
             operationSet.insert(.accessibility)
         }
         if enableCompatibilityMode {
+            operationSet.insert(.menuAction)
             operationSet.insert(.shortcut)
         }
         if shouldUseAppleScript {

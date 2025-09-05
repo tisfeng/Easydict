@@ -140,7 +140,7 @@ extension SystemUtility {
 
     @objc
     func hasCopyMenuItem() -> Bool {
-        AXManager.shared.findCopyMenuItem() != nil
+        axManager.hasCopyMenuItem()
     }
 
     /// Check if there is a focused text field element

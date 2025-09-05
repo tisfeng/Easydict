@@ -64,15 +64,6 @@
       }
     },
     {
-      "identity" : "axswiftext",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/s1ntoneli/AXSwiftExt",
-      "state" : {
-        "revision" : "a2696cad4504996dffc53bb59892e13242a2c243",
-        "version" : "0.1.0"
-      }
-    },
-    {
       "identity" : "cocoalumberjack",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
@@ -301,8 +292,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/SelectedTextKit.git",
       "state" : {
-        "revision" : "d0b1199ebd0d6f6663b3a7b77947060a6e0f753a",
-        "version" : "2.6.0"
+        "branch" : "main",
+        "revision" : "a6587dc853fc7936bfe69c97f93b96248c790ed9"
       }
     },
     {

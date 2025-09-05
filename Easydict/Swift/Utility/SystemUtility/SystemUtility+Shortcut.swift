@@ -10,7 +10,7 @@ import Foundation
 import KeySender
 import SelectedTextKit
 
-private let minPasteboardInterval: TimeInterval = 0.05
+let minPasteboardInterval: TimeInterval = 0.05
 
 // MARK: - SystemUtility + Shortcut
 
@@ -29,7 +29,7 @@ extension SystemUtility {
         restorePasteboard: Bool = true,
         restoreInterval: TimeInterval = minPasteboardInterval
     ) async {
-        await PasteboardManager.shared.pasteText(
+        await pasteboardManager.pasteText(
             text,
             restorePasteboard: restorePasteboard,
             restoreInterval: restoreInterval
