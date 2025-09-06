@@ -13,6 +13,8 @@
 
 @interface EZDetectManager ()
 
+@property (nonatomic, strong) EZAppleService *appleService;
+
 @property (nonatomic, strong) EZGoogleTranslate *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
 @property (nonatomic, strong) EZYoudaoService *youdaoService;
@@ -75,7 +77,7 @@
 #pragma mark -
 
 - (void)ocrAndDetectText:(void (^)(EZQueryModel *_Nonnull, NSError *_Nullable))completion {
-    [self deepOCR:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+    [self ocr:^(EZOCRResult *ocrResult, NSError *error) {
         if (!ocrResult) {
             completion(self.queryModel, error);
             return;
@@ -165,7 +167,7 @@
 }
 
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSImage *image = self.queryModel.OCRImage;
+    NSImage *image = self.queryModel.ocrImage;
     if (!image) {
         EZQueryError *error = [EZQueryError errorWithType:EZQueryErrorTypeParameter message: @"ocr image cannot be nil"];
         completion(nil, error);
@@ -200,7 +202,7 @@
         }
 
         /**
-         !!!: Even confidence is high, such as confidence is 1.0, that just means the ocr result text is accurate, but the ocr result from langauge may be not accurate, such as 'heel', it may be detected as 'Dutch'. So we need to detect text language again.
+         !!!: Even confidence is high, such as confidence is 1.0, that just means the ocr result text is accurate, but the ocr result from language may be not accurate, such as 'heel', it may be detected as 'Dutch'. So we need to detect text language again.
          */
 
         NSString *ocrText = ocrResult.mergedText;

@@ -32,6 +32,14 @@ extension Language: CaseIterable {
     }
 }
 
+// MARK: - Language + CustomStringConvertible
+
+extension Language: CustomStringConvertible {
+    public var description: String {
+        "\(localizedName)(\(code))"
+    }
+}
+
 extension Language {
     public var model: EZLanguageModel {
         EZLanguageModel.allLanguagesDict().object(forKey: rawValue as NSString)
@@ -77,27 +85,18 @@ extension Language {
     public var localeLanguage: Locale.Language {
         .init(identifier: code)
     }
-}
 
-extension [Language] {
-    /// Contains Chinese language,
-    func containsChinese() -> Bool {
-        contains { $0.isKindOfChinese() }
-    }
-}
-
-extension Language {
     /// Is kind of Chinese language, means it is simplifiedChinese, traditionalChinese or classicalChinese.
-    func isKindOfChinese() -> Bool {
+    var isChinese: Bool {
         [.simplifiedChinese, .traditionalChinese, .classicalChinese].contains(self)
     }
-}
 
-// MARK: - Language + CustomStringConvertible
+    var isEnglish: Bool {
+        self == .english
+    }
 
-extension Language: CustomStringConvertible {
-    public var description: String {
-        "\(localizedName)(\(code)"
+    var requiresWordSpacing: Bool {
+        EZLanguageManager.shared().isLanguageWordsNeedSpace(self)
     }
 }
 
@@ -115,6 +114,11 @@ extension [Language: String] {
 }
 
 extension [Language] {
+    /// Contains Chinese language,
+    func containsChinese() -> Bool {
+        contains { $0.isChinese }
+    }
+
     /// Convert Language array to MMOrderedDictionary, dict value is the same as key
     func toMMOrderedDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
@@ -122,5 +126,9 @@ extension [Language] {
             orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
         }
         return orderedDict
+    }
+
+    var formattedDescription: String {
+        map { $0.localizedName }.joined(separator: ", ")
     }
 }

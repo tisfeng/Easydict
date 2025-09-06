@@ -76,7 +76,7 @@ struct AliTranslateType: Equatable {
          https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes
          */
 
-        if from == .mongolian, !to.isKindOfChinese() || to == .mongolian, !from.isKindOfChinese() {
+        if from == .mongolian, !to.isChinese || to == .mongolian, !from.isChinese {
             return .unsupported
         }
 
@@ -88,14 +88,14 @@ struct AliTranslateType: Equatable {
 
         // If translate traditionalChinese <--> simplifiedChinese, use Ali API directly.
         if EZLanguageManager.shared().onlyContainsChineseLanguages([from, to]) {
-            let traditionalLangaugeCode = "zh-tw"
+            let traditionalLanguageCode = "zh-tw"
 
             // Maybe traditionalChinese --> traditionalChinese
             if from == .traditionalChinese {
-                fromLanguage = traditionalLangaugeCode
+                fromLanguage = traditionalLanguageCode
             }
             if to == .traditionalChinese {
-                toLanguage = traditionalLangaugeCode
+                toLanguage = traditionalLanguageCode
             }
         }
 

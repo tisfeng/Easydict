@@ -26,7 +26,6 @@
 #import "NSImage+EZSymbolmage.h"
 #import "TTTDictionary.h"
 #import "EZServiceTypes.h"
-#import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
 #import "Easydict-Swift.h"
@@ -785,9 +784,20 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
 
+        // Determine accent based on user preference if language is English
+        NSString *accentToUse = nil;
+        if ([language isEqualToString:EZLanguageEnglish]) {
+            // Assuming EnglishPronunciationUk is accessible, similar to EZBaseQueryViewController
+            if (Configuration.shared.pronunciation == EnglishPronunciationUk) {
+                accentToUse = @"uk";
+            } else {
+                accentToUse = @"us";
+            }
+        }
+
         [result.service.audioPlayer playTextAudio:text
                                          language:language
-                                           accent:nil
+                                           accent:accentToUse // Use determined accent
                                          audioURL:nil
                                 designatedService:defaultTTSService];
     }];

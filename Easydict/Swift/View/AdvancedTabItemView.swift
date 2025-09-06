@@ -6,12 +6,13 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import SFSafeSymbols
 import SwiftUI
 
-/// Takes in a Color, a systemImage, a text label, and an optional subtitle to quickly create a toggle or picker style for Advanced Tab in Settings.
+/// Takes in a Color, a SFSymbol, a text label, and an optional subtitle to quickly create a toggle or picker style for Advanced Tab in Settings.
 struct AdvancedTabItemView: View {
     let color: Color
-    let systemImage: String
+    let icon: SFSymbol
     let labelText: LocalizedStringKey
     var subtitleText: LocalizedStringKey?
 
@@ -22,7 +23,7 @@ struct AdvancedTabItemView: View {
                 .frame(width: 20, height: 20, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
                 .overlay(
-                    Image(systemName: systemImage)
+                    Image(systemSymbol: icon)
                         .font(.system(size: 12))
                         .foregroundColor(.white)
                 )

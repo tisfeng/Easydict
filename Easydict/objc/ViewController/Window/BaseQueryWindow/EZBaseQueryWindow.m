@@ -49,8 +49,12 @@
 }
 
 - (void)setupUI {
+    // On Xcode 16 and before, the titleView is the subviews[1] object
+    // On Xcode 26, the titleView is the subviews[2] object
+    // But they are all the lastObject of the subviews array.
+    // So we use lastObject to get the titleView.
     NSView *themeView = self.contentView.superview;
-    NSView *titleView = themeView.subviews[1];
+    NSView *titleView = themeView.subviews.lastObject;
     
     self.titleBar = [[EZTitlebar alloc] initWithFrame:CGRectMake(0, 0, self.width, 30)];
     [titleView addSubview:self.titleBar];

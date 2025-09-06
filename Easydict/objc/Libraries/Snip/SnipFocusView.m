@@ -77,7 +77,7 @@ DefineMethodMMMake_m(SnipFocusView);
         }];
     }];
 
-    self.sizeTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+    self.sizeTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
         [self addSubview:textField];
         textField.stringValue = @"尺寸: (0, 0)";
         textField.editable = NO;

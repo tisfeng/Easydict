@@ -124,7 +124,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return EZServiceTypeBaidu;
 }
 
-- (EZQueryTextType)queryTextType {
+- (EZQueryTextType)supportedQueryType {
     EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
     EZQueryTextType type = [Configuration.shared queryTextTypeForServiceType:self.serviceType];
 
@@ -326,7 +326,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (NSString *)getTTSLanguageCode:(EZLanguage)language accent:(NSString *_Nullable)accent {
-    // If langauge is English, we need to support US and UK accent.
+    // If language is English, we need to support US and UK accent.
     if ([language isEqualToString:EZLanguageEnglish]) {
         return [accent isEqualToString:@"uk"] ? @"uk" : @"en";
     }

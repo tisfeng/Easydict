@@ -26,10 +26,15 @@ NS_SWIFT_NAME(QueryService)
 
 /// In the settings page, whether the service is enabled or not.
 @property (nonatomic, assign) BOOL enabled;
+
 /// In the query page, whether to allow this service query.
 @property (nonatomic, assign) BOOL enabledQuery;
 
+/// In the query page, whether to enable auto query for this service.
+/// If user close this service manually, it will be disabled.
 @property (nonatomic, assign) BOOL enabledAutoQuery;
+
+@property (nonatomic, assign) EZQueryTextType queryType;
 
 @property (nonatomic, assign) EZWindowType windowType;
 
@@ -57,7 +62,7 @@ NS_SWIFT_NAME(QueryService)
                         to:(EZLanguage)to
                 completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
-/// Get TTS langauge code.
+/// Get TTS language code.
 /// @param language Text language
 /// @param accent English text tone, such as en-US, en-GB
 - (NSString *)getTTSLanguageCode:(EZLanguage)language accent:(NSString *_Nullable)accent;
@@ -110,7 +115,7 @@ NS_SWIFT_NAME(QueryService)
 - (EZServiceUsageStatus)serviceUsageStatus;
 
 /// Query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
-- (EZQueryTextType)queryTextType;
+- (EZQueryTextType)supportedQueryType;
 
 /// Intelligent query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
 - (EZQueryTextType)intelligentQueryTextType;

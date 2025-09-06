@@ -79,13 +79,18 @@ typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
 };
 
 
-typedef NSString *EZActionType NS_STRING_ENUM;
+typedef NSString *EZActionType NS_STRING_ENUM NS_SWIFT_NAME(ActionType);
+FOUNDATION_EXPORT EZActionType const EZActionTypeNone;
 FOUNDATION_EXPORT EZActionType const EZActionTypeAutoSelectQuery;
 FOUNDATION_EXPORT EZActionType const EZActionTypeShortcutQuery;
 FOUNDATION_EXPORT EZActionType const EZActionTypeInputQuery;
 FOUNDATION_EXPORT EZActionType const EZActionTypeOCRQuery;
 FOUNDATION_EXPORT EZActionType const EZActionTypeScreenshotOCR;
 FOUNDATION_EXPORT EZActionType const EZActionTypeInvokeQuery;
+FOUNDATION_EXPORT EZActionType const EZActionTypePasteboardOCR;
+FOUNDATION_EXPORT EZActionType const EZActionTypePasteboardTranslate;
+FOUNDATION_EXPORT EZActionType const EZActionTypeTranslateAndReplace;
+FOUNDATION_EXPORT EZActionType const EZActionTypePolishAndReplace;
 
 
 typedef NSString *EZSelectTextType NS_STRING_ENUM;

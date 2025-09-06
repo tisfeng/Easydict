@@ -9,6 +9,8 @@
 import Defaults
 import Foundation
 
+// MARK: - BuiltInAIService
+
 @objc(EZBuiltInAIService)
 class BuiltInAIService: BaseOpenAIService {
     // MARK: Lifecycle
@@ -43,17 +45,18 @@ class BuiltInAIService: BaseOpenAIService {
 
     override var defaultModels: [String] {
         [
-            // zhipu free model https://bigmodel.cn/dev/howuse/model
-            "glm-4-flash", // glm-4-flash, 128k context, 4k output, 200 QoS | THUDM/glm-4-9b-chat(SiliconFlow)
+            // GML free models
+            GLMModel.glm_4_flash_250414.rawValue,
+            GLMModel.glm_4_flash.rawValue,
 
-            // Groq free models https://console.groq.com/docs/models
-            "gemma-2-9b", // gemma2-9b-it, 30 RPM, 14,400 RPD, 15,000 TPM, 500,000 TPD
-            "llama-3-70b", // llama3-70b-8192, 30 RPM, 14,400 RPD, 6,000 TPM, 500,000 TPD
-            "llama-3.3-70b", // llama-3.3-70b-versatile, 30 RPM, 1,00 RPD, 6,000 TPM, 100,000 TPD
-
-            // Google free models https://ai.google.dev/gemini-api/docs/models/gemini#gemini-2.0-flash-lite
-            "gemini-2.0-flash-lite", // 30 RPM, 1,500 RPD, 1,000,000 TPM
+            // Groq free models
+            GroqModel.gemma2_9b.rawValue,
+            GroqModel.llama3_70b.rawValue,
         ]
+    }
+
+    override var defaultModel: String {
+        GLMModel.glm_4_flash_250414.rawValue
     }
 
     override var apiKey: String {
@@ -67,4 +70,21 @@ class BuiltInAIService: BaseOpenAIService {
     override var observeKeys: [Defaults.Key<String>] {
         [supportedModelsKey]
     }
+}
+
+// MARK: - GLMModel
+
+enum GLMModel: String, CaseIterable {
+    // zhipu free model https://docs.bigmodel.cn/cn/guide/start/model-overview
+    // rate-limits: https://www.bigmodel.cn/usercenter/proj-mgmt/rate-limits
+
+    case glm_4_5 = "glm-4.5" // 128K context, 96K output, 20 QoS
+    case glm_4_5_x = "glm-4.5-x" // 128K context, 96K output, 1 QoS
+    case glm_4_5_air = "glm-4.5-air" // 128K context, 96K output, 30 QoS
+    case glm_4_5_airx = "glm-4.5-airx" // 128K context, 96K output, 5 QoS
+
+    // GLM free models https://docs.bigmodel.cn/cn/guide/start/model-overview
+    case glm_4_5_flash = "glm-4.5-flash" // 128K context, 96K output, 2 QoS
+    case glm_4_flash_250414 = "glm-4-flash-250414" // 128K context, 16k output, 30 QoS
+    case glm_4_flash = "glm-4-flash" // glm-4-flash, 128K context, 4k output, 200 QoS
 }

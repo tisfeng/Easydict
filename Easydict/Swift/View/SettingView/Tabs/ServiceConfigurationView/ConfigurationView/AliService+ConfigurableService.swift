@@ -11,11 +11,6 @@ import SwiftUI
 extension AliService {
     override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.aliAccessKeyId, .aliAccessKeySecret]) {
-            StaticPickerCell(
-                titleKey: "service.configuration.api_picker.title",
-                key: .aliServiceApiTypeKey,
-                values: ServiceAPIType.allCases
-            )
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_id.title",
                 key: .aliAccessKeyId

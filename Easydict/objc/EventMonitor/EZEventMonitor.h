@@ -37,11 +37,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)shared;
 
 /// Use Accessibility to get selected text first, if failed, use shortcut.
-- (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable text))completion;
+- (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable text))completion NS_SWIFT_ASYNC_NAME(getSelectedText());
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
+- (void)addGlobalMonitor:(BOOL)isAutoSelectTextEnabled;
 
 - (void)start;
 - (void)stop;

@@ -6,29 +6,201 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import AVFoundation
 import Foundation
+import NaturalLanguage
 import Translation
+import Vision
 
 // MARK: - AppleService
 
+@objc(EZAppleService)
 public class AppleService: QueryService {
+    // MARK: Public
+
+    @objc
+    public override func serviceType() -> ServiceType {
+        .apple
+    }
+
+    @objc
+    public override func name() -> String {
+        NSLocalizedString("apple_translate", comment: "")
+    }
+
+    /// Supported languages dictionary
+    @objc
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+        languageMapper.supportedLanguages.toMMOrderedDictionary()
+    }
+
+    public override func detectText(
+        _ text: String, completion: @escaping (Language, (any Error)?) -> ()
+    ) {
+        let language = detectText(text)
+        completion(language, nil)
+    }
+
+    public override func translate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+    ) {
+        Task {
+            do {
+                let result = try await translateAsync(
+                    text: text,
+                    from: from,
+                    to: to
+                )
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(self.result, error)
+                }
+            }
+        }
+    }
+
+    @objc
+    public override func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
+        let image = queryModel.ocrImage ?? NSImage()
+        let language = queryModel.queryFromLanguage
+
+        ocrEnginee.recognizeText(
+            image: image,
+            language: language,
+            completion: completion
+        )
+    }
+
+    public override func autoConvertTraditionalChinese() -> Bool {
+        // Since Apple system translation not support zh-hans <--> zh-hant, so we need to convert it manually.
+        true
+    }
+
+    /// Async translation method
+    public func translateAsync(
+        text: String,
+        from sourceLanguage: Language,
+        to targetLanguage: Language
+    ) async throws
+        -> EZQueryResult {
+        // Use macOS 15+ API to translate if available
+        if #available(macOS 15.0, *), Configuration.shared.enableAppleOfflineTranslation {
+            let service = await getTranslationService()
+            if let service = service as? TranslationService {
+                let translatedText = try await service.translate(
+                    text: text,
+                    sourceLanguage: sourceLanguage,
+                    targetLanguage: targetLanguage
+                )
+
+                result.translatedResults = [translatedText]
+                return result
+            }
+        }
+
+        // Fallback to AppleScript-based translation
+        return try await translateWithAppleScript(
+            text: text,
+            from: sourceLanguage,
+            to: targetLanguage
+        )
+    }
+
+    @objc
+    public func detectText(_ text: String) -> Language {
+        let detectedLanguage = languageDetector.detectLanguage(text: text)
+        return detectedLanguage
+    }
+
+    /// Play text audio using system speech synthesizer
+    @objc
+    public func playTextAudio(_ text: String, textLanguage: Language) -> NSSpeechSynthesizer? {
+        speechService.playAudio(text: text, language: textLanguage) { _ in }
+    }
+
+    /// Convert NLLanguage to Language enum
+    @objc
+    public func languageEnum(fromAppleLanguage appleLanguage: NLLanguage) -> Language {
+        languageMapper.languageEnum(from: appleLanguage)
+    }
+
+    // MARK: Internal
+
+    @objc static let shared = AppleService()
+
     var supportedLanguages = [Locale.Language]()
 
     @available(macOS 15.0, *)
     func prepareSupportedLanguages() async {
-        supportedLanguages = await LanguageAvailability().supportedLanguages // en_US, zh_CN, zh_TW, ja_JP
+        supportedLanguages = await LanguageAvailability().supportedLanguages
 
         supportedLanguages.sort {
             $0.languageCode!.identifier < $1.languageCode!.identifier
         }
 
-        // supportedLanguages: ar_AE, de_DE, en_GB, en_US, es_ES, fr_FR, hi_IN, id_ID, it_IT, ja_JP, ko_KR, nl_NL, pl_PL, pt_BR, ru_RU, th_TH, tr_TR, uk_UA, vi_VN, zh_TW, zh_CN
         for language in supportedLanguages {
             print("\(language.languageCode!.identifier)_\(language.region!)")
         }
     }
+
+    // MARK: Private
+
+    private let ocrEnginee = AppleOCREngine()
+    private let languageMapper = AppleLanguageMapper.shared
+    private let languageDetector = AppleLanguageDetector(enableDebugLog: true)
+    private let speechService = AppleSpeechService()
+
+    private var translationService: Any? // Use Any to avoid compile-time type checking
+
+    @MainActor
+    private func getTranslationService() -> Any? {
+        if #available(macOS 15.0, *) {
+            if translationService == nil {
+                let window = NSApplication.shared.windows.first
+                let service = TranslationService(attachedWindow: window)
+                service.enableTranslateSameLanguage = true
+                translationService = service
+            }
+            return translationService
+        } else {
+            return nil
+        }
+    }
+
+    /// Fallback translation using AppleScript
+    private func translateWithAppleScript(
+        text: String,
+        from sourceLanguage: Language,
+        to targetLanguage: Language
+    ) async throws
+        -> EZQueryResult {
+        guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
+              let toLanguage = languageMapper.supportedLanguages[targetLanguage]
+        else {
+            throw QueryError(
+                type: .parameter, message: "Unsupported language for Apple Translation"
+            )
+        }
+
+        let parameters = [
+            "text": text,
+            "from": fromLanguage,
+            "to": toLanguage,
+        ]
+
+        let text = try await AppleScriptTask.runTranslateShortcut(parameters: parameters) ?? ""
+        result.translatedResults = [text]
+        return result
+    }
 }
 
+// Only extend TranslationService when it's available
 @available(macOS 15.0, *)
 extension TranslationService {
     /// Translate text from source language to target language, used for objc.
@@ -38,10 +210,20 @@ extension TranslationService {
         targetLanguage: Language
     ) async throws
         -> String {
+        let mapper = AppleLanguageMapper.shared
+
+        // Convert Language to Locale.Language using BCP-47 codes
+        let sourceLocaleLanguage = Locale.Language(
+            identifier: mapper.languageCode(for: sourceLanguage)
+        )
+        let targetLocaleLanguage = Locale.Language(
+            identifier: mapper.languageCode(for: targetLanguage)
+        )
+
         let response = try await translate(
             text: text,
-            sourceLanguage: sourceLanguage.localeLanguage,
-            targetLanguage: targetLanguage.localeLanguage
+            sourceLanguage: sourceLocaleLanguage,
+            targetLanguage: targetLocaleLanguage
         )
 
         return response.targetText
@@ -52,55 +234,6 @@ extension NLLanguage {
     var localeLanguage: Locale.Language {
         .init(identifier: rawValue)
     }
-}
-
-/// Test if NLLanguage is equal to Language.code
-func testNLLanguage() {
-    print("testNLLanguage")
-
-    let allLanguages = Language.allCases
-
-    let apple = EZAppleService.shared()
-
-    for language in allLanguages {
-        let nlLanguage = apple.appleLanguage(fromLanguageEnum: language)
-        print("\(language.rawValue): \(language.code): \(nlLanguage.rawValue)\n")
-    }
-}
-
-func systemLanguages() {
-    for language in Locale.Language.systemLanguages {
-        // zh, zh, zh-Hans-CN 中文 (中国大陆)
-        // zh, zh-TW, zh-Hant-TW 中文 (台湾)
-        print(language)
-    }
-}
-
-func availableIdentifiers() {
-    let availableIdentifiers = Locale.availableIdentifiers
-    var availableLanguages = [Locale.Language]()
-
-    for identifier in availableIdentifiers {
-        let locale = Locale(identifier: identifier)
-        let language = locale.language
-
-        if Locale.Language.systemLanguages.contains(language) {
-            availableLanguages.append(language)
-
-            // locale identifier: zh_Hans, zh, zh-Hans-CN
-            // locale identifier: zh_Hant, zh-TW, zh-Hant-TW
-            print(
-                "locale identifier: \(identifier), \(locale.language.minimalIdentifier), \(locale.language.maximalIdentifier)"
-            )
-
-            // zh, Hant, HK
-            print(
-                "\(language.languageCode?.identifier ?? "nil"), \(language.script?.identifier ?? "nil"), \(language.region?.identifier ?? "nil")\n"
-            )
-        }
-    }
-
-    print(availableLanguages)
 }
 
 // MARK: - Locale.Language + CustomStringConvertible

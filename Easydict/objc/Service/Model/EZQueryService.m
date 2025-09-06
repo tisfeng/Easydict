@@ -161,7 +161,7 @@ userInfo:nil]
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    [self ocr:queryModel.OCRImage from:queryModel.queryFromLanguage to:queryModel.queryTargetLanguage completion:completion];
+    [self ocr:queryModel.ocrImage from:queryModel.queryFromLanguage to:queryModel.queryTargetLanguage completion:completion];
 }
 
 
@@ -295,7 +295,7 @@ userInfo:nil]
     return EZServiceUsageStatusDefault;
 }
 
-- (EZQueryTextType)queryTextType {
+- (EZQueryTextType)supportedQueryType {
     return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
 }
 

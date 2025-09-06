@@ -61,6 +61,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.shortcutSelectTranslateWindowType) var shortcutSelectTranslateWindowType:
         EZWindowType
     @DefaultsWrapper(.fixedWindowPosition) var fixedWindowPosition: EZShowWindowPosition
+    @DefaultsWrapper(.miniWindowPosition) var miniWindowPosition: EZShowWindowPosition
     @DefaultsWrapper(.pinWindowWhenDisplayed) var pinWindowWhenDisplayed
     @DefaultsWrapper(.hideMainWindow) var hideMainWindow: Bool
 
@@ -96,10 +97,16 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.replaceWithTranslationInCompatibilityMode) var replaceWithTranslationInCompatibilityMode: Bool
-    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
+    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType:
+        ForceGetSelectedTextType
 
     @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
-    @DefaultsWrapper(.screenVisibleFrame) var screenVisibleFrame: CGRect
+    @DefaultsWrapper(.enableOCRTextNormalization) var enableOCRTextNormalization: Bool
+    @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
+    @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
+
+    // Max window height percentage, e.g., 80 means 80% of the screen height
+    @DefaultsWrapper(.maxWindowHeightPercentage) var maxWindowHeightPercentage: Int
 
     @DefaultsWrapper(.allowCrashLog) var allowCrashLog: Bool
     @DefaultsWrapper(.allowAnalytics) var allowAnalytics: Bool
@@ -402,6 +409,7 @@ extension Configuration {
     }
 
     fileprivate func didSetAutoSelectText() {
+        EZEventMonitor.shared().addGlobalMonitor(autoSelectText)
         logSettings(["auto_select_sext": autoSelectText])
     }
 

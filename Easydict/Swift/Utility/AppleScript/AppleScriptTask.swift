@@ -53,7 +53,7 @@ class AppleScriptTask: NSObject {
 
     static func runTranslateShortcut(parameters: [String: String]) async throws -> String? {
         let appleScript = appleScript(
-            of: Constants.easydictTranslateShortcutName, parameters: parameters
+            of: SharedConstants.easydictTranslateShortcutName, parameters: parameters
         )
         return try await runAppleScript(appleScript)
     }
