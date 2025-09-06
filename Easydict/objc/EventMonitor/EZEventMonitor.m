@@ -191,9 +191,16 @@ static EZEventMonitor *_instance = nil;
         }
         return event;
     }];
+    [self addGlobalMonitor:Configuration.shared.autoSelectText];
+}
 
+- (void)addGlobalMonitor:(BOOL)isAutoSelectTextEnabled {
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskRightMouseDown | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate;
+    NSEventMask maskWhenAutoSelectTextEnabled = NSEventMaskScrollWheel | NSEventMaskMouseMoved;
+    if (isAutoSelectTextEnabled) {
+        eventMask |= maskWhenAutoSelectTextEnabled;
+    }
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         [self handleMonitorEvent:event];
@@ -588,6 +595,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4",  // Sublime Text
             @"com.microsoft.Word", // Word
+            @"com.microsoft.Powerpoint", // Powerpoint, Fix https://github.com/tisfeng/Easydict/issues/868#issuecomment-2832027942
 
             @"com.tencent.xinWeChat",     // WeChat
             @"com.readdle.PDFExpert-Mac", // PDF Expert

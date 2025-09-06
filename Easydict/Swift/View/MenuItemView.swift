@@ -6,9 +6,12 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Defaults
 import SettingsAccess
+import SFSafeSymbols
 import Sparkle
 import SwiftUI
+import Vision
 import ZipArchive
 
 // MARK: - MenuItemStore
@@ -38,26 +41,34 @@ struct MenuItemView: View {
         // Button 和Label的systemImage是不会渲染的
         Group {
             versionItem
+
             Divider()
-            inputItem
-                .keyboardShortcut(.inputTranslate)
-            screenshotItem
-                .keyboardShortcut(.snipTranslate)
-            selectWordItem
-                .keyboardShortcut(.selectTranslate)
-            miniWindowItem
-                .keyboardShortcut(.showMiniWindow)
+
+            inputItem.keyboardShortcut(.inputTranslate)
+            screenshotItem.keyboardShortcut(.snipTranslate)
+            selectWordItem.keyboardShortcut(.selectTranslate)
+            pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
+            miniWindowItem.keyboardShortcut(.showMiniWindow)
+
             Divider()
-            ocrItem
-                .keyboardShortcut(.silentScreenshotOcr)
+
+            silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
+
+            if showOCRMenuItems {
+                screenshotOCRItem
+                pasteboardOCRItem
+                showOCRWindowItem
+            }
+
             Divider()
-            settingItem
-                .keyboardShortcut(.init(","))
+
+            settingItem.keyboardShortcut(.init(","))
             checkUpdateItem
             helpItem
+
             Divider()
-            quitItem
-                .keyboardShortcut(.init("q"))
+
+            quitItem.keyboardShortcut(.init("q"))
         }
         .task {
             latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
@@ -67,8 +78,10 @@ struct MenuItemView: View {
     // MARK: Private
 
     @ObservedObject private var store = MenuItemStore()
+    @Default(.showOCRMenuItems) private var showOCRMenuItems
 
-    @State private var currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    @State private var currentVersion =
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
 
     @State private var latestVersion: String?
 
@@ -98,16 +111,18 @@ struct MenuItemView: View {
             SettingsLink {
                 Text("Settings...")
             } preAction: {
-                logInfo("打开设置")
-                NSApp.activate(ignoringOtherApps: true)
+                logInfo("Open App Settings")
+                NSApplication.shared.activateApp()
             } postAction: {
                 // nothing to do
             }
         } else {
             Button("Settings...") {
-                logInfo("打开设置")
-                NSApp.activate(ignoringOtherApps: true)
-                NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                logInfo("Open App Settings")
+                NSApplication.shared.activateApp()
+                NSApplication.shared.sendAction(
+                    Selector(("showSettingsWindow:")), to: nil, from: nil
+                )
             }
         }
     }
@@ -116,7 +131,7 @@ struct MenuItemView: View {
 
     @ViewBuilder private var inputItem: some View {
         Button {
-            logInfo("输入翻译")
+            logInfo("Input Translate")
             EZWindowManager.shared().inputTranslate()
         } label: {
             HStack {
@@ -128,11 +143,11 @@ struct MenuItemView: View {
 
     @ViewBuilder private var screenshotItem: some View {
         Button {
-            logInfo("截图翻译")
+            logInfo("Screenshot Translate")
             EZWindowManager.shared().snipTranslate()
         } label: {
             HStack {
-                Image(systemName: "camera.viewfinder")
+                Image(systemSymbol: .cameraViewfinder)
                 Text("menu_screenshot_Translate")
             }
         }
@@ -140,36 +155,86 @@ struct MenuItemView: View {
 
     @ViewBuilder private var selectWordItem: some View {
         Button {
-            logInfo("划词翻译")
+            logInfo("Select Text Translate")
             EZWindowManager.shared().selectTextTranslate()
         } label: {
             HStack {
-                Image(systemName: "highlighter")
+                Image(systemSymbol: .highlighter)
                 Text("menu_selectWord_Translate")
+            }
+        }
+    }
+
+    @ViewBuilder private var pasteboardTranslateItem: some View {
+        Button {
+            logInfo("Pasteboard Translate")
+            EZWindowManager.shared().pasteboardTranslate()
+        } label: {
+            HStack {
+                Image(systemSymbol: .docOnClipboard)
+                let title = LocalizedStringKey(
+                    ShortcutType.pasteboardTranslate.localizedStringKey()
+                )
+                Text(title)
             }
         }
     }
 
     @ViewBuilder private var miniWindowItem: some View {
         Button {
-            logInfo("显示迷你窗口")
+            logInfo("Show Mini Window")
             EZWindowManager.shared().showMiniFloatingWindow()
         } label: {
             HStack {
-                Image(systemName: "dock.rectangle")
+                Image(systemSymbol: .dockRectangle)
                 Text("menu_show_mini_window")
             }
         }
     }
 
-    @ViewBuilder private var ocrItem: some View {
+    @ViewBuilder private var silentScreenshotOCRItem: some View {
         Button {
-            logInfo("静默截图OCR")
+            logInfo("Silent Screenshot OCR")
+            EZWindowManager.shared().silentScreenshotOCR()
+        } label: {
+            HStack {
+                Image(systemSymbol: .cameraMeteringSpot)
+                Text("menu_silent_screenshot_OCR")
+            }
+        }
+    }
+
+    @ViewBuilder private var screenshotOCRItem: some View {
+        Button {
             EZWindowManager.shared().screenshotOCR()
         } label: {
             HStack {
-                Image(systemName: "camera.metering.spot")
-                Text("menu_silent_screenshot_OCR")
+                Image(systemSymbol: .cameraMeteringMultispot)
+                Text("menu_screenshot_OCR")
+            }
+        }
+    }
+
+    @ViewBuilder private var pasteboardOCRItem: some View {
+        Button {
+            AppleOCREngine().pasteboardOCR()
+        } label: {
+            HStack {
+                Image(systemSymbol: .listClipboard)
+                Text("menu_pasteboard_OCR")
+            }
+        }
+    }
+
+    @ViewBuilder private var showOCRWindowItem: some View {
+        Button {
+            logInfo("Show OCR Window")
+            // Simply show the OCR window without updating data
+            OCRWindowManager.shared.showWindow()
+        } label: {
+            HStack {
+                Image(systemSymbol: .textAndCommandMacwindow)
+                Text("menu_show_ocr_window")
             }
         }
     }
@@ -178,14 +243,14 @@ struct MenuItemView: View {
 
     @ViewBuilder private var checkUpdateItem: some View {
         Button("check_updates") {
-            logInfo("检查更新")
+            logInfo("Check Updates")
             Configuration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 
     @ViewBuilder private var quitItem: some View {
         Button("quit") {
-            logInfo("退出应用")
+            logInfo("Quit Application")
             NSApplication.shared.terminate(nil)
         }
     }
@@ -193,6 +258,7 @@ struct MenuItemView: View {
     @ViewBuilder private var helpItem: some View {
         Menu("Help") {
             Button("Feedback") {
+                logInfo("Open Feedback")
                 guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
                     return
                 }
@@ -202,7 +268,7 @@ struct MenuItemView: View {
                 exportLogAction()
             }
             Button("Log Directory") {
-                logInfo("日志目录")
+                logInfo("Open Log Directory")
                 let logPath = MMManagerForLog.rootLogDirectory() ?? ""
                 let directoryURL = URL(fileURLWithPath: logPath)
                 NSWorkspace.shared.open(directoryURL)
@@ -211,12 +277,14 @@ struct MenuItemView: View {
     }
 
     private func exportLogAction() {
-        logInfo("导出日志")
+        logInfo("Export Log")
         let logPath = MMManagerForLog.rootLogDirectory() ?? ""
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH-mm-ss-SSS"
         let dataString = dateFormatter.string(from: Date())
-        let downloadDirectory = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
+        let downloadDirectory = FileManager.default.urls(
+            for: .downloadsDirectory, in: .userDomainMask
+        )[0]
         let zipPath = downloadDirectory.appendingPathComponent("Easydict log \(dataString).zip")
             .path(percentEncoded: false)
         let success = SSZipArchive.createZipFile(
@@ -227,7 +295,62 @@ struct MenuItemView: View {
         if success {
             NSWorkspace.shared.selectFile(zipPath, inFileViewerRootedAtPath: "")
         } else {
-            logError("导出日志失败")
+            logError("Export log failed")
+        }
+    }
+
+    private func ocr(image: NSImage) {
+        // Get the CGImage on which to perform requests.
+        guard let cgImage = image.toCGImage() else { return }
+
+        // Create a new image-request handler.
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+
+        let recognizeTextHandler = { (request: VNRequest, error: Error?) in
+            if let error {
+                print("Error recognizing text: \(error)")
+                return
+            }
+
+            // Get the results from the request.
+            guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                print("No text recognized.")
+                return
+            }
+
+            // Process the recognized text observations.
+            for observation in observations {
+                if let topCandidate = observation.topCandidates(1).first {
+                    print("Recognized text: \(topCandidate.string)")
+                }
+            }
+        }
+        DispatchQueue.global(qos: .userInitiated).async {
+            // Create a new request to recognize text.
+            let request = VNRecognizeTextRequest(completionHandler: recognizeTextHandler)
+            request.usesLanguageCorrection = true
+            request.recognitionLevel = .accurate
+            request.recognitionLanguages = [
+                "zh-Hans",
+                "zh-Hant",
+                "en-US",
+                "ja-JP",
+                "fr-FR",
+                "de-DE",
+                "es-ES",
+                "pt-BR",
+                "it-IT",
+                "ko-KR",
+                "ru-RU",
+                "uk-UA",
+            ]
+
+            do {
+                // Perform the text-recognition request.
+                try requestHandler.perform([request])
+            } catch {
+                print("Unable to perform the requests: \(error).")
+            }
         }
     }
 }

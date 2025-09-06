@@ -8,20 +8,45 @@
 
 import Foundation
 
+// MARK: - Double Extensions
+
+/// Convert double to string with one decimal place.
+/// - Example:
+///   - 1 -> "1.0"
+///   - 1.234 -> "1.2"
 extension Double {
-    /// Convert double to string with one decimal place.
-    /// - Example:
-    ///   - 1 -> "1.0"
-    ///   - 1.234 -> "1.2"
-    var oneDecimalString: String {
+    var string1f: String {
         String(format: "%.1f", self)
     }
 
-    var twoDecimalString: String {
+    var string2f: String {
         String(format: "%.2f", self)
     }
 
-    var intString: String {
-        String(format: "%.0f", self)
+    var string3f: String {
+        String(format: "%.3f", self)
+    }
+}
+
+extension CGFloat {
+    var string1f: String {
+        String(format: "%.1f", self)
+    }
+
+    var string2f: String {
+        String(format: "%.2f", self)
+    }
+
+    var string3f: String {
+        String(format: "%.3f", self)
+    }
+}
+
+/// Extension to get the elapsed time string from a CFAbsoluteTime value.
+extension CFAbsoluteTime {
+    /// Returns a string representing the elapsed time since this CFAbsoluteTime value.
+    var elapsedTimeString: String {
+        let elapsedTime = CFAbsoluteTimeGetCurrent() - self
+        return elapsedTime.string3f
     }
 }

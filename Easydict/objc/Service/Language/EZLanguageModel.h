@@ -1,5 +1,5 @@
 //
-//  EZLanguageConst.h
+//  EZLanguageModel.h
 //  Easydict
 //
 //  Created by tisfeng on 2022/12/1.

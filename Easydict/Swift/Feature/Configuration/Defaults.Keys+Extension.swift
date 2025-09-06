@@ -76,6 +76,10 @@ extension Defaults.Keys {
         "EZConfiguration_kShowFixedWindowPositionKey",
         default: .right
     )
+    static let miniWindowPosition = Key<EZShowWindowPosition>(
+        "EZConfiguration_kShowMiniWindowPositionKey",
+        default: .mouse
+    )
     static let mouseSelectTranslateWindowType = Key<EZWindowType>(
         "EZConfiguration_kMouseSelectTranslateWindowTypeKey",
         default: .fixed
@@ -140,9 +144,16 @@ extension Defaults.Keys {
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
     )
+    static var enableOCRTextNormalization = Key<Bool>(
+        "enableOCRTextNormalization", default: false
+    )
+    static var showOCRMenuItems = Key<Bool>(
+        "showOCRMenuItems", default: false
+    )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
-        "minClassicalChineseTextDetectLength", default: "10"
+        "minClassicalChineseTextDetectLength",
+        default: "\(SharedConstants.minClassicalChineseLength)"
     )
 
     static let enableForceGetSelectedText = Key<Bool>(
@@ -155,7 +166,20 @@ extension Defaults.Keys {
     )
 
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
-    static var screenVisibleFrame = Key<CGRect>("EZConfiguration_kScreenVisibleFrameKey", default: .zero)
+    static var formerFixedScreenVisibleFrame = Key<CGRect>(
+        "EZConfiguration_kScreenVisibleFrameKey", default: .zero
+    )
+
+    static var formerMiniScreenVisibleFrame = Key<CGRect>(
+        "EZConfiguration_kFormerMiniScreenVisibleFrameKey",
+        default: .zero
+    )
+
+    // MARK: - Window Height Limit
+
+    // Key for storing the selected max window height percentage, default is 100%.
+    // Storing as Int (e.g., 50, 80, 100).
+    static let maxWindowHeightPercentage = Key<Int>("maxWindowHeightPercentage", default: 100)
 }
 
 extension Defaults.Keys {
@@ -317,6 +341,9 @@ extension Defaults.Keys {
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")
     static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder")
+    static let pasteboardTranslateShortcut = Key<KeyCombo?>(
+        "EZPasteboardTranslateShortcutKey_keyHolder"
+    )
 
     // App
     static let clearInputShortcut = Key<KeyCombo?>("EZClearInputShortcutKey_keyHolder")

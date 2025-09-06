@@ -27,12 +27,20 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 最简单的添加方式，就是找寻已转换好格式的 .dictionary 词典，将其拖入到 Dictionary 的【词典文件夹】，再重启词典 App，就可以在设置中看到这部词典了。
 
-注意：每次添加新词典后，需要重启 Easydict 才能在 Easydict 中看到该词典。另外，修改词典应用设置时，可能会导致 Easydict 崩溃，这是 feature。
-
+进入【词典文件夹】目录：`cd ~/Library/Dictionaries/; open .`，也可以通过词典 App 「文件 -> 打开词典文件夹」打开。
 <div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928224622274-1695912382.png
-" width="50%" />
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928224622274-1695912382.png" width="50%" />
 </div>
+
+将下载的 .dictionary 词典拖入到词典文件夹，如下图所示添加了两个自定义词典
+
+![dictionary](https://ik.imagekit.io/tonngw/R8ndZGr6G2DVtzfpWaaSZMNGp266dROWbmIbVni5d9A.png)
+
+打开 EasyDict 之后默认新添加的词典是放在最下面的，打开苹果词典，`Command + ,` 进入设置页面，可以拖动调整一下安装的词典顺序把它放到最上面，其他不使用的词典可以全部关掉，保留一个清爽的页面。
+
+![dictionary_settins](https://ik.imagekit.io/tonngw/IT8GgH9HQFG9oDwYKivxCOzVX0IvMvhhiUS9Gvh0fBo.png)
+
+注意：每次添加新词典后，需要重启 Easydict 才能在 Easydict 中看到该词典。另外，修改词典应用设置时，可能会导致 Easydict 崩溃，这是 feature。
 
 为方便大家使用，我已经制作了几部 .dictionary 词典，放在 Google 云盘上，直接下载即可用。
 

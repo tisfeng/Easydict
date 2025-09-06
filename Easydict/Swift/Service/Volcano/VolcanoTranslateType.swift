@@ -74,7 +74,7 @@ struct VolcanoTranslateType: Equatable {
             return .unsupported
         }
 
-        // Volcano doesn't support Slovak as source langauge
+        // Volcano doesn't support Slovak as source language
         guard fromLanguage != supportLanguagesDictionary[.slovak]
         else {
             return .unsupported

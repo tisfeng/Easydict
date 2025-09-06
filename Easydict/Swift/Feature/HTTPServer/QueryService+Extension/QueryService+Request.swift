@@ -40,7 +40,7 @@ extension QueryService {
                 text: text, from: sourceLanguage, to: to
             )
             if prehandled {
-                logInfo("prehandled query text: \(text.truncated())")
+                logInfo("prehandled query text: \(text.prefix200)")
                 return result
             }
         }

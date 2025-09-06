@@ -150,7 +150,11 @@
         mm_strongify(self);
         self.queryModel.needDetectLanguage = NO;
         NSString *text = [[self copiedText] trim];
-        self.queryModel.specifiedTextLanguageDict[text] = language;
+        
+        // Do not set text language if text is OCR merged text.
+        if (text.length && !self.queryModel.ocrImage) {
+            self.queryModel.specifiedTextLanguageDict[text] = language;
+        }
         if (self.selectedLanguageBlock) {
             self.selectedLanguageBlock(language);
         }

@@ -26,3 +26,14 @@ extension NSArray {
         return array
     }
 }
+
+extension Array {
+    /// Convert the array to a pretty-printed JSON string.
+    var prettyPrinted: NSString {
+        let jsonData = try? JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+        if let jsonData = jsonData, let jsonString = String(data: jsonData, encoding: .utf8) {
+            return jsonString as NSString
+        }
+        return "[]"
+    }
+}

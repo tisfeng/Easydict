@@ -87,3 +87,11 @@ extension HostWindowManager {
         }
     }
 }
+
+extension String {
+    // Acknowledgements window id.
+    static let acknowledgementsWindowId = "setting.about.acknowledgements"
+
+    // About window id.
+    static let aboutWindowId = "setting.about"
+}

@@ -7,7 +7,6 @@
 //
 
 #import "EZLanguageManager.h"
-#import "EZAppleService.h"
 #import "Easydict-Swift.h"
 
 @interface EZLanguageManager ()
@@ -20,6 +19,9 @@
 @property (nonatomic, copy) NSArray<EZLanguage> *userPreferredTwoLanguages;
 
 @property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageFlagDict;
+
+// Cache for languages without word spaces
+@property (nonatomic, strong) NSArray<EZLanguage> *languagesWithoutWordSpaces;
 
 @end
 
@@ -287,7 +289,7 @@ static EZLanguageManager *_instance;
     return [language isEqualToString:EZLanguageTraditionalChinese];
 }
 
-- (BOOL)isEnglishLangauge:(EZLanguage)language {
+- (BOOL)isEnglishLanguage:(EZLanguage)language {
     return [language isEqualToString:EZLanguageEnglish];
 }
 
@@ -301,15 +303,40 @@ static EZLanguageManager *_instance;
     return YES;
 }
 
-/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
+/// Determines if words in a given language are typically separated by spaces.
+///
+/// Such as English, French, etc. where words are separated by spaces.
 - (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
-    NSArray *languages = @[
-        EZLanguageSimplifiedChinese,
-        EZLanguageTraditionalChinese,
-        EZLanguageJapanese,
-        EZLanguageKorean,
-    ];
-    return ![languages containsObject:language];
+    // A language needs spaces between words if it's NOT a script that omits word spaces.
+    return ![self.languagesWithoutWordSpaces containsObject:language];
+}
+
+/// Lazy-loaded cache of languages that do not use spaces between words.
+/// These languages typically write words consecutively without spaces between them.
+/// Examples: Chinese, Japanese, Korean, Thai, etc.
+- (NSArray<EZLanguage> *)languagesWithoutWordSpaces {
+    if (!_languagesWithoutWordSpaces) {
+        _languagesWithoutWordSpaces = @[
+            // Chinese variants
+            EZLanguageSimplifiedChinese,
+            EZLanguageTraditionalChinese,
+            EZLanguageClassicalChinese,
+            
+            // East Asian languages
+            EZLanguageJapanese,
+            EZLanguageKorean,
+            
+            // Southeast Asian languages
+            EZLanguageThai,
+            EZLanguageLao,
+            EZLanguageKhmer,      // Cambodian
+            EZLanguageBurmese,    // Myanmar
+            
+            // Note: Vietnamese uses spaces between syllables, not traditional word boundaries
+            // Mongolian traditional script doesn't use spaces, but modern Cyrillic Mongolian does
+        ];
+    }
+    return _languagesWithoutWordSpaces;
 }
 
 - (BOOL)isShortWordLength:(NSString *)word language:(EZLanguage)language {

@@ -27,12 +27,21 @@ Furthermore, Apple Dictionary also supports custom import dictionaries. This mea
 
 The easiest way to add a dictionary to macOS is to find a converted .dictionary file, drag it into the Dictionary folder of Apple Dictionary, and then restart the Dicionary.app to ensure the new dictionary appears in the Settings.
 
-Attention: Each time a new dictionary is added, Easydict needs to be restarted to see the changes in effect. Also, modifying the dictionary application settings may cause Easydict to crash; this is an expected behaviour.
+Enter the [Dictionary Folder] directory: cd ~/Library/Dictionaries/; open., and you can also open it through the Dictionary App "File -> Open Dictionary Folder".
 
 <div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928224622274-1695912382.png
-" width="50%" />
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928224622274-1695912382.png" width="50%" />
 </div>
+
+Drag the downloaded.dictionary dictionary into the dictionary folder. As shown in the following figure, two custom dictionaries have been added.
+
+![dictionary](https://ik.imagekit.io/tonngw/R8ndZGr6G2DVtzfpWaaSZMNGp266dROWbmIbVni5d9A.png)
+
+After opening EasyDict, the newly added dictionary is placed at the bottom by default. Open the Apple Dictionary, Command + , to enter the settings page. You can drag and adjust the order of the installed dictionaries to put it at the top. Other unused dictionaries can be all turned off to keep a clean page.
+
+![dictionary_settins](https://ik.imagekit.io/tonngw/IT8GgH9HQFG9oDwYKivxCOzVX0IvMvhhiUS9Gvh0fBo.png)
+
+Attention: Each time a new dictionary is added, Easydict needs to be restarted to see the changes in effect. Also, modifying the dictionary application settings may cause Easydict to crash; this is an expected behaviour.
 
 For your convenience, I've created several .dictionary files and put them on Google Drive, so you can directly download and use them.
 

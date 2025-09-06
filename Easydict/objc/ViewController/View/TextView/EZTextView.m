@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSColor *placeholderColor;
 @property (nonatomic, strong) NSFont *placeholderFont;
 
-@property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 15
+@property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 0
 @property (nonatomic, assign) CGFloat miniParagraphSpacing; // 0
 
 /// paragraphSpacing
@@ -29,7 +29,7 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-        CGFloat defaultParagraphSpacing = 15;
+        CGFloat defaultParagraphSpacing = 0;
         CGFloat miniParagraphSpacing = 0;
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
