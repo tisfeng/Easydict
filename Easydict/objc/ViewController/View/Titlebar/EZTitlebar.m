@@ -318,11 +318,9 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     
     // Eudic
     if (Configuration.shared.showEudicQuickLink) {
-        // !!!: Note that some applications have multiple channel versions. Refer: https://github.com/tisfeng/Raycast-Easydict/issues/16
-        BOOL installedEudic = [self checkInstalledApp:@[ @"com.eusoft.freeeudic", @"com.eusoft.eudic", @"eusoft.eudic.ip" ]];
-        if (installedEudic) {
-            [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeEudicDic)];
-        }
+        // Fix https://github.com/tisfeng/Easydict/issues/957#issuecomment-3261505123
+        // Since edudic has multiple bundle ids, we don't check if installed.
+        [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeEudicDic)];
     }
     
     return shortcutButtonTypes.copy;

@@ -8315,25 +8315,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Eudic quick link icon (if installed)"
+            "value" : "Show Eudic quick link icon"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zobraziť Eudic ikonu rýchleho odkazu (ak je nainštalovaný)"
+            "value" : "Zobraziť Eudic ikonu rýchleho odkazu"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示欧路词典快捷图标（若有安装）"
+            "value" : "显示欧路词典快捷图标"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "顯示歐路辭典快速連結圖示（如已安裝）"
+            "value" : "顯示歐路辭典快速連結圖示"
           }
         }
       }

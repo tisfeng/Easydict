@@ -58,6 +58,8 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                 Spacer()
             }
 
+            Spacer()
+
             Button {
                 validate()
             } label: {
