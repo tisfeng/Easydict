@@ -1,12 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Zhipu.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Zhipu@2x.png",
+      "filename" : "bigmodel.cn.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
