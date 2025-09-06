@@ -115,7 +115,7 @@ extension ShortcutAction {
             .silentScreenshotOCR: .init(
                 titleKey: "menu_silent_screenshot_OCR",
                 icon: .cameraMeteringSpot,
-                defaultsKey: .screenshotOCRShortcut,
+                defaultsKey: .silentScreenshotOCRShortcut,
                 action: { windowManager.silentScreenshotOCR() }
             ),
             .pasteboardTranslate: .init(
