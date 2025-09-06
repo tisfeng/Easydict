@@ -50,8 +50,7 @@ class BuiltInAIService: BaseOpenAIService {
             ZhipuModel.glm_4_flash.rawValue,
 
             // Groq free models
-            GroqModel.gemma2_9b.rawValue,
-            GroqModel.llama3_70b.rawValue,
+            GroqModel.llama3_1_8b_instant.rawValue,
         ]
     }
 
