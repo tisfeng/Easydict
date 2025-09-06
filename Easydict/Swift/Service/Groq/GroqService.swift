@@ -45,10 +45,6 @@ class GroqService: OpenAIService {
     override var defaultEndpoint: String {
         "https://api.groq.com/openai/v1/chat/completions"
     }
-
-    override var apiKeyPlaceholder: LocalizedStringKey {
-        "gsk_xxxxxxxxxx"
-    }
 }
 
 // MARK: - GroqModel

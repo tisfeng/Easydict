@@ -1848,62 +1848,6 @@
         }
       }
     },
-    "gsk_xxxxxxxxxx" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gsk_xxxxxxxxxx"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gsk_xxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gsk_xxxxxxxxxx"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gsk_xxxxxxxxxx"
-          }
-        }
-      }
-    },
-    "zhipu_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zhipu Translate"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zhipu Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "智谱翻译"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "智譜翻譯"
-          }
-        }
-      }
-    },
     "Help" : {
       "localizations" : {
         "sk" : {
@@ -4883,34 +4827,6 @@
         }
       }
     },
-    "service.configuration.openai.api_key.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sk-xxxxxxxxxx"
-          }
-        }
-      }
-    },
     "service.configuration.openai.api_key.title" : {
       "localizations" : {
         "en" : {
@@ -4934,7 +4850,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API 金鑰"
+            "value" : "API Key"
           }
         }
       }
@@ -9385,6 +9301,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有道詞典"
+          }
+        }
+      }
+    },
+    "zhipu_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zhipu Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zhipu Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智谱翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智譜翻譯"
           }
         }
       }
