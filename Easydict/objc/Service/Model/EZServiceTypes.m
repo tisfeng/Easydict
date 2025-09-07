@@ -50,6 +50,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeOpenAI, [EZOpenAIService class],
                                            EZServiceTypeDeepSeek, [EZDeepSeekService class],
                                            EZServiceTypeGroq, [EZGroqService class],
+                                           EZServiceTypeZhipu, [EZZhipuService class],
                                            EZServiceTypeGitHub, [EZGitHubService class],
                                            EZServiceTypeBuiltInAI, [EZBuiltInAIService class],
                                            EZServiceTypeGemini, [EZGeminiService class],
