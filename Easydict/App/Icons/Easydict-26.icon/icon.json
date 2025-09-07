@@ -2,11 +2,12 @@
   "fill" : {
     "linear-gradient" : [
       "display-p3:0.97856,0.97856,0.97856,1.00000",
-      "srgb:0.89262,0.89262,0.89262,1.00000"
+      "srgb:0.94444,0.94444,0.94444,1.00000"
     ]
   },
   "groups" : [
     {
+      "blend-mode" : "normal",
       "blur-material-specializations" : [
         {
           "value" : 0.43
@@ -36,7 +37,7 @@
               "appearance" : "dark",
               "value" : {
                 "linear-gradient" : [
-                  "display-p3:1.00000,1.00000,1.00000,0.86031",
+                  "display-p3:1.00000,1.00000,1.00000,0.87174",
                   "srgb:1.00000,1.00000,1.00000,1.00000"
                 ]
               }
@@ -45,7 +46,7 @@
               "appearance" : "tinted",
               "value" : {
                 "linear-gradient" : [
-                  "display-p3:1.00000,1.00000,1.00000,0.74904",
+                  "display-p3:1.00000,1.00000,1.00000,0.90288",
                   "srgb:1.00000,1.00000,1.00000,0.98166"
                 ]
               }
@@ -58,7 +59,7 @@
           "opacity-specializations" : [
             {
               "appearance" : "tinted",
-              "value" : 0.93
+              "value" : 0.94
             }
           ],
           "position" : {
@@ -73,11 +74,11 @@
       "name" : "Group",
       "opacity-specializations" : [
         {
-          "value" : 0.9
+          "value" : 0.92
         },
         {
           "appearance" : "dark",
-          "value" : 0.9
+          "value" : 0.96
         },
         {
           "appearance" : "tinted",
@@ -88,7 +89,7 @@
         {
           "value" : {
             "kind" : "layer-color",
-            "opacity" : 0.22
+            "opacity" : 0.36
           }
         },
         {
@@ -106,18 +107,19 @@
           }
         }
       ],
+      "specular" : true,
       "translucency-specializations" : [
         {
           "value" : {
             "enabled" : true,
-            "value" : 0.18
+            "value" : 0.03
           }
         },
         {
           "appearance" : "dark",
           "value" : {
             "enabled" : true,
-            "value" : 0.18
+            "value" : 0.04
           }
         },
         {
@@ -249,7 +251,7 @@
         {
           "value" : {
             "enabled" : true,
-            "value" : 0.12
+            "value" : 0.02
           }
         },
         {
