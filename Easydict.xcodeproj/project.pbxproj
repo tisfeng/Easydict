@@ -395,6 +395,7 @@
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
+		03F281602D9A323700AE518C /* ZhipuService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281612D9A323700AE518C /* ZhipuService.swift */; };
 		03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */; };
 		03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */; };
 		03F4142E2E6B251000FF1994 /* SystemUtility+MenuAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */; };
@@ -1068,6 +1069,7 @@
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
 		03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChinseseMarker.swift; sourceTree = "<group>"; };
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
+		03F281612D9A323700AE518C /* ZhipuService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZhipuService.swift; sourceTree = "<group>"; };
 		03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
 		03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindow.swift; sourceTree = "<group>"; };
 		03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+MenuAction.swift"; sourceTree = "<group>"; };
@@ -1816,6 +1818,7 @@
 			isa = PBXGroup;
 			children = (
 				03F086F62DB3A93200268DF0 /* Groq */,
+				03F281622D9A323700AE518C /* Zhipu */,
 				0371A4FF2DB128E50097D4A1 /* GitHub Models */,
 				40F5D52A2D65B1A200EDB997 /* DeepSeek */,
 				036463682CB62B6600D0D6CC /* Apple */,
@@ -2835,6 +2838,14 @@
 			path = Groq;
 			sourceTree = "<group>";
 		};
+		03F281622D9A323700AE518C /* Zhipu */ = {
+			isa = PBXGroup;
+			children = (
+				03F281612D9A323700AE518C /* ZhipuService.swift */,
+			);
+			path = Zhipu;
+			sourceTree = "<group>";
+		};
 		03F0DB352953424F00EBF9C1 /* EZLog */ = {
 			isa = PBXGroup;
 			children = (
@@ -3729,6 +3740,7 @@
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				9627F9382B59956800B1E999 /* GlobalShortcutSettingView.swift in Sources */,
 				03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */,
+				03F281602D9A323700AE518C /* ZhipuService.swift in Sources */,
 				962B9ACE2BFA03270080F4D4 /* EZAppModel.m in Sources */,
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
 				62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */,
