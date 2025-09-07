@@ -102,12 +102,12 @@ struct MenuItemView: View {
         menuItem(for: .pasteboardTranslate)
     }
 
-    @ViewBuilder private var translateAndReplaceItem: some View {
-        menuItem(for: .translateAndReplace)
-    }
-
     @ViewBuilder private var polishAndReplaceItem: some View {
         menuItem(for: .polishAndReplace)
+    }
+
+    @ViewBuilder private var translateAndReplaceItem: some View {
+        menuItem(for: .translateAndReplace)
     }
 
     @ViewBuilder private var miniWindowItem: some View {

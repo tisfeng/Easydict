@@ -35,7 +35,7 @@ class GroqService: OpenAIService {
     }
 
     override var defaultModel: String {
-        GroqModel.gemma2_9b.rawValue
+        GroqModel.gpt_oss_120b.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -55,16 +55,19 @@ class GroqService: OpenAIService {
 
 enum GroqModel: String, CaseIterable {
     // Docs: https://console.groq.com/docs/models
-    // Pricing: https://groq.com/pricing/
+    // Limits: https://console.groq.com/settings/limits
 
     // Production Models
-    case gemma2_9b = "gemma2-9b-it" // 30 RPM, 14.4k RPD, 15k TPM, 500k TPD
-    case llama3_70b = "llama3-70b-8192" // 30 RPM, 14.4k RPD, 6k TPM, 500k TPD
-
-    // Preview Models
     case gpt_oss_120b = "openai/gpt-oss-120b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
     case gpt_oss_20b = "openai/gpt-oss-20b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
 
-    case llama4_maverick_17b =
-        "meta-llama/llama-4-maverick-17b-128e-instruct" // 30 RPM, 1,000 RPD, 6,000 TPM
+    case llama3_1_8b_instant = "llama-3.1-8b-instant" // 30 RPM, 14.4k RPD, 6k TPM, 500k TPD
+
+    // Preview Models
+    case kimi_k2_instruct_0905 = "moonshotai/kimi-k2-instruct-0905" // 60 RPM, 1k RPD, 10k TPM, 300k TPD
+
+    case llama4_maverick_17b_128e =
+        "meta-llama/llama-4-maverick-17b-128e-instruct" // 30 RPM, 1k RPD, 6k TPM, 500k TPD
+
+    case qwen3_32b = "qwen/qwen3-32b" // 60 RPM, 1k RPD, 6k TPM, 300k TPD
 }

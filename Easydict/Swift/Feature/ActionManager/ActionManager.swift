@@ -211,7 +211,7 @@ class ActionManager: NSObject {
 
             var reuslt = ""
             for try await content in contentStream where !content.isEmpty {
-//                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+                //                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
 
                 reuslt += content
                 await systemUtility.insertText(content, using: textStrategy)

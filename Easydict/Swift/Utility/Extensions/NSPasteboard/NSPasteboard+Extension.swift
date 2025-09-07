@@ -20,6 +20,12 @@ extension NSPasteboard {
         }
     }
 
+    /// Set string to pasteboard safely
+    func setString(_ string: String) {
+        clearContents()
+        setString(string, forType: .string)
+    }
+
     // MARK: - Get Image from Pasteboard
 
     /// Gets an image from the pasteboard, correctly handling both

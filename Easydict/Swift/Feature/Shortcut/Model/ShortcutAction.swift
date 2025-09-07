@@ -21,8 +21,8 @@ public enum ShortcutAction: String, Identifiable {
     case selectTranslate
     case showMiniWindow
     case pasteboardTranslate
-    case translateAndReplace
     case polishAndReplace
+    case translateAndReplace
     case silentScreenshotOCR
 
     // OCR specific shortcuts
