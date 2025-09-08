@@ -42,10 +42,6 @@ class OpenAIService: BaseOpenAIService {
         "https://api.openai.com/v1/chat/completions"
     }
 
-    override var apiKeyPlaceholder: LocalizedStringKey {
-        "service.configuration.openai.api_key.placeholder"
-    }
-
     override var observeKeys: [Defaults.Key<String>] {
         [apiKeyKey, supportedModelsKey]
     }
