@@ -6795,25 +6795,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In browsers, prefer using AppleScript API for text selection and replacement"
+            "value" : "In browsers, prioritize AppleScript API for text selection and replacement. Enabling this option improves accuracy and success rate."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "V prehliadačoch uprednostniť používanie AppleScript API pre výber a nahradenie textu"
+            "value" : "V prehliadačoch uprednostniť používanie AppleScript API pre výber a nahradenie textu. Povolenie tejto možnosti zlepšuje presnosť a úspešnosť."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在浏览器中，优先使用 AppleScript API 来取词和文本替换"
+            "value" : "在浏览器中，优先使用 AppleScript API 进行取词和文本替换。开启该选项，可提升取词的准确性和成功率。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在瀏覽器中，優先使用 AppleScript API 來取詞和文本替換"
+            "value" : "在瀏覽器中，優先使用 AppleScript API 進行取詞和文本替換。開啟該選項，可提升取詞的準確性和成功率。"
           }
         }
       }

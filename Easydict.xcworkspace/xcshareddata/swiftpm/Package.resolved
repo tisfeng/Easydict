@@ -293,7 +293,7 @@
       "location" : "https://github.com/tisfeng/SelectedTextKit.git",
       "state" : {
         "branch" : "main",
-        "revision" : "a6587dc853fc7936bfe69c97f93b96248c790ed9"
+        "revision" : "7edf548e037f3848eeaee30cc71a68f572045b88"
       }
     },
     {
@@ -495,12 +495,21 @@
       }
     },
     {
+      "identity" : "swift-subprocess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-subprocess.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "44be5d56aa4b26dc2003a67c0288a6a68366a87d"
+      }
+    },
+    {
       "identity" : "swift-system",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
-        "revision" : "c8a44d836fe7913603e246acab7c528c2e780168",
-        "version" : "1.4.0"
+        "revision" : "61e4ca4b81b9e09e2ec863b00c340eb13497dac6",
+        "version" : "1.5.0"
       }
     },
     {

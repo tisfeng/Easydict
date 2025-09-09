@@ -171,12 +171,6 @@ class AppleScriptTask: NSObject {
     private let errorPipe: Pipe
 }
 
-// MARK: - AppleScriptError
-
-// enum AppleScriptError: Error {
-//    case executionError(message: String, code: Int = 1)
-// }
-
 func appleScript(of shortcutName: String, inputText: String) -> String {
     // inputText may contain ", we need to escape it
     let escapedInputText = inputText.replacingOccurrences(of: "\"", with: "\\\"")

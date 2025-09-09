@@ -113,9 +113,6 @@ class ActionManager: NSObject {
 
         logInfo("Auto-selected all text content in field")
 
-        // Turn off muting alert volume. If true, we cannot get selected text in short time.
-        EZEventMonitor.shared().isMutingAlertVolume = false
-
         return await systemUtility.getFocusedTextFieldInfo()
     }
 

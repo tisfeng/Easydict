@@ -239,6 +239,7 @@
 		03A5B4BF2E0AB23900BA8F2E /* String+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
+		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E829231FA6001C7E63 /* entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* entry.m */; };
@@ -818,6 +819,7 @@
 		03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+OCR.swift"; sourceTree = "<group>"; };
 		03A5E0912D3C020200FF7D95 /* StreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamService.swift; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* TextFieldInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldInfo.swift; sourceTree = "<group>"; };
+		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -2458,6 +2460,7 @@
 				03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */,
 				0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */,
 				0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */,
+				03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */,
 				03A91F142E63E1FB00896B17 /* TextFieldInfo.swift */,
 			);
 			path = SystemUtility;
@@ -2838,14 +2841,6 @@
 			path = Groq;
 			sourceTree = "<group>";
 		};
-		03F281622D9A323700AE518C /* Zhipu */ = {
-			isa = PBXGroup;
-			children = (
-				03F281612D9A323700AE518C /* ZhipuService.swift */,
-			);
-			path = Zhipu;
-			sourceTree = "<group>";
-		};
 		03F0DB352953424F00EBF9C1 /* EZLog */ = {
 			isa = PBXGroup;
 			children = (
@@ -2868,6 +2863,14 @@
 				03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */,
 			);
 			path = ChineseGenre;
+			sourceTree = "<group>";
+		};
+		03F281622D9A323700AE518C /* Zhipu */ = {
+			isa = PBXGroup;
+			children = (
+				03F281612D9A323700AE518C /* ZhipuService.swift */,
+			);
+			path = Zhipu;
 			sourceTree = "<group>";
 		};
 		03F2F08B2E4074F400496F71 /* CharacterSet */ = {
@@ -3249,7 +3252,6 @@
 			isa = PBXGroup;
 			children = (
 				03BBC8142E62049600CFC582 /* SystemUtility */,
-				03F2F08B2E4074F400496F71 /* CharacterSet */,
 				03F2815B2D98E52200AE518C /* ChineseGenre */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
@@ -3279,6 +3281,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				03F2F08B2E4074F400496F71 /* CharacterSet */,
 				03916D6F2E68153F007E50D7 /* Task */,
 				034B47192E23E39800C1428D /* NSPasteboard */,
 				03FDAE922E1A29B70029369E /* Regex */,
@@ -3984,6 +3987,7 @@
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
+				03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */,
 				03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */,
 				03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
