@@ -809,7 +809,10 @@ static EZWindowManager *_instance;
         }
         self.selectedText = text;
 
-        [self showFloatingWindowType:windowType queryText:self.selectedText];
+        // Run it on main thread to avoid some UI bugs.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showFloatingWindowType:windowType queryText:self.selectedText];
+        });
     }];
 }
 

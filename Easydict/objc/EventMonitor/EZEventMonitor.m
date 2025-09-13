@@ -266,77 +266,77 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 #pragma mark - Get selected text.
 
+/// Get selected text with different strategies.
+///
+/// - Important: This completion is `NOT` called on main thread.
 - (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable))completion {
-    // Since `getSelectedText` is async, we need to make sure the completion block is called on main thread.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self recordSelectTextInfo];
-        MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
+    [self recordSelectTextInfo];
+    MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
 
-        self.selectedTextEditable = NO;
+    self.selectedTextEditable = NO;
 
-        NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
 
-        // Use Accessibility first
-        [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyAccessibility
-                                          completionHandler:^(NSString *text, NSError *error) {
-            AXError axError = (AXError)error.code;
-            
-            self.selectTextType = EZSelectTextTypeAccessibility;
-            self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
+    // Use Accessibility first
+    [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyAccessibility
+                                      completionHandler:^(NSString *text, NSError *error) {
+        AXError axError = (AXError)error.code;
+        
+        self.selectTextType = EZSelectTextTypeAccessibility;
+        self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 
-            // 1. If successfully use Accessibility to get selected text.
-            if (text.length > 0) {
-                // Monitor CGEventTap after successfully using Accessibility.
-                if (Configuration.shared.autoSelectText) {
-                    [self monitorCGEventTap];
-                }
-
-                completion(text);
-                return;
+        // 1. If successfully use Accessibility to get selected text.
+        if (text.length > 0) {
+            // Monitor CGEventTap after successfully using Accessibility.
+            if (Configuration.shared.autoSelectText) {
+                [self monitorCGEventTap];
             }
 
-            // If this is the first time using Accessibility, request Accessibility permission.
-            BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && axError == kAXErrorAPIDisabled;
-            if (needRequestAccessibility) {
-                [self isAccessibilityEnabled];
-                completion(nil);
-                return;
-            }
+            completion(text);
+            return;
+        }
 
-            // 2. Use AppleScript to get selected text from the browser.
-            if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
-                self.selectTextType = EZSelectTextTypeAppleScript;
-                [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (error) {
-                            // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
-                            MMLogError(@"Failed to get selected text from browser: %@", error);
-                            [self tryForceGetSelectedText:completion];
-                            return;
-                        }
+        // If this is the first time using Accessibility, request Accessibility permission.
+        BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && axError == kAXErrorAPIDisabled;
+        if (needRequestAccessibility) {
+            [self isAccessibilityEnabled];
+            completion(nil);
+            return;
+        }
 
-                        NSString *text = selectedText.trim;
-                        if (text.length > 0) {
-                            completion(text);
-                            return;
-                        }
-
-                        MMLogInfo(@"AppleScript get selected text is empty, try to use force get selected text for browser");
-
+        // 2. Use AppleScript to get selected text from the browser.
+        if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
+            self.selectTextType = EZSelectTextTypeAppleScript;
+            [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
+                        MMLogError(@"Failed to get selected text from browser: %@", error);
                         [self tryForceGetSelectedText:completion];
-                    });
-                }];
-                return;
-            }
+                        return;
+                    }
 
-            if (axError == kAXErrorAPIDisabled) {
-                MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
-            }
+                    NSString *text = selectedText.trim;
+                    if (text.length > 0) {
+                        completion(text);
+                        return;
+                    }
 
-            // 3. Try to use force get selected text.
-            [self handleForceGetSelectedTextOnAXError:axError completion:completion];
-        }];
-    });
+                    MMLogInfo(@"AppleScript get selected text is empty, try to use force get selected text for browser");
+
+                    [self tryForceGetSelectedText:completion];
+                });
+            }];
+            return;
+        }
+
+        if (axError == kAXErrorAPIDisabled) {
+            MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
+        }
+
+        // 3. Try to use force get selected text.
+        [self handleForceGetSelectedTextOnAXError:axError completion:completion];
+    }];
 }
 
 /// Check error type to use menu action copy or simulated key to get selected text.
