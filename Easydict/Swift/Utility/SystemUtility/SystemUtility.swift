@@ -100,7 +100,7 @@ class SystemUtility: NSObject {
             }
 
             // 3. Try to get selected text and range
-            let selectedRange = try element.selectedRange()
+            let selectedRange = try element.selectedTextRange()
             let selectedText = await getSelectedText()
             let roleValue = try element.roleValue() ?? "unknown"
 

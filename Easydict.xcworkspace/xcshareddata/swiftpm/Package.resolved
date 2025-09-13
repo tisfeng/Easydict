@@ -57,10 +57,10 @@
     {
       "identity" : "axswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tmandry/AXSwift",
+      "location" : "https://github.com/clavierorg/AXSwift.git",
       "state" : {
-        "revision" : "81dcc36aced905d6464cc25e35f8d13184bbf21c",
-        "version" : "0.3.2"
+        "revision" : "191440838c70c9ceb4ccc6d81d310507b7bc8589",
+        "version" : "0.3.4"
       }
     },
     {
@@ -293,7 +293,7 @@
       "location" : "https://github.com/tisfeng/SelectedTextKit.git",
       "state" : {
         "branch" : "main",
-        "revision" : "7edf548e037f3848eeaee30cc71a68f572045b88"
+        "revision" : "03353c2e80eccbd72b7834c21532d3a510a5dc8e"
       }
     },
     {

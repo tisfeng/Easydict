@@ -267,88 +267,76 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 #pragma mark - Get selected text.
 
 - (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable))completion {
-    [self getSelectedText:NO completion:^(NSString *text) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(text);
-        });
-    }];
-}
+    // Since `getSelectedText` is async, we need to make sure the completion block is called on main thread.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self recordSelectTextInfo];
+        MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
 
-/// Use Accessibility to get selected text first, if failed, use AppleScript and Cmd+C.
-- (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
-    [self recordSelectTextInfo];
-    MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
+        self.selectedTextEditable = NO;
 
-    self.selectedTextEditable = NO;
+        NSString *bundleID = self.frontmostApplication.bundleIdentifier;
 
-    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+        // Use Accessibility first
+        [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyAccessibility
+                                          completionHandler:^(NSString *text, NSError *error) {
+            AXError axError = (AXError)error.code;
+            
+            self.selectTextType = EZSelectTextTypeAccessibility;
+            self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 
-    // Use Accessibility first
-    [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyAccessibility
-                                      completionHandler:^(NSString *text, NSError *error) {
-        AXError axError = (AXError)error.code;
-        
-        self.selectTextType = EZSelectTextTypeAccessibility;
-        self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
+            // 1. If successfully use Accessibility to get selected text.
+            if (text.length > 0) {
+                // Monitor CGEventTap after successfully using Accessibility.
+                if (Configuration.shared.autoSelectText) {
+                    [self monitorCGEventTap];
+                }
 
-        // If selected text frame is invalid, ignore it.
-        if (checkTextFrame && ![self isValidSelectedFrame]) {
-            completion(nil);
-            return;
-        }
-
-        // 1. If successfully use Accessibility to get selected text.
-        if (text.length > 0) {
-            // Monitor CGEventTap after successfully using Accessibility.
-            if (Configuration.shared.autoSelectText) {
-                [self monitorCGEventTap];
+                completion(text);
+                return;
             }
 
-            completion(text);
-            return;
-        }
+            // If this is the first time using Accessibility, request Accessibility permission.
+            BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && axError == kAXErrorAPIDisabled;
+            if (needRequestAccessibility) {
+                [self isAccessibilityEnabled];
+                completion(nil);
+                return;
+            }
 
-        // If this is the first time using Accessibility, request Accessibility permission.
-        BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && axError == kAXErrorAPIDisabled;
-        if (needRequestAccessibility) {
-            [self isAccessibilityEnabled];
-            completion(nil);
-            return;
-        }
+            // 2. Use AppleScript to get selected text from the browser.
+            if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
+                self.selectTextType = EZSelectTextTypeAppleScript;
+                [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (error) {
+                            // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
+                            MMLogError(@"Failed to get selected text from browser: %@", error);
+                            [self tryForceGetSelectedText:completion];
+                            return;
+                        }
 
-        // 2. Use AppleScript to get selected text from the browser.
-        if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
-            self.selectTextType = EZSelectTextTypeAppleScript;
-            [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (error) {
-                        // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
-                        MMLogError(@"Failed to get selected text from browser: %@", error);
+                        NSString *text = selectedText.trim;
+                        if (text.length > 0) {
+                            completion(text);
+                            return;
+                        }
+
+                        MMLogInfo(@"AppleScript get selected text is empty, try to use force get selected text for browser");
+
                         [self tryForceGetSelectedText:completion];
-                        return;
-                    }
+                    });
+                }];
+                return;
+            }
 
-                    NSString *text = selectedText.trim;
-                    if (text.length > 0) {
-                        completion(text);
-                        return;
-                    }
+            if (axError == kAXErrorAPIDisabled) {
+                MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
+            }
 
-                    MMLogInfo(@"AppleScript get selected text is empty, try to use force get selected text for browser");
-
-                    [self tryForceGetSelectedText:completion];
-                });
-            }];
-            return;
-        }
-
-        if (axError == kAXErrorAPIDisabled) {
-            MMLogError(@"Failed to get text, kAXErrorAPIDisabled");
-        }
-
-        // 3. Try to use force get selected text.
-        [self handleForceGetSelectedTextOnAXError:axError completion:completion];
-    }];
+            // 3. Try to use force get selected text.
+            [self handleForceGetSelectedTextOnAXError:axError completion:completion];
+        }];
+    });
 }
 
 /// Check error type to use menu action copy or simulated key to get selected text.
@@ -472,27 +460,28 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSString *bundleID = self.frontmostApplication.bundleIdentifier;
     [AppleScriptTask getCurrentTabURLFromBrowser:bundleID completionHandler:^(NSString *_Nullable URLString, NSError *_Nullable error) {
-        if (error) {
-            MMLogError(@"Failed to get browser tabl url: %@", error);
-        } else {
+        if (!error) {
+            MMLogInfo(@"Get browser tab url: %@", URLString);
             // Create a new copy of URLString and set it on main thread
             // FIX: Detected over-release of a CFTypeRef 0x60000158c4e0 (7 / CFString)
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.browserTabURLString = [URLString copy];
             });
+        } else {
+            MMLogError(@"Failed to get browser tabl url: %@", error);
         }
     }];
 }
 
 /// Auto get selected text.
-- (void)autoGetSelectedText:(BOOL)checkTextFrame {
+- (void)autoGetSelectedText {
     if ([self enabledAutoSelectText]) {
         MMLogInfo(@"auto get selected text");
 
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
 
-        [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
+        [self getSelectedTextWithCompletion:^(NSString *_Nullable text) {
             self.isPopButtonVisible = YES;
 
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -629,55 +618,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     return NO;
 }
 
-/**
- Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
-
- But this method need allow Accessibility in setting first, no pop-up alerts.
-
- Cannot work in Apps: Safari, Mail, etc.
- */
-- (void)getSelectedTextByAccessibility:(void (^)(NSString *_Nullable text, AXError error))completion {
-    AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    AXUIElementRef focusedElement = NULL;
-
-    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-
-    NSString *selectedText;
-    AXError error = getFocusedUIElementError;
-
-    // !!!: This frame is left-top position
-    CGRect selectedTextFrame = [self getSelectedTextFrame];
-    //    MMLogInfo(@"selected text: %@", @(selectedTextFrame));
-
-    self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
-
-    if (getFocusedUIElementError == kAXErrorSuccess) {
-        AXValueRef selectedTextValue = NULL;
-        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-        if (getSelectedTextError == kAXErrorSuccess) {
-            // Note: selectedText may be @""
-            selectedText = (__bridge NSString *)(selectedTextValue);
-            selectedText = [selectedText removeInvisibleChar];
-            self.selectedText = selectedText;
-            MMLogInfo(@"--> Accessibility getText success: %@", selectedText.truncated);
-        } else {
-            if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Unsupported Accessibility error: %d (kAXErrorNoValue)", getSelectedTextError);
-            } else {
-                MMLogError(@"Accessibility error: %d", getSelectedTextError);
-            }
-        }
-        error = getSelectedTextError;
-    }
-
-    if (focusedElement != NULL) {
-        CFRelease(focusedElement);
-    }
-    CFRelease(systemWideElement);
-
-    completion(selectedText, error);
-}
-
 - (AXUIElementRef)focusedElement {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
@@ -748,7 +688,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if ([self checkIfLeftMouseDragged]) {
                 self.triggerType = EZTriggerTypeDragged;
                 if (self.frontmostAppTriggerType & self.triggerType) {
-                    [self autoGetSelectedText:YES];
+                    [self autoGetSelectedText];
                 }
             }
             break;
@@ -971,16 +911,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 #pragma mark - Delay get selected text
 
 - (void)delayGetSelectedText {
-    [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
+    [self performSelector:@selector(autoGetSelectedText) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
 }
 
 - (void)delayGetSelectedText:(NSTimeInterval)delayTime {
-    [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:delayTime];
+    [self performSelector:@selector(autoGetSelectedText) withObject:@(NO) afterDelay:delayTime];
 }
 
 /// Cancel delay get selected text.
 - (void)cancelDelayGetSelectedText {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(autoGetSelectedText:) object:@(NO)];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(autoGetSelectedText) object:@(NO)];
 }
 
 
@@ -999,38 +939,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
-}
-
-/**
- Check selected text frame is valid.
-
- If selected text frame size is zero, return YES
- If selected text frame size is not zero, and start point and end point is in selected text frame, return YES, else return NO
- */
-- (BOOL)isValidSelectedFrame {
-    CGRect selectedTextFrame = self.selectedTextFrame;
-    // means get frame failed, but get selected text may success
-    if (selectedTextFrame.size.width == 0 && selectedTextFrame.size.height == 0) {
-        return YES;
-    }
-
-    // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
-    CGFloat expandValue = 40;
-    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
-                                                  selectedTextFrame.origin.y - expandValue,
-                                                  selectedTextFrame.size.width + expandValue * 2,
-                                                  selectedTextFrame.size.height + expandValue * 2);
-
-    // !!!: Note: sometimes selectedTextFrame is not correct, such as when select text in VSCode, selectedTextFrame is not correct.
-    if (CGRectContainsPoint(expandedSelectedTextFrame, self.startPoint) &&
-        CGRectContainsPoint(expandedSelectedTextFrame, self.endPoint)) {
-        return YES;
-    }
-
-    MMLogInfo(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
-    MMLogInfo(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
-
-    return NO;
 }
 
 - (BOOL)isMouseInPopButtonExpandedFrame {
@@ -1055,37 +963,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     CGFloat distanceSqr = pow(point.x - center.x, 2) + pow(point.y - center.y, 2);
     CGFloat radiusSqr = pow(radius, 2);
     return distanceSqr <= radiusSqr;
-}
-
-
-/// Check if current mouse position is in expanded selected text frame.
-- (BOOL)isMouseInExpandedSelectedTextFrame2 {
-    CGRect selectedTextFrame = self.selectedTextFrame;
-    // means get frame failed, but get selected text may success
-    if (CGSizeEqualToSize(selectedTextFrame.size, CGSizeZero)) {
-        EZPopButtonWindow *popButtonWindow = EZWindowManager.shared.popButtonWindow;
-        if (popButtonWindow.isVisible) {
-            selectedTextFrame = popButtonWindow.frame;
-        }
-    }
-
-    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedRadiusValue,
-                                                  selectedTextFrame.origin.y - kExpandedRadiusValue,
-                                                  selectedTextFrame.size.width + kExpandedRadiusValue * 2,
-                                                  selectedTextFrame.size.height + kExpandedRadiusValue * 2);
-
-    CGPoint mouseLocation = NSEvent.mouseLocation;
-    if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
-        return YES;
-    }
-
-    // Since selectedTextFrame may be zere, so we need to check start point and end point
-    CGRect startEndPointFrame = [self frameFromStartPoint:self.startPoint endPoint:self.endPoint];
-    if (CGRectContainsPoint(startEndPointFrame, mouseLocation)) {
-        return YES;
-    }
-
-    return NO;
 }
 
 /// Get frame from two points.

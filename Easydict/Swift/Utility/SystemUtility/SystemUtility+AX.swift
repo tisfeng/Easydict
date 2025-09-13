@@ -148,4 +148,9 @@ extension SystemUtility {
     func isFocusedTextField() -> Bool {
         (try? focusedTextFieldElement()) != nil
     }
+
+    @objc
+    func getSelectedTextFrame() -> NSRect {
+        (try? axManager.getSelectedTextFrame().rectValue) ?? .zero
+    }
 }

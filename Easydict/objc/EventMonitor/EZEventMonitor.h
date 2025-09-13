@@ -21,7 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSRunningApplication *frontmostApplication;
 @property (nonatomic, copy, nullable) NSString *browserTabURLString;
 
-@property (nonatomic, assign) CGRect selectedTextFrame;
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
 
