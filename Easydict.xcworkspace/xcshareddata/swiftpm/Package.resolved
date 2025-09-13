@@ -57,19 +57,10 @@
     {
       "identity" : "axswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tmandry/AXSwift",
+      "location" : "https://github.com/clavierorg/AXSwift.git",
       "state" : {
-        "revision" : "81dcc36aced905d6464cc25e35f8d13184bbf21c",
-        "version" : "0.3.2"
-      }
-    },
-    {
-      "identity" : "axswiftext",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/s1ntoneli/AXSwiftExt",
-      "state" : {
-        "revision" : "a2696cad4504996dffc53bb59892e13242a2c243",
-        "version" : "0.1.0"
+        "revision" : "191440838c70c9ceb4ccc6d81d310507b7bc8589",
+        "version" : "0.3.4"
       }
     },
     {
@@ -301,8 +292,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/SelectedTextKit.git",
       "state" : {
-        "revision" : "b9ad84483511429cb4f36986a46e1465c544eb77",
-        "version" : "1.1.0"
+        "branch" : "main",
+        "revision" : "03353c2e80eccbd72b7834c21532d3a510a5dc8e"
       }
     },
     {
@@ -504,12 +495,21 @@
       }
     },
     {
+      "identity" : "swift-subprocess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-subprocess.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "44be5d56aa4b26dc2003a67c0288a6a68366a87d"
+      }
+    },
+    {
       "identity" : "swift-system",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
-        "revision" : "c8a44d836fe7913603e246acab7c528c2e780168",
-        "version" : "1.4.0"
+        "revision" : "61e4ca4b81b9e09e2ec863b00c340eb13497dac6",
+        "version" : "1.5.0"
       }
     },
     {

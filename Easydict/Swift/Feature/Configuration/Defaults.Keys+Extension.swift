@@ -134,7 +134,7 @@ extension Defaults.Keys {
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
     static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
     static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
-    static var replaceWithTranslationInCompatibilityMode = Key<Bool>(
+    static var enableCompatibilityReplace = Key<Bool>(
         "replaceWithTranslationInCompatibilityMode",
         default: false
     )
@@ -168,6 +168,11 @@ extension Defaults.Keys {
     static let autoSelectAllTextFieldText = Key<Bool>(
         "EZConfiguration_kAutoSelectAllTextFieldText",
         default: true
+    )
+
+    static let preferAppleScriptAPI = Key<Bool>(
+        "EZConfiguration_kPreferAppleScriptAPI",
+        default: false
     )
 
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer

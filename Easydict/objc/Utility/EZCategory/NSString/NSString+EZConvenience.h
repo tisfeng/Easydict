@@ -45,9 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)unescapedXMLString;
 
-- (void)copyToPasteboard;
-- (void)copyToPasteboardSafely;
-
 - (void)copyAndShowToast:(BOOL)showToast;
 
 /// Check if the string is a valid URL. eg. https://www.google.com

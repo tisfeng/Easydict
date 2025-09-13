@@ -25,7 +25,9 @@ struct AdvancedTab: View {
                 }
             }
 
-            // Items image color order: blue, green, orange, purple, red, mint, yellow, cyan
+            // Items image color order: blue, green, orange, purple, red, mint, yellow, cyan, indigo
+
+            // General settings section
             Section {
                 Picker(
                     selection: $defaultTTSServiceType,
@@ -48,28 +50,11 @@ struct AdvancedTab: View {
                     )
                 }
 
-                Toggle(isOn: $enableYoudaoOCR) {
-                    AdvancedTabItemView(
-                        color: .orange,
-                        icon: .circleRectangleFilledPatternDiagonalline,
-                        labelText: "setting.advance.youdao_ocr",
-                        subtitleText: "setting.advance.youdao_ocr_desc"
-                    )
-                }
-                Toggle(isOn: $replaceWithTranslationInCompatibilityMode) {
-                    AdvancedTabItemView(
-                        color: .purple,
-                        icon: .arrowForwardSquare,
-                        labelText: "setting.advance.replace_with_translation",
-                        subtitleText: "setting.advance.replace_with_translation_desc"
-                    )
-                }
-
                 // Require macOS 15+
                 if #available(macOS 15.0, *) {
                     Toggle(isOn: $enableLocalAppleTranslation) {
                         AdvancedTabItemView(
-                            color: .red,
+                            color: .orange,
                             icon: .appleLogo,
                             labelText: "setting.advance.apple_offline_translation",
                             subtitleText: "setting.advance.apple_offline_translation_desc"
@@ -93,41 +78,16 @@ struct AdvancedTab: View {
                     }
                 } label: {
                     AdvancedTabItemView(
-                        color: .mint,
+                        color: .purple,
                         icon: .book,
                         labelText: "setting.advance.min_classical_chinese_text_detect_length"
                     )
                 }
-
-                Toggle(isOn: $enableOCRTextNormalization) {
-                    AdvancedTabItemView(
-                        color: .yellow,
-                        icon: .docViewfinder,
-                        labelText: "setting.advance.enable_ocr_text_normalization",
-                        subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
-                    )
-                }
-
-                Toggle(isOn: $showOCRMenuItems) {
-                    AdvancedTabItemView(
-                        color: .cyan,
-                        icon: .textAndCommandMacwindow,
-                        labelText: "setting.advance.show_ocr_menu_items",
-                        subtitleText: "setting.advance.show_ocr_menu_items_desc"
-                    )
-                }
-
-                Toggle(isOn: $autoSelectAllTextFieldText) {
-                    AdvancedTabItemView(
-                        color: .indigo,
-                        icon: .checkmarkSquare,
-                        labelText: "setting.advance.auto_select_all_text_field_text",
-                        subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
-                    )
-                }
+            } header: {
+                Text("setting.advance.header.general_settings")
             }
 
-            // Force get selected text
+            // Force get selected text and replace text
             Section {
                 Toggle(isOn: $enableForceGetSelectedText) {
                     AdvancedTabItemView(
@@ -137,7 +97,6 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.enable_force_get_selected_text_desc"
                     )
                 }
-
                 Picker(
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
@@ -151,8 +110,65 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+
+                Toggle(isOn: $preferAppleScriptAPI) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        icon: .applescript,
+                        labelText: "setting.advance.prefer_applescript_api",
+                        subtitleText: "setting.advance.prefer_applescript_api_desc"
+                    )
+                }
+                Toggle(isOn: $enableCompatibilityReplace) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        icon: .arrowForwardSquare,
+                        labelText: "setting.advance.enable_compatibility_replace",
+                        subtitleText: "setting.advance.enable_compatibility_replace_desc"
+                    )
+                }
+                Toggle(isOn: $autoSelectAllTextFieldText) {
+                    AdvancedTabItemView(
+                        color: .red,
+                        icon: .checkmarkSquare,
+                        labelText: "setting.advance.auto_select_all_text_field_text",
+                        subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
+                    )
+                }
+
             } header: {
-                Text("setting.advance.header.force_get_selected_text")
+                Text("setting.advance.header.text_selection_and_replacement")
+            }
+
+            // OCR settings section
+            Section {
+                Toggle(isOn: $enableYoudaoOCR) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .circleRectangleFilledPatternDiagonalline,
+                        labelText: "setting.advance.enable_youdao_ocr",
+                        subtitleText: "setting.advance.enable_youdao_ocr_desc"
+                    )
+                }
+                Toggle(isOn: $enableOCRTextNormalization) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        icon: .docViewfinder,
+                        labelText: "setting.advance.enable_ocr_text_normalization",
+                        subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
+                    )
+                }
+
+                Toggle(isOn: $showOCRMenuItems) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        icon: .textAndCommandMacwindow,
+                        labelText: "setting.advance.show_ocr_menu_items",
+                        subtitleText: "setting.advance.show_ocr_menu_items_desc"
+                    )
+                }
+            } header: {
+                Text("setting.advance.header.ocr_settings")
             }
 
             // Mouse query icon
@@ -202,7 +218,7 @@ struct AdvancedTab: View {
                 }
                 Toggle(isOn: $automaticWordSegmentation) {
                     AdvancedTabItemView(
-                        color: .purple,
+                        color: .orange,
                         icon: .textWordSpacing,
                         labelText: "setting.advance.automatically_split_words"
                     )
@@ -358,13 +374,13 @@ struct AdvancedTab: View {
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
-    @Default(.replaceWithTranslationInCompatibilityMode) private
-    var replaceWithTranslationInCompatibilityMode
+    @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems
     @Default(.autoSelectAllTextFieldText) private var autoSelectAllTextFieldText
+    @Default(.preferAppleScriptAPI) private var preferAppleScriptAPI
 
     // Force get selected text
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText

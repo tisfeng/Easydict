@@ -11,14 +11,10 @@
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 #import "EZLocalStorage.h"
-#import "EZSystemUtility.h"
 #import "Easydict-Swift.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
-
-// The longest system alert audio is Crystal, named Glass.aiff, its effective playback time is less than 0.8s
-static NSTimeInterval const kDelayRecoverVolumeTime = 1.0;
 
 static NSInteger const kRecordEventCount = 3;
 
@@ -53,8 +49,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 // We need to store the alert volume, because the volume will be set to 0 when using Cmd+C to get selected text.
 @property (nonatomic, assign) NSInteger currentAlertVolume;
-// When isMuting, we should not read alert volume, avoid reading this value incorrectly.
-@property (nonatomic, assign) BOOL isMutingAlertVolume;
 
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
@@ -272,26 +266,24 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 #pragma mark - Get selected text.
 
+/// Get selected text with different strategies.
+///
+/// - Important: This completion is `NOT` called on main thread.
 - (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable))completion {
-    [self getSelectedText:NO completion:completion];
-}
-
-/// Use Accessibility to get selected text first, if failed, use AppleScript and Cmd+C.
-- (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     [self recordSelectTextInfo];
     MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
 
     self.selectedTextEditable = NO;
 
-    // Use Accessibility first
-    [SharedUtilities getSelectedTextByAXUIWithCompletion:^(NSString *_Nullable text, AXError axError) {
-        self.selectTextType = EZSelectTextTypeAccessibility;
+    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
 
-        // If selected text frame is invalid, ignore it.
-        if (checkTextFrame && ![self isValidSelectedFrame]) {
-            completion(nil);
-            return;
-        }
+    // Use Accessibility first
+    [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyAccessibility
+                                      completionHandler:^(NSString *text, NSError *error) {
+        AXError axError = (AXError)error.code;
+        
+        self.selectTextType = EZSelectTextTypeAccessibility;
+        self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 
         // 1. If successfully use Accessibility to get selected text.
         if (text.length > 0) {
@@ -300,7 +292,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                 [self monitorCGEventTap];
             }
 
-            self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
             completion(text);
             return;
         }
@@ -312,8 +303,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             completion(nil);
             return;
         }
-
-        NSString *bundleID = self.frontmostApplication.bundleIdentifier;
 
         // 2. Use AppleScript to get selected text from the browser.
         if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
@@ -380,36 +369,18 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     }
 }
 
-/// Get selected text by simulated key Cmd+C, and mute alert volume.
+/// Get selected text by simulated key Cmd+C, and mute alert volume temporarily to avoid alert sound.
 - (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
-    MMLogInfo(@"Get selected text by simulated key");
+    MMLogInfo(@"Get selected text by simulated key.");
 
     self.selectTextType = EZSelectTextTypeSimulatedKey;
 
-    // Do not mute alert volume if already muting, avoid getting muted volume 0, since this method may be called multiple times when dragging window.
-    if (!self.isMutingAlertVolume) {
-        self.isMutingAlertVolume = YES;
-
-        // First, mute alert volume to avoid alert.
-        [AppleScriptTask muteAlertVolumeWithCompletionHandler:^(NSInteger volume, NSError *error) {
-            if (error) {
-                MMLogError(@"Failed to mute alert volume: %@", error);
-            } else {
-                self.currentAlertVolume = volume;
-            }
-
-            // After muting alert volume, get selected text by simulated key.
-            [SharedUtilities getSelectedTextByShortcutCopyWithCompletionHandler:^(NSString *selectedText) {
-                MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
-                completion(selectedText);
-            }];
-        }];
-    }
-
-    [self cancelDelayRecoverVolume];
-
-    // Delay to recover volume, avoid alert volume if the user does not select text when simulating Cmd+C.
-    [self delayRecoverVolume];
+    // After muting alert volume, get selected text by simulated key.
+    [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyShortcut
+                                      completionHandler:^(NSString *selectedText, NSError *error) {
+        MMLogInfo(@"Get selected text by simulated key success: %@", selectedText);
+        completion(selectedText);
+    }];
 }
 
 /// Get selected text by menu bar action copy.
@@ -418,7 +389,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     self.selectTextType = EZSelectTextTypeMenuBarActionCopy;
 
-    [SharedUtilities getSelectedTextByMenuBarActionCopyWithCompletionHandler:completion];
+    [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyMenuAction
+                                      completionHandler:completion];
 }
 
 /// Get selected text by simulated key first, if failed, use menu bar action copy.
@@ -457,7 +429,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
 
         // If the frontmost app has no copy menu item, try to use simulated key to get selected text.
-        if (![SharedUtilities hasCopyMenuItem]) {
+        if (![EZSystemUtility.shared hasCopyMenuItem]) {
             MMLogError(@"Get selected text by menu bar action copy is empty, try to use simulated key");
             [self getSelectedTextBySimulatedKey:completion];
         } else {
@@ -468,7 +440,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)updateSelectedTextEditableState {
-    self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
+    self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 }
 
 - (BOOL)useAccessibilityForFirstTime {
@@ -488,30 +460,33 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSString *bundleID = self.frontmostApplication.bundleIdentifier;
     [AppleScriptTask getCurrentTabURLFromBrowser:bundleID completionHandler:^(NSString *_Nullable URLString, NSError *_Nullable error) {
-        if (error) {
-            MMLogError(@"Failed to get browser tabl url: %@", error);
-        } else {
+        if (!error) {
+            MMLogInfo(@"Get browser tab url: %@", URLString);
             // Create a new copy of URLString and set it on main thread
             // FIX: Detected over-release of a CFTypeRef 0x60000158c4e0 (7 / CFString)
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.browserTabURLString = [URLString copy];
             });
+        } else {
+            MMLogError(@"Failed to get browser tabl url: %@", error);
         }
     }];
 }
 
 /// Auto get selected text.
-- (void)autoGetSelectedText:(BOOL)checkTextFrame {
+- (void)autoGetSelectedText {
     if ([self enabledAutoSelectText]) {
         MMLogInfo(@"auto get selected text");
 
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
 
-        [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
+        [self getSelectedTextWithCompletion:^(NSString *_Nullable text) {
             self.isPopButtonVisible = YES;
 
-            [self handleSelectedText:text];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self handleSelectedText:text];
+            });
         }];
     }
 }
@@ -573,6 +548,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      */
     if (axError == kAXErrorNoValue) {
         MMLogInfo(@"error: kAXErrorNoValue, unsupported Accessibility App: %@", application);
+        MMLogError(@"This error type allow force get selected text");
         return YES;
     }
 
@@ -640,75 +616,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     MMLogInfo(@"After check axError: %d, not use force get selected text: %@", axError, application);
 
     return NO;
-}
-
-#pragma mark - Delay to recover volume
-
-- (void)delayRecoverVolume {
-    [self performSelector:@selector(recoverVolume) withObject:nil afterDelay:kDelayRecoverVolumeTime];
-}
-
-- (void)cancelDelayRecoverVolume {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(recoverVolume) object:nil];
-}
-
-- (void)recoverVolume {
-    [AppleScriptTask setAlertVolume:self.currentAlertVolume completionHandler:^(NSError *error) {
-        self.isMutingAlertVolume = NO;
-        if (error) {
-            MMLogError(@"Failed to recover alert volume: %@", error.localizedDescription);
-        }
-    }];
-}
-
-
-/**
- Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
-
- But this method need allow Accessibility in setting first, no pop-up alerts.
-
- Cannot work in Apps: Safari, Mail, etc.
- */
-- (void)getSelectedTextByAccessibility:(void (^)(NSString *_Nullable text, AXError error))completion {
-    AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    AXUIElementRef focusedElement = NULL;
-
-    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-
-    NSString *selectedText;
-    AXError error = getFocusedUIElementError;
-
-    // !!!: This frame is left-top position
-    CGRect selectedTextFrame = [self getSelectedTextFrame];
-    //    MMLogInfo(@"selected text: %@", @(selectedTextFrame));
-
-    self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
-
-    if (getFocusedUIElementError == kAXErrorSuccess) {
-        AXValueRef selectedTextValue = NULL;
-        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-        if (getSelectedTextError == kAXErrorSuccess) {
-            // Note: selectedText may be @""
-            selectedText = (__bridge NSString *)(selectedTextValue);
-            selectedText = [selectedText removeInvisibleChar];
-            self.selectedText = selectedText;
-            MMLogInfo(@"--> Accessibility getText success: %@", selectedText.truncated);
-        } else {
-            if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Unsupported Accessibility error: %d (kAXErrorNoValue)", getSelectedTextError);
-            } else {
-                MMLogError(@"Accessibility error: %d", getSelectedTextError);
-            }
-        }
-        error = getSelectedTextError;
-    }
-
-    if (focusedElement != NULL) {
-        CFRelease(focusedElement);
-    }
-    CFRelease(systemWideElement);
-
-    completion(selectedText, error);
 }
 
 - (AXUIElementRef)focusedElement {
@@ -781,7 +688,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             if ([self checkIfLeftMouseDragged]) {
                 self.triggerType = EZTriggerTypeDragged;
                 if (self.frontmostAppTriggerType & self.triggerType) {
-                    [self autoGetSelectedText:YES];
+                    [self autoGetSelectedText];
                 }
             }
             break;
@@ -987,7 +894,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)dismissPopButton {
     // If isMutingAlertVolume is YES, in this case, Cmd + C may be used to get selected text, so don't dismiss pop button.
-    if (self.isMutingAlertVolume && [self isCmdCEvent:self.event]) {
+    if ([self isCmdCEvent:self.event]) {
         return;
     }
 
@@ -1004,16 +911,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 #pragma mark - Delay get selected text
 
 - (void)delayGetSelectedText {
-    [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
+    [self performSelector:@selector(autoGetSelectedText) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
 }
 
 - (void)delayGetSelectedText:(NSTimeInterval)delayTime {
-    [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:delayTime];
+    [self performSelector:@selector(autoGetSelectedText) withObject:@(NO) afterDelay:delayTime];
 }
 
 /// Cancel delay get selected text.
 - (void)cancelDelayGetSelectedText {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(autoGetSelectedText:) object:@(NO)];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(autoGetSelectedText) object:@(NO)];
 }
 
 
@@ -1025,19 +932,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     return app;
 }
 
-- (AXUIElementRef)focusedElement2 {
-    pid_t pid = [self getFrontmostApp].processIdentifier;
-    AXUIElementRef focusedApp = AXUIElementCreateApplication(pid);
-
-    AXUIElementRef focusedElement;
-    AXError focusedElementError = AXUIElementCopyAttributeValue(focusedApp, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-    if (focusedElementError == kAXErrorSuccess) {
-        return focusedElement;
-    } else {
-        return nil;
-    }
-}
-
 - (void)authorize {
     MMLogInfo(@"AuthorizeButton clicked");
 
@@ -1045,38 +939,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
-}
-
-/**
- Check selected text frame is valid.
-
- If selected text frame size is zero, return YES
- If selected text frame size is not zero, and start point and end point is in selected text frame, return YES, else return NO
- */
-- (BOOL)isValidSelectedFrame {
-    CGRect selectedTextFrame = self.selectedTextFrame;
-    // means get frame failed, but get selected text may success
-    if (selectedTextFrame.size.width == 0 && selectedTextFrame.size.height == 0) {
-        return YES;
-    }
-
-    // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
-    CGFloat expandValue = 40;
-    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
-                                                  selectedTextFrame.origin.y - expandValue,
-                                                  selectedTextFrame.size.width + expandValue * 2,
-                                                  selectedTextFrame.size.height + expandValue * 2);
-
-    // !!!: Note: sometimes selectedTextFrame is not correct, such as when select text in VSCode, selectedTextFrame is not correct.
-    if (CGRectContainsPoint(expandedSelectedTextFrame, self.startPoint) &&
-        CGRectContainsPoint(expandedSelectedTextFrame, self.endPoint)) {
-        return YES;
-    }
-
-    MMLogInfo(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
-    MMLogInfo(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
-
-    return NO;
 }
 
 - (BOOL)isMouseInPopButtonExpandedFrame {
@@ -1101,37 +963,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     CGFloat distanceSqr = pow(point.x - center.x, 2) + pow(point.y - center.y, 2);
     CGFloat radiusSqr = pow(radius, 2);
     return distanceSqr <= radiusSqr;
-}
-
-
-/// Check if current mouse position is in expanded selected text frame.
-- (BOOL)isMouseInExpandedSelectedTextFrame2 {
-    CGRect selectedTextFrame = self.selectedTextFrame;
-    // means get frame failed, but get selected text may success
-    if (CGSizeEqualToSize(selectedTextFrame.size, CGSizeZero)) {
-        EZPopButtonWindow *popButtonWindow = EZWindowManager.shared.popButtonWindow;
-        if (popButtonWindow.isVisible) {
-            selectedTextFrame = popButtonWindow.frame;
-        }
-    }
-
-    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedRadiusValue,
-                                                  selectedTextFrame.origin.y - kExpandedRadiusValue,
-                                                  selectedTextFrame.size.width + kExpandedRadiusValue * 2,
-                                                  selectedTextFrame.size.height + kExpandedRadiusValue * 2);
-
-    CGPoint mouseLocation = NSEvent.mouseLocation;
-    if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
-        return YES;
-    }
-
-    // Since selectedTextFrame may be zere, so we need to check start point and end point
-    CGRect startEndPointFrame = [self frameFromStartPoint:self.startPoint endPoint:self.endPoint];
-    if (CGRectContainsPoint(startEndPointFrame, mouseLocation)) {
-        return YES;
-    }
-
-    return NO;
 }
 
 /// Get frame from two points.

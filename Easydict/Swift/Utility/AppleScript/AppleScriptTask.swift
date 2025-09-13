@@ -55,11 +55,11 @@ class AppleScriptTask: NSObject {
         let appleScript = appleScript(
             of: SharedConstants.easydictTranslateShortcutName, parameters: parameters
         )
-        return try await runAppleScript(appleScript)
+        return try await asyncRunAppleScript(appleScript)
     }
 
     @discardableResult
-    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws -> String? {
+    static func asyncRunAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws -> String? {
         try await Task { () -> String? in
             try runAppleScript(appleScript, timeout: timeout)
         }.value
@@ -170,12 +170,6 @@ class AppleScriptTask: NSObject {
     private let outputPipe: Pipe
     private let errorPipe: Pipe
 }
-
-// MARK: - AppleScriptError
-
-// enum AppleScriptError: Error {
-//    case executionError(message: String, code: Int = 1)
-// }
 
 func appleScript(of shortcutName: String, inputText: String) -> String {
     // inputText may contain ", we need to escape it

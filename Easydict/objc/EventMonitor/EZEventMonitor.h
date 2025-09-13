@@ -21,7 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSRunningApplication *frontmostApplication;
 @property (nonatomic, copy, nullable) NSString *browserTabURLString;
 
-@property (nonatomic, assign) CGRect selectedTextFrame;
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
 
@@ -36,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)shared;
 
-/// Use Accessibility to get selected text first, if failed, use shortcut.
 - (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable text))completion NS_SWIFT_ASYNC_NAME(getSelectedText());
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;

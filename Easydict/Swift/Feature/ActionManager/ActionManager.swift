@@ -7,9 +7,9 @@
 //
 
 import AppKit
-import AXSwift
 import Defaults
 import Foundation
+import SelectedTextKit
 
 // MARK: - ActionManager
 
@@ -67,11 +67,8 @@ class ActionManager: NSObject {
         logInfo("Text Field Info after Auto-Selection: \(textFieldInfo)")
 
         // Prepare translation request
-        guard let request = await prepareTranslationRequest(
-            from: textFieldInfo,
-            type: type
-        )
-        else {
+        let queryText = textFieldInfo.focusedText
+        guard let request = await prepareTranslationRequest(queryText: queryText, type: type) else {
             return
         }
 
@@ -84,22 +81,35 @@ class ActionManager: NSObject {
 
     // MARK: - Helper Methods
 
+    /// Determine the appropriate text strategy set based on the text field info and user settings
+    private func textStrategySet(for textFieldInfo: TextFieldInfo) -> TextStrategySet {
+        let isSupportedAX = textFieldInfo.isSupportedAXElement
+        let enableCompatibilityMode = Defaults[.enableCompatibilityReplace]
+
+        let isBrowser = AppleScriptTask.isBrowserSupportingAppleScript(frontmostAppBundleID)
+        let preferAppleScriptAPI = Defaults[.preferAppleScriptAPI]
+        let shouldUseAppleScript = isBrowser && preferAppleScriptAPI
+
+        return systemUtility.textStrategySet(
+            shouldUseAppleScript: shouldUseAppleScript,
+            enableCompatibilityMode: enableCompatibilityMode,
+            isSupportedAX: isSupportedAX
+        )
+    }
+
     /// Process automatic text selection based on user settings and return updated text field info
     /// - Parameter textFieldInfo: Information about the current text field
     /// - Returns: Updated TextFieldInfo after processing auto-selection, or nil if processing fails
     private func processAutoTextSelection(for textFieldInfo: TextFieldInfo) async -> TextFieldInfo? {
         let autoSelectEnabled = Defaults[.autoSelectAllTextFieldText]
-        let selectedText = textFieldInfo.selectedText ?? ""
+        let selectedText = textFieldInfo.selectedText?.trim() ?? ""
 
         guard autoSelectEnabled, selectedText.isEmpty else {
             return textFieldInfo
         }
 
-        // Send Cmd+A to select all text in the field
-        systemUtility.selectAll()
-
-        // Small delay to allow selection to complete
-        await Task.sleep(seconds: 0.1)
+        let textStrategy = textStrategySet(for: textFieldInfo)
+        await systemUtility.selectAll(using: textStrategy)
 
         logInfo("Auto-selected all text content in field")
 
@@ -112,12 +122,10 @@ class ActionManager: NSObject {
     ///   - type: The type of processing (translate or polish)
     /// - Returns: A configured TranslationRequest or nil if preparation fails
     private func prepareTranslationRequest(
-        from textFieldInfo: TextFieldInfo,
+        queryText: String,
         type: ProcessingType
     ) async
         -> TranslationRequest? {
-        let queryText = textFieldInfo.focusedText
-
         // Detect language and target
         let queryModel = try? await EZDetectManager().detectText(queryText)
         guard let detectedLanguage = queryModel?.detectedLanguage,
@@ -172,79 +180,46 @@ class ActionManager: NSObject {
         }
     }
 
-    // MARK: - Text Replacement Methods
-
     /// Replace text with streaming data
-    /// - Parameters:
-    ///   - contentStream: AsyncThrowingStream of text content
-    ///   - textFieldInfo: Information about the text field
     private func replaceTextWithStream(
         _ contentStream: AsyncThrowingStream<String, Error>,
         textFieldInfo: TextFieldInfo
     ) async {
-        if textFieldInfo.isSupportedAXElement {
-            // Streaming replacement for supported text fields
-            await performStreamingReplacement(contentStream, textFieldInfo: textFieldInfo)
-        } else {
-            // Animated copy-paste replacement for non-AX supported fields
-            await performAnimatedCopyPasteReplacement(contentStream, textFieldInfo: textFieldInfo)
-        }
-    }
+        logInfo("Replacing text with streaming content")
 
-    /// Perform streaming replacement for supported text fields
-    private func performStreamingReplacement(
-        _ contentStream: AsyncThrowingStream<String, Error>,
-        textFieldInfo: TextFieldInfo
-    ) async {
-        logInfo("Performing streaming replacement for AX supported text field")
+        // For avoding polluting user pasteboard content, we need to save and restore it when AX is not supported.
+        let pasteboard = NSPasteboard.general
+        var snapshotItems: [NSPasteboardItem]?
+
+        let isSupportedAX = textFieldInfo.isSupportedAXElement
+        if !isSupportedAX {
+            snapshotItems = await pasteboard.backupItems()
+        }
 
         do {
-            var currentRange = textFieldInfo.selectedRange
-            for try await content in contentStream {
-//                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+            let textStrategy = textStrategySet(for: textFieldInfo)
 
-                if let range = currentRange {
-                    // Replace at the specific range
-                    systemUtility.replaceFocusedTextFieldText(
-                        with: content, range: range
-                    )
-                    // Update range for next replacement (cursor position)
-                    currentRange = CFRange(location: range.location, length: 0)
-                }
+            /**
+             - Note:
+             For GitHub web text area, if select all and insert empty string,
+             it will clear the text area and lose focus.
+             So we do not insert empty string.
+             */
+
+            var reuslt = ""
+            for try await content in contentStream where !content.isEmpty {
+                //                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
+
+                reuslt += content
+                await systemUtility.insertText(content, using: textStrategy)
             }
+            logInfo("Final replacement result: \(reuslt.prettyJSONString)")
         } catch {
-            logError("Streaming replacement failed: \(error.localizedDescription)")
+            logError("Streaming replacement failed: \(error)")
         }
-    }
 
-    /// Perform animated copy-paste replacement for non-AX supported text fields
-    private func performAnimatedCopyPasteReplacement(
-        _ contentStream: AsyncThrowingStream<String, Error>,
-        textFieldInfo: TextFieldInfo
-    ) async {
-        logInfo("Performing animated copy-paste replacement for non-AX supported text field")
-
-        do {
-            // Stream content and perform animated replacement in real-time
-            for try await content in contentStream {
-//                logInfo("Received streaming content chunk: \(content.prettyJSONString)")
-
-                await SharedUtilities.copyTextAndPaste(content)
-
-                // Small delay to allow paste operation to complete
-                await Task.sleep(seconds: 0.05)
-            }
-        } catch {
-            logError("Animated copy-paste replacement failed: \(error.localizedDescription)")
+        if let snapshotItems, !isSupportedAX {
+            await pasteboard.restoreItems(snapshotItems)
         }
-    }
-}
-
-// MARK: - Task Extensions
-
-extension Task where Success == Never, Failure == Never {
-    /// Sleep for given seconds within a Task
-    static func sleep(seconds: TimeInterval) async {
-        try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 }

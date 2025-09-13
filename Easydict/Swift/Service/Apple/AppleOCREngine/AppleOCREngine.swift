@@ -113,7 +113,7 @@ public class AppleOCREngine: NSObject {
 
     func pasteboardOCR() {
         logInfo("Pasteboard OCR")
-        if let image = NSPasteboard.general.readImage() {
+        if let image = NSPasteboard.general.image {
             Task {
                 try await showOCRWindow(image: image)
             }

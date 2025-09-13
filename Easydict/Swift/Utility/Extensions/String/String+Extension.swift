@@ -54,13 +54,18 @@ extension String {
         return String(dropFirst(prefix.count))
     }
 
-    /// Copy to clipboard
-    func copyToClipboard() {
+    /// Copy string to pasteboard.
+    func copyToPasteboard() {
+        guard !isEmpty else {
+            return
+        }
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(self, forType: .string)
     }
 }
+
+// MARK: - NSString Extensions
 
 @objc
 extension NSString {
@@ -73,6 +78,10 @@ extension NSString {
             return substring(to: maxLength) as NSString
         }
         return self
+    }
+
+    func copyToPasteboard() {
+        (self as String).copyToPasteboard()
     }
 
     func replacingNewlinesWithWhitespace() -> NSString {

@@ -6062,6 +6062,62 @@
         }
       }
     },
+    "setting.advance.enable_compatibility_replace" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compatibility Replace"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Náhrada v režime kompatibility"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "兼容模式替换"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相容模式取代"
+          }
+        }
+      }
+    },
+    "setting.advance.enable_compatibility_replace_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, text replacement will use compatibility mode, which works better in certain applications."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ak je povolené, nahrádzanie textu bude používať režim kompatibility, ktorý funguje lepšie v niektorých aplikáciách."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用后，文本替换将使用兼容模式，在部分应用中更可靠。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用後，文字取代將使用相容模式，在部分應用程式中更可靠。"
+          }
+        }
+      }
+    },
     "setting.advance.enable_force_get_selected_text" : {
       "localizations" : {
         "en" : {
@@ -6202,6 +6258,62 @@
         }
       }
     },
+    "setting.advance.enable_youdao_ocr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR recognition"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR rozpoznávanie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道 OCR 识别"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道 OCR 辨識"
+          }
+        }
+      }
+    },
+    "setting.advance.enable_youdao_ocr_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fallback to Youdao OCR if the default OCR fails"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použiť Youdao OCR ako zálohu, ak zlyhá predvolený OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当默认OCR识别失败时，自动使用有道OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當預設 OCR 識別失敗時，自動使用有道 OCR"
+          }
+        }
+      }
+    },
     "setting.advance.footer.query_text_processing_desc" : {
       "localizations" : {
         "en" : {
@@ -6314,30 +6426,30 @@
         }
       }
     },
-    "setting.advance.header.force_get_selected_text" : {
+    "setting.advance.header.general_settings" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Force Get Selected Text"
+            "value" : "General Settings"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vynútené získanie vybraného textu"
+            "value" : "Všeobecné nastavenia"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "强制取词"
+            "value" : "通用设置"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "強制取詞"
+            "value" : "一般設定"
           }
         }
       }
@@ -6370,6 +6482,34 @@
         }
       }
     },
+    "setting.advance.header.ocr_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Settings"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenia OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 設定"
+          }
+        }
+      }
+    },
     "setting.advance.header.query_text_processing" : {
       "localizations" : {
         "en" : {
@@ -6394,6 +6534,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢文本處理"
+          }
+        }
+      }
+    },
+    "setting.advance.header.text_selection_and_replacement" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text Selection & Replacement"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výber a nahradenie textu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取词与文本替换"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取詞與文本替換"
           }
         }
       }
@@ -6594,58 +6762,58 @@
         }
       }
     },
-    "setting.advance.replace_with_translation" : {
+    "setting.advance.prefer_applescript_api" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Replace with Translation in compatibility mode"
+            "value" : "Prefer AppleScript API"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Použiť Nahradiť prekladom v režime kompatibility"
+            "value" : "Uprednostniť AppleScript API"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用兼容模式进行译文替换"
+            "value" : "优先使用 AppleScript API"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在相容模式中使用以翻譯取代"
+            "value" : "優先使用 AppleScript API"
           }
         }
       }
     },
-    "setting.advance.replace_with_translation_desc" : {
+    "setting.advance.prefer_applescript_api_desc" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "If using Repalce with Translation fails in some applications, try turning on compatibility mode, which will use Copy + Paste to ensure successful replacement."
+            "value" : "In browsers, prioritize AppleScript API for text selection and replacement. Enabling this option improves accuracy and success rate."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ak používanie Nahradiť prekladom zlyhá v niektorých aplikáciách, skús zapnúť režim kompatibility, ktorý použije funkcie Kopírovať + Vložiť na zabezpečenie úspešnej výmeny."
+            "value" : "V prehliadačoch uprednostniť používanie AppleScript API pre výber a nahradenie textu. Povolenie tejto možnosti zlepšuje presnosť a úspešnosť."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "如果在某些应用中使用译文替换失败，请尝试开启兼容模式，它将会使用复制+粘贴方式确保替换成功。"
+            "value" : "在浏览器中，优先使用 AppleScript API 进行取词和文本替换。开启该选项，可提升取词的准确性和成功率。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "如果在某些應用程式中使用「以翻譯取代」功能失敗，請嘗試開啟相容模式，此模式會使用拷貝 + 貼上來確保成功取代。"
+            "value" : "在瀏覽器中，優先使用 AppleScript API 進行取詞和文本替換。開啟該選項，可提升取詞的準確性和成功率。"
           }
         }
       }
@@ -6870,62 +7038,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快速鍵視窗類型"
-          }
-        }
-      }
-    },
-    "setting.advance.youdao_ocr" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Youdao OCR recognition"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Youdao OCR rozpoznávanie"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "有道 OCR 识别"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "有道 OCR 辨識"
-          }
-        }
-      }
-    },
-    "setting.advance.youdao_ocr_desc" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use the Youdao OCR for identification after a default OCR failure"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Použiť Youdao OCR na identifikáciu po zlyhaní štandardného OCR"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在默认OCR识别失败后使用有道OCR进行识别"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預設 OCR 識別失敗後使用有道 OCR 進行識別"
           }
         }
       }

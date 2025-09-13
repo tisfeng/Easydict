@@ -12,7 +12,7 @@ extension AppleScriptTask {
     /// Get alert volume of volume settings, cost ~0.1s
     static func alertVolume() async throws -> Int {
         let script = "get alert volume of (get volume settings)"
-        if let volumeString = try await runAppleScript(script),
+        if let volumeString = try await asyncRunAppleScript(script),
            let volume = Int(volumeString) {
             logInfo("AppleScript get alert volume: \(volume)")
             return volume
@@ -24,7 +24,7 @@ extension AppleScriptTask {
     static func setAlertVolume(_ volume: Int) async throws {
         logInfo("AppleScript set alert volume: \(volume)")
         let script = "set volume alert volume \(volume)"
-        try await runAppleScript(script)
+        try await asyncRunAppleScript(script)
     }
 
     /// Mute the alert volume and return the previous volume
@@ -47,7 +47,7 @@ extension AppleScriptTask {
         end tell
         """
 
-        if let result = try await runAppleScript(script),
+        if let result = try await asyncRunAppleScript(script),
            let previousVolume = Int(result) {
             logInfo("AppleScript set alert volume from \(previousVolume) to \(volume)")
             return previousVolume
