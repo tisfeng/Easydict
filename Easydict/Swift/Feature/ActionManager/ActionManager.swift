@@ -181,6 +181,7 @@ class ActionManager: NSObject {
     }
 
     /// Replace text with streaming data
+    @MainActor
     private func replaceTextWithStream(
         _ contentStream: AsyncThrowingStream<String, Error>,
         textFieldInfo: TextFieldInfo
@@ -193,7 +194,7 @@ class ActionManager: NSObject {
 
         let isSupportedAX = textFieldInfo.isSupportedAXElement
         if !isSupportedAX {
-            snapshotItems = await pasteboard.backupItems()
+            snapshotItems = pasteboard.backupItems()
         }
 
         do {
@@ -219,7 +220,7 @@ class ActionManager: NSObject {
         }
 
         if let snapshotItems, !isSupportedAX {
-            await pasteboard.restoreItems(snapshotItems)
+            pasteboard.restoreItems(snapshotItems)
         }
     }
 }
