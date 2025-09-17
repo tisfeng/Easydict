@@ -122,7 +122,7 @@ extension ShortcutAction {
                 titleKey: "menu_pasteboard_translate",
                 icon: .docOnClipboard,
                 defaultsKey: .pasteboardTranslateShortcut,
-                action: { windowManager.pasteboardTranslate() }
+                action: { windowManager.pasteboardTranslate(.fixed) }
             ),
             .polishAndReplace: .init(
                 titleKey: "menu_polish_and_replace",

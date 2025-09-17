@@ -1419,7 +1419,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
-        [EZWindowManager.shared pasteboardTranslate];
+        mm_strongify(self);
+        BOOL autoQuery = [Configuration.shared autoQueryPastedText];
+        if (autoQuery) {
+            [self startQueryText:text];
+        }
     }];
 
     [queryView setPlayAudioBlock:^(NSString *text) {

@@ -264,51 +264,28 @@ static EZWindowManager *_instance;
     [EZLayoutManager.shared updateScreenVisibleFrame:screenVisibleFrame];
 }
 
-#pragma mark - Others
+#pragma mark - Show Floating Window
 
-- (nullable EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
-    EZBaseQueryWindow *window = nil;
-    switch (type) {
-        case EZWindowTypeMain: {
-            window = _mainWindow;
-            break;
-        }
-        case EZWindowTypeFixed: {
-            window = self.fixedWindow;
-            break;
-        }
-        case EZWindowTypeMini: {
-            window = self.miniWindow;
-            break;
-        }
-        case EZWindowTypeNone: {
-            break;
-        }
+/// Show floating window with OCR image, auto query or not.
+- (void)showFloatingWindowWithOCRImage:(NSImage *)image
+                             autoQuery:(BOOL)autoQuery
+                            actionType:(EZActionType)actionType {
+    if (!image) {
+        MMLogWarn(@"Image is nil, cannot show OCR window");
+        return;
     }
-    return window;
-}
 
-/// Return top-left point.
-- (CGPoint)floatingWindowLocationWithType:(EZWindowType)type {
-    CGPoint location = CGPointZero;
-    switch (type) {
-        case EZWindowTypeMain: {
-            location = CGPointMake(100, 500);
-            break;
-        }
-        case EZWindowTypeFixed: {
-            location = [self getFloatingWindowLocation:Configuration.shared.fixedWindowPosition];
-            break;
-        }
-        case EZWindowTypeMini: {
-            location = [self getFloatingWindowLocation:Configuration.shared.miniWindowPosition];
-            break;
-        }
-        case EZWindowTypeNone: {
-            break;
-        }
-    }
-    return location;
+    MMLogInfo(@"Show window with OCR image");
+
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+
+    // Reset window height first, avoid being affected by previous window height.
+    [window.queryViewController resetTableView:^{
+        self.actionType = actionType;
+        [self showFloatingWindowType:windowType queryText:nil];
+        [window.queryViewController startOCRImage:image actionType:actionType autoQuery:autoQuery];
+    }];
 }
 
 /// Show floating window.
@@ -429,6 +406,54 @@ static EZWindowManager *_instance;
         updateQueryTextAndStartQueryBlock(YES);
     }
 }
+
+#pragma mark - Others
+
+- (nullable EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
+    EZBaseQueryWindow *window = nil;
+    switch (type) {
+        case EZWindowTypeMain: {
+            window = _mainWindow;
+            break;
+        }
+        case EZWindowTypeFixed: {
+            window = self.fixedWindow;
+            break;
+        }
+        case EZWindowTypeMini: {
+            window = self.miniWindow;
+            break;
+        }
+        case EZWindowTypeNone: {
+            break;
+        }
+    }
+    return window;
+}
+
+/// Return top-left point.
+- (CGPoint)floatingWindowLocationWithType:(EZWindowType)type {
+    CGPoint location = CGPointZero;
+    switch (type) {
+        case EZWindowTypeMain: {
+            location = CGPointMake(100, 500);
+            break;
+        }
+        case EZWindowTypeFixed: {
+            location = [self getFloatingWindowLocation:Configuration.shared.fixedWindowPosition];
+            break;
+        }
+        case EZWindowTypeMini: {
+            location = [self getFloatingWindowLocation:Configuration.shared.miniWindowPosition];
+            break;
+        }
+        case EZWindowTypeNone: {
+            break;
+        }
+    }
+    return location;
+}
+
 
 - (void)orderFrontWindowAndFocusInputTextView:(EZBaseQueryWindow *)window {
     [self saveFrontmostApplication];
@@ -863,7 +888,7 @@ static EZWindowManager *_instance;
 
     [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
         BOOL autoQuery = [Configuration.shared autoQueryOCRText];
-        [self showFloatingWindowWithOCRImage:image actionType:EZActionTypeOCRQuery autoQuery:autoQuery];
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypeOCRQuery];
     }];
 }
 
@@ -895,8 +920,8 @@ static EZWindowManager *_instance;
 }
 
 /// Translate text from pasteboard, support both image and text.
-- (void)pasteboardTranslate {
-    MMLogInfo(@"Pasteboard Translate");
+- (void)pasteboardTranslate:(EZWindowType)windowType {
+    MMLogInfo(@"Pasteboard Translate with windowType: %@", @(windowType));
 
     self.actionType = EZActionTypePasteboardTranslate;
     BOOL autoQuery = [Configuration.shared autoQueryPastedText];
@@ -905,40 +930,16 @@ static EZWindowManager *_instance;
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.image;
     if (image) {
-        [self showFloatingWindowWithOCRImage:image actionType:self.actionType autoQuery:autoQuery];
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:self.actionType];
         return;
     }
 
     // If no image, read string from pasteboard.
     NSString *queryText = pasteboard.string;
     if (queryText.length > 0) {
-        EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
         [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:self.actionType];
     }
 }
-
-
-- (void)showFloatingWindowWithOCRImage:(NSImage *)image
-                            actionType:(EZActionType)actionType
-                             autoQuery:(BOOL)autoQuery {
-    if (!image) {
-        MMLogWarn(@"Image is nil, cannot show OCR window");
-        return;
-    }
-
-    MMLogInfo(@"Show window with OCR image");
-
-    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
-    EZBaseQueryWindow *window = [self windowWithType:windowType];
-
-    // Reset window height first, avoid being affected by previous window height.
-    [window.queryViewController resetTableView:^{
-        self.actionType = actionType;
-        [self showFloatingWindowType:windowType queryText:nil];
-        [window.queryViewController startOCRImage:image actionType:actionType autoQuery:autoQuery];
-    }];
-}
-
 
 /**
  * Capture screenshot with options for app restoration
