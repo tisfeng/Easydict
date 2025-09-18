@@ -269,6 +269,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Get selected text with different strategies.
 ///
 /// - Important: This completion is `NOT` called on main thread.
+/// - TODO: Refactor this method, too many nested callbacks.
 - (void)getSelectedTextWithCompletion:(void (^)(NSString *_Nullable))completion {
     [self recordSelectTextInfo];
     MMLogInfo(@"getSelectedText in App: %@", self.frontmostApplication);
@@ -285,15 +286,25 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         self.selectTextType = EZSelectTextTypeAccessibility;
         self.selectedTextEditable = [EZSystemUtility.shared isFocusedTextField];
 
+        BOOL isBrowser = [AppleScriptTask isBrowserSupportingAppleScript:bundleID];
+        
+        // Check if user prefer AppleScript API to get selected text.
+        // Since some browsers pages may use custom controls, Accessibility may not get selected text correctly.
+        // Fix https://github.com/tisfeng/Easydict/issues/944
+        BOOL preferAppleScript = Configuration.shared.preferAppleScriptAPI;
+        
         // 1. If successfully use Accessibility to get selected text.
         if (text.length > 0) {
             // Monitor CGEventTap after successfully using Accessibility.
             if (Configuration.shared.autoSelectText) {
                 [self monitorCGEventTap];
             }
-
-            completion(text);
-            return;
+            
+            // If user prefer AppleScript, and the frontmost app is a browser, use AppleScript to get selected text first.
+            if (!isBrowser || !preferAppleScript) {
+                completion(text);
+                return;
+            }
         }
 
         // If this is the first time using Accessibility, request Accessibility permission.
@@ -305,20 +316,29 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
 
         // 2. Use AppleScript to get selected text from the browser.
-        if ([AppleScriptTask isBrowserSupportingAppleScript:bundleID]) {
+        if (isBrowser) {
             self.selectTextType = EZSelectTextTypeAppleScript;
             [AppleScriptTask getSelectedTextFromBrowser:bundleID completionHandler:^(NSString *_Nullable selectedText, NSError *_Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
                         MMLogError(@"Failed to get selected text from browser: %@", error);
+
+                        // If AppleScript get selected text failed, fall back to use Accessibility result.
+                        if (text.length > 0) {
+                            MMLogInfo(@"Fallback to use Accessibility selected text: %@", text);
+                            completion(text);
+                            return;
+                        }
+                        
+                        // If Accessibility also failed, try to use force get selected text if enabled.
+                        // AppleScript may return timeout error if the selected text is in browser pop-up window, like Permanently remove my account in https://betterstack.com/settings/account
                         [self tryForceGetSelectedText:completion];
                         return;
                     }
 
-                    NSString *text = selectedText.trim;
-                    if (text.length > 0) {
-                        completion(text);
+                    NSString *trimmedText = selectedText.trim;
+                    if (trimmedText.length > 0) {
+                        completion(trimmedText);
                         return;
                     }
 
