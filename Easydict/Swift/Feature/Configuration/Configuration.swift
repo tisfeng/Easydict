@@ -29,6 +29,9 @@ enum EnglishPronunciation: Int {
 
 // MARK: - Configuration
 
+/// Singleton class to manage application configuration settings.
+/// This class uses the `Defaults` library to persist settings and provides
+/// reactive updates using Combine.
 @objcMembers
 class Configuration: NSObject {
     // MARK: Lifecycle
@@ -103,6 +106,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.enableOCRTextNormalization) var enableOCRTextNormalization: Bool
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
+
+    @DefaultsWrapper(.preferAppleScriptAPI) var preferAppleScriptAPI: Bool
 
     // Max window height percentage, e.g., 80 means 80% of the screen height
     @DefaultsWrapper(.maxWindowHeightPercentage) var maxWindowHeightPercentage: Int
