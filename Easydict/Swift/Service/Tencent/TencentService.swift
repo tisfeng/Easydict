@@ -72,6 +72,7 @@ public final class TencentService: QueryService {
             "ProjectId": 0,
         ]
 
+        // Tencent docs: https://cloud.tencent.com/document/product/551/15619
         let endpoint = "https://tmt.tencentcloudapi.com"
 
         let service = "tmt"
@@ -87,6 +88,10 @@ public final class TencentService: QueryService {
             secretKey: secretKey
         )
 
+        /// - BUG: Alamofire 5.10.0 will lead Tencent and Volcano API request fail.
+        /// - SeeAlso: https://github.com/tisfeng/Easydict/issues/975 and https://github.com/tisfeng/Easydict/issues/971
+        /// - Fix: Downgrade to Alamofire 5.9.1
+        
         let request = AF.request(
             endpoint,
             method: .post,
