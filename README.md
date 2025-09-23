@@ -43,7 +43,7 @@
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
 - [x] 支持有道词典，OpenAI，Gemini，DeepSeek，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
-- [x] 支持 48 种语言。
+- [x] 支持 52 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
@@ -300,6 +300,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 |  克罗地亚语  |    ❌    |     ❌      |     ❌     |    ✅    |     ✅      |    ✅    |    ✅    |
 |    蒙古语    |    ❌    |     ❌      |     ❌     |    ✅    |     ✅      |    ✅    |    ✅    |
 |   希伯来语   |    ❌    |     ❌      |     ❌     |    ✅    |     ✅      |    ✅    |    ✅    |
+| 加泰罗尼亚语 |    ❌    |     ❌      |     ❌     |    ✅    |     ✅      |    ❌    |    ❌    |
 
 </p>
 

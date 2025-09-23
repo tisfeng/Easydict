@@ -42,7 +42,7 @@
 - [x] Support [🍎 Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
 - [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali and Volcano Translate.
-- [x] Support for 48 languages.
+- [x] Support for 52 languages.
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
@@ -297,6 +297,7 @@ Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple S
 |       Croatian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 |       Mongolian       |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 |        Hebrew         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Catalan        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ❌   |   ❌    |
 
 </p>
 
