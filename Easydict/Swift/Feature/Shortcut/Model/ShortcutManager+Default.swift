@@ -23,7 +23,9 @@ extension ShortcutManager {
         Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
         Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
         Defaults[.showMiniWindowShortcut] = KeyCombo(key: .f, cocoaModifiers: .option)
-        Defaults[.silentScreenshotOCRShortcut] = KeyCombo(key: .s, cocoaModifiers: [.option, .shift])
+        Defaults[.silentScreenshotOCRShortcut] = KeyCombo(
+            key: .s, cocoaModifiers: [.option, .shift]
+        )
     }
 
     private func setDefaultAppShortcutKeys() {
@@ -50,27 +52,20 @@ extension ShortcutManager {
 extension ShortcutManager {
     /// Setup global shortcut actions
     func setupGlobalShortcutActions() {
-        let globalActions: [ShortcutAction] = [
-            .inputTranslate,
-            .snipTranslate,
-            .selectTranslate,
-            .pasteboardTranslate,
-            .showMiniWindow,
-            .silentScreenshotOCR,
-        ]
-
         for action in globalActions {
             if let key = action.defaultsKey {
                 let keyCombo = Defaults[key]
-                bindingShortcutAction(keyCombo: keyCombo, action: action)
+                bindingGlobalShortcutAction(keyCombo: keyCombo, action: action)
             }
         }
     }
 
-    /// Bind default shortcut action
-    func bindingShortcutAction(keyCombo: KeyCombo?, action: ShortcutAction) {
+    /// Bind global shortcut action (registers as system-wide hotkey)
+    func bindingGlobalShortcutAction(keyCombo: KeyCombo?, action: ShortcutAction) {
         HotKeyCenter.shared.unregisterHotKey(with: action.rawValue)
-        guard let keyCombo else {
+
+        // Ensure the action is a global action and keyCombo is valid
+        guard let keyCombo, globalActions.contains(action) else {
             return
         }
 
