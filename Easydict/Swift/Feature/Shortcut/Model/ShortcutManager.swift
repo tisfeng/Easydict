@@ -16,6 +16,20 @@ class ShortcutManager: NSObject {
 
     var confictMenuItem: NSMenuItem?
 
+    let globalActions: [ShortcutAction] = [
+        .inputTranslate,
+        .snipTranslate,
+        .selectTranslate,
+        .pasteboardTranslate,
+        .showMiniWindow,
+        .silentScreenshotOCR,
+        .translateAndReplace,
+        .polishAndReplace,
+        .screenshotOCR,
+        .pasteboardOCR,
+        .showOCRWindow,
+    ]
+
     @objc
     func setupShortcut() {
         setupGlobalShortcutActions()

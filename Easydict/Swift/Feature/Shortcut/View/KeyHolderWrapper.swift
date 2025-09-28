@@ -106,14 +106,14 @@ extension KeyHolderWrapper {
                 ShortcutManager.shared.updateMenu(action)
             }
             storeKeyCombo(with: keyCombo)
-            ShortcutManager.shared.bindingShortcutAction(keyCombo: keyCombo, action: action)
+            ShortcutManager.shared.bindingGlobalShortcutAction(keyCombo: keyCombo, action: action)
         }
 
         /// Restore the key combo for the given record view based on the shortcut type.
         func restoreKeyCombo(_ recordView: RecordView) {
             let keyCombo = getKeyCombo()
             recordView.keyCombo = keyCombo
-            ShortcutManager.shared.bindingShortcutAction(keyCombo: keyCombo, action: action)
+            ShortcutManager.shared.bindingGlobalShortcutAction(keyCombo: keyCombo, action: action)
         }
 
         /// Store the key combo for the shortcut type.
