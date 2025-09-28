@@ -574,7 +574,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     NSDictionary *allowedAppErrorDict = @{
         /**
-         Some Apps return kAXErrorSuccess 0 but text is empty, so we need to check bundleID.
+         Some Apps return kAXErrorSuccess(0), but get selected text is empty, so we need to check bundleID.
 
          VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
          IDEA: Javadoc rendered view will return empty text
@@ -585,6 +585,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.foxitsoftware.FoxitReaderLite",   // Foxit PDF Reader
             @"com.foxit-software.Foxit.PDF.Reader", // 福昕PDF阅读器 https://www.foxitsoftware.cn/pdf-reader/
             @"com.foxit-software.Foxit.PDF.Editor", // 福昕高级PDF编辑器 Fix https://github.com/tisfeng/Easydict/issues/796
+            @"com.apple.iBooksX", // Apple Books Fix https://github.com/tisfeng/Easydict/issues/964
         ],
 
         // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
