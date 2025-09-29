@@ -242,7 +242,7 @@ class OCRLineMeasurer {
 
         let averageCharWidth = computeAverageCharWidth(
             currentObservation: observation,
-            anotherObservation: referenceObservation,
+            anotherObservation: referenceObservation
         )
 
         // Convert logical distance to character count using average character width
