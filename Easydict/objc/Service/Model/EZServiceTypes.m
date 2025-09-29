@@ -68,6 +68,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeCaiyun, [EZCaiyunService class],
                                            EZServiceTypeTencent, [EZTencentService class],
                                            EZServiceTypeAlibaba, [EZAliService class],
+                                           EZServiceTypeDoubao, NSClassFromString(@"EZDoubaoService"),
                                            nil];
     return allServiceDict;
 }
