@@ -52,7 +52,7 @@ extension ShortcutManager {
 extension ShortcutManager {
     /// Setup global shortcut actions
     func setupGlobalShortcutActions() {
-        for action in globalActions {
+        for action in ShortcutAction.globalActions {
             if let key = action.defaultsKey {
                 let keyCombo = Defaults[key]
                 bindingGlobalShortcutAction(keyCombo: keyCombo, action: action)
@@ -65,7 +65,7 @@ extension ShortcutManager {
         HotKeyCenter.shared.unregisterHotKey(with: action.rawValue)
 
         // Ensure the action is a global action and keyCombo is valid
-        guard let keyCombo, globalActions.contains(action) else {
+        guard let keyCombo, action.isGlobal else {
             return
         }
 

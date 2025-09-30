@@ -10,24 +10,6 @@ import SwiftUI
 
 extension ShortcutTab {
     struct AppShortcutSettingView: View {
-        @State private var shortcutDataList: [ShortcutAction] = [
-            .clearInput,
-            .clearAll,
-            .copy,
-            .copyFirstResult,
-            .focus,
-            .play,
-            .retry,
-            .toggle,
-            .pin,
-            .hide,
-            .increaseFontSize,
-            .decreaseFontSize,
-            .google,
-            .eudic,
-            .appleDic,
-        ]
-
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
 
         var body: some View {
@@ -39,7 +21,7 @@ extension ShortcutTab {
             )
 
             Section {
-                ForEach(shortcutDataList) { action in
+                ForEach(ShortcutAction.appActions) { action in
                     KeyHolderRowView(
                         title: action.localizedStringKey(),
                         action: action,
