@@ -33,7 +33,9 @@ class ShortcutManager: NSObject {
 extension ShortcutManager {
     /// Update shortcut menu
     func updateMenu(_ action: ShortcutAction) {
-        let shortcutTitle = String(localized: LocalizedStringResource(stringLiteral: action.localizedStringKey()))
+        let shortcutTitle = String(
+            localized: LocalizedStringResource(stringLiteral: action.localizedStringKey())
+        )
         let menuTitle = String(localized: LocalizedStringResource(stringLiteral: "shortcut"))
         let shortcutMenu = NSApp.mainMenu?.items.first(where: { $0.title == menuTitle })
         let clearInput = shortcutMenu?.submenu?.items.first(where: { $0.title == shortcutTitle })

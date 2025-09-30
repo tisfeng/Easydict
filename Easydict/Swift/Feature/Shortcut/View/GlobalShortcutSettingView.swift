@@ -10,8 +10,6 @@ import SwiftUI
 
 extension ShortcutTab {
     struct GlobalShortcutSettingView: View {
-        // MARK: Internal
-
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
 
         var body: some View {
@@ -23,7 +21,7 @@ extension ShortcutTab {
                 }
             )
             Section {
-                ForEach(shortcutDataList) { action in
+                ForEach(ShortcutAction.globalActions) { action in
                     KeyHolderRowView(
                         title: action.localizedStringKey(),
                         action: action,
@@ -46,18 +44,5 @@ extension ShortcutTab {
                 Text(message.message)
             }
         }
-
-        // MARK: Private
-
-        @State private var shortcutDataList: [ShortcutAction] = [
-            .inputTranslate,
-            .snipTranslate,
-            .selectTranslate,
-            .pasteboardTranslate,
-            .translateAndReplace,
-            .polishAndReplace,
-            .showMiniWindow,
-            .silentScreenshotOCR,
-        ]
     }
 }
