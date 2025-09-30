@@ -2,7 +2,7 @@
 //  DoubaoResponse.swift
 //  Easydict
 //
-//  Created by Assistant on 2024/12/14.
+//  Created by Liaoworking on 2025/9/30.
 //  Copyright © 2024 izual. All rights reserved.
 //
 

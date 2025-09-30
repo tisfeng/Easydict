@@ -2,7 +2,7 @@
 //  DoubaoTranslate+ConfigurableVIew.swift
 //  Easydict
 //
-//  Created by liao on 2025/9/29.
+//  Created by Liaoworking on 2025/9/30.
 //  Copyright © 2025 izual. All rights reserved.
 //
 
@@ -13,10 +13,17 @@ import SwiftUI
 
 extension DoubaoService {
     public override func configurationListItems() -> Any? {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.doubaoAPIKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.doubaoAPIKey, .doubaoModel]) {
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.doubao.api_key.title",
                 key: .doubaoAPIKey
+            )
+
+            InputCell(
+                textFieldTitleKey: "service.configuration.doubao.model.title",
+                key: .doubaoModel,
+                placeholder: "doubao-seed-translation-250915",
+                limitLength: 100
             )
         }
     }

@@ -35,6 +35,7 @@ static NSString *const EZVolcanoAccessKeyID = @"EZVolcanoAccessKeyID";
 static NSString *const EZVolcanoSecretAccessKey = @"EZVolcanoSecretAccessKey";
 
 static NSString *const EZDoubaoAPIKey = @"EZDoubaoAPIKey";
+static NSString *const EZDoubaoModelKey = @"EZDoubaoModelKey";
 
 @interface EZConstKey : NSObject
 

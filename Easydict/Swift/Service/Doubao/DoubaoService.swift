@@ -2,7 +2,7 @@
 //  DoubaoService.swift
 //  Easydict
 //
-//  Created by Assistant on 2024/12/14.
+//  Created by Liaoworking on 2025/9/30.
 //  Copyright © 2024 izual. All rights reserved.
 //
 
@@ -64,7 +64,7 @@ public final class DoubaoService: QueryService {
 
         // Prepare request body according to Doubao API format
         let requestBody: [String: Any] = [
-            "model": "doubao-seed-translation-250915",
+            "model": model,
             "input": [
                 [
                     "role": "user",
@@ -158,6 +158,12 @@ public final class DoubaoService: QueryService {
     /// easydict://writeKeyValue?EZDoubaoAPIKey=xxx
     private var apiKey: String {
         Defaults[.doubaoAPIKey]
+    }
+
+    /// easydict://writeKeyValue?EZDoubaoModelKey=xxx
+    private var model: String {
+        let value = Defaults[.doubaoModel].trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? "doubao-seed-translation-250915" : value
     }
 
     /// Validates the API key, returns a QueryError if missing
