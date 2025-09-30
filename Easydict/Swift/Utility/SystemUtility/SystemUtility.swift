@@ -26,20 +26,20 @@ class SystemUtility: NSObject {
     }
 
     /// Select all text using the specified operation set.
-    func selectAll(using operationSet: TextStrategySet) async {
-        logInfo("Select all using operation set: \(operationSet)")
+    func selectAll(using strategies: [TextStrategy]) async {
+        logInfo("Select all using operation set: \(strategies)")
 
         func selectAllInNonBrowser() async {
-            if operationSet.contains(.menuAction) {
+            if strategies.contains(.menuAction) {
                 await selectAllByMenuAction()
-            } else if operationSet.contains(.shortcut) {
+            } else if strategies.contains(.shortcut) {
                 await selectAllByShortcut()
-            } else if operationSet.contains(.accessibility) {
+            } else if strategies.contains(.accessibility) {
                 selectAllByAX()
             }
         }
 
-        if operationSet.contains(.appleScript) {
+        if strategies.contains(.appleScript) {
             do {
                 try await selectAllByAppleScript()
             } catch {
@@ -55,22 +55,22 @@ class SystemUtility: NSObject {
     ///
     /// - Parameters:
     ///   - text: The text to insert
-    ///   - operationSet: The set of available operation types, will use the highest priority one
+    ///   - strategies: The text strategies to use, in order of preference
     ///
     /// - Important: This function may be called many times in streaming mode,
-    ///              so we pass the operation set as parameter to avoid repeated checks.
-    func insertText(_ text: String, using operationSet: TextStrategySet) async {
+    ///              so we pass the strategies array each time to avoid recomputation.
+    func insertText(_ text: String, using strategies: [TextStrategy]) async {
         func insertTextInNonBrowser() async {
-            if operationSet.contains(.menuAction) {
+            if strategies.contains(.menuAction) {
                 await insertTextByMenuAction(text)
-            } else if operationSet.contains(.shortcut) {
+            } else if strategies.contains(.shortcut) {
                 await insertTextByShortcut(text)
-            } else if operationSet.contains(.accessibility) {
+            } else if strategies.contains(.accessibility) {
                 insertTextByAX(text)
             }
         }
 
-        if operationSet.contains(.appleScript) {
+        if strategies.contains(.appleScript) {
             do {
                 try await insertTextByAppleScript(text)
             } catch {
@@ -116,24 +116,24 @@ class SystemUtility: NSObject {
         }
     }
 
-    /// Get text strategy set based on current application context
-    func textStrategySet(
+    /// Get text strategies based on user preferences and system capabilities
+    func textStrategies(
         shouldUseAppleScript: Bool,
         enableCompatibilityMode: Bool,
         isSupportedAX: Bool
     )
-        -> TextStrategySet {
-        var operationSet: TextStrategySet = []
+        -> [TextStrategy] {
+        var strategies: [TextStrategy] = []
+        if shouldUseAppleScript {
+            strategies.append(.appleScript)
+        }
         if isSupportedAX {
-            operationSet.insert(.accessibility)
+            strategies.append(.accessibility)
         }
         if enableCompatibilityMode {
-            operationSet.insert(.menuAction)
-            operationSet.insert(.shortcut)
+            strategies.append(.menuAction)
+            strategies.append(.shortcut)
         }
-        if shouldUseAppleScript {
-            operationSet.insert(.appleScript)
-        }
-        return operationSet
+        return strategies
     }
 }

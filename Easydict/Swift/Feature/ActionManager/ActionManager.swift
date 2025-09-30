@@ -82,7 +82,7 @@ class ActionManager: NSObject {
     // MARK: - Helper Methods
 
     /// Determine the appropriate text strategy set based on the text field info and user settings
-    private func textStrategySet(for textFieldInfo: TextFieldInfo) -> TextStrategySet {
+    private func textStrategies(for textFieldInfo: TextFieldInfo) -> [TextStrategy] {
         let isSupportedAX = textFieldInfo.isSupportedAXElement
         let enableCompatibilityMode = Defaults[.enableCompatibilityReplace]
 
@@ -90,7 +90,7 @@ class ActionManager: NSObject {
         let preferAppleScriptAPI = Defaults[.preferAppleScriptAPI]
         let shouldUseAppleScript = isBrowser && preferAppleScriptAPI
 
-        return systemUtility.textStrategySet(
+        return systemUtility.textStrategies(
             shouldUseAppleScript: shouldUseAppleScript,
             enableCompatibilityMode: enableCompatibilityMode,
             isSupportedAX: isSupportedAX
@@ -108,7 +108,7 @@ class ActionManager: NSObject {
             return textFieldInfo
         }
 
-        let textStrategy = textStrategySet(for: textFieldInfo)
+        let textStrategy = textStrategies(for: textFieldInfo)
         await systemUtility.selectAll(using: textStrategy)
 
         logInfo("Auto-selected all text content in field")
@@ -198,7 +198,7 @@ class ActionManager: NSObject {
         }
 
         do {
-            let textStrategy = textStrategySet(for: textFieldInfo)
+            let textStrategy = textStrategies(for: textFieldInfo)
 
             /**
              - Note:

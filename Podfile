@@ -18,7 +18,7 @@ target 'Easydict' do
 
 end
 
-target 'EasydictTests' do
+target 'EasydictSwiftTests' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'
