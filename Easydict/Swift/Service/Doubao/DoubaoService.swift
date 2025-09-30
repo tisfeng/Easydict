@@ -82,7 +82,7 @@ public final class DoubaoService: QueryService {
             ],
         ]
 
-        let endpoint = "http://ark.cn-beijing.volces.com/api/v3/responses"
+        let endpoint = "https://ark.cn-beijing.volces.com/api/v3/responses"
 
         var headers: HTTPHeaders = [
             "Content-Type": "application/json",
