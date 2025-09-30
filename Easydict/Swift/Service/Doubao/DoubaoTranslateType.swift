@@ -3,7 +3,7 @@
 //  Easydict
 //
 //  Created by Liaoworking on 2025/9/30.
-//  Copyright © 2024 izual. All rights reserved.
+//  Copyright © 2025 izual. All rights reserved.
 //
 
 import Foundation
