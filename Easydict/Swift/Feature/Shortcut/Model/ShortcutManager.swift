@@ -16,20 +16,6 @@ class ShortcutManager: NSObject {
 
     var confictMenuItem: NSMenuItem?
 
-    let globalActions: [ShortcutAction] = [
-        .inputTranslate,
-        .snipTranslate,
-        .selectTranslate,
-        .pasteboardTranslate,
-        .showMiniWindow,
-        .silentScreenshotOCR,
-        .translateAndReplace,
-        .polishAndReplace,
-        .screenshotOCR,
-        .pasteboardOCR,
-        .showOCRWindow,
-    ]
-
     @objc
     func setupShortcut() {
         setupGlobalShortcutActions()
@@ -47,7 +33,9 @@ class ShortcutManager: NSObject {
 extension ShortcutManager {
     /// Update shortcut menu
     func updateMenu(_ action: ShortcutAction) {
-        let shortcutTitle = String(localized: LocalizedStringResource(stringLiteral: action.localizedStringKey()))
+        let shortcutTitle = String(
+            localized: LocalizedStringResource(stringLiteral: action.localizedStringKey())
+        )
         let menuTitle = String(localized: LocalizedStringResource(stringLiteral: "shortcut"))
         let shortcutMenu = NSApp.mainMenu?.items.first(where: { $0.title == menuTitle })
         let clearInput = shortcutMenu?.submenu?.items.first(where: { $0.title == shortcutTitle })
