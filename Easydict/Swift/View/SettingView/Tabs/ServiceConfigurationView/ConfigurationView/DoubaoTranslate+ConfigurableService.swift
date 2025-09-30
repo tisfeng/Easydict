@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-// MARK: - CaiyunService + ConfigurableService
+// MARK: - DoubaoService + ConfigurableService
 
 extension DoubaoService {
     public override func configurationListItems() -> Any? {
