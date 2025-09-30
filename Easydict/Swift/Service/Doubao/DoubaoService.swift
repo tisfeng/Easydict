@@ -115,9 +115,7 @@ public final class DoubaoService: QueryService {
                           let content = firstOutput.content,
                           let firstContent = content.first,
                           let translatedText = firstContent.text {
-                    // 处理豆包返回的冗长响应，提取真正的翻译结果
-                    let cleanedText = self?.extractTranslationFromDoubaoResponse(translatedText) ?? translatedText
-                    result.translatedResults = [cleanedText]
+                    result.translatedResults = [translatedText]
                     completion(result, nil)
                 } else {
                     let errorMessage = "Unexpected response format"
@@ -175,73 +173,5 @@ public final class DoubaoService: QueryService {
             )
         }
         return nil
-    }
-
-    /// 从豆包的冗长响应中提取真正的翻译结果
-    private func extractTranslationFromDoubaoResponse(_ response: String) -> String {
-        // 豆包返回的响应包含很多解释性文字，我们需要提取出真正的翻译
-        let lines = response.components(separatedBy: .newlines)
-
-        // 寻找包含实际翻译的行
-        for line in lines {
-            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-
-            // 跳过空行和解释性文字
-            if trimmedLine.isEmpty ||
-                trimmedLine.contains("请直接翻译") ||
-                trimmedLine.contains("不需要任何解释") ||
-                trimmedLine.contains("您好，我是") ||
-                trimmedLine.contains("很高兴为您提供翻译") ||
-                trimmedLine.contains("首先，我需要") ||
-                trimmedLine.contains("翻译时需要") ||
-                trimmedLine.contains("接下来") ||
-                trimmedLine.contains("然后，考虑到") ||
-                trimmedLine.contains("此外，还需要") ||
-                trimmedLine.contains("最后，通读") ||
-                trimmedLine.contains("总结来说") ||
-                trimmedLine.hasPrefix("例如") ||
-                trimmedLine.hasPrefix("因此") {
-                continue
-            }
-
-            // 如果找到简短且没有解释性前缀的行，可能是翻译结果
-            if trimmedLine.count < 50, !trimmedLine.contains("翻译"), !trimmedLine.contains("需要") {
-                return trimmedLine
-            }
-        }
-
-        // 如果没有找到简短的翻译，尝试查找引号中的内容
-        let quotedPattern = #""([^"]+)""#
-        if let regex = try? NSRegularExpression(pattern: quotedPattern) {
-            let matches = regex.matches(in: response, range: NSRange(response.startIndex..., in: response))
-            var candidates: [String] = []
-
-            for match in matches {
-                if let range = Range(match.range(at: 1), in: response) {
-                    let quoted = String(response[range])
-                    if quoted.count < 100 { // 确保不是长解释
-                        candidates.append(quoted)
-                    }
-                }
-            }
-
-            // 优先选择中文翻译而不是原文
-            for candidate in candidates {
-                if candidate != "Hello world", candidate != "hello world" {
-                    // 检查是否包含中文字符
-                    if candidate.range(of: "[\u{4e00}-\u{9fff}]", options: .regularExpression) != nil {
-                        return candidate
-                    }
-                }
-            }
-
-            // 如果没有中文，返回第一个候选
-            if let first = candidates.first {
-                return first
-            }
-        }
-
-        // 如果都没找到，返回前100个字符作为fallback
-        return String(response.prefix(100))
     }
 }
