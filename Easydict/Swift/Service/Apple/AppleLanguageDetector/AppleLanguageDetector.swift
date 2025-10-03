@@ -78,7 +78,7 @@ public class AppleLanguageDetector: NSObject {
 
     /// Raw language probabilities from Apple's NaturalLanguage framework
     ///
-    /// - Note: This probabilities may be a empty dictionary for certain edge cases
+    /// - Note: These probabilities may be an empty dictionary for certain edge cases
     /// such as numeric-only text ("729") or unrecognizable input.
     public private(set) var rawProbabilities: [NLLanguage: Double] = [:]
 
