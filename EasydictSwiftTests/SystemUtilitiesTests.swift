@@ -14,6 +14,8 @@ import Testing
 /// Tests for system utilities and macOS integrations
 @Suite("System Utilities", .tags(.system, .integration))
 struct SystemUtilitiesTests {
+    let systemUtility = SystemUtility.shared
+
     @Test("Alert Volume Control", .tags(.system))
     func testAlertVolume() async throws {
         let originalVolume = try await AppleScriptTask.alertVolume()
@@ -34,11 +36,11 @@ struct SystemUtilitiesTests {
         .tags(.system, .performance),
         .disabled("Only run manually")
     )
-    func testGetSelectedText() async throws {
+    func testGetSelectedText() async {
         // Run thousands of times to test crash.
         for i in 0 ..< 2000 {
             print("test index: \(i)")
-            let selectedText = await (try? getSelectedText()) ?? ""
+            let selectedText = await systemUtility.getSelectedText() ?? ""
             print("\(i) selectedText: \(selectedText)")
         }
         #expect(true, "Test getSelectedText completed without crash")
@@ -49,12 +51,12 @@ struct SystemUtilitiesTests {
         .tags(.system, .performance),
         .disabled("Only run manually")
     )
-    func testConcurrentGetSelectedText() async throws {
+    func testConcurrentGetSelectedText() async {
         await withTaskGroup(of: Void.self) { group in
             for i in 0 ..< 2000 {
                 group.addTask {
                     print("test index: \(i)")
-                    let selectedText = (try? await getSelectedText()) ?? ""
+                    let selectedText = await systemUtility.getSelectedText() ?? ""
                     print("\(i) selectedText: \(selectedText)")
                 }
             }
