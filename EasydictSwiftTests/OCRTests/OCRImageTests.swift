@@ -31,6 +31,19 @@ struct OCRImageTests {
     /// OCR engine instance for testing
     let ocrEngine = AppleOCREngine()
 
+    // MARK: - All OCR Tests
+
+    @Test(
+        "All OCR Tests",
+        .tags(.ocr),
+        .disabled("This test runs all OCR images, which can take a long time to complete. ")
+    )
+    func testAllOCRImages() async throws {
+        for sample in OCRTestSample.allCases {
+            await testOCR(sample: sample)
+        }
+    }
+
     // MARK: - Just one test
 
     @Test("One Test", .tags(.ocr))
@@ -122,19 +135,6 @@ struct OCRImageTests {
         await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.0)
         // Cost time: 1.32s
         await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
-    }
-
-    // MARK: - All OCR Tests
-
-    @Test(
-        "All OCR Tests",
-        .tags(.ocr),
-        .disabled("This test runs all OCR images, which can take a long time to complete. ")
-    )
-    func testAllOCRImages() async throws {
-        for sample in OCRTestSample.allCases {
-            await testOCR(sample: sample)
-        }
     }
 
     // MARK: Private
