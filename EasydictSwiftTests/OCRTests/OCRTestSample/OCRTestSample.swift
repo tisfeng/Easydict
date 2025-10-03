@@ -40,7 +40,6 @@ enum OCRTestSample: String, CaseIterable {
     case enPaper11 = "ocr-en-paper-11.png"
     case enPaper12 = "ocr-en-paper-12.png"
     case enPaper13 = "ocr-en-paper-13.png"
-    case enPaper14 = "ocr-en-paper-14.png"
 
     case enTextList1 = "ocr-en-text-list-1.png"
     case enTextList2 = "ocr-en-text-list-2.png"
@@ -49,6 +48,9 @@ enum OCRTestSample: String, CaseIterable {
     case enTextLetter338 = "ocr-en-text-letter-338.png"
 
     case enPoetry8 = "ocr-en-poetry-8.png" // Match zhPoetry8
+
+    case enNumber729 = "ocr-en-number-729.png"
+    case enNumberPi = "ocr-en-number-pi.png"
 
     // MARK: - Chinese Text Cases
 
