@@ -14,6 +14,7 @@ struct DoubaoTranslateType: Equatable {
     static let unsupported = DoubaoTranslateType(sourceLanguage: "", targetLanguage: "")
 
     /// Doubao supported languages
+    /// Docs: https://console.volcengine.com/ark/region:ark+cn-beijing/model/detail?Id=doubao-seed-translation
     static let supportLanguagesDictionary: [Language: String] = [
         .auto: "auto",
         .simplifiedChinese: "zh",
@@ -21,50 +22,29 @@ struct DoubaoTranslateType: Equatable {
         .english: "en",
         .japanese: "ja",
         .korean: "ko",
+        .german: "de",
         .french: "fr",
         .spanish: "es",
-        .portuguese: "pt",
         .italian: "it",
-        .german: "de",
+        .portuguese: "pt",
         .russian: "ru",
-        .arabic: "ar",
-        .swedish: "sv",
-        .romanian: "ro",
         .thai: "th",
-        .slovak: "sk",
-        .dutch: "nl",
-        .hungarian: "hu",
-        .greek: "el",
+        .vietnamese: "vi",
+        .arabic: "ar",
+        .czech: "cs",
         .danish: "da",
         .finnish: "fi",
-        .polish: "pl",
-        .czech: "cs",
-        .turkish: "tr",
-        .lithuanian: "lt",
-        .latvian: "lv",
-        .ukrainian: "uk",
-        .bulgarian: "bg",
+        .croatian: "hr",
+        .hungarian: "hu",
         .indonesian: "id",
         .malay: "ms",
-        .slovenian: "sl",
-        .estonian: "et",
-        .vietnamese: "vi",
-        .persian: "fa",
-        .hindi: "hi",
-        .telugu: "te",
-        .tamil: "ta",
-        .urdu: "ur",
-        .filipino: "fil",
-        .khmer: "km",
-        .lao: "lo",
-        .bengali: "bn",
-        .burmese: "my",
-        .norwegian: "no",
-        .serbian: "sr",
-        .croatian: "hr",
-        .mongolian: "mn",
-        .hebrew: "he",
-        .georgian: "ka",
+        .norwegian: "nb",  // Norwegian Bokmål
+        .dutch: "nl",
+        .polish: "pl",
+        .romanian: "ro",
+        .swedish: "sv",
+        .turkish: "tr",
+        .ukrainian: "uk",
     ]
 
     let sourceLanguage: String
@@ -72,7 +52,8 @@ struct DoubaoTranslateType: Equatable {
 
     static func transType(from: Language, to: Language) -> DoubaoTranslateType {
         guard let sourceLang = supportLanguagesDictionary[from],
-              let targetLang = supportLanguagesDictionary[to] else {
+            let targetLang = supportLanguagesDictionary[to]
+        else {
             return .unsupported
         }
 
