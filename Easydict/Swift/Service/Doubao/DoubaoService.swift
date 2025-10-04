@@ -62,6 +62,9 @@ public final class DoubaoService: QueryService {
             return
         }
 
+        // Doubao-Seed-Translation
+        // https://console.volcengine.com/ark/region:ark+cn-beijing/model/detail?Id=doubao-seed-translation
+
         // Prepare request body according to Doubao API format
         let requestBody: [String: Any] = [
             "model": model,

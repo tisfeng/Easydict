@@ -24,7 +24,6 @@ struct DoubaoTranslateType: Equatable {
         .french: "fr",
         .spanish: "es",
         .portuguese: "pt",
-        .brazilianPortuguese: "pt-BR",
         .italian: "it",
         .german: "de",
         .russian: "ru",
