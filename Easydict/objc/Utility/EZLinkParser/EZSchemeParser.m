@@ -206,6 +206,8 @@
         
         EZVolcanoAccessKeyID,
         EZVolcanoSecretAccessKey,
+        
+        EZDoubaoAPIKey,
 
         EZIntelligentQueryModeKey,
     ];
