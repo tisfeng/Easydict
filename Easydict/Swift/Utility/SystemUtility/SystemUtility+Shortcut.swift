@@ -10,6 +10,7 @@ import Foundation
 import KeySender
 import SelectedTextKit
 
+/// Minimum interval for pasteboard operations
 let minPasteboardInterval: TimeInterval = 0.05
 
 // MARK: - SystemUtility + Shortcut

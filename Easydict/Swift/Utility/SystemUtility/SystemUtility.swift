@@ -103,16 +103,13 @@ class SystemUtility: NSObject {
 
     /// Get text strategies for current focused TextField element
     func textStrategies(enableSelectAll: Bool = false) async -> [TextStrategy] {
-        guard let textFieldInfo = await focusedTextFieldInfo(enableSelectAll: enableSelectAll) else {
-            return []
-        }
-
+        let textFieldInfo = await focusedTextFieldInfo(enableSelectAll: enableSelectAll)
         return textStrategies(for: textFieldInfo)
     }
 
     /// Determine the appropriate text strategy set based on the text field info and user settings
-    func textStrategies(for textFieldInfo: TextFieldInfo) -> [TextStrategy] {
-        let isSupportedAX = textFieldInfo.isSupportedAXElement
+    func textStrategies(for textFieldInfo: TextFieldInfo?) -> [TextStrategy] {
+        let isSupportedAX = textFieldInfo?.isSupportedAXElement ?? false
         let enableCompatibilityMode = Defaults[.enableCompatibilityReplace]
 
         let isBrowser = AppleScriptTask.isBrowserSupportingAppleScript(frontmostAppBundleID)

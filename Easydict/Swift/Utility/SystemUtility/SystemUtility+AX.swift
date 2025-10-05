@@ -80,8 +80,7 @@ extension SystemUtility {
 
     /// A `UIElement` for frontmost application.
     var frontmostAppElement: UIElement? {
-        let frontmostApp = NSWorkspace.shared.frontmostApplication
-        guard let frontmostApp else {
+        guard let frontmostApp = NSWorkspace.shared.frontmostApplication else {
             return nil
         }
         return Application(frontmostApp)
