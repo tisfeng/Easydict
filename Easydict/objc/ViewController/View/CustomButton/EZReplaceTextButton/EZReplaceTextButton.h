@@ -1,6 +1,6 @@
 //
 //  EZReplaceTextButton.h
-//  
+//  Easydict
 //
 //  Created by tisfeng on 2023/10/13.
 //
