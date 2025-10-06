@@ -71,7 +71,7 @@ public final class VolcanoService: QueryService {
             return
         }
 
-        let parameters: [String: Any] = [
+        let parameters: Parameters = [
             "SourceLanguage": transType.sourceLanguage,
             "TargetLanguage": transType.targetLanguage,
             "TextList": [text],
