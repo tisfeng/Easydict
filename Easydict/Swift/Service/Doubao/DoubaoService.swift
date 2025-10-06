@@ -104,6 +104,14 @@ public final class DoubaoService: StreamService {
                     urlRequest.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
                     urlRequest.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
+                    // Note: We use URLSession.shared.bytes instead of ChatQuery/Gemini-style requests because:
+                    // 1. Doubao provides a specialized translation API, not a general chat/LLM API
+                    // 2. The API uses a unique format with "translation_options" parameter, which is incompatible with
+                    //    standard chat message formats (system/user/assistant roles)
+                    // 3. Similar to traditional translation services (Youdao, Ali, Tencent), we directly construct
+                    //    HTTP requests to match the provider's API specification
+                    // 4. Unlike OpenAI/Gemini which use conversational prompts, Doubao's translation model expects
+                    //    structured input with explicit source/target language parameters
                     let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
 
                     guard let httpResponse = response as? HTTPURLResponse else {
