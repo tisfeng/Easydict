@@ -9,6 +9,12 @@
 import Defaults
 import Foundation
 
+/**
+ The specifically designed Doubao AI Model for translation.
+ Documentation: https://www.volcengine.com/docs/82379/1820188
+ API Key Application: https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey
+ */
+
 @objc(EZDoubaoService)
 public final class DoubaoService: StreamService {
     // MARK: Public
@@ -50,7 +56,6 @@ public final class DoubaoService: StreamService {
         Self.defaultModelIdentifier
     }
 
-    /// Stream-based content translation for Doubao API
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -75,7 +80,6 @@ public final class DoubaoService: StreamService {
 
             currentTask = Task {
                 do {
-                    // Prepare request body
                     let requestBody: [String: Any] = [
                         "model": model,
                         "stream": true,
