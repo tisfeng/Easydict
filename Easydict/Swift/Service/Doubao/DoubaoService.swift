@@ -107,11 +107,24 @@ public final class DoubaoService: StreamService {
                     let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
 
                     guard let httpResponse = response as? HTTPURLResponse else {
-                        throw QueryError(type: .api, message: "Invalid response")
+                        throw QueryError(
+                            type: .api,
+                            message: NSLocalizedString(
+                                "doubao.error.invalid_response",
+                                comment: ""
+                            )
+                        )
                     }
 
                     guard (200 ... 299).contains(httpResponse.statusCode) else {
-                        throw QueryError(type: .api, message: "HTTP error: \(httpResponse.statusCode)")
+                        let errorMessage = String(
+                            format: NSLocalizedString(
+                                "doubao.error.http_error",
+                                comment: ""
+                            ),
+                            httpResponse.statusCode
+                        )
+                        throw QueryError(type: .api, message: errorMessage)
                     }
 
                     var dataBuffer = Data()
@@ -170,7 +183,10 @@ public final class DoubaoService: StreamService {
         guard !apiKey.isEmpty else {
             return QueryError(
                 type: .missingSecretKey,
-                message: "Missing Doubao API Key. Get your API key from https://www.volcengine.com/product/doubao"
+                message: NSLocalizedString(
+                    "doubao.error.missing_api_key",
+                    comment: ""
+                )
             )
         }
         return nil
