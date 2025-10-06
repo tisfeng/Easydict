@@ -38,7 +38,7 @@ struct DoubaoTranslateType: Equatable {
         .hungarian: "hu",
         .indonesian: "id",
         .malay: "ms",
-        .norwegian: "nb",  // Norwegian Bokmål
+        .norwegian: "nb", // Norwegian Bokmål
         .dutch: "nl",
         .polish: "pl",
         .romanian: "ro",
@@ -52,7 +52,7 @@ struct DoubaoTranslateType: Equatable {
 
     static func transType(from: Language, to: Language) -> DoubaoTranslateType {
         guard let sourceLang = supportLanguagesDictionary[from],
-            let targetLang = supportLanguagesDictionary[to]
+              let targetLang = supportLanguagesDictionary[to]
         else {
             return .unsupported
         }

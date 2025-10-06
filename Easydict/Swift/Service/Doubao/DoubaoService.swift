@@ -6,13 +6,15 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import Alamofire
 import Defaults
 import Foundation
 
 @objc(EZDoubaoService)
-public final class DoubaoService: QueryService {
+public final class DoubaoService: StreamService {
     // MARK: Public
+
+    /// Default Doubao translation model identifier
+    public static let defaultModelIdentifier = "doubao-seed-translation-250915"
 
     public override func serviceType() -> ServiceType {
         .doubao
@@ -38,143 +40,171 @@ public final class DoubaoService: QueryService {
         !apiKey.isEmpty
     }
 
-    /// Doubao Translation API
-    override public func translate(
+    // MARK: Internal
+
+    override var defaultModels: [String] {
+        [Self.defaultModelIdentifier]
+    }
+
+    override var defaultModel: String {
+        Self.defaultModelIdentifier
+    }
+
+    /// Stream-based content translation for Doubao API
+    override func contentStreamTranslate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        let result = result
+        to: Language
+    )
+        -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream { continuation in
+            // Validate API key
+            if let error = validateAPIKey() {
+                continuation.finish(throwing: error)
+                return
+            }
 
-        // Validate API key
-        if let error = validateAPIKey() {
-            completion(result, error)
-            return
-        }
+            let transType = DoubaoTranslateType.transType(from: from, to: to)
+            guard transType != .unsupported else {
+                let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
+                let showingTo = EZLanguageManager.shared().showingLanguageName(to)
+                let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
+                continuation.finish(throwing: error)
+                return
+            }
 
-        let transType = DoubaoTranslateType.transType(from: from, to: to)
-        guard transType != .unsupported else {
-            let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
-            let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
-        }
-
-        // Doubao-Seed-Translation
-        // https://console.volcengine.com/ark/region:ark+cn-beijing/model/detail?Id=doubao-seed-translation
-
-        // Prepare request body according to Doubao API format
-        let requestBody: [String: Any] = [
-            "model": model,
-            "input": [
-                [
-                    "role": "user",
-                    "content": [
-                        [
-                            "type": "input_text",
-                            "text": "\(text)",
-                            "translation_options": [
-                                "source_language": transType.sourceLanguage,
-                                "target_language": transType.targetLanguage,
+            currentTask = Task {
+                do {
+                    // Prepare request body
+                    let requestBody: [String: Any] = [
+                        "model": model,
+                        "stream": true,
+                        "input": [
+                            [
+                                "role": "user",
+                                "content": [
+                                    [
+                                        "type": "input_text",
+                                        "text": text,
+                                        "translation_options": [
+                                            "source_language": transType.sourceLanguage,
+                                            "target_language": transType.targetLanguage,
+                                        ],
+                                    ],
+                                ],
                             ],
                         ],
-                    ],
-                ],
-            ],
-        ]
+                    ]
 
-        let endpoint = "https://ark.cn-beijing.volces.com/api/v3/responses"
+                    let endpoint = URL(string: "https://ark.cn-beijing.volces.com/api/v3/responses")!
 
-        var headers: HTTPHeaders = [
-            "Content-Type": "application/json",
-        ]
+                    var urlRequest = URLRequest(url: endpoint)
+                    urlRequest.httpMethod = "POST"
+                    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    urlRequest.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+                    urlRequest.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-        if !apiKey.isEmpty {
-            headers["Authorization"] = "Bearer \(apiKey)"
-        }
+                    let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
 
-        let request = AF.request(
-            endpoint,
-            method: .post,
-            parameters: requestBody,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-        .validate()
-        .responseDecodable(of: DoubaoResponse.self) { [weak self] response in
-            guard self != nil else { return }
-
-            switch response.result {
-            case let .success(doubaoResponse):
-                if let error = doubaoResponse.error {
-                    let errorMessage = error.message ?? "Unknown error"
-                    logError("Doubao translate error: \(errorMessage)")
-                    let queryError = QueryError(type: .api, message: errorMessage)
-                    completion(result, queryError)
-                } else if let outputs = doubaoResponse.output,
-                          let firstOutput = outputs.first,
-                          let content = firstOutput.content,
-                          let firstContent = content.first,
-                          let translatedText = firstContent.text {
-                    result.translatedResults = [translatedText]
-                    completion(result, nil)
-                } else {
-                    let errorMessage = "Unexpected response format"
-                    logError("Doubao translate error: \(errorMessage)")
-                    let queryError = QueryError(type: .unknown, message: errorMessage)
-                    completion(result, queryError)
-                }
-
-            case let .failure(error):
-                logError("Doubao translate error: \(error)")
-
-                let errorMessage = error.localizedDescription
-                let queryError = QueryError(type: .api, message: errorMessage)
-
-                if let data = response.data {
-                    do {
-                        let errorResponse = try JSONDecoder().decode(
-                            DoubaoResponse.self, from: data
-                        )
-                        if let doubaoError = errorResponse.error {
-                            queryError.errorDataMessage = doubaoError.message
-                        }
-                    } catch {
-                        logError("Failed to decode error response: \(error)")
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        throw QueryError(type: .api, message: "Invalid response")
                     }
+
+                    guard (200 ... 299).contains(httpResponse.statusCode) else {
+                        throw QueryError(type: .api, message: "HTTP error: \(httpResponse.statusCode)")
+                    }
+
+                    var dataBuffer = Data()
+                    var textBuffer = ""
+
+                    for try await byte in asyncBytes {
+                        // Check for cancellation
+                        try Task.checkCancellation()
+
+                        dataBuffer.append(byte)
+
+                        // Try to decode accumulated bytes as UTF-8
+                        if let text = String(data: dataBuffer, encoding: .utf8) {
+                            textBuffer.append(text)
+                            dataBuffer.removeAll()
+
+                            // Process complete SSE events
+                            if textBuffer.contains("\n\n") {
+                                let events = textBuffer.components(separatedBy: "\n\n")
+                                textBuffer = events.last ?? ""
+
+                                for event in events.dropLast() {
+                                    if let content = parseSSEEvent(event) {
+                                        continuation.yield(content)
+                                    }
+                                }
+                            }
+                        }
+                        // If decoding fails, continue accumulating bytes (incomplete UTF-8 sequence)
+                    }
+
+                    continuation.finish()
+                } catch is CancellationError {
+                    logInfo("Doubao task was cancelled.")
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
                 }
-                completion(result, queryError)
             }
         }
+    }
 
-        queryModel.setStop({
-            request.cancel()
-        }, serviceType: serviceType().rawValue)
+    override func cancelStream() {
+        currentTask?.cancel()
     }
 
     // MARK: Private
 
-    /// easydict://writeKeyValue?EZDoubaoAPIKey=xxx
-    private var apiKey: String {
-        Defaults[.doubaoAPIKey]
-    }
+    private var currentTask: Task<(), Never>?
 
-    /// easydict://writeKeyValue?EZDoubaoModelKey=xxx
-    private var model: String {
-        let value = Defaults[.doubaoModel].trimmingCharacters(in: .whitespacesAndNewlines)
-        return value.isEmpty ? "doubao-seed-translation-250915" : value
-    }
+    /// SSE event type for translation delta updates
+    private let deltaEventType = "response.output_text.delta"
 
     /// Validates the API key, returns a QueryError if missing
     private func validateAPIKey() -> QueryError? {
-        if apiKey.isEmpty {
+        guard !apiKey.isEmpty else {
             return QueryError(
                 type: .missingSecretKey,
                 message: "Missing Doubao API Key. Get your API key from https://www.volcengine.com/product/doubao"
             )
         }
         return nil
+    }
+
+    /// Parse SSE event and extract delta content
+    /// Doubao API returns SSE events in the format:
+    /// event: response.output_text.delta
+    /// data: {"type":"response.output_text.delta","delta":"text"}
+    private func parseSSEEvent(_ event: String) -> String? {
+        let lines = event.components(separatedBy: "\n")
+        var eventType = ""
+        var data = ""
+
+        for line in lines {
+            if line.hasPrefix("event: ") {
+                eventType = String(line.dropFirst(7)).trimmingCharacters(in: .whitespaces)
+            } else if line.hasPrefix("data: ") {
+                data = String(line.dropFirst(6))
+            }
+        }
+
+        // Only process output_text.delta events
+        guard eventType == deltaEventType, data != "[DONE]" else {
+            return nil
+        }
+
+        // Parse JSON data and extract delta
+        guard let jsonData = data.data(using: .utf8),
+              let streamEvent = try? JSONDecoder().decode(DoubaoStreamEvent.self, from: jsonData),
+              let delta = streamEvent.delta else {
+            return nil
+        }
+
+        return delta
     }
 }
