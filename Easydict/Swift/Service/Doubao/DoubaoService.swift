@@ -141,12 +141,19 @@ public final class DoubaoService: StreamService {
 
                     var dataBuffer = Data()
                     var textBuffer = ""
+                    let bufferThreshold = 1024 // Process in 1KB chunks for better performance
 
                     for try await byte in asyncBytes {
                         // Check for cancellation
                         try Task.checkCancellation()
 
                         dataBuffer.append(byte)
+
+                        // Process bytes in larger chunks to improve performance
+                        // Only attempt decoding when we have enough bytes or detect event boundary
+                        guard dataBuffer.count >= bufferThreshold || byte == 0x0A else { // 0x0A is '\n'
+                            continue
+                        }
 
                         // Try to decode accumulated bytes as UTF-8
                         if let text = String(data: dataBuffer, encoding: .utf8) {
@@ -166,6 +173,21 @@ public final class DoubaoService: StreamService {
                             }
                         }
                         // If decoding fails, continue accumulating bytes (incomplete UTF-8 sequence)
+                    }
+
+                    // Process any remaining data in the buffer
+                    if !dataBuffer.isEmpty, let text = String(data: dataBuffer, encoding: .utf8) {
+                        textBuffer.append(text)
+                    }
+
+                    // Process any remaining complete events
+                    if textBuffer.contains("\n\n") {
+                        let events = textBuffer.components(separatedBy: "\n\n")
+                        for event in events where !event.isEmpty {
+                            if let content = parseSSEEvent(event) {
+                                continuation.yield(content)
+                            }
+                        }
                     }
 
                     continuation.finish()
