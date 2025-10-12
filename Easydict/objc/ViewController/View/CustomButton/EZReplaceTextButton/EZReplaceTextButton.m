@@ -1,6 +1,6 @@
 //
 //  EZReplaceTextButton.m
-//
+//  Easydict
 //
 //  Created by tisfeng on 2023/10/13.
 //
@@ -58,51 +58,15 @@
 
     /**
      Since some apps (such as Browsers) environment is complex, use Accessibility to replace text may fail, so it is better to use key event to replace text. Fix https://github.com/tisfeng/Easydict/issues/622
-
+     
      But Copy and Paste action will pollute the clipboard, and may cause Cmd + C does not work 😓
 
      So we add a option for user to decide whether to use key event to replace text.
+     
+     For browsers, we should use AppleScript to replace text first if enabled.
      */
-    if (useCompatibilityMode) {
-        [self replaceSelectedTextByKey:replacementString];
-    } else {
-        [self replaceSelectedTextByAccessibility:replacementString];
-    }
-}
-
-- (void)replaceSelectedTextByAccessibility:(NSString *)replacementString {
-    MMLogInfo(@"replaceSelectedTextByAccessibility: %@", replacementString);
-
-    AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    AXUIElementRef focusedElement = NULL;
-
-    AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-
-    if (error == kAXErrorSuccess && focusedElement) {
-        // ???: Sometimes in Chrome, error is kAXErrorSuccess but replace text failed 😓
-        error = AXUIElementSetAttributeValue(focusedElement, kAXSelectedTextAttribute, (__bridge CFTypeRef)(replacementString));
-        if (error != kAXErrorSuccess) {
-            MMLogError(@"replaceSelectedText error: %d", error);
-            [self replaceSelectedTextByKey:replacementString];
-        }
-        CFRelease(focusedElement);
-    } else {
-        MMLogError(@"replaceSelectedText error: %d", error);
-        [self replaceSelectedTextByKey:replacementString];
-    }
-    CFRelease(systemWideElement);
-}
-
-- (void)replaceSelectedTextByKey:(NSString *)replacementString {
-    NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
-    MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app);
     
-    [STKPasteboardManager.shared pasteText:replacementString
-                         restorePasteboard:NO
-                           restoreInterval: 0
-                           completionHandler:^{
-        MMLogInfo(@"End replace selected text by key");
-    }];
+    [EZSystemUtility.shared insertText:replacementString completionHandler:^{}];
 }
 
 @end

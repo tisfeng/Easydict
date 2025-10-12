@@ -7,7 +7,6 @@
 //
 
 import AppKit
-import Defaults
 import Foundation
 import SelectedTextKit
 
@@ -55,16 +54,10 @@ class ActionManager: NSObject {
 
     /// Common method to execute text replacement actions
     private func executeTextReplacementAction(_ type: ProcessingType) async {
-        guard let textFieldInfo = await systemUtility.getFocusedTextFieldInfo() else {
+        guard let textFieldInfo = await systemUtility.focusedTextFieldInfo(enableSelectAll: true) else {
+            logError("No focused text field found, aborting action")
             return
         }
-        logInfo("Focused Text Field Info: \(textFieldInfo)")
-
-        // Process auto-selection and get updated text field info
-        guard let textFieldInfo = await processAutoTextSelection(for: textFieldInfo) else {
-            return
-        }
-        logInfo("Text Field Info after Auto-Selection: \(textFieldInfo)")
 
         // Prepare translation request
         let queryText = textFieldInfo.focusedText
@@ -73,48 +66,10 @@ class ActionManager: NSObject {
         }
 
         // Execute the streaming service
-        await performStreamingService(
-            request: request,
-            textFieldInfo: textFieldInfo
-        )
+        await performStreamingService(request: request, textFieldInfo: textFieldInfo)
     }
 
     // MARK: - Helper Methods
-
-    /// Determine the appropriate text strategy set based on the text field info and user settings
-    private func textStrategies(for textFieldInfo: TextFieldInfo) -> [TextStrategy] {
-        let isSupportedAX = textFieldInfo.isSupportedAXElement
-        let enableCompatibilityMode = Defaults[.enableCompatibilityReplace]
-
-        let isBrowser = AppleScriptTask.isBrowserSupportingAppleScript(frontmostAppBundleID)
-        let preferAppleScriptAPI = Defaults[.preferAppleScriptAPI]
-        let shouldUseAppleScript = isBrowser && preferAppleScriptAPI
-
-        return systemUtility.textStrategies(
-            shouldUseAppleScript: shouldUseAppleScript,
-            enableCompatibilityMode: enableCompatibilityMode,
-            isSupportedAX: isSupportedAX
-        )
-    }
-
-    /// Process automatic text selection based on user settings and return updated text field info
-    /// - Parameter textFieldInfo: Information about the current text field
-    /// - Returns: Updated TextFieldInfo after processing auto-selection, or nil if processing fails
-    private func processAutoTextSelection(for textFieldInfo: TextFieldInfo) async -> TextFieldInfo? {
-        let autoSelectEnabled = Defaults[.autoSelectAllTextFieldText]
-        let selectedText = textFieldInfo.selectedText?.trim() ?? ""
-
-        guard autoSelectEnabled, selectedText.isEmpty else {
-            return textFieldInfo
-        }
-
-        let textStrategy = textStrategies(for: textFieldInfo)
-        await systemUtility.selectAll(using: textStrategy)
-
-        logInfo("Auto-selected all text content in field")
-
-        return await systemUtility.getFocusedTextFieldInfo()
-    }
 
     /// Prepare translation request from text field information
     /// - Parameters:
@@ -198,7 +153,7 @@ class ActionManager: NSObject {
         }
 
         do {
-            let textStrategy = textStrategies(for: textFieldInfo)
+            let textStrategy = systemUtility.textStrategies(for: textFieldInfo)
 
             /**
              - Note:
