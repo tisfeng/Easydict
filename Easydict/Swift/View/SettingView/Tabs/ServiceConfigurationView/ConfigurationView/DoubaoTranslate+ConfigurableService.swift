@@ -22,7 +22,7 @@ extension DoubaoService {
             InputCell(
                 textFieldTitleKey: "service.configuration.doubao.model.title",
                 key: .doubaoModel,
-                placeholder: "doubao-seed-translation-250915",
+                placeholder: LocalizedStringKey(DoubaoService.defaultModelIdentifier),
                 limitLength: 100
             )
         }
