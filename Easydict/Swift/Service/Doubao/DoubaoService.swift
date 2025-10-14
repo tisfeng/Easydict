@@ -121,6 +121,10 @@ public final class DoubaoService: StreamService {
     }
 
     /// Creates an error for unsupported language pairs
+    /// - Parameters:
+    ///   - from: The source language
+    ///   - to: The target language
+    /// - Returns: A QueryError with unsupported language message
     private func createUnsupportedLanguageError(from: Language, to: Language) -> QueryError {
         let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
         let showingTo = EZLanguageManager.shared().showingLanguageName(to)
@@ -128,6 +132,10 @@ public final class DoubaoService: StreamService {
     }
 
     /// Builds the request body for Doubao translation API
+    /// - Parameters:
+    ///   - text: The text to be translated
+    ///   - transType: The translation type containing source and target language codes
+    /// - Returns: A dictionary containing the formatted request body for the API
     private func buildRequestBody(text: String, transType: DoubaoTranslateType) -> [String: Any] {
         [
             "model": model,
@@ -151,6 +159,7 @@ public final class DoubaoService: StreamService {
     }
 
     /// Creates and configures URLRequest for Doubao API
+    ///
     /// Note: We use URLSession.shared.bytes instead of ChatQuery/Gemini-style requests because:
     /// 1. Doubao provides a specialized translation API, not a general chat/LLM API
     /// 2. The API uses a unique format with "translation_options" parameter, which is incompatible with
@@ -159,6 +168,10 @@ public final class DoubaoService: StreamService {
     ///    HTTP requests to match the provider's API specification
     /// 4. Unlike OpenAI/Gemini which use conversational prompts, Doubao's translation model expects
     ///    structured input with explicit source/target language parameters
+    ///
+    /// - Parameter body: The request body dictionary to be serialized as JSON
+    /// - Returns: A configured URLRequest with authorization headers and JSON body
+    /// - Throws: An error if JSON serialization fails
     private func createURLRequest(body: [String: Any]) throws -> URLRequest {
         let endpoint = URL(string: "https://ark.cn-beijing.volces.com/api/v3/responses")!
 
@@ -172,6 +185,8 @@ public final class DoubaoService: StreamService {
     }
 
     /// Validates HTTP response status
+    /// - Parameter response: The URLResponse to validate
+    /// - Throws: QueryError if response is not HTTPURLResponse or status code is not in 200-299 range
     private func validateHTTPResponse(_ response: URLResponse) throws {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw QueryError(
@@ -196,6 +211,10 @@ public final class DoubaoService: StreamService {
     }
 
     /// Processes stream bytes and yields translation content
+    /// - Parameters:
+    ///   - asyncBytes: The async byte stream from URLSession
+    ///   - continuation: The continuation to yield translated content chunks
+    /// - Throws: CancellationError if task is cancelled, or other errors during processing
     private func processStreamBytes(
         _ asyncBytes: URLSession.AsyncBytes,
         continuation: AsyncThrowingStream<String, Error>.Continuation
@@ -237,6 +256,9 @@ public final class DoubaoService: StreamService {
     }
 
     /// Processes complete SSE events from the text buffer
+    /// - Parameters:
+    ///   - textBuffer: The text buffer containing SSE events, modified in-place to keep remaining incomplete events
+    ///   - continuation: The continuation to yield parsed translation content
     private func processCompleteEvents(
         from textBuffer: inout String,
         continuation: AsyncThrowingStream<String, Error>.Continuation
@@ -254,9 +276,14 @@ public final class DoubaoService: StreamService {
     }
 
     /// Parse SSE event and extract delta content
+    ///
     /// Doubao API returns SSE events in the format:
+    /// ```
     /// event: response.output_text.delta
     /// data: {"type":"response.output_text.delta","delta":"text"}
+    /// ```
+    /// - Parameter event: The SSE event string to parse
+    /// - Returns: The delta text content if the event is a valid translation delta, nil otherwise
     private func parseSSEEvent(_ event: String) -> String? {
         let lines = event.components(separatedBy: "\n")
         var eventType = ""
