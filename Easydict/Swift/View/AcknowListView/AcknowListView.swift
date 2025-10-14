@@ -49,10 +49,6 @@ struct AcknowListView: View {
                 title: "CoolToast",
                 repository: URL(string: "https://github.com/socoolby/CoolToast")!
             ),
-            .init(
-                title: "Snip",
-                repository: URL(string: "https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac")!
-            ),
         ]
 
         acknowList?.acknowledgements += manualAcknowList
