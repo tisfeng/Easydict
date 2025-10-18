@@ -255,23 +255,25 @@ public final class DoubaoService: StreamService {
         processCompleteEvents(from: &textBuffer, continuation: continuation)
     }
 
-    /// Processes complete SSE events from the text buffer
+    /// Processes complete SSE events from the accumulated text buffer.
+    ///
     /// - Parameters:
-    ///   - textBuffer: The text buffer containing SSE events, modified in-place to keep remaining incomplete events
-    ///   - continuation: The continuation to yield parsed translation content
+    ///   - textBuffer: The text buffer containing SSE events. It will be updated in place to keep any incomplete event data.
+    ///   - continuation: The async stream continuation used to yield parsed translation content.
     private func processCompleteEvents(
         from textBuffer: inout String,
         continuation: AsyncThrowingStream<String, Error>.Continuation
     ) {
-        guard textBuffer.contains("\n\n") else { return }
+        let eventSeparator = "\n\n"
+        guard textBuffer.contains(eventSeparator) else { return }
 
-        let events = textBuffer.components(separatedBy: "\n\n")
-        textBuffer = events.last ?? ""
+        // Split into complete events and retain remaining incomplete data
+        let parts = textBuffer.split(separator: eventSeparator, omittingEmptySubsequences: false)
+        textBuffer = String(parts.last ?? "")
 
-        for event in events.dropLast() where !event.isEmpty {
-            if let content = parseSSEEvent(event) {
-                continuation.yield(content)
-            }
+        for event in parts.dropLast() where !event.isEmpty {
+            guard let content = parseSSEEvent(String(event)) else { continue }
+            continuation.yield(content)
         }
     }
 
@@ -292,11 +294,13 @@ public final class DoubaoService: StreamService {
         var eventType: String?
         var jsonDataString: String?
 
-        for line in event.split(separator: "\n", omittingEmptySubsequences: true) {
+        for line in event.split(separator: "\n") {
             if line.starts(with: eventPrefix) {
                 eventType = line.dropFirst(eventPrefix.count).trimmingCharacters(in: .whitespaces)
             } else if line.starts(with: dataPrefix) {
-                jsonDataString = line.dropFirst(dataPrefix.count).trimmingCharacters(in: .whitespaces)
+                jsonDataString = line.dropFirst(dataPrefix.count).trimmingCharacters(
+                    in: .whitespaces
+                )
             }
         }
 
