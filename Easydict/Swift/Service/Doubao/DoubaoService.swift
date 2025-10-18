@@ -285,30 +285,34 @@ public final class DoubaoService: StreamService {
     /// - Parameter event: The SSE event string to parse
     /// - Returns: The delta text content if the event is a valid translation delta, nil otherwise
     private func parseSSEEvent(_ event: String) -> String? {
-        let lines = event.components(separatedBy: "\n")
-        var eventType = ""
-        var data = ""
+        let eventPrefix = "event:"
+        let dataPrefix = "data:"
+        let doneFlag = "[DONE]"
 
-        for line in lines {
-            if line.hasPrefix("event: ") {
-                eventType = String(line.dropFirst(7)).trimmingCharacters(in: .whitespaces)
-            } else if line.hasPrefix("data: ") {
-                data = String(line.dropFirst(6))
+        var eventType: String?
+        var jsonDataString: String?
+
+        for line in event.split(separator: "\n", omittingEmptySubsequences: true) {
+            if line.starts(with: eventPrefix) {
+                eventType = line.dropFirst(eventPrefix.count).trimmingCharacters(in: .whitespaces)
+            } else if line.starts(with: dataPrefix) {
+                jsonDataString = line.dropFirst(dataPrefix.count).trimmingCharacters(in: .whitespaces)
             }
         }
 
-        // Only process output_text.delta events
-        guard eventType == deltaEventType, data != "[DONE]" else {
+        guard eventType == deltaEventType,
+              let dataString = jsonDataString,
+              dataString != doneFlag,
+              let data = dataString.data(using: .utf8)
+        else {
             return nil
         }
 
-        // Parse JSON data and extract delta
-        guard let jsonData = data.data(using: .utf8),
-              let streamEvent = try? JSONDecoder().decode(DoubaoStreamEvent.self, from: jsonData),
-              let delta = streamEvent.delta else {
+        guard let streamEvent = try? JSONDecoder().decode(DoubaoStreamEvent.self, from: data) else {
+            logError("Failed to decode Doubao SSE data: \(jsonDataString ?? "")")
             return nil
         }
 
-        return delta
+        return streamEvent.delta
     }
 }
