@@ -16,7 +16,7 @@ func tencentSignHeader(
     service: String,
     action: String,
     version: String,
-    parameters: [String: Any],
+    parameters: Parameters,
     secretId: String,
     secretKey: String
 )

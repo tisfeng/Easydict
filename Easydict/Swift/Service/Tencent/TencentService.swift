@@ -65,7 +65,7 @@ public final class TencentService: QueryService {
             return
         }
 
-        let parameters: [String: Any] = [
+        let parameters: Parameters = [
             "SourceText": text,
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,

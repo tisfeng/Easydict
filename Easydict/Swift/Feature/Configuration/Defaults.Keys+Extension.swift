@@ -172,7 +172,7 @@ extension Defaults.Keys {
 
     static let preferAppleScriptAPI = Key<Bool>(
         "EZConfiguration_kPreferAppleScriptAPI",
-        default: false
+        default: true
     )
 
     /// Cannot use NSScreen, so we use CGRect to record the screen visible frame for EZShowWindowPositionFormer
