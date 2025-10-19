@@ -30,7 +30,7 @@ extension YoudaoService {
         static let defaultKey = "asdjnjfenknafdfsdfsd"
     }
 
-    private var generalParameters: [String: Any] {
+    private var generalParameters: Parameters {
         [
             "client": Constants.client,
             "product": Constants.product,
