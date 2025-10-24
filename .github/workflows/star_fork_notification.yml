@@ -99,28 +99,42 @@ jobs:
             echo "✅ User meets notification criteria"
             echo "📊 Reason: $notification_reason"
             echo "user_conditions_met=true" >> $GITHUB_ENV
+            echo "notification_reason=$notification_reason" >> $GITHUB_ENV
           else
             echo "❌ User does not meet notification criteria"
             echo "📊 Stats: Stars=$earn_star_count, Commits=$commit_count, Followers=$follower_count"
             echo "user_conditions_met=false" >> $GITHUB_ENV
+            echo "notification_reason=Does not meet criteria" >> $GITHUB_ENV
           fi
 
       - name: Convert body to HTML
         run: |
           html_body=""
-          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b>&nbsp;&nbsp;(Earn stars: ${{ env.earn_star_count }}, Commits: ${{ env.commit_count }}, Followers: ${{ env.follower_count }})<br><br>"
+          html_body+="<h3>🎉 New Stargazer</h3>"
+          html_body+="User: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b><br><br>"
 
-          html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
-          html_body+="Forks: <b>${{ env.repo_forks }}</b><br><br>"
-          html_body+="Downloads: <b>${{ env.download_count }}</b><br><br>"
-          html_body+="Repo: <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a><br><br>"
-          html_body+="Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a><br><br>"
+          html_body+="<h4>👤 User Statistics:</h4>"
+          html_body+="⭐ Earned Stars: <b>${{ env.earn_star_count }}</b><br>"
+          html_body+="💻 Commits: <b>${{ env.commit_count }}</b><br>"
+          html_body+="👥 Followers: <b>${{ env.follower_count }}</b><br><br>"
 
+          html_body+="<h4>✅ Notification Reason:</h4>"
+          html_body+="<span style='color: green; font-weight: bold;'>${{ env.notification_reason }}</span><br><br>"
+
+          html_body+="<h4>📊 Repository Statistics:</h4>"
+          html_body+="⭐ Stars: <b>${{ env.repo_stars }}</b><br>"
+          html_body+="🍴 Forks: <b>${{ env.repo_forks }}</b><br>"
+          html_body+="📥 Downloads: <b>${{ env.download_count }}</b><br><br>"
+
+          html_body+="<h4>🔗 Links:</h4>"
+          html_body+="Repo: <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a><br>"
+          html_body+="Stargazers: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a><br><br>"
+
+          html_body+="<h4>📈 User GitHub Stats:</h4>"
           html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=${{ github.actor }}&layout=normal&theme=algolia"><br>'
           html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api?username=${{ github.actor }}&theme=algolia&show_icons=true"><br>'
 
           echo "html_body=$html_body" >> $GITHUB_ENV
-          echo "html body: ${{ env.html_body }}"
 
       - name: "Send mail"
         if: env.user_conditions_met == 'true'
