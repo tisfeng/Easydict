@@ -97,6 +97,7 @@
                                                                         EZLanguageMongolian, @"mn-Mong",
                                                                         EZLanguageHebrew, @"he",
                                                                         EZLanguageGeorgian, @"ka",
+                                                                        EZLanguageCatalan, @"ca",
                                                                         nil];
     return orderedDict;
 }
