@@ -44,6 +44,7 @@ jobs:
       - name: Get user information
         id: check_conditions
         run: |
+          # Fetch user's GitHub statistics
           earn_star_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.actor }}/repos?per_page=100&sort=pushed" | jq '[.[] | .stargazers_count] | add // 0')
           commit_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/commits?per_page=100&q=author:${{ github.actor }}" | jq -r '.total_count // 0')
           follower_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '.followers // 0')
@@ -55,9 +56,52 @@ jobs:
           echo "commit_count=$commit_count" >> $GITHUB_ENV
           echo "follower_count=$follower_count" >> $GITHUB_ENV
 
-          if [[ $earn_star_count -ge 10 || $commit_count -gt 1000 ]]; then
-          echo "user_conditions_met=true" >> $GITHUB_ENV
+          # Define threshold values for VIP-tiered notification filtering
+          # Tier 1: Elite developers (any single condition triggers notification)
+          ELITE_STARS=100       # Elite: User's repos have earned 100+ stars
+          ELITE_COMMITS=5000    # Elite: User has made 5000+ commits
+          ELITE_FOLLOWERS=500   # Elite: User has 500+ followers
+
+          # Tier 2: Quality developers (must meet 2 conditions to trigger notification)
+          QUALITY_STARS=20      # Quality: User's repos have earned 20+ stars
+          QUALITY_COMMITS=1000  # Quality: User has made 1000+ commits
+          QUALITY_FOLLOWERS=100 # Quality: User has 100+ followers
+
+          # Check if user meets notification criteria using VIP-tiered system
+          user_conditions_met=false
+          notification_reason=""
+
+          # Tier 1: Elite developers - single condition is enough
+          if [[ $earn_star_count -ge $ELITE_STARS ]]; then
+            user_conditions_met=true
+            notification_reason="Elite developer: Stars ($earn_star_count) >= $ELITE_STARS"
+          elif [[ $commit_count -gt $ELITE_COMMITS ]]; then
+            user_conditions_met=true
+            notification_reason="Elite developer: Commits ($commit_count) > $ELITE_COMMITS"
+          elif [[ $follower_count -ge $ELITE_FOLLOWERS ]]; then
+            user_conditions_met=true
+            notification_reason="Elite developer: Followers ($follower_count) >= $ELITE_FOLLOWERS"
+
+          # Tier 2: Quality developers - must meet 2 out of 3 conditions
+          elif [[ $earn_star_count -ge $QUALITY_STARS && $follower_count -ge $QUALITY_FOLLOWERS ]]; then
+            user_conditions_met=true
+            notification_reason="Quality developer: Stars ($earn_star_count) >= $QUALITY_STARS AND Followers ($follower_count) >= $QUALITY_FOLLOWERS"
+          elif [[ $earn_star_count -ge $QUALITY_STARS && $commit_count -gt $QUALITY_COMMITS ]]; then
+            user_conditions_met=true
+            notification_reason="Quality developer: Stars ($earn_star_count) >= $QUALITY_STARS AND Commits ($commit_count) > $QUALITY_COMMITS"
+          elif [[ $follower_count -ge $QUALITY_FOLLOWERS && $commit_count -gt $QUALITY_COMMITS ]]; then
+            user_conditions_met=true
+            notification_reason="Quality developer: Followers ($follower_count) >= $QUALITY_FOLLOWERS AND Commits ($commit_count) > $QUALITY_COMMITS"
+          fi
+
+          # Output result
+          if [[ $user_conditions_met == true ]]; then
+            echo "✅ User meets notification criteria"
+            echo "📊 Reason: $notification_reason"
+            echo "user_conditions_met=true" >> $GITHUB_ENV
           else
+            echo "❌ User does not meet notification criteria"
+            echo "📊 Stats: Stars=$earn_star_count, Commits=$commit_count, Followers=$follower_count"
             echo "user_conditions_met=false" >> $GITHUB_ENV
           fi
 
