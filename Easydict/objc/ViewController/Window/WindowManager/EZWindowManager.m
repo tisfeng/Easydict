@@ -10,7 +10,6 @@
 #import "EZBaseQueryViewController.h"
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
-#import "Snip.h"
 #import "EZCoordinateUtils.h"
 #import "EZLog.h"
 #import "Easydict-Swift.h"
@@ -474,7 +473,7 @@ static EZWindowManager *_instance;
 
     [self saveFrontmostApplication];
 
-    if (Snip.shared.isSnapshotting) {
+    if (Screenshot.shared.isTakingScreenshot) {
         return;
     }
 
@@ -813,7 +812,7 @@ static EZWindowManager *_instance;
     }
 
     [self saveFrontmostApplication];
-    if (Snip.shared.isSnapshotting) {
+    if (Screenshot.shared.isTakingScreenshot) {
         return;
     }
 
@@ -845,7 +844,7 @@ static EZWindowManager *_instance;
     MMLogInfo(@"inputTranslate");
 
     [self saveFrontmostApplication];
-    if (Snip.shared.isSnapshotting) {
+    if (Screenshot.shared.isTakingScreenshot) {
         return;
     }
 
@@ -952,7 +951,7 @@ static EZWindowManager *_instance;
 
     [self saveFrontmostApplication];
 
-    if (Snip.shared.isSnapshotting || Screenshot.shared.isTakingScreenshot) {
+    if (Screenshot.shared.isTakingScreenshot) {
         MMLogWarn(@"Already snapshotting, ignoring request");
         return;
     }
@@ -986,18 +985,13 @@ static EZWindowManager *_instance;
         }
     };
 
-    // New screenshot feature may be unstable, so we only enable it in beta.
-    if (Configuration.shared.beta) {
-        [Screenshot.shared startCaptureWithCompletion:captureCompletion];
-    } else {
-        [Snip.shared startWithCompletion:captureCompletion];
-    }
+    [Screenshot.shared startCaptureWithCompletion:captureCompletion];
 }
 
 #pragma mark - Application Shortcut
 
 - (void)rerty {
-    if (Snip.shared.isSnapshotting) {
+    if (Screenshot.shared.isTakingScreenshot) {
         return;
     }
 
@@ -1036,8 +1030,8 @@ static EZWindowManager *_instance;
 - (void)closeWindowOrExitSreenshot {
     MMLogInfo(@"Close window, or exit screenshot");
 
-    if (Snip.shared.isSnapshotting) {
-        [Snip.shared stop];
+    if (Screenshot.shared.isTakingScreenshot) {
+        [Screenshot.shared finishCapture:nil];
     } else {
         [self closeFloatingWindow];
     }

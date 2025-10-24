@@ -65,6 +65,8 @@ public final class TencentService: QueryService {
             return
         }
 
+        // Use `Parameters` type alias, not `[String: Any]`
+        // SeeAlso: https://github.com/Alamofire/Alamofire/issues/3983
         let parameters: Parameters = [
             "SourceText": text,
             "Source": transType.sourceLanguage,
@@ -87,10 +89,6 @@ public final class TencentService: QueryService {
             secretId: secretId,
             secretKey: secretKey
         )
-
-        /// - BUG: Alamofire 5.10.0 will lead Tencent and Volcano API request fail.
-        /// - SeeAlso: https://github.com/tisfeng/Easydict/issues/975 and https://github.com/tisfeng/Easydict/issues/971
-        /// - Fix: Downgrade to Alamofire 5.9.1
 
         let request = AF.request(
             endpoint,

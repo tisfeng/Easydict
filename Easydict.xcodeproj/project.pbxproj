@@ -262,11 +262,6 @@
 		03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */; };
 		03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */; };
 		03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228C29231FA6001C7E63 /* DarkModeManager.m */; };
-		03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229329231FA6001C7E63 /* SnipWindow.m */; };
-		03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229429231FA6001C7E63 /* SnipFocusView.m */; };
-		03B0231729231FA6001C7E63 /* Snip.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229529231FA6001C7E63 /* Snip.m */; };
-		03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229729231FA6001C7E63 /* SnipWindowController.m */; };
-		03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229829231FA6001C7E63 /* SnipViewController.m */; };
 		03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022A829231FA6001C7E63 /* NSWindow+MM.m */; };
 		03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AA29231FA6001C7E63 /* NSPasteboard+MM.m */; };
 		03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AB29231FA6001C7E63 /* NSImage+MM.m */; };
@@ -867,16 +862,6 @@
 		03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
 		03B0228C29231FA6001C7E63 /* DarkModeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DarkModeManager.m; sourceTree = "<group>"; };
 		03B0228D29231FA6001C7E63 /* NSView+HiddenDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+HiddenDebug.h"; sourceTree = "<group>"; };
-		03B0228F29231FA6001C7E63 /* Snip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snip.h; sourceTree = "<group>"; };
-		03B0229029231FA6001C7E63 /* SnipFocusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipFocusView.h; sourceTree = "<group>"; };
-		03B0229129231FA6001C7E63 /* SnipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipViewController.h; sourceTree = "<group>"; };
-		03B0229229231FA6001C7E63 /* SnipWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipWindowController.h; sourceTree = "<group>"; };
-		03B0229329231FA6001C7E63 /* SnipWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipWindow.m; sourceTree = "<group>"; };
-		03B0229429231FA6001C7E63 /* SnipFocusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipFocusView.m; sourceTree = "<group>"; };
-		03B0229529231FA6001C7E63 /* Snip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Snip.m; sourceTree = "<group>"; };
-		03B0229629231FA6001C7E63 /* SnipWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipWindow.h; sourceTree = "<group>"; };
-		03B0229729231FA6001C7E63 /* SnipWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipWindowController.m; sourceTree = "<group>"; };
-		03B0229829231FA6001C7E63 /* SnipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipViewController.m; sourceTree = "<group>"; };
 		03B022A729231FA6001C7E63 /* NSAttributedString+MM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+MM.h"; sourceTree = "<group>"; };
 		03B022A829231FA6001C7E63 /* NSWindow+MM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+MM.m"; sourceTree = "<group>"; };
 		03B022A929231FA6001C7E63 /* NSColor+MM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+MM.h"; sourceTree = "<group>"; };
@@ -2276,23 +2261,6 @@
 			path = DarkMode;
 			sourceTree = "<group>";
 		};
-		03B0228E29231FA6001C7E63 /* Snip */ = {
-			isa = PBXGroup;
-			children = (
-				03B0228F29231FA6001C7E63 /* Snip.h */,
-				03B0229529231FA6001C7E63 /* Snip.m */,
-				03B0229029231FA6001C7E63 /* SnipFocusView.h */,
-				03B0229429231FA6001C7E63 /* SnipFocusView.m */,
-				03B0229129231FA6001C7E63 /* SnipViewController.h */,
-				03B0229829231FA6001C7E63 /* SnipViewController.m */,
-				03B0229629231FA6001C7E63 /* SnipWindow.h */,
-				03B0229329231FA6001C7E63 /* SnipWindow.m */,
-				03B0229229231FA6001C7E63 /* SnipWindowController.h */,
-				03B0229729231FA6001C7E63 /* SnipWindowController.m */,
-			);
-			path = Snip;
-			sourceTree = "<group>";
-		};
 		03B0229929231FA6001C7E63 /* StatusItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -2500,7 +2468,6 @@
 		03BDA7982A26DA000079D04F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				03B0228E29231FA6001C7E63 /* Snip */,
 				033C30F82A7409C40095926A /* DictionaryKit */,
 				0361966B2A000E7800806370 /* FWEncryptorAES */,
 				03BDA7992A26DA280079D04F /* ArgumentParser */,
@@ -3811,7 +3778,6 @@
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
-				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */,
 				03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */,
 				03D486502E3F2021009313B3 /* Regex+List.swift in Sources */,
@@ -3832,7 +3798,6 @@
 				03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */,
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,
 				40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */,
-				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				0337D3CA2E66AA5000B08437 /* SystemUtility+AX.swift in Sources */,
 				03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */,
 				039785282CC678F400A49087 /* TranslationManager.swift in Sources */,
@@ -3930,7 +3895,6 @@
 				036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
 				033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */,
-				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */,
 				6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */,
@@ -3983,7 +3947,6 @@
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
-				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
 				03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */,
@@ -4001,7 +3964,6 @@
 				0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */,
 				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,
-				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
 				03F44F2B2E57813B003C2EA3 /* RecognizedTextObservation+Extension.swift in Sources */,
