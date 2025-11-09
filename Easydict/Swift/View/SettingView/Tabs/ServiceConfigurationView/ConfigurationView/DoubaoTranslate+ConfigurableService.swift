@@ -1,5 +1,5 @@
 //
-//  DoubaoTranslate+ConfigurableView.swift
+//  DoubaoTranslate+ConfigurableService.swift
 //  Easydict
 //
 //  Created by Liaoworking on 2025/9/30.
