@@ -46,6 +46,11 @@ public final class DoubaoService: StreamService {
         !apiKey.isEmpty
     }
 
+    /// Note: `doubao-seed-translation-250915` only supports translation tasks.
+    public override func supportedQueryType() -> EZQueryTextType {
+        .translation
+    }
+
     // MARK: Internal
 
     override var defaultModels: [String] {
