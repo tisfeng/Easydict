@@ -341,6 +341,10 @@ extension Defaults.Keys {
     // Volcano
     static let volcanoAccessKeyID = Key<String>(EZVolcanoAccessKeyID, default: "")
     static let volcanoSecretAccessKey = Key<String>(EZVolcanoSecretAccessKey, default: "")
+
+    // Doubao
+    static let doubaoAPIKey = Key<String>(EZDoubaoAPIKey, default: "")
+    static let doubaoModel = Key<String>(EZDoubaoModelKey, default: DoubaoService.defaultModelIdentifier)
 }
 
 /// shortcut

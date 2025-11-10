@@ -11,7 +11,7 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 - The commit message **must be written in English** and **follow the Angular Conventional Commit style**.
 - After generating the English commit message, also provide a **Simplified Chinese translation** of the message below it for developer reference.
 - The Chinese translation should **not** be written into the commit file or committed.
-- Do **not** commit immediately. First, show me a preview of the proposed commit message and wait for my confirmation.
+- Do **not** commit immediately. First, show me a preview of the English and Chinese commit message and wait for my confirmation.
 - When committing, write the message to a temporary text file `commit_message.txt` in the project root, then run: `git commit -F <file>`, finally, delete the temporary file to avoid encoding issues.
 
 ### Additional Context
