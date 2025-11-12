@@ -34,9 +34,18 @@ public class AppleOCREngine: NSObject {
     /// - Parameters:
     ///   - image: The `NSImage` to recognize text from.
     ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
+    ///   - requiresAccurateRecognition: Whether to perform a second-pass OCR for accurate recognition.
+    ///     **⚠️ Important**: When enabled, this may significantly increase processing time as it runs
+    ///     multi-language OCR concurrently to select the most accurate result. Only enable when
+    ///     high accuracy is required. Defaults to `false`.
     /// - Returns: An `EZOCRResult` containing the recognized and processed text.
-    func recognizeText(image: NSImage, language: Language = .auto) async throws -> EZOCRResult {
-        log("Recognizing text in image with language: \(language), image size: \(image.size)")
+    func recognizeText(
+        image: NSImage,
+        language: Language = .auto,
+        requiresAccurateRecognition: Bool = false
+    ) async throws
+        -> EZOCRResult {
+        logInfo("Recognizing text in image with language: \(language), image size: \(image.size)")
 
         guard image.isValid else {
             throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
@@ -56,8 +65,8 @@ public class AppleOCREngine: NSObject {
         // Perform Vision OCR using unified API
         let observations = try await performVisionOCR(on: cgImage, language: language)
 
-        log("Recognize observations count: \(observations.count) (\(language))")
-        log("Cost time: \(startTime.elapsedTimeString) seconds")
+        logInfo("Recognize observations count: \(observations.count) (\(language))")
+        logInfo("Cost time: \(startTime.elapsedTimeString) seconds")
 
         let ocrResult = EZOCRResult()
         ocrResult.from = language
@@ -66,7 +75,7 @@ public class AppleOCREngine: NSObject {
         let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
         let rawProbabilities = languageDetector.rawProbabilities
         let textAnalysis = languageDetector.getTextAnalysis()
-        log(
+        logInfo(
             "Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)"
         )
 
@@ -80,8 +89,8 @@ public class AppleOCREngine: NSObject {
             || hasDominantLanguage(in: rawProbabilities)
             || rawProbabilities.isEmpty
 
-        log("Merged text char count: \(mergedText.count)")
-        log("Performing OCR text processing, smart merging: \(smartMerging)")
+        logInfo("Merged text char count: \(mergedText.count)")
+        logInfo("Performing OCR text processing, smart merging: \(smartMerging)")
 
         textProcessor.setupOCRResult(
             ocrResult,
@@ -95,11 +104,14 @@ public class AppleOCREngine: NSObject {
             ocrResult.from = detectedLanguage
         }
 
-        // If we have done smart merging, means we are confident enough with the result,
-        // no need to run multi-language candidate selection.
+        // Determine whether to perform second-pass OCR:
+        // 1. If requiresAccurateRecognition is false, skip second pass regardless of smartMerging
+        // 2. If requiresAccurateRecognition is true but smartMerging is true, still skip second pass
+        //    (we're already confident enough with the result)
+        // 3. Only perform second pass when requiresAccurateRecognition is true AND smartMerging is false
 
-        if smartMerging {
-            log("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
+        if !requiresAccurateRecognition || smartMerging {
+            logInfo("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
             return ocrResult
         }
 
@@ -112,8 +124,8 @@ public class AppleOCREngine: NSObject {
             candidates: rawProbabilities
         )
 
-        log("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
-        log("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
+        logInfo("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
+        logInfo("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
     }
@@ -201,7 +213,7 @@ public class AppleOCREngine: NSObject {
          */
 
         if observations.isEmpty, language == .auto {
-            log("No text recognized with auto language, retrying with Japanese.")
+            logInfo("No text recognized with auto language, retrying with Japanese.")
             return try await performSingleLegacyVisionOCR(on: cgImage, language: .japanese)
         }
 
@@ -221,7 +233,7 @@ public class AppleOCREngine: NSObject {
 
                 let results = request.results as! [VNRecognizedTextObservation]
                 if results.isEmpty {
-                    log("No text recognized in the image with language: \(language)")
+                    logInfo("No text recognized in the image with language: \(language)")
 
                     // For empty results, don't throw error - let caller handle retry logic
                     if language == .auto {
@@ -241,7 +253,7 @@ public class AppleOCREngine: NSObject {
             }
 
             let enableAutoDetect = !hasValidOCRLanguage(language)
-            log("Performing Vision with language: \(language), auto detect: \(enableAutoDetect)")
+            logInfo("Performing Vision with language: \(language), auto detect: \(enableAutoDetect)")
 
             // Configure Vision request
             request.recognitionLevel = .accurate
@@ -282,7 +294,7 @@ public class AppleOCREngine: NSObject {
         candidates languageProbabilities: [NLLanguage: Double]
     ) async throws
         -> EZOCRResult {
-        log("Selecting best OCR from candidates: \(languageProbabilities.prettyPrinted)")
+        logInfo("Selecting best OCR from candidates: \(languageProbabilities.prettyPrinted)")
 
         // Run concurrent OCR for all candidates
         let results = try await performConcurrentOCR(
@@ -384,7 +396,7 @@ public class AppleOCREngine: NSObject {
         // Check both conditions for dominant language
         let hasDominant =
             highest > minDominantProbability && (highest - secondHighest) > minProbabilityGap
-        log(
+        logInfo(
             "Has dominant language: \(hasDominant), highest: \(highest.string2f), second highest: \(secondHighest.string2f)"
         )
 
@@ -409,13 +421,13 @@ public class AppleOCREngine: NSObject {
         // So we only use it on macOS 26.0+ for now.
         // Fix https://github.com/tisfeng/Easydict/pull/950#issuecomment-3222553146
         if #available(macOS 26.0, *) {
-            log("Using modern RecognizeTextRequest API")
+            logInfo("Using modern RecognizeTextRequest API")
             let modernObservations = try await performModernVisionOCR(
                 on: cgImage, language: language
             )
             return modernObservations.toEZRecognizedTextObservations()
         } else {
-            log("Using legacy VNRecognizeTextRequest API")
+            logInfo("Using legacy VNRecognizeTextRequest API")
             let legacyObservations = try await performLegacyVisionOCR(
                 on: cgImage, language: language
             )
@@ -433,7 +445,7 @@ public class AppleOCREngine: NSObject {
         let observations = try await performSingleModernVisionOCR(on: cgImage, language: language)
 
         if observations.isEmpty, language == .auto {
-            log("No text recognized with auto language, retrying with Japanese.")
+            logInfo("No text recognized with auto language, retrying with Japanese.")
             return try await performSingleModernVisionOCR(on: cgImage, language: .japanese)
         }
 
@@ -446,7 +458,7 @@ public class AppleOCREngine: NSObject {
         async throws
         -> [RecognizedTextObservation] {
         let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
-        log(
+        logInfo(
             "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
         )
 
@@ -466,7 +478,7 @@ public class AppleOCREngine: NSObject {
             let recognizedTexts = try await request.perform(on: cgImage)
 
             if recognizedTexts.isEmpty {
-                log("No text recognized in the image with language: \(language)")
+                logInfo("No text recognized in the image with language: \(language)")
 
                 // For empty results, don't throw error - let caller handle retry logic
                 if language == .auto {
