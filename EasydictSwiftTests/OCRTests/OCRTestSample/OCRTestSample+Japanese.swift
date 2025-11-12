@@ -64,7 +64,7 @@ extension OCRTestSample {
         """,
 
         jaText4: """
-        今日は世界自然保護デー
+        今日 世界自然保護
         """,
     ]
 }

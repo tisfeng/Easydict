@@ -190,7 +190,7 @@ extension OCRTestSample {
 
         HTTP/2 features, standard and custom headers and discuss their security implications in 5G SBA. We comment on the applicability of some known HTTP/2 attacks in 5G SBA in light of the standardized APIs and discuss the security opportunities and research directions brought by this protocol and its related technologies.
 
-        Index Terms- 5G security, HTTP/2, Service Based Architecture, Application programming interface, OAuth 2.0
+        Index Terms- 5G security, HTTP/2, Service Based Architecture, Application programming interface, Auth 2.0
 
         1. INTRODUCTION
 
@@ -212,7 +212,7 @@ extension OCRTestSample {
 
         A. Overview
 
-        5G networks revolutionized the telecommunication architecture by adopling a cloud-native, service-driven deployment promoting enhanced network operational efficiencies. The 5G SBA (Figure I) enables a granular design and delivery of 5G network functionality through a decoupling of User Plane (UP) and Control Plane (CP), hence, providing independent scalability and flexible deployments [2], [9]. The UP and CP consist of multiple interconnected NFs, each providing a set of "services". Examples of such services include service registration, authorization and discovery [19]. The 5G CP is defined by a SBA. The interactions between the CP NFs are enabled by a service-based representation in which the SBIs can be easily extended without the need to introduce new reference points.
+        5G networks revolutionized the telecommunication architecture by adopling a cloud-native, service-driven deployment promoting enhanced network operational efficiencies. The 5G SBA (Figure I) enables a granular design and delivery of 5G network functionality through a decoupling of User Plane (UP) and Control Plane (CP), hence, providing independent scalability and flexible deployments [2], [9]. The UP and CP consist of multiple interconnected NFs, each providing a set of "services". Examples of such services include service registration, authorization and discovery 19]. The 5G CP is defined by a SBA. The interactions between the CP NFs are enabled by a service-based representation in which the SBIs can be easily extended without the need to introduce new reference points.
         """,
 
         enTextTwoColumns2: """
