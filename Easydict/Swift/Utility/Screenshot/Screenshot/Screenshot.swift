@@ -60,6 +60,7 @@ class Screenshot: NSObject {
     var previewScreenshotWorkItem: DispatchWorkItem?
 
     /// Finish screenshot capture and call the completion handler
+    @objc
     func finishCapture(_ image: NSImage?) {
         // Cancel any pending preview screenshot task first
         cancelPreviewScreenshotTimer()

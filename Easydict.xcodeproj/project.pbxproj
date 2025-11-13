@@ -152,6 +152,8 @@
 		035451052E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */; };
 		0354E9202D3601500050E5BE /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 0354E91F2D3601500050E5BE /* AsyncAlgorithms */; };
 		035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */; };
+		0356498E2E8F7EDA00398D52 /* ocr-en-number-729.png in Resources */ = {isa = PBXBuildFile; fileRef = 0356498B2E8F7EDA00398D52 /* ocr-en-number-729.png */; };
+		035649902E8FBFB900398D52 /* ocr-en-number-pi.png in Resources */ = {isa = PBXBuildFile; fileRef = 0356498F2E8FBFB900398D52 /* ocr-en-number-pi.png */; };
 		0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357B9592C04387D00A48CB0 /* TextEditorCell.swift */; };
 		035E37E72A0953120061DFAF /* EZToast.m in Sources */ = {isa = PBXBuildFile; fileRef = 035E37E62A0953120061DFAF /* EZToast.m */; };
 		035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */; };
@@ -260,11 +262,6 @@
 		03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */; };
 		03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */; };
 		03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228C29231FA6001C7E63 /* DarkModeManager.m */; };
-		03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229329231FA6001C7E63 /* SnipWindow.m */; };
-		03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229429231FA6001C7E63 /* SnipFocusView.m */; };
-		03B0231729231FA6001C7E63 /* Snip.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229529231FA6001C7E63 /* Snip.m */; };
-		03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229729231FA6001C7E63 /* SnipWindowController.m */; };
-		03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229829231FA6001C7E63 /* SnipViewController.m */; };
 		03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022A829231FA6001C7E63 /* NSWindow+MM.m */; };
 		03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AA29231FA6001C7E63 /* NSPasteboard+MM.m */; };
 		03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AB29231FA6001C7E63 /* NSImage+MM.m */; };
@@ -434,6 +431,10 @@
 		0AC8A8452B6A4D97006DA5CC /* ServiceCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8442B6A4D97006DA5CC /* ServiceCells.swift */; };
 		0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */; };
 		0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */; };
+		0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */; };
+		0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */; };
+		0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */; };
+		0D124C422E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C412E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
@@ -716,6 +717,8 @@
 		035451022E3C60D600BAA8E5 /* OCRConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRConstants.swift; sourceTree = "<group>"; };
 		035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeAnalyzer.swift; sourceTree = "<group>"; };
 		035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+DictV4.swift"; sourceTree = "<group>"; };
+		0356498B2E8F7EDA00398D52 /* ocr-en-number-729.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-number-729.png"; sourceTree = "<group>"; };
+		0356498F2E8FBFB900398D52 /* ocr-en-number-pi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-number-pi.png"; sourceTree = "<group>"; };
 		0357B9592C04387D00A48CB0 /* TextEditorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorCell.swift; sourceTree = "<group>"; };
 		035E37E52A0953120061DFAF /* EZToast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZToast.h; sourceTree = "<group>"; };
 		035E37E62A0953120061DFAF /* EZToast.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZToast.m; sourceTree = "<group>"; };
@@ -859,16 +862,6 @@
 		03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
 		03B0228C29231FA6001C7E63 /* DarkModeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DarkModeManager.m; sourceTree = "<group>"; };
 		03B0228D29231FA6001C7E63 /* NSView+HiddenDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+HiddenDebug.h"; sourceTree = "<group>"; };
-		03B0228F29231FA6001C7E63 /* Snip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snip.h; sourceTree = "<group>"; };
-		03B0229029231FA6001C7E63 /* SnipFocusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipFocusView.h; sourceTree = "<group>"; };
-		03B0229129231FA6001C7E63 /* SnipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipViewController.h; sourceTree = "<group>"; };
-		03B0229229231FA6001C7E63 /* SnipWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipWindowController.h; sourceTree = "<group>"; };
-		03B0229329231FA6001C7E63 /* SnipWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipWindow.m; sourceTree = "<group>"; };
-		03B0229429231FA6001C7E63 /* SnipFocusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipFocusView.m; sourceTree = "<group>"; };
-		03B0229529231FA6001C7E63 /* Snip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Snip.m; sourceTree = "<group>"; };
-		03B0229629231FA6001C7E63 /* SnipWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipWindow.h; sourceTree = "<group>"; };
-		03B0229729231FA6001C7E63 /* SnipWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipWindowController.m; sourceTree = "<group>"; };
-		03B0229829231FA6001C7E63 /* SnipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipViewController.m; sourceTree = "<group>"; };
 		03B022A729231FA6001C7E63 /* NSAttributedString+MM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+MM.h"; sourceTree = "<group>"; };
 		03B022A829231FA6001C7E63 /* NSWindow+MM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+MM.m"; sourceTree = "<group>"; };
 		03B022A929231FA6001C7E63 /* NSColor+MM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+MM.h"; sourceTree = "<group>"; };
@@ -1110,6 +1103,10 @@
 		0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BingService+ConfigurableService.swift"; sourceTree = "<group>"; };
 		0AC8A8442B6A4D97006DA5CC /* ServiceCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCells.swift; sourceTree = "<group>"; };
 		0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationSecretSectionView.swift; sourceTree = "<group>"; };
+		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
+		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
+		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
+		0D124C412E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DoubaoTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
 		17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
 		17BCAEF42B0DFF9000A7D372 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
 		17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
@@ -1835,6 +1832,7 @@
 				62E2BF462B4082BA00E42D38 /* Ali */,
 				C43B566A2C693F4000EF26FD /* Volcano */,
 				03CD01582D24E17C0079D0CB /* Youdao */,
+				0D124C3D2E8AD3EA00D6B72C /* Doubao */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2263,23 +2261,6 @@
 			path = DarkMode;
 			sourceTree = "<group>";
 		};
-		03B0228E29231FA6001C7E63 /* Snip */ = {
-			isa = PBXGroup;
-			children = (
-				03B0228F29231FA6001C7E63 /* Snip.h */,
-				03B0229529231FA6001C7E63 /* Snip.m */,
-				03B0229029231FA6001C7E63 /* SnipFocusView.h */,
-				03B0229429231FA6001C7E63 /* SnipFocusView.m */,
-				03B0229129231FA6001C7E63 /* SnipViewController.h */,
-				03B0229829231FA6001C7E63 /* SnipViewController.m */,
-				03B0229629231FA6001C7E63 /* SnipWindow.h */,
-				03B0229329231FA6001C7E63 /* SnipWindow.m */,
-				03B0229229231FA6001C7E63 /* SnipWindowController.h */,
-				03B0229729231FA6001C7E63 /* SnipWindowController.m */,
-			);
-			path = Snip;
-			sourceTree = "<group>";
-		};
 		03B0229929231FA6001C7E63 /* StatusItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -2487,7 +2468,6 @@
 		03BDA7982A26DA000079D04F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				03B0228E29231FA6001C7E63 /* Snip */,
 				033C30F82A7409C40095926A /* DictionaryKit */,
 				0361966B2A000E7800806370 /* FWEncryptorAES */,
 				03BDA7992A26DA280079D04F /* ArgumentParser */,
@@ -2606,6 +2586,8 @@
 		03C3A5622E1BC78600B59152 /* ocr-images */ = {
 			isa = PBXGroup;
 			children = (
+				0356498B2E8F7EDA00398D52 /* ocr-en-number-729.png */,
+				0356498F2E8FBFB900398D52 /* ocr-en-number-pi.png */,
 				03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */,
 				034227F52E37145200325B47 /* ocr-ru-poetry-11.png */,
 				03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */,
@@ -2936,6 +2918,16 @@
 				0A9AFBAA2B7F8D7E0064C9A8 /* CustomOpenAIService.swift */,
 			);
 			path = CustomOpenAI;
+			sourceTree = "<group>";
+		};
+		0D124C3D2E8AD3EA00D6B72C /* Doubao */ = {
+			isa = PBXGroup;
+			children = (
+				0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */,
+				0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */,
+				0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */,
+			);
+			path = Doubao;
 			sourceTree = "<group>";
 		};
 		17BCAEF22B0DFF9000A7D372 /* Niutrans */ = {
@@ -3332,6 +3324,7 @@
 				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
 				CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */,
 				C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */,
+				0D124C412E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift */,
 			);
 			path = ConfigurationView;
 			sourceTree = "<group>";
@@ -3483,7 +3476,9 @@
 				033897B62E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png in Resources */,
 				033897B72E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png in Resources */,
 				033897B82E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png in Resources */,
+				035649902E8FBFB900398D52 /* ocr-en-number-pi.png in Resources */,
 				033897AA2E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png in Resources */,
+				0356498E2E8F7EDA00398D52 /* ocr-en-number-729.png in Resources */,
 				03C3A5B92E1BFE4900B59152 /* ocr-en-paper-7.png in Resources */,
 				03C3A5BA2E1BFE4900B59152 /* ocr-en-paper-8.png in Resources */,
 				038A9BC52E599D9100D08B57 /* ocr-zh-poetry-2.png in Resources */,
@@ -3770,6 +3765,7 @@
 				03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */,
 				0340D39E2C951850004C9910 /* QueryError.swift in Sources */,
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
+				0D124C422E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift in Sources */,
 				C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */,
@@ -3782,7 +3778,6 @@
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
-				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */,
 				03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */,
 				03D486502E3F2021009313B3 /* Regex+List.swift in Sources */,
@@ -3803,7 +3798,6 @@
 				03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */,
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,
 				40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */,
-				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				0337D3CA2E66AA5000B08437 /* SystemUtility+AX.swift in Sources */,
 				03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */,
 				039785282CC678F400A49087 /* TranslationManager.swift in Sources */,
@@ -3901,7 +3895,6 @@
 				036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
 				033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */,
-				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */,
 				6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */,
@@ -3954,7 +3947,6 @@
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
-				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
 				03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */,
@@ -3972,7 +3964,6 @@
 				0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */,
 				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,
-				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
 				03F44F2B2E57813B003C2EA3 /* RecognizedTextObservation+Extension.swift in Sources */,
@@ -4023,6 +4014,9 @@
 				EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */,
 				036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */,
 				03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */,
+				0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */,
+				0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */,
+				0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */,
 				03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */,
 				62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */,
 				03B0232729231FA6001C7E63 /* NSColor+MM.m in Sources */,
@@ -4555,8 +4549,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
-				kind = exactVersion;
-				version = 5.9.1;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
 			};
 		};
 		61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

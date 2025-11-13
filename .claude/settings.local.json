@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(swiftc:*)",
+      "Bash(git commit:*)",
+      "Bash(uuidgen:*)",
+      "Bash(swift:*)",
+      "Bash(plutil -lint:*)",
+      "Bash(find:*)",
+      "Bash(git diff:*)",
+      "Read(//System/Library/Frameworks/AppKit.framework/Versions/Current/**)",
+      "Bash(claude mcp add:*)"
+    ],
+    "deny": [
+      "Bash(xcodebuild:*)",
+      "Bash(git add:*)"
+    ],
+    "ask": []
+  }
+}

@@ -1375,6 +1375,122 @@
         }
       }
     },
+    "doubao.error.http_error" : {
+      "comment" : "HTTP error with status code",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP error: %d"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba HTTP: %d"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP 错误：%d"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP 錯誤：%d"
+          }
+        }
+      }
+    },
+    "doubao.error.invalid_response" : {
+      "comment" : "Invalid response error",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid response"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neplatná odpoveď"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无效的响应"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無效的響應"
+          }
+        }
+      }
+    },
+    "doubao.error.missing_api_key" : {
+      "comment" : "Missing Doubao API Key error message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing Doubao API Key. Get your API key from https://www.volcengine.com/product/doubao"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chýba Doubao API kľúč. Získajte svoj API kľúč na https://www.volcengine.com/product/doubao"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少豆包 API Key。请从 https://www.volcengine.com/product/doubao 获取您的 API Key"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少豆包 API Key。請從 https://www.volcengine.com/product/doubao 獲取您的 API Key"
+          }
+        }
+      }
+    },
+    "doubao_translate" : {
+      "comment" : "The name of Doubao Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doubao Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doubao Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "豆包翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "豆包翻譯"
+          }
+        }
+      }
+    },
     "Easydict" : {
       "localizations" : {
         "sk" : {
@@ -4739,6 +4855,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除"
+          }
+        }
+      }
+    },
+    "service.configuration.doubao.api_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        }
+      }
+    },
+    "service.configuration.doubao.model.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型"
           }
         }
       }

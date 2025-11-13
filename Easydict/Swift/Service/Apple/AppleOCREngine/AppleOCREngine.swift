@@ -74,8 +74,12 @@ public class AppleOCREngine: NSObject {
         // If text is too short, we need to recognize it with all candidate languages.
         let hasEnoughLength = mergedText.count > 50
         let hasDesignatedLanguage = language != .auto
-        let smartMerging =
-            hasDesignatedLanguage || hasEnoughLength || hasDominantLanguage(in: rawProbabilities)
+
+        let smartMerging = hasDesignatedLanguage
+            || hasEnoughLength
+            || hasDominantLanguage(in: rawProbabilities)
+            || rawProbabilities.isEmpty
+
         log("Merged text char count: \(mergedText.count)")
         log("Performing OCR text processing, smart merging: \(smartMerging)")
 
@@ -90,6 +94,9 @@ public class AppleOCREngine: NSObject {
         if language == .auto {
             ocrResult.from = detectedLanguage
         }
+
+        // If we have done smart merging, means we are confident enough with the result,
+        // no need to run multi-language candidate selection.
 
         if smartMerging {
             log("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")

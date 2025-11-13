@@ -20,7 +20,7 @@ func volcanoSigning(
     queryString: String,
     region: String,
     service: String,
-    parameters: [String: Any]
+    parameters: Parameters
 )
     -> HTTPHeaders {
     let httpMethod = "POST"

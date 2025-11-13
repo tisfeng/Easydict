@@ -120,10 +120,11 @@ extension AppleScriptTask {
             return (script, 0.2, "Chrome Browser text field text")
 
         case let .insertText(text):
+            let escapedText = escapeJavaScriptString(text)
             let script = """
             tell application id "\(bundleID)"
                tell active tab of front window
-                    execute javascript "document.execCommand('insertText', false, '\(text)')"
+                    execute javascript "document.execCommand('insertText', false, '\(escapedText)')"
                end tell
             end tell
             """
@@ -179,11 +180,14 @@ extension AppleScriptTask {
             return (script, 0.2, "Safari text field text")
 
         case let .insertText(text):
+            logInfo("Inserting text into Safari: \(text)")
+            let escapedText = escapeJavaScriptString(text)
             let script = """
             tell application id "\(bundleID)"
-                do JavaScript "document.execCommand('insertText', false, '\(text)')" in document 1
+                do JavaScript "document.execCommand('insertText', false, '\(escapedText)')" in document 1
             end tell
             """
+            logInfo("Safari insert text script: \(script)")
             return (script, nil, "Safari insert text result")
 
         case .selectAllText:
@@ -247,6 +251,22 @@ extension AppleScriptTask {
             return false;
         })();
         """
+    }
+
+    /// Escape JavaScript string to prevent injection and handle special characters.
+    /// The JavaScript code is inside AppleScript's double-quoted string, and JS string uses single quotes.
+    /// AppleScript requires backslash to be escaped as \\, and for JS single quote we need \'
+    /// So in AppleScript double-quoted string: \\\' represents a literal \' which JS interprets as escaped quote
+    ///
+    /// - Example:
+    ///   - Original string: `\` This is a special character.\n" test"\n"\\" Hello.
+    ///   - After escaping: `\\\\` This is a special character.\\n\"test\"\\n\"\\\\\\\\\" Hello.
+    private class func escapeJavaScriptString(_ string: String) -> String {
+        string
+            .replacing("\\", with: "\\\\\\\\") // Escape backslash: \
+            .replacing("'", with: "\\\\'") // Escape single quote: '
+            .replacing("\"", with: "\\\"") // Escape double quote: "
+            .replacing("\n", with: "\\\\n") // Escape new line: \n
     }
 
     // MARK: - Static Data
