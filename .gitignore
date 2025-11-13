@@ -84,3 +84,6 @@ node_modules/
 .DS_Store
 
 .sentryclirc
+
+# Claude Code
+.claude/settings.local.json

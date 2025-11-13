@@ -73,23 +73,23 @@ class OCRWindow: NSWindow {
 
 extension OCRWindow: NSWindowDelegate {
     func windowDidResignKey(_ notification: Notification) {
-        print("OCRWindow: windowDidResignKey called, isPinned: \(isPinned)")
+        logInfo("OCRWindow: windowDidResignKey called, isPinned: \(isPinned)")
         // Window lost focus - hide if not pinned
         if !isPinned {
-            print("OCRWindow: Hiding window because it's not pinned")
+            logInfo("OCRWindow: Hiding window because it's not pinned")
             orderOut(nil)
         } else {
-            print("OCRWindow: Keeping window visible because it's pinned")
+            logInfo("OCRWindow: Keeping window visible because it's pinned")
         }
     }
 
     func windowDidBecomeKey(_ notification: Notification) {
-        print("OCRWindow: windowDidBecomeKey called")
+        logInfo("OCRWindow: windowDidBecomeKey called")
         // Window gained focus
     }
 
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        print("OCRWindow: windowShouldClose called")
+        logInfo("OCRWindow: windowShouldClose called")
         // Allow window to close
         return true
     }
