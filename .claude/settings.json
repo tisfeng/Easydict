@@ -16,5 +16,6 @@
       "Bash(git add:*)"
     ],
     "ask": []
-  }
+  },
+  "includeCoAuthoredBy": false
 }
