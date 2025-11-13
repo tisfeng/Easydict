@@ -42,12 +42,7 @@ struct KeyHolderWrapper: NSViewRepresentable {
         return recordView
     }
 
-    func updateNSView(_ nsView: NSViewType, context: Context) {
-        // Restore the key combo when the view is updated (e.g., when switching tabs)
-        if let recordView = nsView as? RecordView {
-            context.coordinator.restoreKeyCombo(recordView)
-        }
-    }
+    func updateNSView(_ nsView: NSViewType, context: Context) {}
 
     // MARK: Private
 
