@@ -258,11 +258,14 @@ public class AppleOCREngine: NSObject {
             // Perform request on background queue
             // Note: We use DispatchQueue instead of Task.detached to avoid potential issues
             DispatchQueue.global().async {
-                do {
-                    try requestHandler.perform([request])
-                } catch {
-                    let queryError = QueryError.queryError(from: error, type: .api)!
-                    continuation.resume(throwing: queryError)
+                // Wrap Vision request in autoreleasepool for better memory management
+                autoreleasepool {
+                    do {
+                        try requestHandler.perform([request])
+                    } catch {
+                        let queryError = QueryError.queryError(from: error, type: .api)!
+                        continuation.resume(throwing: queryError)
+                    }
                 }
             }
         }
@@ -446,47 +449,49 @@ public class AppleOCREngine: NSObject {
     private func performSingleModernVisionOCR(on cgImage: CGImage, language: Language = .auto)
         async throws
         -> [RecognizedTextObservation] {
-        let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
-        log(
-            "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
-        )
+        return try await autoreleasepool {
+            let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
+            log(
+                "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
+            )
 
-        // Create the modern RecognizeTextRequest
-        var request = RecognizeTextRequest()
+            // Create the modern RecognizeTextRequest
+            var request = RecognizeTextRequest()
 
-        // Configure recognition settings
-        request.recognitionLevel = .accurate
-        request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
-            for: language, isModernOCR: true
-        )
-        request.usesLanguageCorrection = true
-        request.automaticallyDetectsLanguage = enableAutoDetect
+            // Configure recognition settings
+            request.recognitionLevel = .accurate
+            request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
+                for: language, isModernOCR: true
+            )
+            request.usesLanguageCorrection = true
+            request.automaticallyDetectsLanguage = enableAutoDetect
 
-        do {
-            // Perform OCR using the new async API - returns [RecognizedText]
-            let recognizedTexts = try await request.perform(on: cgImage)
+            do {
+                // Perform OCR using the new async API - returns [RecognizedText]
+                let recognizedTexts = try await request.perform(on: cgImage)
 
-            if recognizedTexts.isEmpty {
-                log("No text recognized in the image with language: \(language)")
+                if recognizedTexts.isEmpty {
+                    log("No text recognized in the image with language: \(language)")
 
-                // For empty results, don't throw error - let caller handle retry logic
-                if language == .auto {
-                    // Return empty array, caller will handle Japanese retry
-                    return []
-                } else {
-                    // For specific language, throw error
-                    let message = String(localized: "ocr_result_is_empty")
-                    throw QueryError.error(type: .noResult, message: message)
+                    // For empty results, don't throw error - let caller handle retry logic
+                    if language == .auto {
+                        // Return empty array, caller will handle Japanese retry
+                        return []
+                    } else {
+                        // For specific language, throw error
+                        let message = String(localized: "ocr_result_is_empty")
+                        throw QueryError.error(type: .noResult, message: message)
+                    }
                 }
+
+                return recognizedTexts
+
+            } catch {
+                throw QueryError.queryError(from: error, type: .api)
+                    ?? QueryError.error(
+                        type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
+                    )
             }
-
-            return recognizedTexts
-
-        } catch {
-            throw QueryError.queryError(from: error, type: .api)
-                ?? QueryError.error(
-                    type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
-                )
         }
     }
 }
