@@ -42,7 +42,7 @@ struct KeyHolderWrapper: NSViewRepresentable {
         return recordView
     }
 
-    func updateNSView(_: NSViewType, context _: Context) {}
+    func updateNSView(_ nsView: NSViewType, context: Context) {}
 
     // MARK: Private
 
@@ -136,6 +136,9 @@ extension KeyHolderWrapper {
                 .pasteboardTranslate: DefaultsKeyWrapper(.pasteboardTranslateShortcut),
                 .translateAndReplace: DefaultsKeyWrapper(.translateAndReplaceShortcut),
                 .polishAndReplace: DefaultsKeyWrapper(.polishAndReplaceShortcut),
+                .screenshotOCR: DefaultsKeyWrapper(.screenshotOCRShortcut),
+                .pasteboardOCR: DefaultsKeyWrapper(.pasteboardOCRShortcut),
+                .showOCRWindow: DefaultsKeyWrapper(.showOCRWindowShortcut),
                 .clearInput: DefaultsKeyWrapper(.clearInputShortcut),
                 .clearAll: DefaultsKeyWrapper(.clearAllShortcut),
                 .copy: DefaultsKeyWrapper(.copyShortcut),
