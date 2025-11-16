@@ -9,13 +9,18 @@
       "Bash(find:*)",
       "Bash(git diff:*)",
       "Read(//System/Library/Frameworks/AppKit.framework/Versions/Current/**)",
-      "Bash(claude mcp add:*)"
+      "WebSearch",
+      "Bash(swiftlint lint:*)",
+      "Bash(./Pods/SwiftLint/swiftlint lint:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:casualprogrammer.com)"
     ],
     "deny": [
       "Bash(xcodebuild:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ],
     "ask": []
-  },
-  "includeCoAuthoredBy": false
+  }
 }
