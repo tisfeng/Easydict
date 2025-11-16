@@ -36,68 +36,67 @@ public class AppleOCREngine: NSObject {
     ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
     /// - Returns: An `EZOCRResult` containing the recognized and processed text.
     func recognizeText(image: NSImage, language: Language = .auto) async throws -> EZOCRResult {
-        return try await autoreleasepool {
-            log("Recognizing text in image with language: \(language), image size: \(image.size)")
+        log("Recognizing text in image with language: \(language), image size: \(image.size)")
 
-            guard image.isValid else {
-                throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
-            }
+        guard image.isValid else {
+            throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
+        }
 
-            image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
+        image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
 
-            // Convert NSImage to CGImage in autoreleasepool
-            guard let cgImage = autoreleasepool(invoking: { image.toCGImage() }) else {
-                throw QueryError.error(
-                    type: .parameter, message: "Failed to convert NSImage to CGImage"
-                )
-            }
-
-            let startTime = CFAbsoluteTimeGetCurrent()
-
-            // Perform Vision OCR using unified API
-            let observations = try await performVisionOCR(on: cgImage, language: language)
-
-            log("Recognize observations count: \(observations.count) (\(language))")
-            log("Cost time: \(startTime.elapsedTimeString) seconds")
-
-            let ocrResult = EZOCRResult()
-            ocrResult.from = language
-
-            let mergedText = observations.simpleMergedText
-            let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
-            let rawProbabilities = languageDetector.rawProbabilities
-            let textAnalysis = languageDetector.getTextAnalysis()
-            log(
-                "Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)"
+        // Convert NSImage to CGImage in autoreleasepool
+        guard let cgImage = autoreleasepool(invoking: { image.toCGImage() }) else {
+            throw QueryError.error(
+                type: .parameter, message: "Failed to convert NSImage to CGImage"
             )
+        }
 
-            // If OCR text is long enough, consider its detected language confident.
-            // If text is too short, we need to recognize it with all candidate languages.
-            let hasEnoughLength = mergedText.count > 50
-            let hasDesignatedLanguage = language != .auto
+        let startTime = CFAbsoluteTimeGetCurrent()
 
-            let smartMerging = hasDesignatedLanguage
-                || hasEnoughLength
-                || hasDominantLanguage(in: rawProbabilities)
-                || rawProbabilities.isEmpty
+        // Perform Vision OCR using unified API
+        let observations = try await performVisionOCR(on: cgImage, language: language)
 
-            log("Merged text char count: \(mergedText.count)")
-            log("Performing OCR text processing, smart merging: \(smartMerging)")
+        log("Recognize observations count: \(observations.count) (\(language))")
+        log("Cost time: \(startTime.elapsedTimeString) seconds")
 
-            textProcessor.setupOCRResult(
-                ocrResult,
-                observations: observations,
-                ocrImage: image,
-                smartMerging: smartMerging,
-                textAnalysis: textAnalysis
-            )
+        let ocrResult = EZOCRResult()
+        ocrResult.from = language
 
-            if language == .auto {
-                ocrResult.from = detectedLanguage
-            }
+        let mergedText = observations.simpleMergedText
+        let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
+        let rawProbabilities = languageDetector.rawProbabilities
+        let textAnalysis = languageDetector.getTextAnalysis()
+        log(
+            "Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)"
+        )
 
-            // If we have done smart merging, means we are confident enough with the result,
-            // no need to run multi-language candidate selection.
+        // If OCR text is long enough, consider its detected language confident.
+        // If text is too short, we need to recognize it with all candidate languages.
+        let hasEnoughLength = mergedText.count > 50
+        let hasDesignatedLanguage = language != .auto
+
+        let smartMerging = hasDesignatedLanguage
+            || hasEnoughLength
+            || hasDominantLanguage(in: rawProbabilities)
+            || rawProbabilities.isEmpty
+
+        log("Merged text char count: \(mergedText.count)")
+        log("Performing OCR text processing, smart merging: \(smartMerging)")
+
+        textProcessor.setupOCRResult(
+            ocrResult,
+            observations: observations,
+            ocrImage: image,
+            smartMerging: smartMerging,
+            textAnalysis: textAnalysis
+        )
+
+        if language == .auto {
+            ocrResult.from = detectedLanguage
+        }
+
+        // If we have done smart merging, means we are confident enough with the result,
+        // no need to run multi-language candidate selection.
 
         if smartMerging {
             log("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
@@ -449,49 +448,50 @@ public class AppleOCREngine: NSObject {
     private func performSingleModernVisionOCR(on cgImage: CGImage, language: Language = .auto)
         async throws
         -> [RecognizedTextObservation] {
-        return try await autoreleasepool {
-            let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
-            log(
-                "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
-            )
+        let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
+        log(
+            "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
+        )
 
-            // Create the modern RecognizeTextRequest
-            var request = RecognizeTextRequest()
+        // Create the modern RecognizeTextRequest
+        var request = RecognizeTextRequest()
 
-            // Configure recognition settings
-            request.recognitionLevel = .accurate
-            request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
-                for: language, isModernOCR: true
-            )
-            request.usesLanguageCorrection = true
-            request.automaticallyDetectsLanguage = enableAutoDetect
+        // Configure recognition settings
+        request.recognitionLevel = .accurate
+        request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
+            for: language, isModernOCR: true
+        )
+        request.usesLanguageCorrection = true
+        request.automaticallyDetectsLanguage = enableAutoDetect
 
-            do {
-                // Perform OCR using the new async API - returns [RecognizedText]
-                let recognizedTexts = try await request.perform(on: cgImage)
-
-                if recognizedTexts.isEmpty {
-                    log("No text recognized in the image with language: \(language)")
-
-                    // For empty results, don't throw error - let caller handle retry logic
-                    if language == .auto {
-                        // Return empty array, caller will handle Japanese retry
-                        return []
-                    } else {
-                        // For specific language, throw error
-                        let message = String(localized: "ocr_result_is_empty")
-                        throw QueryError.error(type: .noResult, message: message)
-                    }
-                }
-
-                return recognizedTexts
-
-            } catch {
-                throw QueryError.queryError(from: error, type: .api)
-                    ?? QueryError.error(
-                        type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
-                    )
+        do {
+            // Perform OCR using the new async API - returns [RecognizedText]
+            // Wrap in autoreleasepool to release temporary objects promptly
+            let recognizedTexts = try await autoreleasepool {
+                try await request.perform(on: cgImage)
             }
+
+            if recognizedTexts.isEmpty {
+                log("No text recognized in the image with language: \(language)")
+
+                // For empty results, don't throw error - let caller handle retry logic
+                if language == .auto {
+                    // Return empty array, caller will handle Japanese retry
+                    return []
+                } else {
+                    // For specific language, throw error
+                    let message = String(localized: "ocr_result_is_empty")
+                    throw QueryError.error(type: .noResult, message: message)
+                }
+            }
+
+            return recognizedTexts
+
+        } catch {
+            throw QueryError.queryError(from: error, type: .api)
+                ?? QueryError.error(
+                    type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
+                )
         }
     }
 }
