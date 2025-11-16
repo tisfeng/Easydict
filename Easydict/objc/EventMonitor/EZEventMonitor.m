@@ -57,6 +57,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, strong) NSEvent *event;
 
+// Throttling properties to reduce high-frequency event processing
+@property (nonatomic, assign) NSTimeInterval lastMouseMoveEventTime;
+@property (nonatomic, assign) NSTimeInterval lastScrollWheelEventTime;
+
 @end
 
 
@@ -82,6 +86,10 @@ static EZEventMonitor *_instance = nil;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
     self.triggerType = EZTriggerTypeNone;
+    
+    // Initialize throttling timestamps
+    self.lastMouseMoveEventTime = 0;
+    self.lastScrollWheelEventTime = 0;
 }
 
 - (EZTriggerType)frontmostAppTriggerType {
@@ -212,6 +220,18 @@ static EZEventMonitor *_instance = nil;
         [NSEvent removeMonitor:self.globalMonitor];
         self.globalMonitor = nil;
     }
+    
+    // Cancel any pending delayed operations to prevent memory leaks
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
+    // Clear event arrays
+    [self.recordEvents removeAllObjects];
+    [self.commandKeyEvents removeAllObjects];
+    
+    // Reset state
+    self.isPopButtonVisible = NO;
+    self.lastMouseMoveEventTime = 0;
+    self.lastScrollWheelEventTime = 0;
 }
 
 #pragma mark - Monitor CGEventTap
@@ -750,6 +770,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeScrollWheel: {
             if (self.isPopButtonVisible) {
+                // Throttle scroll wheel events to reduce CPU usage
+                // Only process scroll events every 50ms
+                NSTimeInterval currentTime = event.timestamp;
+                if (currentTime - self.lastScrollWheelEventTime < 0.05) {
+                    break;
+                }
+                self.lastScrollWheelEventTime = currentTime;
+                
                 CGFloat deltaY = event.scrollingDeltaY;
                 self.movedY += deltaY;
                 //                MMLogInfo(@"movedY: %.1f", self.movedY);
@@ -763,6 +791,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         case NSEventTypeMouseMoved: {
             if (self.isPopButtonVisible) {
+                // Throttle mouse move events to reduce CPU usage
+                // Only process mouse move events every 100ms
+                NSTimeInterval currentTime = event.timestamp;
+                if (currentTime - self.lastMouseMoveEventTime < 0.1) {
+                    break;
+                }
+                self.lastMouseMoveEventTime = currentTime;
+                
                 // Hide the button after exceeding a certain range of selected text frame.
                 if (![self isMouseInPopButtonExpandedFrame]) {
                     [self dismissPopButton];
@@ -825,6 +861,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         [self.recordEvents removeObjectAtIndex:0];
     }
     [self.recordEvents addObject:event];
+    
+    // Additional safety: if array somehow grows beyond expected size, clear it
+    if (self.recordEvents.count > kRecordEventCount * 2) {
+        MMLogError(@"recordEvents unexpectedly large (%lu), clearing", (unsigned long)self.recordEvents.count);
+        [self.recordEvents removeAllObjects];
+    }
 }
 
 // Check if RecoredEvents are all dragged event
@@ -882,6 +924,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         [self.commandKeyEvents removeObjectAtIndex:0];
     }
     [self.commandKeyEvents addObject:event];
+    
+    // Additional safety: if array somehow grows beyond expected size, clear it
+    if (self.commandKeyEvents.count > kCommandKeyEventCount * 2) {
+        MMLogError(@"commandKeyEvents unexpectedly large (%lu), clearing", (unsigned long)self.commandKeyEvents.count);
+        [self.commandKeyEvents removeAllObjects];
+    }
 }
 
 - (BOOL)checkIfDoubleCommandEvents {
@@ -926,6 +974,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     self.isPopButtonVisible = NO;
 
     [self stopCGEventTap];
+    
+    // Clear event arrays to prevent memory accumulation
+    [self.recordEvents removeAllObjects];
+    [self.commandKeyEvents removeAllObjects];
+    
+    // Reset throttling timestamps
+    self.lastMouseMoveEventTime = 0;
+    self.lastScrollWheelEventTime = 0;
 }
 
 
