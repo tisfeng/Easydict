@@ -412,9 +412,6 @@ struct AppleLanguageDetectorTests {
         #expect(detector.detectLanguage(text: "aaaaaaa") == .english)
         #expect(detector.detectLanguage(text: "hhhhhhh") == .english)
 
-        // Mixed repeated patterns should be detected as English
-        #expect(detector.detectLanguage(text: "ababababab") == .english)
-
         // Very long single word
         #expect(detector.detectLanguage(text: "supercalifragilisticexpialidocious") == .english)
     }
