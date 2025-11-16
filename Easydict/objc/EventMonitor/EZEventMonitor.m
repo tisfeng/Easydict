@@ -51,6 +51,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, assign) NSInteger currentAlertVolume;
 
 @property (nonatomic, assign) CFMachPortRef eventTap;
+@property (nonatomic, assign) CFRunLoopSourceRef eventTapRunLoopSource;
 
 @property (nonatomic, assign) EZTriggerType frontmostAppTriggerType;
 @property (nonatomic, assign) BOOL isPopButtonVisible;
@@ -235,9 +236,9 @@ static EZEventMonitor *_instance = nil;
     if (eventTap) {
         // eventTap must not be NULL, otherwise it will crash.
         CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
+        self.eventTapRunLoopSource = runLoopSource;
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
         CGEventTapEnable(eventTap, true);
-        CFRelease(runLoopSource);
     }
 }
 
@@ -256,9 +257,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     // Stop and release the previously created event tap
     if (self.eventTap) {
         CGEventTapEnable(self.eventTap, false); // Disable the event tap
-        CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, self.eventTap, 0);
-        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
-        CFRelease(runLoopSource);
+        
+        if (self.eventTapRunLoopSource) {
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), self.eventTapRunLoopSource, kCFRunLoopCommonModes);
+            CFRelease(self.eventTapRunLoopSource);
+            self.eventTapRunLoopSource = NULL;
+        }
+        
         CFRelease(self.eventTap);
         self.eventTap = NULL;
     }
