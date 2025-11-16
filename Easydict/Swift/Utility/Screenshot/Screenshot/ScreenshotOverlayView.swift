@@ -15,7 +15,11 @@ struct ScreenshotOverlayView: View {
 
     init(state: ScreenshotState) {
         self.state = state
-        self._backgroundImage = State(initialValue: state.screen.takeScreenshot())
+        // Capture background image in autoreleasepool to ensure CGImage is released promptly
+        let capturedImage = autoreleasepool {
+            state.screen.takeScreenshot()
+        }
+        self._backgroundImage = State(initialValue: capturedImage)
     }
 
     // MARK: Internal

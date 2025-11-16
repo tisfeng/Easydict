@@ -36,67 +36,68 @@ public class AppleOCREngine: NSObject {
     ///   - language: The preferred `Language` for recognition. Defaults to `.auto`.
     /// - Returns: An `EZOCRResult` containing the recognized and processed text.
     func recognizeText(image: NSImage, language: Language = .auto) async throws -> EZOCRResult {
-        log("Recognizing text in image with language: \(language), image size: \(image.size)")
+        return try await autoreleasepool {
+            log("Recognizing text in image with language: \(language), image size: \(image.size)")
 
-        guard image.isValid else {
-            throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
-        }
+            guard image.isValid else {
+                throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
+            }
 
-        image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
+            image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
 
-        // Convert NSImage to CGImage
-        guard let cgImage = image.toCGImage() else {
-            throw QueryError.error(
-                type: .parameter, message: "Failed to convert NSImage to CGImage"
+            // Convert NSImage to CGImage in autoreleasepool
+            guard let cgImage = autoreleasepool(invoking: { image.toCGImage() }) else {
+                throw QueryError.error(
+                    type: .parameter, message: "Failed to convert NSImage to CGImage"
+                )
+            }
+
+            let startTime = CFAbsoluteTimeGetCurrent()
+
+            // Perform Vision OCR using unified API
+            let observations = try await performVisionOCR(on: cgImage, language: language)
+
+            log("Recognize observations count: \(observations.count) (\(language))")
+            log("Cost time: \(startTime.elapsedTimeString) seconds")
+
+            let ocrResult = EZOCRResult()
+            ocrResult.from = language
+
+            let mergedText = observations.simpleMergedText
+            let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
+            let rawProbabilities = languageDetector.rawProbabilities
+            let textAnalysis = languageDetector.getTextAnalysis()
+            log(
+                "Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)"
             )
-        }
 
-        let startTime = CFAbsoluteTimeGetCurrent()
+            // If OCR text is long enough, consider its detected language confident.
+            // If text is too short, we need to recognize it with all candidate languages.
+            let hasEnoughLength = mergedText.count > 50
+            let hasDesignatedLanguage = language != .auto
 
-        // Perform Vision OCR using unified API
-        let observations = try await performVisionOCR(on: cgImage, language: language)
+            let smartMerging = hasDesignatedLanguage
+                || hasEnoughLength
+                || hasDominantLanguage(in: rawProbabilities)
+                || rawProbabilities.isEmpty
 
-        log("Recognize observations count: \(observations.count) (\(language))")
-        log("Cost time: \(startTime.elapsedTimeString) seconds")
+            log("Merged text char count: \(mergedText.count)")
+            log("Performing OCR text processing, smart merging: \(smartMerging)")
 
-        let ocrResult = EZOCRResult()
-        ocrResult.from = language
+            textProcessor.setupOCRResult(
+                ocrResult,
+                observations: observations,
+                ocrImage: image,
+                smartMerging: smartMerging,
+                textAnalysis: textAnalysis
+            )
 
-        let mergedText = observations.simpleMergedText
-        let detectedLanguage = languageDetector.detectLanguage(text: mergedText)
-        let rawProbabilities = languageDetector.rawProbabilities
-        let textAnalysis = languageDetector.getTextAnalysis()
-        log(
-            "Detected language: \(detectedLanguage), probabilities: \(rawProbabilities.prettyPrinted)"
-        )
+            if language == .auto {
+                ocrResult.from = detectedLanguage
+            }
 
-        // If OCR text is long enough, consider its detected language confident.
-        // If text is too short, we need to recognize it with all candidate languages.
-        let hasEnoughLength = mergedText.count > 50
-        let hasDesignatedLanguage = language != .auto
-
-        let smartMerging = hasDesignatedLanguage
-            || hasEnoughLength
-            || hasDominantLanguage(in: rawProbabilities)
-            || rawProbabilities.isEmpty
-
-        log("Merged text char count: \(mergedText.count)")
-        log("Performing OCR text processing, smart merging: \(smartMerging)")
-
-        textProcessor.setupOCRResult(
-            ocrResult,
-            observations: observations,
-            ocrImage: image,
-            smartMerging: smartMerging,
-            textAnalysis: textAnalysis
-        )
-
-        if language == .auto {
-            ocrResult.from = detectedLanguage
-        }
-
-        // If we have done smart merging, means we are confident enough with the result,
-        // no need to run multi-language candidate selection.
+            // If we have done smart merging, means we are confident enough with the result,
+            // no need to run multi-language candidate selection.
 
         if smartMerging {
             log("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")

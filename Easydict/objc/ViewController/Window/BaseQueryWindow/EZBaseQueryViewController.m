@@ -536,6 +536,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             dispatch_block_on_main_safely(^{
                 [EZToast showSuccessToast];
             });
+            
+            // Clear OCR image after silent screenshot OCR to free memory
+            self.queryModel.ocrImage = nil;
 
             return;
         }

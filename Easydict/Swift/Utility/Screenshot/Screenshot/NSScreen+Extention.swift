@@ -13,39 +13,41 @@ extension NSScreen {
     /// - Parameter rect: The rect in the screen to capture. The rect is `top-left` origin. If nil, capture the entire screen.
     /// - Returns: NSImage of captured screenshot or nil if failed
     func takeScreenshot(rect: CGRect? = nil) -> NSImage? {
-        let rect = rect ?? bounds
-        NSLog("Taking screenshot of rect: \(rect), screen: \(debugDescription)")
+        return autoreleasepool {
+            let rect = rect ?? bounds
+            NSLog("Taking screenshot of rect: \(rect), screen: \(debugDescription)")
 
-        // Get screen's display ID
-        let screenNumber = deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber
-        guard let displayID = screenNumber?.uint32Value else {
-            NSLog("Failed to get display ID for screen")
-            return nil
+            // Get screen's display ID
+            let screenNumber = deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber
+            guard let displayID = screenNumber?.uint32Value else {
+                NSLog("Failed to get display ID for screen")
+                return nil
+            }
+
+            // Create a screenshot of the entire display
+            guard let displayImage = CGDisplayCreateImage(displayID) else {
+                NSLog("Failed to create display image")
+                return nil
+            }
+
+            // Apply screen scale factor for Retina displays
+            let scaleFactor = backingScaleFactor
+            let scaledCropRect = CGRect(
+                x: rect.origin.x * scaleFactor,
+                y: rect.origin.y * scaleFactor,
+                width: rect.width * scaleFactor,
+                height: rect.height * scaleFactor
+            ).integral
+
+            // Crop the image to the specified rect
+            guard let croppedImage = displayImage.cropping(to: scaledCropRect) else {
+                NSLog("Failed to crop display image")
+                return nil
+            }
+
+            let image = NSImage(cgImage: croppedImage, size: .zero)
+            return image
         }
-
-        // Create a screenshot of the entire display
-        guard let displayImage = CGDisplayCreateImage(displayID) else {
-            NSLog("Failed to create display image")
-            return nil
-        }
-
-        // Apply screen scale factor for Retina displays
-        let scaleFactor = backingScaleFactor
-        let scaledCropRect = CGRect(
-            x: rect.origin.x * scaleFactor,
-            y: rect.origin.y * scaleFactor,
-            width: rect.width * scaleFactor,
-            height: rect.height * scaleFactor
-        ).integral
-
-        // Crop the image to the specified rect
-        guard let croppedImage = displayImage.cropping(to: scaledCropRect) else {
-            NSLog("Failed to crop display image")
-            return nil
-        }
-
-        let image = NSImage(cgImage: croppedImage, size: .zero)
-        return image
     }
 
     var bounds: CGRect {
