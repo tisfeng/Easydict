@@ -93,16 +93,15 @@ static EZLocalStorage *_instance;
                     serviceInfo.enabledQuery = NO;
                 }
 
-                // Mini window should keep concise, so default enabled services should <= 4
-                if (windowType == EZWindowTypeMini) {
-                    NSArray *defaultEnabledServices = @[
-                        EZServiceTypeAppleDictionary,
-                        EZServiceTypeYoudao,
-                        EZServiceTypeDeepL,
-                        EZServiceTypeGoogle,
-                    ];
-                    serviceInfo.enabled = [defaultEnabledServices containsObject:serviceType];
-                }
+                // Apply consistent default enabled services for all window types
+                NSArray *defaultEnabledServices = @[
+                    EZServiceTypeAppleDictionary,
+                    EZServiceTypeYoudao,
+                    EZServiceTypeDeepL,
+                    EZServiceTypeGoogle,
+                    EZServiceTypeBuiltInAI,
+                ];
+                serviceInfo.enabled = [defaultEnabledServices containsObject:serviceType];
 
                 [self setServiceInfo:serviceInfo windowType:windowType];
             }
