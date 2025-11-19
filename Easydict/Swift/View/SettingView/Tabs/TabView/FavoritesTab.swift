@@ -115,15 +115,15 @@ struct QueryRecordRow: View {
 
     private func performQuery() {
         // Trigger a new query with the stored text and languages
-        let queryModel = EZQueryModel()
-        queryModel.inputText = record.queryText
-        queryModel.userSourceLanguage = record.queryFromLanguage
-        queryModel.userTargetLanguage = record.queryToLanguage
-
-        // Show main query window and perform the query
-        EZWindowManager.shared().showMainWindow {
-            let viewController = EZWindowManager.shared().mainQueryWindow()?.queryViewController
-            viewController?.startQueryText(
+        let windowManager = EZWindowManager.shared()
+        
+        // Show main window if needed
+        windowManager.showMainWindowIfNeeded()
+        
+        // Get the main window and perform the query
+        if let mainWindow = windowManager.mainWindow {
+            let viewController = mainWindow.queryViewController
+            viewController.startQueryText(
                 record.queryText,
                 actionType: EZActionType.selectTextTranslate
             )
