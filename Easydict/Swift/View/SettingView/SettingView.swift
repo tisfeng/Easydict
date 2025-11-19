@@ -17,6 +17,8 @@ enum SettingTab: Int {
     case advanced
     case shortcut
     case privacy
+    case favorites
+    case history
     case about
 }
 
@@ -46,9 +48,18 @@ struct SettingView: View {
             AdvancedTab()
                 .tabItem { Label("advanced", systemImage: "gearshape.2") }
                 .tag(SettingTab.advanced)
+            
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
+
+            FavoritesTab()
+                .tabItem { Label("favorites.tab", systemImage: "star") }
+                .tag(SettingTab.favorites)
+
+            HistoryTab()
+                .tabItem { Label("history.tab", systemImage: "clock") }
+                .tag(SettingTab.history)
 
             AboutTab()
                 .tabItem { Label("setting.about", systemImage: "info.bubble") }
@@ -80,6 +91,8 @@ struct SettingView: View {
             340
         case .about:
             300
+        case .favorites, .history:
+            640
         default:
             maxWidth * 0.8
         }

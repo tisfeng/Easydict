@@ -54,11 +54,13 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     self.imageSize = CGSizeMake(self.imageWidth, self.imageWidth);
     
     [self addSubview:self.pinButton];
+    [self addSubview:self.favoriteButton];
     [self addSubview:self.stackView];
 
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:NSNotification.linkButtonUpdated object:nil];
     [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:NSNotification.languagePreferenceChanged object:nil];
+    [defaultCenter addObserver:self selector:@selector(updateFavoriteButton) name:NSNotification.serviceHasUpdated object:nil];
 }
 
 - (void)updateTitlebar {
@@ -73,13 +75,16 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     // Remove and dealloc all views to refresh UI.
     
     [_pinButton removeFromSuperview];
+    [_favoriteButton removeFromSuperview];
     [_stackView removeFromSuperview];
     _stackView = nil;
     _quickActionButton = nil;
     
     [self updatePinButton];
+    [self updateFavoriteButton];
     
     [self addSubview:self.pinButton];
+    [self addSubview:self.favoriteButton];
     [self addSubview:self.stackView];
     
     [self setNeedsUpdateConstraints:YES];
@@ -92,6 +97,12 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.height.mas_equalTo(self.buttonWidth);
         make.left.inset(margin);
+        make.top.equalTo(self).offset(topOffset);
+    }];
+    
+    [self.favoriteButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(self.buttonWidth);
+        make.left.equalTo(self.pinButton.mas_right).offset(self.buttonPadding);
         make.top.equalTo(self).offset(topOffset);
     }];
     
@@ -420,6 +431,94 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         button.image = image;
     }];
 }
+
+- (EZOpenLinkButton *)favoriteButton {
+    if (!_favoriteButton) {
+        EZOpenLinkButton *favoriteButton = [[EZOpenLinkButton alloc] init];
+        _favoriteButton = favoriteButton;
+        
+        favoriteButton.contentTintColor = [NSColor clearColor];
+        favoriteButton.clickBlock = nil;
+        
+        mm_weakify(self);
+        [favoriteButton setClickBlock:^(EZButton *_Nonnull button) {
+            mm_strongify(self);
+            [self toggleFavorite];
+        }];
+    }
+    return _favoriteButton;
+}
+
+- (void)updateFavoriteButton {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    EZBaseQueryViewController *viewController = window.queryViewController;
+    NSString *queryText = viewController.inputText;
+    
+    BOOL isFavorited = NO;
+    if (queryText.length > 0) {
+        isFavorited = [FavoritesManager.shared isFavoritedWithQueryText:queryText];
+    }
+    
+    CGFloat imageWidth = 18;
+    CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
+    
+    NSColor *normalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *normalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+    
+    NSImage *normalImage = [NSImage ez_imageWithSymbolName:@"star"];
+    NSImage *selectedImage = [NSImage ez_imageWithSymbolName:@"star.fill"];
+    
+    NSImage *normalLightImage = [[normalImage imageWithTintColor:normalLightTintColor] resizeToSize:imageSize];
+    NSImage *normalDarkImage = [[normalImage imageWithTintColor:normalDarkTintColor] resizeToSize:imageSize];
+    NSImage *selectedImageResized = [selectedImage resizeToSize:imageSize];
+    
+    mm_weakify(self);
+    [self.favoriteButton excuteLight:^(EZHoverButton *button) {
+        mm_strongify(self)
+        NSImage *image = isFavorited ? selectedImageResized : normalLightImage;
+        button.image = image;
+    } dark:^(EZHoverButton *button) {
+        mm_strongify(self)
+        NSImage *image = isFavorited ? selectedImageResized : normalDarkImage;
+        button.image = image;
+    }];
+    
+    NSString *tooltip = isFavorited ? NSLocalizedString(@"remove_from_favorites", nil) : NSLocalizedString(@"add_to_favorites", nil);
+    self.favoriteButton.toolTip = tooltip;
+}
+
+- (void)toggleFavorite {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    EZBaseQueryViewController *viewController = window.queryViewController;
+    EZQueryModel *queryModel = viewController.queryModel;
+    
+    NSString *queryText = queryModel.queryText;
+    if (queryText.length == 0) {
+        return;
+    }
+    
+    BOOL isFavorited = [FavoritesManager.shared isFavoritedWithQueryText:queryText];
+    
+    if (isFavorited) {
+        // Remove from favorites
+        NSArray<QueryRecord *> *favorites = [FavoritesManager.shared getAllFavorites];
+        for (QueryRecord *record in favorites) {
+            if ([record.queryText isEqualToString:queryText]) {
+                [FavoritesManager.shared removeFavoriteWithId:record.id];
+                break;
+            }
+        }
+    } else {
+        // Add to favorites
+        [FavoritesManager.shared addFavoriteWithQueryText:queryText
+                                             fromLanguage:queryModel.queryFromLanguage
+                                               toLanguage:queryModel.queryTargetLanguage];
+    }
+    
+    [self updateFavoriteButton];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.serviceHasUpdated object:nil];
+}
+
 
 /// Check if installed app according to bundle id array
 - (BOOL)checkInstalledApp:(NSArray<NSString *> *)bundleIds {

@@ -60,7 +60,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
-@property (nonatomic, strong) EZQueryModel *queryModel;
+@property (nonatomic, strong, readwrite) EZQueryModel *queryModel;
 
 @property (nonatomic, strong) EZQueryService *firstService;
 
@@ -424,6 +424,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
+    
+    // Update favorite button state when input text changes
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.serviceHasUpdated object:nil];
 }
 
 - (NSString *)queryText {
@@ -833,6 +836,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
+    
+    // Add to history
+    [HistoryManager.shared addHistoryWithQueryText:queryModel.queryText
+                                      fromLanguage:queryModel.queryFromLanguage
+                                        toLanguage:queryModel.queryTargetLanguage];
 
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];
