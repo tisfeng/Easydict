@@ -444,6 +444,11 @@
 		278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2783225F2B0FB0EA0026644C /* CaiyunResponse.swift */; };
 		278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */; };
 		278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278540332B3DE04F004E9488 /* GeneralTab.swift */; };
+		AA0000012E00000000000001 /* QueryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000001 /* QueryRecord.swift */; };
+		AA0000012E00000000000002 /* FavoritesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000002 /* FavoritesManager.swift */; };
+		AA0000012E00000000000003 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000003 /* HistoryManager.swift */; };
+		AA0000012E00000000000004 /* FavoritesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000004 /* FavoritesTab.swift */; };
+		AA0000012E00000000000005 /* HistoryTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000005 /* HistoryTab.swift */; };
 		27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE95262B3DC55F000AD654 /* EasydictApp.swift */; };
 		27FE98092B3DD536000AD654 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE98082B3DD536000AD654 /* SettingView.swift */; };
 		27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */; };
@@ -1198,6 +1203,11 @@
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
 		EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
+		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
+		AA0000022E00000000000002 /* FavoritesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesManager.swift; sourceTree = "<group>"; };
+		AA0000022E00000000000003 /* HistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
+		AA0000022E00000000000004 /* FavoritesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTab.swift; sourceTree = "<group>"; };
+		AA0000022E00000000000005 /* HistoryTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTab.swift; sourceTree = "<group>"; };
 		EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectOptimizeExtensions.swift; sourceTree = "<group>"; };
 		EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTypeExtensions.swift; sourceTree = "<group>"; };
 		EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowWindowPositionExtensions.swift; sourceTree = "<group>"; };
@@ -1313,6 +1323,8 @@
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
+				AA0000022E00000000000004 /* FavoritesTab.swift */,
+				AA0000022E00000000000005 /* HistoryTab.swift */,
 			);
 			path = TabView;
 			sourceTree = "<group>";
@@ -1833,6 +1845,8 @@
 				C43B566A2C693F4000EF26FD /* Volcano */,
 				03CD01582D24E17C0079D0CB /* Youdao */,
 				0D124C3D2E8AD3EA00D6B72C /* Doubao */,
+				AA0000022E00000000000002 /* FavoritesManager.swift */,
+				AA0000022E00000000000003 /* HistoryManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -3261,6 +3275,7 @@
 			isa = PBXGroup;
 			children = (
 				0340D39D2C951850004C9910 /* QueryError.swift */,
+				AA0000022E00000000000001 /* QueryRecord.swift */,
 				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
 				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
 				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
@@ -3843,6 +3858,11 @@
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
+				AA0000012E00000000000001 /* QueryRecord.swift in Sources */,
+				AA0000012E00000000000002 /* FavoritesManager.swift in Sources */,
+				AA0000012E00000000000003 /* HistoryManager.swift in Sources */,
+				AA0000012E00000000000004 /* FavoritesTab.swift in Sources */,
+				AA0000012E00000000000005 /* HistoryTab.swift in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */,
