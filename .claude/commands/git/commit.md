@@ -8,6 +8,11 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 
 **Step-by-step process:**
 1. **Analysis Phase**: First run `git status && git diff --staged` to analyze current staged changes
+   - **CRITICAL**: Carefully examine whether each code change is an **addition (+)** or **deletion (-)** 
+   - Lines starting with `+` are **added code** (new functionality)
+   - Lines starting with `-` are **removed code** (deleted functionality)
+   - **DO NOT** confuse additions with deletions - this directly affects commit message accuracy
+   - Pay special attention to the change type when describing what the commit does
 2. **Generate English Commit Message**: Create English commit message following Angular Conventional Commit style
 3. **Provide Chinese Translation**: Show Simplified Chinese translation below English message for reference
 4. **Display Preview**: Present both English and Chinese versions, wait for user confirmation
@@ -21,7 +26,7 @@ Your goal is to generate a clear, professional **Git commit message** based on t
  - Commit title (the first line) **must not** exceed 80 characters — keep it short and focused.
 - Chinese translation **must not** be written into commit file or included in commit
 - **Do not commit immediately** - first show preview and wait for confirmation
-- When committing: write message to temporary file `commit_message.txt` in project root, then run `git commit -F <file>`, finally delete temporary file to avoid encoding issues
+- When committing: use `echo` command to write message to temporary file `commit_message.txt` in project root, then run `git commit -F commit_message.txt && rm commit_message.txt` to commit and clean up
 
 ### Additional Context
 User-provided description: $ARGUMENTS
