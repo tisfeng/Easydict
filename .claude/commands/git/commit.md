@@ -23,7 +23,8 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 - **Do not** run `git add` or `git push` commands
 - **Must** obtain explicit user authorization before running `git commit`
 - Commit message **must** be written in English and follow Angular Conventional Commit style
- - Commit title (the first line) **must not** exceed 80 characters — keep it short and focused.
+- Commit title (the first line) **must not** exceed 80 characters, keep it short and focused
+- Total commit message length **must not** exceed 600 characters - keep it concise and focused
 - Chinese translation **must not** be written into commit file or included in commit
 - **Do not commit immediately** - first show preview and wait for confirmation
 - When committing: use `echo` command to write message to temporary file `commit_message.txt` in project root, then run `git commit -F commit_message.txt && rm commit_message.txt` to commit and clean up
