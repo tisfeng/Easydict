@@ -202,4 +202,5 @@ enum GeminiModel: String, CaseIterable {
     case gemini_2_5_pro = "gemini-2.5-pro" // 5 RPM | 250,000 TPM | 100 RPD
     case gemini_2_5_flash = "gemini-2.5-flash" // 10 RPM | 250,000 TPM | 250 RPD
     case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // 15 RPM | 250,000 TPM | 1000 RPD
+    case gemini_3_pro_preview = "gemini-3-pro-preview" // Not available for free tier
 }
