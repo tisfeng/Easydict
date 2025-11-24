@@ -25,7 +25,7 @@ struct AppleServiceTests {
     @available(macOS 15.0, *)
     @Test("Apple Offline Translation", .tags(.apple, .integration))
     func testAppleOfflineTranslation() async throws {
-        let translationService = TranslationService(
+        let translationService = AppleTranslation(
             configuration: .init(
                 source: .init(languageCode: .english),
                 target: .init(languageCode: .chinese)

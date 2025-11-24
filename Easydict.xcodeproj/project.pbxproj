@@ -220,7 +220,7 @@
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
 		039785282CC678F400A49087 /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785242CC678F400A49087 /* TranslationManager.swift */; };
-		039785292CC678F400A49087 /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785252CC678F400A49087 /* TranslationService.swift */; };
+		039785292CC678F400A49087 /* AppleTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785252CC678F400A49087 /* AppleTranslation.swift */; };
 		0397852A2CC678F400A49087 /* TranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785262CC678F400A49087 /* TranslationView.swift */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
@@ -791,7 +791,7 @@
 		0396D614292CC4C3006A11D9 /* EZLocalStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLocalStorage.m; sourceTree = "<group>"; };
 		0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOpenAIService.swift; sourceTree = "<group>"; };
 		039785242CC678F400A49087 /* TranslationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationManager.swift; sourceTree = "<group>"; };
-		039785252CC678F400A49087 /* TranslationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationService.swift; sourceTree = "<group>"; };
+		039785252CC678F400A49087 /* AppleTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleTranslation.swift; sourceTree = "<group>"; };
 		039785262CC678F400A49087 /* TranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationView.swift; sourceTree = "<group>"; };
 		03991156292927E000E1B06D /* EZTitlebar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitlebar.h; sourceTree = "<group>"; };
 		03991157292927E000E1B06D /* EZTitlebar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitlebar.m; sourceTree = "<group>"; };
@@ -1708,7 +1708,7 @@
 				031760F02E07FB2800CE8FD7 /* AppleLanguageDetector */,
 				031760F22E07FB2800CE8FD7 /* AppleSpeechService */,
 				031760E92E065DB300CE8FD7 /* AppleOCREngine */,
-				039785272CC678F400A49087 /* TranslationService */,
+				039785272CC678F400A49087 /* AppleTranslation */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -1989,14 +1989,14 @@
 			path = Storage;
 			sourceTree = "<group>";
 		};
-		039785272CC678F400A49087 /* TranslationService */ = {
+		039785272CC678F400A49087 /* AppleTranslation */ = {
 			isa = PBXGroup;
 			children = (
-				039785252CC678F400A49087 /* TranslationService.swift */,
+				039785252CC678F400A49087 /* AppleTranslation.swift */,
 				039785242CC678F400A49087 /* TranslationManager.swift */,
 				039785262CC678F400A49087 /* TranslationView.swift */,
 			);
-			path = TranslationService;
+			path = AppleTranslation;
 			sourceTree = "<group>";
 		};
 		03991155292927A100E1B06D /* Titlebar */ = {
@@ -3801,7 +3801,7 @@
 				0337D3CA2E66AA5000B08437 /* SystemUtility+AX.swift in Sources */,
 				03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */,
 				039785282CC678F400A49087 /* TranslationManager.swift in Sources */,
-				039785292CC678F400A49087 /* TranslationService.swift in Sources */,
+				039785292CC678F400A49087 /* AppleTranslation.swift in Sources */,
 				0397852A2CC678F400A49087 /* TranslationView.swift in Sources */,
 				03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */,
 				0328D07B2D7D42A70050B2C7 /* Screencapture.swift in Sources */,

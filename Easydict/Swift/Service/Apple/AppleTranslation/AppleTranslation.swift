@@ -1,5 +1,5 @@
 //
-//  TranslationService.swift
+//  AppleTranslation.swift
 //  AppleTranslation
 //
 //  Created by tisfeng on 2024/10/10.
@@ -10,11 +10,11 @@ import Foundation
 import SwiftUI
 import Translation
 
-// MARK: - TranslationService
+// MARK: - AppleTranslation
 
 @objcMembers
 @available(macOS 15.0, *)
-public class TranslationService: NSObject {
+public class AppleTranslation: NSObject {
     // MARK: Lifecycle
 
     @MainActor
