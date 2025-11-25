@@ -108,6 +108,7 @@ extension NSImage {
     /// let success = image.mm_writeToFileAsPNG("/path/to/image.png")
     /// ```
     @objc(mm_writeToFileAsPNG:)
+    @discardableResult
     func mm_writeToFileAsPNG(_ path: String) -> Bool {
         (try? savePNG(toPath: path)) != nil
     }

@@ -34,46 +34,46 @@ extension Color {
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)
 
-        let a, r, g, b: UInt64
+        let alphaComp, redComp, greenComp, blueComp: UInt64
         switch hex.count {
         case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+            (alphaComp, redComp, greenComp, blueComp) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
         case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+            (alphaComp, redComp, greenComp, blueComp) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
         case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+            (alphaComp, redComp, greenComp, blueComp) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
         default:
-            (a, r, g, b) = (255, 255, 255, 255) // Default to white for invalid format
+            (alphaComp, redComp, greenComp, blueComp) = (255, 255, 255, 255) // Default to white for invalid format
         }
 
         self.init(
             .sRGB,
-            red: Double(r) / 255.0,
-            green: Double(g) / 255.0,
-            blue: Double(b) / 255.0,
-            opacity: alpha ?? Double(a) / 255.0
+            red: Double(redComp) / 255.0,
+            green: Double(greenComp) / 255.0,
+            blue: Double(blueComp) / 255.0,
+            opacity: alpha ?? Double(alphaComp) / 255.0
         )
     }
 
     /// Initialize Color from RGB integer values (0-255).
     ///
     /// - Parameters:
-    ///   - r: Red component (0-255)
-    ///   - g: Green component (0-255)
-    ///   - b: Blue component (0-255)
+    ///   - red: Red component (0-255)
+    ///   - green: Green component (0-255)
+    ///   - blue: Blue component (0-255)
     ///   - alpha: Alpha component (0.0-1.0), defaults to 1.0
     ///
     /// - Example:
     /// ```swift
-    /// let purple = Color(r: 128, g: 0, b: 255)
-    /// let semiTransparent = Color(r: 255, g: 100, g: 50, alpha: 0.7)
+    /// let purple = Color(red: 128, green: 0, blue: 255)
+    /// let semiTransparent = Color(red: 255, green: 100, blue: 50, alpha: 0.7)
     /// ```
-    init(r: Int, g: Int, b: Int, alpha: CGFloat = 1.0) {
+    init(red: Int, green: Int, blue: Int, alpha: CGFloat = 1.0) {
         self.init(
             .sRGB,
-            red: Double(r) / 255.0,
-            green: Double(g) / 255.0,
-            blue: Double(b) / 255.0,
+            red: Double(red) / 255.0,
+            green: Double(green) / 255.0,
+            blue: Double(blue) / 255.0,
             opacity: Double(alpha)
         )
     }
@@ -92,10 +92,10 @@ extension Color {
         // Generate values between 0.6-1.0 to ensure light colors
         let start = 60
         let length = 40
-        let r = CGFloat(start + Int.random(in: 0 ..< length)) / 100.0
-        let g = CGFloat(start + Int.random(in: 0 ..< length)) / 100.0
-        let b = CGFloat(start + Int.random(in: 0 ..< length)) / 100.0
-        return Color(.sRGB, red: r, green: g, blue: b, opacity: 1.0)
+        let redComp = CGFloat(start + Int.random(in: 0 ..< length)) / 100.0
+        let greenComp = CGFloat(start + Int.random(in: 0 ..< length)) / 100.0
+        let blueComp = CGFloat(start + Int.random(in: 0 ..< length)) / 100.0
+        return Color(.sRGB, red: redComp, green: greenComp, blue: blueComp, opacity: 1.0)
     }
 
     /// Convert Color to hex string.
@@ -111,10 +111,10 @@ extension Color {
         guard let components = NSColor(self).cgColor.components, components.count >= 3 else {
             return nil
         }
-        let r = Int(components[0] * 255.0)
-        let g = Int(components[1] * 255.0)
-        let b = Int(components[2] * 255.0)
-        return String(format: "#%02X%02X%02X", r, g, b)
+        let redComp = Int(components[0] * 255.0)
+        let greenComp = Int(components[1] * 255.0)
+        let blueComp = Int(components[2] * 255.0)
+        return String(format: "#%02X%02X%02X", redComp, greenComp, blueComp)
     }
 }
 
@@ -156,14 +156,14 @@ extension NSColor {
     /// Initialize NSColor from RGB integer values (modern API).
     ///
     /// - Parameters:
-    ///   - r: Red component (0-255)
-    ///   - g: Green component (0-255)
-    ///   - b: Blue component (0-255)
+    ///   - red: Red component (0-255)
+    ///   - green: Green component (0-255)
+    ///   - blue: Blue component (0-255)
     ///   - alpha: Alpha component (0.0-1.0), defaults to 1.0
     ///
     /// - Returns: NSColor instance
-    static func color(withR r: Int, g: Int, b: Int, alpha: CGFloat = 1.0) -> NSColor {
-        NSColor(Color(r: r, g: g, b: b, alpha: alpha))
+    static func color(withR red: Int, green: Int, blue: Int, alpha: CGFloat = 1.0) -> NSColor {
+        NSColor(Color(red: red, green: green, blue: blue, alpha: alpha))
     }
 
     /// Initialize NSColor from RGB integer values (legacy mm_ API).
@@ -174,8 +174,8 @@ extension NSColor {
     ///   - b: Blue component (0-255)
     /// - Returns: NSColor instance
     @objc(mm_colorWithIntR:g:b:)
-    static func mm_color(withIntR r: Int, g: Int, b: Int) -> NSColor {
-        color(withR: r, g: g, b: b, alpha: 1.0)
+    static func mm_color(withIntR red: Int, green: Int, blue: Int) -> NSColor {
+        color(withR: red, green: green, blue: blue, alpha: 1.0)
     }
 
     /// Initialize NSColor from RGB integer values with alpha (legacy mm_ API).
@@ -187,8 +187,8 @@ extension NSColor {
     ///   - alpha: Alpha component (0.0-1.0)
     /// - Returns: NSColor instance
     @objc(mm_colorWithIntR:g:b:alhpa:)
-    static func mm_color(withIntR r: Int, g: Int, b: Int, alhpa alpha: CGFloat) -> NSColor {
-        color(withR: r, g: g, b: b, alpha: alpha)
+    static func mm_color(withIntR red: Int, green: Int, blue: Int, alhpa alpha: CGFloat) -> NSColor {
+        color(withR: red, green: green, blue: blue, alpha: alpha)
     }
 
     /// Generate a random light NSColor (modern API).
