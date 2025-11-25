@@ -13,23 +13,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (MM)
 
-// get string width
-- (CGFloat)mm_widthWithFont:(NSFont *)font;
-- (CGFloat)mm_widthWithFont:(NSFont *)font constrainedToHeight:(CGFloat)height;
-
-// get string height
-- (CGFloat)mm_heightWithFont:(NSFont *)font;
-- (CGFloat)mm_heightWithFont:(NSFont *)font constrainedToWidth:(CGFloat)width;
-
-// get string size
-- (CGSize)mm_sizeWithFont:(NSFont *)font;
-- (CGSize)mm_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size;
-- (CGSize)mm_sizetWithAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes
-               constrainedToSize:(CGSize)size;
-
-- (NSString *)mm_urlencode;
-
+/// 将字符串数组用指定分隔符拼接
+/// @param components 字符串数组
+/// @param separatedString 分隔符，为 nil 时返回 nil
 + (NSString *)mm_stringByCombineComponents:(NSArray<NSString *> *)components separatedString:(nullable NSString *)separatedString;
+
+// https://stackoverflow.com/questions/8088473/how-do-i-url-encode-a-string
+- (NSString *)mm_urlencode;
 
 @end
 

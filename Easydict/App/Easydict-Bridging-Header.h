@@ -7,7 +7,6 @@
 #import "EZConstKey.h"
 #import "NSString+EZChineseText.h"
 #import "EZConst.h"
-#import "NSImage+MM.h"
 #import "NSColor+MyColors.h"
 #import "entry.h"
 #import "AppDelegate.h"
