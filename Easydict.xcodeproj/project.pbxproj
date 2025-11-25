@@ -160,6 +160,9 @@
 		035FB7882ED4E02400F3EB27 /* NSImage+Export.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035FB7872ED4E02400F3EB27 /* NSImage+Export.swift */; };
 		035FB78A2ED4E06700F3EB27 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035FB7892ED4E06700F3EB27 /* Color+Hex.swift */; };
 		035FB78C2ED4E08500F3EB27 /* String+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035FB78B2ED4E08500F3EB27 /* String+Layout.swift */; };
+		035FB78F2ED6023900F3EB27 /* NSButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035FB78D2ED6023900F3EB27 /* NSButton+Extension.swift */; };
+		035FB7912ED6095B00F3EB27 /* Dictionary+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035FB7902ED6095B00F3EB27 /* Dictionary+ObjCCompat.swift */; };
+		035FB7932ED6097B00F3EB27 /* NSPasteboard+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035FB7922ED6097B00F3EB27 /* NSPasteboard+ObjCCompat.swift */; };
 		036196752A000F5900806370 /* FWEncryptorAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196702A000F5800806370 /* FWEncryptorAES.m */; };
 		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
 		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
@@ -266,13 +269,10 @@
 		03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */; };
 		03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228C29231FA6001C7E63 /* DarkModeManager.m */; };
 		03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022A829231FA6001C7E63 /* NSWindow+MM.m */; };
-		03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AA29231FA6001C7E63 /* NSPasteboard+MM.m */; };
 		03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AC29231FA6001C7E63 /* NSString+MM.m */; };
 		03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AD29231FA6001C7E63 /* NSUserDefaults+MM.m */; };
-		03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AE29231FA6001C7E63 /* NSButton+MM.m */; };
 		03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022B429231FA6001C7E63 /* NSAttributedString+MM.m */; };
 		03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022BD29231FA6001C7E63 /* NSTextView+Height.m */; };
-		03B0232929231FA6001C7E63 /* NSDictionary+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022BE29231FA6001C7E63 /* NSDictionary+MM.m */; };
 		03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022C129231FA6001C7E63 /* NSColor+MyColors.m */; };
 		03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022C229231FA6001C7E63 /* NSMutableAttributedString+MM.m */; };
 		03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022C329231FA6001C7E63 /* NSView+MM.m */; };
@@ -727,6 +727,9 @@
 		035FB7872ED4E02400F3EB27 /* NSImage+Export.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Export.swift"; sourceTree = "<group>"; };
 		035FB7892ED4E06700F3EB27 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		035FB78B2ED4E08500F3EB27 /* String+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Layout.swift"; sourceTree = "<group>"; };
+		035FB78D2ED6023900F3EB27 /* NSButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSButton+Extension.swift"; sourceTree = "<group>"; };
+		035FB7902ED6095B00F3EB27 /* Dictionary+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+ObjCCompat.swift"; sourceTree = "<group>"; };
+		035FB7922ED6097B00F3EB27 /* NSPasteboard+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPasteboard+ObjCCompat.swift"; sourceTree = "<group>"; };
 		0361966F2A000F5800806370 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		036196702A000F5800806370 /* FWEncryptorAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWEncryptorAES.m; sourceTree = "<group>"; };
 		036196712A000F5900806370 /* FWEncryptorAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWEncryptorAES.h; sourceTree = "<group>"; };
@@ -1562,6 +1565,7 @@
 		0340D3922C8EEF4B004C9910 /* Dictionary */ = {
 			isa = PBXGroup;
 			children = (
+				035FB7902ED6095B00F3EB27 /* Dictionary+ObjCCompat.swift */,
 				0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */,
 			);
 			path = Dictionary;
@@ -1593,6 +1597,7 @@
 		034B47192E23E39800C1428D /* NSPasteboard */ = {
 			isa = PBXGroup;
 			children = (
+				035FB7922ED6097B00F3EB27 /* NSPasteboard+ObjCCompat.swift */,
 				034B471A2E23E3AF00C1428D /* NSPasteboard+Extension.swift */,
 			);
 			path = NSPasteboard;
@@ -1677,6 +1682,14 @@
 				03538DFA2D2653E2005E56A8 /* look up.json */,
 			);
 			path = v2;
+			sourceTree = "<group>";
+		};
+		035FB78E2ED6023900F3EB27 /* NSButton */ = {
+			isa = PBXGroup;
+			children = (
+				035FB78D2ED6023900F3EB27 /* NSButton+Extension.swift */,
+			);
+			path = NSButton;
 			sourceTree = "<group>";
 		};
 		0361966B2A000E7800806370 /* FWEncryptorAES */ = {
@@ -3292,6 +3305,7 @@
 				038F1F8D2BAD835500CD2F65 /* AppKit */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
+				035FB78E2ED6023900F3EB27 /* NSButton */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3806,7 +3820,6 @@
 				03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */,
 				0328D07B2D7D42A70050B2C7 /* Screencapture.swift in Sources */,
 				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,
-				03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */,
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
@@ -3882,7 +3895,6 @@
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
 				03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */,
-				03B0232929231FA6001C7E63 /* NSDictionary+MM.m in Sources */,
 				035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */,
 				03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */,
 				03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */,
@@ -3973,7 +3985,6 @@
 				033E8A132E502E2D008A7110 /* OCRMergedTextView.swift in Sources */,
 				6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */,
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
-				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
@@ -4006,6 +4017,7 @@
 				0340D3992C91D4B6004C9910 /* AppleScriptTask+System.swift in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
 				9627F9392B59956800B1E999 /* KeyHolderWrapper.swift in Sources */,
+				035FB78F2ED6023900F3EB27 /* NSButton+Extension.swift in Sources */,
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
 				0320411C2E44989D0065A05B /* PoetryStatistics.swift in Sources */,
 				03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */,
@@ -4037,6 +4049,7 @@
 				03538DF02D259B0A005E56A8 /* EZQueryResult+Dict.swift in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
+				035FB7912ED6095B00F3EB27 /* Dictionary+ObjCCompat.swift in Sources */,
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */,
@@ -4045,6 +4058,7 @@
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
 				034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
+				035FB7932ED6097B00F3EB27 /* NSPasteboard+ObjCCompat.swift in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,
 				039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */,
