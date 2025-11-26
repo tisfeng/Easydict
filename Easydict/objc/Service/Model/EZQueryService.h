@@ -11,7 +11,8 @@
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
 #import "EZAudioPlayer.h"
-#import "MMOrderedDictionary.h"
+
+@class MMOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
 

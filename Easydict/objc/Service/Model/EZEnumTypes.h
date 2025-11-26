@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MMOrderedDictionary.h"
+
+@class MMOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -117,9 +118,9 @@ typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
 
 + (NSString *)windowName:(EZWindowType)type;
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
++ (MMOrderedDictionary *)fixedWindowPositionDict;
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict;
++ (MMOrderedDictionary *)translateWindowTypeDict;
 
 @end
 

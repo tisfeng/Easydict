@@ -7,6 +7,8 @@
 //
 
 #import "EZEnumTypes.h"
+#import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 NSString *const EZServiceTypeKey = @"ServiceType";
 
@@ -93,7 +95,7 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
     }
 }
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict {
++ (MMOrderedDictionary *)fixedWindowPositionDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                                                  @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
                                                                  @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
@@ -104,7 +106,7 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
     return dict;
 }
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict {
++ (MMOrderedDictionary *)translateWindowTypeDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                                                  @(EZWindowTypeMini), NSLocalizedString(@"mini_window", nil),
                                                                  @(EZWindowTypeFixed), NSLocalizedString(@"fixed_window", nil),

@@ -18,7 +18,7 @@
 
 @property (nonatomic, copy) NSArray<EZLanguage> *userPreferredTwoLanguages;
 
-@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageFlagDict;
+@property (nonatomic, strong) MMOrderedDictionary*allLanguageFlagDict;
 
 // Cache for languages without word spaces
 @property (nonatomic, strong) NSArray<EZLanguage> *languagesWithoutWordSpaces;
@@ -187,7 +187,7 @@ static EZLanguageManager *_instance;
     return secondLanguage;
 }
 
-- (MMOrderedDictionary<EZLanguage, NSString *> *)allLanguageFlagDict {
+- (MMOrderedDictionary *)allLanguageFlagDict {
     if (!_allLanguageFlagDict) {
         MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
         for (EZLanguage language in self.allLanguages) {

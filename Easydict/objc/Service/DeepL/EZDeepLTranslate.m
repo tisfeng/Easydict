@@ -9,6 +9,7 @@
 #import "EZDeepLTranslate.h"
 #import "Easydict-Swift.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
+#import "OrderedDictionary+Variadic.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
@@ -81,7 +82,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 // Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh-hans",

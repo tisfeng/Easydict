@@ -12,6 +12,7 @@
 #import "EZBingLookupModel.h"
 #import "NSString+EZUtils.h"
 #import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
@@ -44,7 +45,7 @@
 }
 
 /// Azure transalte supported languages: https://learn.microsoft.com/zh-cn/azure/ai-services/translator/language-support
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                                                         EZLanguageAuto, @"auto-detect",
                                                                         EZLanguageSimplifiedChinese, @"zh-Hans",

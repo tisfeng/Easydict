@@ -278,7 +278,6 @@
 		03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D529231FA6001C7E63 /* MMFileLogFormatter.m */; };
 		03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D729231FA6001C7E63 /* MMEventMonitor.m */; };
 		03B0233729231FA6001C7E63 /* MMMake.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D829231FA6001C7E63 /* MMMake.m */; };
-		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
 		03B17E902E0D30050017350E /* VNRecognizedTextObservation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */; };
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
@@ -385,6 +384,8 @@
 		03E75A092ED760E200E1741E /* NSMutableAttributedString+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A072ED760E200E1741E /* NSMutableAttributedString+ObjCCompat.swift */; };
 		03E75A0A2ED760E200E1741E /* NSAttributedString+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A062ED760E200E1741E /* NSAttributedString+ObjCCompat.swift */; };
 		03E75A0C2ED7610400E1741E /* Array+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A0B2ED7610400E1741E /* Array+ObjCCompat.swift */; };
+		03E75A122ED76ACB00E1741E /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A112ED76ACB00E1741E /* OrderedDictionary.swift */; };
+		7B4CA2D1929E4E2E9A44A2EA0E347F4C /* OrderedDictionary+Variadic.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */; };
 		03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F12DB1F5F000268DF0 /* SliderCell.swift */; };
 		03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F42DB21EC200268DF0 /* Double+String.swift */; };
 		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
@@ -888,13 +889,11 @@
 		03B022D529231FA6001C7E63 /* MMFileLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMFileLogFormatter.m; sourceTree = "<group>"; };
 		03B022D729231FA6001C7E63 /* MMEventMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMEventMonitor.m; sourceTree = "<group>"; };
 		03B022D829231FA6001C7E63 /* MMMake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMMake.m; sourceTree = "<group>"; };
-		03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMOrderedDictionary.m; sourceTree = "<group>"; };
 		03B022DA29231FA6001C7E63 /* MMTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMTool.h; sourceTree = "<group>"; };
 		03B022DB29231FA6001C7E63 /* MMMake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMMake.h; sourceTree = "<group>"; };
 		03B022DC29231FA6001C7E63 /* MMEventMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMEventMonitor.h; sourceTree = "<group>"; };
 		03B022DD29231FA6001C7E63 /* MMMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMMacro.h; sourceTree = "<group>"; };
 		03B022DE29231FA6001C7E63 /* MMTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMTool.m; sourceTree = "<group>"; };
-		03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOrderedDictionary.h; sourceTree = "<group>"; };
 		03B022E329231FA6001C7E63 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		03B022E429231FA6001C7E63 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		03B17E8F2E0D2FFD0017350E /* VNRecognizedTextObservation+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VNRecognizedTextObservation+Extension.swift"; sourceTree = "<group>"; };
@@ -1044,6 +1043,9 @@
 		03E75A062ED760E200E1741E /* NSAttributedString+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+ObjCCompat.swift"; sourceTree = "<group>"; };
 		03E75A072ED760E200E1741E /* NSMutableAttributedString+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+ObjCCompat.swift"; sourceTree = "<group>"; };
 		03E75A0B2ED7610400E1741E /* Array+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+ObjCCompat.swift"; sourceTree = "<group>"; };
+		03E75A112ED76ACB00E1741E /* OrderedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
+		EF4F062ADB404915AA0EF5186FAF162A /* OrderedDictionary+Variadic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OrderedDictionary+Variadic.h"; sourceTree = "<group>"; };
+		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
 		03F086F12DB1F5F000268DF0 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		03F086F42DB21EC200268DF0 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
 		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
@@ -1923,8 +1925,6 @@
 				03B022DE29231FA6001C7E63 /* MMTool.m */,
 				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
 				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
-				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
-				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
 			);
 			path = Kit;
 			sourceTree = "<group>";
@@ -2806,6 +2806,16 @@
 			path = NSAttributedString;
 			sourceTree = "<group>";
 		};
+		03E75A102ED76A2600E1741E /* OrderedDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				03E75A112ED76ACB00E1741E /* OrderedDictionary.swift */,
+				EF4F062ADB404915AA0EF5186FAF162A /* OrderedDictionary+Variadic.h */,
+				A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */,
+			);
+			path = OrderedDictionary;
+			sourceTree = "<group>";
+		};
 		03F086F32DB21EAD00268DF0 /* Double */ = {
 			isa = PBXGroup;
 			children = (
@@ -3296,6 +3306,7 @@
 				03E759FC2ED75F5600E1741E /* Pasteboard */,
 				03E75A022ED75FB400E1741E /* UserDefaults */,
 				03E75A082ED760E200E1741E /* NSAttributedString */,
+				03E75A102ED76A2600E1741E /* OrderedDictionary */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3847,7 +3858,6 @@
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				039223C02E4B61980052F695 /* OCRImageView.swift in Sources */,
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
-				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
@@ -4072,6 +4082,8 @@
 				C43B566C2C693F6200EF26FD /* VolcanoService.swift in Sources */,
 				EA9943E82B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift in Sources */,
 				03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */,
+				03E75A122ED76ACB00E1741E /* OrderedDictionary.swift in Sources */,
+				7B4CA2D1929E4E2E9A44A2EA0E347F4C /* OrderedDictionary+Variadic.m in Sources */,
 				03792EA22C3831040074A145 /* OllamaService.swift in Sources */,
 				0AC8A83F2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift in Sources */,
 				0333D4C72E5CA38500CD4613 /* ActionConfiguration.swift in Sources */,

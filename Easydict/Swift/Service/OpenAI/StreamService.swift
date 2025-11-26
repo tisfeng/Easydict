@@ -42,7 +42,7 @@ public class StreamService: QueryService {
         Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         let allLanguages = EZLanguageManager.shared().allLanguages
         let supportedLanguages = allLanguages.filter { language in
             !unsupportedLanguages.contains(language)

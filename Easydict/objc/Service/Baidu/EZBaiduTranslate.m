@@ -12,6 +12,7 @@
 #import "EZWebViewTranslator.h"
 #import "NSString+EZRegex.h"
 #import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
@@ -157,7 +158,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 /// Baidu Translate supported languages: https://fanyi-api.baidu.com/product/113
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh",

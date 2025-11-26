@@ -14,10 +14,11 @@
 #import "EZAppleDictionary.h"
 #import "EZNiuTransTranslate.h"
 #import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 @interface EZServiceTypes ()
 
-@property (nonatomic, strong) MMOrderedDictionary<EZServiceType, Class> *allServiceDict;
+@property (nonatomic, strong) MMOrderedDictionary *allServiceDict;
 
 @end
 
@@ -43,7 +44,7 @@ static EZServiceTypes *_instance;
     return [[self allServiceDict] sortedKeys];
 }
 
-- (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
+- (MMOrderedDictionary *)allServiceDict {
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                            EZServiceTypeAppleDictionary, [EZAppleDictionary class],
                                            EZServiceTypeYoudao, [EZYoudaoService class],

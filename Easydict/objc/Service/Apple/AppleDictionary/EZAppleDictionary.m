@@ -94,7 +94,7 @@ static EZAppleDictionary *_instance;
     return NSLocalizedString(@"apple_dictionary", nil);
 }
 
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
     NSArray<EZLanguage> *allLanguages = [EZLanguageManager.shared allLanguages];
     for (EZLanguage language in allLanguages) {

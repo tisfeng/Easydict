@@ -31,7 +31,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 
 @property (nonatomic, assign) BOOL canRetryFetchHost;
 
-@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *languageVoices;
+@property (nonatomic, strong) MMOrderedDictionary *languageVoices;
 
 @end
 
@@ -63,7 +63,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 }
 
 
-+ (MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *)languageVoices {
++ (MMOrderedDictionary *)languageVoices {
     static MMOrderedDictionary *allLanguageVoices;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

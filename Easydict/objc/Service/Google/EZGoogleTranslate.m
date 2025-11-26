@@ -10,6 +10,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+EZUtils.h"
 #import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
@@ -129,7 +130,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 /// Google translate support languages: https://cloud.google.com/translate/docs/languages?hl=zh-cn
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh-CN",

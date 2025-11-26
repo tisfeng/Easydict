@@ -14,6 +14,7 @@
 #import "EZEventMonitor.h"
 #import "Easydict-Swift.h"
 
+
 #define MethodNotImplemented()                                                                                                           \
 @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
 reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
@@ -277,7 +278,7 @@ userInfo:nil]
     return self.link;
 }
 
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MethodNotImplemented();
 }
 

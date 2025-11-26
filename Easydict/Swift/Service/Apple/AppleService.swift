@@ -30,7 +30,7 @@ public class AppleService: QueryService {
 
     /// Supported languages dictionary
     @objc
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         languageMapper.supportedLanguages.toMMOrderedDictionary()
     }
 

@@ -9,6 +9,7 @@
 #import "EZNiuTransTranslate.h"
 #import "EZNiuTransTranslateResponse.h"
 #import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 @interface EZNiuTransTranslate ()
 
@@ -49,7 +50,7 @@
 }
 
 /// Niutrans translate supported languages: https://niutrans.com/documents/contents/trans_text#languageList
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+- (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh",
