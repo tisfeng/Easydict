@@ -169,9 +169,9 @@ extension NSColor {
     /// Initialize NSColor from RGB integer values (legacy mm_ API).
     ///
     /// - Parameters:
-    ///   - r: Red component (0-255)
-    ///   - g: Green component (0-255)
-    ///   - b: Blue component (0-255)
+    ///   - red: Red component (0-255)
+    ///   - green: Green component (0-255)
+    ///   - blue: Blue component (0-255)
     /// - Returns: NSColor instance
     @objc(mm_colorWithIntR:g:b:)
     static func mm_color(withIntR red: Int, green: Int, blue: Int) -> NSColor {
@@ -181,9 +181,9 @@ extension NSColor {
     /// Initialize NSColor from RGB integer values with alpha (legacy mm_ API).
     ///
     /// - Parameters:
-    ///   - r: Red component (0-255)
-    ///   - g: Green component (0-255)
-    ///   - b: Blue component (0-255)
+    ///   - red: Red component (0-255)
+    ///   - green: Green component (0-255)
+    ///   - blue: Blue component (0-255)
     ///   - alpha: Alpha component (0.0-1.0)
     /// - Returns: NSColor instance
     @objc(mm_colorWithIntR:g:b:alhpa:)
@@ -216,7 +216,7 @@ extension NSColor {
     /// Convert NSColor to hex string (legacy mm_ API).
     ///
     /// - Parameter color: NSColor to convert
-    /// - Returns: Hex string in format `#RRGGBB`
+    /// - Returns: Hex string in format `#RRGGBB`, or "#FFFFFF" if conversion fails
     @objc(mm_hexStringFromColor:)
     static func mm_hexString(from color: NSColor) -> String {
         color.hexString ?? "#FFFFFF"
