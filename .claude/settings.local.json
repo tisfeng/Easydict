@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(swiftc:*)",
+      "Bash(git commit:*)",
+      "Bash(uuidgen:*)",
+      "Bash(swift:*)",
+      "Bash(plutil -lint:*)",
+      "Bash(find:*)",
+      "Bash(git diff:*)",
+      "Read(//System/Library/Frameworks/**)",
+      "WebSearch",
+      "Bash(swiftlint lint:*)",
+      "Bash(./Pods/SwiftLint/swiftlint lint:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:casualprogrammer.com)",
+      "Bash(clang:*)",
+      "Bash(echo:*)",
+      "Bash(commit_message.txt)",
+      "Bash(rm:*)",
+      "Bash(tree:*)",
+      "Bash(xargs:*)",
+      "Bash(git checkout:*)",
+      "Bash(python3:*)",
+      "Bash(for:*)",
+      "Bash(do uuidgen)",
+      "Bash(done)",
+      "Bash(ruby:*)",
+      "Bash(gem list:*)",
+      "Bash(sed:*)",
+      "Bash(ls:*)",
+      "Bash(git log:*)",
+      "Bash(git ls-tree:*)"
+    ],
+    "deny": [
+      "Bash(git add:*)",
+      "Bash(git push:*)"
+    ],
+    "ask": []
+  }
+}

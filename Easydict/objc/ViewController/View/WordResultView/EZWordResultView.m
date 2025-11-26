@@ -13,7 +13,6 @@
 #import "NSTextView+Height.h"
 #import "EZConst.h"
 #import "EZFixedQueryWindow.h"
-#import "NSString+MM.h"
 #import "EZLayoutManager.h"
 #import "EZWindowManager.h"
 #import "EZOpenLinkButton.h"
