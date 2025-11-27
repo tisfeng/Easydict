@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) EZAppleService *appleService;
 
-@property (nonatomic, strong) EZGoogleTranslate *googleService;
+@property (nonatomic, strong) GoogleService *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
 @property (nonatomic, strong) EZYoudaoService *youdaoService;
 
@@ -52,9 +52,9 @@
     return _ocrService;
 }
 
-- (EZGoogleTranslate *)googleService {
+- (GoogleService *)googleService {
     if (!_googleService) {
-        _googleService = [[EZGoogleTranslate alloc] init];
+        _googleService = [[GoogleService alloc] init];
     }
     return _googleService;
 }

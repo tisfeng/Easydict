@@ -14,7 +14,6 @@ private let kGoogleTranslateURL = "https://translate.google.com"
 
 // MARK: - GoogleService
 
-@objc(EZGoogleTranslate)
 class GoogleService: QueryService {
     // MARK: Lifecycle
 

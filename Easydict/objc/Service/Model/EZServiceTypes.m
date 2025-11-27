@@ -59,7 +59,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeSummary, [EZSummaryService class],
                                            EZServiceTypeCustomOpenAI, [EZCustomOpenAIService class],
                                            EZServiceTypeDeepL, [EZDeepLTranslate class],
-                                           EZServiceTypeGoogle, [EZGoogleTranslate class],
+                                           EZServiceTypeGoogle, [GoogleService class],
                                            EZServiceTypeApple, [EZAppleService class],
                                            EZServiceTypeBaidu, [EZBaiduTranslate class],
                                            EZServiceTypeBing, [EZBingService class],
