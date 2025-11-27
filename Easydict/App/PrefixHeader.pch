@@ -12,7 +12,6 @@
 #import <AFNetworking/AFNetworking.h>
 
 #import "MMMacro.h"
-#import "MMTool.h"
 #import "MMMake.h"
 #import "NSColor+MyColors.h"
 #import "MMEventMonitor.h"

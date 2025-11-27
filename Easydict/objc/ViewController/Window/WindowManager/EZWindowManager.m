@@ -535,24 +535,6 @@ static EZWindowManager *_instance;
     [_fixedWindow.titleBar updateShortcutButtonsToolTip];
 }
 
-- (NSScreen *)getMouseLocatedScreen {
-    NSPoint mouseLocation = [NSEvent mouseLocation]; // ???: self.endPoint
-
-    // 找到鼠标所在屏幕
-    NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
-        return NSPointInRect(mouseLocation, obj.frame) ? obj : nil;
-    }];
-    // 找不到屏幕；可能在边缘，放宽条件
-    if (!screen) {
-        screen = [NSScreen.screens mm_find:^id _Nullable(NSScreen *_Nonnull obj, NSUInteger idx) {
-            return MMPointInRect(mouseLocation, obj.frame) ? obj : nil;
-        }];
-    }
-
-    return screen;
-}
-
-
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [NSEvent mouseLocation];
