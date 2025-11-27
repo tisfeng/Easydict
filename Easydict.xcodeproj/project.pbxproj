@@ -1940,15 +1940,6 @@
 			path = String;
 			sourceTree = "<group>";
 		};
-		038F1F8D2BAD835500CD2F65 /* AppKit */ = {
-			isa = PBXGroup;
-			children = (
-				038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */,
-				035FB7892ED4E06700F3EB27 /* Color+Hex.swift */,
-			);
-			path = AppKit;
-			sourceTree = "<group>";
-		};
 		03916D6F2E68153F007E50D7 /* Task */ = {
 			isa = PBXGroup;
 			children = (
@@ -2633,6 +2624,22 @@
 			path = Youdao;
 			sourceTree = "<group>";
 		};
+		03CE80232ED8971700FB4EAB /* NSMenu */ = {
+			isa = PBXGroup;
+			children = (
+				038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */,
+			);
+			path = NSMenu;
+			sourceTree = "<group>";
+		};
+		03CE80242ED8972600FB4EAB /* Color */ = {
+			isa = PBXGroup;
+			children = (
+				035FB7892ED4E06700F3EB27 /* Color+Hex.swift */,
+			);
+			path = Color;
+			sourceTree = "<group>";
+		};
 		03CF88612B137ED60030C199 /* Array */ = {
 			isa = PBXGroup;
 			children = (
@@ -3277,6 +3284,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				03CE80232ED8971700FB4EAB /* NSMenu */,
 				03F2F08B2E4074F400496F71 /* CharacterSet */,
 				03916D6F2E68153F007E50D7 /* Task */,
 				03FDAE922E1A29B70029369E /* Regex */,
@@ -3293,7 +3301,6 @@
 				0A2BA95E2B49A967002872A4 /* Binding */,
 				03CF88612B137ED60030C199 /* Array */,
 				03779F162BB256C5008D3C42 /* URL */,
-				038F1F8D2BAD835500CD2F65 /* AppKit */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
 				035FB78E2ED6023900F3EB27 /* NSButton */,
@@ -3302,6 +3309,7 @@
 				03E75A022ED75FB400E1741E /* UserDefaults */,
 				03E75A082ED760E200E1741E /* NSAttributedString */,
 				03E75A102ED76A2600E1741E /* OrderedDictionary */,
+				03CE80242ED8972600FB4EAB /* Color */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
