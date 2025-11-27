@@ -143,7 +143,6 @@
 		03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3F2937B3C900C34C33 /* EZOCRResult.m */; };
 		03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A422937B45E00C34C33 /* EZBaiduTranslate.m */; };
 		03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */; };
-		03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A482937B5CF00C34C33 /* EZGoogleTranslate.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		035451012E3C601100BAA8E5 /* OCRMergeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */; };
@@ -344,6 +343,7 @@
 		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
 		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
 		03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CD01572D24E17C0079D0CB /* YoudaoService.swift */; };
+		03CE80272ED89AD600FB4EAB /* GoogleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE80252ED89AD600FB4EAB /* GoogleService.swift */; };
 		03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */; };
 		03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF5E632C39B2310058F9DB /* OllamaModel.swift */; };
 		03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+Convenience.swift */; };
@@ -707,8 +707,6 @@
 		03542A422937B45E00C34C33 /* EZBaiduTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaiduTranslate.m; sourceTree = "<group>"; };
 		03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBaiduTranslateResponse.h; sourceTree = "<group>"; };
 		03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaiduTranslateResponse.m; sourceTree = "<group>"; };
-		03542A472937B5CF00C34C33 /* EZGoogleTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZGoogleTranslate.h; sourceTree = "<group>"; };
-		03542A482937B5CF00C34C33 /* EZGoogleTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZGoogleTranslate.m; sourceTree = "<group>"; };
 		03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDetectLanguageButton.h; sourceTree = "<group>"; };
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
@@ -989,6 +987,7 @@
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
 		03CD01572D24E17C0079D0CB /* YoudaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoService.swift; sourceTree = "<group>"; };
+		03CE80252ED89AD600FB4EAB /* GoogleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleService.swift; sourceTree = "<group>"; };
 		03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screenshot+UserDefaults.swift"; sourceTree = "<group>"; };
 		03CF5E632C39B2310058F9DB /* OllamaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaModel.swift; sourceTree = "<group>"; };
 		03CF88622B137F650030C199 /* Array+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Convenience.swift"; sourceTree = "<group>"; };
@@ -1825,6 +1824,7 @@
 				C43B566A2C693F4000EF26FD /* Volcano */,
 				03CD01582D24E17C0079D0CB /* Youdao */,
 				0D124C3D2E8AD3EA00D6B72C /* Doubao */,
+				03CE80262ED89AD600FB4EAB /* Google */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2097,8 +2097,6 @@
 		03B0223229231FA6001C7E63 /* Google */ = {
 			isa = PBXGroup;
 			children = (
-				03542A472937B5CF00C34C33 /* EZGoogleTranslate.h */,
-				03542A482937B5CF00C34C33 /* EZGoogleTranslate.m */,
 				03B0223529231FA6001C7E63 /* google-translate-sign.js */,
 			);
 			path = Google;
@@ -2638,6 +2636,14 @@
 				035FB7892ED4E06700F3EB27 /* Color+Hex.swift */,
 			);
 			path = Color;
+			sourceTree = "<group>";
+		};
+		03CE80262ED89AD600FB4EAB /* Google */ = {
+			isa = PBXGroup;
+			children = (
+				03CE80252ED89AD600FB4EAB /* GoogleService.swift */,
+			);
+			path = Google;
 			sourceTree = "<group>";
 		};
 		03CF88612B137ED60030C199 /* Array */ = {
@@ -3775,7 +3781,6 @@
 				03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */,
 				035FB7882ED4E02400F3EB27 /* NSImage+Export.swift in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
-				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */,
 				03538E042D26D70E005E56A8 /* YoudaoService+Translate.swift in Sources */,
@@ -4067,6 +4072,7 @@
 				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,
 				039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */,
 				039223BE2E4B41950052F695 /* OCRBandView.swift in Sources */,
+				03CE80272ED89AD600FB4EAB /* GoogleService.swift in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
 				03B73F7B2D9C51580051CB74 /* ChineseDetection+Poetry.swift in Sources */,

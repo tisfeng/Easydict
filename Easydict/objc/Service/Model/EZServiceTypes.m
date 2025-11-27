@@ -7,7 +7,6 @@
 //
 
 #import "EZServiceTypes.h"
-#import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
 #import "EZDeepLTranslate.h"
 #import "EZBingService.h"

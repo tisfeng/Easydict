@@ -38,6 +38,19 @@ extension NSString {
     var urlEncodedString: String {
         (self as String).urlEncoded()
     }
+
+    /// Trims the string and limits it to a maximum length.
+    ///
+    /// - Parameter maxLength: The maximum length of the resulting string.
+    /// - Returns: A trimmed string limited to the specified length.
+    @objc(mm_trimToMaxLength:)
+    func trimmingToMaxLength(_ maxLength: Int) -> String {
+        let trimmed = (self as String).trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.count > maxLength {
+            return String(trimmed.prefix(maxLength))
+        }
+        return trimmed
+    }
 }
 
 extension String {
