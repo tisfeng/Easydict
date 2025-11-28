@@ -20,7 +20,6 @@
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
 		030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */; };
 		030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 030D612D2CD9BBC3000DF298 /* Package.resolved */; };
-		030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */; };
 		0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */; };
@@ -31,6 +30,13 @@
 		031760EE2E06B9C700CE8FD7 /* NSImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760ED2E06B9C700CE8FD7 /* NSImage+Extension.swift */; };
 		031760F32E07FB2800CE8FD7 /* AppleSpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */; };
 		031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */; };
+		031C66CC2ED9EB290025D190 /* BingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C72ED9EB290025D190 /* BingRequest.swift */; };
+		031C66CD2ED9EB290025D190 /* BingService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C92ED9EB290025D190 /* BingService+Translate.swift */; };
+		031C66CE2ED9EB290025D190 /* BingTranslateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */; };
+		031C66CF2ED9EB290025D190 /* BingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C82ED9EB290025D190 /* BingService.swift */; };
+		031C66D02ED9EB290025D190 /* BingLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C62ED9EB290025D190 /* BingLookupResponse.swift */; };
+		031C66D12ED9EB290025D190 /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C52ED9EB290025D190 /* BingLanguageVoice.swift */; };
+		031C66D22ED9EB290025D190 /* BingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C42ED9EB290025D190 /* BingConfig.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 032041192E43BEB50065A05B /* ocr-en-text-4.png */; };
@@ -406,7 +412,6 @@
 		03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */; };
 		03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */; };
 		03F46BED2E426F8300D35EF6 /* ocr-zh-poetry-13.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */; };
-		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
@@ -452,10 +457,6 @@
 		40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */; };
 		59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */; };
 		5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA77A6C61B54C27803F5D7D /* Sentry */; };
-		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
-		6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */; };
-		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
-		62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A2D03E2A82967F007EEB01 /* EZBingRequest.m */; };
 		62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF472B4082BA00E42D38 /* AliService.swift */; };
 		62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF482B4082BA00E42D38 /* AliResponse.swift */; };
 		62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */; };
@@ -567,7 +568,6 @@
 		030D61242CD9B905000DF298 /* AcknowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowListView.swift; sourceTree = "<group>"; };
 		030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pods-Easydict-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Easydict/Pods-Easydict-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		030D612D2CD9BBC3000DF298 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; name = Package.resolved; path = Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = SOURCE_ROOT; };
-		030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextNormalizer.swift; sourceTree = "<group>"; };
 		0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetectorTests.swift; sourceTree = "<group>"; };
@@ -578,6 +578,13 @@
 		031760ED2E06B9C700CE8FD7 /* NSImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Extension.swift"; sourceTree = "<group>"; };
 		031760EF2E07FB2800CE8FD7 /* AppleLanguageDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetector.swift; sourceTree = "<group>"; };
 		031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechService.swift; sourceTree = "<group>"; };
+		031C66C42ED9EB290025D190 /* BingConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingConfig.swift; sourceTree = "<group>"; };
+		031C66C52ED9EB290025D190 /* BingLanguageVoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingLanguageVoice.swift; sourceTree = "<group>"; };
+		031C66C62ED9EB290025D190 /* BingLookupResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingLookupResponse.swift; sourceTree = "<group>"; };
+		031C66C72ED9EB290025D190 /* BingRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingRequest.swift; sourceTree = "<group>"; };
+		031C66C82ED9EB290025D190 /* BingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingService.swift; sourceTree = "<group>"; };
+		031C66C92ED9EB290025D190 /* BingService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BingService+Translate.swift"; sourceTree = "<group>"; };
+		031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTranslateResponse.swift; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
@@ -1062,8 +1069,6 @@
 		03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidenceLevel.swift; sourceTree = "<group>"; };
 		03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationInfo.swift; sourceTree = "<group>"; };
 		03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-13.png"; sourceTree = "<group>"; };
-		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
-		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-11.png"; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
@@ -1114,14 +1119,6 @@
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
 		416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSuites.swift; sourceTree = "<group>"; };
-		6220AD592A82812300BBFB52 /* EZBingService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingService.h; sourceTree = "<group>"; };
-		6220AD5A2A82812300BBFB52 /* EZBingService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingService.m; sourceTree = "<group>"; };
-		6295DE2F2A84D82E006145F4 /* EZBingTranslateModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingTranslateModel.h; sourceTree = "<group>"; };
-		6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingTranslateModel.m; sourceTree = "<group>"; };
-		6295DE322A84EF76006145F4 /* EZBingLookupModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingLookupModel.h; sourceTree = "<group>"; };
-		6295DE332A84EF76006145F4 /* EZBingLookupModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingLookupModel.m; sourceTree = "<group>"; };
-		62A2D03D2A82967F007EEB01 /* EZBingRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingRequest.h; sourceTree = "<group>"; };
-		62A2D03E2A82967F007EEB01 /* EZBingRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingRequest.m; sourceTree = "<group>"; };
 		62E2BF472B4082BA00E42D38 /* AliService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliService.swift; sourceTree = "<group>"; };
 		62E2BF482B4082BA00E42D38 /* AliResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliResponse.swift; sourceTree = "<group>"; };
 		62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliTranslateType.swift; sourceTree = "<group>"; };
@@ -1391,6 +1388,20 @@
 				031760F12E07FB2800CE8FD7 /* AppleSpeechService.swift */,
 			);
 			path = AppleSpeechService;
+			sourceTree = "<group>";
+		};
+		031C66CB2ED9EB290025D190 /* Bing */ = {
+			isa = PBXGroup;
+			children = (
+				031C66C42ED9EB290025D190 /* BingConfig.swift */,
+				031C66C52ED9EB290025D190 /* BingLanguageVoice.swift */,
+				031C66C62ED9EB290025D190 /* BingLookupResponse.swift */,
+				031C66C72ED9EB290025D190 /* BingRequest.swift */,
+				031C66C82ED9EB290025D190 /* BingService.swift */,
+				031C66C92ED9EB290025D190 /* BingService+Translate.swift */,
+				031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */,
+			);
+			path = Bing;
 			sourceTree = "<group>";
 		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
@@ -1832,6 +1843,7 @@
 				03CE80262ED89AD600FB4EAB /* Google */,
 				033C6DC32ED9D6D700AC39FC /* DeepL */,
 				033C6DC92ED9E2E500AC39FC /* NiuTrans */,
+				031C66CB2ED9EB290025D190 /* Bing */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2072,7 +2084,6 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				6220AD582A8280E800BBFB52 /* Bing */,
 				03BD281B29481BE100F5891A /* AudioPlayer */,
 				033B7131293CE2010096E2DF /* WebViewTranslator */,
 				03542A362937AE2100C34C33 /* Model */,
@@ -3010,24 +3021,6 @@
 			path = DeepSeek;
 			sourceTree = "<group>";
 		};
-		6220AD582A8280E800BBFB52 /* Bing */ = {
-			isa = PBXGroup;
-			children = (
-				6220AD592A82812300BBFB52 /* EZBingService.h */,
-				6220AD5A2A82812300BBFB52 /* EZBingService.m */,
-				62A2D03D2A82967F007EEB01 /* EZBingRequest.h */,
-				62A2D03E2A82967F007EEB01 /* EZBingRequest.m */,
-				6295DE2F2A84D82E006145F4 /* EZBingTranslateModel.h */,
-				6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */,
-				6295DE322A84EF76006145F4 /* EZBingLookupModel.h */,
-				6295DE332A84EF76006145F4 /* EZBingLookupModel.m */,
-				030DB2602B56CC6500E27DEA /* BingLanguageVoice.swift */,
-				03F639932AA6CFBB009B9914 /* EZBingConfig.h */,
-				03F639942AA6CFBB009B9914 /* EZBingConfig.m */,
-			);
-			path = Bing;
-			sourceTree = "<group>";
-		};
 		62E2BF462B4082BA00E42D38 /* Ali */ = {
 			isa = PBXGroup;
 			children = (
@@ -3774,7 +3767,6 @@
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */,
 				03538E042D26D70E005E56A8 /* YoudaoService+Translate.swift in Sources */,
-				6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */,
 				033870B62E0437FE007E154C /* MaxWindowHeightPercentageOption.swift in Sources */,
 				03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */,
 				0340D39E2C951850004C9910 /* QueryError.swift in Sources */,
@@ -3910,7 +3902,6 @@
 				033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */,
-				6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */,
 				03D9D6FB2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift in Sources */,
 				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
 				CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */,
@@ -3937,7 +3928,6 @@
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
 				035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */,
 				03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */,
-				62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */,
 				03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
 				C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */,
@@ -3972,7 +3962,6 @@
 				03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */,
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
 				0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */,
-				030DB2612B56CC6500E27DEA /* BingLanguageVoice.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
@@ -4030,6 +4019,13 @@
 				0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */,
 				0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */,
 				0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */,
+				031C66CC2ED9EB290025D190 /* BingRequest.swift in Sources */,
+				031C66CD2ED9EB290025D190 /* BingService+Translate.swift in Sources */,
+				031C66CE2ED9EB290025D190 /* BingTranslateResponse.swift in Sources */,
+				031C66CF2ED9EB290025D190 /* BingService.swift in Sources */,
+				031C66D02ED9EB290025D190 /* BingLookupResponse.swift in Sources */,
+				031C66D12ED9EB290025D190 /* BingLanguageVoice.swift in Sources */,
+				031C66D22ED9EB290025D190 /* BingConfig.swift in Sources */,
 				03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */,
 				62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */,
 				03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */,
@@ -4064,7 +4060,6 @@
 				039223BE2E4B41950052F695 /* OCRBandView.swift in Sources */,
 				03CE80272ED89AD600FB4EAB /* GoogleService.swift in Sources */,
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
-				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
 				03B73F7B2D9C51580051CB74 /* ChineseDetection+Poetry.swift in Sources */,
 				DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
@@ -4079,7 +4074,6 @@
 				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
 				C43B566C2C693F6200EF26FD /* VolcanoService.swift in Sources */,
 				EA9943E82B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift in Sources */,
-				03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */,
 				03E75A122ED76ACB00E1741E /* OrderedDictionary.swift in Sources */,
 				7B4CA2D1929E4E2E9A44A2EA0E347F4C /* OrderedDictionary+Variadic.m in Sources */,
 				03792EA22C3831040074A145 /* OllamaService.swift in Sources */,

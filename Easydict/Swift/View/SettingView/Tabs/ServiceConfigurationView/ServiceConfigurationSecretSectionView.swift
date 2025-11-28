@@ -208,7 +208,7 @@ private class ServiceValidationViewModel: ObservableObject {
 }
 
 #Preview {
-    ServiceConfigurationSecretSectionView(service: EZBingService(), observeKeys: [.bingCookieKey]) {
+    ServiceConfigurationSecretSectionView(service: BingService(), observeKeys: [.bingCookieKey]) {
         SecureInputCell(
             textFieldTitleKey: "service.configuration.bing.cookie.title",
             key: .bingCookieKey

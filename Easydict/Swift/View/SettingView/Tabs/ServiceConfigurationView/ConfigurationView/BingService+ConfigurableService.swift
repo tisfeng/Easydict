@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-extension EZBingService {
+extension BingService {
     open override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey]) {
             SecureInputCell(

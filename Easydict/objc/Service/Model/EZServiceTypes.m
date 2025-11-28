@@ -8,7 +8,6 @@
 
 #import "EZServiceTypes.h"
 #import "EZBaiduTranslate.h"
-#import "EZBingService.h"
 #import "EZAppleDictionary.h"
 #import "Easydict-Swift.h"
 #import "OrderedDictionary+Variadic.h"

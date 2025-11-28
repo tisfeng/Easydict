@@ -17,7 +17,6 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "DarkModeManager.h"
-#import "EZBingService.h"
 #import "NSString+EZUtils.h"
 #import "EZBaiduTranslate.h"
 #import "MMCrash.h"
