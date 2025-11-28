@@ -10,7 +10,7 @@ import Defaults
 import Foundation
 import SwiftUI
 
-extension EZDeepLTranslate {
+extension DeepLService {
     open override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.deepLAuth]) {
             SecureInputCell(

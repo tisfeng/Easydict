@@ -8,7 +8,6 @@
 
 #import "EZServiceTypes.h"
 #import "EZBaiduTranslate.h"
-#import "EZDeepLTranslate.h"
 #import "EZBingService.h"
 #import "EZAppleDictionary.h"
 #import "EZNiuTransTranslate.h"

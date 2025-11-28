@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
-		03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2A2940D3230062B821 /* EZDeepLTranslate.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
 		03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F182B3591AE00B63209 /* GoogleGenerativeAI */; };
@@ -92,6 +91,9 @@
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		033C6DBE2ED9C4F000AC39FC /* GoogleService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */; };
 		033C6DBF2ED9C4F000AC39FC /* GoogleService+Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */; };
+		033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */; };
+		033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC02ED9D6D700AC39FC /* DeepLService.swift */; };
+		033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
 		033E8A0B2E4E5318008A7110 /* ocr-en-text-two-columns-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */; };
 		033E8A0F2E4F53B9008A7110 /* OCRSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A0E2E4F53B9008A7110 /* OCRSection.swift */; };
@@ -230,8 +232,6 @@
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
-		0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */; };
-		0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */; };
 		0399C6B829A9F4B800B4AFCC /* EZSchemeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */; };
 		039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 039B694E2A9D9F370063709D /* EZWebViewManager.m */; };
 		039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CBE862D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift */; };
@@ -552,8 +552,6 @@
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
-		03008B292940D3230062B821 /* EZDeepLTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeepLTranslate.h; sourceTree = "<group>"; };
-		03008B2A2940D3230062B821 /* EZDeepLTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeepLTranslate.m; sourceTree = "<group>"; };
 		03008B2C2941956D0062B821 /* EZURLSchemeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZURLSchemeHandler.h; sourceTree = "<group>"; };
 		03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZURLSchemeHandler.m; sourceTree = "<group>"; };
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
@@ -652,6 +650,9 @@
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
 		033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleService+Language.swift"; sourceTree = "<group>"; };
 		033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleService+Translate.swift"; sourceTree = "<group>"; };
+		033C6DC02ED9D6D700AC39FC /* DeepLService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLService.swift; sourceTree = "<group>"; };
+		033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeepLService+Translate.swift"; sourceTree = "<group>"; };
+		033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLTranslateResponse.swift; sourceTree = "<group>"; };
 		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
 		033E8A0E2E4F53B9008A7110 /* OCRSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSection.swift; sourceTree = "<group>"; };
 		033E8A102E4F79E6008A7110 /* OCRBandMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRBandMerger.swift; sourceTree = "<group>"; };
@@ -806,10 +807,6 @@
 		03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitleBarMoveView.m; sourceTree = "<group>"; };
 		03991168292AA2EF00E1B06D /* EZLayoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLayoutManager.h; sourceTree = "<group>"; };
 		03991169292AA2EF00E1B06D /* EZLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLayoutManager.m; sourceTree = "<group>"; };
-		0399C6A329A747E600B4AFCC /* EZDeepLTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeepLTranslateResponse.h; sourceTree = "<group>"; };
-		0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeepLTranslateResponse.m; sourceTree = "<group>"; };
-		0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZDeepLTranslateResponse.h"; sourceTree = "<group>"; };
-		0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZDeepLTranslateResponse.m"; sourceTree = "<group>"; };
 		0399C6B629A9F4B800B4AFCC /* EZSchemeParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSchemeParser.h; sourceTree = "<group>"; };
 		0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSchemeParser.m; sourceTree = "<group>"; };
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
@@ -1250,19 +1247,6 @@
 			path = "NSObject+DarkMode";
 			sourceTree = "<group>";
 		};
-		03008B282940D2FD0062B821 /* DeepL */ = {
-			isa = PBXGroup;
-			children = (
-				03008B292940D3230062B821 /* EZDeepLTranslate.h */,
-				03008B2A2940D3230062B821 /* EZDeepLTranslate.m */,
-				0399C6A329A747E600B4AFCC /* EZDeepLTranslateResponse.h */,
-				0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */,
-				0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */,
-				0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */,
-			);
-			path = DeepL;
-			sourceTree = "<group>";
-		};
 		03008B3C29444A650062B821 /* NSView+AnimatedHidden */ = {
 			isa = PBXGroup;
 			children = (
@@ -1533,6 +1517,16 @@
 				0310C8262A94EFA100B1D81E /* apple-dictionary.html */,
 			);
 			path = AppleDictionary;
+			sourceTree = "<group>";
+		};
+		033C6DC32ED9D6D700AC39FC /* DeepL */ = {
+			isa = PBXGroup;
+			children = (
+				033C6DC02ED9D6D700AC39FC /* DeepLService.swift */,
+				033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */,
+				033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */,
+			);
+			path = DeepL;
 			sourceTree = "<group>";
 		};
 		033EA07C2CFC63A50017F86C /* View */ = {
@@ -1829,6 +1823,7 @@
 				03CD01582D24E17C0079D0CB /* Youdao */,
 				0D124C3D2E8AD3EA00D6B72C /* Doubao */,
 				03CE80262ED89AD600FB4EAB /* Google */,
+				033C6DC32ED9D6D700AC39FC /* DeepL */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2072,7 +2067,6 @@
 				17BCAEF22B0DFF9000A7D372 /* Niutrans */,
 				6220AD582A8280E800BBFB52 /* Bing */,
 				03BD281B29481BE100F5891A /* AudioPlayer */,
-				03008B282940D2FD0062B821 /* DeepL */,
 				033B7131293CE2010096E2DF /* WebViewTranslator */,
 				03542A362937AE2100C34C33 /* Model */,
 				03542A312936F6FE00C34C33 /* Language */,
@@ -3773,12 +3767,14 @@
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */,
 				03D9D6FF2D8C186F009E0CEC /* NSScreen+Extention.swift in Sources */,
-				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				27FE98092B3DD536000AD654 /* SettingView.swift in Sources */,
 				03CF5E642C39B2310058F9DB /* OllamaModel.swift in Sources */,
 				035FB7882ED4E02400F3EB27 /* NSImage+Export.swift in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
+				033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */,
+				033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */,
+				033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */,
 				03538E042D26D70E005E56A8 /* YoudaoService+Translate.swift in Sources */,
@@ -3868,7 +3864,6 @@
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */,
-				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
 				032864DA2E532AF800CB85BF /* OCRDebugViewModel.swift in Sources */,
 				0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */,
 				17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */,
@@ -3965,7 +3960,6 @@
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				03715A2A2E6D253E0067259C /* TextFieldInfo.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
-				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
