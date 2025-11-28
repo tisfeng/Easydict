@@ -90,6 +90,8 @@
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
+		033C6DBE2ED9C4F000AC39FC /* GoogleService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */; };
+		033C6DBF2ED9C4F000AC39FC /* GoogleService+Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
 		033E8A0B2E4E5318008A7110 /* ocr-en-text-two-columns-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */; };
 		033E8A0F2E4F53B9008A7110 /* OCRSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E8A0E2E4F53B9008A7110 /* OCRSection.swift */; };
@@ -648,6 +650,8 @@
 		033C30FB2A7409C40095926A /* TTTDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTDictionary.m; sourceTree = "<group>"; };
 		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
+		033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleService+Language.swift"; sourceTree = "<group>"; };
+		033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleService+Translate.swift"; sourceTree = "<group>"; };
 		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
 		033E8A0E2E4F53B9008A7110 /* OCRSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSection.swift; sourceTree = "<group>"; };
 		033E8A102E4F79E6008A7110 /* OCRBandMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRBandMerger.swift; sourceTree = "<group>"; };
@@ -2642,6 +2646,8 @@
 			isa = PBXGroup;
 			children = (
 				03CE80252ED89AD600FB4EAB /* GoogleService.swift */,
+				033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */,
+				033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */,
 			);
 			path = Google;
 			sourceTree = "<group>";
@@ -3997,6 +4003,8 @@
 				03E759FD2ED75F5600E1741E /* NSPasteboard+ObjCCompat.swift in Sources */,
 				03E759FE2ED75F5600E1741E /* NSPasteboard+Extension.swift in Sources */,
 				033E8A132E502E2D008A7110 /* OCRMergedTextView.swift in Sources */,
+				033C6DBE2ED9C4F000AC39FC /* GoogleService+Translate.swift in Sources */,
+				033C6DBF2ED9C4F000AC39FC /* GoogleService+Language.swift in Sources */,
 				6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */,
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
