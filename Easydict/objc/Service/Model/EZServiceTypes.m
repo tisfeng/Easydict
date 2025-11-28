@@ -10,7 +10,6 @@
 #import "EZBaiduTranslate.h"
 #import "EZBingService.h"
 #import "EZAppleDictionary.h"
-#import "EZNiuTransTranslate.h"
 #import "Easydict-Swift.h"
 #import "OrderedDictionary+Variadic.h"
 
