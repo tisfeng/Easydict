@@ -246,129 +246,20 @@ extension BingService {
             return
         }
 
-        var parts: [EZTranslatePart] = []
-        var exchanges: [EZTranslateExchange] = []
-        var simpleWords: [EZTranslateSimpleWord] = []
-        var phonetics: [EZWordPhonetic] = []
-        var synonyms: [EZTranslatePart] = []
-        var antonyms: [EZTranslatePart] = []
-        var collocation: [EZTranslatePart] = []
+        var parsedData = BingDictParsedData()
+        let audioUrl = value.first?["pronunciationAudio"] as? [String: Any]
 
         for meaningGroup in meaningGroups {
-            guard let partOfSpeech = meaningGroup["partsOfSpeech"] as? [[String: Any]],
-                  !partOfSpeech.isEmpty,
-                  let name = partOfSpeech.first?["name"] as? String,
-                  let description = partOfSpeech.first?["description"] as? String,
-                  let meanings = meaningGroup["meanings"] as? [[String: Any]],
-                  !meanings.isEmpty
-            else { continue }
-
-            let richDefinitions = meanings.first?["richDefinitions"] as? [[String: Any]]
-            let fragments = richDefinitions?.first?["fragments"] as? [[String: Any]]
-
-            if description == "发音" {
-                if name == "US" || name == "UK" {
-                    let usAudioUrl = value.first?["pronunciationAudio"] as? [String: Any]
-                    let contentUrl = usAudioUrl?["contentUrl"] as? String
-
-                    let phonetic = EZWordPhonetic()
-                    phonetic.word = word
-                    phonetic.language = .english
-                    phonetic.name = name == "US"
-                        ? NSLocalizedString("us_phonetic", comment: "")
-                        : NSLocalizedString("uk_phonetic", comment: "")
-                    phonetic.value = fragments?.first?["text"] as? String
-                    phonetic.speakURL = name == "US"
-                        ? contentUrl
-                        : contentUrl?.replacingOccurrences(of: "tom", with: "george")
-                    phonetic.accent = name
-                    phonetics.append(phonetic)
-                }
-            } else if description == "快速释义" {
-                let partObj = EZTranslatePart()
-                partObj.part = name
-                partObj.means = fragments?.compactMap { $0["text"] as? String } ?? []
-                parts.append(partObj)
-            } else if description == "词组" {
-                for richDefinition in richDefinitions ?? [] {
-                    guard let examples = richDefinition["examples"] as? [String],
-                          examples.count == 2
-                    else { continue }
-
-                    let simpleWord = EZTranslateSimpleWord()
-                    simpleWord.word = examples.first ?? ""
-                    simpleWord.means = examples.last?.components(separatedBy: ";")
-                    simpleWords.append(simpleWord)
-                }
-            } else if description == "分类词典" {
-                let synonymMeans = (meanings.first?["synonyms"] as? [[String: Any]])?
-                    .compactMap { $0["name"] as? String }
-                let antonymMeans = (meanings.first?["antonyms"] as? [[String: Any]])?
-                    .compactMap { $0["name"] as? String }
-
-                if let synonymMeans = synonymMeans, !synonymMeans.isEmpty {
-                    let synonymsPart = EZTranslatePart()
-                    synonymsPart.part = name
-                    synonymsPart.means = synonymMeans
-                    synonyms.append(synonymsPart)
-                }
-
-                if let antonymMeans = antonymMeans, !antonymMeans.isEmpty {
-                    let antonymsPart = EZTranslatePart()
-                    antonymsPart.part = name
-                    antonymsPart.means = antonymMeans
-                    antonyms.append(antonymsPart)
-                }
-            } else if description == "搭配" {
-                let means = fragments?.compactMap { $0["text"] as? String }
-                let collocationPart = EZTranslatePart()
-                collocationPart.part = name
-                collocationPart.means = means ?? []
-                collocation.append(collocationPart)
-            }
-
-            if name == "变形" {
-                for fragment in fragments ?? [] {
-                    guard let text = fragment["text"] as? String else { continue }
-                    let components = text.components(separatedBy: "：")
-                    if components.count == 2 {
-                        let exchange = EZTranslateExchange()
-                        exchange.name = components.first ?? ""
-                        exchange.words = [components.last ?? ""]
-                        exchanges.append(exchange)
-                    }
-                }
-            }
+            parseMeaningGroup(meaningGroup, word: word, audioUrl: audioUrl, into: &parsedData)
         }
 
         let wordResult = EZTranslateWordResult()
         result.wordResult = wordResult
-
-        if !phonetics.isEmpty {
-            wordResult.phonetics = phonetics
-        }
-        if !parts.isEmpty {
-            wordResult.parts = parts
-        }
-        if !exchanges.isEmpty {
-            wordResult.exchanges = exchanges
-        }
-        if !simpleWords.isEmpty {
-            wordResult.simpleWords = simpleWords
-        }
-        if !synonyms.isEmpty {
-            wordResult.synonyms = synonyms
-        }
-        if !antonyms.isEmpty {
-            wordResult.antonyms = antonyms
-        }
-        if !collocation.isEmpty {
-            wordResult.collocation = collocation
-        }
+        applyParsedData(parsedData, to: wordResult)
 
         // API has no field for translated result, get one from parts.
-        if let means = wordResult.parts?.first?.means,
-           let translateResult = means.first as? String,
+        if let means = wordResult.parts?.first?.means as? [String],
+           let translateResult = means.first,
            !translateResult.isEmpty {
             result.translatedResults = [translateResult]
         }
@@ -376,6 +267,169 @@ extension BingService {
         result.raw = json as NSDictionary
         completion(result, nil)
     }
+
+    // MARK: - Parse Meaning Group
+
+    private func parseMeaningGroup(
+        _ meaningGroup: [String: Any],
+        word: String,
+        audioUrl: [String: Any]?,
+        into data: inout BingDictParsedData
+    ) {
+        guard let partOfSpeech = meaningGroup["partsOfSpeech"] as? [[String: Any]],
+              !partOfSpeech.isEmpty,
+              let name = partOfSpeech.first?["name"] as? String,
+              let description = partOfSpeech.first?["description"] as? String,
+              let meanings = meaningGroup["meanings"] as? [[String: Any]],
+              !meanings.isEmpty
+        else { return }
+
+        let richDefinitions = meanings.first?["richDefinitions"] as? [[String: Any]]
+        let fragments = richDefinitions?.first?["fragments"] as? [[String: Any]]
+
+        switch description {
+        case "发音":
+            if let phonetic = parsePhonetic(name: name, word: word, fragments: fragments, audioUrl: audioUrl) {
+                data.phonetics.append(phonetic)
+            }
+        case "快速释义":
+            data.parts.append(parsePart(name: name, fragments: fragments))
+        case "词组":
+            data.simpleWords.append(contentsOf: parsePhrases(richDefinitions: richDefinitions))
+        case "分类词典":
+            parseSynonymsAndAntonyms(meanings: meanings, name: name, into: &data)
+        case "搭配":
+            data.collocation.append(parseCollocation(name: name, fragments: fragments))
+        default:
+            break
+        }
+
+        if name == "变形" {
+            data.exchanges.append(contentsOf: parseExchanges(fragments: fragments))
+        }
+    }
+
+    // MARK: - Parse Phonetic
+
+    private func parsePhonetic(
+        name: String,
+        word: String,
+        fragments: [[String: Any]]?,
+        audioUrl: [String: Any]?
+    )
+        -> EZWordPhonetic? {
+        guard name == "US" || name == "UK" else { return nil }
+
+        let contentUrl = audioUrl?["contentUrl"] as? String
+        let phonetic = EZWordPhonetic()
+        phonetic.word = word
+        phonetic.language = .english
+        phonetic.name = name == "US"
+            ? NSLocalizedString("us_phonetic", comment: "")
+            : NSLocalizedString("uk_phonetic", comment: "")
+        phonetic.value = fragments?.first?["text"] as? String
+        phonetic.speakURL = name == "US" ? contentUrl : contentUrl?.replacingOccurrences(of: "tom", with: "george")
+        phonetic.accent = name
+        return phonetic
+    }
+
+    // MARK: - Parse Part
+
+    private func parsePart(name: String, fragments: [[String: Any]]?) -> EZTranslatePart {
+        let part = EZTranslatePart()
+        part.part = name
+        part.means = fragments?.compactMap { $0["text"] as? String } ?? []
+        return part
+    }
+
+    // MARK: - Parse Phrases
+
+    private func parsePhrases(richDefinitions: [[String: Any]]?) -> [EZTranslateSimpleWord] {
+        var simpleWords: [EZTranslateSimpleWord] = []
+        for richDefinition in richDefinitions ?? [] {
+            guard let examples = richDefinition["examples"] as? [String], examples.count == 2 else { continue }
+            let simpleWord = EZTranslateSimpleWord()
+            simpleWord.word = examples.first ?? ""
+            simpleWord.means = examples.last?.components(separatedBy: ";")
+            simpleWords.append(simpleWord)
+        }
+        return simpleWords
+    }
+
+    // MARK: - Parse Synonyms and Antonyms
+
+    private func parseSynonymsAndAntonyms(
+        meanings: [[String: Any]],
+        name: String,
+        into data: inout BingDictParsedData
+    ) {
+        let synonymMeans = (meanings.first?["synonyms"] as? [[String: Any]])?.compactMap { $0["name"] as? String }
+        let antonymMeans = (meanings.first?["antonyms"] as? [[String: Any]])?.compactMap { $0["name"] as? String }
+
+        if let synonymMeans = synonymMeans, !synonymMeans.isEmpty {
+            let part = EZTranslatePart()
+            part.part = name
+            part.means = synonymMeans
+            data.synonyms.append(part)
+        }
+
+        if let antonymMeans = antonymMeans, !antonymMeans.isEmpty {
+            let part = EZTranslatePart()
+            part.part = name
+            part.means = antonymMeans
+            data.antonyms.append(part)
+        }
+    }
+
+    // MARK: - Parse Collocation
+
+    private func parseCollocation(name: String, fragments: [[String: Any]]?) -> EZTranslatePart {
+        let part = EZTranslatePart()
+        part.part = name
+        part.means = fragments?.compactMap { $0["text"] as? String } ?? []
+        return part
+    }
+
+    // MARK: - Parse Exchanges
+
+    private func parseExchanges(fragments: [[String: Any]]?) -> [EZTranslateExchange] {
+        var exchanges: [EZTranslateExchange] = []
+        for fragment in fragments ?? [] {
+            guard let text = fragment["text"] as? String else { continue }
+            let components = text.components(separatedBy: "：")
+            if components.count == 2 {
+                let exchange = EZTranslateExchange()
+                exchange.name = components.first ?? ""
+                exchange.words = [components.last ?? ""]
+                exchanges.append(exchange)
+            }
+        }
+        return exchanges
+    }
+
+    // MARK: - Apply Parsed Data
+
+    private func applyParsedData(_ data: BingDictParsedData, to wordResult: EZTranslateWordResult) {
+        if !data.phonetics.isEmpty { wordResult.phonetics = data.phonetics }
+        if !data.parts.isEmpty { wordResult.parts = data.parts }
+        if !data.exchanges.isEmpty { wordResult.exchanges = data.exchanges }
+        if !data.simpleWords.isEmpty { wordResult.simpleWords = data.simpleWords }
+        if !data.synonyms.isEmpty { wordResult.synonyms = data.synonyms }
+        if !data.antonyms.isEmpty { wordResult.antonyms = data.antonyms }
+        if !data.collocation.isEmpty { wordResult.collocation = data.collocation }
+    }
+}
+
+// MARK: - BingDictParsedData
+
+private struct BingDictParsedData {
+    var parts: [EZTranslatePart] = []
+    var exchanges: [EZTranslateExchange] = []
+    var simpleWords: [EZTranslateSimpleWord] = []
+    var phonetics: [EZWordPhonetic] = []
+    var synonyms: [EZTranslatePart] = []
+    var antonyms: [EZTranslatePart] = []
+    var collocation: [EZTranslatePart] = []
 }
 
 // MARK: - Array Safe Subscript

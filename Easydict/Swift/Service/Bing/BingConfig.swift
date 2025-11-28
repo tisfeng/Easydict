@@ -70,7 +70,7 @@ class BingConfig: NSObject, Codable {
     // MARK: - Methods
 
     func isBingTokenExpired() -> Bool {
-        guard let token = token, let key = key else {
+        guard let key else {
             return true
         }
 

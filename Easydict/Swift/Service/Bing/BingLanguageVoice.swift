@@ -12,17 +12,6 @@ import Foundation
 
 /// Docs: https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts
 struct BingLanguageVoice {
-    // MARK: Lifecycle
-
-    init(lang: String, voiceName: String) {
-        self.lang = lang
-        self.voiceName = voiceName
-    }
-
-    // MARK: Internal
-
-    // MARK: - Properties
-
     /// BCP-47 language code, e.g. en-US
     var lang: String
     /// Voice name, e.g. en-US-JennyNeural

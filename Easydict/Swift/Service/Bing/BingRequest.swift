@@ -133,8 +133,7 @@ class BingRequest {
                         executeCallback()
                     }
                 )
-            } failure: { [weak self] error in
-                guard let self = self else { return }
+            } failure: { error in
                 completion(nil, nil, error, nil)
             }
         }
