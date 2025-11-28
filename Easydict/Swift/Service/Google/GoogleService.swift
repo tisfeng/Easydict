@@ -23,6 +23,8 @@ class GoogleService: QueryService {
 
     // MARK: Internal
 
+    // MARK: - JavaScript Context
+
     lazy var jsContext: JSContext = {
         let context = JSContext()
         if let jsPath = Bundle.main.path(forResource: "google-translate-sign", ofType: "js"),
@@ -39,6 +41,8 @@ class GoogleService: QueryService {
     lazy var windowObject: JSValue = {
         jsContext.objectForKeyedSubscript("window")
     }()
+
+    // MARK: - HTTP Session Managers
 
     lazy var htmlSession: AFHTTPSessionManager = {
         let session = AFHTTPSessionManager()
@@ -74,6 +78,8 @@ class GoogleService: QueryService {
         return session
     }()
 
+    // MARK: - QueryService Override
+
     override func translate(
         _ text: String,
         from: Language,
@@ -96,6 +102,8 @@ class GoogleService: QueryService {
         }
     }
 
+    // MARK: - Service Type & Configuration
+
     override func serviceType() -> ServiceType {
         .google
     }
@@ -116,6 +124,9 @@ class GoogleService: QueryService {
         kGoogleTranslateURL
     }
 
+    // MARK: - Word Link
+
+    /// https://translate.google.com/?sl=en&tl=zh-CN&text=good&op=translate
     override func wordLink(_ queryModel: EZQueryModel) -> String? {
         guard let from = languageCode(for: queryModel.queryFromLanguage),
               let to = languageCode(for: queryModel.queryTargetLanguage)
@@ -129,6 +140,8 @@ class GoogleService: QueryService {
 
         return "\(kGoogleTranslateURL)/?sl=\(from)&tl=\(to)&text=\(text)&op=translate"
     }
+
+    // MARK: - Supported Languages
 
     /// Google translate support languages: https://cloud.google.com/translate/docs/languages?hl=zh-cn
     override func supportLanguagesDictionary() -> MMOrderedDictionary {
@@ -197,12 +210,16 @@ class GoogleService: QueryService {
         return orderedDict
     }
 
+    // MARK: - Language Detection
+
     override func detectText(
         _ text: String,
         completion: @escaping (Language, Error?) -> ()
     ) {
         webAppDetect(text, completion: completion)
     }
+
+    // MARK: - Text to Audio
 
     override func text(
         toAudio text: String,
@@ -254,6 +271,8 @@ class GoogleService: QueryService {
         }
     }
 
+    // MARK: - Language Code Helpers
+
     internal override func languageEnum(fromCode code: String) -> Language {
         language(fromCode: code) ?? .auto
     }
@@ -262,6 +281,8 @@ class GoogleService: QueryService {
         // TODO: Implement accent handling
         languageCode(for: language) ?? "en"
     }
+
+    // MARK: - Audio URL
 
     func getAudioURL(withText text: String, language: String, sign: String) -> String {
         // TODO: text length must <= 200, maybe we can split it.

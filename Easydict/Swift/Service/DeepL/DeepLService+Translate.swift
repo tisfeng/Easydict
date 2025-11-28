@@ -12,10 +12,10 @@ import Foundation
 
 private let kDeepLWebURL = "https://www2.deepl.com/jsonrpc"
 
-// MARK: - DeepLService + Web Translate
+// MARK: - DeepLService + Translate
 
 extension DeepLService {
-    // MARK: - DeepL Web Translate
+    // MARK: - Web Translate
 
     /// DeepL web translate.
     /// Ref: https://github.com/akl7777777/bob-plugin-akl-deepl-free-translate/blob/9d194783b3eb8b3a82f21bcfbbaf29d6b28c2761/src/main.js
@@ -156,6 +156,8 @@ extension DeepLService {
         }, serviceType: serviceType().rawValue)
     }
 
+    // MARK: - Web Translate Response Parser
+
     private func parseWebTranslateResponse(
         _ responseDict: [String: Any],
         completion: @escaping (EZQueryResult, (any Error)?) -> ()
@@ -174,7 +176,7 @@ extension DeepLService {
         }
     }
 
-    // MARK: - DeepL Official API Translate
+    // MARK: - Official API Translate
 
     /// DeepL official API translate.
     /// Docs: https://www.deepl.com/zh/docs-api/translating-text
@@ -260,6 +262,8 @@ extension DeepLService {
         }, serviceType: serviceType().rawValue)
     }
 
+    // MARK: - Official API Response Parser
+
     private func parseOfficialResponse(_ responseDict: [String: Any]) -> [String]? {
         guard let translations = responseDict["translations"] as? [[String: Any]],
               let firstTranslation = translations.first,
@@ -270,7 +274,7 @@ extension DeepLService {
         return translatedText.toParagraphs()
     }
 
-    // MARK: - Helper Methods
+    // MARK: - Request Helper Methods
 
     private func getICount(_ text: String) -> Int {
         text.components(separatedBy: "i").count - 1

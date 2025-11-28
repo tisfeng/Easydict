@@ -8,10 +8,10 @@
 
 import Foundation
 
-// MARK: - GoogleService + Language Code Mapping
+// MARK: - GoogleService + Language
 
 extension GoogleService {
-    // MARK: - Helper Methods
+    // MARK: - Text Length Helper
 
     /// Get max text length for Google Translate.
     func maxTextLength(_ text: String, fromLanguage: Language) -> String {
@@ -23,6 +23,8 @@ extension GoogleService {
             return (text as NSString).trimmingToMaxLength(5000)
         }
     }
+
+    // MARK: - Language Code Mapping
 
     func languageCode(for language: Language) -> String? {
         switch language {
@@ -80,6 +82,8 @@ extension GoogleService {
         default: return nil
         }
     }
+
+    // MARK: - Language from Code
 
     func language(fromCode code: String) -> Language? {
         switch code {

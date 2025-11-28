@@ -10,10 +10,10 @@ import Foundation
 
 private let kGoogleTranslateURL = "https://translate.google.com"
 
-// MARK: - GoogleService + WebApp Translate
+// MARK: - GoogleService + Translate
 
 extension GoogleService {
-    // MARK: - WebApp, including word info
+    // MARK: - WebApp Translate
 
     /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
     func webAppTranslate(
@@ -164,6 +164,8 @@ extension GoogleService {
         }
     }
 
+    // MARK: - WebApp Network Request
+
     func sendWebAppTranslate(
         _ text: String,
         from: Language,
@@ -221,6 +223,8 @@ extension GoogleService {
             }, serviceType: serviceType().rawValue
         )
     }
+
+    // MARK: - TKK Management
 
     func sendGetWebAppTKKRequest(completion: @escaping (String?, Error?) -> ()) {
         let url = kGoogleTranslateURL
@@ -294,7 +298,7 @@ extension GoogleService {
         }
     }
 
-    // MARK: - GTX Transalte, the same as web translation
+    // MARK: - GTX Translate
 
     /// GTX can only get translation and src language.
     func sendGTXTranslate(
@@ -349,6 +353,8 @@ extension GoogleService {
             }, serviceType: serviceType().rawValue
         )
     }
+
+    // MARK: - GTX Translation Processing
 
     func gtxTranslate(
         _ text: String,
@@ -410,6 +416,8 @@ extension GoogleService {
             completion(result, QueryError(type: .api, message: nil))
         }
     }
+
+    // MARK: - Language Detection
 
     func gtxDetect(
         _ text: String,

@@ -19,6 +19,8 @@ private let kDeepLTranslateURL = "https://www.deepl.com/translator"
 class DeepLService: QueryService {
     // MARK: Internal
 
+    // MARK: - Service Type & Configuration
+
     override func serviceType() -> ServiceType {
         .deepL
     }
@@ -31,7 +33,9 @@ class DeepLService: QueryService {
         kDeepLTranslateURL
     }
 
-    // https://www.deepl.com/translator#en/zh/good
+    // MARK: - Word Link
+
+    /// https://www.deepl.com/translator#en/zh/good
     override func wordLink(_ queryModel: EZQueryModel) -> String? {
         guard var from = languageCode(for: queryModel.queryFromLanguage),
               let to = languageCode(for: queryModel.queryTargetLanguage)
@@ -48,6 +52,8 @@ class DeepLService: QueryService {
 
         return "\(kDeepLTranslateURL)#\(from)/\(to)/\(encodedText)"
     }
+
+    // MARK: - Supported Languages
 
     /// Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
     override func supportLanguagesDictionary() -> MMOrderedDictionary {
@@ -98,6 +104,8 @@ class DeepLService: QueryService {
         return orderedDict
     }
 
+    // MARK: - Translate
+
     override func translate(
         _ text: String,
         from: Language,
@@ -135,9 +143,11 @@ class DeepLService: QueryService {
     }
 }
 
-// MARK: - Language Code Mapping
+// MARK: - DeepLService + Language
 
 extension DeepLService {
+    // MARK: - Language Code Mapping
+
     func languageCode(for language: Language) -> String? {
         switch language {
         case .auto: return "auto"
@@ -176,6 +186,8 @@ extension DeepLService {
         default: return nil
         }
     }
+
+    // MARK: - Language Variant Helper
 
     /// Remove language variant, e.g. zh-hans --> zh, pt-BR --> pt
     /// Since DeepL API source language code is different from the target language code, it has no variant.
