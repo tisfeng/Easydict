@@ -2078,7 +2078,6 @@
 				03542A312936F6FE00C34C33 /* Language */,
 				03542A2D293645B800C34C33 /* Apple */,
 				03B0222C29231FA6001C7E63 /* Baidu */,
-				03B0223229231FA6001C7E63 /* Google */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2096,14 +2095,6 @@
 				03D2A3DE29F42B280035CED4 /* bd.js */,
 			);
 			path = Baidu;
-			sourceTree = "<group>";
-		};
-		03B0223229231FA6001C7E63 /* Google */ = {
-			isa = PBXGroup;
-			children = (
-				03B0223529231FA6001C7E63 /* google-translate-sign.js */,
-			);
-			path = Google;
 			sourceTree = "<group>";
 		};
 		03B0224F29231FA6001C7E63 /* ViewController */ = {
@@ -2648,6 +2639,7 @@
 				03CE80252ED89AD600FB4EAB /* GoogleService.swift */,
 				033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */,
 				033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */,
+				03B0223529231FA6001C7E63 /* google-translate-sign.js */,
 			);
 			path = Google;
 			sourceTree = "<group>";
