@@ -20,7 +20,6 @@
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
 		030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */; };
 		030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 030D612D2CD9BBC3000DF298 /* Package.resolved */; };
-		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */; };
 		0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */; };
 		031258512E18C4EA0072320C /* String+ToChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031258502E18C4EA0072320C /* String+ToChinese.swift */; };
@@ -37,6 +36,8 @@
 		031C66D02ED9EB290025D190 /* BingLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C62ED9EB290025D190 /* BingLookupResponse.swift */; };
 		031C66D12ED9EB290025D190 /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C52ED9EB290025D190 /* BingLanguageVoice.swift */; };
 		031C66D22ED9EB290025D190 /* BingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C42ED9EB290025D190 /* BingConfig.swift */; };
+		031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D32ED9F9E30025D190 /* AppleDictionary.swift */; };
+		031C66D62ED9F9E40025D190 /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 031C66D52ED9F9E40025D190 /* apple-dictionary.html */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 032041192E43BEB50065A05B /* ocr-en-text-4.png */; };
@@ -94,7 +95,6 @@
 		033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033A8EAD2BDFE09B00030C08 /* String+Extension.swift */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
-		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		033C6DBE2ED9C4F000AC39FC /* GoogleService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */; };
 		033C6DBF2ED9C4F000AC39FC /* GoogleService+Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */; };
 		033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */; };
@@ -568,7 +568,6 @@
 		030D61242CD9B905000DF298 /* AcknowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowListView.swift; sourceTree = "<group>"; };
 		030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pods-Easydict-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Easydict/Pods-Easydict-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		030D612D2CD9BBC3000DF298 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; name = Package.resolved; path = Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = SOURCE_ROOT; };
-		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextNormalizer.swift; sourceTree = "<group>"; };
 		0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetectorTests.swift; sourceTree = "<group>"; };
 		031258502E18C4EA0072320C /* String+ToChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ToChinese.swift"; sourceTree = "<group>"; };
@@ -585,6 +584,8 @@
 		031C66C82ED9EB290025D190 /* BingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingService.swift; sourceTree = "<group>"; };
 		031C66C92ED9EB290025D190 /* BingService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BingService+Translate.swift"; sourceTree = "<group>"; };
 		031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTranslateResponse.swift; sourceTree = "<group>"; };
+		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
+		031C66D52ED9F9E40025D190 /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
@@ -653,8 +654,6 @@
 		033C30F92A7409C40095926A /* DictionaryKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictionaryKit.h; sourceTree = "<group>"; };
 		033C30FA2A7409C40095926A /* TTTDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTDictionary.h; sourceTree = "<group>"; };
 		033C30FB2A7409C40095926A /* TTTDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTDictionary.m; sourceTree = "<group>"; };
-		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
-		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
 		033C6DBC2ED9C4F000AC39FC /* GoogleService+Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleService+Language.swift"; sourceTree = "<group>"; };
 		033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleService+Translate.swift"; sourceTree = "<group>"; };
 		033C6DC02ED9D6D700AC39FC /* DeepLService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLService.swift; sourceTree = "<group>"; };
@@ -1404,6 +1403,15 @@
 			path = Bing;
 			sourceTree = "<group>";
 		};
+		031C66D72ED9F9F20025D190 /* AppleDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				031C66D32ED9F9E30025D190 /* AppleDictionary.swift */,
+				031C66D52ED9F9E40025D190 /* apple-dictionary.html */,
+			);
+			path = AppleDictionary;
+			sourceTree = "<group>";
+		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1518,16 +1526,6 @@
 			path = DictionaryKit;
 			sourceTree = "<group>";
 		};
-		033C30FD2A74CEB10095926A /* AppleDictionary */ = {
-			isa = PBXGroup;
-			children = (
-				033C30FE2A74CECE0095926A /* EZAppleDictionary.h */,
-				033C30FF2A74CECE0095926A /* EZAppleDictionary.m */,
-				0310C8262A94EFA100B1D81E /* apple-dictionary.html */,
-			);
-			path = AppleDictionary;
-			sourceTree = "<group>";
-		};
 		033C6DC32ED9D6D700AC39FC /* DeepL */ = {
 			isa = PBXGroup;
 			children = (
@@ -1626,14 +1624,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		03542A2D293645B800C34C33 /* Apple */ = {
-			isa = PBXGroup;
-			children = (
-				033C30FD2A74CEB10095926A /* AppleDictionary */,
-			);
-			path = Apple;
-			sourceTree = "<group>";
-		};
 		03542A312936F6FE00C34C33 /* Language */ = {
 			isa = PBXGroup;
 			children = (
@@ -1716,6 +1706,7 @@
 				031760F22E07FB2800CE8FD7 /* AppleSpeechService */,
 				031760E92E065DB300CE8FD7 /* AppleOCREngine */,
 				039785272CC678F400A49087 /* AppleTranslation */,
+				031C66D72ED9F9F20025D190 /* AppleDictionary */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -2088,7 +2079,6 @@
 				033B7131293CE2010096E2DF /* WebViewTranslator */,
 				03542A362937AE2100C34C33 /* Model */,
 				03542A312936F6FE00C34C33 /* Language */,
-				03542A2D293645B800C34C33 /* Apple */,
 				03B0222C29231FA6001C7E63 /* Baidu */,
 			);
 			path = Service;
@@ -3553,7 +3543,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA9CF8A72D2E6D3C000C1860 /* 人的一生_v4.json in Resources */,
-				0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */,
 				03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */,
 				03538DF62D2652F7005E56A8 /* 美.json in Resources */,
 				031DBD792AE01E130071CF85 /* easydict in Resources */,
@@ -3581,6 +3570,7 @@
 				C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */,
 				CA9CF8A32D2E6CE6000C1860 /* good_v4.json in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
+				031C66D62ED9F9E40025D190 /* apple-dictionary.html in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
 				03538DF42D263FA5005E56A8 /* good.json in Resources */,
@@ -3935,6 +3925,7 @@
 				038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */,
 				03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
+				031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */,
 				03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
@@ -4090,7 +4081,6 @@
 				03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */,
 				03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
-				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,
 			);

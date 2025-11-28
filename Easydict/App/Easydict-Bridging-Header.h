@@ -21,6 +21,7 @@
 #import "EZBaiduTranslate.h"
 #import "MMCrash.h"
 #import "EZDetectManager.h"
-#import "EZAppleDictionary.h"
 #import "EZServiceTypes.h"
 #import "EZEventMonitor.h"
+#import "DictionaryKit.h"
+#import "NSString+EZHandleInputText.h"
