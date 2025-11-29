@@ -455,8 +455,8 @@ extension AppleDictionary {
 
             // Filter cases like queryViewController --> query
             if (word as NSString).isEnglishWord(withMaxWordLength: 30) {
-                let splitWord = ((word as NSString).splitCodeText() as NSString).lowercased
-                let splitHeadword = ((headword as NSString).splitCodeText() as NSString).lowercased
+                let splitWord = word.splitCodeText().lowercased()
+                let splitHeadword = headword.splitCodeText().lowercased()
 
                 if (splitWord as NSString).wordCount() != (splitHeadword as NSString).wordCount(),
                    splitWord.contains(splitHeadword) {
