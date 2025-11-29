@@ -89,14 +89,8 @@ extension String {
 
 @objc
 extension NSString {
-    /// Split code text by snake case and camel case, then filter empty parts
-    @objc(splitCodeText)
-    func splitCodeText() -> NSString {
-        (self as String).splitCodeText() as NSString
-    }
-
     /// Remove comment block symbols (/* */) and join texts intelligently
-    @objc(removeCommentBlockSymbols)
+
     func removeCommentBlockSymbols() -> NSString {
         guard allLineStartsWithCommentSymbol() else {
             return removeCommentBlockSymbolsInline()
@@ -106,14 +100,14 @@ extension NSString {
     }
 
     /// Check if all lines start with comment symbols (#, //, *)
-    @objc(allLineStartsWithCommentSymbol)
+
     func allLineStartsWithCommentSymbol() -> Bool {
         let lines = components(separatedBy: .newlines)
         return lines.allSatisfy { startsWithCommentSymbol($0) }
     }
 
     /// Segment English text to words
-    @objc(segmentWords)
+
     func segmentWords() -> NSString {
         var queryText = self as String
 
@@ -133,7 +127,7 @@ extension NSString {
     }
 
     /// Handle input text with configuration settings
-    @objc(handleInputText)
+
     func handleInputText() -> NSString {
         guard length > 0 else { return self }
 

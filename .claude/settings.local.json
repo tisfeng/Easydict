@@ -31,7 +31,11 @@
       "Bash(sed:*)",
       "Bash(ls:*)",
       "Bash(git log:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(xcodebuild build:*)",
+      "Bash(xcodebuild test:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [
       "Bash(git add:*)",

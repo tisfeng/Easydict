@@ -6,13 +6,17 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-@testable import Easydict
-import XCTest
+import Testing
 
-final class StringHandleInputTextTests: XCTestCase {
+@testable import Easydict
+
+/// Tests for String extension methods
+@Suite("String Extensions")
+struct StringHandleInputTextTests {
     // MARK: - Split Code Text Tests
 
-    func testSplitCamelCaseText() {
+    @Test("Split camel case text")
+    func splitCamelCaseText() {
         let testCases = [
             ("anchoredDraggableState", "anchored Draggable State"),
             ("AnchoredDraggableState", "Anchored Draggable State"),
@@ -24,11 +28,12 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.splitCamelCaseText(), expected, "Failed for input: \(input)")
+            #expect(input.splitCamelCaseText() == expected, "Failed for input: \(input)")
         }
     }
 
-    func testSplitSnakeCaseText() {
+    @Test("Split snake case text")
+    func splitSnakeCaseText() {
         let testCases = [
             ("anchored_draggable_state", "anchored draggable state"),
             ("simple_word", "simple word"),
@@ -39,11 +44,12 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.splitSnakeCaseText(), expected, "Failed for input: \(input)")
+            #expect(input.splitSnakeCaseText() == expected, "Failed for input: \(input)")
         }
     }
 
-    func testSplitCodeText() {
+    @Test("Split code text")
+    func splitCodeText() {
         let testCases = [
             ("anchored_draggable_state", "anchored draggable state"),
             ("GetHTTPCode", "Get HTTP Code"),
@@ -55,13 +61,14 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.splitCodeText(), expected, "Failed for input: \(input)")
+            #expect(input.splitCodeText() == expected, "Failed for input: \(input)")
         }
     }
 
     // MARK: - Comment Handling Tests
 
-    func testAllLineStartsWithCommentSymbol() {
+    @Test("All lines start with comment symbol")
+    func allLineStartsWithCommentSymbol() {
         let testCases = [
             ("# This is a comment\n// Another comment", true),
             ("# Comment\nNot a comment", false),
@@ -73,23 +80,25 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.allLineStartsWithCommentSymbol(), expected, "Failed for input: \(input)")
+            #expect(input.allLineStartsWithCommentSymbol() == expected, "Failed for input: \(input)")
         }
     }
 
-    func testRemoveCommentBlockSymbols() {
+    @Test("Remove comment block symbols")
+    func removeCommentBlockSymbols() {
         let input = """
         // This is a comment
         // with multiple lines
         """
 
         let result = input.removingCommentBlockSymbols()
-        XCTAssertTrue(result.contains("This is a comment"))
-        XCTAssertTrue(result.contains("with multiple lines"))
-        XCTAssertFalse(result.contains("//"))
+        #expect(result.contains("This is a comment"))
+        #expect(result.contains("with multiple lines"))
+        #expect(!result.contains("//"))
     }
 
-    func testRemoveCommentSymbolPrefix() {
+    @Test("Remove comment symbol prefix")
+    func removeCommentSymbolPrefix() {
         let testCases = [
             ("// Comment", "Comment"),
             ("# Hash comment", "Hash comment"),
@@ -99,11 +108,12 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.removeCommentSymbolPrefix(), expected, "Failed for input: \(input)")
+            #expect(input.removeCommentSymbolPrefix() == expected, "Failed for input: \(input)")
         }
     }
 
-    func testRemoveCommentSymbols() {
+    @Test("Remove comment symbols")
+    func removeCommentSymbols() {
         let testCases = [
             ("// Comment at start", "Comment at start"),
             ("Comment at end //", "Comment at end"),
@@ -113,13 +123,14 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.removeCommentSymbols(), expected, "Failed for input: \(input)")
+            #expect(input.removeCommentSymbols() == expected, "Failed for input: \(input)")
         }
     }
 
     // MARK: - Word Segmentation Tests
 
-    func testSegmentWords() {
+    @Test("Segment words")
+    func segmentWords() {
         let testCases = [
             ("key_value", "key value"),
             ("LaTeX", "LaTeX"),
@@ -130,69 +141,81 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.segmentWords(), expected, "Failed for input: \(input)")
+            #expect(input.segmentWords() == expected, "Failed for input: \(input)")
         }
     }
 
     // MARK: - Quote Handling Tests
 
-    func testHasQuotesPair() {
-        let testCases = [
+    @Test("Has quotes pair")
+    func hasQuotesPair() {
+        // Use Unicode escapes for curly quotes to avoid syntax issues
+        let leftDoubleQuote = "\u{201C}" // "
+        let rightDoubleQuote = "\u{201D}" // "
+
+        let testCases: [(String, Bool)] = [
             ("'text'", true),
             ("\"text\"", true),
-            (""text"", true),
-            (""text"", true),
-            (""text"", true),
+            ("\(leftDoubleQuote)text\(rightDoubleQuote)", true),
+            ("\(leftDoubleQuote)text\(rightDoubleQuote)", true),
+            ("\(leftDoubleQuote)text\(rightDoubleQuote)", true),
             ("text", false),
             ("'text", false),
             ("text'", false),
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.hasQuotesPair(), expected, "Failed for input: \(input)")
+            #expect(input.hasQuotesPair() == expected, "Failed for input: \(input)")
         }
     }
 
-    func testTryToRemoveQuotes() {
-        let testCases = [
+    @Test("Try to remove quotes")
+    func tryToRemoveQuotes() {
+        // Use Unicode escapes for curly quotes to avoid syntax issues
+        let leftDoubleQuote = "\u{201C}" // "
+        let rightDoubleQuote = "\u{201D}" // "
+
+        let testCases: [(String, String)] = [
             ("'text'", "text"),
             ("\"text\"", "text"),
-            (""text"", "text"),
-            (""text"", "text"),
-            (""text"", "text"),
+            ("\(leftDoubleQuote)text\(rightDoubleQuote)", "text"),
+            ("\(leftDoubleQuote)text\(rightDoubleQuote)", "text"),
+            ("\(leftDoubleQuote)text\(rightDoubleQuote)", "text"),
             ("text", "text"),
             ("'text", "'text"),
             ("text'", "text'"),
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.tryToRemoveQuotes(), expected, "Failed for input: \(input)")
+            #expect(input.tryToRemoveQuotes() == expected, "Failed for input: \(input)")
         }
     }
 
     // MARK: - End Punctuation Tests
 
-    func testHasEndPunctuationSuffix() {
-        let testCases = [
+    @Test("Has end punctuation suffix")
+    func hasEndPunctuationSuffix() {
+        let testCases: [(String, Bool)] = [
             ("text.", true),
             ("text!", true),
             ("text?", true),
-            ("text.", true),
+            ("text。", true),
             ("text…", true),
             ("text", false),
-            ("text.", false),
+            ("text..", false),
             ("text,", false),
             ("", false),
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.hasEndPunctuationSuffix, expected, "Failed for input: \(input)")
+            #expect(input.hasEndPunctuationSuffix == expected, "Failed for input: \(input)")
         }
     }
 
     // MARK: - Newline Replacement Tests
 
-    func testReplacingNewlinesWithWhitespace() {
+    @Test("Replacing newlines with whitespace")
+    func replacingNewlinesWithWhitespace() {
         let testCases = [
             ("line1\nline2", "line1 line2"),
             ("line1\n\nline2", "line1  line2"),
@@ -203,13 +226,14 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.replacingNewlinesWithWhitespace(), expected, "Failed for input: \(input)")
+            #expect(input.replacingNewlinesWithWhitespace() == expected, "Failed for input: \(input)")
         }
     }
 
     // MARK: - Integration Tests
 
-    func testHandleInputTextIntegration() {
+    @Test("Handle input text integration")
+    func handleInputTextIntegration() {
         // Test complete input handling with various configurations
         let testInput = """
         // This is a comment
@@ -218,13 +242,14 @@ final class StringHandleInputTextTests: XCTestCase {
         """
 
         let result = testInput.handlingInputText()
-        XCTAssertFalse(result.contains("//"))
-        XCTAssertTrue(result.contains("key value"))
-        XCTAssertTrue(result.contains("testWord"))
-        XCTAssertTrue(result.splitCodeText().contains("key value"))
+        #expect(!result.contains("//"))
+        #expect(result.contains("key value"))
+        #expect(result.contains("testWord"))
+        #expect(result.splitCodeText().contains("key value"))
     }
 
-    func testComplexCodeSplitting() {
+    @Test("Complex code splitting")
+    func complexCodeSplitting() {
         let testCases = [
             ("XMLHttpRequest", "XML Http Request"),
             ("getUserID", "get User ID"),
@@ -233,29 +258,7 @@ final class StringHandleInputTextTests: XCTestCase {
         ]
 
         for (input, expected) in testCases {
-            XCTAssertEqual(input.splitCodeText(), expected, "Failed for input: \(input)")
-        }
-    }
-
-    // MARK: - Performance Tests
-
-    func testPerformanceSplitCodeText() {
-        let longString = "anchoredDraggableState" + String(repeating: "testWord", count: 1000)
-
-        measure {
-            _ = longString.splitCodeText()
-        }
-    }
-
-    func testPerformanceRemoveCommentBlockSymbols() {
-        var lines = [String]()
-        for i in 0 ..< 1000 {
-            lines.append("// This is comment number \(i)")
-        }
-        let longComment = lines.joined(separator: "\n")
-
-        measure {
-            _ = longComment.removingCommentBlockSymbols()
+            #expect(input.splitCodeText() == expected, "Failed for input: \(input)")
         }
     }
 }

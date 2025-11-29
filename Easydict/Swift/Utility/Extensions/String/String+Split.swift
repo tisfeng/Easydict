@@ -79,13 +79,13 @@ extension String {
 @objc
 extension NSString {
     /// Split camel case text by adding spaces before uppercase letters
-    @objc(splitCamelCaseText)
+
     func splitCamelCaseText() -> NSString {
         (self as String).splitCamelCaseText() as NSString
     }
 
     /// Split snake case text by replacing underscores with spaces
-    @objc(splitSnakeCaseText)
+
     func splitSnakeCaseText() -> NSString {
         (self as String).splitSnakeCaseText() as NSString
     }
