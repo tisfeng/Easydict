@@ -35,7 +35,8 @@
       "Bash(xcodebuild build:*)",
       "Bash(xcodebuild test:*)",
       "Bash(xcodebuild:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(pod install:*)"
     ],
     "deny": [
       "Bash(git add:*)",
