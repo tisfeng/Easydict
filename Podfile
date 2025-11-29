@@ -12,9 +12,8 @@ target 'Easydict' do
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
-  # Swift format
-  pod 'SwiftFormat/CLI', '~> 0.55'
-  pod 'SwiftLint', '~> 0.58'
+  # Swift format and linting migrated to Swift Package Manager
+  # See scripts/format.sh and scripts/lint.sh
 
 end
 

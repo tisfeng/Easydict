@@ -236,7 +236,7 @@ extension NLLanguage {
     }
 }
 
-// MARK: - Locale.Language + CustomStringConvertible
+// MARK: - Locale.Language + @retroactive CustomStringConvertible
 
 extension Locale.Language: @retroactive CustomStringConvertible {
     public var description: String {

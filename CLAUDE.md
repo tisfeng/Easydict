@@ -32,11 +32,9 @@ xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:E
 ## Linting and Formatting
 
 ```bash
-# SwiftLint (via CocoaPods)
-./Pods/SwiftLint/swiftlint lint
+./scripts/lint.sh      # Run SwiftLint
+./scripts/format.sh    # Run SwiftFormat
 
-# SwiftFormat (via CocoaPods)
-./Pods/SwiftFormat/CommandLineTool/swiftformat .
 ```
 
 Configuration files: `.swiftlint.yml`, `.swiftformat`

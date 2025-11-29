@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(echo:*), Bash(cat:*), Bash(rm:*)
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(echo:*), Bash(rm:*)
 argument-hint: [message]
 description: Generate an Angular-style git commit message
 model: ANTHROPIC_DEFAULT_HAIKU_MODEL
