@@ -38,11 +38,7 @@
       "Bash(chmod:*)",
       "Bash(pod install:*)",
       "Bash(open:*)",
-      "Bash(./scripts/lint.sh:*)",
-      "Bash(./scripts/format.sh:*)",
-      "Bash(pod:*)",
-      "Bash(PATH=\"/nonexistent:$PATH\" ./scripts/format.sh:*)",
-      "Bash(PATH=\"\" ./scripts/lint.sh:*)"
+      "Bash(pod:*)"
     ],
     "deny": [
       "Bash(git add:*)",

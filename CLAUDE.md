@@ -31,12 +31,6 @@ xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:E
 
 ## Linting and Formatting
 
-```bash
-./scripts/lint.sh      # Run SwiftLint
-./scripts/format.sh    # Run SwiftFormat
-
-```
-
 Configuration files: `.swiftlint.yml`, `.swiftformat`
 
 ## Code Architecture
