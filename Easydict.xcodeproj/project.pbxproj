@@ -20,6 +20,10 @@
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
 		030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */; };
 		030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 030D612D2CD9BBC3000DF298 /* Package.resolved */; };
+		031153412EDB0BA20083521F /* StringCommentHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533C2EDB0BA20083521F /* StringCommentHandlingTests.swift */; };
+		031153422EDB0BA20083521F /* StringQuoteHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533F2EDB0BA20083521F /* StringQuoteHandlingTests.swift */; };
+		031153432EDB0BA20083521F /* StringCodeSplittingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */; };
+		031153452EDB0BA20083521F /* StringFormattingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533D2EDB0BA20083521F /* StringFormattingTests.swift */; };
 		0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */; };
 		0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */; };
 		031258512E18C4EA0072320C /* String+ToChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031258502E18C4EA0072320C /* String+ToChinese.swift */; };
@@ -39,7 +43,6 @@
 		031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D32ED9F9E30025D190 /* AppleDictionary.swift */; };
 		031C66D62ED9F9E40025D190 /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 031C66D52ED9F9E40025D190 /* apple-dictionary.html */; };
 		031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D92EDA14E90025D190 /* String+Split.swift */; };
-		031C66DD2EDA15500025D190 /* StringHandleInputTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66DC2EDA15500025D190 /* StringHandleInputTextTests.swift */; };
 		031C66DF2EDA1A400025D190 /* String+HandleInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
@@ -572,6 +575,10 @@
 		030D61242CD9B905000DF298 /* AcknowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowListView.swift; sourceTree = "<group>"; };
 		030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pods-Easydict-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Easydict/Pods-Easydict-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		030D612D2CD9BBC3000DF298 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; name = Package.resolved; path = Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = SOURCE_ROOT; };
+		0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCodeSplittingTests.swift; sourceTree = "<group>"; };
+		0311533C2EDB0BA20083521F /* StringCommentHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCommentHandlingTests.swift; sourceTree = "<group>"; };
+		0311533D2EDB0BA20083521F /* StringFormattingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormattingTests.swift; sourceTree = "<group>"; };
+		0311533F2EDB0BA20083521F /* StringQuoteHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringQuoteHandlingTests.swift; sourceTree = "<group>"; };
 		0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextNormalizer.swift; sourceTree = "<group>"; };
 		0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetectorTests.swift; sourceTree = "<group>"; };
 		031258502E18C4EA0072320C /* String+ToChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ToChinese.swift"; sourceTree = "<group>"; };
@@ -591,7 +598,6 @@
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
 		031C66D52ED9F9E40025D190 /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		031C66D92EDA14E90025D190 /* String+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Split.swift"; sourceTree = "<group>"; };
-		031C66DC2EDA15500025D190 /* StringHandleInputTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHandleInputTextTests.swift; sourceTree = "<group>"; };
 		031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HandleInputText.swift"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
@@ -1261,6 +1267,7 @@
 		03022F2F2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXGroup;
 			children = (
+				031153402EDB0BA20083521F /* StringTests */,
 				03D486512E3F211C009313B3 /* RegexTests */,
 				0305E7422E1D2B3E000A23A0 /* Extensions */,
 				03C3A5612E1BB4F400B59152 /* OCRTests */,
@@ -1269,7 +1276,6 @@
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
-				031C66DC2EDA15500025D190 /* StringHandleInputTextTests.swift */,
 			);
 			path = EasydictTests;
 			sourceTree = "<group>";
@@ -1324,6 +1330,17 @@
 				030D612D2CD9BBC3000DF298 /* Package.resolved */,
 			);
 			path = AcknowListView;
+			sourceTree = "<group>";
+		};
+		031153402EDB0BA20083521F /* StringTests */ = {
+			isa = PBXGroup;
+			children = (
+				0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */,
+				0311533C2EDB0BA20083521F /* StringCommentHandlingTests.swift */,
+				0311533D2EDB0BA20083521F /* StringFormattingTests.swift */,
+				0311533F2EDB0BA20083521F /* StringQuoteHandlingTests.swift */,
+			);
+			path = StringTests;
 			sourceTree = "<group>";
 		};
 		0315D3E12C4E64F600AC0442 /* Vapor */ = {
@@ -3749,11 +3766,14 @@
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
-				031C66DD2EDA15500025D190 /* StringHandleInputTextTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
+				031153412EDB0BA20083521F /* StringCommentHandlingTests.swift in Sources */,
+				031153422EDB0BA20083521F /* StringQuoteHandlingTests.swift in Sources */,
+				031153432EDB0BA20083521F /* StringCodeSplittingTests.swift in Sources */,
+				031153452EDB0BA20083521F /* StringFormattingTests.swift in Sources */,
 				039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
 				033897B22E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift in Sources */,
