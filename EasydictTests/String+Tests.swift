@@ -1,5 +1,5 @@
 //
-//  String+HandleInputTextTests.swift
+//  String+Tests.swift
 //  EasydictTests
 //
 //  Created by Claude on 2025/1/29.

@@ -39,7 +39,7 @@
 		031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D32ED9F9E30025D190 /* AppleDictionary.swift */; };
 		031C66D62ED9F9E40025D190 /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 031C66D52ED9F9E40025D190 /* apple-dictionary.html */; };
 		031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D92EDA14E90025D190 /* String+Split.swift */; };
-		031C66DD2EDA15500025D190 /* String+HandleInputTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66DC2EDA15500025D190 /* String+HandleInputTextTests.swift */; };
+		031C66DD2EDA15500025D190 /* String+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66DC2EDA15500025D190 /* String+Tests.swift */; };
 		031C66DF2EDA1A400025D190 /* String+HandleInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
@@ -560,7 +560,7 @@
 		03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZURLSchemeHandler.m; sourceTree = "<group>"; };
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
 		03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZAnimatedHidden.m"; sourceTree = "<group>"; };
-		03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		03022F2E2B370B7100B63209 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Test.swift"; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
@@ -590,7 +590,7 @@
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
 		031C66D52ED9F9E40025D190 /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		031C66D92EDA14E90025D190 /* String+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Split.swift"; sourceTree = "<group>"; };
-		031C66DC2EDA15500025D190 /* String+HandleInputTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HandleInputTextTests.swift"; sourceTree = "<group>"; };
+		031C66DC2EDA15500025D190 /* String+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Tests.swift"; sourceTree = "<group>"; };
 		031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HandleInputText.swift"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
@@ -1256,7 +1256,7 @@
 			path = "NSView+AnimatedHidden";
 			sourceTree = "<group>";
 		};
-		03022F2F2B370B7100B63209 /* EasydictSwiftTests */ = {
+		03022F2F2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXGroup;
 			children = (
 				03D486512E3F211C009313B3 /* RegexTests */,
@@ -1267,9 +1267,9 @@
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
-				031C66DC2EDA15500025D190 /* String+HandleInputTextTests.swift */,
+				031C66DC2EDA15500025D190 /* String+Tests.swift */,
 			);
-			path = EasydictSwiftTests;
+			path = EasydictTests;
 			sourceTree = "<group>";
 		};
 		0305E7422E1D2B3E000A23A0 /* Extensions */ = {
@@ -3187,7 +3187,7 @@
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,
-				03022F2F2B370B7100B63209 /* EasydictSwiftTests */,
+				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
 				9CB57B9B45EC322A11ED8865 /* Pods */,
 				713A345D86B5BC86D158B68F /* Frameworks */,
@@ -3200,7 +3200,7 @@
 			isa = PBXGroup;
 			children = (
 				C99EEB182385796700FEE666 /* Easydict-debug.app */,
-				03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */,
+				03022F2E2B370B7100B63209 /* EasydictTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3335,9 +3335,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		03022F2D2B370B7100B63209 /* EasydictSwiftTests */ = {
+		03022F2D2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictSwiftTests" */;
+			buildConfigurationList = 03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictTests" */;
 			buildPhases = (
 				03022F2A2B370B7100B63209 /* Sources */,
 				03022F2B2B370B7100B63209 /* Frameworks */,
@@ -3348,9 +3348,9 @@
 			dependencies = (
 				03022F332B370B7100B63209 /* PBXTargetDependency */,
 			);
-			name = EasydictSwiftTests;
+			name = EasydictTests;
 			productName = EasydictSwiftTests;
-			productReference = 03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */;
+			productReference = 03022F2E2B370B7100B63209 /* EasydictTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		C99EEB172385796700FEE666 /* Easydict */ = {
@@ -3464,7 +3464,7 @@
 			projectRoot = "";
 			targets = (
 				C99EEB172385796700FEE666 /* Easydict */,
-				03022F2D2B370B7100B63209 /* EasydictSwiftTests */,
+				03022F2D2B370B7100B63209 /* EasydictTests */,
 			);
 		};
 /* End PBXProject section */
@@ -3702,7 +3702,7 @@
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
-				031C66DD2EDA15500025D190 /* String+HandleInputTextTests.swift in Sources */,
+				031C66DD2EDA15500025D190 /* String+Tests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
@@ -4389,7 +4389,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictSwiftTests" */ = {
+		03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				03022F342B370B7100B63209 /* Debug */,

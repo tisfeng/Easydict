@@ -34,8 +34,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "03022F2D2B370B7100B63209"
-               BuildableName = "EasydictSwiftTests.xctest"
-               BlueprintName = "EasydictSwiftTests"
+               BuildableName = "EasydictTests.xctest"
+               BlueprintName = "EasydictTests"
                ReferencedContainer = "container:Easydict.xcodeproj">
             </BuildableReference>
          </TestableReference>
