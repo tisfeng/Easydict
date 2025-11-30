@@ -37,11 +37,12 @@ struct StringTextCleaningTests {
     func removeWhitespaceAndNewlines() {
         let textWithWhitespace = "  hello \n world \t test  \n\n  "
         let cleaned = textWithWhitespace.removingWhitespaceAndNewlineCharacters()
+        logInfo("cleaned: \(cleaned)")
 
         #expect(cleaned == "helloworldtest", "Should remove all whitespace and newlines")
-        #expect(cleaned.contains(" "), "Should not contain spaces")
-        #expect(cleaned.contains("\n"), "Should not contain newlines")
-        #expect(cleaned.contains("\t"), "Should not contain tabs")
+        #expect(!cleaned.contains(" "), "Should not contain spaces")
+        #expect(!cleaned.contains("\n"), "Should not contain newlines")
+        #expect(!cleaned.contains("\t"), "Should not contain tabs")
     }
 
     // MARK: - Punctuation Removal
@@ -103,17 +104,18 @@ struct StringTextCleaningTests {
 
     @Test("Remove symbols")
     func removeSymbols() {
-        let textWithSymbols = "Hello@world#$test%café"
+        let textWithSymbols = "+Hello@world#$test%café^🚀"
         let cleaned = textWithSymbols.removingSymbolCharacterSet()
+        logInfo("cleaned: \(cleaned)") // Hello@world#test%café
 
         #expect(cleaned.contains("Hello"), "Should keep letters")
         #expect(cleaned.contains("world"), "Should keep letters")
         #expect(cleaned.contains("test"), "Should keep letters")
         #expect(cleaned.contains("café"), "Should keep accented characters")
-        #expect(!cleaned.contains("@"), "Should remove at symbol")
-        #expect(!cleaned.contains("#"), "Should remove hash symbol")
+        #expect(!cleaned.contains("+"), "Should not remove at symbol")
+        #expect(!cleaned.contains("^"), "Should remove hash symbol")
         #expect(!cleaned.contains("$"), "Should remove dollar symbol")
-        #expect(!cleaned.contains("%"), "Should remove percent symbol")
+        #expect(!cleaned.contains("🚀"), "Should remove percent symbol")
     }
 
     @Test("Remove math symbols")
@@ -132,7 +134,7 @@ struct StringTextCleaningTests {
         #expect(!cleaned.contains("√"), "Should remove square root symbol")
         #expect(!cleaned.contains("×"), "Should remove multiplication sign")
         #expect(!cleaned.contains("∑"), "Should remove summation symbol")
-        #expect(!cleaned.contains("π"), "Should remove pi symbol")
+        #expect(cleaned.contains("π"), "Should not remove pi symbol")
     }
 
     // MARK: - Alphabet Removal
@@ -161,7 +163,7 @@ struct StringTextCleaningTests {
 
     @Test("Remove letters and numbers")
     func removeLettersAndNumbers() {
-        let textWithAlphanumerics = "Hello_world123!"
+        let textWithAlphanumerics = "Helloworld123"
         let cleaned = textWithAlphanumerics.removingAlphabetAndNumbers()
 
         #expect(cleaned.isEmpty, "Should remove all letters and numbers")

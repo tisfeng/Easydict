@@ -50,7 +50,7 @@ extension String {
     /// "  spaced  text  ".removingWhitespaceAndNewlines()   // Returns: "spacedtext"
     /// ```
     func removingWhitespaceAndNewlines() -> String {
-        components(separatedBy: .whitespacesAndNewlines).joined()
+        filter { !$0.isWhitespace && !$0.isNewline }
     }
 
     /// Remove punctuation characters from the string
@@ -95,7 +95,10 @@ extension String {
     /// "math: 2+2=4".removingSymbols()  // Returns: "math: 224"
     /// ```
     func removingSymbols() -> String {
-        components(separatedBy: .symbols).joined()
+        filter { character in
+            let scalars = character.unicodeScalars
+            return !scalars.allSatisfy { CharacterSet.symbols.contains($0) }
+        }
     }
 
     /// Remove numeric digits from the string
@@ -148,7 +151,10 @@ extension String {
 
     /// Remove symbol characters
     func removingSymbolCharacterSet() -> String {
-        components(separatedBy: .symbols).joined()
+        filter { character in
+            let scalars = character.unicodeScalars
+            return !scalars.allSatisfy { CharacterSet.symbols.contains($0) }
+        }
     }
 
     /// Remove control characters
@@ -175,7 +181,7 @@ extension String {
 
     /// Remove alphabet characters using regex
     func removingAlphabet2() -> String {
-        let pattern = "[a-zA-Z]"
+        let pattern = "[a-zA-Z_-]"
         return replacingOccurrences(of: pattern, with: "", options: .regularExpression)
     }
 
@@ -186,7 +192,10 @@ extension String {
 
     /// Remove alphabet and numbers
     func removingAlphabetAndNumbers() -> String {
-        components(separatedBy: .alphanumerics).joined()
+        filter { character in
+            let scalars = character.unicodeScalars
+            return !scalars.allSatisfy { CharacterSet.alphanumerics.contains($0) }
+        }
     }
 }
 

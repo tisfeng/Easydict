@@ -19,6 +19,7 @@ extension String {
 
     /// Check if the string contains only letters
     var isLetterString: Bool {
+        guard !isEmpty else { return false }
         let letterSet = CharacterSet.letters
         return unicodeScalars.allSatisfy { letterSet.contains($0) }
     }
@@ -44,7 +45,7 @@ extension String {
     /// Check if the first character is uppercase
     var isUppercaseFirstChar: Bool {
         guard let firstChar = first else { return false }
-        return String(firstChar).isUppercaseLetter
+        return firstChar.isUppercase
     }
 
     /// Get the first word of the string
@@ -143,7 +144,7 @@ extension String {
     var isEnglishPhrase: Bool {
         let text = replacingOccurrences(of: " ", with: "")
         let isEnglishPhraseLength = text.isEnglishWordWithMaxLength(Self.englishWordMaxLength * 2)
-        let isPhraseWordCount = wordCount <= 2
+        let isPhraseWordCount = wordCount == 2
         return isEnglishPhraseLength && isPhraseWordCount
     }
 
@@ -190,8 +191,8 @@ extension String {
 
     /// Check if the text contains only numbers
     var isNumbers: Bool {
-        let pattern = "^[0-9]+$"
-        return range(of: pattern, options: .regularExpression) != nil
+        guard !isEmpty else { return false }
+        return unicodeScalars.allSatisfy { CharacterSet.decimalDigits.contains($0) }
     }
 
     /// Check if the text is a sentence
@@ -205,11 +206,24 @@ extension String {
 extension String {
     /// Count the number of words in the text using NLTokenizer
     var wordCount: Int {
+        guard !isEmpty else { return 0 }
+
         let tokenizer = NLTokenizer(unit: .word)
         tokenizer.string = self
+
+        // Set language for better tokenization
+        if isChineseText {
+            tokenizer.setLanguage(.simplifiedChinese)
+        }
+
         var count = 0
-        tokenizer.enumerateTokens(in: startIndex ..< endIndex) { _, _ in
-            count += 1
+        tokenizer.enumerateTokens(in: startIndex ..< endIndex) { tokenRange, _ in
+            let token = String(self[tokenRange])
+            // Skip whitespace and punctuation
+            if !token.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               token.rangeOfCharacter(from: .punctuationCharacters) == nil {
+                count += 1
+            }
             return true
         }
         return count
@@ -229,14 +243,25 @@ extension String {
 
     /// Get an array of words in the text using NLTokenizer
     var wordsInText: [String] {
+        guard !isEmpty else { return [] }
         let trimmedText = trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // For Chinese text, use word tokenizer which handles Chinese better
         let tokenizer = NLTokenizer(unit: .word)
         tokenizer.string = trimmedText
+        // Set language for better Chinese word segmentation
+        if isChineseText {
+            tokenizer.setLanguage(.simplifiedChinese)
+        }
 
         var words: [String] = []
         tokenizer.enumerateTokens(in: trimmedText.startIndex ..< trimmedText.endIndex) { tokenRange, _ in
             let token = String(trimmedText[tokenRange])
-            words.append(token)
+            // Filter out punctuation-only tokens
+            if !token.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               token.rangeOfCharacter(from: .punctuationCharacters) == nil {
+                words.append(token)
+            }
             return true
         }
 
@@ -245,14 +270,23 @@ extension String {
 
     /// Get the word at the specified character index using NLTokenizer
     func word(at characterIndex: Int) -> String? {
+        guard !isEmpty else { return nil }
+        guard characterIndex >= 0, characterIndex < count else { return nil }
+
+        let stringIndex = index(startIndex, offsetBy: characterIndex)
         let tokenizer = NLTokenizer(unit: .word)
         tokenizer.string = self
 
-        guard characterIndex >= 0, characterIndex < utf16.count else { return nil }
-        let stringIndex = String.Index(utf16Offset: characterIndex, in: self)
         let tokenRange = tokenizer.tokenRange(at: stringIndex)
-        guard tokenRange.lowerBound != tokenRange.upperBound else { return nil }
+        guard tokenRange.lowerBound < tokenRange.upperBound else { return nil }
 
-        return String(self[tokenRange])
+        let word = String(self[tokenRange])
+        // Skip if it's just punctuation or whitespace
+        let trimmed = word.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed.rangeOfCharacter(from: .punctuationCharacters) == nil else {
+            return nil
+        }
+
+        return word
     }
 }

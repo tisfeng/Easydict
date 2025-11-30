@@ -28,10 +28,18 @@ struct StringDetectionTests {
 
     @Test("Letter string detection")
     func letterStringDetection() {
-        #expect("hello".isLetterString, "String with only letters should be detected as letter string")
-        #expect(!("world123".isLetterString), "String with numbers should not be detected as letter string")
+        #expect(
+            "hello".isLetterString, "String with only letters should be detected as letter string"
+        )
+        #expect(
+            !("world123".isLetterString),
+            "String with numbers should not be detected as letter string"
+        )
         #expect("こんにちは".isLetterString, "Japanese string should be detected as letter string")
-        #expect(!("hello world".isLetterString), "String with spaces should not be detected as letter string")
+        #expect(
+            !("hello world".isLetterString),
+            "String with spaces should not be detected as letter string"
+        )
         #expect(!("".isLetterString), "Empty string should not be detected as letter string")
     }
 
@@ -39,15 +47,27 @@ struct StringDetectionTests {
     func caseDetection() {
         #expect("hello".isLowercaseLetter, "All lowercase string should be detected as lowercase")
         #expect("HELLO".isUppercaseLetter, "All uppercase string should be detected as uppercase")
-        #expect(!("Hello".isLowercaseLetter), "Mixed case string should not be detected as all lowercase")
-        #expect(!("hello".isUppercaseLetter), "Mixed case string should not be detected as all uppercase")
-
-        #expect("hello".isLowercaseFirstChar, "String starting with lowercase should be detected correctly")
         #expect(
-            !("Hello".isUppercaseFirstChar),
+            !("Hello".isLowercaseLetter),
+            "Mixed case string should not be detected as all lowercase"
+        )
+        #expect(
+            !("hello".isUppercaseLetter),
+            "Mixed case string should not be detected as all uppercase"
+        )
+
+        #expect(
+            "hello".isLowercaseFirstChar,
+            "String starting with lowercase should be detected correctly"
+        )
+        #expect(
+            !("hello".isUppercaseFirstChar),
             "String starting with lowercase should not be detected as starting with uppercase"
         )
-        #expect("Hello".isUppercaseFirstChar, "String starting with uppercase should be detected correctly")
+        #expect(
+            "Hello".isUppercaseFirstChar,
+            "String starting with uppercase should be detected correctly"
+        )
         #expect(
             !("hello".isUppercaseFirstChar),
             "String starting with lowercase should not be detected as starting with uppercase"
@@ -68,10 +88,16 @@ struct StringDetectionTests {
 
     @Test("Single word detection")
     func singleWordDetection() {
-        #expect("hello".isSingleWord, "Single word without spaces should be detected as single word")
-        #expect(!("hello world".isSingleWord), "Multiple words should not be detected as single word")
+        #expect(
+            "hello".isSingleWord, "Single word without spaces should be detected as single word"
+        )
+        #expect(
+            !("hello world".isSingleWord), "Multiple words should not be detected as single word"
+        )
         #expect(!("".isSingleWord), "Empty string should not be detected as single word")
-        #expect(!("   ".isSingleWord), "String with only spaces should not be detected as single word")
+        #expect(
+            !("   ".isSingleWord), "String with only spaces should not be detected as single word"
+        )
     }
 
     // MARK: - Language Detection
@@ -89,8 +115,13 @@ struct StringDetectionTests {
     func englishWordDetection() {
         #expect("hello".isEnglishWord, "Simple English word should be detected")
         #expect("world".isEnglishWord, "Simple English word should be detected")
-        #expect(!("hello world".isEnglishWord), "Phrase with space should not be detected as single word")
-        #expect(!("hello-world".isEnglishWord), "Word with hyphen should not be detected as single word")
+        #expect(
+            !("hello world".isEnglishWord),
+            "Phrase with space should not be detected as single word"
+        )
+        #expect(
+            !("hello-world".isEnglishWord), "Word with hyphen should not be detected as single word"
+        )
         #expect(!("".isEnglishWord), "Empty string should not be detected as English word")
         #expect(!("你好".isEnglishWord), "Chinese characters should not be detected as English word")
     }
@@ -100,7 +131,9 @@ struct StringDetectionTests {
         #expect("hello world".isEnglishPhrase, "Two-word phrase should be detected")
         #expect("good morning".isEnglishPhrase, "Two-word phrase should be detected")
         #expect(!("hello world test".isEnglishPhrase), "Three-word phrase should not be detected")
-        #expect(!("helloworld".isEnglishPhrase), "Single long word should not be detected as phrase")
+        #expect(
+            !("helloworld".isEnglishPhrase), "Single long word should not be detected as phrase"
+        )
         #expect(!("".isEnglishPhrase), "Empty string should not be detected as phrase")
     }
 
@@ -111,7 +144,10 @@ struct StringDetectionTests {
         #expect("• First item".isPointFirstWord, "Bullet point should be detected")
         #expect("‧ Second item".isPointFirstWord, "Middle dot should be detected")
         #expect("∙ Third item".isPointFirstWord, "Bullet should be detected")
-        #expect(!("Normal item".isPointFirstWord), "Normal text should not be detected as starting with point")
+        #expect(
+            !("Normal item".isPointFirstWord),
+            "Normal text should not be detected as starting with point"
+        )
         #expect(!("•Item".isPointFirstWord), "Point in middle should not be detected as first word")
     }
 
@@ -120,7 +156,10 @@ struct StringDetectionTests {
         #expect("— First item".isDashFirstWord, "Em dash should be detected")
         #expect("- Second item".isDashFirstWord, "Hyphen should be detected")
         #expect("– Third item".isDashFirstWord, "En dash should be detected")
-        #expect(!("Normal item".isDashFirstWord), "Normal text should not be detected as starting with dash")
+        #expect(
+            !("Normal item".isDashFirstWord),
+            "Normal text should not be detected as starting with dash"
+        )
     }
 
     @Test("Number detection")
@@ -136,7 +175,9 @@ struct StringDetectionTests {
         #expect("• First item".isListTypeFirstWord, "Point list should be detected")
         #expect("- Second item".isListTypeFirstWord, "Dash list should be detected")
         #expect("1. Third item".isListTypeFirstWord, "Numbered list should be detected")
-        #expect(!("Normal item".isListTypeFirstWord), "Normal text should not be detected as list type")
+        #expect(
+            !("Normal item".isListTypeFirstWord), "Normal text should not be detected as list type"
+        )
     }
 
     // MARK: - Number Detection
@@ -157,10 +198,22 @@ struct StringDetectionTests {
         #expect("Hello.".hasEndPunctuationSuffix, "Period should be detected as end punctuation")
         #expect("World？".hasEndPunctuationSuffix, "Chinese question mark should be detected")
         #expect("Test！".hasEndPunctuationSuffix, "Chinese exclamation mark should be detected")
-        #expect("Great!".hasEndPunctuationSuffix, "Exclamation mark should be detected as end punctuation")
-        #expect("Hello world;".hasEndPunctuationSuffix, "Semicolon should be detected as end punctuation")
+        #expect(
+            "Great!".hasEndPunctuationSuffix,
+            "Exclamation mark should be detected as end punctuation"
+        )
+        #expect(
+            "Hello world;".hasEndPunctuationSuffix,
+            "Semicolon should be detected as end punctuation"
+        )
         #expect("Quote:".hasEndPunctuationSuffix, "Colon should be detected as end punctuation")
-        #expect(!("Hello".hasEndPunctuationSuffix), "Text without end punctuation should not be detected")
-        #expect(!("".hasEndPunctuationSuffix), "Empty string should not be detected as having end punctuation")
+        #expect(
+            !("Hello".hasEndPunctuationSuffix),
+            "Text without end punctuation should not be detected"
+        )
+        #expect(
+            !("".hasEndPunctuationSuffix),
+            "Empty string should not be detected as having end punctuation"
+        )
     }
 }

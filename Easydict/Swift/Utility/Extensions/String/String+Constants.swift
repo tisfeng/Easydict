@@ -23,7 +23,9 @@ extension String {
     static let dashCharacters = ["—", "-", "–"]
 
     /// End punctuation marks
-    static let endPunctuationMarks = ["。", "？", "！", "?", "!", ";", ":", "：", "...", "……"]
+    static let endPunctuationMarks = [
+        ".", "。", "?", "？", "!", "！", ";", ":", "：", "..", "...", "…", "……",
+    ]
 
     /// Quote pairs for matching
     static let quotePairs: [String: String] = [
