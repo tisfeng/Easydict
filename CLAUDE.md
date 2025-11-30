@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Easydict is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation. The project is currently undergoing a gradual migration from Objective-C to Swift/SwiftUI.
+Easydict is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation. The project is currently **actively migrating from Objective-C to Swift + SwiftUI**.
+
+**IMPORTANT:** We are in an active migration phase. **Prohibit adding any new Objective-C files**. All new code must be implemented using Swift/SwiftUI.
 
 ## Build Commands
 
@@ -53,13 +55,13 @@ xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict
 ### Directory Structure
 
 - `Easydict/App/` - App entry point, bridging header, assets, localization
-- `Easydict/Swift/` - Swift code (new development)
+- `Easydict/Swift/` - **Primary development environment** (all new code)
   - `Service/` - Translation services (Google, Bing, DeepL, OpenAI, etc.)
   - `Feature/` - Feature modules
   - `Model/` - Data models
   - `Utility/` - Extensions and helpers
   - `View/` - SwiftUI views
-- `Easydict/objc/` - Objective-C code (legacy, being migrated)
+- `Easydict/objc/` - **Legacy code - Maintenance only, no extensions**
   - `Service/` - Remaining Obj-C services (Baidu, language detection)
   - `ViewController/` - Window and query view controllers
   - `MMKit/` - Utility framework
@@ -72,7 +74,11 @@ The project follows a phased migration plan (see `MIGRATION_PROGRESS.md`):
 - Translation services: ~46% complete (Google, Bing, Youdao, DeepL, NiuTrans migrated)
 - Core infrastructure: ~50% complete
 
-When adding new functionality, prefer Swift. When modifying existing Obj-C code, consider migrating to Swift if the scope is reasonable.
+**Migration Rules:**
+- **Must migrate to Swift before modifying Objective-C code**
+- All new functionality MUST be implemented in Swift/SwiftUI
+- Objective-C code only allows bug fixes, feature extensions are prohibited
+- When modifying existing Obj-C code, evaluate migration feasibility first
 
 ### Service Architecture
 
@@ -86,6 +92,17 @@ Translation services inherit from a base query service. Each service lives in it
 - Bridging header at `Easydict/App/Easydict-Bridging-Header.h`
 - String localization uses Xcode String Catalogs (`.xcstrings` files)
 - URL Scheme support: `easydict://query?text=xxx`
+
+## Code Contribution Iron Rules
+
+**MANDATORY REQUIREMENTS FOR ALL CONTRIBUTORS:**
+
+1. **Prohibit adding any new Objective-C files** (.m, .h files)
+2. All new code MUST be implemented using Swift/SwiftUI
+3. Swift/SwiftUI is the only future tech stack for this project
+4. Must migrate to Swift before modifying existing Objective-C code
+5. Objective-C legacy code: bug fixes only, no feature extensions
+6. Any pull request adding new Objective-C code will be rejected
 
 ## Commit Style
 
