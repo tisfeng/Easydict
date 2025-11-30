@@ -40,7 +40,7 @@ public final class VolcanoService: QueryService {
         NSLocalizedString("volcano_translate", comment: "The name of Volcano Translate")
     }
 
-    override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    override public func supportLanguagesDictionary() -> MMOrderedDictionary {
         VolcanoTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 

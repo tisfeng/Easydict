@@ -26,7 +26,7 @@ public final class TencentService: QueryService {
         NSLocalizedString("tencent_translate", comment: "The name of Tencent Translate")
     }
 
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         TencentTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 

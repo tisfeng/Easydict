@@ -37,7 +37,7 @@ extension TencentService {
     }
 }
 
-extension EZNiuTransTranslate {
+extension NiuTransService {
     @objc var niutransAPIKey: String {
         APIKey.niutransAPIKey.stringValue
     }

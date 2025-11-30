@@ -30,7 +30,7 @@ public class AppleService: QueryService {
 
     /// Supported languages dictionary
     @objc
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         languageMapper.supportedLanguages.toMMOrderedDictionary()
     }
 
@@ -92,7 +92,7 @@ public class AppleService: QueryService {
         // Use macOS 15+ API to translate if available
         if #available(macOS 15.0, *), Configuration.shared.enableAppleOfflineTranslation {
             let service = await getTranslationService()
-            if let service = service as? TranslationService {
+            if let service = service as? AppleTranslation {
                 let translatedText = try await service.translate(
                     text: text,
                     sourceLanguage: sourceLanguage,
@@ -163,7 +163,7 @@ public class AppleService: QueryService {
         if #available(macOS 15.0, *) {
             if translationService == nil {
                 let window = NSApplication.shared.windows.first
-                let service = TranslationService(attachedWindow: window)
+                let service = AppleTranslation(attachedWindow: window)
                 service.enableTranslateSameLanguage = true
                 translationService = service
             }
@@ -202,7 +202,7 @@ public class AppleService: QueryService {
 
 // Only extend TranslationService when it's available
 @available(macOS 15.0, *)
-extension TranslationService {
+extension AppleTranslation {
     /// Translate text from source language to target language, used for objc.
     public func translate(
         text: String,

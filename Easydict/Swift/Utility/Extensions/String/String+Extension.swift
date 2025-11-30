@@ -42,6 +42,10 @@ extension String {
         trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    func truncated(_ maxLength: Int) -> String {
+        (self as NSString).truncated(maxLength) as String
+    }
+
     /// Replace all newlines with whitespaces.
     /// For line breaks, currently macOS is `\n`, previously used `\r`, Windows is `\r\n`.
     func replacingNewlinesWithWhitespace() -> String {

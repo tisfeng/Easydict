@@ -31,7 +31,7 @@ class AliService: QueryService {
         !aliAccessKeyId.isEmpty && !aliAccessKeySecret.isEmpty
     }
 
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         AliTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 

@@ -28,7 +28,7 @@ public final class CaiyunService: QueryService {
         NSLocalizedString("caiyun_translate", comment: "The name of Caiyun Translate")
     }
 
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         CaiyunTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 

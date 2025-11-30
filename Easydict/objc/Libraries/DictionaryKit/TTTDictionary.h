@@ -24,6 +24,8 @@
 #import <Cocoa/Cocoa.h>
 #import "EZLanguageModel.h"
 
+@class MMOrderedDictionary;
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
@@ -79,7 +81,7 @@ typedef NS_ENUM(NSUInteger, TTTDictionarySearchType) {
 @property (readonly, nonatomic, strong) NSURL *dictionaryURL;
 
 /// key: EZLanguage, value: language dict name
-@property (class, readonly, nonatomic, copy) MMOrderedDictionary<EZLanguage, NSString *> *languageToDictionaryNameMap;
+@property (class, readonly, nonatomic, copy) MMOrderedDictionary*languageToDictionaryNameMap;
 
 /// Get dict with CFBundleDisplayName
 + (instancetype)dictionaryNamed:(NSString *)name;

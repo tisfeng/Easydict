@@ -10,6 +10,7 @@
 #import "EZTitlebar.h"
 #import "EZWindowManager.h"
 #import "NSImage+EZResize.h"
+#import "Easydict-Swift.h"
 
 @interface EZBaseQueryWindow () <NSWindowDelegate, NSToolbarDelegate>
 

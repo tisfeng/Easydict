@@ -34,7 +34,7 @@ public final class DoubaoService: StreamService {
         NSLocalizedString("doubao_translate", comment: "The name of Doubao Translate")
     }
 
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         DoubaoTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 

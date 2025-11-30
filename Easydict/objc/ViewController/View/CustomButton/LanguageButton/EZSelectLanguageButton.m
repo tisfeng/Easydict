@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSImageView *imageView;
 @property (nonatomic, strong, nullable) NSMenu *customMenu;
 
-@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *languageDict;
+@property (nonatomic, strong) MMOrderedDictionary *languageDict;
 
 @end
 

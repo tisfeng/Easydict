@@ -7,17 +7,13 @@
 //
 
 #import "EZServiceTypes.h"
-#import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
-#import "EZDeepLTranslate.h"
-#import "EZBingService.h"
-#import "EZAppleDictionary.h"
-#import "EZNiuTransTranslate.h"
 #import "Easydict-Swift.h"
+#import "OrderedDictionary+Variadic.h"
 
 @interface EZServiceTypes ()
 
-@property (nonatomic, strong) MMOrderedDictionary<EZServiceType, Class> *allServiceDict;
+@property (nonatomic, strong) MMOrderedDictionary *allServiceDict;
 
 @end
 
@@ -43,7 +39,7 @@ static EZServiceTypes *_instance;
     return [[self allServiceDict] sortedKeys];
 }
 
-- (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
+- (MMOrderedDictionary *)allServiceDict {
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                            EZServiceTypeAppleDictionary, [EZAppleDictionary class],
                                            EZServiceTypeYoudao, [EZYoudaoService class],
@@ -59,7 +55,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeSummary, [EZSummaryService class],
                                            EZServiceTypeCustomOpenAI, [EZCustomOpenAIService class],
                                            EZServiceTypeDeepL, [EZDeepLTranslate class],
-                                           EZServiceTypeGoogle, [EZGoogleTranslate class],
+                                           EZServiceTypeGoogle, [GoogleService class],
                                            EZServiceTypeApple, [EZAppleService class],
                                            EZServiceTypeBaidu, [EZBaiduTranslate class],
                                            EZServiceTypeBing, [EZBingService class],

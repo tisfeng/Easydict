@@ -9,7 +9,6 @@
 #import "NSString+EZHandleInputText.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZSplit.h"
-#import "EZAppleDictionary.h"
 #import "Easydict-Swift.h"
 
 static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";

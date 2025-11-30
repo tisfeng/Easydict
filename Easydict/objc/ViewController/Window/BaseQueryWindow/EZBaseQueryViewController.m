@@ -22,7 +22,6 @@
 #import "EZBaiduTranslate.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
-#import "EZAppleDictionary.h"
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
 #import "NSString+EZHandleInputText.h"

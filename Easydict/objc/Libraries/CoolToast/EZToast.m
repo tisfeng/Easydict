@@ -7,6 +7,7 @@
 //
 
 #import "EZToast.h"
+#import "Easydict-Swift.h"
 
 @implementation EZToast
 

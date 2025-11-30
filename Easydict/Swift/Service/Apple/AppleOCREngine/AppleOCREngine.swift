@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import AppKit
 import CoreImage
 import Foundation
 @preconcurrency import Vision
@@ -51,7 +52,7 @@ public class AppleOCREngine: NSObject {
             throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
         }
 
-        image.mm_writeToFile(asPNG: OCRConstants.snipImageFileURL.path())
+        try? image.savePNG(toPath: OCRConstants.snipImageFileURL.path())
 
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {

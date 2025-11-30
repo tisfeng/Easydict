@@ -9,9 +9,9 @@
 import Foundation
 import SwiftUI
 
-// MARK: - EZNiuTransTranslate + ConfigurableService
+// MARK: - NiuTransService + ConfigurableService
 
-extension EZNiuTransTranslate {
+extension NiuTransService {
     open override func configurationListItems() -> Any? {
         ServiceConfigurationSecretSectionView(service: self, observeKeys: [.niuTransAPIKey]) {
             SecureInputCell(

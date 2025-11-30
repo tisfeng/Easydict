@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import AppKit
 import Foundation
 
 // MARK: - YoudaoService+OCR
@@ -23,9 +24,14 @@ extension YoudaoService {
         to: Language
     ) async throws
         -> EZOCRResult {
-        let imageData = image.mm_PNGData()
+        let imageData: Data
+        if let pngData = image.pngData {
+            imageData = pngData
+        } else {
+            throw QueryError(type: .parameter, message: "Failed to get PNG data from image")
+        }
 
-        let encodedImageStr = imageData.base64EncodedString(options: .lineLength64Characters)
+        let encodedImageStr = imageData.base64EncodedString()
         let imageBase = "data:image/png;base64,\(encodedImageStr)"
 
         let parameters = ["imgBase": imageBase]
@@ -110,7 +116,7 @@ extension YoudaoService {
 
         // Need additional translation
         ocrSuccess(ocrResult, true)
-        let queryResult = try await translate(ocrResult.mergedText, from: from, to: to)
+        let queryResult = try await translate(ocrResult.mergedText, from: from, to: to, enablePrehandle: true)
         return (ocrResult, queryResult)
     }
 }
