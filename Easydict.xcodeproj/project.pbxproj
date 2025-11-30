@@ -61,6 +61,7 @@
 		0322D7472EDB6092005E67D8 /* StringAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D7442EDB6092005E67D8 /* StringAnalysisTests.swift */; };
 		0322D7482EDB6092005E67D8 /* StringDetectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D7452EDB6092005E67D8 /* StringDetectionTests.swift */; };
 		0322D7492EDB6092005E67D8 /* StringTextCleaningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D7462EDB6092005E67D8 /* StringTextCleaningTests.swift */; };
+		0322D74C2EDC1C72005E67D8 /* OmenTextField in Frameworks */ = {isa = PBXBuildFile; productRef = 0322D74B2EDC1C72005E67D8 /* OmenTextField */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
@@ -1225,6 +1226,7 @@
 				038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */,
 				C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
+				0322D74C2EDC1C72005E67D8 /* OmenTextField in Frameworks */,
 				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
 				0364EC8A2C208EB50036B61B /* KeySender in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
@@ -3425,6 +3427,7 @@
 				0354E91F2D3601500050E5BE /* AsyncAlgorithms */,
 				8FA77A6C61B54C27803F5D7D /* Sentry */,
 				860409122DDD5F090095781D /* FirebaseAnalytics */,
+				0322D74B2EDC1C72005E67D8 /* OmenTextField */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -3488,6 +3491,7 @@
 				0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 				61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				03DD46182EDB38D1009E5D7B /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				0322D74A2EDC1C72005E67D8 /* XCRemoteSwiftPackageReference "OmenTextField" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -4524,6 +4528,14 @@
 				minimumVersion = 5.6.0;
 			};
 		};
+		0322D74A2EDC1C72005E67D8 /* XCRemoteSwiftPackageReference "OmenTextField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Renset/OmenTextField";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vapor/vapor.git";
@@ -4701,6 +4713,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		0322D74B2EDC1C72005E67D8 /* OmenTextField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0322D74A2EDC1C72005E67D8 /* XCRemoteSwiftPackageReference "OmenTextField" */;
+			productName = OmenTextField;
 		};
 		033E181E2C5A970A0099A7B0 /* Vapor */ = {
 			isa = XCSwiftPackageProductDependency;
