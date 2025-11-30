@@ -5,7 +5,6 @@
 #import "MMLog.h"
 #import "EZQueryService.h"
 #import "EZConstKey.h"
-#import "NSString+EZChineseText.h"
 #import "EZConst.h"
 #import "NSColor+MyColors.h"
 #import "entry.h"
@@ -17,7 +16,7 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "DarkModeManager.h"
-#import "NSString+EZUtils.h"
+
 #import "EZBaiduTranslate.h"
 #import "MMCrash.h"
 #import "EZDetectManager.h"

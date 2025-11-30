@@ -10,8 +10,6 @@
       "Bash(git diff:*)",
       "Read(//System/Library/Frameworks/**)",
       "WebSearch",
-      "Bash(swiftlint lint:*)",
-      "Bash(./Pods/SwiftLint/swiftlint lint:*)",
       "Bash(cat:*)",
       "WebFetch(domain:stackoverflow.com)",
       "WebFetch(domain:casualprogrammer.com)",

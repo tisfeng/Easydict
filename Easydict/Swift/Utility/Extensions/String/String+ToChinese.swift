@@ -19,3 +19,20 @@ extension String {
         applyingTransform(.init("Hant-Hans"), reverse: false) ?? self
     }
 }
+
+@objc
+extension NSString {
+    func toTraditionalChineseText() -> NSString {
+        (self as String).toTraditionalChinese() as NSString
+    }
+
+    func toSimplifiedChineseText() -> NSString {
+        (self as String).toSimplifiedChinese() as NSString
+    }
+
+    func isSimplifiedChinese() -> Bool {
+        let cleanedText = (self as String).removingNonNormalCharacters()
+        guard !cleanedText.isEmpty else { return false }
+        return cleanedText == cleanedText.toSimplifiedChinese()
+    }
+}

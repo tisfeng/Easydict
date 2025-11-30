@@ -21,8 +21,7 @@ extension StreamService {
         }
 
         // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes().trim()
+        resultText = resultText.tryToRemoveQuotes().trim()
 
         return resultText
     }

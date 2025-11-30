@@ -25,12 +25,6 @@ extension String {
         return firstChar.isLowercase && firstChar.isLetter
     }
 
-    /// Check if text ends with end punctuation marks
-    var hasEndPunctuationSuffix: Bool {
-        guard let lastChar = last else { return false }
-        return String(lastChar).isEndPunctuation
-    }
-
     /// Check if text contains end punctuation marks in the middle (not at the end)
     var hasEndPunctuationInMiddle: Bool {
         guard count > 1 else { return false }
@@ -66,11 +60,6 @@ extension String {
         return String(firstChar).isPunctuationCharacter
     }
 
-    /// Count the number of words in the text string, splitting by whitespace and punctuation
-    var wordCount: Int {
-        wordComponents.count
-    }
-
     /// Count the number of English words in the text string.
     var englishWordCount: Int {
         let englishWords = wordComponents.filter { $0.removingNonLetters().isEnglishText }
@@ -84,16 +73,6 @@ extension String {
 
         // Use the comprehensive list marker pattern from Regex+List
         return trimmedText.contains(Regex.listMarkerPattern)
-    }
-
-    /// Get the first word in the string, splitting by whitespace and punctuation
-    var firstWord: String {
-        wordComponents.first ?? ""
-    }
-
-    /// Get the last word in the string, splitting by whitespace and punctuation
-    var lastWord: String {
-        wordComponents.last ?? ""
     }
 
     /// Splits the string into word components, preserving the original order of appearance.

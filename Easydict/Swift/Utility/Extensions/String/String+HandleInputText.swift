@@ -49,19 +49,9 @@ extension String {
 
     // MARK: - ObjC Method Wrappers
 
-    /// Check if string has quote pairs (wrapper for ObjC method)
-    func hasQuotesPair() -> Bool {
-        (self as NSString).hasQuotesPair()
-    }
-
     /// Try to remove quotes from string (wrapper for ObjC method)
     func tryToRemoveQuotes() -> String {
-        (self as NSString).tryToRemoveQuotes() as String
-    }
-
-    /// Check if string is a single word (wrapper for ObjC method)
-    func isSingleWord() -> Bool {
-        (self as NSString).isSingleWord()
+        tryRemovingQuotes
     }
 
     /// Remove comment symbol prefix (wrapper for ObjC method)
@@ -112,11 +102,13 @@ extension NSString {
         var queryText = self as String
 
         // If text is a single English word, don't split it
-        if isSingleWord() {
-            let isEnglishWord = AppleDictionary.shared.queryDictionary(forText: queryText, language: .english)
+        if (self as String).isSingleWord {
+            let isEnglishWord = AppleDictionary.shared.queryDictionary(
+                forText: queryText, language: .english
+            )
             if !isEnglishWord {
-                if hasQuotesPair() {
-                    queryText = tryToRemoveQuotes() as String
+                if (self as String).hasQuotesPair {
+                    queryText = queryText.tryToRemoveQuotes()
                 } else {
                     queryText = queryText.splitCodeText()
                 }
@@ -163,7 +155,8 @@ extension NSString {
         guard let regex = try? NSRegularExpression(
             pattern: pattern,
             options: .dotMatchesLineSeparators
-        ) else {
+        )
+        else {
             return self
         }
 
@@ -207,7 +200,8 @@ extension NSString {
 
         // Determine if language uses spaces between words
         let detectedLanguage = AppleService.shared.detectText(content)
-        let isEnglishTypeLanguage = EZLanguageManager.shared().isLanguageWordsNeedSpace(detectedLanguage)
+        let isEnglishTypeLanguage = EZLanguageManager.shared().isLanguageWordsNeedSpace(
+            detectedLanguage)
         let alphabetCount: CGFloat = isEnglishTypeLanguage ? 15 : 1.5
 
         var modifiedBlockText = ""
@@ -224,7 +218,7 @@ extension NSString {
             if index > 0 {
                 let threshold = alphabetCount * singleAlphabetWidth
                 let isPrevLineLongText = maxWidthValue - widths[index - 1] <= threshold
-                let isPrevLineEnd = (lines[index - 1] as NSString).hasEndPunctuationSuffix()
+                let isPrevLineEnd = lines[index - 1].hasEndPunctuationSuffix
                 let newTrimmedText = newText.trimmingCharacters(in: .whitespaces)
 
                 if !newTrimmedText.isEmpty, isPrevLineLongText, !isPrevLineEnd {

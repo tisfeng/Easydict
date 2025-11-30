@@ -33,7 +33,7 @@ struct StringQuoteHandlingTests {
         ]
 
         for (input, expected) in testCases {
-            #expect(input.hasQuotesPair() == expected, "Failed for input: \(input)")
+            #expect(input.hasQuotesPair == expected, "Failed for input: \(input)")
         }
     }
 

@@ -17,7 +17,7 @@ open Easydict.xcworkspace
 # Build from command line
 xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict
 
-# Run all tests
+# Run all tests (May cost much time)
 xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict 
 
 # Run specific test class
@@ -29,9 +29,24 @@ xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:E
 
 **Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+
 
-## Linting and Formatting
+## Code Quality & Formatting
 
-Configuration files: `.swiftlint.yml`, `.swiftformat`
+The project integrates SwiftLint and SwiftFormat to maintain code quality and consistency:
+
+- SwiftLint: Static analysis tool based on Google Swift Style Guide
+- SwiftFormat: Automatic code formatter compliant with Google Swift guidelines
+- 
+Usage
+Both tools are integrated into Xcode build phases - no manual execution required:
+```
+# Code quality checks and formatting run automatically during build
+xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict
+```
+
+### Configuration
+
+- swiftlint.yml - SwiftLint rules and exceptions
+- swiftformat - SwiftFormat formatting behavior
 
 ## Code Architecture
 

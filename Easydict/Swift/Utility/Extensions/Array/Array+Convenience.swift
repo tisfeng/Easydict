@@ -10,10 +10,7 @@ import Foundation
 
 extension [String] {
     func toTraditionalChineseTexts() -> [String] {
-        map { text in
-            let nsStringText = text as NSString
-            return nsStringText.toTraditionalChineseText()
-        }
+        map { $0.toTraditionalChinese() }
     }
 }
 
@@ -24,6 +21,36 @@ extension NSArray {
         guard maxCount > 0, maxCount < count else { return self }
         let array = subarray(with: NSRange(location: 0, length: maxCount)) as NSArray
         return array
+    }
+
+    /// Convert translated results to Traditional Chinese manually.  开门 --> 開門
+    func toTraditionalChineseTexts() -> NSArray {
+        mapStringElements { $0.toTraditionalChineseText() }
+    }
+
+    /// Convert translated results to Simplified Chinese manually.  開門 --> 开门
+    func toSimplifiedChineseTexts() -> NSArray {
+        mapStringElements { $0.toSimplifiedChineseText() }
+    }
+
+    func removeExtraLineBreaks() -> NSArray {
+        mapStringElements { $0.removeExtraLineBreaks() as NSString }
+    }
+}
+
+extension NSArray {
+    fileprivate func mapStringElements(_ transform: (NSString) -> NSString) -> NSArray {
+        let transformed = compactMap { element -> NSString? in
+            switch element {
+            case let string as NSString:
+                return transform(string)
+            case let string as String:
+                return transform(string as NSString)
+            default:
+                return nil
+            }
+        }
+        return transformed as NSArray
     }
 }
 
