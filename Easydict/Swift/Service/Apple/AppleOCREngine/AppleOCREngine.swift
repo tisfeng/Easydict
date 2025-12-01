@@ -9,6 +9,7 @@
 import AppKit
 import CoreImage
 import Foundation
+import NaturalLanguage
 @preconcurrency import Vision
 
 // MARK: - AppleOCREngine

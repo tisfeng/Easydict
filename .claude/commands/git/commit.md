@@ -1,13 +1,27 @@
+---
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(echo:*), Bash(rm:*)
+argument-hint: [message]
+description: Generate an Angular-style git commit message
+model: ANTHROPIC_DEFAULT_HAIKU_MODEL
+---
+
 Angular-style git commit message generator
 
 You are an intelligent Git commit message generator.
 
 Your goal is to generate a clear, professional **Git commit message** based on the currently staged changes.
 
-### Improved Commit Flow Process
+## Context
+
+- Current git status: !`git status`
+- Current git staged changes: !`git status && git diff --staged`
+- Current branch: !`git branch --show-current`
+- Recent commits: !`git log --oneline -10`
+
+## Improved Commit Flow Process
 
 **Step-by-step process:**
-1. **Analysis Phase**: First run `git status && git diff --staged` to analyze current staged changes
+1. **Analysis Phase**: Analyze current staged changes
    - **CRITICAL**: Carefully examine whether each code change is an **addition (+)** or **deletion (-)** 
    - Lines starting with `+` are **added code** (new functionality)
    - Lines starting with `-` are **removed code** (deleted functionality)
@@ -19,7 +33,7 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 5. **Commit After Confirmation**: Only proceed with commit after explicit user approval
 
 **Important Rules:**
-- You may run `git status && git diff --staged` directly to analyze changes without asking
+- You can run `git status && git diff --staged` directly to analyze changes without asking
 - **Do not** run `git add` or `git push` commands
 - **Must** obtain explicit user authorization before running `git commit`
 - Commit message **must** be written in English and follow Angular Conventional Commit style
@@ -29,10 +43,10 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 - **Do not commit immediately** - first show preview and wait for confirmation
 - When committing: use `echo` command to write message to temporary file `commit_message.txt` in project root, then run `git commit -F commit_message.txt && rm commit_message.txt` to commit and clean up
 
-### Additional Context
+## Additional Context
 User-provided description: $ARGUMENTS
 
-### Git Commit Message Examples
+## Git Commit Message Examples
 
 ```
 fix(screenshot): resolve crash by deferring screenshot capture

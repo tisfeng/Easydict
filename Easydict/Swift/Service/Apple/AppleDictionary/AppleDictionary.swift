@@ -86,7 +86,7 @@ class AppleDictionary: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (EZQueryResult, (any Error)?) -> Void
     ) {
         let noResultError = QueryError(type: .noResult)
 
@@ -108,12 +108,14 @@ class AppleDictionary: QueryService {
 
     override func detectText(
         _ text: String,
-        completion: @escaping (Language, (any Error)?) -> ()
+        completion: @escaping (Language, (any Error)?) -> Void
     ) {
         let languageDict = TTTDictionary.languageToDictionaryNameMap
         let supportedLanguages = languageDict.allKeys() as? [Language] ?? []
 
-        if let matchedLanguage = supportedLanguages.first(where: { queryDictionary(forText: text, language: $0) }) {
+        if let matchedLanguage = supportedLanguages.first(where: {
+            queryDictionary(forText: text, language: $0)
+        }) {
             completion(matchedLanguage, nil)
         } else {
             completion(.auto, nil)
@@ -122,7 +124,7 @@ class AppleDictionary: QueryService {
 
     override func ocr(
         _ queryModel: EZQueryModel,
-        completion: @escaping (EZOCRResult?, (any Error)?) -> ()
+        completion: @escaping (EZOCRResult?, (any Error)?) -> Void
     ) {
         logError("Apple Dictionary does not support ocr")
     }
@@ -160,7 +162,8 @@ extension AppleDictionary {
         fromToLanguages languages: [Language]?,
         inDictionaryNames dictNames: [String]
     )
-        -> String? {
+        -> String?
+    {
         var dicts: [TTTDictionary] = []
         for name in dictNames {
             let dict = TTTDictionary(named: name)
@@ -168,7 +171,9 @@ extension AppleDictionary {
                 dicts.append(dict)
             }
         }
-        return queryAllIframeHTMLResult(ofWord: word, fromToLanguages: languages, inDictionaries: dicts)
+        return queryAllIframeHTMLResult(
+            ofWord: word, fromToLanguages: languages, inDictionaries: dicts
+        )
     }
 
     /// Get All iframe HTML of word from dictionaries, cost ~0.2s
@@ -177,13 +182,14 @@ extension AppleDictionary {
         fromToLanguages languages: [Language]?,
         inDictionaries dictionaries: [TTTDictionary]
     )
-        -> String? {
+        -> String?
+    {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let fromLanguage = languages?.first
 
         guard let baseHtmlPath = Bundle.main.path(forResource: "apple-dictionary", ofType: "html"),
-              let baseHtmlString = try? String(contentsOfFile: baseHtmlPath, encoding: .utf8)
+            let baseHtmlString = try? String(contentsOfFile: baseHtmlPath, encoding: .utf8)
         else {
             return nil
         }
@@ -196,18 +202,18 @@ extension AppleDictionary {
         let customIframeContainerClass = "custom-iframe-container"
 
         let customCSS = """
-        <style>\
-        .\(customIframeContainerClass) { margin-top: 0px; margin-bottom: 0px; width: 100%; }\
-        body { margin: 10px; color: \(lightTextColorString); background-color: \(lightBackgroundColorString
+            <style>\
+            .\(customIframeContainerClass) { margin-top: 0px; margin-bottom: 0px; width: 100%; }\
+            body { margin: 10px; color: \(lightTextColorString); background-color: \(lightBackgroundColorString
         ); font-family: 'system-ui'; }\
-        @media (prefers-color-scheme: dark) { \
-        body {\
-        background-color: \(darkBackgroundColorString);\
-        filter: invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);\
-        }\
-        }\
-        </style>
-        """
+            @media (prefers-color-scheme: dark) { \
+            body {\
+            background-color: \(darkBackgroundColorString);\
+            filter: invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);\
+            }\
+            }\
+            </style>
+            """
 
         var iframesHtmlString = ""
         var bigWordHtml = "<h2 class=\"\(bigWordTitleH2Class)\">\(word)</h2>"
@@ -218,11 +224,15 @@ extension AppleDictionary {
             // ~/Library/Dictionaries/Apple.dictionary/Contents/
             let contentsURL = dictionary.dictionaryURL.appendingPathComponent("Contents")
 
-            let entryHTMLs = queryEntryHTMLs(ofWord: word, inDictionary: dictionary, language: fromLanguage)
+            let entryHTMLs = queryEntryHTMLs(
+                ofWord: word, inDictionary: dictionary, language: fromLanguage
+            )
             result.htmlStrings = entryHTMLs
 
             for html in entryHTMLs {
-                let absolutePathHTML = replacedAudioPath(ofHTML: html, withBasePath: contentsURL.path)
+                let absolutePathHTML = replacedAudioPath(
+                    ofHTML: html, withBasePath: contentsURL.path
+                )
                 wordHtmlString += absolutePathHTML
             }
 
@@ -272,7 +282,8 @@ extension AppleDictionary {
         inDictionaryName name: String,
         language: Language?
     )
-        -> [String] {
+        -> [String]
+    {
         let dictionary = TTTDictionary(named: name)
         return queryEntryHTMLs(ofWord: word, inDictionary: dictionary, language: language)
     }
@@ -282,7 +293,8 @@ extension AppleDictionary {
         inDictionary dictionary: TTTDictionary,
         language: Language?
     )
-        -> [String] {
+        -> [String]
+    {
         var entryHTMLs: [String] = []
         var texts: [String] = []
 
@@ -313,7 +325,9 @@ extension AppleDictionary {
         let fileManager = FileManager.default
         if !fileManager.fileExists(atPath: htmlDirectory) {
             do {
-                try fileManager.createDirectory(atPath: htmlDirectory, withIntermediateDirectories: true)
+                try fileManager.createDirectory(
+                    atPath: htmlDirectory, withIntermediateDirectories: true
+                )
             } catch {
                 logError("createDirectoryAtPath error: \(error)")
             }
@@ -346,7 +360,9 @@ extension AppleDictionary {
         }
 
         var mutableHTML = html
-        let matches = regex.matches(in: mutableHTML, range: NSRange(mutableHTML.startIndex..., in: mutableHTML))
+        let matches = regex.matches(
+            in: mutableHTML, range: NSRange(mutableHTML.startIndex..., in: mutableHTML)
+        )
 
         // Process matches in reverse order to preserve indices
         for match in matches.reversed() {
@@ -360,7 +376,9 @@ extension AppleDictionary {
             let components = relativePath.components(separatedBy: "/")
             let isDirectoryPath = components.count > 1
             if isDirectoryPath, let directoryName = components.first {
-                if let directoryPath = findFilePath(inDirectory: basePath, withTargetDirectory: directoryName) {
+                if let directoryPath = findFilePath(
+                    inDirectory: basePath, withTargetDirectory: directoryName
+                ) {
                     fileBasePath = (directoryPath as NSString).deletingLastPathComponent
                 }
             }
@@ -381,7 +399,8 @@ extension AppleDictionary {
         inDirectory directoryPath: String,
         withTargetDirectory targetDirectory: String
     )
-        -> String? {
+        -> String?
+    {
         let fileManager = FileManager.default
 
         guard let contents = try? fileManager.contentsOfDirectory(atPath: directoryPath) else {
@@ -399,7 +418,9 @@ extension AppleDictionary {
                     return fullPath
                 }
 
-                if let subDirectoryPath = findFilePath(inDirectory: fullPath, withTargetDirectory: targetDirectory) {
+                if let subDirectoryPath = findFilePath(
+                    inDirectory: fullPath, withTargetDirectory: targetDirectory
+                ) {
                     return subDirectoryPath
                 }
             }
@@ -414,7 +435,9 @@ extension AppleDictionary {
 extension AppleDictionary {
     // MARK: Private
 
-    private func isValidHeadword(_ headword: String, queryWord word: String, language: Language?) -> Bool {
+    private func isValidHeadword(_ headword: String, queryWord word: String, language: Language?)
+        -> Bool
+    {
         // Convert to case-insensitive and accent-insensitive normalized string
         let normalizedWord = (word as NSString).folded()
         let normalizedHeadword = (headword as NSString).folded()
@@ -434,15 +457,18 @@ extension AppleDictionary {
             let simplifiedWord = (normalizedWord as NSString).toSimplifiedChineseText()
             let simplifiedHeadword = (normalizedHeadword as NSString).toSimplifiedChineseText()
 
-            let pureChineseHeadwords = ((simplifiedHeadword as NSString).removeAlphabet() as NSString).trim()
-            let hasWordSubstring = pureChineseHeadwords.contains(simplifiedWord)
+            let pureChineseHeadwords =
+                ((simplifiedHeadword as NSString).removeAlphabet() as NSString).trim()
+            let hasWordSubstring = pureChineseHeadwords.contains(simplifiedWord as String)
             return hasWordSubstring
         }
 
         // If text is not Chinese
         let isQueryDictionary: Bool
         if let language {
-            isQueryDictionary = (word as NSString).shouldQueryDictionary(withLanguage: language, maxWordCount: 1)
+            isQueryDictionary = (word as NSString).shouldQueryDictionary(
+                withLanguage: language, maxWordCount: 1
+            )
         } else {
             isQueryDictionary = false
         }
@@ -454,12 +480,13 @@ extension AppleDictionary {
             }
 
             // Filter cases like queryViewController --> query
-            if (word as NSString).isEnglishWord(withMaxWordLength: 30) {
-                let splitWord = ((word as NSString).splitCodeText() as NSString).lowercased
-                let splitHeadword = ((headword as NSString).splitCodeText() as NSString).lowercased
+            if word.isEnglishWordWithMaxLength(30) {
+                let splitWord = word.splitCodeText().lowercased()
+                let splitHeadword = headword.splitCodeText().lowercased()
 
-                if (splitWord as NSString).wordCount() != (splitHeadword as NSString).wordCount(),
-                   splitWord.contains(splitHeadword) {
+                if splitWord.wordCount != splitHeadword.wordCount,
+                    splitWord.contains(splitHeadword)
+                {
                     return false
                 }
             }

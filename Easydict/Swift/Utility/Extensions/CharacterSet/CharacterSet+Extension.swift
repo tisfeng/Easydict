@@ -10,7 +10,7 @@ import Foundation
 
 extension CharacterSet {
     /// Set of end punctuation marks
-    static let endPunctuationMarks = CharacterSet(charactersIn: "。！？.!?;:")
+    static let endPunctuationMarks = CharacterSet(charactersIn: "。！？.!?;:…")
 
     /// Set of dot-like characters
     static let dotLikeCharacters = CharacterSet(charactersIn: "⋅•‧∙⋄◦∘○●")

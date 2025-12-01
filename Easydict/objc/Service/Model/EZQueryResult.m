@@ -8,8 +8,6 @@
 
 #import "EZQueryResult.h"
 #import "EZLocalStorage.h"
-#import "NSArray+EZChineseText.h"
-#import "NSString+EZUtils.h"
 #import "Easydict-Swift.h"
 
 /**
@@ -225,7 +223,7 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (NSArray<NSString *> *)translatedResults {
-    @synchronized (self) {
+    @synchronized(self) {
         return _translatedResults;
     }
 }

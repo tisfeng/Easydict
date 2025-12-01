@@ -20,6 +20,10 @@
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
 		030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */; };
 		030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 030D612D2CD9BBC3000DF298 /* Package.resolved */; };
+		031153412EDB0BA20083521F /* StringCommentHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533C2EDB0BA20083521F /* StringCommentHandlingTests.swift */; };
+		031153422EDB0BA20083521F /* StringQuoteHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533F2EDB0BA20083521F /* StringQuoteHandlingTests.swift */; };
+		031153432EDB0BA20083521F /* StringCodeSplittingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */; };
+		031153452EDB0BA20083521F /* StringFormattingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311533D2EDB0BA20083521F /* StringFormattingTests.swift */; };
 		0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */; };
 		0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */; };
 		031258512E18C4EA0072320C /* String+ToChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031258502E18C4EA0072320C /* String+ToChinese.swift */; };
@@ -38,6 +42,8 @@
 		031C66D22ED9EB290025D190 /* BingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C42ED9EB290025D190 /* BingConfig.swift */; };
 		031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D32ED9F9E30025D190 /* AppleDictionary.swift */; };
 		031C66D62ED9F9E40025D190 /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 031C66D52ED9F9E40025D190 /* apple-dictionary.html */; };
+		031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D92EDA14E90025D190 /* String+Split.swift */; };
+		031C66DF2EDA1A400025D190 /* String+HandleInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */; };
 		031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031CBA632CD76F1500364437 /* ChatMessage.swift */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
 		0320411A2E43BEB50065A05B /* ocr-en-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 032041192E43BEB50065A05B /* ocr-en-text-4.png */; };
@@ -48,6 +54,14 @@
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
 		03220E2A2E11A1A0002C7F3F /* OCRObservationPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */; };
+		0322D7402EDB606D005E67D8 /* String+QuoteHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D73F2EDB606D005E67D8 /* String+QuoteHandling.swift */; };
+		0322D7412EDB606D005E67D8 /* String+Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D73E2EDB606D005E67D8 /* String+Detection.swift */; };
+		0322D7422EDB606D005E67D8 /* String+Analysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D73C2EDB606D005E67D8 /* String+Analysis.swift */; };
+		0322D7432EDB606D005E67D8 /* String+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D73D2EDB606D005E67D8 /* String+Constants.swift */; };
+		0322D7472EDB6092005E67D8 /* StringAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D7442EDB6092005E67D8 /* StringAnalysisTests.swift */; };
+		0322D7482EDB6092005E67D8 /* StringDetectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D7452EDB6092005E67D8 /* StringDetectionTests.swift */; };
+		0322D7492EDB6092005E67D8 /* StringTextCleaningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322D7462EDB6092005E67D8 /* StringTextCleaningTests.swift */; };
+		0322D74C2EDC1C72005E67D8 /* OmenTextField in Frameworks */ = {isa = PBXBuildFile; productRef = 0322D74B2EDC1C72005E67D8 /* OmenTextField */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */; };
@@ -69,8 +83,6 @@
 		0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0333D4C42E5C784600CD4613 /* ShortcutModifier.swift */; };
 		0333D4C72E5CA38500CD4613 /* ActionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0333D4C62E5CA38500CD4613 /* ActionConfiguration.swift */; };
 		0333D4C92E5CA3F700CD4613 /* ShortcutConfictAlertMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0333D4C82E5CA3F700CD4613 /* ShortcutConfictAlertMessage.swift */; };
-		0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */; };
-		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
 		0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */; };
 		0337D3CA2E66AA5000B08437 /* SystemUtility+AX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3C92E66AA5000B08437 /* SystemUtility+AX.swift */; };
 		0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */; };
@@ -130,7 +142,6 @@
 		034227F22E36891A00325B47 /* ocr-zh-poetry-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */; };
 		034227F42E37144200325B47 /* ocr-zh-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F32E37144200325B47 /* ocr-zh-poetry-11.png */; };
 		034227F62E37145200325B47 /* ocr-ru-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F52E37145200325B47 /* ocr-ru-poetry-11.png */; };
-		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034E30992E17809C0079E371 /* OCRTextProcessor.swift */; };
 		035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */; };
@@ -182,7 +193,6 @@
 		0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */; };
 		03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
-		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
 		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
 		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
@@ -381,7 +391,6 @@
 		03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C5D2A3ABE28000BF7C9 /* EZConstKey.m */; };
 		03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C652A3CA465000BF7C9 /* HWSegmentedControl.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
-		03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */; };
 		03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */; };
 		03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = 03E534BB2CE0D38C00B37264 /* AcknowList */; };
 		03E759F92ED75F4F00E1741E /* NSWindow+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E759F72ED75F4F00E1741E /* NSWindow+ObjCCompat.swift */; };
@@ -412,6 +421,7 @@
 		03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */; };
 		03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */; };
 		03F46BED2E426F8300D35EF6 /* ocr-zh-poetry-13.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */; };
+		03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F5A1002F5B3A0100AA0001 /* NSStringEasydictBridge.swift */; };
 		03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
@@ -456,6 +466,7 @@
 		27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */; };
 		40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */; };
 		59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */; };
+		5A3A753C59BD5443FA91764C /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
 		5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA77A6C61B54C27803F5D7D /* Sentry */; };
 		62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF472B4082BA00E42D38 /* AliService.swift */; };
 		62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF482B4082BA00E42D38 /* AliResponse.swift */; };
@@ -557,7 +568,7 @@
 		03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZURLSchemeHandler.m; sourceTree = "<group>"; };
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
 		03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZAnimatedHidden.m"; sourceTree = "<group>"; };
-		03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		03022F2E2B370B7100B63209 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Test.swift"; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
@@ -568,6 +579,10 @@
 		030D61242CD9B905000DF298 /* AcknowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowListView.swift; sourceTree = "<group>"; };
 		030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pods-Easydict-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Easydict/Pods-Easydict-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		030D612D2CD9BBC3000DF298 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; name = Package.resolved; path = Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = SOURCE_ROOT; };
+		0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCodeSplittingTests.swift; sourceTree = "<group>"; };
+		0311533C2EDB0BA20083521F /* StringCommentHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCommentHandlingTests.swift; sourceTree = "<group>"; };
+		0311533D2EDB0BA20083521F /* StringFormattingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormattingTests.swift; sourceTree = "<group>"; };
+		0311533F2EDB0BA20083521F /* StringQuoteHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringQuoteHandlingTests.swift; sourceTree = "<group>"; };
 		0311A5AB2E150522007AB02B /* OCRTextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextNormalizer.swift; sourceTree = "<group>"; };
 		0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageDetectorTests.swift; sourceTree = "<group>"; };
 		031258502E18C4EA0072320C /* String+ToChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ToChinese.swift"; sourceTree = "<group>"; };
@@ -586,6 +601,8 @@
 		031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTranslateResponse.swift; sourceTree = "<group>"; };
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
 		031C66D52ED9F9E40025D190 /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
+		031C66D92EDA14E90025D190 /* String+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Split.swift"; sourceTree = "<group>"; };
+		031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HandleInputText.swift"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
@@ -596,6 +613,13 @@
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
 		03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRObservationPair.swift; sourceTree = "<group>"; };
+		0322D73C2EDB606D005E67D8 /* String+Analysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Analysis.swift"; sourceTree = "<group>"; };
+		0322D73D2EDB606D005E67D8 /* String+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Constants.swift"; sourceTree = "<group>"; };
+		0322D73E2EDB606D005E67D8 /* String+Detection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Detection.swift"; sourceTree = "<group>"; };
+		0322D73F2EDB606D005E67D8 /* String+QuoteHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+QuoteHandling.swift"; sourceTree = "<group>"; };
+		0322D7442EDB6092005E67D8 /* StringAnalysisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringAnalysisTests.swift; sourceTree = "<group>"; };
+		0322D7452EDB6092005E67D8 /* StringDetectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDetectionTests.swift; sourceTree = "<group>"; };
+		0322D7462EDB6092005E67D8 /* StringTextCleaningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringTextCleaningTests.swift; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
 		03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLoadingAnimationView.m; sourceTree = "<group>"; };
 		03262C1A29EEE91700EFECA0 /* EZEnumTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEnumTypes.h; sourceTree = "<group>"; };
@@ -623,10 +647,6 @@
 		0333D4C42E5C784600CD4613 /* ShortcutModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutModifier.swift; sourceTree = "<group>"; };
 		0333D4C62E5CA38500CD4613 /* ActionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionConfiguration.swift; sourceTree = "<group>"; };
 		0333D4C82E5CA3F700CD4613 /* ShortcutConfictAlertMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutConfictAlertMessage.swift; sourceTree = "<group>"; };
-		0333FDA12A035BEC00891515 /* NSArray+EZChineseText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+EZChineseText.h"; sourceTree = "<group>"; };
-		0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+EZChineseText.m"; sourceTree = "<group>"; };
-		0333FDA42A035D5700891515 /* NSString+EZChineseText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZChineseText.h"; sourceTree = "<group>"; };
-		0333FDA52A035D5700891515 /* NSString+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZChineseText.m"; sourceTree = "<group>"; };
 		0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceUsageStatus.swift; sourceTree = "<group>"; };
 		0337D3C92E66AA5000B08437 /* SystemUtility+AX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+AX.swift"; sourceTree = "<group>"; };
 		0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Shortcut.swift"; sourceTree = "<group>"; };
@@ -688,8 +708,6 @@
 		034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-10.png"; sourceTree = "<group>"; };
 		034227F32E37144200325B47 /* ocr-zh-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-11.png"; sourceTree = "<group>"; };
 		034227F52E37145200325B47 /* ocr-ru-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ru-poetry-11.png"; sourceTree = "<group>"; };
-		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
-		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
 		034E30992E17809C0079E371 /* OCRTextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessor.swift; sourceTree = "<group>"; };
 		035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToDouble.swift"; sourceTree = "<group>"; };
@@ -751,8 +769,6 @@
 		0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+UpdateResult.swift"; sourceTree = "<group>"; };
 		0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+AsyncStream.swift"; sourceTree = "<group>"; };
 		03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOverlayView.swift; sourceTree = "<group>"; };
-		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
-		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
 		036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZReplaceTextButton.m; sourceTree = "<group>"; };
 		036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationKey.swift; sourceTree = "<group>"; };
@@ -1035,8 +1051,6 @@
 		03DC7C652A3CA465000BF7C9 /* HWSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWSegmentedControl.m; sourceTree = "<group>"; };
 		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
 		03E02A2529250D1D00A10260 /* EZEventMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEventMonitor.m; sourceTree = "<group>"; };
-		03E2BF732A298F2B00E010F3 /* NSString+EZUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZUtils.h"; sourceTree = "<group>"; };
-		03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZUtils.m"; sourceTree = "<group>"; };
 		03E3E7C02ADE318800812C84 /* EZQueryMenuTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryMenuTextView.h; sourceTree = "<group>"; };
 		03E3E7C12ADE318800812C84 /* EZQueryMenuTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryMenuTextView.m; sourceTree = "<group>"; };
 		03E759F72ED75F4F00E1741E /* NSWindow+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSWindow+ObjCCompat.swift"; sourceTree = "<group>"; };
@@ -1068,6 +1082,7 @@
 		03F46BE62E41C75C00D35EF6 /* ConfidenceLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidenceLevel.swift; sourceTree = "<group>"; };
 		03F46BE82E41C83B00D35EF6 /* IndentationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationInfo.swift; sourceTree = "<group>"; };
 		03F46BEC2E426F8300D35EF6 /* ocr-zh-poetry-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-13.png"; sourceTree = "<group>"; };
+		03F5A1002F5B3A0100AA0001 /* NSStringEasydictBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSStringEasydictBridge.swift; sourceTree = "<group>"; };
 		03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-11.png"; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
@@ -1194,6 +1209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03A220072D42414C00788927 /* (null) in Frameworks */,
+				5A3A753C59BD5443FA91764C /* Pods_EasydictTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1210,6 +1226,7 @@
 				038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */,
 				C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
+				0322D74C2EDC1C72005E67D8 /* OmenTextField in Frameworks */,
 				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
 				0364EC8A2C208EB50036B61B /* KeySender in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
@@ -1250,9 +1267,10 @@
 			path = "NSView+AnimatedHidden";
 			sourceTree = "<group>";
 		};
-		03022F2F2B370B7100B63209 /* EasydictSwiftTests */ = {
+		03022F2F2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXGroup;
 			children = (
+				031153402EDB0BA20083521F /* StringTests */,
 				03D486512E3F211C009313B3 /* RegexTests */,
 				0305E7422E1D2B3E000A23A0 /* Extensions */,
 				03C3A5612E1BB4F400B59152 /* OCRTests */,
@@ -1262,7 +1280,7 @@
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
 			);
-			path = EasydictSwiftTests;
+			path = EasydictTests;
 			sourceTree = "<group>";
 		};
 		0305E7422E1D2B3E000A23A0 /* Extensions */ = {
@@ -1315,6 +1333,20 @@
 				030D612D2CD9BBC3000DF298 /* Package.resolved */,
 			);
 			path = AcknowListView;
+			sourceTree = "<group>";
+		};
+		031153402EDB0BA20083521F /* StringTests */ = {
+			isa = PBXGroup;
+			children = (
+				0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */,
+				0311533C2EDB0BA20083521F /* StringCommentHandlingTests.swift */,
+				0311533D2EDB0BA20083521F /* StringFormattingTests.swift */,
+				0311533F2EDB0BA20083521F /* StringQuoteHandlingTests.swift */,
+				0322D7442EDB6092005E67D8 /* StringAnalysisTests.swift */,
+				0322D7452EDB6092005E67D8 /* StringDetectionTests.swift */,
+				0322D7462EDB6092005E67D8 /* StringTextCleaningTests.swift */,
+			);
+			path = StringTests;
 			sourceTree = "<group>";
 		};
 		0315D3E12C4E64F600AC0442 /* Vapor */ = {
@@ -1482,16 +1514,8 @@
 			children = (
 				03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */,
 				03BFFC7029612E10004E033E /* NSString+EZConvenience.m */,
-				0333FDA42A035D5700891515 /* NSString+EZChineseText.h */,
-				0333FDA52A035D5700891515 /* NSString+EZChineseText.m */,
-				03E2BF732A298F2B00E010F3 /* NSString+EZUtils.h */,
-				03E2BF742A298F2B00E010F3 /* NSString+EZUtils.m */,
 				03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */,
 				03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */,
-				0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */,
-				0342A9802AD64924002A9F5F /* NSString+EZSplit.m */,
-				036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */,
-				036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */,
 			);
 			path = NSString;
 			sourceTree = "<group>";
@@ -1946,6 +1970,12 @@
 				031258502E18C4EA0072320C /* String+ToChinese.swift */,
 				031258522E18D2C50072320C /* String+Detect.swift */,
 				03FF0D5E2E1959EC00ABBF17 /* String+Removing.swift */,
+				031C66D92EDA14E90025D190 /* String+Split.swift */,
+				031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */,
+				0322D73C2EDB606D005E67D8 /* String+Analysis.swift */,
+				0322D73D2EDB606D005E67D8 /* String+Constants.swift */,
+				0322D73E2EDB606D005E67D8 /* String+Detection.swift */,
+				0322D73F2EDB606D005E67D8 /* String+QuoteHandling.swift */,
 			);
 			path = String;
 			sourceTree = "<group>";
@@ -2734,8 +2764,6 @@
 				03B022BF29231FA6001C7E63 /* NSColor+MyColors */,
 				039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */,
 				039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */,
-				0333FDA12A035BEC00891515 /* NSArray+EZChineseText.h */,
-				0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */,
 				0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */,
 				0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */,
 				03262C2329EFE97B00EFECA0 /* NSViewController+EZWindow.h */,
@@ -2878,6 +2906,15 @@
 				03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */,
 			);
 			path = CharacterSet;
+			sourceTree = "<group>";
+		};
+		03F5A1052F5B3A0100AA0001 /* Bridging */ = {
+			isa = PBXGroup;
+			children = (
+				03F5A1002F5B3A0100AA0001 /* NSStringEasydictBridge.swift */,
+			);
+			name = Bridging;
+			path = ../Bridging;
 			sourceTree = "<group>";
 		};
 		03FDAE922E1A29B70029369E /* Regex */ = {
@@ -3178,7 +3215,7 @@
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,
-				03022F2F2B370B7100B63209 /* EasydictSwiftTests */,
+				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
 				9CB57B9B45EC322A11ED8865 /* Pods */,
 				713A345D86B5BC86D158B68F /* Frameworks */,
@@ -3191,7 +3228,7 @@
 			isa = PBXGroup;
 			children = (
 				C99EEB182385796700FEE666 /* Easydict-debug.app */,
-				03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */,
+				03022F2E2B370B7100B63209 /* EasydictTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3235,12 +3272,12 @@
 				03F2815B2D98E52200AE518C /* ChineseGenre */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
-				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 				96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */,
 				03714B8E2C17FCAD00BB4459 /* SharedConstants */,
 				0340D3972C91D4A3004C9910 /* AppleScript */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 				03538DF12D25AAD1005E56A8 /* CookieManager.swift */,
+				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -3280,6 +3317,7 @@
 				03779F162BB256C5008D3C42 /* URL */,
 				EA1013412B5DBDA5005E43F9 /* Defaults */,
 				038A723E2B62C07B004995E3 /* String */,
+				03F5A1052F5B3A0100AA0001 /* Bridging */,
 				035FB78E2ED6023900F3EB27 /* NSButton */,
 				03E759F82ED75F4F00E1741E /* NSWindow */,
 				03E759FC2ED75F5600E1741E /* Pasteboard */,
@@ -3326,22 +3364,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		03022F2D2B370B7100B63209 /* EasydictSwiftTests */ = {
+		03022F2D2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictSwiftTests" */;
+			buildConfigurationList = 03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictTests" */;
 			buildPhases = (
+				91CCC529266D312A0946A130 /* [CP] Check Pods Manifest.lock */,
 				03022F2A2B370B7100B63209 /* Sources */,
 				03022F2B2B370B7100B63209 /* Frameworks */,
 				03022F2C2B370B7100B63209 /* Resources */,
+				812269D5662B2709BA0D6FA5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				03022F332B370B7100B63209 /* PBXTargetDependency */,
 			);
-			name = EasydictSwiftTests;
+			name = EasydictTests;
 			productName = EasydictSwiftTests;
-			productReference = 03022F2E2B370B7100B63209 /* EasydictSwiftTests.xctest */;
+			productReference = 03022F2E2B370B7100B63209 /* EasydictTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		C99EEB172385796700FEE666 /* Easydict */ = {
@@ -3387,6 +3427,7 @@
 				0354E91F2D3601500050E5BE /* AsyncAlgorithms */,
 				8FA77A6C61B54C27803F5D7D /* Sentry */,
 				860409122DDD5F090095781D /* FirebaseAnalytics */,
+				0322D74B2EDC1C72005E67D8 /* OmenTextField */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -3449,13 +3490,15 @@
 				03E534BA2CE0D38C00B37264 /* XCRemoteSwiftPackageReference "AcknowList" */,
 				0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 				61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				03DD46182EDB38D1009E5D7B /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				0322D74A2EDC1C72005E67D8 /* XCRemoteSwiftPackageReference "OmenTextField" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				C99EEB172385796700FEE666 /* Easydict */,
-				03022F2D2B370B7100B63209 /* EasydictSwiftTests */,
+				03022F2D2B370B7100B63209 /* EasydictTests */,
 			);
 		};
 /* End PBXProject section */
@@ -3597,7 +3640,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT\"\n";
+			shellScript = "#!/bin/bash\n# Easydict SwiftFormat Script\n\nset -e\n\n#Docs https://github.com/nicklockwood/SwiftFormat#using-swift-package-manager\n\nif [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"SwiftFormat skipped for Xcode Previews.\"\n  exit 0;\nfi\n# \"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT\"\n\ncd BuildTools\nSDKROOT=(xcrun --sdk macosx --show-sdk-path)\n#swift package update #Uncomment this line temporarily to update the version used to the latest matching your BuildTools/Package.swift file\nswift run -c release swiftformat \"$SRCROOT\"\n";
 		};
 		0A10B7439899441180660AF2 /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3660,6 +3703,49 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		812269D5662B2709BA0D6FA5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EasydictTests/Pods-EasydictTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		91CCC529266D312A0946A130 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EasydictTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		EAA54DF92B8C74F6001C2CC6 /* Lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -3677,7 +3763,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+			shellScript = "#!/bin/bash\n# Easydict SwiftLint Script\n\nset -e\n\n# Docs https://github.com/realm/SwiftLint#xcode-run-script-build-phase\n\nSWIFT_PACKAGE_DIR=\"${BUILD_DIR%Build/*}SourcePackages/artifacts\"\nSWIFTLINT_CMD=\"$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/macos/swiftlint\"\n\nif test -f \"$SWIFTLINT_CMD\" 2>&1\nthen\n    \"$SWIFTLINT_CMD\"\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#xcode-run-script-build-phase for installation instructions.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3697,6 +3783,13 @@
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
+				031153412EDB0BA20083521F /* StringCommentHandlingTests.swift in Sources */,
+				031153422EDB0BA20083521F /* StringQuoteHandlingTests.swift in Sources */,
+				031153432EDB0BA20083521F /* StringCodeSplittingTests.swift in Sources */,
+				031153452EDB0BA20083521F /* StringFormattingTests.swift in Sources */,
+				0322D7472EDB6092005E67D8 /* StringAnalysisTests.swift in Sources */,
+				0322D7482EDB6092005E67D8 /* StringDetectionTests.swift in Sources */,
+				0322D7492EDB6092005E67D8 /* StringTextCleaningTests.swift in Sources */,
 				039CC6362E1F518A0046DC16 /* OCRTestSample.swift in Sources */,
 				038842752E166EE900EF18DE /* OCRTextProcessingChineseTests.swift in Sources */,
 				033897B22E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift in Sources */,
@@ -3711,6 +3804,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,
 				03715A282E6D24F60067259C /* SystemUtility.swift in Sources */,
 				EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
@@ -3727,6 +3821,7 @@
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */,
 				03E75A002ED75F6D00E1741E /* NSView+ObjCCompat.swift in Sources */,
+				031C66DF2EDA1A400025D190 /* String+HandleInputText.swift in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03D5C4C82D9D1EE70054D0D4 /* TextAnalysis.swift in Sources */,
 				0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */,
@@ -3739,7 +3834,6 @@
 				62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */,
 				C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */,
 				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
-				036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */,
 				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
 				039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
@@ -3806,7 +3900,6 @@
 				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
-				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
 				03F4142E2E6B251000FF1994 /* SystemUtility+MenuAction.swift in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				031760EE2E06B9C700CE8FD7 /* NSImage+Extension.swift in Sources */,
@@ -3881,7 +3974,6 @@
 				035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */,
 				03280B812C23FE4A00E75A24 /* StreamConfigurationView.swift in Sources */,
 				03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */,
-				0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */,
@@ -3936,6 +4028,7 @@
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				03715A2A2E6D253E0067259C /* TextFieldInfo.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
+				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
@@ -3949,7 +4042,6 @@
 				03D9D6F72D8AB0C8009E0CEC /* ScreenshotState.swift in Sources */,
 				03BE26EB2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m in Sources */,
 				03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */,
-				0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */,
 				03F46BE72E41C75C00D35EF6 /* ConfidenceLevel.swift in Sources */,
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
 				0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */,
@@ -4025,6 +4117,10 @@
 				03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */,
 				03A5B4BF2E0AB23900BA8F2E /* String+OCR.swift in Sources */,
 				C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */,
+				0322D7402EDB606D005E67D8 /* String+QuoteHandling.swift in Sources */,
+				0322D7412EDB606D005E67D8 /* String+Detection.swift in Sources */,
+				0322D7422EDB606D005E67D8 /* String+Analysis.swift in Sources */,
+				0322D7432EDB606D005E67D8 /* String+Constants.swift in Sources */,
 				0AC8A83D2B6685EE006DA5CC /* SecureTextField.swift in Sources */,
 				0AC8A8372B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift in Sources */,
 				03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */,
@@ -4081,7 +4177,6 @@
 				03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */,
 				03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
-				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4099,6 +4194,7 @@
 /* Begin XCBuildConfiguration section */
 		03022F342B370B7100B63209 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -4107,7 +4203,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 45Z6V4YD5U;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -4127,6 +4223,7 @@
 		};
 		03022F352B370B7100B63209 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -4135,7 +4232,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 45Z6V4YD5U;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -4190,7 +4287,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
+				DEVELOPMENT_TEAM = 45Z6V4YD5U;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -4258,7 +4355,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
+				DEVELOPMENT_TEAM = 45Z6V4YD5U;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -4377,7 +4474,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictSwiftTests" */ = {
+		03022F362B370B7100B63209 /* Build configuration list for PBXNativeTarget "EasydictTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				03022F342B370B7100B63209 /* Debug */,
@@ -4429,6 +4526,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.6.0;
+			};
+		};
+		0322D74A2EDC1C72005E67D8 /* XCRemoteSwiftPackageReference "OmenTextField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Renset/OmenTextField";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 		033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */ = {
@@ -4519,6 +4624,14 @@
 				minimumVersion = 11.13.0;
 			};
 		};
+		03DD46182EDB38D1009E5D7B /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.62.2;
+			};
+		};
 		03E534BA2CE0D38C00B37264 /* XCRemoteSwiftPackageReference "AcknowList" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tisfeng/AcknowList";
@@ -4600,6 +4713,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		0322D74B2EDC1C72005E67D8 /* OmenTextField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0322D74A2EDC1C72005E67D8 /* XCRemoteSwiftPackageReference "OmenTextField" */;
+			productName = OmenTextField;
 		};
 		033E181E2C5A970A0099A7B0 /* Vapor */ = {
 			isa = XCSwiftPackageProductDependency;

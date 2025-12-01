@@ -10,7 +10,6 @@
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
 #import "EZLog.h"
-#import "NSString+EZUtils.h"
 #import "Easydict-Swift.h"
 
 @interface EZQueryMenuTextView ()
@@ -25,16 +24,16 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
     // We need to rewrite menuForEvent: rather than menu, because we want custom menu itme shown in the first place.
-    
+
     NSMenu *menu = [super menuForEvent:event];
     NSString *queryText = [self selectedText].trim;
-    
+
     if (queryText.length > 0) {
         NSString *title = [NSString stringWithFormat:@"%@ \"%@\"", NSLocalizedString(@"query_in_app", nil), queryText];
         NSMenuItem *queryInAppMenuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(queryInApp:) keyEquivalent:@""];
-        
+
         // Note that this shortcut only works when the menu is displayed.
-    //    [queryInAppMenuItem setKeyEquivalentModifierMask: NSEventModifierFlagCommand];
+        //    [queryInAppMenuItem setKeyEquivalentModifierMask: NSEventModifierFlagCommand];
 
         [queryInAppMenuItem setTarget:self];
 
@@ -53,13 +52,13 @@
 
     EZWindowManager *windowManager = [EZWindowManager shared];
     EZWindowType floatingWindowType = windowManager.floatingWindowType;
-    
+
     if (Configuration.shared.mouseSelectTranslateWindowType == floatingWindowType) {
         anotherWindowType = Configuration.shared.shortcutSelectTranslateWindowType;
     } else {
         anotherWindowType = Configuration.shared.mouseSelectTranslateWindowType;
     }
-    
+
     if (anotherWindowType != floatingWindowType) {
         // Note that floating window will be closed if not pinned when losing focus.
         EZBaseQueryWindow *floatingWindow = windowManager.floatingWindow;
@@ -76,7 +75,7 @@
             // Top left of current screen.
             CGPoint point = CGPointMake(0, screen.frame.size.height);
             CGPoint absolutePoint = [EZCoordinateUtils getTopLeftPoint:point inScreen:screen];
-            
+
             [windowManager showFloatingWindowType:anotherWindowType
                                         queryText:self.queryText
                                        actionType:actionType
@@ -86,7 +85,7 @@
     } else {
         [windowManager.floatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
     }
-    
+
     NSDictionary *parameters = @{
         @"floating_window_type" : @(floatingWindowType),
     };

@@ -1,5 +1,5 @@
 {
-  "originHash" : "59fb665309614717c793ae0a58a89f94cbb47fa0c38afa587f34f6bdae2b3394",
+  "originHash" : "203614886162b5c87044e34a9b4b12064c67b9a29f188f6b01f87e102a2079b6",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -253,6 +253,15 @@
       }
     },
     {
+      "identity" : "omentextfield",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Renset/OmenTextField",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4e077092b140241d7b3448352ade33a839478892"
+      }
+    },
+    {
       "identity" : "openai",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tisfeng/OpenAI",
@@ -501,6 +510,15 @@
       "state" : {
         "revision" : "61e4ca4b81b9e09e2ec863b00c340eb13497dac6",
         "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "ecafb5b056cb7995324f0d310a61f30661d00cad",
+        "version" : "0.62.2"
       }
     },
     {

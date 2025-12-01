@@ -50,7 +50,7 @@ extension String {
     /// "  spaced  text  ".removingWhitespaceAndNewlines()   // Returns: "spacedtext"
     /// ```
     func removingWhitespaceAndNewlines() -> String {
-        components(separatedBy: .whitespacesAndNewlines).joined()
+        filter { !$0.isWhitespace && !$0.isNewline }
     }
 
     /// Remove punctuation characters from the string
@@ -95,7 +95,10 @@ extension String {
     /// "math: 2+2=4".removingSymbols()  // Returns: "math: 224"
     /// ```
     func removingSymbols() -> String {
-        components(separatedBy: .symbols).joined()
+        filter { character in
+            let scalars = character.unicodeScalars
+            return !scalars.allSatisfy { CharacterSet.symbols.contains($0) }
+        }
     }
 
     /// Remove numeric digits from the string
@@ -120,5 +123,95 @@ extension String {
     /// ```
     func removingNumbers() -> String {
         components(separatedBy: .decimalDigits).joined()
+    }
+
+    // MARK: - NSString+EZUtils Text Cleaning Methods
+
+    /// Remove all non-normal characters (combination of multiple removal methods)
+    func removingNonNormalCharacters() -> String {
+        removingWhitespaceAndNewlineCharacters()
+            .removingPunctuationCharacters()
+            .removingSymbolCharacterSet()
+            .removingNumbers()
+            .removingNonBaseCharacterSet()
+    }
+
+    /// Remove whitespace and newline characters
+    func removingWhitespaceAndNewlineCharacters() -> String {
+        removingWhitespaceAndNewlines()
+    }
+
+    /// Remove punctuation characters (enhanced version with Chinese punctuation)
+    func removingPunctuationCharacters2() -> String {
+        let chinesePunctuationChars = "，。《》？"
+        let enhancedPunctuationSet = CharacterSet.punctuationCharacters
+            .union(CharacterSet(charactersIn: chinesePunctuationChars))
+        return components(separatedBy: enhancedPunctuationSet).joined()
+    }
+
+    /// Remove symbol characters
+    func removingSymbolCharacterSet() -> String {
+        filter { character in
+            let scalars = character.unicodeScalars
+            return !scalars.allSatisfy { CharacterSet.symbols.contains($0) }
+        }
+    }
+
+    /// Remove control characters
+    func removingControlCharacterSet() -> String {
+        components(separatedBy: .controlCharacters).joined()
+    }
+
+    /// Remove illegal characters
+    func removingIllegalCharacterSet() -> String {
+        components(separatedBy: .illegalCharacters).joined()
+    }
+
+    /// Remove non-base characters
+    func removingNonBaseCharacterSet() -> String {
+        components(separatedBy: CharacterSet.nonBaseCharacters).joined()
+    }
+
+    /// Remove alphabet characters (a-z, A-Z)
+    func removingAlphabet() -> String {
+        let alphabetSet = CharacterSet(
+            charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        return components(separatedBy: alphabetSet).joined()
+    }
+
+    /// Remove alphabet characters using regex
+    func removingAlphabet2() -> String {
+        let pattern = "[a-zA-Z_-]"
+        return replacingOccurrences(of: pattern, with: "", options: .regularExpression)
+    }
+
+    /// Remove all letters
+    func removingLetters() -> String {
+        components(separatedBy: .letters).joined()
+    }
+
+    /// Remove alphabet and numbers
+    func removingAlphabetAndNumbers() -> String {
+        filter { character in
+            let scalars = character.unicodeScalars
+            return !scalars.allSatisfy { CharacterSet.alphanumerics.contains($0) }
+        }
+    }
+}
+
+// MARK: - NSString Bridges
+
+@objc
+extension NSString {
+    func removeAlphabet() -> NSString {
+        (self as String).removingAlphabet() as NSString
+    }
+
+    func removeNonNormalCharacters() -> NSString {
+        (self as String).removingNonNormalCharacters() as NSString
+    }
+
+    func removingNonLetters() -> NSString {
+        (self as String).removingNonLetters() as NSString
     }
 }

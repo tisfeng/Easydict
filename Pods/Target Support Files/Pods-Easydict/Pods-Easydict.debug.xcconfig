@@ -1,14 +1,11 @@
-ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
 FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking" "${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes" "${PODS_CONFIGURATION_BUILD_DIR}/KVOController" "${PODS_CONFIGURATION_BUILD_DIR}/Masonry" "${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking/AFNetworking.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes/JLRoutes.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/KVOController/KVOController.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Masonry/Masonry.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC/ReactiveObjC.framework/Headers"
-LD_RUNPATH_SEARCH_PATHS = $(inherited) /usr/lib/swift '@executable_path/../Frameworks' '@loader_path/Frameworks' "${TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}"
-LIBRARY_SEARCH_PATHS = $(inherited) "${TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}" /usr/lib/swift
+LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/Frameworks'
 OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking/AFNetworking.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes/JLRoutes.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/KVOController/KVOController.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Masonry/Masonry.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC/ReactiveObjC.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/KVOController" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Masonry" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC"
 OTHER_LDFLAGS = $(inherited) -framework "AFNetworking" -framework "AppKit" -framework "CoreServices" -framework "Foundation" -framework "JLRoutes" -framework "KVOController" -framework "Masonry" -framework "ReactiveObjC" -framework "Security" -framework "SystemConfiguration"
-OTHER_MODULE_VERIFIER_FLAGS = $(inherited) "-F${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking" "-F${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes" "-F${PODS_CONFIGURATION_BUILD_DIR}/KVOController" "-F${PODS_CONFIGURATION_BUILD_DIR}/Masonry" "-F${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC" "-F${PODS_CONFIGURATION_BUILD_DIR}/SwiftFormat" "-F${PODS_CONFIGURATION_BUILD_DIR}/SwiftLint"
-OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
+OTHER_MODULE_VERIFIER_FLAGS = $(inherited) "-F${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking" "-F${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes" "-F${PODS_CONFIGURATION_BUILD_DIR}/KVOController" "-F${PODS_CONFIGURATION_BUILD_DIR}/Masonry" "-F${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.

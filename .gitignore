@@ -84,3 +84,8 @@ node_modules/
 .DS_Store
 
 .sentryclirc
+
+# SwiftFormat 
+# https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#xcode-build-phase
+BuildTools/.build
+BuildTools/.swiftpm

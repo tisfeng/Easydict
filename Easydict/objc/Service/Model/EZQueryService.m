@@ -9,16 +9,14 @@
 #import "EZQueryService.h"
 #import "EZLocalStorage.h"
 #import "EZAudioPlayer.h"
-#import "NSString+EZChineseText.h"
-#import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
 #import "Easydict-Swift.h"
 
 
 #define MethodNotImplemented()                                                                                                           \
-@throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
-reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
-userInfo:nil]
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
+                                 userInfo:nil]
 
 @interface EZQueryService ()
 
@@ -169,8 +167,7 @@ userInfo:nil]
 - (BOOL)prehandleQueryText:(NSString *)text
                       from:(EZLanguage)from
                         to:(EZLanguage)to
-                completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion
-{
+                completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!self.queryModel) {
         self.queryModel = [[EZQueryModel alloc] init];
         self.queryModel.userSourceLanguage = from;
@@ -222,8 +219,8 @@ userInfo:nil]
     // Some services need API Key, the built-in API key free quota may not be enough for all users to use, so it is provided to new users first.
     if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared hasFreeQuotaLeft:self]) {
         EZQueryError *error = [EZQueryError errorWithType:EZQueryErrorTypeApi
-                                    message:nil
-                               errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
+                                                  message:nil
+                                         errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
 
         self.result.promptURL = self.link;
         completion(self.result, error);
@@ -336,7 +333,7 @@ userInfo:nil]
     [self.audioPlayer.defaultTTSService textToAudio:text fromLanguage:from completion:completion];
 }
 
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from accent:(NSString *)accent completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from accent:(NSString *)accent completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     [self textToAudio:text fromLanguage:from completion:completion];
 }
 

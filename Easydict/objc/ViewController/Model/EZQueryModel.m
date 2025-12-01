@@ -8,9 +8,6 @@
 
 #import "EZQueryModel.h"
 #import <KVOController/NSObject+FBKVOController.h>
-#import "NSString+EZUtils.h"
-#import "NSString+EZSplit.h"
-#import "NSString+EZHandleInputText.h"
 #import "Easydict-Swift.h"
 
 @interface EZQueryModel ()
@@ -34,7 +31,7 @@
         [self.KVOController observe:Configuration.shared keyPath:@"toLanguage" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, Configuration *config, NSDictionary<NSString *, id> *_Nonnull change) {
             queryModel.userTargetLanguage = change[NSKeyValueChangeNewKey];
         }];
-        
+
         self.detectedLanguage = EZLanguageAuto;
         self.actionType = EZActionTypeNone;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
@@ -61,7 +58,7 @@
     model.showAutoLanguage = _showAutoLanguage;
     model.specifiedTextLanguageDict = [_specifiedTextLanguageDict mutableCopy];
     model.autoQuery = _autoQuery;
-    
+
     return model;
 }
 
@@ -70,13 +67,13 @@
         // TODO: need to optimize, like needDetectLanguage.
         self.audioURL = nil;
         self.needDetectLanguage = YES;
-        
+
         // TODO: we may not need to update queryText every time.
         self.queryText = [inputText handleInputText];
     }
-    
+
     _inputText = [inputText copy];
-    
+
     if (_queryText.length == 0) {
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
@@ -85,12 +82,9 @@
 
 - (void)setActionType:(EZActionType)actionType {
     _actionType = actionType;
-    
-    BOOL isOCRAction = (actionType == EZActionTypeOCRQuery
-                          || actionType == EZActionTypeScreenshotOCR
-                          || actionType == EZActionTypePasteboardOCR
-                          || actionType == EZActionTypeNone);
-    
+
+    BOOL isOCRAction = (actionType == EZActionTypeOCRQuery || actionType == EZActionTypeScreenshotOCR || actionType == EZActionTypePasteboardOCR || actionType == EZActionTypeNone);
+
     // Remove OCR image when action type is not OCR related.
     if (!isOCRAction) {
         _ocrImage = nil;
@@ -99,7 +93,7 @@
 
 - (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
     _detectedLanguage = detectedLanguage;
-    
+
     [self.specifiedTextLanguageDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, EZLanguage language, BOOL *stop) {
         if ([key isEqualToString:self.queryText]) {
             _detectedLanguage = language;
@@ -111,11 +105,11 @@
 
 - (void)setNeedDetectLanguage:(BOOL)needDetectLanguage {
     _needDetectLanguage = needDetectLanguage;
-    
+
     if (needDetectLanguage) {
         _showAutoLanguage = NO;
     }
-    
+
     [self setDetectedLanguage:self.detectedLanguage];
 }
 

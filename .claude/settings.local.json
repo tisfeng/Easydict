@@ -10,8 +10,6 @@
       "Bash(git diff:*)",
       "Read(//System/Library/Frameworks/**)",
       "WebSearch",
-      "Bash(swiftlint lint:*)",
-      "Bash(./Pods/SwiftLint/swiftlint lint:*)",
       "Bash(cat:*)",
       "WebFetch(domain:stackoverflow.com)",
       "WebFetch(domain:casualprogrammer.com)",
@@ -31,7 +29,14 @@
       "Bash(sed:*)",
       "Bash(ls:*)",
       "Bash(git log:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(xcodebuild build:*)",
+      "Bash(xcodebuild test:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(chmod:*)",
+      "Bash(pod install:*)",
+      "Bash(open:*)",
+      "Bash(pod:*)"
     ],
     "deny": [
       "Bash(git add:*)",

@@ -144,7 +144,7 @@ extension NSApplication {
     /// Convenience method to activate the application
     func activateApp() {
         if #available(macOS 14.0, *) {
-            self.activate()
+            activate()
         } else {
             activate(ignoringOtherApps: true)
         }
