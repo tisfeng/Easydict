@@ -1,8 +1,8 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**Please use Simplified Chinese for all communication. All documentation and comments within the codebase must be written in English.**
 
-**Please use Simplified Chinese to communicate with me, and use English for code comments.**
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
@@ -29,26 +29,9 @@ xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:E
 xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:EasydictTests/UtilityFunctionsTests/testAES
 ```
 
-**Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+
+**Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+ (minimum supported).  
 
-## Code Quality & Formatting
-
-The project integrates SwiftLint and SwiftFormat to maintain code quality and consistency:
-
-- SwiftLint: Static analysis tool based on Google Swift Style Guide
-- SwiftFormat: Automatic code formatter compliant with Google Swift guidelines
-- 
-Usage
-Both tools are integrated into Xcode build phases - no manual execution required:
-```
-# Code quality checks and formatting run automatically during build
-xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict
-```
-
-### Configuration
-
-- swiftlint.yml - SwiftLint rules and exceptions
-- swiftformat - SwiftFormat formatting behavior
+**Note:** All new development should prefer modern Swift and SwiftUI APIs available on macOS 13.0+ to ensure cleaner, safer, and future‑proof code.
 
 ## Code Architecture
 
@@ -67,19 +50,6 @@ xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict
   - `MMKit/` - Utility framework
 - `EasydictTests/` - Unit tests
 
-### Obj-C to Swift Migration
-
-The project follows a phased migration plan (see `MIGRATION_PROGRESS.md`):
-- AI services: 100% complete
-- Translation services: ~46% complete (Google, Bing, Youdao, DeepL, NiuTrans migrated)
-- Core infrastructure: ~50% complete
-
-**Migration Rules:**
-- **Must migrate to Swift before modifying Objective-C code**
-- All new functionality MUST be implemented in Swift/SwiftUI
-- Objective-C code only allows bug fixes, feature extensions are prohibited
-- When modifying existing Obj-C code, evaluate migration feasibility first
-
 ### Service Architecture
 
 Translation services inherit from a base query service. Each service lives in its own directory under `Swift/Service/` with:
@@ -91,7 +61,6 @@ Translation services inherit from a base query service. Each service lives in it
 - CocoaPods for dependency management (AFNetworking, Masonry, ReactiveObjC, etc.)
 - Bridging header at `Easydict/App/Easydict-Bridging-Header.h`
 - String localization uses Xcode String Catalogs (`.xcstrings` files)
-- URL Scheme support: `easydict://query?text=xxx`
 
 ## Code Contribution Iron Rules
 
@@ -100,25 +69,4 @@ Translation services inherit from a base query service. Each service lives in it
 1. **Prohibit adding any new Objective-C files** (.m, .h files)
 2. All new code MUST be implemented using Swift/SwiftUI
 3. Swift/SwiftUI is the only future tech stack for this project
-4. Must migrate to Swift before modifying existing Objective-C code
-5. Objective-C legacy code: bug fixes only, no feature extensions
-6. Any pull request adding new Objective-C code will be rejected
-
-## Commit Style
-
-Follow Angular Conventional Commit format:
-```
-<type>(<scope>): <description>
-
-[optional body]
-```
-
-Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`
-
-For Obj-C to Swift migrations, use: `refactor(objc-to-swift): migrate <Component> to Swift`
-
-## Development Notes
-
-- Use `Easydict-debug.xcconfig` for local development team configuration (git-ignored)
-- To ignore local changes to xcconfig: `git update-index --skip-worktree Easydict-debug.xcconfig`
-- The app uses private APIs, so it cannot be published to the Mac App Store
+4. Objective-C legacy code: bug fixes only, no feature extensions
