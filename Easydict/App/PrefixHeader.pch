@@ -19,7 +19,6 @@
 #import "Singleton.h"
 #import <ReactiveObjC.h>
 #import "NSObject+DarkMode.h"
-#import "NSView+HiddenDebug.h"
 #import "MMLog.h"
 
 #import "EZConst.h"

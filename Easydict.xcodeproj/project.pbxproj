@@ -283,7 +283,6 @@
 		03B0230629231FA6001C7E63 /* EZLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226C29231FA6001C7E63 /* EZLabel.m */; };
 		03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226E29231FA6001C7E63 /* EZCommonView.m */; };
 		03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */; };
-		03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */; };
 		03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228C29231FA6001C7E63 /* DarkModeManager.m */; };
 		03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022BD29231FA6001C7E63 /* NSTextView+Height.m */; };
 		03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022C129231FA6001C7E63 /* NSColor+MyColors.m */; };
@@ -886,10 +885,8 @@
 		03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+DarkMode.m"; sourceTree = "<group>"; };
 		03B0228829231FA6001C7E63 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
 		03B0228929231FA6001C7E63 /* DarkModeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarkModeManager.h; sourceTree = "<group>"; };
-		03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+HiddenDebug.m"; sourceTree = "<group>"; };
 		03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
 		03B0228C29231FA6001C7E63 /* DarkModeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DarkModeManager.m; sourceTree = "<group>"; };
-		03B0228D29231FA6001C7E63 /* NSView+HiddenDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+HiddenDebug.h"; sourceTree = "<group>"; };
 		03B022BC29231FA6001C7E63 /* NSTextView+Height.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+Height.h"; sourceTree = "<group>"; };
 		03B022BD29231FA6001C7E63 /* NSTextView+Height.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+Height.m"; sourceTree = "<group>"; };
 		03B022C029231FA6001C7E63 /* NSColor+MyColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+MyColors.h"; sourceTree = "<group>"; };
@@ -2262,8 +2259,6 @@
 				03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */,
 				03B0228929231FA6001C7E63 /* DarkModeManager.h */,
 				03B0228C29231FA6001C7E63 /* DarkModeManager.m */,
-				03B0228D29231FA6001C7E63 /* NSView+HiddenDebug.h */,
-				03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */,
 			);
 			path = DarkMode;
 			sourceTree = "<group>";
@@ -3837,7 +3832,6 @@
 				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
 				039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
-				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */,
 				03D9D6FF2D8C186F009E0CEC /* NSScreen+Extention.swift in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,

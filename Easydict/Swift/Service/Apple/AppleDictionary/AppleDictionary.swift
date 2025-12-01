@@ -86,7 +86,7 @@ class AppleDictionary: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> Void
+        completion: @escaping (EZQueryResult, (any Error)?) -> ()
     ) {
         let noResultError = QueryError(type: .noResult)
 
@@ -108,7 +108,7 @@ class AppleDictionary: QueryService {
 
     override func detectText(
         _ text: String,
-        completion: @escaping (Language, (any Error)?) -> Void
+        completion: @escaping (Language, (any Error)?) -> ()
     ) {
         let languageDict = TTTDictionary.languageToDictionaryNameMap
         let supportedLanguages = languageDict.allKeys() as? [Language] ?? []
@@ -124,7 +124,7 @@ class AppleDictionary: QueryService {
 
     override func ocr(
         _ queryModel: EZQueryModel,
-        completion: @escaping (EZOCRResult?, (any Error)?) -> Void
+        completion: @escaping (EZOCRResult?, (any Error)?) -> ()
     ) {
         logError("Apple Dictionary does not support ocr")
     }
@@ -162,8 +162,7 @@ extension AppleDictionary {
         fromToLanguages languages: [Language]?,
         inDictionaryNames dictNames: [String]
     )
-        -> String?
-    {
+        -> String? {
         var dicts: [TTTDictionary] = []
         for name in dictNames {
             let dict = TTTDictionary(named: name)
@@ -182,14 +181,13 @@ extension AppleDictionary {
         fromToLanguages languages: [Language]?,
         inDictionaries dictionaries: [TTTDictionary]
     )
-        -> String?
-    {
+        -> String? {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let fromLanguage = languages?.first
 
         guard let baseHtmlPath = Bundle.main.path(forResource: "apple-dictionary", ofType: "html"),
-            let baseHtmlString = try? String(contentsOfFile: baseHtmlPath, encoding: .utf8)
+              let baseHtmlString = try? String(contentsOfFile: baseHtmlPath, encoding: .utf8)
         else {
             return nil
         }
@@ -202,18 +200,18 @@ extension AppleDictionary {
         let customIframeContainerClass = "custom-iframe-container"
 
         let customCSS = """
-            <style>\
-            .\(customIframeContainerClass) { margin-top: 0px; margin-bottom: 0px; width: 100%; }\
-            body { margin: 10px; color: \(lightTextColorString); background-color: \(lightBackgroundColorString
+        <style>\
+        .\(customIframeContainerClass) { margin-top: 0px; margin-bottom: 0px; width: 100%; }\
+        body { margin: 10px; color: \(lightTextColorString); background-color: \(lightBackgroundColorString
         ); font-family: 'system-ui'; }\
-            @media (prefers-color-scheme: dark) { \
-            body {\
-            background-color: \(darkBackgroundColorString);\
-            filter: invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);\
-            }\
-            }\
-            </style>
-            """
+        @media (prefers-color-scheme: dark) { \
+        body {\
+        background-color: \(darkBackgroundColorString);\
+        filter: invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);\
+        }\
+        }\
+        </style>
+        """
 
         var iframesHtmlString = ""
         var bigWordHtml = "<h2 class=\"\(bigWordTitleH2Class)\">\(word)</h2>"
@@ -282,8 +280,7 @@ extension AppleDictionary {
         inDictionaryName name: String,
         language: Language?
     )
-        -> [String]
-    {
+        -> [String] {
         let dictionary = TTTDictionary(named: name)
         return queryEntryHTMLs(ofWord: word, inDictionary: dictionary, language: language)
     }
@@ -293,8 +290,7 @@ extension AppleDictionary {
         inDictionary dictionary: TTTDictionary,
         language: Language?
     )
-        -> [String]
-    {
+        -> [String] {
         var entryHTMLs: [String] = []
         var texts: [String] = []
 
@@ -399,8 +395,7 @@ extension AppleDictionary {
         inDirectory directoryPath: String,
         withTargetDirectory targetDirectory: String
     )
-        -> String?
-    {
+        -> String? {
         let fileManager = FileManager.default
 
         guard let contents = try? fileManager.contentsOfDirectory(atPath: directoryPath) else {
@@ -436,8 +431,7 @@ extension AppleDictionary {
     // MARK: Private
 
     private func isValidHeadword(_ headword: String, queryWord word: String, language: Language?)
-        -> Bool
-    {
+        -> Bool {
         // Convert to case-insensitive and accent-insensitive normalized string
         let normalizedWord = (word as NSString).folded()
         let normalizedHeadword = (headword as NSString).folded()
@@ -485,8 +479,7 @@ extension AppleDictionary {
                 let splitHeadword = headword.splitCodeText().lowercased()
 
                 if splitWord.wordCount != splitHeadword.wordCount,
-                    splitWord.contains(splitHeadword)
-                {
+                   splitWord.contains(splitHeadword) {
                     return false
                 }
             }
