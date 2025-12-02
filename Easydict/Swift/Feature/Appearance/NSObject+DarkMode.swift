@@ -14,36 +14,45 @@ import Foundation
 extension NSObject: DarkModeCapable {
     /// Check if current appearance is dark mode
     var isDarkMode: Bool {
-        if #available(macOS 10.14, *) {
-            return NSApp.effectiveAppearance.bestMatch(from: [
-                .darkAqua,
-                .aqua,
-            ]) == .darkAqua
-        }
-        return false
+        NSApp.effectiveAppearance.bestMatch(from: [
+            .darkAqua,
+            .aqua,
+        ]) == .darkAqua
     }
 
-    /// Execute different code blocks based on current dark mode
+    /// Execute different code blocks based on current dark mode.
+
     /// - Parameters:
     ///   - light: Code block to execute in light mode, passes self as parameter
     ///   - dark: Code block to execute in dark mode, passes self as parameter
+    ///
+    /// - Important: The appropriate block will be executed one time immediately based on the current mode.
     @objc
     func executeLight(
         _ light: AnyObject? = nil,
         dark: AnyObject? = nil
     ) {
+        // Create closures once
+        let lightClosure = light.map { lightBlock in
+            unsafeBitCast(lightBlock, to: (@convention(block) (NSObject) -> ()).self)
+        }
+
+        let darkClosure = dark.map { darkBlock in
+            unsafeBitCast(darkBlock, to: (@convention(block) (NSObject) -> ()).self)
+        }
+
+        // Execute immediately based on current mode
+        if isDarkMode {
+            darkClosure?(self)
+        } else {
+            lightClosure?(self)
+        }
+
+        // Set up observer for future changes
         setupDarkModeObserver(lightHandler: {
-            if let lightBlock = light {
-                // Cast the block to the expected signature and call it
-                let lightClosure = unsafeBitCast(lightBlock, to: (@convention(block) (NSObject) -> ()).self)
-                lightClosure(self)
-            }
+            lightClosure?(self)
         }, darkHandler: {
-            if let darkBlock = dark {
-                // Cast the block to the expected signature and call it
-                let darkClosure = unsafeBitCast(darkBlock, to: (@convention(block) (NSObject) -> ()).self)
-                darkClosure(self)
-            }
+            darkClosure?(self)
         })
     }
 }
