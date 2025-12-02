@@ -19,6 +19,7 @@ extension Notification.Name {
     static let didChangeWindowConfiguration = Notification.Name("didChangeWindowConfiguration")
 
     static let maxWindowHeightSettingsChanged = Notification.Name("maxWindowHeightSettingsChanged")
+    static let appleInterfaceThemeChanged = Notification.Name("AppleInterfaceThemeChangedNotification")
 }
 
 @objc

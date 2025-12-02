@@ -282,8 +282,6 @@
 		03B0230529231FA6001C7E63 /* EZButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226829231FA6001C7E63 /* EZButton.m */; };
 		03B0230629231FA6001C7E63 /* EZLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226C29231FA6001C7E63 /* EZLabel.m */; };
 		03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226E29231FA6001C7E63 /* EZCommonView.m */; };
-		03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */; };
-		03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228C29231FA6001C7E63 /* DarkModeManager.m */; };
 		03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022BD29231FA6001C7E63 /* NSTextView+Height.m */; };
 		03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022C129231FA6001C7E63 /* NSColor+MyColors.m */; };
 		03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022C829231FA6001C7E63 /* MMCrashSignalExceptionHandler.m */; };
@@ -361,6 +359,10 @@
 		03C3A5CF2E1BFE4900B59152 /* ocr-en-paper-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A02E1BFE4900B59152 /* ocr-en-paper-3.png */; };
 		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
 		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
+		03CA1CF12EDE089E001908D0 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CED2EDE089E001908D0 /* Appearance.swift */; };
+		03CA1CF22EDE089E001908D0 /* DarkModeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */; };
+		03CA1CF32EDE089E001908D0 /* DarkModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */; };
+		03CA1CF62EDE08C0001908D0 /* NSObject+DarkMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CF42EDE08C0001908D0 /* NSObject+DarkMode.swift */; };
 		03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CD01572D24E17C0079D0CB /* YoudaoService.swift */; };
 		03CE80272ED89AD600FB4EAB /* GoogleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE80252ED89AD600FB4EAB /* GoogleService.swift */; };
 		03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */; };
@@ -524,7 +526,6 @@
 		CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */; };
 		CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */; };
 		DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* Configuration.swift */; };
-		DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C882B3969510055EFFC /* Appearance.swift */; };
 		DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */; };
 		EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */; };
 		EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */; };
@@ -882,11 +883,6 @@
 		03B0226C29231FA6001C7E63 /* EZLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZLabel.m; sourceTree = "<group>"; };
 		03B0226E29231FA6001C7E63 /* EZCommonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCommonView.m; sourceTree = "<group>"; };
 		03B0226F29231FA6001C7E63 /* EZCommonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCommonView.h; sourceTree = "<group>"; };
-		03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+DarkMode.m"; sourceTree = "<group>"; };
-		03B0228829231FA6001C7E63 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
-		03B0228929231FA6001C7E63 /* DarkModeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarkModeManager.h; sourceTree = "<group>"; };
-		03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
-		03B0228C29231FA6001C7E63 /* DarkModeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DarkModeManager.m; sourceTree = "<group>"; };
 		03B022BC29231FA6001C7E63 /* NSTextView+Height.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+Height.h"; sourceTree = "<group>"; };
 		03B022BD29231FA6001C7E63 /* NSTextView+Height.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+Height.m"; sourceTree = "<group>"; };
 		03B022C029231FA6001C7E63 /* NSColor+MyColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+MyColors.h"; sourceTree = "<group>"; };
@@ -1007,6 +1003,10 @@
 		03C3A5B32E1BFE4900B59152 /* ocr-zh-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-1.png"; sourceTree = "<group>"; };
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
+		03CA1CED2EDE089E001908D0 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
+		03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeManager.swift; sourceTree = "<group>"; };
+		03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeProtocol.swift; sourceTree = "<group>"; };
+		03CA1CF42EDE08C0001908D0 /* NSObject+DarkMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+DarkMode.swift"; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
 		03CD01572D24E17C0079D0CB /* YoudaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoService.swift; sourceTree = "<group>"; };
 		03CE80252ED89AD600FB4EAB /* GoogleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleService.swift; sourceTree = "<group>"; };
@@ -2093,7 +2093,6 @@
 				03B0229929231FA6001C7E63 /* StatusItem */,
 				03BDA7982A26DA000079D04F /* Libraries */,
 				038954372A25A94E00EFFDC3 /* Utility */,
-				03B0228629231FA6001C7E63 /* DarkMode */,
 				03B022A529231FA6001C7E63 /* MMKit */,
 			);
 			path = objc;
@@ -2249,18 +2248,6 @@
 				03B0226E29231FA6001C7E63 /* EZCommonView.m */,
 			);
 			path = CommonView;
-			sourceTree = "<group>";
-		};
-		03B0228629231FA6001C7E63 /* DarkMode */ = {
-			isa = PBXGroup;
-			children = (
-				03B0228829231FA6001C7E63 /* Singleton.h */,
-				03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */,
-				03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */,
-				03B0228929231FA6001C7E63 /* DarkModeManager.h */,
-				03B0228C29231FA6001C7E63 /* DarkModeManager.m */,
-			);
-			path = DarkMode;
 			sourceTree = "<group>";
 		};
 		03B0229929231FA6001C7E63 /* StatusItem */ = {
@@ -2628,6 +2615,17 @@
 				03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */,
 			);
 			path = "ocr-images";
+			sourceTree = "<group>";
+		};
+		03CA1CF02EDE089E001908D0 /* Appearance */ = {
+			isa = PBXGroup;
+			children = (
+				03CA1CED2EDE089E001908D0 /* Appearance.swift */,
+				03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */,
+				03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */,
+				03CA1CF42EDE08C0001908D0 /* NSObject+DarkMode.swift */,
+			);
+			path = Appearance;
 			sourceTree = "<group>";
 		};
 		03CD01582D24E17C0079D0CB /* Youdao */ = {
@@ -3126,6 +3124,7 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				03CA1CF02EDE089E001908D0 /* Appearance */,
 				03A00D862E616D3D001A4D82 /* ActionManager */,
 				032AAA502C456D96007996A1 /* HTTPServer */,
 				032A28632BB26DB600265BA4 /* Appearance */,
@@ -3870,6 +3869,7 @@
 				033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */,
 				960835502B6791F200C6A931 /* ShortcutManager+Validator.swift in Sources */,
 				03E75A092ED760E200E1741E /* NSMutableAttributedString+ObjCCompat.swift in Sources */,
+				03CA1CF62EDE08C0001908D0 /* NSObject+DarkMode.swift in Sources */,
 				03E75A0A2ED760E200E1741E /* NSAttributedString+ObjCCompat.swift in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03F44F2D2E578A58003C2EA3 /* EZRecognizedTextObservation.swift in Sources */,
@@ -3922,7 +3922,6 @@
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
 				03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */,
 				03F46BE92E41C83B00D35EF6 /* IndentationInfo.swift in Sources */,
-				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				039223C02E4B61980052F695 /* OCRImageView.swift in Sources */,
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
@@ -3963,6 +3962,9 @@
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
+				03CA1CF12EDE089E001908D0 /* Appearance.swift in Sources */,
+				03CA1CF22EDE089E001908D0 /* DarkModeProtocol.swift in Sources */,
+				03CA1CF32EDE089E001908D0 /* DarkModeManager.swift in Sources */,
 				03E75A0C2ED7610400E1741E /* Array+ObjCCompat.swift in Sources */,
 				03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */,
 				035F9CCF2C529A04005D1C9A /* ServiceAPIType.swift in Sources */,
@@ -4013,7 +4015,6 @@
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */,
 				03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */,
-				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
 				0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */,
@@ -4134,7 +4135,6 @@
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
 				034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */,
-				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,
 				039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */,

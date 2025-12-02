@@ -91,7 +91,7 @@ class Configuration: NSObject {
     @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
 
-    @DefaultsWrapper(.appearanceType) var appearance: AppearenceType
+    @DefaultsWrapper(.appearanceType) var appearance: AppearanceType
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
     @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
 
@@ -540,8 +540,8 @@ extension Configuration {
         NotificationCenter.default.post(name: .didChangeFontSize, object: nil)
     }
 
-    fileprivate func didSetAppearance(_ appearance: AppearenceType) {
-        DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
+    fileprivate func didSetAppearance(_ appearance: AppearanceType) {
+        DarkModeManager.shared.updateDarkMode(appearance)
     }
 }
 

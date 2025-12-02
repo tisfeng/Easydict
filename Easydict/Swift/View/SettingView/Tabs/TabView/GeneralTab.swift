@@ -114,7 +114,7 @@ struct GeneralTab: View {
                 Picker(
                     "setting.general.appearance.light_dark_appearance", selection: $appearanceType
                 ) {
-                    ForEach(AppearenceType.allCases, id: \.rawValue) { option in
+                    ForEach(AppearanceType.allCases, id: \.rawValue) { option in
                         Text(option.title)
                             .tag(option)
                     }

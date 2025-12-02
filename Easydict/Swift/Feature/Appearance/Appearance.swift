@@ -9,10 +9,10 @@
 import Defaults
 import Foundation
 
-// MARK: - AppearenceType
+// MARK: - AppearanceType
 
 @objc
-enum AppearenceType: Int, CaseIterable, Defaults.Serializable {
+enum AppearanceType: Int, CaseIterable, Defaults.Serializable {
     case followSystem = 0
     case light
     case dark
@@ -42,22 +42,22 @@ enum AppearenceType: Int, CaseIterable, Defaults.Serializable {
     }
 
     static func titles() -> [String] {
-        let array = AppearenceType.allCases.map(\.title)
+        let array = AppearanceType.allCases.map(\.title)
         return array
     }
 }
 
-// MARK: - AppearenceHelper
+// MARK: - AppearanceHelper
 
 @objcMembers
-class AppearenceHelper: NSObject {
-    static let shared = AppearenceHelper()
+class AppearanceHelper: NSObject {
+    static let shared = AppearanceHelper()
 
     func titles() -> [String] {
-        AppearenceType.titles()
+        AppearanceType.titles()
     }
 
-    func updateAppApperance(_ apperanceType: AppearenceType) {
+    func updateAppAppearance(_ apperanceType: AppearanceType) {
         NSApplication.shared.appearance = apperanceType.appearence
     }
 }

@@ -16,9 +16,10 @@
 #import "NSColor+MyColors.h"
 #import "MMEventMonitor.h"
 
-#import "Singleton.h"
-#import <ReactiveObjC.h>
-#import "NSObject+DarkMode.h"
+// Dark mode functionality moved to Swift implementation
+// #import "Singleton.h"
+// #import <ReactiveObjC.h>
+// #import "NSObject+DarkMode.h"
 #import "MMLog.h"
 
 #import "EZConst.h"

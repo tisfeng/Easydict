@@ -15,7 +15,7 @@
 #import "NSViewController+EZWindow.h"
 #import "EZLog.h"
 #import "EZLanguageManager.h"
-#import "DarkModeManager.h"
+//#import "DarkModeManager.h"
 
 #import "EZBaiduTranslate.h"
 #import "MMCrash.h"

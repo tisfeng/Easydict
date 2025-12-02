@@ -25,7 +25,7 @@
     
     [self registerRouters];
     
-    [[DarkModeManager manager] updateDarkMode:Configuration.shared.appearance];
+    [DarkModeManager.shared updateDarkMode:Configuration.shared.appearance];
 }
 
 #pragma mark - NSApplicationDelegate

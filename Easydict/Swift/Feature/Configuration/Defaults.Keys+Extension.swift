@@ -110,7 +110,7 @@ extension Defaults.Keys {
         default: false
     )
 
-    static let appearanceType = Key<AppearenceType>(
+    static let appearanceType = Key<AppearanceType>(
         "EZConfiguration_kApperanceKey", default: .followSystem
     )
     static let fontSizeOptionIndex = Key<UInt>(

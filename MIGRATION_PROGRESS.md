@@ -69,6 +69,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | 文本选择 | AXUI | TextSelection | ✅ |
 | 离线翻译 | - | OfflineTranslation | ✅ |
 | SwiftPM | - | Package.swift | ✅ |
+| 暗色模式 | DarkModeManager/NSObject+DarkMode/Singleton | DarkModeManager.swift + Extensions | ✅ |
 
 #### 工具扩展层 (Utilities)
 
@@ -99,6 +100,21 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 修复了 AppleDictionary.swift 中的调用
   - 修复了所有 SwiftLint 违规和编译错误
   - 通过了所有 SwiftLint 检查 (0 violations)
+
+### 2025-01-30：DarkMode 模块重构
+
+- **目标**: 使用 Swift 完全重写 DarkMode 模块
+- **状态**: ✅ 完成
+- **实际时间**: 1 天
+- **成果**:
+  - 创建了 `DarkModeManager.swift` 统一的暗色模式管理器
+  - 创建了 `DarkModeProtocol.swift` 提供响应式暗色模式协议
+  - 创建了 `NSObject+DarkMode.swift` 和 `NSView+DarkMode.swift` 扩展
+  - 使用 Combine 替代 ReactiveObjC，移除额外依赖
+  - 更新了 `AppDelegate.m` 和 `Configuration.swift` 的调用
+  - 移除了 4 个 Objective-C 文件和整个 DarkMode 目录
+  - 更新了 `PrefixHeader.pch` 移除旧导入
+  - 更新了 `MIGRATION_PROGRESS.md` 记录迁移进度
 
 ## 📋 待迁移列表
 
