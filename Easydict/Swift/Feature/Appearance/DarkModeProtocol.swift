@@ -26,7 +26,7 @@ extension DarkModeCapable where Self: NSObject {
         lightHandler: (() -> ())? = nil,
         darkHandler: (() -> ())? = nil
     ) {
-        NotificationCenter.default.publisher(for: .darkModeDidChange)
+        let cancellable = NotificationCenter.default.publisher(for: .darkModeDidChange)
             .receive(on: DispatchQueue.main)
             .sink { notification in
                 guard let isDark = notification.userInfo?["isDark"] as? Bool else { return }
@@ -37,17 +37,12 @@ extension DarkModeCapable where Self: NSObject {
                     lightHandler?()
                 }
             }
-            .store(in: &associatedCancellables)
-    }
 
-    // Associated object for storing cancellables
-    private var associatedCancellables: Set<AnyCancellable> {
-        get {
-            objc_getAssociatedObject(self, &cancellablesKey) as? Set<AnyCancellable> ?? Set<AnyCancellable>()
+        // Store the cancellable using a simple approach
+        if let existingCancellable = objc_getAssociatedObject(self, &cancellablesKey) as? AnyCancellable {
+            existingCancellable.cancel()
         }
-        set {
-            objc_setAssociatedObject(self, &cancellablesKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
+        objc_setAssociatedObject(self, &cancellablesKey, cancellable, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
 

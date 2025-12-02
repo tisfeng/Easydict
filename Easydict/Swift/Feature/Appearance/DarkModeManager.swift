@@ -70,13 +70,10 @@ class DarkModeManager: NSObject {
     }
 
     func currentSystemDarkMode() -> Bool {
-        if #available(macOS 10.14, *) {
-            return NSApp.effectiveAppearance.bestMatch(from: [
-                .darkAqua,
-                .aqua,
-            ]) == .darkAqua
-        }
-        return false
+        NSApp.effectiveAppearance.bestMatch(from: [
+            .darkAqua,
+            .aqua,
+        ]) == .darkAqua
     }
 
     // MARK: Private
