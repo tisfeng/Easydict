@@ -68,7 +68,7 @@
 
     self.image = isPlaying ? pauseImage : playImage;
 
-    [self excuteLight:^(NSButton *audioButton) {
+    [self executeLight:^(NSButton *audioButton) {
         audioButton.image = [audioButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *audioButton) {
         audioButton.image = [audioButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

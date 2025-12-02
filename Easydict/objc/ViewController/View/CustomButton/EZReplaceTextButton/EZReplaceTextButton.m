@@ -25,7 +25,7 @@
 - (void)setup {
     self.image = [NSImage ez_imageWithSymbolName:@"arrow.forward.square"];
 
-    [self excuteLight:^(NSButton *button) {
+    [self executeLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

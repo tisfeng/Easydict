@@ -155,7 +155,7 @@
             [self addSubview:view];
             view.wantsLayer = YES;
             view.layer.cornerRadius = EZCornerRadius_8;
-            [view.layer excuteLight:^(CALayer *layer) {
+            [view.layer executeLight:^(CALayer *layer) {
                 layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
             } dark:^(CALayer *layer) {
                 layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
@@ -189,7 +189,7 @@
             label.backgroundColor = NSColor.clearColor;
             label.alignment = NSTextAlignmentCenter;
             label.font = [NSFont systemFontOfSize:14];
-            [label excuteLight:^(NSTextField *label) {
+            [label executeLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextDarkColor];
@@ -212,7 +212,7 @@
             label.stringValue = self.dataDict[@"questions"][0];
             label.usesSingleLineMode = NO;
             label.maximumNumberOfLines = 0;
-            [label excuteLight:^(NSTextField *label) {
+            [label executeLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextDarkColor];
@@ -231,7 +231,7 @@
         _moreBtn.title = NSLocalizedString(@"tips_more", nil);
         _moreBtn.imagePosition = NSImageLeft;
         _moreBtn.edgeInsets = NSEdgeInsetsMake(0, 3, 0, 3);
-        [_moreBtn excuteLight:^(NSButton *button) {
+        [_moreBtn executeLight:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
@@ -250,7 +250,7 @@
         _solveBtn.imagePosition = NSImageLeft;
         _solveBtn.title = NSLocalizedString(@"tips_solve", nil);
         _solveBtn.edgeInsets = NSEdgeInsetsMake(0, 3, 0, 3);
-        [_solveBtn excuteLight:^(NSButton *button) {
+        [_solveBtn executeLight:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

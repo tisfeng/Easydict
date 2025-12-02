@@ -23,7 +23,7 @@
     copyImage = [copyImage resizeToSize:CGSizeMake(16, 16)];
     self.image = copyImage;
     
-    [self excuteLight:^(NSButton *button) {
+    [self executeLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

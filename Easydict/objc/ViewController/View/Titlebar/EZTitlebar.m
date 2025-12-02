@@ -251,7 +251,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
         CGSize imageSize = CGSizeMake(20, 20);
         
-        [quickActionButton excuteLight:^(EZButton *button) {
+        [quickActionButton executeLight:^(EZButton *button) {
             button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
         } dark:^(EZButton *button) {
             button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
@@ -410,7 +410,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
     
     mm_weakify(self);
-    [self.pinButton excuteLight:^(EZHoverButton *button) {
+    [self.pinButton executeLight:^(EZHoverButton *button) {
         mm_strongify(self)
         NSImage *image = self.pin ? selectedImage : normalLightImage;
         button.image = image;

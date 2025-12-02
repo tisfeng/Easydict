@@ -48,7 +48,7 @@
     self.languageBarView = languageBarView;
     languageBarView.wantsLayer = YES;
     languageBarView.layer.cornerRadius = EZCornerRadius_8;
-    [languageBarView excuteLight:^(NSView *barView) {
+    [languageBarView executeLight:^(NSView *barView) {
         barView.layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
     } dark:^(NSView *barView) {
         barView.layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
@@ -65,7 +65,7 @@
     transformButton.toolTip = toolTip;
     transformButton.image = [NSImage imageNamed:@"transform"];
     
-    [transformButton excuteLight:^(EZHoverButton *transformButton) {
+    [transformButton executeLight:^(EZHoverButton *transformButton) {
         transformButton.contentTintColor = NSColor.blackColor;
     } dark:^(EZHoverButton *transformButton) {
         transformButton.contentTintColor = NSColor.whiteColor;

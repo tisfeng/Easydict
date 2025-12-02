@@ -33,7 +33,7 @@
         self.delegate = self;
         
         // !!!: must set backgroundColor
-        [self excuteLight:^(NSWindow *window) {
+        [self executeLight:^(NSWindow *window) {
             window.backgroundColor = [NSColor ez_mainViewBgLightColor];
         } dark:^(NSWindow *window) {
             window.backgroundColor = [NSColor ez_mainViewBgDarkColor];

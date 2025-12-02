@@ -56,7 +56,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         self.wantsLayer = YES;
         self.layer.cornerRadius = EZCornerRadius_8;
         self.fontSizeRatio = Configuration.shared.fontSizeRatio;
-        [self.layer excuteLight:^(CALayer *layer) {
+        [self.layer executeLight:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
@@ -334,7 +334,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
                 NSButton *tagButton = [[NSButton alloc] init];
                 tagButton.title = tag;
-                [tagButton excuteLight:^(NSButton *tagButton) {
+                [tagButton executeLight:^(NSButton *tagButton) {
                     NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
                     [self updateTagButton:tagButton tagColor:tagColor];
                 } dark:^(NSButton *tagButton) {
@@ -366,7 +366,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     tagContentView = [[NSView alloc] init];
                     [tagScrollView addSubview:tagContentView];
                     tagContentView.wantsLayer = YES;
-                    [tagContentView.layer excuteLight:^(CALayer *layer) {
+                    [tagContentView.layer executeLight:^(CALayer *layer) {
                         layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
                     } dark:^(CALayer *layer) {
                         layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
@@ -654,7 +654,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             meanLabel.text = obj.meansText;
             meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
             [self addSubview:meanLabel];
-            [meanLabel excuteLight:^(id _Nonnull x) {
+            [meanLabel executeLight:^(id _Nonnull x) {
                 [x setTextColor:[NSColor ez_resultTextLightColor]];
             } dark:^(id _Nonnull x) {
                 [x setTextColor:[NSColor ez_resultTextDarkColor]];
@@ -855,7 +855,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     linkButton.link = [result.service wordLink:result.queryModel];
 
-    [linkButton excuteLight:^(NSButton *linkButton) {
+    [linkButton executeLight:^(NSButton *linkButton) {
         linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *linkButton) {
         linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

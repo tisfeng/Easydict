@@ -28,7 +28,7 @@ extension NSObject: DarkModeCapable {
     ///   - light: Code block to execute in light mode, passes self as parameter
     ///   - dark: Code block to execute in dark mode, passes self as parameter
     @objc
-    func excuteLight(
+    func executeLight(
         _ light: AnyObject? = nil,
         dark: AnyObject? = nil
     ) {

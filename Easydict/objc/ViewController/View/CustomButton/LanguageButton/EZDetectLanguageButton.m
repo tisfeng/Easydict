@@ -32,7 +32,7 @@
     self.alphaValue = 0;
     self.title = @"";
     
-    [self excuteLight:^(EZButton *detectButton) {
+    [self executeLight:^(EZButton *detectButton) {
         detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#E8E8E8"];
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#DCDCDC"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#CCCCCC"];
