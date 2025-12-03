@@ -10,12 +10,6 @@ import AppKit
 import Combine
 import Foundation
 
-// MARK: - Notification Extensions
-
-extension Notification.Name {
-    static let darkModeDidChange = Notification.Name("DarkModeDidChange")
-}
-
 // MARK: - DarkModeManager
 
 @objcMembers
@@ -43,11 +37,7 @@ class DarkModeManager: NSObject {
 
     private(set) var systemDarkMode: Bool = false {
         didSet {
-            NotificationCenter.default.post(
-                name: .darkModeDidChange,
-                object: nil,
-                userInfo: ["isDark": systemDarkMode]
-            )
+            NotificationCenter.default.postDarkModeDidChangeNotification(isDark: systemDarkMode)
         }
     }
 

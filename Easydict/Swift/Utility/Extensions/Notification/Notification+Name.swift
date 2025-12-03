@@ -19,7 +19,19 @@ extension Notification.Name {
     static let didChangeWindowConfiguration = Notification.Name("didChangeWindowConfiguration")
 
     static let maxWindowHeightSettingsChanged = Notification.Name("maxWindowHeightSettingsChanged")
+
+    // System dark mode change notification
     static let appleInterfaceThemeChanged = Notification.Name("AppleInterfaceThemeChangedNotification")
+
+    // User app dark mode change notification
+    static let appDarkModeDidChange = Notification.Name("AppDarkModeDidChange")
+}
+
+// MARK: - NotificationUserInfoKey
+
+enum NotificationUserInfoKey {
+    /// UserInfo key for dark mode state in appDarkModeDidChange notification
+    public static let isDark = "isDark"
 }
 
 @objc
@@ -31,6 +43,7 @@ extension NSNotification {
     static let didChangeFontSize = Notification.Name.didChangeFontSize
     static let didChangeWindowConfiguration = Notification.Name.didChangeWindowConfiguration
     static let maxWindowHeightSettingsChanged = Notification.Name.maxWindowHeightSettingsChanged
+    static let appDarkModeDidChange = Notification.Name.appDarkModeDidChange
 }
 
 @objc
@@ -51,5 +64,14 @@ extension NotificationCenter {
 
     func postServiceUpdateNotification() {
         postServiceUpdateNotification(autoQuery: false)
+    }
+
+    /// Post dark mode change notification
+    func postDarkModeDidChangeNotification(isDark: Bool) {
+        let notification = Notification(
+            name: .appDarkModeDidChange,
+            userInfo: [NotificationUserInfoKey.isDark: isDark]
+        )
+        post(notification)
     }
 }
