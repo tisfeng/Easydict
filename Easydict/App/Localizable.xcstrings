@@ -295,7 +295,7 @@
         }
       }
     },
-    "appearenceType_dark" : {
+    "appearanceType_dark" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -323,7 +323,7 @@
         }
       }
     },
-    "appearenceType_followSystem" : {
+    "appearanceType_followSystem" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -351,7 +351,7 @@
         }
       }
     },
-    "appearenceType_light" : {
+    "appearanceType_light" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {

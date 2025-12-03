@@ -22,15 +22,15 @@ enum AppearanceType: Int, CaseIterable, Defaults.Serializable {
     var title: String {
         switch self {
         case .followSystem:
-            NSLocalizedString("appearenceType_followSystem", comment: "")
+            NSLocalizedString("appearanceType_followSystem", comment: "")
         case .light:
-            NSLocalizedString("appearenceType_light", comment: "")
+            NSLocalizedString("appearanceType_light", comment: "")
         case .dark:
-            NSLocalizedString("appearenceType_dark", comment: "")
+            NSLocalizedString("appearanceType_dark", comment: "")
         }
     }
 
-    var appearence: NSAppearance? {
+    var appearance: NSAppearance? {
         switch self {
         case .followSystem:
             nil
@@ -58,6 +58,6 @@ class AppearanceHelper: NSObject {
     }
 
     func updateAppAppearance(_ apperanceType: AppearanceType) {
-        NSApplication.shared.appearance = apperanceType.appearence
+        NSApplication.shared.appearance = apperanceType.appearance
     }
 }
