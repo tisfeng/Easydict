@@ -66,22 +66,19 @@
     NSString *detectLanguageTitle = [EZLanguageManager.shared showingLanguageName:detectedLanguage];
 
     // Button title format: Detected English
-    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"detected", nil)];
-    [attrTitle addAttributes:@{
+    NSFont *titleFont = [NSFont systemFontOfSize:10];
+    NSString *detectedTitle = NSLocalizedString(@"detected", nil);
+    NSString *fullTitle = [NSString stringWithFormat:@"%@ %@", detectedTitle, detectLanguageTitle];
+    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:fullTitle
+                                                                                   attributes:@{
+        NSFontAttributeName : titleFont,
         NSForegroundColorAttributeName : NSColor.grayColor,
-        NSFontAttributeName : [NSFont systemFontOfSize:10],
-    } range:NSMakeRange(0, attrTitle.length)];
-
-    NSMutableAttributedString *whitespace = [[NSMutableAttributedString alloc] initWithString:@" "];
-    [attrTitle appendAttributedString:whitespace];
-
-    NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguageTitle];
-    [detectAttrTitle addAttributes:@{
+    }];
+    
+    NSRange languageRange = NSMakeRange(detectedTitle.length + 1, detectLanguageTitle.length);
+    [attrTitle addAttributes:@{
         NSForegroundColorAttributeName : [NSColor ez_blueTitleColor],
-        NSFontAttributeName : [NSFont systemFontOfSize:10],
-    } range:NSMakeRange(0, detectAttrTitle.length)];
-
-    [attrTitle appendAttributedString:detectAttrTitle];
+    } range:languageRange];
     self.attributedTitle = attrTitle;
     
     CGFloat width = [attrTitle mm_getTextWidth];
