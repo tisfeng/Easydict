@@ -97,9 +97,9 @@ strongifiedSelf
 
 --self init-only
 
-# Excluded folders
+# Excluded folders 
 
---exclude Pods,**/UNTESTED_TODO,vendor,fastlane
+--exclude Pods, **/UNTESTED_TODO, vendor, fastlane, DerivedData, .build, SourcePackages, **/checkouts/**, **/.build/**
 
 # https://github.com/NoemiRozpara/Google-SwiftFormat-Config
 

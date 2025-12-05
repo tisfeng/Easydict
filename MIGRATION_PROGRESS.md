@@ -40,6 +40,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 |---------|----------|----------|----------|------|
 | 文本分割 | NSString+EZSplit | String+Split | 2025-01-29 | 分割驼峰和下划线文本 |
 | 输入文本处理 | NSString+EZHandleInputText | String+HandleInputText | 2025-01-29 | 完整的输入文本处理功能 |
+| 字符串便利 | NSString+EZConvenience | String+Convenience | 2025-02-17 | URL 编码、剪贴板、XML 转义、MD5 等 |
 
 #### AI 服务层 (AI Services)
 
@@ -83,7 +84,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 - **翻译服务**: 6/13 已完成 (46%)
 - **AI 服务**: 14/14 已完成 (100%)
 - **基础设施**: 5/10 已完成 (50%)
-- **工具扩展**: 2/15 已完成 (13%)
+- **工具扩展**: 3/15 已完成 (20%)
 
 ## ✅ 已完成迁移
 
@@ -115,6 +116,14 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 移除了 4 个 Objective-C 文件和整个 DarkMode 目录
   - 更新了 `PrefixHeader.pch` 移除旧导入
   - 更新了 `MIGRATION_PROGRESS.md` 记录迁移进度
+
+### 2025-02-17：NSString+EZConvenience
+
+- **目标**: 使用 Swift 重写 `NSString+EZConvenience`
+- **状态**: ✅ 完成
+- **成果**:
+  - 新增 `String+Convenience.swift`，覆盖 URL 编码/解码、剪贴板操作、XML 转义、MD5、段落拆分等方法
+  - 删除旧的 Objective-C 分类，更新 PCH、Bridging Header 和 Xcode 工程引用
 
 ## 📋 待迁移列表
 
@@ -173,25 +182,23 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 8. **NSString+EZChineseText** - 中文文本处理
    - **⚠️ 禁止修改，必须迁移到 Swift**
-9. **NSString+EZConvenience** - 字符串便利方法
-   - **⚠️ 禁止修改，必须迁移到 Swift**
-10. **NSString+EZUtils** - 字符串工具
+9. **NSString+EZUtils** - 字符串工具
     - **⚠️ 禁止修改，必须迁移到 Swift**
-11. **NSString+EZSplit** - 文本分割
+10. **NSString+EZSplit** - 文本分割
     - **⚠️ 禁止修改，必须迁移到 Swift**
-12. **NSColor+MyColors** - 颜色扩展
+11. **NSColor+MyColors** - 颜色扩展
     - **⚠️ 重写时必须使用 Swift**
-13. **EZLanguageManager** - 语言管理
+12. **EZLanguageManager** - 语言管理
     - **⚠️ 重写时必须使用 Swift**
-14. **EZEventMonitor** - 事件监控
+13. **EZEventMonitor** - 事件监控
     - **⚠️ 重写时必须使用 Swift**
-15. **EZLog** - 日志工具
+14. **EZLog** - 日志工具
     - **⚠️ 重写时必须使用 Swift**
-16. **DarkModeManager** - 深色模式
+15. **DarkModeManager** - 深色模式
     - **⚠️ 重写时必须使用 Swift**
-17. **MMLog** - 日志框架
+16. **MMLog** - 日志框架
     - **⚠️ 重写时必须使用 Swift**
-18. **MMCrash** - 崩溃处理
+17. **MMCrash** - 崩溃处理
     - **⚠️ 重写时必须使用 Swift**
 
 ## 🚀 迁移计划

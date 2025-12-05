@@ -105,6 +105,7 @@
 		033897B72E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */; };
 		033897B82E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */; };
 		033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033A8EAD2BDFE09B00030C08 /* String+Extension.swift */; };
+		24832952EE17407C852B2258 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24832951EE17407C852B2258 /* String+Convenience.swift */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C6DBE2ED9C4F000AC39FC /* GoogleService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DBD2ED9C4F000AC39FC /* GoogleService+Translate.swift */; };
@@ -332,7 +333,6 @@
 		03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */; };
 		03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */; };
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
-		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03C3A59A2E1BC8C600B59152 /* OCRImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */; };
 		03C3A5B62E1BFE4900B59152 /* ocr-en-paper-9.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A62E1BFE4900B59152 /* ocr-en-paper-9.png */; };
 		03C3A5B72E1BFE4900B59152 /* ocr-en-paper-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A59F2E1BFE4900B59152 /* ocr-en-paper-2.png */; };
@@ -669,6 +669,7 @@
 		033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-2.png"; sourceTree = "<group>"; };
 		033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-3.png"; sourceTree = "<group>"; };
 		033A8EAD2BDFE09B00030C08 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		033B7132293CE2430096E2DF /* EZWebViewTranslator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewTranslator.h; sourceTree = "<group>"; };
 		033B7133293CE2430096E2DF /* EZWebViewTranslator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewTranslator.m; sourceTree = "<group>"; };
 		033C30F92A7409C40095926A /* DictionaryKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictionaryKit.h; sourceTree = "<group>"; };
@@ -975,8 +976,6 @@
 		03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cyan-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@3x.png"; sourceTree = "<group>"; };
-		03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZConvenience.h"; sourceTree = "<group>"; };
-		03BFFC7029612E10004E033E /* NSString+EZConvenience.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZConvenience.m"; sourceTree = "<group>"; };
 		03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageTests.swift; sourceTree = "<group>"; };
 		03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-letter-338.png"; sourceTree = "<group>"; };
 		03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-1.png"; sourceTree = "<group>"; };
@@ -1509,8 +1508,6 @@
 		0333FDA72A035D6400891515 /* NSString */ = {
 			isa = PBXGroup;
 			children = (
-				03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */,
-				03BFFC7029612E10004E033E /* NSString+EZConvenience.m */,
 				03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */,
 				03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */,
 			);
@@ -1961,6 +1958,7 @@
 				03E75A042ED75FE200E1741E /* String+ObjCCompat.swift */,
 				035FB78B2ED4E08500F3EB27 /* String+Layout.swift */,
 				033A8EAD2BDFE09B00030C08 /* String+Extension.swift */,
+				24832951EE17407C852B2258 /* String+Convenience.swift */,
 				03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */,
 				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
 				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
@@ -3848,6 +3846,7 @@
 				03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */,
 				0340D39E2C951850004C9910 /* QueryError.swift in Sources */,
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
+				24832952EE17407C852B2258 /* String+Convenience.swift in Sources */,
 				0D124C422E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift in Sources */,
 				C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
@@ -3857,7 +3856,6 @@
 				0AC8A8352B6641A7006DA5CC /* TencentService+ConfigurableService.swift in Sources */,
 				DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
-				03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */,
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,

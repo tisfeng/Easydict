@@ -48,7 +48,7 @@ class BingService: QueryService {
 
         // If Chinese text too long, web link page will report error.
         if EZLanguageManager.shared().isChineseLanguage(textLanguage) {
-            text = (maxText as NSString).trim(toMaxLength: 450) as String
+            text = maxText.trimToMaxLength(450)
         }
 
         if isDictQueryResult {

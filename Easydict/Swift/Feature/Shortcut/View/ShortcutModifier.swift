@@ -62,15 +62,15 @@ struct ShortcutModifierWithKey<Content: View>: View {
         }
     }
 
-    private func fetchShortcutKeyEventModifiers(_ keyCombo: KeyCombo) -> EventModifiers {
-        let modifierMappings: [(NSEvent.ModifierFlags, EventModifiers)] = [
+    private func fetchShortcutKeyEventModifiers(_ keyCombo: KeyCombo) -> SwiftUI.EventModifiers {
+        let modifierMappings: [(NSEvent.ModifierFlags, SwiftUI.EventModifiers)] = [
             (.command, .command),
             (.control, .control),
             (.option, .option),
             (.shift, .shift),
         ]
 
-        return modifierMappings.reduce(into: EventModifiers()) { result, mapping in
+        return modifierMappings.reduce(into: SwiftUI.EventModifiers()) { result, mapping in
             if keyCombo.keyEquivalentModifierMask.contains(mapping.0) {
                 result.update(with: mapping.1)
             }

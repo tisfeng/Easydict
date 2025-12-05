@@ -17,16 +17,24 @@ Easydict is a macOS dictionary and translation app that supports word lookup, te
 open Easydict.xcworkspace
 
 # Build from command line
-xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict
-
-# Run all tests (May cost much time)
-xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict 
+xcodebuild build-for-testing \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -derivedDataPath ./DerivedData | xcbeautify
 
 # Run specific test class
-xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:EasydictTests/UtilityFunctionsTests
+xcodebuild test-without-building \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -derivedDataPath ./DerivedData \
+  -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
 
 # Run specific test method
-xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -only-testing:EasydictTests/UtilityFunctionsTests/testAES
+xcodebuild test-without-building \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -derivedDataPath ./DerivedData \
+  -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 ```
 
 **Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+ (minimum supported).  

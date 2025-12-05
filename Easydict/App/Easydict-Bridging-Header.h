@@ -10,12 +10,11 @@
 #import "entry.h"
 #import "AppDelegate.h"
 #import "EZLocalStorage.h"
-#import "NSString+EZConvenience.h"
 #import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
 #import "EZLog.h"
 #import "EZLanguageManager.h"
-//#import "DarkModeManager.h"
+#import "EZToast.h"
 
 #import "EZBaiduTranslate.h"
 #import "MMCrash.h"

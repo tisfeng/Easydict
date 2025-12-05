@@ -467,10 +467,10 @@ class BingRequest {
         /// 1000 Chinese characters, is about 1MB, duration 4 minutes (mp3)
         /// 2000 Chinese characters, is about 1.9MB, duration 8 minutes
         /// 7000 English characters, is about 2MB, duration 8 minutes
-        var trimText = (text as NSString).trim(toMaxLength: 7000) as String
+        var trimText = text.trimToMaxLength(7000)
         // Chinese text should be shorter, long TTS will cost much time.
         if !EZLanguageManager.shared().isLanguageWordsNeedSpace(language) {
-            trimText = (text as NSString).trim(toMaxLength: 2000) as String
+            trimText = text.trimToMaxLength(2000)
         }
 
         let escapedXMLText = trimText.escapeXMLEntities()

@@ -238,7 +238,7 @@ extension AppleDictionary {
                 let dictHTML = "\(customCSS)\n\n\(wordHtmlString)"
 
                 // Create an iframe for each HTML content
-                let escapedDictHTML = (dictHTML as NSString).escapedXML()
+                let escapedDictHTML = dictHTML.escapedXMLString()
                 let iframeHTML =
                     "<iframe class=\"\(customIframeContainerClass)\" srcdoc=\"\(escapedDictHTML)\"></iframe>"
 
@@ -433,8 +433,8 @@ extension AppleDictionary {
     private func isValidHeadword(_ headword: String, queryWord word: String, language: Language?)
         -> Bool {
         // Convert to case-insensitive and accent-insensitive normalized string
-        let normalizedWord = (word as NSString).folded()
-        let normalizedHeadword = (headword as NSString).folded()
+        let normalizedWord = word.foldedString()
+        let normalizedHeadword = headword.foldedString()
 
         // Filter results like "-log", "log-" when querying "log"
         let remainedText = normalizedHeadword.replacingOccurrences(of: normalizedWord, with: "")
