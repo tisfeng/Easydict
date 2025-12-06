@@ -1037,25 +1037,26 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     return frame;
 }
 
-- (BOOL)isCmdCEvent:(NSEvent *)event {
+- (BOOL)isCmdKeyEvent:(NSEvent *)event withKeyCode:(CGKeyCode)keyCode {
     if (event.type != NSEventTypeKeyDown && event.type != NSEventTypeKeyUp) {
         return NO;
     }
 
     BOOL isCmdKeyPressed = (event.modifierFlags & NSEventModifierFlagCommand) != 0;
-    BOOL isCKeyPressed = event.keyCode == kVK_ANSI_C;
-    return isCmdKeyPressed && isCKeyPressed;
+    BOOL isTargetKeyPressed = event.keyCode == keyCode;
+    return isCmdKeyPressed && isTargetKeyPressed;
+}
+
+- (BOOL)isCmdCEvent:(NSEvent *)event {
+    return [self isCmdKeyEvent:event withKeyCode:kVK_ANSI_C];
 }
 
 - (BOOL)isCmdVEvent:(NSEvent *)event {
-    // Only detect key down to avoid double detection
+    // Only detect key down to avoid double detection for paste tracking
     if (event.type != NSEventTypeKeyDown) {
         return NO;
     }
-
-    BOOL isCmdKeyPressed = (event.modifierFlags & NSEventModifierFlagCommand) != 0;
-    BOOL isVKeyPressed = event.keyCode == kVK_ANSI_V;
-    return isCmdKeyPressed && isVKeyPressed;
+    return [self isCmdKeyEvent:event withKeyCode:kVK_ANSI_V];
 }
 
 @end
