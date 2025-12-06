@@ -23,6 +23,9 @@ static CGFloat const kDoublCommandInterval = 0.5;
 
 static CGFloat const kExpandedRadiusValue = 120;
 
+// Suppress auto-select for this duration after Cmd+V paste to avoid focus stealing
+static NSTimeInterval const kSuppressAutoSelectAfterPasteInterval = 0.5;
+
 static NSString *const kHasUsedAutoSelectTextKey = @"kHasUsedAutoSelectTextKey";
 
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
@@ -57,6 +60,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, strong) NSEvent *event;
 
+// Track last paste time to avoid auto-select triggering immediately after paste
+@property (nonatomic, assign) NSTimeInterval lastPasteTime;
+
 @end
 
 
@@ -82,6 +88,7 @@ static EZEventMonitor *_instance = nil;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
     self.triggerType = EZTriggerTypeNone;
+    self.lastPasteTime = 0;
 }
 
 - (EZTriggerType)frontmostAppTriggerType {
@@ -496,6 +503,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText {
     if ([self enabledAutoSelectText]) {
+        // Check if a paste operation (Cmd+V) just occurred
+        NSTimeInterval timeSinceLastPaste = NSDate.timeIntervalSinceReferenceDate - self.lastPasteTime;
+        if (timeSinceLastPaste < kSuppressAutoSelectAfterPasteInterval) {
+            MMLogInfo(@"Suppressing auto-select text due to recent paste operation (%.2fs ago)", timeSinceLastPaste);
+            return;
+        }
+
         MMLogInfo(@"auto get selected text");
 
         self.movedY = 0;
@@ -741,6 +755,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             //            MMLogInfo(@"key down: %@, modifierFlags: %ld", event.characters, event.modifierFlags);
 
             EZWindowManager.shared.lastPoint = NSEvent.mouseLocation;
+
+            // Track Cmd+V paste operations to suppress auto-select briefly after paste
+            if ([self isCmdVEvent:event]) {
+                self.lastPasteTime = event.timestamp;
+                MMLogInfo(@"Detected Cmd+V paste operation");
+            }
 
             if (self.isPopButtonVisible) {
                 [self dismissPopButton];
@@ -1023,6 +1043,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     BOOL isCmdKeyPressed = (event.modifierFlags & NSEventModifierFlagCommand) != 0;
     BOOL isCKeyPressed = event.keyCode == kVK_ANSI_C;
     return isCmdKeyPressed && isCKeyPressed;
+}
+
+- (BOOL)isCmdVEvent:(NSEvent *)event {
+    if (event.type != NSEventTypeKeyDown && event.type != NSEventTypeKeyUp) {
+        return NO;
+    }
+
+    BOOL isCmdKeyPressed = (event.modifierFlags & NSEventModifierFlagCommand) != 0;
+    BOOL isVKeyPressed = event.keyCode == kVK_ANSI_V;
+    return isCmdKeyPressed && isVKeyPressed;
 }
 
 @end
