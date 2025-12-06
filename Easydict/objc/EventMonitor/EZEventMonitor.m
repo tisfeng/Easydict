@@ -504,8 +504,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)autoGetSelectedText {
     if ([self enabledAutoSelectText]) {
         // Check if a paste operation (Cmd+V) just occurred
-        NSTimeInterval timeSinceLastPaste = NSDate.timeIntervalSinceReferenceDate - self.lastPasteTime;
-        if (timeSinceLastPaste < kSuppressAutoSelectAfterPasteInterval) {
+        NSTimeInterval currentTime = NSProcessInfo.processInfo.systemUptime;
+        NSTimeInterval timeSinceLastPaste = currentTime - self.lastPasteTime;
+        if (self.lastPasteTime > 0 && timeSinceLastPaste < kSuppressAutoSelectAfterPasteInterval) {
             MMLogInfo(@"Suppressing auto-select text due to recent paste operation (%.2fs ago)", timeSinceLastPaste);
             return;
         }
@@ -758,7 +759,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
             // Track Cmd+V paste operations to suppress auto-select briefly after paste
             if ([self isCmdVEvent:event]) {
-                self.lastPasteTime = event.timestamp;
+                self.lastPasteTime = NSProcessInfo.processInfo.systemUptime;
                 MMLogInfo(@"Detected Cmd+V paste operation");
             }
 
@@ -1046,7 +1047,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (BOOL)isCmdVEvent:(NSEvent *)event {
-    if (event.type != NSEventTypeKeyDown && event.type != NSEventTypeKeyUp) {
+    // Only detect key down to avoid double detection
+    if (event.type != NSEventTypeKeyDown) {
         return NO;
     }
 
