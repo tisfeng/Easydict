@@ -448,21 +448,18 @@ extension AppleDictionary {
                 return true
             }
 
-            let simplifiedWord = (normalizedWord as NSString).toSimplifiedChineseText()
-            let simplifiedHeadword = (normalizedHeadword as NSString).toSimplifiedChineseText()
+            let simplifiedWord = normalizedWord.toSimplifiedChinese()
+            let simplifiedHeadword = normalizedHeadword.toSimplifiedChinese()
 
-            let pureChineseHeadwords =
-                ((simplifiedHeadword as NSString).removeAlphabet() as NSString).trim()
-            let hasWordSubstring = pureChineseHeadwords.contains(simplifiedWord as String)
+            let pureChineseHeadwords = simplifiedHeadword.removingAlphabet().trim()
+            let hasWordSubstring = pureChineseHeadwords.contains(simplifiedWord)
             return hasWordSubstring
         }
 
         // If text is not Chinese
         let isQueryDictionary: Bool
         if let language {
-            isQueryDictionary = (word as NSString).shouldQueryDictionary(
-                withLanguage: language, maxWordCount: 1
-            )
+            isQueryDictionary = word.shouldQueryDictionary(withLanguage: language, maxWordCount: 1)
         } else {
             isQueryDictionary = false
         }

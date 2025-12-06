@@ -270,7 +270,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 - (nullable NSArray<NSString *> *)getValidTranslatedTexts:(NSArray<NSString *> *)texts {
     // line break is \n\n
-    NSString *translatedText = [[texts componentsJoinedByString:@"\n"] trim];
+    NSString *translatedText = [[texts componentsJoinedByString:@"\n"]  ns_trim];
     if (translatedText.length == 0) {
         return nil;
     }

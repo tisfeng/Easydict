@@ -222,7 +222,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         return;
     }
 
-    text = [text trimToMaxLength:5000];
+    text = [text ns_trimToMaxLength:5000];
 
     [self updateCookieAndToken];
 
@@ -279,7 +279,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
 
     // 字符串太长会导致获取语言的接口报错
-    NSString *queryString = [text trimToMaxLength:73];
+    NSString *queryString = [text ns_trimToMaxLength:73];
 
     NSString *url = [kBaiduTranslateURL stringByAppendingString:@"/langdetect"];
 
@@ -343,8 +343,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
      https://fanyi.baidu.com/gettts?lan=en&text=good&spd=4&source=web
      */
 
-    text = [text trimToMaxLength:1000];
-    text = [text encode]; // text.mm_urlencode
+    text = [text ns_trimToMaxLength:1000];
+    text = [text ns_encode]; // text.mm_urlencode
 
     // Refer to Baidu web.
     NSInteger speed = [ttsLangCode isEqualToString:@"zh"] ? 5 : 3;
@@ -666,7 +666,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
                         // ???: use word_means as normalResults?
                         if (simple_means.word_means.count) {
-                            result.translatedResults = @[ simple_means.word_means.firstObject.trim ];
+                            result.translatedResults = @[ [simple_means.word_means.firstObject  ns_trim] ];
                         }
 
                         // 至少要有词义或单词组才认为有单词翻译结果
@@ -679,7 +679,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                     // 解析普通释义
                     NSMutableArray *translatedResults = [NSMutableArray array];
                     [response.trans_result.data enumerateObjectsUsingBlock:^(EZBaiduTranslateResponseData *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                        NSString *translatedText = obj.dst.trim;
+                        NSString *translatedText = [obj.dst  ns_trim];
                         if (obj.prefixWrap) {
                             translatedText = [NSString stringWithFormat:@"\n%@", translatedText];
                         }

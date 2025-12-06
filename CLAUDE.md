@@ -22,14 +22,14 @@ xcodebuild build-for-testing \
   -scheme Easydict \
   -derivedDataPath ./DerivedData | xcbeautify
 
-# Run specific test class
+# e.g. run specific test class, -only-testing:<Target>/<TestClass>
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
   -derivedDataPath ./DerivedData \
   -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
 
-# Run specific test method
+# e.g. run specific test method, -only-testing:<Target>/<TestClass>/<testMethod>
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
@@ -78,3 +78,4 @@ Translation services inherit from a base query service. Each service lives in it
 2. All new code MUST be implemented using Swift/SwiftUI
 3. Swift/SwiftUI is the only future tech stack for this project
 4. Objective-C legacy code: bug fixes only, no feature extensions
+5. All class and struct and function need proper documentation comments in English

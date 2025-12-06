@@ -70,7 +70,7 @@ static NSString *const EZQueryKey = @"{Query}";
         return;
     }
 
-    NSString *queryText = text.trim ?: @"";
+    NSString *queryText = text.ns_trim ?: @"";
     NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 
     NSString *urlString = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
@@ -84,11 +84,11 @@ static NSString *const EZQueryKey = @"{Query}";
      google.com
      dict://when the cat is away, the mice will play
      */
-    NSURL *URL = [urlString detectLink] ?: [NSURL URLWithString:urlString];
+    NSURL *URL = [urlString ns_detectLink] ?: [NSURL URLWithString:urlString];
     
     // If link is EZGoogleWebSearchURL and queryText is a URL, we should open URL directly.
     if ([self.link isEqualToString:EZGoogleWebSearchURL]) {
-        NSURL *detectURL = [queryText detectLink];
+        NSURL *detectURL = [queryText ns_detectLink];
         if (detectURL) {
             URL = detectURL;
         }

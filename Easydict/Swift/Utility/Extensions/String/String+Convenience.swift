@@ -104,7 +104,7 @@ extension String {
             return
         }
         DispatchQueue.main.async {
-            EZToast.showText("Copy Success")
+            //            EZToast.showText("Copy Success")
         }
     }
 
@@ -176,144 +176,87 @@ extension String {
 
 @objc
 extension NSString {
-    func trim() -> NSString {
-        trimmingCharacters(in: .whitespacesAndNewlines) as NSString
+    func ns_trim() -> NSString {
+        (self as String).trim() as NSString
     }
 
-    func trimNewLine() -> NSString {
-        trimmingCharacters(in: .newlines) as NSString
+    func ns_trimNewLine() -> NSString {
+        (self as String).trimNewLine() as NSString
     }
 
-    func trimToMaxLength(_ maxLength: Int) -> NSString {
-        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.count > maxLength {
-            return String(trimmed.prefix(maxLength)) as NSString
-        }
-        return trimmed as NSString
+    func ns_trimToMaxLength(_ maxLength: Int) -> NSString {
+        (self as String).trimToMaxLength(maxLength) as NSString
     }
 
-    func removeInvisibleChar() -> NSString {
-        replacingOccurrences(of: "\u{fffc}", with: "") as NSString
+    func ns_removeInvisibleChar() -> NSString {
+        (self as String).removeInvisibleChar() as NSString
     }
 
-    func removeExtraLineBreaks() -> NSString {
-        let regex = "(\\n\\s*){2,}"
-        return replacingOccurrences(
-            of: regex,
-            with: "\n",
-            options: .regularExpression,
-            range: NSRange(location: 0, length: length)
-        ) as NSString
+    func ns_removeExtraLineBreaks() -> NSString {
+        (self as String).removeExtraLineBreaks() as NSString
     }
 
-    func toParagraphs() -> [String] {
-        components(separatedBy: "\n")
+    func ns_toParagraphs() -> [String] {
+        (self as String).toParagraphs()
     }
 
-    func removeExtraLineBreaksAndToParagraphs() -> [String] {
-        (removeExtraLineBreaks() as String).components(separatedBy: "\n")
+    func ns_removeExtraLineBreaksAndToParagraphs() -> [String] {
+        (self as String).removeExtraLineBreaksAndToParagraphs()
     }
 
-    func encode() -> NSString {
-        addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) as NSString? ?? self
+    func ns_encode() -> NSString {
+        (self as String).encode() as NSString
     }
 
-    func decode() -> NSString {
-        removingPercentEncoding as NSString? ?? self
+    func ns_decode() -> NSString {
+        (self as String).decode() as NSString
     }
 
-    func encodeSafely() -> NSString {
-        let decoded = removingPercentEncoding
-        if decoded == self as String? {
-            return encode()
-        }
-        return self
+    func ns_encodeSafely() -> NSString {
+        (self as String).encodeSafely() as NSString
     }
 
-    func encodeIncludingAmpersandSafely() -> NSString {
-        encodeSafely(excluding: "&")
+    func ns_encodeIncludingAmpersandSafely() -> NSString {
+        (self as String).encodeIncludingAmpersandSafely() as NSString
     }
 
-    func encodeIncludingCharacters(_ includingChars: String) -> NSString {
-        percentEncoded(excluding: includingChars)
+    func ns_encodeIncludingCharacters(_ includingChars: String) -> NSString {
+        (self as String).encodeIncludingCharacters(includingChars) as NSString
     }
 
-    func escapedXMLString() -> NSString {
-        if let escaped = CFXMLCreateStringByEscapingEntities(nil, self, nil) as String? {
-            return escaped as NSString
-        }
-        return self
+    func ns_escapedXMLString() -> NSString {
+        (self as String).escapedXMLString() as NSString
     }
 
-    func unescapedXMLString() -> NSString {
-        if let unescaped = CFXMLCreateStringByUnescapingEntities(nil, self, nil) as String? {
-            return unescaped as NSString
-        }
-        return self
+    func ns_unescapedXMLString() -> NSString {
+        (self as String).unescapedXMLString() as NSString
     }
 
-    func copyAndShowToast(_ showToast: Bool) {
-        copyToPasteboard()
-        guard length > 0, showToast else { return }
-        DispatchQueue.main.async {
-            EZToast.showText("Copy Success")
-        }
+    func ns_copyAndShowToast(_ showToast: Bool) {
+        (self as String).copyAndShowToast(showToast)
     }
 
-    func copyToPasteboardSafely() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in
-            copyToPasteboard()
-        }
+    func ns_copyToPasteboardSafely() {
+        (self as String).copyToPasteboardSafely()
     }
 
-    func isURL() -> Bool {
-        detectLink() != nil
+    func ns_isURL() -> Bool {
+        (self as String).isURL()
     }
 
-    func isLink() -> Bool {
-        let urlRegEx = "(?:https?://)?(?:www\\.)?\\w+\\.[a-z]+(?:/[^\\s]*)?"
-        let nsRange = range(of: urlRegEx, options: .regularExpression)
-        return nsRange.location != NSNotFound
+    func ns_isLink() -> Bool {
+        (self as String).isLink()
     }
 
-    func detectLink() -> NSURL? {
-        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        else {
-            return nil
-        }
-        let range = NSRange(location: 0, length: length)
-        guard let result = detector.matches(in: self as String, options: [], range: range).first,
-              result.resultType == .link,
-              result.range.length == length
-        else {
-            return nil
-        }
-        return result.url as NSURL?
+    func ns_detectLink() -> NSURL? {
+        (self as String).detectLink() as NSURL?
     }
 
-    func md5() -> NSString {
-        let digest = Insecure.MD5.hash(data: (self as String).data(using: .utf8) ?? Data())
-        return digest.map { String(format: "%02x", $0) }.joined() as NSString
+    func ns_md5() -> NSString {
+        (self as String).md5() as NSString
     }
 
-    func foldedString() -> NSString {
-        folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current) as NSString
-    }
-
-    // MARK: Private helpers
-
-    private func encodeSafely(excluding characters: String) -> NSString {
-        guard let decoded = removingPercentEncoding, decoded == self as String else {
-            return self
-        }
-        return percentEncoded(excluding: characters)
-    }
-
-    private func percentEncoded(excluding characters: String) -> NSString {
-        var allowed = CharacterSet.urlQueryAllowed
-        if !characters.isEmpty {
-            allowed.remove(charactersIn: characters)
-        }
-        return addingPercentEncoding(withAllowedCharacters: allowed) as NSString? ?? self
+    func ns_foldedString() -> NSString {
+        (self as String).foldedString() as NSString
     }
 }

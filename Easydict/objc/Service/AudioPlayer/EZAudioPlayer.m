@@ -567,7 +567,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     NSString *audioDirectory = [self getAudioDirectory];
 
     // Avoid special characters in file name.
-    word = [word md5];
+    word = [word ns_md5];
     NSString *textLanguage = language;
     if ([language isEqualToString:EZLanguageEnglish] && !accent) {
         accent = @"us";

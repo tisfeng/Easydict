@@ -36,7 +36,9 @@
       "Bash(chmod:*)",
       "Bash(pod install:*)",
       "Bash(open:*)",
-      "Bash(pod:*)"
+      "Bash(pod:*)",
+      "Bash(xcbeautify:*)",
+      "Bash(pgrep:*)"
     ],
     "deny": [
       "Bash(git add:*)",

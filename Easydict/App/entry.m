@@ -23,7 +23,7 @@ void queryText(NSString *text) {
     delay_block(^{
         EZWindowManager *windowManager = [EZWindowManager shared];
         [windowManager showFloatingWindowType:EZWindowTypeFixed
-                                    queryText:text.trim
+                                    queryText:text.ns_trim
                                     autoQuery:YES
                                    actionType:EZActionTypeInvokeQuery];
     });

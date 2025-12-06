@@ -809,7 +809,7 @@ static EZWindowManager *_instance;
 
          !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
          */
-        text = text.removeInvisibleChar.trim;
+        text = [[text ns_removeInvisibleChar]  ns_trim];
         if (text.length == 0) {
             text = Configuration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }

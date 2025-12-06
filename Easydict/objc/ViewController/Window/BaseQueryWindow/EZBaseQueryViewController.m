@@ -445,7 +445,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)startQueryText:(NSString *)text actionType:(EZActionType)actionType {
     MMLogInfo(@"query actionType: %@", actionType);
 
-    if (text.trim.length == 0) {
+    if ([text  ns_trim].length == 0) {
         MMLogWarn(@"query text is empty");
         return;
     }
@@ -560,7 +560,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
             [self.queryView highlightAllLinks];
 
-            if ([self.inputText isURL]) {
+            if ([self.inputText ns_isURL]) {
                 // Append a whitespace to beautify the link.
                 self.inputText = [self.inputText stringByAppendingString:@" "];
 
@@ -637,12 +637,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)copyQueryText {
-    [self.inputText copyAndShowToast:YES];
+    [self.inputText ns_copyAndShowToast:YES];
 }
 
 - (void)copyFirstTranslatedText {
     if (self.firstService) {
-        [self.firstService.result.copiedText copyAndShowToast:YES];
+        [self.firstService.result.copiedText ns_copyAndShowToast:YES];
     }
 }
 
@@ -1400,7 +1400,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.inputText = text;
 
         // Only detect when query text is changed.
-        if (![self.inputText.trim isEqualToString:oldInputText.trim]) {
+        if (![[self.inputText  ns_trim] isEqualToString:[oldInputText  ns_trim]]) {
             [self delayDetectQueryText];
         }
 
@@ -1429,7 +1429,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {
-        [text copyAndShowToast:YES];
+        [text ns_copyAndShowToast:YES];
     }];
 
     [queryView setClearBlock:^(NSString *_Nonnull text) {

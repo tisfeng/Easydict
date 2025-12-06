@@ -111,7 +111,7 @@
         NSPasteboardTypeRTFD
     ]];
     NSString *pasteboardString = [pasteboard stringForType:stringType];
-    pasteboardString = [pasteboardString trim];
+    pasteboardString = [pasteboardString ns_trim];
     
     // pasteboardString may be nil
     if (!pasteboardString) {
@@ -186,7 +186,7 @@
 - (void)updateTextAndParagraphStyle:(NSString *)text {
     self.string = text;
     
-    NSString *newText = [text removeExtraLineBreaks];
+    NSString *newText = [text ns_removeExtraLineBreaks];
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
     BOOL hasExtraLineBreaks = ![newText isEqualToString:text];

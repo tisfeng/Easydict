@@ -17,7 +17,7 @@
 
 /// Open Easydict URL Scheme.
 - (void)openURLScheme:(NSString *)URLScheme completion:(void (^)(BOOL isSuccess, NSString *_Nullable returnValue, NSString *_Nullable actionKey))completion {
-    NSString *text = [URLScheme trim];
+    NSString *text = [URLScheme ns_trim];
     
     if (![self isEasydictScheme:text]) {
         completion(NO, @"Invalid Easydict Scheme", nil);
@@ -71,7 +71,7 @@
 }
 
 - (BOOL)isEasydictScheme:(NSString *)text {
-    NSString *urlString = [text trim];
+    NSString *urlString = [text ns_trim];
     NSURLComponents *urlComponents = [NSURLComponents componentsWithString:urlString];
     NSString *scheme = urlComponents.scheme;
     NSArray *schemes = @[EZEasydictScheme, EZEasydictDebugScheme];

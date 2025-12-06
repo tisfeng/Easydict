@@ -26,7 +26,7 @@
     // We need to rewrite menuForEvent: rather than menu, because we want custom menu itme shown in the first place.
 
     NSMenu *menu = [super menuForEvent:event];
-    NSString *queryText = [self selectedText].trim;
+    NSString *queryText = [self selectedText].ns_trim;
 
     if (queryText.length > 0) {
         NSString *title = [NSString stringWithFormat:@"%@ \"%@\"", NSLocalizedString(@"query_in_app", nil), queryText];

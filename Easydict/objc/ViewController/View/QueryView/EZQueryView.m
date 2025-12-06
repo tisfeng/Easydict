@@ -149,7 +149,7 @@
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
         self.queryModel.needDetectLanguage = NO;
-        NSString *text = [[self copiedText] trim];
+        NSString *text = [[self copiedText] ns_trim];
         
         // Do not set text language if text is OCR merged text.
         if (text.length && !self.queryModel.ocrImage) {

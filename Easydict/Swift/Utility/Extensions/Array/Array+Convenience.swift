@@ -34,7 +34,7 @@ extension NSArray {
     }
 
     func removeExtraLineBreaks() -> NSArray {
-        mapStringElements { $0.removeExtraLineBreaks() as NSString }
+        mapStringElements { $0.ns_removeExtraLineBreaks() as NSString }
     }
 }
 

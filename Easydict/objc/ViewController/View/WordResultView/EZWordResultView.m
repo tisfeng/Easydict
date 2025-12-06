@@ -289,7 +289,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize * self.fontSizeRatio];
 
                 // ???: WTF, why Baidu phonetic contain '\n', e.g. ceil "siːl\n"
-                phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", phonetic.trim];
+                phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", [phonetic  ns_trim]];
                 [phoneticLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.equalTo(phoneticTagLabel.mas_right).offset(kHorizontalMargin_8);
                     make.centerY.equalTo(phoneticTagLabel);
@@ -809,7 +809,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         MMLogInfo(@"copyActionBlock");
-        [result.copiedText copyAndShowToast:YES];
+        [result.copiedText ns_copyAndShowToast:YES];
     }];
     textCopyButton.mas_key = @"result_copyButton";
 
@@ -1084,13 +1084,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
         MMLogInfo(@"Open URI: %@", navigationActionURL);
 
-        NSString *hrefText = [navigationActionURL.absoluteString decode];
+        NSString *hrefText = [navigationActionURL.absoluteString ns_decode];
 
         [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
             MMLogInfo(@"URL text is: %@", text);
 
             if (self.queryTextBlock) {
-                self.queryTextBlock([text trim]);
+                self.queryTextBlock([text  ns_trim]);
             }
         }];
 

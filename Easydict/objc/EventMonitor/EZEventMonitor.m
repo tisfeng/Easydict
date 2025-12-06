@@ -336,7 +336,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
                         return;
                     }
 
-                    NSString *trimmedText = selectedText.trim;
+                    NSString *trimmedText = selectedText.ns_trim;
                     if (trimmedText.length > 0) {
                         completion(trimmedText);
                         return;
@@ -436,7 +436,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     MMLogInfo(@"Get selected text by menu bar action copy first");
 
     [self getSelectedTextByMenuBarActionCopy:^(NSString *_Nullable text, NSError *_Nullable error) {
-        NSString *trimText = [text trim];
+        NSString *trimText = [text ns_trim];
 
         if (trimText.length > 0) {
             MMLogInfo(@"Get selected text by menu bar action copy success: %@", trimText);
@@ -522,7 +522,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (void)handleSelectedText:(NSString *)text {
-    NSString *trimText = text.removeInvisibleChar.trim;
+    NSString *trimText = text.ns_removeInvisibleChar.ns_trim;
     if (trimText.length > 0 && self.selectedTextBlock) {
         [self cancelDismissPopButton];
         self.selectedTextBlock(trimText);
