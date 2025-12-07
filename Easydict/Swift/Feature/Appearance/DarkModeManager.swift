@@ -44,6 +44,8 @@ class DarkModeManager: NSObject {
     // MARK: - Public Methods
 
     func updateDarkMode(_ appearanceType: AppearanceType) {
+        logInfo("Updating appearance mode: \(appearanceType)")
+
         let isDarkMode = currentSystemDarkMode()
 
         switch appearanceType {
@@ -56,14 +58,14 @@ class DarkModeManager: NSObject {
         }
 
         AppearanceHelper.shared.updateAppAppearance(appearanceType)
-        logInfo("\(systemDarkMode ? "深色模式" : "浅色模式")")
+        logInfo("\(systemDarkMode ? "Dark" : "Light") mode is enabled")
     }
 
     func currentSystemDarkMode() -> Bool {
-        NSApp.effectiveAppearance.bestMatch(from: [
-            .darkAqua,
-            .aqua,
-        ]) == .darkAqua
+        let defaults = UserDefaults.standard
+        let globalDomain = defaults.persistentDomain(forName: UserDefaults.globalDomain)
+        let appleInterfaceStyle = globalDomain?["AppleInterfaceStyle"] as? String
+        return appleInterfaceStyle == "Dark"
     }
 
     // MARK: Private

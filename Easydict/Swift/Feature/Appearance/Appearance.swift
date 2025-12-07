@@ -12,7 +12,7 @@ import Foundation
 // MARK: - AppearanceType
 
 @objc
-enum AppearanceType: Int, CaseIterable, Defaults.Serializable {
+enum AppearanceType: Int, CaseIterable, Defaults.Serializable, CustomStringConvertible {
     case followSystem = 0
     case light
     case dark
@@ -39,6 +39,12 @@ enum AppearanceType: Int, CaseIterable, Defaults.Serializable {
         case .dark:
             NSAppearance(named: .darkAqua)
         }
+    }
+
+    // MARK: CustomStringConvertible
+
+    var description: String {
+        title
     }
 
     static func titles() -> [String] {
