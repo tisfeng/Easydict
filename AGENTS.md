@@ -1,14 +1,14 @@
-# CLAUDE.md
+# AGENTS.md - Easydict Project Guide
 
 **Please use Simplified Chinese for all communication. All documentation and comments within the codebase must be written in English.**
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file guides AI coding agents working in this repository. Content mirrors `CLAUDE.md` and should remain in English.
 
 ## Project Overview
 
-Easydict is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation. The project is currently **actively migrating from Objective-C to Swift + SwiftUI**.
+**Easydict** is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation. 
 
-**IMPORTANT:** We are in an active migration phase. **Prohibit adding any new Objective-C files**. All new code must be implemented using Swift/SwiftUI.
+The project is currently **actively migrating from Objective-C to Swift + SwiftUI**.
 
 ## Build Commands
 
@@ -19,30 +19,27 @@ Easydict is a macOS dictionary and translation app that supports word lookup, te
 open Easydict.xcworkspace
 
 # Build
-xcodebuild build \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath ./DerivedData | xcbeautify
+xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath ./DerivedData | xcbeautify
 
 # Build for testing
-xcodebuild build-for-testing \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath ./DerivedData | xcbeautify
+xcodebuild build-for-testing -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath ./DerivedData | xcbeautify
 
-# e.g. run specific test class, -only-testing:<Target>/<TestClass>
+# Run specific test method (without building), -only-testing:<Target>/<TestClass>/<testMethod>
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
   -derivedDataPath ./DerivedData \
-  -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
+  -only-testing:EasydictTests/StitchImageTests/stitchGameImagesLowOverlap | xcbeautify
 
-# e.g. run specific test method, -only-testing:<Target>/<TestClass>/<testMethod>
+# Run specific test class (without building), -only-testing:<Target>/<TestClass>
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
   -derivedDataPath ./DerivedData \
-  -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
+  -only-testing:EasydictTests/StitchImageTests | xcbeautify
+
+  # Run all tests (without building) (May cost much time)
+xcodebuild test-without-building -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath ./DerivedData | xcbeautify
 ```
 
 **Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+ (minimum supported).  
