@@ -120,7 +120,7 @@ extension SystemUtility {
 
     /// Roles that are considered text fields
     private var textFieldRoles: Set<String> {
-        TextFieldInfo.textInputRoles
+        FocusedElementInfo.textInputRoles
     }
 
     private func isEditableTextInputElement(_ element: UIElement) -> Bool {

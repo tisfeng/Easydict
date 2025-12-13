@@ -105,15 +105,15 @@ class SystemUtility: NSObject {
 
     // MARK: - Text Strategies
 
-    /// Get text strategies for current focused TextField element
+    /// Get text strategies for current focused element
     func textStrategies(enableSelectAll: Bool = false) async -> [TextStrategy] {
-        let textFieldInfo = await focusedTextFieldInfo(enableSelectAll: enableSelectAll)
-        return textStrategies(for: textFieldInfo)
+        let elementInfo = await focusedElementInfo(enableSelectAll: enableSelectAll)
+        return textStrategies(for: elementInfo)
     }
 
-    /// Determine the appropriate text strategy set based on the text field info and user settings
-    func textStrategies(for textFieldInfo: TextFieldInfo?) -> [TextStrategy] {
-        let isSupportedAX = textFieldInfo?.isSupportedAXElement ?? false
+    /// Determine the appropriate text strategy set based on the focused element info and user settings
+    func textStrategies(for elementInfo: FocusedElementInfo) -> [TextStrategy] {
+        let isSupportedAX = elementInfo.isSupportedAXElement
         let enableCompatibilityMode = Defaults[.enableCompatibilityReplace]
 
         let isBrowser = AppleScriptTask.isBrowserSupportingAppleScript(frontmostAppBundleID)
@@ -127,23 +127,18 @@ class SystemUtility: NSObject {
         )
     }
 
-    // MARK: - Focused Text Field Info
+    // MARK: - Focused Element Info
 
-    func focusedTextFieldInfo(enableSelectAll: Bool = false) async -> TextFieldInfo? {
-        guard var textFieldInfo = await fetchFocusedTextFieldInfo() else {
-            return nil
-        }
-        logInfo("Focused Text Field Info: \(textFieldInfo)")
+    func focusedElementInfo(enableSelectAll: Bool = false) async -> FocusedElementInfo {
+        var elementInfo = await fetchFocusedElementInfo()
+
+        logInfo("Focused Element Info: \(elementInfo)")
 
         if enableSelectAll {
-            // Process auto-selection and get updated text field info
-            guard let newInfo = await processAutoAllTextSelection(for: textFieldInfo) else {
-                return nil
-            }
-            textFieldInfo = newInfo
-            logInfo("Text Field Info after Auto-Selection: \(textFieldInfo)")
+            elementInfo = await processAutoAllTextSelection(for: elementInfo)
+            logInfo("Element Info after Auto-Selection: \(elementInfo)")
         }
-        return textFieldInfo
+        return elementInfo
     }
 
     // MARK: Private
@@ -169,57 +164,48 @@ class SystemUtility: NSObject {
         return strategies
     }
 
-    /// Fetch comprehensive information from current focused text field
+    /// Fetch comprehensive information from current focused element
     ///
-    /// - Returns: TextFieldInfo containing text, range, and selected text
-    private func fetchFocusedTextFieldInfo() async -> TextFieldInfo? {
+    /// - Returns: FocusedElementInfo containing text, range, and selected text. Returns empty info when unavailable.
+    private func fetchFocusedElementInfo() async -> FocusedElementInfo {
         do {
-            // 1. Ensure focused element is a text field
-            guard let element = try focusedTextFieldElement() else {
-                logInfo("Current focused element is not a text field")
-                return nil
+            guard let element = try frontmostAppElement?.focusedUIElement() else {
+                logInfo("No focused UI element found: \(String(describing: frontmostAppElement))")
+                return .empty
             }
 
-            // 2. Get full text from the text field
-            guard let fullText = try element.value() else {
-                logInfo("Failed to get text from focused element")
-                return nil
-            }
-
-            // 3. Try to get selected text and range
-            let selectedRange = try element.selectedTextRange()
+            let roleValue = try? element.roleValue()
+            let fullText: String? = try? element.value()
+            let selectedRange: CFRange? = try? element.selectedTextRange()
             let selectedText = await getSelectedText()
-            let roleValue = try element.roleValue() ?? "unknown"
 
-            return TextFieldInfo(
+            return FocusedElementInfo(
                 fullText: fullText,
                 selectedRange: selectedRange,
                 selectedText: selectedText,
                 roleValue: roleValue
             )
         } catch {
-            logError("Error getting focused text field info: \(error)")
-            return nil
+            logError("Error getting focused UI element info: \(error)")
+            return .empty
         }
     }
 
-    /// Process automatic all text selection based on user settings and return updated text field info
+    /// Process automatic all text selection based on user settings and return updated element info
     ///
-    /// - Parameter textFieldInfo: Information about the current text field
-    /// - Returns: Updated TextFieldInfo after processing auto-selection, or nil if processing fails
-    private func processAutoAllTextSelection(for textFieldInfo: TextFieldInfo) async -> TextFieldInfo? {
-        let autoSelectEnabled = Defaults[.autoSelectAllTextFieldText]
-        let selectedText = textFieldInfo.selectedText?.trim() ?? ""
-
-        guard autoSelectEnabled, selectedText.isEmpty else {
-            return textFieldInfo
+    /// - Parameter elementInfo: Information about the current focused element
+    /// - Returns: Updated FocusedElementInfo after processing auto-selection.
+    private func processAutoAllTextSelection(for elementInfo: FocusedElementInfo) async
+        -> FocusedElementInfo {
+        guard elementInfo.isTextField else {
+            return elementInfo
         }
 
-        let textStrategy = textStrategies(for: textFieldInfo)
+        let textStrategy = textStrategies(for: elementInfo)
         await selectAll(using: textStrategy)
 
         logInfo("Auto-selected all text content in field")
 
-        return await fetchFocusedTextFieldInfo()
+        return await fetchFocusedElementInfo()
     }
 }
