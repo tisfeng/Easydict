@@ -73,14 +73,6 @@ typedef NS_ENUM(NSUInteger, EZServiceUsageStatus) {
     EZServiceUsageStatusAlwaysOn = 2,
 };
 
-FOUNDATION_EXPORT NSString *const EZDeepLTranslationAPIKey;
-typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
-    EZDeepLTranslationAPIWebFirst = 0,
-    EZDeepLTranslationAPIOfficialFirst = 1,
-    EZDeepLTranslationAPIOnlyOfficical = 2,
-};
-
-
 typedef NSString *EZActionType NS_STRING_ENUM NS_SWIFT_NAME(ActionType);
 FOUNDATION_EXPORT EZActionType const EZActionTypeNone;
 FOUNDATION_EXPORT EZActionType const EZActionTypeAutoSelectQuery;

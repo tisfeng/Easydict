@@ -192,7 +192,6 @@
         
         EZDeepLAuthKey,
         EZDeepLTranslateEndPointKey,
-        EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,
         EZTencentSecretId,

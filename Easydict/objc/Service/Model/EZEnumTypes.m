@@ -41,7 +41,6 @@ NSString *const EZServiceTypeDoubao = @"Doubao";
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";
 
-NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPIKey";
 
 #pragma mark - EZActionType
 NSString *const EZActionTypeNone = @"none";
