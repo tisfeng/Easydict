@@ -11,7 +11,6 @@
 #import "EZQueryService.h"
 #import "EZEnumTypes.h"
 #import "EZBaiduTranslate.h"
-#import "EZServiceTypes.h"
 #import <sys/xattr.h>
 #import "Easydict-Swift.h"
 

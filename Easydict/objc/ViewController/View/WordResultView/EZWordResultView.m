@@ -24,7 +24,7 @@
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "TTTDictionary.h"
-#import "EZServiceTypes.h"
+#import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
 #import "Easydict-Swift.h"

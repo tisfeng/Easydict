@@ -13,7 +13,7 @@
 #import "EZSelectLanguageCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
-#import "EZServiceTypes.h"
+#import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
 #import "EZLocalStorage.h"

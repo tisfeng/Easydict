@@ -19,6 +19,5 @@
 #import "EZBaiduTranslate.h"
 #import "MMCrash.h"
 #import "EZDetectManager.h"
-#import "EZServiceTypes.h"
 #import "EZEventMonitor.h"
 #import "DictionaryKit.h"
