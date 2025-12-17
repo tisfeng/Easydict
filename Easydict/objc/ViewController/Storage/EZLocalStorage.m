@@ -111,7 +111,7 @@ static EZLocalStorage *_instance;
 
 - (NSArray<NSString *> *)allServiceTypes:(EZWindowType)windowType {
     NSString *allServiceTypesKey = [self serviceTypesKeyOfWindowType:windowType];
-    NSArray *allServiceTypes = EZServiceTypes.shared.allServiceTypes;
+    NSArray *allServiceTypes = QueryServiceFactory.shared.allServiceTypes;
     NSArray *allStoredServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:allServiceTypesKey];
     if (!allStoredServiceTypes) {
         allStoredServiceTypes = allServiceTypes;
@@ -136,7 +136,7 @@ static EZLocalStorage *_instance;
 }
 
 - (NSArray<EZQueryService *> *)allServices:(EZWindowType)windowType {
-    NSArray *allServices = [EZServiceTypes.shared servicesFromTypes:[self allServiceTypes:windowType]];
+    NSArray *allServices = [QueryServiceFactory.shared servicesFromTypes:[self allServiceTypes:windowType]];
     for (EZQueryService *service in allServices) {
         [self updateServiceInfo:service windowType:windowType];
     }
@@ -144,7 +144,7 @@ static EZLocalStorage *_instance;
 }
 
 - (EZQueryService *)service:(NSString *)serviceTypeId windowType:(EZWindowType)windowType {
-    EZQueryService *service = [EZServiceTypes.shared serviceWithTypeId:serviceTypeId];
+    EZQueryService *service = [QueryServiceFactory.shared serviceWithTypeId:serviceTypeId];
     [self updateServiceInfo:service windowType:windowType];
     return service;
 }
@@ -374,17 +374,17 @@ query count  | level | title
 
 #pragma mark - Disabled AppModel
 
-- (void)setSelectTextTypeAppModelList:(NSArray<EZAppModel *> *)selectTextAppModelList {
-    NSArray<NSDictionary *> *dictArray = [EZAppModel dictionaryArrayFromAppModels:selectTextAppModelList];
+- (void)setSelectTextTypeAppModelList:(NSArray<AppTriggerConfig *> *)selectTextAppModelList {
+    NSArray<NSDictionary *> *dictArray = [AppTriggerConfig dictionaryArrayFromAppModels:selectTextAppModelList];
     [[NSUserDefaults standardUserDefaults] setObject:dictArray forKey:kAppModelTriggerListKey];
 }
 
-- (NSArray<EZAppModel *> *)selectTextTypeAppModelList {
+- (NSArray<AppTriggerConfig *> *)selectTextTypeAppModelList {
     NSArray<NSDictionary *> *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kAppModelTriggerListKey];
-    NSArray<EZAppModel *> *appModels = [EZAppModel appModelsFromDictionaryArray:dictArray ?: @[]];
+    NSArray<AppTriggerConfig *> *appModels = [AppTriggerConfig appModelsFromDictionaryArray:dictArray ?: @[]];
     
     if (!dictArray) {
-        EZAppModel *keyChainApp = [[EZAppModel alloc] init];
+        AppTriggerConfig *keyChainApp = [[AppTriggerConfig alloc] init];
         keyChainApp.appBundleID = @"com.apple.keychainaccess";
         keyChainApp.triggerType = EZTriggerTypeNone;
         appModels = @[

@@ -60,7 +60,7 @@ class GlobalContext: NSObject {
             }
         }
         let allServiceTypes = EZLocalStorage.shared().allServiceTypes(EZWindowType.main)
-        services = ServiceTypes.shared.services(fromTypes: allServiceTypes)
+        services = QueryServiceFactory.shared.services(fromTypes: allServiceTypes)
         for service in services {
             if let llmService = service as? StreamService {
                 llmService.setupSubscribers()

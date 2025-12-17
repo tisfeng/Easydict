@@ -117,7 +117,7 @@ class ActionManager: NSObject {
         request: TranslationRequest,
         textFieldInfo: TextFieldInfo
     ) async {
-        guard let service = ServiceTypes.shared.service(withTypeId: request.serviceType) else {
+        guard let service = QueryServiceFactory.shared.service(withTypeId: request.serviceType) else {
             logError("Service type \(request.serviceType) not found")
             return
         }

@@ -10,7 +10,7 @@
 #import "EZServiceInfo.h"
 #import "EZLayoutManager.h"
 
-@class EZAppModel;
+@class AppTriggerConfig;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,7 +22,7 @@ static NSString *const EZAutoQueryKey = @"EZAutoQueryKey";
 
 #pragma mark - Disabled AppModel
 
-@property (nonatomic, copy) NSArray<EZAppModel *> *selectTextTypeAppModelList;
+@property (nonatomic, copy) NSArray<AppTriggerConfig *> *selectTextTypeAppModelList;
 
 
 + (instancetype)shared;

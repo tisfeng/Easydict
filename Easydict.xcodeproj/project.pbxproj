@@ -145,7 +145,7 @@
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
 		034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034E30992E17809C0079E371 /* OCRTextProcessor.swift */; };
 		035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */; };
-		035179182EF301C20054C985 /* EZAppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035179172EF301C20054C985 /* EZAppModel.swift */; };
+		035179182EF301C20054C985 /* AppTriggerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035179172EF301C20054C985 /* AppTriggerConfig.swift */; };
 		0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */; };
 		0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */; };
 		03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */; };
@@ -535,7 +535,7 @@
 		EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */; };
 		EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */; };
 		EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */; };
-		FA0D2894537C47E1AF63D495 /* ServiceTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* ServiceTypes.swift */; };
+		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -711,7 +711,7 @@
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
 		034E30992E17809C0079E371 /* OCRTextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessor.swift; sourceTree = "<group>"; };
 		035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToDouble.swift"; sourceTree = "<group>"; };
-		035179172EF301C20054C985 /* EZAppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZAppModel.swift; sourceTree = "<group>"; };
+		035179172EF301C20054C985 /* AppTriggerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerConfig.swift; sourceTree = "<group>"; };
 		0352AF302E0EEE9D00C2D4B1 /* OCRDashHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDashHandler.swift; sourceTree = "<group>"; };
 		0352AF312E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRPoetryDetector.swift; sourceTree = "<group>"; };
 		03538DEB2D259115005E56A8 /* YoudaoDictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponse.swift; sourceTree = "<group>"; };
@@ -1126,7 +1126,7 @@
 		27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
 		357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.release.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.release.xcconfig"; sourceTree = "<group>"; };
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3E9448196CAA4B98A453AA5C /* ServiceTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTypes.swift; sourceTree = "<group>"; };
+		3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceFactory.swift; sourceTree = "<group>"; };
 		40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
 		416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSuites.swift; sourceTree = "<group>"; };
 		62E2BF472B4082BA00E42D38 /* AliService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliService.swift; sourceTree = "<group>"; };
@@ -2081,7 +2081,6 @@
 		03B0222429231FA6001C7E63 /* objc */ = {
 			isa = PBXGroup;
 			children = (
-				962B9ACB2BFA030A0080F4D4 /* Legacy */,
 				03B0224F29231FA6001C7E63 /* ViewController */,
 				03B0222B29231FA6001C7E63 /* Service */,
 				03E02A2329250CED00A10260 /* EventMonitor */,
@@ -3039,7 +3038,6 @@
 		54A84CEDD3AD444B860067F8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				3E9448196CAA4B98A453AA5C /* ServiceTypes.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3103,13 +3101,6 @@
 				0333D4C42E5C784600CD4613 /* ShortcutModifier.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		962B9ACB2BFA030A0080F4D4 /* Legacy */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Legacy;
 			sourceTree = "<group>";
 		};
 		9643D93E2B6FC405000FBEA6 /* MenuView */ = {
@@ -3280,7 +3271,8 @@
 		EA9943E12B534C2900EE7B97 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				035179172EF301C20054C985 /* EZAppModel.swift */,
+				3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */,
+				035179172EF301C20054C985 /* AppTriggerConfig.swift */,
 				0340D39D2C951850004C9910 /* QueryError.swift */,
 				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
 				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
@@ -4075,7 +4067,7 @@
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03FF0D5F2E1959EC00ABBF17 /* String+Removing.swift in Sources */,
-				FA0D2894537C47E1AF63D495 /* ServiceTypes.swift in Sources */,
+				FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */,
 				031760F32E07FB2800CE8FD7 /* AppleSpeechService.swift in Sources */,
 				031760F42E07FB2800CE8FD7 /* AppleLanguageDetector.swift in Sources */,
 				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,
@@ -4132,7 +4124,7 @@
 				0327A5A62CCA7ACF002BA81B /* Configuration+Extension.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */,
-				035179182EF301C20054C985 /* EZAppModel.swift in Sources */,
+				035179182EF301C20054C985 /* AppTriggerConfig.swift in Sources */,
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,

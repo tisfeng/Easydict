@@ -20,8 +20,8 @@ private class DisabledAppViewModel: ObservableObject {
 
     // MARK: Internal
 
-    @Published var appModelList: [EZAppModel] = []
-    @Published var selectedAppModels: Set<EZAppModel> = []
+    @Published var appModelList: [AppTriggerConfig] = []
+    @Published var selectedAppModels: Set<AppTriggerConfig> = []
     @Published var isShowImportErrorAlert = false
 
     @Published var isImporting = false {
@@ -66,8 +66,8 @@ private class DisabledAppViewModel: ObservableObject {
         saveDisabledApps()
     }
 
-    func disabledAppModel(from url: URL) -> EZAppModel? {
-        let appModel = EZAppModel()
+    func disabledAppModel(from url: URL) -> AppTriggerConfig? {
+        let appModel = AppTriggerConfig()
         guard let bundle = Bundle(url: url) else { return nil }
         appModel.appBundleID = bundle.bundleIdentifier ?? ""
         appModel.triggerType = []
@@ -212,7 +212,7 @@ private struct ListButton: View {
 private struct BlockAppItemView: View {
     // MARK: Lifecycle
 
-    init(with appModel: EZAppModel) {
+    init(with appModel: AppTriggerConfig) {
         _appItemViewModel = StateObject(wrappedValue: AppItemViewModel(appModel: appModel))
     }
 
@@ -247,7 +247,7 @@ private struct BlockAppItemView: View {
 private class AppItemViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(appModel: EZAppModel) {
+    init(appModel: AppTriggerConfig) {
         self.appModel = appModel
         getAppBundleInfo()
     }
@@ -258,7 +258,7 @@ private class AppItemViewModel: ObservableObject {
 
     @Published var appName = ""
 
-    var appModel: EZAppModel
+    var appModel: AppTriggerConfig
 
     func getAppBundleInfo() {
         let appBundleId = appModel.appBundleID

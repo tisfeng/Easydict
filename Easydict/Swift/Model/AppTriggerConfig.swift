@@ -1,10 +1,18 @@
+//
+//  AppTriggerConfig.swift
+//  Easydict
+//
+//  Created by tisfeng on 2025/12/16.
+//  Copyright © 2025 izual. All rights reserved.
+//
+
 import Foundation
 
-// MARK: - EZAppModel
+// MARK: - AppTriggerConfig
 
 /// Represents an app entry and its trigger configuration for text selection handling.
 @objcMembers
-final class EZAppModel: NSObject, NSSecureCoding {
+final class AppTriggerConfig: NSObject, NSSecureCoding {
     // MARK: Lifecycle
 
     /// Creates an empty app model with no triggers.
@@ -57,7 +65,7 @@ final class EZAppModel: NSObject, NSSecureCoding {
     /// - Parameter object: The object to compare with.
     /// - Returns: `true` when bundle identifiers match.
     override func isEqual(_ object: Any?) -> Bool {
-        guard let other = object as? EZAppModel else { return false }
+        guard let other = object as? AppTriggerConfig else { return false }
         return appBundleID == other.appBundleID
     }
 
@@ -71,12 +79,12 @@ final class EZAppModel: NSObject, NSSecureCoding {
 
 // MARK: - Dictionary Helpers
 
-extension EZAppModel {
+extension AppTriggerConfig {
     /// Converts a model to a dictionary for persistence.
     /// - Parameter appModel: The model to convert.
     /// - Returns: Dictionary containing bundle identifier and trigger raw value.
     @objc(dictionaryFromAppModel:)
-    static func dictionary(from appModel: EZAppModel) -> NSDictionary {
+    static func dictionary(from appModel: AppTriggerConfig) -> NSDictionary {
         [
             CodingKeys.appBundleID.rawValue: appModel.appBundleID,
             CodingKeys.triggerType.rawValue: NSNumber(value: appModel.triggerType.rawValue),
@@ -85,21 +93,21 @@ extension EZAppModel {
 
     /// Creates a model from a persisted dictionary.
     /// - Parameter dictionary: Dictionary containing model fields.
-    /// - Returns: Parsed `EZAppModel` instance when bundle identifier exists.
+    /// - Returns: Parsed `AppModel` instance when bundle identifier exists.
     @objc(appModelFromDictionary:)
-    static func appModel(from dictionary: NSDictionary) -> EZAppModel? {
+    static func appModel(from dictionary: NSDictionary) -> AppTriggerConfig? {
         guard let bundleID = dictionary[CodingKeys.appBundleID.rawValue] as? String else {
             return nil
         }
         let rawValue = (dictionary[CodingKeys.triggerType.rawValue] as? NSNumber)?.uintValue ?? 0
-        return EZAppModel(appBundleID: bundleID, triggerType: EZTriggerType(rawValue: rawValue))
+        return AppTriggerConfig(appBundleID: bundleID, triggerType: EZTriggerType(rawValue: rawValue))
     }
 
     /// Converts an array of models to dictionaries for user defaults storage.
     /// - Parameter appModels: Models to persist.
     /// - Returns: Array of dictionaries ready for storage.
     @objc(dictionaryArrayFromAppModels:)
-    static func dictionaryArray(from appModels: [EZAppModel]) -> [NSDictionary] {
+    static func dictionaryArray(from appModels: [AppTriggerConfig]) -> [NSDictionary] {
         appModels.map { dictionary(from: $0) }
     }
 
@@ -107,14 +115,14 @@ extension EZAppModel {
     /// - Parameter dictionaryArray: Dictionaries loaded from storage.
     /// - Returns: Array of parsed models.
     @objc(appModelsFromDictionaryArray:)
-    static func appModels(from dictionaryArray: [NSDictionary]) -> [EZAppModel] {
+    static func appModels(from dictionaryArray: [NSDictionary]) -> [AppTriggerConfig] {
         dictionaryArray.compactMap { appModel(from: $0) }
     }
 }
 
-// MARK: EZAppModel.CodingKeys
+// MARK: AppTriggerConfig.CodingKeys
 
-extension EZAppModel {
+extension AppTriggerConfig {
     fileprivate enum CodingKeys: String {
         case appBundleID
         case triggerType

@@ -781,7 +781,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
 
         EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
-        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
+        EZQueryService *defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
 
         // Determine accent based on user preference if language is English
         NSString *accentToUse = nil;

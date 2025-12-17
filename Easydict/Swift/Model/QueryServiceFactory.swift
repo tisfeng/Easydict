@@ -1,5 +1,5 @@
 //
-//  ServiceTypes.swift
+//  QueryServiceFactory.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/12/16.
@@ -11,19 +11,12 @@ import Foundation
 /// A registry that maps `ServiceType` identifiers to their corresponding `QueryService` subclasses.
 ///
 /// This class mirrors the legacy Objective-C `EZServiceTypes` API and stays accessible from both Objective-C and Swift.
-@objc(EZServiceTypes)
 @objcMembers
-final class ServiceTypes: NSObject {
-    // MARK: Lifecycle
-
-    private override init() {
-        super.init()
-    }
-
+final class QueryServiceFactory: NSObject {
     // MARK: Internal
 
     /// Shared singleton instance.
-    static let shared = ServiceTypes()
+    static let shared = QueryServiceFactory()
 
     /// Ordered list of all supported service types.
     var allServiceTypes: [ServiceType] {

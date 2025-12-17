@@ -59,7 +59,7 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
     func duplicate() {
         let uuid = UUID().uuidString
         let newServiceType = "\(serviceType().rawValue)#\(uuid)"
-        guard let newService = ServiceTypes.shared.service(withTypeId: newServiceType) else {
+        guard let newService = QueryServiceFactory.shared.service(withTypeId: newServiceType) else {
             return
         }
         newService.enabled = false
