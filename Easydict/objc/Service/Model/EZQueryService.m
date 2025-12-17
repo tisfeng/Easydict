@@ -7,7 +7,6 @@
 //
 
 #import "EZQueryService.h"
-#import "EZLocalStorage.h"
 #import "EZAudioPlayer.h"
 #import "EZEventMonitor.h"
 #import "Easydict-Swift.h"

@@ -8,8 +8,9 @@
 
 import Foundation
 
+/// Swift Notification.Name extensions
 extension Notification.Name {
-    static let serviceHasUpdated = Notification.Name(EZServiceHasUpdatedNotification)
+    static let serviceHasUpdated = Notification.Name("serviceHasUpdated")
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
     static let languagePreferenceChanged = Notification.Name(
         I18nHelper.languagePreferenceChangedNotification
@@ -27,13 +28,7 @@ extension Notification.Name {
     static let appDarkModeDidChange = Notification.Name("AppDarkModeDidChange")
 }
 
-// MARK: - NotificationUserInfoKey
-
-enum NotificationUserInfoKey {
-    /// UserInfo key for dark mode state in appDarkModeDidChange notification
-    public static let isDark = "isDark"
-}
-
+/// Objective-C Notification.Name extensions
 @objc
 extension NSNotification {
     static let serviceHasUpdated = Notification.Name.serviceHasUpdated
@@ -46,6 +41,18 @@ extension NSNotification {
     static let appDarkModeDidChange = Notification.Name.appDarkModeDidChange
 }
 
+// MARK: - UserInfoKey
+
+@objcMembers
+class UserInfoKey: NSObject {
+    /// UserInfo key for dark mode state in appDarkModeDidChange notification
+    static let isDark = "isDark"
+
+    static let windowType = "windowType"
+    static let serviceType = "serviceType"
+    static let autoQuery = "autoQuery"
+}
+
 @objc
 extension NotificationCenter {
     func postServiceUpdateNotification(
@@ -54,9 +61,9 @@ extension NotificationCenter {
         autoQuery: Bool = false
     ) {
         let userInfo: [String: Any] = [
-            EZServiceTypeKey: serviceType,
-            EZWindowTypeKey: windowType.rawValue,
-            EZAutoQueryKey: autoQuery,
+            UserInfoKey.serviceType: serviceType,
+            UserInfoKey.windowType: windowType.rawValue,
+            UserInfoKey.autoQuery: autoQuery,
         ]
         let notification = Notification(name: .serviceHasUpdated, userInfo: userInfo)
         post(notification)
@@ -70,7 +77,7 @@ extension NotificationCenter {
     func postDarkModeDidChangeNotification(isDark: Bool) {
         let notification = Notification(
             name: .appDarkModeDidChange,
-            userInfo: [NotificationUserInfoKey.isDark: isDark]
+            userInfo: [UserInfoKey.isDark: isDark]
         )
         post(notification)
     }

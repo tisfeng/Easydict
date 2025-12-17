@@ -7,7 +7,6 @@
 //
 
 #import "EZQueryResult.h"
-#import "EZLocalStorage.h"
 #import "Easydict-Swift.h"
 
 /**

@@ -32,7 +32,7 @@ extension DarkModeCapable where Self: NSObject {
         let cancellable = NotificationCenter.default.publisher(for: .appDarkModeDidChange)
             .receive(on: DispatchQueue.main)
             .sink { notification in
-                guard let isDark = notification.userInfo?[NotificationUserInfoKey.isDark] as? Bool else { return }
+                guard let isDark = notification.userInfo?[UserInfoKey.isDark] as? Bool else { return }
 
                 if isDark {
                     darkHandler?()

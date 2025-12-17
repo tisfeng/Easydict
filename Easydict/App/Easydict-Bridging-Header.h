@@ -9,7 +9,6 @@
 #import "NSColor+MyColors.h"
 #import "entry.h"
 #import "AppDelegate.h"
-#import "EZLocalStorage.h"
 #import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
 #import "EZLog.h"

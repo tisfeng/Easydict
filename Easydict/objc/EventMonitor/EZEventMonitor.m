@@ -10,7 +10,6 @@
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
-#import "EZLocalStorage.h"
 #import "Easydict-Swift.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;

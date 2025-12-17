@@ -16,7 +16,6 @@
 #import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
-#import "EZLocalStorage.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"
 #import "EZBaiduTranslate.h"
@@ -179,7 +178,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [defaultCenter addObserver:self
                       selector:@selector(handleServiceUpdate:)
-                          name:EZServiceHasUpdatedNotification
+                          name:NSNotification.serviceHasUpdated
                         object:nil];
 
     [defaultCenter addObserver:self
@@ -305,9 +304,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    EZWindowType windowType = [userInfo[EZWindowTypeKey] integerValue];
+    EZWindowType windowType = [userInfo[UserInfoKey.windowType] integerValue];
     NSString *serviceType = userInfo[EZServiceTypeKey];
-    BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
+    BOOL autoQuery = [userInfo[UserInfoKey.autoQuery] boolValue];
 
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
 

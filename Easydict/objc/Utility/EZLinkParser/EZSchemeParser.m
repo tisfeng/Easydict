@@ -7,7 +7,6 @@
 //
 
 #import "EZSchemeParser.h"
-#import "EZLocalStorage.h"
 #import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
