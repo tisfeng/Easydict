@@ -71,6 +71,10 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | 离线翻译 | - | OfflineTranslation | ✅ |
 | SwiftPM | - | Package.swift | ✅ |
 | 暗色模式 | DarkModeManager/NSObject+DarkMode/Singleton | DarkModeManager.swift + Extensions | ✅ |
+| 服务信息 | EZServiceInfo | EZServiceInfo.swift | ✅ |
+| 本地存储 | EZLocalStorage | EZLocalStorage.swift | ✅ |
+| 应用模型 | EZAppModel | EZAppModel.swift | ✅ |
+| 服务类型 | EZServiceTypes | ServiceTypes.swift | ✅ |
 
 #### 工具扩展层 (Utilities)
 
@@ -83,7 +87,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 - **翻译服务**: 6/13 已完成 (46%)
 - **AI 服务**: 14/14 已完成 (100%)
-- **基础设施**: 5/10 已完成 (50%)
+- **基础设施**: 10/10 已完成 (100%)
 - **工具扩展**: 3/15 已完成 (20%)
 
 ## ✅ 已完成迁移
@@ -125,6 +129,53 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 新增 `String+Convenience.swift`，覆盖 URL 编码/解码、剪贴板操作、XML 转义、MD5、段落拆分等方法
   - 删除旧的 Objective-C 分类，更新 PCH、Bridging Header 和 Xcode 工程引用
 
+### 2025-12-17：存储层重构
+
+- **目标**: 迁移存储相关类到 Swift
+- **状态**: ✅ 完成
+- **成果**:
+  - 迁移 `EZServiceInfo` 到 Swift，添加 Codable 支持
+  - 迁移 `EZLocalStorage` 到 Swift，使用现代属性访问器
+  - 保持 @objcMembers 注解以兼容 Objective-C 代码
+  - 更新 bridging header 移除不再需要的导入
+
+### 2025-12-17：应用模型迁移
+
+- **目标**: 迁移 EZAppModel 到 Swift
+- **状态**: ✅ 完成
+- **成果**:
+  - 从 objc/Legacy/ 迁移到 Swift/Model/
+  - 添加全面的文档注释
+  - 实现 NSSecureCoding 协议
+  - 添加便捷的字典转换方法
+  - 移除 MJExtension/KVC 依赖
+
+### 2025-12-16：服务类型注册
+
+- **目标**: 迁移 EZServiceTypes 到 Swift
+- **状态**: ✅ 完成
+- **成果**:
+  - 使用 `ServiceTypes.swift` 替换 EZServiceTypes.h/.m
+  - 保持 API 兼容性，使用 @objc 属性
+  - 保留单例模式和所有公共方法
+  - 更新代码库中的所有导入语句
+
+### 2025-12-18：类名规范化
+
+- **目标**: 重命名类以符合更清晰的命名约定
+- **状态**: ✅ 完成
+- **成果**:
+  - 统一命名规范，提高代码可读性
+  - 更新相关引用和文档
+
+### 2025-12-17：DeepL API 清理
+
+- **目标**: 移除未使用的 DeepL API 枚举和相关代码
+- **状态**: ✅ 完成
+- **成果**:
+  - 删除 EZDeepLTranslationAPI 枚举
+  - 清理冗余代码，简化架构
+
 ## 📋 待迁移列表
 
 **⚠️ 重要提醒：以下所有 Objective-C 组件修改时必须先迁移到 Swift，禁止直接修改！**
@@ -163,11 +214,9 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
    - 优先级: 中高
    - **⚠️ 禁止修改，必须迁移到 Swift**
 
-6. **EZLocalStorage** - 本地存储
-   - 位置: `objc/Service/EZLocalStorage.h/.m`
-   - 影响: 数据持久化
-   - 优先级: 中
-   - **⚠️ 重写时必须使用 Swift**
+6. **EZLocalStorage** - 本地存储 ✅
+   - 已于 2025-12-17 迁移到 Swift
+   - 新位置: `objc/ViewController/Storage/EZLocalStorage.swift`
 
 ### UI 和交互 (Medium Priority)
 
@@ -212,9 +261,9 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 - [ ] EZDetectManager - **必须使用 Swift**
 
 ### 第二阶段：应用架构 (Q2 2025)
+- [x] EZLocalStorage - ✅ 已完成 (2025-12-17)
 - [ ] AppDelegate - **必须使用 Swift**
 - [ ] EZWindowManager - **禁止修改，必须迁移到 Swift**
-- [ ] EZLocalStorage - **必须使用 Swift**
 - [ ] EZLanguageManager - **必须使用 Swift**
 
 ### 第三阶段：用户界面 (Q3 2025)
@@ -266,4 +315,4 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 ---
 
-*最后更新: 2025-01-29*
+*最后更新: 2025-12-18*
