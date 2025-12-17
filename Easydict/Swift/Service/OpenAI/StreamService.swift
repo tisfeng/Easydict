@@ -71,9 +71,7 @@ public class StreamService: QueryService {
     }
 
     public override func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = Defaults[serviceUsageStatusKey]
-        guard let value = UInt(usageStatus.rawValue) else { return .default }
-        return EZServiceUsageStatus(rawValue: value) ?? .default
+        Defaults[serviceUsageStatusKey].ezStatus
     }
 
     public override func configurationListItems() -> Any? {

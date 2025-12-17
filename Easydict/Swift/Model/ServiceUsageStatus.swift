@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ServiceUsageStatus.swift
 //  Easydict
 //
 //  Created by tisfeng on 2024/6/5.
@@ -24,7 +24,42 @@ enum ServiceUsageStatus: String, CaseIterable {
     case alwaysOn = "2"
 }
 
-// MARK: EnumLocalizedStringConvertible
+// MARK: Legacy bridging
+
+extension ServiceUsageStatus {
+    /// Creates a Swift usage status from the Objective-C `EZServiceUsageStatus` enum.
+    init(ezStatus: EZServiceUsageStatus) {
+        switch ezStatus {
+        case .alwaysOff:
+            self = .alwaysOff
+        case .alwaysOn:
+            self = .alwaysOn
+        default:
+            self = .default
+        }
+    }
+
+    /// Converts the Swift usage status to the Objective-C enum used by legacy code.
+    var ezStatus: EZServiceUsageStatus {
+        switch self {
+        case .alwaysOff:
+            return .alwaysOff
+        case .alwaysOn:
+            return .alwaysOn
+        default:
+            return .default
+        }
+    }
+}
+
+extension EZServiceUsageStatus {
+    /// Returns the Swift `ServiceUsageStatus` counterpart for the Objective-C enum.
+    var swiftValue: ServiceUsageStatus {
+        ServiceUsageStatus(ezStatus: self)
+    }
+}
+
+// MARK: - ServiceUsageStatus + EnumLocalizedStringConvertible
 
 extension ServiceUsageStatus: EnumLocalizedStringConvertible {
     var title: LocalizedStringKey {

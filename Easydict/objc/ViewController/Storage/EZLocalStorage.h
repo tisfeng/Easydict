@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "EZServiceInfo.h"
 #import "EZLayoutManager.h"
-#import "EZAppModel.h"
+
+@class EZAppModel;
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -375,13 +375,13 @@ query count  | level | title
 #pragma mark - Disabled AppModel
 
 - (void)setSelectTextTypeAppModelList:(NSArray<EZAppModel *> *)selectTextAppModelList {
-    NSArray *dictArray = [EZAppModel mj_keyValuesArrayWithObjectArray:selectTextAppModelList];
+    NSArray<NSDictionary *> *dictArray = [EZAppModel dictionaryArrayFromAppModels:selectTextAppModelList];
     [[NSUserDefaults standardUserDefaults] setObject:dictArray forKey:kAppModelTriggerListKey];
 }
 
 - (NSArray<EZAppModel *> *)selectTextTypeAppModelList {
-    NSArray *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kAppModelTriggerListKey];
-    NSArray *appModels = [EZAppModel mj_objectArrayWithKeyValuesArray:dictArray] ?: [NSArray array];
+    NSArray<NSDictionary *> *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kAppModelTriggerListKey];
+    NSArray<EZAppModel *> *appModels = [EZAppModel appModelsFromDictionaryArray:dictArray ?: @[]];
     
     if (!dictArray) {
         EZAppModel *keyChainApp = [[EZAppModel alloc] init];
