@@ -99,7 +99,7 @@ class AppleDictionary: QueryService {
                 fromToLanguages: [from, to],
                 inDictionaries: appleDictionaries
             )
-            result.htmlString = htmlString
+            result?.htmlString = htmlString
 
             let error: QueryError? = htmlString?.isEmpty != false ? noResultError : nil
             completion(result, error)
@@ -225,7 +225,7 @@ extension AppleDictionary {
             let entryHTMLs = queryEntryHTMLs(
                 ofWord: word, inDictionary: dictionary, language: fromLanguage
             )
-            result.htmlStrings = entryHTMLs
+            result?.htmlStrings = entryHTMLs
 
             for html in entryHTMLs {
                 let absolutePathHTML = replacedAudioPath(
@@ -308,7 +308,9 @@ extension AppleDictionary {
             }
         }
 
-        result.innerTexts = texts
+        // `detectText` may call this method without setting `result` beforehand.
+        // Avoid crashing when `result` is nil.
+        result?.innerTexts = texts
 
         return entryHTMLs
     }
