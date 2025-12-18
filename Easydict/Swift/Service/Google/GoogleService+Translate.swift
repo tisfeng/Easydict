@@ -28,8 +28,8 @@ extension GoogleService {
         }
 
         sendWebAppTranslate(text, from: from, to: to) { [weak self] responseObject, signText, _, error in
-            guard let self = self else { return }
-            let result = result
+            guard let self, let result = result else { return }
+
             if let error = error {
                 completion(result, error)
                 return
@@ -368,8 +368,8 @@ extension GoogleService {
         }
 
         sendGTXTranslate(text, from: from, to: to) { [weak self] responseObject, signText, _, error in
-            guard let self = self else { return }
-            let result = result
+            guard let self, let result = result else { return }
+
             if let error = error {
                 completion(result, error)
                 return

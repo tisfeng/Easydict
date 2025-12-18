@@ -498,7 +498,7 @@ class BingRequest {
 // MARK: - String Regex Extension
 
 extension String {
-    fileprivate func getStringValue(withPattern pattern: String) -> String? {
+    func getStringValue(withPattern pattern: String) -> String? {
         guard let regex = try? NSRegularExpression(pattern: pattern),
               let match = regex.firstMatch(in: self, range: NSRange(startIndex..., in: self)),
               match.numberOfRanges >= 2
@@ -512,7 +512,7 @@ extension String {
         return nil
     }
 
-    fileprivate func escapeXMLEntities() -> String {
+    func escapeXMLEntities() -> String {
         var result = self
         result = result.replacingOccurrences(of: "&", with: "&amp;")
         result = result.replacingOccurrences(of: "<", with: "&lt;")

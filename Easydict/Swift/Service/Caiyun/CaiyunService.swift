@@ -32,11 +32,6 @@ public final class CaiyunService: QueryService {
         CaiyunTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
-    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        logInfo("Caiyun Translate does not support OCR")
-        throw QueryServiceError.notSupported
-    }
-
     public override func hasPrivateAPIKey() -> Bool {
         token != caiyunToken
     }
@@ -78,8 +73,7 @@ public final class CaiyunService: QueryService {
         )
         .validate()
         .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
-            guard let self else { return }
-            let result = result
+            guard let self, let result = result else { return }
 
             switch response.result {
             case let .success(value):

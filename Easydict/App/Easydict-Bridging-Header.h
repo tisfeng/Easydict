@@ -3,7 +3,6 @@
 //
 
 #import "MMLog.h"
-#import "EZQueryService.h"
 #import "EZConstKey.h"
 #import "EZConst.h"
 #import "NSColor+MyColors.h"
@@ -14,9 +13,10 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "EZToast.h"
+#import "EZBaiduTranslateResponse.h"
 
-#import "EZBaiduTranslate.h"
 #import "MMCrash.h"
 #import "EZDetectManager.h"
 #import "EZEventMonitor.h"
 #import "DictionaryKit.h"
+#import "EZAudioPlayer.h"

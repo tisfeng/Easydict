@@ -19,7 +19,7 @@ import SwiftUI
 public class StreamService: QueryService {
     // MARK: Lifecycle
 
-    override init() {
+    required init() {
         super.init()
 
         // Since getter Defaults[key] cost CPU high when update too frequently, we observe it here.

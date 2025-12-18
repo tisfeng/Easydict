@@ -12,8 +12,6 @@ Easydict is a macOS dictionary and translation app that supports word lookup, te
 
 ## Build Commands
 
-**IMPORTANT:** If you make significant code changes, you MUST run `xcodebuild build` to ensure the project compiles successfully. If there are build errors, fix them based on the error logs before proceeding.
-
 ```bash
 # Open workspace in Xcode (NOT the .xcodeproj)
 open Easydict.xcworkspace

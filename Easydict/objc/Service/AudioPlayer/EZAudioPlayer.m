@@ -8,9 +8,7 @@
 
 #import "EZAudioPlayer.h"
 #import <AVFoundation/AVFoundation.h>
-#import "EZQueryService.h"
 #import "EZEnumTypes.h"
-#import "EZBaiduTranslate.h"
 #import <sys/xattr.h>
 #import "Easydict-Swift.h"
 

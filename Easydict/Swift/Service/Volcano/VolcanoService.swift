@@ -51,7 +51,8 @@ public final class VolcanoService: QueryService {
         to: Language,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
-        let result = result
+        guard let result = result else { return }
+
         if let error = validateAPIKey(accessKeyID, keyType: "AccessKeyID") {
             completion(result, error)
             return

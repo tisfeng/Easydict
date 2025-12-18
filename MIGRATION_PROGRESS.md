@@ -33,6 +33,13 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | NiuTrans 翻译 | EZNiuTransTranslate | NiuTransService | 2024-12 | refactor(objc-to-swift): migrate EZNiuTransTranslate to Swift |
 | DeepL 翻译 | EZDeepLTranslate | DeepLService | 2024-12 | refactor(objc-to-swift): migrate EZDeepLTranslate to Swift |
 | 苹果词典 | EZAppleDictionary | AppleDictionary | 2025-01 | refactor(objc-to-swift): migrate EZAppleDictionary to Swift |
+| 百度翻译 | EZBaiduTranslate | BaiduService | 2025-03 | refactor(objc-to-swift): migrate EZBaiduTranslate to Swift |
+
+#### 核心基类 (Service Base)
+
+| 名称 | 原文件名 | 新文件名 | 完成时间 | 提交记录 |
+|------|----------|----------|----------|----------|
+| 查询服务基类 | EZQueryService | QueryService | 2025-03 | refactor(objc-to-swift): migrate EZQueryService to Swift |
 
 #### 字符串处理层 (String Processing)
 
@@ -182,19 +189,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 ### 核心服务 (High Priority)
 
-1. **EZQueryService** - 查询服务基类
-   - 位置: `objc/Service/EZQueryService.h/.m`
-   - 影响: 所有翻译服务依赖
-   - 优先级: 最高
-   - **⚠️ 重写时必须使用 Swift**
-
-2. **EZBaiduTranslate** - 百度翻译服务
-   - 位置: `objc/Service/Baidu/`
-   - 影响: 主要翻译服务之一
-   - 优先级: 高
-   - **⚠️ 禁止修改，必须迁移到 Swift**
-
-3. **EZDetectManager** - 文本检测管理器
+1. **EZDetectManager** - 文本检测管理器
    - 位置: `objc/Service/Model/EZDetectManager.h/.m`
    - 影响: 语言检测和 OCR 功能
    - 优先级: 高
@@ -202,25 +197,25 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 ### 应用架构 (Medium Priority)
 
-4. **AppDelegate** - 应用代理
+2. **AppDelegate** - 应用代理
    - 位置: `objc/AppDelegate.h/.m`
    - 影响: 应用生命周期管理
    - 优先级: 中高
    - **⚠️ 重写时必须使用 Swift**
 
-5. **EZWindowManager** - 窗口管理器
+3. **EZWindowManager** - 窗口管理器
    - 位置: `objc/ViewController/Window/EZWindowManager.h/.m`
    - 影响: 所有窗口功能
    - 优先级: 中高
    - **⚠️ 禁止修改，必须迁移到 Swift**
 
-6. **EZLocalStorage** - 本地存储 ✅
+4. **EZLocalStorage** - 本地存储 ✅
    - 已于 2025-12-17 迁移到 Swift
    - 新位置: `objc/ViewController/Storage/EZLocalStorage.swift`
 
 ### UI 和交互 (Medium Priority)
 
-7. **EZBaseQueryViewController** - 基础查询控制器
+5. **EZBaseQueryViewController** - 基础查询控制器
    - 位置: `objc/ViewController/Window/BaseQueryWindow/EZBaseQueryViewController.m`
    - 行数: ~1700 行
    - 影响: 核心用户界面
@@ -256,8 +251,8 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 ### 第一阶段：核心功能 (Q1 2025)
 - [x] Apple Dictionary
-- [ ] EZQueryService (基类) - **必须使用 Swift**
-- [ ] EZBaiduTranslate - **禁止修改，必须迁移到 Swift**
+- [x] EZQueryService (基类) - **已迁移至 Swift**
+- [x] EZBaiduTranslate - **已迁移至 Swift**
 - [ ] EZDetectManager - **必须使用 Swift**
 
 ### 第二阶段：应用架构 (Q2 2025)

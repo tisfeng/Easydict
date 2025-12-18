@@ -30,11 +30,6 @@ public final class TencentService: QueryService {
         TencentTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
-    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        logInfo("Tencent Translate currently does not support OCR")
-        throw QueryServiceError.notSupported
-    }
-
     public override func needPrivateAPIKey() -> Bool {
         true
     }
@@ -99,8 +94,7 @@ public final class TencentService: QueryService {
         )
         .validate()
         .responseDecodable(of: TencentResponse.self) { [weak self] response in
-            guard let self else { return }
-            let result = result
+            guard let self, let result = result else { return }
 
             switch response.result {
             case let .success(value):

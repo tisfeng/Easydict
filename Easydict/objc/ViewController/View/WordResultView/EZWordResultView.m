@@ -17,7 +17,6 @@
 #import "EZWindowManager.h"
 #import "EZOpenLinkButton.h"
 #import "NSImage+EZResize.h"
-#import "EZQueryService.h"
 #import "EZBlueTextButton.h"
 #import "EZMyLabel.h"
 #import "EZAudioButton.h"

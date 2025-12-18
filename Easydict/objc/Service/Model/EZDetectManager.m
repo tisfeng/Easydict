@@ -7,7 +7,6 @@
 //
 
 #import "EZDetectManager.h"
-#import "EZBaiduTranslate.h"
 #import "Easydict-Swift.h"
 
 @interface EZDetectManager ()

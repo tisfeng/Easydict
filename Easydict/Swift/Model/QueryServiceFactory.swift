@@ -84,7 +84,7 @@ final class QueryServiceFactory: NSObject {
         (.deepL, DeepLService.self),
         (.google, GoogleService.self),
         (.apple, AppleService.self),
-        (.baidu, EZBaiduTranslate.self),
+        (.baidu, BaiduService.self),
         (.bing, BingService.self),
         (.volcano, VolcanoService.self),
         (.niuTrans, NiuTransService.self),

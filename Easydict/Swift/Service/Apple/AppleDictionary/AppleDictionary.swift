@@ -21,7 +21,7 @@ private let kHTMLDictFilePath = "all_dict.html"
 class AppleDictionary: QueryService {
     // MARK: Lifecycle
 
-    override init() {
+    required init() {
         super.init()
         self.appleDictionaries = TTTDictionary.activeDictionaries()
     }

@@ -15,7 +15,7 @@ import Foundation
 class BuiltInAIService: BaseOpenAIService {
     // MARK: Lifecycle
 
-    override init() {
+    required init() {
         super.init()
 
         // Set default supported models, disable user to change it.

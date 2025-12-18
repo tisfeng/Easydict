@@ -119,8 +119,8 @@ class YoudaoService: QueryService {
         }
     }
 
-    override func text(
-        toAudio text: String,
+    override func textToAudio(
+        _ text: String,
         fromLanguage from: Language,
         accent: String?,
         completion: @escaping (String?, (any Error)?) -> ()

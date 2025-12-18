@@ -194,8 +194,7 @@ class AliService: QueryService {
         let request = AF.request("https://mt.aliyuncs.com", method: .post, parameters: param)
             .validate()
             .responseDecodable(of: AliAPIResponse.self) { [weak self] response in
-                guard let self else { return }
-                let result = result
+                guard let self, let result = result else { return }
 
                 switch response.result {
                 case let .success(value):

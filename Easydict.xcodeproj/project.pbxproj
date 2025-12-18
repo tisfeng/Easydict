@@ -162,10 +162,10 @@
 		03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E092D281920005E56A8 /* YoudaoService+OCR.swift */; };
 		03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
-		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
+		03D0F0112F00000100ABCDEF /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0012F00000100ABCDEF /* QueryService.swift */; };
 		03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3C2937AF4F00C34C33 /* EZQueryResult.m */; };
 		03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3F2937B3C900C34C33 /* EZOCRResult.m */; };
-		03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A422937B45E00C34C33 /* EZBaiduTranslate.m */; };
+		03D0F0122F00000100ABCDEF /* BaiduService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0022F00000100ABCDEF /* BaiduService.swift */; };
 		03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
@@ -729,14 +729,12 @@
 		03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoOCRResponse.swift; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
 		03542A332936F70F00C34C33 /* EZLanguageManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageManager.m; sourceTree = "<group>"; };
-		03542A382937AE6400C34C33 /* EZQueryService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryService.h; sourceTree = "<group>"; };
-		03542A392937AE6400C34C33 /* EZQueryService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryService.m; sourceTree = "<group>"; };
+		03D0F0012F00000100ABCDEF /* QueryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryService.swift; sourceTree = "<group>"; };
 		03542A3B2937AF4F00C34C33 /* EZQueryResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryResult.h; sourceTree = "<group>"; };
 		03542A3C2937AF4F00C34C33 /* EZQueryResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryResult.m; sourceTree = "<group>"; };
 		03542A3E2937B3C900C34C33 /* EZOCRResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOCRResult.h; sourceTree = "<group>"; };
 		03542A3F2937B3C900C34C33 /* EZOCRResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOCRResult.m; sourceTree = "<group>"; };
-		03542A412937B45E00C34C33 /* EZBaiduTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBaiduTranslate.h; sourceTree = "<group>"; };
-		03542A422937B45E00C34C33 /* EZBaiduTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaiduTranslate.m; sourceTree = "<group>"; };
+		03D0F0022F00000100ABCDEF /* BaiduService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaiduService.swift; sourceTree = "<group>"; };
 		03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBaiduTranslateResponse.h; sourceTree = "<group>"; };
 		03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaiduTranslateResponse.m; sourceTree = "<group>"; };
 		03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDetectLanguageButton.h; sourceTree = "<group>"; };
@@ -1644,8 +1642,6 @@
 			children = (
 				03B0224A29231FA6001C7E63 /* EZDetectManager.h */,
 				03B0224429231FA6001C7E63 /* EZDetectManager.m */,
-				03542A382937AE6400C34C33 /* EZQueryService.h */,
-				03542A392937AE6400C34C33 /* EZQueryService.m */,
 				03542A3B2937AF4F00C34C33 /* EZQueryResult.h */,
 				03542A3C2937AF4F00C34C33 /* EZQueryResult.m */,
 				03542A3E2937B3C900C34C33 /* EZOCRResult.h */,
@@ -1817,6 +1813,8 @@
 			isa = PBXGroup;
 			children = (
 				54A84CEDD3AD444B860067F8 /* Model */,
+				03D0F0012F00000100ABCDEF /* QueryService.swift */,
+				03D0F0202F00000100ABCDEF /* Baidu */,
 				03F086F62DB3A93200268DF0 /* Groq */,
 				03F281622D9A323700AE518C /* Zhipu */,
 				0371A4FF2DB128E50097D4A1 /* GitHub Models */,
@@ -1855,6 +1853,14 @@
 				031CBA632CD76F1500364437 /* ChatMessage.swift */,
 			);
 			path = OpenAI;
+			sourceTree = "<group>";
+		};
+		03D0F0202F00000100ABCDEF /* Baidu */ = {
+			isa = PBXGroup;
+			children = (
+				03D0F0022F00000100ABCDEF /* BaiduService.swift */,
+			);
+			path = Baidu;
 			sourceTree = "<group>";
 		};
 		03779F122BB256B5008D3C42 /* DefaultAPIKeys */ = {
@@ -2096,8 +2102,6 @@
 			children = (
 				CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */,
 				CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */,
-				03542A412937B45E00C34C33 /* EZBaiduTranslate.h */,
-				03542A422937B45E00C34C33 /* EZBaiduTranslate.m */,
 				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
 				03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */,
 				03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */,
@@ -3893,7 +3897,7 @@
 				27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */,
 				9643D9392B6F49E0000FBEA6 /* AppShortcutSettingView.swift in Sources */,
 				96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */,
-				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
+				03D0F0122F00000100ABCDEF /* BaiduService.swift in Sources */,
 				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */,
@@ -3930,7 +3934,7 @@
 				033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */,
 				039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */,
 				0399C6B829A9F4B800B4AFCC /* EZSchemeParser.m in Sources */,
-				03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */,
+				03D0F0112F00000100ABCDEF /* QueryService.swift in Sources */,
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03779F132BB256B5008D3C42 /* APIKey.swift in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,

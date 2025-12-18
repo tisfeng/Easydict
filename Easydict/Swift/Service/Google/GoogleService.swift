@@ -15,14 +15,6 @@ private let kGoogleTranslateURL = "https://translate.google.com"
 // MARK: - GoogleService
 
 class GoogleService: QueryService {
-    // MARK: Lifecycle
-
-    override init() {
-        super.init()
-    }
-
-    // MARK: Internal
-
     // MARK: - JavaScript Context
 
     lazy var jsContext: JSContext = {
@@ -221,8 +213,8 @@ class GoogleService: QueryService {
 
     // MARK: - Text to Audio
 
-    override func text(
-        toAudio text: String,
+    override func textToAudio(
+        _ text: String,
         fromLanguage: Language,
         accent: String?,
         completion: @escaping (String?, Error?) -> ()

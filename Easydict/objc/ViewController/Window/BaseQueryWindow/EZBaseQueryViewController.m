@@ -18,7 +18,6 @@
 #import "EZLog.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"
-#import "EZBaiduTranslate.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
 #import "EZEventMonitor.h"
