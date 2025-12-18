@@ -208,6 +208,7 @@ open class QueryService: NSObject {
         return languageCode(forLanguage: currentLanguage) ?? ""
     }
 
+    @discardableResult
     open dynamic func resetServiceResult() -> EZQueryResult {
         let currentResult = result ?? EZQueryResult()
         currentResult.reset()

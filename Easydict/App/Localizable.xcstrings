@@ -1069,6 +1069,7 @@
       }
     },
     "comparative" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3504,6 +3505,7 @@
       }
     },
     "past" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3532,6 +3534,7 @@
       }
     },
     "past_participle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3672,6 +3675,7 @@
       }
     },
     "plural" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3728,6 +3732,7 @@
       }
     },
     "present_participle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4182,6 +4187,7 @@
       }
     },
     "root" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8623,6 +8629,7 @@
       }
     },
     "singular" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8844,6 +8851,7 @@
       }
     },
     "superlative" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

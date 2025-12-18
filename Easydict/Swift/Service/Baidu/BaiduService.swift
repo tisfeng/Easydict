@@ -147,8 +147,8 @@ final class BaiduService: QueryService {
 
         if apiTranslate.isEnable {
             apiTranslate.result = result
-            let fromCode = Language(rawValue: languageCode(forLanguage: from) ?? "") ?? from
-            let toCode = Language(rawValue: languageCode(forLanguage: to) ?? "") ?? to
+            let fromCode = languageCode(forLanguage: from).map(Language.init(rawValue:)) ?? from
+            let toCode = languageCode(forLanguage: to).map(Language.init(rawValue:)) ?? to
 
             apiTranslate.translate(trimmedText, from: fromCode, to: toCode) { [weak self] result, error in
                 guard let self else { return }
@@ -332,7 +332,7 @@ final class BaiduService: QueryService {
                         ocrResult.texts = filtered
                     }
                 }
-                ocrResult.raw = responseObject
+                ocrResult.raw = responseObject as Any
 
                 let texts = ocrResult.texts
                 if !texts.isEmpty {
@@ -496,8 +496,7 @@ final class BaiduService: QueryService {
         var message: String?
 
         if let responseObject,
-           let response = EZBaiduTranslateResponse.mj_object(withKeyValues: responseObject)
-           as? EZBaiduTranslateResponse {
+           let response = EZBaiduTranslateResponse.mj_object(withKeyValues: responseObject) {
             if response.error == 0 {
                 error997Count = 0
                 parseDictionaryResult(response, result: currentResult)
@@ -543,163 +542,41 @@ final class BaiduService: QueryService {
 
         let wordResult = EZTranslateWordResult()
 
-        var tags: [String] = []
-        let simpleTags = simpleMeans.tags
-        if let core = simpleTags.core { tags.append(contentsOf: core) }
-        if let other = simpleTags.other {
-            tags.append(contentsOf: other.filter { !$0.isEmpty })
-        }
-        if !tags.isEmpty {
-            wordResult.tags = tags
-        }
+        appendTags(from: simpleMeans.tags, to: wordResult)
 
         if let symbol = simpleMeans.symbols.first {
-            var phonetics: [EZWordPhonetic] = []
-            let language = queryModel.queryFromLanguage
-
-            if !symbol.ph_am.isEmpty {
-                let phonetic = EZWordPhonetic()
-                phonetic.name = NSLocalizedString("us_phonetic", comment: "")
-                phonetic.language = language
-                phonetic.accent = "us"
-                phonetic.word = queryModel.queryText
-                phonetic.value = symbol.ph_am
-                phonetic.speakURL = getAudioURL(with: result.queryText, langCode: "en")
-                phonetics.append(phonetic)
-            }
-
-            if !symbol.ph_en.isEmpty {
-                let phonetic = EZWordPhonetic()
-                phonetic.name = NSLocalizedString("uk_phonetic", comment: "")
-                phonetic.language = language
-                phonetic.accent = "uk"
-                phonetic.word = queryModel.queryText
-                phonetic.value = symbol.ph_en
-                phonetic.speakURL = getAudioURL(with: result.queryText, langCode: "uk")
-                phonetics.append(phonetic)
-            }
-
+            let phonetics = buildPhonetics(
+                from: symbol,
+                language: queryModel.queryFromLanguage,
+                queryText: queryModel.queryText
+            )
             if !phonetics.isEmpty {
                 wordResult.phonetics = phonetics
             }
 
-            let parts = symbol.parts.compactMap { part -> EZTranslatePart? in
-                let translatePart = EZTranslatePart()
-                if let partText = part.part, !partText.isEmpty {
-                    translatePart.part = partText
-                } else if let partName = part.part_name, !partName.isEmpty {
-                    translatePart.part = partName
-                }
-                translatePart.means = []
-                if let means = part.means as? [String], !means.isEmpty {
-                    translatePart.means = means
-                }
-                return translatePart.means.isEmpty ? nil : translatePart
-            }
+            let parts = buildTranslateParts(from: symbol)
             if !parts.isEmpty {
                 wordResult.parts = parts
             }
+        }
 
-            let exchange = simpleMeans.exchange
-            var exchanges: [EZTranslateExchange] = []
-            let wordThird = (exchange.word_third as? [String]) ?? []
-            if !wordThird.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("singular", comment: "")
-                ex.words = wordThird
-                exchanges.append(ex)
-            }
-            let wordPl = (exchange.word_pl as? [String]) ?? []
-            if !wordPl.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("plural", comment: "")
-                ex.words = wordPl
-                exchanges.append(ex)
-            }
-            let wordEr = (exchange.word_er as? [String]) ?? []
-            if !wordEr.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("comparative", comment: "")
-                ex.words = wordEr
-                exchanges.append(ex)
-            }
-            let wordEst = (exchange.word_est as? [String]) ?? []
-            if !wordEst.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("superlative", comment: "")
-                ex.words = wordEst
-                exchanges.append(ex)
-            }
-            let wordPast = (exchange.word_past as? [String]) ?? []
-            if !wordPast.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("past", comment: "")
-                ex.words = wordPast
-                exchanges.append(ex)
-            }
-            let wordDone = (exchange.word_done as? [String]) ?? []
-            if !wordDone.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("past_participle", comment: "")
-                ex.words = wordDone
-                exchanges.append(ex)
-            }
-            let wordIng = (exchange.word_ing as? [String]) ?? []
-            if !wordIng.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("present_participle", comment: "")
-                ex.words = wordIng
-                exchanges.append(ex)
-            }
-            let wordProto = (exchange.word_proto as? [String]) ?? []
-            if !wordProto.isEmpty {
-                let ex = EZTranslateExchange()
-                ex.name = NSLocalizedString("root", comment: "")
-                ex.words = wordProto
-                exchanges.append(ex)
-            }
-            if !exchanges.isEmpty {
-                wordResult.exchanges = exchanges
-            }
+        let exchanges = buildExchanges(from: simpleMeans.exchange)
+        if !exchanges.isEmpty {
+            wordResult.exchanges = exchanges
+        }
 
-            if let firstPart = simpleMeans.symbols.first?.parts.first,
-               let means = firstPart.means as? [[String: Any]] {
-                var simpleWords: [EZTranslateSimpleWord] = []
-                for item in means {
-                    guard item["isSeeAlso"] == nil else { continue }
-                    guard let word = item["text"] as? String, !word.isEmpty else { continue }
+        let simpleWords = buildSimpleWords(from: simpleMeans.symbols.first?.parts.first)
+        if !simpleWords.isEmpty {
+            wordResult.simpleWords = simpleWords
+        }
 
-                    let simpleWord = EZTranslateSimpleWord()
-                    simpleWord.word = word
-                    let part = (item["part"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "misc."
-                    simpleWord.part = part
-                    if let wordMeans = item["means"] as? [String] {
-                        simpleWord.means = wordMeans
-                    }
-                    simpleWords.append(simpleWord)
-                }
+        let wordMeans = simpleMeans.word_means
+        if let first = wordMeans.first {
+            result.translatedResults = [(first as NSString).ns_trim() as String]
+        }
 
-                if !simpleWords.isEmpty {
-                    wordResult.simpleWords = simpleWords.sorted { lhs, rhs in
-                        if rhs.part == "misc." {
-                            return true
-                        }
-                        if lhs.part == "misc." {
-                            return false
-                        }
-                        return (lhs.part ?? "") < (rhs.part ?? "")
-                    }
-                }
-            }
-
-            let wordMeans = simpleMeans.word_means
-            if let first = wordMeans.first {
-                result.translatedResults = [(first as NSString).ns_trim() as String]
-            }
-
-            if wordResult.parts != nil || wordResult.simpleWords != nil {
-                result.wordResult = wordResult
-            }
+        if wordResult.parts != nil || wordResult.simpleWords != nil {
+            result.wordResult = wordResult
         }
     }
 
@@ -717,6 +594,125 @@ final class BaiduService: QueryService {
 
         if !translatedResults.isEmpty {
             result.translatedResults = translatedResults
+        }
+    }
+
+    /// Merge response tags into the given word result.
+    private func appendTags(from tags: EZBaiduTranslateResponseTags?, to wordResult: EZTranslateWordResult) {
+        guard let tags else { return }
+
+        var combined: [String] = []
+        if let core = tags.core { combined.append(contentsOf: core) }
+        if let other = tags.other {
+            combined.append(contentsOf: other.filter { !$0.isEmpty })
+        }
+
+        if !combined.isEmpty {
+            wordResult.tags = combined
+        }
+    }
+
+    /// Build phonetics for the first dictionary symbol.
+    private func buildPhonetics(
+        from symbol: EZBaiduTranslateResponseSymbol,
+        language: Language,
+        queryText: String
+    )
+        -> [EZWordPhonetic] {
+        var phonetics: [EZWordPhonetic] = []
+
+        if !symbol.ph_am.isEmpty {
+            let phonetic = EZWordPhonetic()
+            phonetic.name = NSLocalizedString("us_phonetic", comment: "")
+            phonetic.language = language
+            phonetic.accent = "us"
+            phonetic.word = queryText
+            phonetic.value = symbol.ph_am
+            phonetic.speakURL = getAudioURL(with: queryText, langCode: "en")
+            phonetics.append(phonetic)
+        }
+
+        if !symbol.ph_en.isEmpty {
+            let phonetic = EZWordPhonetic()
+            phonetic.name = NSLocalizedString("uk_phonetic", comment: "")
+            phonetic.language = language
+            phonetic.accent = "uk"
+            phonetic.word = queryText
+            phonetic.value = symbol.ph_en
+            phonetic.speakURL = getAudioURL(with: queryText, langCode: "uk")
+            phonetics.append(phonetic)
+        }
+
+        return phonetics
+    }
+
+    /// Build translate parts from Baidu dictionary response.
+    private func buildTranslateParts(from symbol: EZBaiduTranslateResponseSymbol) -> [EZTranslatePart] {
+        symbol.parts.compactMap { part -> EZTranslatePart? in
+            let translatePart = EZTranslatePart()
+            if let partText = part.part, !partText.isEmpty {
+                translatePart.part = partText
+            } else if let partName = part.part_name, !partName.isEmpty {
+                translatePart.part = partName
+            }
+            translatePart.means = []
+            if let means = part.means as? [String], !means.isEmpty {
+                translatePart.means = means
+            }
+            return translatePart.means.isEmpty ? nil : translatePart
+        }
+    }
+
+    /// Build word exchanges list with localized labels.
+    private func buildExchanges(from exchange: EZBaiduTranslateResponseExchange?) -> [EZTranslateExchange] {
+        guard let exchange else { return [] }
+
+        let entries: [(nameKey: String, words: [String]?)] = [
+            ("singular", exchange.word_third),
+            ("plural", exchange.word_pl),
+            ("comparative", exchange.word_er),
+            ("superlative", exchange.word_est),
+            ("past", exchange.word_past),
+            ("past_participle", exchange.word_done),
+            ("present_participle", exchange.word_ing),
+            ("root", exchange.word_proto),
+        ]
+
+        return entries.compactMap { entry in
+            guard let words = entry.words, !words.isEmpty else { return nil }
+            let exchange = EZTranslateExchange()
+            exchange.name = NSLocalizedString(entry.nameKey, comment: "")
+            exchange.words = words
+            return exchange
+        }
+    }
+
+    /// Build simplified related words list from the first dictionary part.
+    private func buildSimpleWords(from part: EZBaiduTranslateResponsePart?) -> [EZTranslateSimpleWord] {
+        guard let means = part?.means as? [[String: Any]] else { return [] }
+
+        let simpleWords: [EZTranslateSimpleWord] = means.compactMap { item in
+            guard item["isSeeAlso"] == nil else { return nil }
+            guard let word = item["text"] as? String, !word.isEmpty else { return nil }
+
+            let simpleWord = EZTranslateSimpleWord()
+            simpleWord.word = word
+            let part = (item["part"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "misc."
+            simpleWord.part = part
+            if let wordMeans = item["means"] as? [String] {
+                simpleWord.means = wordMeans
+            }
+            return simpleWord
+        }
+
+        return simpleWords.sorted { lhs, rhs in
+            if rhs.part == "misc." {
+                return true
+            }
+            if lhs.part == "misc." {
+                return false
+            }
+            return (lhs.part ?? "") < (rhs.part ?? "")
         }
     }
 
