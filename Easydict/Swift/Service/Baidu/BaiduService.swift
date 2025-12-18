@@ -8,10 +8,9 @@
 
 import AFNetworking
 import AppKit
-import Foundation
 import JavaScriptCore
 
-private let kBaiduTranslateURL = "https://fanyi.baidu.com"
+let kBaiduTranslateURL = "https://fanyi.baidu.com"
 
 // MARK: - BaiduService
 
@@ -19,6 +18,15 @@ private let kBaiduTranslateURL = "https://fanyi.baidu.com"
 @objcMembers
 final class BaiduService: QueryService {
     // MARK: Internal
+
+    lazy var jsonSession: AFHTTPSessionManager = {
+        let session = AFHTTPSessionManager()
+        session.requestSerializer = AFHTTPRequestSerializer()
+        let responseSerializer = AFJSONResponseSerializer()
+        responseSerializer.acceptableContentTypes = ["application/json"]
+        session.responseSerializer = responseSerializer
+        return session
+    }()
 
     // MARK: - Overrides
 
@@ -270,105 +278,12 @@ final class BaiduService: QueryService {
         return super.getTTSLanguageCode(language, accent: accent)
     }
 
-    override func ocr(
-        _ image: NSImage,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZOCRResult?, Error?) -> ()
-    ) {
-        guard let data = image.mm_PNGData else {
-            completion(nil, QueryError.error(type: .parameter, message: "图片为空"))
-            return
-        }
+    func getAudioURL(with text: String, langCode: String) -> String {
+        let trimmed = (text as NSString).ns_trimToMaxLength(1000) as String
+        let encoded = trimmed.ns_encode() as String
 
-        let fromLang = from == .auto ? languageCode(forLanguage: .english) : languageCode(forLanguage: from)
-        let toLang: String?
-        if to == .auto {
-            let target = EZLanguageManager.shared().userTargetLanguage(withSourceLanguage: from)
-            toLang = languageCode(forLanguage: target)
-        } else {
-            toLang = languageCode(forLanguage: to)
-        }
-
-        let url = "\(kBaiduTranslateURL)/getocr"
-        let params: [String: Any] = [
-            "image": data,
-            "from": fromLang ?? "",
-            "to": toLang ?? "",
-        ]
-
-        jsonSession.post(
-            url,
-            parameters: params,
-            constructingBodyWith: { formData in
-                formData.appendPart(withFileData: data, name: "image", fileName: "blob", mimeType: "image/png")
-            },
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self else { return }
-                guard let json = responseObject as? [String: Any],
-                      let data = json["data"] as? [String: Any]
-                else {
-                    completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
-                    return
-                }
-
-                let ocrResult = EZOCRResult()
-                if let from = data["from"] as? String {
-                    ocrResult.from = languageEnum(fromCode: from)
-                }
-                if let to = data["to"] as? String {
-                    ocrResult.to = languageEnum(fromCode: to)
-                }
-                if let src = data["src"] as? [String] {
-                    let filtered = src.filter { !$0.isEmpty }
-                    if !filtered.isEmpty {
-                        let ocrTexts = filtered.map { text -> EZOCRText in
-                            let ocrText = EZOCRText()
-                            ocrText.text = text
-                            return ocrText
-                        }
-                        ocrResult.ocrTextArray = ocrTexts
-                        ocrResult.texts = filtered
-                    }
-                }
-                ocrResult.raw = responseObject as Any
-
-                let texts = ocrResult.texts
-                if !texts.isEmpty {
-                    let merged = texts.joined(separator: " ")
-                    ocrResult.mergedText = merged
-                    completion(ocrResult, nil)
-                    return
-                }
-
-                completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
-            },
-            failure: { _, _ in
-                completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
-            }
-        )
-    }
-
-    override func ocrAndTranslate(
-        _ image: NSImage,
-        from: Language,
-        to: Language,
-        ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
-        completion: @escaping (EZOCRResult?, EZQueryResult?, Error?) -> ()
-    ) {
-        ocr(image, from: from, to: to) { [weak self] ocrResult, error in
-            guard let self else { return }
-            guard let ocrResult else {
-                completion(nil, nil, error)
-                return
-            }
-
-            ocrSuccess(ocrResult, true)
-            translate(ocrResult.mergedText, from: from, to: to) { result, error in
-                completion(ocrResult, result, error)
-            }
-        }
+        let speed = (langCode == "zh") ? 5 : 3
+        return "\(kBaiduTranslateURL)/gettts?text=\(encoded)&lan=\(langCode)&spd=\(speed)&source=web"
     }
 
     // MARK: Private
@@ -393,15 +308,6 @@ final class BaiduService: QueryService {
         session.requestSerializer = AFHTTPRequestSerializer()
         let responseSerializer = AFHTTPResponseSerializer()
         responseSerializer.acceptableContentTypes = ["text/html"]
-        session.responseSerializer = responseSerializer
-        return session
-    }()
-
-    private lazy var jsonSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        session.requestSerializer = AFHTTPRequestSerializer()
-        let responseSerializer = AFJSONResponseSerializer()
-        responseSerializer.acceptableContentTypes = ["application/json"]
         session.responseSerializer = responseSerializer
         return session
     }()
@@ -534,188 +440,6 @@ final class BaiduService: QueryService {
         completion(currentResult, QueryError.error(type: .api, message: message))
     }
 
-    private func parseDictionaryResult(
-        _ response: EZBaiduTranslateResponse,
-        result: EZQueryResult
-    ) {
-        guard let simpleMeans = response.dict_result?.simple_means else { return }
-
-        let wordResult = EZTranslateWordResult()
-
-        appendTags(from: simpleMeans.tags, to: wordResult)
-
-        if let symbol = simpleMeans.symbols.first {
-            let phonetics = buildPhonetics(
-                from: symbol,
-                language: queryModel.queryFromLanguage,
-                queryText: queryModel.queryText
-            )
-            if !phonetics.isEmpty {
-                wordResult.phonetics = phonetics
-            }
-
-            let parts = buildTranslateParts(from: symbol)
-            if !parts.isEmpty {
-                wordResult.parts = parts
-            }
-        }
-
-        let exchanges = buildExchanges(from: simpleMeans.exchange)
-        if !exchanges.isEmpty {
-            wordResult.exchanges = exchanges
-        }
-
-        let simpleWords = buildSimpleWords(from: simpleMeans.symbols.first?.parts.first)
-        if !simpleWords.isEmpty {
-            wordResult.simpleWords = simpleWords
-        }
-
-        let wordMeans = simpleMeans.word_means
-        if let first = wordMeans.first {
-            result.translatedResults = [(first as NSString).ns_trim() as String]
-        }
-
-        if wordResult.parts != nil || wordResult.simpleWords != nil {
-            result.wordResult = wordResult
-        }
-    }
-
-    private func parseTranslationResult(
-        _ response: EZBaiduTranslateResponse,
-        result: EZQueryResult
-    ) {
-        let translatedResults: [String] = response.trans_result.data.compactMap { item in
-            let trimmed = item.dst.trim()
-            if item.prefixWrap {
-                return "\n\(trimmed)"
-            }
-            return trimmed
-        }
-
-        if !translatedResults.isEmpty {
-            result.translatedResults = translatedResults
-        }
-    }
-
-    /// Merge response tags into the given word result.
-    private func appendTags(from tags: EZBaiduTranslateResponseTags?, to wordResult: EZTranslateWordResult) {
-        guard let tags else { return }
-
-        var combined: [String] = []
-        if let core = tags.core { combined.append(contentsOf: core) }
-        if let other = tags.other {
-            combined.append(contentsOf: other.filter { !$0.isEmpty })
-        }
-
-        if !combined.isEmpty {
-            wordResult.tags = combined
-        }
-    }
-
-    /// Build phonetics for the first dictionary symbol.
-    private func buildPhonetics(
-        from symbol: EZBaiduTranslateResponseSymbol,
-        language: Language,
-        queryText: String
-    )
-        -> [EZWordPhonetic] {
-        var phonetics: [EZWordPhonetic] = []
-
-        if !symbol.ph_am.isEmpty {
-            let phonetic = EZWordPhonetic()
-            phonetic.name = NSLocalizedString("us_phonetic", comment: "")
-            phonetic.language = language
-            phonetic.accent = "us"
-            phonetic.word = queryText
-            phonetic.value = symbol.ph_am
-            phonetic.speakURL = getAudioURL(with: queryText, langCode: "en")
-            phonetics.append(phonetic)
-        }
-
-        if !symbol.ph_en.isEmpty {
-            let phonetic = EZWordPhonetic()
-            phonetic.name = NSLocalizedString("uk_phonetic", comment: "")
-            phonetic.language = language
-            phonetic.accent = "uk"
-            phonetic.word = queryText
-            phonetic.value = symbol.ph_en
-            phonetic.speakURL = getAudioURL(with: queryText, langCode: "uk")
-            phonetics.append(phonetic)
-        }
-
-        return phonetics
-    }
-
-    /// Build translate parts from Baidu dictionary response.
-    private func buildTranslateParts(from symbol: EZBaiduTranslateResponseSymbol) -> [EZTranslatePart] {
-        symbol.parts.compactMap { part -> EZTranslatePart? in
-            let translatePart = EZTranslatePart()
-            if let partText = part.part, !partText.isEmpty {
-                translatePart.part = partText
-            } else if let partName = part.part_name, !partName.isEmpty {
-                translatePart.part = partName
-            }
-            translatePart.means = []
-            if let means = part.means as? [String], !means.isEmpty {
-                translatePart.means = means
-            }
-            return translatePart.means.isEmpty ? nil : translatePart
-        }
-    }
-
-    /// Build word exchanges list with localized labels.
-    private func buildExchanges(from exchange: EZBaiduTranslateResponseExchange?) -> [EZTranslateExchange] {
-        guard let exchange else { return [] }
-
-        let entries: [(nameKey: String, words: [String]?)] = [
-            ("singular", exchange.word_third),
-            ("plural", exchange.word_pl),
-            ("comparative", exchange.word_er),
-            ("superlative", exchange.word_est),
-            ("past", exchange.word_past),
-            ("past_participle", exchange.word_done),
-            ("present_participle", exchange.word_ing),
-            ("root", exchange.word_proto),
-        ]
-
-        return entries.compactMap { entry in
-            guard let words = entry.words, !words.isEmpty else { return nil }
-            let exchange = EZTranslateExchange()
-            exchange.name = NSLocalizedString(entry.nameKey, comment: "")
-            exchange.words = words
-            return exchange
-        }
-    }
-
-    /// Build simplified related words list from the first dictionary part.
-    private func buildSimpleWords(from part: EZBaiduTranslateResponsePart?) -> [EZTranslateSimpleWord] {
-        guard let means = part?.means as? [[String: Any]] else { return [] }
-
-        let simpleWords: [EZTranslateSimpleWord] = means.compactMap { item in
-            guard item["isSeeAlso"] == nil else { return nil }
-            guard let word = item["text"] as? String, !word.isEmpty else { return nil }
-
-            let simpleWord = EZTranslateSimpleWord()
-            simpleWord.word = word
-            let part = (item["part"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "misc."
-            simpleWord.part = part
-            if let wordMeans = item["means"] as? [String] {
-                simpleWord.means = wordMeans
-            }
-            return simpleWord
-        }
-
-        return simpleWords.sorted { lhs, rhs in
-            if rhs.part == "misc." {
-                return true
-            }
-            if lhs.part == "misc." {
-                return false
-            }
-            return (lhs.part ?? "") < (rhs.part ?? "")
-        }
-    }
-
     private func sendGetTokenAndGtkRequest(completion: @escaping (String?, String?, Error?) -> ()) {
         let url = kBaiduTranslateURL
 
@@ -770,13 +494,5 @@ final class BaiduService: QueryService {
                 self?.gtk = gtk
             }
         }
-    }
-
-    private func getAudioURL(with text: String, langCode: String) -> String {
-        let trimmed = (text as NSString).ns_trimToMaxLength(1000) as String
-        let encoded = trimmed.ns_encode() as String
-
-        let speed = (langCode == "zh") ? 5 : 3
-        return "\(kBaiduTranslateURL)/gettts?text=\(encoded)&lan=\(langCode)&spd=\(speed)&source=web"
     }
 }
