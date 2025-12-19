@@ -69,21 +69,27 @@ class BaiduApiTranslate: NSObject {
                 "Content-Type": "application/x-www-form-urlencoded",
             ]
         )
-        .validate()
-        .responseDecodable(of: BaiduApiResponse.self) { [weak self] response in
+        let task = Task { [weak self] in
             guard let self else { return }
             let result = result ?? EZQueryResult()
             result.from = from
             result.to = to
             result.queryText = text
 
-            switch response.result {
-            case let .success(value):
+            let dataTask = request
+                .validate()
+                .serializingDecodable(BaiduApiResponse.self)
+
+            do {
+                let value = try await dataTask.value
                 result.translatedResults = value.transResult.map { $0.dst }
-                completion(result, nil)
-            case let .failure(error):
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
                 logError("Baidu official API error \(error)")
                 let queryError = QueryError(type: .api, message: error.localizedDescription)
+                let response = await dataTask.response
                 if let data = response.data {
                     do {
                         let errorResponse = try JSONDecoder().decode(
@@ -95,12 +101,15 @@ class BaiduApiTranslate: NSObject {
                         logError("Failed to decode error response: \(error)")
                     }
                 }
-                completion(result, queryError)
+                await MainActor.run {
+                    completion(result, queryError)
+                }
             }
         }
 
         queryModel.setStop({
             request.cancel()
+            task.cancel()
         }, serviceType: ServiceType.baidu.rawValue)
     }
 
