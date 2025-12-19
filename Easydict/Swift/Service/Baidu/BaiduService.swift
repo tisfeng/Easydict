@@ -159,27 +159,19 @@ final class BaiduService: QueryService {
             return
         }
 
-        let queryString = (text as NSString).ns_trimToMaxLength(73) as String
-        let url = "\(kBaiduTranslateURL)/langdetect"
-
-        AF.request(
-            url,
-            method: .post,
-            parameters: ["query": queryString],
-            encoder: URLEncodedFormParameterEncoder.default
-        )
-        .validate()
-        .responseDecodable(of: BaiduDetectResponse.self) { [weak self] response in
+        Task { [weak self] in
             guard let self else { return }
-            switch response.result {
-            case let .success(value):
-                if let from = value.lan, !from.isEmpty {
-                    completion(languageEnum(fromCode: from), nil)
-                } else {
-                    completion(.auto, QueryError.error(type: .unsupportedLanguage))
+            do {
+                let detectedLanguage = try await requestDetectedLanguage(for: text)
+                await MainActor.run {
+                    completion(detectedLanguage, nil)
                 }
-            case .failure:
-                completion(.auto, QueryError.error(type: .api, message: "判断语言失败"))
+            } catch {
+                let queryError = error as? QueryError
+                    ?? QueryError.error(type: .api, message: "判断语言失败")
+                await MainActor.run {
+                    completion(.auto, queryError)
+                }
             }
         }
     }
@@ -233,6 +225,37 @@ final class BaiduService: QueryService {
     private lazy var apiTranslate: BaiduApiTranslate = {
         BaiduApiTranslate(queryModel: queryModel ?? EZQueryModel())
     }()
+
+    /// Requests detected language for the given text.
+    private func requestDetectedLanguage(for text: String) async throws -> Language {
+        let queryString = (text as NSString).ns_trimToMaxLength(73) as String
+        let url = "\(kBaiduTranslateURL)/langdetect"
+
+        do {
+            let response = try await AF.request(
+                url,
+                method: .post,
+                parameters: ["query": queryString],
+                encoder: URLEncodedFormParameterEncoder.default
+            )
+            .validate()
+            .serializingDecodable(BaiduDetectResponse.self)
+            .value
+
+            guard let from = response.lan, !from.isEmpty else {
+                throw QueryError.error(type: .unsupportedLanguage)
+            }
+
+            return languageEnum(fromCode: from)
+        } catch let decodingError as DecodingError {
+            logError("Baidu language detection response parsing error: \(decodingError)")
+            throw QueryError.error(type: .api, message: "判断语言失败")
+        } catch let queryError as QueryError {
+            throw queryError
+        } catch {
+            throw QueryError.error(type: .api, message: "判断语言失败")
+        }
+    }
 }
 
 // MARK: - BaiduDetectResponse

@@ -31,58 +31,23 @@ extension BaiduService {
             toLang = languageCode(forLanguage: to)
         }
 
-        let url = "\(kBaiduTranslateURL)/getocr"
-        AF.upload(
-            multipartFormData: { formData in
-                formData.append(data, withName: "image", fileName: "blob", mimeType: "image/png")
-                formData.append(Data((fromLang ?? "").utf8), withName: "from")
-                formData.append(Data((toLang ?? "").utf8), withName: "to")
-            },
-            to: url,
-            method: .post
-        )
-        .validate()
-        .responseDecodable(of: BaiduOcrResponse.self) { [weak self] response in
+        Task { [weak self] in
             guard let self else { return }
-            switch response.result {
-            case let .success(value):
-                guard let data = value.data else {
-                    completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
-                    return
-                }
-
-                let ocrResult = EZOCRResult()
-                if let from = data.from {
-                    ocrResult.from = languageEnum(fromCode: from)
-                }
-                if let to = data.to {
-                    ocrResult.to = languageEnum(fromCode: to)
-                }
-                if let src = data.src {
-                    let filtered = src.filter { !$0.isEmpty }
-                    if !filtered.isEmpty {
-                        let ocrTexts = filtered.map { text -> EZOCRText in
-                            let ocrText = EZOCRText()
-                            ocrText.text = text
-                            return ocrText
-                        }
-                        ocrResult.ocrTextArray = ocrTexts
-                        ocrResult.texts = filtered
-                    }
-                }
-                ocrResult.raw = value
-
-                let texts = ocrResult.texts
-                if !texts.isEmpty {
-                    let merged = texts.joined(separator: " ")
-                    ocrResult.mergedText = merged
+            do {
+                let ocrResult = try await requestOcrResult(
+                    imageData: data,
+                    fromLang: fromLang,
+                    toLang: toLang
+                )
+                await MainActor.run {
                     completion(ocrResult, nil)
-                    return
                 }
-
-                completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
-            case .failure:
-                completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
+            } catch {
+                let queryError = error as? QueryError
+                    ?? QueryError.error(type: .api, message: "识别图片文本失败")
+                await MainActor.run {
+                    completion(nil, queryError)
+                }
             }
         }
     }
@@ -105,6 +70,72 @@ extension BaiduService {
             translate(ocrResult.mergedText, from: from, to: to) { result, error in
                 completion(ocrResult, result, error)
             }
+        }
+    }
+
+    /// Requests OCR result for the given image data.
+    private func requestOcrResult(
+        imageData: Data,
+        fromLang: String?,
+        toLang: String?
+    ) async throws
+        -> EZOCRResult {
+        let url = "\(kBaiduTranslateURL)/getocr"
+
+        do {
+            let response = try await AF.upload(
+                multipartFormData: { formData in
+                    formData.append(imageData, withName: "image", fileName: "blob", mimeType: "image/png")
+                    formData.append(Data((fromLang ?? "").utf8), withName: "from")
+                    formData.append(Data((toLang ?? "").utf8), withName: "to")
+                },
+                to: url,
+                method: .post
+            )
+            .validate()
+            .serializingDecodable(BaiduOcrResponse.self)
+            .value
+
+            guard let data = response.data else {
+                throw QueryError.error(type: .api, message: "识别图片文本失败")
+            }
+
+            let ocrResult = EZOCRResult()
+            if let from = data.from {
+                ocrResult.from = languageEnum(fromCode: from)
+            }
+            if let to = data.to {
+                ocrResult.to = languageEnum(fromCode: to)
+            }
+            if let src = data.src {
+                let filtered = src.filter { !$0.isEmpty }
+                if !filtered.isEmpty {
+                    let ocrTexts = filtered.map { text -> EZOCRText in
+                        let ocrText = EZOCRText()
+                        ocrText.text = text
+                        return ocrText
+                    }
+                    ocrResult.ocrTextArray = ocrTexts
+                    ocrResult.texts = filtered
+                }
+            }
+            ocrResult.raw = response
+
+            let texts = ocrResult.texts
+            if !texts.isEmpty {
+                let merged = texts.joined(separator: " ")
+                ocrResult.mergedText = merged
+                return ocrResult
+            }
+
+            throw QueryError.error(type: .api, message: "识别图片文本失败")
+        } catch let decodingError as DecodingError {
+            logError("Baidu OCR response parsing error: \(decodingError)")
+            throw QueryError.error(type: .api, message: "识别图片文本失败")
+        } catch let queryError as QueryError {
+            throw queryError
+        } catch {
+            throw QueryError.error(type: .api, message: "识别图片文本失败")
         }
     }
 }
