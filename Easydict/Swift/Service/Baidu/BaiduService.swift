@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import SwiftUI
 
 let kBaiduTranslateURL = "https://fanyi.baidu.com"
 
@@ -15,6 +16,26 @@ let kBaiduTranslateURL = "https://fanyi.baidu.com"
 @objc(EZBaiduTranslate)
 @objcMembers
 final class BaiduService: QueryService {
+    // MARK: Public
+
+    /// Returns configuration items for the Baidu service settings view.
+    public override func configurationListItems() -> Any {
+        ServiceConfigurationSecretSectionView(
+            service: self,
+            observeKeys: [.baiduAppId, .baiduSecretKey]
+        ) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.baidu.app_id.title",
+                key: .baiduAppId
+            )
+
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.baidu.secret_key.title",
+                key: .baiduSecretKey
+            )
+        }
+    }
+
     // MARK: Internal
 
     // MARK: - Overrides

@@ -9,6 +9,7 @@
 import Alamofire
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - CaiyunService
 
@@ -34,6 +35,16 @@ public final class CaiyunService: QueryService {
 
     public override func hasPrivateAPIKey() -> Bool {
         token != caiyunToken
+    }
+
+    /// Returns configuration items for the Caiyun service settings view.
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.caiyunToken]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.caiyun.token.title",
+                key: .caiyunToken
+            )
+        }
     }
 
     public override func translate(

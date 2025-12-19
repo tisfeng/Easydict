@@ -437,21 +437,14 @@
 		0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9AFBAA2B7F8D7E0064C9A8 /* CustomOpenAIService.swift */; };
 		0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B212B4D16A500F07198 /* WindowAccessor.swift */; };
 		0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B232B4E46B300F07198 /* TapHandlerView.swift */; };
-		0AC8A8352B6641A7006DA5CC /* TencentService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8342B6641A7006DA5CC /* TencentService+ConfigurableService.swift */; };
-		0AC8A8372B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8362B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift */; };
-		0AC8A8392B666F07006DA5CC /* CaiyunService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8382B666F07006DA5CC /* CaiyunService+ConfigurableService.swift */; };
-		0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */; };
 		0AC8A83D2B6685EE006DA5CC /* SecureTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A83C2B6685EE006DA5CC /* SecureTextField.swift */; };
 		0AC8A83F2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A83E2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift */; };
-		0AC8A8412B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8402B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift */; };
-		0AC8A8432B6957B0006DA5CC /* BingService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */; };
 		0AC8A8452B6A4D97006DA5CC /* ServiceCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8442B6A4D97006DA5CC /* ServiceCells.swift */; };
 		0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */; };
 		0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */; };
 		0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */; };
 		0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */; };
 		0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */; };
-		0D124C422E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C412E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift */; };
 		24832952EE17407C852B2258 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24832951EE17407C852B2258 /* String+Convenience.swift */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
 		2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746AEC02AF95138005FE0A1 /* CaiyunService.swift */; };
@@ -503,7 +496,6 @@
 		C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */; };
 		C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B566F2C693FE000EF26FD /* VolcanoResponse.swift */; };
 		C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B56712C693FFB00EF26FD /* VolcanoSigning.swift */; };
-		C466CB662C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */; };
 		C477BF912C0E2C61006A3F27 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */; };
 		C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */; };
 		C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A512BD2C414A2400F00F33 /* AIToolService.swift */; };
@@ -519,7 +511,6 @@
 		CA9CF8A72D2E6D3C000C1860 /* 人的一生_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A62D2E6D3C000C1860 /* 人的一生_v4.json */; };
 		CA9CF8A92D2E6D54000C1860 /* look up_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A82D2E6D54000C1860 /* look up_v4.json */; };
 		CA9CF8AB2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9CF8AA2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift */; };
-		CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */; };
 		CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */; };
 		CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */; };
 		DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* Configuration.swift */; };
@@ -1086,20 +1077,13 @@
 		0A9AFBAA2B7F8D7E0064C9A8 /* CustomOpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOpenAIService.swift; sourceTree = "<group>"; };
 		0AC11B212B4D16A500F07198 /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		0AC11B232B4E46B300F07198 /* TapHandlerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapHandlerView.swift; sourceTree = "<group>"; };
-		0AC8A8342B6641A7006DA5CC /* TencentService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TencentService+ConfigurableService.swift"; sourceTree = "<group>"; };
-		0AC8A8362B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NiuTransTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
-		0AC8A8382B666F07006DA5CC /* CaiyunService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaiyunService+ConfigurableService.swift"; sourceTree = "<group>"; };
-		0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AliService+ConfigurableService.swift"; sourceTree = "<group>"; };
 		0AC8A83C2B6685EE006DA5CC /* SecureTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureTextField.swift; sourceTree = "<group>"; };
 		0AC8A83E2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSecretConfigreValidatable.swift; sourceTree = "<group>"; };
-		0AC8A8402B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeepLTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
-		0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BingService+ConfigurableService.swift"; sourceTree = "<group>"; };
 		0AC8A8442B6A4D97006DA5CC /* ServiceCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCells.swift; sourceTree = "<group>"; };
 		0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationSecretSectionView.swift; sourceTree = "<group>"; };
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
-		0D124C412E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DoubaoTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingTests.swift; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
@@ -1155,7 +1139,6 @@
 		C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoTranslateType.swift; sourceTree = "<group>"; };
 		C43B566F2C693FE000EF26FD /* VolcanoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoResponse.swift; sourceTree = "<group>"; };
 		C43B56712C693FFB00EF26FD /* VolcanoSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoSigning.swift; sourceTree = "<group>"; };
-		C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VolcanoService+ConfigurableService.swift"; sourceTree = "<group>"; };
 		C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AdvancedTabItemView.swift; path = Easydict/Swift/View/AdvancedTabItemView.swift; sourceTree = SOURCE_ROOT; };
 		C4A512BD2C414A2400F00F33 /* AIToolService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToolService.swift; sourceTree = "<group>"; };
@@ -1171,7 +1154,6 @@
 		CA9CF8A62D2E6D3C000C1860 /* 人的一生_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "人的一生_v4.json"; sourceTree = "<group>"; };
 		CA9CF8A82D2E6D54000C1860 /* look up_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "look up_v4.json"; sourceTree = "<group>"; };
 		CA9CF8AA2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponseV4.swift; sourceTree = "<group>"; };
-		CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BaiduTranslate+ConfigurableService.swift"; sourceTree = "<group>"; };
 		CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiTranslate.swift; sourceTree = "<group>"; };
 		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -3294,7 +3276,7 @@
 		EAED41EA2B54A4900005FE0A /* ServiceConfigurationView */ = {
 			isa = PBXGroup;
 			children = (
-				EAED41F02B54B1A60005FE0A /* ConfigurationView */,
+				03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */,
 				0AC8A83E2B689E68006DA5CC /* ServiceSecretConfigreValidatable.swift */,
 				0AC8A83C2B6685EE006DA5CC /* SecureTextField.swift */,
 				0AC8A8462B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift */,
@@ -3304,23 +3286,6 @@
 				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
 			);
 			path = ServiceConfigurationView;
-			sourceTree = "<group>";
-		};
-		EAED41F02B54B1A60005FE0A /* ConfigurationView */ = {
-			isa = PBXGroup;
-			children = (
-				03280B802C23FE4A00E75A24 /* StreamConfigurationView.swift */,
-				0AC8A8402B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift */,
-				0AC8A8342B6641A7006DA5CC /* TencentService+ConfigurableService.swift */,
-				0AC8A8362B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift */,
-				0AC8A8382B666F07006DA5CC /* CaiyunService+ConfigurableService.swift */,
-				0AC8A83A2B6682D4006DA5CC /* AliService+ConfigurableService.swift */,
-				0AC8A8422B6957B0006DA5CC /* BingService+ConfigurableService.swift */,
-				CB8C42FB2C441B5A004EC86F /* BaiduTranslate+ConfigurableService.swift */,
-				C466CB652C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift */,
-				0D124C412E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift */,
-			);
-			path = ConfigurationView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3814,13 +3779,11 @@
 				0340D39E2C951850004C9910 /* QueryError.swift in Sources */,
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
 				24832952EE17407C852B2258 /* String+Convenience.swift in Sources */,
-				0D124C422E8AD81200D6B72C /* DoubaoTranslate+ConfigurableService.swift in Sources */,
 				C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */,
-				0AC8A8352B6641A7006DA5CC /* TencentService+ConfigurableService.swift in Sources */,
 				DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
@@ -3874,7 +3837,6 @@
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				0311A5AC2E150522007AB02B /* OCRTextNormalizer.swift in Sources */,
 				0337D3CE2E66AC3F00B08437 /* SystemUtility+AppleScript.swift in Sources */,
-				0AC8A8392B666F07006DA5CC /* CaiyunService+ConfigurableService.swift in Sources */,
 				035451032E3C60D600BAA8E5 /* OCRConstants.swift in Sources */,
 				27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */,
 				9643D9392B6F49E0000FBEA6 /* AppShortcutSettingView.swift in Sources */,
@@ -3959,7 +3921,6 @@
 				03538DEC2D259115005E56A8 /* YoudaoDictResponse.swift in Sources */,
 				9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */,
 				0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */,
-				0AC8A8412B695480006DA5CC /* DeepLTranslate+ConfigurableService.swift in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				0333D4C92E5CA3F700CD4613 /* ShortcutConfictAlertMessage.swift in Sources */,
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
@@ -3990,7 +3951,6 @@
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
-				CB8C42FC2C441B5B004EC86F /* BaiduTranslate+ConfigurableService.swift in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
 				03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */,
@@ -4029,7 +3989,6 @@
 				03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */,
 				03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */,
 				032AAA5B2C456F04007996A1 /* routes.swift in Sources */,
-				0AC8A8432B6957B0006DA5CC /* BingService+ConfigurableService.swift in Sources */,
 				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,
 				0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */,
@@ -4082,10 +4041,8 @@
 				0322D7422EDB606D005E67D8 /* String+Analysis.swift in Sources */,
 				0322D7432EDB606D005E67D8 /* String+Constants.swift in Sources */,
 				0AC8A83D2B6685EE006DA5CC /* SecureTextField.swift in Sources */,
-				0AC8A8372B6659A8006DA5CC /* NiuTransTranslate+ConfigurableService.swift in Sources */,
 				03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */,
 				03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */,
-				C466CB662C6A35A4002AACEC /* VolcanoService+ConfigurableService.swift in Sources */,
 				9643D9442B6FEF5F000FBEA6 /* ShortcutManager+Default.swift in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */,
@@ -4099,7 +4056,6 @@
 				035179182EF301C20054C985 /* AppTriggerConfig.swift in Sources */,
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
-				0AC8A83B2B6682D4006DA5CC /* AliService+ConfigurableService.swift in Sources */,
 				034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,

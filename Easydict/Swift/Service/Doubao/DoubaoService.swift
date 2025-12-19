@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import SwiftUI
 
 /**
  The specifically designed Doubao AI Model for translation.
@@ -49,6 +50,23 @@ public final class DoubaoService: StreamService {
     /// Note: `doubao-seed-translation-250915` only supports translation tasks.
     public override func supportedQueryType() -> EZQueryTextType {
         .translation
+    }
+
+    /// Returns configuration items for the Doubao service settings view.
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.doubaoAPIKey, .doubaoModel]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.doubao.api_key.title",
+                key: .doubaoAPIKey
+            )
+
+            InputCell(
+                textFieldTitleKey: "service.configuration.doubao.model.title",
+                key: .doubaoModel,
+                placeholder: LocalizedStringKey(DoubaoService.defaultModelIdentifier),
+                limitLength: 100
+            )
+        }
     }
 
     // MARK: Internal

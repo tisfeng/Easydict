@@ -151,6 +151,22 @@ public final class VolcanoService: QueryService {
         }, serviceType: serviceType().rawValue)
     }
 
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(
+            service: self,
+            observeKeys: [.volcanoAccessKeyID, .volcanoSecretAccessKey]
+        ) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.volcano.access_id.title",
+                key: .volcanoAccessKeyID
+            )
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.volcano.secret_key.title",
+                key: .volcanoSecretAccessKey
+            )
+        }
+    }
+
     // MARK: Private
 
     // easydict://writeKeyValue?EZVolcanoAccessKeyID=xxx

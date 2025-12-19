@@ -8,12 +8,27 @@
 
 import AFNetworking
 import Foundation
+import SwiftUI
 
 // MARK: - BingService
 
 @objc(EZBingService)
 @objcMembers
 class BingService: QueryService {
+    // MARK: Open
+
+    /// Returns configuration items for the Bing service settings view.
+    open override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.bing.cookie.title",
+                key: .bingCookieKey
+            )
+        }
+    }
+
+    // MARK: Internal
+
     // MARK: - Internal Properties (for extension)
 
     lazy var bingRequest = BingRequest()

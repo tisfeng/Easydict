@@ -9,6 +9,7 @@
 import AFNetworking
 import Defaults
 import Foundation
+import SwiftUI
 
 private let kNiuTransURL = "https://niutrans.com"
 private let kNiuTransAPIURL = "https://api.niutrans.com/NiuTransServer/translation"
@@ -18,6 +19,18 @@ private let kNiuTransAPIURL = "https://api.niutrans.com/NiuTransServer/translati
 @objc(EZNiuTransTranslate)
 @objcMembers
 class NiuTransService: QueryService {
+    // MARK: Open
+
+    /// Returns configuration items for the NiuTrans service settings view.
+    open override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.niuTransAPIKey]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.niutrans.api_key.title",
+                key: .niuTransAPIKey
+            )
+        }
+    }
+
     // MARK: Internal
 
     // MARK: - Service Type & Configuration

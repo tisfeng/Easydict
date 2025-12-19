@@ -9,6 +9,7 @@
 import Alamofire
 import Defaults
 import Foundation
+import SwiftUI
 
 @objc(EZTencentService)
 public final class TencentService: QueryService {
@@ -43,6 +44,20 @@ public final class TencentService: QueryService {
 
     public override func totalFreeQueryCharacterCount() -> Int {
         500 * 10000
+    }
+
+    /// Returns configuration items for the Tencent service settings view.
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.tencentSecretId, .tencentSecretKey]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.tencent.secret_id.title",
+                key: .tencentSecretId
+            )
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.tencent.secret_key.title",
+                key: .tencentSecretKey
+            )
+        }
     }
 
     override public func translate(

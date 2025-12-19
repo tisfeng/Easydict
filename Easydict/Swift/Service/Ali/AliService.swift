@@ -10,6 +10,7 @@ import Alamofire
 import CryptoKit
 import Defaults
 import Foundation
+import SwiftUI
 
 @objc(EZAliService)
 class AliService: QueryService {
@@ -76,6 +77,20 @@ class AliService: QueryService {
     }
 
     // MARK: Internal
+
+    /// Returns configuration items for the Ali service settings view.
+    override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.aliAccessKeyId, .aliAccessKeySecret]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.ali.access_key_id.title",
+                key: .aliAccessKeyId
+            )
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.ali.access_key_secret.title",
+                key: .aliAccessKeySecret
+            )
+        }
+    }
 
     func hmacSha1(key: String, params: String) -> String? {
         guard let secret = key.data(using: .utf8),

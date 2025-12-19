@@ -108,35 +108,35 @@ open class QueryService: NSObject {
     // MARK: - Public API
 
     /// Supported languages.
-    open dynamic func languages() -> [Language] {
+    open func languages() -> [Language] {
         buildLanguageCachesIfNeeded()
         return cachedLanguages ?? []
     }
 
     /// Language enum to string code, nil if unsupported.
     @objc(languageCodeForLanguage:)
-    open dynamic func languageCode(forLanguage language: Language) -> String? {
+    open func languageCode(forLanguage language: Language) -> String? {
         buildLanguageCachesIfNeeded()
         return languageDictionary?.object(forKey: language) as? String
     }
 
     /// String code to language enum, returns `.auto` if unsupported.
     @objc(languageEnumFromCode:)
-    open dynamic func languageEnum(fromCode langString: String) -> Language {
+    open func languageEnum(fromCode langString: String) -> Language {
         buildLanguageCachesIfNeeded()
         return languageFromStringDict?[langString] ?? .auto
     }
 
     /// Index of the language in the supported list, returns 0 if missing.
     @objc(indexForLanguage:)
-    open dynamic func index(forLanguage lang: Language) -> Int {
+    open func index(forLanguage lang: Language) -> Int {
         buildLanguageCachesIfNeeded()
         return languageIndexDict?[lang]?.intValue ?? 0
     }
 
     /// Preprocess a query. Returns true if handled (no further request needed).
     @objc(prehandleQueryText:from:to:completion:)
-    open dynamic func prehandleQueryText(
+    open func prehandleQueryText(
         _ text: String,
         from: Language,
         to: Language,
@@ -208,7 +208,7 @@ open class QueryService: NSObject {
     /// - Parameters:
     ///   - language: Text language.
     ///   - accent: English accent, such as en-US, en-GB.
-    open dynamic func getTTSLanguageCode(_ language: Language, accent: String?) -> String {
+    open func getTTSLanguageCode(_ language: Language, accent: String?) -> String {
         var currentLanguage = language
         if currentLanguage == .classicalChinese {
             currentLanguage = .simplifiedChinese
@@ -218,7 +218,7 @@ open class QueryService: NSObject {
     }
 
     @discardableResult
-    open dynamic func resetServiceResult() -> EZQueryResult {
+    open func resetServiceResult() -> EZQueryResult {
         let currentResult = result ?? EZQueryResult()
         currentResult.reset()
 
@@ -239,7 +239,7 @@ open class QueryService: NSObject {
         return currentResult
     }
 
-    open dynamic func startQuery(
+    open func startQuery(
         _ queryModel: EZQueryModel,
         completion: @escaping (EZQueryResult, Error?) -> ()
     ) {
@@ -256,7 +256,7 @@ open class QueryService: NSObject {
         translate(queryText, from: fromLanguage, to: targetLanguage, completion: completion)
     }
 
-    open dynamic func configurationListItems() -> Any? {
+    open func configurationListItems() -> Any? {
         nil
     }
 
@@ -267,32 +267,32 @@ open class QueryService: NSObject {
 
     // MARK: - Required subclass overrides
 
-    open dynamic func serviceType() -> ServiceType {
+    open func serviceType() -> ServiceType {
         fatalError("You must override \(#function) in a subclass.")
     }
 
-    open dynamic func serviceTypeWithUniqueIdentifier() -> String {
+    open func serviceTypeWithUniqueIdentifier() -> String {
         serviceType().rawValue
     }
 
-    open dynamic func name() -> String {
+    open func name() -> String {
         fatalError("You must override \(#function) in a subclass.")
     }
 
-    open dynamic func link() -> String? {
+    open func link() -> String? {
         nil
     }
 
     /// Word direct link. If nil, fallback to `link`.
-    open dynamic func wordLink(_ queryModel: EZQueryModel) -> String? {
+    open func wordLink(_ queryModel: EZQueryModel) -> String? {
         link()
     }
 
-    open dynamic func supportLanguagesDictionary() -> MMOrderedDictionary {
+    open func supportLanguagesDictionary() -> MMOrderedDictionary {
         fatalError("You must override \(#function) in a subclass.")
     }
 
-    open dynamic func translate(
+    open func translate(
         _ text: String,
         from: Language,
         to: Language,
@@ -303,54 +303,54 @@ open class QueryService: NSObject {
 
     // MARK: - Optional subclass overrides
 
-    open dynamic func autoConvertTraditionalChinese() -> Bool {
+    open func autoConvertTraditionalChinese() -> Bool {
         false
     }
 
-    open dynamic func serviceUsageStatus() -> EZServiceUsageStatus {
+    open func serviceUsageStatus() -> EZServiceUsageStatus {
         .default
     }
 
-    open dynamic func supportedQueryType() -> EZQueryTextType {
+    open func supportedQueryType() -> EZQueryTextType {
         [.translation, .sentence]
     }
 
-    open dynamic func intelligentQueryTextType() -> EZQueryTextType {
+    open func intelligentQueryTextType() -> EZQueryTextType {
         [.translation, .sentence]
     }
 
-    open dynamic func hasPrivateAPIKey() -> Bool {
+    open func hasPrivateAPIKey() -> Bool {
         false
     }
 
-    open dynamic func needPrivateAPIKey() -> Bool {
+    open func needPrivateAPIKey() -> Bool {
         false
     }
 
-    open dynamic func totalFreeQueryCharacterCount() -> Int {
+    open func totalFreeQueryCharacterCount() -> Int {
         100 * 10_000
     }
 
-    open dynamic func isStream() -> Bool {
+    open func isStream() -> Bool {
         false
     }
 
-    open dynamic func isDuplicatable() -> Bool {
+    open func isDuplicatable() -> Bool {
         false
     }
 
-    open dynamic func isDeletable(_ windowType: EZWindowType) -> Bool {
+    open func isDeletable(_ windowType: EZWindowType) -> Bool {
         true
     }
 
-    open dynamic func detectText(
+    open func detectText(
         _ text: String,
         completion: @escaping (Language, Error?) -> ()
     ) {
         fatalError("You must override \(#function) in a subclass.")
     }
 
-    open dynamic func textToAudio(
+    open func textToAudio(
         _ text: String,
         fromLanguage: Language,
         completion: @escaping (String?, Error?) -> ()
@@ -362,7 +362,7 @@ open class QueryService: NSObject {
         )
     }
 
-    open dynamic func textToAudio(
+    open func textToAudio(
         _ text: String,
         fromLanguage: Language,
         accent: String?,
@@ -380,7 +380,7 @@ open class QueryService: NSObject {
         fatalError("You must override \(#function) in a subclass.")
     }
 
-    open dynamic func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
+    open func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
         guard let image = queryModel.ocrImage else {
             completion(nil, QueryError.error(type: .parameter, message: "Image is nil"))
             return
