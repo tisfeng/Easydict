@@ -23,8 +23,6 @@ open class QueryService: NSObject {
     // MARK: - Public properties
 
     open dynamic var uuid: String = ""
-    open dynamic var queryModel: EZQueryModel!
-
     open dynamic var enabled: Bool = true
 
     open dynamic var queryType: EZQueryTextType = []
@@ -32,9 +30,20 @@ open class QueryService: NSObject {
 
     open dynamic var autoCopyTranslatedTextBlock: ((EZQueryResult, Error?) -> ())?
 
+    open dynamic var queryModel: EZQueryModel! {
+        didSet {
+            guard let queryModel else { return }
+            result?.queryModel = queryModel
+        }
+    }
+
     open dynamic var result: EZQueryResult! {
         didSet {
             guard let result else { return }
+
+            if queryModel == nil {
+                queryModel = EZQueryModel()
+            }
 
             result.service = self
             result.serviceTypeWithUniqueIdentifier = serviceTypeWithUniqueIdentifier()
