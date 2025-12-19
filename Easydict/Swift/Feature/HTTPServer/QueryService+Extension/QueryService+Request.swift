@@ -57,19 +57,16 @@ extension QueryService {
     ) async throws
         -> (Bool, EZQueryResult) {
         try await withCheckedThrowingContinuation { continuation in
-            var prehandled = false
-            self.prehandleQueryText(text, from: from, to: to) { result, error in
-                prehandled = true
-
+            let isHandled = self.prehandleQueryText(text, from: from, to: to) { result, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: (prehandled, result))
+                    continuation.resume(returning: (true, result))
                 }
             }
 
-            if !prehandled {
-                continuation.resume(returning: (prehandled, result))
+            if !isHandled {
+                continuation.resume(returning: (false, EZQueryResult()))
             }
         }
     }
