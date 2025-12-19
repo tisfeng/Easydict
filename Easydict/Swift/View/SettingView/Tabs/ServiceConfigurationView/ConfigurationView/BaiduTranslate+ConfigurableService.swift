@@ -16,12 +16,6 @@ extension BaiduService {
             service: self,
             observeKeys: [.baiduAppId, .baiduSecretKey]
         ) {
-            StaticPickerCell(
-                titleKey: "service.configuration.api_picker.title",
-                key: .baiduServiceApiTypeKey,
-                values: ServiceAPIType.allCases
-            )
-
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.baidu.app_id.title",
                 key: .baiduAppId
