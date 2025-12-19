@@ -169,19 +169,15 @@ final class BaiduService: QueryService {
             encoder: URLEncodedFormParameterEncoder.default
         )
         .validate()
-        .responseJSON { [weak self] response in
+        .responseDecodable(of: BaiduDetectResponse.self) { [weak self] response in
             guard let self else { return }
             switch response.result {
             case let .success(value):
-                if let json = value as? [String: Any] {
-                    if let from = json["lan"] as? String, !from.isEmpty {
-                        completion(languageEnum(fromCode: from), nil)
-                    } else {
-                        completion(.auto, QueryError.error(type: .unsupportedLanguage))
-                    }
-                    return
+                if let from = value.lan, !from.isEmpty {
+                    completion(languageEnum(fromCode: from), nil)
+                } else {
+                    completion(.auto, QueryError.error(type: .unsupportedLanguage))
                 }
-                completion(.auto, QueryError.error(type: .api, message: "判断语言失败"))
             case .failure:
                 completion(.auto, QueryError.error(type: .api, message: "判断语言失败"))
             }
@@ -237,4 +233,11 @@ final class BaiduService: QueryService {
     private lazy var apiTranslate: BaiduApiTranslate = {
         BaiduApiTranslate(queryModel: queryModel ?? EZQueryModel())
     }()
+}
+
+// MARK: - BaiduDetectResponse
+
+/// Response payload for Baidu language detection.
+private struct BaiduDetectResponse: Decodable {
+    let lan: String?
 }

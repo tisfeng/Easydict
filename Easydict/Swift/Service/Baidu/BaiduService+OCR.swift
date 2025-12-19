@@ -42,25 +42,23 @@ extension BaiduService {
             method: .post
         )
         .validate()
-        .responseJSON { [weak self] response in
+        .responseDecodable(of: BaiduOcrResponse.self) { [weak self] response in
             guard let self else { return }
             switch response.result {
             case let .success(value):
-                guard let json = value as? [String: Any],
-                      let data = json["data"] as? [String: Any]
-                else {
+                guard let data = value.data else {
                     completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
                     return
                 }
 
                 let ocrResult = EZOCRResult()
-                if let from = data["from"] as? String {
+                if let from = data.from {
                     ocrResult.from = languageEnum(fromCode: from)
                 }
-                if let to = data["to"] as? String {
+                if let to = data.to {
                     ocrResult.to = languageEnum(fromCode: to)
                 }
-                if let src = data["src"] as? [String] {
+                if let src = data.src {
                     let filtered = src.filter { !$0.isEmpty }
                     if !filtered.isEmpty {
                         let ocrTexts = filtered.map { text -> EZOCRText in
@@ -109,4 +107,20 @@ extension BaiduService {
             }
         }
     }
+}
+
+// MARK: - BaiduOcrResponse
+
+/// Response payload for Baidu OCR.
+private struct BaiduOcrResponse: Decodable {
+    let data: BaiduOcrData?
+}
+
+// MARK: - BaiduOcrData
+
+/// Response data container for Baidu OCR.
+private struct BaiduOcrData: Decodable {
+    let from: String?
+    let to: String?
+    let src: [String]?
 }
