@@ -164,7 +164,6 @@
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3C2937AF4F00C34C33 /* EZQueryResult.m */; };
 		03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3F2937B3C900C34C33 /* EZOCRResult.m */; };
-		03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		035451012E3C601100BAA8E5 /* OCRMergeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035450FE2E3C601100BAA8E5 /* OCRMergeContext.swift */; };
@@ -268,7 +267,6 @@
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E829231FA6001C7E63 /* entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* entry.m */; };
 		03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222329231FA6001C7E63 /* AppDelegate.m */; };
-		03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */; };
 		03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 03B0223529231FA6001C7E63 /* google-translate-sign.js */; };
 		03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0224429231FA6001C7E63 /* EZDetectManager.m */; };
 		03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */; };
@@ -357,7 +355,6 @@
 		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
 		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
 		03C408F52EF472660025A1F0 /* BaiduService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */; };
-		03C408F62EF472660025A1F0 /* BaiduService+Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C408F42EF472660025A1F0 /* BaiduService+Parser.swift */; };
 		03CA1CF12EDE089E001908D0 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CED2EDE089E001908D0 /* Appearance.swift */; };
 		03CA1CF22EDE089E001908D0 /* DarkModeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */; };
 		03CA1CF32EDE089E001908D0 /* DarkModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */; };
@@ -374,7 +371,6 @@
 		03D0F0112F00000100ABCDEF /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0012F00000100ABCDEF /* QueryService.swift */; };
 		03D0F0122F00000100ABCDEF /* BaiduService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0022F00000100ABCDEF /* BaiduService.swift */; };
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
-		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
 		03D486502E3F2021009313B3 /* Regex+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4864F2E3F2021009313B3 /* Regex+List.swift */; };
 		03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D486522E3F2190009313B3 /* ListRegexTests.swift */; };
@@ -735,8 +731,6 @@
 		03542A3C2937AF4F00C34C33 /* EZQueryResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryResult.m; sourceTree = "<group>"; };
 		03542A3E2937B3C900C34C33 /* EZOCRResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOCRResult.h; sourceTree = "<group>"; };
 		03542A3F2937B3C900C34C33 /* EZOCRResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOCRResult.m; sourceTree = "<group>"; };
-		03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBaiduTranslateResponse.h; sourceTree = "<group>"; };
-		03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaiduTranslateResponse.m; sourceTree = "<group>"; };
 		03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDetectLanguageButton.h; sourceTree = "<group>"; };
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
@@ -857,7 +851,6 @@
 		03B0222129231FA6001C7E63 /* entry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = entry.m; sourceTree = "<group>"; };
 		03B0222229231FA6001C7E63 /* EZConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZConst.h; sourceTree = "<group>"; };
 		03B0222329231FA6001C7E63 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "baidu-translate-sign.js"; sourceTree = "<group>"; };
 		03B0223529231FA6001C7E63 /* google-translate-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "google-translate-sign.js"; sourceTree = "<group>"; };
 		03B0224429231FA6001C7E63 /* EZDetectManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZDetectManager.m; sourceTree = "<group>"; };
 		03B0224A29231FA6001C7E63 /* EZDetectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZDetectManager.h; sourceTree = "<group>"; };
@@ -998,7 +991,6 @@
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaiduService+OCR.swift"; sourceTree = "<group>"; };
-		03C408F42EF472660025A1F0 /* BaiduService+Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaiduService+Parser.swift"; sourceTree = "<group>"; };
 		03CA1CED2EDE089E001908D0 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeManager.swift; sourceTree = "<group>"; };
 		03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeProtocol.swift; sourceTree = "<group>"; };
@@ -1020,7 +1012,6 @@
 		03D0F0012F00000100ABCDEF /* QueryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryService.swift; sourceTree = "<group>"; };
 		03D0F0022F00000100ABCDEF /* BaiduService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaiduService.swift; sourceTree = "<group>"; };
 		03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
 		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
 		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
 		03D4864F2E3F2021009313B3 /* Regex+List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+List.swift"; sourceTree = "<group>"; };
@@ -2088,22 +2079,8 @@
 				033B7131293CE2010096E2DF /* WebViewTranslator */,
 				03542A362937AE2100C34C33 /* Model */,
 				03542A312936F6FE00C34C33 /* Language */,
-				03B0222C29231FA6001C7E63 /* Baidu */,
 			);
 			path = Service;
-			sourceTree = "<group>";
-		};
-		03B0222C29231FA6001C7E63 /* Baidu */ = {
-			isa = PBXGroup;
-			children = (
-				CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */,
-				CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */,
-				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
-				03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */,
-				03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */,
-				03D2A3DE29F42B280035CED4 /* bd.js */,
-			);
-			path = Baidu;
 			sourceTree = "<group>";
 		};
 		03B0224F29231FA6001C7E63 /* ViewController */ = {
@@ -2712,8 +2689,9 @@
 			isa = PBXGroup;
 			children = (
 				03D0F0022F00000100ABCDEF /* BaiduService.swift */,
+				CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */,
+				CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */,
 				03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */,
-				03C408F42EF472660025A1F0 /* BaiduService+Parser.swift */,
 			);
 			path = Baidu;
 			sourceTree = "<group>";
@@ -3581,7 +3559,6 @@
 				03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */,
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
 				03538DF92D26536C005E56A8 /* 人的一生.json in Resources */,
-				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
 				CA9CF8A92D2E6D54000C1860 /* look up_v4.json in Resources */,
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
@@ -3593,7 +3570,6 @@
 				CA9CF8A52D2E6D13000C1860 /* 美_v4.json in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
-				03D2A3DF29F42B290035CED4 /* bd.js in Resources */,
 				C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */,
 				CA9CF8A32D2E6CE6000C1860 /* good_v4.json in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
@@ -3797,7 +3773,6 @@
 				0AC8A8472B6A4E3F006DA5CC /* ServiceConfigurationSecretSectionView.swift in Sources */,
 				03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */,
 				CA9CF8AB2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift in Sources */,
-				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */,
 				03220E2A2E11A1A0002C7F3F /* OCRObservationPair.swift in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
@@ -3819,7 +3794,6 @@
 				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
 				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
 				03C408F52EF472660025A1F0 /* BaiduService+OCR.swift in Sources */,
-				03C408F62EF472660025A1F0 /* BaiduService+Parser.swift in Sources */,
 				039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */,

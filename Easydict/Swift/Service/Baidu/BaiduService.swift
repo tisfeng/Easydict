@@ -7,8 +7,6 @@
 //
 
 import AFNetworking
-import AppKit
-import JavaScriptCore
 
 let kBaiduTranslateURL = "https://fanyi.baidu.com"
 
@@ -151,61 +149,13 @@ final class BaiduService: QueryService {
         }
 
         let trimmedText = (text as NSString).ns_trimToMaxLength(5000) as String
-        updateCookieAndToken()
+        apiTranslate.result = result
+        let fromCode = languageCode(forLanguage: from).map(Language.init(rawValue:)) ?? from
+        let toCode = languageCode(forLanguage: to).map(Language.init(rawValue:)) ?? to
 
-        if apiTranslate.isEnable {
-            apiTranslate.result = result
-            let fromCode = languageCode(forLanguage: from).map(Language.init(rawValue:)) ?? from
-            let toCode = languageCode(forLanguage: to).map(Language.init(rawValue:)) ?? to
-
-            apiTranslate.translate(trimmedText, from: fromCode, to: toCode) { [weak self] result, error in
-                guard let self else { return }
-                completion(result ?? self.result, error)
-            }
-            return
-        }
-
-        let performRequest: () -> () = { [weak self] in
+        apiTranslate.translate(trimmedText, from: fromCode, to: toCode) { [weak self] result, error in
             guard let self else { return }
-
-            let translateBlock: (Language) -> () = { [weak self] detectedFrom in
-                guard let self else { return }
-                sendTranslateRequest(trimmedText, from: detectedFrom, to: to, completion: completion)
-            }
-
-            if from == .auto {
-                detectText(trimmedText) { [weak self] detectedLanguage, error in
-                    guard let self else { return }
-                    if let error {
-                        completion(result, error)
-                        return
-                    }
-                    translateBlock(detectedLanguage)
-                }
-            } else {
-                translateBlock(from)
-            }
-        }
-
-        if token == nil || gtk == nil {
-            sendGetTokenAndGtkRequest { [weak self] token, gtk, error in
-                guard let self else { return }
-                if let error {
-                    completion(result, error)
-                    return
-                }
-
-                guard let token, let gtk else {
-                    completion(result, QueryError.error(type: .api, message: "Get token failed."))
-                    return
-                }
-
-                self.token = token
-                self.gtk = gtk
-                performRequest()
-            }
-        } else {
-            performRequest()
+            completion(result ?? self.result, error)
         }
     }
 
@@ -290,209 +240,7 @@ final class BaiduService: QueryService {
 
     // MARK: - Private properties
 
-    private lazy var jsContext: JSContext = {
-        let context = JSContext()
-        if let jsPath = Bundle.main.path(forResource: "baidu-translate-sign", ofType: "js"),
-           let jsString = try? String(contentsOfFile: jsPath, encoding: .utf8) {
-            context?.evaluateScript(jsString)
-        }
-        return context!
-    }()
-
-    private lazy var jsFunction: JSValue = {
-        jsContext.objectForKeyedSubscript("encrypt")
-    }()
-
-    private lazy var htmlSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        session.requestSerializer = AFHTTPRequestSerializer()
-        let responseSerializer = AFHTTPResponseSerializer()
-        responseSerializer.acceptableContentTypes = ["text/html"]
-        session.responseSerializer = responseSerializer
-        return session
-    }()
-
     private lazy var apiTranslate: BaiduApiTranslate = {
         BaiduApiTranslate(queryModel: queryModel ?? EZQueryModel())
     }()
-
-    private var token: String?
-    private var gtk: String?
-    private var error997Count = 0
-
-    private var cookie: String {
-        var storedCookie = UserDefaults.standard.string(forKey: kBaiduTranslateURL)
-            ?? "BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;"
-        if !storedCookie.contains("smallFlowVersion=old") {
-            storedCookie += ";smallFlowVersion=old;"
-        }
-        return storedCookie
-    }
-
-    // MARK: - Private helpers
-
-    private func sendTranslateRequest(
-        _ text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        guard let gtk else {
-            completion(result, QueryError.error(type: .api, message: "Get token failed."))
-            return
-        }
-
-        let sign = jsFunction.call(withArguments: [text, gtk])?.toString()
-        let url = "\(kBaiduTranslateURL)/v2transapi"
-        let params: [String: Any] = [
-            "from": languageCode(forLanguage: from) ?? "",
-            "to": languageCode(forLanguage: to) ?? "",
-            "query": text,
-            "simple_means_flag": 3,
-            "transtype": "realtime",
-            "domain": "common",
-            "sign": sign ?? "",
-            "token": token ?? "",
-        ]
-
-        let headers: [String: String] = [
-            "User-Agent": EZUserAgent,
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "Cookie": cookie,
-        ]
-
-        for (key, value) in headers {
-            jsonSession.requestSerializer.setValue(value, forHTTPHeaderField: key)
-        }
-
-        let task = jsonSession.post(
-            url,
-            parameters: params,
-            constructingBodyWith: nil,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self else { return }
-                parseResponseObject(responseObject, completion: completion)
-            },
-            failure: { [weak self] _, error in
-                guard let self else { return }
-                if (error as NSError).code == NSURLErrorCancelled {
-                    return
-                }
-                completion(result, QueryError.error(type: .api))
-            }
-        )
-
-        queryModel.setStop({ task?.cancel() }, serviceType: serviceType().rawValue)
-    }
-
-    private func parseResponseObject(
-        _ responseObject: Any?,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        if queryModel.isServiceStopped(serviceType().rawValue) {
-            return
-        }
-
-        guard let currentResult = result else {
-            completion(result, QueryError.error(type: .api))
-            return
-        }
-
-        var message: String?
-
-        if let responseObject,
-           let response = EZBaiduTranslateResponse.mj_object(withKeyValues: responseObject) {
-            if response.error == 0 {
-                error997Count = 0
-                parseDictionaryResult(response, result: currentResult)
-                parseTranslationResult(response, result: currentResult)
-                currentResult.raw = responseObject
-
-                if currentResult.wordResult != nil || currentResult.translatedResults != nil {
-                    completion(currentResult, nil)
-                    return
-                }
-
-                message = "百度翻译结果为空"
-                return
-            } else if response.error == 997 {
-                error997Count += 1
-                if error997Count < 3 {
-                    token = nil
-                    gtk = nil
-                    translate(
-                        queryModel.queryText,
-                        from: queryModel.queryFromLanguage,
-                        to: queryModel.queryTargetLanguage,
-                        completion: completion
-                    )
-                    return
-                } else {
-                    message = "百度翻译获取 token 失败"
-                }
-            } else {
-                message = "错误码 \(response.error)"
-            }
-        }
-
-        updateCookieAndToken()
-        completion(currentResult, QueryError.error(type: .api, message: message))
-    }
-
-    private func sendGetTokenAndGtkRequest(completion: @escaping (String?, String?, Error?) -> ()) {
-        let url = kBaiduTranslateURL
-
-        let headers: [String: String] = [
-            "Cookie": cookie,
-        ]
-
-        for (key, value) in headers {
-            jsonSession.requestSerializer.setValue(value, forHTTPHeaderField: key)
-            htmlSession.requestSerializer.setValue(value, forHTTPHeaderField: key)
-        }
-
-        htmlSession.get(
-            url,
-            parameters: nil,
-            progress: nil,
-            success: { _, responseObject in
-                guard let data = responseObject as? Data,
-                      let html = String(data: data, encoding: .utf8) else {
-                    completion(nil, nil, QueryError.error(type: .api, message: "获取 token 失败"))
-                    return
-                }
-
-                let tokenPattern = "token: '(.*?)',"
-                let gtkPattern = "window.gtk = \"(.*?)\";"
-
-                let token = html.getStringValue(withPattern: tokenPattern)
-                let gtk = html.getStringValue(withPattern: gtkPattern)
-
-                if let token, let gtk, !token.isEmpty, !gtk.isEmpty {
-                    completion(token, gtk, nil)
-                } else {
-                    completion(nil, nil, QueryError.error(type: .api, message: "获取 token 失败"))
-                }
-            },
-            failure: { _, _ in
-                completion(nil, nil, QueryError.error(type: .api, message: "获取 token 失败"))
-            }
-        )
-    }
-
-    private func updateCookieAndToken() {
-        Task {
-            if let cookie = try? await CookieManager.shared.requestCookie(ofURL: kBaiduTranslateURL, name: "BAIDUID"),
-               !cookie.isEmpty {
-                let cookieString = "BAIDUID=\(cookie)"
-                UserDefaults.standard.set(cookieString, forKey: kBaiduTranslateURL)
-            }
-
-            sendGetTokenAndGtkRequest { [weak self] token, gtk, _ in
-                self?.token = token
-                self?.gtk = gtk
-            }
-        }
-    }
 }

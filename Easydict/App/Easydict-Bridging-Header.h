@@ -13,7 +13,6 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "EZToast.h"
-#import "EZBaiduTranslateResponse.h"
 
 #import "MMCrash.h"
 #import "EZDetectManager.h"
