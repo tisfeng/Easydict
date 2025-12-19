@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Alamofire
 import AppKit
 import Foundation
 
@@ -31,22 +32,21 @@ extension BaiduService {
         }
 
         let url = "\(kBaiduTranslateURL)/getocr"
-        let params: [String: Any] = [
-            "image": data,
-            "from": fromLang ?? "",
-            "to": toLang ?? "",
-        ]
-
-        jsonSession.post(
-            url,
-            parameters: params,
-            constructingBodyWith: { formData in
-                formData.appendPart(withFileData: data, name: "image", fileName: "blob", mimeType: "image/png")
+        AF.upload(
+            multipartFormData: { formData in
+                formData.append(data, withName: "image", fileName: "blob", mimeType: "image/png")
+                formData.append(Data((fromLang ?? "").utf8), withName: "from")
+                formData.append(Data((toLang ?? "").utf8), withName: "to")
             },
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self else { return }
-                guard let json = responseObject as? [String: Any],
+            to: url,
+            method: .post
+        )
+        .validate()
+        .responseJSON { [weak self] response in
+            guard let self else { return }
+            switch response.result {
+            case let .success(value):
+                guard let json = value as? [String: Any],
                       let data = json["data"] as? [String: Any]
                 else {
                     completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
@@ -72,7 +72,7 @@ extension BaiduService {
                         ocrResult.texts = filtered
                     }
                 }
-                ocrResult.raw = responseObject as Any
+                ocrResult.raw = value
 
                 let texts = ocrResult.texts
                 if !texts.isEmpty {
@@ -83,11 +83,10 @@ extension BaiduService {
                 }
 
                 completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
-            },
-            failure: { _, _ in
+            case .failure:
                 completion(nil, QueryError.error(type: .api, message: "识别图片文本失败"))
             }
-        )
+        }
     }
 
     override func ocrAndTranslate(

@@ -6,7 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import AFNetworking
+import Alamofire
 
 let kBaiduTranslateURL = "https://fanyi.baidu.com"
 
@@ -16,15 +16,6 @@ let kBaiduTranslateURL = "https://fanyi.baidu.com"
 @objcMembers
 final class BaiduService: QueryService {
     // MARK: Internal
-
-    lazy var jsonSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        session.requestSerializer = AFHTTPRequestSerializer()
-        let responseSerializer = AFJSONResponseSerializer()
-        responseSerializer.acceptableContentTypes = ["application/json"]
-        session.responseSerializer = responseSerializer
-        return session
-    }()
 
     // MARK: - Overrides
 
@@ -171,14 +162,18 @@ final class BaiduService: QueryService {
         let queryString = (text as NSString).ns_trimToMaxLength(73) as String
         let url = "\(kBaiduTranslateURL)/langdetect"
 
-        jsonSession.post(
+        AF.request(
             url,
+            method: .post,
             parameters: ["query": queryString],
-            constructingBodyWith: nil,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self else { return }
-                if let json = responseObject as? [String: Any] {
+            encoder: URLEncodedFormParameterEncoder.default
+        )
+        .validate()
+        .responseJSON { [weak self] response in
+            guard let self else { return }
+            switch response.result {
+            case let .success(value):
+                if let json = value as? [String: Any] {
                     if let from = json["lan"] as? String, !from.isEmpty {
                         completion(languageEnum(fromCode: from), nil)
                     } else {
@@ -187,11 +182,10 @@ final class BaiduService: QueryService {
                     return
                 }
                 completion(.auto, QueryError.error(type: .api, message: "判断语言失败"))
-            },
-            failure: { _, _ in
+            case .failure:
                 completion(.auto, QueryError.error(type: .api, message: "判断语言失败"))
             }
-        )
+        }
     }
 
     override func textToAudio(
