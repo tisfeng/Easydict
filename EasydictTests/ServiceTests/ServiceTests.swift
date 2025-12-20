@@ -32,10 +32,7 @@ struct ServiceTests {
 
     /// Validates a single service type and records a failure if translation fails.
     private func validate(serviceType: ServiceType, factory: QueryServiceFactory) async {
-        guard let service = factory.service(withTypeId: serviceType.rawValue) else {
-            Issue.record("Unable to instantiate service for \(serviceType.rawValue).")
-            return
-        }
+        let service = #require(factory.service(withTypeId: serviceType.rawValue))
 
         let result = await validationResult(for: service)
         #expect(
