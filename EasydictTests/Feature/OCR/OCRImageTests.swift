@@ -19,7 +19,7 @@ import Testing
 ///
 /// These tests validate the OCR functionality against a comprehensive collection of
 /// test images covering different languages, text types, and document formats.
-/// The test images are located in the ocr-images directory and include:
+/// The test images are located in Resources/OCRImages within the test bundle and include:
 /// - English text samples (papers, letters, lists)
 /// - Chinese text samples (traditional and simplified)
 /// - Japanese text samples

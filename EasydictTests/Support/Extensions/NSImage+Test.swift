@@ -34,25 +34,32 @@ extension NSImage {
 
     // MARK: - Image Loading
 
-    /// Load test image from bundle
-    /// - Parameter imageName: Name of the image file in Resources directory
+    /// Load test image from test bundle resources
+    /// - Parameters:
+    ///   - imageName: Name of the image file in the bundle
+    ///   - subdirectory: Resource subdirectory relative to the test bundle
     /// - Returns: NSImage instance or nil if loading fails
-    static func loadTestImage(named imageName: String) -> NSImage? {
-        guard let imagePath = testBundle.path(
-            forResource: imageName.components(separatedBy: ".").first,
-            ofType: imageName.components(separatedBy: ".").last
-        )
-        else {
+    static func loadTestImage(named imageName: String, subdirectory: String = "OCRImages") -> NSImage? {
+        let baseName = (imageName as NSString).deletingPathExtension
+        let fileExtension = (imageName as NSString).pathExtension
+
+        let imageURL = testBundle.url(
+            forResource: baseName,
+            withExtension: fileExtension,
+            subdirectory: subdirectory
+        ) ?? testBundle.url(forResource: baseName, withExtension: fileExtension)
+
+        guard let imageURL else {
             print("❌ Could not find image path for: \(imageName)")
             return nil
         }
 
-        guard let image = NSImage(contentsOfFile: imagePath) else {
-            print("❌ Could not load image from path: \(imagePath)")
+        guard let image = NSImage(contentsOf: imageURL) else {
+            print("❌ Could not load image from path: \(imageURL.path)")
             return nil
         }
 
-        print("✅ Loaded image: \(imageName) from \(imagePath)")
+        print("✅ Loaded image: \(imageName) from \(imageURL.path)")
         return image
     }
 }

@@ -1085,6 +1085,7 @@
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
+		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingTests.swift; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
@@ -1237,16 +1238,11 @@
 		03022F2F2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXGroup;
 			children = (
-				03C408F72EF5CAFB0025A1F0 /* ServiceTests */,
-				031153402EDB0BA20083521F /* StringTests */,
-				03D486512E3F211C009313B3 /* RegexTests */,
-				0305E7422E1D2B3E000A23A0 /* Extensions */,
-				03C3A5612E1BB4F400B59152 /* OCRTests */,
-				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
-				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
-				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
-				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
-				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
+				BE5912DE778CDCD8495CA4E5 /* Feature */,
+				03C408F72EF5CAFB0025A1F0 /* Service */,
+				141F5505BB90A4CC1D55C12A /* Utility */,
+				9E55A569A7F486BE277A6014 /* Support */,
+				6FE8577F5AD82A0E07D9662F /* Resources */,
 			);
 			path = EasydictTests;
 			sourceTree = "<group>";
@@ -1302,7 +1298,7 @@
 			path = AcknowListView;
 			sourceTree = "<group>";
 		};
-		031153402EDB0BA20083521F /* StringTests */ = {
+		031153402EDB0BA20083521F /* String */ = {
 			isa = PBXGroup;
 			children = (
 				0311533B2EDB0BA20083521F /* StringCodeSplittingTests.swift */,
@@ -1313,7 +1309,7 @@
 				0322D7452EDB6092005E67D8 /* StringDetectionTests.swift */,
 				0322D7462EDB6092005E67D8 /* StringTextCleaningTests.swift */,
 			);
-			path = StringTests;
+			path = String;
 			sourceTree = "<group>";
 		};
 		0315D3E12C4E64F600AC0442 /* Vapor */ = {
@@ -1562,7 +1558,7 @@
 			path = AppleScript;
 			sourceTree = "<group>";
 		};
-		034227EC2E36748300325B47 /* OCRTestSample */ = {
+		034227EC2E36748300325B47 /* Support */ = {
 			isa = PBXGroup;
 			children = (
 				039CC6352E1F518A0046DC16 /* OCRTestSample.swift */,
@@ -1572,7 +1568,7 @@
 				034227E62E36747A00325B47 /* OCRTestSample+Japanese.swift */,
 				034227E72E36747A00325B47 /* OCRTestSample+Other.swift */,
 			);
-			path = OCRTestSample;
+			path = Support;
 			sourceTree = "<group>";
 		};
 		035166F42E0C0FB8004C65BB /* Int */ = {
@@ -2466,22 +2462,22 @@
 			path = "cyan-white-icon";
 			sourceTree = "<group>";
 		};
-		03C3A5612E1BB4F400B59152 /* OCRTests */ = {
+		03C3A5612E1BB4F400B59152 /* OCR */ = {
 			isa = PBXGroup;
 			children = (
-				034227EC2E36748300325B47 /* OCRTestSample */,
-				03C3A5622E1BC78600B59152 /* ocr-images */,
+				034227EC2E36748300325B47 /* Support */,
 				03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */,
 				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
 				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
 				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
 			);
-			path = OCRTests;
+			path = OCR;
 			sourceTree = "<group>";
 		};
-		03C3A5622E1BC78600B59152 /* ocr-images */ = {
+		03C3A5622E1BC78600B59152 /* OCRImages */ = {
 			isa = PBXGroup;
 			children = (
+				23C50DB027FC5F26D2AED298 /* README.md */,
 				0356498B2E8F7EDA00398D52 /* ocr-en-number-729.png */,
 				0356498F2E8FBFB900398D52 /* ocr-en-number-pi.png */,
 				03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */,
@@ -2553,15 +2549,17 @@
 				0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */,
 				03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */,
 			);
-			path = "ocr-images";
+			path = OCRImages;
 			sourceTree = "<group>";
 		};
-		03C408F72EF5CAFB0025A1F0 /* ServiceTests */ = {
+		03C408F72EF5CAFB0025A1F0 /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
+				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
+				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
 			);
-			path = ServiceTests;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		03CA1CF02EDE089E001908D0 /* Appearance */ = {
@@ -2685,13 +2683,13 @@
 			path = Baidu;
 			sourceTree = "<group>";
 		};
-		03D486512E3F211C009313B3 /* RegexTests */ = {
+		03D486512E3F211C009313B3 /* Regex */ = {
 			isa = PBXGroup;
 			children = (
 				03FDAE952E1A8A290029369E /* RegexTests.swift */,
 				03D486522E3F2190009313B3 /* ListRegexTests.swift */,
 			);
-			path = RegexTests;
+			path = Regex;
 			sourceTree = "<group>";
 		};
 		03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */ = {
@@ -2935,6 +2933,17 @@
 			path = Doubao;
 			sourceTree = "<group>";
 		};
+		141F5505BB90A4CC1D55C12A /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				031153402EDB0BA20083521F /* String */,
+				03D486512E3F211C009313B3 /* Regex */,
+				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
+				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
 			isa = PBXGroup;
 			children = (
@@ -3041,6 +3050,14 @@
 			path = Localization;
 			sourceTree = "<group>";
 		};
+		6FE8577F5AD82A0E07D9662F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				03C3A5622E1BC78600B59152 /* OCRImages */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -3113,6 +3130,23 @@
 				357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		9E55A569A7F486BE277A6014 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				0305E7422E1D2B3E000A23A0 /* Extensions */,
+				416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
+			isa = PBXGroup;
+			children = (
+				03C3A5612E1BB4F400B59152 /* OCR */,
+			);
+			path = Feature;
 			sourceTree = "<group>";
 		};
 		C415C0AB2B450C4500A9D231 /* Gemini */ = {
