@@ -17,22 +17,22 @@ struct ServiceTests {
 
     /// Validates that every registered service returns a successful translation result.
     @Test("Validate All Services Translation", .tags(.integration))
-    func testAllServicesValidateTranslation() async {
+    func testAllServicesValidateTranslation() async throws {
         let factory = QueryServiceFactory.shared
         let serviceTypes = factory.allServiceTypes
 
         #expect(!serviceTypes.isEmpty, "QueryServiceFactory returned no registered services.")
 
         for serviceType in serviceTypes {
-            await validate(serviceType: serviceType, factory: factory)
+            try await validate(serviceType: serviceType, factory: factory)
         }
     }
 
     // MARK: Private
 
     /// Validates a single service type and records a failure if translation fails.
-    private func validate(serviceType: ServiceType, factory: QueryServiceFactory) async {
-        let service = #require(factory.service(withTypeId: serviceType.rawValue))
+    private func validate(serviceType: ServiceType, factory: QueryServiceFactory) async throws {
+        let service = try #require(factory.service(withTypeId: serviceType.rawValue))
 
         let result = await validationResult(for: service)
         #expect(
