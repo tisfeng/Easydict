@@ -42,7 +42,7 @@ class GitHubService: OpenAIService {
     }
 
     override var defaultEndpoint: String {
-        "https://models.inference.ai.azure.com/chat/completions"
+        "https://models.github.ai/inference/chat/completions"
     }
 }
 
