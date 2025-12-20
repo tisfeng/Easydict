@@ -355,6 +355,7 @@
 		03C3A5D02E1BFE4900B59152 /* ocr-en-paper-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */; };
 		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
 		03C408F52EF472660025A1F0 /* BaiduService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */; };
+		03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C408F82EF5CB830025A1F0 /* ServiceTests.swift */; };
 		03CA1CF12EDE089E001908D0 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CED2EDE089E001908D0 /* Appearance.swift */; };
 		03CA1CF22EDE089E001908D0 /* DarkModeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */; };
 		03CA1CF32EDE089E001908D0 /* DarkModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */; };
@@ -982,6 +983,7 @@
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaiduService+OCR.swift"; sourceTree = "<group>"; };
+		03C408F82EF5CB830025A1F0 /* ServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTests.swift; sourceTree = "<group>"; };
 		03CA1CED2EDE089E001908D0 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeManager.swift; sourceTree = "<group>"; };
 		03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeProtocol.swift; sourceTree = "<group>"; };
@@ -1236,6 +1238,7 @@
 		03022F2F2B370B7100B63209 /* EasydictTests */ = {
 			isa = PBXGroup;
 			children = (
+				03C408F72EF5CAFB0025A1F0 /* ServiceTests */,
 				031153402EDB0BA20083521F /* StringTests */,
 				03D486512E3F211C009313B3 /* RegexTests */,
 				0305E7422E1D2B3E000A23A0 /* Extensions */,
@@ -2557,6 +2560,14 @@
 			path = "ocr-images";
 			sourceTree = "<group>";
 		};
+		03C408F72EF5CAFB0025A1F0 /* ServiceTests */ = {
+			isa = PBXGroup;
+			children = (
+				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
+			);
+			path = ServiceTests;
+			sourceTree = "<group>";
+		};
 		03CA1CF02EDE089E001908D0 /* Appearance */ = {
 			isa = PBXGroup;
 			children = (
@@ -3704,6 +3715,7 @@
 				AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
+				03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
