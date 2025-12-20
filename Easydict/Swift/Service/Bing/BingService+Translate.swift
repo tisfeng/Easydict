@@ -18,7 +18,7 @@ extension BingService {
         useDictQuery: Bool,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         isDictQueryResult = false
 
@@ -229,7 +229,7 @@ extension BingService {
     private func parseBingDictTranslate(
         _ json: [String: Any]?,
         word: String,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         guard let json = json else {
             completion(result, QueryError(type: .api, message: "bing dict json is nil"))

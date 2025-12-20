@@ -162,7 +162,6 @@
 		03538E0A2D281920005E56A8 /* YoudaoService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E092D281920005E56A8 /* YoudaoService+OCR.swift */; };
 		03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
-		03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3C2937AF4F00C34C33 /* EZQueryResult.m */; };
 		03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A3F2937B3C900C34C33 /* EZOCRResult.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
@@ -371,6 +370,7 @@
 		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
 		03D0F0112F00000100ABCDEF /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0012F00000100ABCDEF /* QueryService.swift */; };
 		03D0F0122F00000100ABCDEF /* BaiduService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0022F00000100ABCDEF /* BaiduService.swift */; };
+		03D0F0132F00000200ABCDEF /* QueryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0032F00000200ABCDEF /* QueryResult.swift */; };
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
 		03D486502E3F2021009313B3 /* Regex+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4864F2E3F2021009313B3 /* Regex+List.swift */; };
@@ -719,8 +719,6 @@
 		03538E0B2D281ADA005E56A8 /* YoudaoOCRResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoOCRResponse.swift; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
 		03542A332936F70F00C34C33 /* EZLanguageManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageManager.m; sourceTree = "<group>"; };
-		03542A3B2937AF4F00C34C33 /* EZQueryResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryResult.h; sourceTree = "<group>"; };
-		03542A3C2937AF4F00C34C33 /* EZQueryResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryResult.m; sourceTree = "<group>"; };
 		03542A3E2937B3C900C34C33 /* EZOCRResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOCRResult.h; sourceTree = "<group>"; };
 		03542A3F2937B3C900C34C33 /* EZOCRResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOCRResult.m; sourceTree = "<group>"; };
 		03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDetectLanguageButton.h; sourceTree = "<group>"; };
@@ -1004,6 +1002,7 @@
 		03D043592928C4C800E7559E /* EZWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowManager.m; sourceTree = "<group>"; };
 		03D0F0012F00000100ABCDEF /* QueryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryService.swift; sourceTree = "<group>"; };
 		03D0F0022F00000100ABCDEF /* BaiduService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaiduService.swift; sourceTree = "<group>"; };
+		03D0F0032F00000200ABCDEF /* QueryResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryResult.swift; sourceTree = "<group>"; };
 		03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
 		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
@@ -1622,8 +1621,6 @@
 			children = (
 				03B0224A29231FA6001C7E63 /* EZDetectManager.h */,
 				03B0224429231FA6001C7E63 /* EZDetectManager.m */,
-				03542A3B2937AF4F00C34C33 /* EZQueryResult.h */,
-				03542A3C2937AF4F00C34C33 /* EZQueryResult.m */,
 				03542A3E2937B3C900C34C33 /* EZOCRResult.h */,
 				03542A3F2937B3C900C34C33 /* EZOCRResult.m */,
 				03262C1A29EEE91700EFECA0 /* EZEnumTypes.h */,
@@ -1793,7 +1790,6 @@
 			isa = PBXGroup;
 			children = (
 				54A84CEDD3AD444B860067F8 /* Model */,
-				03D0F0012F00000100ABCDEF /* QueryService.swift */,
 				03D0F0202F00000100ABCDEF /* Baidu */,
 				03F086F62DB3A93200268DF0 /* Groq */,
 				03F281622D9A323700AE518C /* Zhipu */,
@@ -3006,6 +3002,11 @@
 		54A84CEDD3AD444B860067F8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				03D0F0032F00000200ABCDEF /* QueryResult.swift */,
+				03D0F0012F00000100ABCDEF /* QueryService.swift */,
+				3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */,
+				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
+				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3238,12 +3239,9 @@
 		EA9943E12B534C2900EE7B97 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */,
 				035179172EF301C20054C985 /* AppTriggerConfig.swift */,
 				0340D39D2C951850004C9910 /* QueryError.swift */,
-				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
 				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
-				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
 				0327A5A72CCB3339002BA81B /* UpdateNotificationInfo.swift */,
 				033870B52E0437FE007E154C /* MaxWindowHeightPercentageOption.swift */,
 			);
@@ -3818,7 +3816,7 @@
 				03B73F7D2D9C51700051CB74 /* ChineseDetection+Lyrics.swift in Sources */,
 				0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */,
 				037A9CCD2E29421D00668C49 /* OCRMergeStrategy.swift in Sources */,
-				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
+				03D0F0132F00000200ABCDEF /* QueryResult.swift in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
 				0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */,
 				03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */,

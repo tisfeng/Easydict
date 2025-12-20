@@ -135,7 +135,7 @@ class DeepLService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         if apiType == .webFirst {
             deepLWebTranslate(text, from: from, to: to, completion: completion)

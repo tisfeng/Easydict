@@ -183,6 +183,15 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 删除 EZDeepLTranslationAPI 枚举
   - 清理冗余代码，简化架构
 
+### 2025-12-20: EZQueryResult Migration
+
+- **Goal**: Migrate EZQueryResult and related word result models to Swift.
+- **Status**: ✅ Completed
+- **Outcome**:
+  - Added Swift implementation in `Swift/Service/Model/EZQueryResult.swift`.
+  - Removed Objective-C `EZQueryResult.h/.m` and updated ObjC headers to forward declarations.
+  - Updated project references to use the Swift implementation.
+
 ## 📋 待迁移列表
 
 **⚠️ 重要提醒：以下所有 Objective-C 组件修改时必须先迁移到 Swift，禁止直接修改！**

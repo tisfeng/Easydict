@@ -64,7 +64,7 @@ public final class TencentService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {

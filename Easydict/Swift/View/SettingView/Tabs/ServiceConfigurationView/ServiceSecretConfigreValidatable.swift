@@ -11,13 +11,13 @@ import Foundation
 // MARK: - ServiceSecretConfigreValidatable
 
 protocol ServiceSecretConfigreValidatable {
-    func validate() async -> EZQueryResult
+    func validate() async -> QueryResult
 }
 
 // MARK: - QueryService + ServiceSecretConfigreValidatable
 
 extension QueryService: ServiceSecretConfigreValidatable {
-    func validate() async -> EZQueryResult {
+    func validate() async -> QueryResult {
         resetServiceResult()
 
         /**

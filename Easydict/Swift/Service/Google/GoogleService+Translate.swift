@@ -20,7 +20,7 @@ extension GoogleService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         guard !text.isEmpty else {
             completion(result, QueryError(type: .parameter, message: "翻译的文本为空"))
@@ -360,7 +360,7 @@ extension GoogleService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         guard !text.isEmpty else {
             completion(result, QueryError(type: .parameter, message: "翻译的文本为空"))

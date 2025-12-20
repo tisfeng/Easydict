@@ -42,7 +42,7 @@ struct ServiceTests {
     }
 
     /// Returns the validation result for a service, using dictionary-friendly input when needed.
-    private func validationResult(for service: QueryService) async -> EZQueryResult {
+    private func validationResult(for service: QueryService) async -> QueryResult {
         if service is AppleDictionary {
             return await validateTranslation(
                 service,
@@ -62,7 +62,7 @@ struct ServiceTests {
         from: Language,
         to: Language
     ) async
-        -> EZQueryResult {
+        -> QueryResult {
         service.resetServiceResult()
 
         return await withCheckedContinuation { continuation in

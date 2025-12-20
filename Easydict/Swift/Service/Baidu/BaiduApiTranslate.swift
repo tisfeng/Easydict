@@ -22,7 +22,7 @@ class BaiduApiTranslate: NSObject {
 
     // MARK: Internal
 
-    var result: EZQueryResult?
+    var result: QueryResult?
 
     var isEnable: Bool {
         Defaults[.baiduServiceApiTypeKey] == ServiceAPIType.secretKey
@@ -32,7 +32,7 @@ class BaiduApiTranslate: NSObject {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult?, Error?) -> ()
+        completion: @escaping (QueryResult?, Error?) -> ()
     ) {
         if appId.isEmpty || secretKey.isEmpty {
             let message =
@@ -71,7 +71,7 @@ class BaiduApiTranslate: NSObject {
         )
         let task = Task { [weak self] in
             guard let self else { return }
-            let result = result ?? EZQueryResult()
+            let result = result ?? QueryResult()
             result.from = from
             result.to = to
             result.queryText = text

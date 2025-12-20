@@ -28,7 +28,7 @@ open class QueryService: NSObject {
     open dynamic var queryType: EZQueryTextType = []
     open dynamic var windowType: EZWindowType = .main
 
-    open dynamic var autoCopyTranslatedTextBlock: ((EZQueryResult, Error?) -> ())?
+    open dynamic var autoCopyTranslatedTextBlock: ((QueryResult, Error?) -> ())?
 
     open dynamic var queryModel: EZQueryModel! {
         didSet {
@@ -37,7 +37,7 @@ open class QueryService: NSObject {
         }
     }
 
-    open dynamic var result: EZQueryResult! {
+    open dynamic var result: QueryResult! {
         didSet {
             guard let result else { return }
 
@@ -140,7 +140,7 @@ open class QueryService: NSObject {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     )
         -> Bool {
         if queryModel == nil {
@@ -152,7 +152,7 @@ open class QueryService: NSObject {
         queryModel.inputText = text
 
         if result == nil {
-            result = EZQueryResult()
+            result = QueryResult()
         }
 
         result.queryText = text
@@ -218,8 +218,8 @@ open class QueryService: NSObject {
     }
 
     @discardableResult
-    open func resetServiceResult() -> EZQueryResult {
-        let currentResult = result ?? EZQueryResult()
+    open func resetServiceResult() -> QueryResult {
+        let currentResult = result ?? QueryResult()
         currentResult.reset()
 
         let enabledReplaceTypes: [ActionType] = [
@@ -241,7 +241,7 @@ open class QueryService: NSObject {
 
     open func startQuery(
         _ queryModel: EZQueryModel,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         self.queryModel = queryModel
 
@@ -263,7 +263,7 @@ open class QueryService: NSObject {
     // MARK: - Overridable hooks
 
     /// Invoked when `result` is set to allow subclasses to customize side effects.
-    open func resultDidUpdate(_ result: EZQueryResult) {}
+    open func resultDidUpdate(_ result: QueryResult) {}
 
     // MARK: - Required subclass overrides
 
@@ -296,7 +296,7 @@ open class QueryService: NSObject {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         fatalError("You must override \(#function) in a subclass.")
     }
@@ -393,7 +393,7 @@ open class QueryService: NSObject {
         from: Language,
         to: Language,
         ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
-        completion: @escaping (EZOCRResult?, EZQueryResult?, Error?) -> ()
+        completion: @escaping (EZOCRResult?, QueryResult?, Error?) -> ()
     ) {
         fatalError("You must override \(#function) in a subclass.")
     }
@@ -406,7 +406,7 @@ open class QueryService: NSObject {
         from: Language,
         to: Language
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         try await withCheckedThrowingContinuation { continuation in
             self.translate(text, from: from, to: to) { result, error in
                 if let error {

@@ -86,7 +86,7 @@ class AppleDictionary: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         let noResultError = QueryError(type: .noResult)
 

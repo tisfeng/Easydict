@@ -1048,7 +1048,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryResult *result in results) {
         // !!!: Render webView html takes a little time(~0.5s), so we stop loading when webView finished loading.
         BOOL isFinished = YES;
-        if (result.isShowing && result.HTMLString.length) {
+        if (result.isShowing && result.htmlString.length) {
             isFinished = result.webViewManager.wordResultViewHeight > 0;
         }
         result.isLoading = !isFinished;
@@ -1481,7 +1481,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         webView = webViewManager.webView;
         resultCell.wordResultView.webView = webView;
 
-        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !webViewManager.isLoaded;
+        BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
             webViewManager.isLoaded = YES;
 
@@ -1709,7 +1709,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     [service setAutoCopyTranslatedTextBlock:^(EZQueryResult *result, NSError *error) {
-        if (!result.HTMLString.length) {
+        if (!result.htmlString.length) {
             [result.copiedText copyToPasteboard];
             return;
         }

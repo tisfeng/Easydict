@@ -40,7 +40,7 @@ final class BaiduService: QueryService {
 
     // MARK: - Overrides
 
-    override func resultDidUpdate(_ result: EZQueryResult) {
+    override func resultDidUpdate(_ result: QueryResult) {
         super.resultDidUpdate(result)
         apiTranslate.result = result
     }
@@ -153,7 +153,7 @@ final class BaiduService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         guard !text.isEmpty else {
             completion(result, QueryError.error(type: .parameter, message: "翻译的文本为空"))

@@ -19,3 +19,5 @@
 #import "EZEventMonitor.h"
 #import "DictionaryKit.h"
 #import "EZAudioPlayer.h"
+
+#import "EZWebViewManager.h"

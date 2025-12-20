@@ -11,7 +11,7 @@ import Foundation
 // MARK: - EZQueryResult + DictV4
 
 // swiftlint:disable all
-extension EZQueryResult {
+extension QueryResult {
     func update(dictV4 model: YoudaoDictResponseV4) {
         raw = model
 

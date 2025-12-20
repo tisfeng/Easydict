@@ -84,7 +84,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     mm_weakify(self);
 
-    if (result.HTMLString.length) {
+    if (result.htmlString.length) {
         [self addSubview:self.webView];
 
         if (result.webViewManager.isLoaded) {
@@ -804,7 +804,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
     [self addSubview:textCopyButton];
-    textCopyButton.enabled = hasTranslatedText | result.HTMLString.length;
+    textCopyButton.enabled = hasTranslatedText | result.htmlString.length;
 
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         MMLogInfo(@"copyActionBlock");
@@ -889,7 +889,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     // webView height need time to calculate, and the value will be called back later.
     if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
-        BOOL hasHTML = result.HTMLString.length > 0;
+        BOOL hasHTML = result.htmlString.length > 0;
         linkButton.enabled = hasHTML;
 
         if (hasHTML) {
@@ -1155,7 +1155,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      take: 1971476
      */
 
-    //    CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+    //    CGFloat delayShowingTime = self.result.htmlString.length / 1000000.0;
     //    MMLogInfo(@"Delay showing time: %.2f", delayShowingTime);
 
     // !!!: Must update view height, then update cell height.

@@ -51,7 +51,7 @@ public final class CaiyunService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {

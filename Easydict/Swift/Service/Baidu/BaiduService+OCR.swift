@@ -57,7 +57,7 @@ extension BaiduService {
         from: Language,
         to: Language,
         ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
-        completion: @escaping (EZOCRResult?, EZQueryResult?, Error?) -> ()
+        completion: @escaping (EZOCRResult?, QueryResult?, Error?) -> ()
     ) {
         ocr(image, from: from, to: to) { [weak self] ocrResult, error in
             guard let self else { return }

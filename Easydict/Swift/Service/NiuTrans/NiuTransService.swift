@@ -136,7 +136,7 @@ class NiuTransService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         niuTransTranslate(text, from: from, to: to, completion: completion)
     }
@@ -164,7 +164,7 @@ extension NiuTransService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         let sourceLangCode = languageCode(forLanguage: from) ?? "auto"
         let targetLangCode = languageCode(forLanguage: to) ?? ""
@@ -222,7 +222,7 @@ extension NiuTransService {
 
     private func parseResponse(
         _ responseDict: [String: Any],
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: responseDict)

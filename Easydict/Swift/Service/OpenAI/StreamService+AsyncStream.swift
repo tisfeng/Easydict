@@ -24,7 +24,7 @@ extension StreamService {
 
     /// Stream translate text, return EZQueryResult stream.
     /// - Note: This func do not throttle result.
-    func streamTranslate(text: String, from: Language, to: Language) -> AsyncStream<EZQueryResult> {
+    func streamTranslate(text: String, from: Language, to: Language) -> AsyncStream<QueryResult> {
         AsyncStream { continuation in
             Task {
                 var resultText = ""
@@ -103,7 +103,7 @@ extension StreamService {
 
     /// Convert AsyncStream<EZQueryResult> to AsyncThrowingStream<String, Error>
     func queryResultStreamToTextStream(
-        _ queryResultStream: AsyncStream<EZQueryResult>
+        _ queryResultStream: AsyncStream<QueryResult>
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream<String, Error> { continuation in

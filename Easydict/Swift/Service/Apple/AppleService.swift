@@ -45,7 +45,7 @@ public class AppleService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         Task {
             do {
@@ -88,7 +88,7 @@ public class AppleService: QueryService {
         from sourceLanguage: Language,
         to targetLanguage: Language
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         // Use macOS 15+ API to translate if available
         if #available(macOS 15.0, *), Configuration.shared.enableAppleOfflineTranslation {
             let service = await getTranslationService()
@@ -179,7 +179,7 @@ public class AppleService: QueryService {
         from sourceLanguage: Language,
         to targetLanguage: Language
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
               let toLanguage = languageMapper.supportedLanguages[targetLanguage]
         else {

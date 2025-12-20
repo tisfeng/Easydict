@@ -51,7 +51,7 @@ class AliService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         let limit = 5000
         let text = String(text.prefix(limit))
@@ -124,7 +124,7 @@ class AliService: QueryService {
         text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         if id.isEmpty || secret.isEmpty {
             let message = String(localized: "service.configuration.api_missing.tips \(name())")

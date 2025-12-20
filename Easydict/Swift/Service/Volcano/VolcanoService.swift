@@ -49,7 +49,7 @@ public final class VolcanoService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         guard let result = result else { return }
 

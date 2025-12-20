@@ -82,7 +82,7 @@ public class StreamService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
+        completion: @escaping (QueryResult, Error?) -> ()
     ) {
         let queryResultStream = streamTranslate(text: text, from: from, to: to)
         let textStream = queryResultStreamToTextStream(queryResultStream)

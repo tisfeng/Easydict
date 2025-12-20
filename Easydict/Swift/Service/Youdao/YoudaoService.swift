@@ -103,7 +103,7 @@ class YoudaoService: QueryService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         Task {
             do {
@@ -180,7 +180,7 @@ class YoudaoService: QueryService {
         from: Language,
         to: Language,
         ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
-        completion: @escaping (EZOCRResult?, EZQueryResult?, (any Error)?) -> ()
+        completion: @escaping (EZOCRResult?, QueryResult?, (any Error)?) -> ()
     ) {
         Task {
             do {
@@ -227,7 +227,7 @@ class YoudaoService: QueryService {
         from: Language,
         to: Language
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         guard !text.isEmpty else {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
