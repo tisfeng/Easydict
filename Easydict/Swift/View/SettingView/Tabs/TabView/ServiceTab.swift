@@ -29,7 +29,9 @@ struct ServiceTab: View {
                 .padding(.horizontal)
                 .frame(minWidth: 260)
                 .onReceive(serviceHasUpdatedNotification) { _ in
-                    viewModel.updateServices()
+                    Task { @MainActor in
+                        viewModel.updateServices()
+                    }
                 }
             }
 
@@ -63,6 +65,11 @@ struct ServiceTab: View {
             .layoutPriority(1)
         }
         .environmentObject(viewModel)
+        .onChange(of: viewModel.windowType) { _ in
+            Task { @MainActor in
+                viewModel.handleWindowTypeChange()
+            }
+        }
     }
 
     // MARK: Private
@@ -75,6 +82,7 @@ struct ServiceTab: View {
 
 // MARK: - ServiceTabViewModel
 
+@MainActor
 private class ServiceTabViewModel: ObservableObject {
     // MARK: Lifecycle
 
@@ -89,13 +97,12 @@ private class ServiceTabViewModel: ObservableObject {
 
     @Published private(set) var services: [QueryService]
 
-    @Published var windowType: EZWindowType {
-        didSet {
-            if oldValue != windowType {
-                updateServices()
-                selectedService = nil
-            }
-        }
+    @Published var windowType: EZWindowType
+
+    /// Refresh services when the window type changes.
+    func handleWindowTypeChange() {
+        selectedService = nil
+        updateServices()
     }
 
     func updateServices() {
