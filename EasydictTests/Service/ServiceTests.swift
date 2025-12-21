@@ -63,18 +63,16 @@ struct ServiceTests {
         to: Language
     ) async
         -> QueryResult {
-        service.resetServiceResult()
+        let currentResult = service.resetServiceResult()
 
-        return await withCheckedContinuation { continuation in
-            var hasResumed = false
-            service.translate(text, from: from, to: to) { result, error in
-                guard !hasResumed else { return }
-                hasResumed = true
-                if result.error == nil {
-                    result.error = QueryError.queryError(from: error)
-                }
-                continuation.resume(returning: result)
+        do {
+            return try await service.translate(text, from: from, to: to)
+        } catch {
+            let result = service.result ?? currentResult
+            if result.error == nil {
+                result.error = QueryError.queryError(from: error)
             }
+            return result
         }
     }
 }
