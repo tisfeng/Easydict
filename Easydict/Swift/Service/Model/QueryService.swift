@@ -20,22 +20,22 @@ open class QueryService: NSObject {
 
     // MARK: Open
 
-    open dynamic var uuid: String = ""
-    open dynamic var enabled: Bool = true
+    open var uuid: String = ""
+    open var enabled: Bool = true
 
-    open dynamic var queryType: EZQueryTextType = []
-    open dynamic var windowType: EZWindowType = .main
+    open var queryType: EZQueryTextType = []
+    open var windowType: EZWindowType = .main
 
-    open dynamic var autoCopyTranslatedTextBlock: ((QueryResult, Error?) -> ())?
+    open var autoCopyTranslatedTextBlock: ((QueryResult, Error?) -> ())?
 
-    open dynamic var queryModel: EZQueryModel! {
+    open var queryModel: EZQueryModel! {
         didSet {
             guard let queryModel else { return }
             result?.queryModel = queryModel
         }
     }
 
-    open dynamic var result: QueryResult! {
+    open var result: QueryResult! {
         didSet {
             guard let result else { return }
 
@@ -50,7 +50,7 @@ open class QueryService: NSObject {
         }
     }
 
-    open dynamic var enabledQuery: Bool {
+    open var enabledQuery: Bool {
         get { storedEnabledQuery }
         set {
             storedEnabledQuery = newValue
@@ -63,7 +63,7 @@ open class QueryService: NSObject {
         }
     }
 
-    open dynamic var enabledAutoQuery: Bool {
+    open var enabledAutoQuery: Bool {
         get {
             if serviceUsageStatus() == .alwaysOff {
                 return false
@@ -84,7 +84,7 @@ open class QueryService: NSObject {
         set { storedEnabledAutoQuery = newValue }
     }
 
-    open dynamic var audioPlayer: EZAudioPlayer! {
+    open var audioPlayer: EZAudioPlayer! {
         get {
             if storedAudioPlayer == nil {
                 let player = EZAudioPlayer()
@@ -418,7 +418,7 @@ open class QueryService: NSObject {
     }
 
     /// Perform OCR for the given image.
-    open dynamic func ocr(
+    open func ocr(
         _ image: NSImage,
         from: Language,
         to: Language
@@ -440,7 +440,7 @@ open class QueryService: NSObject {
     }
 
     /// Perform OCR and translation with an intermediate OCR callback.
-    open dynamic func ocrAndTranslate(
+    open func ocrAndTranslate(
         _ image: NSImage,
         from: Language,
         to: Language,
