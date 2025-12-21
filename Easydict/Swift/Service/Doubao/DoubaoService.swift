@@ -23,6 +23,10 @@ public final class DoubaoService: StreamService {
     /// Default Doubao translation model identifier
     public static let defaultModelIdentifier = "doubao-seed-translation-250915"
 
+    public override func cancelStream() {
+        currentTask?.cancel()
+    }
+
     public override func serviceType() -> ServiceType {
         .doubao
     }
@@ -116,10 +120,6 @@ public final class DoubaoService: StreamService {
                 }
             }
         }
-    }
-
-    override func cancelStream() {
-        currentTask?.cancel()
     }
 
     // MARK: Private

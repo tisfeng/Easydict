@@ -205,6 +205,45 @@ open class QueryService: NSObject {
         return try await translate(queryText, from: fromLanguage, to: targetLanguage)
     }
 
+    /// Starts a query and reports incremental results on the main thread.
+    open func startQueryStream(
+        _ queryModel: EZQueryModel,
+        completionHandler: @escaping (QueryResult, Error?) -> ()
+    ) {
+        let task = Task { [weak self] in
+            guard let self else { return }
+
+            var didYieldError = false
+
+            do {
+                for try await result in startQueryStream(queryModel) {
+                    if result.error != nil {
+                        didYieldError = true
+                    }
+                    await MainActor.run {
+                        completionHandler(result, result.error)
+                    }
+                }
+            } catch {
+                if !didYieldError {
+                    let errorResult = ensureResult()
+                    if errorResult.error == nil {
+                        errorResult.error = QueryError.queryError(from: error)
+                    }
+                    await MainActor.run {
+                        completionHandler(errorResult, errorResult.error)
+                    }
+                }
+            }
+        }
+
+        let serviceType = serviceTypeWithUniqueIdentifier()
+        queryModel.setStop({ [weak self] in
+            task.cancel()
+            self?.cancelStream()
+        }, serviceType: serviceType)
+    }
+
     /// Starts a query using async stream and yields incremental results.
     open func startQueryStream(_ queryModel: EZQueryModel)
         -> AsyncThrowingStream<QueryResult, Error> {
@@ -264,6 +303,9 @@ open class QueryService: NSObject {
     open func configurationListItems() -> Any? {
         nil
     }
+
+    /// Cancels the current streaming request if supported.
+    open func cancelStream() {}
 
     // MARK: - Overridable hooks
 

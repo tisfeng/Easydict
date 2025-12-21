@@ -32,6 +32,11 @@ public class StreamService: QueryService {
             .store(in: &cancellables)
     }
 
+    // MARK: Open
+
+    /// Cancels the current streaming request manually.
+    open override func cancelStream() {}
+
     // MARK: Public
 
     public override func isStream() -> Bool {
@@ -394,9 +399,6 @@ public class StreamService: QueryService {
 
         return .translation
     }
-
-    /// Cancel stream request manually.
-    func cancelStream() {}
 
     /// Content stream translate.
     /// Content is the original delta text.

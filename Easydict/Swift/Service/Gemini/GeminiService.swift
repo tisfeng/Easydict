@@ -17,6 +17,10 @@ import GoogleGenerativeAI
 public final class GeminiService: StreamService {
     // MARK: Public
 
+    public override func cancelStream() {
+        currentTask?.cancel()
+    }
+
     public override func serviceType() -> ServiceType {
         .gemini
     }
@@ -159,10 +163,6 @@ public final class GeminiService: StreamService {
             chatModels.append(chat)
         }
         return chatModels
-    }
-
-    override func cancelStream() {
-        currentTask?.cancel()
     }
 
     // MARK: Private

@@ -883,7 +883,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [self updateResultLoadingAnimation:result];
 
-    [service startQuery:queryModel completionHandler:completion];
+    [service startQueryStream:queryModel completionHandler:completion];
 
     [EZLocalStorage.shared increaseQueryService:service];
 }
