@@ -134,22 +134,6 @@ open class QueryService: NSObject {
         return languageIndexDict?[lang]?.intValue ?? 0
     }
 
-    /// Preprocess a query. Returns true if handled (no further request needed).
-    @objc(prehandleQueryText:from:to:completion:)
-    open func prehandleQueryText(
-        _ text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    )
-        -> Bool {
-        let outcome = prehandleQueryTextOutcome(text, from: from, to: to)
-        if outcome.handled {
-            completion(outcome.result, outcome.error)
-        }
-        return outcome.handled
-    }
-
     /// Preprocess a query and return the result when handled.
     @nonobjc
     open func prehandleQueryText(
@@ -386,40 +370,6 @@ open class QueryService: NSObject {
                     }
                     continuation.yield(errorResult)
                     continuation.finish(throwing: error)
-                }
-            }
-        }
-    }
-
-    /// Translate text using completion callbacks for Objective-C callers.
-    open func translate(
-        _ text: String,
-        from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            var didYieldError = false
-
-            do {
-                for try await result in translateStream(text, from: from, to: to) {
-                    if result.error != nil {
-                        didYieldError = true
-                    }
-                    await MainActor.run {
-                        completion(result, result.error)
-                    }
-                }
-            } catch {
-                if !didYieldError {
-                    let errorResult = ensureResult()
-                    if errorResult.error == nil {
-                        errorResult.error = QueryError.queryError(from: error)
-                    }
-                    await MainActor.run {
-                        completion(errorResult, error)
-                    }
                 }
             }
         }
