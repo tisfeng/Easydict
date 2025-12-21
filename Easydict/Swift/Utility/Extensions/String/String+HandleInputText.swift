@@ -199,7 +199,7 @@ extension NSString {
         let singleAlphabetWidth = maxWidthValue / CGFloat(lineAtMaxWidth.count)
 
         // Determine if language uses spaces between words
-        let detectedLanguage = AppleService.shared.detectText(content)
+        let detectedLanguage = AppleService.shared.detectTextSync(content)
         let isEnglishTypeLanguage = EZLanguageManager.shared().isLanguageWordsNeedSpace(
             detectedLanguage)
         let alphabetCount: CGFloat = isEnglishTypeLanguage ? 15 : 1.5

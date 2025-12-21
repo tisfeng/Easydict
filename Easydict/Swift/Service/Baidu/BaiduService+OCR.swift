@@ -11,15 +11,15 @@ import AppKit
 import Foundation
 
 extension BaiduService {
-    override func ocr(
+    /// Perform OCR using Baidu web endpoint.
+    func performBaiduOCR(
         _ image: NSImage,
         from: Language,
-        to: Language,
-        completion: @escaping (EZOCRResult?, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> EZOCRResult? {
         guard let data = image.mm_PNGData else {
-            completion(nil, QueryError.error(type: .parameter, message: "图片为空"))
-            return
+            throw QueryError.error(type: .parameter, message: "图片为空")
         }
 
         let fromLang = from == .auto ? languageCode(forLanguage: .english) : languageCode(forLanguage: from)
@@ -31,45 +31,15 @@ extension BaiduService {
             toLang = languageCode(forLanguage: to)
         }
 
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let ocrResult = try await requestOcrResult(
-                    imageData: data,
-                    fromLang: fromLang,
-                    toLang: toLang
-                )
-                await MainActor.run {
-                    completion(ocrResult, nil)
-                }
-            } catch {
-                let queryError = error as? QueryError
-                    ?? QueryError.error(type: .api, message: "识别图片文本失败")
-                await MainActor.run {
-                    completion(nil, queryError)
-                }
-            }
-        }
-    }
-
-    override func ocrAndTranslate(
-        _ image: NSImage,
-        from: Language,
-        to: Language,
-        ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
-        completion: @escaping (EZOCRResult?, QueryResult?, Error?) -> ()
-    ) {
-        ocr(image, from: from, to: to) { [weak self] ocrResult, error in
-            guard let self else { return }
-            guard let ocrResult else {
-                completion(nil, nil, error)
-                return
-            }
-
-            ocrSuccess(ocrResult, true)
-            translate(ocrResult.mergedText, from: from, to: to) { result, error in
-                completion(ocrResult, result, error)
-            }
+        do {
+            return try await requestOcrResult(
+                imageData: data,
+                fromLang: fromLang,
+                toLang: toLang
+            )
+        } catch {
+            throw error as? QueryError
+                ?? QueryError.error(type: .api, message: "识别图片文本失败")
         }
     }
 

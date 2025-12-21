@@ -72,12 +72,13 @@ class GoogleService: QueryService {
 
     // MARK: - QueryService Override
 
+    /// Translate text using Google web or GTX APIs.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, (any Error)?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let processedText = maxTextLength(text, fromLanguage: from)
 
         // TODO: We should the Google web translate API instead.
@@ -86,11 +87,22 @@ class GoogleService: QueryService {
             withLanguage: from,
             maxWordCount: 1
         )
-        if queryDictionary {
-            // This API can get word info, like pronunciation.
-            webAppTranslate(processedText, from: from, to: to, completion: completion)
-        } else {
-            gtxTranslate(processedText, from: from, to: to, completion: completion)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let completion: (QueryResult, Error?) -> () = { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+
+            if queryDictionary {
+                // This API can get word info, like pronunciation.
+                webAppTranslate(processedText, from: from, to: to, completion: completion)
+            } else {
+                gtxTranslate(processedText, from: from, to: to, completion: completion)
+            }
         }
     }
 
@@ -204,63 +216,66 @@ class GoogleService: QueryService {
 
     // MARK: - Language Detection
 
+    /// Detect language using Google web detection.
+    @nonobjc
+    override func detectText(_ text: String) async throws -> Language {
+        try await withCheckedThrowingContinuation { continuation in
+            webAppDetect(text) { language, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: language)
+                }
+            }
+        }
+    }
+
+    /// Detect language for Objective-C callers without spawning a Task bridge.
     override func detectText(
         _ text: String,
         completion: @escaping (Language, Error?) -> ()
     ) {
-        webAppDetect(text, completion: completion)
+        webAppDetect(text) { language, error in
+            DispatchQueue.main.async {
+                completion(language, error)
+            }
+        }
     }
 
     // MARK: - Text to Audio
 
+    /// Generate audio URL using Google TTS.
     override func textToAudio(
         _ text: String,
         fromLanguage: Language,
-        accent: String?,
-        completion: @escaping (String?, Error?) -> ()
-    ) {
+        accent: String?
+    ) async throws
+        -> String? {
         guard !text.isEmpty else {
-            completion(
-                nil,
-                QueryError(type: .parameter, message: "获取音频的文本为空")
-            )
-            return
+            throw QueryError(type: .parameter, message: "获取音频的文本为空")
         }
 
         // TODO: need to optimize, Ref: https://github.com/florabtw/google-translate-tts/blob/master/src/synthesize.js
 
         if fromLanguage == .auto {
-            detectText(text) { [weak self] (lang: Language, error: Error?) in
-                guard let self = self else { return }
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-
-                let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
-                let url = getAudioURL(
-                    withText: text,
-                    language: getTTSLanguageCode(lang, accent: accent),
-                    sign: sign
-                )
-                completion(url, nil)
-            }
-        } else {
-            updateWebAppTKK { error in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-
-                let sign = self.signFunction.call(withArguments: [text])?.toString() ?? ""
-                let url = self.getAudioURL(
-                    withText: text,
-                    language: self.getTTSLanguageCode(fromLanguage, accent: accent),
-                    sign: sign
-                )
-                completion(url, nil)
-            }
+            let lang = try await detectText(text)
+            let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
+            let url = getAudioURL(
+                withText: text,
+                language: getTTSLanguageCode(lang, accent: accent),
+                sign: sign
+            )
+            return url
         }
+
+        try await updateWebAppTKK()
+        let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
+        let url = getAudioURL(
+            withText: text,
+            language: getTTSLanguageCode(fromLanguage, accent: accent),
+            sign: sign
+        )
+        return url
     }
 
     // MARK: - Language Code Helpers

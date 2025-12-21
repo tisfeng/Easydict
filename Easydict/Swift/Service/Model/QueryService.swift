@@ -143,65 +143,29 @@ open class QueryService: NSObject {
         completion: @escaping (QueryResult, Error?) -> ()
     )
         -> Bool {
-        if queryModel == nil {
-            let model = EZQueryModel()
-            model.userSourceLanguage = from
-            model.userTargetLanguage = to
-            queryModel = model
+        let outcome = prehandleQueryTextOutcome(text, from: from, to: to)
+        if outcome.handled {
+            completion(outcome.result, outcome.error)
         }
-        queryModel.inputText = text
+        return outcome.handled
+    }
 
-        if result == nil {
-            result = QueryResult()
-        }
-
-        result.queryText = text
-        result.from = from
-        result.to = to
-
-        // Chinese conversion prehandle.
-        let languages = [from, to]
-        if autoConvertTraditionalChinese(),
-           EZLanguageManager.shared().onlyContainsChineseLanguages(languages) {
-            var translatedText: String?
-            if to == .simplifiedChinese {
-                translatedText = text.toSimplifiedChinese()
-            } else if to == .traditionalChinese {
-                translatedText = text.toTraditionalChinese()
+    /// Preprocess a query and return the result when handled.
+    @nonobjc
+    open func prehandleQueryText(
+        _ text: String,
+        from: Language,
+        to: Language
+    ) async throws
+        -> (Bool, QueryResult) {
+        let outcome = prehandleQueryTextOutcome(text, from: from, to: to)
+        if outcome.handled {
+            if let error = outcome.error {
+                throw error
             }
-
-            if let translatedText {
-                result.translatedResults = [translatedText]
-                completion(result, nil)
-                return true
-            }
+            return (true, outcome.result)
         }
-
-        guard let fromLanguage = languageCode(forLanguage: from),
-              let toLanguage = languageCode(forLanguage: to)
-        else {
-            completion(result, QueryError.unsupportedLanguageError(service: self))
-            return true
-        }
-
-        _ = fromLanguage
-        _ = toLanguage
-
-        // Free quota check for services requiring private API key.
-        if needPrivateAPIKey(),
-           !hasPrivateAPIKey(),
-           !EZLocalStorage.shared().hasFreeQuotaLeft(self) {
-            let error = QueryError.error(
-                type: .api,
-                message: nil,
-                errorDataMessage: NSLocalizedString("insufficient_quota_prompt", comment: "")
-            )
-            result.promptURL = link()
-            completion(result, error)
-            return true
-        }
-
-        return false
+        return (false, outcome.result)
     }
 
     /// Get TTS language code.
@@ -239,21 +203,114 @@ open class QueryService: NSObject {
         return currentResult
     }
 
-    open func startQuery(
-        _ queryModel: EZQueryModel,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
+    /// Starts a query using async/await and returns the final result.
+    @nonobjc
+    open func startQuery(_ queryModel: EZQueryModel) async throws -> QueryResult {
         self.queryModel = queryModel
 
         let queryText = queryModel.queryText
         let fromLanguage = queryModel.queryFromLanguage
         let targetLanguage = queryModel.queryTargetLanguage
 
-        if prehandleQueryText(queryText, from: fromLanguage, to: targetLanguage, completion: completion) {
-            return
+        let (handled, prehandleResult) = try await prehandleQueryText(
+            queryText,
+            from: fromLanguage,
+            to: targetLanguage
+        )
+        if handled {
+            return prehandleResult
         }
 
-        translate(queryText, from: fromLanguage, to: targetLanguage, completion: completion)
+        return try await translate(queryText, from: fromLanguage, to: targetLanguage)
+    }
+
+    /// Starts a query using async stream and yields incremental results.
+    @nonobjc
+    open func startQueryStream(_ queryModel: EZQueryModel)
+        -> AsyncThrowingStream<QueryResult, Error> {
+        AsyncThrowingStream { [weak self] continuation in
+            Task {
+                guard let self else {
+                    continuation.finish()
+                    return
+                }
+
+                self.queryModel = queryModel
+
+                let queryText = queryModel.queryText
+                let fromLanguage = queryModel.queryFromLanguage
+                let targetLanguage = queryModel.queryTargetLanguage
+
+                var didYieldError = false
+
+                do {
+                    let (handled, prehandleResult) = try await self.prehandleQueryText(
+                        queryText,
+                        from: fromLanguage,
+                        to: targetLanguage
+                    )
+                    if handled {
+                        continuation.yield(prehandleResult)
+                        continuation.finish()
+                        return
+                    }
+
+                    for try await result in self.translateStream(
+                        queryText,
+                        from: fromLanguage,
+                        to: targetLanguage
+                    ) {
+                        if result.error != nil {
+                            didYieldError = true
+                        }
+                        continuation.yield(result)
+                    }
+
+                    continuation.finish()
+                } catch {
+                    if !didYieldError {
+                        let errorResult = self.ensureResult()
+                        if errorResult.error == nil {
+                            errorResult.error = QueryError.queryError(from: error)
+                        }
+                        continuation.yield(errorResult)
+                    }
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+
+    /// Starts a query with completion callbacks for Objective-C callers.
+    open func startQuery(
+        _ queryModel: EZQueryModel,
+        completion: @escaping (QueryResult, Error?) -> ()
+    ) {
+        Task { [weak self] in
+            guard let self else { return }
+            var didYieldError = false
+
+            do {
+                for try await result in startQueryStream(queryModel) {
+                    if result.error != nil {
+                        didYieldError = true
+                    }
+                    await MainActor.run {
+                        completion(result, result.error)
+                    }
+                }
+            } catch {
+                if !didYieldError {
+                    let errorResult = ensureResult()
+                    if errorResult.error == nil {
+                        errorResult.error = QueryError.queryError(from: error)
+                    }
+                    await MainActor.run {
+                        completion(errorResult, error)
+                    }
+                }
+            }
+        }
     }
 
     open func configurationListItems() -> Any? {
@@ -292,13 +349,80 @@ open class QueryService: NSObject {
         fatalError("You must override \(#function) in a subclass.")
     }
 
+    /// Translate text and return the final result.
+    @nonobjc
+    open func translate(
+        _ text: String,
+        from: Language,
+        to: Language
+    ) async throws
+        -> QueryResult {
+        fatalError("You must override \(#function) in a subclass.")
+    }
+
+    /// Translate text and return an async stream of results.
+    @nonobjc
+    open func translateStream(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> AsyncThrowingStream<QueryResult, Error> {
+        AsyncThrowingStream { [weak self] continuation in
+            Task {
+                guard let self else {
+                    continuation.finish()
+                    return
+                }
+
+                do {
+                    let result = try await self.translate(text, from: from, to: to)
+                    continuation.yield(result)
+                    continuation.finish()
+                } catch {
+                    let errorResult = self.ensureResult()
+                    if errorResult.error == nil {
+                        errorResult.error = QueryError.queryError(from: error)
+                    }
+                    continuation.yield(errorResult)
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+
+    /// Translate text using completion callbacks for Objective-C callers.
     open func translate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (QueryResult, Error?) -> ()
     ) {
-        fatalError("You must override \(#function) in a subclass.")
+        Task { [weak self] in
+            guard let self else { return }
+            var didYieldError = false
+
+            do {
+                for try await result in translateStream(text, from: from, to: to) {
+                    if result.error != nil {
+                        didYieldError = true
+                    }
+                    await MainActor.run {
+                        completion(result, result.error)
+                    }
+                }
+            } catch {
+                if !didYieldError {
+                    let errorResult = ensureResult()
+                    if errorResult.error == nil {
+                        errorResult.error = QueryError.queryError(from: error)
+                    }
+                    await MainActor.run {
+                        completion(errorResult, error)
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Optional subclass overrides
@@ -343,51 +467,190 @@ open class QueryService: NSObject {
         true
     }
 
+    /// Detect the language of the given text.
+    @nonobjc
+    open func detectText(_ text: String) async throws -> Language {
+        fatalError("You must override \(#function) in a subclass.")
+    }
+
+    /// Detect the language of the given text using completion callbacks.
     open func detectText(
         _ text: String,
         completion: @escaping (Language, Error?) -> ()
     ) {
-        fatalError("You must override \(#function) in a subclass.")
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let language = try await detectText(text)
+                await MainActor.run {
+                    completion(language, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(.auto, error)
+                }
+            }
+        }
     }
 
+    /// Generate audio for the given text.
+    @nonobjc
+    open func textToAudio(
+        _ text: String,
+        fromLanguage: Language
+    ) async throws
+        -> String? {
+        try await withCheckedThrowingContinuation { continuation in
+            audioPlayer.defaultTTSService.textToAudio(
+                text,
+                fromLanguage: fromLanguage
+            ) { url, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: url)
+                }
+            }
+        }
+    }
+
+    /// Generate audio for the given text with an optional accent.
+    @nonobjc
+    open func textToAudio(
+        _ text: String,
+        fromLanguage: Language,
+        accent: String?
+    ) async throws
+        -> String? {
+        _ = accent
+        return try await textToAudio(text, fromLanguage: fromLanguage)
+    }
+
+    /// Generate audio using completion callbacks for Objective-C callers.
     open func textToAudio(
         _ text: String,
         fromLanguage: Language,
         completion: @escaping (String?, Error?) -> ()
     ) {
-        audioPlayer.defaultTTSService.textToAudio(
-            text,
-            fromLanguage: fromLanguage,
-            completion: completion
-        )
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let url = try await textToAudio(text, fromLanguage: fromLanguage)
+                await MainActor.run {
+                    completion(url, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
     }
 
+    /// Generate audio with an accent using completion callbacks for Objective-C callers.
     open func textToAudio(
         _ text: String,
         fromLanguage: Language,
         accent: String?,
         completion: @escaping (String?, Error?) -> ()
     ) {
-        textToAudio(text, fromLanguage: fromLanguage, completion: completion)
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let url = try await textToAudio(
+                    text,
+                    fromLanguage: fromLanguage,
+                    accent: accent
+                )
+                await MainActor.run {
+                    completion(url, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
     }
 
+    /// Perform OCR for the given image.
+    @nonobjc
+    open dynamic func ocr(
+        _ image: NSImage,
+        from: Language,
+        to: Language
+    ) async throws
+        -> EZOCRResult? {
+        fatalError("You must override \(#function) in a subclass.")
+    }
+
+    /// Perform OCR for the given query model.
+    @nonobjc
+    open func ocr(_ queryModel: EZQueryModel) async throws -> EZOCRResult? {
+        guard let image = queryModel.ocrImage else {
+            throw QueryError.error(type: .parameter, message: "Image is nil")
+        }
+        return try await ocr(
+            image,
+            from: queryModel.queryFromLanguage,
+            to: queryModel.queryTargetLanguage
+        )
+    }
+
+    /// Perform OCR using completion callbacks for Objective-C callers.
     open dynamic func ocr(
         _ image: NSImage,
         from: Language,
         to: Language,
         completion: @escaping (EZOCRResult?, Error?) -> ()
     ) {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let result = try await ocr(image, from: from, to: to)
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+
+    /// Perform OCR using completion callbacks for Objective-C callers.
+    open func ocr(
+        _ queryModel: EZQueryModel,
+        completion: @escaping (EZOCRResult?, Error?) -> ()
+    ) {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let result = try await ocr(queryModel)
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+
+    /// Perform OCR and translation with an intermediate OCR callback.
+    open dynamic func ocrAndTranslate(
+        _ image: NSImage,
+        from: Language,
+        to: Language,
+        ocrSuccess: @escaping (EZOCRResult, Bool) -> ()
+    ) async throws
+        -> (EZOCRResult?, QueryResult?) {
         fatalError("You must override \(#function) in a subclass.")
     }
 
-    open func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
-        guard let image = queryModel.ocrImage else {
-            completion(nil, QueryError.error(type: .parameter, message: "Image is nil"))
-            return
-        }
-        ocr(image, from: queryModel.queryFromLanguage, to: queryModel.queryTargetLanguage, completion: completion)
-    }
-
+    /// Perform OCR and translation using completion callbacks for Objective-C callers.
     open dynamic func ocrAndTranslate(
         _ image: NSImage,
         from: Language,
@@ -395,24 +658,21 @@ open class QueryService: NSObject {
         ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
         completion: @escaping (EZOCRResult?, QueryResult?, Error?) -> ()
     ) {
-        fatalError("You must override \(#function) in a subclass.")
-    }
-
-    // MARK: Internal
-
-    /// Async wrapper for completion-based translate API.
-    func translate(
-        _ text: String,
-        from: Language,
-        to: Language
-    ) async throws
-        -> QueryResult {
-        try await withCheckedThrowingContinuation { continuation in
-            self.translate(text, from: from, to: to) { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: result)
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let (ocrResult, queryResult) = try await ocrAndTranslate(
+                    image,
+                    from: from,
+                    to: to,
+                    ocrSuccess: ocrSuccess
+                )
+                await MainActor.run {
+                    completion(ocrResult, queryResult, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, nil, error)
                 }
             }
         }
@@ -459,5 +719,87 @@ open class QueryService: NSObject {
             }
             languageIndexDict = indexMap
         }
+    }
+
+    /// Builds and returns a consistent query result for prehandle checks.
+    private func prehandleQueryTextOutcome(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> (handled: Bool, result: QueryResult, error: Error?) {
+        if queryModel == nil {
+            let model = EZQueryModel()
+            model.userSourceLanguage = from
+            model.userTargetLanguage = to
+            queryModel = model
+        }
+        queryModel.inputText = text
+
+        if result == nil {
+            result = QueryResult()
+        }
+
+        let currentResult = result ?? QueryResult()
+        result = currentResult
+
+        currentResult.queryText = text
+        currentResult.from = from
+        currentResult.to = to
+        currentResult.error = nil
+
+        // Chinese conversion prehandle.
+        let languages = [from, to]
+        if autoConvertTraditionalChinese(),
+           EZLanguageManager.shared().onlyContainsChineseLanguages(languages) {
+            var translatedText: String?
+            if to == .simplifiedChinese {
+                translatedText = text.toSimplifiedChinese()
+            } else if to == .traditionalChinese {
+                translatedText = text.toTraditionalChinese()
+            }
+
+            if let translatedText {
+                currentResult.translatedResults = [translatedText]
+                return (true, currentResult, nil)
+            }
+        }
+
+        guard let fromLanguage = languageCode(forLanguage: from),
+              let toLanguage = languageCode(forLanguage: to)
+        else {
+            let error = QueryError.unsupportedLanguageError(service: self)
+            currentResult.error = error
+            return (true, currentResult, error)
+        }
+
+        _ = fromLanguage
+        _ = toLanguage
+
+        // Free quota check for services requiring private API key.
+        if needPrivateAPIKey(),
+           !hasPrivateAPIKey(),
+           !EZLocalStorage.shared().hasFreeQuotaLeft(self) {
+            let error = QueryError.error(
+                type: .api,
+                message: nil,
+                errorDataMessage: NSLocalizedString("insufficient_quota_prompt", comment: "")
+            )
+            currentResult.promptURL = link()
+            currentResult.error = error
+            return (true, currentResult, error)
+        }
+
+        return (false, currentResult, nil)
+    }
+
+    /// Ensure that `result` is non-nil and return it.
+    private func ensureResult() -> QueryResult {
+        if let result {
+            return result
+        }
+        let newResult = QueryResult()
+        result = newResult
+        return newResult
     }
 }

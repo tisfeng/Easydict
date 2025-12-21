@@ -47,12 +47,13 @@ class AliService: QueryService {
         return true
     }
 
+    /// Translate text using the Aliyun API.
     override public func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let limit = 5000
         let text = String(text.prefix(limit))
 
@@ -60,20 +61,25 @@ class AliService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
-        requestByAPI(
-            id: aliAccessKeyId,
-            secret: aliAccessKeySecret,
-            transType: transType,
-            text: text,
-            from: from,
-            to: to,
-            completion: completion
-        )
+        return try await withCheckedThrowingContinuation { continuation in
+            requestByAPI(
+                id: aliAccessKeyId,
+                secret: aliAccessKeySecret,
+                transType: transType,
+                text: text,
+                from: from,
+                to: to
+            ) { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+        }
     }
 
     // MARK: Internal
@@ -206,19 +212,33 @@ class AliService: QueryService {
 
         param["Signature"] = signature
 
+        let currentResult = result ?? QueryResult()
+        if result == nil {
+            result = currentResult
+        }
+
         let request = AF.request("https://mt.aliyuncs.com", method: .post, parameters: param)
             .validate()
             .responseDecodable(of: AliAPIResponse.self) { [weak self] response in
-                guard let self, let result = result else { return }
+                guard let self else {
+                    completion(
+                        currentResult,
+                        QueryError.error(
+                            type: .unknown,
+                            message: "Service released before completing the request"
+                        )
+                    )
+                    return
+                }
 
                 switch response.result {
                 case let .success(value):
                     if let data = value.data, let translateText = data.translated {
-                        result.translatedResults = [translateText]
-                        completion(result, nil)
+                        currentResult.translatedResults = [translateText]
+                        completion(currentResult, nil)
                     } else {
                         completion(
-                            result,
+                            currentResult,
                             QueryError(type: .api, message: value.code?.stringValue, errorDataMessage: value.message)
                         )
                     }
@@ -231,7 +251,7 @@ class AliService: QueryService {
 
                     logError("Ali translate error: \(msg ?? "")")
                     completion(
-                        result,
+                        currentResult,
                         QueryError(type: .api, message: error.localizedDescription, errorDataMessage: msg)
                     )
                 }

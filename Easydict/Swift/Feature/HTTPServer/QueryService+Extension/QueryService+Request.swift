@@ -39,7 +39,9 @@ extension QueryService {
 
         if enablePrehandle {
             let (prehandled, result) = try await prehandleQueryText(
-                text: text, from: sourceLanguage, to: to
+                text,
+                from: sourceLanguage,
+                to: to
             )
             if prehandled {
                 logInfo("prehandled query text: \(text.prefix200)")
@@ -48,26 +50,5 @@ extension QueryService {
         }
 
         return try await translate(text, from: sourceLanguage, to: to)
-    }
-
-    func prehandleQueryText(
-        text: String,
-        from: Language,
-        to: Language
-    ) async throws
-        -> (Bool, QueryResult) {
-        try await withCheckedThrowingContinuation { continuation in
-            let isHandled = self.prehandleQueryText(text, from: from, to: to) { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: (true, result))
-                }
-            }
-
-            if !isHandled {
-                continuation.resume(returning: (false, QueryResult()))
-            }
-        }
     }
 }

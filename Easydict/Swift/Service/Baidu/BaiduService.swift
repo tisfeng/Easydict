@@ -149,15 +149,15 @@ final class BaiduService: QueryService {
         return orderedDict
     }
 
+    /// Translate text using the Baidu API.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         guard !text.isEmpty else {
-            completion(result, QueryError.error(type: .parameter, message: "翻译的文本为空"))
-            return
+            throw QueryError.error(type: .parameter, message: "翻译的文本为空")
         }
 
         let trimmedText = (text as NSString).ns_trimToMaxLength(5000) as String
@@ -165,63 +165,64 @@ final class BaiduService: QueryService {
         let fromCode = languageCode(forLanguage: from).map(Language.init(rawValue:)) ?? from
         let toCode = languageCode(forLanguage: to).map(Language.init(rawValue:)) ?? to
 
-        apiTranslate.translate(trimmedText, from: fromCode, to: toCode) { [weak self] result, error in
-            guard let self else { return }
-            completion(result ?? self.result, error)
-        }
-    }
-
-    override func detectText(
-        _ text: String,
-        completion: @escaping (Language, Error?) -> ()
-    ) {
-        guard !text.isEmpty else {
-            completion(.auto, QueryError.error(type: .parameter, message: "识别语言的文本为空"))
-            return
-        }
-
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let detectedLanguage = try await requestDetectedLanguage(for: text)
-                await MainActor.run {
-                    completion(detectedLanguage, nil)
+        return try await withCheckedThrowingContinuation { continuation in
+            apiTranslate.translate(trimmedText, from: fromCode, to: toCode) { [weak self] result, error in
+                guard let self else {
+                    continuation.resume(
+                        throwing: QueryError.error(
+                            type: .unknown,
+                            message: "Service released before completing the request"
+                        )
+                    )
+                    return
                 }
-            } catch {
-                let queryError = error as? QueryError
-                    ?? QueryError.error(type: .api, message: "判断语言失败")
-                await MainActor.run {
-                    completion(.auto, queryError)
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result ?? self.result ?? QueryResult())
                 }
             }
         }
     }
 
+    /// Detect language using the Baidu API.
+    @nonobjc
+    override func detectText(_ text: String) async throws -> Language {
+        guard !text.isEmpty else {
+            throw QueryError.error(type: .parameter, message: "识别语言的文本为空")
+        }
+
+        do {
+            let languge = try await requestDetectedLanguage(for: text)
+            return languge
+        } catch {
+            throw error as? QueryError ?? QueryError.error(type: .api, message: "判断语言失败")
+        }
+    }
+
+    /// Generate audio URL for Baidu TTS.
     override func textToAudio(
         _ text: String,
         fromLanguage: Language,
-        accent: String?,
-        completion: @escaping (String?, Error?) -> ()
-    ) {
+        accent: String?
+    ) async throws
+        -> String? {
         guard !text.isEmpty else {
-            completion(nil, QueryError.error(type: .parameter, message: "获取音频的文本为空"))
-            return
+            throw QueryError.error(type: .parameter, message: "获取音频的文本为空")
         }
 
         if fromLanguage == .auto {
-            detectText(text) { [weak self] detectedLanguage, error in
-                guard let self else { return }
-                if let error {
-                    completion(nil, error)
-                } else {
-                    let url = getAudioURL(with: text, langCode: getTTSLanguageCode(detectedLanguage, accent: accent))
-                    completion(url, nil)
-                }
-            }
-        } else {
-            let url = getAudioURL(with: text, langCode: getTTSLanguageCode(fromLanguage, accent: accent))
-            completion(url, nil)
+            let detectedLanguage = try await detectText(text)
+            return getAudioURL(
+                with: text,
+                langCode: getTTSLanguageCode(detectedLanguage, accent: accent)
+            )
         }
+
+        return getAudioURL(
+            with: text,
+            langCode: getTTSLanguageCode(fromLanguage, accent: accent)
+        )
     }
 
     override func getTTSLanguageCode(_ language: Language, accent: String?) -> String {
@@ -229,6 +230,53 @@ final class BaiduService: QueryService {
             return accent == "uk" ? "uk" : "en"
         }
         return super.getTTSLanguageCode(language, accent: accent)
+    }
+
+    // MARK: - OCR
+
+    override func ocr(
+        _ image: NSImage,
+        from: Language,
+        to: Language
+    ) async throws
+        -> EZOCRResult? {
+        try await performBaiduOCR(image, from: from, to: to)
+    }
+
+    override func ocrAndTranslate(
+        _ image: NSImage,
+        from: Language,
+        to: Language,
+        ocrSuccess: @escaping (EZOCRResult, Bool) -> ()
+    ) async throws
+        -> (EZOCRResult?, QueryResult?) {
+        guard let ocrResult = try await ocr(image, from: from, to: to) else {
+            return (nil, nil)
+        }
+
+        ocrSuccess(ocrResult, true)
+        let result = try await translate(ocrResult.mergedText, from: from, to: to)
+        return (ocrResult, result)
+    }
+
+    /// Detect language for Objective-C callers without creating nested async tasks.
+    override func detectText(
+        _ text: String,
+        completion: @escaping (Language, Error?) -> ()
+    ) {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let language = try await detectText(text)
+                await MainActor.run {
+                    completion(language, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(.auto, error)
+                }
+            }
+        }
     }
 
     func getAudioURL(with text: String, langCode: String) -> String {

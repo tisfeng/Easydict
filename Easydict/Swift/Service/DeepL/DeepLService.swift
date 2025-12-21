@@ -131,16 +131,27 @@ class DeepLService: QueryService {
 
     // MARK: - Translate
 
+    /// Translate text using DeepL API or web fallback.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, (any Error)?) -> ()
-    ) {
-        if apiType == .webFirst {
-            deepLWebTranslate(text, from: from, to: to, completion: completion)
-        } else {
-            deepLTranslate(text, from: from, to: to, completion: completion)
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await withCheckedThrowingContinuation { continuation in
+            let completion: (QueryResult, Error?) -> () = { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+
+            if apiType == .webFirst {
+                deepLWebTranslate(text, from: from, to: to, completion: completion)
+            } else {
+                deepLTranslate(text, from: from, to: to, completion: completion)
+            }
         }
     }
 

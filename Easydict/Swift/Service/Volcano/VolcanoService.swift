@@ -45,31 +45,30 @@ public final class VolcanoService: QueryService {
     }
 
     /// Volcano Translate API: https://www.volcengine.com/docs/4640/65067
+    /// Translate text using Volcano API.
     override public func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
-        guard let result = result else { return }
+        to: Language
+    ) async throws
+        -> QueryResult {
+        guard let result = result else {
+            return QueryResult()
+        }
 
         if let error = validateAPIKey(accessKeyID, keyType: "AccessKeyID") {
-            completion(result, error)
-            return
+            throw error
         }
 
         if let error = validateAPIKey(secretAccessKey, keyType: "SecretAccessKey") {
-            completion(result, error)
-            return
+            throw error
         }
 
         let transType = VolcanoTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
         let parameters: Parameters = [
@@ -97,58 +96,58 @@ public final class VolcanoService: QueryService {
 
         let afHost = host + uri + "?" + queryString
 
-        let request = AF.request(
-            afHost,
-            method: .post,
-            parameters: parameters,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-        .validate()
-        .responseDecodable(of: VolcanoResponse.self) { [weak self] response in
-            guard self != nil else { return }
-
-            switch response.result {
-            case let .success(volcanoResponse):
-                if let error = volcanoResponse.responseMetadata.error {
-                    let errorMessage = error.message
-                    logError("Volcano lookup error: \(errorMessage)")
-                    let queryError = QueryError(type: .api, message: errorMessage)
-                    completion(result, queryError)
-                } else if let translationList = volcanoResponse.translationList {
-                    result.translatedResults = translationList.map { $0.translation }
-                    completion(result, nil)
-                } else {
-                    let errorMessage = "Unexpected response format"
-                    logError("Volcano lookup error: \(errorMessage)")
-                    let queryError = QueryError(type: .unknown, message: errorMessage)
-                    completion(result, queryError)
-                }
-
-            case let .failure(error):
-                logError("Volcano lookup error: \(error)")
-
-                let errorMessage = error.localizedDescription
-                let queryError = QueryError(type: .api, message: errorMessage)
-
-                if let data = response.data {
-                    do {
-                        let errorResponse = try JSONDecoder().decode(
-                            VolcanoResponse.self, from: data
-                        )
-                        if let volcanoError = errorResponse.responseMetadata.error {
-                            queryError.errorDataMessage = volcanoError.message
-                        }
-                    } catch {
-                        logError("Failed to decode error response: \(error)")
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = AF.request(
+                afHost,
+                method: .post,
+                parameters: parameters,
+                encoding: JSONEncoding.default,
+                headers: headers
+            )
+            .validate()
+            .responseDecodable(of: VolcanoResponse.self) { response in
+                switch response.result {
+                case let .success(volcanoResponse):
+                    if let error = volcanoResponse.responseMetadata.error {
+                        let errorMessage = error.message
+                        logError("Volcano lookup error: \(errorMessage)")
+                        let queryError = QueryError(type: .api, message: errorMessage)
+                        continuation.resume(throwing: queryError)
+                    } else if let translationList = volcanoResponse.translationList {
+                        result.translatedResults = translationList.map { $0.translation }
+                        continuation.resume(returning: result)
+                    } else {
+                        let errorMessage = "Unexpected response format"
+                        logError("Volcano lookup error: \(errorMessage)")
+                        let queryError = QueryError(type: .unknown, message: errorMessage)
+                        continuation.resume(throwing: queryError)
                     }
+
+                case let .failure(error):
+                    logError("Volcano lookup error: \(error)")
+
+                    let errorMessage = error.localizedDescription
+                    let queryError = QueryError(type: .api, message: errorMessage)
+
+                    if let data = response.data {
+                        do {
+                            let errorResponse = try JSONDecoder().decode(
+                                VolcanoResponse.self, from: data
+                            )
+                            if let volcanoError = errorResponse.responseMetadata.error {
+                                queryError.errorDataMessage = volcanoError.message
+                            }
+                        } catch {
+                            logError("Failed to decode error response: \(error)")
+                        }
+                    }
+                    continuation.resume(throwing: queryError)
                 }
-                completion(result, queryError)
             }
+            queryModel.setStop({
+                request.cancel()
+            }, serviceType: serviceType().rawValue)
         }
-        queryModel.setStop({
-            request.cancel()
-        }, serviceType: serviceType().rawValue)
     }
 
     public override func configurationListItems() -> Any? {

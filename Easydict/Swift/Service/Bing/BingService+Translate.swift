@@ -66,7 +66,7 @@ extension BingService {
                     // canRetry is used to avoid recursive calls, code 205 only retry once.
                     if canRetry, needRetry {
                         canRetry = false
-                        translate(text, from: from, to: to, completion: completion)
+                        bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
                         return
                     }
                     canRetry = true

@@ -47,19 +47,18 @@ public final class CaiyunService: QueryService {
         }
     }
 
+    /// Translate text using the Caiyun API.
     public override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
         // Docs: https://docs.caiyunapp.com/lingocloud-api/
@@ -75,36 +74,51 @@ public final class CaiyunService: QueryService {
             "x-authorization": "token " + token,
         ]
 
-        let request = AF.request(
-            apiEndPoint,
-            method: .post,
-            parameters: parameters,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-        .validate()
-        .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
-            guard let self, let result = result else { return }
-
-            switch response.result {
-            case let .success(value):
-                result.translatedResults = value.target
-                completion(result, nil)
-            case let .failure(error):
-                logError("Caiyun lookup error \(error)")
-                let queryError = QueryError(type: .api, message: error.localizedDescription)
-                if let data = response.data {
-                    if let errorString = String(data: data, encoding: .utf8) {
-                        queryError.errorDataMessage = errorString
-                    }
-                }
-                completion(result, queryError)
-            }
+        let currentResult = result ?? QueryResult()
+        if result == nil {
+            result = currentResult
         }
 
-        queryModel.setStop({
-            request.cancel()
-        }, serviceType: serviceType().rawValue)
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = AF.request(
+                apiEndPoint,
+                method: .post,
+                parameters: parameters,
+                encoding: JSONEncoding.default,
+                headers: headers
+            )
+            .validate()
+            .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
+                guard let self else {
+                    continuation.resume(
+                        throwing: QueryError.error(
+                            type: .unknown,
+                            message: "Service released before completing the request"
+                        )
+                    )
+                    return
+                }
+
+                switch response.result {
+                case let .success(value):
+                    currentResult.translatedResults = value.target
+                    continuation.resume(returning: currentResult)
+                case let .failure(error):
+                    logError("Caiyun lookup error \(error)")
+                    let queryError = QueryError(type: .api, message: error.localizedDescription)
+                    if let data = response.data {
+                        if let errorString = String(data: data, encoding: .utf8) {
+                            queryError.errorDataMessage = errorString
+                        }
+                    }
+                    continuation.resume(throwing: queryError)
+                }
+            }
+
+            queryModel.setStop({
+                request.cancel()
+            }, serviceType: serviceType().rawValue)
+        }
     }
 
     // MARK: Private

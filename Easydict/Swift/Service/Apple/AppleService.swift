@@ -34,47 +34,52 @@ public class AppleService: QueryService {
         languageMapper.supportedLanguages.toMMOrderedDictionary()
     }
 
-    public override func detectText(
-        _ text: String, completion: @escaping (Language, (any Error)?) -> ()
-    ) {
-        let language = detectText(text)
-        completion(language, nil)
+    /// Detect language using Apple's language detection.
+    @nonobjc
+    public override func detectText(_ text: String) async throws -> Language {
+        let language = detectTextSync(text)
+        return language
     }
 
+    /// Detect language for Objective-C callers without spinning up a Task.
+    @objc
+    public override func detectText(
+        _ text: String,
+        completion: @escaping (Language, Error?) -> ()
+    ) {
+        completion(detectTextSync(text), nil)
+    }
+
+    /// Translate text using Apple translation services.
     public override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, (any Error)?) -> ()
-    ) {
-        Task {
-            do {
-                let result = try await translateAsync(
-                    text: text,
-                    from: from,
-                    to: to
-                )
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(self.result, error)
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await translateAsync(text: text, from: from, to: to)
+    }
+
+    /// Perform OCR using Apple's Vision-based engine.
+    public override func ocr(
+        _ image: NSImage,
+        from: Language,
+        to: Language
+    ) async throws
+        -> EZOCRResult? {
+        _ = to
+        return try await withCheckedThrowingContinuation { continuation in
+            ocrEnginee.recognizeText(
+                image: image,
+                language: from
+            ) { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
                 }
             }
         }
-    }
-
-    @objc
-    public override func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
-        let image = queryModel.ocrImage ?? NSImage()
-        let language = queryModel.queryFromLanguage
-
-        ocrEnginee.recognizeText(
-            image: image,
-            language: language,
-            completion: completion
-        )
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
@@ -113,9 +118,8 @@ public class AppleService: QueryService {
     }
 
     @objc
-    public func detectText(_ text: String) -> Language {
-        let detectedLanguage = languageDetector.detectLanguage(text: text)
-        return detectedLanguage
+    public func detectTextSync(_ text: String) -> Language {
+        languageDetector.detectLanguage(text: text)
     }
 
     /// Play text audio using system speech synthesizer

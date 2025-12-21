@@ -298,6 +298,19 @@ extension GoogleService {
         }
     }
 
+    /// Update the web app TKK value using async/await.
+    func updateWebAppTKK() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(), Error>) in
+            updateWebAppTKK { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            }
+        }
+    }
+
     // MARK: - GTX Translate
 
     /// GTX can only get translation and src language.

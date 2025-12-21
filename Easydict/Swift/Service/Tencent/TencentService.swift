@@ -60,19 +60,18 @@ public final class TencentService: QueryService {
         }
     }
 
+    /// Translate text using the Tencent API.
     override public func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
         // Use `Parameters` type alias, not `[String: Any]`
@@ -100,42 +99,44 @@ public final class TencentService: QueryService {
             secretKey: secretKey
         )
 
-        let request = AF.request(
-            endpoint,
-            method: .post,
-            parameters: parameters,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-        .validate()
-        .responseDecodable(of: TencentResponse.self) { [weak self] response in
-            guard let self, let result = result else { return }
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = AF.request(
+                endpoint,
+                method: .post,
+                parameters: parameters,
+                encoding: JSONEncoding.default,
+                headers: headers
+            )
+            .validate()
+            .responseDecodable(of: TencentResponse.self) { [weak self] response in
+                guard let self, let result = result else { return }
 
-            switch response.result {
-            case let .success(value):
-                result.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
-                completion(result, nil)
-            case let .failure(error):
-                logError("Tencent lookup error \(error)")
-                let queryError = QueryError(type: .api, message: error.localizedDescription)
+                switch response.result {
+                case let .success(value):
+                    result.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
+                    continuation.resume(returning: result)
+                case let .failure(error):
+                    logError("Tencent lookup error \(error)")
+                    let queryError = QueryError(type: .api, message: error.localizedDescription)
 
-                if let data = response.data {
-                    do {
-                        let errorResponse = try JSONDecoder().decode(
-                            TencentErrorResponse.self, from: data
-                        )
-                        queryError.errorDataMessage = errorResponse.response.error.message
-                    } catch {
-                        logError("Failed to decode error response: \(error)")
+                    if let data = response.data {
+                        do {
+                            let errorResponse = try JSONDecoder().decode(
+                                TencentErrorResponse.self, from: data
+                            )
+                            queryError.errorDataMessage = errorResponse.response.error.message
+                        } catch {
+                            logError("Failed to decode error response: \(error)")
+                        }
                     }
+                    continuation.resume(throwing: queryError)
                 }
-                completion(result, queryError)
             }
-        }
 
-        queryModel.setStop({
-            request.cancel()
-        }, serviceType: serviceType().rawValue)
+            queryModel.setStop({
+                request.cancel()
+            }, serviceType: serviceType().rawValue)
+        }
     }
 
     // MARK: Private

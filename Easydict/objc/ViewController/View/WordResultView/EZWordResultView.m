@@ -774,7 +774,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = result.copiedText;
 
         // For some special case, copied text language is not the queryTargetLanguage, like 龘, Youdao translate.
-        EZLanguage language = [EZAppleService.shared detectText:text];
+        EZLanguage language = [EZAppleService.shared detectTextSync:text];
         if ([result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }

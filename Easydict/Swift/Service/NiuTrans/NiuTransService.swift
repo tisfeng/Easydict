@@ -132,13 +132,22 @@ class NiuTransService: QueryService {
 
     // MARK: - Translate
 
+    /// Translate text using NiuTrans API.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, (any Error)?) -> ()
-    ) {
-        niuTransTranslate(text, from: from, to: to, completion: completion)
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await withCheckedThrowingContinuation { continuation in
+            niuTransTranslate(text, from: from, to: to) { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+        }
     }
 
     // MARK: Private

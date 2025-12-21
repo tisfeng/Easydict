@@ -146,29 +146,38 @@ class BingService: QueryService {
 
     // MARK: - Translate
 
+    /// Translate text using Bing APIs.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (QueryResult, (any Error)?) -> ()
-    ) {
-        bingTranslate(
-            text,
-            useDictQuery: isEnglishWordToChinese(text, from: from, to: to),
-            from: from,
-            to: to,
-            completion: completion
-        )
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await withCheckedThrowingContinuation { continuation in
+            bingTranslate(
+                text,
+                useDictQuery: isEnglishWordToChinese(text, from: from, to: to),
+                from: from,
+                to: to
+            ) { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+        }
     }
 
     // MARK: - Text to Audio
 
+    /// Generate audio URL using Bing TTS.
     override func textToAudio(
         _ text: String,
         fromLanguage from: Language,
-        accent: String?,
-        completion: @escaping (String?, (any Error)?) -> ()
-    ) {
+        accent: String?
+    ) async throws
+        -> String? {
         var language = from
         if from == .classicalChinese {
             language = .simplifiedChinese
@@ -183,30 +192,31 @@ class BingService: QueryService {
 
         // If file path already exists.
         if FileManager.default.fileExists(atPath: filePath) {
-            completion(filePath, nil)
-            return
+            return filePath
         }
 
         logInfo("Bing is fetching text audio: \(text)")
 
-        bingRequest.fetchTextToAudio(
-            text: text,
-            fromLanguage: language,
-            accent: accent
-        ) { audioData, error in
-            if let error = error {
-                completion(nil, error)
-                return
+        let audioData: Data? = try await withCheckedThrowingContinuation { continuation in
+            bingRequest.fetchTextToAudio(
+                text: text,
+                fromLanguage: language,
+                accent: accent
+            ) { data, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: data)
             }
-
-            guard let audioData = audioData else {
-                completion(nil, nil)
-                return
-            }
-
-            try? audioData.write(to: URL(fileURLWithPath: filePath))
-            completion(filePath, nil)
         }
+
+        guard let audioData else {
+            return nil
+        }
+
+        try? audioData.write(to: URL(fileURLWithPath: filePath))
+        return filePath
     }
 
     // MARK: - Internal Methods (for extension)

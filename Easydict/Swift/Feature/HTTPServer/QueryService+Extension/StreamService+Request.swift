@@ -48,7 +48,7 @@ extension StreamService {
             from = queryModel.detectedLanguage
         }
 
-        let (prehandled, result) = try await prehandleQueryText(text: text, from: from, to: to)
+        let (prehandled, result) = try await prehandleQueryText(text, from: from, to: to)
         if prehandled {
             logInfo("prehandled query text: \(text.prefix200)")
             if let error = result.error {
