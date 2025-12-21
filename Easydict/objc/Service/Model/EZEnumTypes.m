@@ -10,8 +10,6 @@
 #import "Easydict-Swift.h"
 #import "OrderedDictionary+Variadic.h"
 
-NSString *const EZServiceTypeKey = @"ServiceType";
-
 #pragma mark - EZServiceType
 NSString *const EZServiceTypeGoogle = @"Google";
 NSString *const EZServiceTypeBaidu = @"Baidu";

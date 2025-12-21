@@ -304,7 +304,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType windowType = [userInfo[UserInfoKey.windowType] integerValue];
-    NSString *serviceType = userInfo[EZServiceTypeKey];
+    NSString *serviceType = userInfo[UserInfoKey.serviceType];
     BOOL autoQuery = [userInfo[UserInfoKey.autoQuery] boolValue];
 
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
