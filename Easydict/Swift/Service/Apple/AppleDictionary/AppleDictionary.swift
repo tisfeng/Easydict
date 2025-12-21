@@ -16,9 +16,11 @@ private let kHTMLDictFilePath = "all_dict.html"
 
 // MARK: - AppleDictionary
 
+/// Query service that wraps Apple's built-in dictionaries.
+/// Marked as `@unchecked Sendable` because lookups are dispatched to background queues.
 @objc(EZAppleDictionary)
 @objcMembers
-class AppleDictionary: QueryService {
+class AppleDictionary: QueryService, @unchecked Sendable {
     // MARK: Lifecycle
 
     required init() {

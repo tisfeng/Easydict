@@ -137,7 +137,7 @@ public final class VolcanoService: QueryService {
             logError("Volcano lookup error: \(error)")
 
             let errorMessage = error.localizedDescription
-            var queryError = QueryError(type: .api, message: errorMessage)
+            let queryError = QueryError(type: .api, message: errorMessage)
 
             let response = await dataTask.response
 

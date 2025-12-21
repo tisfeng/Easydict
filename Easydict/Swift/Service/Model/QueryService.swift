@@ -20,8 +20,6 @@ open class QueryService: NSObject {
 
     // MARK: Open
 
-    // MARK: - Public properties
-
     open dynamic var uuid: String = ""
     open dynamic var enabled: Bool = true
 

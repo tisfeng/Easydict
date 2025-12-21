@@ -131,7 +131,7 @@ public final class TencentService: QueryService {
                 throw queryError
             }
 
-            var queryError = QueryError(type: .api, message: error.localizedDescription)
+            let queryError = QueryError(type: .api, message: error.localizedDescription)
             let response = await dataTask.response
 
             if let data = response.data {
