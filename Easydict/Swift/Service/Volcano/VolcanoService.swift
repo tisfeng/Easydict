@@ -96,57 +96,64 @@ public final class VolcanoService: QueryService {
 
         let afHost = host + uri + "?" + queryString
 
-        return try await withCheckedThrowingContinuation { continuation in
-            let request = AF.request(
-                afHost,
-                method: .post,
-                parameters: parameters,
-                encoding: JSONEncoding.default,
-                headers: headers
-            )
+        let request = AF.request(
+            afHost,
+            method: .post,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers
+        )
+
+        queryModel.setStop({
+            request.cancel()
+        }, serviceType: serviceType().rawValue)
+
+        let dataTask = request
             .validate()
-            .responseDecodable(of: VolcanoResponse.self) { response in
-                switch response.result {
-                case let .success(volcanoResponse):
-                    if let error = volcanoResponse.responseMetadata.error {
-                        let errorMessage = error.message
-                        logError("Volcano lookup error: \(errorMessage)")
-                        let queryError = QueryError(type: .api, message: errorMessage)
-                        continuation.resume(throwing: queryError)
-                    } else if let translationList = volcanoResponse.translationList {
-                        result.translatedResults = translationList.map { $0.translation }
-                        continuation.resume(returning: result)
-                    } else {
-                        let errorMessage = "Unexpected response format"
-                        logError("Volcano lookup error: \(errorMessage)")
-                        let queryError = QueryError(type: .unknown, message: errorMessage)
-                        continuation.resume(throwing: queryError)
+            .serializingDecodable(VolcanoResponse.self)
+
+        do {
+            let volcanoResponse = try await dataTask.value
+
+            if let error = volcanoResponse.responseMetadata.error {
+                let errorMessage = error.message
+                logError("Volcano lookup error: \(errorMessage)")
+                throw QueryError(type: .api, message: errorMessage)
+            }
+
+            if let translationList = volcanoResponse.translationList {
+                result.translatedResults = translationList.map { $0.translation }
+                return result
+            }
+
+            let errorMessage = "Unexpected response format"
+            logError("Volcano lookup error: \(errorMessage)")
+            throw QueryError(type: .unknown, message: errorMessage)
+        } catch {
+            if let queryError = error as? QueryError {
+                throw queryError
+            }
+
+            logError("Volcano lookup error: \(error)")
+
+            let errorMessage = error.localizedDescription
+            var queryError = QueryError(type: .api, message: errorMessage)
+
+            let response = await dataTask.response
+
+            if let data = response.data {
+                do {
+                    let errorResponse = try JSONDecoder().decode(
+                        VolcanoResponse.self, from: data
+                    )
+                    if let volcanoError = errorResponse.responseMetadata.error {
+                        queryError.errorDataMessage = volcanoError.message
                     }
-
-                case let .failure(error):
-                    logError("Volcano lookup error: \(error)")
-
-                    let errorMessage = error.localizedDescription
-                    let queryError = QueryError(type: .api, message: errorMessage)
-
-                    if let data = response.data {
-                        do {
-                            let errorResponse = try JSONDecoder().decode(
-                                VolcanoResponse.self, from: data
-                            )
-                            if let volcanoError = errorResponse.responseMetadata.error {
-                                queryError.errorDataMessage = volcanoError.message
-                            }
-                        } catch {
-                            logError("Failed to decode error response: \(error)")
-                        }
-                    }
-                    continuation.resume(throwing: queryError)
+                } catch {
+                    logError("Failed to decode error response: \(error)")
                 }
             }
-            queryModel.setStop({
-                request.cancel()
-            }, serviceType: serviceType().rawValue)
+            throw queryError
         }
     }
 

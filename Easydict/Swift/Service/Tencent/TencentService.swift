@@ -99,43 +99,53 @@ public final class TencentService: QueryService {
             secretKey: secretKey
         )
 
-        return try await withCheckedThrowingContinuation { continuation in
-            let request = AF.request(
-                endpoint,
-                method: .post,
-                parameters: parameters,
-                encoding: JSONEncoding.default,
-                headers: headers
-            )
+        let currentResult = result ?? QueryResult()
+        if result == nil {
+            result = currentResult
+        }
+
+        let request = AF.request(
+            endpoint,
+            method: .post,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers
+        )
+
+        queryModel.setStop({
+            request.cancel()
+        }, serviceType: serviceType().rawValue)
+
+        let dataTask = request
             .validate()
-            .responseDecodable(of: TencentResponse.self) { [weak self] response in
-                guard let self, let result = result else { return }
+            .serializingDecodable(TencentResponse.self)
 
-                switch response.result {
-                case let .success(value):
-                    result.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
-                    continuation.resume(returning: result)
-                case let .failure(error):
-                    logError("Tencent lookup error \(error)")
-                    let queryError = QueryError(type: .api, message: error.localizedDescription)
+        do {
+            let value = try await dataTask.value
+            currentResult.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
+            return currentResult
+        } catch {
+            logError("Tencent lookup error \(error)")
 
-                    if let data = response.data {
-                        do {
-                            let errorResponse = try JSONDecoder().decode(
-                                TencentErrorResponse.self, from: data
-                            )
-                            queryError.errorDataMessage = errorResponse.response.error.message
-                        } catch {
-                            logError("Failed to decode error response: \(error)")
-                        }
-                    }
-                    continuation.resume(throwing: queryError)
+            if let queryError = error as? QueryError {
+                throw queryError
+            }
+
+            var queryError = QueryError(type: .api, message: error.localizedDescription)
+            let response = await dataTask.response
+
+            if let data = response.data {
+                do {
+                    let errorResponse = try JSONDecoder().decode(
+                        TencentErrorResponse.self, from: data
+                    )
+                    queryError.errorDataMessage = errorResponse.response.error.message
+                } catch {
+                    logError("Failed to decode error response: \(error)")
                 }
             }
 
-            queryModel.setStop({
-                request.cancel()
-            }, serviceType: serviceType().rawValue)
+            throw queryError
         }
     }
 

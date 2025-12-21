@@ -79,45 +79,39 @@ public final class CaiyunService: QueryService {
             result = currentResult
         }
 
-        return try await withCheckedThrowingContinuation { continuation in
-            let request = AF.request(
-                apiEndPoint,
-                method: .post,
-                parameters: parameters,
-                encoding: JSONEncoding.default,
-                headers: headers
-            )
-            .validate()
-            .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
-                guard let self else {
-                    continuation.resume(
-                        throwing: QueryError.error(
-                            type: .unknown,
-                            message: "Service released before completing the request"
-                        )
-                    )
-                    return
-                }
+        let request = AF.request(
+            apiEndPoint,
+            method: .post,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers
+        )
 
-                switch response.result {
-                case let .success(value):
-                    currentResult.translatedResults = value.target
-                    continuation.resume(returning: currentResult)
-                case let .failure(error):
-                    logError("Caiyun lookup error \(error)")
-                    let queryError = QueryError(type: .api, message: error.localizedDescription)
-                    if let data = response.data {
-                        if let errorString = String(data: data, encoding: .utf8) {
-                            queryError.errorDataMessage = errorString
-                        }
-                    }
-                    continuation.resume(throwing: queryError)
-                }
+        queryModel.setStop({
+            request.cancel()
+        }, serviceType: serviceType().rawValue)
+
+        let dataTask = request
+            .validate()
+            .serializingDecodable(CaiyunResponse.self)
+
+        do {
+            let value = try await dataTask.value
+            currentResult.translatedResults = value.target
+            return currentResult
+        } catch {
+            if let queryError = error as? QueryError {
+                throw queryError
             }
 
-            queryModel.setStop({
-                request.cancel()
-            }, serviceType: serviceType().rawValue)
+            logError("Caiyun lookup error \(error)")
+            let queryError = QueryError(type: .api, message: error.localizedDescription)
+            let response = await dataTask.response
+            if let data = response.data,
+               let errorString = String(data: data, encoding: .utf8) {
+                queryError.errorDataMessage = errorString
+            }
+            throw queryError
         }
     }
 
