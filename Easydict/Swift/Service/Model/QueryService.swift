@@ -409,37 +409,14 @@ open class QueryService: NSObject {
         }
     }
 
-    /// Generate audio for the given text.
-    open func textToAudio(
-        _ text: String,
-        fromLanguage: Language
-    ) async throws
-        -> String? {
-        try await audioPlayer.defaultTTSService.textToAudio(text, fromLanguage: fromLanguage)
-
-//        try await withCheckedThrowingContinuation { continuation in
-//            audioPlayer.defaultTTSService.textToAudio(
-//                text,
-//                fromLanguage: fromLanguage
-//            ) { url, error in
-//                if let error {
-//                    continuation.resume(throwing: error)
-//                } else {
-//                    continuation.resume(returning: url)
-//                }
-//            }
-//        }
-    }
-
     /// Generate audio for the given text with an optional accent.
     open func textToAudio(
         _ text: String,
         fromLanguage: Language,
-        accent: String?
+        accent: String? = nil
     ) async throws
         -> String? {
-        _ = accent
-        return try await textToAudio(text, fromLanguage: fromLanguage)
+        try await audioPlayer.defaultTTSService.textToAudio(text, fromLanguage: fromLanguage, accent: accent)
     }
 
     /// Perform OCR for the given image.
