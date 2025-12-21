@@ -262,18 +262,18 @@ final class BaiduService: QueryService {
     /// Detect language for Objective-C callers without creating nested async tasks.
     override func detectText(
         _ text: String,
-        completion: @escaping (Language, Error?) -> ()
+        completionHandler: @escaping (Language, Error?) -> ()
     ) {
         Task { [weak self] in
             guard let self else { return }
             do {
                 let language = try await detectText(text)
                 await MainActor.run {
-                    completion(language, nil)
+                    completionHandler(language, nil)
                 }
             } catch {
                 await MainActor.run {
-                    completion(.auto, error)
+                    completionHandler(.auto, error)
                 }
             }
         }

@@ -233,11 +233,11 @@ class GoogleService: QueryService {
     /// Detect language for Objective-C callers without spawning a Task bridge.
     override func detectText(
         _ text: String,
-        completion: @escaping (Language, Error?) -> ()
+        completionHandler: @escaping (Language, Error?) -> ()
     ) {
         webAppDetect(text) { language, error in
             DispatchQueue.main.async {
-                completion(language, error)
+                completionHandler(language, error)
             }
         }
     }

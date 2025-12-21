@@ -140,7 +140,7 @@ class AppleDictionary: QueryService {
     /// Detect language for Objective-C callers using a direct lookup.
     override func detectText(
         _ text: String,
-        completion: @escaping (Language, Error?) -> ()
+        completionHandler: @escaping (Language, Error?) -> ()
     ) {
         let languageDict = TTTDictionary.languageToDictionaryNameMap
         let supportedLanguages = languageDict.allKeys() as? [Language] ?? []
@@ -148,11 +148,11 @@ class AppleDictionary: QueryService {
         if let matchedLanguage = supportedLanguages.first(where: {
             queryDictionary(forText: text, language: $0)
         }) {
-            completion(matchedLanguage, nil)
+            completionHandler(matchedLanguage, nil)
             return
         }
 
-        completion(.auto, nil)
+        completionHandler(.auto, nil)
     }
 
     /// Apple Dictionary does not support OCR.

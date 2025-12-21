@@ -100,7 +100,7 @@
         return;
     }
 
-    [self.appleService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
+    [self.appleService detectText:queryText completionHandler:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager.shared preferredLanguages] mutableCopy];
         LanguageDetectOptimize languageDetectOptimize = Configuration.shared.languageDetectOptimize;
 
@@ -118,7 +118,7 @@
         }
 
         void (^baiduDetectBlock)(NSString *) = ^(NSString *queryText) {
-            [self.baiduService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
+            [self.baiduService detectText:queryText completionHandler:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
                 EZLanguage detectedLanguage = appleDetectdedLanguage;
                 if (!error) {
                     detectedLanguage = language;
@@ -136,7 +136,7 @@
         }
 
         if (languageDetectOptimize == LanguageDetectOptimizeGoogle) {
-            [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
+            [self.googleService detectText:queryText completionHandler:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
                 if (!error) {
                     MMLogInfo(@"google detected: %@", language);
                     [self handleDetectedLanguage:language error:error completion:completion];
@@ -172,7 +172,7 @@
         return;
     }
 
-    [self.ocrService ocr:self.queryModel completion:completion];
+    [self.ocrService ocr:self.queryModel completionHandler:completion];
 }
 
 /// If not designated ocr language, after ocr, we use detected language to ocr again.
@@ -216,7 +216,7 @@
                 return;
             }
 
-            [self.ocrService ocr:queryModel completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+            [self.ocrService ocr:queryModel completionHandler:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
                 [self handleOCRResult:ocrResult error:error completion:completion];
             }];
         }];
@@ -234,7 +234,7 @@
      */
 
     if (Configuration.shared.enableYoudaoOCR) {
-        [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
+        [self.youdaoService ocr:self.queryModel completionHandler:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
             if (!youdaoOCRError) {
                 completion(youdaoOCRResult, nil);
             } else {

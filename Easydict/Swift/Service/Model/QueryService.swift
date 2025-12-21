@@ -188,7 +188,6 @@ open class QueryService: NSObject {
     }
 
     /// Starts a query using async/await and returns the final result.
-    @nonobjc
     open func startQuery(_ queryModel: EZQueryModel) async throws -> QueryResult {
         self.queryModel = queryModel
 
@@ -209,7 +208,6 @@ open class QueryService: NSObject {
     }
 
     /// Starts a query using async stream and yields incremental results.
-    @nonobjc
     open func startQueryStream(_ queryModel: EZQueryModel)
         -> AsyncThrowingStream<QueryResult, Error> {
         AsyncThrowingStream { [weak self] continuation in
@@ -260,38 +258,6 @@ open class QueryService: NSObject {
                         continuation.yield(errorResult)
                     }
                     continuation.finish(throwing: error)
-                }
-            }
-        }
-    }
-
-    /// Starts a query with completion callbacks for Objective-C callers.
-    open func startQuery(
-        _ queryModel: EZQueryModel,
-        completion: @escaping (QueryResult, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            var didYieldError = false
-
-            do {
-                for try await result in startQueryStream(queryModel) {
-                    if result.error != nil {
-                        didYieldError = true
-                    }
-                    await MainActor.run {
-                        completion(result, result.error)
-                    }
-                }
-            } catch {
-                if !didYieldError {
-                    let errorResult = ensureResult()
-                    if errorResult.error == nil {
-                        errorResult.error = QueryError.queryError(from: error)
-                    }
-                    await MainActor.run {
-                        completion(errorResult, error)
-                    }
                 }
             }
         }
@@ -426,46 +392,46 @@ open class QueryService: NSObject {
     /// Detect the language of the given text using completion callbacks.
     open func detectText(
         _ text: String,
-        completion: @escaping (Language, Error?) -> ()
+        completionHandler: @escaping (Language, Error?) -> ()
     ) {
         Task { [weak self] in
             guard let self else { return }
             do {
                 let language = try await detectText(text)
                 await MainActor.run {
-                    completion(language, nil)
+                    completionHandler(language, nil)
                 }
             } catch {
                 await MainActor.run {
-                    completion(.auto, error)
+                    completionHandler(.auto, error)
                 }
             }
         }
     }
 
     /// Generate audio for the given text.
-    @nonobjc
     open func textToAudio(
         _ text: String,
         fromLanguage: Language
     ) async throws
         -> String? {
-        try await withCheckedThrowingContinuation { continuation in
-            audioPlayer.defaultTTSService.textToAudio(
-                text,
-                fromLanguage: fromLanguage
-            ) { url, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: url)
-                }
-            }
-        }
+        try await audioPlayer.defaultTTSService.textToAudio(text, fromLanguage: fromLanguage)
+
+//        try await withCheckedThrowingContinuation { continuation in
+//            audioPlayer.defaultTTSService.textToAudio(
+//                text,
+//                fromLanguage: fromLanguage
+//            ) { url, error in
+//                if let error {
+//                    continuation.resume(throwing: error)
+//                } else {
+//                    continuation.resume(returning: url)
+//                }
+//            }
+//        }
     }
 
     /// Generate audio for the given text with an optional accent.
-    @nonobjc
     open func textToAudio(
         _ text: String,
         fromLanguage: Language,
@@ -476,55 +442,7 @@ open class QueryService: NSObject {
         return try await textToAudio(text, fromLanguage: fromLanguage)
     }
 
-    /// Generate audio using completion callbacks for Objective-C callers.
-    open func textToAudio(
-        _ text: String,
-        fromLanguage: Language,
-        completion: @escaping (String?, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let url = try await textToAudio(text, fromLanguage: fromLanguage)
-                await MainActor.run {
-                    completion(url, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
-    /// Generate audio with an accent using completion callbacks for Objective-C callers.
-    open func textToAudio(
-        _ text: String,
-        fromLanguage: Language,
-        accent: String?,
-        completion: @escaping (String?, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let url = try await textToAudio(
-                    text,
-                    fromLanguage: fromLanguage,
-                    accent: accent
-                )
-                await MainActor.run {
-                    completion(url, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
     /// Perform OCR for the given image.
-    @nonobjc
     open dynamic func ocr(
         _ image: NSImage,
         from: Language,
@@ -535,7 +453,6 @@ open class QueryService: NSObject {
     }
 
     /// Perform OCR for the given query model.
-    @nonobjc
     open func ocr(_ queryModel: EZQueryModel) async throws -> EZOCRResult? {
         guard let image = queryModel.ocrImage else {
             throw QueryError.error(type: .parameter, message: "Image is nil")
@@ -547,48 +464,6 @@ open class QueryService: NSObject {
         )
     }
 
-    /// Perform OCR using completion callbacks for Objective-C callers.
-    open dynamic func ocr(
-        _ image: NSImage,
-        from: Language,
-        to: Language,
-        completion: @escaping (EZOCRResult?, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let result = try await ocr(image, from: from, to: to)
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
-    /// Perform OCR using completion callbacks for Objective-C callers.
-    open func ocr(
-        _ queryModel: EZQueryModel,
-        completion: @escaping (EZOCRResult?, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let result = try await ocr(queryModel)
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
     /// Perform OCR and translation with an intermediate OCR callback.
     open dynamic func ocrAndTranslate(
         _ image: NSImage,
@@ -598,34 +473,6 @@ open class QueryService: NSObject {
     ) async throws
         -> (EZOCRResult?, QueryResult?) {
         fatalError("You must override \(#function) in a subclass.")
-    }
-
-    /// Perform OCR and translation using completion callbacks for Objective-C callers.
-    open dynamic func ocrAndTranslate(
-        _ image: NSImage,
-        from: Language,
-        to: Language,
-        ocrSuccess: @escaping (EZOCRResult, Bool) -> (),
-        completion: @escaping (EZOCRResult?, QueryResult?, Error?) -> ()
-    ) {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let (ocrResult, queryResult) = try await ocrAndTranslate(
-                    image,
-                    from: from,
-                    to: to,
-                    ocrSuccess: ocrSuccess
-                )
-                await MainActor.run {
-                    completion(ocrResult, queryResult, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, nil, error)
-                }
-            }
-        }
     }
 
     // MARK: Private

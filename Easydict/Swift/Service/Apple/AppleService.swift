@@ -45,9 +45,9 @@ public class AppleService: QueryService {
     @objc
     public override func detectText(
         _ text: String,
-        completion: @escaping (Language, Error?) -> ()
+        completionHandler: @escaping (Language, Error?) -> ()
     ) {
-        completion(detectTextSync(text), nil)
+        completionHandler(detectTextSync(text), nil)
     }
 
     /// Translate text using Apple translation services.
