@@ -32,7 +32,7 @@ private class DisabledAppViewModel: ObservableObject {
     }
 
     func fetchDisabledApps() {
-        let allAppModelList = EZLocalStorage.shared().selectTextTypeAppModelList
+        let allAppModelList = LocalStorage.shared().selectTextTypeAppModelList
 
         appModelList = allAppModelList.compactMap { appModel in
             let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appModel.appBundleID)
@@ -41,7 +41,7 @@ private class DisabledAppViewModel: ObservableObject {
     }
 
     func saveDisabledApps() {
-        EZLocalStorage.shared().selectTextTypeAppModelList = appModelList
+        LocalStorage.shared().selectTextTypeAppModelList = appModelList
     }
 
     func removeDisabledApp() {

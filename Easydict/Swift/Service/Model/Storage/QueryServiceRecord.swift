@@ -8,7 +8,6 @@
 
 import Foundation
 
-@objc(EZQueryServiceRecord)
 public class QueryServiceRecord: NSObject {
     // MARK: Lifecycle
 

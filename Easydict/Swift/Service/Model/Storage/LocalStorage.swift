@@ -1,5 +1,5 @@
 //
-//  EZLocalStorage.swift
+//  LocalStorage.swift
 //  Easydict
 //
 //  Created by tisfeng on 2022/11/22.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-// MARK: - EZLocalStorage
+// MARK: - LocalStorage
 
 /// Local persistence layer for service metadata and usage stats.
 @objc(EZLocalStorage)
 @objcMembers
-final class EZLocalStorage: NSObject {
+final class LocalStorage: NSObject {
     // MARK: Lifecycle
 
     private override init() {
@@ -61,11 +61,11 @@ final class EZLocalStorage: NSObject {
 
     /// Shared storage instance matching the Objective-C API.
     @objc(shared)
-    static func shared() -> EZLocalStorage {
+    static func shared() -> LocalStorage {
         if let instance = sharedInstance {
             return instance
         }
-        let instance = EZLocalStorage()
+        let instance = LocalStorage()
         sharedInstance = instance
         return instance
     }
@@ -137,12 +137,17 @@ final class EZLocalStorage: NSObject {
     ///   - windowType: Target window type.
     /// - Returns: Persisted service info when available.
     @objc(serviceInfoWithType:serviceId:windowType:)
-    func serviceInfo(withType type: ServiceType, serviceId: String, windowType: EZWindowType) -> EZServiceInfo? {
+    func serviceInfo(
+        withType type: ServiceType,
+        serviceId: String,
+        windowType: EZWindowType
+    )
+        -> QueryServiceConfiguration? {
         guard let data = storedServiceInfoData(type: type, serviceId: serviceId, windowType: windowType) else {
             return nil
         }
 
-        if let info = try? decoder.decode(EZServiceInfo.self, from: data) {
+        if let info = try? decoder.decode(QueryServiceConfiguration.self, from: data) {
             return normalized(info, fallbackType: type, serviceId: serviceId, windowType: windowType)
         }
 
@@ -163,7 +168,7 @@ final class EZLocalStorage: NSObject {
     ///   - serviceInfo: Service info to persist.
     ///   - windowType: Target window type.
     @objc(setServiceInfo:windowType:)
-    func setServiceInfo(_ serviceInfo: EZServiceInfo, windowType: EZWindowType) {
+    func setServiceInfo(_ serviceInfo: QueryServiceConfiguration, windowType: EZWindowType) {
         let normalizedInfo = normalized(
             serviceInfo,
             fallbackType: serviceInfo.type,
@@ -189,7 +194,7 @@ final class EZLocalStorage: NSObject {
     ///   - windowType: Target window type.
     @objc(setService:windowType:)
     func setService(_ service: QueryService, windowType: EZWindowType) {
-        let serviceInfo = EZServiceInfo.serviceInfo(with: service)
+        let serviceInfo = QueryServiceConfiguration.serviceInfo(with: service)
         setServiceInfo(serviceInfo, windowType: windowType)
     }
 
@@ -201,13 +206,14 @@ final class EZLocalStorage: NSObject {
     ///   - windowType: Target window type.
     @objc(setEnabledQuery:serviceType:serviceId:windowType:)
     func setEnabledQuery(_ enabledQuery: Bool, serviceType: ServiceType, serviceId: String, windowType: EZWindowType) {
-        let info = serviceInfo(withType: serviceType, serviceId: serviceId, windowType: windowType) ?? EZServiceInfo(
-            uuid: serviceId,
-            type: serviceType,
-            enabled: true,
-            enabledQuery: enabledQuery,
-            windowType: windowType
-        )
+        let info = serviceInfo(withType: serviceType, serviceId: serviceId, windowType: windowType) ??
+            QueryServiceConfiguration(
+                uuid: serviceId,
+                type: serviceType,
+                enabled: true,
+                enabledQuery: enabledQuery,
+                windowType: windowType
+            )
 
         info.enabledQuery = enabledQuery
         setServiceInfo(info, windowType: windowType)
@@ -271,7 +277,7 @@ final class EZLocalStorage: NSObject {
 
     // MARK: Private
 
-    private static var sharedInstance: EZLocalStorage?
+    private static var sharedInstance: LocalStorage?
 
     private let userDefaults = UserDefaults.standard
     private let encoder = JSONEncoder()
@@ -301,7 +307,7 @@ final class EZLocalStorage: NSObject {
                 let baseType = ServiceType(rawValue: rawType)
 
                 if serviceInfo(withType: baseType, serviceId: uuid, windowType: windowType) == nil {
-                    let serviceInfo = EZServiceInfo(
+                    let serviceInfo = QueryServiceConfiguration(
                         uuid: uuid,
                         type: baseType,
                         enabled: true,
@@ -468,7 +474,7 @@ final class EZLocalStorage: NSObject {
         serviceId: String,
         windowType: EZWindowType
     )
-        -> EZServiceInfo? {
+        -> QueryServiceConfiguration? {
         guard let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return nil
         }
@@ -479,7 +485,7 @@ final class EZLocalStorage: NSObject {
         let enabledQuery = jsonObject["enabledQuery"] as? Bool ?? true
         let windowValue = jsonObject["windowType"] as? Int ?? windowType.rawValue
 
-        let info = EZServiceInfo(
+        let info = QueryServiceConfiguration(
             uuid: legacyUUID,
             type: ServiceType(rawValue: typeRaw),
             enabled: enabled,
@@ -498,16 +504,16 @@ final class EZLocalStorage: NSObject {
     ///   - windowType: Window scope to apply.
     /// - Returns: Normalized service info.
     private func normalized(
-        _ info: EZServiceInfo,
+        _ info: QueryServiceConfiguration,
         fallbackType: ServiceType,
         serviceId: String,
         windowType: EZWindowType
     )
-        -> EZServiceInfo {
+        -> QueryServiceConfiguration {
         let baseType = baseServiceType(from: info.type)
         let normalizedUUID = info.uuid.isEmpty ? serviceId : info.uuid
 
-        let normalizedInfo = EZServiceInfo(
+        let normalizedInfo = QueryServiceConfiguration(
             uuid: normalizedUUID,
             type: baseType,
             enabled: info.enabled,

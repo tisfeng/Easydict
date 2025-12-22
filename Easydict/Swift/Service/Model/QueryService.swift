@@ -54,7 +54,7 @@ open class QueryService: NSObject {
         get { storedEnabledQuery }
         set {
             storedEnabledQuery = newValue
-            EZLocalStorage.shared().setEnabledQuery(
+            LocalStorage.shared().setEnabledQuery(
                 newValue,
                 serviceType: serviceType(),
                 serviceId: uuid,
@@ -593,7 +593,7 @@ open class QueryService: NSObject {
         // Free quota check for services requiring private API key.
         if needPrivateAPIKey(),
            !hasPrivateAPIKey(),
-           !EZLocalStorage.shared().hasFreeQuotaLeft(self) {
+           !LocalStorage.shared().hasFreeQuotaLeft(self) {
             let error = QueryError.error(
                 type: .api,
                 message: nil,

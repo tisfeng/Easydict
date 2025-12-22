@@ -88,7 +88,7 @@ private class ServiceTabViewModel: ObservableObject {
 
     init(windowType: EZWindowType = .fixed) {
         self.windowType = windowType
-        self.services = EZLocalStorage.shared().allServices(windowType)
+        self.services = LocalStorage.shared().allServices(windowType)
     }
 
     // MARK: Internal
@@ -106,7 +106,7 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func updateServices() {
-        services = EZLocalStorage.shared().allServices(windowType)
+        services = LocalStorage.shared().allServices(windowType)
 
         let isSelectedExist =
             services
@@ -124,7 +124,7 @@ private class ServiceTabViewModel: ObservableObject {
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
         let serviceTypes = services.map { $0.serviceTypeWithUniqueIdentifier() }
-        EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
+        LocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
         updateServices()
@@ -256,7 +256,7 @@ private class ServiceItemViewModel: ObservableObject {
     /// Update service enabled status, and post update service notification.
     private func updateServiceStatus(enabled: Bool) {
         service.enabled = enabled
-        EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+        LocalStorage.shared().setService(service, windowType: viewModel.windowType)
         viewModel.postUpdateServiceNotification()
     }
 }

@@ -1,5 +1,5 @@
 //
-//  EZServiceInfo.swift
+//  QueryServiceConfiguration.swift
 //  Easydict
 //
 //  Created by tisfeng on 2022/11/22.
@@ -8,9 +8,7 @@
 import Foundation
 
 /// Stores persisted metadata for a query service, such as enablement and target window type.
-@objc(EZServiceInfo)
-@objcMembers
-final class EZServiceInfo: NSObject, Codable {
+final class QueryServiceConfiguration: NSObject, Codable {
     // MARK: Lifecycle
 
     /// Creates a new service info instance.
@@ -67,8 +65,8 @@ final class EZServiceInfo: NSObject, Codable {
     /// - Parameter service: Source query service.
     /// - Returns: Populated service info instance.
     @objc(serviceInfoWithService:)
-    static func serviceInfo(with service: QueryService) -> EZServiceInfo {
-        EZServiceInfo(
+    static func serviceInfo(with service: QueryService) -> QueryServiceConfiguration {
+        QueryServiceConfiguration(
             uuid: service.uuid,
             type: service.serviceType(),
             enabled: service.enabled,
