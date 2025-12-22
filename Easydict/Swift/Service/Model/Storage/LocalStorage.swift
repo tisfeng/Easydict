@@ -237,7 +237,7 @@ final class LocalStorage: NSObject {
                 "level": "\(newLevel)",
                 "title": levelTitle,
             ]
-            EZLog.logEvent(withName: "query_count", parameters: dict)
+            AnalyticsService.logEvent(withName: "query_count", parameters: dict)
         }
 
         queryCount = newCount
@@ -255,7 +255,7 @@ final class LocalStorage: NSObject {
         record.queryCharacterCount += queryLength
         setQueryServiceRecord(record, serviceType: serviceType)
 
-        EZLog.logQueryService(service)
+        AnalyticsService.logQueryService(service)
     }
 
     /// Checks whether a service has free quota left for the current user.

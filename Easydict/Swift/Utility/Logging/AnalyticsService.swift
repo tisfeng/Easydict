@@ -1,5 +1,5 @@
 //
-//  EZLog.swift
+//  AnalyticsService.swift
 //  Easydict
 //
 //  Created by tisfeng on 2025/12/22.
@@ -12,9 +12,9 @@ import Foundation
 import Sentry
 
 /// Provides analytics and crash logging utilities.
-@objc(EZLog)
+@objc(EZAnalyticsService)
 @objcMembers
-final class EZLog: NSObject {
+final class AnalyticsService: NSObject {
     // MARK: Internal
 
     /// Configures crash logging services in non-debug builds.

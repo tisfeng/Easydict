@@ -59,7 +59,7 @@ extension Configuration {
                 "window_type": windowType.rawValue,
             ] as [String: Any]
 
-        EZLog.logEvent(withName: "intelligent_query_mode", parameters: parameters)
+        AnalyticsService.logEvent(withName: "intelligent_query_mode", parameters: parameters)
     }
 
     func intelligentQueryModeForWindowType(_ windowType: EZWindowType) -> Bool {

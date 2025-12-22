@@ -124,7 +124,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)viewWillAppear {
     [super viewWillAppear];
 
-    [EZLog logWindowAppear:self.windowType];
+    [EZAnalyticsService logWindowAppear:self.windowType];
 }
 
 
@@ -521,7 +521,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             @"detectedLanguage" : queryModel.detectedLanguage,
             @"actionType" : actionType,
         };
-        [EZLog logEventWithName:@"ocr" parameters:dict];
+        [EZAnalyticsService logEventWithName:@"ocr" parameters:dict];
 
 
         if (actionType == EZActionTypeScreenshotOCR) {
@@ -1455,7 +1455,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 @"autoDetect" : detectedLanguage,
                 @"userSelect" : language,
             };
-            [EZLog logEventWithName:@"change_detected_language" parameters:dict];
+            [EZAnalyticsService logEventWithName:@"change_detected_language" parameters:dict];
         }
     }];
 

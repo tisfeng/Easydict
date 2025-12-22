@@ -276,7 +276,7 @@ struct GeneralTab: View {
     }
 
     private func logSettings(_ parameters: [String: Any]) {
-        EZLog.logEvent(withName: "settings", parameters: parameters)
+        AnalyticsService.logEvent(withName: "settings", parameters: parameters)
     }
 }
 
