@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EZQueryModel.h"
+
+@class EZQueryModel;
 
 NS_ASSUME_NONNULL_BEGIN
 

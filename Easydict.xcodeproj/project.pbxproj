@@ -16,7 +16,6 @@
 		0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
-		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
 		030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */; };
 		030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 030D612D2CD9BBC3000DF298 /* Package.resolved */; };
@@ -295,6 +294,7 @@
 		03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B63ABE2A86967800E155ED /* CoreServices.framework */; };
 		03B73F7B2D9C51580051CB74 /* ChineseDetection+Poetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B73F7A2D9C51580051CB74 /* ChineseDetection+Poetry.swift */; };
 		03B73F7D2D9C51700051CB74 /* ChineseDetection+Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B73F7C2D9C51700051CB74 /* ChineseDetection+Lyrics.swift */; };
+		03B877562EF9A51F00B5ED68 /* EZQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B877552EF9A51F00B5ED68 /* EZQueryModel.swift */; };
 		03BA35C42C520058007BF100 /* AppleDictionary+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BA35C32C520058007BF100 /* AppleDictionary+Translate.swift */; };
 		03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DE229F5772F00447EDD /* EZAudioButton.m */; };
 		03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */; };
@@ -564,8 +564,6 @@
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
 		0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZGetViewController.m"; sourceTree = "<group>"; };
-		0309E1F2292BD6A100AFB76A /* EZQueryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryModel.h; sourceTree = "<group>"; };
-		0309E1F3292BD6A100AFB76A /* EZQueryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryModel.m; sourceTree = "<group>"; };
 		030D61242CD9B905000DF298 /* AcknowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowListView.swift; sourceTree = "<group>"; };
 		030D612B2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pods-Easydict-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Easydict/Pods-Easydict-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		030D612D2CD9BBC3000DF298 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; name = Package.resolved; path = Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = SOURCE_ROOT; };
@@ -896,6 +894,7 @@
 		03B63ABE2A86967800E155ED /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		03B73F7A2D9C51580051CB74 /* ChineseDetection+Poetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Poetry.swift"; sourceTree = "<group>"; };
 		03B73F7C2D9C51700051CB74 /* ChineseDetection+Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Lyrics.swift"; sourceTree = "<group>"; };
+		03B877552EF9A51F00B5ED68 /* EZQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZQueryModel.swift; sourceTree = "<group>"; };
 		03BA35C32C520058007BF100 /* AppleDictionary+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleDictionary+Translate.swift"; sourceTree = "<group>"; };
 		03BB2DE129F5772F00447EDD /* EZAudioButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioButton.h; sourceTree = "<group>"; };
 		03BB2DE229F5772F00447EDD /* EZAudioButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioButton.m; sourceTree = "<group>"; };
@@ -1274,15 +1273,6 @@
 				0309E1EC292B439A00AFB76A /* EZTextView.m */,
 			);
 			path = TextView;
-			sourceTree = "<group>";
-		};
-		0309E1F1292BD67E00AFB76A /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				0309E1F2292BD6A100AFB76A /* EZQueryModel.h */,
-				0309E1F3292BD6A100AFB76A /* EZQueryModel.m */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		030D61262CD9BA0F000DF298 /* AcknowListView */ = {
@@ -2062,7 +2052,6 @@
 				03B0225029231FA6001C7E63 /* Window */,
 				03B0225A29231FA6001C7E63 /* View */,
 				03B0225529231FA6001C7E63 /* Cell */,
-				0309E1F1292BD67E00AFB76A /* Model */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -3269,6 +3258,7 @@
 		EA9943E12B534C2900EE7B97 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				03B877552EF9A51F00B5ED68 /* EZQueryModel.swift */,
 				035179172EF301C20054C985 /* AppTriggerConfig.swift */,
 				0340D39D2C951850004C9910 /* QueryError.swift */,
 				033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */,
@@ -3825,7 +3815,6 @@
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */,
 				DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */,
-				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
@@ -4051,6 +4040,7 @@
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
 				9627F9392B59956800B1E999 /* KeyHolderWrapper.swift in Sources */,
 				035FB78F2ED6023900F3EB27 /* NSButton+Extension.swift in Sources */,
+				03B877562EF9A51F00B5ED68 /* EZQueryModel.swift in Sources */,
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
 				0320411C2E44989D0065A05B /* PoetryStatistics.swift in Sources */,
 				03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */,
