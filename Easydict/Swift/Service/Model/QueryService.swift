@@ -186,6 +186,8 @@ open class QueryService: NSObject {
     }
 
     /// Starts a query using async/await and returns the final result.
+    ///
+    /// - NOTE: This function only returns the final result. For incremental results, use `startQueryStream(_:)`.
     open func startQuery(_ queryModel: EZQueryModel) async throws -> QueryResult {
         self.queryModel = queryModel
 
@@ -206,6 +208,8 @@ open class QueryService: NSObject {
     }
 
     /// Starts a query and reports incremental results on the main thread.
+    ///
+    /// - NOTE: The completionHandler will be called many time for stream service.
     open func startQueryStream(
         _ queryModel: EZQueryModel,
         completionHandler: @escaping (QueryResult, Error?) -> ()

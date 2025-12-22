@@ -855,7 +855,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self updateCellWithResult:result reloadData:YES];
 
         if (service.autoCopyTranslatedTextBlock) {
-            service.autoCopyTranslatedTextBlock(result, error);
+            BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
+            if (shouldAutoCopy) {
+                service.autoCopyTranslatedTextBlock(result, error);
+            }
         }
     }];
 }
