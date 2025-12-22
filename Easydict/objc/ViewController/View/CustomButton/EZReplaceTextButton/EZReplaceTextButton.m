@@ -8,7 +8,6 @@
 #import "EZReplaceTextButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "EZLog.h"
 #import "Easydict-Swift.h"
 
 @import SelectedTextKit;

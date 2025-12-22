@@ -15,7 +15,6 @@
 #import "EZCoordinateUtils.h"
 #import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
-#import "EZLog.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"
 #import "EZToast.h"

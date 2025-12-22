@@ -11,7 +11,6 @@
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
 #import "EZCoordinateUtils.h"
-#import "EZLog.h"
 #import "Easydict-Swift.h"
 
 @interface EZWindowManager ()

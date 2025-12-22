@@ -89,13 +89,15 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 |---------|----------|----------|------|
 | 字符串布局 | - | String+Layout | ✅ |
 | 颜色扩展 | NSColor+... | NSColor+... | ✅ |
+| Logging | EZLog | EZLog.swift | ✅ |
+| Device Info | EZDeviceSystemInfo | EZDeviceSystemInfo.swift | ✅ |
 
 ### 📊 迁移统计
 
 - **翻译服务**: 6/13 已完成 (46%)
 - **AI 服务**: 14/14 已完成 (100%)
 - **基础设施**: 10/10 已完成 (100%)
-- **工具扩展**: 3/15 已完成 (20%)
+- **工具扩展**: 5/15 已完成 (33%)
 
 ## ✅ 已完成迁移
 
@@ -191,6 +193,15 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - Added Swift implementation in `Swift/Service/Model/EZQueryResult.swift`.
   - Removed Objective-C `EZQueryResult.h/.m` and updated ObjC headers to forward declarations.
   - Updated project references to use the Swift implementation.
+
+### 2025-12-22: EZLog and EZDeviceSystemInfo Migration
+
+- **Goal**: Migrate EZLog and EZDeviceSystemInfo to Swift utilities.
+- **Status**: ✅ Completed
+- **Outcome**:
+  - Added `Swift/Utility/Logging/EZLog.swift` and `Swift/Utility/DeviceInfo/EZDeviceSystemInfo.swift`.
+  - Updated ObjC call sites to import `Easydict-Swift.h`.
+  - Removed legacy ObjC sources from the build phase.
 
 ## 📋 待迁移列表
 
@@ -319,4 +330,4 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 ---
 
-*最后更新: 2025-12-18*
+*最后更新: 2025-12-22*

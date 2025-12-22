@@ -378,7 +378,6 @@
 		03D5C4C82D9D1EE70054D0D4 /* TextAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */; };
 		03D5C4CA2D9D455E0054D0D4 /* ChineseDetection+Prose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */; };
 		03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */; };
-		03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
 		03D90BC62E22A4A2005C1BBB /* ocr-pl-text-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */; };
 		03D90F8F2CCA451200EE4E84 /* WindowConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D90F8E2CCA451200EE4E84 /* WindowConfigurationView.swift */; };
@@ -405,7 +404,6 @@
 		03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F12DB1F5F000268DF0 /* SliderCell.swift */; };
 		03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F42DB21EC200268DF0 /* Double+String.swift */; };
 		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
-		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */; };
 		03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
@@ -488,6 +486,8 @@
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */; };
 		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
+		A2016EDA90ED45B5B66FA986 /* EZLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14921B68C1D645268F93668E /* EZLog.swift */; };
+		A94F9CB9D704426DB91B25D3 /* DeviceSystemInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */; };
 		AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */; };
@@ -1011,8 +1011,6 @@
 		03D5C4C72D9D1EE70054D0D4 /* TextAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAnalysis.swift; sourceTree = "<group>"; };
 		03D5C4C92D9D455E0054D0D4 /* ChineseDetection+Prose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Prose.swift"; sourceTree = "<group>"; };
 		03D5C4CB2DA21EAD0054D0D4 /* MetadataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataExtractor.swift; sourceTree = "<group>"; };
-		03D5FCFD2A5EF4E400AD26BE /* EZDeviceSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeviceSystemInfo.h; sourceTree = "<group>"; };
-		03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeviceSystemInfo.m; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
 		03D90BC52E22A4A2005C1BBB /* ocr-pl-text-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-pl-text-1.png"; sourceTree = "<group>"; };
@@ -1042,8 +1040,6 @@
 		03F086F12DB1F5F000268DF0 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		03F086F42DB21EC200268DF0 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
 		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
-		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
-		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageMapper.swift; sourceTree = "<group>"; };
 		03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSectionMerger.swift; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
@@ -1085,6 +1081,7 @@
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
+		14921B68C1D645268F93668E /* EZLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZLog.swift; sourceTree = "<group>"; };
 		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingTests.swift; sourceTree = "<group>"; };
@@ -1160,6 +1157,7 @@
 		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
+		E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSystemInfo.swift; sourceTree = "<group>"; };
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
 		EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
@@ -1884,8 +1882,6 @@
 			isa = PBXGroup;
 			children = (
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
-				03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */,
-				03F0DB352953424F00EBF9C1 /* EZLog */,
 				033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */,
 				039D119629D5E21E00C93F46 /* EZAudioUtils */,
 				0399C6B529A9F49200B4AFCC /* EZLinkParser */,
@@ -2691,15 +2687,6 @@
 			path = Regex;
 			sourceTree = "<group>";
 		};
-		03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */ = {
-			isa = PBXGroup;
-			children = (
-				03D5FCFD2A5EF4E400AD26BE /* EZDeviceSystemInfo.h */,
-				03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */,
-			);
-			path = EZDeviceSystemInfo;
-			sourceTree = "<group>";
-		};
 		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
 			isa = PBXGroup;
 			children = (
@@ -2814,15 +2801,6 @@
 				03F086F72DB3A94600268DF0 /* GroqService.swift */,
 			);
 			path = Groq;
-			sourceTree = "<group>";
-		};
-		03F0DB352953424F00EBF9C1 /* EZLog */ = {
-			isa = PBXGroup;
-			children = (
-				03F0DB362953428300EBF9C1 /* EZLog.h */,
-				03F0DB372953428300EBF9C1 /* EZLog.m */,
-			);
-			path = EZLog;
 			sourceTree = "<group>";
 		};
 		03F2815B2D98E52200AE518C /* ChineseGenre */ = {
@@ -2943,6 +2921,14 @@
 			path = Utility;
 			sourceTree = "<group>";
 		};
+		1720B06B4E14473BB7EB192B /* DeviceInfo */ = {
+			isa = PBXGroup;
+			children = (
+				E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */,
+			);
+			path = DeviceInfo;
+			sourceTree = "<group>";
+		};
 		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
 			isa = PBXGroup;
 			children = (
@@ -3018,6 +3004,14 @@
 				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		5A735120BF914C709B1E6B2B /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				14921B68C1D645268F93668E /* EZLog.swift */,
+			);
+			path = Logging;
 			sourceTree = "<group>";
 		};
 		62E2BF462B4082BA00E42D38 /* Ali */ = {
@@ -3257,6 +3251,8 @@
 			children = (
 				03CA1CF02EDE089E001908D0 /* Appearance */,
 				03BBC8142E62049600CFC582 /* SystemUtility */,
+				5A735120BF914C709B1E6B2B /* Logging */,
+				1720B06B4E14473BB7EB192B /* DeviceInfo */,
 				03F2815B2D98E52200AE518C /* ChineseGenre */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
@@ -3870,7 +3866,7 @@
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				031760EE2E06B9C700CE8FD7 /* NSImage+Extension.swift in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
-				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
+				A94F9CB9D704426DB91B25D3 /* DeviceSystemInfo.swift in Sources */,
 				C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */,
 				27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
@@ -4099,7 +4095,7 @@
 				03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */,
 				035179182EF301C20054C985 /* AppTriggerConfig.swift in Sources */,
 				0A9AFBAB2B7F8D7E0064C9A8 /* CustomOpenAIService.swift in Sources */,
-				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
+				A2016EDA90ED45B5B66FA986 /* EZLog.swift in Sources */,
 				034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */,

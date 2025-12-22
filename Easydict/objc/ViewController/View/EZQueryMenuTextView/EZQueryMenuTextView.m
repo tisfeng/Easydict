@@ -9,7 +9,6 @@
 #import "EZQueryMenuTextView.h"
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
-#import "EZLog.h"
 #import "Easydict-Swift.h"
 
 @interface EZQueryMenuTextView ()
