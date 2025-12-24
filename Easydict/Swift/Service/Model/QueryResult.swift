@@ -169,7 +169,7 @@ public class QueryResult: NSObject {
 
     // MARK: Internal
 
-    var queryModel: EZQueryModel = .init()
+    var queryModel: QueryModel = .init()
 
     var serviceTypeWithUniqueIdentifier: String = ServiceType.youdao.rawValue
     weak var service: QueryService?
@@ -269,7 +269,7 @@ public class QueryResult: NSObject {
 
     /// Resets the result to its initial state.
     func reset() {
-        queryModel = EZQueryModel()
+        queryModel = QueryModel()
         translatedResults = nil
         wordResult = nil
         error = nil

@@ -15,7 +15,7 @@ import Foundation
 class BaiduApiTranslate: NSObject {
     // MARK: Lifecycle
 
-    required public init(queryModel: EZQueryModel) {
+    required public init(queryModel: QueryModel) {
         self.queryModel = queryModel
         super.init()
     }
@@ -115,7 +115,7 @@ class BaiduApiTranslate: NSObject {
 
     // MARK: Private
 
-    private let queryModel: EZQueryModel
+    private let queryModel: QueryModel
 
     private var appId: String {
         Defaults[.baiduAppId]

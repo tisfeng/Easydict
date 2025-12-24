@@ -57,7 +57,7 @@ class YoudaoService: QueryService {
 
      means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
      */
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         let encodedWord = queryModel.queryText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         guard let foreignLanguage = youdaoDictForeignLanguage(queryModel) else {
             return link()

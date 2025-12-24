@@ -68,7 +68,7 @@ extension YoudaoService {
         }
     }
 
-    func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
+    func youdaoDictForeignLanguage(_ queryModel: QueryModel) -> String? {
         let fromLanguage = queryModel.queryFromLanguage
         let toLanguage = queryModel.queryTargetLanguage
 

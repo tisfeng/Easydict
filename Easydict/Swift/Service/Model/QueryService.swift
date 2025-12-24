@@ -28,7 +28,7 @@ open class QueryService: NSObject {
 
     open var autoCopyTranslatedTextBlock: ((QueryResult, Error?) -> ())?
 
-    open var queryModel: EZQueryModel! {
+    open var queryModel: QueryModel! {
         didSet {
             guard let queryModel else { return }
             result?.queryModel = queryModel
@@ -40,7 +40,7 @@ open class QueryService: NSObject {
             guard let result else { return }
 
             if queryModel == nil {
-                queryModel = EZQueryModel()
+                queryModel = QueryModel()
             }
 
             result.service = self
@@ -188,7 +188,7 @@ open class QueryService: NSObject {
     /// Starts a query using async/await and returns the final result.
     ///
     /// - NOTE: This function only returns the final result. For incremental results, use `startQueryStream(_:)`.
-    open func startQuery(_ queryModel: EZQueryModel) async throws -> QueryResult {
+    open func startQuery(_ queryModel: QueryModel) async throws -> QueryResult {
         self.queryModel = queryModel
 
         let queryText = queryModel.queryText
@@ -211,7 +211,7 @@ open class QueryService: NSObject {
     ///
     /// - NOTE: The completionHandler will be called many time for stream service.
     open func startQueryStream(
-        _ queryModel: EZQueryModel,
+        _ queryModel: QueryModel,
         completionHandler: @escaping (QueryResult, Error?) -> ()
     ) {
         let task = Task { [weak self] in
@@ -249,7 +249,7 @@ open class QueryService: NSObject {
     }
 
     /// Starts a query using async stream and yields incremental results.
-    open func startQueryStream(_ queryModel: EZQueryModel)
+    open func startQueryStream(_ queryModel: QueryModel)
         -> AsyncThrowingStream<QueryResult, Error> {
         AsyncThrowingStream { [weak self] continuation in
             Task {
@@ -335,7 +335,7 @@ open class QueryService: NSObject {
     }
 
     /// Word direct link. If nil, fallback to `link`.
-    open func wordLink(_ queryModel: EZQueryModel) -> String? {
+    open func wordLink(_ queryModel: QueryModel) -> String? {
         link()
     }
 
@@ -474,7 +474,7 @@ open class QueryService: NSObject {
     }
 
     /// Perform OCR for the given query model.
-    open func ocr(_ queryModel: EZQueryModel) async throws -> EZOCRResult? {
+    open func ocr(_ queryModel: QueryModel) async throws -> EZOCRResult? {
         guard let image = queryModel.ocrImage else {
             throw QueryError.error(type: .parameter, message: "Image is nil")
         }
@@ -547,7 +547,7 @@ open class QueryService: NSObject {
     )
         -> (handled: Bool, result: QueryResult, error: Error?) {
         if queryModel == nil {
-            let model = EZQueryModel()
+            let model = QueryModel()
             model.userSourceLanguage = from
             model.userTargetLanguage = to
             queryModel = model

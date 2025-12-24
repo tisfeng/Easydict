@@ -66,7 +66,7 @@ class AppleDictionary: QueryService, @unchecked Sendable {
         [.dictionary, .sentence]
     }
 
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         let encodedText = self.queryModel.queryText.encode()
         return "dict://\(encodedText)"
     }

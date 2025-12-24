@@ -67,7 +67,7 @@ final class BaiduService: QueryService {
         kBaiduTranslateURL
     }
 
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         guard let from = languageCode(forLanguage: queryModel.queryFromLanguage),
               let to = languageCode(forLanguage: queryModel.queryTargetLanguage) else {
             return nil
@@ -292,7 +292,7 @@ final class BaiduService: QueryService {
     // MARK: - Private properties
 
     private lazy var apiTranslate: BaiduApiTranslate = {
-        BaiduApiTranslate(queryModel: queryModel ?? EZQueryModel())
+        BaiduApiTranslate(queryModel: queryModel ?? QueryModel())
     }()
 
     /// Requests detected language for the given text.

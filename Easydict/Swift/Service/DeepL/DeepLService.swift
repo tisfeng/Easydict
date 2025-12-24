@@ -61,7 +61,7 @@ class DeepLService: QueryService {
     // MARK: - Word Link
 
     /// https://www.deepl.com/translator#en/zh/good
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         guard var from = languageCode(for: queryModel.queryFromLanguage),
               let to = languageCode(for: queryModel.queryTargetLanguage)
         else { return nil }

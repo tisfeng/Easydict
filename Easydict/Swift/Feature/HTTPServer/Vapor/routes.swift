@@ -114,7 +114,7 @@ func routes(_ app: Application) throws {
     app.on(.POST, "ocr", body: .collect(maxSize: "10mb")) { req async throws -> OCRResponse in
         let request = try req.content.decode(OCRRequest.self)
 
-        let queryModel = EZQueryModel()
+        let queryModel = QueryModel()
         queryModel.ocrImage = NSImage(data: request.imageData)
 
         var from = Language.auto

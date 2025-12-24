@@ -131,7 +131,7 @@ class GoogleService: QueryService {
     // MARK: - Word Link
 
     /// https://translate.google.com/?sl=en&tl=zh-CN&text=good&op=translate
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         guard let from = languageCode(for: queryModel.queryFromLanguage),
               let to = languageCode(for: queryModel.queryTargetLanguage)
         else { return nil }

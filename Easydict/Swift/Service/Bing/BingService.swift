@@ -53,7 +53,7 @@ class BingService: QueryService {
 
     // MARK: - Word Link
 
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         let textLanguage = queryModel.queryFromLanguage
         let from = languageCode(forLanguage: textLanguage) ?? ""
         let to = languageCode(forLanguage: queryModel.queryTargetLanguage) ?? ""
