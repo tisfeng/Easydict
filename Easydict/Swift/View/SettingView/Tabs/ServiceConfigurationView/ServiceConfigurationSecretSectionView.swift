@@ -201,7 +201,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     private func didReceive(_ notification: Notification) {
         guard let info = notification.userInfo as? [String: Any] else { return }
-        guard let serviceType = info[EZServiceTypeKey] as? String else { return }
+        guard let serviceType = info[UserInfoKey.serviceType] as? String else { return }
         guard serviceType == service.serviceType().rawValue else { return }
         name = service.name()
     }

@@ -10,7 +10,7 @@ import Foundation
 
 extension QueryService {
     /// Translate request, if source language is auto or nil, will detect source language first.
-    func translate(request: TranslationRequest) async throws -> EZQueryResult {
+    func translate(request: TranslationRequest) async throws -> QueryResult {
         queryType = request.queryType
 
         let text = request.text
@@ -30,7 +30,7 @@ extension QueryService {
         to: Language,
         enablePrehandle: Bool
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         var sourceLanguage = from
         if from == .auto {
             let queryModel = try await EZDetectManager().detectText(text)
@@ -39,7 +39,9 @@ extension QueryService {
 
         if enablePrehandle {
             let (prehandled, result) = try await prehandleQueryText(
-                text: text, from: sourceLanguage, to: to
+                text,
+                from: sourceLanguage,
+                to: to
             )
             if prehandled {
                 logInfo("prehandled query text: \(text.prefix200)")
@@ -48,29 +50,5 @@ extension QueryService {
         }
 
         return try await translate(text, from: sourceLanguage, to: to)
-    }
-
-    func prehandleQueryText(
-        text: String,
-        from: Language,
-        to: Language
-    ) async throws
-        -> (Bool, EZQueryResult) {
-        try await withCheckedThrowingContinuation { continuation in
-            var prehandled = false
-            self.prehandleQueryText(text, from: from, to: to) { result, error in
-                prehandled = true
-
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: (prehandled, result))
-                }
-            }
-
-            if !prehandled {
-                continuation.resume(returning: (prehandled, result))
-            }
-        }
     }
 }

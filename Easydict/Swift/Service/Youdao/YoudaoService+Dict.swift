@@ -10,13 +10,13 @@ import Alamofire
 import Foundation
 
 extension YoudaoService {
-    func queryYoudaoDict(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+    func queryYoudaoDict(text: String, from: Language, to: Language) async throws -> QueryResult {
         try await queryDictionaryV4(text: text, from: from, to: to)
     }
 
     // MARK: - Youdao Web Dictionary API V4 (Updated at 2025/01/03)
 
-    func queryDictionaryV4(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+    func queryDictionaryV4(text: String, from: Language, to: Language) async throws -> QueryResult {
         guard !text.isEmpty else {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }
@@ -68,7 +68,7 @@ extension YoudaoService {
         }
     }
 
-    func youdaoDictForeignLanguage(_ queryModel: EZQueryModel) -> String? {
+    func youdaoDictForeignLanguage(_ queryModel: QueryModel) -> String? {
         let fromLanguage = queryModel.queryFromLanguage
         let toLanguage = queryModel.queryTargetLanguage
 
@@ -89,7 +89,7 @@ extension YoudaoService {
     // MARK: - Legacy Youdao Web Dictionary API V2 (Deprecated)
 
     @available(*, deprecated)
-    func queryDictionaryV2(text: String, from: Language, to: Language) async throws -> EZQueryResult {
+    func queryDictionaryV2(text: String, from: Language, to: Language) async throws -> QueryResult {
         guard !text.isEmpty else {
             throw QueryError(type: .parameter, message: "Translation text is empty")
         }

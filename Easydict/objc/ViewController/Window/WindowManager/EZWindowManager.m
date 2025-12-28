@@ -11,7 +11,6 @@
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
 #import "EZCoordinateUtils.h"
-#import "EZLog.h"
 #import "Easydict-Swift.h"
 
 @interface EZWindowManager ()
@@ -1126,7 +1125,7 @@ static EZWindowManager *_instance;
     NSRunningApplication *application = self.eventMonitor.frontmostApplication;
     NSString *appName = application.localizedName ?: @"";
     NSString *bundleID = application.bundleIdentifier ?: @"";
-    NSString *textLength = [EZLog textLengthRange:text];
+    NSString *textLength = [EZAnalyticsService textLengthRange:text];
     NSString *triggerType = [EZEnumTypes stringValueOfTriggerType:self.eventMonitor.triggerType];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
@@ -1145,7 +1144,7 @@ static EZWindowManager *_instance;
         dict[@"host"] = host;
     }
 
-    [EZLog logEventWithName:@"getSelectedText" parameters:dict];
+    [EZAnalyticsService logEventWithName:@"getSelectedText" parameters:dict];
 }
 
 @end

@@ -16,7 +16,7 @@ import Foundation
 class OllamaService: BaseOpenAIService {
     // MARK: Lifecycle
 
-    override init() {
+    required init() {
         super.init()
 
         Task {

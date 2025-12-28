@@ -9,6 +9,7 @@
 import Alamofire
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - CaiyunService
 
@@ -32,28 +33,32 @@ public final class CaiyunService: QueryService {
         CaiyunTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
-    public override func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        logInfo("Caiyun Translate does not support OCR")
-        throw QueryServiceError.notSupported
-    }
-
     public override func hasPrivateAPIKey() -> Bool {
         token != caiyunToken
     }
 
+    /// Returns configuration items for the Caiyun service settings view.
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.caiyunToken]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.caiyun.token.title",
+                key: .caiyunToken
+            )
+        }
+    }
+
+    /// Translate text using the Caiyun API.
     public override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
         // Docs: https://docs.caiyunapp.com/lingocloud-api/
@@ -69,6 +74,11 @@ public final class CaiyunService: QueryService {
             "x-authorization": "token " + token,
         ]
 
+        let currentResult = result ?? QueryResult()
+        if result == nil {
+            result = currentResult
+        }
+
         let request = AF.request(
             apiEndPoint,
             method: .post,
@@ -76,30 +86,33 @@ public final class CaiyunService: QueryService {
             encoding: JSONEncoding.default,
             headers: headers
         )
-        .validate()
-        .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
-            guard let self else { return }
-            let result = result
-
-            switch response.result {
-            case let .success(value):
-                result.translatedResults = value.target
-                completion(result, nil)
-            case let .failure(error):
-                logError("Caiyun lookup error \(error)")
-                let queryError = QueryError(type: .api, message: error.localizedDescription)
-                if let data = response.data {
-                    if let errorString = String(data: data, encoding: .utf8) {
-                        queryError.errorDataMessage = errorString
-                    }
-                }
-                completion(result, queryError)
-            }
-        }
 
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)
+
+        let dataTask = request
+            .validate()
+            .serializingDecodable(CaiyunResponse.self)
+
+        do {
+            let value = try await dataTask.value
+            currentResult.translatedResults = value.target
+            return currentResult
+        } catch {
+            if let queryError = error as? QueryError {
+                throw queryError
+            }
+
+            logError("Caiyun lookup error \(error)")
+            let queryError = QueryError(type: .api, message: error.localizedDescription)
+            let response = await dataTask.response
+            if let data = response.data,
+               let errorString = String(data: data, encoding: .utf8) {
+                queryError.errorDataMessage = errorString
+            }
+            throw queryError
+        }
     }
 
     // MARK: Private

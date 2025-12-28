@@ -21,7 +21,7 @@ func routes(_ app: Application) throws {
         let request = try req.content.decode(TranslationRequest.self)
         let appleDictionaryNames = request.appleDictionaryNames
 
-        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType) else {
+        guard let service = QueryServiceFactory.shared.service(withTypeId: request.serviceType) else {
             throw QueryError(
                 type: .unsupportedServiceType, message: "\(request.serviceType)"
             )
@@ -66,7 +66,7 @@ func routes(_ app: Application) throws {
     app.post("streamTranslate") { req async throws -> Response in
         let request = try req.content.decode(TranslationRequest.self)
 
-        guard let service = ServiceTypes.shared().service(withTypeId: request.serviceType)
+        guard let service = QueryServiceFactory.shared.service(withTypeId: request.serviceType)
         else {
             throw QueryError(
                 type: .unsupportedServiceType, message: "\(request.serviceType)"
@@ -114,7 +114,7 @@ func routes(_ app: Application) throws {
     app.on(.POST, "ocr", body: .collect(maxSize: "10mb")) { req async throws -> OCRResponse in
         let request = try req.content.decode(OCRRequest.self)
 
-        let queryModel = EZQueryModel()
+        let queryModel = QueryModel()
         queryModel.ocrImage = NSImage(data: request.imageData)
 
         var from = Language.auto

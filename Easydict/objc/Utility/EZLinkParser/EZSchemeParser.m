@@ -7,8 +7,6 @@
 //
 
 #import "EZSchemeParser.h"
-#import "EZServiceTypes.h"
-#import "EZLocalStorage.h"
 #import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
@@ -135,7 +133,7 @@
         handled = YES;
     }
     
-    NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
+    NSArray *allServiceTypes = [QueryServiceFactory.shared allServiceTypes];
     // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
     NSArray *arr = [key componentsSeparatedByString:@"-"];
     if (arr.count) {
@@ -193,7 +191,6 @@
         
         EZDeepLAuthKey,
         EZDeepLTranslateEndPointKey,
-        EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,
         EZTencentSecretId,

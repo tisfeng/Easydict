@@ -301,6 +301,8 @@ class ShortcutWrapper<T: KeyCombo> {
     }
 }
 
+private let EZDeepLTranslationAPIKey = "EZDeepLTranslationAPIKey"
+
 // Service Configuration
 extension Defaults.Keys {
     // DeepL

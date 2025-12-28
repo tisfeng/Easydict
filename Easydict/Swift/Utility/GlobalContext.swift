@@ -59,8 +59,8 @@ class GlobalContext: NSObject {
                 llmService.cancelSubscribers()
             }
         }
-        let allServiceTypes = EZLocalStorage.shared().allServiceTypes(EZWindowType.main)
-        services = ServiceTypes.shared().services(fromTypes: allServiceTypes)
+        let allServiceTypes = LocalStorage.shared().allServiceTypes(EZWindowType.main)
+        services = QueryServiceFactory.shared.services(fromTypes: allServiceTypes)
         for service in services {
             if let llmService = service as? StreamService {
                 llmService.setupSubscribers()

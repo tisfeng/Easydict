@@ -49,8 +49,11 @@
     
     mm_weakify(self);
     [audioPlayer setPlayingBlock:^(BOOL isPlaying) {
-        mm_strongify(self);        
-        self.isPlaying = isPlaying;
+        mm_strongify(self);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.isPlaying = isPlaying;
+        });
     }];
 }
 
@@ -59,7 +62,7 @@
         
     NSString *action = isPlaying ? @"Stop" : @"Play";
     self.toolTip = [NSString stringWithFormat:@"%@ Audio", action];
-
+    
 //    NSString *symbolName = isPlaying ? @"pause.circle" : @"play.circle";
 //    NSImage *audioImage = [NSImage ez_imageWithSymbolName:symbolName size:CGSizeMake(15, 15)];
     

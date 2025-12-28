@@ -17,14 +17,13 @@
 #import "EZWindowManager.h"
 #import "EZOpenLinkButton.h"
 #import "NSImage+EZResize.h"
-#import "EZQueryService.h"
 #import "EZBlueTextButton.h"
 #import "EZMyLabel.h"
 #import "EZAudioButton.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "TTTDictionary.h"
-#import "EZServiceTypes.h"
+#import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
 #import "Easydict-Swift.h"
@@ -85,7 +84,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     mm_weakify(self);
 
-    if (result.HTMLString.length) {
+    if (result.htmlString.length) {
         [self addSubview:self.webView];
 
         if (result.webViewManager.isLoaded) {
@@ -775,13 +774,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = result.copiedText;
 
         // For some special case, copied text language is not the queryTargetLanguage, like 龘, Youdao translate.
-        EZLanguage language = [EZAppleService.shared detectText:text];
+        EZLanguage language = [EZAppleService.shared detectTextSync:text];
         if ([result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }
 
         EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
-        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
+        EZQueryService *defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
 
         // Determine accent based on user preference if language is English
         NSString *accentToUse = nil;
@@ -805,7 +804,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
     [self addSubview:textCopyButton];
-    textCopyButton.enabled = hasTranslatedText | result.HTMLString.length;
+    textCopyButton.enabled = hasTranslatedText | result.htmlString.length;
 
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         MMLogInfo(@"copyActionBlock");
@@ -890,7 +889,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     // webView height need time to calculate, and the value will be called back later.
     if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
-        BOOL hasHTML = result.HTMLString.length > 0;
+        BOOL hasHTML = result.htmlString.length > 0;
         linkButton.enabled = hasHTML;
 
         if (hasHTML) {
@@ -1156,7 +1155,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      take: 1971476
      */
 
-    //    CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+    //    CGFloat delayShowingTime = self.result.htmlString.length / 1000000.0;
     //    MMLogInfo(@"Delay showing time: %.2f", delayShowingTime);
 
     // !!!: Must update view height, then update cell height.

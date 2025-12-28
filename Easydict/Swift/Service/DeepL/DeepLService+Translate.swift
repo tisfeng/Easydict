@@ -23,7 +23,7 @@ extension DeepLService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         var sourceLangCode = languageCode(for: from) ?? "auto"
         sourceLangCode = removeLanguageVariant(sourceLangCode)
@@ -160,7 +160,7 @@ extension DeepLService {
 
     private func parseWebTranslateResponse(
         _ responseDict: [String: Any],
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: responseDict)
@@ -184,7 +184,7 @@ extension DeepLService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         var sourceLangCode = languageCode(for: from) ?? "auto"
         sourceLangCode = removeLanguageVariant(sourceLangCode)

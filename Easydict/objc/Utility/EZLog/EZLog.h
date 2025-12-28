@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "EZWindowManager.h"
-#import "EZQueryService.h"
+
+@class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
 

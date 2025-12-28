@@ -10,7 +10,6 @@
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
-#import "EZLocalStorage.h"
 #import "Easydict-Swift.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
@@ -85,8 +84,8 @@ static EZEventMonitor *_instance = nil;
 }
 
 - (EZTriggerType)frontmostAppTriggerType {
-    NSArray<EZAppModel *> *defaultAppModelList = [self defaultAppModelList];
-    NSArray<EZAppModel *> *userAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
+    NSArray<AppTriggerConfig *> *defaultAppModelList = [self defaultAppModelList];
+    NSArray<AppTriggerConfig *> *userAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
 
     self.frontmostApplication = [self getFrontmostApp];
     NSString *appBundleID = self.frontmostApplication.bundleIdentifier;
@@ -103,10 +102,10 @@ static EZEventMonitor *_instance = nil;
 }
 
 - (EZTriggerType)getAppSelectTextActionType:(NSString *)appBundleID
-                               appModelList:(NSArray<EZAppModel *> *)appModelList
+                               appModelList:(NSArray<AppTriggerConfig *> *)appModelList
                                 defaultType:(EZTriggerType)defaultType {
     EZTriggerType triggerType = defaultType;
-    for (EZAppModel *appModel in appModelList) {
+    for (AppTriggerConfig *appModel in appModelList) {
         if ([appModel.appBundleID isEqualToString:appBundleID]) {
             triggerType = appModel.triggerType;
             MMLogInfo(@"Hit app bundleID: %@, triggerType: %@", appBundleID, @(triggerType));
@@ -115,7 +114,7 @@ static EZEventMonitor *_instance = nil;
     return triggerType;
 }
 
-- (NSArray<EZAppModel *> *)defaultAppModelList {
+- (NSArray<AppTriggerConfig *> *)defaultAppModelList {
     NSMutableArray *defaultAppModels = [NSMutableArray array];
 
     // When use simulated key to get selected text, add wechat to default app list.
@@ -125,7 +124,7 @@ static EZEventMonitor *_instance = nil;
 
          And WeChat does not support Shift select text, so please use shortcut key to instead.
          */
-        EZAppModel *wechat = [[EZAppModel alloc] init];
+        AppTriggerConfig *wechat = [[AppTriggerConfig alloc] init];
         wechat.appBundleID = @"com.tencent.xinWeChat";
         wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
 

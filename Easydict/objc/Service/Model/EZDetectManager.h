@@ -7,8 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EZQueryModel.h"
-#import "EZQueryService.h"
+#import "EZOCRResult.h"
+
+@class EZQueryModel;
+@class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
 

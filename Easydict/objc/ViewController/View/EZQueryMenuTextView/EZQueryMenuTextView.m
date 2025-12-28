@@ -9,7 +9,6 @@
 #import "EZQueryMenuTextView.h"
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
-#import "EZLog.h"
 #import "Easydict-Swift.h"
 
 @interface EZQueryMenuTextView ()
@@ -89,7 +88,7 @@
     NSDictionary *parameters = @{
         @"floating_window_type" : @(floatingWindowType),
     };
-    [EZLog logEventWithName:@"query_in_app" parameters:parameters];
+    [EZAnalyticsService logEventWithName:@"query_in_app" parameters:parameters];
 }
 
 - (nullable NSString *)selectedText {

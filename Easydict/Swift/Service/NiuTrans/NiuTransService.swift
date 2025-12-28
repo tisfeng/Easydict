@@ -9,6 +9,7 @@
 import AFNetworking
 import Defaults
 import Foundation
+import SwiftUI
 
 private let kNiuTransURL = "https://niutrans.com"
 private let kNiuTransAPIURL = "https://api.niutrans.com/NiuTransServer/translation"
@@ -18,6 +19,18 @@ private let kNiuTransAPIURL = "https://api.niutrans.com/NiuTransServer/translati
 @objc(EZNiuTransTranslate)
 @objcMembers
 class NiuTransService: QueryService {
+    // MARK: Open
+
+    /// Returns configuration items for the NiuTrans service settings view.
+    open override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.niuTransAPIKey]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.niutrans.api_key.title",
+                key: .niuTransAPIKey
+            )
+        }
+    }
+
     // MARK: Internal
 
     // MARK: - Service Type & Configuration
@@ -119,13 +132,22 @@ class NiuTransService: QueryService {
 
     // MARK: - Translate
 
+    /// Translate text using NiuTrans API.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
-    ) {
-        niuTransTranslate(text, from: from, to: to, completion: completion)
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await withCheckedThrowingContinuation { continuation in
+            niuTransTranslate(text, from: from, to: to) { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+        }
     }
 
     // MARK: Private
@@ -151,7 +173,7 @@ extension NiuTransService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         let sourceLangCode = languageCode(forLanguage: from) ?? "auto"
         let targetLangCode = languageCode(forLanguage: to) ?? ""
@@ -209,7 +231,7 @@ extension NiuTransService {
 
     private func parseResponse(
         _ responseDict: [String: Any],
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: responseDict)

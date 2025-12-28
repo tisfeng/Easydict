@@ -360,7 +360,7 @@
 #pragma mark - Update UI
 
 - (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
-    if (self.result.HTMLString.length) {
+    if (self.result.htmlString.length) {
         self.result.webViewManager.wordResultViewHeight = wordResultViewHeight;
         
         if (wordResultViewHeight) {

@@ -20,7 +20,7 @@ extension GoogleService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         guard !text.isEmpty else {
             completion(result, QueryError(type: .parameter, message: "翻译的文本为空"))
@@ -28,8 +28,8 @@ extension GoogleService {
         }
 
         sendWebAppTranslate(text, from: from, to: to) { [weak self] responseObject, signText, _, error in
-            guard let self = self else { return }
-            let result = result
+            guard let self, let result = result else { return }
+
             if let error = error {
                 completion(result, error)
                 return
@@ -298,6 +298,19 @@ extension GoogleService {
         }
     }
 
+    /// Update the web app TKK value using async/await.
+    func updateWebAppTKK() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(), Error>) in
+            updateWebAppTKK { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            }
+        }
+    }
+
     // MARK: - GTX Translate
 
     /// GTX can only get translation and src language.
@@ -360,7 +373,7 @@ extension GoogleService {
         _ text: String,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         guard !text.isEmpty else {
             completion(result, QueryError(type: .parameter, message: "翻译的文本为空"))
@@ -368,8 +381,8 @@ extension GoogleService {
         }
 
         sendGTXTranslate(text, from: from, to: to) { [weak self] responseObject, signText, _, error in
-            guard let self = self else { return }
-            let result = result
+            guard let self, let result = result else { return }
+
             if let error = error {
                 completion(result, error)
                 return

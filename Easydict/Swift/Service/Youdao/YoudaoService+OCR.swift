@@ -90,7 +90,9 @@ extension YoudaoService {
         to: Language,
         ocrSuccess: @escaping (EZOCRResult, Bool) -> ()
     ) async throws
-        -> (ocrResult: EZOCRResult, queryResult: EZQueryResult?) {
+        -> (ocrResult: EZOCRResult, queryResult: QueryResult?) {
+        guard let result = result else { return (EZOCRResult(), nil) }
+
         let ocrResult = try await ocr(image: image, from: from, to: to)
 
         // Check if we need to translate

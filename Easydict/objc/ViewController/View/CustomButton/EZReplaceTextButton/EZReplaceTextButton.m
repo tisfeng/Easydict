@@ -8,7 +8,6 @@
 #import "EZReplaceTextButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "EZLog.h"
 #import "Easydict-Swift.h"
 
 @import SelectedTextKit;
@@ -43,7 +42,7 @@
 
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
-    NSString *textLengthRange = [EZLog textLengthRange:replacementString];
+    NSString *textLengthRange = [EZAnalyticsService textLengthRange:replacementString];
     BOOL useCompatibilityMode = Configuration.shared.enableCompatibilityReplace;
 
     NSDictionary *parameters = @{
@@ -53,7 +52,7 @@
         @"text_length" : textLengthRange,
         @"use_compatibility_mode" : @(useCompatibilityMode)
     };
-    [EZLog logEventWithName:@"replace_selected_text" parameters:parameters];
+    [EZAnalyticsService logEventWithName:@"replace_selected_text" parameters:parameters];
     MMLogInfo(@"repalce selected text: %@", parameters);
 
     /**

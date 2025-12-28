@@ -40,9 +40,11 @@
       "Bash(xcbeautify:*)",
       "Bash(pgrep:*)"
     ],
-    "deny": [
+     "deny": [
       "Bash(git add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit --all:*)",
+      "Bash(xcodebuild:*)"
     ],
     "ask": []
   }

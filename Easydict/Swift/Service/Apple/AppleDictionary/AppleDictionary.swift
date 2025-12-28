@@ -16,12 +16,14 @@ private let kHTMLDictFilePath = "all_dict.html"
 
 // MARK: - AppleDictionary
 
+/// Query service that wraps Apple's built-in dictionaries.
+/// Marked as `@unchecked Sendable` because lookups are dispatched to background queues.
 @objc(EZAppleDictionary)
 @objcMembers
-class AppleDictionary: QueryService {
+class AppleDictionary: QueryService, @unchecked Sendable {
     // MARK: Lifecycle
 
-    override init() {
+    required init() {
         super.init()
         self.appleDictionaries = TTTDictionary.activeDictionaries()
     }
@@ -64,7 +66,7 @@ class AppleDictionary: QueryService {
         [.dictionary, .sentence]
     }
 
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         let encodedText = self.queryModel.queryText.encode()
         return "dict://\(encodedText)"
     }
@@ -82,33 +84,65 @@ class AppleDictionary: QueryService {
         return orderedDict
     }
 
+    /// Translate text using Apple Dictionary HTML lookup.
+    @nonobjc
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let noResultError = QueryError(type: .noResult)
 
-        DispatchQueue.global(qos: .default).async { [weak self] in
-            guard let self else { return }
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .default).async { [weak self] in
+                guard let self else {
+                    continuation.resume(
+                        throwing: QueryError.error(
+                            type: .unknown,
+                            message: "Service released before completing the request"
+                        )
+                    )
+                    return
+                }
 
-            // Note: this method may cost long time(>1.0s), if the html is very large.
-            let htmlString = queryAllIframeHTMLResult(
-                ofWord: text,
-                fromToLanguages: [from, to],
-                inDictionaries: appleDictionaries
-            )
-            result.htmlString = htmlString
+                // Note: this method may cost long time(>1.0s), if the html is very large.
+                let htmlString = queryAllIframeHTMLResult(
+                    ofWord: text,
+                    fromToLanguages: [from, to],
+                    inDictionaries: appleDictionaries
+                )
+                result?.htmlString = htmlString
 
-            let error: QueryError? = htmlString?.isEmpty != false ? noResultError : nil
-            completion(result, error)
+                let error: QueryError? = htmlString?.isEmpty != false ? noResultError : nil
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result ?? QueryResult())
+                }
+            }
         }
     }
 
+    /// Detect language using available Apple dictionaries.
+    @nonobjc
+    override func detectText(_ text: String) async throws -> Language {
+        let languageDict = TTTDictionary.languageToDictionaryNameMap
+        let supportedLanguages = languageDict.allKeys() as? [Language] ?? []
+
+        if let matchedLanguage = supportedLanguages.first(where: {
+            queryDictionary(forText: text, language: $0)
+        }) {
+            return matchedLanguage
+        }
+
+        return .auto
+    }
+
+    /// Detect language for Objective-C callers using a direct lookup.
     override func detectText(
         _ text: String,
-        completion: @escaping (Language, (any Error)?) -> ()
+        completionHandler: @escaping (Language, Error?) -> ()
     ) {
         let languageDict = TTTDictionary.languageToDictionaryNameMap
         let supportedLanguages = languageDict.allKeys() as? [Language] ?? []
@@ -116,17 +150,25 @@ class AppleDictionary: QueryService {
         if let matchedLanguage = supportedLanguages.first(where: {
             queryDictionary(forText: text, language: $0)
         }) {
-            completion(matchedLanguage, nil)
-        } else {
-            completion(.auto, nil)
+            completionHandler(matchedLanguage, nil)
+            return
         }
+
+        completionHandler(.auto, nil)
     }
 
+    /// Apple Dictionary does not support OCR.
+    @nonobjc
     override func ocr(
-        _ queryModel: EZQueryModel,
-        completion: @escaping (EZOCRResult?, (any Error)?) -> ()
-    ) {
-        logError("Apple Dictionary does not support ocr")
+        _ image: NSImage,
+        from: Language,
+        to: Language
+    ) async throws
+        -> EZOCRResult? {
+        _ = image
+        _ = from
+        _ = to
+        throw QueryError.error(type: .unsupportedQueryType, message: "Apple Dictionary does not support OCR")
     }
 
     // MARK: - Public Methods
@@ -225,7 +267,7 @@ extension AppleDictionary {
             let entryHTMLs = queryEntryHTMLs(
                 ofWord: word, inDictionary: dictionary, language: fromLanguage
             )
-            result.htmlStrings = entryHTMLs
+            result?.htmlStrings = entryHTMLs
 
             for html in entryHTMLs {
                 let absolutePathHTML = replacedAudioPath(
@@ -308,7 +350,9 @@ extension AppleDictionary {
             }
         }
 
-        result.innerTexts = texts
+        // `detectText` may call this method without setting `result` beforehand.
+        // Avoid crashing when `result` is nil.
+        result?.innerTexts = texts
 
         return entryHTMLs
     }

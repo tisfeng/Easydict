@@ -524,7 +524,7 @@ extension Configuration {
     }
 
     fileprivate func didSetAllowCrashLog() {
-        EZLog.setCrashEnabled(allowCrashLog)
+        AnalyticsService.setCrashEnabled(allowCrashLog)
         logSettings(["allow_crash_log": allowCrashLog])
     }
 
@@ -552,6 +552,6 @@ extension Configuration {
     }
 
     fileprivate func logSettings(_ parameters: [String: Any]) {
-        EZLog.logEvent(withName: "settings", parameters: parameters)
+        AnalyticsService.logEvent(withName: "settings", parameters: parameters)
     }
 }

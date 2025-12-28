@@ -18,7 +18,7 @@ extension BingService {
         useDictQuery: Bool,
         from: Language,
         to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         isDictQueryResult = false
 
@@ -66,7 +66,7 @@ extension BingService {
                     // canRetry is used to avoid recursive calls, code 205 only retry once.
                     if canRetry, needRetry {
                         canRetry = false
-                        translate(text, from: from, to: to, completion: completion)
+                        bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
                         return
                     }
                     canRetry = true
@@ -229,7 +229,7 @@ extension BingService {
     private func parseBingDictTranslate(
         _ json: [String: Any]?,
         word: String,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
+        completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         guard let json = json else {
             completion(result, QueryError(type: .api, message: "bing dict json is nil"))

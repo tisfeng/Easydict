@@ -3,22 +3,20 @@
 //
 
 #import "MMLog.h"
-#import "EZQueryService.h"
 #import "EZConstKey.h"
 #import "EZConst.h"
 #import "NSColor+MyColors.h"
 #import "entry.h"
 #import "AppDelegate.h"
-#import "EZLocalStorage.h"
 #import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
-#import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "EZToast.h"
 
-#import "EZBaiduTranslate.h"
 #import "MMCrash.h"
 #import "EZDetectManager.h"
-#import "EZServiceTypes.h"
 #import "EZEventMonitor.h"
 #import "DictionaryKit.h"
+#import "EZAudioPlayer.h"
+
+#import "EZWebViewManager.h"

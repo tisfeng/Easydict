@@ -7,10 +7,11 @@
 //
 
 #import "EZTextView.h"
-#import "EZQueryModel.h"
 #import "EZLoadingAnimationView.h"
 #import "EZAudioButton.h"
 #import "NSObject+EZWindowType.h"
+
+@class EZQueryModel;
 
 NS_ASSUME_NONNULL_BEGIN
 

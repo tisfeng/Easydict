@@ -10,6 +10,7 @@ import Alamofire
 import CryptoKit
 import Defaults
 import Foundation
+import SwiftUI
 
 @objc(EZAliService)
 class AliService: QueryService {
@@ -46,12 +47,13 @@ class AliService: QueryService {
         return true
     }
 
+    /// Translate text using the Aliyun API.
     override public func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         let limit = 5000
         let text = String(text.prefix(limit))
 
@@ -59,23 +61,34 @@ class AliService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
-        requestByAPI(
+        return try await requestByAPI(
             id: aliAccessKeyId,
             secret: aliAccessKeySecret,
             transType: transType,
             text: text,
             from: from,
-            to: to,
-            completion: completion
+            to: to
         )
     }
 
     // MARK: Internal
+
+    /// Returns configuration items for the Ali service settings view.
+    override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.aliAccessKeyId, .aliAccessKeySecret]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.ali.access_key_id.title",
+                key: .aliAccessKeyId
+            )
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.ali.access_key_secret.title",
+                key: .aliAccessKeySecret
+            )
+        }
+    }
 
     func hmacSha1(key: String, params: String) -> String? {
         guard let secret = key.data(using: .utf8),
@@ -108,13 +121,12 @@ class AliService: QueryService {
         transType: AliTranslateType,
         text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
         if id.isEmpty || secret.isEmpty {
             let message = String(localized: "service.configuration.api_missing.tips \(name())")
-            completion(result, QueryError(type: .missingSecretKey, message: message))
-            return
+            throw QueryError(type: .missingSecretKey, message: message)
         }
 
         /// https://help.aliyun.com/zh/sdk/product-overview/rpc-mechanism?spm=a2c4g.11186623.0.i20#sectiondiv-6jf-89b-wfa
@@ -159,8 +171,7 @@ class AliService: QueryService {
         }.joined(separator: "&")
 
         if !paramsEncodeErrorString.isEmpty {
-            completion(result, QueryError(type: .parameter, message: paramsEncodeErrorString))
-            return
+            throw QueryError(type: .parameter, message: paramsEncodeErrorString)
         }
 
         guard let slashEncode = "/".addingPercentEncoding(withAllowedCharacters: allowedCharacterSet),
@@ -168,8 +179,7 @@ class AliService: QueryService {
               canonicalizedQueryString
                   .addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
         else {
-            completion(result, QueryError(type: .parameter, message: "encoding error"))
-            return
+            throw QueryError(type: .parameter, message: "encoding error")
         }
 
         let stringToSign = "POST" + "&" + slashEncode + "&" + canonicalizedQueryStringEncode
@@ -180,51 +190,56 @@ class AliService: QueryService {
                   encoding: .nonLossyASCII
               )
         else {
-            completion(result, QueryError(type: .parameter, message: "signature error"))
-            return
+            throw QueryError(type: .parameter, message: "signature error")
         }
 
         guard let signature = hmacSha1(key: secret + "&", params: utf8String) else {
-            completion(result, QueryError(type: .parameter, message: "hmacSha1 error"))
-            return
+            throw QueryError(type: .parameter, message: "hmacSha1 error")
         }
 
         param["Signature"] = signature
 
+        let currentResult = result ?? QueryResult()
+        if result == nil {
+            result = currentResult
+        }
+
         let request = AF.request("https://mt.aliyuncs.com", method: .post, parameters: param)
-            .validate()
-            .responseDecodable(of: AliAPIResponse.self) { [weak self] response in
-                guard let self else { return }
-                let result = result
-
-                switch response.result {
-                case let .success(value):
-                    if let data = value.data, let translateText = data.translated {
-                        result.translatedResults = [translateText]
-                        completion(result, nil)
-                    } else {
-                        completion(
-                            result,
-                            QueryError(type: .api, message: value.code?.stringValue, errorDataMessage: value.message)
-                        )
-                    }
-                case let .failure(error):
-                    var msg: String?
-                    if let data = response.data {
-                        let res = try? JSONDecoder().decode(AliAPIResponse.self, from: data)
-                        msg = res?.message
-                    }
-
-                    logError("Ali translate error: \(msg ?? "")")
-                    completion(
-                        result,
-                        QueryError(type: .api, message: error.localizedDescription, errorDataMessage: msg)
-                    )
-                }
-            }
 
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)
+
+        let dataTask = request
+            .validate()
+            .serializingDecodable(AliAPIResponse.self)
+
+        do {
+            let value = try await dataTask.value
+            if let data = value.data, let translateText = data.translated {
+                currentResult.translatedResults = [translateText]
+                return currentResult
+            }
+
+            throw QueryError(
+                type: .api,
+                message: value.code?.stringValue,
+                errorDataMessage: value.message
+            )
+        } catch {
+            if let queryError = error as? QueryError {
+                throw queryError
+            }
+
+            let response = await dataTask.response
+            var msg: String?
+            if let data = response.data {
+                let res = try? JSONDecoder().decode(AliAPIResponse.self, from: data)
+                msg = res?.message
+            }
+
+            logError("Ali translate error: \(msg ?? "")")
+            throw QueryError(type: .api, message: error.localizedDescription, errorDataMessage: msg)
+        }
     }
 }

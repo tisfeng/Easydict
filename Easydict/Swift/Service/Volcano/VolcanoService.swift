@@ -22,7 +22,7 @@ public final class VolcanoService: QueryService {
         "https://translate.volcengine.com"
     }
 
-    override public func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override public func wordLink(_ queryModel: QueryModel) -> String? {
         guard let from = languageCode(forLanguage: queryModel.queryFromLanguage),
               let to = languageCode(forLanguage: queryModel.queryTargetLanguage),
               let queryText = queryModel.queryText.addingPercentEncoding(
@@ -45,30 +45,30 @@ public final class VolcanoService: QueryService {
     }
 
     /// Volcano Translate API: https://www.volcengine.com/docs/4640/65067
+    /// Translate text using Volcano API.
     override public func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
-        let result = result
+        to: Language
+    ) async throws
+        -> QueryResult {
+        guard let result = result else {
+            return QueryResult()
+        }
+
         if let error = validateAPIKey(accessKeyID, keyType: "AccessKeyID") {
-            completion(result, error)
-            return
+            throw error
         }
 
         if let error = validateAPIKey(secretAccessKey, keyType: "SecretAccessKey") {
-            completion(result, error)
-            return
+            throw error
         }
 
         let transType = VolcanoTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
-            completion(result, error)
-            return
+            throw QueryError(type: .unsupportedLanguage, message: "\(showingFrom) --> \(showingTo)")
         }
 
         let parameters: Parameters = [
@@ -103,51 +103,74 @@ public final class VolcanoService: QueryService {
             encoding: JSONEncoding.default,
             headers: headers
         )
-        .validate()
-        .responseDecodable(of: VolcanoResponse.self) { [weak self] response in
-            guard self != nil else { return }
 
-            switch response.result {
-            case let .success(volcanoResponse):
-                if let error = volcanoResponse.responseMetadata.error {
-                    let errorMessage = error.message
-                    logError("Volcano lookup error: \(errorMessage)")
-                    let queryError = QueryError(type: .api, message: errorMessage)
-                    completion(result, queryError)
-                } else if let translationList = volcanoResponse.translationList {
-                    result.translatedResults = translationList.map { $0.translation }
-                    completion(result, nil)
-                } else {
-                    let errorMessage = "Unexpected response format"
-                    logError("Volcano lookup error: \(errorMessage)")
-                    let queryError = QueryError(type: .unknown, message: errorMessage)
-                    completion(result, queryError)
-                }
-
-            case let .failure(error):
-                logError("Volcano lookup error: \(error)")
-
-                let errorMessage = error.localizedDescription
-                let queryError = QueryError(type: .api, message: errorMessage)
-
-                if let data = response.data {
-                    do {
-                        let errorResponse = try JSONDecoder().decode(
-                            VolcanoResponse.self, from: data
-                        )
-                        if let volcanoError = errorResponse.responseMetadata.error {
-                            queryError.errorDataMessage = volcanoError.message
-                        }
-                    } catch {
-                        logError("Failed to decode error response: \(error)")
-                    }
-                }
-                completion(result, queryError)
-            }
-        }
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)
+
+        let dataTask = request
+            .validate()
+            .serializingDecodable(VolcanoResponse.self)
+
+        do {
+            let volcanoResponse = try await dataTask.value
+
+            if let error = volcanoResponse.responseMetadata.error {
+                let errorMessage = error.message
+                logError("Volcano lookup error: \(errorMessage)")
+                throw QueryError(type: .api, message: errorMessage)
+            }
+
+            if let translationList = volcanoResponse.translationList {
+                result.translatedResults = translationList.map { $0.translation }
+                return result
+            }
+
+            let errorMessage = "Unexpected response format"
+            logError("Volcano lookup error: \(errorMessage)")
+            throw QueryError(type: .unknown, message: errorMessage)
+        } catch {
+            if let queryError = error as? QueryError {
+                throw queryError
+            }
+
+            logError("Volcano lookup error: \(error)")
+
+            let errorMessage = error.localizedDescription
+            let queryError = QueryError(type: .api, message: errorMessage)
+
+            let response = await dataTask.response
+
+            if let data = response.data {
+                do {
+                    let errorResponse = try JSONDecoder().decode(
+                        VolcanoResponse.self, from: data
+                    )
+                    if let volcanoError = errorResponse.responseMetadata.error {
+                        queryError.errorDataMessage = volcanoError.message
+                    }
+                } catch {
+                    logError("Failed to decode error response: \(error)")
+                }
+            }
+            throw queryError
+        }
+    }
+
+    public override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(
+            service: self,
+            observeKeys: [.volcanoAccessKeyID, .volcanoSecretAccessKey]
+        ) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.volcano.access_id.title",
+                key: .volcanoAccessKeyID
+            )
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.volcano.secret_key.title",
+                key: .volcanoSecretAccessKey
+            )
+        }
     }
 
     // MARK: Private

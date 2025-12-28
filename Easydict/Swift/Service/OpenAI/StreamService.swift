@@ -19,7 +19,7 @@ import SwiftUI
 public class StreamService: QueryService {
     // MARK: Lifecycle
 
-    override init() {
+    required init() {
         super.init()
 
         // Since getter Defaults[key] cost CPU high when update too frequently, we observe it here.
@@ -31,6 +31,11 @@ public class StreamService: QueryService {
             }
             .store(in: &cancellables)
     }
+
+    // MARK: Open
+
+    /// Cancels the current streaming request manually.
+    open override func cancelStream() {}
 
     // MARK: Public
 
@@ -71,33 +76,81 @@ public class StreamService: QueryService {
     }
 
     public override func serviceUsageStatus() -> EZServiceUsageStatus {
-        let usageStatus = Defaults[serviceUsageStatusKey]
-        guard let value = UInt(usageStatus.rawValue) else { return .default }
-        return EZServiceUsageStatus(rawValue: value) ?? .default
+        Defaults[serviceUsageStatusKey].ezStatus
     }
 
     public override func configurationListItems() -> Any? {
         StreamConfigurationView(service: self)
     }
 
+    /// Translate text and return the final streaming result.
+    @nonobjc
     public override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, Error?) -> ()
-    ) {
+        to: Language
+    ) async throws
+        -> QueryResult {
+        var latestResult = result ?? QueryResult()
+        do {
+            for try await result in translateStream(text, from: from, to: to) {
+                latestResult = result
+            }
+        } catch {
+            latestResult = result ?? latestResult
+            if latestResult.error == nil {
+                latestResult.error = QueryError.queryError(from: error)
+            }
+            throw error
+        }
+        return latestResult
+    }
+
+    /// Translate text and return a throttled stream of results.
+    @nonobjc
+    public override func translateStream(
+        _ text: String,
+        from: Language,
+        to: Language
+    )
+        -> AsyncThrowingStream<QueryResult, Error> {
         let queryResultStream = streamTranslate(text: text, from: from, to: to)
         let textStream = queryResultStreamToTextStream(queryResultStream)
 
-        Task {
-            do {
-                try await throttleUpdateResultText(
-                    textStream, queryType: supportedQueryType(), error: nil
-                ) { result in
-                    completion(result, result.error)
+        return AsyncThrowingStream { [weak self] continuation in
+            Task {
+                guard let self else {
+                    continuation.finish()
+                    return
                 }
-            } catch {
-                completion(result, error)
+
+                var didYieldError = false
+
+                do {
+                    try await self.throttleUpdateResultText(
+                        textStream,
+                        queryType: self.supportedQueryType(),
+                        error: nil
+                    ) { result in
+                        if result.error != nil {
+                            didYieldError = true
+                        }
+                        continuation.yield(result)
+                    }
+                    continuation.finish()
+                } catch {
+                    if !didYieldError {
+                        let errorResult = self.result ?? QueryResult()
+                        if self.result == nil {
+                            self.result = errorResult
+                        }
+                        if errorResult.error == nil {
+                            errorResult.error = QueryError.queryError(from: error)
+                        }
+                        continuation.yield(errorResult)
+                    }
+                    continuation.finish(throwing: error)
+                }
             }
         }
     }
@@ -346,9 +399,6 @@ public class StreamService: QueryService {
 
         return .translation
     }
-
-    /// Cancel stream request manually.
-    func cancelStream() {}
 
     /// Content stream translate.
     /// Content is the original delta text.

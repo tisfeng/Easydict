@@ -8,10 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZLayoutManager.h"
-#import "EZQueryModel.h"
-#import "EZQueryResult.h"
 #import "EZTitlebar.h"
 #import "EZTableTipsCell.h"
+#import "EZLanguageModel.h"
+
+@class EZQueryModel;
+@class EZQueryResult;
+@class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
 

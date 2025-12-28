@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZEnumTypes.h"
-#import "EZQueryResult.h"
 
 @class EZQueryService;
+@class EZWordPhonetic;
 
 NS_ASSUME_NONNULL_BEGIN
 

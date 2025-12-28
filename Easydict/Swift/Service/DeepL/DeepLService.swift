@@ -9,6 +9,7 @@
 import AFNetworking
 import Defaults
 import Foundation
+import SwiftUI
 
 private let kDeepLTranslateURL = "https://www.deepl.com/translator"
 
@@ -17,6 +18,30 @@ private let kDeepLTranslateURL = "https://www.deepl.com/translator"
 @objc(EZDeepLTranslate)
 @objcMembers
 class DeepLService: QueryService {
+    // MARK: Open
+
+    /// Returns configuration items for the DeepL service settings view.
+    open override func configurationListItems() -> Any? {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.deepLAuth]) {
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.deepl.auth_key.title",
+                key: .deepLAuth
+            )
+
+            InputCell(
+                textFieldTitleKey: "service.configuration.deepl.endpoint.title",
+                key: .deepLTranslateEndPointKey,
+                placeholder: "service.configuration.deepl.endpoint.placeholder"
+            )
+
+            StaticPickerCell(
+                titleKey: "service.configuration.deepl.translation.title",
+                key: .deepLTranslation,
+                values: DeepLAPIUsagePriority.allCases
+            )
+        }
+    }
+
     // MARK: Internal
 
     // MARK: - Service Type & Configuration
@@ -36,7 +61,7 @@ class DeepLService: QueryService {
     // MARK: - Word Link
 
     /// https://www.deepl.com/translator#en/zh/good
-    override func wordLink(_ queryModel: EZQueryModel) -> String? {
+    override func wordLink(_ queryModel: QueryModel) -> String? {
         guard var from = languageCode(for: queryModel.queryFromLanguage),
               let to = languageCode(for: queryModel.queryTargetLanguage)
         else { return nil }
@@ -106,16 +131,27 @@ class DeepLService: QueryService {
 
     // MARK: - Translate
 
+    /// Translate text using DeepL API or web fallback.
     override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
-    ) {
-        if apiType == .webFirst {
-            deepLWebTranslate(text, from: from, to: to, completion: completion)
-        } else {
-            deepLTranslate(text, from: from, to: to, completion: completion)
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await withCheckedThrowingContinuation { continuation in
+            let completion: (QueryResult, Error?) -> () = { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+
+            if apiType == .webFirst {
+                deepLWebTranslate(text, from: from, to: to, completion: completion)
+            } else {
+                deepLTranslate(text, from: from, to: to, completion: completion)
+            }
         }
     }
 
@@ -140,6 +176,35 @@ class DeepLService: QueryService {
     private var deepLTranslateEndPoint: String {
         // easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
         Defaults[.deepLTranslateEndPointKey]
+    }
+}
+
+// MARK: - DeepLAPIUsagePriority
+
+/// Defines how DeepL API usage is prioritized.
+enum DeepLAPIUsagePriority: String, CaseIterable {
+    case webFirst = "0"
+    case authKeyFirst = "1"
+    case authKeyOnly = "2"
+}
+
+// MARK: Defaults.Serializable
+
+extension DeepLAPIUsagePriority: Defaults.Serializable {}
+
+// MARK: EnumLocalizedStringConvertible
+
+extension DeepLAPIUsagePriority: EnumLocalizedStringConvertible {
+    /// Localized title for the API usage priority.
+    var title: LocalizedStringKey {
+        switch self {
+        case .webFirst:
+            "service.configuration.deepl.web_first.title"
+        case .authKeyFirst:
+            "service.configuration.deepl.authkey_first.title"
+        case .authKeyOnly:
+            "service.configuration.deepl.authkey_only.title"
+        }
     }
 }
 

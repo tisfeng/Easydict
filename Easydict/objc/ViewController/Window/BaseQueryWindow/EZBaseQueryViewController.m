@@ -13,13 +13,10 @@
 #import "EZSelectLanguageCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
-#import "EZServiceTypes.h"
+#import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
-#import "EZLog.h"
-#import "EZLocalStorage.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"
-#import "EZBaiduTranslate.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
 #import "EZEventMonitor.h"
@@ -127,7 +124,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)viewWillAppear {
     [super viewWillAppear];
 
-    [EZLog logWindowAppear:self.windowType];
+    [EZAnalyticsService logWindowAppear:self.windowType];
 }
 
 
@@ -179,7 +176,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [defaultCenter addObserver:self
                       selector:@selector(handleServiceUpdate:)
-                          name:EZServiceHasUpdatedNotification
+                          name:NSNotification.serviceHasUpdated
                         object:nil];
 
     [defaultCenter addObserver:self
@@ -305,9 +302,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    EZWindowType windowType = [userInfo[EZWindowTypeKey] integerValue];
-    NSString *serviceType = userInfo[EZServiceTypeKey];
-    BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
+    EZWindowType windowType = [userInfo[UserInfoKey.windowType] integerValue];
+    NSString *serviceType = userInfo[UserInfoKey.serviceType];
+    BOOL autoQuery = [userInfo[UserInfoKey.autoQuery] boolValue];
 
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
 
@@ -431,7 +428,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (EZQueryService *)defaultTTSService {
     EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
-        _defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
+        _defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
     }
     return _defaultTTSService;
 }
@@ -524,7 +521,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             @"detectedLanguage" : queryModel.detectedLanguage,
             @"actionType" : actionType,
         };
-        [EZLog logEventWithName:@"ocr" parameters:dict];
+        [EZAnalyticsService logEventWithName:@"ocr" parameters:dict];
 
 
         if (actionType == EZActionTypeScreenshotOCR) {
@@ -857,7 +854,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self updateCellWithResult:result reloadData:YES];
 
         if (service.autoCopyTranslatedTextBlock) {
-            service.autoCopyTranslatedTextBlock(result, error);
+            BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
+            if (shouldAutoCopy) {
+                service.autoCopyTranslatedTextBlock(result, error);
+            }
         }
     }];
 }
@@ -885,7 +885,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [self updateResultLoadingAnimation:result];
 
-    [service startQuery:queryModel completion:completion];
+    [service startQueryStream:queryModel completionHandler:completion];
 
     [EZLocalStorage.shared increaseQueryService:service];
 }
@@ -1050,7 +1050,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryResult *result in results) {
         // !!!: Render webView html takes a little time(~0.5s), so we stop loading when webView finished loading.
         BOOL isFinished = YES;
-        if (result.isShowing && result.HTMLString.length) {
+        if (result.isShowing && result.htmlString.length) {
             isFinished = result.webViewManager.wordResultViewHeight > 0;
         }
         result.isLoading = !isFinished;
@@ -1455,7 +1455,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 @"autoDetect" : detectedLanguage,
                 @"userSelect" : language,
             };
-            [EZLog logEventWithName:@"change_detected_language" parameters:dict];
+            [EZAnalyticsService logEventWithName:@"change_detected_language" parameters:dict];
         }
     }];
 
@@ -1483,7 +1483,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         webView = webViewManager.webView;
         resultCell.wordResultView.webView = webView;
 
-        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !webViewManager.isLoaded;
+        BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
             webViewManager.isLoaded = YES;
 
@@ -1711,7 +1711,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     [service setAutoCopyTranslatedTextBlock:^(EZQueryResult *result, NSError *error) {
-        if (!result.HTMLString.length) {
+        if (!result.htmlString.length) {
             [result.copiedText copyToPasteboard];
             return;
         }
