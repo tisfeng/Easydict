@@ -57,6 +57,11 @@ class ScreenshotState: ObservableObject {
 
         removeMonitor()
     }
+    
+    /// Clean up resources to help with memory management
+    func cleanup() {
+        reset()
+    }
 
     // MARK: - State Management
 

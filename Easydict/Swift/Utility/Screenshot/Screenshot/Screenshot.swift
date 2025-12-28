@@ -82,6 +82,9 @@ class Screenshot: NSObject {
 
         hideAllOverlayWindows()
         removeEventMonitor()
+        
+        // Clean up all overlay view states to release background images
+        overlayViewStates.values.forEach { $0.cleanup() }
         overlayViewStates.removeAll()
     }
 

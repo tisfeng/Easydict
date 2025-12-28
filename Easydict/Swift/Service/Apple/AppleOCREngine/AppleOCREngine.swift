@@ -55,8 +55,8 @@ public class AppleOCREngine: NSObject {
 
         try? image.savePNG(toPath: OCRConstants.snipImageFileURL.path())
 
-        // Convert NSImage to CGImage
-        guard let cgImage = image.toCGImage() else {
+        // Convert NSImage to CGImage in autoreleasepool
+        guard let cgImage = autoreleasepool(invoking: { image.toCGImage() }) else {
             throw QueryError.error(
                 type: .parameter, message: "Failed to convert NSImage to CGImage"
             )
@@ -271,11 +271,14 @@ public class AppleOCREngine: NSObject {
             // Perform request on background queue
             // Note: We use DispatchQueue instead of Task.detached to avoid potential issues
             DispatchQueue.global().async {
-                do {
-                    try requestHandler.perform([request])
-                } catch {
-                    let queryError = QueryError.queryError(from: error, type: .api)!
-                    continuation.resume(throwing: queryError)
+                // Wrap Vision request in autoreleasepool for better memory management
+                autoreleasepool {
+                    do {
+                        try requestHandler.perform([request])
+                    } catch {
+                        let queryError = QueryError.queryError(from: error, type: .api)!
+                        continuation.resume(throwing: queryError)
+                    }
                 }
             }
         }
@@ -477,7 +480,10 @@ public class AppleOCREngine: NSObject {
 
         do {
             // Perform OCR using the new async API - returns [RecognizedText]
-            let recognizedTexts = try await request.perform(on: cgImage)
+            // Wrap in autoreleasepool to release temporary objects promptly
+            let recognizedTexts = try await autoreleasepool {
+                try await request.perform(on: cgImage)
+            }
 
             if recognizedTexts.isEmpty {
                 logInfo("No text recognized in the image with language: \(language)")
