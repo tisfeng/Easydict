@@ -25,7 +25,7 @@ extension YoudaoService {
     ) async throws
         -> EZOCRResult {
         let imageData: Data
-        if let pngData = image.pngData {
+        if let pngData = image.pngData() {
             imageData = pngData
         } else {
             throw QueryError(type: .parameter, message: "Failed to get PNG data from image")
