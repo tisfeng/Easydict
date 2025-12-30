@@ -51,7 +51,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
-@property (nonatomic, assign) EZTriggerType frontmostAppTriggerType;
 @property (nonatomic, assign) BOOL isPopButtonVisible;
 
 @property (nonatomic, strong) NSEvent *event;
@@ -83,8 +82,9 @@ static EZEventMonitor *_instance = nil;
     self.triggerType = EZTriggerTypeNone;
 }
 
-- (EZTriggerType)frontmostAppTriggerType {
-    NSArray<AppTriggerConfig *> *defaultAppModelList = [self defaultAppModelList];
+/// Return the trigger type for the frontmost app with the provided force-get-selected-text strategy.
+- (EZTriggerType)frontmostAppTriggerType:(ForceGetSelectedTextType)forceGetSelectedTextType {
+    NSArray<AppTriggerConfig *> *defaultAppModelList = [self defaultAppTriggerList:forceGetSelectedTextType];
     NSArray<AppTriggerConfig *> *userAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
 
     self.frontmostApplication = [self getFrontmostApp];
@@ -114,24 +114,31 @@ static EZEventMonitor *_instance = nil;
     return triggerType;
 }
 
-- (NSArray<AppTriggerConfig *> *)defaultAppModelList {
-    NSMutableArray *defaultAppModels = [NSMutableArray array];
-
-    // When use simulated key to get selected text, add wechat to default app list.
-    if (MyConfiguration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeSimulatedShortcutCopy) {
+/// Return the default app trigger list for the provided force-get-selected-text strategy.
+- (NSArray<AppTriggerConfig *> *)defaultAppTriggerList:(ForceGetSelectedTextType)forceGetSelectedTextType {
+    NSMutableArray *appTriggerList = [NSMutableArray array];
+    
         /**
+         If enabling "Menu Action Copy" to get selected text, when using drag to select text in WeChat, if WeChat's multiple message selection is triggered, and no text is selected, the copy menu item is disabled, so it will use simulated shortcut key cmd + c to get selected text.
+         
+            But WeChat overrides the behavior of cmd + c, which will cause the multiple message selection state to be lost.
+         
+            This will lead to abnormal behavior and affect user experience, so drag to select text is not enabled for WeChat.
+         
          FIX https://github.com/tisfeng/Easydict/issues/123
 
          And WeChat does not support Shift select text, so please use shortcut key to instead.
-         */
+        */
+    
+    if (forceGetSelectedTextType == ForceGetSelectedTextTypeSimulatedShortcutCopy) {
         AppTriggerConfig *wechat = [[AppTriggerConfig alloc] init];
         wechat.appBundleID = @"com.tencent.xinWeChat";
         wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
-
-        [defaultAppModels addObject:wechat];
+        
+        [appTriggerList addObject:wechat];
     }
 
-    return defaultAppModels;
+    return appTriggerList;
 }
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
@@ -394,6 +401,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     self.selectTextType = EZSelectTextTypeSimulatedKey;
 
+    ForceGetSelectedTextType forceGetSelectedTextType = ForceGetSelectedTextTypeSimulatedShortcutCopy;
+    EZTriggerType frontmostTriggerType = [self frontmostAppTriggerType:forceGetSelectedTextType];
+    if (!(frontmostTriggerType & self.triggerType)) {
+        MMLogInfo(@"Frontmost app trigger type does not contain current trigger type: %@", @(self.triggerType));
+        return completion(nil);
+    }
+    
     // After muting alert volume, get selected text by simulated key.
     [EZSystemUtility.shared getSelectedTextWithStrategy:EZTextStrategyShortcut
                                       completionHandler:^(NSString *selectedText, NSError *error) {
@@ -415,7 +429,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Get selected text by simulated key first, if failed, use menu bar action copy.
 - (void)getSelectedTextBySimulatedKeyFirst:(void (^)(NSString *_Nullable))completion {
     MMLogInfo(@"Get selected text by simulated key first");
-
+    
     [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
         if (text.length > 0) {
             completion(text);
@@ -434,6 +448,13 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)getSelectedTextByMenuBarActionCopyFirst:(void (^)(NSString *_Nullable))completion {
     MMLogInfo(@"Get selected text by menu bar action copy first");
 
+    ForceGetSelectedTextType forceGetSelectedTextType = ForceGetSelectedTextTypeMenuBarActionCopy;
+    EZTriggerType frontmostTriggerType = [self frontmostAppTriggerType:forceGetSelectedTextType];
+    if (!(frontmostTriggerType & self.triggerType)) {
+        MMLogInfo(@"Frontmost app trigger type does not contain current trigger type: %@", @(self.triggerType));
+        return completion(nil);
+    }
+    
     [self getSelectedTextByMenuBarActionCopy:^(NSString *_Nullable text, NSError *_Nullable error) {
         NSString *trimText = [text ns_trim];
 
@@ -707,7 +728,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
             if ([self checkIfLeftMouseDragged]) {
                 self.triggerType = EZTriggerTypeDragged;
-                if (self.frontmostAppTriggerType & self.triggerType) {
+                EZTriggerType frontmostTriggerType = [self frontmostAppTriggerType:MyConfiguration.shared.forceGetSelectedTextType];
+                if (frontmostTriggerType & self.triggerType) {
                     [self autoGetSelectedText];
                 }
             }
@@ -851,23 +873,25 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     // FIXME: Since use Accessibility to get selected text in Chrome immediately by double click may fail, so we delay a little.
 
+    EZTriggerType frontmostTriggerType = [self frontmostAppTriggerType:MyConfiguration.shared.forceGetSelectedTextType];
+
     // Check if it is a double or triple click.
     if (event.clickCount == 2) {
         self.triggerType = EZTriggerTypeDoubleClick;
-        if (self.frontmostAppTriggerType & self.triggerType) {
+        if (frontmostTriggerType & self.triggerType) {
             // Delay more time, in case it is a triple click, we don't want to get selected text twice.
             [self delayGetSelectedText:0.2];
         }
     } else if (event.clickCount == 3) {
         self.triggerType = EZTriggerTypeTripleClick;
-        if (self.frontmostAppTriggerType & self.triggerType) {
+        if (frontmostTriggerType & self.triggerType) {
             // Cancel former double click selected text.
             [self cancelDelayGetSelectedText];
             [self delayGetSelectedText];
         }
     } else if (event.modifierFlags & NSEventModifierFlagShift) {
         self.triggerType = EZTriggerTypeShift;
-        if (self.frontmostAppTriggerType & self.triggerType) {
+        if (frontmostTriggerType & self.triggerType) {
             // Shift + Left mouse button pressed.
             [self delayGetSelectedText];
         }
