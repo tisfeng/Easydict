@@ -1,6 +1,6 @@
 //
 //  OCRImageTests.swift
-//  EasydictSwiftTests
+//  ScocoTests
 //
 //  Created by tisfeng on 2025/7/7.
 //  Copyright © 2025 izual. All rights reserved.
@@ -19,7 +19,7 @@ import Testing
 ///
 /// These tests validate the OCR functionality against a comprehensive collection of
 /// test images covering different languages, text types, and document formats.
-/// The test images are located in Resources/OCRImages within the test bundle and include:
+/// The test images are located in the ocr-images directory and include:
 /// - English text samples (papers, letters, lists)
 /// - Chinese text samples (traditional and simplified)
 /// - Japanese text samples
@@ -40,7 +40,7 @@ struct OCRImageTests {
     )
     func testAllOCRImages() async throws {
         for sample in OCRTestSample.allCases {
-            await testOCR(sample: sample)
+            try await testOCR(sample: sample)
         }
     }
 
@@ -48,7 +48,7 @@ struct OCRImageTests {
 
     @Test("One Test", .tags(.ocr))
     func test() async throws {
-        await testOCR(sample: .zhTextBitcoin, language: .auto)
+        try await testOCR(sample: .zhTextBitcoin, language: .auto)
     }
 
     // MARK: - Test auto language OCR
@@ -60,7 +60,7 @@ struct OCRImageTests {
             .jaText4,
         ]
         for sample in samples {
-            await testOCR(sample: sample, language: .auto)
+            try await testOCR(sample: sample, language: .auto)
         }
     }
 
@@ -69,7 +69,7 @@ struct OCRImageTests {
     @Test("English OCR Test", .tags(.ocr))
     func testEnglishOCR() async throws {
         for sample in OCRTestSample.englishCases {
-            await testOCR(sample: sample, language: .english)
+            try await testOCR(sample: sample, language: .english)
         }
     }
 
@@ -82,7 +82,7 @@ struct OCRImageTests {
             // OCR image may contain many sections with different languages,
             // use .auto to let OCR engine detect each section's language automatically.
             // .zhTextBitcoin is a mixed language text, so we use .auto here.
-            await testOCR(sample: sample, language: .auto)
+            try await testOCR(sample: sample, language: .auto)
         }
     }
 
@@ -91,7 +91,7 @@ struct OCRImageTests {
     @Test("Classical Chinese OCR Test", .tags(.ocr))
     func testClassicalChineseOCR() async throws {
         for sample in OCRTestSample.classicalChineseCases {
-            await testOCR(sample: sample, language: .classicalChinese)
+            try await testOCR(sample: sample, language: .classicalChinese)
         }
     }
 
@@ -100,7 +100,7 @@ struct OCRImageTests {
     @Test("Japanese OCR Test", .tags(.ocr))
     func testJapaneseOCR() async throws {
         for sample in OCRTestSample.japaneseCases {
-            await testOCR(sample: sample, language: .auto)
+            try await testOCR(sample: sample, language: .japanese)
         }
     }
 
@@ -109,7 +109,7 @@ struct OCRImageTests {
     @Test("Other Language OCR Test", .tags(.ocr))
     func testOtherLanguageOCR() async throws {
         for sample in OCRTestSample.otherLanguageCases {
-            await testOCR(sample: sample, language: .auto)
+            try await testOCR(sample: sample, language: .auto)
         }
     }
 
@@ -119,10 +119,10 @@ struct OCRImageTests {
     @Test("OCR Performance Test One", .tags(.ocr, .performance))
     func testOCRPerformanceOne() async throws {
         // One time cost 2.17s but 3.26s in whole test suite
-        //        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 3.5)
+        //        try await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 3.5)
 
         // One time cost 1.30s but 2.89s in whole test suite
-        //        await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 3.0)
+        //        try await measureOCRPerformance(sample: .zhClassicalPoetry1, language: .auto, expectedCost: 3.0)
     }
 
     @Test(
@@ -132,9 +132,9 @@ struct OCRImageTests {
     )
     func testOCRPerformance() async throws {
         // Cost time: 1.92s
-        await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.0)
+        try await measureOCRPerformance(sample: .enPaper1, language: .auto, expectedCost: 2.0)
         // Cost time: 1.32s
-        await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
+        try await measureOCRPerformance(sample: .enPaper1, language: .english, expectedCost: 1.5)
     }
 
     // MARK: Private
@@ -153,14 +153,11 @@ struct OCRImageTests {
         language: Language = .auto,
         iterations: Int = 1,
         expectedCost: TimeInterval
-    ) async {
+    ) async throws {
         let imageName = sample.imageName
 
         // Load test image
-        guard let image = NSImage.loadTestImage(named: imageName) else {
-            Issue.record("Failed to load test image: \(imageName)")
-            return
-        }
+        let image = try NSImage.loadTestImage(named: imageName)
 
         var totalTime: TimeInterval = 0
         var results: [String] = []
@@ -215,13 +212,10 @@ struct OCRImageTests {
     /// Helper function to run OCR on a given image and compare with expected result.
     ///
     /// - Parameter named: The name of the image file in the test bundle.
-    private func testOCR(sample: OCRTestSample, language: Language = .auto) async {
+    private func testOCR(sample: OCRTestSample, language: Language = .auto) async throws {
         let imageName = sample.imageName
         // Load test image
-        guard let image = NSImage.loadTestImage(named: imageName) else {
-            Issue.record("Failed to load test image: \(imageName)")
-            return
-        }
+        let image = try NSImage.loadTestImage(named: imageName)
 
         do {
             // Perform OCR

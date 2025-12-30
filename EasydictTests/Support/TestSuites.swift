@@ -83,6 +83,9 @@ extension Tag {
     /// Utility functions (通用工具函数)
     @Tag static var utilities: Self
 
+    /// Screenshot functionality (截图功能)
+    @Tag static var screenshot: Self
+
     // MARK: - Test Type Tags (测试类型标签)
 
     /// Unit tests: test individual functions/methods, fast, no external dependencies

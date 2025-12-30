@@ -34,32 +34,42 @@ extension NSImage {
 
     // MARK: - Image Loading
 
-    /// Load test image from test bundle resources
-    /// - Parameters:
-    ///   - imageName: Name of the image file in the bundle
-    ///   - subdirectory: Resource subdirectory relative to the test bundle
-    /// - Returns: NSImage instance or nil if loading fails
-    static func loadTestImage(named imageName: String, subdirectory: String = "OCRImages") -> NSImage? {
-        let baseName = (imageName as NSString).deletingPathExtension
-        let fileExtension = (imageName as NSString).pathExtension
+    enum LoadingError: Error, CustomStringConvertible {
+        case imageNotFound(name: String)
+        case failedToLoad(name: String, path: String)
 
-        let imageURL = testBundle.url(
-            forResource: baseName,
-            withExtension: fileExtension,
-            subdirectory: subdirectory
-        ) ?? testBundle.url(forResource: baseName, withExtension: fileExtension)
+        // MARK: Internal
 
-        guard let imageURL else {
+        var description: String {
+            switch self {
+            case let .imageNotFound(name):
+                return "Could not find image path for: \(name)"
+            case let .failedToLoad(name, path):
+                return "Could not load image \(name) from path: \(path)"
+            }
+        }
+    }
+
+    /// Load test image from bundle
+    /// - Parameter imageName: Name of the image file in Resources directory
+    /// - Returns: NSImage instance
+    /// - Throws: LoadingError if image cannot be found or loaded
+    static func loadTestImage(named imageName: String) throws -> NSImage {
+        guard let imagePath = testBundle.path(
+            forResource: imageName.components(separatedBy: ".").first,
+            ofType: imageName.components(separatedBy: ".").last
+        )
+        else {
             print("❌ Could not find image path for: \(imageName)")
-            return nil
+            throw LoadingError.imageNotFound(name: imageName)
         }
 
-        guard let image = NSImage(contentsOf: imageURL) else {
-            print("❌ Could not load image from path: \(imageURL.path)")
-            return nil
+        guard let image = NSImage(contentsOfFile: imagePath) else {
+            print("❌ Could not load image from path: \(imagePath)")
+            throw LoadingError.failedToLoad(name: imageName, path: imagePath)
         }
 
-        print("✅ Loaded image: \(imageName) from \(imageURL.path)")
+        print("✅ Loaded image: \(imageName) from \(imagePath)")
         return image
     }
 }
