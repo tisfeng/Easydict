@@ -70,7 +70,7 @@ class YoudaoService: QueryService {
     }
 
     override func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
+        MyConfiguration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
     // TODO: add configuration UI

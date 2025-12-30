@@ -11,7 +11,7 @@
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZWindowType.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZResultView ()
 

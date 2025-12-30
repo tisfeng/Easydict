@@ -7,13 +7,12 @@
 //
 
 #import "EZDetectManager.h"
-#import "Easydict-Swift.h"
 
 @interface EZDetectManager ()
 
 @property (nonatomic, strong) EZAppleService *appleService;
 
-@property (nonatomic, strong) GoogleService *googleService;
+@property (nonatomic, strong) EZGoogleService *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
 @property (nonatomic, strong) EZYoudaoService *youdaoService;
 
@@ -51,9 +50,9 @@
     return _ocrService;
 }
 
-- (GoogleService *)googleService {
+- (EZGoogleService *)googleService {
     if (!_googleService) {
-        _googleService = [[GoogleService alloc] init];
+        _googleService = [[EZGoogleService alloc] init];
     }
     return _googleService;
 }
@@ -102,7 +101,7 @@
 
     [self.appleService detectText:queryText completionHandler:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager.shared preferredLanguages] mutableCopy];
-        LanguageDetectOptimize languageDetectOptimize = Configuration.shared.languageDetectOptimize;
+        LanguageDetectOptimize languageDetectOptimize = MyConfiguration.shared.languageDetectOptimize;
 
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[
@@ -233,7 +232,7 @@
      Sometimes Apple OCR may fail, like Japanese text, but we have set Japanese as preferred language and OCR again when OCR result is empty, currently it seems work, but we do not guarantee it is always work in other languages.
      */
 
-    if (Configuration.shared.enableYoudaoOCR) {
+    if (MyConfiguration.shared.enableYoudaoOCR) {
         [self.youdaoService ocr:self.queryModel completionHandler:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
             if (!youdaoOCRError) {
                 completion(youdaoOCRResult, nil);

@@ -26,7 +26,6 @@
 #import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
-#import "Easydict-Swift.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -54,7 +53,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if (self) {
         self.wantsLayer = YES;
         self.layer.cornerRadius = EZCornerRadius_8;
-        self.fontSizeRatio = Configuration.shared.fontSizeRatio;
+        self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
         [self.layer executeLight:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
@@ -67,7 +66,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 // TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
-    self.fontSizeRatio = Configuration.shared.fontSizeRatio;
+    self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
 
     EZTranslateWordResult *wordResult = result.wordResult;
     self.webView = result.webViewManager.webView;
@@ -779,14 +778,14 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             language = result.to;
         }
 
-        EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
+        EZServiceType defaultTTSServiceType = MyConfiguration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
 
         // Determine accent based on user preference if language is English
         NSString *accentToUse = nil;
         if ([language isEqualToString:EZLanguageEnglish]) {
             // Assuming EnglishPronunciationUk is accessible, similar to EZBaseQueryViewController
-            if (Configuration.shared.pronunciation == EnglishPronunciationUk) {
+            if (MyConfiguration.shared.pronunciation == EnglishPronunciationUk) {
                 accentToUse = @"uk";
             } else {
                 accentToUse = @"us";

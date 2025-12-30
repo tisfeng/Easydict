@@ -7,7 +7,7 @@
 //
 
 #import "EZEnumTypes.h"
-#import "Easydict-Swift.h"
+
 #import "OrderedDictionary+Variadic.h"
 
 #pragma mark - EZServiceType

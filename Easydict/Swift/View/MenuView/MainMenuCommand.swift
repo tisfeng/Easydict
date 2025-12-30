@@ -34,7 +34,7 @@ struct EasydictMainMenu: Commands {
         // Check for updates
         CommandGroup(after: .appInfo, addition: {
             Button {
-                Configuration.shared.updater.checkForUpdates()
+                MyConfiguration.shared.updater.checkForUpdates()
             } label: {
                 Text("check_updates")
             }

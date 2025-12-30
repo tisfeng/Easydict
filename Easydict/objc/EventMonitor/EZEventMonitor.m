@@ -10,7 +10,7 @@
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
-#import "Easydict-Swift.h"
+
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
@@ -118,7 +118,7 @@ static EZEventMonitor *_instance = nil;
     NSMutableArray *defaultAppModels = [NSMutableArray array];
 
     // When use simulated key to get selected text, add wechat to default app list.
-    if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeSimulatedShortcutCopy) {
+    if (MyConfiguration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeSimulatedShortcutCopy) {
         /**
          FIX https://github.com/tisfeng/Easydict/issues/123
 
@@ -184,7 +184,7 @@ static EZEventMonitor *_instance = nil;
         }
         return event;
     }];
-    [self addGlobalMonitor:Configuration.shared.autoSelectText];
+    [self addGlobalMonitor:MyConfiguration.shared.autoSelectText];
 }
 
 - (void)addGlobalMonitor:(BOOL)isAutoSelectTextEnabled {
@@ -290,12 +290,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         // Check if user prefer AppleScript API to get selected text.
         // Since some browsers pages may use custom controls, Accessibility may not get selected text correctly.
         // Fix https://github.com/tisfeng/Easydict/issues/944
-        BOOL preferAppleScript = Configuration.shared.preferAppleScriptAPI;
+        BOOL preferAppleScript = MyConfiguration.shared.preferAppleScriptAPI;
         
         // 1. If successfully use Accessibility to get selected text.
         if (text.length > 0) {
             // Monitor CGEventTap after successfully using Accessibility.
-            if (Configuration.shared.autoSelectText) {
+            if (MyConfiguration.shared.autoSelectText) {
                 [self monitorCGEventTap];
             }
             
@@ -369,7 +369,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Try to force get selected text when Accessibility failed.
 - (void)tryForceGetSelectedText:(void (^)(NSString *_Nullable))completion {
-    BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
+    BOOL enableForceGetSelectedText = MyConfiguration.shared.enableForceGetSelectedText;
     MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
 
     if (!enableForceGetSelectedText) {
@@ -381,7 +381,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
     // Menu bar action copy is better than simulated key in most cases, such as WeChat, Telegram, etc, but it may be not stable, some apps do not have copy menu item, like Billfish.
 
-    if (Configuration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
+    if (MyConfiguration.shared.forceGetSelectedTextType == ForceGetSelectedTextTypeMenuBarActionCopy) {
         [self getSelectedTextByMenuBarActionCopyFirst:completion];
     } else {
         [self getSelectedTextBySimulatedKeyFirst:completion];
@@ -511,7 +511,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (BOOL)enabledAutoSelectText {
-    Configuration *config = [Configuration shared];
+    MyConfiguration *config = [MyConfiguration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
     if (!enabled) {
         MMLog(@"disabled autoSelectText");
@@ -536,7 +536,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      Fix https://github.com/tisfeng/Easydict/issues/608#issuecomment-2262951479
      */
 
-    BOOL enableForceGetSelectedText = Configuration.shared.enableForceGetSelectedText;
+    BOOL enableForceGetSelectedText = MyConfiguration.shared.enableForceGetSelectedText;
     MMLogInfo(@"Enable force get selected text: %@", enableForceGetSelectedText ? @"YES" : @"NO");
     if (!enableForceGetSelectedText) {
         return NO;
@@ -554,7 +554,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
      FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
      */
-    if (isInEasydict && Configuration.shared.isRecordingSelectTextShortcutKey) {
+    if (isInEasydict && MyConfiguration.shared.isRecordingSelectTextShortcutKey) {
         return NO;
     }
 

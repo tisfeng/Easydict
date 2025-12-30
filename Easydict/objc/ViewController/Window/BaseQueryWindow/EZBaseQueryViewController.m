@@ -20,7 +20,7 @@
 #import "EZToast.h"
 #import "DictionaryKit.h"
 #import "EZEventMonitor.h"
-#import "Easydict-Swift.h"
+
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -81,7 +81,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, assign) NSInteger selectLanguageCellIndex; // 0 or 1
 @property (nonatomic, assign) NSInteger tipsCellIndex;           // 0 or 1 or 2
 
-@property (nonatomic, strong) Configuration *config;
+@property (nonatomic, strong) MyConfiguration *config;
 
 @end
 
@@ -130,7 +130,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
-    self.config = Configuration.shared;
+    self.config = MyConfiguration.shared;
 
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
 
@@ -1417,7 +1417,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
-        BOOL autoQuery = [Configuration.shared autoQueryPastedText];
+        BOOL autoQuery = [MyConfiguration.shared autoQueryPastedText];
         if (autoQuery) {
             [self startQueryText:text];
         }

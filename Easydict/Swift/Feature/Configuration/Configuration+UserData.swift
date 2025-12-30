@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Configuration {
+extension MyConfiguration {
     var userDefaultsData: [String: Any] {
         let userDefaults = UserDefaults.standard
 

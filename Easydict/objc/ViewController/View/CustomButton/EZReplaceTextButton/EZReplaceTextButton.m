@@ -8,7 +8,7 @@
 #import "EZReplaceTextButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "Easydict-Swift.h"
+
 
 @import SelectedTextKit;
 
@@ -43,7 +43,7 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
     NSString *textLengthRange = [EZAnalyticsService textLengthRange:replacementString];
-    BOOL useCompatibilityMode = Configuration.shared.enableCompatibilityReplace;
+    BOOL useCompatibilityMode = MyConfiguration.shared.enableCompatibilityReplace;
 
     NSDictionary *parameters = @{
         @"floating_window_type" : @(EZWindowManager.shared.floatingWindowType),

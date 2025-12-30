@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: Window Frame
 
-extension Configuration {
+extension MyConfiguration {
     func windowFrameWithType(_ windowType: EZWindowType) -> CGRect {
         Defaults[.windowFrame(for: windowType)]
     }
@@ -23,7 +23,7 @@ extension Configuration {
 
 // MARK: Intelligent Query Text Type of Service
 
-extension Configuration {
+extension MyConfiguration {
     func setIntelligentQueryTextType(_ queryTextType: EZQueryTextType, serviceType: ServiceType) {
         Defaults[.intelligentQueryTextType(for: serviceType)] = queryTextType
     }
@@ -35,7 +35,7 @@ extension Configuration {
 
 // MARK: Intelligent Query Text Type of Service
 
-extension Configuration {
+extension MyConfiguration {
     func setQueryTextType(_ queryTextType: EZQueryTextType, serviceType: ServiceType) {
         Defaults[.queryTextType(for: serviceType)] = queryTextType
     }
@@ -47,7 +47,7 @@ extension Configuration {
 
 // MARK: Intelligent Query Mode
 
-extension Configuration {
+extension MyConfiguration {
     func setIntelligentQueryMode(_ enabled: Bool, windowType: EZWindowType) {
         let key = EZConstKey.constkey("IntelligentQueryMode", windowType: windowType)
         let stringValue = "\(enabled)"
@@ -70,7 +70,7 @@ extension Configuration {
 
 // MARK: Window Configuration
 
-extension Configuration {
+extension MyConfiguration {
     func showInputTextField(key: WindowConfigurationKey, windowType: EZWindowType) -> Bool {
         Defaults[windowConfigurationKey(key, windowType: windowType, defaultValue: true)]
     }

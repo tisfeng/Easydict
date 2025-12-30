@@ -69,7 +69,7 @@ open class QueryService: NSObject {
                 return false
             }
 
-            if Configuration.shared.intelligentQueryModeForWindowType(windowType) {
+            if MyConfiguration.shared.intelligentQueryModeForWindowType(windowType) {
                 guard let model = queryModel else { return false }
                 let queryType = model.queryText.queryType(
                     withLanguage: model.queryFromLanguage,

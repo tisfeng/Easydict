@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "TTTDictionary.h"
-#import "Easydict-Swift.h"
+
 #import "OrderedDictionary+Variadic.h"
 #import <CoreServices/CoreServices.h>
 

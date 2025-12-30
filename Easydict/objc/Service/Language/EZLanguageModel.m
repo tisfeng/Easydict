@@ -7,7 +7,7 @@
 //
 
 #import "EZLanguageModel.h"
-#import "Easydict-Swift.h"
+
 
 NSString *const EZLanguageAuto = @"auto";
 NSString *const EZLanguageSimplifiedChinese = @"Simplified-Chinese";

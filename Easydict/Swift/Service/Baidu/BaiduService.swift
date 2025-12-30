@@ -51,12 +51,12 @@ final class BaiduService: QueryService {
 
     override func supportedQueryType() -> EZQueryTextType {
         let defaultType: EZQueryTextType = [.dictionary, .sentence, .translation]
-        let configured = Configuration.shared.queryTextTypeForServiceType(serviceType())
+        let configured = MyConfiguration.shared.queryTextTypeForServiceType(serviceType())
         return configured.isEmpty ? defaultType : configured
     }
 
     override func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
+        MyConfiguration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
     override func name() -> String {

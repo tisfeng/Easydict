@@ -163,7 +163,7 @@ class OCRSectionMerger {
         mergedText = currentText
 
         // Apply text normalization if the feature is enabled.
-        if Configuration.shared.enableOCRTextNormalization {
+        if MyConfiguration.shared.enableOCRTextNormalization {
             log("🔧 Applying text normalization...")
             mergedText = textNormalizer.normalizeText(mergedText)
         }

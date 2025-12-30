@@ -27,7 +27,7 @@ private class DisabledAppViewModel: ObservableObject {
     @Published var isImporting = false {
         didSet {
             // https://github.com/tisfeng/Easydict/issues/346
-            Configuration.shared.disabledAutoSelect = isImporting
+            MyConfiguration.shared.disabledAutoSelect = isImporting
         }
     }
 

@@ -10,7 +10,6 @@
 #import <JLRoutes.h>
 #import "EZWindowManager.h"
 #import "EZSchemeParser.h"
-#import "Easydict-Swift.h"
 
 @implementation AppDelegate (EZURLScheme)
 
@@ -70,7 +69,7 @@
 
 - (void)showFloatingWindowAndAutoQueryText:(NSString *)text {
     EZWindowManager *windowManager = [EZWindowManager shared];
-    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    EZWindowType windowType = MyConfiguration.shared.shortcutSelectTranslateWindowType;
 
     [windowManager showFloatingWindowType:windowType
                                 queryText:[text  ns_trim]
@@ -108,7 +107,7 @@
     NSURL *URL = [NSURL URLWithString:[urlString ns_encodeIncludingAmpersandSafely]];
 
     // easydict://query?text=good, easydict://query?text=你好
-    if ([URL.scheme containsString:EZEasydictScheme]) {
+    if ([URL.scheme containsString:EZAppScheme]) {
         MMLogInfo(@"handle URL: %@", URL);
     }
 
