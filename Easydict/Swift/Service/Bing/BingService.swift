@@ -48,7 +48,7 @@ class BingService: QueryService {
     // MARK: - Query Text Type
 
     override func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
+        MyConfiguration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
     // MARK: - Word Link

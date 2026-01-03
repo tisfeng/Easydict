@@ -14,6 +14,7 @@ private let kGoogleTranslateURL = "https://translate.google.com"
 
 // MARK: - GoogleService
 
+@objc(EZGoogleService)
 class GoogleService: QueryService {
     // MARK: - JavaScript Context
 
@@ -117,7 +118,7 @@ class GoogleService: QueryService {
     }
 
     override func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
+        MyConfiguration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
     override func name() -> String {

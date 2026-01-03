@@ -7,7 +7,6 @@
 //
 
 #import "EZSchemeParser.h"
-#import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
 
@@ -72,7 +71,7 @@
     NSString *urlString = [text ns_trim];
     NSURLComponents *urlComponents = [NSURLComponents componentsWithString:urlString];
     NSString *scheme = urlComponents.scheme;
-    NSArray *schemes = @[EZEasydictScheme, EZEasydictDebugScheme];
+    NSArray *schemes = @[EZAppScheme, EZAppDebugScheme];
     return [schemes containsObject:scheme];
 }
 
@@ -104,14 +103,14 @@
         NSString *value = keyValues[key];
         handled = [self enabledReadWriteKey:key];
         if (handled) {
-            Configuration *config = [Configuration shared];
+            MyConfiguration *config = [MyConfiguration shared];
             BOOL isBeta = config.beta;
             
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
             
             // If enabling beta feature, setup beta features.
             if (!isBeta && config.beta) {
-                [Configuration.shared enableBetaFeaturesIfNeeded];
+                [MyConfiguration.shared enableBetaFeaturesIfNeeded];
             }
         }
     }
@@ -148,15 +147,15 @@
 
 - (void)resetUserDefaultsData {
     // easydict://resetUserDefaultsData
-    [Configuration.shared resetUserDefaultsData];
+    [MyConfiguration.shared resetUserDefaultsData];
     
     [EZLocalStorage destroySharedInstance];
-    [Configuration destroySharedInstance];
+    [MyConfiguration destroySharedInstance];
 }
 
 - (void)saveUserDefaultsDataToDownloadFolder {
     // easydict://saveUserDefaultsDataToDownloadFolder
-    [Configuration.shared saveUserDefaultsDataToDownloadFolder];
+    [MyConfiguration.shared saveUserDefaultsDataToDownloadFolder];
 }
 
 

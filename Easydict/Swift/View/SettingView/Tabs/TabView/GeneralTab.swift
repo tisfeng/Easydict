@@ -34,7 +34,7 @@ struct GeneralTab: View {
 
         // MARK: Private
 
-        private let updater = Configuration.shared.updater
+        private let updater = MyConfiguration.shared.updater
     }
 
     @Environment(\.colorScheme) var colorScheme
@@ -130,7 +130,7 @@ struct GeneralTab: View {
                     }
                     Spacer()
                     Button("check_now") {
-                        Configuration.shared.updater.checkForUpdates()
+                        MyConfiguration.shared.updater.checkForUpdates()
                     }
                 }
 

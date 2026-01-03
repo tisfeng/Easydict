@@ -7,7 +7,7 @@
 //
 
 #import "OrderedDictionary+Variadic.h"
-#import "Easydict-Swift.h"
+
 
 @implementation MMOrderedDictionary (Variadic)
 

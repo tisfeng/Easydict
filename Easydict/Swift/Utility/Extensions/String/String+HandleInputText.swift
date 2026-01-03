@@ -126,17 +126,17 @@ extension NSString {
         var queryText = self as NSString
 
         // Apply automatic word segmentation
-        if Configuration.shared.automaticWordSegmentation {
+        if MyConfiguration.shared.automaticWordSegmentation {
             queryText = queryText.segmentWords()
         }
 
         // Remove comment blocks if enabled
-        if Configuration.shared.automaticallyRemoveCodeCommentSymbols {
+        if MyConfiguration.shared.automaticallyRemoveCodeCommentSymbols {
             queryText = queryText.removeCommentBlockSymbols()
         }
 
         // Replace newlines with whitespace if enabled
-        if Configuration.shared.replaceNewlineWithSpace {
+        if MyConfiguration.shared.replaceNewlineWithSpace {
             queryText = queryText.replacingNewlinesWithWhitespace()
         }
 

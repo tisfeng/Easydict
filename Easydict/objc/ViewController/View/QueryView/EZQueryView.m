@@ -17,7 +17,7 @@
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -73,7 +73,7 @@
     textView.delegate = self;
     textView.textStorage.delegate = self;
     textView.textContainerInset = CGSizeMake(6, 8);
-    textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
+    textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
     
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
@@ -88,7 +88,7 @@
                                                       object:nil
                                                        queue:NSOperationQueue.mainQueue
                                                   usingBlock:^(NSNotification * _Nonnull notification) {
-        self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
+        self.textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
     }];
     
     // When programatically setting the text, like auto select text, or OCR text.

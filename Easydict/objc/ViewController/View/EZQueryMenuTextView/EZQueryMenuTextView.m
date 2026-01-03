@@ -9,7 +9,7 @@
 #import "EZQueryMenuTextView.h"
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZQueryMenuTextView ()
 
@@ -52,10 +52,10 @@
     EZWindowManager *windowManager = [EZWindowManager shared];
     EZWindowType floatingWindowType = windowManager.floatingWindowType;
 
-    if (Configuration.shared.mouseSelectTranslateWindowType == floatingWindowType) {
-        anotherWindowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    if (MyConfiguration.shared.mouseSelectTranslateWindowType == floatingWindowType) {
+        anotherWindowType = MyConfiguration.shared.shortcutSelectTranslateWindowType;
     } else {
-        anotherWindowType = Configuration.shared.mouseSelectTranslateWindowType;
+        anotherWindowType = MyConfiguration.shared.mouseSelectTranslateWindowType;
     }
 
     if (anotherWindowType != floatingWindowType) {

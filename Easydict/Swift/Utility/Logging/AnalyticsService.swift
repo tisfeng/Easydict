@@ -50,7 +50,7 @@ final class AnalyticsService: NSObject {
     /// - Parameters should use string keys and values that are compatible with analytics.
     @objc(logEventWithName:parameters:)
     static func logEvent(withName name: String, parameters: [String: Any]?) {
-        guard Configuration.shared.allowAnalytics else {
+        guard MyConfiguration.shared.allowAnalytics else {
             return
         }
 

@@ -9,7 +9,7 @@
 #import "MMLog.h"
 #import "MMConsoleLogFormatter.h"
 #import "MMFileLogFormatter.h"
-#import "Easydict-Swift.h"
+
 
 #if DEBUG
 DDLogLevel MMDefaultLogLevel = DDLogLevelAll;

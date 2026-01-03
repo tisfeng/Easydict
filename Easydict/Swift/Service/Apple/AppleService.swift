@@ -95,7 +95,7 @@ public class AppleService: QueryService {
     ) async throws
         -> QueryResult {
         // Use macOS 15+ API to translate if available
-        if #available(macOS 15.0, *), Configuration.shared.enableAppleOfflineTranslation {
+        if #available(macOS 15.0, *), MyConfiguration.shared.enableAppleOfflineTranslation {
             let service = await getTranslationService()
             if let service = service as? AppleTranslation {
                 let translatedText = try await service.translate(

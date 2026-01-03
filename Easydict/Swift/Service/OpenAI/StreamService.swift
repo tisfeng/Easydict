@@ -44,7 +44,7 @@ public class StreamService: QueryService {
     }
 
     public override func intelligentQueryTextType() -> EZQueryTextType {
-        Configuration.shared.intelligentQueryTextTypeForServiceType(serviceType())
+        MyConfiguration.shared.intelligentQueryTextTypeForServiceType(serviceType())
     }
 
     public override func supportLanguagesDictionary() -> MMOrderedDictionary {

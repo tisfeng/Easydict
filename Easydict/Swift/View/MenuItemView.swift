@@ -171,7 +171,7 @@ struct MenuItemView: View {
     @ViewBuilder private var checkUpdateItem: some View {
         Button("check_updates") {
             logInfo("Check Updates")
-            Configuration.shared.updater.checkForUpdates()
+            MyConfiguration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 
@@ -291,7 +291,7 @@ final class MenuItemStore: ObservableObject {
     // MARK: Lifecycle
 
     init() {
-        Configuration.shared.updater
+        MyConfiguration.shared.updater
             .publisher(for: \.canCheckForUpdates)
             .assign(to: &$canCheckForUpdates)
     }

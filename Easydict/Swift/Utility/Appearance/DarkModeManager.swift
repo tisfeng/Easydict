@@ -91,6 +91,6 @@ class DarkModeManager: NSObject {
     }
 
     private func handleSystemThemeChanged() {
-        updateDarkMode(Configuration.shared.appearance)
+        updateDarkMode(MyConfiguration.shared.appearance)
     }
 }

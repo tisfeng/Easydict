@@ -18,7 +18,7 @@ extension BaiduService {
         to: Language
     ) async throws
         -> EZOCRResult? {
-        guard let data = image.mm_PNGData else {
+        guard let data = image.pngData() else {
             throw QueryError.error(type: .parameter, message: "图片为空")
         }
 

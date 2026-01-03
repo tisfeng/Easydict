@@ -7,7 +7,7 @@
 //
 
 #import "NSColor+MyColors.h"
-#import "Easydict-Swift.h"
+
 
 @implementation NSColor (MyColors)
 

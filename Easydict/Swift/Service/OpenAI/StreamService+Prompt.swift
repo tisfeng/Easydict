@@ -170,7 +170,7 @@ extension StreamService {
     func sentenceMessages(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (sentence, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
-        let answerLanguage = Configuration.shared.firstLanguage
+        let answerLanguage = MyConfiguration.shared.firstLanguage
 
         var prompt = ""
         var keyWords = "Key Words"
@@ -366,7 +366,7 @@ extension StreamService {
 
         var prompt = ""
 
-        let answerLanguage = Configuration.shared.firstLanguage
+        let answerLanguage = MyConfiguration.shared.firstLanguage
 
         var pronunciation = "Pronunciation"
         var tense = "Tense"
@@ -734,7 +734,7 @@ extension StreamService {
         )
         runtimePrompt = runtimePrompt.replacingOccurrences(
             of: "${{firstLanguage}}",
-            with: Configuration.shared.firstLanguage.rawValue
+            with: MyConfiguration.shared.firstLanguage.rawValue
         )
         return runtimePrompt
     }

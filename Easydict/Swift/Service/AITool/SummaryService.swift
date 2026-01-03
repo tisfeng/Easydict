@@ -26,7 +26,7 @@ class SummaryService: AIToolService {
 
     override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (text, sourceLanguage, _, _, _) = chatQuery.unpack()
-        let answerLanguage = Configuration.shared.firstLanguage
+        let answerLanguage = MyConfiguration.shared.firstLanguage
         let prompt = summaryPrompt(
             text: text, sourceLanguage: sourceLanguage, answerLanguage: answerLanguage
         )

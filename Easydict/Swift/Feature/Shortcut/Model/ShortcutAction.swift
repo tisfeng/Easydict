@@ -254,8 +254,8 @@ extension ShortcutAction {
                 icon: .textformatAlt,
                 defaultsKey: .increaseFontSize,
                 action: {
-                    if Configuration.shared.fontSizeIndex < Configuration.shared.fontSizes.count - 1 {
-                        Configuration.shared.fontSizeIndex += 1
+                    if MyConfiguration.shared.fontSizeIndex < MyConfiguration.shared.fontSizes.count - 1 {
+                        MyConfiguration.shared.fontSizeIndex += 1
                     }
                 }
             ),
@@ -264,8 +264,8 @@ extension ShortcutAction {
                 icon: .textformatAlt,
                 defaultsKey: .decreaseFontSize,
                 action: {
-                    if Configuration.shared.fontSizeIndex > 0 {
-                        Configuration.shared.fontSizeIndex -= 1
+                    if MyConfiguration.shared.fontSizeIndex > 0 {
+                        MyConfiguration.shared.fontSizeIndex -= 1
                     }
                 }
             ),

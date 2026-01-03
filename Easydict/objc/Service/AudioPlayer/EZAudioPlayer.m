@@ -10,7 +10,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import "EZEnumTypes.h"
 #import <sys/xattr.h>
-#import "Easydict-Swift.h"
 
 static NSString *const kFileExtendedAttributes = @"NSFileExtendedAttributes";
 
@@ -122,7 +121,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 // Note that user may change it when using, so we need to read it every time.
 - (EZQueryService *)defaultTTSService {
-    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = MyConfiguration.shared.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
         EZQueryService *defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
         _defaultTTSService = defaultTTSService;

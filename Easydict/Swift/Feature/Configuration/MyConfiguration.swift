@@ -1,5 +1,5 @@
 //
-//  Configuration.swift
+//  MyConfiguration.swift
 //  Easydict
 //
 //  Created by ljk on 2024/1/2.
@@ -27,13 +27,13 @@ enum EnglishPronunciation: Int {
     case us
 }
 
-// MARK: - Configuration
+// MARK: - MyConfiguration
 
 /// Singleton class to manage application configuration settings.
 /// This class uses the `Defaults` library to persist settings and provides
 /// reactive updates using Combine.
 @objcMembers
-class Configuration: NSObject {
+class MyConfiguration: NSObject {
     // MARK: Lifecycle
 
     override private init() {
@@ -46,7 +46,7 @@ class Configuration: NSObject {
 
     // MARK: Internal
 
-    private(set) static var shared = Configuration()
+    private(set) static var shared = MyConfiguration()
 
     @DefaultsWrapper(.firstLanguage) var firstLanguage: Language
     @DefaultsWrapper(.secondLanguage) var secondLanguage: Language
@@ -152,7 +152,7 @@ class Configuration: NSObject {
     }
 
     static func destroySharedInstance() {
-        shared = Configuration()
+        shared = MyConfiguration()
     }
 
     func enableBetaFeaturesIfNeeded() {
@@ -403,7 +403,7 @@ class Configuration: NSObject {
 
 // MARK: setter
 
-extension Configuration {
+extension MyConfiguration {
     fileprivate func didSetFirstLanguage() {
         logSettings(["first_language": firstLanguage])
     }
@@ -545,7 +545,7 @@ extension Configuration {
     }
 }
 
-extension Configuration {
+extension MyConfiguration {
     fileprivate func postUpdateQuickLinkButtonNotification() {
         let notification = Notification(name: Notification.Name.linkButtonUpdated, object: nil)
         NotificationCenter.default.post(notification)
