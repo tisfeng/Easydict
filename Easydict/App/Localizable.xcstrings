@@ -7052,6 +7052,62 @@
         }
       }
     },
+    "setting.advance.hide_screenshot_tip_layer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Screenshot Tips"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť tipy pri snímke"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏截图提示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏截圖提示"
+          }
+        }
+      }
+    },
+    "setting.advance.hide_screenshot_tip_layer_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide the tip view when starting screenshot capture."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť tipy pri spustení snímania obrazovky."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始截图时隐藏提示视图。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始截圖時隱藏提示檢視。"
+          }
+        }
+      }
+    },
     "setting.advance.window_management.header" : {
       "localizations" : {
         "en" : {

@@ -167,6 +167,15 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.show_ocr_menu_items_desc"
                     )
                 }
+
+                Toggle(isOn: $isScreenshotTipLayerHidden) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        icon: .lightbulbFill,
+                        labelText: "setting.advance.hide_screenshot_tip_layer",
+                        subtitleText: "setting.advance.hide_screenshot_tip_layer_desc"
+                    )
+                }
             } header: {
                 Text("setting.advance.header.ocr_settings")
             }
@@ -379,6 +388,7 @@ struct AdvancedTab: View {
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems
+    @Default(.isScreenshotTipLayerHidden) private var isScreenshotTipLayerHidden
     @Default(.autoSelectAllTextFieldText) private var autoSelectAllTextFieldText
     @Default(.preferAppleScriptAPI) private var preferAppleScriptAPI
 

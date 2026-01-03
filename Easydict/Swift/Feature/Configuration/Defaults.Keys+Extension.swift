@@ -150,6 +150,10 @@ extension Defaults.Keys {
     static var showOCRMenuItems = Key<Bool>(
         "showOCRMenuItems", default: false
     )
+    /// Controls whether the screenshot tip layer is hidden during capture.
+    static var isScreenshotTipLayerHidden = Key<Bool>(
+        "isScreenshotTipLayerHidden", default: false
+    )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength",
