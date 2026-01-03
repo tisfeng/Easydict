@@ -439,8 +439,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 /// Recreate the query model and rebind dependent managers for background OCR.
 - (void)resetQueryModelForBackgroundOCR {
     EZQueryModel *model = [[EZQueryModel alloc] init];
-    model.userSourceLanguage = Configuration.shared.fromLanguage;
-    model.userTargetLanguage = Configuration.shared.toLanguage;
+    model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
+    model.userTargetLanguage = MyConfiguration.shared.toLanguage;
 
     self.queryModel = model;
     self.detectManager = [EZDetectManager managerWithModel:model];
