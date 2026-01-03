@@ -93,6 +93,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (instancetype)initWithWindowType:(EZWindowType)type {
+    MMLogInfo(@"init EZBaseQueryViewController with type: %@", @(type));
     if (self = [super init]) {
         self.windowType = type;
         [self setupUI];
@@ -432,7 +433,30 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     return _defaultTTSService;
 }
+
 #pragma mark - Public Methods
+
+/// Recreate the query model and rebind dependent managers for background OCR.
+- (void)resetQueryModelForBackgroundOCR {
+    EZQueryModel *model = [[EZQueryModel alloc] init];
+    model.userSourceLanguage = Configuration.shared.fromLanguage;
+    model.userTargetLanguage = Configuration.shared.toLanguage;
+
+    self.queryModel = model;
+    self.detectManager = [EZDetectManager managerWithModel:model];
+
+    for (EZQueryService *service in self.services) {
+        service.queryModel = model;
+    }
+
+    if (self.queryView) {
+        self.queryView.queryModel = model;
+    }
+
+    if (self.selectLanguageCell) {
+        self.selectLanguageCell.queryModel = model;
+    }
+}
 
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
@@ -500,6 +524,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
            actionType:(EZActionType)actionType
             autoQuery:(BOOL)autoQuery {
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
+    MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
