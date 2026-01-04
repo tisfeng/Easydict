@@ -182,3 +182,14 @@ struct ScreenshotOverlayView: View {
         }
     }
 }
+
+// MARK: - ScreenshotOverlayHostingView
+
+/// Ensures the cursor updates to a crosshair while hovering over the screenshot overlay.
+final class ScreenshotOverlayHostingView<Content: View>: NSHostingView<Content> {
+    /// Registers a crosshair cursor for the entire overlay area.
+    override func resetCursorRects() {
+        discardCursorRects()
+        addCursorRect(bounds, cursor: .crosshair)
+    }
+}
