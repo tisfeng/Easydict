@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import AppKit
 import Foundation
 import SwiftUI
 
@@ -45,6 +46,7 @@ class Screenshot: NSObject {
         }
 
         isTakingScreenshot = true
+        pushCrosshairCursor()
         setupEventMonitor()
         showOverlayWindow(completion: completion)
     }
@@ -66,6 +68,7 @@ class Screenshot: NSObject {
         cancelPreviewScreenshotTimer()
 
         isTakingScreenshot = false
+        popCrosshairCursor()
 
         // Restore focus to previous application only if shouldRestorePreviousApp is true
         if shouldRestorePreviousApp, let previousApp = previousActiveApp {
@@ -120,6 +123,28 @@ class Screenshot: NSObject {
 
     private var previousActiveApp: NSRunningApplication?
 
+    /// Tracks whether the crosshair cursor is currently pushed onto the cursor stack.
+    private var hasPushedCrosshairCursor = false
+
+    /// Applies the crosshair cursor immediately.
+    private func updateCrosshairCursor() {
+        NSCursor.crosshair.set()
+    }
+
+    private func pushCrosshairCursor() {
+        guard !hasPushedCrosshairCursor else { return }
+        NSCursor.crosshair.push()
+        updateCrosshairCursor()
+        hasPushedCrosshairCursor = true
+    }
+
+    /// Pops the crosshair cursor from the cursor stack after capture finishes.
+    private func popCrosshairCursor() {
+        guard hasPushedCrosshairCursor else { return }
+        NSCursor.pop()
+        hasPushedCrosshairCursor = false
+    }
+
     private func showOverlayWindow(completion: @escaping (NSImage?) -> ()) {
         // Store the completion handler
         captureCompletionHandler = completion
@@ -147,7 +172,7 @@ class Screenshot: NSObject {
     }
 
     private func createOverlayWindow(for screen: NSScreen) {
-        let window = NSWindow(
+        let window = ScreenshotOverlayWindow(
             contentRect: screen.frame,
             styleMask: [.borderless],
             backing: .buffered,
@@ -155,13 +180,17 @@ class Screenshot: NSObject {
         )
 
         window.level = .screenSaver
+        window.acceptsMouseMovedEvents = true
         window.backgroundColor = .clear
         window.isOpaque = false
-        window.orderFront(nil)
+        window.makeKeyAndOrderFront(nil)
 
         let state = ScreenshotState(screen: screen)
         let contentView = ScreenshotOverlayView(state: state)
-        window.contentView = NSHostingView(rootView: contentView)
+        window.contentView = ScreenshotOverlayHostingView(rootView: contentView)
+        if let contentView = window.contentView {
+            window.invalidateCursorRects(for: contentView)
+        }
 
         overlayWindows[screen] = window
         overlayViewStates[screen] = state
@@ -172,5 +201,18 @@ class Screenshot: NSObject {
             window.orderOut(nil)
         }
         overlayWindows.removeAll()
+    }
+}
+
+// MARK: - ScreenshotOverlayWindow
+
+/// A borderless overlay window that can become key and main for cursor updates.
+final class ScreenshotOverlayWindow: NSWindow {
+    override var canBecomeKey: Bool {
+        true
+    }
+
+    override var canBecomeMain: Bool {
+        true
     }
 }
