@@ -170,8 +170,13 @@
         completion(nil, error);
         return;
     }
-
-    [self.ocrService ocr:self.queryModel completionHandler:completion];
+    
+    [self.ocrService ocr:self.queryModel completionHandler:^(EZOCRResult *ocrResult, NSError *error) {
+        // call back on main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(ocrResult, error);
+        });
+    }];
 }
 
 /// If not designated ocr language, after ocr, we use detected language to ocr again.
