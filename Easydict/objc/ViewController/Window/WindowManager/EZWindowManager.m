@@ -882,7 +882,9 @@ static EZWindowManager *_instance;
         }
 
         self.actionType = EZActionTypeScreenshotOCR;
-        [self.backgroundQueryViewController startOCRImage:image actionType:self.actionType autoQuery:NO];
+        EZBaseQueryViewController *viewController = self.backgroundQueryViewController;
+        [viewController resetQueryModelForBackgroundOCR];
+        [viewController startOCRImage:image actionType:self.actionType autoQuery:NO];
     }];
 }
 

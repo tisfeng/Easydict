@@ -53,9 +53,6 @@ open class QueryModel: NSObject, NSCopying {
     /// Selection type for text capture.
     var selectTextType: EZSelectTextType = .accessibility
 
-    /// User selected source language.
-    var userSourceLanguage: Language = .auto
-
     /// User selected target language.
     var userTargetLanguage: Language = .auto
 
@@ -82,6 +79,13 @@ open class QueryModel: NSObject, NSCopying {
 
     /// Whether to auto query after updating the model.
     var autoQuery: Bool = true
+
+    /// User selected source language.
+    var userSourceLanguage: Language = .auto {
+        didSet {
+            logInfo("User source language changed to: \(userSourceLanguage), self: \(self)")
+        }
+    }
 
     // MARK: - Public Properties
 
