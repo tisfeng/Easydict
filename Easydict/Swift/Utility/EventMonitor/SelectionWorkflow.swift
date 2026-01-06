@@ -116,7 +116,7 @@ final class SelectionWorkflow {
     }
 
     private func updateEndPoint() {
-        EZEventMonitor.shared.endPoint = NSEvent.mouseLocation
+        EventMonitor.shared.endPoint = NSEvent.mouseLocation
     }
 
     private func getSelectedTextFromBrowser(
@@ -192,9 +192,9 @@ final class SelectionWorkflow {
             forceGetSelectedTextType: .simulatedShortcutCopy
         )
 
-        if !frontmostTriggerType.contains(EZEventMonitor.shared.triggerType) {
+        if !frontmostTriggerType.contains(EventMonitor.shared.triggerType) {
             logInfo(
-                "Frontmost app trigger type does not contain current trigger type: \(EZEventMonitor.shared.triggerType)"
+                "Frontmost app trigger type does not contain current trigger type: \(EventMonitor.shared.triggerType)"
             )
             completion(nil)
             return
@@ -269,9 +269,9 @@ final class SelectionWorkflow {
             forceGetSelectedTextType: .menuBarActionCopy
         )
 
-        if !frontmostTriggerType.contains(EZEventMonitor.shared.triggerType) {
+        if !frontmostTriggerType.contains(EventMonitor.shared.triggerType) {
             logInfo(
-                "Frontmost app trigger type does not contain current trigger type: \(EZEventMonitor.shared.triggerType)"
+                "Frontmost app trigger type does not contain current trigger type: \(EventMonitor.shared.triggerType)"
             )
             completion(nil)
             return
@@ -360,7 +360,7 @@ final class SelectionWorkflow {
             return true
         }
 
-        if EZEventMonitor.shared.actionType == .shortcutQuery {
+        if EventMonitor.shared.actionType == .shortcutQuery {
             logInfo("Fallback to use force get selected text for shortcut query")
             logError(
                 "Maybe need to add it to allowed app error list dict: \(axError), \(String(describing: application))"

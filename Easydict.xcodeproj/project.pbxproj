@@ -3971,7 +3971,6 @@
 				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				03715A2A2E6D253E0067259C /* FocusedElementInfo.swift in Sources */,
-				0395C6022EC8E6D6007FFB01 /* NSImage+ImageFormat.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,

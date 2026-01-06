@@ -415,7 +415,7 @@ extension MyConfiguration {
     }
 
     fileprivate func didSetAutoSelectText() {
-        EZEventMonitor.shared.addBothMonitor(autoSelectText)
+        EventMonitor.shared.addBothMonitor(autoSelectText)
         logSettings(["auto_select_sext": autoSelectText])
     }
 

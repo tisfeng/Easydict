@@ -1,5 +1,5 @@
 //
-//  EZEventMonitor.swift
+//  EventMonitor.swift
 //  Scoco
 //
 //  Created by tisfeng on 2025/xx/xx.
@@ -15,7 +15,7 @@ import Foundation
 /// Monitors user input events and provides selected text extraction.
 @objc(EZEventMonitor)
 @objcMembers
-final class EZEventMonitor: NSObject {
+final class EventMonitor: NSObject {
     // MARK: Lifecycle
 
     private override init() {
@@ -38,9 +38,7 @@ final class EZEventMonitor: NSObject {
     typealias VoidBlock = @convention(block) () -> ()
     typealias PointBlock = @convention(block) (CGPoint) -> ()
 
-    static var shared: EZEventMonitor {
-        sharedInstance
-    }
+    static let shared = EventMonitor()
 
     // MARK: Public Properties (ObjC visible)
 
@@ -171,8 +169,6 @@ final class EZEventMonitor: NSObject {
         static let delayGetSelectedText: TimeInterval = 0.1
         static let expandedRadius: CGFloat = 120
     }
-
-    private static let sharedInstance = EZEventMonitor()
 
     private let eventMonitorEngine: EventMonitorEngine
     private let eventTapMonitor: EventTapMonitor

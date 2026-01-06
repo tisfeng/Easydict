@@ -30,7 +30,7 @@ class SystemUtility: NSObject {
     ///
     /// - Note: Just a wrapper of EZEventMonitor's getSelectedText method.
     func getSelectedText() async -> String? {
-        await EZEventMonitor.shared.getSelectedText()
+        await EventMonitor.shared.getSelectedText()
     }
 
     /// Select all text using the specified operation set.
