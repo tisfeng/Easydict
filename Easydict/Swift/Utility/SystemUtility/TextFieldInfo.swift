@@ -10,6 +10,16 @@ import Foundation
 
 /// Result type for focused text field information
 struct TextFieldInfo: CustomStringConvertible {
+    /// Roles that are considered text input elements
+    static let textInputRoles: Set<String> = [
+        kAXTextFieldRole,
+        kAXTextAreaRole,
+        kAXComboBoxRole, // Safari: Google search field
+        kAXSearchFieldSubrole,
+        kAXPopUpButtonRole,
+        kAXMenuRole,
+    ]
+
     /// Full text in the focused text field, empty string if element not supported, e.g. VSCode
     let fullText: String
 

@@ -100,7 +100,8 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.enableCompatibilityReplace) var enableCompatibilityReplace: Bool
-    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType: ForceGetSelectedTextType
+    @DefaultsWrapper(.forceGetSelectedTextType) var forceGetSelectedTextType:
+        ForceGetSelectedTextType
 
     @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
     @DefaultsWrapper(.enableOCRTextNormalization) var enableOCRTextNormalization: Bool
@@ -414,7 +415,7 @@ extension MyConfiguration {
     }
 
     fileprivate func didSetAutoSelectText() {
-        EZEventMonitor.shared().addGlobalMonitor(autoSelectText)
+        EZEventMonitor.shared.addBothMonitor(autoSelectText)
         logSettings(["auto_select_sext": autoSelectText])
     }
 

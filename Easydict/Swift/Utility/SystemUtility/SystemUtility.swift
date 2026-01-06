@@ -22,11 +22,15 @@ class SystemUtility: NSObject {
     let pasteboardManager = PasteboardManager.shared
     let selectedTextManager = SelectedTextManager.shared
 
+    /// Bundle identifiers of apps that should use the "Paste menu item enabled" heuristic
+    /// when the focused text field element cannot be reliably determined via Accessibility APIs.
+    var bundleIDAllowListForPasteMenuCheck: Set<String> = [AppBundleIDs.weChat]
+
     /// Get selected text from current focused application.
     ///
     /// - Note: Just a wrapper of EZEventMonitor's getSelectedText method.
     func getSelectedText() async -> String? {
-        await EZEventMonitor.shared().getSelectedText()
+        await EZEventMonitor.shared.getSelectedText()
     }
 
     /// Select all text using the specified operation set.

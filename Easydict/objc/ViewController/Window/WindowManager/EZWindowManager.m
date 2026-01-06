@@ -9,9 +9,7 @@
 #import "EZWindowManager.h"
 #import "EZBaseQueryViewController.h"
 #import "EZFixedQueryWindow.h"
-#import "EZEventMonitor.h"
 #import "EZCoordinateUtils.h"
-
 
 @interface EZWindowManager ()
 
@@ -808,7 +806,7 @@ static EZWindowManager *_instance;
 
          !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
          */
-        text = [[text ns_removeInvisibleChar]  ns_trim];
+        text = [[text ns_removeInvisibleChar] ns_trim];
         if (text.length == 0) {
             text = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }

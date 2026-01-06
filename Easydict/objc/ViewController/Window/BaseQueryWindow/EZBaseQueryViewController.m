@@ -19,7 +19,6 @@
 #import "EZSchemeParser.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
-#import "EZEventMonitor.h"
 
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";

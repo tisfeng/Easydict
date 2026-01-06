@@ -176,7 +176,7 @@ open class QueryService: NSObject {
 
         if let actionType = queryModel?.actionType,
            enabledReplaceTypes.contains(actionType) {
-            currentResult.showReplaceButton = EZEventMonitor.shared().isSelectedTextEditable
+            currentResult.showReplaceButton = EZEventMonitor.shared.isSelectedTextEditable
         } else {
             currentResult.showReplaceButton = false
         }

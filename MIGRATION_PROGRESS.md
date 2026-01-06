@@ -1,4 +1,4 @@
-# Easydict Swift 迁移进度追踪
+#  Swift 迁移进度追踪
 
 ## 📋 迁移政策
 
@@ -17,7 +17,7 @@
 
 ## 项目概述
 
-Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到 Swift + SwiftUI 的逐步迁移。
+Scoco 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到 Swift + SwiftUI 的逐步迁移。
 
 ## ✅ 已完成迁移
 

@@ -14,7 +14,6 @@
 #import "EZToast.h"
 
 #import "MMCrash.h"
-#import "EZEventMonitor.h"
 #import "DictionaryKit.h"
 #import "EZAudioPlayer.h"
 
