@@ -7,7 +7,7 @@
 //
 
 #import "EZBaseQueryViewController.h"
-#import "EZDetectManager.h"
+#import <Easydict-Swift.h>
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
@@ -536,7 +536,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self showTipsView:NO completion:nil];
 
     mm_weakify(self);
-    [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;

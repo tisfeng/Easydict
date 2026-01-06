@@ -44,7 +44,7 @@ extension StreamService {
         }
 
         if from == .auto {
-            let queryModel = try await EZDetectManager().detectText(text)
+            let queryModel = try await DetectManager().detectText(text)
             from = queryModel.detectedLanguage
         }
 

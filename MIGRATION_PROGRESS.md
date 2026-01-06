@@ -203,17 +203,36 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - Updated ObjC call sites to import `Easydict-Swift.h`.
   - Removed legacy ObjC sources from the build phase.
 
+### 2026-01-06: EZDetectManager Migration
+
+- **Goal**: Migrate EZDetectManager to Swift for text detection and OCR functionality.
+- **Status**: ✅ Completed
+- **Outcome**:
+  - Added `Swift/Service/Model/DetectManager.swift` with complete implementation.
+  - Used `@objc(EZDetectManager)` and `@objcMembers` for Objective-C compatibility.
+  - Added async/await versions of methods for Swift code.
+  - Updated `EZBaseQueryViewController.m` to import `Easydict-Swift.h`.
+  - Updated `Easydict-Bridging-Header.h` to comment out old Objective-C import.
+
 ## 📋 待迁移列表
 
 **⚠️ 重要提醒：以下所有 Objective-C 组件修改时必须先迁移到 Swift，禁止直接修改！**
 
 ### 核心服务 (High Priority)
 
-1. **EZDetectManager** - 文本检测管理器
-   - 位置: `objc/Service/Model/EZDetectManager.h/.m`
+1. **EZDetectManager** ✅ - 文本检测管理器
+   - 位置: `Swift/Service/Model/DetectManager.swift`
    - 影响: 语言检测和 OCR 功能
    - 优先级: 高
-   - **⚠️ 重写时必须使用 Swift**
+   - **✅ 已完成迁移到 Swift**
+   - **状态**: ✅ 完成
+   - **实际时间**: 2026-01-06
+   - **成果**:
+     - 创建了 `Swift/Service/Model/DetectManager.swift` 完整的 Swift 实现
+     - 使用 `@objc(EZDetectManager)` 和 `@objcMembers` 保持 Objective-C 兼容性
+     - 添加了 async/await 版本的方法支持 Swift 代码调用
+     - 更新了 `EZBaseQueryViewController.m` 导入 `Easydict-Swift.h`
+     - 更新了 `Easydict-Bridging-Header.h` 注释掉旧的 Objective-C 导入
 
 ### 应用架构 (Medium Priority)
 

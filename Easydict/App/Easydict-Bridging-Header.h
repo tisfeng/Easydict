@@ -14,9 +14,9 @@
 #import "EZToast.h"
 
 #import "MMCrash.h"
-#import "EZDetectManager.h"
 #import "EZEventMonitor.h"
 #import "DictionaryKit.h"
 #import "EZAudioPlayer.h"
 
 #import "EZWebViewManager.h"
+#import "EZOCRResult.h"

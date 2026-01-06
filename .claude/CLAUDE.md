@@ -10,7 +10,13 @@ Easydict is a macOS dictionary and translation app that supports word lookup, te
 
 **IMPORTANT:** We are in an active migration phase. **Prohibit adding any new Objective-C files**. All new code must be implemented using Swift/SwiftUI.
 
+**Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+ (minimum supported).  
+
+**Note:** All new development should prefer modern Swift and SwiftUI APIs available on macOS 13.0+ to ensure cleaner, safer, and future‑proof code.
+
 ## Build Commands
+
+Do not need to run `xcodebuild` commands if not demanded. 
 
 ```bash
 # Open workspace in Xcode (NOT the .xcodeproj)
@@ -42,10 +48,6 @@ xcodebuild test-without-building \
   -derivedDataPath ./DerivedData \
   -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 ```
-
-**Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+ (minimum supported).  
-
-**Note:** All new development should prefer modern Swift and SwiftUI APIs available on macOS 13.0+ to ensure cleaner, safer, and future‑proof code.
 
 ## Code Architecture
 

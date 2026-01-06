@@ -12,6 +12,8 @@ The project is currently **actively migrating from Objective-C to Swift + SwiftU
 
 ## Build Commands
 
+Do not need to run `xcodebuild` commands if not demanded. 
+
 ```bash
 # Open workspace in Xcode (NOT the .xcodeproj)
 open Easydict.xcworkspace

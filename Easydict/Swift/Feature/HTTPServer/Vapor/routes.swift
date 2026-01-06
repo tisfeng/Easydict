@@ -123,7 +123,7 @@ func routes(_ app: Application) throws {
         }
         queryModel.userSourceLanguage = from
 
-        let detectManager = EZDetectManager(model: queryModel)
+        let detectManager = DetectManager(model: queryModel)
         let result = try await detectManager.ocr()
 
         return OCRResponse(
@@ -135,7 +135,7 @@ func routes(_ app: Application) throws {
     /// Detect language
     app.post("detect") { req async throws -> DetectResponse in
         let request = try req.content.decode(DetectRequest.self)
-        let queryModel = try await EZDetectManager().detectText(request.text)
+        let queryModel = try await DetectManager().detectText(request.text)
 
         return DetectResponse(sourceLanguage: queryModel.detectedLanguage.code)
     }

@@ -82,7 +82,7 @@ class ActionManager: NSObject {
     ) async
         -> TranslationRequest? {
         // Detect language and target
-        let queryModel = try? await EZDetectManager().detectText(queryText)
+        let queryModel = try? await DetectManager().detectText(queryText)
         guard let detectedLanguage = queryModel?.detectedLanguage,
               let targetLanguage = queryModel?.queryTargetLanguage
         else {

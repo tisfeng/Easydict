@@ -33,7 +33,7 @@ extension QueryService {
         -> QueryResult {
         var sourceLanguage = from
         if from == .auto {
-            let queryModel = try await EZDetectManager().detectText(text)
+            let queryModel = try await DetectManager().detectText(text)
             sourceLanguage = queryModel.detectedLanguage
         }
 
