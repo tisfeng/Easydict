@@ -24,7 +24,7 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 2. Draft the commit message in English following Angular style (`type(scope): subject`), keep title ≤80 chars and total ≤600 chars.
 3. Provide a Simplified Chinese translation for preview only (do not include in the commit file).
 4. Show the English + Chinese preview and wait for explicit approval.
-5. After approval, write the message to `commit_message.txt`, run `git commit -F commit_message.txt && rm commit_message.txt`.
+5. After approval, use `echo` to write the message to `commit_message.txt`, then run `git commit -F commit_message.txt && rm commit_message.txt`.
 
 **Important Rules:**
 - Do not run `git add` or `git push`.

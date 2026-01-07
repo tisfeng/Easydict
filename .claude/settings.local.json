@@ -38,9 +38,10 @@
       "Bash(open:*)",
       "Bash(pod:*)",
       "Bash(xcbeautify:*)",
-      "Bash(pgrep:*)"
+      "Bash(pgrep:*)",
+      "Bash(git show:*)"
     ],
-     "deny": [
+    "deny": [
       "Bash(git add:*)",
       "Bash(git push:*)",
       "Bash(git commit --all:*)",
