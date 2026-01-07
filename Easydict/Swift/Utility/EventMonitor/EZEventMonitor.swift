@@ -343,7 +343,11 @@ final class EZEventMonitor: NSObject {
         guard !trimmed.isEmpty else { return }
         selectedText = trimmed
         cancelDismissPopButton()
-        selectedTextBlock?(trimmed)
+
+        // call back on main thread
+        DispatchQueue.main.async {
+            self.selectedTextBlock?(trimmed)
+        }
     }
 
     @objc
