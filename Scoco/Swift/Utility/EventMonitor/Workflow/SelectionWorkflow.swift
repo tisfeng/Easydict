@@ -20,10 +20,10 @@ final class SelectionWorkflow {
 
     var isSelectedTextEditable: Bool = false
 
-    var onStartMonitoringKeyboard: (() -> ())?
-    var onBrowserURLUpdated: ((String?) -> ())?
+    var onStartMonitoringKeyboard: (() -> Void)?
+    var onBrowserURLUpdated: ((String?) -> Void)?
 
-    func getSelectedTextSnapshot(completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    func getSelectedTextSnapshot(completion: @escaping (SelectedTextSnapshot?) -> Void) {
         recordSelectTextInfo()
         let frontmostApp = contextProvider?.frontmostApplication
         logInfo("getSelectedText in App: \(String(describing: frontmostApp))")
@@ -54,7 +54,7 @@ final class SelectionWorkflow {
                     }
                     if !isBrowser || !preferAppleScript {
                         completion(
-                            .init(
+                            SelectedTextSnapshot(
                                 text: text,
                                 selectTextType: .accessibility,
                                 isEditable: editable
@@ -64,9 +64,11 @@ final class SelectionWorkflow {
                 }
 
                 if contextProvider?.useAccessibilityForFirstTime() == true {
-                    if AXIsProcessTrustedWithOptions([
-                        kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true,
-                    ] as CFDictionary) == false {
+                    if AXIsProcessTrustedWithOptions(
+                        [
+                            kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true
+                        ] as CFDictionary) == false
+                    {
                         completion(nil)
                         return
                     }
@@ -86,7 +88,9 @@ final class SelectionWorkflow {
                     return
                 }
 
-                completion(.init(text: text, selectTextType: .accessibility, isEditable: editable))
+                completion(
+                    SelectedTextSnapshot(
+                        text: text, selectTextType: .accessibility, isEditable: editable))
             } catch let error as NSError {
                 let axError = AXError(rawValue: Int32(error.code)) ?? .failure
                 handleForceGetSelectedTextOnAXError(axError: axError, completion: completion)
@@ -94,7 +98,7 @@ final class SelectionWorkflow {
         }
     }
 
-    func getSelectedText(completion: @escaping (String?) -> ()) {
+    func getSelectedText(completion: @escaping (String?) -> Void) {
         getSelectedTextSnapshot { snapshot in
             completion(snapshot?.text)
         }
@@ -123,7 +127,7 @@ final class SelectionWorkflow {
     private func getSelectedTextFromBrowser(
         bundleID: String,
         accessibilityFallback: String,
-        completion: @escaping (SelectedTextSnapshot?) -> ()
+        completion: @escaping (SelectedTextSnapshot?) -> Void
     ) async {
         do {
             let selectedText = try await AppleScriptTask.getSelectedTextFromBrowser(bundleID)
@@ -131,10 +135,14 @@ final class SelectionWorkflow {
             if !trimmed.isEmpty {
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(.init(text: trimmed, selectTextType: .appleScript, isEditable: isEditable))
+                completion(
+                    SelectedTextSnapshot(
+                        text: trimmed, selectTextType: .appleScript, isEditable: isEditable))
                 return
             }
-            logInfo("AppleScript get selected text is empty, try to use force get selected text for browser")
+            logInfo(
+                "AppleScript get selected text is empty, try to use force get selected text for browser"
+            )
             tryForceGetSelectedText(completion)
         } catch {
             logError("Failed to get selected text from browser: \(error)")
@@ -142,11 +150,12 @@ final class SelectionWorkflow {
                 logInfo("Fallback to use Accessibility selected text: \(accessibilityFallback)")
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(.init(
-                    text: accessibilityFallback,
-                    selectTextType: .accessibility,
-                    isEditable: isEditable
-                ))
+                completion(
+                    SelectedTextSnapshot(
+                        text: accessibilityFallback,
+                        selectTextType: .accessibility,
+                        isEditable: isEditable
+                    ))
                 return
             }
             tryForceGetSelectedText(completion)
@@ -155,7 +164,7 @@ final class SelectionWorkflow {
 
     private func handleForceGetSelectedTextOnAXError(
         axError: AXError,
-        completion: @escaping (SelectedTextSnapshot?) -> ()
+        completion: @escaping (SelectedTextSnapshot?) -> Void
     ) {
         if shouldForceGetSelectedText(axError: axError) {
             tryForceGetSelectedText(completion)
@@ -164,7 +173,7 @@ final class SelectionWorkflow {
         }
     }
 
-    private func tryForceGetSelectedText(_ completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    private func tryForceGetSelectedText(_ completion: @escaping (SelectedTextSnapshot?) -> Void) {
         let enableForce = MyConfiguration.shared.enableForceGetSelectedText
         logInfo("Enable force get selected text: \(enableForce ? "YES" : "NO")")
         guard enableForce else {
@@ -181,7 +190,9 @@ final class SelectionWorkflow {
         }
     }
 
-    private func getSelectedTextBySimulatedKey(_ completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    private func getSelectedTextBySimulatedKey(
+        _ completion: @escaping (SelectedTextSnapshot?) -> Void
+    ) {
         logInfo("Get selected text by simulated key.")
 
         guard let contextProvider else {
@@ -207,11 +218,12 @@ final class SelectionWorkflow {
                 logInfo("Get selected text by simulated key success: \(selectedText ?? "")")
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(.init(
-                    text: selectedText,
-                    selectTextType: .simulatedKey,
-                    isEditable: isEditable
-                ))
+                completion(
+                    SelectedTextSnapshot(
+                        text: selectedText,
+                        selectTextType: .simulatedKey,
+                        isEditable: isEditable
+                    ))
             } catch {
                 completion(nil)
             }
@@ -219,7 +231,7 @@ final class SelectionWorkflow {
     }
 
     private func getSelectedTextByMenuBarActionCopy(
-        _ completion: @escaping (String?, Error?) -> ()
+        _ completion: @escaping (String?, Error?) -> Void
     ) {
         logInfo("Get selected text by menu bar action copy")
         Task {
@@ -232,7 +244,9 @@ final class SelectionWorkflow {
         }
     }
 
-    private func getSelectedTextBySimulatedKeyFirst(_ completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    private func getSelectedTextBySimulatedKeyFirst(
+        _ completion: @escaping (SelectedTextSnapshot?) -> Void
+    ) {
         logInfo("Get selected text by simulated key first")
         getSelectedTextBySimulatedKey { [weak self] snapshot in
             guard let self else { return }
@@ -248,16 +262,19 @@ final class SelectionWorkflow {
                 }
                 let isEditable = self.systemUtility?.isFocusedTextField() ?? false
                 self.isSelectedTextEditable = isEditable
-                completion(.init(
+                let result = SelectedTextSnapshot(
                     text: text,
                     selectTextType: .menuBarActionCopy,
                     isEditable: isEditable
-                ))
+                )
+                completion(result)
             }
         }
     }
 
-    private func getSelectedTextByMenuBarActionCopyFirst(_ completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    private func getSelectedTextByMenuBarActionCopyFirst(
+        _ completion: @escaping (SelectedTextSnapshot?) -> Void
+    ) {
         logInfo("Get selected text by menu bar action copy first")
 
         guard let contextProvider else {
@@ -284,11 +301,12 @@ final class SelectionWorkflow {
                 logInfo("Get selected text by menu bar action copy success: \(trimmed)")
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(.init(
-                    text: trimmed,
-                    selectTextType: .menuBarActionCopy,
-                    isEditable: isEditable
-                ))
+                completion(
+                    SelectedTextSnapshot(
+                        text: trimmed,
+                        selectTextType: .menuBarActionCopy,
+                        isEditable: isEditable
+                    ))
                 return
             }
 
@@ -297,7 +315,8 @@ final class SelectionWorkflow {
             }
 
             if systemUtility?.hasEnabledCopyMenuItem() == false {
-                logError("Has no enabled copy menu item, try to use simulated key to get selected text")
+                logError(
+                    "Has no enabled copy menu item, try to use simulated key to get selected text")
                 getSelectedTextBySimulatedKey(completion)
             } else {
                 logError(
@@ -322,7 +341,9 @@ final class SelectionWorkflow {
         }
 
         if axError == .noValue {
-            logInfo("error: kAXErrorNoValue, unsupported Accessibility App: \(String(describing: application))")
+            logInfo(
+                "error: kAXErrorNoValue, unsupported Accessibility App: \(String(describing: application))"
+            )
             logError("This error type allow force get selected text")
             return true
         }
@@ -351,12 +372,13 @@ final class SelectionWorkflow {
                 "com.openai.chat",
             ],
             .failure: [
-                "com.apple.dt.Xcode",
+                "com.apple.dt.Xcode"
             ],
         ]
 
         if let bundleIDs = allowedAppErrorDict[axError], bundleIDs.contains(bundleID) {
-            logError("Allow force get selected text: \(axError), \(String(describing: application))")
+            logError(
+                "Allow force get selected text: \(axError), \(String(describing: application))")
             return true
         }
 
@@ -368,7 +390,9 @@ final class SelectionWorkflow {
             return true
         }
 
-        logInfo("After check axError: \(axError), not use force get selected text: \(String(describing: application))")
+        logInfo(
+            "After check axError: \(axError), not use force get selected text: \(String(describing: application))"
+        )
         return false
     }
 }
