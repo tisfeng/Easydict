@@ -100,7 +100,7 @@ struct OCRImageTests {
     @Test("Japanese OCR Test", .tags(.ocr))
     func testJapaneseOCR() async throws {
         for sample in OCRTestSample.japaneseCases {
-            try await testOCR(sample: sample, language: .japanese)
+            try await testOCR(sample: sample, language: .auto)
         }
     }
 
