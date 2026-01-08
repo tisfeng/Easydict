@@ -46,8 +46,8 @@ class BuiltInAIService: BaseOpenAIService {
     override var defaultModels: [String] {
         [
             // GML free models
+            ZhipuModel.glm_4_5_flash.rawValue,
             ZhipuModel.glm_4_flash_250414.rawValue,
-            ZhipuModel.glm_4_flash.rawValue,
 
             // Groq free models
             GroqModel.llama3_1_8b_instant.rawValue,
