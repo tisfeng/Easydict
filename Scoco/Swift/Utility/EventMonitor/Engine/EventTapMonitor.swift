@@ -16,8 +16,10 @@ import Foundation
 final class EventTapMonitor {
     // MARK: Internal
 
-    var keyDownHandler: (() -> ())?
+    /// Invoked when a key-down event is observed by the event tap.
+    var keyDownHandler: ((CGKeyCode, CGEventFlags) -> ())?
 
+    /// Starts the CGEventTap for global keyboard events.
     func start() {
         stop()
 
@@ -25,8 +27,12 @@ final class EventTapMonitor {
         let callback: CGEventTapCallBack = { _, type, event, refcon in
             guard let refcon else { return Unmanaged.passUnretained(event) }
             let monitor = Unmanaged<EventTapMonitor>.fromOpaque(refcon).takeUnretainedValue()
-            if type == .keyDown {
-                monitor.keyDownHandler?()
+            let keyCode = CGKeyCode(event.getIntegerValueField(.keyboardEventKeycode))
+            switch type {
+            case .keyDown:
+                monitor.keyDownHandler?(keyCode, event.flags)
+            default:
+                break
             }
             return Unmanaged.passUnretained(event)
         }
@@ -49,6 +55,7 @@ final class EventTapMonitor {
         CGEvent.tapEnable(tap: eventTap, enable: true)
     }
 
+    /// Stops the CGEventTap and removes the run loop source.
     func stop() {
         if let eventTap {
             CGEvent.tapEnable(tap: eventTap, enable: false)

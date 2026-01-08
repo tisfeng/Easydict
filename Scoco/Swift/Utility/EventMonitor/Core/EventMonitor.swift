@@ -10,7 +10,20 @@ import AppKit
 import Carbon
 import Foundation
 
-// MARK: - EZEventMonitor
+extension CGEventFlags {
+    /// Converts CGEventFlags into NSEvent modifier flags.
+    fileprivate func toNSEventModifierFlags() -> NSEvent.ModifierFlags {
+        var flags = NSEvent.ModifierFlags()
+        if contains(.maskCommand) { flags.insert(.command) }
+        if contains(.maskAlternate) { flags.insert(.option) }
+        if contains(.maskShift) { flags.insert(.shift) }
+        if contains(.maskControl) { flags.insert(.control) }
+        if contains(.maskSecondaryFn) { flags.insert(.function) }
+        return flags
+    }
+}
+
+// MARK: - EventMonitor
 
 /// Monitors user input events and provides selected text extraction.
 @objc(EZEventMonitor)
@@ -179,14 +192,16 @@ final class EventMonitor: NSObject {
     private let systemUtility: SystemUtility
 
     private var lastEvent: NSEvent?
+    private var currentModifierFlags: NSEvent.ModifierFlags = []
+    private var shouldBypassDismissIgnore = false
 
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
             self?.handleMonitorEvent(event)
         }
 
-        eventTapMonitor.keyDownHandler = { [weak self] in
-            self?.delayDismissPopButton()
+        eventTapMonitor.keyDownHandler = { [weak self] keyCode, flags in
+            self?.handleEventTapKeyDown(keyCode: keyCode, flags: flags)
         }
 
         selectionWorkflow.contextProvider = appContextProvider
@@ -238,7 +253,18 @@ final class EventMonitor: NSObject {
         case .rightMouseDown:
             rightMouseDownBlock?(mouseLocation)
         case .keyDown:
+            log("keyDown, characters: \(event.characters ?? "")")
+            log("keyCode: \(event.keyCode)")
+
             EZWindowManager.shared().lastPoint = mouseLocation
+            if shouldDismissForKeyCombination(
+                keyCode: Int(event.keyCode),
+                modifierFlags: event.modifierFlags.union(currentModifierFlags)
+            ) {
+                forceDismissPopButton()
+                return
+            }
+
             if popButtonController.isPopButtonVisible {
                 dismissPopButton()
             }
@@ -247,6 +273,10 @@ final class EventMonitor: NSObject {
         case .mouseMoved:
             popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
         case .flagsChanged:
+            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
+            log("keyCode: \(event.keyCode)")
+
+            currentModifierFlags = event.modifierFlags
             EZWindowManager.shared().lastPoint = mouseLocation
             if event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand {
                 triggerEvaluator.updateCommandKeyEvents(event)
@@ -351,7 +381,7 @@ final class EventMonitor: NSObject {
 
     @objc
     private func dismissPopButton() {
-        if popButtonController.shouldIgnoreDismiss() {
+        if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
             return
         }
         dismissPopButtonBlock?()
@@ -361,6 +391,54 @@ final class EventMonitor: NSObject {
 
     private func delayDismissPopButton() {
         delayDismissPopButton(delay: Constants.dismissPopButtonDelay)
+    }
+
+    /// Handles CGEventTap key-down callbacks for global key combinations.
+    private func handleEventTapKeyDown(keyCode: CGKeyCode, flags: CGEventFlags) {
+        if shouldDismissForKeyCombination(keyCode: Int(keyCode), modifierFlags: flags.toNSEventModifierFlags()) {
+            forceDismissPopButton()
+        } else {
+            delayDismissPopButton()
+        }
+    }
+
+    /// Determines whether a key combination should dismiss the pop button.
+    private func shouldDismissForKeyCombination(
+        keyCode: Int,
+        modifierFlags: NSEvent.ModifierFlags
+    )
+        -> Bool {
+        guard popButtonController.isPopButtonVisible else { return false }
+        let supportedModifiers: NSEvent.ModifierFlags = [.command, .option, .shift, .control, .function]
+        guard !modifierFlags.isDisjoint(with: supportedModifiers) else { return false }
+        guard isModifierKeyCode(keyCode) == false else { return false }
+        return true
+    }
+
+    /// Checks whether the key code belongs to a modifier key.
+    private func isModifierKeyCode(_ keyCode: Int) -> Bool {
+        let modifierKeyCodes: Set<Int> = [
+            Int(kVK_Command),
+            Int(kVK_RightCommand),
+            Int(kVK_Shift),
+            Int(kVK_RightShift),
+            Int(kVK_Option),
+            Int(kVK_RightOption),
+            Int(kVK_Control),
+            Int(kVK_RightControl),
+            Int(kVK_Function),
+        ]
+        return modifierKeyCodes.contains(keyCode)
+    }
+
+    /// Dismisses the pop button even if dismiss ignores are active.
+    private func forceDismissPopButton() {
+        log("forceDismissPopButton")
+        if popButtonController.isPopButtonVisible {
+            shouldBypassDismissIgnore = true
+            dismissPopButton()
+            shouldBypassDismissIgnore = false
+        }
     }
 
     private func delayDismissPopButton(delay: TimeInterval) {
