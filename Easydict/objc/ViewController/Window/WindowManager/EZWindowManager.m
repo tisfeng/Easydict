@@ -468,6 +468,9 @@ static EZWindowManager *_instance;
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
     //    MMLogInfo(@"show floating window: %@, %@", window, @(point));
 
+    // Close pop button window when showing floating window.
+    [EZPopButtonWindow.shared close];
+    
     [self saveFrontmostApplication];
 
     if (Screenshot.shared.isTakingScreenshot) {
