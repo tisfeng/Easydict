@@ -316,10 +316,8 @@ final class LocalStorage: NSObject {
                     )
 
                     let defaultEnabledServices: [ServiceType] = [
-                        .appleDictionary,
                         .youdao,
                         .deepL,
-                        .google,
                         .builtInAI,
                     ]
 
