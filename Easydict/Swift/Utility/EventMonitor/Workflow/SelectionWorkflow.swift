@@ -53,11 +53,12 @@ final class SelectionWorkflow {
                         onStartMonitoringKeyboard?()
                     }
                     if !isBrowser || !preferAppleScript {
-                        completion(SelectedTextSnapshot(
-                            text: text,
-                            selectTextType: .accessibility,
-                            isEditable: editable
-                        ))
+                        completion(
+                            .init(
+                                text: text,
+                                selectTextType: .accessibility,
+                                isEditable: editable
+                            ))
                         return
                     }
                 }
@@ -85,7 +86,7 @@ final class SelectionWorkflow {
                     return
                 }
 
-                completion(SelectedTextSnapshot(text: text, selectTextType: .accessibility, isEditable: editable))
+                completion(.init(text: text, selectTextType: .accessibility, isEditable: editable))
             } catch let error as NSError {
                 let axError = AXError(rawValue: Int32(error.code)) ?? .failure
                 handleForceGetSelectedTextOnAXError(axError: axError, completion: completion)
@@ -130,7 +131,7 @@ final class SelectionWorkflow {
             if !trimmed.isEmpty {
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(SelectedTextSnapshot(text: trimmed, selectTextType: .appleScript, isEditable: isEditable))
+                completion(.init(text: trimmed, selectTextType: .appleScript, isEditable: isEditable))
                 return
             }
             logInfo("AppleScript get selected text is empty, try to use force get selected text for browser")
@@ -141,7 +142,7 @@ final class SelectionWorkflow {
                 logInfo("Fallback to use Accessibility selected text: \(accessibilityFallback)")
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(SelectedTextSnapshot(
+                completion(.init(
                     text: accessibilityFallback,
                     selectTextType: .accessibility,
                     isEditable: isEditable
@@ -206,7 +207,7 @@ final class SelectionWorkflow {
                 logInfo("Get selected text by simulated key success: \(selectedText ?? "")")
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(SelectedTextSnapshot(
+                completion(.init(
                     text: selectedText,
                     selectTextType: .simulatedKey,
                     isEditable: isEditable
@@ -247,12 +248,11 @@ final class SelectionWorkflow {
                 }
                 let isEditable = self.systemUtility?.isFocusedTextField() ?? false
                 self.isSelectedTextEditable = isEditable
-                let result = SelectedTextSnapshot(
+                completion(.init(
                     text: text,
                     selectTextType: .menuBarActionCopy,
                     isEditable: isEditable
-                )
-                completion(result)
+                ))
             }
         }
     }
@@ -284,7 +284,7 @@ final class SelectionWorkflow {
                 logInfo("Get selected text by menu bar action copy success: \(trimmed)")
                 let isEditable = systemUtility?.isFocusedTextField() ?? false
                 isSelectedTextEditable = isEditable
-                completion(SelectedTextSnapshot(
+                completion(.init(
                     text: trimmed,
                     selectTextType: .menuBarActionCopy,
                     isEditable: isEditable

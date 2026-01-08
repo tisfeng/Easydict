@@ -409,6 +409,16 @@
 		03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */; };
 		03F2815F2D9A323700AE518C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2815E2D9A323700AE518C /* String+Utils.swift */; };
 		03F281602D9A323700AE518C /* ZhipuService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281612D9A323700AE518C /* ZhipuService.swift */; };
+		03F2D0302F0FE6D600A99FC0 /* SelectionWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D02C2F0FE6D600A99FC0 /* SelectionWorkflow.swift */; };
+		03F2D0312F0FE6D600A99FC0 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D0202F0FE6D600A99FC0 /* EventMonitor.swift */; };
+		03F2D0322F0FE6D600A99FC0 /* AppContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D01F2F0FE6D600A99FC0 /* AppContextProvider.swift */; };
+		03F2D0332F0FE6D600A99FC0 /* SelectedTextSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D0252F0FE6D600A99FC0 /* SelectedTextSnapshot.swift */; };
+		03F2D0342F0FE6D600A99FC0 /* EventMonitorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D0222F0FE6D600A99FC0 /* EventMonitorEngine.swift */; };
+		03F2D0352F0FE6D600A99FC0 /* PopButtonVisibilityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D0272F0FE6D600A99FC0 /* PopButtonVisibilityController.swift */; };
+		03F2D0362F0FE6D600A99FC0 /* TriggerEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D02D2F0FE6D600A99FC0 /* TriggerEvaluator.swift */; };
+		03F2D0372F0FE6D600A99FC0 /* RectHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D02A2F0FE6D600A99FC0 /* RectHelper.swift */; };
+		03F2D0382F0FE6D600A99FC0 /* GeometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D0292F0FE6D600A99FC0 /* GeometryHelper.swift */; };
+		03F2D0392F0FE6D600A99FC0 /* EventTapMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2D0232F0FE6D600A99FC0 /* EventTapMonitor.swift */; };
 		03F2F08D2E4074FF00496F71 /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */; };
 		03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */; };
 		03F4142E2E6B251000FF1994 /* SystemUtility+MenuAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */; };
@@ -1046,6 +1056,16 @@
 		03F2815C2D98E7DF00AE518C /* ChinseseMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChinseseMarker.swift; sourceTree = "<group>"; };
 		03F2815E2D9A323700AE518C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		03F281612D9A323700AE518C /* ZhipuService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZhipuService.swift; sourceTree = "<group>"; };
+		03F2D01F2F0FE6D600A99FC0 /* AppContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContextProvider.swift; sourceTree = "<group>"; };
+		03F2D0202F0FE6D600A99FC0 /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
+		03F2D0222F0FE6D600A99FC0 /* EventMonitorEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitorEngine.swift; sourceTree = "<group>"; };
+		03F2D0232F0FE6D600A99FC0 /* EventTapMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTapMonitor.swift; sourceTree = "<group>"; };
+		03F2D0252F0FE6D600A99FC0 /* SelectedTextSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTextSnapshot.swift; sourceTree = "<group>"; };
+		03F2D0272F0FE6D600A99FC0 /* PopButtonVisibilityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopButtonVisibilityController.swift; sourceTree = "<group>"; };
+		03F2D0292F0FE6D600A99FC0 /* GeometryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryHelper.swift; sourceTree = "<group>"; };
+		03F2D02A2F0FE6D600A99FC0 /* RectHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectHelper.swift; sourceTree = "<group>"; };
+		03F2D02C2F0FE6D600A99FC0 /* SelectionWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionWorkflow.swift; sourceTree = "<group>"; };
+		03F2D02D2F0FE6D600A99FC0 /* TriggerEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerEvaluator.swift; sourceTree = "<group>"; };
 		03F2F08C2E4074FF00496F71 /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
 		03F2F1A52E54D70500FF71E3 /* OCRWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindow.swift; sourceTree = "<group>"; };
 		03F4142D2E6B251000FF1994 /* SystemUtility+MenuAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+MenuAction.swift"; sourceTree = "<group>"; };
@@ -1175,7 +1195,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0338211A2F0EAF990087A361 /* EventMonitor */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = EventMonitor; sourceTree = "<group>"; };
 		0338213E2F0EBBFE0087A361 /* OCR */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = OCR; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -2794,6 +2813,71 @@
 			path = Zhipu;
 			sourceTree = "<group>";
 		};
+		03F2D0212F0FE6D600A99FC0 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D01F2F0FE6D600A99FC0 /* AppContextProvider.swift */,
+				03F2D0202F0FE6D600A99FC0 /* EventMonitor.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		03F2D0242F0FE6D600A99FC0 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D0222F0FE6D600A99FC0 /* EventMonitorEngine.swift */,
+				03F2D0232F0FE6D600A99FC0 /* EventTapMonitor.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		03F2D0262F0FE6D600A99FC0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D0252F0FE6D600A99FC0 /* SelectedTextSnapshot.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		03F2D0282F0FE6D600A99FC0 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D0272F0FE6D600A99FC0 /* PopButtonVisibilityController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		03F2D02B2F0FE6D600A99FC0 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D0292F0FE6D600A99FC0 /* GeometryHelper.swift */,
+				03F2D02A2F0FE6D600A99FC0 /* RectHelper.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		03F2D02E2F0FE6D600A99FC0 /* Workflow */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D02C2F0FE6D600A99FC0 /* SelectionWorkflow.swift */,
+				03F2D02D2F0FE6D600A99FC0 /* TriggerEvaluator.swift */,
+			);
+			path = Workflow;
+			sourceTree = "<group>";
+		};
+		03F2D02F2F0FE6D600A99FC0 /* EventMonitor */ = {
+			isa = PBXGroup;
+			children = (
+				03F2D0212F0FE6D600A99FC0 /* Core */,
+				03F2D0242F0FE6D600A99FC0 /* Engine */,
+				03F2D0262F0FE6D600A99FC0 /* Model */,
+				03F2D0282F0FE6D600A99FC0 /* UI */,
+				03F2D02B2F0FE6D600A99FC0 /* Utilities */,
+				03F2D02E2F0FE6D600A99FC0 /* Workflow */,
+			);
+			path = EventMonitor;
+			sourceTree = "<group>";
+		};
 		03F2F08B2E4074F400496F71 /* CharacterSet */ = {
 			isa = PBXGroup;
 			children = (
@@ -3219,7 +3303,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				0338211A2F0EAF990087A361 /* EventMonitor */,
+				03F2D02F2F0FE6D600A99FC0 /* EventMonitor */,
 				03CA1CF02EDE089E001908D0 /* Appearance */,
 				03BBC8142E62049600CFC582 /* SystemUtility */,
 				5A735120BF914C709B1E6B2B /* Logging */,
@@ -3343,9 +3427,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				0338211A2F0EAF990087A361 /* EventMonitor */,
 			);
 			name = Easydict;
 			packageProductDependencies = (
@@ -3824,6 +3905,16 @@
 				6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */,
 				03B73F7D2D9C51700051CB74 /* ChineseDetection+Lyrics.swift in Sources */,
 				0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */,
+				03F2D0302F0FE6D600A99FC0 /* SelectionWorkflow.swift in Sources */,
+				03F2D0312F0FE6D600A99FC0 /* EventMonitor.swift in Sources */,
+				03F2D0322F0FE6D600A99FC0 /* AppContextProvider.swift in Sources */,
+				03F2D0332F0FE6D600A99FC0 /* SelectedTextSnapshot.swift in Sources */,
+				03F2D0342F0FE6D600A99FC0 /* EventMonitorEngine.swift in Sources */,
+				03F2D0352F0FE6D600A99FC0 /* PopButtonVisibilityController.swift in Sources */,
+				03F2D0362F0FE6D600A99FC0 /* TriggerEvaluator.swift in Sources */,
+				03F2D0372F0FE6D600A99FC0 /* RectHelper.swift in Sources */,
+				03F2D0382F0FE6D600A99FC0 /* GeometryHelper.swift in Sources */,
+				03F2D0392F0FE6D600A99FC0 /* EventTapMonitor.swift in Sources */,
 				037A9CCD2E29421D00668C49 /* OCRMergeStrategy.swift in Sources */,
 				03D0F0132F00000200ABCDEF /* QueryResult.swift in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
