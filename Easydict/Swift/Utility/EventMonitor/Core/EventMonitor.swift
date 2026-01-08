@@ -253,8 +253,8 @@ final class EventMonitor: NSObject {
         case .rightMouseDown:
             rightMouseDownBlock?(mouseLocation)
         case .keyDown:
-            log("keyDown, characters: \(event.characters ?? "")")
-            log("keyCode: \(event.keyCode)")
+//            log("keyDown, characters: \(event.characters ?? "")")
+//            log("keyCode: \(event.keyCode)")
 
             EZWindowManager.shared().lastPoint = mouseLocation
             if shouldDismissForKeyCombination(
@@ -273,8 +273,8 @@ final class EventMonitor: NSObject {
         case .mouseMoved:
             popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
         case .flagsChanged:
-            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
-            log("keyCode: \(event.keyCode)")
+//            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
+//            log("keyCode: \(event.keyCode)")
 
             currentModifierFlags = event.modifierFlags
             EZWindowManager.shared().lastPoint = mouseLocation

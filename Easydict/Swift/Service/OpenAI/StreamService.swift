@@ -289,7 +289,7 @@ public class StreamService: QueryService {
     }
 
     var isSentenceEnabledByDefault: Bool {
-        true
+        false
     }
 
     var dictionaryKey: Defaults.Key<String> {
@@ -297,7 +297,7 @@ public class StreamService: QueryService {
     }
 
     var isDictionaryEnabledByDefault: Bool {
-        true
+        false
     }
 
     var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
