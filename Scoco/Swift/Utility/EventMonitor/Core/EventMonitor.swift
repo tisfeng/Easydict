@@ -214,10 +214,12 @@ final class EventMonitor: NSObject {
         frontmostApplication = appContextProvider.frontmostApplication
         popButtonController.lastEvent = event
 
+        let mouseLocation = NSEvent.mouseLocation
+
         switch event.type {
         case .leftMouseUp:
-            EZWindowManager.shared().lastPoint = NSEvent.mouseLocation
-            endPoint = NSEvent.mouseLocation
+            EZWindowManager.shared().lastPoint = mouseLocation
+            endPoint = mouseLocation
             if triggerEvaluator.checkIfLeftMouseDragged() {
                 triggerType = .dragged
                 let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
@@ -232,11 +234,11 @@ final class EventMonitor: NSObject {
             handleLeftMouseDown(event)
         case .leftMouseDragged:
             triggerEvaluator.updateRecordedEvents(event)
-            endPoint = NSEvent.mouseLocation
+            endPoint = mouseLocation
         case .rightMouseDown:
-            rightMouseDownBlock?(NSEvent.mouseLocation)
+            rightMouseDownBlock?(mouseLocation)
         case .keyDown:
-            EZWindowManager.shared().lastPoint = NSEvent.mouseLocation
+            EZWindowManager.shared().lastPoint = mouseLocation
             if popButtonController.isPopButtonVisible {
                 dismissPopButton()
             }
@@ -245,7 +247,7 @@ final class EventMonitor: NSObject {
         case .mouseMoved:
             popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
         case .flagsChanged:
-            EZWindowManager.shared().lastPoint = NSEvent.mouseLocation
+            EZWindowManager.shared().lastPoint = mouseLocation
             if event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand {
                 triggerEvaluator.updateCommandKeyEvents(event)
                 if triggerEvaluator.checkIfDoubleCommandEvents() {
@@ -261,8 +263,9 @@ final class EventMonitor: NSObject {
     }
 
     private func handleLeftMouseDown(_ event: NSEvent) {
-        startPoint = NSEvent.mouseLocation
-        leftMouseDownBlock?(startPoint)
+        let mouseLocation = NSEvent.mouseLocation
+        startPoint = mouseLocation
+        leftMouseDownBlock?(mouseLocation)
         dismissWindowsIfMouseLocationOutsideFloatingWindow()
 
         frontmostApplication = appContextProvider.frontmostApplication
