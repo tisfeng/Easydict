@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepSeek](https://www.deepseek.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/)，[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)，[🍎 **苹果系统翻译**](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepSeek](https://www.deepseek.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/)，[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -40,8 +40,8 @@
 - [x] 支持智能查询模式。
 - [x] 支持系统 OCR 截图翻译，静默截图 OCR。
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
-- [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
-- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
+- [x] 支持 [🍎 苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)，支持第三方词典，可手动导入 mdict 词典。
+- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
 - [x] 支持有道词典，OpenAI，Gemini，DeepSeek，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里，火山和豆包翻译。
 - [x] 支持 48 种语言。
 
@@ -85,6 +85,7 @@
   - [小牛翻译](#小牛翻译)
   - [彩云小译](#彩云小译)
   - [阿里翻译](#阿里翻译)
+  - [豆包翻译](#豆包翻译)
 - [智能查询模式](#智能查询模式)
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
@@ -311,7 +312,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
-详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
 
 <table>
  		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
@@ -356,7 +357,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务。
 
-但请注意，内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [one-api](https://github.com/songquanpeng/one-api) 搭建自己的大模型服务。
+但请注意，内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [AxonHub](https://github.com/looplj/axonhub) 等开源项目搭建自己的大模型服务。
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
 

@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/), [Volcano Translation](https://translate.volcengine.com/translate) and [Doubao Translation](https://www.volcengine.com/docs/82379/1820188).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), [**🍎 macOS System Translation**](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/), [Volcano Translation](https://translate.volcengine.com/translate) and [Doubao Translation](https://www.volcengine.com/docs/82379/1820188).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -39,8 +39,8 @@
 - [x] Support for configuring different services for different window types.
 - [x] Support system OCR screenshot translation, Silent Screenshot OCR.
 - [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
-- [x] Support [🍎 Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
-- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
+- [x] Support [🍎 Apple System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
+- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)_)
 - [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali, Volcano and Doubao Translate.
 - [x] Support for 48 languages.
 
@@ -309,7 +309,7 @@ Easydict seamlessly integrates with the dictionaries available in the macOS Dict
 
 Furthermore, Apple Dictionary offers support for custom dictionaries, allowing you to import third-party options such as the Concise English-Chinese Dictionary, Longman Dictionary of Contemporary Advanced English, and more. These can be added to your system by importing dictionaries in the .dictionary format.
 
-For detailed information, please see [How to use macOS system dictionary in Easydict](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)
+For detailed information, please see [How to use macOS system dictionary in Easydict](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
 
 <table>
  		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
@@ -354,7 +354,7 @@ Currently, some LLM service vendors provide free AI models with restrictions, su
 
 To make it easier for new users to get a taste of using these big model AI translations, we have added a built-in AI translation service, which can be used directly without the need to configure the API key.
 
-However, please note that the built-in models have some limitations (mainly on the free amount), we do not guarantee that they can be used stably all the time, and we recommend users to use [one-api](https://github.com/songquanpeng/one-api) to build their own big model service.
+However, please note that the built-in models have some limitations (mainly on the free amount), we do not guarantee that they can be used stably all the time, and we recommend users to use [AxonHub](https://github.com/looplj/axonhub) to build their own LLM service.
 
 ![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
 
