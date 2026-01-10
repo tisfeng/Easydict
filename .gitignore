@@ -90,5 +90,10 @@ node_modules/
 BuildTools/.build
 BuildTools/.swiftpm
 
+.tmp/
+
 # Ignore xcodeproj Package.resolved file, use xcworkspace Package.resolved instead (For CocoaPods
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
+# Ignore *.zip files
+*.zip
