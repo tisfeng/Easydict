@@ -39,7 +39,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
-@interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource, WKNavigationDelegate>
+@interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource, WKNavigationDelegate, NSWindowDelegate>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -67,6 +67,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
+
+@property (nonatomic, strong) NSWindow *historyWindow;
 
 @property (nonatomic, assign) EZTipsCellType tipsCellType;
 
@@ -214,6 +216,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [defaultCenter addObserver:self
                       selector:@selector(updateWindowHeight)
                           name:NSNotification.maxWindowHeightSettingsChanged
+                        object:nil];
+    
+    // Also listen for app-level resign active to hide history window (same as translation window behavior)
+    [defaultCenter addObserver:self
+                      selector:@selector(applicationDidResignActive:)
+                          name:NSApplicationDidResignActiveNotification
                         object:nil];
 }
 
@@ -621,18 +629,38 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)focusInputTextView {
     // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
-    if (self.queryView.window == self.baseQueryWindow) {
-        // Need to activate the current application first.
-        [NSApp activateIgnoringOtherApps:YES];
+    
+    // Check if queryView and textView exist and are in the correct window
+    if (!self.queryView || !self.queryView.textView) {
+        return;
+    }
+    
+    NSWindow *queryViewWindow = self.queryView.window;
+    if (!queryViewWindow || queryViewWindow != self.baseQueryWindow) {
+        return;
+    }
+    
+    // Verify textView is actually in the window's view hierarchy
+    if (self.queryView.textView.window != self.baseQueryWindow) {
+        MMLogWarn(@"TextView is not in the correct window, skipping focus");
+        return;
+    }
+    
+    // Need to activate the current application first.
+    [NSApp activateIgnoringOtherApps:YES];
 
-        // Delay to make textView the first responder.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    // Delay to make textView the first responder.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        // Double-check window state before setting first responder
+        if (self.queryView.textView.window == self.baseQueryWindow && self.baseQueryWindow.isVisible) {
             [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
             if (self.config.selectQueryTextWhenWindowActivate) {
                 self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
             }
-        });
-    }
+        } else {
+            MMLogWarn(@"Window state changed, skipping focus");
+        }
+    });
 }
 
 - (void)clearInput {
@@ -876,6 +904,20 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
+
+        // Save translation history when translation is successful
+        if (result.hasTranslatedResult && !result.error && result.isStreamFinished) {
+            NSString *translatedText = result.translatedText ?: @"";
+            if (translatedText.length > 0 && queryModel.queryText.length > 0) {
+                EZLanguage fromLanguage = result.queryFromLanguage;
+                EZLanguage toLanguage = queryModel.queryTargetLanguage;
+                [TranslationHistoryManager saveTranslationHistoryWithQueryText:queryModel.queryText
+                                                               translatedText:translatedText
+                                                                 fromLanguage:fromLanguage
+                                                                   toLanguage:toLanguage
+                                                                  serviceType:service.serviceTypeWithUniqueIdentifier];
+            }
+        }
 
         if (service.autoCopyTranslatedTextBlock) {
             BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
@@ -1764,6 +1806,264 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (BOOL)isTipsViewAtRow:(NSInteger)row {
     return row == self.tipsCellIndex && self.isTipsViewVisible;
+}
+
+#pragma mark - Translation History
+
+- (void)showTranslationHistory {
+    MMLogInfo(@"showTranslationHistory called");
+    
+    // Safely access historyWindow using direct ivar access to avoid potential crashes
+    NSWindow *existingWindow = nil;
+    @try {
+        existingWindow = _historyWindow;
+    } @catch (NSException *exception) {
+        MMLogWarn(@"Failed to access historyWindow: %@", exception);
+        _historyWindow = nil;
+    }
+    
+    // Reuse existing history window if it exists and is valid (even if hidden)
+    if (existingWindow && [existingWindow isKindOfClass:[NSWindow class]]) {
+        MMLogInfo(@"Reusing existing history window");
+        // Don't reposition, keep the existing position
+        [existingWindow orderFront:nil];
+        return;
+    }
+    
+    // Create new history window
+    EZTranslationHistoryHostingView *hostingView = [[EZTranslationHistoryHostingView alloc] initWithOnSelectHistory:^(NSString *queryText, NSString *translatedText) {
+        MMLogInfo(@"History item selected: %@", queryText);
+        
+        // Close history window first, before triggering translation
+        if (self.historyWindow) {
+            [self.historyWindow close];
+            self.historyWindow = nil;
+        }
+        
+        // Ensure main window is active and visible before triggering translation
+        NSWindow *mainWindow = self.view.window;
+        if (mainWindow) {
+            [mainWindow makeKeyAndOrderFront:nil];
+            
+            // Longer delay to ensure window is fully ready before triggering translation
+            // This prevents focusInputTextView errors when window state is inconsistent
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                // Verify window is still visible before proceeding
+                if (mainWindow.isVisible && mainWindow == self.view.window) {
+                    // Set query text and trigger translation
+                    self.queryModel.inputText = queryText;
+                    [self startQueryText:queryText actionType:EZActionTypeNone];
+                } else {
+                    MMLogWarn(@"Main window state changed, skipping translation");
+                }
+            });
+        } else {
+            // If no main window, just trigger translation
+            self.queryModel.inputText = queryText;
+            [self startQueryText:queryText actionType:EZActionTypeNone];
+        }
+    }];
+    
+    // Set window size
+    CGFloat windowWidth = 500;
+    CGFloat windowHeight = 600;
+    
+    self.historyWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, windowWidth, windowHeight)
+                                                      styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable
+                                                        backing:NSBackingStoreBuffered
+                                                          defer:NO];
+    self.historyWindow.contentViewController = hostingView;
+    self.historyWindow.title = NSLocalizedString(@"translation.history", nil);
+    self.historyWindow.titlebarAppearsTransparent = YES;
+    self.historyWindow.titleVisibility = NSWindowTitleVisible;
+    
+    // Ensure window has correct content size
+    [self.historyWindow setContentSize:NSMakeSize(windowWidth, windowHeight)];
+    
+    // Set window delegate to handle focus events
+    // Use a separate delegate object to avoid conflicts with main window delegate
+    self.historyWindow.delegate = self;
+    
+    // Set window level to floating, but below the main query window
+    // This ensures history window doesn't hide the main window
+    NSWindow *mainWindow = self.view.window;
+    if (mainWindow) {
+        // Use same level as main window
+        self.historyWindow.level = mainWindow.level;
+        
+        // Position window using smart positioning
+        [self positionHistoryWindow:self.historyWindow];
+        
+        // Order history window in front, but don't make it key window
+        // This keeps main window visible
+        [self.historyWindow orderFront:nil];
+        MMLogInfo(@"History window created and shown, size: %.0fx%.0f", windowWidth, windowHeight);
+    } else {
+        [self.historyWindow center];
+        [self.historyWindow makeKeyAndOrderFront:nil];
+        MMLogInfo(@"History window created and shown centered (no main window), size: %.0fx%.0f", windowWidth, windowHeight);
+    }
+}
+
+#pragma mark - Window Notifications
+
+#pragma mark - NSWindowDelegate (for history window)
+
+- (void)windowDidResignKey:(NSNotification *)notification {
+    NSWindow *window = notification.object;
+    NSWindow *historyWindow = nil;
+    @try {
+        historyWindow = _historyWindow;
+    } @catch (NSException *exception) {
+        MMLogWarn(@"Failed to access historyWindow: %@", exception);
+        return;
+    }
+    
+    // Only handle history window focus events
+    if (window != historyWindow) {
+        return;
+    }
+    
+    // Check which window is becoming key window
+    NSWindow *newKeyWindow = [NSApplication sharedApplication].keyWindow;
+    NSWindow *mainWindow = self.view.window;
+    
+    // If main window is becoming key, keep history window visible (user might be switching between windows)
+    if (newKeyWindow == mainWindow) {
+        MMLogInfo(@"Main window is becoming key, keeping history window visible");
+        return;
+    }
+    
+    // If no window is key (clicked outside), hide history window
+    // Use a small delay to ensure mouse location is accurate
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSWindow *currentKeyWindow = [NSApplication sharedApplication].keyWindow;
+        
+        // If still no key window or key window is neither main nor history, hide history window
+        if (!currentKeyWindow || (currentKeyWindow != mainWindow && currentKeyWindow != historyWindow)) {
+            [self hideHistoryWindowIfClickOutside];
+        }
+    });
+}
+
+- (void)applicationDidResignActive:(NSNotification *)notification {
+    // Hide history window when app loses focus (same behavior as translation window)
+    [self hideHistoryWindowIfVisible];
+}
+
+- (void)hideHistoryWindowIfClickOutside {
+    // Check if mouse click is outside both main window and history window
+    NSPoint mouseLocation = [NSEvent mouseLocation];
+    
+    NSWindow *mainWindow = self.view.window;
+    NSWindow *historyWindow = nil;
+    @try {
+        historyWindow = _historyWindow;
+    } @catch (NSException *exception) {
+        MMLogWarn(@"Failed to access historyWindow: %@", exception);
+        return;
+    }
+    
+    // Check if mouse is inside main window
+    BOOL mouseInMainWindow = NO;
+    if (mainWindow && mainWindow.isVisible) {
+        NSRect mainFrame = mainWindow.frame;
+        // Convert mouse location to screen coordinates (NSWindow frame uses bottom-left origin)
+        mouseInMainWindow = NSPointInRect(mouseLocation, mainFrame);
+    }
+    
+    // Check if mouse is inside history window
+    BOOL mouseInHistoryWindow = NO;
+    if (historyWindow && [historyWindow isKindOfClass:[NSWindow class]] && historyWindow.isVisible) {
+        NSRect historyFrame = historyWindow.frame;
+        mouseInHistoryWindow = NSPointInRect(mouseLocation, historyFrame);
+    }
+    
+    // Only hide if mouse is outside both windows
+    if (!mouseInMainWindow && !mouseInHistoryWindow) {
+        if (historyWindow && historyWindow.isVisible) {
+            MMLogInfo(@"Hiding history window (click outside both windows)");
+            [historyWindow orderOut:nil];
+        }
+    }
+}
+
+- (void)hideHistoryWindowIfVisible {
+    // Hide history window when app loses focus (same behavior as translation window)
+    // Use orderOut instead of close to avoid dealloc issues with SwiftUI views
+    NSWindow *historyWindow = nil;
+    @try {
+        historyWindow = _historyWindow;
+    } @catch (NSException *exception) {
+        MMLogWarn(@"Failed to access historyWindow: %@", exception);
+        return;
+    }
+    
+    if (historyWindow && [historyWindow isKindOfClass:[NSWindow class]] && historyWindow.isVisible) {
+        MMLogInfo(@"Hiding history window (app lost focus)");
+        [historyWindow orderOut:nil];
+        // Don't set to nil here, keep reference for reuse
+    }
+}
+
+- (void)positionHistoryWindow:(NSWindow *)historyWindow {
+    NSWindow *mainWindow = self.view.window;
+    if (!mainWindow || !historyWindow) {
+        [historyWindow center];
+        return;
+    }
+    
+    CGFloat windowWidth = historyWindow.frame.size.width;
+    CGFloat windowHeight = historyWindow.frame.size.height;
+    
+    // Get screen visible frame
+    NSScreen *screen = mainWindow.screen ?: [NSScreen mainScreen];
+    NSRect screenVisibleFrame = screen.visibleFrame;
+    
+    NSRect mainFrame = mainWindow.frame;
+    
+    // Try to position at center-top of screen first
+    CGFloat centerX = screenVisibleFrame.origin.x + (screenVisibleFrame.size.width - windowWidth) / 2.0;
+    CGFloat topY = screenVisibleFrame.origin.y + screenVisibleFrame.size.height - windowHeight;
+    
+    NSRect preferredFrame = NSMakeRect(centerX, topY, windowWidth, windowHeight);
+    
+    // Check if preferred position would overlap with main window
+    NSRect intersection = NSIntersectionRect(preferredFrame, mainFrame);
+    if (intersection.size.width > 0 && intersection.size.height > 0) {
+        // If overlap, try to position to the left or right of main window
+        CGFloat spacing = 10;
+        
+        // Try right side first
+        CGFloat rightX = mainFrame.origin.x + mainFrame.size.width + spacing;
+        NSRect rightFrame = NSMakeRect(rightX, topY, windowWidth, windowHeight);
+        
+        // Check if right side fits in screen
+        if (rightFrame.origin.x + rightFrame.size.width <= screenVisibleFrame.origin.x + screenVisibleFrame.size.width) {
+            preferredFrame = rightFrame;
+        } else {
+            // Try left side
+            CGFloat leftX = mainFrame.origin.x - windowWidth - spacing;
+            NSRect leftFrame = NSMakeRect(leftX, topY, windowWidth, windowHeight);
+            
+            // Check if left side fits in screen
+            if (leftFrame.origin.x >= screenVisibleFrame.origin.x) {
+                preferredFrame = leftFrame;
+            } else {
+                // If neither side fits, position below main window
+                CGFloat belowY = mainFrame.origin.y - windowHeight - spacing;
+                if (belowY >= screenVisibleFrame.origin.y) {
+                    preferredFrame = NSMakeRect(centerX, belowY, windowWidth, windowHeight);
+                }
+                // Otherwise, use center-top even if it overlaps slightly
+            }
+        }
+    }
+    
+    // Ensure frame is within screen bounds using safe area calculation
+    NSRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:preferredFrame inScreenVisibleFrame:screenVisibleFrame];
+    
+    [historyWindow setFrame:safeFrame display:YES];
 }
 
 @end

@@ -351,6 +351,9 @@ extension Defaults.Keys {
     // Doubao
     static let doubaoAPIKey = Key<String>(EZDoubaoAPIKey, default: "")
     static let doubaoModel = Key<String>(EZDoubaoModelKey, default: DoubaoService.defaultModelIdentifier)
+
+    // Translation History
+    static let translationHistoryMaxCount = Key<Int>("EZTranslationHistoryMaxCount", default: 20)
 }
 
 /// shortcut

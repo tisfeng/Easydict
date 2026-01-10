@@ -70,6 +70,52 @@ struct GeneralTab: View {
             }
 
             Section {
+                let bindingMaxHistory = Binding<Int>(
+                    get: { maxHistoryCount },
+                    set: { newValue in
+                        maxHistoryCount = min(max(1, newValue), 50)
+                    }
+                )
+                Stepper(
+                    value: bindingMaxHistory,
+                    in: 1 ... 50,
+                    step: 1
+                ) {
+                    HStack {
+                        Text("setting.general.history.max_count")
+                        Spacer()
+                        Text("\(maxHistoryCount)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Button(role: .destructive) {
+                    showClearHistoryAlert = true
+                } label: {
+                    HStack {
+                        Text("setting.general.history.clear_all")
+                        Spacer()
+                    }
+                }
+            } header: {
+                Text("setting.general.history.header")
+            } footer: {
+                Text("setting.general.history.footer")
+                    .font(.footnote)
+            }
+            .alert("setting.general.history.clear_all.confirm", isPresented: $showClearHistoryAlert) {
+                Button("cancel", role: .cancel) {
+                    showClearHistoryAlert = false
+                }
+                Button("delete", role: .destructive) {
+                    clearAllTranslationHistory()
+                    showClearHistoryAlert = false
+                }
+            } message: {
+                Text("setting.general.history.clear_all.message")
+            }
+
+            Section {
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
@@ -247,6 +293,10 @@ struct GeneralTab: View {
     @Default(.autoCopySelectedText) private var autoCopySelectedText
     @Default(.autoCopyFirstTranslatedText) private var autoCopyFirstTranslatedText
 
+    // Translation History
+    @Default(.translationHistoryMaxCount) private var maxHistoryCount
+    @State private var showClearHistoryAlert = false
+
     // Quick link
     @Default(.showGoogleQuickLink) private var showGoogleQuickLink
     @Default(.showEudicQuickLink) private var showEudicQuickLink
@@ -277,6 +327,13 @@ struct GeneralTab: View {
 
     private func logSettings(_ parameters: [String: Any]) {
         AnalyticsService.logEvent(withName: "settings", parameters: parameters)
+    }
+
+    /// Clears all translation history.
+    private func clearAllTranslationHistory() {
+        Task { @MainActor in
+            TranslationHistoryManager.shared.clearAllHistory()
+        }
     }
 }
 

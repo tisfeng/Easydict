@@ -76,6 +76,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [_stackView removeFromSuperview];
     _stackView = nil;
     _quickActionButton = nil;
+    _historyButton = nil;
     
     [self updatePinButton];
     
@@ -99,6 +100,8 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         make.top.equalTo(self).offset(topOffset);
         make.right.equalTo(self).offset(-margin);
     }];
+    
+    [self.stackView addArrangedSubview:self.historyButton];
     
     if (MyConfiguration.shared.showQuickActionButton) {
         [self.stackView addArrangedSubview:self.quickActionButton];
@@ -231,6 +234,39 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         _quickActionMenu = menu;
     }
     return _quickActionMenu;
+}
+
+- (EZOpenLinkButton *)historyButton {
+    if (!_historyButton) {
+        EZOpenLinkButton *historyButton = [[EZOpenLinkButton alloc] init];
+        _historyButton = historyButton;
+        NSImage *image = [NSImage ez_imageWithSymbolName:@"clock.arrow.circlepath"];
+        historyButton.image = image;
+        historyButton.toolTip = NSLocalizedString(@"translation.history", nil);
+        
+        mm_weakify(self);
+        [historyButton setClickBlock:^(EZButton *_Nonnull button) {
+            mm_strongify(self);
+            if (self.historyButtonClickBlock) {
+                self.historyButtonClickBlock();
+            }
+        }];
+        
+        NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+        NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+        CGSize imageSize = CGSizeMake(20, 20);
+        
+        [historyButton executeLight:^(EZButton *button) {
+            button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
+        } dark:^(EZButton *button) {
+            button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
+        }];
+        
+        [historyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(24);
+        }];
+    }
+    return _historyButton;
 }
 
 - (EZOpenLinkButton *)quickActionButton {

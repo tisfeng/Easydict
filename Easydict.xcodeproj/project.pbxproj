@@ -485,6 +485,10 @@
 		8049F36C2F0376B000DD454F /* NSImage+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8049F3672F0376B000DD454F /* NSImage+RoundedCorner.swift */; };
 		860409132DDD5F090095781D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 860409122DDD5F090095781D /* FirebaseAnalytics */; };
 		894B8BB72D5D98A3004B36C1 /* PronunciationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894B8BB62D5D989A004B36C1 /* PronunciationExtensions.swift */; };
+		943B0E092F12882100E6CE83 /* TranslationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943B0E072F12882100E6CE83 /* TranslationHistory.swift */; };
+		943B0E0A2F12882100E6CE83 /* TranslationHistory+ObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943B0E082F12882100E6CE83 /* TranslationHistory+ObjC.swift */; };
+		943B0E0C2F12888B00E6CE83 /* TranslationHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943B0E0B2F12888B00E6CE83 /* TranslationHistoryView.swift */; };
+		943B0E0E2F128B0800E6CE83 /* TranslationHistoryHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943B0E0D2F128B0800E6CE83 /* TranslationHistoryHostingView.swift */; };
 		94F90BEEE04149F988662B80 /* OCRTextProcessingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */; };
 		960835502B6791F200C6A931 /* ShortcutManager+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* ShortcutManager+Validator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
@@ -1142,6 +1146,10 @@
 		8049F3672F0376B000DD454F /* NSImage+RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+RoundedCorner.swift"; sourceTree = "<group>"; };
 		894B8BB62D5D989A004B36C1 /* PronunciationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationExtensions.swift; sourceTree = "<group>"; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
+		943B0E072F12882100E6CE83 /* TranslationHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationHistory.swift; sourceTree = "<group>"; };
+		943B0E082F12882100E6CE83 /* TranslationHistory+ObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TranslationHistory+ObjC.swift"; sourceTree = "<group>"; };
+		943B0E0B2F12888B00E6CE83 /* TranslationHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationHistoryView.swift; sourceTree = "<group>"; };
+		943B0E0D2F128B0800E6CE83 /* TranslationHistoryHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationHistoryHostingView.swift; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* ShortcutManager+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShortcutManager+Validator.swift"; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
 		9627F9352B59956800B1E999 /* GlobalShortcutSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalShortcutSettingView.swift; sourceTree = "<group>"; };
@@ -3006,6 +3014,8 @@
 		27FE98062B3DD525000AD654 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				943B0E0D2F128B0800E6CE83 /* TranslationHistoryHostingView.swift */,
+				943B0E0B2F12888B00E6CE83 /* TranslationHistoryView.swift */,
 				03FEF15F2D45D06E002D5F28 /* Window */,
 				030D61262CD9BA0F000DF298 /* AcknowListView */,
 				9643D93E2B6FC405000FBEA6 /* MenuView */,
@@ -3324,6 +3334,8 @@
 		EA9943E12B534C2900EE7B97 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				943B0E072F12882100E6CE83 /* TranslationHistory.swift */,
+				943B0E082F12882100E6CE83 /* TranslationHistory+ObjC.swift */,
 				03DB07152F0C2CDD00D2C68C /* DetectManager.swift */,
 				03B877552EF9A51F00B5ED68 /* QueryModel.swift */,
 				035179172EF301C20054C985 /* AppTriggerConfig.swift */,
@@ -3887,6 +3899,8 @@
 				03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */,
 				DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */,
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
+				943B0E092F12882100E6CE83 /* TranslationHistory.swift in Sources */,
+				943B0E0A2F12882100E6CE83 /* TranslationHistory+ObjC.swift in Sources */,
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */,
@@ -4036,6 +4050,7 @@
 				9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */,
 				0337D0092C109D0C002ACE72 /* ServiceUsageStatus.swift in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
+				943B0E0C2F12888B00E6CE83 /* TranslationHistoryView.swift in Sources */,
 				0333D4C92E5CA3F700CD4613 /* ShortcutConfictAlertMessage.swift in Sources */,
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
@@ -4080,6 +4095,7 @@
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
 				0333D4C52E5C784600CD4613 /* ShortcutModifier.swift in Sources */,
 				EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */,
+				943B0E0E2F128B0800E6CE83 /* TranslationHistoryHostingView.swift in Sources */,
 				03779F0F2BB256A7008D3C42 /* StreamService+Prompt.swift in Sources */,
 				032E7CD12E13CE2100BB8B00 /* OCRLineMeasurer.swift in Sources */,
 				03F44F2B2E57813B003C2EA3 /* RecognizedTextObservation+Extension.swift in Sources */,

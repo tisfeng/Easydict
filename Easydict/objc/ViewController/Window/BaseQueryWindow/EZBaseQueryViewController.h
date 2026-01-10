@@ -75,6 +75,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// show tips view
 - (void)showTipsView:(BOOL)isVisible;
 
+/// Show translation history window.
+- (void)showTranslationHistory;
+
 @end
 
 NS_ASSUME_NONNULL_END

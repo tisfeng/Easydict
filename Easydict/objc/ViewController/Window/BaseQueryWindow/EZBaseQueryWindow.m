@@ -68,6 +68,16 @@
         mm_strongify(self);
         [self.queryViewController receiveTitlebarAction:action];
     };
+    
+    self.titleBar.historyButtonClickBlock = ^{
+        mm_strongify(self);
+        MMLogInfo(@"History button clicked");
+        if (self.queryViewController) {
+            [self.queryViewController showTranslationHistory];
+        } else {
+            MMLogWarn(@"queryViewController is nil");
+        }
+    };
 }
 
 
