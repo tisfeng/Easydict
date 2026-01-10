@@ -85,8 +85,6 @@ We plan to refactor the project with Swift. If you are interested in this open s
   - [Lingocloud](#lingocloud)
   - [Ali Translate](#ali-translate)
   - [Doubao Translate](#doubao-translate)
-- [Smart query mode](#smart-query-mode)
-  - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
 - [Use with PopClip](#use-with-popclip)
 - [Settings](#settings)
@@ -429,60 +427,6 @@ It is recommended to use your own API key, each registered user of Ali Translate
 [Doubao Translation](https://www.volcengine.com/docs/82379/1820188) requires an API key, which can be applied for at the [Volcano Ark Platform](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey).
 
 It is recommended to use your own API key. Each registered user is given 500,000 characters of free translation quota.
-
-## Smart query mode
-
-Currently, there are two main types of lookup services: vocabulary lookup (e.g., Apple Dictionary) and translating text (e.g., DeepL), and there are also some services (e.g., Yudao and Google) that support both vocabulary lookup and translating text.
-
-```objc
-typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
-    EZQueryTextTypeNone = 0, // 0
-    EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
-    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
-    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
-};
-```
-
-Easydict can automatically enable the appropriate query service based on the content of the query text.
-
-Specifically, under smart query mode, when looking up for vocabularies, only services that support [Words lookup] will be invoked; when translating text, only services that support [Text Translation] will be enabled.
-
-For vocabularies, services that support vocabularies lookup work significantly better than translations, while translating text with vocabularies lookups enabled.
-
-By default, all translation services support vocabularies lookup (vocabularies are also a kind of text), users can adjust it manually. For example, to set Google to translate text only, just use the following command to change the property to `translation | sentence`.
-
-```bash
-easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
-```
-
-Similarly, for some services that support looking up vocabulary and translating text at the same time, such as Youdao Dictionary, you can set its query mode to look up only vocabulary by setting the type to `dictionary`.
-
-```bash
-easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
-```
-
-By default, all Windows are not enabled for smart query mode, users can enable this feature manually:
-
-```bash
-easydict://writeKeyValue?IntelligentQueryMode-window1=1
-```
-window1 represents the mini window, while window2 represents hover window, value 0 represents disabled, while 1 represents enabled.
-
-> [!NOTE] 
-> Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
-
-<table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
-</table>
-
-### Query in App
-
-Easydict in-app lookup is supported. In the input box or translation result, if you encounter unfamiliar words, you can call out the menu by right-clicking with heavy pressure and selecting the first "In-app lookup".
-
-<div>
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/9a8ac25d-a24f-441e-b7a9-331655def562" width="50%" />
-</div>
 
 ## URL Scheme
 

@@ -86,8 +86,6 @@
   - [彩云小译](#彩云小译)
   - [阿里翻译](#阿里翻译)
   - [豆包翻译](#豆包翻译)
-- [智能查询模式](#智能查询模式)
-  - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
 - [配合 PopClip 使用](#配合-popclip-使用)
 - [设置](#设置)
@@ -435,61 +433,6 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + 
 [豆包翻译](https://www.volcengine.com/docs/82379/1820188) 需要 API key，可在[火山方舟平台](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey)进行申请。
 
 建议使用自己的 API key，每个注册用户赠送 50 万字符的免费翻译额度。
-
-## 智能查询模式
-
-目前查询服务主要分为两类：查询单词（如苹果词典）和翻译文本（如 DeepL），另外有些服务（如有道和谷歌），同时支持查询单词和翻译文本。
-
-```objc
-typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
-    EZQueryTextTypeNone = 0, // 0
-    EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
-    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
-    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
-};
-```
-
-Easydict 可以根据查询文本的内容，自动启用相应的查询服务。
-
-具体来说，在智能查询模式下，当查询单词时，则只会调用支持【单词查询】的服务；当翻译文本时，则只会调用支持【文本翻译】的服务。
-
-对于单词查询，支持查询单词服务的效果明显比简单翻译更好，例如苹果词典和有道词典；而进行长文本翻译时，启用单词查询服务没有意义，例如使用苹果词典来翻译。
-
-默认情况下，所有的翻译服务都支持单词查询（单词也属于文本的一种），用户可以手动调整，如设置 Google 智能模式只翻译文本，只需要使用下面命令修改为 `translation | sentence` 即可。
-
-```bash
-easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
-```
-
-同样，对于一些同时支持查询单词和翻译文本的服务，如有道词典，也可以设置它智能模式只查询单词，设置类型为 `dictionary`
-
-```bash
-easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
-```
-
-默认情况下，所有窗口都未开启智能查询模式，用户可手动启用此功能：
-
-```bash
-easydict://writeKeyValue?IntelligentQueryMode-window1=1
-```
-window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关闭，1 表示开启。
-
-> [!NOTE]
-> 智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头按钮展开查询。
-
-<table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
-</table>
-
-### 应用内查询
-
-支持 Easydict 应用内便捷查询。在输入框或翻译结果，如遇到不熟悉的单词，可通过重压右击唤出菜单，选择第一个“应用内查询”。
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
-</div>
-
 
 ## URL Scheme
 
