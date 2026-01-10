@@ -141,21 +141,122 @@ private struct ServiceItems: View {
     // MARK: Internal
 
     var body: some View {
-        ForEach(servicesWithID, id: \.1) { service, _ in
-            ServiceItemView(service: service, viewModel: viewModel)
-                .tag(service)
+        Group {
+            // Free services section
+            if !freeServices.isEmpty {
+                Section {
+                    ForEach(freeServicesWithID, id: \.1) { service, _ in
+                        ServiceItemView(service: service, viewModel: viewModel)
+                            .tag(service)
+                    }
+                    .onMove { source, destination in
+                        handleMove(source: source, destination: destination, inSection: freeServices)
+                    }
+                } header: {
+                    Text("setting.service.section.free")
+                        .font(.headline)
+                }
+            }
+
+            // Pro services section (require API key)
+            if !proServices.isEmpty {
+                Section {
+                    ForEach(proServicesWithID, id: \.1) { service, _ in
+                        ServiceItemView(service: service, viewModel: viewModel)
+                            .tag(service)
+                    }
+                    .onMove { source, destination in
+                        handleMove(source: source, destination: destination, inSection: proServices)
+                    }
+                } header: {
+                    Text("setting.service.section.pro")
+                        .font(.headline)
+                }
+            }
         }
-        .onMove(perform: viewModel.onServiceItemMove)
     }
 
     // MARK: Private
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    private var servicesWithID: [(QueryService, String)] {
-        viewModel.services.map { service in
+    private var freeServices: [QueryService] {
+        viewModel.services.filter { !requiresAPIKey($0) }
+    }
+
+    private var proServices: [QueryService] {
+        viewModel.services.filter { requiresAPIKey($0) }
+    }
+
+    private var freeServicesWithID: [(QueryService, String)] {
+        freeServices.map { service in
             (service, service.serviceTypeWithUniqueIdentifier())
         }
+    }
+
+    private var proServicesWithID: [(QueryService, String)] {
+        proServices.map { service in
+            (service, service.serviceTypeWithUniqueIdentifier())
+        }
+    }
+
+    /// Determines if a service requires an API key to use.
+    private func requiresAPIKey(_ service: QueryService) -> Bool {
+        // BuiltInAI uses built-in API keys, so it's free for users
+        if service.serviceType() == .builtInAI {
+            return false
+        }
+
+        // StreamService (AI services) generally require API keys
+        if service.isKind(of: StreamService.self) {
+            return true
+        }
+
+        // Check if service explicitly requires private API key
+        if service.needPrivateAPIKey() {
+            return true
+        }
+
+        // Check if service has API key configuration by checking configuration view type
+        if let configView = service.configurationListItems() as? (any View) {
+            let typeName = String(describing: type(of: configView))
+            // Services with secret sections or stream configuration likely need API keys
+            if typeName.contains("StreamConfigurationView") ||
+                typeName.contains("ServiceConfigurationSecretSectionView") {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /// Handles move operation within a specific section.
+    private func handleMove(source: IndexSet, destination: Int, inSection sectionServices: [QueryService]) {
+        // Create a mapping of section services to their indices in the full services array
+        var sectionToFullIndexMap: [Int: Int] = [:]
+        var sectionIndex = 0
+
+        for (fullIndex, service) in viewModel.services.enumerated() {
+            if sectionServices
+                .contains(where: { $0.serviceTypeWithUniqueIdentifier() == service.serviceTypeWithUniqueIdentifier()
+                }) {
+                sectionToFullIndexMap[sectionIndex] = fullIndex
+                sectionIndex += 1
+            }
+        }
+
+        // Convert section source indices to full array indices
+        var actualSourceIndices = IndexSet()
+        for sectionIdx in source {
+            if let fullIdx = sectionToFullIndexMap[sectionIdx] {
+                actualSourceIndices.insert(fullIdx)
+            }
+        }
+
+        // Find destination index in full services array
+        let actualDestination = sectionToFullIndexMap[destination] ?? destination
+
+        viewModel.onServiceItemMove(fromOffsets: actualSourceIndices, toOffset: actualDestination)
     }
 }
 
