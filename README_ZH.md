@@ -59,6 +59,7 @@ brew install --cask easydict
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
+> [!NOTE]
 > 最新版本支持 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
 ---
