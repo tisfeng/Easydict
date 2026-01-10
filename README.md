@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)，[🍎 **苹果系统翻译**](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepSeek](https://www.deepseek.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/)，[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [**🍎 苹果系统词典**](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)，[🍎 **苹果系统翻译**](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepSeek](https://www.deepseek.com/)，[Ollama](https://ollama.com/)，[Groq](https://groq.com/)，[智谱AI](https://open.bigmodel.cn/)，[GitHub Models](https://github.com/marketplace/models)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[有道词典](https://www.youdao.com/)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/)，[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -38,7 +38,7 @@
 - 📸 OCR 截图翻译，静默截图 OCR
 - 🔊 多种 TTS 语音服务
 - 📚 支持 🍎 [苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌐 支持多个翻译服务（OpenAI、Gemini、DeepL、Google 等）
+- 🌐 支持 20+ 翻译服务（OpenAI、Gemini、DeepL、Google、Ollama、Groq 等）
 - 🗣️ 支持 48 种语言
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**

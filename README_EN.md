@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time.
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently supports [**🍎 Apple Dictionary**](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), [🍎 **Apple Translate**](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) and [Doubao](https://www.volcengine.com/docs/82379/1820188).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -38,7 +38,7 @@
 - 📸 OCR screenshot translation and slient screenshot OCR
 - 🔊 Multiple TTS voice services
 - 📚 Support 🍎 [Apple System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌐 Multiple translation services (OpenAI, Gemini, DeepL, Google, etc.)
+- 🌐 Support 20+ translation services (OpenAI, Gemini, DeepL, Google, Ollama, Groq, etc.)
 - 🗣️ Support for 48 languages
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
