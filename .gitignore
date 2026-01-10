@@ -95,5 +95,7 @@ BuildTools/.swiftpm
 # Ignore xcodeproj Package.resolved file, use xcworkspace Package.resolved instead (For CocoaPods
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
-# Ignore *.zip files
+# Ignore *.zip, *.app and *.dmg files generated during build or release process
 *.zip
+*.app
+*.dmg
