@@ -102,13 +102,13 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 
 感谢 [@CanglongCl](https://github.com/CanglongCl) 提供的苹果开发者账号，解决了应用 [签名问题](https://github.com/tisfeng/Easydict/issues/2)，让更多人能够方便地使用 Easydict。
 
-感谢所有支持者的赞助，详情请看查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
-
 <a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
+
+感谢所有支持者的赞助，详情请查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
 
 ---
 

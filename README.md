@@ -102,13 +102,13 @@ Easydict is a free and open source project, currently mainly developed and maint
 
 Thanks to [@CanglongCl](https://github.com/CanglongCl) for providing the Apple Developer account, which solved the app [signature issue](https://github.com/tisfeng/Easydict/issues/2), allowing more people to use Easydict conveniently.
 
-Thanks to all sponsors for their generous support. For details, please see the [Sponsor List](./docs/en/SPONSOR_LIST.md).
-
 <a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
+
+Thanks to all sponsors for their generous support. For details, please see the [Sponsor List](./docs/en/SPONSOR_LIST.md).
 
 ---
 
