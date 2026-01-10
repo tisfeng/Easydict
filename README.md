@@ -15,12 +15,16 @@
 </p>
 
 <div align="center">
-<a href="./README.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README_EN.md">English</a>
+<a href="./README_ZH.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README.md">English</a>
 </div>
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [**🍎 苹果系统词典**](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)，[🍎 **苹果系统翻译**](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)，[OpenAI](https://chat.openai.com/)，[Gemini](https://gemini.google.com/)，[DeepSeek](https://www.deepseek.com/)，[Ollama](https://ollama.com/)，[Groq](https://groq.com/)，[智谱AI](https://open.bigmodel.cn/)，[GitHub Models](https://github.com/marketplace/models)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[有道词典](https://www.youdao.com/)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/)，[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text.
+
+Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time.
+
+**Supported translation services:** [**🍎 Apple Dictionary**](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), [🍎 **Apple Translate**](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) and [Doubao](https://www.volcengine.com/docs/82379/1820188).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -31,41 +35,54 @@
 
 ![immerse-1686534718.gif](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/immerse-1686534718.gif)
 
-## 功能特性
+## Features
 
-- 🚀 开箱即用，自动识别输入语言
-- 🖱️ 鼠标自动划词和快捷键划词
-- 📸 OCR 截图翻译，静默截图 OCR
-- 🔊 多种 TTS 语音服务
-- 📚 支持 🍎 [苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌐 支持 20+ 翻译服务（OpenAI、Gemini、DeepL、Google、Ollama、Groq 等）
-- 🗣️ 支持 48 种语言
+- 🚀 Out of the box, automatic language recognition
+- 🖱️ Auto select with mouse and shortcut key
+- 📸 OCR screenshot translation and slient screenshot OCR
+- 🔊 Multiple TTS voice services
+- 📚 Support 🍎 [Apple System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌐 Support 20+ translation services (OpenAI, Gemini, DeepL, Google, Ollama, Groq, etc.)
+- 🗣️ Support for 48 languages
 
-**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
+**If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
-## 安装
+## Installation
 
-### Homebrew 安装（推荐）
+### Homebrew Installation (Recommended)
 
 ```bash
 brew install --cask easydict
 ```
 
-### 手动下载安装
+### Manual Installation
 
-[下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
+[Download](https://github.com/tisfeng/Easydict/releases) the latest release.
 
-> 最新版本支持 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
+> Latest version supports macOS 13.0+, for older systems please use [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
 ---
 
-## 文档
+## Usage
 
-- 📖 [完整使用指南](./docs/zh/GUIDE.md) - 详细功能说明和配置方法
-- 🔧 [开发者构建指南](./docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
-- 🍎 [如何使用 macOS 系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
-- 🍎 [如何使用 macOS 系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌍 [如何帮助翻译 Easydict](./docs/How-to-translate-Easydict-zh.md)
+| Ways                      | Description                                                             | Preview                                                                                                                                        |
+| ------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mouse select translate    | Query icon appears after selection, hover to translate                  | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| Shortcut select translate | Select text and press shortcut key (default ⌥ + D)                      | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
+| Screenshot translate      | Press screenshot shortcut (default ⌥ + S) to capture area               | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
+| Input translate           | Press input shortcut (default ⌥ + A or ⌥ + F), type and press Enter    | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
+
+📖 **[Complete Usage Guide](./docs/en/GUIDE.md)** - Detailed features, configuration and tips
+
+---
+
+## Documentation
+
+- 📖 [Complete Usage Guide](./docs/en/GUIDE.md) - Detailed features, configuration and tips
+- 🔧 [Developer Build Guide](./docs/en/GUIDE.md#developer-build) - Build and run from source code
+- 🍎 [How to use macOS System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
+- 🍎 [How to use macOS System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌍 [How to translate Easydict](./docs/How-to-translate-Easydict-en.md)
 
 ---
 
@@ -79,19 +96,19 @@ brew install --cask easydict
   </picture>
 </a>
 
-## 致谢
+## Acknowledgements
 
-- 这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
-- 截图功能是基于 [isee15](https://github.com/isee15) 的 [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac)，并在此基础上进行了优化。
-- 鼠标划词功能参考了 [PopClip](https://pilotmoon.com/popclip/)。
+- This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was made based on [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob). Easydict has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob.
+- Screenshot feature is based on [isee15](https://github.com/isee15)'s [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac), and optimized on this project.
+- Select text feature is referenced from [PopClip](https://pilotmoon.com/popclip/).
 
-## 声明
+## Statement
 
-Easydict 为 [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) 开源协议，仅供学习交流，任何人都可以免费获取该产品和源代码。如果你认为您的合法权益受到侵犯，请立即联系[作者](https://github.com/tisfeng)。你可以自由使用源代码，但必须附上相应的许可证和版权声明。
+Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) open source license, which is for learning and communication only. Anyone can get this product and source code for free. If you believe that your legal rights have been violated, please contact the [author](https://github.com/tisfeng) immediately. You can use the source code freely, but you must attach the corresponding license and copyright.
 
-## 赞助支持
+## Sponsor
 
-Easydict 作为一个免费开源的非盈利项目，目前主要是作者个人在开发和维护，如果你喜欢这个项目，觉得它对你有帮助，可以考虑赞助支持一下这个项目，用爱发电，让它能够走得更远。
+Easydict is a free and open source project, currently mainly developed and maintained by the author. If you like this project and find it helpful, you can consider sponsoring this project to support it, so that it can go further.
 
 <a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
@@ -99,5 +116,4 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-感谢所有支持者的赞助，详情请看查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
-
+Thanks to all sponsors for their generous support. For details, please see the [Sponsor List](./docs/en/SPONSOR_LIST.md).
