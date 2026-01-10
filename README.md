@@ -35,7 +35,7 @@
 
 - 🚀 开箱即用，自动识别输入语言
 - 🖱️ 自动划词翻译，鼠标悬浮即可查询
-- 📸 OCR 截图翻译，支持静默截图
+- 📸 OCR 截图翻译，静默截图
 - 🔊 多种 TTS 语音服务
 - 📚 支持 🍎 [苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌐 支持多个翻译服务（OpenAI、Gemini、DeepL、Google 等）
@@ -45,23 +45,17 @@
 
 ## 安装
 
-你可以使用下面两种方式之一安装。
-
-Easydict 最新版本支持系统 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)。
-
-### 1. 手动下载安装
-
-[下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
-
-### 2. Homebrew 安装
-
-感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) 提供的最初安装版本。
+### Homebrew 安装（推荐）
 
 ```bash
 brew install --cask easydict
 ```
 
-> Easydict 最新版本支持系统 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
+### 手动下载安装
+
+[下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
+
+> 最新版本支持 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
 📖 **开发者构建说明请查看 [完整使用指南](./docs/zh/GUIDE.md#开发者构建)**
 
@@ -106,5 +100,5 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-请查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
+感谢所有支持者的赞助，详情请看查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
 

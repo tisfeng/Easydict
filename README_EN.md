@@ -35,7 +35,7 @@
 
 - 🚀 Out of the box, automatic language recognition
 - 🖱️ Auto select translate with mouse hover
-- 📸 OCR screenshot translation with silent mode
+- 📸 OCR screenshot translation and slient screenshot OCR
 - 🔊 Multiple TTS voice services
 - 📚 Support 🍎 [Apple System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌐 Multiple translation services (OpenAI, Gemini, DeepL, Google, etc.)
@@ -43,16 +43,17 @@
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
-## Quick Start
+## Installation
 
-### Installation
+### Homebrew Installation (Recommended)
 
-**Manual Installation:** [Download Latest Release](https://github.com/tisfeng/Easydict/releases)
-
-**Homebrew Installation:**
 ```bash
 brew install --cask easydict
 ```
+
+### Manual Installation
+
+[Download](https://github.com/tisfeng/Easydict/releases) the latest release.
 
 > Latest version supports macOS 13.0+, for older systems please use [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
@@ -60,7 +61,7 @@ brew install --cask easydict
 
 ---
 
-### Basic Usage
+## Usage
 
 | Ways                      | Description                                                             | Preview                                                                                                                                        |
 | ------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -112,4 +113,4 @@ Easydict is a free and open source project, currently mainly developed and maint
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-Please see the [Sponsor List](./docs/en/SPONSOR_LIST.md).
+Thanks to all sponsors for their generous support. For details, please see the [Sponsor List](./docs/en/SPONSOR_LIST.md).
