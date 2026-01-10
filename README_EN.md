@@ -34,7 +34,7 @@
 ## Features
 
 - 🚀 Out of the box, automatic language recognition
-- 🖱️ Auto select translate with mouse hover
+- 🖱️ Auto select with mouse and shortcut key
 - 📸 OCR screenshot translation and slient screenshot OCR
 - 🔊 Multiple TTS voice services
 - 📚 Support 🍎 [Apple System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
@@ -57,8 +57,6 @@ brew install --cask easydict
 
 > Latest version supports macOS 13.0+, for older systems please use [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
-📖 **For developer build instructions, see [Complete Usage Guide](./docs/en/GUIDE.md#developer-build)**
-
 ---
 
 ## Usage
@@ -77,6 +75,7 @@ brew install --cask easydict
 ## Documentation
 
 - 📖 [Complete Usage Guide](./docs/en/GUIDE.md) - Detailed features, configuration and tips
+- 🔧 [Developer Build Guide](./docs/en/GUIDE.md#developer-build) - Build and run from source code
 - 🍎 [How to use macOS System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
 - 🍎 [How to use macOS System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌍 [How to translate Easydict](./docs/How-to-translate-Easydict-en.md)

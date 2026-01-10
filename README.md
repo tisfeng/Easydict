@@ -34,8 +34,8 @@
 ## 功能特性
 
 - 🚀 开箱即用，自动识别输入语言
-- 🖱️ 自动划词翻译，鼠标悬浮即可查询
-- 📸 OCR 截图翻译，静默截图
+- 🖱️ 鼠标自动划词和快捷键划词
+- 📸 OCR 截图翻译，静默截图 OCR
 - 🔊 多种 TTS 语音服务
 - 📚 支持 🍎 [苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌐 支持多个翻译服务（OpenAI、Gemini、DeepL、Google 等）
@@ -57,13 +57,12 @@ brew install --cask easydict
 
 > 最新版本支持 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
-📖 **开发者构建说明请查看 [完整使用指南](./docs/zh/GUIDE.md#开发者构建)**
-
 ---
 
 ## 文档
 
 - 📖 [完整使用指南](./docs/zh/GUIDE.md) - 详细功能说明和配置方法
+- 🔧 [开发者构建指南](./docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
 - 🍎 [如何使用 macOS 系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
 - 🍎 [如何使用 macOS 系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌍 [如何帮助翻译 Easydict](./docs/How-to-translate-Easydict-zh.md)
