@@ -67,10 +67,7 @@ We plan to refactor the project with Swift. If you are interested in this open s
   - [Select text by Mouse](#select-text-by-mouse)
   - [About Permissions](#about-permissions)
 - [OCR](#ocr)
-- [Language Recognition](#language-recognition)
 - [TTS Services](#tts-services)
-- [Translation Services](#translation-services)
-  - [Supported languages](#supported-languages)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI Translate](#openai-translate)
     - [OpenAI Query Mode](#openai-query-mode)
@@ -202,17 +199,7 @@ For Safari users, it is highly recommended that this option be turned on, as Saf
 
 ## OCR
 
-Currently, only the system OCR is supported, third-party OCR services will be integrated later.
-
-System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
-
-## Language Recognition
-
-Currently, only the system language recognition is supported, and Baidu and Google language recognition are supported, but considering the speed problem of online recognition and instability (Google also needs to be flipped), the other two recognition services are only used for auxiliary optimization.
-
-The system language recognition is used by default, and after tuning, the accuracy of the system language recognition is already very high, which can meet the needs of most users.
-
-If you still feel that the system language recognition is inaccurate in actual use, you can turn on Baidu language recognition or Google language recognition optimization in the settings, but please note that this may cause the response speed to slow down, and the recognition rate will not be 100% in line with user expectations. If there is a recognition error, you can manually specify the language type.
+Currently, only the system OCR is supported. OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
 ## TTS Services
 
@@ -229,77 +216,6 @@ By default, the application uses Youdao TTS, but users have the option to select
 Due to its impressive performance with English words, Youdao TTS is the recommended choice for such content, while the default TTS service remains in use for other languages. 
 
 It's worth noting that, apart from the system TTS, all other TTS services are unofficial interfaces and may experience instabilities from time to time
-
-## Translation Services
-
-Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple System Translator, DeepL, Google, Bing, Baidu and Volcano Translator.
-
-> [!NOTE] 
-> Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
-
-<details>
-<summary> 
-
-### Supported languages
-
-</summary>
-
-<p>
-
-|       Languages       | Youdao | DeepL | 🍎 Apple Translate | Bing | Google | Baidu | Volcano | Doubao |
-| :-------------------: | :----: | :---: | :----------: | :--: | :----: | :---: | :-----: | :-----: |
-| Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-| Chinese (Traditional) |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        English        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|       Japanese        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Korean         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        French         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Spanish        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|      Portuguese       |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Italian        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        German         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Russian        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Arabic         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Swedish        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|       Romanian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|         Thai          |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Slovak         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|         Dutch         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|       Hungarian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|         Greek         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|        Danish         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Finnish        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Polish         |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|         Czech         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Turkish        |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|      Lithuanian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|        Latvian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|       Ukrainian       |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|       Bulgarian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|      Indonesian       |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|         Malay         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|       Slovenian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|       Estonian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|      Vietnamese       |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Persian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|         Hindi         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|        Telugu         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|         Tamil         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|         Urdu          |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|       Filipino        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|         Khmer         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|          Lao          |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|        Bengali        |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |   ❌    |
-|        Burmese        |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |   ❌    |
-|       Norwegian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|        Serbian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|       Croatian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ✅    |
-|       Mongolian       |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-|        Hebrew         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |   ❌    |
-
-</p>
-
-</details>
 
 ### 🍎 Apple System Dictionary
 
