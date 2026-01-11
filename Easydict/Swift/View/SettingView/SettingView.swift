@@ -36,14 +36,14 @@ struct SettingView: View {
                 .tabItem { Label("service", systemImage: "briefcase") }
                 .tag(SettingTab.service)
 
-            DisabledAppTab()
-                .tabItem { Label("disabled_app_list", systemImage: "nosign") }
-                .tag(SettingTab.disabled)
-            
             FavoritesTab()
                 .tabItem { Label("favorites.tab", systemImage: "star") }
                 .tag(SettingTab.favorites)
-            
+
+            DisabledAppTab()
+                .tabItem { Label("disabled_app_list", systemImage: "nosign") }
+                .tag(SettingTab.disabled)
+
             ShortcutTab()
                 .tabItem { Label("shortcut", systemImage: "command.square") }
                 .tag(SettingTab.shortcut)
