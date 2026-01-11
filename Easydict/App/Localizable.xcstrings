@@ -56,6 +56,7 @@
       }
     },
     "add_to_favorites" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4436,6 +4437,7 @@
       }
     },
     "remove_from_favorites" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

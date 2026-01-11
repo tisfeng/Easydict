@@ -418,9 +418,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
-    
-    // Update favorite button state when input text changes
-    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.serviceHasUpdated object:nil];
 }
 
 - (NSString *)queryText {

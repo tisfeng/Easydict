@@ -25,8 +25,6 @@ typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 
 @property (nonatomic, strong) EZOpenLinkButton *pinButton;
 
-@property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
-
 @property (nonatomic, strong) EZOpenLinkButton *eudicButton;
 @property (nonatomic, strong) EZOpenLinkButton *googleButton;
 @property (nonatomic, strong) EZOpenLinkButton *appleDictionaryButton;
