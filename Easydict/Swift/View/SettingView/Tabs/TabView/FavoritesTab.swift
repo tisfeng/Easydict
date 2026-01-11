@@ -27,27 +27,11 @@ struct FavoritesTab: View {
             .padding(.horizontal)
             .padding(.top)
 
-            // Header with clear button
+            // Header
             HStack {
                 Text(headerTitleKey)
                     .font(.headline)
                 Spacer()
-                Button(action: {
-                    showingClearAlert = true
-                }) {
-                    Text(clearButtonTitleKey)
-                }
-                .disabled(currentRecords.isEmpty)
-                .alert(isPresented: $showingClearAlert) {
-                    Alert(
-                        title: Text(clearAlertTitleKey),
-                        message: Text(clearAlertMessageKey),
-                        primaryButton: .destructive(Text(clearAlertConfirmKey)) {
-                            clearCurrentRecords()
-                        },
-                        secondaryButton: .cancel()
-                    )
-                }
             }
             .padding(.horizontal)
 
@@ -95,7 +79,6 @@ struct FavoritesTab: View {
     @State private var selectedSection: FavoritesSection = .favorites
     @State private var favorites: [QueryRecord] = []
     @State private var history: [QueryRecord] = []
-    @State private var showingClearAlert = false
 
     private var currentRecords: [QueryRecord] {
         selectedSection == .favorites ? favorites : history
@@ -105,38 +88,12 @@ struct FavoritesTab: View {
         selectedSection == .favorites ? "favorites.title" : "history.title"
     }
 
-    private var clearButtonTitleKey: LocalizedStringKey {
-        selectedSection == .favorites ? "favorites.clear_all" : "history.clear_all"
-    }
-
-    private var clearAlertTitleKey: LocalizedStringKey {
-        selectedSection == .favorites ? "favorites.clear_alert.title" : "history.clear_alert.title"
-    }
-
-    private var clearAlertMessageKey: LocalizedStringKey {
-        selectedSection == .favorites ? "favorites.clear_alert.message" : "history.clear_alert.message"
-    }
-
-    private var clearAlertConfirmKey: LocalizedStringKey {
-        selectedSection == .favorites ? "favorites.clear_alert.confirm" : "history.clear_alert.confirm"
-    }
-
     private var emptyStateTitleKey: LocalizedStringKey {
         selectedSection == .favorites ? "favorites.empty" : "history.empty"
     }
 
     private var emptyStateImageName: String {
         selectedSection == .favorites ? "star.slash" : "clock.badge.xmark"
-    }
-
-    /// Clears the records for the currently selected section.
-    private func clearCurrentRecords() {
-        switch selectedSection {
-        case .favorites:
-            FavoritesManager.shared.clearAllFavorites()
-        case .history:
-            HistoryManager.shared.clearAllHistory()
-        }
     }
 
     /// Removes a record from the currently selected section.
@@ -189,7 +146,7 @@ struct QueryRecordRow: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
                 Spacer()
-                Text(record.timestamp, style: .relative)
+                Text(Self.timestampFormatter.string(from: record.timestamp))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -202,6 +159,14 @@ struct QueryRecordRow: View {
     }
 
     // MARK: Private
+
+    /// Formats timestamps without relative updates.
+    private static let timestampFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
 
     /// Replays the query stored in this record.
     private func performQuery() {

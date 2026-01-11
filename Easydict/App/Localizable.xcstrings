@@ -1665,6 +1665,7 @@
       }
     },
     "favorites.clear_alert.confirm" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1687,6 +1688,7 @@
       }
     },
     "favorites.clear_alert.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1709,6 +1711,7 @@
       }
     },
     "favorites.clear_alert.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1731,6 +1734,7 @@
       }
     },
     "favorites.clear_all" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2310,6 +2314,7 @@
       }
     },
     "history.clear_alert.confirm" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2332,6 +2337,7 @@
       }
     },
     "history.clear_alert.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2354,6 +2360,7 @@
       }
     },
     "history.clear_alert.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2376,6 +2383,7 @@
       }
     },
     "history.clear_all" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

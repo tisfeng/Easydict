@@ -39,7 +39,11 @@ struct SettingView: View {
             DisabledAppTab()
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
                 .tag(SettingTab.disabled)
-
+            
+            FavoritesTab()
+                .tabItem { Label("favorites.tab", systemImage: "star") }
+                .tag(SettingTab.favorites)
+            
             ShortcutTab()
                 .tabItem { Label("shortcut", systemImage: "command.square") }
                 .tag(SettingTab.shortcut)
@@ -51,10 +55,6 @@ struct SettingView: View {
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
-
-            FavoritesTab()
-                .tabItem { Label("favorites.tab", systemImage: "star") }
-                .tag(SettingTab.favorites)
 
             AboutTab()
                 .tabItem { Label("setting.about", systemImage: "info.bubble") }
