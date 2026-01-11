@@ -101,16 +101,16 @@ struct FavoritesTab: View {
     private func removeRecord(_ record: QueryRecord) {
         switch selectedSection {
         case .favorites:
-            FavoritesManager.shared.removeFavorite(id: record.id)
+            QueryRecordManager.shared.removeFavorite(id: record.id)
         case .history:
-            HistoryManager.shared.removeHistory(id: record.id)
+            QueryRecordManager.shared.removeHistory(id: record.id)
         }
     }
 
     /// Loads the favorites and history data for display.
     private func loadRecords() {
-        favorites = FavoritesManager.shared.getAllFavorites()
-        history = HistoryManager.shared.getAllHistory()
+        favorites = QueryRecordManager.shared.getAllFavorites()
+        history = QueryRecordManager.shared.getAllHistory()
     }
 }
 

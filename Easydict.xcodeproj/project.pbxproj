@@ -207,6 +207,8 @@
 		0377C08E2F13EAAC00302A2C /* View+DebugOnly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */; };
 		0377C08F2F13EAAC00302A2C /* View+BorderedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */; };
 		0377C0922F13EAFE00302A2C /* BuildConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0902F13EAFE00302A2C /* BuildConfig.swift */; };
+		0377C0DA2F13F97100302A2C /* QueryRecordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0D92F13F97100302A2C /* QueryRecordManager.swift */; };
+		0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
 		037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */; };
@@ -507,9 +509,6 @@
 		A2016EDA90ED45B5B66FA986 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14921B68C1D645268F93668E /* AnalyticsService.swift */; };
 		A94F9CB9D704426DB91B25D3 /* DeviceSystemInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */; };
 		AA0000012E00000000000001 /* QueryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000001 /* QueryRecord.swift */; };
-		AA0000012E00000000000002 /* FavoritesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000002 /* FavoritesManager.swift */; };
-		AA0000012E00000000000003 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000003 /* HistoryManager.swift */; };
-		AA0000012E00000000000004 /* FavoritesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000004 /* FavoritesTab.swift */; };
 		AE8150F3175A4287B9A58FD2 /* OCRPunctuationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */; };
@@ -788,6 +787,8 @@
 		0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+BorderedCard.swift"; sourceTree = "<group>"; };
 		0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DebugOnly.swift"; sourceTree = "<group>"; };
 		0377C0902F13EAFE00302A2C /* BuildConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfig.swift; sourceTree = "<group>"; };
+		0377C0D92F13F97100302A2C /* QueryRecordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecordManager.swift; sourceTree = "<group>"; };
+		0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTab.swift; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
@@ -1170,9 +1171,6 @@
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
 		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
-		AA0000022E00000000000002 /* FavoritesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesManager.swift; sourceTree = "<group>"; };
-		AA0000022E00000000000003 /* HistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
-		AA0000022E00000000000004 /* FavoritesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTab.swift; sourceTree = "<group>"; };
 		C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		C43B566B2C693F6200EF26FD /* VolcanoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoService.swift; sourceTree = "<group>"; };
 		C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoTranslateType.swift; sourceTree = "<group>"; };
@@ -1301,7 +1299,7 @@
 			children = (
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
-				AA0000022E00000000000004 /* FavoritesTab.swift */,
+				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
@@ -1826,8 +1824,6 @@
 				C43B566A2C693F4000EF26FD /* Volcano */,
 				03CD01582D24E17C0079D0CB /* Youdao */,
 				0D124C3D2E8AD3EA00D6B72C /* Doubao */,
-				AA0000022E00000000000002 /* FavoritesManager.swift */,
-				AA0000022E00000000000003 /* HistoryManager.swift */,
 				03CE80262ED89AD600FB4EAB /* Google */,
 				033C6DC32ED9D6D700AC39FC /* DeepL */,
 				033C6DC92ED9E2E500AC39FC /* NiuTrans */,
@@ -1883,6 +1879,14 @@
 				0377C0902F13EAFE00302A2C /* BuildConfig.swift */,
 			);
 			path = Environment;
+			sourceTree = "<group>";
+		};
+		0377C0C12F13F74100302A2C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0377C0D92F13F97100302A2C /* QueryRecordManager.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		03792EA02C3830E60074A145 /* Ollama */ = {
@@ -3064,6 +3068,7 @@
 		27FE980C2B3DD749000AD654 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
+				0377C0C12F13F74100302A2C /* Model */,
 				03071E1B2BC03ADE0042CD38 /* TabView */,
 				9627F9332B59956800B1E999 /* View */,
 				EAED41EA2B54A4900005FE0A /* ServiceConfigurationView */,
@@ -3869,6 +3874,7 @@
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
 				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,
 				03715A282E6D24F60067259C /* SystemUtility.swift in Sources */,
+				0377C0DA2F13F97100302A2C /* QueryRecordManager.swift in Sources */,
 				EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
@@ -4000,9 +4006,6 @@
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
 				AA0000012E00000000000001 /* QueryRecord.swift in Sources */,
-				AA0000012E00000000000002 /* FavoritesManager.swift in Sources */,
-				AA0000012E00000000000003 /* HistoryManager.swift in Sources */,
-				AA0000012E00000000000004 /* FavoritesTab.swift in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				031CBA642CD76F1500364437 /* ChatMessage.swift in Sources */,
@@ -4106,6 +4109,7 @@
 				03715A2A2E6D253E0067259C /* FocusedElementInfo.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
+				0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,

@@ -436,11 +436,11 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         return;
     }
     
-    BOOL isFavorited = [FavoritesManager.shared isFavoritedWithQueryText:queryText];
+    BOOL isFavorited = [QueryRecordManager.shared isFavoritedWithQueryText:queryText];
     if (!isFavorited) {
-        [FavoritesManager.shared addFavoriteWithQueryText:queryText
-                                             fromLanguage:queryModel.queryFromLanguage
-                                               toLanguage:queryModel.queryTargetLanguage];
+        [QueryRecordManager.shared addFavoriteWithQueryText:queryText
+                                               fromLanguage:queryModel.queryFromLanguage
+                                                 toLanguage:queryModel.queryTargetLanguage];
     }
 }
 
