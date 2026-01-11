@@ -18,8 +18,8 @@ struct FavoritesTab: View {
     var body: some View {
         VStack(spacing: 16) {
             Picker(selection: $selectedSection) {
-                Text("favorites.tab").tag(FavoritesSection.favorites)
                 Text("history.tab").tag(FavoritesSection.history)
+                Text("favorites.tab").tag(FavoritesSection.favorites)
             } label: {
                 EmptyView()
             }
@@ -101,16 +101,16 @@ struct FavoritesTab: View {
     private func removeRecord(_ record: QueryRecord) {
         switch selectedSection {
         case .favorites:
-            QueryRecordManager.shared.removeFavorite(id: record.id)
+            QueryRecordManager.shared.removeRecord(id: record.id, from: .favorites)
         case .history:
-            QueryRecordManager.shared.removeHistory(id: record.id)
+            QueryRecordManager.shared.removeRecord(id: record.id, from: .history)
         }
     }
 
     /// Loads the favorites and history data for display.
     private func loadRecords() {
-        favorites = QueryRecordManager.shared.getAllFavorites()
-        history = QueryRecordManager.shared.getAllHistory()
+        favorites = QueryRecordManager.shared.getAllRecords(for: .favorites)
+        history = QueryRecordManager.shared.getAllRecords(for: .history)
     }
 }
 

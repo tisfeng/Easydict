@@ -853,9 +853,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
     
     // Add to history
-    [QueryRecordManager.shared addHistoryWithQueryText:queryModel.queryText
-                                          fromLanguage:queryModel.queryFromLanguage
-                                            toLanguage:queryModel.queryTargetLanguage];
+    [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
+                                         fromLanguage:queryModel.queryFromLanguage
+                                           toLanguage:queryModel.queryTargetLanguage
+                                                   to:RecordTypeHistory];
 
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];

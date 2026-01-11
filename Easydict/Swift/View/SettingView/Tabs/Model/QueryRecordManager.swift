@@ -14,113 +14,138 @@ import Foundation
 /// Manages query record operations for favorites and history.
 @objc
 class QueryRecordManager: NSObject {
-    // MARK: Lifecycle
+    // MARK: Internal
 
-    /// Initializes the manager singleton.
-    override private init() {
-        super.init()
+    /// Defines the record category stored in defaults.
+    @objc
+    enum RecordType: Int {
+        case favorites
+        case history
+
+        // MARK: Internal
+
+        /// Returns the defaults key for the record type.
+        var storageKey: Defaults.Key<[QueryRecord]> {
+            switch self {
+            case .favorites:
+                return Defaults.Keys.favorites
+            case .history:
+                return Defaults.Keys.queryHistory
+            }
+        }
+
+        /// Provides the maximum number of records allowed for the type.
+        var maxCount: Int? {
+            switch self {
+            case .favorites:
+                return nil
+            case .history:
+                return QueryRecordManager.maxHistoryCount
+            }
+        }
+
+        /// Determines how duplicates should be handled for the record type.
+        var deduplicationPolicy: DeduplicationPolicy {
+            switch self {
+            case .favorites:
+                return .skipIfExists
+            case .history:
+                return .moveToFront
+            }
+        }
     }
 
-    // MARK: Internal
+    /// Describes how to handle duplicate query texts when adding records.
+    enum DeduplicationPolicy {
+        case skipIfExists
+        case moveToFront
+    }
 
     /// Shared instance used by the app.
     @objc static let shared = QueryRecordManager()
 
-    /// Adds a query to favorites if it is not already present.
+    /// Adds a query record to the specified category.
     @objc
-    func addFavorite(
+    func addRecord(
         queryText: String,
         fromLanguage: Language,
-        toLanguage: Language
+        toLanguage: Language,
+        to type: RecordType
     ) {
-        let record = makeRecord(
-            queryText: queryText,
-            fromLanguage: fromLanguage,
-            toLanguage: toLanguage
-        )
+        updateRecords(for: type) { records in
+            let record = makeRecord(
+                queryText: queryText,
+                fromLanguage: fromLanguage,
+                toLanguage: toLanguage
+            )
 
-        var favorites = Defaults[.favorites]
+            switch type.deduplicationPolicy {
+            case .skipIfExists:
+                guard !records.contains(where: { $0.queryText == queryText }) else {
+                    return false
+                }
+            case .moveToFront:
+                records.removeAll { $0.queryText == queryText }
+            }
 
-        // Avoid duplicates - check if the same query text already exists.
-        if !favorites.contains(where: { $0.queryText == queryText }) {
-            favorites.insert(record, at: 0)
-            Defaults[.favorites] = favorites
+            records.insert(record, at: 0)
+
+            if let maxCount = type.maxCount, records.count > maxCount {
+                records = Array(records.prefix(maxCount))
+            }
+
+            return true
         }
     }
 
-    /// Removes a favorite record by ID.
-    func removeFavorite(id: UUID) {
-        var favorites = Defaults[.favorites]
-        favorites.removeAll { $0.id == id }
-        Defaults[.favorites] = favorites
-    }
-
-    /// Returns all favorite records.
-    func getAllFavorites() -> [QueryRecord] {
-        Defaults[.favorites]
-    }
-
-    /// Clears all favorite records.
-    func clearAllFavorites() {
-        Defaults[.favorites] = []
-    }
-
-    /// Checks whether the given query text is already favorited.
-    @objc
-    func isFavorited(queryText: String) -> Bool {
-        Defaults[.favorites].contains { $0.queryText == queryText }
-    }
-
-    /// Adds a query to history, deduplicating and keeping the most recent records.
-    @objc
-    func addHistory(
-        queryText: String,
-        fromLanguage: Language,
-        toLanguage: Language
-    ) {
-        let record = makeRecord(
-            queryText: queryText,
-            fromLanguage: fromLanguage,
-            toLanguage: toLanguage
-        )
-
-        var history = Defaults[.queryHistory]
-
-        // Remove existing duplicate to avoid multiple entries for the same query.
-        history.removeAll { $0.queryText == queryText }
-
-        // Add to the beginning.
-        history.insert(record, at: 0)
-
-        // Keep only the most recent records.
-        if history.count > maxHistoryCount {
-            history = Array(history.prefix(maxHistoryCount))
+    /// Removes a record by ID from the specified category.
+    func removeRecord(id: UUID, from type: RecordType) {
+        updateRecords(for: type) { records in
+            let originalCount = records.count
+            records.removeAll { $0.id == id }
+            return records.count != originalCount
         }
-
-        Defaults[.queryHistory] = history
     }
 
-    /// Removes a history record by ID.
-    func removeHistory(id: UUID) {
-        var history = Defaults[.queryHistory]
-        history.removeAll { $0.id == id }
-        Defaults[.queryHistory] = history
+    /// Returns all records for the specified category.
+    func getAllRecords(for type: RecordType) -> [QueryRecord] {
+        loadRecords(for: type)
     }
 
-    /// Returns all history records.
-    func getAllHistory() -> [QueryRecord] {
-        Defaults[.queryHistory]
+    /// Clears all records for the specified category.
+    func clearAllRecords(for type: RecordType) {
+        saveRecords([], for: type)
     }
 
-    /// Clears all history records.
-    func clearAllHistory() {
-        Defaults[.queryHistory] = []
+    /// Checks whether the given query text exists in the specified category.
+    @objc
+    func containsRecord(queryText: String, in type: RecordType) -> Bool {
+        loadRecords(for: type).contains { $0.queryText == queryText }
     }
 
     // MARK: Private
 
     /// Maximum number of history records to keep.
-    private let maxHistoryCount = 1000
+    private static let maxHistoryCount = 1000
+
+    /// Returns all records stored for the specified type.
+    private func loadRecords(for type: RecordType) -> [QueryRecord] {
+        Defaults[type.storageKey]
+    }
+
+    /// Saves the records for the specified type.
+    private func saveRecords(_ records: [QueryRecord], for type: RecordType) {
+        Defaults[type.storageKey] = records
+    }
+
+    /// Updates records for the specified type and saves when modified.
+    private func updateRecords(for type: RecordType, mutate: (inout [QueryRecord]) -> Bool) {
+        var records = loadRecords(for: type)
+        let didChange = mutate(&records)
+        if didChange {
+            saveRecords(records, for: type)
+        }
+    }
 
     /// Creates a query record from the provided values.
     private func makeRecord(
