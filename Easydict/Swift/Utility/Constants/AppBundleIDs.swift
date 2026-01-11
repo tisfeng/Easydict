@@ -1,6 +1,6 @@
 //
 //  AppBundleIDs.swift
-//  Scoco
+//  Easydict
 //
 //  Created by tisfeng on 2025/12/18.
 //  Copyright © 2025 izual. All rights reserved.

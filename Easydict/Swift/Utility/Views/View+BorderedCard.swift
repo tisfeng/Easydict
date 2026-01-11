@@ -1,8 +1,8 @@
 //
 //  View+BorderedCard.swift
-//  Scoco
+//  Easydict
 //
-//  Created by Scoco on 2026/1/9.
+//  Created by Easydict on 2026/1/9.
 //  Copyright © 2026 izual. All rights reserved.
 //
 
