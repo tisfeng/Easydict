@@ -59,6 +59,7 @@ brew install --cask easydict
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
+> [!NOTE]
 > 最新版本支持 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)
 
 ---
@@ -85,16 +86,6 @@ brew install --cask easydict
 
 ---
 
-## Star History
-
-<a href="https://star-history.com/#tisfeng/easydict&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
-  </picture>
-</a>
-
 ## 致谢
 
 - 这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
@@ -109,11 +100,24 @@ Easydict 为 [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) �
 
 Easydict 作为一个免费开源的非盈利项目，目前主要是作者个人在开发和维护，如果你喜欢这个项目，觉得它对你有帮助，可以考虑赞助支持一下这个项目，用爱发电，让它能够走得更远。
 
+感谢 [@CanglongCl](https://github.com/CanglongCl) 提供的苹果开发者账号，解决了应用 [签名问题](https://github.com/tisfeng/Easydict/issues/2)，让更多人能够方便地使用 Easydict。
+
 <a href="https://afdian.com/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-感谢所有支持者的赞助，详情请看查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
+感谢所有支持者的赞助，详情请查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
 
+---
+
+## Star History
+
+<a href="https://star-history.com/#tisfeng/easydict&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
+  </picture>
+</a>
