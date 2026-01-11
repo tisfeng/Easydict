@@ -24,9 +24,6 @@ class HistoryManager: NSObject {
 
     static let shared = HistoryManager()
 
-    /// Maximum number of history records to keep
-    private let maxHistoryCount = 1000
-
     /// Add a query to history
     @objc
     func addHistory(
@@ -41,18 +38,18 @@ class HistoryManager: NSObject {
         )
 
         var history = Defaults[.queryHistory]
-        
+
         // Remove existing duplicate to avoid multiple entries for the same query
         history.removeAll { $0.queryText == queryText }
-        
+
         // Add to the beginning
         history.insert(record, at: 0)
-        
+
         // Keep only the most recent records
         if history.count > maxHistoryCount {
             history = Array(history.prefix(maxHistoryCount))
         }
-        
+
         Defaults[.queryHistory] = history
     }
 
@@ -72,4 +69,9 @@ class HistoryManager: NSObject {
     func clearAllHistory() {
         Defaults[.queryHistory] = []
     }
+
+    // MARK: Private
+
+    /// Maximum number of history records to keep
+    private let maxHistoryCount = 1000
 }

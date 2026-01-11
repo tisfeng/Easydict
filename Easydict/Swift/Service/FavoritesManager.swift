@@ -38,7 +38,7 @@ class FavoritesManager: NSObject {
         )
 
         var favorites = Defaults[.favorites]
-        
+
         // Avoid duplicates - check if the same query text already exists
         if !favorites.contains(where: { $0.queryText == queryText }) {
             favorites.insert(record, at: 0)

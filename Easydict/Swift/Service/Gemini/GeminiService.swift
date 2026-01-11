@@ -199,15 +199,15 @@ enum GeminiModel: String, CaseIterable {
     // RPM: Requests per minute
     // TPM: Tokens per minute
     // RPD: Requests per day
-    
+
     // MARK: - Free models
 
     case gemini_3_flash_preview = "gemini-3-flash-preview"
     case gemini_2_5_flash = "gemini-2.5-flash" // up to 500 RPD (limit shared with Flash-Lite RPD)
     case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // up to 500 RPD (limit shared with Flash RPD)
-    
+
     // MARK: - Pro models, not available for free tier
-    
+
     case gemini_3_pro_preview = "gemini-3-pro-preview"
     case gemini_2_5_pro = "gemini-2.5-pro"
 }

@@ -37,11 +37,11 @@ struct QueryRecord: Codable, Identifiable, Hashable, Defaults.Serializable {
     let queryToLanguage: Language
     let timestamp: Date
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
     static func == (lhs: QueryRecord, rhs: QueryRecord) -> Bool {
         lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

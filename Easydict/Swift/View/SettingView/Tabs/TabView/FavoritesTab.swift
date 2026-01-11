@@ -86,6 +86,8 @@ struct FavoritesTab: View {
 // MARK: - QueryRecordRow
 
 struct QueryRecordRow: View {
+    // MARK: Internal
+
     let record: QueryRecord
 
     var body: some View {
@@ -113,13 +115,15 @@ struct QueryRecordRow: View {
         }
     }
 
+    // MARK: Private
+
     private func performQuery() {
         // Trigger a new query with the stored text and languages
         let windowManager = EZWindowManager.shared()
-        
+
         // Show main window if needed
         windowManager.showMainWindowIfNeeded()
-        
+
         // Get the main window and perform the query
         if let mainWindow = windowManager.mainWindow {
             let viewController = mainWindow.queryViewController
