@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+
 struct KeyHolderRowView: View {
     // MARK: Public
 
@@ -22,6 +23,7 @@ struct KeyHolderRowView: View {
             Spacer()
             KeyHolderWrapper(shortcutType: action, confictAlterMessage: $confictAlterMessage)
                 .frame(width: 150, height: 28)
+                .borderedCard()
         }
     }
 }
