@@ -11,7 +11,7 @@
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZWindowType.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZResultView ()
 
@@ -40,7 +40,7 @@
 - (void)setup {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-    [self.layer excuteLight:^(CALayer *layer) {
+    [self.layer executeLight:^(CALayer *layer) {
         layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
     } dark:^(CALayer *layer) {
         layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
@@ -52,7 +52,7 @@
         mm_strongify(self);
         [self addSubview:view];
         view.wantsLayer = YES;
-        [view.layer excuteLight:^(CALayer *layer) {
+        [view.layer executeLight:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
@@ -81,7 +81,7 @@
         label.maximumNumberOfLines = 1;
         label.lineBreakMode = NSLineBreakByClipping;
         
-        [label excuteLight:^(NSTextField *label) {
+        [label executeLight:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextLightColor];
         } dark:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextDarkColor];
@@ -96,7 +96,7 @@
     self.serviceModelButton.titleFont = [NSFont systemFontOfSize:10];
     self.serviceModelButton.lineBreakMode = NSLineBreakByClipping;
 
-    [self.serviceModelButton excuteLight:^(EZButton *button) {
+    [self.serviceModelButton executeLight:^(EZButton *button) {
         button.titleColor = [NSColor mm_colorWithHexString:@"#666666"];
         button.backgroundColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#D2D2D2"];
@@ -165,7 +165,7 @@
     retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
     retryButton.hidden = YES;
-    [retryButton excuteLight:^(NSButton *button) {
+    [retryButton executeLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
@@ -360,7 +360,7 @@
 #pragma mark - Update UI
 
 - (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
-    if (self.result.HTMLString.length) {
+    if (self.result.htmlString.length) {
         self.result.webViewManager.wordResultViewHeight = wordResultViewHeight;
         
         if (wordResultViewHeight) {
@@ -438,7 +438,7 @@
     
     self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
     
-    [self.arrowButton excuteLight:^(NSButton *button) {
+    [self.arrowButton executeLight:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];

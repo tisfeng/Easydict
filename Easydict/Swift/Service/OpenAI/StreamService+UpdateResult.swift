@@ -21,8 +21,7 @@ extension StreamService {
         }
 
         // Since it is more difficult to accurately remove redundant quotes in streaming, we wait until the end of the request to remove the quotes
-        let nsText = resultText as NSString
-        resultText = nsText.tryToRemoveQuotes().trim()
+        resultText = resultText.tryToRemoveQuotes().trim()
 
         return resultText
     }
@@ -33,7 +32,7 @@ extension StreamService {
         queryType: EZQueryTextType,
         error: Error?,
         interval: TimeInterval = 0.3,
-        completion: @escaping (EZQueryResult) -> ()
+        completion: @escaping (QueryResult) -> ()
     ) async throws {
         for try await text in textStream._throttle(for: .seconds(interval)) {
             updateResultText(text, queryType: queryType, error: error, completion: completion)
@@ -44,7 +43,7 @@ extension StreamService {
         _ resultText: String?,
         queryType: EZQueryTextType,
         error: Error?,
-        completion: @escaping (EZQueryResult) -> ()
+        completion: @escaping (QueryResult) -> ()
     ) {
         // Acquire the lock before accessing/modifying the shared 'result' state
         updateResultLock.lock()
@@ -104,7 +103,7 @@ extension StreamService {
             updateCompletion()
         }
 
-        func completeWithResult(_ result: EZQueryResult, error: Error?) {
+        func completeWithResult(_ result: QueryResult, error: Error?) {
             result.error = .queryError(from: error)
             completion(result)
         }

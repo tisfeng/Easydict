@@ -8,10 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZLayoutManager.h"
-#import "EZQueryModel.h"
-#import "EZQueryResult.h"
 #import "EZTitlebar.h"
 #import "EZTableTipsCell.h"
+#import "EZLanguageModel.h"
+
+@class EZQueryModel;
+@class EZQueryResult;
+@class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
 - (void)resetTableView:(nullable void (^)(void))completion;
+
+/// Recreate the query model and rebind dependent managers for background OCR.
+- (void)resetQueryModelForBackgroundOCR;
 
 - (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType autoQuery:(BOOL)autoQuery;

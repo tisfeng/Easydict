@@ -28,7 +28,7 @@
 - (void)setupUI {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-    [self.layer excuteLight:^(id _Nonnull x) {
+    [self.layer executeLight:^(id _Nonnull x) {
         [x setBackgroundColor:[NSColor ez_queryViewBgLightColor].CGColor];
     } dark:^(id _Nonnull x) {
         [x setBackgroundColor:[NSColor ez_queryViewBgDarkColor].CGColor];

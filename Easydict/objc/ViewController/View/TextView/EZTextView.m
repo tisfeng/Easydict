@@ -72,7 +72,7 @@
             //        | NSTextCheckingTypeRegularExpression
             | NSTextCheckingTypePhoneNumber | NSTextCheckingTypeTransitInformation;
 
-        [self excuteLight:^(EZTextView *textView) {
+        [self executeLight:^(EZTextView *textView) {
             textView.backgroundColor = [NSColor ez_queryViewBgLightColor];
             [textView setTextColor:[NSColor ez_queryTextLightColor]];
         } dark:^(EZTextView *textView) {
@@ -111,7 +111,7 @@
         NSPasteboardTypeRTFD
     ]];
     NSString *pasteboardString = [pasteboard stringForType:stringType];
-    pasteboardString = [pasteboardString trim];
+    pasteboardString = [pasteboardString ns_trim];
     
     // pasteboardString may be nil
     if (!pasteboardString) {
@@ -186,7 +186,7 @@
 - (void)updateTextAndParagraphStyle:(NSString *)text {
     self.string = text;
     
-    NSString *newText = [text removeExtraLineBreaks];
+    NSString *newText = [text ns_removeExtraLineBreaks];
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
     BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
@@ -214,7 +214,7 @@
     self.placeholderTextField.editable = NO;
     self.placeholderTextField.selectable = NO;
 
-    [self.placeholderTextField excuteLight:^(NSTextView *placeholderTextView) {
+    [self.placeholderTextField executeLight:^(NSTextView *placeholderTextView) {
         [placeholderTextView setBackgroundColor:[NSColor ez_queryViewBgLightColor]];
     } dark:^(NSTextView *placeholderTextView) {
         [placeholderTextView setBackgroundColor:[NSColor ez_queryViewBgDarkColor]];

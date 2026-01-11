@@ -17,7 +17,7 @@ extension Language: Defaults.Serializable {}
 
 extension Language: CaseIterable {
     public static let allCases: [Language] = EZLanguageModel.allLanguagesDict().sortedKeys().map { rawValue in
-        Language(rawValue: rawValue as String)
+        Language(rawValue: rawValue as! String)
     }
 
     public static let allAvailableOptions: [Language] = allCases.filter { language in
@@ -42,7 +42,7 @@ extension Language: CustomStringConvertible {
 
 extension Language {
     public var model: EZLanguageModel {
-        EZLanguageModel.allLanguagesDict().object(forKey: rawValue as NSString)
+        EZLanguageModel.allLanguagesDict().object(forKey: rawValue as NSString) as! EZLanguageModel
     }
 
     public var chineseName: String {
@@ -104,8 +104,8 @@ extension Language {
 
 extension [Language: String] {
     /// Convert Language dict to MMOrderedDictionary
-    func toMMOrderedDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+    func toMMOrderedDictionary() -> MMOrderedDictionary {
+        let orderedDict = MMOrderedDictionary()
         for (key, value) in self {
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
@@ -120,8 +120,8 @@ extension [Language] {
     }
 
     /// Convert Language array to MMOrderedDictionary, dict value is the same as key
-    func toMMOrderedDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
+    func toMMOrderedDictionary() -> MMOrderedDictionary {
+        let orderedDict = MMOrderedDictionary()
         for language in self {
             orderedDict.setObject(language.rawValue as NSString, forKey: language.rawValue as NSString)
         }

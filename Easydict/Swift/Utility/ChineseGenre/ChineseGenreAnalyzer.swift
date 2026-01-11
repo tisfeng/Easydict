@@ -330,7 +330,8 @@ class ChineseGenreAnalyzer {
 
         // Split content lines into phrases, omitting empty subsequences
         let phrases = contentLines.joined(separator: "\n").splitIntoShortPhrases(
-            omittingEmptySubsequences: true)
+            omittingEmptySubsequences: true
+        )
         let phraseLengths = phrases.map { $0.filter { !$0.isWhitespace }.count }
 
         // Guard against division by zero if there are no phrases

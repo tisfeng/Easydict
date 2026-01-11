@@ -9,7 +9,7 @@
 #import "MMLog.h"
 #import "MMConsoleLogFormatter.h"
 #import "MMFileLogFormatter.h"
-#import "EZDeviceSystemInfo.h"
+
 
 #if DEBUG
 DDLogLevel MMDefaultLogLevel = DDLogLevelAll;

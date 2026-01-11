@@ -7,10 +7,6 @@
 //
 
 #import "EZSchemeParser.h"
-#import "EZServiceTypes.h"
-#import "EZDeepLTranslate.h"
-#import "EZLocalStorage.h"
-#import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
 
@@ -18,7 +14,7 @@
 
 /// Open Easydict URL Scheme.
 - (void)openURLScheme:(NSString *)URLScheme completion:(void (^)(BOOL isSuccess, NSString *_Nullable returnValue, NSString *_Nullable actionKey))completion {
-    NSString *text = [URLScheme trim];
+    NSString *text = [URLScheme ns_trim];
     
     if (![self isEasydictScheme:text]) {
         completion(NO, @"Invalid Easydict Scheme", nil);
@@ -72,10 +68,10 @@
 }
 
 - (BOOL)isEasydictScheme:(NSString *)text {
-    NSString *urlString = [text trim];
+    NSString *urlString = [text ns_trim];
     NSURLComponents *urlComponents = [NSURLComponents componentsWithString:urlString];
     NSString *scheme = urlComponents.scheme;
-    NSArray *schemes = @[EZEasydictScheme, EZEasydictDebugScheme];
+    NSArray *schemes = @[EZAppScheme, EZAppDebugScheme];
     return [schemes containsObject:scheme];
 }
 
@@ -107,14 +103,14 @@
         NSString *value = keyValues[key];
         handled = [self enabledReadWriteKey:key];
         if (handled) {
-            Configuration *config = [Configuration shared];
+            MyConfiguration *config = [MyConfiguration shared];
             BOOL isBeta = config.beta;
             
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
             
             // If enabling beta feature, setup beta features.
             if (!isBeta && config.beta) {
-                [Configuration.shared enableBetaFeaturesIfNeeded];
+                [MyConfiguration.shared enableBetaFeaturesIfNeeded];
             }
         }
     }
@@ -136,7 +132,7 @@
         handled = YES;
     }
     
-    NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
+    NSArray *allServiceTypes = [QueryServiceFactory.shared allServiceTypes];
     // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
     NSArray *arr = [key componentsSeparatedByString:@"-"];
     if (arr.count) {
@@ -151,15 +147,15 @@
 
 - (void)resetUserDefaultsData {
     // easydict://resetUserDefaultsData
-    [Configuration.shared resetUserDefaultsData];
+    [MyConfiguration.shared resetUserDefaultsData];
     
     [EZLocalStorage destroySharedInstance];
-    [Configuration destroySharedInstance];
+    [MyConfiguration destroySharedInstance];
 }
 
 - (void)saveUserDefaultsDataToDownloadFolder {
     // easydict://saveUserDefaultsDataToDownloadFolder
-    [Configuration.shared saveUserDefaultsDataToDownloadFolder];
+    [MyConfiguration.shared saveUserDefaultsDataToDownloadFolder];
 }
 
 
@@ -194,7 +190,6 @@
         
         EZDeepLAuthKey,
         EZDeepLTranslateEndPointKey,
-        EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,
         EZTencentSecretId,

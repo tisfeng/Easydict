@@ -60,7 +60,7 @@
     [attributedString addAttributes:attributes range:range];
 
     // Handle color for light/dark mode
-    [self excuteLight:^(NSTextView *textView) {
+    [self executeLight:^(NSTextView *textView) {
         NSColor *color = self.textForegroundColor ?: [NSColor ez_resultTextLightColor];
         [self updateTextView:textView withAttributedString:attributedString color:color range:range];
     } dark:^(NSTextView *textView) {

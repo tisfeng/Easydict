@@ -76,3 +76,6 @@ excluded:
   - "vendor"
   - "fastlane"
   - ".build"
+  - "**/.build/**"      # Exclude all .build subdirectories
+  - "**/checkouts/**"    # Exclude all SPM downloaded dependencies
+  - "**/DerivedData/**" # Exclude Xcode derived data

@@ -22,6 +22,7 @@
 
 #import "TTTDictionary.h"
 
+#import "OrderedDictionary+Variadic.h"
 #import <CoreServices/CoreServices.h>
 
 // User dictionary directory.
@@ -249,7 +250,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 }
 
 /// key: EZLanguage, value: language dict name
-+ (MMOrderedDictionary<EZLanguage, NSString *> *)languageToDictionaryNameMap {
++ (MMOrderedDictionary*)languageToDictionaryNameMap {
     static MMOrderedDictionary *_languageToDictionaryNameMap = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

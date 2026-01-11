@@ -1,0 +1,96 @@
+//
+//  DarkModeManager.swift
+//  Easydict
+//
+//  Created by Claude on 2025/1/30.
+//  Copyright © 2025 izual. All rights reserved.
+//
+
+import AppKit
+import Combine
+import Foundation
+
+// MARK: - DarkModeManager
+
+@objcMembers
+class DarkModeManager: NSObject {
+    // MARK: Lifecycle
+
+    // MARK: - Initialization
+
+    private override init() {
+        super.init()
+        setupNotificationObserver()
+    }
+
+    // MARK: - Deinitialization
+
+    deinit {
+        removeNotificationObserver()
+    }
+
+    // MARK: Internal
+
+    // MARK: - Singleton
+
+    static let shared = DarkModeManager()
+
+    private(set) var systemDarkMode: Bool = false {
+        didSet {
+            NotificationCenter.default.postDarkModeDidChangeNotification(isDark: systemDarkMode)
+        }
+    }
+
+    // MARK: - Public Methods
+
+    func updateDarkMode(_ appearanceType: AppearanceType) {
+        logInfo("Updating appearance mode: \(appearanceType)")
+
+        let isDarkMode = currentSystemDarkMode()
+
+        switch appearanceType {
+        case .dark:
+            systemDarkMode = true
+        case .light:
+            systemDarkMode = false
+        case .followSystem:
+            systemDarkMode = isDarkMode
+        }
+
+        AppearanceHelper.shared.updateAppAppearance(appearanceType)
+        logInfo("\(systemDarkMode ? "Dark" : "Light") mode is enabled")
+    }
+
+    func currentSystemDarkMode() -> Bool {
+        let defaults = UserDefaults.standard
+        let globalDomain = defaults.persistentDomain(forName: UserDefaults.globalDomain)
+        let appleInterfaceStyle = globalDomain?["AppleInterfaceStyle"] as? String
+        return appleInterfaceStyle == "Dark"
+    }
+
+    // MARK: Private
+
+    private var notificationObserver: NSObjectProtocol?
+
+    // MARK: - Private Methods
+
+    private func setupNotificationObserver() {
+        notificationObserver = DistributedNotificationCenter.default().addObserver(
+            forName: .appleInterfaceThemeChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleSystemThemeChanged()
+        }
+    }
+
+    private func removeNotificationObserver() {
+        if let observer = notificationObserver {
+            DistributedNotificationCenter.default().removeObserver(observer)
+        }
+    }
+
+    private func handleSystemThemeChanged() {
+        updateDarkMode(MyConfiguration.shared.appearance)
+    }
+}

@@ -8,6 +8,7 @@
 
 #import "NSColor+MyColors.h"
 
+
 @implementation NSColor (MyColors)
 
 // Main background color

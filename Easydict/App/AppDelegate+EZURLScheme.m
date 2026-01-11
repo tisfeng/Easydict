@@ -10,7 +10,6 @@
 #import <JLRoutes.h>
 #import "EZWindowManager.h"
 #import "EZSchemeParser.h"
-#import "Easydict-Swift.h"
 
 @implementation AppDelegate (EZURLScheme)
 
@@ -70,10 +69,10 @@
 
 - (void)showFloatingWindowAndAutoQueryText:(NSString *)text {
     EZWindowManager *windowManager = [EZWindowManager shared];
-    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    EZWindowType windowType = MyConfiguration.shared.shortcutSelectTranslateWindowType;
 
     [windowManager showFloatingWindowType:windowType
-                                queryText:text.trim
+                                queryText:[text  ns_trim]
                                 autoQuery:YES
                                actionType:EZActionTypeInvokeQuery];
 }
@@ -81,7 +80,7 @@
 /// Get query text from URL scheme, easydict://good%2Fgirl --> good%2Fgirl
 - (NSString *)extractQueryTextFromURL:(NSURL *)URL {
     NSString *queryText = [URL.resourceSpecifier stringByReplacingOccurrencesOfString:@"//" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, 2)];
-    return queryText.decode;
+    return [queryText ns_decode];
 }
 
 - (void)handleURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
@@ -105,10 +104,10 @@
      easydict://query?text=Agent Mode & Auto Context
 
      */
-    NSURL *URL = [NSURL URLWithString:urlString.encodeIncludingAmpersandSafely];
+    NSURL *URL = [NSURL URLWithString:[urlString ns_encodeIncludingAmpersandSafely]];
 
     // easydict://query?text=good, easydict://query?text=你好
-    if ([URL.scheme containsString:EZEasydictScheme]) {
+    if ([URL.scheme containsString:EZAppScheme]) {
         MMLogInfo(@"handle URL: %@", URL);
     }
 

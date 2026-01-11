@@ -17,6 +17,10 @@ import GoogleGenerativeAI
 public final class GeminiService: StreamService {
     // MARK: Public
 
+    public override func cancelStream() {
+        currentTask?.cancel()
+    }
+
     public override func serviceType() -> ServiceType {
         .gemini
     }
@@ -161,10 +165,6 @@ public final class GeminiService: StreamService {
         return chatModels
     }
 
-    override func cancelStream() {
-        currentTask?.cancel()
-    }
-
     // MARK: Private
 
     private var currentTask: Task<(), Never>?
@@ -193,13 +193,21 @@ public final class GeminiService: StreamService {
 
 enum GeminiModel: String, CaseIterable {
     // Docs: https://ai.google.dev/gemini-api/docs/models
+    // Prcing: https://ai.google.dev/gemini-api/docs/pricing
     // Rate limits: https://ai.google.dev/gemini-api/docs/rate-limits
 
     // RPM: Requests per minute
     // TPM: Tokens per minute
     // RPD: Requests per day
+    
+    // MARK: - Free models
 
-    case gemini_2_5_pro = "gemini-2.5-pro" // 5 RPM | 250,000 TPM | 100 RPD
-    case gemini_2_5_flash = "gemini-2.5-flash" // 10 RPM | 250,000 TPM | 250 RPD
-    case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // 15 RPM | 250,000 TPM | 1000 RPD
+    case gemini_3_flash_preview = "gemini-3-flash-preview"
+    case gemini_2_5_flash = "gemini-2.5-flash" // up to 500 RPD (limit shared with Flash-Lite RPD)
+    case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // up to 500 RPD (limit shared with Flash RPD)
+    
+    // MARK: - Pro models, not available for free tier
+    
+    case gemini_3_pro_preview = "gemini-3-pro-preview"
+    case gemini_2_5_pro = "gemini-2.5-pro"
 }

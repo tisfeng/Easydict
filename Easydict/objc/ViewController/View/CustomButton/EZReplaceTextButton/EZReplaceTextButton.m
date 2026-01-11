@@ -8,8 +8,7 @@
 #import "EZReplaceTextButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZWindowManager.h"
-#import "EZLog.h"
-#import "Easydict-Swift.h"
+
 
 @import SelectedTextKit;
 
@@ -25,7 +24,7 @@
 - (void)setup {
     self.image = [NSImage ez_imageWithSymbolName:@"arrow.forward.square"];
 
-    [self excuteLight:^(NSButton *button) {
+    [self executeLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
@@ -43,8 +42,8 @@
 
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
-    NSString *textLengthRange = [EZLog textLengthRange:replacementString];
-    BOOL useCompatibilityMode = Configuration.shared.enableCompatibilityReplace;
+    NSString *textLengthRange = [EZAnalyticsService textLengthRange:replacementString];
+    BOOL useCompatibilityMode = MyConfiguration.shared.enableCompatibilityReplace;
 
     NSDictionary *parameters = @{
         @"floating_window_type" : @(EZWindowManager.shared.floatingWindowType),
@@ -53,7 +52,7 @@
         @"text_length" : textLengthRange,
         @"use_compatibility_mode" : @(useCompatibilityMode)
     };
-    [EZLog logEventWithName:@"replace_selected_text" parameters:parameters];
+    [EZAnalyticsService logEventWithName:@"replace_selected_text" parameters:parameters];
     MMLogInfo(@"repalce selected text: %@", parameters);
 
     /**

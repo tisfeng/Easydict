@@ -34,7 +34,7 @@ struct GeneralTab: View {
 
         // MARK: Private
 
-        private let updater = Configuration.shared.updater
+        private let updater = MyConfiguration.shared.updater
     }
 
     @Environment(\.colorScheme) var colorScheme
@@ -114,7 +114,7 @@ struct GeneralTab: View {
                 Picker(
                     "setting.general.appearance.light_dark_appearance", selection: $appearanceType
                 ) {
-                    ForEach(AppearenceType.allCases, id: \.rawValue) { option in
+                    ForEach(AppearanceType.allCases, id: \.rawValue) { option in
                         Text(option.title)
                             .tag(option)
                     }
@@ -130,7 +130,7 @@ struct GeneralTab: View {
                     }
                     Spacer()
                     Button("check_now") {
-                        Configuration.shared.updater.checkForUpdates()
+                        MyConfiguration.shared.updater.checkForUpdates()
                     }
                 }
 
@@ -276,7 +276,7 @@ struct GeneralTab: View {
     }
 
     private func logSettings(_ parameters: [String: Any]) {
-        EZLog.logEvent(withName: "settings", parameters: parameters)
+        AnalyticsService.logEvent(withName: "settings", parameters: parameters)
     }
 }
 

@@ -15,6 +15,14 @@ import OpenAI
 @objcMembers
 @objc(EZBaseOpenAIService)
 public class BaseOpenAIService: StreamService {
+    // MARK: Open
+
+    open override func cancelStream() {
+        control.cancel()
+    }
+
+    // MARK: Internal
+
     typealias OpenAIChatMessage = ChatQuery.ChatCompletionMessageParam
 
     let control = StreamControl()
@@ -92,9 +100,5 @@ public class BaseOpenAIService: StreamService {
             }
         }
         return chatMessages
-    }
-
-    override func cancelStream() {
-        control.cancel()
     }
 }

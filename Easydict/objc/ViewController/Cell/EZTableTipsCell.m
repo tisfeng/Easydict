@@ -10,7 +10,6 @@
 #import "EZOpenLinkButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "EZLanguageManager.h"
-#import "NSString+EZUtils.h"
 
 @interface EZTableTipsCell ()
 @property (nonatomic, strong) NSView *contentView;
@@ -33,7 +32,7 @@
     return [self initWithFrame:frame type:type content:@""];
 }
 
-- (instancetype)initWithFrame:(NSRect)frame 
+- (instancetype)initWithFrame:(NSRect)frame
                          type:(EZTipsCellType)type
                       content:(NSString *)content {
     self = [super initWithFrame:frame];
@@ -51,7 +50,7 @@
 }
 
 - (void)updateTipsContent:(NSString *)content type:(EZTipsCellType)type {
-    if (!EZ_isEmptyString(content)) {
+    if (content.length > 0) {
         self.contentStr = content;
         self.tipsContentLabel.stringValue = content;
     }
@@ -66,31 +65,31 @@
     self.tipsNameLabel.mas_key = @"tipsNameLabel";
     self.moreBtn.mas_key = @"moreBtn";
     self.solveBtn.mas_key = @"solveBtn";
-    
+
     CGSize iconSize = CGSizeMake(20, 20);
-    
+
     // constraints
     [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
-    
+
     [self.tipsIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(9);
         make.top.mas_equalTo(9);
         make.size.mas_equalTo(iconSize);
     }];
-    
+
     [self.tipsNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.tipsIconImageView.mas_right).offset(6);
         make.centerY.mas_equalTo(self.tipsIconImageView.mas_centerY).offset(1);
     }];
-    
+
     [self.solveBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(9);
         make.top.mas_equalTo(self.tipsContentLabel.mas_bottom).offset(9);
         make.size.mas_equalTo(CGSizeMake(98, 32));
     }];
-    
+
     [self.moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.solveBtn.mas_right).offset(20);
         make.top.mas_equalTo(self.solveBtn);
@@ -104,13 +103,13 @@
         make.width.mas_lessThanOrEqualTo(self.bounds.size.width - 9);
         make.top.mas_equalTo(self.tipsNameLabel.mas_bottom).offset(12);
     }];
-    
+
     [super updateConstraints];
 }
 
 - (void)updateQuestionContent {
     if (self.tipsType == EZTipsCellTypeErrorTips ||
-        self.tipsType == EZTipsCellTypeWarnTips  ||
+        self.tipsType == EZTipsCellTypeWarnTips ||
         self.tipsType == EZTipsCellTypeInfoTips) {
         self.showResloveBtnFlag = NO;
         self.solveBtn.hidden = YES;
@@ -143,7 +142,7 @@
 }
 
 - (CGFloat)cellHeight {
-    CGFloat cellHeight = 9 + 20 + 12 + self.tipsContentLabel.height + 9 + (self.showResloveBtnFlag? 32: 0) + 6;
+    CGFloat cellHeight = 9 + 20 + 12 + self.tipsContentLabel.height + 9 + (self.showResloveBtnFlag ? 32 : 0) + 6;
     return cellHeight;
 }
 
@@ -156,7 +155,7 @@
             [self addSubview:view];
             view.wantsLayer = YES;
             view.layer.cornerRadius = EZCornerRadius_8;
-            [view.layer excuteLight:^(CALayer *layer) {
+            [view.layer executeLight:^(CALayer *layer) {
                 layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
             } dark:^(CALayer *layer) {
                 layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
@@ -190,7 +189,7 @@
             label.backgroundColor = NSColor.clearColor;
             label.alignment = NSTextAlignmentCenter;
             label.font = [NSFont systemFontOfSize:14];
-            [label excuteLight:^(NSTextField *label) {
+            [label executeLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextDarkColor];
@@ -213,7 +212,7 @@
             label.stringValue = self.dataDict[@"questions"][0];
             label.usesSingleLineMode = NO;
             label.maximumNumberOfLines = 0;
-            [label excuteLight:^(NSTextField *label) {
+            [label executeLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextDarkColor];
@@ -232,7 +231,7 @@
         _moreBtn.title = NSLocalizedString(@"tips_more", nil);
         _moreBtn.imagePosition = NSImageLeft;
         _moreBtn.edgeInsets = NSEdgeInsetsMake(0, 3, 0, 3);
-        [_moreBtn excuteLight:^(NSButton *button) {
+        [_moreBtn executeLight:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
@@ -251,7 +250,7 @@
         _solveBtn.imagePosition = NSImageLeft;
         _solveBtn.title = NSLocalizedString(@"tips_solve", nil);
         _solveBtn.edgeInsets = NSEdgeInsetsMake(0, 3, 0, 3);
-        [_solveBtn excuteLight:^(NSButton *button) {
+        [_solveBtn executeLight:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
         } dark:^(NSButton *button) {
             button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

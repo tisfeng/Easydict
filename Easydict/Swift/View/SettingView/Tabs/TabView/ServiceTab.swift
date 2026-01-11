@@ -29,7 +29,9 @@ struct ServiceTab: View {
                 .padding(.horizontal)
                 .frame(minWidth: 260)
                 .onReceive(serviceHasUpdatedNotification) { _ in
-                    viewModel.updateServices()
+                    Task { @MainActor in
+                        viewModel.updateServices()
+                    }
                 }
             }
 
@@ -63,6 +65,11 @@ struct ServiceTab: View {
             .layoutPriority(1)
         }
         .environmentObject(viewModel)
+        .onChange(of: viewModel.windowType) { _ in
+            Task { @MainActor in
+                viewModel.handleWindowTypeChange()
+            }
+        }
     }
 
     // MARK: Private
@@ -75,12 +82,13 @@ struct ServiceTab: View {
 
 // MARK: - ServiceTabViewModel
 
+@MainActor
 private class ServiceTabViewModel: ObservableObject {
     // MARK: Lifecycle
 
     init(windowType: EZWindowType = .fixed) {
         self.windowType = windowType
-        self.services = EZLocalStorage.shared().allServices(windowType)
+        self.services = LocalStorage.shared().allServices(windowType)
     }
 
     // MARK: Internal
@@ -89,17 +97,16 @@ private class ServiceTabViewModel: ObservableObject {
 
     @Published private(set) var services: [QueryService]
 
-    @Published var windowType: EZWindowType {
-        didSet {
-            if oldValue != windowType {
-                updateServices()
-                selectedService = nil
-            }
-        }
+    @Published var windowType: EZWindowType
+
+    /// Refresh services when the window type changes.
+    func handleWindowTypeChange() {
+        selectedService = nil
+        updateServices()
     }
 
     func updateServices() {
-        services = EZLocalStorage.shared().allServices(windowType)
+        services = LocalStorage.shared().allServices(windowType)
 
         let isSelectedExist =
             services
@@ -117,7 +124,7 @@ private class ServiceTabViewModel: ObservableObject {
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
         let serviceTypes = services.map { $0.serviceTypeWithUniqueIdentifier() }
-        EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
+        LocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
         updateServices()
@@ -241,7 +248,7 @@ private class ServiceItemViewModel: ObservableObject {
 
     private func didReceive(_ notification: Notification) {
         guard let info = notification.userInfo as? [String: Any] else { return }
-        guard let serviceType = info[EZServiceTypeKey] as? String else { return }
+        guard let serviceType = info[UserInfoKey.serviceType] as? String else { return }
         guard serviceType == service.serviceType().rawValue else { return }
         name = service.name()
     }
@@ -249,7 +256,7 @@ private class ServiceItemViewModel: ObservableObject {
     /// Update service enabled status, and post update service notification.
     private func updateServiceStatus(enabled: Bool) {
         service.enabled = enabled
-        EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+        LocalStorage.shared().setService(service, windowType: viewModel.windowType)
         viewModel.postUpdateServiceNotification()
     }
 }

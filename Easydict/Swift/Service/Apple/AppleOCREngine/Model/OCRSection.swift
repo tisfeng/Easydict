@@ -311,7 +311,7 @@ class OCRSection {
 
         // Track x coordinates and line lengths
         let x = boundingBox.origin.x
-        if x < minXObservation?.boundingBox.minX ?? .greatestFiniteMagnitude {
+        if x < minXObservation?.boundingBox.minX ?? CGFloat.greatestFiniteMagnitude {
             minXObservation = textObservation
         }
 

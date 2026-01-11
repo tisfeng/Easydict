@@ -7,7 +7,7 @@
 //
 
 #import "EZLanguageManager.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZLanguageManager ()
 
@@ -18,7 +18,7 @@
 
 @property (nonatomic, copy) NSArray<EZLanguage> *userPreferredTwoLanguages;
 
-@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageFlagDict;
+@property (nonatomic, strong) MMOrderedDictionary*allLanguageFlagDict;
 
 // Cache for languages without word spaces
 @property (nonatomic, strong) NSArray<EZLanguage> *languagesWithoutWordSpaces;
@@ -172,7 +172,7 @@ static EZLanguageManager *_instance;
 }
 
 - (EZLanguage)userFirstLanguage {
-    EZLanguage firstLanguage = Configuration.shared.firstLanguage;
+    EZLanguage firstLanguage = MyConfiguration.shared.firstLanguage;
     if (!firstLanguage) {
         firstLanguage = [self systemPreferredTwoLanguages][0];
     }
@@ -180,14 +180,14 @@ static EZLanguageManager *_instance;
 }
 
 - (EZLanguage)userSecondLanguage {
-    EZLanguage secondLanguage = Configuration.shared.secondLanguage;
+    EZLanguage secondLanguage = MyConfiguration.shared.secondLanguage;
     if (!secondLanguage) {
         secondLanguage = [self systemPreferredTwoLanguages][1];
     }
     return secondLanguage;
 }
 
-- (MMOrderedDictionary<EZLanguage, NSString *> *)allLanguageFlagDict {
+- (MMOrderedDictionary *)allLanguageFlagDict {
     if (!_allLanguageFlagDict) {
         MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
         for (EZLanguage language in self.allLanguages) {

@@ -11,6 +11,34 @@ import Foundation
 import SelectedTextKit
 
 extension SystemUtility {
+    /// Determine whether inserting/replacing text is likely supported in the current context.
+    ///
+    /// The primary signal is whether the focused UI element can be identified as a text input element.
+    /// For apps that don't expose reliable focused-role information via Accessibility (e.g. WeChat),
+    /// this falls back to checking whether the standard "Paste" menu item is enabled.
+    ///
+    /// - Returns: `true` when insertion is likely supported; otherwise `false`.
+    @MainActor
+    func canInsertText() -> Bool {
+        logInfo("Checking if text insertion is supported in current context")
+
+        if let element = try? focusedTextFieldElement() {
+            return isEditableTextInputElement(element)
+        }
+
+        guard bundleIDAllowListForPasteMenuCheck.contains(frontmostAppBundleID) else {
+            return false
+        }
+
+        do {
+            _ = try axManager.findMenuItem(.paste, requireEnabled: true)
+            return true
+        } catch {
+            logInfo("Paste menu item is not available or not enabled: \(error)")
+            return false
+        }
+    }
+
     /// Replace text in current focused text field with optional range support
     /// - Parameters:
     ///   - text: The replacement text
@@ -55,10 +83,12 @@ extension SystemUtility {
     }
 
     /// Get the currently focused text field element, use AXSwift API
+    ///
+    /// - NOTE: May return nil if no focused text field is found, if not supported AX
     func focusedTextFieldElement() throws -> UIElement? {
         do {
             guard let focusedUIElement = try frontmostAppElement?.focusedUIElement() else {
-                logInfo("No focused UI element found")
+                logInfo("No focused UI element found: \(String(describing: frontmostAppElement))")
                 return nil
             }
 
@@ -90,15 +120,24 @@ extension SystemUtility {
 
     /// Roles that are considered text fields
     private var textFieldRoles: Set<String> {
-        [
-            kAXTextFieldRole,
-            kAXTextAreaRole,
-            kAXTextAreaRole,
-            kAXComboBoxRole, // Safari: Google search field
-            kAXSearchFieldSubrole,
-            kAXPopUpButtonRole,
-            kAXMenuRole,
-        ]
+        FocusedElementInfo.textInputRoles
+    }
+
+    private func isEditableTextInputElement(_ element: UIElement) -> Bool {
+        // !!!: `enabled` is not reliable for some apps, e.g. ChatGPT app.
+//        if element.boolAttribute(.enabled) != true {
+//            logInfo("Focused text input element is not enabled")
+//            return false
+//        }
+
+        let isSettable = try? element.attributeIsSettable(.value)
+
+        if isSettable != true {
+            logInfo("Focused text input element is not editable")
+            return false
+        }
+
+        return true
     }
 
     /// Get the currently focused text field element, use system AXUIElement API
@@ -138,8 +177,8 @@ extension SystemUtility {
     // MARK: - Objective-C AX Wrappers
 
     @objc
-    func hasCopyMenuItem() -> Bool {
-        axManager.hasCopyMenuItem()
+    func hasEnabledCopyMenuItem() -> Bool {
+        (try? axManager.findEnabledMenuItem(.copy)) != nil
     }
 
     /// Check if there is a focused text field element
@@ -151,5 +190,23 @@ extension SystemUtility {
     @objc
     func getSelectedTextFrame() -> NSRect {
         (try? axManager.getSelectedTextFrame().rectValue) ?? .zero
+    }
+}
+
+extension UIElement {
+    func boolAttribute(_ attribute: Attribute) -> Bool? {
+        guard let value: Any = try? self.attribute(attribute) else {
+            return nil
+        }
+
+        if let bool = value as? Bool {
+            return bool
+        }
+
+        if let number = value as? NSNumber {
+            return number.boolValue
+        }
+
+        return nil
     }
 }

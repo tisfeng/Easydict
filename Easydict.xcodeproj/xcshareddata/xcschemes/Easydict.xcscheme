@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
+   LastUpgradeVersion = "2610"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -20,6 +20,20 @@
                ReferencedContainer = "container:Easydict.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "03022F2D2B370B7100B63209"
+               BuildableName = "EasydictTests.xctest"
+               BlueprintName = "EasydictTests"
+               ReferencedContainer = "container:Easydict.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -29,13 +43,12 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "03022F2D2B370B7100B63209"
-               BuildableName = "EasydictSwiftTests.xctest"
-               BlueprintName = "EasydictSwiftTests"
+               BuildableName = "EasydictTests.xctest"
+               BlueprintName = "EasydictTests"
                ReferencedContainer = "container:Easydict.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -63,7 +76,7 @@
       </BuildableProductRunnable>
       <AdditionalOptions>
          <AdditionalOption
-            key = "MallocStackLogging"
+            key = "MallocScribble"
             value = ""
             isEnabled = "YES">
          </AdditionalOption>
@@ -73,7 +86,7 @@
             isEnabled = "YES">
          </AdditionalOption>
          <AdditionalOption
-            key = "MallocScribble"
+            key = "MallocStackLogging"
             value = ""
             isEnabled = "YES">
          </AdditionalOption>

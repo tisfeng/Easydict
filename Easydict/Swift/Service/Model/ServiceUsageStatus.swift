@@ -1,0 +1,87 @@
+//
+//  ServiceUsageStatus.swift
+//  Easydict
+//
+//  Created by tisfeng on 2024/6/5.
+//  Copyright © 2024 izual. All rights reserved.
+//
+
+import Defaults
+import Foundation
+import SwiftUI
+
+// MARK: - EnumLocalizedStringConvertible
+
+protocol EnumLocalizedStringConvertible {
+    var title: LocalizedStringKey { get }
+}
+
+// MARK: - ServiceUsageStatus
+
+enum ServiceUsageStatus: String, CaseIterable {
+    case `default` = "0"
+    case alwaysOff = "1"
+    case alwaysOn = "2"
+}
+
+// MARK: Legacy bridging
+
+extension ServiceUsageStatus {
+    /// Creates a Swift usage status from the Objective-C `EZServiceUsageStatus` enum.
+    init(ezStatus: EZServiceUsageStatus) {
+        switch ezStatus {
+        case .alwaysOff:
+            self = .alwaysOff
+        case .alwaysOn:
+            self = .alwaysOn
+        default:
+            self = .default
+        }
+    }
+
+    /// Converts the Swift usage status to the Objective-C enum used by legacy code.
+    var ezStatus: EZServiceUsageStatus {
+        switch self {
+        case .alwaysOff:
+            return .alwaysOff
+        case .alwaysOn:
+            return .alwaysOn
+        default:
+            return .default
+        }
+    }
+}
+
+extension EZServiceUsageStatus {
+    /// Returns the Swift `ServiceUsageStatus` counterpart for the Objective-C enum.
+    var swiftValue: ServiceUsageStatus {
+        ServiceUsageStatus(ezStatus: self)
+    }
+}
+
+// MARK: - ServiceUsageStatus + EnumLocalizedStringConvertible
+
+extension ServiceUsageStatus: EnumLocalizedStringConvertible {
+    var title: LocalizedStringKey {
+        switch self {
+        case .default:
+            "service.configuration.openai.usage_status_default.title"
+        case .alwaysOff:
+            "service.configuration.openai.usage_status_always_off.title"
+        case .alwaysOn:
+            "service.configuration.openai.usage_status_always_on.title"
+        }
+    }
+}
+
+// MARK: - String + EnumLocalizedStringConvertible
+
+extension String: EnumLocalizedStringConvertible {
+    var title: LocalizedStringKey {
+        LocalizedStringKey(self)
+    }
+}
+
+// MARK: - ServiceUsageStatus + Defaults.Serializable
+
+extension ServiceUsageStatus: Defaults.Serializable {}

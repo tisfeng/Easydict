@@ -15,7 +15,7 @@ extension View {
     @ViewBuilder
     func disableWindowMinimize() -> some View {
         if #available(macOS 15.0, *) {
-            self.windowMinimizeBehavior(.disabled)
+            windowMinimizeBehavior(.disabled)
         } else {
             self
         }
@@ -24,7 +24,7 @@ extension View {
     @ViewBuilder
     func hideWindowToolbarBackground() -> some View {
         if #available(macOS 15.0, *) {
-            self.toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+            toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         } else {
             self
         }
@@ -33,7 +33,7 @@ extension View {
     @ViewBuilder
     func thickMaterialWindowBackground() -> some View {
         if #available(macOS 15.0, *) {
-            self.containerBackground(.thickMaterial, for: .window)
+            containerBackground(.thickMaterial, for: .window)
         } else {
             self
         }

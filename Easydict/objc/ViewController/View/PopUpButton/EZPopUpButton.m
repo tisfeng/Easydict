@@ -7,7 +7,7 @@
 //
 
 #import "EZPopUpButton.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZPopUpButton ()
 
@@ -63,7 +63,7 @@ DefineMethodMMMake_m(EZPopUpButton);
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.top.left.bottom.equalTo(titleContainerView);
             }];
-            [textField excuteLight:^(NSTextField *label) {
+            [textField executeLight:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
                 label.textColor = [NSColor ez_resultTextDarkColor];
@@ -79,7 +79,7 @@ DefineMethodMMMake_m(EZPopUpButton);
                 make.right.equalTo(titleContainerView);
                 make.width.height.equalTo(@8);
             }];
-            [imageView excuteLight:^(NSImageView *imageView) {
+            [imageView executeLight:^(NSImageView *imageView) {
                 imageView.image = [image imageWithTintColor:[NSColor ez_imageTintLightColor]];
             } dark:^(NSTextField *label) {
                 imageView.image = [image imageWithTintColor:[NSColor ez_imageTintDarkColor]];

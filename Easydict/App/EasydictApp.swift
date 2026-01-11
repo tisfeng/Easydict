@@ -20,8 +20,8 @@ enum EasydictCmpatibilityEntry {
 
         // Capturing crash logs must be placed first.
         MMCrash.registerHandler()
-        EZLog.setupCrashService()
-        EZLog.logAppInfo()
+        AnalyticsService.setupCrashService()
+        AnalyticsService.logAppInfo()
 
         // app launch
         EasydictApp.main()

@@ -450,7 +450,7 @@ public class AppleLanguageDetector: NSObject {
             return nil
         }
 
-        if isClassicalChineseDetectionEnabled, Configuration.shared.beta {
+        if isClassicalChineseDetectionEnabled, MyConfiguration.shared.beta {
             // Initialize ChineseDetection if not already created
             if chineseGenreAnalyzer == nil {
                 chineseGenreAnalyzer = ChineseGenreAnalyzer(text: text)

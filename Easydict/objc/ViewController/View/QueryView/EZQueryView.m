@@ -17,7 +17,7 @@
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
-#import "Easydict-Swift.h"
+
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -51,7 +51,7 @@
 - (void)setup {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-    [self.layer excuteLight:^(id _Nonnull x) {
+    [self.layer executeLight:^(id _Nonnull x) {
         [x setBackgroundColor:[NSColor ez_queryViewBgLightColor].CGColor];
     } dark:^(id _Nonnull x) {
         [x setBackgroundColor:[NSColor ez_queryViewBgDarkColor].CGColor];
@@ -73,7 +73,7 @@
     textView.delegate = self;
     textView.textStorage.delegate = self;
     textView.textContainerInset = CGSizeMake(6, 8);
-    textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
+    textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
     
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
@@ -88,7 +88,7 @@
                                                       object:nil
                                                        queue:NSOperationQueue.mainQueue
                                                   usingBlock:^(NSNotification * _Nonnull notification) {
-        self.textView.font = [NSFont systemFontOfSize:14 * Configuration.shared.fontSizeRatio];
+        self.textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
     }];
     
     // When programatically setting the text, like auto select text, or OCR text.
@@ -149,7 +149,7 @@
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
         self.queryModel.needDetectLanguage = NO;
-        NSString *text = [[self copiedText] trim];
+        NSString *text = [[self copiedText] ns_trim];
         
         // Do not set text language if text is OCR merged text.
         if (text.length && !self.queryModel.ocrImage) {

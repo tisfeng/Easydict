@@ -11,8 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Easydict Scheme: easydict://
-static NSString *const EZEasydictScheme = @"easydict";
-static NSString *const EZEasydictDebugScheme = @"easydictd";
+static NSString *const EZAppScheme = @"easydict";
+static NSString *const EZAppDebugScheme = @"easydictd";
 
 static NSString *const EZWriteKeyValueKey = @"writeKeyValue";
 static NSString *const EZReadValueOfKeyKey = @"readValueOfKey";

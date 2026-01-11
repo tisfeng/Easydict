@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MMOrderedDictionary.h"
+
+@class MMOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -26,8 +27,6 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
     EZShowWindowPositionFormer = 2,
     EZShowWindowPositionCenter = 3,
 };
-
-FOUNDATION_EXPORT NSString *const EZServiceTypeKey;
 
 typedef NSString *EZServiceType NS_STRING_ENUM NS_SWIFT_NAME(ServiceType);
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
@@ -72,14 +71,6 @@ typedef NS_ENUM(NSUInteger, EZServiceUsageStatus) {
     EZServiceUsageStatusAlwaysOn = 2,
 };
 
-FOUNDATION_EXPORT NSString *const EZDeepLTranslationAPIKey;
-typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
-    EZDeepLTranslationAPIWebFirst = 0,
-    EZDeepLTranslationAPIOfficialFirst = 1,
-    EZDeepLTranslationAPIOnlyOfficical = 2,
-};
-
-
 typedef NSString *EZActionType NS_STRING_ENUM NS_SWIFT_NAME(ActionType);
 FOUNDATION_EXPORT EZActionType const EZActionTypeNone;
 FOUNDATION_EXPORT EZActionType const EZActionTypeAutoSelectQuery;
@@ -117,9 +108,9 @@ typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
 
 + (NSString *)windowName:(EZWindowType)type;
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
++ (MMOrderedDictionary *)fixedWindowPositionDict;
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict;
++ (MMOrderedDictionary *)translateWindowTypeDict;
 
 @end
 

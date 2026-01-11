@@ -148,8 +148,9 @@ extension StreamService {
 
         ].flatMap { $0 }
 
-        var messages: [ChatMessage] = enableSystemPrompt
-            ? [.init(role: .system, content: StreamService.translationSystemPrompt)] : []
+        var messages: [ChatMessage] =
+            enableSystemPrompt
+                ? [.init(role: .system, content: StreamService.translationSystemPrompt)] : []
 
         messages.append(contentsOf: chineseFewShot)
 
@@ -169,7 +170,7 @@ extension StreamService {
     func sentenceMessages(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (sentence, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
-        let answerLanguage = Configuration.shared.firstLanguage
+        let answerLanguage = MyConfiguration.shared.firstLanguage
 
         var prompt = ""
         var keyWords = "Key Words"
@@ -344,8 +345,9 @@ extension StreamService {
             ),
         ].flatMap { $0 }
 
-        var messages: [ChatMessage] = enableSystemPrompt
-            ? [ChatMessage(role: .system, content: StreamService.translationSystemPrompt)] : []
+        var messages: [ChatMessage] =
+            enableSystemPrompt
+                ? [ChatMessage(role: .system, content: StreamService.translationSystemPrompt)] : []
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
@@ -364,7 +366,7 @@ extension StreamService {
 
         var prompt = ""
 
-        let answerLanguage = Configuration.shared.firstLanguage
+        let answerLanguage = MyConfiguration.shared.firstLanguage
 
         var pronunciation = "Pronunciation"
         var tense = "Tense"
@@ -378,11 +380,11 @@ extension StreamService {
         var commonPhrases = "common Phrases"
         var exampleSentence = "Example sentence"
 
-        let isEnglishWord = sourceLanguage == .english && word.isEnglishWord()
-        let isEnglishPhrase = sourceLanguage == .english && word.isEnglishPhrase()
+        let isEnglishWord = sourceLanguage == .english && word.isEnglishWord
+        let isEnglishPhrase = sourceLanguage == .english && word.isEnglishPhrase
 
         let isChineseWord =
-            EZLanguageManager.shared().isChineseLanguage(sourceLanguage) && word.isChineseWord()
+            EZLanguageManager.shared().isChineseLanguage(sourceLanguage) && word.isChineseWord
 
         let isWord = isEnglishWord || isChineseWord
 
@@ -672,9 +674,10 @@ extension StreamService {
             ),
         ].flatMap { $0 }
 
-        var messages: [ChatMessage] = enableSystemPrompt
-            ? [ChatMessage(role: .system, content: StreamService.dictSystemPrompt)]
-            : []
+        var messages: [ChatMessage] =
+            enableSystemPrompt
+                ? [ChatMessage(role: .system, content: StreamService.dictSystemPrompt)]
+                : []
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
@@ -731,7 +734,7 @@ extension StreamService {
         )
         runtimePrompt = runtimePrompt.replacingOccurrences(
             of: "${{firstLanguage}}",
-            with: Configuration.shared.firstLanguage.rawValue
+            with: MyConfiguration.shared.firstLanguage.rawValue
         )
         return runtimePrompt
     }

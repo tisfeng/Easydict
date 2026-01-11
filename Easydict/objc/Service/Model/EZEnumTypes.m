@@ -8,7 +8,7 @@
 
 #import "EZEnumTypes.h"
 
-NSString *const EZServiceTypeKey = @"ServiceType";
+#import "OrderedDictionary+Variadic.h"
 
 #pragma mark - EZServiceType
 NSString *const EZServiceTypeGoogle = @"Google";
@@ -39,7 +39,6 @@ NSString *const EZServiceTypeDoubao = @"Doubao";
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";
 
-NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPIKey";
 
 #pragma mark - EZActionType
 NSString *const EZActionTypeNone = @"none";
@@ -93,7 +92,7 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
     }
 }
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict {
++ (MMOrderedDictionary *)fixedWindowPositionDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                                                  @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
                                                                  @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
@@ -104,7 +103,7 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
     return dict;
 }
 
-+ (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict {
++ (MMOrderedDictionary *)translateWindowTypeDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                                                  @(EZWindowTypeMini), NSLocalizedString(@"mini_window", nil),
                                                                  @(EZWindowTypeFixed), NSLocalizedString(@"fixed_window", nil),

@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MMOrderedDictionary.h"
+
+@class MMOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -93,7 +94,7 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageUnsupported;
  */
 @property (nonatomic, copy) NSString *code;
 
-+ (MMOrderedDictionary<EZLanguage, EZLanguageModel *> *)allLanguagesDict;
++ (MMOrderedDictionary *)allLanguagesDict;
 
 @end
 

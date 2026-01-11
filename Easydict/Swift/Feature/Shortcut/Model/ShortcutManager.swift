@@ -18,13 +18,14 @@ class ShortcutManager: NSObject {
 
     @objc
     func setupShortcut() {
-        setupGlobalShortcutActions()
-
-        // Set default shortcut for first launch
+        // Set default shortcuts for first launch
         if Defaults[.firstLaunch] {
             Defaults[.firstLaunch] = false
             setDefaultShortcutKeys()
         }
+
+        // Bind global shortcut actions
+        setupGlobalShortcutActions()
     }
 }
 

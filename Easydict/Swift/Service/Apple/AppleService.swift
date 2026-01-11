@@ -30,51 +30,56 @@ public class AppleService: QueryService {
 
     /// Supported languages dictionary
     @objc
-    public override func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
+    public override func supportLanguagesDictionary() -> MMOrderedDictionary {
         languageMapper.supportedLanguages.toMMOrderedDictionary()
     }
 
-    public override func detectText(
-        _ text: String, completion: @escaping (Language, (any Error)?) -> ()
-    ) {
-        let language = detectText(text)
-        completion(language, nil)
+    /// Detect language using Apple's language detection.
+    @nonobjc
+    public override func detectText(_ text: String) async throws -> Language {
+        let language = detectTextSync(text)
+        return language
     }
 
+    /// Detect language for Objective-C callers without spinning up a Task.
+    @objc
+    public override func detectText(
+        _ text: String,
+        completionHandler: @escaping (Language, Error?) -> ()
+    ) {
+        completionHandler(detectTextSync(text), nil)
+    }
+
+    /// Translate text using Apple translation services.
     public override func translate(
         _ text: String,
         from: Language,
-        to: Language,
-        completion: @escaping (EZQueryResult, (any Error)?) -> ()
-    ) {
-        Task {
-            do {
-                let result = try await translateAsync(
-                    text: text,
-                    from: from,
-                    to: to
-                )
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(self.result, error)
+        to: Language
+    ) async throws
+        -> QueryResult {
+        try await translateAsync(text: text, from: from, to: to)
+    }
+
+    /// Perform OCR using Apple's Vision-based engine.
+    public override func ocr(
+        _ image: NSImage,
+        from: Language,
+        to: Language
+    ) async throws
+        -> EZOCRResult? {
+        _ = to
+        return try await withCheckedThrowingContinuation { continuation in
+            ocrEnginee.recognizeText(
+                image: image,
+                language: from
+            ) { result, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: result)
                 }
             }
         }
-    }
-
-    @objc
-    public override func ocr(_ queryModel: EZQueryModel, completion: @escaping (EZOCRResult?, Error?) -> ()) {
-        let image = queryModel.ocrImage ?? NSImage()
-        let language = queryModel.queryFromLanguage
-
-        ocrEnginee.recognizeText(
-            image: image,
-            language: language,
-            completion: completion
-        )
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
@@ -88,11 +93,11 @@ public class AppleService: QueryService {
         from sourceLanguage: Language,
         to targetLanguage: Language
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         // Use macOS 15+ API to translate if available
-        if #available(macOS 15.0, *), Configuration.shared.enableAppleOfflineTranslation {
+        if #available(macOS 15.0, *), MyConfiguration.shared.enableAppleOfflineTranslation {
             let service = await getTranslationService()
-            if let service = service as? TranslationService {
+            if let service = service as? AppleTranslation {
                 let translatedText = try await service.translate(
                     text: text,
                     sourceLanguage: sourceLanguage,
@@ -113,9 +118,8 @@ public class AppleService: QueryService {
     }
 
     @objc
-    public func detectText(_ text: String) -> Language {
-        let detectedLanguage = languageDetector.detectLanguage(text: text)
-        return detectedLanguage
+    public func detectTextSync(_ text: String) -> Language {
+        languageDetector.detectLanguage(text: text)
     }
 
     /// Play text audio using system speech synthesizer
@@ -163,7 +167,7 @@ public class AppleService: QueryService {
         if #available(macOS 15.0, *) {
             if translationService == nil {
                 let window = NSApplication.shared.windows.first
-                let service = TranslationService(attachedWindow: window)
+                let service = AppleTranslation(attachedWindow: window)
                 service.enableTranslateSameLanguage = true
                 translationService = service
             }
@@ -179,7 +183,7 @@ public class AppleService: QueryService {
         from sourceLanguage: Language,
         to targetLanguage: Language
     ) async throws
-        -> EZQueryResult {
+        -> QueryResult {
         guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
               let toLanguage = languageMapper.supportedLanguages[targetLanguage]
         else {
@@ -202,7 +206,7 @@ public class AppleService: QueryService {
 
 // Only extend TranslationService when it's available
 @available(macOS 15.0, *)
-extension TranslationService {
+extension AppleTranslation {
     /// Translate text from source language to target language, used for objc.
     public func translate(
         text: String,
@@ -236,7 +240,7 @@ extension NLLanguage {
     }
 }
 
-// MARK: - Locale.Language + CustomStringConvertible
+// MARK: - Locale.Language + @retroactive CustomStringConvertible
 
 extension Locale.Language: @retroactive CustomStringConvertible {
     public var description: String {

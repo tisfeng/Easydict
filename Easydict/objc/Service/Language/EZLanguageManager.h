@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageModel.h"
-#import "MMOrderedDictionary.h"
+
+@class MMOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, readonly) NSArray<EZLanguage> *allLanguages;
 
 /// <EZLanguageEnglish : 🇬🇧 英语>
-@property (nonatomic, strong, readonly) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageFlagDict;
+@property (nonatomic, strong, readonly) MMOrderedDictionary *allLanguageFlagDict;
 
 
 - (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;

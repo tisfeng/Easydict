@@ -13,22 +13,19 @@
 #import "NSTextView+Height.h"
 #import "EZConst.h"
 #import "EZFixedQueryWindow.h"
-#import "NSString+MM.h"
 #import "EZLayoutManager.h"
 #import "EZWindowManager.h"
 #import "EZOpenLinkButton.h"
 #import "NSImage+EZResize.h"
-#import "EZQueryService.h"
 #import "EZBlueTextButton.h"
 #import "EZMyLabel.h"
 #import "EZAudioButton.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import "TTTDictionary.h"
-#import "EZServiceTypes.h"
+#import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
-#import "Easydict-Swift.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -56,8 +53,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if (self) {
         self.wantsLayer = YES;
         self.layer.cornerRadius = EZCornerRadius_8;
-        self.fontSizeRatio = Configuration.shared.fontSizeRatio;
-        [self.layer excuteLight:^(CALayer *layer) {
+        self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
+        [self.layer executeLight:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
@@ -69,7 +66,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 // TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
-    self.fontSizeRatio = Configuration.shared.fontSizeRatio;
+    self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
 
     EZTranslateWordResult *wordResult = result.wordResult;
     self.webView = result.webViewManager.webView;
@@ -86,7 +83,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     mm_weakify(self);
 
-    if (result.HTMLString.length) {
+    if (result.htmlString.length) {
         [self addSubview:self.webView];
 
         if (result.webViewManager.isLoaded) {
@@ -290,7 +287,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize * self.fontSizeRatio];
 
                 // ???: WTF, why Baidu phonetic contain '\n', e.g. ceil "siːl\n"
-                phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", phonetic.trim];
+                phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", [phonetic  ns_trim]];
                 [phoneticLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.equalTo(phoneticTagLabel.mas_right).offset(kHorizontalMargin_8);
                     make.centerY.equalTo(phoneticTagLabel);
@@ -335,7 +332,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
                 NSButton *tagButton = [[NSButton alloc] init];
                 tagButton.title = tag;
-                [tagButton excuteLight:^(NSButton *tagButton) {
+                [tagButton executeLight:^(NSButton *tagButton) {
                     NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
                     [self updateTagButton:tagButton tagColor:tagColor];
                 } dark:^(NSButton *tagButton) {
@@ -367,7 +364,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     tagContentView = [[NSView alloc] init];
                     [tagScrollView addSubview:tagContentView];
                     tagContentView.wantsLayer = YES;
-                    [tagContentView.layer excuteLight:^(CALayer *layer) {
+                    [tagContentView.layer executeLight:^(CALayer *layer) {
                         layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
                     } dark:^(CALayer *layer) {
                         layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
@@ -655,7 +652,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             meanLabel.text = obj.meansText;
             meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
             [self addSubview:meanLabel];
-            [meanLabel excuteLight:^(id _Nonnull x) {
+            [meanLabel executeLight:^(id _Nonnull x) {
                 [x setTextColor:[NSColor ez_resultTextLightColor]];
             } dark:^(id _Nonnull x) {
                 [x setTextColor:[NSColor ez_resultTextDarkColor]];
@@ -776,19 +773,19 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = result.copiedText;
 
         // For some special case, copied text language is not the queryTargetLanguage, like 龘, Youdao translate.
-        EZLanguage language = [EZAppleService.shared detectText:text];
+        EZLanguage language = [EZAppleService.shared detectTextSync:text];
         if ([result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }
 
-        EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
-        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
+        EZServiceType defaultTTSServiceType = MyConfiguration.shared.defaultTTSServiceType;
+        EZQueryService *defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
 
         // Determine accent based on user preference if language is English
         NSString *accentToUse = nil;
         if ([language isEqualToString:EZLanguageEnglish]) {
             // Assuming EnglishPronunciationUk is accessible, similar to EZBaseQueryViewController
-            if (Configuration.shared.pronunciation == EnglishPronunciationUk) {
+            if (MyConfiguration.shared.pronunciation == EnglishPronunciationUk) {
                 accentToUse = @"uk";
             } else {
                 accentToUse = @"us";
@@ -806,11 +803,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
     [self addSubview:textCopyButton];
-    textCopyButton.enabled = hasTranslatedText | result.HTMLString.length;
+    textCopyButton.enabled = hasTranslatedText | result.htmlString.length;
 
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         MMLogInfo(@"copyActionBlock");
-        [result.copiedText copyAndShowToast:YES];
+        [result.copiedText ns_copyAndShowToast:YES];
     }];
     textCopyButton.mas_key = @"result_copyButton";
 
@@ -856,7 +853,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     linkButton.link = [result.service wordLink:result.queryModel];
 
-    [linkButton excuteLight:^(NSButton *linkButton) {
+    [linkButton executeLight:^(NSButton *linkButton) {
         linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *linkButton) {
         linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
@@ -891,7 +888,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
     // webView height need time to calculate, and the value will be called back later.
     if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
-        BOOL hasHTML = result.HTMLString.length > 0;
+        BOOL hasHTML = result.htmlString.length > 0;
         linkButton.enabled = hasHTML;
 
         if (hasHTML) {
@@ -1085,13 +1082,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
         MMLogInfo(@"Open URI: %@", navigationActionURL);
 
-        NSString *hrefText = [navigationActionURL.absoluteString decode];
+        NSString *hrefText = [navigationActionURL.absoluteString ns_decode];
 
         [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
             MMLogInfo(@"URL text is: %@", text);
 
             if (self.queryTextBlock) {
-                self.queryTextBlock([text trim]);
+                self.queryTextBlock([text  ns_trim]);
             }
         }];
 
@@ -1157,7 +1154,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      take: 1971476
      */
 
-    //    CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+    //    CGFloat delayShowingTime = self.result.htmlString.length / 1000000.0;
     //    MMLogInfo(@"Delay showing time: %.2f", delayShowingTime);
 
     // !!!: Must update view height, then update cell height.

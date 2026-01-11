@@ -15,7 +15,8 @@ class ScreenshotState: ObservableObject {
 
     init(screen: NSScreen) {
         self.screen = screen
-        self.isTipVisible = !Screenshot.shared.lastScreenshotRect.isEmpty
+        self.isTipVisible = !MyConfiguration.shared.isScreenshotTipLayerHidden
+            && !Screenshot.shared.lastScreenshotRect.isEmpty
 
         updateHideDarkOverlay()
         setupMouseMovedMonitor()
@@ -102,6 +103,10 @@ class ScreenshotState: ObservableObject {
 
             isMouseMoved = true
             updateHideDarkOverlay()
+
+            guard !MyConfiguration.shared.isScreenshotTipLayerHidden else {
+                return event
+            }
 
             let expandedValue = 20.0
             let tipLayerExpandedFrame = CGRect(

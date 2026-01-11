@@ -20,7 +20,7 @@
 - (void)ez_setup {
     self.cornerRadius = 5;
     
-    [self excuteLight:^(EZButton *button) {
+    [self executeLight:^(EZButton *button) {
         button.contentTintColor = [NSColor ez_imageTintLightColor];
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
         button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#DADADA"]; 

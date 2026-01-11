@@ -7,26 +7,19 @@
 //
 
 #import "EZBaseQueryViewController.h"
-#import "EZDetectManager.h"
+#import <Easydict-Swift.h>
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
-#import "EZServiceTypes.h"
+#import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
-#import "EZLog.h"
-#import "EZLocalStorage.h"
 #import "EZTableRowView.h"
 #import "EZSchemeParser.h"
-#import "EZBaiduTranslate.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
-#import "EZAppleDictionary.h"
-#import "NSString+EZUtils.h"
-#import "EZEventMonitor.h"
-#import "NSString+EZHandleInputText.h"
-#import "Easydict-Swift.h"
+
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -87,7 +80,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, assign) NSInteger selectLanguageCellIndex; // 0 or 1
 @property (nonatomic, assign) NSInteger tipsCellIndex;           // 0 or 1 or 2
 
-@property (nonatomic, strong) Configuration *config;
+@property (nonatomic, strong) MyConfiguration *config;
 
 @end
 
@@ -99,6 +92,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (instancetype)initWithWindowType:(EZWindowType)type {
+    MMLogInfo(@"init EZBaseQueryViewController with type: %@", @(type));
     if (self = [super init]) {
         self.windowType = type;
         [self setupUI];
@@ -115,7 +109,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = EZCornerRadius_8;
     self.view.layer.masksToBounds = YES;
-    [self.view excuteLight:^(NSView *_Nonnull x) {
+    [self.view executeLight:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = [NSColor ez_mainViewBgLightColor].CGColor;
     } dark:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = [NSColor ez_mainViewBgDarkColor].CGColor;
@@ -130,13 +124,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)viewWillAppear {
     [super viewWillAppear];
 
-    [EZLog logWindowAppear:self.windowType];
+    [EZAnalyticsService logWindowAppear:self.windowType];
 }
 
 
 - (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
-    self.config = Configuration.shared;
+    self.config = MyConfiguration.shared;
 
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
 
@@ -182,7 +176,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [defaultCenter addObserver:self
                       selector:@selector(handleServiceUpdate:)
-                          name:EZServiceHasUpdatedNotification
+                          name:NSNotification.serviceHasUpdated
                         object:nil];
 
     [defaultCenter addObserver:self
@@ -308,9 +302,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    EZWindowType windowType = [userInfo[EZWindowTypeKey] integerValue];
-    NSString *serviceType = userInfo[EZServiceTypeKey];
-    BOOL autoQuery = [userInfo[EZAutoQueryKey] boolValue];
+    EZWindowType windowType = [userInfo[UserInfoKey.windowType] integerValue];
+    NSString *serviceType = userInfo[UserInfoKey.serviceType];
+    BOOL autoQuery = [userInfo[UserInfoKey.autoQuery] boolValue];
 
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
 
@@ -344,7 +338,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
-        [scrollView excuteLight:^(NSScrollView *scrollView) {
+        [scrollView executeLight:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = [NSColor ez_mainViewBgLightColor];
         } dark:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = [NSColor ez_mainViewBgDarkColor];
@@ -374,7 +368,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
 
-        [tableView excuteLight:^(NSTableView *tableView) {
+        [tableView executeLight:^(NSTableView *tableView) {
             tableView.backgroundColor = [NSColor ez_mainViewBgLightColor];
         } dark:^(NSTableView *tableView) {
             tableView.backgroundColor = [NSColor ez_mainViewBgDarkColor];
@@ -437,11 +431,34 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (EZQueryService *)defaultTTSService {
     EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
-        _defaultTTSService = [EZServiceTypes.shared serviceWithTypeId:defaultTTSServiceType];
+        _defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
     }
     return _defaultTTSService;
 }
+
 #pragma mark - Public Methods
+
+/// Recreate the query model and rebind dependent managers for background OCR.
+- (void)resetQueryModelForBackgroundOCR {
+    EZQueryModel *model = [[EZQueryModel alloc] init];
+    model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
+    model.userTargetLanguage = MyConfiguration.shared.toLanguage;
+
+    self.queryModel = model;
+    self.detectManager = [EZDetectManager managerWithModel:model];
+
+    for (EZQueryService *service in self.services) {
+        service.queryModel = model;
+    }
+
+    if (self.queryView) {
+        self.queryView.queryModel = model;
+    }
+
+    if (self.selectLanguageCell) {
+        self.selectLanguageCell.queryModel = model;
+    }
+}
 
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
@@ -451,7 +468,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)startQueryText:(NSString *)text actionType:(EZActionType)actionType {
     MMLogInfo(@"query actionType: %@", actionType);
 
-    if (text.trim.length == 0) {
+    if ([text  ns_trim].length == 0) {
         MMLogWarn(@"query text is empty");
         return;
     }
@@ -509,6 +526,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
            actionType:(EZActionType)actionType
             autoQuery:(BOOL)autoQuery {
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
+    MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
@@ -520,7 +538,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self showTipsView:NO completion:nil];
 
     mm_weakify(self);
-    [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
@@ -530,7 +548,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             @"detectedLanguage" : queryModel.detectedLanguage,
             @"actionType" : actionType,
         };
-        [EZLog logEventWithName:@"ocr" parameters:dict];
+        [EZAnalyticsService logEventWithName:@"ocr" parameters:dict];
 
 
         if (actionType == EZActionTypeScreenshotOCR) {
@@ -566,7 +584,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
             [self.queryView highlightAllLinks];
 
-            if ([self.inputText isURL]) {
+            if ([self.inputText ns_isURL]) {
                 // Append a whitespace to beautify the link.
                 self.inputText = [self.inputText stringByAppendingString:@" "];
 
@@ -609,7 +627,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (self.queryView.window == self.baseQueryWindow) {
         // Need to activate the current application first.
         [NSApp activateIgnoringOtherApps:YES];
-        
+
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
@@ -643,12 +661,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)copyQueryText {
-    [self.inputText copyAndShowToast:YES];
+    [self.inputText ns_copyAndShowToast:YES];
 }
 
 - (void)copyFirstTranslatedText {
     if (self.firstService) {
-        [self.firstService.result.copiedText copyAndShowToast:YES];
+        [self.firstService.result.copiedText ns_copyAndShowToast:YES];
     }
 }
 
@@ -868,7 +886,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self updateCellWithResult:result reloadData:YES];
 
         if (service.autoCopyTranslatedTextBlock) {
-            service.autoCopyTranslatedTextBlock(result, error);
+            BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
+            if (shouldAutoCopy) {
+                service.autoCopyTranslatedTextBlock(result, error);
+            }
         }
     }];
 }
@@ -896,7 +917,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [self updateResultLoadingAnimation:result];
 
-    [service startQuery:queryModel completion:completion];
+    [service startQueryStream:queryModel completionHandler:completion];
 
     [EZLocalStorage.shared increaseQueryService:service];
 }
@@ -1061,7 +1082,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryResult *result in results) {
         // !!!: Render webView html takes a little time(~0.5s), so we stop loading when webView finished loading.
         BOOL isFinished = YES;
-        if (result.isShowing && result.HTMLString.length) {
+        if (result.isShowing && result.htmlString.length) {
             isFinished = result.webViewManager.wordResultViewHeight > 0;
         }
         result.isLoading = !isFinished;
@@ -1411,7 +1432,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.inputText = text;
 
         // Only detect when query text is changed.
-        if (![self.inputText.trim isEqualToString:oldInputText.trim]) {
+        if (![[self.inputText  ns_trim] isEqualToString:[oldInputText  ns_trim]]) {
             [self delayDetectQueryText];
         }
 
@@ -1428,7 +1449,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
-        BOOL autoQuery = [Configuration.shared autoQueryPastedText];
+        BOOL autoQuery = [MyConfiguration.shared autoQueryPastedText];
         if (autoQuery) {
             [self startQueryText:text];
         }
@@ -1440,7 +1461,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {
-        [text copyAndShowToast:YES];
+        [text ns_copyAndShowToast:YES];
     }];
 
     [queryView setClearBlock:^(NSString *_Nonnull text) {
@@ -1466,7 +1487,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 @"autoDetect" : detectedLanguage,
                 @"userSelect" : language,
             };
-            [EZLog logEventWithName:@"change_detected_language" parameters:dict];
+            [EZAnalyticsService logEventWithName:@"change_detected_language" parameters:dict];
         }
     }];
 
@@ -1494,7 +1515,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         webView = webViewManager.webView;
         resultCell.wordResultView.webView = webView;
 
-        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !webViewManager.isLoaded;
+        BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
             webViewManager.isLoaded = YES;
 
@@ -1722,7 +1743,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     [service setAutoCopyTranslatedTextBlock:^(EZQueryResult *result, NSError *error) {
-        if (!result.HTMLString.length) {
+        if (!result.htmlString.length) {
             [result.copiedText copyToPasteboard];
             return;
         }

@@ -110,7 +110,7 @@ extension Defaults.Keys {
         default: false
     )
 
-    static let appearanceType = Key<AppearenceType>(
+    static let appearanceType = Key<AppearanceType>(
         "EZConfiguration_kApperanceKey", default: .followSystem
     )
     static let fontSizeOptionIndex = Key<UInt>(
@@ -149,6 +149,10 @@ extension Defaults.Keys {
     )
     static var showOCRMenuItems = Key<Bool>(
         "showOCRMenuItems", default: false
+    )
+    /// Controls whether the screenshot tip layer is hidden during capture.
+    static var isScreenshotTipLayerHidden = Key<Bool>(
+        "isScreenshotTipLayerHidden", default: false
     )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
@@ -305,6 +309,8 @@ class ShortcutWrapper<T: KeyCombo> {
         return (keyCombo?.keyEquivalentModifierMaskString ?? "") + (keyCombo?.keyEquivalent ?? "")
     }
 }
+
+private let EZDeepLTranslationAPIKey = "EZDeepLTranslationAPIKey"
 
 // Service Configuration
 extension Defaults.Keys {

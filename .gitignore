@@ -85,8 +85,17 @@ node_modules/
 
 .sentryclirc
 
-# CodeQL
-_codeql_detected_source_root
+# SwiftFormat 
+# https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#xcode-build-phase
+BuildTools/.build
+BuildTools/.swiftpm
 
-# Claude Code
-.claude/settings.local.json
+.tmp/
+
+# Ignore xcodeproj Package.resolved file, use xcworkspace Package.resolved instead (For CocoaPods
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
+# Ignore *.zip, *.app and *.dmg files generated during build or release process
+*.zip
+*.app
+*.dmg

@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "AppDelegate+EZURLScheme.h"
-#import "Easydict-Swift.h"
+
 
 @interface AppDelegate ()
 
@@ -25,7 +25,7 @@
     
     [self registerRouters];
     
-    [[DarkModeManager manager] updateDarkMode:Configuration.shared.appearance];
+    [DarkModeManager.shared updateDarkMode:MyConfiguration.shared.appearance];
 }
 
 #pragma mark - NSApplicationDelegate

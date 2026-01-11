@@ -8,7 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZLanguageManager.h"
-#import "EZQueryModel.h"
+
+@class EZQueryModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
