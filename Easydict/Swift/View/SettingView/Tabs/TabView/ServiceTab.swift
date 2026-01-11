@@ -24,7 +24,7 @@ struct ServiceTab: View {
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.never)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .borderedCard()
                 .padding(.bottom)
                 .padding(.horizontal)
                 .frame(minWidth: 260)
