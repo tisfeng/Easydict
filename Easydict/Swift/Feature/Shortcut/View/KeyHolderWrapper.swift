@@ -32,7 +32,6 @@ struct KeyHolderWrapper: NSViewRepresentable {
 
     func makeNSView(context: Context) -> some NSView {
         let recordView = RecordView(frame: CGRect.zero)
-        recordView.tintColor = NSColor(red: 0.164, green: 0.517, blue: 0.823, alpha: 1)
         recordView.delegate = context.coordinator
         recordView.layer?.cornerRadius = 6.0
         recordView.layer?.masksToBounds = true

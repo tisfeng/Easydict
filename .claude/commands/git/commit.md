@@ -1,14 +1,15 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git commit:*),  Bash(cat:*), Bash(echo:*), Bash(rm:*)
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(printf:*), Bash(cat:*), Bash(echo:*), Bash(rm:*)
 argument-hint: [message]
 description: Generate an Angular-style git commit message
 model: ANTHROPIC_DEFAULT_HAIKU_MODEL
 ---
 
-Angular-style git commit message generator
+# Angular-style git commit message generator
 
 You are an intelligent Git commit message generator.
-Your goal is to generate a clear, professional **Git commit message** based on the currently staged changes.
+
+Your goal is to generate a clear, professional **Git commit message** based on the User-provided description(may be empty) and currently staged changes.
 
 ## Context
 
@@ -20,27 +21,31 @@ Your goal is to generate a clear, professional **Git commit message** based on t
 ## Improved Commit Flow Process
 
 **Step-by-step process:**
+
 1. Analyze staged changes with `git status && git diff --staged`; identify additions (+) vs deletions (-) to describe impact accurately.
 2. Draft the commit message in English following Angular style (`type(scope): subject`), keep title ≤80 chars and total ≤600 chars.
 3. Provide a Simplified Chinese translation for preview only (do not include in the commit file).
 4. Show the English + Chinese preview and wait for explicit approval.
-5. After approval, use `echo` to write the message to `commit_message.txt`, then run `git commit -F commit_message.txt && rm commit_message.txt`.
+5. After approval, use `printf` to write the message to `commit_message.txt`, then run `git commit -F commit_message.txt && rm commit_message.txt`.
 
 **Important Rules:**
+
 - Do not run `git add` or `git push`.
 - Do not commit without explicit user authorization.
 - Keep titles concise (≤80 chars) and the whole message under 600 chars.
 - Use Angular Conventional Commit style; Chinese translation is for preview only.
 
 ## Additional Context
+
 User-provided description: $ARGUMENTS
 
 ## Angular Conventional Commit style
 
 An Angular-style message should include:
-  1. `type(scope): subject` — `type` is the change category, `scope` is the touched module or file, `subject` is a concise summary.
-  2. A detailed body explaining the motivation and what was changed.
-  3. Impact notes for breaking changes or special considerations.
+
+1. `type(scope): subject` — `type` is the change category, `scope` is the touched module or file, `subject` is a concise summary.
+2. `body`: A detailed body explaining the motivation and what was changed.
+3. `footer`: Impact notes for breaking changes or special considerations.
 
 ## Git Commit Message Examples
 

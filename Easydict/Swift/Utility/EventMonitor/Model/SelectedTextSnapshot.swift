@@ -1,6 +1,6 @@
 //
 //  SelectedTextSnapshot.swift
-//  Scoco
+//  Easydict
 //
 //  Created by tisfeng on 2025/xx/xx.
 //  Copyright © 2025 izual. All rights reserved.

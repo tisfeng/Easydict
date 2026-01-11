@@ -204,6 +204,9 @@
 		03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03779F112BB256B5008D3C42 /* EncryptedSecretKeys.plist */; };
 		03779F172BB256C5008D3C42 /* URL+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03779F152BB256C5008D3C42 /* URL+Extension.swift */; };
 		03779F1A2BB25797008D3C42 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03779F192BB25797008D3C42 /* OpenAI */; };
+		0377C08E2F13EAAC00302A2C /* View+DebugOnly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */; };
+		0377C08F2F13EAAC00302A2C /* View+BorderedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */; };
+		0377C0922F13EAFE00302A2C /* BuildConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0902F13EAFE00302A2C /* BuildConfig.swift */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
 		037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */; };
@@ -778,6 +781,9 @@
 		03779F102BB256B5008D3C42 /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		03779F112BB256B5008D3C42 /* EncryptedSecretKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EncryptedSecretKeys.plist; sourceTree = "<group>"; };
 		03779F152BB256C5008D3C42 /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
+		0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+BorderedCard.swift"; sourceTree = "<group>"; };
+		0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DebugOnly.swift"; sourceTree = "<group>"; };
+		0377C0902F13EAFE00302A2C /* BuildConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfig.swift; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
@@ -1849,6 +1855,23 @@
 				03779F152BB256C5008D3C42 /* URL+Extension.swift */,
 			);
 			path = URL;
+			sourceTree = "<group>";
+		};
+		0377C08D2F13EAAC00302A2C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */,
+				0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		0377C0912F13EAFE00302A2C /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+				0377C0902F13EAFE00302A2C /* BuildConfig.swift */,
+			);
+			path = Environment;
 			sourceTree = "<group>";
 		};
 		03792EA02C3830E60074A145 /* Ollama */ = {
@@ -3303,6 +3326,8 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				0377C0912F13EAFE00302A2C /* Environment */,
+				0377C08D2F13EAAC00302A2C /* Views */,
 				03F2D02F2F0FE6D600A99FC0 /* EventMonitor */,
 				03CA1CF02EDE089E001908D0 /* Appearance */,
 				03BBC8142E62049600CFC582 /* SystemUtility */,
@@ -3885,6 +3910,7 @@
 				C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				03538DF22D25AAD1005E56A8 /* CookieManager.swift in Sources */,
+				0377C0922F13EAFE00302A2C /* BuildConfig.swift in Sources */,
 				DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */,
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
@@ -4104,6 +4130,8 @@
 				032AAA5B2C456F04007996A1 /* routes.swift in Sources */,
 				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,
+				0377C08E2F13EAAC00302A2C /* View+DebugOnly.swift in Sources */,
+				0377C08F2F13EAAC00302A2C /* View+BorderedCard.swift in Sources */,
 				0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */,
 				0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */,
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
