@@ -129,7 +129,7 @@ struct QueryRecordRow: View {
             let viewController = mainWindow.queryViewController
             viewController.startQueryText(
                 record.queryText,
-                actionType: EZActionType.selectTextTranslate
+                actionType: .invokeQuery
             )
         }
     }

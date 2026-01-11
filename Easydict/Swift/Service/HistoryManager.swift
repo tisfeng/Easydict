@@ -22,7 +22,7 @@ class HistoryManager: NSObject {
 
     // MARK: Internal
 
-    static let shared = HistoryManager()
+    @objc static let shared = HistoryManager()
 
     /// Add a query to history
     @objc

@@ -13,6 +13,25 @@ import Foundation
 
 extension Language: Defaults.Serializable {}
 
+// MARK: - Language + Codable
+
+extension Language: Codable {
+    /// Creates a language value from a decoded raw string.
+    /// - Parameter decoder: The decoder to read from.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = Language(rawValue: rawValue)
+    }
+
+    /// Encodes the language as its raw string value.
+    /// - Parameter encoder: The encoder to write to.
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
+}
+
 // MARK: - Language + CaseIterable
 
 extension Language: CaseIterable {

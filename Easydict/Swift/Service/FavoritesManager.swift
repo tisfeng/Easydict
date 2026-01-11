@@ -22,7 +22,7 @@ class FavoritesManager: NSObject {
 
     // MARK: Internal
 
-    static let shared = FavoritesManager()
+    @objc static let shared = FavoritesManager()
 
     /// Add a query to favorites
     @objc

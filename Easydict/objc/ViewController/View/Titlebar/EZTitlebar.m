@@ -472,13 +472,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     NSImage *normalDarkImage = [[normalImage imageWithTintColor:normalDarkTintColor] resizeToSize:imageSize];
     NSImage *selectedImageResized = [selectedImage resizeToSize:imageSize];
     
-    mm_weakify(self);
-    [self.favoriteButton excuteLight:^(EZHoverButton *button) {
-        mm_strongify(self)
+    [self.favoriteButton executeLight:^(EZHoverButton *button) {
         NSImage *image = isFavorited ? selectedImageResized : normalLightImage;
         button.image = image;
     } dark:^(EZHoverButton *button) {
-        mm_strongify(self)
         NSImage *image = isFavorited ? selectedImageResized : normalDarkImage;
         button.image = image;
     }];
@@ -501,13 +498,13 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     
     if (isFavorited) {
         // Remove from favorites
-        NSArray<QueryRecord *> *favorites = [FavoritesManager.shared getAllFavorites];
-        for (QueryRecord *record in favorites) {
-            if ([record.queryText isEqualToString:queryText]) {
-                [FavoritesManager.shared removeFavoriteWithId:record.id];
-                break;
-            }
-        }
+//        NSArray<QueryRecord *> *favorites = [FavoritesManager.shared getAllFavorites];
+//        for (QueryRecord *record in favorites) {
+//            if ([record.queryText isEqualToString:queryText]) {
+//                [FavoritesManager.shared removeFavoriteWithId:record.id];
+//                break;
+//            }
+//        }
     } else {
         // Add to favorites
         [FavoritesManager.shared addFavoriteWithQueryText:queryText
