@@ -62,7 +62,8 @@ struct FavoritesTab: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .borderedCard()
+        .padding(20)
         .onReceive(Defaults.publisher(.favorites)) { change in
             favorites = change.newValue
         }
