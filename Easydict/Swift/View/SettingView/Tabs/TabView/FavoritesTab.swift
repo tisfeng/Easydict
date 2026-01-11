@@ -11,55 +11,65 @@ import SwiftUI
 
 // MARK: - FavoritesTab
 
+/// Displays favorites and history in a single segmented view.
 struct FavoritesTab: View {
     // MARK: Internal
 
     var body: some View {
         VStack(spacing: 16) {
+            Picker(selection: $selectedSection) {
+                Text("favorites.tab").tag(FavoritesSection.favorites)
+                Text("history.tab").tag(FavoritesSection.history)
+            } label: {
+                EmptyView()
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top)
+
             // Header with clear button
             HStack {
-                Text("favorites.title")
+                Text(headerTitleKey)
                     .font(.headline)
                 Spacer()
                 Button(action: {
                     showingClearAlert = true
                 }) {
-                    Text("favorites.clear_all")
+                    Text(clearButtonTitleKey)
                 }
-                .disabled(favorites.isEmpty)
+                .disabled(currentRecords.isEmpty)
                 .alert(isPresented: $showingClearAlert) {
                     Alert(
-                        title: Text("favorites.clear_alert.title"),
-                        message: Text("favorites.clear_alert.message"),
-                        primaryButton: .destructive(Text("favorites.clear_alert.confirm")) {
-                            FavoritesManager.shared.clearAllFavorites()
+                        title: Text(clearAlertTitleKey),
+                        message: Text(clearAlertMessageKey),
+                        primaryButton: .destructive(Text(clearAlertConfirmKey)) {
+                            clearCurrentRecords()
                         },
                         secondaryButton: .cancel()
                     )
                 }
             }
             .padding(.horizontal)
-            .padding(.top)
 
-            if favorites.isEmpty {
+            if currentRecords.isEmpty {
                 // Empty state
                 VStack(spacing: 12) {
-                    Image(systemName: "star.slash")
+                    Image(systemName: emptyStateImageName)
                         .font(.system(size: 48))
                         .foregroundColor(.secondary)
-                    Text("favorites.empty")
+                    Text(emptyStateTitleKey)
                         .font(.headline)
                         .foregroundColor(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                // List of favorites
+                // List of records
                 List {
-                    ForEach(favorites) { record in
+                    ForEach(currentRecords) { record in
                         QueryRecordRow(record: record)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
-                                    FavoritesManager.shared.removeFavorite(id: record.id)
+                                    removeRecord(record)
                                 } label: {
                                     Label("common.delete", systemImage: "trash")
                                 }
@@ -72,19 +82,95 @@ struct FavoritesTab: View {
         .onReceive(Defaults.publisher(.favorites)) { change in
             favorites = change.newValue
         }
+        .onReceive(Defaults.publisher(.queryHistory)) { change in
+            history = change.newValue
+        }
         .onAppear {
-            favorites = FavoritesManager.shared.getAllFavorites()
+            loadRecords()
         }
     }
 
     // MARK: Private
 
+    @State private var selectedSection: FavoritesSection = .favorites
     @State private var favorites: [QueryRecord] = []
+    @State private var history: [QueryRecord] = []
     @State private var showingClearAlert = false
+
+    private var currentRecords: [QueryRecord] {
+        selectedSection == .favorites ? favorites : history
+    }
+
+    private var headerTitleKey: LocalizedStringKey {
+        selectedSection == .favorites ? "favorites.title" : "history.title"
+    }
+
+    private var clearButtonTitleKey: LocalizedStringKey {
+        selectedSection == .favorites ? "favorites.clear_all" : "history.clear_all"
+    }
+
+    private var clearAlertTitleKey: LocalizedStringKey {
+        selectedSection == .favorites ? "favorites.clear_alert.title" : "history.clear_alert.title"
+    }
+
+    private var clearAlertMessageKey: LocalizedStringKey {
+        selectedSection == .favorites ? "favorites.clear_alert.message" : "history.clear_alert.message"
+    }
+
+    private var clearAlertConfirmKey: LocalizedStringKey {
+        selectedSection == .favorites ? "favorites.clear_alert.confirm" : "history.clear_alert.confirm"
+    }
+
+    private var emptyStateTitleKey: LocalizedStringKey {
+        selectedSection == .favorites ? "favorites.empty" : "history.empty"
+    }
+
+    private var emptyStateImageName: String {
+        selectedSection == .favorites ? "star.slash" : "clock.badge.xmark"
+    }
+
+    /// Clears the records for the currently selected section.
+    private func clearCurrentRecords() {
+        switch selectedSection {
+        case .favorites:
+            FavoritesManager.shared.clearAllFavorites()
+        case .history:
+            HistoryManager.shared.clearAllHistory()
+        }
+    }
+
+    /// Removes a record from the currently selected section.
+    private func removeRecord(_ record: QueryRecord) {
+        switch selectedSection {
+        case .favorites:
+            FavoritesManager.shared.removeFavorite(id: record.id)
+        case .history:
+            HistoryManager.shared.removeHistory(id: record.id)
+        }
+    }
+
+    /// Loads the favorites and history data for display.
+    private func loadRecords() {
+        favorites = FavoritesManager.shared.getAllFavorites()
+        history = HistoryManager.shared.getAllHistory()
+    }
+}
+
+// MARK: - FavoritesSection
+
+/// Represents the section shown in the favorites tab.
+private enum FavoritesSection: String, CaseIterable, Identifiable {
+    case favorites
+    case history
+
+    // MARK: Internal
+
+    var id: String { rawValue }
 }
 
 // MARK: - QueryRecordRow
 
+/// Displays a query record and triggers a new query on tap.
 struct QueryRecordRow: View {
     // MARK: Internal
 
@@ -117,6 +203,7 @@ struct QueryRecordRow: View {
 
     // MARK: Private
 
+    /// Replays the query stored in this record.
     private func performQuery() {
         // Trigger a new query with the stored text and languages
         let windowManager = EZWindowManager.shared()
