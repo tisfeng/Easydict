@@ -41,7 +41,7 @@ final class SelectionWorkflow {
 
         Task {
             do {
-                let text = try await systemUtility.getSelectedText(strategy: .accessibility) ?? ""
+                let text = try await systemUtility.getSelectedText(strategy: .accessibility)?.trim() ?? ""
                 let editable = systemUtility.isFocusedTextField()
                 isSelectedTextEditable = editable
                 let frontmostBundleID = frontmostApp?.bundleIdentifier ?? ""
