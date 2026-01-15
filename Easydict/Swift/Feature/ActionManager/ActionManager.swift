@@ -7,6 +7,7 @@
 //
 
 import AppKit
+import Defaults
 import Foundation
 import SelectedTextKit
 
@@ -54,7 +55,8 @@ class ActionManager: NSObject {
 
     /// Common method to execute text replacement actions
     private func executeTextReplacementAction(_ type: ProcessingType) async {
-        let elementInfo = await systemUtility.focusedElementInfo(enableSelectAll: true)
+        let enableSelectAll = Defaults[.autoSelectAllTextFieldText]
+        let elementInfo = await systemUtility.focusedElementInfo(enableSelectAll: enableSelectAll)
 
         // Prepare translation request
         var queryText = elementInfo.focusedText
