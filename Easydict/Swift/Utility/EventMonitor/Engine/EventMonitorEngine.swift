@@ -22,10 +22,8 @@ final class EventMonitorEngine {
         case both
     }
 
-    /// Receives every event delivered by the active monitors.
-    var eventHandler: ((NSEvent) -> ())?
-
     /// Configures the monitor type, mask, and event handler, then starts monitoring.
+    /// Note: Calling `monitor` replaces any existing monitors because `start()` invokes `stop()`.
     /// - Parameters:
     ///   - type: Monitor scope to install.
     ///   - mask: Event mask to observe.

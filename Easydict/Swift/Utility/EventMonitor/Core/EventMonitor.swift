@@ -101,19 +101,7 @@ final class EventMonitor: NSObject {
         await selectionWorkflow.getSelectedText()
     }
 
-    func addLocalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
-        eventMonitorEngine.monitor(type: .local, mask: mask, handler: handler)
-    }
-
-    func addGlobalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
-        eventMonitorEngine.monitor(type: .global, mask: mask, handler: handler)
-    }
-
-    func bothMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
-        eventMonitorEngine.monitor(type: .both, mask: mask, handler: handler)
-    }
-
-    func addBothMonitor(_ isAutoSelectTextEnabled: Bool) {
+    func addGlobalMonitor(_ isAutoSelectTextEnabled: Bool) {
         let eventMask: NSEvent.EventTypeMask = [
             .leftMouseDown,
             .leftMouseUp,
@@ -127,29 +115,14 @@ final class EventMonitor: NSObject {
         let maskWhenAutoSelectTextEnabled: NSEvent.EventTypeMask = [.scrollWheel, .mouseMoved]
         let mask = isAutoSelectTextEnabled ? eventMask.union(maskWhenAutoSelectTextEnabled) : eventMask
 
-        bothMonitorWithEvent(mask) { [weak self] event in
-            self?.handleMonitorEvent(event)
+        eventMonitorEngine.monitor(type: .global, mask: mask) {
+            [weak self] event in self?.handleMonitorEvent(event)
         }
-    }
-
-    func start() {
-        eventMonitorEngine.start()
-    }
-
-    func stop() {
-        eventMonitorEngine.stop()
-        eventTapMonitor.stop()
     }
 
     /// Monitor local and global events.
     func startMonitor() {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            if event.keyCode == kVK_Escape {
-                logInfo("escape")
-            }
-            return event
-        }
-        addBothMonitor(MyConfiguration.shared.autoSelectText)
+        addGlobalMonitor(MyConfiguration.shared.autoSelectText)
     }
 
     func isAccessibilityEnabled() -> Bool {
@@ -159,20 +132,8 @@ final class EventMonitor: NSObject {
         return isEnabled
     }
 
-    func authorize() {
-        logInfo("AuthorizeButton clicked")
-        let urlString = "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
-        if let url = URL(string: urlString) {
-            NSWorkspace.shared.open(url)
-        }
-    }
-
     func updateSelectedTextEditableState() {
         isSelectedTextEditable = systemUtility.isFocusedTextField()
-    }
-
-    func frameFromStartPoint(_ startPoint: CGPoint, endPoint: CGPoint) -> CGRect {
-        RectHelper.frame(from: startPoint, to: endPoint, expandedRadius: Constants.expandedRadius)
     }
 
     // MARK: Private
@@ -196,10 +157,6 @@ final class EventMonitor: NSObject {
     private var shouldBypassDismissIgnore = false
 
     private func configureDependencies() {
-        eventMonitorEngine.eventHandler = { [weak self] event in
-            self?.handleMonitorEvent(event)
-        }
-
         eventTapMonitor.keyDownHandler = { [weak self] keyCode, flags in
             self?.handleEventTapKeyDown(keyCode: keyCode, flags: flags)
         }
