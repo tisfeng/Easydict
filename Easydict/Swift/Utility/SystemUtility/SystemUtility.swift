@@ -131,10 +131,12 @@ class SystemUtility: NSObject {
 
     func focusedElementInfo(enableSelectAll: Bool = false) async -> FocusedElementInfo {
         var elementInfo = await fetchFocusedElementInfo()
-
         logInfo("Focused Element Info: \(elementInfo)")
 
-        if enableSelectAll {
+        let selectedText = elementInfo.selectedText ?? ""
+
+        // Only auto-select all text option when enabled and no selected text
+        if enableSelectAll, selectedText.isEmpty {
             elementInfo = await processAutoAllTextSelection(for: elementInfo)
             logInfo("Element Info after Auto-Selection: \(elementInfo)")
         }
