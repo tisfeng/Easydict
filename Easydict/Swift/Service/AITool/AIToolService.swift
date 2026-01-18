@@ -29,6 +29,10 @@ class AIToolService: BuiltInAIService {
         )
     }
 
+    public override func needPrivateAPIKey() -> Bool {
+        false
+    }
+
     // MARK: Internal
 
     override var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {

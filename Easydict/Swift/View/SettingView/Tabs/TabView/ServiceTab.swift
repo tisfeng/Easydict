@@ -181,11 +181,11 @@ private struct ServiceItems: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
     private var freeServices: [QueryService] {
-        viewModel.services.filter { !requiresAPIKey($0) }
+        viewModel.services.filter { !$0.needPrivateAPIKey() }
     }
 
     private var proServices: [QueryService] {
-        viewModel.services.filter { requiresAPIKey($0) }
+        viewModel.services.filter { $0.needPrivateAPIKey() }
     }
 
     private var freeServicesWithID: [(QueryService, String)] {
@@ -198,36 +198,6 @@ private struct ServiceItems: View {
         proServices.map { service in
             (service, service.serviceTypeWithUniqueIdentifier())
         }
-    }
-
-    /// Determines if a service requires an API key to use.
-    private func requiresAPIKey(_ service: QueryService) -> Bool {
-        // BuiltInAI uses built-in API keys, so it's free for users
-        if service.serviceType() == .builtInAI {
-            return false
-        }
-
-        // StreamService (AI services) generally require API keys
-        if service.isKind(of: StreamService.self) {
-            return true
-        }
-
-        // Check if service explicitly requires private API key
-        if service.needPrivateAPIKey() {
-            return true
-        }
-
-        // Check if service has API key configuration by checking configuration view type
-        if let configView = service.configurationListItems() as? (any View) {
-            let typeName = String(describing: type(of: configView))
-            // Services with secret sections or stream configuration likely need API keys
-            if typeName.contains("StreamConfigurationView") ||
-                typeName.contains("ServiceConfigurationSecretSectionView") {
-                return true
-            }
-        }
-
-        return false
     }
 
     /// Handles move operation within a specific section.

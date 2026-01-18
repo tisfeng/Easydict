@@ -33,6 +33,10 @@ class BuiltInAIService: BaseOpenAIService {
         .builtInAI
     }
 
+    public override func needPrivateAPIKey() -> Bool {
+        false
+    }
+
     public override func configurationListItems() -> Any {
         StreamConfigurationView(
             service: self,

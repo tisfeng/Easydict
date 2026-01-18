@@ -58,6 +58,10 @@ class AppleDictionary: QueryService, @unchecked Sendable {
         .appleDictionary
     }
 
+    override func needPrivateAPIKey() -> Bool {
+        false
+    }
+
     override func supportedQueryType() -> EZQueryTextType {
         [.dictionary, .sentence]
     }

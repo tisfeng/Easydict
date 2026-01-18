@@ -155,6 +155,10 @@ public class StreamService: QueryService {
         }
     }
 
+    public override func needPrivateAPIKey() -> Bool {
+        requireAPIKey
+    }
+
     // MARK: Internal
 
     /// A lock for synchronizing access to the 'result' object

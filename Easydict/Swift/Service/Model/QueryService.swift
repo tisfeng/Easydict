@@ -408,7 +408,7 @@ open class QueryService: NSObject {
     }
 
     open func needPrivateAPIKey() -> Bool {
-        false
+        true
     }
 
     open func totalFreeQueryCharacterCount() -> Int {

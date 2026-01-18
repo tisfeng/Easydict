@@ -48,6 +48,10 @@ class YoudaoService: QueryService {
         .youdao
     }
 
+    override func needPrivateAPIKey() -> Bool {
+        false
+    }
+
     override func link() -> String {
         kYoudaoTranslateURL
     }

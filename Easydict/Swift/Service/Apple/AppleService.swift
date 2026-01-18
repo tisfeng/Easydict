@@ -18,14 +18,16 @@ import Vision
 public class AppleService: QueryService {
     // MARK: Public
 
-    @objc
     public override func serviceType() -> ServiceType {
         .apple
     }
 
-    @objc
     public override func name() -> String {
         NSLocalizedString("apple_translate", comment: "")
+    }
+
+    public override func needPrivateAPIKey() -> Bool {
+        false
     }
 
     /// Supported languages dictionary
