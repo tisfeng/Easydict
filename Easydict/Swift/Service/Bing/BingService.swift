@@ -45,8 +45,8 @@ class BingService: QueryService {
         NSLocalizedString("bing_translate", comment: "")
     }
 
-    override func needPrivateAPIKey() -> Bool {
-        false
+    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .none
     }
 
     // MARK: - Query Text Type

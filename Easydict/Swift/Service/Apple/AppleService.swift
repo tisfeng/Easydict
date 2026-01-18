@@ -26,8 +26,8 @@ public class AppleService: QueryService {
         NSLocalizedString("apple_translate", comment: "")
     }
 
-    public override func needPrivateAPIKey() -> Bool {
-        false
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .none
     }
 
     /// Supported languages dictionary

@@ -31,8 +31,8 @@ public final class TencentService: QueryService {
         TencentTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
-    public override func needPrivateAPIKey() -> Bool {
-        true
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .userProvided
     }
 
     public override func hasPrivateAPIKey() -> Bool {

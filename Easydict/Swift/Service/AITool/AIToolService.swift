@@ -29,8 +29,8 @@ class AIToolService: BuiltInAIService {
         )
     }
 
-    public override func needPrivateAPIKey() -> Bool {
-        false
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .builtIn
     }
 
     // MARK: Internal

@@ -155,8 +155,8 @@ public class StreamService: QueryService {
         }
     }
 
-    public override func needPrivateAPIKey() -> Bool {
-        requireAPIKey
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .userProvided
     }
 
     // MARK: Internal
@@ -251,10 +251,6 @@ public class StreamService: QueryService {
 
     var apiKey: String {
         Defaults[apiKeyKey]
-    }
-
-    var requireAPIKey: Bool {
-        true
     }
 
     var apiKeyKey: Defaults.Key<String> {

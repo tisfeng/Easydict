@@ -9,6 +9,28 @@
 import AppKit
 import Foundation
 
+// MARK: - ServiceAPIKeyRequirement
+
+public enum ServiceAPIKeyRequirement {
+    case none
+    case builtIn
+    case userProvided
+
+    // MARK: Internal
+
+    /// Whether this service requires an API key for requests.
+    var requiresKeyForRequest: Bool {
+        self != .none
+    }
+
+    /// Whether this service needs the user to provide an API key.
+    var needsUserProvidedKey: Bool {
+        self == .userProvided
+    }
+}
+
+// MARK: - QueryService
+
 @objc(EZQueryService)
 @objcMembers
 open class QueryService: NSObject {
@@ -407,8 +429,8 @@ open class QueryService: NSObject {
         false
     }
 
-    open func needPrivateAPIKey() -> Bool {
-        true
+    open func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .userProvided
     }
 
     open func totalFreeQueryCharacterCount() -> Int {
@@ -595,7 +617,7 @@ open class QueryService: NSObject {
         _ = toLanguage
 
         // Free quota check for services requiring private API key.
-        if needPrivateAPIKey(),
+        if apiKeyRequirement().needsUserProvidedKey,
            !hasPrivateAPIKey(),
            !LocalStorage.shared().hasFreeQuotaLeft(self) {
             let error = QueryError.error(

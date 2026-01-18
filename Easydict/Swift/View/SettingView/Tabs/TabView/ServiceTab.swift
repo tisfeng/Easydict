@@ -181,11 +181,11 @@ private struct ServiceItems: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
     private var freeServices: [QueryService] {
-        viewModel.services.filter { !$0.needPrivateAPIKey() }
+        viewModel.services.filter { !$0.apiKeyRequirement().needsUserProvidedKey }
     }
 
     private var proServices: [QueryService] {
-        viewModel.services.filter { $0.needPrivateAPIKey() }
+        viewModel.services.filter { $0.apiKeyRequirement().needsUserProvidedKey }
     }
 
     private var freeServicesWithID: [(QueryService, String)] {
