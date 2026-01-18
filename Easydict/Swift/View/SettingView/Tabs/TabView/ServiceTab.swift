@@ -236,13 +236,11 @@ private struct ServiceItems: View {
         var sectionToFullIndexMap: [Int: Int] = [:]
         var sectionIndex = 0
 
-        for (fullIndex, service) in viewModel.services.enumerated() {
-            if sectionServices
-                .contains(where: { $0.serviceTypeWithUniqueIdentifier() == service.serviceTypeWithUniqueIdentifier()
-                }) {
-                sectionToFullIndexMap[sectionIndex] = fullIndex
-                sectionIndex += 1
-            }
+        for (fullIndex, service) in viewModel.services.enumerated() where sectionServices
+            .contains(where: { $0.serviceTypeWithUniqueIdentifier() == service.serviceTypeWithUniqueIdentifier()
+            }) {
+            sectionToFullIndexMap[sectionIndex] = fullIndex
+            sectionIndex += 1
         }
 
         // Convert section source indices to full array indices
