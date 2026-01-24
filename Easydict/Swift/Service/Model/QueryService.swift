@@ -15,6 +15,7 @@ open class QueryService: NSObject {
     // MARK: Lifecycle
 
     required public override init() {
+        self.queryModel = QueryModel()
         super.init()
     }
 
@@ -28,9 +29,8 @@ open class QueryService: NSObject {
 
     open var autoCopyTranslatedTextBlock: ((QueryResult, Error?) -> ())?
 
-    open var queryModel: QueryModel! {
+    open var queryModel: QueryModel {
         didSet {
-            guard let queryModel else { return }
             result?.queryModel = queryModel
         }
     }
@@ -38,10 +38,6 @@ open class QueryService: NSObject {
     open var result: QueryResult! {
         didSet {
             guard let result else { return }
-
-            if queryModel == nil {
-                queryModel = QueryModel()
-            }
 
             result.service = self
             result.serviceTypeWithUniqueIdentifier = serviceTypeWithUniqueIdentifier()
@@ -70,9 +66,8 @@ open class QueryService: NSObject {
             }
 
             if MyConfiguration.shared.intelligentQueryModeForWindowType(windowType) {
-                guard let model = queryModel else { return false }
-                let queryType = model.queryText.queryType(
-                    withLanguage: model.queryFromLanguage,
+                let queryType = queryModel.queryText.queryType(
+                    withLanguage: queryModel.queryFromLanguage,
                     maxWordCount: 1
                 )
 
@@ -174,8 +169,8 @@ open class QueryService: NSObject {
             ActionType.invokeQuery,
         ]
 
-        if let actionType = queryModel?.actionType,
-           enabledReplaceTypes.contains(actionType) {
+        let actionType = queryModel.actionType
+        if enabledReplaceTypes.contains(actionType) {
             currentResult.showReplaceButton = EventMonitor.shared.isSelectedTextEditable
         } else {
             currentResult.showReplaceButton = false
@@ -546,12 +541,6 @@ open class QueryService: NSObject {
         to: Language
     )
         -> (handled: Bool, result: QueryResult, error: Error?) {
-        if queryModel == nil {
-            let model = QueryModel()
-            model.userSourceLanguage = from
-            model.userTargetLanguage = to
-            queryModel = model
-        }
         queryModel.inputText = text
 
         if result == nil {

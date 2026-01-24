@@ -70,7 +70,7 @@ final class AnalyticsService: NSObject {
     /// Logs query service usage for analytics.
     @objc(logQueryService:)
     static func logQueryService(_ service: QueryService) {
-        guard let model = service.queryModel else { return }
+        let model = service.queryModel
 
         let textLengthRange = textLengthRange(model.queryText)
         let parameters: [String: Any] = [
