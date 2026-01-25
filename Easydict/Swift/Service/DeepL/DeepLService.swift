@@ -58,6 +58,10 @@ class DeepLService: QueryService {
         kDeepLTranslateURL
     }
 
+    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .none
+    }
+
     // MARK: - Word Link
 
     /// https://www.deepl.com/translator#en/zh/good

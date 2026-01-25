@@ -50,8 +50,8 @@ class OllamaService: BaseOpenAIService {
         [supportedModelsKey]
     }
 
-    override var requireAPIKey: Bool {
-        false
+    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .none
     }
 
     override func configurationListItems() -> Any {

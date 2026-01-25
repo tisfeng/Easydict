@@ -49,8 +49,8 @@ class NiuTransService: QueryService {
 
     // MARK: - API Key
 
-    override func needPrivateAPIKey() -> Bool {
-        true
+    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .userProvided
     }
 
     override func hasPrivateAPIKey() -> Bool {

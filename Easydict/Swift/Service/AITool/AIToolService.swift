@@ -29,6 +29,10 @@ class AIToolService: BuiltInAIService {
         )
     }
 
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .builtIn
+    }
+
     // MARK: Internal
 
     override var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {

@@ -155,6 +155,10 @@ public class StreamService: QueryService {
         }
     }
 
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .userProvided
+    }
+
     // MARK: Internal
 
     /// A lock for synchronizing access to the 'result' object
@@ -247,10 +251,6 @@ public class StreamService: QueryService {
 
     var apiKey: String {
         Defaults[apiKeyKey]
-    }
-
-    var requireAPIKey: Bool {
-        true
     }
 
     var apiKeyKey: Defaults.Key<String> {

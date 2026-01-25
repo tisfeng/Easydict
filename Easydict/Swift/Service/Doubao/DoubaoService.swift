@@ -43,8 +43,8 @@ public final class DoubaoService: StreamService {
         DoubaoTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
-    public override func needPrivateAPIKey() -> Bool {
-        true
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .userProvided
     }
 
     public override func hasPrivateAPIKey() -> Bool {

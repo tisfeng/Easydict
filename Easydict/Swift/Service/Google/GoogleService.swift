@@ -113,6 +113,10 @@ class GoogleService: QueryService {
         .google
     }
 
+    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .none
+    }
+
     override func supportedQueryType() -> EZQueryTextType {
         [.dictionary, .sentence, .translation]
     }
