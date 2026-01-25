@@ -199,7 +199,7 @@ extension GoogleService {
             progress: nil,
             success: { [weak self] _, responseObject in
                 guard let self = self else { return }
-                if queryModel?.isServiceStopped(serviceType().rawValue) == true {
+                if queryModel.isServiceStopped(serviceType().rawValue) == true {
                     return
                 }
 
@@ -217,7 +217,7 @@ extension GoogleService {
             }
         )
 
-        queryModel?.setStop(
+        queryModel.setStop(
             {
                 task?.cancel()
             }, serviceType: serviceType().rawValue
@@ -342,7 +342,7 @@ extension GoogleService {
             progress: nil,
             success: { [weak self] _, responseObject in
                 guard let self = self else { return }
-                if queryModel?.isServiceStopped(serviceType().rawValue) == true {
+                if queryModel.isServiceStopped(serviceType().rawValue) == true {
                     return
                 }
 
@@ -360,7 +360,7 @@ extension GoogleService {
             }
         )
 
-        queryModel?.setStop(
+        queryModel.setStop(
             {
                 task?.cancel()
             }, serviceType: serviceType().rawValue

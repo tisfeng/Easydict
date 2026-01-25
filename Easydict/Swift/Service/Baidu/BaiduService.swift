@@ -292,7 +292,7 @@ final class BaiduService: QueryService {
     // MARK: - Private properties
 
     private lazy var apiTranslate: BaiduApiTranslate = {
-        BaiduApiTranslate(queryModel: queryModel ?? QueryModel())
+        BaiduApiTranslate(queryModel: queryModel)
     }()
 
     /// Requests detected language for the given text.
