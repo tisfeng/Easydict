@@ -6,8 +6,10 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import AppKit
 import Defaults
 import SwiftUI
+import UniformTypeIdentifiers
 
 // MARK: - FavoritesTab
 
@@ -32,6 +34,19 @@ struct FavoritesTab: View {
                 Text(headerTitleKey)
                     .font(.headline)
                 Spacer()
+                Menu {
+                    Button("favorites.export") {
+                        exportRecords(for: .favorites)
+                    }
+                    .disabled(favorites.isEmpty)
+                    Button("history.export") {
+                        exportRecords(for: .history)
+                    }
+                    .disabled(history.isEmpty)
+                } label: {
+                    Label("common.export", systemImage: "square.and.arrow.up")
+                        .labelStyle(.iconOnly)
+                }
             }
             .padding(.horizontal)
 
@@ -79,6 +94,20 @@ struct FavoritesTab: View {
 
     // MARK: Private
 
+    /// Formats export file names.
+    private static let exportFileNameFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH-mm-ss"
+        return formatter
+    }()
+
+    /// Formats export timestamps in a stable format.
+    private static let exportTimestampFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+
     @State private var selectedSection: FavoritesSection = .favorites
     @State private var favorites: [QueryRecord] = []
     @State private var history: [QueryRecord] = []
@@ -113,6 +142,61 @@ struct FavoritesTab: View {
     private func loadRecords() {
         favorites = QueryRecordManager.shared.getAllRecords(for: .favorites)
         history = QueryRecordManager.shared.getAllRecords(for: .history)
+    }
+
+    /// Exports the records for the given type to a CSV file.
+    private func exportRecords(for type: QueryRecordManager.RecordType) {
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [UTType.commaSeparatedText]
+        savePanel.canCreateDirectories = true
+        savePanel.isExtensionHidden = false
+        savePanel.nameFieldStringValue = suggestedExportFileName(for: type)
+        savePanel.begin { response in
+            guard response == .OK, let url = savePanel.url else {
+                return
+            }
+            let records = QueryRecordManager.shared.getAllRecords(for: type)
+            let csv = makeCSV(for: records)
+            do {
+                try csv.write(to: url, atomically: true, encoding: .utf8)
+                NSWorkspace.shared.selectFile(url.path, inFileViewerRootedAtPath: "")
+            } catch {
+                logError("Export records failed: \(error)")
+            }
+        }
+    }
+
+    /// Builds a suggested export filename with a timestamp.
+    private func suggestedExportFileName(for type: QueryRecordManager.RecordType) -> String {
+        let typeName: String = type == .favorites ? "Favorites" : "History"
+        let dateString = Self.exportFileNameFormatter.string(from: Date())
+        return "Easydict \(typeName) \(dateString).csv"
+    }
+
+    /// Converts records to a CSV string.
+    private func makeCSV(for records: [QueryRecord]) -> String {
+        var rows = ["queryText,queryFromLanguage,queryToLanguage,timestamp"]
+        rows.reserveCapacity(records.count + 1)
+        for record in records {
+            let timestamp = Self.exportTimestampFormatter.string(from: record.timestamp)
+            let values = [
+                record.queryText,
+                record.queryFromLanguage.localizedName,
+                record.queryToLanguage.localizedName,
+                timestamp,
+            ]
+            rows.append(values.map(csvEscaped).joined(separator: ","))
+        }
+        return rows.joined(separator: "\n")
+    }
+
+    /// Escapes a value for CSV output.
+    private func csvEscaped(_ value: String) -> String {
+        let escaped = value.replacingOccurrences(of: "\"", with: "\"\"")
+        if escaped.contains(",") || escaped.contains("\n") || escaped.contains("\r") {
+            return "\"\(escaped)\""
+        }
+        return escaped
     }
 }
 
