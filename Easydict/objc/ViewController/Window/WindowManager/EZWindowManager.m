@@ -187,10 +187,12 @@ static EZWindowManager *_instance;
 }
 
 - (void)popButtonWindowClicked {
+    // Close pop button window first, and show floating window.
+    [self.popButtonWindow close];
+    
     EZWindowType windowType = MyConfiguration.shared.mouseSelectTranslateWindowType;
     self.actionType = EZActionTypeAutoSelectQuery;
     [self showFloatingWindowType:windowType queryText:self.selectedText];
-    [self->_popButtonWindow close];
 }
 
 #pragma mark - Getter && Setter

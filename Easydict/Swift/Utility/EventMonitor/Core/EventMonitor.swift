@@ -298,6 +298,11 @@ final class EventMonitor: NSObject {
         leftMouseDownBlock?(mouseLocation)
         dismissWindowsIfMouseLocationOutsideFloatingWindow()
 
+        if popButtonController.isPopButtonVisible, isMouseInPopButtonWindow() {
+            // Avoid dismissing the pop button before its click action fires.
+            return
+        }
+
         frontmostApplication = appContextProvider.frontmostApplication
 
         let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
@@ -334,6 +339,11 @@ final class EventMonitor: NSObject {
     private func checkIfMouseLocation(in window: NSWindow?) -> Bool {
         guard let window else { return false }
         return window.frame.contains(NSEvent.mouseLocation)
+    }
+
+    private func isMouseInPopButtonWindow() -> Bool {
+        let popButtonWindow = EZWindowManager.shared().popButtonWindow
+        return popButtonWindow.frame.contains(NSEvent.mouseLocation)
     }
 
     private func autoGetSelectedText() {
