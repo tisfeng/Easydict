@@ -50,14 +50,16 @@ struct FavoritesTab: View {
                 // List of records
                 List {
                     ForEach(currentRecords) { record in
-                        QueryRecordRow(record: record)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    removeRecord(record)
-                                } label: {
-                                    Label("common.delete", systemImage: "trash")
-                                }
+                        QueryRecordRow(record: record, onDelete: {
+                            removeRecord(record)
+                        })
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                removeRecord(record)
+                            } label: {
+                                Label("common.delete", systemImage: "trash")
                             }
+                        }
                     }
                 }
             }
@@ -128,35 +130,42 @@ private enum FavoritesSection: String, CaseIterable, Identifiable {
 
 // MARK: - QueryRecordRow
 
-/// Displays a query record and triggers a new query on tap.
+/// Displays a query record with quick actions.
 struct QueryRecordRow: View {
     // MARK: Internal
 
     let record: QueryRecord
+    let onDelete: () -> ()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(record.queryText)
-                .font(.body)
-                .lineLimit(2)
-            HStack {
-                Label(
-                    "\(record.queryFromLanguage.localizedName) → \(record.queryToLanguage.localizedName)",
-                    systemImage: "arrow.left.arrow.right"
-                )
-                .font(.caption)
-                .foregroundColor(.secondary)
-                Spacer()
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(record.queryText)
+                    .font(.body)
+                    .lineLimit(1)
                 Text(Self.timestampFormatter.string(from: record.timestamp))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
+            Spacer()
+            HStack(spacing: 12) {
+                Button {
+                    performQuery()
+                } label: {
+                    Label("common.query", systemImage: "magnifyingglass")
+                        .labelStyle(.titleAndIcon)
+                }
+
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Label("common.delete", systemImage: "trash")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.borderless)
+            }
         }
         .padding(.vertical, 4)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            performQuery()
-        }
     }
 
     // MARK: Private
