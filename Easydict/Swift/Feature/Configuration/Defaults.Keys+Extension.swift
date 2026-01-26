@@ -194,6 +194,11 @@ extension Defaults.Keys {
     // Key for storing the selected max window height percentage, default is 100%.
     // Storing as Int (e.g., 50, 80, 100).
     static let maxWindowHeightPercentage = Key<Int>("maxWindowHeightPercentage", default: 100)
+
+    // MARK: - Favorites and History
+
+    static let favorites = Key<[QueryRecord]>("EZConfiguration_kFavorites", default: [])
+    static let queryHistory = Key<[QueryRecord]>("EZConfiguration_kQueryHistory", default: [])
 }
 
 extension Defaults.Keys {

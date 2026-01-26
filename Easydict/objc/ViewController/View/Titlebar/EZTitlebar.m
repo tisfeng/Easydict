@@ -76,7 +76,8 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [_stackView removeFromSuperview];
     _stackView = nil;
     _quickActionButton = nil;
-    
+    _quickActionMenu = nil;
+
     [self updatePinButton];
     
     [self addSubview:self.pinButton];
@@ -194,6 +195,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         NSArray *menuSections = @[
             @[
                 @{
+                    @"title" : @"add_to_favorites",
+                    @"action" : NSStringFromSelector(@selector(addFavoriteIfNeeded))
+                },
+                @{
                     @"title" : @"replace_newline_with_space",
                     @"action" : NSStringFromSelector(@selector(replaceNewlineWithSpace))
                 },
@@ -224,7 +229,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
                 [menu addItem:menuItem];
             }
             // Add separatorItem
-            if (section != menuSections.lastObject) {
+            if (section != menuSections.lastObject && section.count > 0) {
                 [menu addItem:[NSMenuItem separatorItem]];
             }
         }
@@ -420,6 +425,27 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         button.image = image;
     }];
 }
+
+- (void)addFavoriteIfNeeded {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    EZBaseQueryViewController *viewController = window.queryViewController;
+    EZQueryModel *queryModel = viewController.queryModel;
+    
+    NSString *queryText = queryModel.queryText;
+    if (queryText.length == 0) {
+        return;
+    }
+    
+    BOOL isFavorited = [QueryRecordManager.shared containsRecordWithQueryText:queryText
+                                                                            in:RecordTypeFavorites];
+    if (!isFavorited) {
+        [QueryRecordManager.shared addRecordWithQueryText:queryText
+                                             fromLanguage:queryModel.queryFromLanguage
+                                               toLanguage:queryModel.queryTargetLanguage
+                                                       to:RecordTypeFavorites];
+    }
+}
+
 
 /// Check if installed app according to bundle id array
 - (BOOL)checkInstalledApp:(NSArray<NSString *> *)bundleIds {
