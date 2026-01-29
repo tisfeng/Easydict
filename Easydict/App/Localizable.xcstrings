@@ -45,6 +45,9 @@
         }
       }
     },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
     "add_to_favorites" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6382,6 +6385,90 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選取文本後自動顯示查詢圖示"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_show_query_icon.condition.desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the query icon only when the selected text language differs and the character count reaches this value."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the query icon only when the selected text language differs and the character count reaches this value."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅当选中文本语言≠指定语言 且 字符数≥该值时显示查询图标。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅當選取文本語言≠指定語言 且 字元數≥該值時顯示查詢圖示。"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_show_query_icon.condition.language" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show only when selected text language is not"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show only when selected text language is not"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅当选中文本语言不是"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅當選取文本語言不是"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_show_query_icon.condition.min_length" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum character length"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum character length"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最小字符长度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最小字元長度"
           }
         }
       }

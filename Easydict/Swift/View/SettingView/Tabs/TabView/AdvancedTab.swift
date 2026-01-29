@@ -182,13 +182,54 @@ struct AdvancedTab: View {
 
             // Mouse query icon
             Section {
-                Toggle(isOn: $autoSelectText) {
+                let minLengthBinding = Binding<Double>(
+                    get: {
+                        Double(min(50, max(0, autoShowQueryIconMinTextLength)))
+                    },
+                    set: { newValue in
+                        autoShowQueryIconMinTextLength = min(50, max(0, Int(newValue)))
+                    }
+                )
+
+                Toggle(isOn: $autoShowQueryIcon) {
                     AdvancedTabItemView(
                         color: .blue,
                         icon: .cursorarrowRays,
                         labelText: "setting.advance.auto_show_query_icon"
                     )
                 }
+
+                Group {
+                    LabeledContent {
+                        Picker("", selection: $autoShowQueryIconExcludedLanguage) {
+                            ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
+                                Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
+                                    .tag(option)
+                            }
+                        }
+                        .labelsHidden()
+                    } label: {
+                        Text("setting.advance.auto_show_query_icon.condition.language")
+                    }
+
+                    LabeledContent {
+                        HStack(spacing: 8) {
+                            Slider(value: minLengthBinding, in: 0 ... 50, step: 10)
+                            Text("\(autoShowQueryIconMinTextLength)")
+                                .frame(width: 32, alignment: .trailing)
+                                .monospacedDigit()
+                        }
+                    } label: {
+                        Text("setting.advance.auto_show_query_icon.condition.min_length")
+                    }
+
+                    Text("setting.advance.auto_show_query_icon.condition.desc")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.leading, 28)
+                .disabled(!autoShowQueryIcon)
+                .opacity(autoShowQueryIcon ? 1 : 0.6)
 
                 Toggle(isOn: $clickQuery) {
                     AdvancedTabItemView(
@@ -397,7 +438,9 @@ struct AdvancedTab: View {
     @Default(.forceGetSelectedTextType) private var forceGetSelectedTextType
 
     // Mouse select query
-    @Default(.autoSelectText) private var autoSelectText
+    @Default(.autoShowQueryIcon) private var autoShowQueryIcon
+    @Default(.autoShowQueryIconExcludedLanguage) private var autoShowQueryIconExcludedLanguage
+    @Default(.autoShowQueryIconMinTextLength) private var autoShowQueryIconMinTextLength
     @Default(.clickQuery) private var clickQuery
     @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
 
