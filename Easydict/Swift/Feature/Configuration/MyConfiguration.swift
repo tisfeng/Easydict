@@ -54,7 +54,9 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.queryToLanguage) var toLanguage: Language
     @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
 
-    @DefaultsWrapper(.autoSelectText) var autoSelectText: Bool
+    @DefaultsWrapper(.autoShowQueryIcon) var autoSelectText: Bool
+    @DefaultsWrapper(.autoShowQueryIconExcludedLanguage) var autoShowQueryIconExcludedLanguage: Language
+    @DefaultsWrapper(.autoShowQueryIconMinTextLength) var autoShowQueryIconMinTextLength: Int
     @DefaultsWrapper(.enableForceGetSelectedText) var enableForceGetSelectedText: Bool
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
     @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
@@ -179,10 +181,24 @@ class MyConfiguration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoSelectText, options: [])
+        Defaults.publisher(.autoShowQueryIcon, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetAutoSelectText()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoShowQueryIconExcludedLanguage, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoShowQueryIconExcludedLanguage()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.autoShowQueryIconMinTextLength, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetAutoShowQueryIconMinTextLength()
             }
             .store(in: &cancellables)
 
@@ -417,6 +433,14 @@ extension MyConfiguration {
     fileprivate func didSetAutoSelectText() {
         EventMonitor.shared.addBothMonitor(autoSelectText)
         logSettings(["auto_select_sext": autoSelectText])
+    }
+
+    fileprivate func didSetAutoShowQueryIconExcludedLanguage() {
+        logSettings(["auto_show_query_icon_excluded_language": autoShowQueryIconExcludedLanguage])
+    }
+
+    fileprivate func didSetAutoShowQueryIconMinTextLength() {
+        logSettings(["auto_show_query_icon_min_text_length": autoShowQueryIconMinTextLength])
     }
 
     fileprivate func didSetForceAutoGetSelectedText() {
