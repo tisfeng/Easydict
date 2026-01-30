@@ -74,10 +74,10 @@ struct ServiceTab: View {
 
     // MARK: Private
 
+    @StateObject private var viewModel: ServiceTabViewModel = .init()
+
     private let serviceHasUpdatedNotification = NotificationCenter.default
         .publisher(for: .serviceHasUpdated)
-
-    @StateObject private var viewModel: ServiceTabViewModel = .init()
 }
 
 // MARK: - ServiceTabViewModel

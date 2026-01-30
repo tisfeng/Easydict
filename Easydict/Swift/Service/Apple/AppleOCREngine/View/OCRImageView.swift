@@ -15,6 +15,7 @@ import Vision
 struct OCRImageView: View {
     let image: NSImage
     let bands: [OCRBand]
+
     @Binding var selectedIndex: Int?
 
     var body: some View {
@@ -53,6 +54,7 @@ struct OCRBoundingBoxOverlay: View {
 
     let bands: [OCRBand]
     @Binding var selectedIndex: Int?
+
     let imageSize: CGSize
 
     var body: some View {

@@ -61,11 +61,15 @@ struct MenuItemView: View {
         }
     }
 
+    // MARK: - Menu Items
+
+    @ViewBuilder var inputItem: some View {
+        menuItem(for: .inputTranslate)
+    }
+
     // MARK: Private
 
     @ObservedObject private var store = MenuItemStore()
-
-    @Default(.showOCRMenuItems) private var showOCRMenuItems
 
     @State private var currentVersion =
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -73,6 +77,8 @@ struct MenuItemView: View {
     @State private var latestVersion: String?
 
     @Environment(\.openURL) private var openURL
+
+    @Default(.showOCRMenuItems) private var showOCRMenuItems
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
@@ -82,12 +88,6 @@ struct MenuItemView: View {
         } else {
             return defaultLabel
         }
-    }
-
-    // MARK: - Menu Items
-
-    @ViewBuilder var inputItem: some View {
-        menuItem(for: .inputTranslate)
     }
 
     @ViewBuilder private var screenshotItem: some View {
@@ -204,8 +204,6 @@ struct MenuItemView: View {
             }
         }
     }
-
-    // MARK: - Actions
 
     private func exportLogAction() {
         logInfo("Export Log")

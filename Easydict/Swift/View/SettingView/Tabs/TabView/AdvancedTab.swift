@@ -13,6 +13,11 @@ import SwiftUI
 struct AdvancedTab: View {
     // MARK: Internal
 
+    // Query text processing
+    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
+    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+
     var body: some View {
         Form {
             Section {
@@ -401,11 +406,6 @@ struct AdvancedTab: View {
     @Default(.clickQuery) private var clickQuery
     @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
 
-    // Query text processing
-    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
-    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
-    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
-
     // Windows management
     @Default(.fixedWindowPosition) private var fixedWindowPosition
     @Default(.miniWindowPosition) private var miniWindowPosition
@@ -417,12 +417,12 @@ struct AdvancedTab: View {
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
 
+    @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
+
     /// Returns Color.green if `enableHTTPServer` is true, returns Color.red otherwise.
     private func getHttpIconColor() -> Color {
         enableHTTPServer ? .green : .red
     }
-
-    @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
 }
 
 #Preview {

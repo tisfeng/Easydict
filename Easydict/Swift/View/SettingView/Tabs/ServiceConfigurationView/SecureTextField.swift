@@ -15,6 +15,7 @@ struct SecureTextField: View {
 
     let title: LocalizedStringKey
     let placeholder: LocalizedStringKey
+
     @Binding var text: String
     @State var showText: Bool = false
 

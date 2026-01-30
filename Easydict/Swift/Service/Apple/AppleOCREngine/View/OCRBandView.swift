@@ -16,6 +16,7 @@ struct OCRBandView: View {
     // MARK: Internal
 
     let bands: [OCRBand]
+
     @Binding var selectedIndex: Int?
 
     var body: some View {
