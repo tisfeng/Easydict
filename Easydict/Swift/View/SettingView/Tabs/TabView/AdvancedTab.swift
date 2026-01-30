@@ -18,6 +18,11 @@ struct AdvancedTab: View {
     @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
     @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
 
+    // Query text processing
+    @Default(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
+    @Default(.automaticallyRemoveCodeCommentSymbols) var automaticallyRemoveCodeCommentSymbols: Bool
+    @Default(.automaticWordSegmentation) var automaticWordSegmentation: Bool
+
     var body: some View {
         Form {
             Section {
