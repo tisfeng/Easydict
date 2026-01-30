@@ -89,8 +89,9 @@ struct EasydictApp: App {
     @AppStorage(Defaults.Key<Bool>.hideMenuBarIcon.name)
     private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
 
-    @Default(.selectedMenuBarIcon) private var menuBarIcon
     @StateObject private var languageState = LanguageState()
+
+    @Default(.selectedMenuBarIcon) private var menuBarIcon
 }
 
 extension Bool {

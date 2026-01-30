@@ -58,7 +58,8 @@ final class SelectionWorkflow {
                                 text: text,
                                 selectTextType: .accessibility,
                                 isEditable: editable
-                            ))
+                            )
+                        )
                         return
                     }
                 }

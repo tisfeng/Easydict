@@ -227,6 +227,15 @@ struct GeneralTab: View {
 
     // MARK: Private
 
+    // App setting
+    @EnvironmentObject private var languageState: LanguageState
+    @State private var showRefuseAlert = false
+    @State private var showHideMenuBarIconAlert = false
+
+    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
+
+    @State private var lastestVersion: String?
+
     // Query language
     @Default(.languageDetectOptimize) private var languageDetectOptimize
 
@@ -253,19 +262,10 @@ struct GeneralTab: View {
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
     @Default(.showQuickActionButton) private var showQuickActionButton
 
-    // App setting
-    @EnvironmentObject private var languageState: LanguageState
     @Default(.appearanceType) private var appearanceType
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
-
-    @State private var showRefuseAlert = false
-    @State private var showHideMenuBarIconAlert = false
-
-    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
-
-    @State private var lastestVersion: String?
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -367,10 +367,10 @@ private struct FirstAndSecondLanguageSettingView: View {
         }
     }
 
+    @State private var languageDuplicatedAlert: LanguageDuplicateAlert?
+
     @Default(.firstLanguage) private var firstLanguage
     @Default(.secondLanguage) private var secondLanguage
-
-    @State private var languageDuplicatedAlert: LanguageDuplicateAlert?
 
     private var showLanguageDuplicatedAlert: Binding<Bool> {
         .init {

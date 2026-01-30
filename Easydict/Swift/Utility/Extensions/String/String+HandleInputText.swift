@@ -201,7 +201,8 @@ extension NSString {
         // Determine if language uses spaces between words
         let detectedLanguage = AppleService.shared.detectTextSync(content)
         let isEnglishTypeLanguage = EZLanguageManager.shared().isLanguageWordsNeedSpace(
-            detectedLanguage)
+            detectedLanguage
+        )
         let alphabetCount: CGFloat = isEnglishTypeLanguage ? 15 : 1.5
 
         var modifiedBlockText = ""
