@@ -53,6 +53,12 @@ struct EasydictApp: App {
                             try? openSettings()
                         }
                     }
+                    .onAppear {
+                        // In macOS 15+, when this label appears while hideMenuBar is true,
+                        // it means the system has made the menu bar icon visible
+                        // We need to sync our app state
+                        syncMenuBarVisibilityIfNeeded()
+                    }
             } icon: {
                 Image(menuBarIcon.rawValue)
                     .resizable()
@@ -91,6 +97,21 @@ struct EasydictApp: App {
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
     @StateObject private var languageState = LanguageState()
+    
+    /// Syncs app's menu bar visibility state with macOS system settings (macOS 15+)
+    /// When the label appears but our state thinks it's hidden, it means the system made it visible
+    private func syncMenuBarVisibilityIfNeeded() {
+        guard #available(macOS 15.0, *) else { return }
+        
+        // If our app state says the icon should be hidden, but the label is appearing,
+        // it means macOS system settings have made the icon visible
+        if hideMenuBar {
+            DispatchQueue.main.async {
+                print("[Easydict] System made menu bar icon visible, syncing app state")
+                hideMenuBar = false
+            }
+        }
+    }
 }
 
 extension Bool {
