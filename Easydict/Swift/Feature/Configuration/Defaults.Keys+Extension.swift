@@ -39,7 +39,7 @@ extension Defaults.Keys {
     )
     static let autoShowQueryIconMinTextLength = Key<Int>(
         "EZConfiguration_kAutoShowQueryIconMinTextLengthKey",
-        default: 20
+        default: 0
     )
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
     static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
