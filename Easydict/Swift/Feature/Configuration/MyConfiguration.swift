@@ -59,7 +59,6 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.autoShowQueryIconMinTextLength) var autoShowQueryIconMinTextLength: Int
     @DefaultsWrapper(.enableForceGetSelectedText) var enableForceGetSelectedText: Bool
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
-    @DefaultsWrapper(.adjustPopButtonOrigin) var adjustPopButtomOrigin: Bool
 
     @DefaultsWrapper(.mouseSelectTranslateWindowType) var mouseSelectTranslateWindowType:
         EZWindowType
@@ -349,13 +348,6 @@ class MyConfiguration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.adjustPopButtonOrigin, options: [])
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.didSetAdjustPopButtomOrigin()
-            }
-            .store(in: &cancellables)
-
         Defaults.publisher(.allowCrashLog, options: [.initial])
             .removeDuplicates()
             .sink { [weak self] _ in
@@ -543,10 +535,6 @@ extension MyConfiguration {
 
     fileprivate func didSetShortcutSelectTranslateWindowType() {
         logSettings(["show_shortcut_window_type": shortcutSelectTranslateWindowType])
-    }
-
-    fileprivate func didSetAdjustPopButtomOrigin() {
-        logSettings(["adjust_pop_buttom_origin": adjustPopButtomOrigin])
     }
 
     fileprivate func didSetAllowCrashLog() {
