@@ -88,8 +88,8 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle("auto_copy_ocr_text", isOn: $autoCopyOCRText)
                 Toggle("auto_copy_selected_text", isOn: $autoCopySelectedText)
+                Toggle("auto_copy_ocr_text", isOn: $autoCopyOCRText)
                 Toggle("auto_copy_first_translated_text", isOn: $autoCopyFirstTranslatedText)
             } header: {
                 Text("setting.general.auto_copy.header")

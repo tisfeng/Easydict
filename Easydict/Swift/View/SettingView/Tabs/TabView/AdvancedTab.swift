@@ -92,99 +92,6 @@ struct AdvancedTab: View {
                 Text("setting.advance.header.general_settings")
             }
 
-            // Force get selected text and replace text
-            Section {
-                Toggle(isOn: $enableForceGetSelectedText) {
-                    AdvancedTabItemView(
-                        color: .blue,
-                        icon: .characterCursorIbeam,
-                        labelText: "setting.advance.enable_force_get_selected_text",
-                        subtitleText: "setting.advance.enable_force_get_selected_text_desc"
-                    )
-                }
-                Picker(
-                    selection: $forceGetSelectedTextType,
-                    label: AdvancedTabItemView(
-                        color: .green,
-                        icon: .highlighter,
-                        labelText: "setting.advance.force_get_selected_text_type"
-                    )
-                ) {
-                    ForEach(ForceGetSelectedTextType.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
-
-                Toggle(isOn: $preferAppleScriptAPI) {
-                    AdvancedTabItemView(
-                        color: .orange,
-                        icon: .applescript,
-                        labelText: "setting.advance.prefer_applescript_api",
-                        subtitleText: "setting.advance.prefer_applescript_api_desc"
-                    )
-                }
-                Toggle(isOn: $enableCompatibilityReplace) {
-                    AdvancedTabItemView(
-                        color: .purple,
-                        icon: .arrowForwardSquare,
-                        labelText: "setting.advance.enable_compatibility_replace",
-                        subtitleText: "setting.advance.enable_compatibility_replace_desc"
-                    )
-                }
-                Toggle(isOn: $autoSelectAllTextFieldText) {
-                    AdvancedTabItemView(
-                        color: .red,
-                        icon: .checkmarkSquare,
-                        labelText: "setting.advance.auto_select_all_text_field_text",
-                        subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
-                    )
-                }
-
-            } header: {
-                Text("setting.advance.header.text_selection_and_replacement")
-            }
-
-            // OCR settings section
-            Section {
-                Toggle(isOn: $enableYoudaoOCR) {
-                    AdvancedTabItemView(
-                        color: .blue,
-                        icon: .circleRectangleFilledPatternDiagonalline,
-                        labelText: "setting.advance.enable_youdao_ocr",
-                        subtitleText: "setting.advance.enable_youdao_ocr_desc"
-                    )
-                }
-                Toggle(isOn: $enableOCRTextNormalization) {
-                    AdvancedTabItemView(
-                        color: .green,
-                        icon: .docViewfinder,
-                        labelText: "setting.advance.enable_ocr_text_normalization",
-                        subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
-                    )
-                }
-
-                Toggle(isOn: $showOCRMenuItems) {
-                    AdvancedTabItemView(
-                        color: .orange,
-                        icon: .textAndCommandMacwindow,
-                        labelText: "setting.advance.show_ocr_menu_items",
-                        subtitleText: "setting.advance.show_ocr_menu_items_desc"
-                    )
-                }
-
-                Toggle(isOn: $isScreenshotTipLayerHidden) {
-                    AdvancedTabItemView(
-                        color: .purple,
-                        icon: .lightbulbFill,
-                        labelText: "setting.advance.hide_screenshot_tip_layer",
-                        subtitleText: "setting.advance.hide_screenshot_tip_layer_desc"
-                    )
-                }
-            } header: {
-                Text("setting.advance.header.ocr_settings")
-            }
-
             // Mouse query icon
             Section {
                 let minLengthBinding = Binding<Double>(
@@ -243,16 +150,61 @@ struct AdvancedTab: View {
                         labelText: "setting.advance.click_icon_query_info"
                     )
                 }
-
-                Toggle(isOn: $adjustPopButtonOrigin) {
-                    AdvancedTabItemView(
-                        color: .orange,
-                        icon: .arrowUpAndDownAndArrowLeftAndRight,
-                        labelText: "setting.advance.mouse_query.adjust_pop_button_origin"
-                    )
-                }
             } header: {
                 Text("setting.advance.mouse_select_query.header")
+            }
+
+            // Force get selected text and replace text
+            Section {
+                Toggle(isOn: $enableForceGetSelectedText) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .characterCursorIbeam,
+                        labelText: "setting.advance.enable_force_get_selected_text",
+                        subtitleText: "setting.advance.enable_force_get_selected_text_desc"
+                    )
+                }
+                Picker(
+                    selection: $forceGetSelectedTextType,
+                    label: AdvancedTabItemView(
+                        color: .green,
+                        icon: .highlighter,
+                        labelText: "setting.advance.force_get_selected_text_type"
+                    )
+                ) {
+                    ForEach(ForceGetSelectedTextType.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+
+                Toggle(isOn: $preferAppleScriptAPI) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        icon: .applescript,
+                        labelText: "setting.advance.prefer_applescript_api",
+                        subtitleText: "setting.advance.prefer_applescript_api_desc"
+                    )
+                }
+                Toggle(isOn: $enableCompatibilityReplace) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        icon: .arrowForwardSquare,
+                        labelText: "setting.advance.enable_compatibility_replace",
+                        subtitleText: "setting.advance.enable_compatibility_replace_desc"
+                    )
+                }
+                Toggle(isOn: $autoSelectAllTextFieldText) {
+                    AdvancedTabItemView(
+                        color: .red,
+                        icon: .checkmarkSquare,
+                        labelText: "setting.advance.auto_select_all_text_field_text",
+                        subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
+                    )
+                }
+
+            } header: {
+                Text("setting.advance.header.text_selection_and_replacement")
             }
 
             // Query text processing
@@ -289,6 +241,46 @@ struct AdvancedTab: View {
 
                     Spacer()
                 }
+            }
+
+            // OCR settings section
+            Section {
+                Toggle(isOn: $enableYoudaoOCR) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .circleRectangleFilledPatternDiagonalline,
+                        labelText: "setting.advance.enable_youdao_ocr",
+                        subtitleText: "setting.advance.enable_youdao_ocr_desc"
+                    )
+                }
+                Toggle(isOn: $enableOCRTextNormalization) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        icon: .docViewfinder,
+                        labelText: "setting.advance.enable_ocr_text_normalization",
+                        subtitleText: "setting.advance.enable_ocr_text_normalization_desc"
+                    )
+                }
+
+                Toggle(isOn: $showOCRMenuItems) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        icon: .textAndCommandMacwindow,
+                        labelText: "setting.advance.show_ocr_menu_items",
+                        subtitleText: "setting.advance.show_ocr_menu_items_desc"
+                    )
+                }
+
+                Toggle(isOn: $isScreenshotTipLayerHidden) {
+                    AdvancedTabItemView(
+                        color: .purple,
+                        icon: .lightbulbFill,
+                        labelText: "setting.advance.hide_screenshot_tip_layer",
+                        subtitleText: "setting.advance.hide_screenshot_tip_layer_desc"
+                    )
+                }
+            } header: {
+                Text("setting.advance.header.ocr_settings")
             }
 
             // Windows management
@@ -447,7 +439,6 @@ struct AdvancedTab: View {
     @Default(.autoShowQueryIconExcludedLanguage) private var autoShowQueryIconExcludedLanguage
     @Default(.autoShowQueryIconMinTextLength) private var autoShowQueryIconMinTextLength
     @Default(.clickQuery) private var clickQuery
-    @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
 
     // Windows management
     @Default(.fixedWindowPosition) private var fixedWindowPosition

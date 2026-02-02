@@ -589,20 +589,6 @@ static EZWindowManager *_instance;
     //    MMLogInfo(@"start point: %@", NSStringFromPoint(startLocation));
     //    MMLogInfo(@"end   point: %@", NSStringFromPoint(endLocation));
 
-    if (MyConfiguration.shared.adjustPopButtomOrigin) {
-        // Since the pop button may cover selected text, we need to move it to the left.
-        CGFloat horizontalOffset = 20;
-
-        x = location.x;
-        if (isDirectionRight) {
-            x += horizontalOffset;
-        } else {
-            x -= (horizontalOffset + self.popButtonWindow.width);
-        }
-
-        y = location.y - self.offsetPoint.y;
-    }
-
     NSPoint popLocation = CGPointMake(x, y);
     //    MMLogInfo(@"popLocation: %@", NSStringFromPoint(popLocation));
 
@@ -611,9 +597,6 @@ static EZWindowManager *_instance;
 
 - (CGPoint)getMiniWindowLocation {
     CGPoint position = [self getShowingMouseLocation];
-    if (MyConfiguration.shared.adjustPopButtomOrigin) {
-        position.y = position.y - 8;
-    }
 
     // If action none, just show mini window, then show window at last position.
     if (self.actionType == EZActionTypeNone) {
