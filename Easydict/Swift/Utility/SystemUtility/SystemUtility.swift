@@ -26,6 +26,10 @@ class SystemUtility: NSObject {
     /// when the focused text field element cannot be reliably determined via Accessibility APIs.
     var bundleIDAllowListForPasteMenuCheck: Set<String> = [AppBundleIDs.weChat]
 
+    /// Bundle identifiers of apps allowed to bypass focused element checks for selectable text.
+    /// Useful when focused UI element cannot be reliably determined via Accessibility APIs.
+    var bundleIDAllowListForSelectableTextCheck: Set<String> = [AppBundleIDs.weChat]
+
     /// Get selected text from current focused application.
     ///
     /// - Note: Just a wrapper of EZEventMonitor's getSelectedText method.
