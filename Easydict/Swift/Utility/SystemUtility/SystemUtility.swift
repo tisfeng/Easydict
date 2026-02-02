@@ -203,7 +203,7 @@ class SystemUtility: NSObject {
     /// - Returns: Updated FocusedElementInfo after processing auto-selection.
     private func processAutoAllTextSelection(for elementInfo: FocusedElementInfo) async
         -> FocusedElementInfo {
-        guard elementInfo.isTextField else {
+        guard elementInfo.isTextInputField else {
             return elementInfo
         }
 

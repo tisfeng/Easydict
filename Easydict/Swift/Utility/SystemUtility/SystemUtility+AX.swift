@@ -57,10 +57,7 @@ extension SystemUtility {
             let roleValue = try? focusedUIElement.roleValue()
             logInfo("Focused UI element role: \(roleValue ?? "nil")")
 
-            let selectableRoles = FocusedElementInfo.textInputRoles.union([
-                kAXStaticTextRole,
-            ])
-            if let roleValue, selectableRoles.contains(roleValue) {
+            if let roleValue, selectableTextRoles.contains(roleValue) {
                 return true
             }
 
@@ -162,6 +159,10 @@ extension SystemUtility {
     /// Roles that are considered text fields
     private var textFieldRoles: Set<String> {
         FocusedElementInfo.textInputRoles
+    }
+
+    private var selectableTextRoles: Set<String> {
+        FocusedElementInfo.selectableTextRoles
     }
 
     private func isEditableTextInputElement(_ element: UIElement) -> Bool {
