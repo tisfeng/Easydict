@@ -118,6 +118,28 @@ extension NSString {
         return queryText as NSString
     }
 
+    /// remove the excerpt info of the books.app
+    func removeBooksExcerptInfo() -> NSString {
+        var queryText = self as String
+
+        if NSRunningApplication.runningApplications(withBundleIdentifier: AppBundleIDs.books).isEmpty {
+            return queryText as NSString
+        }
+
+        // 英文格式: “...” Excerpt From ... This material may be protected by copyright.
+        let enRegex = #/^“(.+)”\s+Excerpt From.+This material may be protected by copyright\.$/#.dotMatchesNewlines()
+        // 中文格式: “...” 摘自 ... 此材料受版权保护。
+        let zhRegex = #/^“(.+)”\s+摘自.+此材料受版权保护。$/#.dotMatchesNewlines()
+
+        if let match = queryText.firstMatch(of: enRegex) {
+            queryText = String(match.output.1)
+        } else if let match = queryText.firstMatch(of: zhRegex) {
+            queryText = String(match.output.1)
+        }
+
+        return queryText as NSString
+    }
+
     /// Handle input text with configuration settings
 
     func handleInputText() -> NSString {
