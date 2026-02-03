@@ -442,6 +442,9 @@ struct AdvancedTab: View {
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText
     @Default(.forceGetSelectedTextType) private var forceGetSelectedTextType
 
+    // mouse select from Books.app
+    @Default(.enableRemoveBooksExcerptInfo) private var enableRemoveBooksExcerptInfo
+
     // Mouse select query
     @Default(.autoShowQueryIcon) private var autoShowQueryIcon
     @Default(.autoShowQueryIconExcludedLanguage) private var autoShowQueryIconExcludedLanguage
