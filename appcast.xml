@@ -3,6 +3,15 @@
     <channel>
         <title>Easydict</title>
         <item>
+            <title>2.17.1</title>
+            <pubDate>Wed, 04 Feb 2026 01:26:01 +0800</pubDate>
+            <sparkle:version>56</sparkle:version>
+            <sparkle:shortVersionString>2.17.1</sparkle:shortVersionString>
+            <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.17.1</sparkle:releaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.17.1/Easydict.zip" length="26971727" type="application/octet-stream" sparkle:edSignature="TdATK2r+uCfUgzg4W8vMNqWXxNNtg763L7DKApOb8g7CNSIxasVRf+Bf1J+vSAMlDE8n7CDerFxp/c78lwvMBQ=="/>
+        </item>
+        <item>
             <title>2.17.0</title>
             <pubDate>Sun, 01 Feb 2026 17:59:01 +0800</pubDate>
             <sparkle:version>55</sparkle:version>
@@ -19,15 +28,6 @@
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.16.3</sparkle:releaseNotesLink>
             <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.16.3/Easydict.zip" length="26893012" type="application/octet-stream" sparkle:edSignature="+bnQnSrly5957QBGWUKyhP6lEOqkv0nHa9s4FOvCiYzXTHZy6x+Hiu8trRT/Ya9sogL1i8YMcsHr6vtKpYAzCg=="/>
-        </item>
-        <item>
-            <title>2.16.2</title>
-            <pubDate>Mon, 17 Nov 2025 00:06:03 +0800</pubDate>
-            <sparkle:version>53</sparkle:version>
-            <sparkle:shortVersionString>2.16.2</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.16.2</sparkle:releaseNotesLink>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.16.2/Easydict.zip" length="26001439" type="application/octet-stream" sparkle:edSignature="DG0sMV0cfrPhlTuuAoPBjkCva62u6RL3EqzsmMgK43L9F4lq1nxLmzBbUEfyxG/nXq5yVPezbvSSDcytik1JAw=="/>
         </item>
         <item>
             <title>2.7.2</title>
