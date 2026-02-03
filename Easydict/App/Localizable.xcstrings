@@ -45,6 +45,9 @@
         }
       }
     },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
     "add_to_favorites" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6386,6 +6389,90 @@
         }
       }
     },
+    "setting.advance.auto_show_query_icon.condition.desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the query icon only when the selected text language differs and the character count reaches this value."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the query icon only when the selected text language differs and the character count reaches this value."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅当选中文本语言≠指定语言 且 字符数≥该值时显示查询图标。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅當選取文本語言≠指定語言 且 字元數≥該值時顯示查詢圖示。"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_show_query_icon.condition.language" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show only when selected text language is not"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show only when selected text language is not"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅当选中文本语言不是"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅當選取文本語言不是"
+          }
+        }
+      }
+    },
+    "setting.advance.auto_show_query_icon.condition.min_length" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum character length"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum character length"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最小字符长度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最小字元長度"
+          }
+        }
+      }
+    },
     "setting.advance.automatically_remove_code_comment_symbols" : {
       "localizations" : {
         "en" : {
@@ -7251,34 +7338,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "檢測古文的最小文本長度"
-          }
-        }
-      }
-    },
-    "setting.advance.mouse_query.adjust_pop_button_origin" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adjust Query Icon Position to avoid conflict with PopClip"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uprav pozíciu ikony vyberania textu pre vyhnutie sa konfliktu s PopClip"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "调整划词查询图标位置（避免和 PopClip 显示冲突）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "調整划詞查詢圖示位置以避免與 PopClip 衝突"
           }
         }
       }

@@ -190,6 +190,7 @@ final class EventMonitor: NSObject {
     private let popButtonController: PopButtonVisibilityController
     private let appContextProvider: AppContextProvider
     private let systemUtility: SystemUtility
+    private let languageDetector = AppleLanguageDetector()
 
     private var lastEvent: NSEvent?
     private var currentModifierFlags: NSEvent.ModifierFlags = []
@@ -355,7 +356,6 @@ final class EventMonitor: NSObject {
 
         selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
             guard let self else { return }
-            popButtonController.isPopButtonVisible = true
             DispatchQueue.main.async {
                 if let snapshot {
                     self.selectTextType = snapshot.selectTextType
@@ -380,13 +380,36 @@ final class EventMonitor: NSObject {
     private func handleSelectedText(_ text: String?) {
         let trimmed = (text ?? "").removeInvisibleChar().trim()
         guard !trimmed.isEmpty else { return }
-        selectedText = trimmed
-        cancelDismissPopButton()
+        let shouldShow = actionType != .autoSelectQuery || shouldShowAutoQueryIcon(for: trimmed)
+        let updateUI = { [weak self] in
+            guard let self else { return }
+            guard shouldShow else {
+                forceDismissPopButton()
+                eventTapMonitor.stop()
+                return
+            }
 
-        // call back on main thread
-        DispatchQueue.main.async {
-            self.selectedTextBlock?(trimmed)
+            popButtonController.isPopButtonVisible = true
+            selectedText = trimmed
+            cancelDismissPopButton()
+            selectedTextBlock?(trimmed)
         }
+
+        if Thread.isMainThread {
+            updateUI()
+        } else {
+            DispatchQueue.main.async(execute: updateUI)
+        }
+    }
+
+    private func shouldShowAutoQueryIcon(for text: String) -> Bool {
+        let config = MyConfiguration.shared
+        let minLength = max(0, min(50, config.autoShowQueryIconMinTextLength))
+        guard text.count >= minLength else { return false }
+
+        let excludedLanguage = config.autoShowQueryIconExcludedLanguage
+        let detectedLanguage = languageDetector.detectLanguage(text: text)
+        return detectedLanguage != excludedLanguage
     }
 
     @objc
