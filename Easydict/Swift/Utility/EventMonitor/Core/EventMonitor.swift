@@ -351,6 +351,11 @@ final class EventMonitor: NSObject {
         guard enabledAutoSelectText() else { return }
         logInfo("auto get selected text")
 
+        guard systemUtility.isFocusedSelectableTextElement() else {
+            logInfo("Focused element is not selectable text element, skip auto get selected text")
+            return
+        }
+
         popButtonController.resetScrollState()
         actionType = .autoSelectQuery
 
@@ -405,11 +410,19 @@ final class EventMonitor: NSObject {
     private func shouldShowAutoQueryIcon(for text: String) -> Bool {
         let config = MyConfiguration.shared
         let minLength = max(0, min(50, config.autoShowQueryIconMinTextLength))
-        guard text.count >= minLength else { return false }
+        guard text.count >= minLength else {
+            logInfo("text length \(text.count) < minLength \(minLength), do not show auto query icon")
+            return false
+        }
 
         let excludedLanguage = config.autoShowQueryIconExcludedLanguage
         let detectedLanguage = languageDetector.detectLanguage(text: text)
-        return detectedLanguage != excludedLanguage
+        let shouldShowAutoQueryIcon = detectedLanguage != excludedLanguage
+        logInfo(
+            "detected language: \(detectedLanguage), excluded language: \(excludedLanguage), shouldShowAutoQueryIcon: \(shouldShowAutoQueryIcon)"
+        )
+
+        return shouldShowAutoQueryIcon
     }
 
     @objc
