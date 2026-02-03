@@ -815,6 +815,11 @@ static EZWindowManager *_instance;
         if (text.length == 0) {
             text = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }
+        // remove the excerpt info of the books if the books.app is running
+        else if (MyConfiguration.shared.enableRemoveBooksExcerptInfo) {
+            text = [text removeBooksExcerptInfo];
+        }
+        
         self.selectedText = text;
 
         // Run it on main thread to avoid some UI bugs.

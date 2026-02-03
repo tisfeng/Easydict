@@ -6667,6 +6667,34 @@
         }
       }
     },
+    "setting.advance.enable_remove_books_excerpt_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Books Excerpt Copyright Notice"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť informácie o autorských právach z výpisov z Books"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除 Books 摘录中的版权信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除 Books 摘錄中的版權資訊"
+          }
+        }
+      }
+    },
     "setting.advance.enable_force_get_selected_text_desc" : {
       "localizations" : {
         "en" : {

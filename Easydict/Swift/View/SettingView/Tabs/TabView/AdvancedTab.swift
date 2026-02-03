@@ -102,6 +102,14 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.enable_force_get_selected_text_desc"
                     )
                 }
+                Toggle(isOn: $enableRemoveBooksExcerptInfo) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .characterCursorIbeam,
+                        labelText: "setting.advance.enable_remove_books_excerpt_info"
+                        // subtitleText: "setting.advance.enable_force_get_selected_text_desc"
+                    )
+                }
                 Picker(
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
