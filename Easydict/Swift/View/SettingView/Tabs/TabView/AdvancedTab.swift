@@ -92,6 +92,68 @@ struct AdvancedTab: View {
                 Text("setting.advance.header.general_settings")
             }
 
+            // Mouse query icon
+            Section {
+                let minLengthBinding = Binding<Double>(
+                    get: {
+                        Double(min(50, max(0, autoShowQueryIconMinTextLength)))
+                    },
+                    set: { newValue in
+                        autoShowQueryIconMinTextLength = min(50, max(0, Int(newValue)))
+                    }
+                )
+
+                Toggle(isOn: $autoShowQueryIcon) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .cursorarrowRays,
+                        labelText: "setting.advance.auto_show_query_icon"
+                    )
+                }
+
+                Group {
+                    LabeledContent {
+                        Picker("", selection: $autoShowQueryIconExcludedLanguage) {
+                            ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
+                                Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
+                                    .tag(option)
+                            }
+                        }
+                        .labelsHidden()
+                    } label: {
+                        Text("setting.advance.auto_show_query_icon.condition.language")
+                    }
+
+                    LabeledContent {
+                        HStack(spacing: 8) {
+                            Slider(value: minLengthBinding, in: 0 ... 50, step: 10)
+                            Text("\(autoShowQueryIconMinTextLength)")
+                                .frame(width: 32, alignment: .trailing)
+                                .monospacedDigit()
+                        }
+                    } label: {
+                        Text("setting.advance.auto_show_query_icon.condition.min_length")
+                    }
+
+                    Text("setting.advance.auto_show_query_icon.condition.desc")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.leading, 28)
+                .disabled(!autoShowQueryIcon)
+                .opacity(autoShowQueryIcon ? 1 : 0.6)
+
+                Toggle(isOn: $clickQuery) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        icon: .cursorarrowClick,
+                        labelText: "setting.advance.click_icon_query_info"
+                    )
+                }
+            } header: {
+                Text("setting.advance.mouse_select_query.header")
+            }
+
             // Force get selected text and replace text
             Section {
                 Toggle(isOn: $enableForceGetSelectedText) {
@@ -153,6 +215,42 @@ struct AdvancedTab: View {
                 Text("setting.advance.header.text_selection_and_replacement")
             }
 
+            // Query text processing
+            Section {
+                Toggle(isOn: $replaceNewlineWithSpace) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .arrowForwardSquare,
+                        labelText: "setting.advance.automatically_replace_newline_with_space"
+                    )
+                }
+                Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
+                    AdvancedTabItemView(
+                        color: .green,
+                        icon: .chevronLeftForwardslashChevronRight,
+                        labelText: "setting.advance.automatically_remove_code_comment_symbols"
+                    )
+                }
+                Toggle(isOn: $automaticWordSegmentation) {
+                    AdvancedTabItemView(
+                        color: .orange,
+                        icon: .textWordSpacing,
+                        labelText: "setting.advance.automatically_split_words"
+                    )
+                }
+            } header: {
+                Text("setting.advance.header.query_text_processing")
+            } footer: {
+                HStack {
+                    Text("setting.advance.footer.query_text_processing_desc")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 10)
+
+                    Spacer()
+                }
+            }
+
             // OCR settings section
             Section {
                 Toggle(isOn: $enableYoudaoOCR) {
@@ -191,71 +289,6 @@ struct AdvancedTab: View {
                 }
             } header: {
                 Text("setting.advance.header.ocr_settings")
-            }
-
-            // Mouse query icon
-            Section {
-                Toggle(isOn: $autoSelectText) {
-                    AdvancedTabItemView(
-                        color: .blue,
-                        icon: .cursorarrowRays,
-                        labelText: "setting.advance.auto_show_query_icon"
-                    )
-                }
-
-                Toggle(isOn: $clickQuery) {
-                    AdvancedTabItemView(
-                        color: .green,
-                        icon: .cursorarrowClick,
-                        labelText: "setting.advance.click_icon_query_info"
-                    )
-                }
-
-                Toggle(isOn: $adjustPopButtonOrigin) {
-                    AdvancedTabItemView(
-                        color: .orange,
-                        icon: .arrowUpAndDownAndArrowLeftAndRight,
-                        labelText: "setting.advance.mouse_query.adjust_pop_button_origin"
-                    )
-                }
-            } header: {
-                Text("setting.advance.mouse_select_query.header")
-            }
-
-            // Query text processing
-            Section {
-                Toggle(isOn: $replaceNewlineWithSpace) {
-                    AdvancedTabItemView(
-                        color: .blue,
-                        icon: .arrowForwardSquare,
-                        labelText: "setting.advance.automatically_replace_newline_with_space"
-                    )
-                }
-                Toggle(isOn: $automaticallyRemoveCodeCommentSymbols) {
-                    AdvancedTabItemView(
-                        color: .green,
-                        icon: .chevronLeftForwardslashChevronRight,
-                        labelText: "setting.advance.automatically_remove_code_comment_symbols"
-                    )
-                }
-                Toggle(isOn: $automaticWordSegmentation) {
-                    AdvancedTabItemView(
-                        color: .orange,
-                        icon: .textWordSpacing,
-                        labelText: "setting.advance.automatically_split_words"
-                    )
-                }
-            } header: {
-                Text("setting.advance.header.query_text_processing")
-            } footer: {
-                HStack {
-                    Text("setting.advance.footer.query_text_processing_desc")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 10)
-
-                    Spacer()
-                }
             }
 
             // Windows management
@@ -413,9 +446,10 @@ struct AdvancedTab: View {
     @Default(.enableRemoveBooksExcerptInfo) private var enableRemoveBooksExcerptInfo
 
     // Mouse select query
-    @Default(.autoSelectText) private var autoSelectText
+    @Default(.autoShowQueryIcon) private var autoShowQueryIcon
+    @Default(.autoShowQueryIconExcludedLanguage) private var autoShowQueryIconExcludedLanguage
+    @Default(.autoShowQueryIconMinTextLength) private var autoShowQueryIconMinTextLength
     @Default(.clickQuery) private var clickQuery
-    @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
 
     // Windows management
     @Default(.fixedWindowPosition) private var fixedWindowPosition

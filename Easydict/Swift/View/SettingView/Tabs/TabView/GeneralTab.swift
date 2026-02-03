@@ -70,8 +70,8 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
+                Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
                 Picker(
@@ -88,8 +88,8 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle("auto_copy_ocr_text", isOn: $autoCopyOCRText)
                 Toggle("auto_copy_selected_text", isOn: $autoCopySelectedText)
+                Toggle("auto_copy_ocr_text", isOn: $autoCopyOCRText)
                 Toggle("auto_copy_first_translated_text", isOn: $autoCopyFirstTranslatedText)
             } header: {
                 Text("setting.general.auto_copy.header")

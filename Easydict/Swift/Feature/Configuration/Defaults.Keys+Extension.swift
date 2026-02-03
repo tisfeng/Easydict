@@ -32,7 +32,15 @@ extension Defaults.Keys {
         default: EZLanguageManager.shared().systemPreferredTwoLanguages[1]
     )
 
-    static let autoSelectText = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
+    static let autoShowQueryIcon = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
+    static let autoShowQueryIconExcludedLanguage = Key<Language>(
+        "EZConfiguration_kAutoShowQueryIconExcludedLanguageKey",
+        default: Defaults[.firstLanguage]
+    )
+    static let autoShowQueryIconMinTextLength = Key<Int>(
+        "EZConfiguration_kAutoShowQueryIconMinTextLengthKey",
+        default: 0
+    )
     static let clickQuery = Key<Bool>("EZConfiguration_kClickQueryKey", default: false)
     static let autoPlayAudio = Key<Bool>("EZConfiguration_kAutoPlayAudioKey", default: false)
     static let pronunciation = Key<EnglishPronunciation>(
@@ -92,9 +100,6 @@ extension Defaults.Keys {
         "EZConfiguration_kPinWindowWhenDisplayed", default: false
     )
 
-    static let adjustPopButtonOrigin = Key<Bool>(
-        "EZConfiguration_kAdjustPopButtomOriginKey", default: false
-    )
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
 
