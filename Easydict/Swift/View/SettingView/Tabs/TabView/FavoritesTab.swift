@@ -28,6 +28,7 @@ struct FavoritesTab: View {
             .pickerStyle(.segmented)
             .padding(.horizontal)
             .padding(.top)
+            .frame(width: 150)
 
             // Header
             HStack {
@@ -47,6 +48,7 @@ struct FavoritesTab: View {
                     Label("common.export", systemImage: "square.and.arrow.up")
                         .labelStyle(.iconOnly)
                 }
+                .frame(maxWidth: 60)
             }
             .padding(.horizontal)
 
