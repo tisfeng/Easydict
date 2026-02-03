@@ -171,6 +171,7 @@ struct MenuItemView: View {
     @ViewBuilder private var checkUpdateItem: some View {
         Button("check_updates") {
             logInfo("Check Updates")
+            NSApp.activateApp()
             MyConfiguration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }

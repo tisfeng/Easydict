@@ -31,6 +31,12 @@ struct FocusedElementInfo: CustomStringConvertible {
         kAXMenuRole,
     ]
 
+    /// Roles that are considered selectable text elements
+    static let selectableTextRoles: Set<String> = textInputRoles.union([
+        kAXStaticTextRole,
+        Role.webArea.rawValue,
+    ])
+
     /// Full text in the focused text field, if available
     let fullText: String?
 
@@ -47,7 +53,7 @@ struct FocusedElementInfo: CustomStringConvertible {
     let roleValue: String?
 
     /// Whether the focused element is a text input element
-    var isTextField: Bool {
+    var isTextInputField: Bool {
         guard let roleValue else {
             return false
         }
