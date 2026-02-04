@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import Sparkle
 
@@ -29,14 +30,12 @@ class GlobalContext: NSObject {
 
     // MARK: Internal
 
+    /// Sparkle Updater Helpers
+    /// https://sparkle-project.org/documentation/publishing/#publishing-an-update
+
     class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {
-        func feedURLString(for _: SPUUpdater) -> String? {
-            var feedURLString =
-                "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
-            #if DEBUG
-            feedURLString = "http://localhost:8000/appcast.xml"
-            #endif
-            return feedURLString
+        func allowedChannels(for updater: SPUUpdater) -> Set<String> {
+            Defaults[.includeBetaUpdates] ? Set(["beta"]) : []
         }
     }
 
