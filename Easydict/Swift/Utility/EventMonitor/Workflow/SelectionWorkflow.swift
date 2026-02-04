@@ -41,7 +41,7 @@ final class SelectionWorkflow {
 
         Task {
             do {
-                let text = try await systemUtility.getSelectedText(strategy: .accessibility) ?? ""
+                let text = try await systemUtility.getSelectedText(strategy: .accessibility)?.trim() ?? ""
                 let editable = systemUtility.isFocusedTextField()
                 isSelectedTextEditable = editable
                 let frontmostBundleID = frontmostApp?.bundleIdentifier ?? ""
@@ -58,7 +58,8 @@ final class SelectionWorkflow {
                                 text: text,
                                 selectTextType: .accessibility,
                                 isEditable: editable
-                            ))
+                            )
+                        )
                         return
                     }
                 }
@@ -165,6 +166,12 @@ final class SelectionWorkflow {
     }
 
     private func tryForceGetSelectedText(_ completion: @escaping (SelectedTextSnapshot?) -> ()) {
+        if isFrontmostAppSelf() {
+            logInfo("Frontmost app is Easydict, skip force get selected text")
+            completion(nil)
+            return
+        }
+
         let enableForce = MyConfiguration.shared.enableForceGetSelectedText
         logInfo("Enable force get selected text: \(enableForce ? "YES" : "NO")")
         guard enableForce else {
@@ -313,11 +320,10 @@ final class SelectionWorkflow {
         logInfo("Enable force get selected text: \(enableForce ? "YES" : "NO")")
         guard enableForce else { return false }
 
-        let easydictBundleID = Bundle.main.bundleIdentifier ?? ""
         let application = contextProvider?.frontmostApplication
         let bundleID = application?.bundleIdentifier ?? ""
-
-        if bundleID == easydictBundleID, MyConfiguration.shared.isRecordingSelectTextShortcutKey {
+        if isFrontmostAppSelf() {
+            logInfo("Frontmost app is Easydict, skip force get selected text")
             return false
         }
 
@@ -370,5 +376,11 @@ final class SelectionWorkflow {
 
         logInfo("After check axError: \(axError), not use force get selected text: \(String(describing: application))")
         return false
+    }
+
+    private func isFrontmostAppSelf() -> Bool {
+        let easydictBundleID = Bundle.main.bundleIdentifier ?? ""
+        let frontmostBundleID = contextProvider?.frontmostApplication?.bundleIdentifier ?? ""
+        return !easydictBundleID.isEmpty && easydictBundleID == frontmostBundleID
     }
 }

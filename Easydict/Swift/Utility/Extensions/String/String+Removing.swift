@@ -175,7 +175,8 @@ extension String {
     /// Remove alphabet characters (a-z, A-Z)
     func removingAlphabet() -> String {
         let alphabetSet = CharacterSet(
-            charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        )
         return components(separatedBy: alphabetSet).joined()
     }
 

@@ -182,7 +182,8 @@ private struct ListToolbar: View {
 // MARK: - ListButton
 
 private struct ListButton: View {
-    @Environment(\.isEnabled) private var isEnabled: Bool
+    // MARK: Internal
+
     var systemName: String
     var action: () -> ()
 
@@ -201,6 +202,10 @@ private struct ListButton: View {
         }
         .buttonStyle(BorderlessButtonStyle())
     }
+
+    // MARK: Private
+
+    @Environment(\.isEnabled) private var isEnabled: Bool
 }
 
 // MARK: - BlockAppItemView

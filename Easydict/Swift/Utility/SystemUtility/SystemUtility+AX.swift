@@ -39,6 +39,44 @@ extension SystemUtility {
         }
     }
 
+    /// Determine whether the focused element is a selectable text element.
+    ///
+    /// This is used to gate auto query icon display. If the focused element cannot be
+    /// resolved via Accessibility APIs, an allowlist can be used to bypass the check.
+    func isFocusedSelectableTextElement() -> Bool {
+        do {
+            guard let focusedUIElement = try frontmostAppElement?.focusedUIElement() else {
+                if bundleIDAllowListForSelectableTextCheck.contains(frontmostAppBundleID) {
+                    logInfo("Bypass selectable text check for allowlisted app: \(frontmostAppBundleID)")
+                    return true
+                }
+                logInfo("No focused UI element found: \(String(describing: frontmostAppElement))")
+                return false
+            }
+
+            let roleValue = try? focusedUIElement.roleValue()
+            logInfo("Focused UI element role: \(roleValue ?? "nil")")
+
+            if let roleValue, selectableTextRoles.contains(roleValue) {
+                return true
+            }
+
+            if (try? focusedUIElement.selectedTextRange()) != nil {
+                return true
+            }
+
+            if let value = try? focusedUIElement.value(), !value.isEmpty {
+                return true
+            }
+
+            logInfo("Focused UI element not selectable text role: \(roleValue ?? "nil")")
+            return false
+        } catch {
+            logError("Error accessing focused UI element: \(error)")
+            return false
+        }
+    }
+
     /// Replace text in current focused text field with optional range support
     /// - Parameters:
     ///   - text: The replacement text
@@ -121,6 +159,10 @@ extension SystemUtility {
     /// Roles that are considered text fields
     private var textFieldRoles: Set<String> {
         FocusedElementInfo.textInputRoles
+    }
+
+    private var selectableTextRoles: Set<String> {
+        FocusedElementInfo.selectableTextRoles
     }
 
     private func isEditableTextInputElement(_ element: UIElement) -> Bool {
