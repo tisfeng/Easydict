@@ -138,6 +138,26 @@ struct GeneralTab: View {
                     Text("auto_check_update ")
                 }
 
+                HStack {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("setting.general.startup_and_update.include_beta")
+                        Text("setting.general.startup_and_update.include_beta.description")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Toggle(
+                        "",
+                        isOn: $includeBetaUpdates.didSet(execute: { state in
+                            logSettings(["include_beta_updates": state])
+                            if state {
+                                MyConfiguration.shared.updater.checkForUpdates()
+                            }
+                        })
+                    )
+                    .labelsHidden()
+                }
+
                 LaunchAtLogin.Toggle {
                     Text("launch_at_startup")
                 }
@@ -266,6 +286,8 @@ struct GeneralTab: View {
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
+
+    @Default(.includeBetaUpdates) private var includeBetaUpdates
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""

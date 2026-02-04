@@ -8212,6 +8212,62 @@
         }
       }
     },
+    "setting.general.startup_and_update.include_beta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Include Beta versions"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahrnúť beta verzie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包括 Beta 版本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包括 Beta 版本"
+          }
+        }
+      }
+    },
+    "setting.general.startup_and_update.include_beta.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get early access to new features, but may be unstable"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Získajte skorý prístup k novým funkciám, ale môže byť nestabilné"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抢先体验新功能，但可能不稳定"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搶先體驗新功能，但可能不穩定"
+          }
+        }
+      }
+    },
     "setting.general.voice.auto_play_word_audio" : {
       "localizations" : {
         "en" : {
