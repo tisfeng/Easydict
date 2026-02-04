@@ -83,6 +83,9 @@ node_modules/
 # Ref: https://github.com/github/gitignore/blob/4488915eec0b3a45b5c63ead28f286819c0917de/Global/macOS.gitignore
 .DS_Store
 
+# macOS Finder custom icon file (contains carriage return in filename, invalid on Windows)
+Icon?
+
 .sentryclirc
 
 # SwiftFormat 
