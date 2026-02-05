@@ -8385,25 +8385,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Free"
+            "value" : "No API Key Required"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zdarma"
+            "value" : "Nevyžaduje API kľúč"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "免费"
+            "value" : "无需 API Key"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "免費"
+            "value" : "無需 API Key"
           }
         }
       }
@@ -8413,25 +8413,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro"
+            "value" : "Requires API Key"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro"
+            "value" : "Vyžaduje API kľúč"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "专业版"
+            "value" : "需要 API Key"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "專業版"
+            "value" : "需要 API Key"
           }
         }
       }
