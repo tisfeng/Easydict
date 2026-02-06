@@ -9,7 +9,6 @@
 import Foundation
 
 enum MaxWindowHeightPercentageOption: Int, CaseIterable, Identifiable {
-    case ten = 10
     case twenty = 20
     case thirty = 30
     case forty = 40
