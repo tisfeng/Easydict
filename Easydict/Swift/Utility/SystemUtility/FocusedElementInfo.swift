@@ -34,6 +34,7 @@ struct FocusedElementInfo: CustomStringConvertible {
     /// Roles that are considered selectable text elements
     static let selectableTextRoles: Set<String> = textInputRoles.union([
         kAXStaticTextRole,
+        kAXGroupRole, // PDF, fix https://github.com/tisfeng/Easydict/issues/1091
         Role.webArea.rawValue,
     ])
 
