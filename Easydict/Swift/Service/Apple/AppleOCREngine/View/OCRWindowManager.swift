@@ -142,11 +142,10 @@ class OCRWindowManager {
 
 extension NSApplication {
     /// Convenience method to activate the application
+    ///
+    /// - Note: Since new API `activate()` on macOS 14.0 not working as expected, it doesn't bring app to front, so use old API for now.
     func activateApp() {
-        if #available(macOS 14.0, *) {
-            activate()
-        } else {
-            activate(ignoringOtherApps: true)
-        }
+        logInfo("Activating application")
+        activate(ignoringOtherApps: true)
     }
 }

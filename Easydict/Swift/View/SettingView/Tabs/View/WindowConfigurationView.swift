@@ -61,6 +61,7 @@ struct WindowConfigurationView: View {
 struct NotifyingToggle: View {
     let title: LocalizedStringKey
     @Binding var isOn: Bool
+
     let windowType: EZWindowType
 
     var body: some View {

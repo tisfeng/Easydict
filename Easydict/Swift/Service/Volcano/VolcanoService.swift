@@ -44,6 +44,10 @@ public final class VolcanoService: QueryService {
         VolcanoTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
+    public override func hasPrivateAPIKey() -> Bool {
+        !accessKeyID.isEmpty && !secretAccessKey.isEmpty
+    }
+
     /// Volcano Translate API: https://www.volcengine.com/docs/4640/65067
     /// Translate text using Volcano API.
     override public func translate(

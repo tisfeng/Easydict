@@ -70,8 +70,8 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
+                Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
                 Picker(
@@ -88,8 +88,8 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle("auto_copy_ocr_text", isOn: $autoCopyOCRText)
                 Toggle("auto_copy_selected_text", isOn: $autoCopySelectedText)
+                Toggle("auto_copy_ocr_text", isOn: $autoCopyOCRText)
                 Toggle("auto_copy_first_translated_text", isOn: $autoCopyFirstTranslatedText)
             } header: {
                 Text("setting.general.auto_copy.header")
@@ -227,6 +227,15 @@ struct GeneralTab: View {
 
     // MARK: Private
 
+    // App setting
+    @EnvironmentObject private var languageState: LanguageState
+    @State private var showRefuseAlert = false
+    @State private var showHideMenuBarIconAlert = false
+
+    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
+
+    @State private var lastestVersion: String?
+
     // Query language
     @Default(.languageDetectOptimize) private var languageDetectOptimize
 
@@ -253,19 +262,10 @@ struct GeneralTab: View {
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
     @Default(.showQuickActionButton) private var showQuickActionButton
 
-    // App setting
-    @EnvironmentObject private var languageState: LanguageState
     @Default(.appearanceType) private var appearanceType
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
-
-    @State private var showRefuseAlert = false
-    @State private var showHideMenuBarIconAlert = false
-
-    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
-
-    @State private var lastestVersion: String?
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -367,10 +367,10 @@ private struct FirstAndSecondLanguageSettingView: View {
         }
     }
 
+    @State private var languageDuplicatedAlert: LanguageDuplicateAlert?
+
     @Default(.firstLanguage) private var firstLanguage
     @Default(.secondLanguage) private var secondLanguage
-
-    @State private var languageDuplicatedAlert: LanguageDuplicateAlert?
 
     private var showLanguageDuplicatedAlert: Binding<Bool> {
         .init {
