@@ -36,10 +36,7 @@ public final class TencentService: QueryService {
     }
 
     public override func hasPrivateAPIKey() -> Bool {
-        if secretId == tencentSecretId, secretKey == tencentSecretKey {
-            return false
-        }
-        return true
+        !secretId.isEmpty && !secretKey.isEmpty
     }
 
     public override func totalFreeQueryCharacterCount() -> Int {
@@ -153,21 +150,11 @@ public final class TencentService: QueryService {
 
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
-        let secretId = Defaults[.tencentSecretId]
-        if !secretId.isEmpty {
-            return secretId
-        } else {
-            return tencentSecretId
-        }
+        Defaults[.tencentSecretId]
     }
 
     // easydict://writeKeyValue?EZTencentSecretKey=xxx
     private var secretKey: String {
-        let secretKey = Defaults[.tencentSecretKey]
-        if !secretKey.isEmpty {
-            return secretKey
-        } else {
-            return tencentSecretKey
-        }
+        Defaults[.tencentSecretKey]
     }
 }
