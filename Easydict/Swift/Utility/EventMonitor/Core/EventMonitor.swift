@@ -385,7 +385,7 @@ final class EventMonitor: NSObject {
     private func handleSelectedText(_ text: String?) {
         let trimmed = (text ?? "").removeInvisibleChar().trim()
         guard !trimmed.isEmpty else { return }
-        let shouldShow = actionType != .autoSelectQuery || shouldShowAutoQueryIcon(for: trimmed)
+        let shouldShow = (actionType == .autoSelectQuery) && shouldShowAutoQueryIcon(for: trimmed)
         let updateUI = { [weak self] in
             guard let self else { return }
             guard shouldShow else {
