@@ -27,16 +27,6 @@ extension CaiyunService {
     }
 }
 
-extension TencentService {
-    var tencentSecretId: String {
-        APIKey.tencentSecretId.stringValue
-    }
-
-    var tencentSecretKey: String {
-        APIKey.tencentSecretKey.stringValue
-    }
-}
-
 extension NiuTransService {
     @objc var niutransAPIKey: String {
         APIKey.niutransAPIKey.stringValue
@@ -55,8 +45,6 @@ enum APIKey: String {
     case openAIEndpoint
     case geminiAPIKey
     case caiyunToken
-    case tencentSecretId
-    case tencentSecretKey
     case niutransAPIKey
     case builtInAIAPIKey
     case builtInAIEndpoint

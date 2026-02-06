@@ -3024,8 +3024,8 @@
 		0D124C3D2E8AD3EA00D6B72C /* Doubao */ = {
 			isa = PBXGroup;
 			children = (
-				0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */,
 				0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */,
+				0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */,
 				0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */,
 			);
 			path = Doubao;
