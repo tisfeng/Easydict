@@ -33,8 +33,8 @@ public final class CaiyunService: QueryService {
         CaiyunTranslateType.supportLanguagesDictionary.toMMOrderedDictionary()
     }
 
-    public override func hasPrivateAPIKey() -> Bool {
-        token != caiyunToken
+    public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .builtIn
     }
 
     /// Returns configuration items for the Caiyun service settings view.

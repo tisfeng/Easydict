@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import Defaults
 import SwiftUI
 
 let kBaiduTranslateURL = "https://fanyi.baidu.com"
@@ -47,6 +48,10 @@ final class BaiduService: QueryService {
 
     override func serviceType() -> ServiceType {
         .baidu
+    }
+
+    override func hasPrivateAPIKey() -> Bool {
+        !appId.isEmpty && !secretKey.isEmpty
     }
 
     override func supportedQueryType() -> EZQueryTextType {
@@ -294,6 +299,14 @@ final class BaiduService: QueryService {
     private lazy var apiTranslate: BaiduApiTranslate = {
         BaiduApiTranslate(queryModel: queryModel)
     }()
+
+    private var appId: String {
+        Defaults[.baiduAppId]
+    }
+
+    private var secretKey: String {
+        Defaults[.baiduSecretKey]
+    }
 
     /// Requests detected language for the given text.
     private func requestDetectedLanguage(for text: String) async throws -> Language {
