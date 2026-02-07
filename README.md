@@ -56,6 +56,10 @@ If you're interested in this project, we welcome your contributions. Our develop
 
 Please submit bug fixes and features to dev branch; for major new features or UI changes, please open an issue for discussion first. See [full contribution guide](./docs/en/GUIDE.md#contributor-guide).
 
+## Issue/PR Triage Notes
+
+The maintainer has been quite busy recently and usually only has time to triage issues on weekends. PRs (especially bugfix PRs) are prioritized. Also, due to an overloaded inbox and notifications, some messages may not be seen or replied to promptly. Thanks for your understanding.
+
 ## Installation
 
 ### Homebrew Installation (Recommended)
