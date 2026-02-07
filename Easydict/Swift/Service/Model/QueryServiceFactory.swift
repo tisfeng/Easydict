@@ -78,6 +78,7 @@ final class QueryServiceFactory: NSObject {
         (.builtInAI, BuiltInAIService.self),
         (.gemini, GeminiService.self),
         (.ollama, OllamaService.self),
+        (.ollamaRephrase, OllamaRephraseService.self),
         (.polishing, PolishingService.self),
         (.summary, SummaryService.self),
         (.customOpenAI, CustomOpenAIService.self),

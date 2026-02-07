@@ -80,3 +80,51 @@ class OllamaService: BaseOpenAIService {
         return try await dataTask.value
     }
 }
+
+// MARK: - OllamaRephraseService
+
+@objc(EZOllamaRephraseService)
+class OllamaRephraseService: OllamaService {
+    override var isSentenceEnabledByDefault: Bool {
+        false
+    }
+
+    override var isDictionaryEnabledByDefault: Bool {
+        false
+    }
+
+    override func name() -> String {
+        NSLocalizedString("ollama_rephrase", comment: "")
+    }
+
+    override func serviceType() -> ServiceType {
+        .ollamaRephrase
+    }
+
+    override func configurationListItems() -> Any {
+        StreamConfigurationView(
+            service: self,
+            showAPIKeySection: false,
+            showTranslationToggle: false,
+            showSentenceToggle: false,
+            showDictionaryToggle: false
+        )
+    }
+
+    override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
+        if enableCustomPrompt {
+            return super.chatMessageDicts(chatQuery)
+        }
+
+        // Default Rephrase Prompts
+        let (text, sourceLanguage, _, _, _) = chatQuery.unpack()
+        let prompt = "Rephrase the following \(sourceLanguage.queryLanguageName) text to make it more natural and fluent: \"\"\"\(text)\"\"\""
+
+        let systemPrompt = "You are a writing assistant. Your task is to rephrase the provided text to improve its flow, vocabulary, and overall quality while keeping the original meaning intact. Only return the rephrased text."
+
+        return [
+            .init(role: .system, content: systemPrompt),
+            .init(role: .user, content: prompt),
+        ]
+    }
+}
