@@ -340,7 +340,7 @@ final class SelectionWorkflow {
                 "com.foxitsoftware.FoxitReaderLite",
                 "com.foxit-software.Foxit.PDF.Reader",
                 "com.foxit-software.Foxit.PDF.Editor",
-                "com.apple.iBooksX",
+                AppBundleIDs.books,
             ],
             .attributeUnsupported: [
                 "com.sublimetext.4",
