@@ -47,9 +47,14 @@ Easydict is ready to use out of the box, can automatically recognize the languag
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
-## Swift Refactoring Plan
+## Contributing
 
-We plan to refactor the project with Swift. If you are interested in this open source project, familiar with Swift/SwiftUI, welcome to join our development team to improve this project together [#194](https://github.com/tisfeng/Easydict/issues/194).
+If you're interested in this project, we welcome your contributions. Our development follows this workflow:
+
+- **dev branch**: Latest development code, may contain features in progress
+- **main branch**: Stable release code, regularly merged from dev branch
+
+Please submit bug fixes and features to dev branch; for major new features or UI changes, please open an issue for discussion first. See [full contribution guide](./docs/en/GUIDE.md#contributor-guide).
 
 ## Installation
 

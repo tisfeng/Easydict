@@ -47,9 +47,14 @@ Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译�
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
-## Swift 重构计划
+## 贡献
 
-我们计划用 Swift 重构项目，如果你对这个开源项目感兴趣，熟悉 Swift/SwiftUI，欢迎加入我们的开发组，一起完善这个项目 [#194](https://github.com/tisfeng/Easydict/issues/194)。
+如果你对这个项目感兴趣，欢迎提交 PR 参与贡献。我们的开发遵循以下流程：
+
+- **dev 分支**：最新的开发代码，可能包含正在开发中的功能
+- **main 分支**：稳定版本代码，会定期合并 dev 分支
+
+Bug 修复和功能实现请提交到 dev 分支；新功能或大的 UI 变动建议先开 issue 讨论。详见[完整贡献指南](./docs/zh/GUIDE.md#贡献指南)。
 
 ## 安装
 
