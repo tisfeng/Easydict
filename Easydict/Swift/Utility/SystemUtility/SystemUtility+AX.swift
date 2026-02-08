@@ -46,26 +46,25 @@ extension SystemUtility {
     func isFocusedSelectableTextElement() -> Bool {
         do {
             guard let focusedUIElement = try frontmostAppElement?.focusedUIElement() else {
-                if bundleIDAllowListForSelectableTextCheck.contains(frontmostAppBundleID) {
-                    logInfo("Bypass selectable text check for allowlisted app: \(frontmostAppBundleID)")
-                    return true
-                }
-                logInfo("No focused UI element found: \(String(describing: frontmostAppElement))")
-                return false
+                logInfo("No focused UI element found: \(String(describing: frontmostAppElement)), treat as selectable")
+                return true
             }
 
             let roleValue = try? focusedUIElement.roleValue()
             logInfo("Focused UI element role: \(roleValue ?? "nil")")
 
             if let roleValue, selectableTextRoles.contains(roleValue) {
+                logInfo("Focused UI element role is in selectable text allowlist, treat as selectable")
                 return true
             }
 
             if (try? focusedUIElement.selectedTextRange()) != nil {
+                logInfo("Focused UI element has selectable text range, treat as selectable")
                 return true
             }
 
             if let value = try? focusedUIElement.value(), !value.isEmpty {
+                logInfo("Focused UI element has non-empty value, treat as selectable")
                 return true
             }
 

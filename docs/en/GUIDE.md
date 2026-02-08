@@ -4,41 +4,48 @@
 
 ## Table of Contents
 
-- [Detailed Feature List](#detailed-feature-list)
-- [Swift Refactoring Plan](#swift-refactoring-plan)
-- [Installation Guide](#installation-guide)
-  - [Manual Installation](#manual-installation)
-  - [Homebrew](#homebrew)
-  - [Developer Build](#developer-build)
-    - [Build Environment](#build-environment)
-- [Usage Instructions](#usage-instructions)
-  - [Select Text by Mouse](#select-text-by-mouse)
-  - [About Permissions](#about-permissions)
-- [OCR Configuration](#ocr-configuration)
-- [TTS Services](#tts-services)
-- [Translation Services Configuration](#translation-services-configuration)
-  - [🍎 Apple System Dictionary](#-apple-system-dictionary)
-  - [OpenAI Translate](#openai-translate)
-  - [Built-In AI Translate](#built-in-ai-translate)
-  - [Gemini Translate](#gemini-translate)
-  - [DeepL Translate](#deepl-translate)
-  - [Tencent Translate](#tencent-translate)
-  - [Bing Translate](#bing-translate)
-  - [Niutrans](#niutrans)
-  - [Lingocloud](#lingocloud)
-  - [Ali Translate](#ali-translate)
-  - [Doubao Translate](#doubao-translate)
-- [Advanced Features](#advanced-features)
-  - [URL Scheme](#url-scheme)
-  - [Use with PopClip](#use-with-popclip)
-- [Settings](#settings)
-  - [General](#general)
-  - [Services](#services)
-- [In-App Shortcuts](#in-app-shortcuts)
-- [Tips](#tips)
-- [Similar Open Source Projects](#similar-open-source-projects)
-- [Motivation](#motivation)
-- [Contributor Guide](#contributor-guide)
+- [Easydict Complete Usage Guide](#easydict-complete-usage-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Detailed Feature List](#detailed-feature-list)
+  - [Installation Guide](#installation-guide)
+    - [Manual Installation](#manual-installation)
+    - [Homebrew](#homebrew)
+    - [Developer Build](#developer-build)
+      - [Build Environment](#build-environment)
+  - [Usage Instructions](#usage-instructions)
+    - [Select Text by Mouse](#select-text-by-mouse)
+    - [About Permissions](#about-permissions)
+  - [OCR Configuration](#ocr-configuration)
+  - [TTS Services](#tts-services)
+  - [Translation Services Configuration](#translation-services-configuration)
+    - [🍎 Apple System Dictionary](#-apple-system-dictionary)
+    - [OpenAI Translate](#openai-translate)
+      - [OpenAI Query Mode](#openai-query-mode)
+    - [Built-In AI Translate](#built-in-ai-translate)
+    - [Gemini Translate](#gemini-translate)
+    - [DeepL Translate](#deepl-translate)
+      - [Configure API endpoint](#configure-api-endpoint)
+      - [Configure API call method](#configure-api-call-method)
+    - [Tencent Translate](#tencent-translate)
+    - [Bing Translate](#bing-translate)
+    - [Niutrans](#niutrans)
+    - [Lingocloud](#lingocloud)
+    - [Ali Translate](#ali-translate)
+    - [Doubao Translate](#doubao-translate)
+  - [Advanced Features](#advanced-features)
+    - [URL Scheme](#url-scheme)
+    - [Use with PopClip](#use-with-popclip)
+  - [Settings](#settings)
+    - [General](#general)
+    - [Services](#services)
+  - [In-App Shortcuts](#in-app-shortcuts)
+  - [Tips](#tips)
+  - [Similar Open Source Projects](#similar-open-source-projects)
+  - [Motivation](#motivation)
+  - [Contributor Guide](#contributor-guide)
+    - [Branch Structure](#branch-structure)
+    - [PR Submission Guidelines](#pr-submission-guidelines)
+    - [Participate in Swift Migration](#participate-in-swift-migration)
 
 ---
 
@@ -55,10 +62,6 @@
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./How-to-use-macOS-system-translation-in-Easydict.md)_)
 - [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali, Volcano and Doubao Translate.
 - [x] Support for 48 languages.
-
-## Swift Refactoring Plan
-
-We plan to refactor the project with Swift. If you are interested in this open source project, familiar with Swift/SwiftUI, welcome to join our development team to improve this project together [#194](https://github.com/tisfeng/Easydict/issues/194).
 
 ## Installation Guide
 
@@ -416,12 +419,18 @@ Open source makes the world better.
 
 If you are interested in this project, we welcome you to contribute to the project, and we will provide help as much as possible.
 
-Currently, the project has two main branches, dev and main. The dev branch code is usually the latest, and may contain some features that are under development. The main branch code is stable and will be merged with the dev branch code regularly.
+### Branch Structure
 
-In addition, we plan to migrate the project from objc to Swift, and gradually use Swift to write new feature modules in the future, see https://github.com/tisfeng/Easydict/issues/194
+- **dev branch**: Development branch, code is usually the latest and may contain features in progress
+- **main branch**: Main branch, code is stable and will be regularly merged with code from the dev branch
+
+### PR Submission Guidelines
 
 If you think there is room for improvement in the project, or if you have new ideas for features, please submit a PR:
 
-If the PR is a bug fix or feature implementation for an existing issue, please submit it to the dev branch.
+- **Bug fixes and feature implementations**: Please submit to the dev branch
+- **New features or major UI changes**: It is recommended to open an issue for discussion first to avoid duplicate or conflicting features
 
-If the PR is about a new feature or involves major changes to the UI, it is recommended to open an issue for discussion first to avoid duplicate or conflicting features.
+### Participate in Swift Migration
+
+We are planning to migrate the project from Objective-C to Swift. If you are interested in Swift/SwiftUI development, welcome to participate in this migration effort. See [#194](https://github.com/tisfeng/Easydict/issues/194).

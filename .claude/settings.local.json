@@ -40,7 +40,8 @@
       "Bash(xcbeautify:*)",
       "Bash(pgrep:*)",
       "Bash(git show:*)",
-      "Bash(printf:*)"
+      "Bash(printf:*)",
+      "Bash(GIT_PAGER=cat git diff:*)"
     ],
     "deny": [
       "Bash(git add:*)",

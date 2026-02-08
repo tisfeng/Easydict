@@ -47,6 +47,19 @@ Easydict is ready to use out of the box, can automatically recognize the languag
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
+## Contributing
+
+If you're interested in this project, we welcome your contributions. Our development follows this workflow:
+
+- **dev branch**: Latest development code, may contain features in progress
+- **main branch**: Stable release code, regularly merged from dev branch
+
+Please submit bug fixes and features to dev branch; for major new features or UI changes, please open an issue for discussion first. See [full contribution guide](./docs/en/GUIDE.md#contributor-guide).
+
+## Issue/PR Triage Notes
+
+The maintainer has been quite busy recently and usually only has time to triage issues on weekends. PRs (especially bugfix PRs) are prioritized. Also, due to an overloaded inbox and notifications, some messages may not be seen or replied to promptly. Thanks for your understanding.
+
 ## Installation
 
 ### Homebrew Installation (Recommended)
