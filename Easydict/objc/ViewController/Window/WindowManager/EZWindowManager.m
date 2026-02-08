@@ -322,6 +322,21 @@ static EZWindowManager *_instance;
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
              completionHandler:(nullable void (^)(void))completionHandler {
+    
+    /**
+     Clear query if text is nil and user don't want to keep the last result.
+
+     !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
+     */
+    queryText = [[queryText ns_removeInvisibleChar] ns_trim];
+    if (queryText.length == 0) {
+        queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
+    }
+    // Remove the excerpt info of the books only when the frontmost app is Books.app
+    else {
+        queryText = [queryText removeBooksExcerptInfo];
+    }
+        
     self.selectedText = queryText;
     self.actionType = actionType;
 
@@ -788,20 +803,6 @@ static EZWindowManager *_instance;
     self.eventMonitor.actionType = EZActionTypeShortcutQuery;
     [self.eventMonitor getSelectedTextWithCompletion:^(NSString *_Nullable text) {
         self.actionType = self.eventMonitor.actionType;
-
-        /**
-         Clear query if text is nil and user don't want to keep the last result.
-
-         !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
-         */
-        text = [[text ns_removeInvisibleChar] ns_trim];
-        if (text.length == 0) {
-            text = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
-        }
-        else {
-            text = [text removeBooksExcerptInfo];
-        }
-        
         self.selectedText = text;
 
         // Run it on main thread to avoid some UI bugs.
