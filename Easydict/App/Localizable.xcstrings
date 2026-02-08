@@ -6759,25 +6759,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove Books Excerpt Copyright Notice"
+            "value" : "When looking up text, remove Books excerpt copyright notice"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Odstrániť informácie o autorských právach z výpisov z Books"
+            "value" : "Pri získavaní textu odstrániť informácie o autorských právach z výpisov z Books"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移除 Books 摘录中的版权信息"
+            "value" : "取词时，移除 Books 摘录中的版权信息"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移除 Books 摘錄中的版權資訊"
+            "value" : "取詞時，移除 Books 摘錄中的版權資訊"
           }
         }
       }
