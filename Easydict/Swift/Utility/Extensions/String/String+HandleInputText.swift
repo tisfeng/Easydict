@@ -118,26 +118,51 @@ extension NSString {
         return queryText as NSString
     }
 
-    /// remove the excerpt info of the books.app
+    /// Remove the excerpt copyright notice from Books.app selection text.
     func removeBooksExcerptInfo() -> NSString {
-        var queryText = self as String
-
-        if NSRunningApplication.runningApplications(withBundleIdentifier: AppBundleIDs.books).isEmpty {
-            return queryText as NSString
+        guard MyConfiguration.shared.enableRemoveBooksExcerptInfo else {
+            return self
         }
 
-        // 英文格式: “...” Excerpt From ... This material may be protected by copyright.
-        let enRegex = #/^“(.+)”\s+Excerpt From.+This material may be protected by copyright\.$/#.dotMatchesNewlines()
-        // 中文格式: “...” 摘 ... 此材料受版权保护。
-        let zhRegex = #/^“(.+)”\s+摘.+此材料受版权保护。$/#.dotMatchesNewlines()
-
-        if let match = queryText.firstMatch(of: enRegex) {
-            queryText = String(match.output.1)
-        } else if let match = queryText.firstMatch(of: zhRegex) {
-            queryText = String(match.output.1)
+        let frontmostBundleIdentifier = NSWorkspace.shared.frontmostApplication?.bundleIdentifier
+        guard frontmostBundleIdentifier == AppBundleIDs.books else {
+            return self
         }
 
-        return queryText as NSString
+        if let extracted = extractBooksExcerptContent() {
+            return extracted as NSString
+        }
+
+        return self
+    }
+
+    // MARK: - Books Excerpt Parsing
+
+    private func extractBooksExcerptContent() -> String? {
+        let text = self as String
+
+        // English format: “...” Excerpt From ... This material may be protected by copyright.
+        let enRegex =
+            #/^“(.+?)”\s+Excerpt From.+This material may be protected by copyright\.$/#
+                .dotMatchesNewlines()
+
+        // Chinese format: “...” 摘 ... 此材料受版权保护。
+        let zhRegex =
+            #/^“(.+?)”\s+摘.+此材料受版权保护。$/#
+                .dotMatchesNewlines()
+
+        let regexes: [Regex<(Substring, Substring)>] = [
+            enRegex,
+            zhRegex,
+        ]
+
+        for regex in regexes {
+            if let match = text.firstMatch(of: regex) {
+                return String(match.output.1).trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+        }
+
+        return nil
     }
 
     /// Handle input text with configuration settings

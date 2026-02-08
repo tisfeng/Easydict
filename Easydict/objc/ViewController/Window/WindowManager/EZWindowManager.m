@@ -798,10 +798,7 @@ static EZWindowManager *_instance;
         if (text.length == 0) {
             text = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
         }
-        // remove the excerpt info of the books only when the frontmost app is Books.app
-        else if (MyConfiguration.shared.enableRemoveBooksExcerptInfo &&
-                 self.lastFrontmostApplication.bundleIdentifier != nil &&
-                 [self.lastFrontmostApplication.bundleIdentifier isEqualToString:AppBundleIDs.books]) {
+        else {
             text = [text removeBooksExcerptInfo];
         }
         
