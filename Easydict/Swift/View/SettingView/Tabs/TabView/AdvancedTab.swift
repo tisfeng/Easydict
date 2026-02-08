@@ -205,8 +205,8 @@ struct AdvancedTab: View {
                 }
                 Toggle(isOn: $enableRemoveBooksExcerptInfo) {
                     AdvancedTabItemView(
-                        color: .blue,
-                        icon: .characterCursorIbeam,
+                        color: .mint,
+                        icon: .book,
                         labelText: "setting.advance.enable_remove_books_excerpt_info"
                     )
                 }
