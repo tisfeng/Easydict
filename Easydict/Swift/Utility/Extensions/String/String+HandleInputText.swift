@@ -128,8 +128,8 @@ extension NSString {
 
         // 英文格式: “...” Excerpt From ... This material may be protected by copyright.
         let enRegex = #/^“(.+)”\s+Excerpt From.+This material may be protected by copyright\.$/#.dotMatchesNewlines()
-        // 中文格式: “...” 摘自 ... 此材料受版权保护。
-        let zhRegex = #/^“(.+)”\s+摘自.+此材料受版权保护。$/#.dotMatchesNewlines()
+        // 中文格式: “...” 摘 ... 此材料受版权保护。
+        let zhRegex = #/^“(.+)”\s+摘.+此材料受版权保护。$/#.dotMatchesNewlines()
 
         if let match = queryText.firstMatch(of: enRegex) {
             queryText = String(match.output.1)
