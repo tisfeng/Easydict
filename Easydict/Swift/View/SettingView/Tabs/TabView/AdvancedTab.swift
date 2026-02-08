@@ -164,14 +164,7 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.enable_force_get_selected_text_desc"
                     )
                 }
-                Toggle(isOn: $enableRemoveBooksExcerptInfo) {
-                    AdvancedTabItemView(
-                        color: .blue,
-                        icon: .characterCursorIbeam,
-                        labelText: "setting.advance.enable_remove_books_excerpt_info"
-                        // subtitleText: "setting.advance.enable_force_get_selected_text_desc"
-                    )
-                }
+
                 Picker(
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
@@ -210,7 +203,13 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
                     )
                 }
-
+                Toggle(isOn: $enableRemoveBooksExcerptInfo) {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .characterCursorIbeam,
+                        labelText: "setting.advance.enable_remove_books_excerpt_info"
+                    )
+                }
             } header: {
                 Text("setting.advance.header.text_selection_and_replacement")
             }
