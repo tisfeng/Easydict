@@ -80,6 +80,7 @@ extension Defaults.Keys {
         "EZConfiguration_kShowSettingQuickLink", default: true
     )
     static let hideMenuBarIcon = Key<Bool>("EZConfiguration_kHideMenuBarIconKey", default: false)
+    static let includeBetaUpdates = Key<Bool>("EZConfiguration_kIncludeBetaUpdatesKey", default: false)
     static let fixedWindowPosition = Key<EZShowWindowPosition>(
         "EZConfiguration_kShowFixedWindowPositionKey",
         default: .right
