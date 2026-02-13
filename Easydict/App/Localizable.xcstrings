@@ -3602,6 +3602,34 @@
         }
       }
     },
+    "ollama_rephrase" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Rephrase"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Rephrase"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama 改写"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama 改寫"
+          }
+        }
+      }
+    },
     "open_app_settings" : {
       "extractionState" : "manual",
       "localizations" : {
