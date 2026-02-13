@@ -164,6 +164,7 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.enable_force_get_selected_text_desc"
                     )
                 }
+
                 Picker(
                     selection: $forceGetSelectedTextType,
                     label: AdvancedTabItemView(
@@ -202,7 +203,13 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.auto_select_all_text_field_text_desc"
                     )
                 }
-
+                Toggle(isOn: $enableRemoveBooksExcerptInfo) {
+                    AdvancedTabItemView(
+                        color: .mint,
+                        icon: .book,
+                        labelText: "setting.advance.enable_remove_books_excerpt_info"
+                    )
+                }
             } header: {
                 Text("setting.advance.header.text_selection_and_replacement")
             }
@@ -433,6 +440,9 @@ struct AdvancedTab: View {
     // Force get selected text
     @Default(.enableForceGetSelectedText) private var enableForceGetSelectedText
     @Default(.forceGetSelectedTextType) private var forceGetSelectedTextType
+
+    // mouse select from Books.app
+    @Default(.enableRemoveBooksExcerptInfo) private var enableRemoveBooksExcerptInfo
 
     // Mouse select query
     @Default(.autoShowQueryIcon) private var autoShowQueryIcon

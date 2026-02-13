@@ -6754,6 +6754,34 @@
         }
       }
     },
+    "setting.advance.enable_remove_books_excerpt_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When looking up text, remove Books excerpt copyright notice"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pri získavaní textu odstrániť informácie o autorských právach z výpisov z Books"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取词时，移除 Books 摘录中的版权信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取詞時，移除 Books 摘錄中的版權資訊"
+          }
+        }
+      }
+    },
     "setting.advance.enable_force_get_selected_text_desc" : {
       "localizations" : {
         "en" : {
