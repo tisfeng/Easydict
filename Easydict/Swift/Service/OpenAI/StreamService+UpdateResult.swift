@@ -58,6 +58,8 @@ extension StreamService {
                 let nsError = error as NSError
                 if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
                     // Do not throw error if user cancelled request.
+                } else if shouldIgnoreCompletionError(error, resultText: resultText) {
+                    logInfo("Ignore stream completion error with existing content: \(error)")
                 } else {
                     queryError = .queryError(from: error)
                 }
@@ -107,5 +109,19 @@ extension StreamService {
             result.error = .queryError(from: error)
             completion(result)
         }
+    }
+
+    private func shouldIgnoreCompletionError(_ error: Error, resultText: String?) -> Bool {
+        guard let resultText, !resultText.trim().isEmpty else {
+            return false
+        }
+
+        let lowercasedError = String(describing: error).lowercased()
+
+        let isContentTypeError =
+            lowercasedError.contains("incorrectcontenttype(")
+                || lowercasedError.contains("incorrect content-type:")
+        let isTextPlainMIME = lowercasedError.contains("text/plain")
+        return isContentTypeError && isTextPlainMIME
     }
 }
