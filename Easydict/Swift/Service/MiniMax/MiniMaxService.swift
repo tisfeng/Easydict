@@ -1,5 +1,5 @@
 //
-//  MinimaxService.swift
+//  MiniMaxService.swift
 //  Easydict
 //
 //  Created by Codex on 2026/2/20.
@@ -9,10 +9,10 @@
 import Defaults
 import Foundation
 
-// MARK: - MinimaxService
+// MARK: - MiniMaxService
 
-@objc(EZMinimaxService)
-class MinimaxService: OpenAIService {
+@objc(EZMiniMaxService)
+class MiniMaxService: OpenAIService {
     // MARK: Public
 
     public override func name() -> String {

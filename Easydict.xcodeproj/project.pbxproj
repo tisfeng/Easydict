@@ -411,7 +411,7 @@
 		03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F12DB1F5F000268DF0 /* SliderCell.swift */; };
 		03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F42DB21EC200268DF0 /* Double+String.swift */; };
 		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
-		03A1B2C32F70000100A1B2C3 /* MinimaxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A1B2C42F70000100A1B2C3 /* MinimaxService.swift */; };
+		03A1B2C32F70000100A1B2C3 /* MiniMaxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A1B2C42F70000100A1B2C3 /* MiniMaxService.swift */; };
 		03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */; };
 		03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */; };
 		03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F281562D97A22500AE518C /* String+ClassicalChinese.swift */; };
@@ -1073,7 +1073,7 @@
 		03F086F12DB1F5F000268DF0 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		03F086F42DB21EC200268DF0 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
 		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
-		03A1B2C42F70000100A1B2C3 /* MinimaxService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimaxService.swift; sourceTree = "<group>"; };
+		03A1B2C42F70000100A1B2C3 /* MiniMaxService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniMaxService.swift; sourceTree = "<group>"; };
 		03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageMapper.swift; sourceTree = "<group>"; };
 		03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRSectionMerger.swift; sourceTree = "<group>"; };
 		03F281562D97A22500AE518C /* String+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ClassicalChinese.swift"; sourceTree = "<group>"; };
@@ -1842,7 +1842,7 @@
 				03D0F0202F00000100ABCDEF /* Baidu */,
 				03F086F62DB3A93200268DF0 /* Groq */,
 				03F281622D9A323700AE518C /* Zhipu */,
-				03A1B2C52F70000100A1B2C3 /* Minimax */,
+				03A1B2C52F70000100A1B2C3 /* MiniMax */,
 				0371A4FF2DB128E50097D4A1 /* GitHub Models */,
 				40F5D52A2D65B1A200EDB997 /* DeepSeek */,
 				036463682CB62B6600D0D6CC /* Apple */,
@@ -2862,12 +2862,12 @@
 			path = Groq;
 			sourceTree = "<group>";
 		};
-		03A1B2C52F70000100A1B2C3 /* Minimax */ = {
+		03A1B2C52F70000100A1B2C3 /* MiniMax */ = {
 			isa = PBXGroup;
 			children = (
-				03A1B2C42F70000100A1B2C3 /* MinimaxService.swift */,
+				03A1B2C42F70000100A1B2C3 /* MiniMaxService.swift */,
 			);
-			path = Minimax;
+			path = MiniMax;
 			sourceTree = "<group>";
 		};
 		03F2815B2D98E52200AE518C /* ChineseGenre */ = {
@@ -3936,7 +3936,7 @@
 				9627F9382B59956800B1E999 /* GlobalShortcutSettingView.swift in Sources */,
 				03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */,
 				03F281602D9A323700AE518C /* ZhipuService.swift in Sources */,
-				03A1B2C32F70000100A1B2C3 /* MinimaxService.swift in Sources */,
+				03A1B2C32F70000100A1B2C3 /* MiniMaxService.swift in Sources */,
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
 				62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */,
 				C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */,
