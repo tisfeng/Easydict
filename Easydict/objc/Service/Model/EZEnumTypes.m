@@ -33,6 +33,7 @@ NSString *const EZServiceTypeDeepSeek = @"DeepSeek";
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 NSString *const EZServiceTypeGroq = @"Groq";
 NSString *const EZServiceTypeZhipu = @"Zhipu";
+NSString *const EZServiceTypeMiniMax = @"MiniMax";
 NSString *const EZServiceTypeGitHub = @"GitHub";
 NSString *const EZServiceTypeDoubao = @"Doubao";
 

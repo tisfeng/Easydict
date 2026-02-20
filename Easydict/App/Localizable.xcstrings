@@ -3327,6 +3327,34 @@
         }
       }
     },
+    "minimax_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MiniMax Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MiniMax Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MiniMax 翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MiniMax 翻譯"
+          }
+        }
+      }
+    },
     "missing_secret_key_error" : {
       "localizations" : {
         "en" : {
