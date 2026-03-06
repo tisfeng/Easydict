@@ -175,6 +175,11 @@ extension Defaults.Keys {
         default: .menuBarActionCopy
     )
 
+    static let enableRemoveBooksExcerptInfo = Key<Bool>(
+        "EZConfiguration_kEnableRemoveBooksExcerptInfo",
+        default: true
+    )
+
     static let autoSelectAllTextFieldText = Key<Bool>(
         "EZConfiguration_kAutoSelectAllTextFieldText",
         default: true
