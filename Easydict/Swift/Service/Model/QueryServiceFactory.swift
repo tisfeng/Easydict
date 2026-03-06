@@ -74,6 +74,7 @@ final class QueryServiceFactory: NSObject {
         (.deepSeek, DeepSeekService.self),
         (.groq, GroqService.self),
         (.zhipu, ZhipuService.self),
+        (.miniMax, MiniMaxService.self),
         (.gitHub, GitHubService.self),
         (.builtInAI, BuiltInAIService.self),
         (.gemini, GeminiService.self),
