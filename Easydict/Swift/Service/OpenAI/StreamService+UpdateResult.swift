@@ -58,6 +58,8 @@ extension StreamService {
                 let nsError = error as NSError
                 if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
                     // Do not throw error if user cancelled request.
+                } else if shouldIgnoreCompletionError(error, resultText: resultText) {
+                    logInfo("Ignore stream completion error with existing content: \(error)")
                 } else {
                     queryError = .queryError(from: error)
                 }
@@ -107,5 +109,85 @@ extension StreamService {
             result.error = .queryError(from: error)
             completion(result)
         }
+    }
+
+    private func shouldIgnoreCompletionError(_ error: Error, resultText: String?) -> Bool {
+        guard let resultText else {
+            return false
+        }
+
+        let trimmedText = resultText.trim()
+        guard !trimmedText.isEmpty else {
+            return false
+        }
+
+        let contentLength = trimmedText.count
+        let minContentLengthToSuppressError = 8
+        guard contentLength >= minContentLengthToSuppressError else {
+            logInfo(
+                "Do not ignore stream completion error due to insufficient content. " +
+                    "Content length: \(contentLength), error: \(error)"
+            )
+            return false
+        }
+
+        // This error can be wrapped by different layers, so we collect a compact context string
+        // from the error itself, NSError metadata, and nested underlying errors.
+        let lowercasedErrorContext = errorContextString(error).lowercased()
+
+        let isContentTypeError =
+            lowercasedErrorContext.contains("incorrectcontenttype(")
+            || lowercasedErrorContext.contains("incorrect content-type:")
+            || lowercasedErrorContext.contains("unacceptable content-type:")
+        let isTextPlainMIME = lowercasedErrorContext.contains("text/plain")
+        let shouldSuppress = isContentTypeError && isTextPlainMIME
+
+        if shouldSuppress {
+            logInfo(
+                "Ignore stream completion error with existing content due to content-type mismatch. " +
+                    "Content length: \(contentLength), error: \(error)"
+            )
+        }
+
+        return shouldSuppress
+    }
+
+    private func errorContextString(_ error: Error) -> String {
+        var parts = Set<String>()
+
+        func collect(_ currentError: Error, depth: Int) {
+            guard depth <= 2 else {
+                return
+            }
+
+            let nsError = currentError as NSError
+            parts.insert(String(describing: currentError))
+            parts.insert(nsError.localizedDescription)
+
+            if let failureReason = nsError.localizedFailureReason {
+                parts.insert(failureReason)
+            }
+
+            if let recoverySuggestion = nsError.localizedRecoverySuggestion {
+                parts.insert(recoverySuggestion)
+            }
+
+            if let debugDescription = nsError.userInfo[NSDebugDescriptionErrorKey] as? String {
+                parts.insert(debugDescription)
+            }
+
+            if let responseData = nsError.userInfo["com.alamofire.serialization.response.error.data"] as? Data,
+               let responseText = String(data: responseData, encoding: .utf8)
+            {
+                parts.insert(responseText)
+            }
+
+            if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? Error {
+                collect(underlyingError, depth: depth + 1)
+            }
+        }
+
+        collect(error, depth: 0)
+        return parts.joined(separator: " | ")
     }
 }
