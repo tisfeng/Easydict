@@ -69,32 +69,28 @@ public class AppleSpeechService: NSObject {
         let localeIdentifier = localeIdentifier(for: language)
         let availableVoices = NSSpeechSynthesizer.availableVoices
 
+        var matchingVoices: [(id: String, priority: Int)] = []
+
         for voice in availableVoices {
             let attributes = NSSpeechSynthesizer.attributes(forVoice: voice)
             if let voiceLocale = attributes[NSSpeechSynthesizer.VoiceAttributeKey.localeIdentifier]
                 as? String,
-                voiceLocale == localeIdentifier {
-                if let voiceId = attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier]
-                    as? String {
-                    // Prefer compact voices
-                    if voiceId.contains("compact") {
-                        return voiceId
-                    }
+                voiceLocale == localeIdentifier,
+                let voiceId = attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier] as? String {
+                // Prefer higher quality voices: premium > enhanced > others (including compact)
+                let priority: Int
+                if voiceId.contains("premium") {
+                    priority = 2
+                } else if voiceId.contains("enhanced") {
+                    priority = 1
+                } else {
+                    priority = 0
                 }
+                matchingVoices.append((id: voiceId, priority: priority))
             }
         }
 
-        // Return first available voice if no compact voice found
-        for voice in availableVoices {
-            let attributes = NSSpeechSynthesizer.attributes(forVoice: voice)
-            if let voiceLocale = attributes[NSSpeechSynthesizer.VoiceAttributeKey.localeIdentifier]
-                as? String,
-                voiceLocale == localeIdentifier {
-                return attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier] as? String
-            }
-        }
-
-        return nil
+        return matchingVoices.sorted { $0.priority > $1.priority }.first?.id
     }
 
     private func localeIdentifier(for language: Language) -> String {
