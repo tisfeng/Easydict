@@ -39,6 +39,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
+/// Compare frames with a tolerance to avoid tiny floating-point oscillations.
+static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolerance) {
+    return ABS(CGRectGetMinX(lhs) - CGRectGetMinX(rhs)) <= tolerance &&
+        ABS(CGRectGetMinY(lhs) - CGRectGetMinY(rhs)) <= tolerance &&
+        ABS(CGRectGetWidth(lhs) - CGRectGetWidth(rhs)) <= tolerance &&
+        ABS(CGRectGetHeight(lhs) - CGRectGetHeight(rhs)) <= tolerance;
+}
+
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource, WKNavigationDelegate>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
@@ -67,6 +75,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
+@property (nonatomic, assign) BOOL isUpdatingWindowFrameInternally;
 
 @property (nonatomic, assign) EZTipsCellType tipsCellType;
 
@@ -148,14 +157,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
 
         // Avoid recycling call, resize window --> update window height --> resize window
-        if (self.lockResizeWindow) {
+        if (self.lockResizeWindow || self.isUpdatingWindowFrameInternally) {
             //            MMLogInfo(@"lockResizeWindow");
             return;
         }
+        
+        MMLogInfo(@"resize window, update window height");
 
         [self setNeedUpdateIframeHeightForAllResults];
 
-        [self reloadTableViewDataWithLock:NO completion:^{
+        [self reloadTableViewDataWithoutWindowHeightUpdate:^{
             // Update query view height manually, and update cell height.
             CGFloat queryViewHeight = [self.queryView heightOfQueryView];
             if (queryViewHeight) {
@@ -1052,6 +1063,19 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [CATransaction commit];
 }
 
+/// Reload table view only. Caller is responsible for window height updates.
+- (void)reloadTableViewDataWithoutWindowHeightUpdate:(nullable void (^)(void))completion {
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        if (completion) {
+            completion();
+        }
+    }];
+
+    [self.tableView reloadData];
+    [CATransaction commit];
+}
+
 - (void)closeAllResultView:(void (^)(void))completionHandler {
     [self.queryModel stopAllService];
 
@@ -1622,7 +1646,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.lockResizeWindow = YES;
     }
 
-    //    MMLogInfo(@"updateWindowViewHeightWithLock");
+        MMLogInfo(@"updateWindowViewHeightWithLock");
 
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
@@ -1644,8 +1668,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
 
-    // Since chaneg height will cause position change, we need to adjust y to keep top-left coordinate position.
-    NSWindow *window = self.view.window;
+    // Since changing height will cause position change, adjust y to keep top-left coordinate stable.
+    NSWindow *window = self.baseQueryWindow ?: self.view.window;
+    if (!window) {
+        self.lockResizeWindow = NO;
+        return;
+    }
+
     CGFloat deltaHeight = window.height - showingWindowHeight;
     CGFloat y = window.y + deltaHeight;
 
@@ -1654,10 +1683,21 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     CGRect screenVisibleFrame = EZLayoutManager.shared.screenVisibleFrame;
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
+    if (ez_frame_equal_with_tolerance(window.frame, safeFrame, 0.5)) {
+        self.tableView.height = tableViewHeight;
+        self.lockResizeWindow = NO;
+        MMLogInfo(@"Equal frame, no need to update window frame");
+        return;
+    }
+
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
-    [self.baseQueryWindow setFrame:safeFrame display:YES];
+    self.isUpdatingWindowFrameInternally = YES;
+    [window setFrame:safeFrame display:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.isUpdatingWindowFrameInternally = NO;
+    });
 
     // Restore tableView height.
     self.tableView.height = tableViewHeight;

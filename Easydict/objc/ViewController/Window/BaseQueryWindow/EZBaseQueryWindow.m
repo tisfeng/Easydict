@@ -40,11 +40,6 @@
         }];
         
         [self setupUI];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(windowDidResize:)
-                                                     name:NSWindowDidResizeNotification
-                                                   object:self];
     }
     return self;
 }
@@ -140,7 +135,7 @@
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-    //    MMLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
+        MMLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
     
     [[EZLayoutManager shared] updateWindowFrame:self];
     

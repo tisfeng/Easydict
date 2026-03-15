@@ -14,14 +14,8 @@ The project is currently **actively migrating from Objective-C to Swift + SwiftU
 
 **Note:** All new development should prefer modern Swift and SwiftUI APIs available on macOS 13.0+ to ensure cleaner, safer, and future‑proof code.
 
-## Build Commands
-
-In general, do not need to run `xcodebuild` commands if not demanded.
-
-See [build.md](build.md) for common build and test commands.
-
 ## Code Architecture
-****
+
 ### Directory Structure
 
 - `Easydict/App/` - App entry point, bridging header, assets, localization
@@ -52,14 +46,24 @@ Translation services inherit from a base query service. Each service lives in it
 - PCH file at `Easydict/App/PrefixHeader.pch`
 - String localization uses Xcode String Catalogs (`Localizable.xcstrings` files)
 
+## Build Commands
+
+In general, do not need to run `xcodebuild` commands if not demanded.
+
+See [build.md](.claude/rules/build.md) for common build and test commands.
+
 ## Coding Standards
 
-See [code-style.md](code-style.md) for detailed coding rules.
+See [code-style.md](.claude/rules/code-style.md) for detailed coding rules.
 
 ## Localization
 
-See [localization.md](localization.md) for detailed localization rules.
+See [localization.md](.claude/rules/localization.md) for detailed localization rules.
 
 ## Git Commit Messages
 
-See [commit.md](commit.md) for Angular-style commit message guidelines.
+See [SKILL.md](.claude/skills/git-commit/SKILL.md) for Angular-style commit message guidelines.
+
+## MCP Servers
+
+Always use the OpenAI developer documentation MCP server if you need to work with the OpenAI API, ChatGPT Apps SDK, Codex,… without me having to explicitly ask.

@@ -11,7 +11,6 @@ import SettingsAccess
 import SFSafeSymbols
 import Sparkle
 import SwiftUI
-import Vision
 import ZipArchive
 
 // MARK: - MenuItemView
@@ -173,7 +172,8 @@ struct MenuItemView: View {
             logInfo("Check Updates")
             NSApp.activateApp()
             MyConfiguration.shared.updater.checkForUpdates()
-        }.disabled(!store.canCheckForUpdates)
+        }
+        .disabled(!store.canCheckForUpdates)
     }
 
     /// Quit item
