@@ -181,6 +181,8 @@ final class EventMonitor: NSObject {
         static let dismissPopButtonDelay: TimeInterval = 0.1
         static let delayGetSelectedText: TimeInterval = 0.1
         static let expandedRadius: CGFloat = 120
+        /// Throttle interval for mouse-moved events to reduce CPU usage.
+        static let mouseMovedThrottleInterval: TimeInterval = 0.1
     }
 
     private let eventMonitorEngine: EventMonitorEngine
@@ -195,6 +197,7 @@ final class EventMonitor: NSObject {
     private var lastEvent: NSEvent?
     private var currentModifierFlags: NSEvent.ModifierFlags = []
     private var shouldBypassDismissIgnore = false
+    private var lastMouseMovedTime: CFAbsoluteTime = 0
 
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
@@ -227,9 +230,22 @@ final class EventMonitor: NSObject {
 
     private func handleMonitorEvent(_ event: NSEvent) {
         lastEvent = event
-        frontmostApplication = appContextProvider.frontmostApplication
         popButtonController.lastEvent = event
 
+        // For high-frequency events (mouseMoved, scrollWheel), skip expensive
+        // operations and handle them early to avoid blocking the main thread.
+        switch event.type {
+        case .mouseMoved:
+            handleMouseMoved()
+            return
+        case .scrollWheel:
+            popButtonController.handleScrollWheel(event)
+            return
+        default:
+            break
+        }
+
+        frontmostApplication = appContextProvider.frontmostApplication
         let mouseLocation = NSEvent.mouseLocation
 
         switch event.type {
@@ -269,10 +285,6 @@ final class EventMonitor: NSObject {
             if popButtonController.isPopButtonVisible {
                 dismissPopButton()
             }
-        case .scrollWheel:
-            popButtonController.handleScrollWheel(event)
-        case .mouseMoved:
-            popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
         case .flagsChanged:
 //            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
 //            log("keyCode: \(event.keyCode)")
@@ -345,6 +357,17 @@ final class EventMonitor: NSObject {
     private func isMouseInPopButtonWindow() -> Bool {
         let popButtonWindow = EZWindowManager.shared().popButtonWindow
         return popButtonWindow.frame.contains(NSEvent.mouseLocation)
+    }
+
+    /// Handles mouse-moved events with throttling to prevent excessive computation.
+    private func handleMouseMoved() {
+        guard popButtonController.isPopButtonVisible else { return }
+
+        let now = CFAbsoluteTimeGetCurrent()
+        guard now - lastMouseMovedTime >= Constants.mouseMovedThrottleInterval else { return }
+        lastMouseMovedTime = now
+
+        popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
     }
 
     private func autoGetSelectedText() {
