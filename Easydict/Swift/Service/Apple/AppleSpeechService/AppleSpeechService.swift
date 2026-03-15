@@ -69,7 +69,7 @@ public class AppleSpeechService: NSObject {
         let localeIdentifier = localeIdentifier(for: language)
         let availableVoices = NSSpeechSynthesizer.availableVoices
 
-        var matchingVoices: [(id: String, priority: Int)] = []
+        var bestVoice: (id: String, priority: Int)?
 
         for voice in availableVoices {
             let attributes = NSSpeechSynthesizer.attributes(forVoice: voice)
@@ -77,20 +77,29 @@ public class AppleSpeechService: NSObject {
                 as? String,
                 voiceLocale == localeIdentifier,
                 let voiceId = attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier] as? String {
-                // Prefer higher quality voices: premium > enhanced > others (including compact)
-                let priority: Int
-                if voiceId.contains("premium") {
-                    priority = 2
-                } else if voiceId.contains("enhanced") {
-                    priority = 1
+                let priority = voicePriority(for: voiceId)
+
+                if let currentBest = bestVoice {
+                    if priority > currentBest.priority {
+                        bestVoice = (id: voiceId, priority: priority)
+                    }
                 } else {
-                    priority = 0
+                    bestVoice = (id: voiceId, priority: priority)
                 }
-                matchingVoices.append((id: voiceId, priority: priority))
             }
         }
 
-        return matchingVoices.sorted { $0.priority > $1.priority }.first?.id
+        return bestVoice?.id
+    }
+
+    private func voicePriority(for voiceId: String) -> Int {
+        if voiceId.contains("premium") {
+            return 2
+        }
+        if voiceId.contains("enhanced") {
+            return 1
+        }
+        return 0
     }
 
     private func localeIdentifier(for language: Language) -> String {
