@@ -63,13 +63,46 @@ public class AppleSpeechService: NSObject {
         return matchingVoices
     }
 
+    // MARK: Internal
+
+    func preferredVoiceIdentifier(from voiceIds: [String]) -> String? {
+        var bestVoice: (id: String, priority: Int)?
+
+        for voiceId in voiceIds {
+            let priority = voicePriority(for: voiceId)
+
+            if let currentBest = bestVoice {
+                if priority > currentBest.priority {
+                    bestVoice = (id: voiceId, priority: priority)
+                }
+            } else {
+                bestVoice = (id: voiceId, priority: priority)
+            }
+        }
+
+        return bestVoice?.id
+    }
+
+    func voicePriority(for voiceId: String) -> Int {
+        if voiceId.contains("premium") {
+            return 3
+        }
+        if voiceId.contains("enhanced") {
+            return 2
+        }
+        if voiceId.contains("compact") {
+            return 1
+        }
+        return 0
+    }
+
     // MARK: Private
 
     private func voiceIdentifier(for language: Language) -> String? {
         let localeIdentifier = localeIdentifier(for: language)
         let availableVoices = NSSpeechSynthesizer.availableVoices
 
-        var bestVoice: (id: String, priority: Int)?
+        var matchingVoices: [String] = []
 
         for voice in availableVoices {
             let attributes = NSSpeechSynthesizer.attributes(forVoice: voice)
@@ -77,29 +110,11 @@ public class AppleSpeechService: NSObject {
                 as? String,
                 voiceLocale == localeIdentifier,
                 let voiceId = attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier] as? String {
-                let priority = voicePriority(for: voiceId)
-
-                if let currentBest = bestVoice {
-                    if priority > currentBest.priority {
-                        bestVoice = (id: voiceId, priority: priority)
-                    }
-                } else {
-                    bestVoice = (id: voiceId, priority: priority)
-                }
+                matchingVoices.append(voiceId)
             }
         }
 
-        return bestVoice?.id
-    }
-
-    private func voicePriority(for voiceId: String) -> Int {
-        if voiceId.contains("premium") {
-            return 2
-        }
-        if voiceId.contains("enhanced") {
-            return 1
-        }
-        return 0
+        return preferredVoiceIdentifier(from: matchingVoices)
     }
 
     private func localeIdentifier(for language: Language) -> String {
