@@ -550,7 +550,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         mm_strongify(self);
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
-        MMLogInfo(@"ocr result: %@", inputText);
+        MMLogInfo(@"ocr result: %@", inputText.truncated);
 
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,

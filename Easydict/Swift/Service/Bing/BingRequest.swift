@@ -318,7 +318,7 @@ class BingRequest {
         }
 
         // For www.bing.com, sometimes it won't return redirect URL, so we use cn.bing.com
-        let webBingURLString = "http://\(BingConfig.chinaHost)"
+        let webBingURLString = "https://\(BingConfig.chinaHost)"
 
         translateSession.get(
             webBingURLString,

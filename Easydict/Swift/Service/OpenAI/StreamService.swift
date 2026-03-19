@@ -254,7 +254,11 @@ public class StreamService: QueryService {
     }
 
     var apiKey: String {
-        Defaults[apiKeyKey]
+        let key = apiKeyKey.name
+        if let keychainValue = KeychainHelper.read(key), !keychainValue.isEmpty {
+            return keychainValue
+        }
+        return Defaults[apiKeyKey]
     }
 
     var apiKeyKey: Defaults.Key<String> {

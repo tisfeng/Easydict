@@ -53,7 +53,7 @@ static char *kNSURLRequestSSTOPKEY = "kNSURLRequestSSTOPKEY";
 }
 
 + (BOOL)allowsAnyHTTPSCertificateForHost:(NSString *)host {
-    return YES;
+    return NO;
 }
 
 + (void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString *)host {
@@ -182,7 +182,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         self.operationQueue = [[NSOperationQueue alloc] init];
         self.operationQueue.maxConcurrentOperationCount = 1;
         self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
-        [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:@"https"];
+        // Removed: insecure certificate bypass
         
         self.monitorDictionary = [NSMutableDictionary dictionary];
         
@@ -325,12 +325,18 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     return nil;
 }
 
-#pragma mark - wkwebview 信任 https 接口
+#pragma mark - NSURLSessionDelegate
 
-- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *_Nullable credential))completionHandler {
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler {
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        NSURLCredential *card = [[NSURLCredential alloc] initWithTrust:challenge.protectionSpace.serverTrust];
-        completionHandler(NSURLSessionAuthChallengeUseCredential, card);
+        SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+        if (serverTrust) {
+            completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+        } else {
+            completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        }
+    } else {
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
     }
 }
 

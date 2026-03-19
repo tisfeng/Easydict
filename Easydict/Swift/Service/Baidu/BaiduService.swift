@@ -301,11 +301,13 @@ final class BaiduService: QueryService {
     }()
 
     private var appId: String {
-        Defaults[.baiduAppId]
+        let kc = KeychainHelper.readOrEmpty(EZBaiduAppId)
+        return kc.isEmpty ? Defaults[.baiduAppId] : kc
     }
 
     private var secretKey: String {
-        Defaults[.baiduSecretKey]
+        let kc = KeychainHelper.readOrEmpty(EZBaiduSecretKey)
+        return kc.isEmpty ? Defaults[.baiduSecretKey] : kc
     }
 
     /// Requests detected language for the given text.

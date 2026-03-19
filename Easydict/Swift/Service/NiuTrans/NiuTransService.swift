@@ -151,8 +151,8 @@ class NiuTransService: QueryService {
     // MARK: - Private Properties
 
     private var apiKey: String {
-        // easydict://writeKeyValue?EZNiuTransAPIKey=
-        let key = Defaults[.niuTransAPIKey]
+        let kcKey = KeychainHelper.readOrEmpty(EZNiuTransAPIKey)
+        let key = kcKey.isEmpty ? Defaults[.niuTransAPIKey] : kcKey
         if key.isEmpty {
             return niutransAPIKey
         }
