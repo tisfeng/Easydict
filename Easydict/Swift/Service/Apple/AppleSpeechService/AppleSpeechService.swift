@@ -63,38 +63,58 @@ public class AppleSpeechService: NSObject {
         return matchingVoices
     }
 
+    // MARK: Internal
+
+    func preferredVoiceIdentifier(from voiceIds: [String]) -> String? {
+        var bestVoice: (id: String, priority: Int)?
+
+        for voiceId in voiceIds {
+            let priority = voicePriority(for: voiceId)
+
+            if let currentBest = bestVoice {
+                if priority > currentBest.priority {
+                    bestVoice = (id: voiceId, priority: priority)
+                }
+            } else {
+                bestVoice = (id: voiceId, priority: priority)
+            }
+        }
+
+        return bestVoice?.id
+    }
+
+    func voicePriority(for voiceId: String) -> Int {
+        if voiceId.contains("premium") {
+            return 3
+        }
+        if voiceId.contains("enhanced") {
+            return 2
+        }
+        if voiceId.contains("compact") {
+            return 1
+        }
+        return 0
+    }
+
     // MARK: Private
 
     private func voiceIdentifier(for language: Language) -> String? {
         let localeIdentifier = localeIdentifier(for: language)
         let availableVoices = NSSpeechSynthesizer.availableVoices
 
+        var matchingVoices: [String] = []
+
         for voice in availableVoices {
             let attributes = NSSpeechSynthesizer.attributes(forVoice: voice)
             if let voiceLocale = attributes[NSSpeechSynthesizer.VoiceAttributeKey.localeIdentifier]
                 as? String,
-                voiceLocale == localeIdentifier {
-                if let voiceId = attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier]
-                    as? String {
-                    // Prefer compact voices
-                    if voiceId.contains("compact") {
-                        return voiceId
-                    }
-                }
+                voiceLocale == localeIdentifier,
+                let voiceId = attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier] as? String {
+                matchingVoices.append(voiceId)
             }
         }
 
-        // Return first available voice if no compact voice found
-        for voice in availableVoices {
-            let attributes = NSSpeechSynthesizer.attributes(forVoice: voice)
-            if let voiceLocale = attributes[NSSpeechSynthesizer.VoiceAttributeKey.localeIdentifier]
-                as? String,
-                voiceLocale == localeIdentifier {
-                return attributes[NSSpeechSynthesizer.VoiceAttributeKey.identifier] as? String
-            }
-        }
-
-        return nil
+        return preferredVoiceIdentifier(from: matchingVoices)
     }
 
     private func localeIdentifier(for language: Language) -> String {
