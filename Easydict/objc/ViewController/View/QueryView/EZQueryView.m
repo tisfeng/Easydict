@@ -34,6 +34,7 @@
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
 
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
+@property (nonatomic, strong) id fontSizeObserver;
 
 @end
 
@@ -46,6 +47,13 @@
         [self setup];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (_fontSizeObserver) {
+        [[NSNotificationCenter defaultCenter] removeObserver:_fontSizeObserver];
+    }
 }
 
 - (void)setup {
@@ -84,10 +92,11 @@
         }
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserverForName:NSNotification.didChangeFontSize
+    self.fontSizeObserver = [[NSNotificationCenter defaultCenter] addObserverForName:NSNotification.didChangeFontSize
                                                       object:nil
                                                        queue:NSOperationQueue.mainQueue
                                                   usingBlock:^(NSNotification * _Nonnull notification) {
+        mm_strongify(self);
         self.textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
     }];
     
