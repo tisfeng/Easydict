@@ -39,6 +39,7 @@ final class EventMonitor: NSObject {
         self.popButtonController = PopButtonVisibilityController()
         self.appContextProvider = AppContextProvider()
         self.systemUtility = SystemUtility.shared
+        self.mouseMovedThrottleGate = ThrottleGate(interval: Constants.mouseMovedThrottleInterval)
         super.init()
         configureDependencies()
     }
@@ -197,7 +198,7 @@ final class EventMonitor: NSObject {
     private var lastEvent: NSEvent?
     private var currentModifierFlags: NSEvent.ModifierFlags = []
     private var shouldBypassDismissIgnore = false
-    private var lastMouseMovedTime: CFAbsoluteTime = 0
+    private var mouseMovedThrottleGate: ThrottleGate
 
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
@@ -362,10 +363,7 @@ final class EventMonitor: NSObject {
     /// Handles mouse-moved events with throttling to prevent excessive computation.
     private func handleMouseMoved() {
         guard popButtonController.isPopButtonVisible else { return }
-
-        let now = CFAbsoluteTimeGetCurrent()
-        guard now - lastMouseMovedTime >= Constants.mouseMovedThrottleInterval else { return }
-        lastMouseMovedTime = now
+        guard mouseMovedThrottleGate.shouldAllow() else { return }
 
         popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
     }
@@ -417,6 +415,7 @@ final class EventMonitor: NSObject {
                 return
             }
 
+            mouseMovedThrottleGate.reset()
             popButtonController.isPopButtonVisible = true
             selectedText = trimmed
             cancelDismissPopButton()
@@ -455,6 +454,7 @@ final class EventMonitor: NSObject {
         }
         dismissPopButtonBlock?()
         popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
         eventTapMonitor.stop()
     }
 
