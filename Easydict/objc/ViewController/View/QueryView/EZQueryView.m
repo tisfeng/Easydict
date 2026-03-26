@@ -85,6 +85,7 @@
     
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
+        mm_strongify(self);
         [self highlightAllLinks];
         
         if (self.pasteTextBlock) {
@@ -102,6 +103,7 @@
     
     // When programatically setting the text, like auto select text, or OCR text.
     [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
+        mm_strongify(self);
         [self updateInputText:text];
     }];
     
