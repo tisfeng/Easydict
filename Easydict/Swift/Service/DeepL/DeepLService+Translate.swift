@@ -6,7 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import AFNetworking
+import Alamofire
 import Defaults
 import Foundation
 
@@ -80,29 +80,26 @@ extension DeepLService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = postDataData
+        request.timeoutInterval = EZNetWorkTimeoutInterval
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let manager = AFURLSessionManager()
-        manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval
 
         let startTime = CFAbsoluteTimeGetCurrent()
 
-        let task = manager.dataTask(
-            with: request,
-            uploadProgress: nil,
-            downloadProgress: nil
-        ) { [weak self] _, responseObject, error in
+        let dataRequest = AF.request(request)
+            .validate(statusCode: 200 ..< 300)
+
+        dataRequest.responseData { [weak self] response in
             guard let self = self else { return }
 
             if queryModel.isServiceStopped(serviceType().rawValue) {
                 return
             }
 
-            if let nsError = error as? NSError, nsError.code == NSURLErrorCancelled {
+            if let nsError = response.error as? NSError, nsError.code == NSURLErrorCancelled {
                 return
             }
 
-            if let error = error {
+            if let error = response.error {
                 logError("deepLWebTranslate error: \(error)")
                 var queryError = QueryError(type: .api, message: error.localizedDescription)
 
@@ -114,12 +111,7 @@ extension DeepLService {
                     return
                 }
 
-                // Try to get error message from response data
-                let nsError = error as NSError
-                if let errorData = nsError.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] as? Data,
-                   let json = try? JSONSerialization.jsonObject(with: errorData) as? [String: Any],
-                   let errorDict = json["error"] as? [String: Any],
-                   let errorMessage = errorDict["message"] as? String {
+                if let errorMessage = parseDeepLErrorMessage(from: response.data) {
                     queryError = QueryError(type: .api, message: nil, errorDataMessage: errorMessage)
                 }
 
@@ -130,12 +122,7 @@ extension DeepLService {
             let endTime = CFAbsoluteTimeGetCurrent()
             logInfo("deepLWebTranslate cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
 
-            guard let responseData = responseObject as? Data else {
-                // Try to parse as dictionary directly (AFNetworking may have already parsed it)
-                if let responseDict = responseObject as? [String: Any] {
-                    parseWebTranslateResponse(responseDict, completion: completion)
-                    return
-                }
+            guard let responseData = response.data else {
                 completion(result, QueryError(type: .api, message: "Invalid response"))
                 return
             }
@@ -149,10 +136,8 @@ extension DeepLService {
             }
         }
 
-        task.resume()
-
         queryModel.setStop({
-            task.cancel()
+            dataRequest.cancel()
         }, serviceType: serviceType().rawValue)
     }
 
@@ -209,56 +194,64 @@ extension DeepLService {
             "target_lang": targetLangCode,
         ]
 
-        let manager = AFHTTPSessionManager()
-        manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval
-
         let authorization = "DeepL-Auth-Key \(authKey)"
-        manager.requestSerializer.setValue(authorization, forHTTPHeaderField: "Authorization")
-
         let startTime = CFAbsoluteTimeGetCurrent()
-
-        let task = manager.post(
+        let request = AF.request(
             url,
+            method: .post,
             parameters: params,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self = self else { return }
+            encoding: URLEncoding.httpBody,
+            headers: HTTPHeaders([
+                "Authorization": authorization,
+            ]),
+            requestModifier: { request in
+                request.timeoutInterval = EZNetWorkTimeoutInterval
+            }
+        )
+        .validate(statusCode: 200 ..< 300)
 
-                let endTime = CFAbsoluteTimeGetCurrent()
-                logInfo("deepLTranslate cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
+        request.responseData { [weak self] response in
+            guard let self = self else { return }
 
-                if let responseDict = responseObject as? [String: Any] {
-                    result.translatedResults = parseOfficialResponse(responseDict)
-                    result.raw = responseDict as NSDictionary
-                }
-                completion(result, nil)
-            },
-            failure: { [weak self] _, error in
-                guard let self = self else { return }
+            if queryModel.isServiceStopped(serviceType().rawValue) {
+                return
+            }
 
-                if queryModel.isServiceStopped(serviceType().rawValue) {
-                    return
-                }
-
+            if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
                     return
                 }
 
                 logError("deepLTranslate error: \(error)")
 
-                // If official first, try web API
                 if Defaults[.deepLTranslation] == .authKeyFirst {
                     deepLWebTranslate(text, from: from, to: to, completion: completion)
                     return
                 }
 
                 let queryError = QueryError(type: .api, message: error.localizedDescription)
+                queryError.errorDataMessage = parseDeepLErrorMessage(from: response.data)
                 completion(result, queryError)
+                return
             }
-        )
+
+            let endTime = CFAbsoluteTimeGetCurrent()
+            logInfo("deepLTranslate cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
+
+            guard let responseData = response.data,
+                  let responseDict = try? JSONSerialization.jsonObject(with: responseData) as? [String: Any]
+            else {
+                completion(result, QueryError(type: .api, message: "Invalid response"))
+                return
+            }
+
+            result.translatedResults = parseOfficialResponse(responseDict)
+            result.raw = responseDict as NSDictionary
+            completion(result, nil)
+        }
 
         queryModel.setStop({
-            task?.cancel()
+            request.cancel()
         }, serviceType: serviceType().rawValue)
     }
 
@@ -272,6 +265,17 @@ extension DeepLService {
             return nil
         }
         return translatedText.toParagraphs()
+    }
+
+    private func parseDeepLErrorMessage(from data: Data?) -> String? {
+        guard let data,
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let errorDict = json["error"] as? [String: Any],
+              let errorMessage = errorDict["message"] as? String
+        else {
+            return nil
+        }
+        return errorMessage
     }
 
     // MARK: - Request Helper Methods

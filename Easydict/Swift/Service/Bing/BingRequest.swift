@@ -6,7 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import AFNetworking
+import Alamofire
 import Foundation
 
 private let kAudioMIMEType = "audio/mpeg"
@@ -44,6 +44,8 @@ class BingRequest {
         to: String,
         completionHandler completion: @escaping BingTranslateCompletion
     ) {
+        cancelActiveRequests()
+        resetData()
         self.from = from
         self.to = to
         self.text = text
@@ -67,33 +69,23 @@ class BingRequest {
                 translateParameters["fromLang"] = from
                 translateParameters["tryFetchingGenderDebiasedTranslations"] = "true"
 
-                translateSession.post(
-                    bingConfig.ttranslatev3URLString,
-                    parameters: translateParameters,
-                    progress: nil,
-                    success: { [weak self] _, responseObject in
-                        guard let self = self else { return }
+                let translateRequest = makeTranslateRequest(
+                    url: bingConfig.ttranslatev3URLString,
+                    parameters: translateParameters
+                )
+                translateRequest.responseData { [weak self] response in
+                    guard let self = self else { return }
+                    untrackRequest(translateRequest)
 
-                        guard let data = responseObject as? Data else {
-                            translateError = QueryError(
-                                type: .api,
-                                message: "bing translate responseObject is not Data"
-                            )
-                            logWarn("bing translate responseObject type: \(type(of: responseObject))")
-                            executeCallback()
+                    if let error = response.error {
+                        if isCancelledError(error) {
                             return
                         }
-                        translateData = data
-                        executeCallback()
-                    },
-                    failure: { [weak self] task, error in
-                        guard let self = self else { return }
 
-                        let response = task?.response as? HTTPURLResponse
                         // if this problem occurs, you can try switching networks
                         // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
                         // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
-                        if response?.statusCode == 429 {
+                        if response.response?.statusCode == 429 {
                             translateError = QueryError(
                                 type: .api,
                                 message: "429 error, Bing translate too many requests"
@@ -102,37 +94,54 @@ class BingRequest {
                             translateError = error
                         }
                         executeCallback()
+                        return
                     }
-                )
+
+                    guard let data = response.data else {
+                        translateError = QueryError(
+                            type: .api,
+                            message: "bing translate responseObject is not Data"
+                        )
+                        executeCallback()
+                        return
+                    }
+
+                    translateData = data
+                    executeCallback()
+                }
 
                 // Get lookup data
                 var dictParameters = parameters
                 dictParameters["from"] = from
 
-                translateSession.post(
-                    bingConfig.tlookupv3URLString,
-                    parameters: dictParameters,
-                    progress: nil,
-                    success: { [weak self] _, responseObject in
-                        guard let self = self else { return }
+                let lookupRequest = makeTranslateRequest(
+                    url: bingConfig.tlookupv3URLString,
+                    parameters: dictParameters
+                )
+                lookupRequest.responseData { [weak self] response in
+                    guard let self = self else { return }
+                    untrackRequest(lookupRequest)
 
-                        guard let data = responseObject as? Data else {
-                            lookupError = QueryError(type: .api, message: "bing lookup responseObject is not Data")
-                            logWarn("bing lookup responseObject type: \(type(of: responseObject))")
-                            executeCallback()
+                    if let error = response.error {
+                        if isCancelledError(error) {
                             return
                         }
-                        lookupData = data
-                        executeCallback()
-                    },
-                    failure: { [weak self] _, error in
-                        guard let self = self else { return }
 
                         logError("bing lookup error: \(error)")
                         lookupError = error
                         executeCallback()
+                        return
                     }
-                )
+
+                    guard let data = response.data else {
+                        lookupError = QueryError(type: .api, message: "bing lookup responseObject is not Data")
+                        executeCallback()
+                        return
+                    }
+
+                    lookupData = data
+                    executeCallback()
+                }
             } failure: { error in
                 completion(nil, nil, error, nil)
             }
@@ -158,34 +167,39 @@ class BingRequest {
                     "key": bingConfig.key ?? "",
                 ]
 
-                ttsSession.post(
-                    bingConfig.tfetttsURLString,
-                    parameters: parameters,
-                    progress: nil,
-                    success: { [weak self] task, responseObject in
-                        guard let self = self else { return }
-
-                        let audioData = responseObject as? Data
-                        if task.response?.mimeType == kAudioMIMEType {
-                            completion(audioData, nil)
-                        } else {
-                            // If host has changed, use new host to fetch again.
-                            if let host = task.response?.url?.host, bingConfig.host != host {
-                                logInfo("bing host changed: \(host)")
-                                bingConfig.host = host
-                                bingConfig.saveToUserDefaults()
-
-                                fetchTextToAudio(text: text, fromLanguage: from, accent: accent, completion: completion)
-                                return
-                            } else {
-                                completion(nil, nil)
-                            }
-                        }
-                    },
-                    failure: { _, error in
-                        completion(nil, error)
-                    }
+                let request = makeTTSRequest(
+                    url: bingConfig.tfetttsURLString,
+                    parameters: parameters
                 )
+                request.responseData { [weak self] response in
+                    guard let self = self else { return }
+                    untrackRequest(request)
+
+                    if let error = response.error {
+                        if isCancelledError(error) {
+                            return
+                        }
+                        completion(nil, error)
+                        return
+                    }
+
+                    let audioData = response.data
+                    if response.response?.mimeType == kAudioMIMEType {
+                        completion(audioData, nil)
+                        return
+                    }
+
+                    // If host has changed, use new host to fetch again.
+                    if let host = response.response?.url?.host, bingConfig.host != host {
+                        logInfo("bing host changed: \(host)")
+                        bingConfig.host = host
+                        bingConfig.saveToUserDefaults()
+
+                        fetchTextToAudio(text: text, fromLanguage: from, accent: accent, completion: completion)
+                    } else {
+                        completion(nil, nil)
+                    }
+                }
             } failure: { error in
                 completion(nil, error)
             }
@@ -199,27 +213,49 @@ class BingRequest {
         fetchBingHost { [weak self] in
             guard let self = self else { return }
 
-            dictTranslateSession.get(
-                bingConfig.dictTranslateURLString,
-                parameters: ["q": text],
-                progress: nil,
-                success: { _, responseObject in
-                    guard let dict = responseObject as? [String: Any] else {
-                        completion(nil, QueryError(type: .api, message: "bing dict translate json parse fail"))
+            let request = makeDictTranslateRequest(
+                url: bingConfig.dictTranslateURLString,
+                parameters: ["q": text]
+            )
+            request.responseData { [weak self] response in
+                guard let self = self else { return }
+                untrackRequest(request)
+
+                if let error = response.error {
+                    if isCancelledError(error) {
                         return
                     }
-                    completion(dict, nil)
-                },
-                failure: { _, error in
                     completion(nil, error)
+                    return
                 }
-            )
+
+                guard let data = response.data,
+                      let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+                else {
+                    completion(nil, QueryError(type: .api, message: "bing dict translate json parse fail"))
+                    return
+                }
+
+                completion(dict, nil)
+            }
         }
     }
 
     func reset() {
+        cancelActiveRequests()
         bingConfig.resetToken()
         resetData()
+    }
+
+    func cancelActiveRequests() {
+        activeRequestLock.lock()
+        let requests = activeRequests
+        activeRequests.removeAll()
+        activeRequestLock.unlock()
+
+        for request in requests {
+            request.cancel()
+        }
     }
 
     // MARK: Private
@@ -238,51 +274,8 @@ class BingRequest {
     private var completion: BingTranslateCompletion?
 
     private var canRetryFetchHost = true
-
-    // MARK: - Lazy Sessions
-
-    private lazy var htmlSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        let requestSerializer = AFHTTPRequestSerializer()
-        requestSerializer.setValue(EZUserAgent, forHTTPHeaderField: "User-Agent")
-        session.requestSerializer = requestSerializer
-        let responseSerializer = AFHTTPResponseSerializer()
-        responseSerializer.acceptableContentTypes = Set(["text/html"])
-        session.responseSerializer = responseSerializer
-        return session
-    }()
-
-    private lazy var translateSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        let requestSerializer = AFHTTPRequestSerializer()
-        requestSerializer.setValue(EZUserAgent, forHTTPHeaderField: "User-Agent")
-        requestSerializer.setValue(bingConfig.cookie, forHTTPHeaderField: "Cookie")
-        session.requestSerializer = requestSerializer
-        session.responseSerializer = AFHTTPResponseSerializer()
-        return session
-    }()
-
-    private lazy var ttsSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        let requestSerializer = AFHTTPRequestSerializer()
-        requestSerializer.setValue(EZUserAgent, forHTTPHeaderField: "User-Agent")
-        requestSerializer.setValue(bingConfig.cookie, forHTTPHeaderField: "Cookie")
-        session.requestSerializer = requestSerializer
-        let responseSerializer = AFHTTPResponseSerializer()
-        responseSerializer.acceptableContentTypes = Set([kAudioMIMEType])
-        session.responseSerializer = responseSerializer
-        return session
-    }()
-
-    private lazy var dictTranslateSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-        let requestSerializer = AFHTTPRequestSerializer()
-        requestSerializer.setValue(EZUserAgent, forHTTPHeaderField: "User-Agent")
-        requestSerializer.setValue(bingConfig.cookie, forHTTPHeaderField: "Cookie")
-        session.requestSerializer = requestSerializer
-        session.responseSerializer = AFJSONResponseSerializer()
-        return session
-    }()
+    private let activeRequestLock = NSLock()
+    private var activeRequests: [Request] = []
 
     // MARK: - Private Methods
 
@@ -320,27 +313,28 @@ class BingRequest {
         // For www.bing.com, sometimes it won't return redirect URL, so we use cn.bing.com
         let webBingURLString = "http://\(BingConfig.chinaHost)"
 
-        translateSession.get(
-            webBingURLString,
-            parameters: nil,
-            progress: nil,
-            success: { [weak self] task, _ in
-                guard let self = self else { return }
+        let request = makeTranslateRequest(url: webBingURLString)
+        request.responseData { [weak self] response in
+            guard let self = self else { return }
+            untrackRequest(request)
 
-                let host = task.response?.url?.host ?? BingConfig.chinaHost
-                bingConfig.host = host
-                bingConfig.saveToUserDefaults()
-                logInfo("bing host: \(host)")
-                callback()
-            },
-            failure: { [weak self] _, _ in
-                guard let self = self else { return }
+            if let error = response.error {
+                if isCancelledError(error) {
+                    return
+                }
 
                 bingConfig.host = BingConfig.chinaHost
                 bingConfig.saveToUserDefaults()
                 callback()
+                return
             }
-        )
+
+            let host = response.response?.url?.host ?? BingConfig.chinaHost
+            bingConfig.host = host
+            bingConfig.saveToUserDefaults()
+            logInfo("bing host: \(host)")
+            callback()
+        }
     }
 
     private func fetchBingConfig(callback: @escaping () -> (), failure: @escaping (Error) -> ()) {
@@ -350,83 +344,196 @@ class BingRequest {
         }
 
         let url = bingConfig.translatorURLString
-        htmlSession.get(
-            url,
-            parameters: nil,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self = self else { return }
+        let request = makeHTMLRequest(url: url)
+        request.responseData { [weak self] response in
+            guard let self = self else { return }
+            untrackRequest(request)
 
-                guard let data = responseObject as? Data else {
-                    let error = QueryError(type: .api, message: "bing htmlSession responseObject is not Data")
-                    failure(error)
-                    logWarn("bing html responseObject type is \(type(of: responseObject))")
+            if let error = response.error {
+                if isCancelledError(error) {
                     return
                 }
-
-                guard let responseString = String(data: data, encoding: .utf8) else {
-                    let error = QueryError(type: .api, message: "bing html response string is nil")
-                    failure(error)
-                    return
-                }
-
-                guard let ig = getIGValue(from: responseString), !ig.isEmpty else {
-                    let error = QueryError(type: .api, message: "bing IG is empty")
-                    failure(error)
-                    return
-                }
-                logInfo("bing IG: \(ig)")
-
-                guard let iid = getDataIidValue(from: responseString), !iid.isEmpty else {
-                    let error = QueryError(type: .api, message: "bing IID is empty")
-                    failure(error)
-                    return
-                }
-                logInfo("bing IID: \(iid)")
-
-                guard let arr = getParamsAbusePreventionHelperArray(from: responseString), arr.count == 3 else {
-                    let error = QueryError(type: .api, message: "bing get key and token failed")
-                    failure(error)
-                    return
-                }
-
-                let key = arr[0]
-                guard !key.isEmpty else {
-                    let error = QueryError(type: .api, message: "bing key is empty")
-                    failure(error)
-                    return
-                }
-
-                let token = arr[1]
-                guard !token.isEmpty else {
-                    let error = QueryError(type: .api, message: "bing token is empty")
-                    failure(error)
-                    return
-                }
-                logInfo("bing key: \(key)")
-                logInfo("bing token: \(token)")
-
-                let expirationInterval = arr[2]
-
-                bingConfig.IG = ig
-                bingConfig.IID = iid
-                bingConfig.key = key
-                bingConfig.token = token
-                bingConfig.expirationInterval = expirationInterval
-                bingConfig.saveToUserDefaults()
-                callback()
-            },
-            failure: { _, error in
                 failure(error)
+                return
             }
-        )
+
+            guard let data = response.data else {
+                let error = QueryError(type: .api, message: "bing htmlSession responseObject is not Data")
+                failure(error)
+                return
+            }
+
+            guard let responseString = String(data: data, encoding: .utf8) else {
+                let error = QueryError(type: .api, message: "bing html response string is nil")
+                failure(error)
+                return
+            }
+
+            guard let ig = getIGValue(from: responseString), !ig.isEmpty else {
+                let error = QueryError(type: .api, message: "bing IG is empty")
+                failure(error)
+                return
+            }
+            logInfo("bing IG: \(ig)")
+
+            guard let iid = getDataIidValue(from: responseString), !iid.isEmpty else {
+                let error = QueryError(type: .api, message: "bing IID is empty")
+                failure(error)
+                return
+            }
+            logInfo("bing IID: \(iid)")
+
+            guard let arr = getParamsAbusePreventionHelperArray(from: responseString), arr.count == 3 else {
+                let error = QueryError(type: .api, message: "bing get key and token failed")
+                failure(error)
+                return
+            }
+
+            let key = arr[0]
+            guard !key.isEmpty else {
+                let error = QueryError(type: .api, message: "bing key is empty")
+                failure(error)
+                return
+            }
+
+            let token = arr[1]
+            guard !token.isEmpty else {
+                let error = QueryError(type: .api, message: "bing token is empty")
+                failure(error)
+                return
+            }
+            logInfo("bing key: \(key)")
+            logInfo("bing token: \(token)")
+
+            let expirationInterval = arr[2]
+
+            bingConfig.IG = ig
+            bingConfig.IID = iid
+            bingConfig.key = key
+            bingConfig.token = token
+            bingConfig.expirationInterval = expirationInterval
+            bingConfig.saveToUserDefaults()
+            callback()
+        }
     }
 
     private func resetData() {
         translateData = nil
         lookupData = nil
         translateError = nil
+        lookupError = nil
         responseCount = 0
+    }
+
+    @discardableResult
+    private func makeHTMLRequest(
+        url: String,
+        parameters: Parameters? = nil
+    )
+        -> DataRequest {
+        makeRequest(
+            url: url,
+            method: .get,
+            parameters: parameters,
+            headers: requestHeaders()
+        )
+    }
+
+    @discardableResult
+    private func makeTranslateRequest(
+        url: String,
+        parameters: Parameters? = nil
+    )
+        -> DataRequest {
+        makeRequest(
+            url: url,
+            method: parameters == nil ? .get : .post,
+            parameters: parameters,
+            headers: requestHeaders(includeCookie: true)
+        )
+    }
+
+    @discardableResult
+    private func makeTTSRequest(
+        url: String,
+        parameters: Parameters
+    )
+        -> DataRequest {
+        makeRequest(
+            url: url,
+            method: .post,
+            parameters: parameters,
+            headers: requestHeaders(includeCookie: true)
+        )
+    }
+
+    @discardableResult
+    private func makeDictTranslateRequest(
+        url: String,
+        parameters: Parameters
+    )
+        -> DataRequest {
+        makeRequest(
+            url: url,
+            method: .get,
+            parameters: parameters,
+            headers: requestHeaders(includeCookie: true)
+        )
+    }
+
+    @discardableResult
+    private func makeRequest(
+        url: String,
+        method: HTTPMethod,
+        parameters: Parameters? = nil,
+        headers: HTTPHeaders
+    )
+        -> DataRequest {
+        let encoding: ParameterEncoding = method == .get ? URLEncoding.default : URLEncoding.httpBody
+        let request = AF.request(
+            url,
+            method: method,
+            parameters: parameters,
+            encoding: encoding,
+            headers: headers,
+            requestModifier: { request in
+                request.timeoutInterval = EZNetWorkTimeoutInterval
+            }
+        )
+        .validate(statusCode: 200 ..< 300)
+
+        trackRequest(request)
+        return request
+    }
+
+    private func requestHeaders(includeCookie: Bool = false) -> HTTPHeaders {
+        var headers = HTTPHeaders([
+            "User-Agent": EZUserAgent,
+        ])
+
+        if includeCookie, !bingConfig.cookie.isEmpty {
+            headers.add(name: "Cookie", value: bingConfig.cookie)
+        }
+
+        return headers
+    }
+
+    private func isCancelledError(_ error: Error) -> Bool {
+        (error as NSError).code == NSURLErrorCancelled
+    }
+
+    private func trackRequest(_ request: Request) {
+        activeRequestLock.lock()
+        activeRequests.append(request)
+        activeRequestLock.unlock()
+    }
+
+    private func untrackRequest(_ request: Request) {
+        activeRequestLock.lock()
+        activeRequests.removeAll { trackedRequest in
+            trackedRequest.id == request.id
+        }
+        activeRequestLock.unlock()
     }
 
     // MARK: - Regex Helpers

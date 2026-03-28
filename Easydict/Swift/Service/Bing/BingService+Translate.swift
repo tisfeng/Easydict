@@ -21,6 +21,9 @@ extension BingService {
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         isDictQueryResult = false
+        queryModel.setStop({ [weak self] in
+            self?.bingRequest.cancelActiveRequests()
+        }, serviceType: serviceType().rawValue)
 
         if useDictQuery {
             bingRequest.translateTextFromDict(text: text) { [weak self] json, error in

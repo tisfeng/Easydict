@@ -45,6 +45,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)setup {
     self.buttonWidth = 24;
     self.imageWidth = 20;

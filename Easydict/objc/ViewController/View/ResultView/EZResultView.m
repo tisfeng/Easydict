@@ -172,6 +172,7 @@
     }];
     
     [retryButton setClickBlock:^(EZButton *button) {
+        mm_strongify(self);
         if (self.retryBlock) {
             self.retryBlock(self.result);
         }

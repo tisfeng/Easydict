@@ -91,6 +91,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 // 重写粘贴方法，纯文本粘贴  https://stackoverflow.com/questions/8198767/how-can-you-intercept-pasting-into-a-nstextview-to-remove-unsupported-formatting
 - (void)paste:(id)sender {
     [self pasteAsPlainText:sender];

@@ -6,7 +6,6 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import AFNetworking
 import Defaults
 import Foundation
 import SwiftUI

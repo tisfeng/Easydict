@@ -39,6 +39,7 @@ final class EventMonitor: NSObject {
         self.popButtonController = PopButtonVisibilityController()
         self.appContextProvider = AppContextProvider()
         self.systemUtility = SystemUtility.shared
+        self.mouseMovedThrottleGate = ThrottleGate(interval: Constants.mouseMovedThrottleInterval)
         super.init()
         configureDependencies()
     }
@@ -139,11 +140,15 @@ final class EventMonitor: NSObject {
     func stop() {
         eventMonitorEngine.stop()
         eventTapMonitor.stop()
+        if let escapeKeyMonitor {
+            NSEvent.removeMonitor(escapeKeyMonitor)
+            self.escapeKeyMonitor = nil
+        }
     }
 
     /// Monitor local and global events.
     func startMonitor() {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        escapeKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             if event.keyCode == kVK_Escape {
                 logInfo("escape")
             }
@@ -181,6 +186,8 @@ final class EventMonitor: NSObject {
         static let dismissPopButtonDelay: TimeInterval = 0.1
         static let delayGetSelectedText: TimeInterval = 0.1
         static let expandedRadius: CGFloat = 120
+        /// Throttle interval for mouse-moved events to reduce CPU usage.
+        static let mouseMovedThrottleInterval: TimeInterval = 0.1
     }
 
     private let eventMonitorEngine: EventMonitorEngine
@@ -195,6 +202,8 @@ final class EventMonitor: NSObject {
     private var lastEvent: NSEvent?
     private var currentModifierFlags: NSEvent.ModifierFlags = []
     private var shouldBypassDismissIgnore = false
+    private var mouseMovedThrottleGate: ThrottleGate
+    private var escapeKeyMonitor: Any?
 
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
@@ -226,10 +235,33 @@ final class EventMonitor: NSObject {
     }
 
     private func handleMonitorEvent(_ event: NSEvent) {
+        #if DEBUG
+        let eventStart = CFAbsoluteTimeGetCurrent()
+        defer {
+            let elapsed = (CFAbsoluteTimeGetCurrent() - eventStart) * 1000
+            if elapsed > 16 {
+                logInfo("Slow event handler: \(event.type.rawValue) took \(String(format: "%.1f", elapsed))ms")
+            }
+        }
+        #endif
+
         lastEvent = event
-        frontmostApplication = appContextProvider.frontmostApplication
         popButtonController.lastEvent = event
 
+        // For high-frequency events (mouseMoved, scrollWheel), skip expensive
+        // operations and handle them early to avoid blocking the main thread.
+        switch event.type {
+        case .mouseMoved:
+            handleMouseMoved()
+            return
+        case .scrollWheel:
+            popButtonController.handleScrollWheel(event)
+            return
+        default:
+            break
+        }
+
+        frontmostApplication = appContextProvider.frontmostApplication
         let mouseLocation = NSEvent.mouseLocation
 
         switch event.type {
@@ -247,7 +279,7 @@ final class EventMonitor: NSObject {
             }
         case .leftMouseDown:
             triggerEvaluator.updateRecordedEvents(event)
-            handleLeftMouseDown(event)
+            handleLeftMouseDown(event, mouseLocation: mouseLocation)
         case .leftMouseDragged:
             triggerEvaluator.updateRecordedEvents(event)
             endPoint = mouseLocation
@@ -269,10 +301,6 @@ final class EventMonitor: NSObject {
             if popButtonController.isPopButtonVisible {
                 dismissPopButton()
             }
-        case .scrollWheel:
-            popButtonController.handleScrollWheel(event)
-        case .mouseMoved:
-            popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
         case .flagsChanged:
 //            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
 //            log("keyCode: \(event.keyCode)")
@@ -293,18 +321,15 @@ final class EventMonitor: NSObject {
         }
     }
 
-    private func handleLeftMouseDown(_ event: NSEvent) {
-        let mouseLocation = NSEvent.mouseLocation
+    private func handleLeftMouseDown(_ event: NSEvent, mouseLocation: CGPoint) {
         startPoint = mouseLocation
         leftMouseDownBlock?(mouseLocation)
-        dismissWindowsIfMouseLocationOutsideFloatingWindow()
+        dismissWindowsIfMouseLocationOutsideFloatingWindow(mouseLocation)
 
-        if popButtonController.isPopButtonVisible, isMouseInPopButtonWindow() {
+        if popButtonController.isPopButtonVisible, isMouseInPopButtonWindow(mouseLocation) {
             // Avoid dismissing the pop button before its click action fires.
             return
         }
-
-        frontmostApplication = appContextProvider.frontmostApplication
 
         let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
             forceGetSelectedTextType: MyConfiguration.shared.forceGetSelectedTextType
@@ -331,20 +356,28 @@ final class EventMonitor: NSObject {
         }
     }
 
-    private func dismissWindowsIfMouseLocationOutsideFloatingWindow() {
-        if !checkIfMouseLocation(in: EZWindowManager.shared().floatingWindow) {
+    private func dismissWindowsIfMouseLocationOutsideFloatingWindow(_ mouseLocation: CGPoint) {
+        if !checkIfMouseLocation(mouseLocation, in: EZWindowManager.shared().floatingWindow) {
             dismissAllNotPinndFloatingWindowBlock?()
         }
     }
 
-    private func checkIfMouseLocation(in window: NSWindow?) -> Bool {
+    private func checkIfMouseLocation(_ mouseLocation: CGPoint, in window: NSWindow?) -> Bool {
         guard let window else { return false }
-        return window.frame.contains(NSEvent.mouseLocation)
+        return window.frame.contains(mouseLocation)
     }
 
-    private func isMouseInPopButtonWindow() -> Bool {
+    private func isMouseInPopButtonWindow(_ mouseLocation: CGPoint) -> Bool {
         let popButtonWindow = EZWindowManager.shared().popButtonWindow
-        return popButtonWindow.frame.contains(NSEvent.mouseLocation)
+        return popButtonWindow.frame.contains(mouseLocation)
+    }
+
+    /// Handles mouse-moved events with throttling to prevent excessive computation.
+    private func handleMouseMoved() {
+        guard popButtonController.isPopButtonVisible else { return }
+        guard mouseMovedThrottleGate.shouldAllow() else { return }
+
+        popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
     }
 
     private func autoGetSelectedText() {
@@ -394,6 +427,7 @@ final class EventMonitor: NSObject {
                 return
             }
 
+            mouseMovedThrottleGate.reset()
             popButtonController.isPopButtonVisible = true
             selectedText = trimmed
             cancelDismissPopButton()
@@ -432,6 +466,7 @@ final class EventMonitor: NSObject {
         }
         dismissPopButtonBlock?()
         popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
         eventTapMonitor.stop()
     }
 
@@ -488,6 +523,7 @@ final class EventMonitor: NSObject {
     }
 
     private func delayDismissPopButton(delay: TimeInterval) {
+        cancelDismissPopButton()
         perform(#selector(dismissPopButton), with: nil, afterDelay: delay)
     }
 

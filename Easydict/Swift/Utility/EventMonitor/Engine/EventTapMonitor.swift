@@ -20,6 +20,10 @@ final class EventTapMonitor {
     var keyDownHandler: ((CGKeyCode, CGEventFlags) -> ())?
 
     /// Starts the CGEventTap for global keyboard events.
+    ///
+    /// Always installs the run loop source on the main run loop to avoid
+    /// mismatched add/remove when `start()` and `stop()` are called from
+    /// different threads (e.g. Swift concurrency Task vs main-thread callback).
     func start() {
         stop()
 
@@ -51,7 +55,9 @@ final class EventTapMonitor {
 
         let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         runLoopSource = source
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
+        let mainRunLoop = CFRunLoopGetMain()
+        installedRunLoop = mainRunLoop
+        CFRunLoopAddSource(mainRunLoop, source, .commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
     }
 
@@ -59,10 +65,11 @@ final class EventTapMonitor {
     func stop() {
         if let eventTap {
             CGEvent.tapEnable(tap: eventTap, enable: false)
-            if let runLoopSource {
-                CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+            if let runLoopSource, let installedRunLoop {
+                CFRunLoopRemoveSource(installedRunLoop, runLoopSource, .commonModes)
             }
             runLoopSource = nil
+            installedRunLoop = nil
             self.eventTap = nil
         }
     }
@@ -71,4 +78,5 @@ final class EventTapMonitor {
 
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
+    private var installedRunLoop: CFRunLoop?
 }
