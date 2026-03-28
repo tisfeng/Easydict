@@ -10,6 +10,7 @@
 #import "EZHoverButton.h"
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZSymbolmage.h"
+#import "NSObject+EZDarkMode.h"
 #import "NSObject+EZWindowType.h"
 
 
@@ -136,7 +137,14 @@
     [self addSubview:arrowButton];
     NSImage *image = [NSImage imageNamed:@"arrow-down"];
     arrowButton.image = image;
+    arrowButton.alternateImage = image;
     self.arrowButton.mas_key = @"arrowButton";
+
+    [arrowButton executeLight:^(NSButton *button) {
+        button.image = [button.alternateImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
+    } dark:^(NSButton *button) {
+        button.image = [button.alternateImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+    }];
 
     // Add `handleTopBarTap:` action to arrowButton
     arrowButton.target = self;
@@ -438,12 +446,8 @@
     }
     
     self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
-    
-    [self.arrowButton executeLight:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    self.arrowButton.alternateImage = arrowImage;
+    [self updateArrowButtonImage];
 }
 
 - (BOOL)isLLLStreamService:(EZQueryService *)service {
@@ -538,6 +542,12 @@
     group.duration = 1;
     group.repeatCount = MAXFLOAT;
     [view.layer addAnimation:group forKey:@"group"];
+}
+
+- (void)updateArrowButtonImage {
+    NSImage *baseImage = self.arrowButton.alternateImage ?: [NSImage imageNamed:@"arrow-left"];
+    NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+    self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
 }
 
 @end

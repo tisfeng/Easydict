@@ -9,6 +9,7 @@
 #import "EZAudioButton.h"
 #import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
+#import "NSObject+EZDarkMode.h"
 
 @interface EZAudioButton ()
 
@@ -42,6 +43,12 @@
             }
         }
     }];
+
+    [self executeLight:^(EZAudioButton *audioButton) {
+        [audioButton updateAudioImageAppearance];
+    } dark:^(EZAudioButton *audioButton) {
+        [audioButton updateAudioImageAppearance];
+    }];
 }
 
 - (void)setAudioPlayer:(EZAudioPlayer *)audioPlayer {
@@ -62,20 +69,9 @@
         
     NSString *action = isPlaying ? @"Stop" : @"Play";
     self.toolTip = [NSString stringWithFormat:@"%@ Audio", action];
-    
-//    NSString *symbolName = isPlaying ? @"pause.circle" : @"play.circle";
-//    NSImage *audioImage = [NSImage ez_imageWithSymbolName:symbolName size:CGSizeMake(15, 15)];
-    
-    NSImage *playImage = [NSImage imageNamed:@"audio"];
-    NSImage *pauseImage = [NSImage ez_imageWithSymbolName:@"pause.circle"];
 
-    self.image = isPlaying ? pauseImage : playImage;
-
-    [self executeLight:^(NSButton *audioButton) {
-        audioButton.image = [audioButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *audioButton) {
-        audioButton.image = [audioButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    self.alternateImage = [self baseAudioImage];
+    [self updateAudioImageAppearance];
     
     if (self.playStatus) {
         self.playStatus(isPlaying, self);
@@ -96,6 +92,18 @@
     [super drawRect:dirtyRect];
     
     // Drawing code here.
+}
+
+- (NSImage *)baseAudioImage {
+    NSImage *playImage = [NSImage imageNamed:@"audio"];
+    NSImage *pauseImage = [NSImage ez_imageWithSymbolName:@"pause.circle"];
+    return self.isPlaying ? pauseImage : playImage;
+}
+
+- (void)updateAudioImageAppearance {
+    NSImage *baseImage = self.alternateImage ?: [self baseAudioImage];
+    NSColor *tintColor = self.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+    self.image = [baseImage imageWithTintColor:tintColor];
 }
 
 @end

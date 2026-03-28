@@ -41,6 +41,10 @@ extension NSObject: DarkModeCapable {
             unsafeBitCast(darkBlock, to: (@convention(block) (NSObject) -> ()).self)
         }
 
+        guard lightClosure != nil || darkClosure != nil else {
+            return
+        }
+
         // Execute immediately based on current mode
         if isDarkMode {
             darkClosure?(self)
@@ -49,9 +53,11 @@ extension NSObject: DarkModeCapable {
         }
 
         // Set up observer for future changes
-        setupDarkModeObserver(lightHandler: {
+        setupDarkModeObserver(lightHandler: { [weak self] in
+            guard let self else { return }
             lightClosure?(self)
-        }, darkHandler: {
+        }, darkHandler: { [weak self] in
+            guard let self else { return }
             darkClosure?(self)
         })
     }

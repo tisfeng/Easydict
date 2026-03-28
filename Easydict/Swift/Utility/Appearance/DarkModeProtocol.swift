@@ -7,7 +7,6 @@
 //
 
 import AppKit
-import Combine
 import Foundation
 
 // MARK: - DarkModeCapable
@@ -29,68 +28,99 @@ extension DarkModeCapable where Self: NSObject {
         lightHandler: (() -> ())? = nil,
         darkHandler: (() -> ())? = nil
     ) {
-        let cancellable = NotificationCenter.default.publisher(for: .appDarkModeDidChange)
-            .receive(on: DispatchQueue.main)
-            .sink { notification in
-                guard let isDark = notification.userInfo?[UserInfoKey.isDark] as? Bool else { return }
+        guard lightHandler != nil || darkHandler != nil else {
+            return
+        }
 
-                if isDark {
-                    darkHandler?()
-                } else {
-                    lightHandler?()
-                }
+        let observerStore = darkModeObserverStore()
+        observerStore.appendHandler { isDark in
+            if isDark {
+                darkHandler?()
+            } else {
+                lightHandler?()
             }
-
-        // Get or create cancellables array for this object
-        if var cancellables = objc_getAssociatedObject(self, &cancellablesKey) as? [AnyCancellable] {
-            // Add new cancellable to existing array
-            cancellables.append(cancellable)
-            objc_setAssociatedObject(self, &cancellablesKey, cancellables, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        } else {
-            // Create new array with first cancellable
-            objc_setAssociatedObject(self, &cancellablesKey, [cancellable], .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
-            // Setup automatic cleanup on first observer
-            setupAutomaticDarkModeCleanup()
         }
     }
 
     /// Remove all dark mode observers for this object
     func removeDarkModeObservers() {
-        if let cancellables = objc_getAssociatedObject(self, &cancellablesKey) as? [AnyCancellable] {
-            cancellables.forEach { $0.cancel() }
-            objc_setAssociatedObject(self, &cancellablesKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        guard let observerStore = objc_getAssociatedObject(self, &darkModeObserverStoreKey) as? DarkModeObserverStore
+        else {
+            return
         }
+
+        observerStore.removeAllHandlers()
+        objc_setAssociatedObject(self, &darkModeObserverStoreKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
-    /// Automatically clean up observers when object is deallocated
-    func setupAutomaticDarkModeCleanup() {
-        // This will be called when the object is deallocated
-        objc_setAssociatedObject(self, &cleanupObserverKey, DarkModeCleanupObserver { [weak self] in
-            self?.removeDarkModeObservers()
-        }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    /// Returns the shared dark mode observer store for the receiver.
+    private func darkModeObserverStore() -> DarkModeObserverStore {
+        if let observerStore = objc_getAssociatedObject(self, &darkModeObserverStoreKey) as? DarkModeObserverStore {
+            return observerStore
+        }
+
+        let observerStore = DarkModeObserverStore()
+        objc_setAssociatedObject(self, &darkModeObserverStoreKey, observerStore, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        return observerStore
     }
 }
 
-// MARK: - DarkModeCleanupObserver
+// MARK: - DarkModeObserverStore
 
-// Helper class to trigger cleanup on deallocation
-private class DarkModeCleanupObserver: NSObject {
+/// Stores dark mode handlers for a single owner and dispatches updates on the main thread.
+private final class DarkModeObserverStore: NSObject {
     // MARK: Lifecycle
 
-    init(cleanup: @escaping () -> ()) {
-        self.cleanup = cleanup
+    override init() {
         super.init()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDarkModeDidChange(_:)),
+            name: .appDarkModeDidChange,
+            object: nil
+        )
     }
 
     deinit {
-        cleanup()
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    // MARK: Internal
+
+    /// Appends a dark mode handler to the store.
+    func appendHandler(_ handler: @escaping DarkModeHandler) {
+        handlers.append(handler)
+    }
+
+    /// Removes all stored handlers.
+    func removeAllHandlers() {
+        handlers.removeAll()
     }
 
     // MARK: Private
 
-    private let cleanup: () -> ()
+    private var handlers: [DarkModeHandler] = []
+
+    @objc
+    private func handleDarkModeDidChange(_ notification: Notification) {
+        guard let isDark = notification.userInfo?[UserInfoKey.isDark] as? Bool else {
+            return
+        }
+
+        if !Thread.isMainThread {
+            DispatchQueue.main.async { [weak self] in
+                self?.dispatchHandlers(isDark: isDark)
+            }
+            return
+        }
+
+        dispatchHandlers(isDark: isDark)
+    }
+
+    private func dispatchHandlers(isDark: Bool) {
+        handlers.forEach { $0(isDark) }
+    }
 }
 
-private var cancellablesKey: UInt8 = 0
-private var cleanupObserverKey: UInt8 = 1
+private typealias DarkModeHandler = (Bool) -> ()
+private var darkModeObserverStoreKey: UInt8 = 0

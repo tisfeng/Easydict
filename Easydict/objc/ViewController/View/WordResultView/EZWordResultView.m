@@ -34,6 +34,17 @@ static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
+static void EZApplyTagButtonAppearance(NSButton *tagButton, NSColor *tagColor, CGFloat fontSize) {
+    tagButton.wantsLayer = YES;
+    tagButton.layer.borderWidth = 1.2;
+    tagButton.layer.cornerRadius = 3;
+    tagButton.layer.borderColor = tagColor.CGColor;
+    tagButton.bordered = NO;
+
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:fontSize] color:tagColor];
+    tagButton.attributedTitle = attributedString;
+}
+
 @interface EZWordResultView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
@@ -323,6 +334,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             __block CGFloat tagContentViewWidth = 0;
             CGFloat padding = 6;
             CGFloat leftMargin = kHorizontalMargin_8 + 2;
+            CGFloat tagFontSize = 12 * self.fontSizeRatio;
 
             __block NSButton *lastTagButton = nil;
             [wordResult.tags enumerateObjectsUsingBlock:^(NSString *_Nonnull tag, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -334,10 +346,10 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 tagButton.title = tag;
                 [tagButton executeLight:^(NSButton *tagButton) {
                     NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
-                    [self updateTagButton:tagButton tagColor:tagColor];
+                    EZApplyTagButtonAppearance(tagButton, tagColor, tagFontSize);
                 } dark:^(NSButton *tagButton) {
                     NSColor *tagColor = [NSColor mm_colorWithHexString:@"#CCCCC8"];
-                    [self updateTagButton:tagButton tagColor:tagColor];
+                    EZApplyTagButtonAppearance(tagButton, tagColor, tagFontSize);
                 }];
 
                 [tagButton sizeToFit];
@@ -975,17 +987,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }];
 
     return rtnView;
-}
-
-- (void)updateTagButton:(NSButton *)tagButton tagColor:(NSColor *)tagColor {
-    tagButton.wantsLayer = YES;
-    tagButton.layer.borderWidth = 1.2;
-    tagButton.layer.cornerRadius = 3;
-    tagButton.layer.borderColor = tagColor.CGColor;
-    tagButton.bordered = NO;
-
-    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12 * self.fontSizeRatio] color:tagColor];
-    tagButton.attributedTitle = attributedString;
 }
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
