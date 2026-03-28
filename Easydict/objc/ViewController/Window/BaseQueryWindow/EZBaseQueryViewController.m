@@ -11,7 +11,6 @@
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
-#import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
 #import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
@@ -71,8 +70,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
-
-@property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL lockResizeWindow;
 @property (nonatomic, assign) BOOL isUpdatingWindowFrameInternally;

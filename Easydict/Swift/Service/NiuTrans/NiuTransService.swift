@@ -6,7 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import AFNetworking
+import Alamofire
 import Defaults
 import Foundation
 import SwiftUI
@@ -182,56 +182,60 @@ extension NiuTransService {
             "source": "Easydict",
         ]
 
-        let manager = AFHTTPSessionManager()
-        // Response data is JSON format, but the response header is text/html,
-        // so we have to add text/html
-        // https://github.com/tisfeng/Easydict/pull/239#discussion_r1402998211
-        manager.responseSerializer.acceptableContentTypes = ["application/json", "text/html"]
-        manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval
-
-        let task = manager.post(
+        let request = AF.request(
             kNiuTransAPIURL,
+            method: .post,
             parameters: params,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self = self else { return }
+            encoding: URLEncoding.httpBody,
+            requestModifier: { request in
+                request.timeoutInterval = EZNetWorkTimeoutInterval
+            }
+        )
+        .validate(statusCode: 200 ..< 300)
 
-                if let responseDict = responseObject as? [String: Any] {
-                    parseResponse(responseDict, completion: completion)
-                } else {
-                    completion(result, QueryError(type: .api, message: "Invalid response"))
-                }
-            },
-            failure: { [weak self] _, error in
-                guard let self = self else { return }
+        request.responseData { [weak self] response in
+            guard let self = self else { return }
 
-                if queryModel.isServiceStopped(serviceType().rawValue) {
-                    return
-                }
+            if queryModel.isServiceStopped(serviceType().rawValue) {
+                return
+            }
 
+            if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
                     return
                 }
 
                 logError("NiuTransTranslate error: \(error)")
                 completion(result, error)
+                return
             }
-        )
+
+            guard let responseData = response.data else {
+                completion(result, QueryError(type: .api, message: "Invalid response"))
+                return
+            }
+
+            parseResponse(responseData, completion: completion)
+        }
 
         queryModel.setStop({
-            task?.cancel()
+            request.cancel()
         }, serviceType: serviceType().rawValue)
     }
 
     // MARK: - Response Parser
 
     private func parseResponse(
-        _ responseDict: [String: Any],
+        _ responseData: Data,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: responseDict)
-            let response = try JSONDecoder().decode(NiuTransTranslateResponse.self, from: jsonData)
+            guard let responseDict = try JSONSerialization.jsonObject(with: responseData) as? [String: Any] else {
+                completion(result, QueryError(type: .api, message: "Invalid response"))
+                return
+            }
+
+            let response = try JSONDecoder().decode(NiuTransTranslateResponse.self, from: responseData)
 
             if let translatedText = response.tgtText?.trimmingCharacters(in: .newlines),
                !translatedText.isEmpty {

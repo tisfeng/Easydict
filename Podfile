@@ -6,10 +6,8 @@ inhibit_all_warnings!
 target 'Easydict' do
   use_frameworks!
   
-  pod 'AFNetworking', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
-  pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
   # Swift format and linting migrated to Swift Package Manager
@@ -20,10 +18,8 @@ end
 target 'EasydictTests' do
   use_frameworks!
   
-  pod 'AFNetworking', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
-  pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
 end

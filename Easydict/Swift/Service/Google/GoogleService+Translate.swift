@@ -6,13 +6,60 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Alamofire
 import Foundation
 
 private let kGoogleTranslateURL = "https://translate.google.com"
+private let kGoogleUserAgent =
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
 
 // MARK: - GoogleService + Translate
 
 extension GoogleService {
+    // MARK: - Request Helpers
+
+    @discardableResult
+    private func googleHTMLRequest(
+        url: String,
+        parameters: Parameters? = nil
+    )
+        -> DataRequest {
+        googleRequest(url: url, parameters: parameters)
+    }
+
+    @discardableResult
+    private func googleJSONRequest(
+        url: String,
+        parameters: Parameters? = nil
+    )
+        -> DataRequest {
+        googleRequest(url: url, parameters: parameters)
+    }
+
+    @discardableResult
+    private func googleRequest(
+        url: String,
+        parameters: Parameters? = nil
+    )
+        -> DataRequest {
+        AF.request(
+            url,
+            method: .get,
+            parameters: parameters,
+            headers: HTTPHeaders([
+                "User-Agent": kGoogleUserAgent,
+            ]),
+            requestModifier: { request in
+                request.timeoutInterval = EZNetWorkTimeoutInterval
+            }
+        )
+        .validate(statusCode: 200 ..< 300)
+    }
+
+    private func parseGoogleJSONResponse(_ data: Data) throws -> Any {
+        try JSONSerialization.jsonObject(with: data)
+    }
+
     // MARK: - WebApp Translate
 
     /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
@@ -193,35 +240,39 @@ extension GoogleService {
             "q": text,
         ]
 
-        let task = jsonSession.get(
-            url,
-            parameters: params,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self = self else { return }
-                if queryModel.isServiceStopped(serviceType().rawValue) == true {
-                    return
-                }
+        let request = googleJSONRequest(url: url, parameters: params)
+        queryModel.setStop(
+            {
+                request.cancel()
+            }, serviceType: serviceType().rawValue
+        )
 
-                if let response = responseObject {
-                    completion(response, sign, nil, nil)
-                } else {
-                    completion(nil, nil, nil, QueryError(type: .api, message: nil))
-                }
-            },
-            failure: { _, error in
+        request.responseData { [weak self] response in
+            guard let self = self else { return }
+            if queryModel.isServiceStopped(serviceType().rawValue) == true {
+                return
+            }
+
+            if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
                     return
                 }
                 completion(nil, nil, nil, QueryError(type: .api, message: nil))
+                return
             }
-        )
 
-        queryModel.setStop(
-            {
-                task?.cancel()
-            }, serviceType: serviceType().rawValue
-        )
+            guard let data = response.data else {
+                completion(nil, nil, nil, QueryError(type: .api, message: nil))
+                return
+            }
+
+            do {
+                let responseObject = try parseGoogleJSONResponse(data)
+                completion(responseObject, sign, nil, nil)
+            } catch {
+                completion(nil, nil, nil, QueryError(type: .api, message: nil))
+            }
+        }
     }
 
     // MARK: - TKK Management
@@ -229,50 +280,52 @@ extension GoogleService {
     func sendGetWebAppTKKRequest(completion: @escaping (String?, Error?) -> ()) {
         let url = kGoogleTranslateURL
 
-        htmlSession.get(
-            url,
-            parameters: nil,
-            progress: nil,
-            success: { _, responseObject in
-                var tkkResult: String?
-                if let data = responseObject as? Data,
-                   let string = String(data: data, encoding: .utf8) {
-                    // tkk:'437961.2280157552'
-                    let pattern = "tkk:'\\d+\\.\\d+',"
-                    let regex = try? NSRegularExpression(
-                        pattern: pattern, options: .caseInsensitive
-                    )
-                    let matches =
-                        regex?.matches(
-                            in: string,
-                            options: .reportCompletion,
-                            range: NSRange(location: 0, length: string.count)
-                        ) ?? []
+        googleHTMLRequest(url: url).responseData { [weak self] response in
+            guard let self = self else { return }
 
-                    for match in matches {
-                        let tkk = (string as NSString).substring(with: match.range)
-                        if tkk.count > 7 {
-                            tkkResult = (tkk as NSString).substring(
-                                with: NSRange(location: 5, length: tkk.count - 7)
-                            )
-                            break
-                        }
+            if let error = response.error {
+                if (error as NSError).code == NSURLErrorCancelled {
+                    return
+                }
+                completion(nil, QueryError(type: .api, message: "谷歌翻译获取 tkk 失败"))
+                return
+            }
+
+            var tkkResult: String?
+            if let data = response.data,
+               let string = String(data: data, encoding: .utf8) {
+                // tkk:'437961.2280157552'
+                let pattern = "tkk:'\\d+\\.\\d+',"
+                let regex = try? NSRegularExpression(
+                    pattern: pattern, options: .caseInsensitive
+                )
+                let matches =
+                    regex?.matches(
+                        in: string,
+                        options: .reportCompletion,
+                        range: NSRange(location: 0, length: string.count)
+                    ) ?? []
+
+                for match in matches {
+                    let tkk = (string as NSString).substring(with: match.range)
+                    if tkk.count > 7 {
+                        tkkResult = (tkk as NSString).substring(
+                            with: NSRange(location: 5, length: tkk.count - 7)
+                        )
+                        break
                     }
                 }
+            }
 
-                if let tkk = tkkResult, !tkk.isEmpty {
-                    completion(tkk, nil)
-                } else if let tkk = self.windowObject.objectForKeyedSubscript("TKK").toString(),
-                          !tkk.isEmpty {
-                    completion(tkk, nil)
-                } else {
-                    completion(nil, QueryError(type: .api, message: "谷歌翻译获取 tkk 失败"))
-                }
-            },
-            failure: { _, _ in
+            if let tkk = tkkResult, !tkk.isEmpty {
+                completion(tkk, nil)
+            } else if let tkk = windowObject.objectForKeyedSubscript("TKK").toString(),
+                      !tkk.isEmpty {
+                completion(tkk, nil)
+            } else {
                 completion(nil, QueryError(type: .api, message: "谷歌翻译获取 tkk 失败"))
             }
-        )
+        }
     }
 
     func updateWebAppTKK(completion: @escaping (Error?) -> ()) {
@@ -336,35 +389,39 @@ extension GoogleService {
             "client": "gtx",
         ]
 
-        let task = jsonSession.get(
-            url,
-            parameters: params,
-            progress: nil,
-            success: { [weak self] _, responseObject in
-                guard let self = self else { return }
-                if queryModel.isServiceStopped(serviceType().rawValue) == true {
-                    return
-                }
+        let request = googleJSONRequest(url: url, parameters: params)
+        queryModel.setStop(
+            {
+                request.cancel()
+            }, serviceType: serviceType().rawValue
+        )
 
-                if let response = responseObject {
-                    completion(response, sign, nil, nil)
-                } else {
-                    completion(nil, nil, nil, QueryError(type: .api, message: nil))
-                }
-            },
-            failure: { _, error in
+        request.responseData { [weak self] response in
+            guard let self = self else { return }
+            if queryModel.isServiceStopped(serviceType().rawValue) == true {
+                return
+            }
+
+            if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
                     return
                 }
                 completion(nil, nil, nil, QueryError(type: .api, message: nil))
+                return
             }
-        )
 
-        queryModel.setStop(
-            {
-                task?.cancel()
-            }, serviceType: serviceType().rawValue
-        )
+            guard let data = response.data else {
+                completion(nil, nil, nil, QueryError(type: .api, message: nil))
+                return
+            }
+
+            do {
+                let responseObject = try parseGoogleJSONResponse(data)
+                completion(responseObject, sign, nil, nil)
+            } catch {
+                completion(nil, nil, nil, QueryError(type: .api, message: nil))
+            }
+        }
     }
 
     // MARK: - GTX Translation Processing

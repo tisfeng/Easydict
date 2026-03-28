@@ -1,44 +1,24 @@
 PODS:
-  - AFNetworking (3.2.1):
-    - AFNetworking/NSURLSession (= 3.2.1)
-    - AFNetworking/Reachability (= 3.2.1)
-    - AFNetworking/Security (= 3.2.1)
-    - AFNetworking/Serialization (= 3.2.1)
-    - AFNetworking/UIKit (= 3.2.1)
-  - AFNetworking/NSURLSession (3.2.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.1)
-  - AFNetworking/Security (3.2.1)
-  - AFNetworking/Serialization (3.2.1)
   - JLRoutes (2.1)
-  - KVOController (1.2.0)
   - Masonry (1.1.0)
   - ReactiveObjC (3.1.1)
 
 DEPENDENCIES:
-  - AFNetworking (~> 3.2.1)
   - JLRoutes (~> 2.1)
-  - KVOController (~> 1.2.0)
   - Masonry (~> 1.1.0)
   - ReactiveObjC (~> 3.1.1)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - AFNetworking
     - JLRoutes
-    - KVOController
     - Masonry
     - ReactiveObjC
 
 SPEC CHECKSUMS:
-  AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
   JLRoutes: d755245322b94227662ea3e43492fdca94e05c5b
-  KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
 
-PODFILE CHECKSUM: 5e3ab9f3db6d151ee709e4e123a055b2a9e9f423
+PODFILE CHECKSUM: 4ea3ca0a49b764fcadcb2252737761365eb67782
 
 COCOAPODS: 1.16.2

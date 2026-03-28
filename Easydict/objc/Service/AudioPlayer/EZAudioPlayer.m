@@ -345,18 +345,44 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                    accent:(nullable NSString *)accent
               serviceType:(EZServiceType)serviceType {
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            MMLogError(@"downloadWordAudio error: %@", error);
+            [session finishTasksAndInvalidate];
+            return;
+        }
+
         NSString *filePath = [self getWordAudioFilePath:word
                                                language:language
                                                  accent:accent
                                             serviceType:serviceType];
-        return [NSURL fileURLWithPath:filePath];
-    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        MMLogInfo(@"Download file to: %@", filePath.path);
-        if (autoPlay) {
-            [self playLocalAudioFile:filePath.path];
+        NSURL *destinationURL = [NSURL fileURLWithPath:filePath];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        [fileManager removeItemAtURL:destinationURL error:nil];
+
+        NSError *moveError = nil;
+        if (location) {
+            [fileManager moveItemAtURL:location toURL:destinationURL error:&moveError];
         }
+
+        if (moveError) {
+            MMLogError(@"downloadWordAudio move error: %@", moveError);
+            [session finishTasksAndInvalidate];
+            return;
+        }
+
+        MMLogInfo(@"Download file to: %@", destinationURL.path);
+        if (autoPlay) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self playLocalAudioFile:destinationURL.path];
+            });
+        }
+
+        [session finishTasksAndInvalidate];
     }];
     [downloadTask resume];
 }
