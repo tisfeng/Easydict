@@ -135,15 +135,12 @@
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
-    NSImage *image = [NSImage imageNamed:@"arrow-down"];
-    arrowButton.image = image;
-    arrowButton.alternateImage = image;
     self.arrowButton.mas_key = @"arrowButton";
 
-    [arrowButton executeLight:^(NSButton *button) {
-        button.image = [button.alternateImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.alternateImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+    [self executeLight:^(EZResultView *view) {
+        [view updateArrowButtonImage];
+    } dark:^(EZResultView *view) {
+        [view updateArrowButtonImage];
     }];
 
     // Add `handleTopBarTap:` action to arrowButton
@@ -440,13 +437,7 @@
 }
 
 - (void)updateArrowButton {
-    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
-    if (self.result.isShowing) {
-        arrowImage = [NSImage imageNamed:@"arrow-down"];
-    }
-    
     self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
-    self.arrowButton.alternateImage = arrowImage;
     [self updateArrowButtonImage];
 }
 
@@ -544,8 +535,12 @@
     [view.layer addAnimation:group forKey:@"group"];
 }
 
+- (NSImage *)baseArrowButtonImage {
+    return self.result.isShowing ? [NSImage imageNamed:@"arrow-down"] : [NSImage imageNamed:@"arrow-left"];
+}
+
 - (void)updateArrowButtonImage {
-    NSImage *baseImage = self.arrowButton.alternateImage ?: [NSImage imageNamed:@"arrow-left"];
+    NSImage *baseImage = [self baseArrowButtonImage];
     NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
     self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
 }

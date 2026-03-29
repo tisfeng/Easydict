@@ -70,7 +70,6 @@
     NSString *action = isPlaying ? @"Stop" : @"Play";
     self.toolTip = [NSString stringWithFormat:@"%@ Audio", action];
 
-    self.alternateImage = [self baseAudioImage];
     [self updateAudioImageAppearance];
     
     if (self.playStatus) {
@@ -101,7 +100,7 @@
 }
 
 - (void)updateAudioImageAppearance {
-    NSImage *baseImage = self.alternateImage ?: [self baseAudioImage];
+    NSImage *baseImage = [self baseAudioImage];
     NSColor *tintColor = self.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
     self.image = [baseImage imageWithTintColor:tintColor];
 }
