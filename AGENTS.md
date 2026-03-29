@@ -1,7 +1,5 @@
 # AGENTS.md
 
-**Please use Simplified Chinese for all communication. All documentation and comments within the codebase must be written in English.**
-
 This file provides guidance to Claude Code, Codex, and other AI agents when working with code in this repository.
 
 ## Project Overview
