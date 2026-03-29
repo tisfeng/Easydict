@@ -11,6 +11,7 @@ import Foundation
 
 // MARK: - NSObject DarkMode Extension
 
+typealias AppearanceHandler = @convention(block) (AnyObject) -> ()
 typealias AppearanceChangeHandler = @convention(block) (AnyObject, Bool) -> ()
 
 // MARK: - NSObject + DarkModeCapable
@@ -35,40 +36,28 @@ extension NSObject: DarkModeCapable {
         executeAppearanceChange(handler: handler)
     }
 
-    /// Execute different code blocks based on current dark mode.
-
-    /// - Parameters:
-    ///   - light: Code block to execute in light mode, passes self as parameter
-    ///   - dark: Code block to execute in dark mode, passes self as parameter
+    /// Execute different code blocks based on the current appearance.
     ///
-    /// - Important: The appropriate block will be executed one time immediately based on the current mode.
-    @objc
+    /// - Parameters:
+    ///   - light: Objective-C block to execute in light mode, passing the owner
+    ///   - dark: Objective-C block to execute in dark mode, passing the owner
+    ///
+    /// - Important: Prefer ``executeOnAppearanceChange(_:)`` for new code when light and
+    ///   dark branches only differ in selected values such as colors or images.
+    @objc(executeLight:dark:)
     func executeLight(
-        _ light: AnyObject? = nil,
-        dark: AnyObject? = nil
+        _ light: AppearanceHandler? = nil,
+        dark: AppearanceHandler? = nil
     ) {
-        // Create closures once
-        let lightClosure = light.map { lightBlock in
-            unsafeBitCast(lightBlock, to: (@convention(block) (NSObject) -> ()).self)
-        }
-
-        let darkClosure = dark.map { darkBlock in
-            unsafeBitCast(darkBlock, to: (@convention(block) (NSObject) -> ()).self)
-        }
-
-        guard lightClosure != nil || darkClosure != nil else {
+        guard light != nil || dark != nil else {
             return
         }
 
         let appearanceHandler: AppearanceChangeHandler = { owner, isDarkMode in
-            guard let owner = owner as? NSObject else {
-                return
-            }
-
             if isDarkMode {
-                darkClosure?(owner)
+                dark?(owner)
             } else {
-                lightClosure?(owner)
+                light?(owner)
             }
         }
 
