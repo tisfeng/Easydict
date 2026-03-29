@@ -180,7 +180,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         }];
 
         [self executeOnAppearanceChange:^(EZTitlebar *titlebar, BOOL isDarkMode) {
-            (void)isDarkMode;
             [titlebar updatePinButtonImage];
         }];
     }

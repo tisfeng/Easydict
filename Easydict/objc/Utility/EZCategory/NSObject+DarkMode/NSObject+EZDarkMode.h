@@ -10,9 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void (^EZAppearanceChangeHandler)(id owner, BOOL isDarkMode);
+
 @interface NSObject (EZDarkMode)
 
 @property (nonatomic, readonly) BOOL isDarkMode;
+
+/// Executes the handler immediately and on future appearance changes.
+/// The block receives the current owner and whether the effective appearance is dark mode.
+- (void)executeOnAppearanceChange:(nullable EZAppearanceChangeHandler)handler;
 
 @end
 

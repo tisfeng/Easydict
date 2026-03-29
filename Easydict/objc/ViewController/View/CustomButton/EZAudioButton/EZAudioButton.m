@@ -43,9 +43,8 @@
             }
         }
     }];
-
+    
     [self executeOnAppearanceChange:^(EZAudioButton *audioButton, BOOL isDarkMode) {
-        (void)isDarkMode;
         [audioButton updateAudioImageAppearance];
     }];
 }

@@ -18,4 +18,8 @@
     return NO;
 }
 
+- (void)executeOnAppearanceChange:(EZAppearanceChangeHandler)handler {
+    [self ez_executeOnAppearanceChange:handler];
+}
+
 @end

@@ -138,7 +138,6 @@
     self.arrowButton.mas_key = @"arrowButton";
 
     [self executeOnAppearanceChange:^(EZResultView *view, BOOL isDarkMode) {
-        (void)isDarkMode;
         [view updateArrowButtonImage];
     }];
 
@@ -169,7 +168,6 @@
     retryButton.hidden = YES;
 
     [self executeOnAppearanceChange:^(EZResultView *view, BOOL isDarkMode) {
-        (void)isDarkMode;
         [view updateRetryButtonImage];
     }];
     

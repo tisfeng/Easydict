@@ -7,6 +7,7 @@
 //
 
 #import "EZTextView.h"
+#import "NSObject+EZDarkMode.h"
 
 @interface EZTextView () <NSTextViewDelegate>
 

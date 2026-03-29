@@ -7,6 +7,7 @@
 //
 
 #import "EZHoverButton.h"
+#import "NSObject+EZDarkMode.h"
 
 @implementation EZHoverButton
 

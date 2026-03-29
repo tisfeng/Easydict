@@ -30,7 +30,6 @@
     self.textContainer.lineFragmentPadding = 2; // Default value: 5.0
 
     [self executeOnAppearanceChange:^(EZLabel *label, BOOL isDarkMode) {
-        (void)isDarkMode;
         [label updateDisplayedText];
     }];
 }

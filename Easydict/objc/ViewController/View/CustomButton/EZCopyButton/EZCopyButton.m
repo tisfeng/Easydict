@@ -8,6 +8,7 @@
 
 #import "EZCopyButton.h"
 #import "NSImage+EZResize.h"
+#import "NSObject+EZDarkMode.h"
 
 @implementation EZCopyButton
 

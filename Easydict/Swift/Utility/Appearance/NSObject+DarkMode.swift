@@ -26,8 +26,8 @@ extension NSObject: DarkModeCapable {
     ///   current appearance is dark mode.
     /// - Important: Prefer this when light and dark paths share the same structure and
     ///   only differ in colors, images, or other selected values.
-    @objc(executeOnAppearanceChange:)
-    func executeOnAppearanceChange(_ handler: AnyObject? = nil) {
+    @objc(ez_executeOnAppearanceChange:)
+    func ez_executeOnAppearanceChange(_ handler: AnyObject? = nil) {
         let appearanceClosure = handler.map { appearanceBlock in
             unsafeBitCast(appearanceBlock, to: (@convention(block) (NSObject, Bool) -> ()).self)
         }
@@ -80,6 +80,6 @@ extension NSObject: DarkModeCapable {
             }
         }
 
-        executeOnAppearanceChange(appearanceHandler as AnyObject)
+        ez_executeOnAppearanceChange(appearanceHandler as AnyObject)
     }
 }
