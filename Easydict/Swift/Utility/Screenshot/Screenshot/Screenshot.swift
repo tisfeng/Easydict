@@ -85,7 +85,7 @@ class Screenshot: NSObject {
 
         hideAllOverlayWindows()
         removeEventMonitor()
-        overlayViewStates.removeAll()
+        tearDownOverlayStates()
     }
 
     /// Cancels the scheduled preview screenshot task, if any.
@@ -152,6 +152,7 @@ class Screenshot: NSObject {
         // Save the currently active application
         previousActiveApp = NSWorkspace.shared.frontmostApplication
 
+        tearDownOverlayStates()
         hideAllOverlayWindows()
 
         // Show overlay window on each screen
@@ -169,6 +170,14 @@ class Screenshot: NSObject {
          if another application was active when the screenshot started.
          */
         NSApplication.shared.activateApp()
+    }
+
+    /// Removes transient screenshot state and releases any local event monitors it owns.
+    private func tearDownOverlayStates() {
+        for state in overlayViewStates.values {
+            state.cleanup()
+        }
+        overlayViewStates.removeAll()
     }
 
     private func createOverlayWindow(for screen: NSScreen) {

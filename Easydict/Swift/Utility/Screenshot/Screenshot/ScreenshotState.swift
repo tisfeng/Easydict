@@ -22,6 +22,10 @@ class ScreenshotState: ObservableObject {
         setupMouseMovedMonitor()
     }
 
+    deinit {
+        cleanup()
+    }
+
     // MARK: Internal
 
     /// The screen where the screenshot state is attached.
@@ -56,7 +60,15 @@ class ScreenshotState: ObservableObject {
         isShowingPreview = false
         shouldHideDarkOverlay = true
 
-        removeMonitor()
+        cleanup()
+    }
+
+    /// Releases the local event monitor owned by this screenshot state.
+    func cleanup() {
+        if let mouseMovedMonitor {
+            NSEvent.removeMonitor(mouseMovedMonitor)
+            self.mouseMovedMonitor = nil
+        }
     }
 
     // MARK: - State Management
@@ -121,13 +133,6 @@ class ScreenshotState: ObservableObject {
 
             // Pass the event to the next screen monitor
             return event
-        }
-    }
-
-    private func removeMonitor() {
-        if let mouseMovedMonitor {
-            NSEvent.removeMonitor(mouseMovedMonitor)
-            self.mouseMovedMonitor = nil
         }
     }
 }
