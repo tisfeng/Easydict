@@ -166,14 +166,13 @@
     EZHoverButton *retryButton = [[EZHoverButton alloc] init];
     self.retryButton = retryButton;
     [self addSubview:retryButton];
-    NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
-    retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
     retryButton.hidden = YES;
-    [retryButton executeLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+
+    [self executeLight:^(EZResultView *view) {
+        [view updateRetryButtonImage];
+    } dark:^(EZResultView *view) {
+        [view updateRetryButtonImage];
     }];
     
     [retryButton setClickBlock:^(EZButton *button) {
@@ -543,6 +542,16 @@
     NSImage *baseImage = [self baseArrowButtonImage];
     NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
     self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
+}
+
+- (NSImage *)baseRetryButtonImage {
+    return [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
+}
+
+- (void)updateRetryButtonImage {
+    NSImage *baseImage = [self baseRetryButtonImage];
+    NSColor *tintColor = self.retryButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+    self.retryButton.image = [baseImage imageWithTintColor:tintColor];
 }
 
 @end
