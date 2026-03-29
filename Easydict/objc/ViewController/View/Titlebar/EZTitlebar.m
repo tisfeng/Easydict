@@ -179,12 +179,9 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
             }
         }];
 
-        [pinButton executeLight:^(EZHoverButton *button) {
-            mm_strongify(self);
-            [self updatePinButtonImage];
-        } dark:^(EZHoverButton *button) {
-            mm_strongify(self);
-            [self updatePinButtonImage];
+        [self executeOnAppearanceChange:^(EZTitlebar *titlebar, BOOL isDarkMode) {
+            (void)isDarkMode;
+            [titlebar updatePinButtonImage];
         }];
     }
     return _pinButton;
@@ -268,10 +265,9 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
         CGSize imageSize = CGSizeMake(20, 20);
         
-        [quickActionButton executeLight:^(EZButton *button) {
-            button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
-        } dark:^(EZButton *button) {
-            button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
+        [quickActionButton executeOnAppearanceChange:^(EZButton *button, BOOL isDarkMode) {
+            NSColor *tintColor = isDarkMode ? darkTintColor : lightTintColor;
+            button.image = [[image imageWithTintColor:tintColor] resizeToSize:imageSize];
         }];
         
         [quickActionButton mas_makeConstraints:^(MASConstraintMaker *make) {

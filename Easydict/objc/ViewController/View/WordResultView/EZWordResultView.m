@@ -349,11 +349,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
                 NSButton *tagButton = [[NSButton alloc] init];
                 tagButton.title = tag;
-                [tagButton executeLight:^(NSButton *tagButton) {
-                    NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
-                    [EZWordResultView applyTagButtonAppearance:tagButton tagColor:tagColor fontSize:tagFontSize];
-                } dark:^(NSButton *tagButton) {
-                    NSColor *tagColor = [NSColor mm_colorWithHexString:@"#CCCCC8"];
+                [tagButton executeOnAppearanceChange:^(NSButton *tagButton, BOOL isDarkMode) {
+                    NSColor *tagColor = [NSColor mm_colorWithHexString:isDarkMode ? @"#CCCCC8" : @"#7A7A78"];
                     [EZWordResultView applyTagButtonAppearance:tagButton tagColor:tagColor fontSize:tagFontSize];
                 }];
 

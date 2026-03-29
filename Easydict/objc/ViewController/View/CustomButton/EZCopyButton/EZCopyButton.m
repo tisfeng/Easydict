@@ -19,14 +19,11 @@
 }
 
 - (void)setup {
-    NSImage *copyImage = [NSImage imageNamed:@"copy"];
-    copyImage = [copyImage resizeToSize:CGSizeMake(16, 16)];
-    self.image = copyImage;
-    
-    [self executeLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+    NSImage *baseImage = [[NSImage imageNamed:@"copy"] resizeToSize:CGSizeMake(16, 16)];
+
+    [self executeOnAppearanceChange:^(NSButton *button, BOOL isDarkMode) {
+        NSColor *tintColor = isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+        button.image = [baseImage imageWithTintColor:tintColor];
     }];
     
     NSString *action = NSLocalizedString(@"copy_text", nil);

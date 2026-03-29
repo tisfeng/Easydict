@@ -20,6 +20,33 @@ extension NSObject: DarkModeCapable {
         ]) == .darkAqua
     }
 
+    /// Execute a single handler for the current appearance and future appearance changes.
+    ///
+    /// - Parameter handler: Objective-C block that receives the owner and whether the
+    ///   current appearance is dark mode.
+    /// - Important: Prefer this when light and dark paths share the same structure and
+    ///   only differ in colors, images, or other selected values.
+    @objc(executeOnAppearanceChange:)
+    func executeOnAppearanceChange(_ handler: AnyObject? = nil) {
+        let appearanceClosure = handler.map { appearanceBlock in
+            unsafeBitCast(appearanceBlock, to: (@convention(block) (NSObject, Bool) -> ()).self)
+        }
+
+        guard let appearanceClosure else {
+            return
+        }
+
+        appearanceClosure(self, isDarkMode)
+
+        setupDarkModeObserver(lightHandler: { [weak self] in
+            guard let self else { return }
+            appearanceClosure(self, false)
+        }, darkHandler: { [weak self] in
+            guard let self else { return }
+            appearanceClosure(self, true)
+        })
+    }
+
     /// Execute different code blocks based on current dark mode.
 
     /// - Parameters:
@@ -45,20 +72,14 @@ extension NSObject: DarkModeCapable {
             return
         }
 
-        // Execute immediately based on current mode
-        if isDarkMode {
-            darkClosure?(self)
-        } else {
-            lightClosure?(self)
+        let appearanceHandler: @convention(block) (NSObject, Bool) -> () = { owner, isDarkMode in
+            if isDarkMode {
+                darkClosure?(owner)
+            } else {
+                lightClosure?(owner)
+            }
         }
 
-        // Set up observer for future changes
-        setupDarkModeObserver(lightHandler: { [weak self] in
-            guard let self else { return }
-            lightClosure?(self)
-        }, darkHandler: { [weak self] in
-            guard let self else { return }
-            darkClosure?(self)
-        })
+        executeOnAppearanceChange(appearanceHandler as AnyObject)
     }
 }

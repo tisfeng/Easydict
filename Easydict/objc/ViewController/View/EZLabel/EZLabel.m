@@ -29,9 +29,8 @@
     self.font = [NSFont systemFontOfSize:14];
     self.textContainer.lineFragmentPadding = 2; // Default value: 5.0
 
-    [self executeLight:^(EZLabel *label) {
-        [label updateDisplayedText];
-    } dark:^(EZLabel *label) {
+    [self executeOnAppearanceChange:^(EZLabel *label, BOOL isDarkMode) {
+        (void)isDarkMode;
         [label updateDisplayedText];
     }];
 }

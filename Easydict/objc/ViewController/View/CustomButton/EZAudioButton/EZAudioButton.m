@@ -44,9 +44,8 @@
         }
     }];
 
-    [self executeLight:^(EZAudioButton *audioButton) {
-        [audioButton updateAudioImageAppearance];
-    } dark:^(EZAudioButton *audioButton) {
+    [self executeOnAppearanceChange:^(EZAudioButton *audioButton, BOOL isDarkMode) {
+        (void)isDarkMode;
         [audioButton updateAudioImageAppearance];
     }];
 }
