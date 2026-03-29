@@ -11,6 +11,10 @@ import Foundation
 
 // MARK: - NSObject DarkMode Extension
 
+typealias AppearanceChangeHandler = @convention(block) (AnyObject, Bool) -> ()
+
+// MARK: - NSObject + DarkModeCapable
+
 extension NSObject: DarkModeCapable {
     /// Check if current appearance is dark mode
     var isDarkMode: Bool {
@@ -26,25 +30,9 @@ extension NSObject: DarkModeCapable {
     ///   current appearance is dark mode.
     /// - Important: Prefer this when light and dark paths share the same structure and
     ///   only differ in colors, images, or other selected values.
-    @objc(ez_executeOnAppearanceChange:)
-    func ez_executeOnAppearanceChange(_ handler: AnyObject? = nil) {
-        let appearanceClosure = handler.map { appearanceBlock in
-            unsafeBitCast(appearanceBlock, to: (@convention(block) (NSObject, Bool) -> ()).self)
-        }
-
-        guard let appearanceClosure else {
-            return
-        }
-
-        appearanceClosure(self, isDarkMode)
-
-        setupDarkModeObserver(lightHandler: { [weak self] in
-            guard let self else { return }
-            appearanceClosure(self, false)
-        }, darkHandler: { [weak self] in
-            guard let self else { return }
-            appearanceClosure(self, true)
-        })
+    @objc(executeOnAppearanceChange:)
+    func executeOnAppearanceChange(_ handler: AppearanceChangeHandler? = nil) {
+        executeAppearanceChange(handler: handler)
     }
 
     /// Execute different code blocks based on current dark mode.
@@ -72,7 +60,11 @@ extension NSObject: DarkModeCapable {
             return
         }
 
-        let appearanceHandler: @convention(block) (NSObject, Bool) -> () = { owner, isDarkMode in
+        let appearanceHandler: AppearanceChangeHandler = { owner, isDarkMode in
+            guard let owner = owner as? NSObject else {
+                return
+            }
+
             if isDarkMode {
                 darkClosure?(owner)
             } else {
@@ -80,6 +72,22 @@ extension NSObject: DarkModeCapable {
             }
         }
 
-        ez_executeOnAppearanceChange(appearanceHandler as AnyObject)
+        executeAppearanceChange(handler: appearanceHandler)
+    }
+
+    private func executeAppearanceChange(handler: AppearanceChangeHandler?) {
+        guard let handler else {
+            return
+        }
+
+        handler(self, isDarkMode)
+
+        setupDarkModeObserver(lightHandler: { [weak self] in
+            guard let self else { return }
+            handler(self, false)
+        }, darkHandler: { [weak self] in
+            guard let self else { return }
+            handler(self, true)
+        })
     }
 }
