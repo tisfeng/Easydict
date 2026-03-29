@@ -34,17 +34,6 @@ static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
-static void EZApplyTagButtonAppearance(NSButton *tagButton, NSColor *tagColor, CGFloat fontSize) {
-    tagButton.wantsLayer = YES;
-    tagButton.layer.borderWidth = 1.2;
-    tagButton.layer.cornerRadius = 3;
-    tagButton.layer.borderColor = tagColor.CGColor;
-    tagButton.bordered = NO;
-
-    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:fontSize] color:tagColor];
-    tagButton.attributedTitle = attributedString;
-}
-
 @interface EZWordResultView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
@@ -54,10 +43,26 @@ static void EZApplyTagButtonAppearance(NSButton *tagButton, NSColor *tagColor, C
 
 @property (nonatomic, assign) CGFloat fontSizeRatio;
 
++ (void)applyTagButtonAppearance:(NSButton *)tagButton tagColor:(NSColor *)tagColor fontSize:(CGFloat)fontSize;
+
 @end
 
 
 @implementation EZWordResultView
+
+/// Applies tag button styling without touching instance state.
+/// Using a class helper keeps the dark mode handlers from capturing `self`,
+/// which avoids a retain cycle through the tag button's observer store.
++ (void)applyTagButtonAppearance:(NSButton *)tagButton tagColor:(NSColor *)tagColor fontSize:(CGFloat)fontSize {
+    tagButton.wantsLayer = YES;
+    tagButton.layer.borderWidth = 1.2;
+    tagButton.layer.cornerRadius = 3;
+    tagButton.layer.borderColor = tagColor.CGColor;
+    tagButton.bordered = NO;
+
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:fontSize] color:tagColor];
+    tagButton.attributedTitle = attributedString;
+}
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -346,10 +351,10 @@ static void EZApplyTagButtonAppearance(NSButton *tagButton, NSColor *tagColor, C
                 tagButton.title = tag;
                 [tagButton executeLight:^(NSButton *tagButton) {
                     NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
-                    EZApplyTagButtonAppearance(tagButton, tagColor, tagFontSize);
+                    [EZWordResultView applyTagButtonAppearance:tagButton tagColor:tagColor fontSize:tagFontSize];
                 } dark:^(NSButton *tagButton) {
                     NSColor *tagColor = [NSColor mm_colorWithHexString:@"#CCCCC8"];
-                    EZApplyTagButtonAppearance(tagButton, tagColor, tagFontSize);
+                    [EZWordResultView applyTagButtonAppearance:tagButton tagColor:tagColor fontSize:tagFontSize];
                 }];
 
                 [tagButton sizeToFit];

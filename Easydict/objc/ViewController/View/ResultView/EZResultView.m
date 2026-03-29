@@ -534,22 +534,14 @@
     [view.layer addAnimation:group forKey:@"group"];
 }
 
-- (NSImage *)baseArrowButtonImage {
-    return self.result.isShowing ? [NSImage imageNamed:@"arrow-down"] : [NSImage imageNamed:@"arrow-left"];
-}
-
 - (void)updateArrowButtonImage {
-    NSImage *baseImage = [self baseArrowButtonImage];
+    NSImage *baseImage = self.result.isShowing ? [NSImage imageNamed:@"arrow-down"] : [NSImage imageNamed:@"arrow-left"];
     NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
     self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
 }
 
-- (NSImage *)baseRetryButtonImage {
-    return [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
-}
-
 - (void)updateRetryButtonImage {
-    NSImage *baseImage = [self baseRetryButtonImage];
+    NSImage *baseImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
     NSColor *tintColor = self.retryButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
     self.retryButton.image = [baseImage imageWithTintColor:tintColor];
 }
