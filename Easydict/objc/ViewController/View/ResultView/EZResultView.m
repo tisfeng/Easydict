@@ -10,6 +10,7 @@
 #import "EZHoverButton.h"
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZSymbolmage.h"
+#import "NSObject+EZDarkMode.h"
 #import "NSObject+EZWindowType.h"
 
 
@@ -134,9 +135,11 @@
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
-    NSImage *image = [NSImage imageNamed:@"arrow-down"];
-    arrowButton.image = image;
     self.arrowButton.mas_key = @"arrowButton";
+
+    [self executeOnAppearanceChange:^(EZResultView *view, BOOL isDarkMode) {
+        [view updateArrowButtonImage];
+    }];
 
     // Add `handleTopBarTap:` action to arrowButton
     arrowButton.target = self;
@@ -161,14 +164,11 @@
     EZHoverButton *retryButton = [[EZHoverButton alloc] init];
     self.retryButton = retryButton;
     [self addSubview:retryButton];
-    NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
-    retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
     retryButton.hidden = YES;
-    [retryButton executeLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+
+    [self executeOnAppearanceChange:^(EZResultView *view, BOOL isDarkMode) {
+        [view updateRetryButtonImage];
     }];
     
     [retryButton setClickBlock:^(EZButton *button) {
@@ -432,18 +432,8 @@
 }
 
 - (void)updateArrowButton {
-    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
-    if (self.result.isShowing) {
-        arrowImage = [NSImage imageNamed:@"arrow-down"];
-    }
-    
     self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
-    
-    [self.arrowButton executeLight:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    [self updateArrowButtonImage];
 }
 
 - (BOOL)isLLLStreamService:(EZQueryService *)service {
@@ -538,6 +528,18 @@
     group.duration = 1;
     group.repeatCount = MAXFLOAT;
     [view.layer addAnimation:group forKey:@"group"];
+}
+
+- (void)updateArrowButtonImage {
+    NSImage *baseImage = self.result.isShowing ? [NSImage imageNamed:@"arrow-down"] : [NSImage imageNamed:@"arrow-left"];
+    NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+    self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
+}
+
+- (void)updateRetryButtonImage {
+    NSImage *baseImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
+    NSColor *tintColor = self.retryButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+    self.retryButton.image = [baseImage imageWithTintColor:tintColor];
 }
 
 @end

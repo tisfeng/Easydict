@@ -178,6 +178,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
                 self.pin = oldPin;
             }
         }];
+
+        [self executeOnAppearanceChange:^(EZTitlebar *titlebar, BOOL isDarkMode) {
+            [titlebar updatePinButtonImage];
+        }];
     }
     return _pinButton;
 }
@@ -260,10 +264,9 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
         CGSize imageSize = CGSizeMake(20, 20);
         
-        [quickActionButton executeLight:^(EZButton *button) {
-            button.image = [[image imageWithTintColor:lightTintColor] resizeToSize:imageSize];
-        } dark:^(EZButton *button) {
-            button.image = [[image imageWithTintColor:darkTintColor] resizeToSize:imageSize];
+        [quickActionButton executeOnAppearanceChange:^(EZButton *button, BOOL isDarkMode) {
+            NSColor *tintColor = isDarkMode ? darkTintColor : lightTintColor;
+            button.image = [[image imageWithTintColor:tintColor] resizeToSize:imageSize];
         }];
         
         [quickActionButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -404,30 +407,24 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 
 - (void)updatePinButton {
     self.pinButton.toolTip = [self toolTipStrWithButtonType:EZTitlebarButtonTypePin];
-    
+    [self updatePinButtonImage];
+}
+
+- (void)updatePinButtonImage {
     CGFloat imageWidth = 18;
     CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
-    
+
     // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
     NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
     NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-    
-    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
-    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
-    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
-    
+
+    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
-    
-    mm_weakify(self);
-    [self.pinButton executeLight:^(EZHoverButton *button) {
-        mm_strongify(self)
-        NSImage *image = self.pin ? selectedImage : normalLightImage;
-        button.image = image;
-    } dark:^(EZHoverButton *button) {
-        mm_strongify(self)
-        NSImage *image = self.pin ? selectedImage : normalDarkImage;
-        button.image = image;
-    }];
+
+    BOOL isDarkMode = self.pinButton.isDarkMode;
+    NSColor *pinTintColor = isDarkMode ? pinNormalDarkTintColor : pinNormalLightTintColor;
+    NSImage *normalTintedImage = [normalImage imageWithTintColor:pinTintColor];
+    self.pinButton.image = self.pin ? selectedImage : normalTintedImage;
 }
 
 - (void)addFavoriteIfNeeded {

@@ -26,6 +26,7 @@
 #import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
+#import "NSObject+EZDarkMode.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -43,10 +44,26 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 @property (nonatomic, assign) CGFloat fontSizeRatio;
 
++ (void)applyTagButtonAppearance:(NSButton *)tagButton tagColor:(NSColor *)tagColor fontSize:(CGFloat)fontSize;
+
 @end
 
 
 @implementation EZWordResultView
+
+/// Applies tag button styling without touching instance state.
+/// Using a class helper keeps the dark mode handlers from capturing `self`,
+/// which avoids a retain cycle through the tag button's observer store.
++ (void)applyTagButtonAppearance:(NSButton *)tagButton tagColor:(NSColor *)tagColor fontSize:(CGFloat)fontSize {
+    tagButton.wantsLayer = YES;
+    tagButton.layer.borderWidth = 1.2;
+    tagButton.layer.cornerRadius = 3;
+    tagButton.layer.borderColor = tagColor.CGColor;
+    tagButton.bordered = NO;
+
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:fontSize] color:tagColor];
+    tagButton.attributedTitle = attributedString;
+}
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -323,6 +340,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             __block CGFloat tagContentViewWidth = 0;
             CGFloat padding = 6;
             CGFloat leftMargin = kHorizontalMargin_8 + 2;
+            CGFloat tagFontSize = 12 * self.fontSizeRatio;
 
             __block NSButton *lastTagButton = nil;
             [wordResult.tags enumerateObjectsUsingBlock:^(NSString *_Nonnull tag, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -332,12 +350,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
                 NSButton *tagButton = [[NSButton alloc] init];
                 tagButton.title = tag;
-                [tagButton executeLight:^(NSButton *tagButton) {
-                    NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
-                    [self updateTagButton:tagButton tagColor:tagColor];
-                } dark:^(NSButton *tagButton) {
-                    NSColor *tagColor = [NSColor mm_colorWithHexString:@"#CCCCC8"];
-                    [self updateTagButton:tagButton tagColor:tagColor];
+                [tagButton executeOnAppearanceChange:^(NSButton *tagButton, BOOL isDarkMode) {
+                    NSColor *tagColor = [NSColor mm_colorWithHexString:isDarkMode ? @"#CCCCC8" : @"#7A7A78"];
+                    [EZWordResultView applyTagButtonAppearance:tagButton tagColor:tagColor fontSize:tagFontSize];
                 }];
 
                 [tagButton sizeToFit];
@@ -975,17 +990,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }];
 
     return rtnView;
-}
-
-- (void)updateTagButton:(NSButton *)tagButton tagColor:(NSColor *)tagColor {
-    tagButton.wantsLayer = YES;
-    tagButton.layer.borderWidth = 1.2;
-    tagButton.layer.cornerRadius = 3;
-    tagButton.layer.borderColor = tagColor.CGColor;
-    tagButton.bordered = NO;
-
-    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12 * self.fontSizeRatio] color:tagColor];
-    tagButton.attributedTitle = attributedString;
 }
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {

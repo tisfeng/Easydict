@@ -14,6 +14,8 @@ static NSString *kMethod = @"method";
 
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
+- (void)teardownWebView;
+
 @end
 
 @implementation EZWebViewManager
@@ -70,12 +72,30 @@ static NSString *kMethod = @"method";
     self.isLoaded = NO;
     self.needUpdateIframeHeight = NO;
     self.didFinishUpdatingIframeHeightBlock = nil;
+    [self teardownWebView];
+}
+
+- (void)dealloc {
+    [self teardownWebView];
 }
 
 #pragma mark - MJExtension
 
 + (NSArray *)mj_ignoredPropertyNames {
     return @[ @"webView" ];
+}
+
+- (void)teardownWebView {
+    WKWebView *webView = _webView;
+    if (!webView) {
+        return;
+    }
+
+    [webView stopLoading];
+    webView.navigationDelegate = nil;
+    webView.UIDelegate = nil;
+    [webView.configuration.userContentController removeScriptMessageHandlerForName:kObjcHandler];
+    _webView = nil;
 }
 
 @end

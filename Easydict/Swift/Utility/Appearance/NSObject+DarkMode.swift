@@ -11,6 +11,11 @@ import Foundation
 
 // MARK: - NSObject DarkMode Extension
 
+typealias AppearanceHandler = @convention(block) (AnyObject) -> ()
+typealias AppearanceChangeHandler = @convention(block) (AnyObject, Bool) -> ()
+
+// MARK: - NSObject + DarkModeCapable
+
 extension NSObject: DarkModeCapable {
     /// Check if current appearance is dark mode
     var isDarkMode: Bool {
@@ -20,39 +25,58 @@ extension NSObject: DarkModeCapable {
         ]) == .darkAqua
     }
 
-    /// Execute different code blocks based on current dark mode.
-
-    /// - Parameters:
-    ///   - light: Code block to execute in light mode, passes self as parameter
-    ///   - dark: Code block to execute in dark mode, passes self as parameter
+    /// Execute a single handler for the current appearance and future appearance changes.
     ///
-    /// - Important: The appropriate block will be executed one time immediately based on the current mode.
-    @objc
+    /// - Parameter handler: Objective-C block that receives the owner and whether the
+    ///   current appearance is dark mode.
+    /// - Important: Prefer this when light and dark paths share the same structure and
+    ///   only differ in colors, images, or other selected values.
+    @objc(executeOnAppearanceChange:)
+    func executeOnAppearanceChange(_ handler: AppearanceChangeHandler? = nil) {
+        executeAppearanceChange(handler: handler)
+    }
+
+    /// Execute different code blocks based on the current appearance.
+    ///
+    /// - Parameters:
+    ///   - light: Objective-C block to execute in light mode, passing the owner
+    ///   - dark: Objective-C block to execute in dark mode, passing the owner
+    ///
+    /// - Important: Prefer ``executeOnAppearanceChange(_:)`` for new code when light and
+    ///   dark branches only differ in selected values such as colors or images.
+    @objc(executeLight:dark:)
     func executeLight(
-        _ light: AnyObject? = nil,
-        dark: AnyObject? = nil
+        _ light: AppearanceHandler? = nil,
+        dark: AppearanceHandler? = nil
     ) {
-        // Create closures once
-        let lightClosure = light.map { lightBlock in
-            unsafeBitCast(lightBlock, to: (@convention(block) (NSObject) -> ()).self)
+        guard light != nil || dark != nil else {
+            return
         }
 
-        let darkClosure = dark.map { darkBlock in
-            unsafeBitCast(darkBlock, to: (@convention(block) (NSObject) -> ()).self)
+        let appearanceHandler: AppearanceChangeHandler = { owner, isDarkMode in
+            if isDarkMode {
+                dark?(owner)
+            } else {
+                light?(owner)
+            }
         }
 
-        // Execute immediately based on current mode
-        if isDarkMode {
-            darkClosure?(self)
-        } else {
-            lightClosure?(self)
+        executeAppearanceChange(handler: appearanceHandler)
+    }
+
+    private func executeAppearanceChange(handler: AppearanceChangeHandler?) {
+        guard let handler else {
+            return
         }
 
-        // Set up observer for future changes
-        setupDarkModeObserver(lightHandler: {
-            lightClosure?(self)
-        }, darkHandler: {
-            darkClosure?(self)
+        handler(self, isDarkMode)
+
+        setupDarkModeObserver(lightHandler: { [weak self] in
+            guard let self else { return }
+            handler(self, false)
+        }, darkHandler: { [weak self] in
+            guard let self else { return }
+            handler(self, true)
         })
     }
 }
