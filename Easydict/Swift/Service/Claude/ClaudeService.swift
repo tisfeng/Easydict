@@ -62,6 +62,10 @@ public final class ClaudeService: StreamService {
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
+            continuation.onTermination = { @Sendable [weak self] _ in
+                self?.currentTask?.cancel()
+            }
+
             if let currentTask, !currentTask.isCancelled {
                 currentTask.cancel()
             }
@@ -93,7 +97,7 @@ public final class ClaudeService: StreamService {
                     let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
                     try await validateHTTPResponse(response, asyncBytes: asyncBytes)
 
-                    try await processStreamBytes(asyncBytes, continuation: continuation)
+                    try await processStreamLines(asyncBytes, continuation: continuation)
                     continuation.finish()
                 } catch is CancellationError {
                     logInfo("Claude task was cancelled.")
@@ -121,6 +125,8 @@ public final class ClaudeService: StreamService {
     private let maxTokens = 4096
 
     private var currentTask: Task<(), Never>?
+
+    private let jsonDecoder = JSONDecoder()
 
     // MARK: - Message Construction
 
@@ -212,16 +218,11 @@ public final class ClaudeService: StreamService {
             return
         }
 
-        // Read the error response body to get the actual error message.
-        var errorData = Data()
-        for try await byte in asyncBytes {
-            errorData.append(byte)
-            // Limit error body read to 4KB to avoid unbounded reads.
-            if errorData.count > 4096 { break }
-        }
+        // Read the error response body (up to 4KB) to get the actual error message.
+        let errorData = try await asyncBytes.prefix(4096).reduce(into: Data()) { $0.append($1) }
 
         var errorMessage = "Claude API error: HTTP \(httpResponse.statusCode)"
-        if let errorBody = try? JSONDecoder().decode(ClaudeStreamError.self, from: errorData) {
+        if let errorBody = try? jsonDecoder.decode(ClaudeStreamError.self, from: errorData) {
             errorMessage = errorBody.error.message
         } else if let bodyString = String(data: errorData, encoding: .utf8), !bodyString.isEmpty {
             errorMessage = bodyString
@@ -232,92 +233,66 @@ public final class ClaudeService: StreamService {
 
     // MARK: - SSE Stream Parsing
 
-    /// Processes SSE byte stream and yields translated text chunks.
-    private func processStreamBytes(
+    /// Processes SSE stream using line-based iteration and yields translated text chunks.
+    ///
+    /// SSE is a line-based protocol: events are separated by blank lines.
+    /// Using `asyncBytes.lines` is more idiomatic than manual byte buffering.
+    private func processStreamLines(
         _ asyncBytes: URLSession.AsyncBytes,
         continuation: AsyncThrowingStream<String, Error>.Continuation
     ) async throws {
-        var dataBuffer = Data()
-        var textBuffer = ""
-        let bufferThreshold = 1024
+        var eventLines: [String] = []
 
-        for try await byte in asyncBytes {
+        for try await line in asyncBytes.lines {
             try Task.checkCancellation()
 
-            dataBuffer.append(byte)
-
-            guard dataBuffer.count >= bufferThreshold || byte == 0x0A else {
-                continue
-            }
-
-            if let text = String(data: dataBuffer, encoding: .utf8) {
-                textBuffer.append(text)
-                dataBuffer.removeAll()
-                processCompleteEvents(from: &textBuffer, continuation: continuation)
+            if line.isEmpty {
+                // Blank line marks the end of an SSE event.
+                if let content = parseSSEEvent(eventLines) {
+                    continuation.yield(content)
+                }
+                eventLines.removeAll()
+            } else {
+                eventLines.append(line)
             }
         }
 
-        if !dataBuffer.isEmpty, let text = String(data: dataBuffer, encoding: .utf8) {
-            textBuffer.append(text)
-        }
-        processCompleteEvents(from: &textBuffer, continuation: continuation)
-    }
-
-    /// Splits the text buffer on double-newlines and processes complete SSE events.
-    private func processCompleteEvents(
-        from textBuffer: inout String,
-        continuation: AsyncThrowingStream<String, Error>.Continuation
-    ) {
-        let eventSeparator = "\n\n"
-        guard textBuffer.contains(eventSeparator) else { return }
-
-        let parts = textBuffer.split(separator: eventSeparator, omittingEmptySubsequences: false)
-        textBuffer = String(parts.last ?? "")
-
-        for event in parts.dropLast() where !event.isEmpty {
-            if let content = parseSSEEvent(String(event)) {
-                continuation.yield(content)
-            }
+        // Process any trailing event without a final blank line.
+        if !eventLines.isEmpty, let content = parseSSEEvent(eventLines) {
+            continuation.yield(content)
         }
     }
 
-    /// Parses a single SSE event and extracts delta text content.
+    /// Parses SSE event lines and extracts delta text content.
     ///
     /// Anthropic SSE format:
     /// ```
     /// event: content_block_delta
     /// data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello"}}
     /// ```
-    private func parseSSEEvent(_ event: String) -> String? {
-        let eventPrefix = "event:"
-        let dataPrefix = "data:"
-
+    private func parseSSEEvent(_ lines: [String]) -> String? {
         var eventType: String?
         var jsonDataString: String?
 
-        for line in event.split(separator: "\n") {
-            let trimmedLine = line.trimmingCharacters(in: .whitespaces)
-            if trimmedLine.starts(with: eventPrefix) {
-                eventType = trimmedLine
-                    .dropFirst(eventPrefix.count)
-                    .trimmingCharacters(in: .whitespaces)
-            } else if trimmedLine.starts(with: dataPrefix) {
-                jsonDataString = trimmedLine
-                    .dropFirst(dataPrefix.count)
-                    .trimmingCharacters(in: .whitespaces)
+        for line in lines {
+            if line.hasPrefix("event:") {
+                eventType = line.dropFirst(6).trimmingCharacters(in: .whitespaces)
+            } else if line.hasPrefix("data:") {
+                jsonDataString = line.dropFirst(5).trimmingCharacters(in: .whitespaces)
             }
         }
 
-        // Handle stream-level errors
+        // Handle stream-level errors.
         if eventType == "error",
            let dataString = jsonDataString,
            let data = dataString.data(using: .utf8),
-           let streamError = try? JSONDecoder().decode(ClaudeStreamError.self, from: data) {
+           let streamError = try? jsonDecoder.decode(ClaudeStreamError.self, from: data)
+        {
             logError("Claude stream error: \(streamError.error.message)")
             return nil
         }
 
-        // Extract text delta from content_block_delta events
+        // Extract text delta from content_block_delta events.
         guard eventType == "content_block_delta",
               let dataString = jsonDataString,
               let data = dataString.data(using: .utf8)
@@ -325,7 +300,7 @@ public final class ClaudeService: StreamService {
             return nil
         }
 
-        guard let streamDelta = try? JSONDecoder().decode(ClaudeStreamDelta.self, from: data) else {
+        guard let streamDelta = try? jsonDecoder.decode(ClaudeStreamDelta.self, from: data) else {
             logError("Failed to decode Claude SSE data: \(jsonDataString ?? "")")
             return nil
         }
