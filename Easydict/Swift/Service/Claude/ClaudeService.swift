@@ -62,17 +62,13 @@ public final class ClaudeService: StreamService {
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
-            continuation.onTermination = { @Sendable [weak self] _ in
-                self?.currentTask?.cancel()
-            }
-
             if let currentTask, !currentTask.isCancelled {
                 currentTask.cancel()
             }
 
             let queryType = queryType(text: text, from: from, to: to)
 
-            currentTask = Task {
+            let task = Task {
                 do {
                     guard !apiKey.isEmpty else {
                         throw QueryError(type: .missingSecretKey, message: "Claude API key is empty.")
@@ -106,6 +102,11 @@ public final class ClaudeService: StreamService {
                     logError("Claude translate error: \(error)")
                     continuation.finish(throwing: error)
                 }
+            }
+
+            currentTask = task
+            continuation.onTermination = { @Sendable _ in
+                task.cancel()
             }
         }
     }
@@ -265,10 +266,15 @@ public final class ClaudeService: StreamService {
     }
 
     /// Splits the text buffer on double-newlines and processes complete SSE events.
+    /// Normalizes CRLF to LF before splitting to handle proxies that use CRLF framing.
     private func processCompleteEvents(
         from textBuffer: inout String,
         continuation: AsyncThrowingStream<String, Error>.Continuation
     ) throws {
+        // Normalize CRLF to LF so the "\n\n" separator works for all line endings.
+        textBuffer = textBuffer.replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+
         let eventSeparator = "\n\n"
         guard textBuffer.contains(eventSeparator) else { return }
 
