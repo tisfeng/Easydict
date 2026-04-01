@@ -97,7 +97,7 @@ public final class ClaudeService: StreamService {
                     let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
                     try await validateHTTPResponse(response, asyncBytes: asyncBytes)
 
-                    try await processStreamLines(asyncBytes, continuation: continuation)
+                    try await processStreamBytes(asyncBytes, continuation: continuation)
                     continuation.finish()
                 } catch is CancellationError {
                     logInfo("Claude task was cancelled.")
@@ -166,7 +166,7 @@ public final class ClaudeService: StreamService {
         var body: [String: Any] = [
             "model": model,
             "max_tokens": maxTokens,
-            "temperature": temperature,
+            "temperature": min(max(temperature, 0), 1),
             "stream": true,
             "messages": messages.map { ["role": $0.role.rawValue, "content": $0.content] },
         ]
@@ -233,63 +233,88 @@ public final class ClaudeService: StreamService {
 
     // MARK: - SSE Stream Parsing
 
-    /// Processes SSE stream using line-based iteration and yields translated text chunks.
-    ///
-    /// SSE is a line-based protocol: events are separated by blank lines.
-    /// Using `asyncBytes.lines` is more idiomatic than manual byte buffering.
-    private func processStreamLines(
+    /// Processes SSE byte stream and yields translated text chunks.
+    private func processStreamBytes(
         _ asyncBytes: URLSession.AsyncBytes,
         continuation: AsyncThrowingStream<String, Error>.Continuation
     ) async throws {
-        var eventLines: [String] = []
+        var dataBuffer = Data()
+        var textBuffer = ""
+        let bufferThreshold = 1024
 
-        for try await line in asyncBytes.lines {
+        for try await byte in asyncBytes {
             try Task.checkCancellation()
 
-            if line.isEmpty {
-                // Blank line marks the end of an SSE event.
-                if let content = parseSSEEvent(eventLines) {
-                    continuation.yield(content)
-                }
-                eventLines.removeAll()
-            } else {
-                eventLines.append(line)
+            dataBuffer.append(byte)
+
+            guard dataBuffer.count >= bufferThreshold || byte == 0x0A else {
+                continue
+            }
+
+            if let text = String(data: dataBuffer, encoding: .utf8) {
+                textBuffer.append(text)
+                dataBuffer.removeAll()
+                try processCompleteEvents(from: &textBuffer, continuation: continuation)
             }
         }
 
-        // Process any trailing event without a final blank line.
-        if !eventLines.isEmpty, let content = parseSSEEvent(eventLines) {
-            continuation.yield(content)
+        if !dataBuffer.isEmpty, let text = String(data: dataBuffer, encoding: .utf8) {
+            textBuffer.append(text)
+        }
+        try processCompleteEvents(from: &textBuffer, continuation: continuation)
+    }
+
+    /// Splits the text buffer on double-newlines and processes complete SSE events.
+    private func processCompleteEvents(
+        from textBuffer: inout String,
+        continuation: AsyncThrowingStream<String, Error>.Continuation
+    ) throws {
+        let eventSeparator = "\n\n"
+        guard textBuffer.contains(eventSeparator) else { return }
+
+        let parts = textBuffer.split(separator: eventSeparator, omittingEmptySubsequences: false)
+        textBuffer = String(parts.last ?? "")
+
+        for event in parts.dropLast() where !event.isEmpty {
+            if let content = try parseSSEEvent(String(event)) {
+                continuation.yield(content)
+            }
         }
     }
 
-    /// Parses SSE event lines and extracts delta text content.
+    /// Parses a single SSE event and extracts delta text content.
     ///
     /// Anthropic SSE format:
     /// ```
     /// event: content_block_delta
     /// data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello"}}
     /// ```
-    private func parseSSEEvent(_ lines: [String]) -> String? {
+    private func parseSSEEvent(_ event: String) throws -> String? {
+        let eventPrefix = "event:"
+        let dataPrefix = "data:"
+
         var eventType: String?
         var jsonDataString: String?
 
-        for line in lines {
-            if line.hasPrefix("event:") {
-                eventType = line.dropFirst(6).trimmingCharacters(in: .whitespaces)
-            } else if line.hasPrefix("data:") {
-                jsonDataString = line.dropFirst(5).trimmingCharacters(in: .whitespaces)
+        for line in event.split(separator: "\n") {
+            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmedLine.starts(with: eventPrefix) {
+                eventType = trimmedLine
+                    .dropFirst(eventPrefix.count)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            } else if trimmedLine.starts(with: dataPrefix) {
+                jsonDataString = trimmedLine
+                    .dropFirst(dataPrefix.count)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
             }
         }
 
-        // Handle stream-level errors.
+        // Handle stream-level errors by throwing to terminate the stream immediately.
         if eventType == "error",
            let dataString = jsonDataString,
            let data = dataString.data(using: .utf8),
-           let streamError = try? jsonDecoder.decode(ClaudeStreamError.self, from: data)
-        {
-            logError("Claude stream error: \(streamError.error.message)")
-            return nil
+           let streamError = try? jsonDecoder.decode(ClaudeStreamError.self, from: data) {
+            throw QueryError(type: .api, errorDataMessage: streamError.error.message)
         }
 
         // Extract text delta from content_block_delta events.
@@ -301,7 +326,7 @@ public final class ClaudeService: StreamService {
         }
 
         guard let streamDelta = try? jsonDecoder.decode(ClaudeStreamDelta.self, from: data) else {
-            logError("Failed to decode Claude SSE data: \(jsonDataString ?? "")")
+            logError("Failed to decode Claude SSE data (\(data.count) bytes)")
             return nil
         }
 
