@@ -3595,6 +3595,7 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 				"zh-Hans",
 				"zh-Hant",
 			);

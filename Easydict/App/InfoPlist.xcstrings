@@ -11,6 +11,12 @@
             "value" : "Easydict"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38,6 +44,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Easydict"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Easydict"
           }
         },
@@ -71,6 +83,12 @@
             "value" : "Easydict requires permission to execute AppleScript."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict requiere permiso para ejecutar AppleScript."
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -99,6 +117,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Copyright © 2023-2025 tisfeng. All rights reserved."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright © 2023-2025 tisfeng. Todos los derechos reservados."
           }
         },
         "sk" : {
