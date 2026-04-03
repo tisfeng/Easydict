@@ -27,10 +27,15 @@ extension BingService {
 
         if useDictQuery {
             bingRequest.translateTextFromDict(text: text) { [weak self] json, error in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completion(QueryResult(), CancellationError())
+                    return
+                }
 
                 parseBingDictTranslate(json, word: text) { dictResult, dictError in
-                    if error != nil || dictError != nil {
+                    if error is CancellationError || dictError is CancellationError {
+                        completion(QueryResult(), CancellationError())
+                    } else if error != nil || dictError != nil {
                         self.bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
                     } else {
                         self.isDictQueryResult = true
@@ -50,7 +55,10 @@ extension BingService {
             from: fromCode,
             to: toCode
         ) { [weak self] translateData, lookupData, translateError, lookupError in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
 
             do {
                 if let translateError = translateError {

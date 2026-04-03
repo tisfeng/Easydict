@@ -82,14 +82,23 @@ class AppleScriptTask: NSObject {
         }
 
         var errorInfo: NSDictionary?
-
-        // Create semaphore for timeout control
-        let semaphore = DispatchSemaphore(value: 0)
         var result: String?
         var executionError: Error?
 
-        // Execute AppleScript in background queue
-        DispatchQueue.global().async {
+        // NSAppleScript requires main thread for thread safety.
+        // If already on main thread, execute directly to avoid deadlock.
+        if Thread.isMainThread {
+            let output = script.executeAndReturnError(&errorInfo)
+            if let errorInfo {
+                let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+                throw makeError(message)
+            }
+            return output.stringValue
+        }
+
+        let semaphore = DispatchSemaphore(value: 0)
+
+        DispatchQueue.main.async {
             let output = script.executeAndReturnError(&errorInfo)
             if let errorInfo {
                 let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
@@ -100,7 +109,6 @@ class AppleScriptTask: NSObject {
             semaphore.signal()
         }
 
-        // Wait for completion or timeout
         let timeoutResult = semaphore.wait(timeout: .now() + timeout)
         if timeoutResult == .timedOut {
             throw makeError("AppleScript execution timed out after \(timeout) seconds")
@@ -117,22 +125,17 @@ class AppleScriptTask: NSObject {
     @discardableResult
     static func runAppleScriptWithDescriptor(_ appleScript: String) async throws
         -> NSAppleEventDescriptor {
-        try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global().async {
-                let appleScript = NSAppleScript(source: appleScript)
-                var errorInfo: NSDictionary?
-                let output = appleScript?.executeAndReturnError(&errorInfo)
+        try await MainActor.run {
+            let script = NSAppleScript(source: appleScript)
+            var errorInfo: NSDictionary?
+            let output = script?.executeAndReturnError(&errorInfo)
 
-                guard let output, errorInfo == nil else {
-                    let errorMessage =
-                        errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                    continuation.resume(
-                        throwing: QueryError(type: .appleScript, message: errorMessage)
-                    )
-                    return
-                }
-                continuation.resume(returning: output)
+            guard let output, errorInfo == nil else {
+                let errorMessage =
+                    errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+                throw QueryError(type: .appleScript, message: errorMessage)
             }
+            return output
         }
     }
 
