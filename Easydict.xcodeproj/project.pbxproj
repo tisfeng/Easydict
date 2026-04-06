@@ -511,7 +511,6 @@
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */; };
 		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
-		9BFB9BB105C1788DDB661B73 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E1AD8C1D1A356A3F910E5C8 /* Pods_Easydict.framework */; };
 		A1D1807B2F8D100100B1C0D1 /* ThrottleGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */; };
 		A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */; };
 		A2016EDA90ED45B5B66FA986 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14921B68C1D645268F93668E /* AnalyticsService.swift */; };
@@ -544,6 +543,7 @@
 		CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */; };
 		DC46DF802B4417B900DEAE3E /* MyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* MyConfiguration.swift */; };
 		DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */; };
+		E34250B62E681A3100CEC295 /* Easydict-26.icon in Resources */ = {isa = PBXBuildFile; fileRef = E34250B52E681A3100CEC295 /* Easydict-26.icon */; };
 		EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */; };
 		EA3B81F92B5254AA004C0E8B /* Defaults.Keys+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */; };
 		EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = EA3B81FB2B52555C004C0E8B /* Defaults */; };
@@ -1221,6 +1221,7 @@
 		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* MyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyConfiguration.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
+		E34250B52E681A3100CEC295 /* Easydict-26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Easydict-26.icon"; sourceTree = "<group>"; };
 		E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSystemInfo.swift; sourceTree = "<group>"; };
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
@@ -1273,7 +1274,6 @@
 				03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */,
 				860409132DDD5F090095781D /* FirebaseAnalytics in Frameworks */,
 				5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */,
-				9BFB9BB105C1788DDB661B73 /* Pods_Easydict.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2513,6 +2513,7 @@
 				03BFBB6B29239C4100C48725 /* blue-white-icon */,
 				03BFBB622923987B00C48725 /* black-white-icon */,
 				03BFBB5529235CB900C48725 /* white-black-icon */,
+				E34250B52E681A3100CEC295 /* Easydict-26.icon */,
 			);
 			path = Icons;
 			sourceTree = "<group>";
@@ -3748,6 +3749,7 @@
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
+				E34250B62E681A3100CEC295 /* Easydict-26.icon in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				030D612C2CD9BB34000DF298 /* Pods-Easydict-acknowledgements.plist in Resources */,
@@ -3802,7 +3804,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script is responsible for uploading debug symbols and source context to Sentry.\n\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\n\n# Only run this script in Release environment\nif [ \"$CONFIGURATION\" != \"Release\" ]; then\n    exit 0\nfi\n\nif which sentry-cli >/dev/null; then\n    export SENTRY_ORG=izual\n    export SENTRY_PROJECT=easydict\n\n    # SENTRY_AUTH_TOKEN should be a local environment variable set in the .zshrc file.\n    # export SENTRY_AUTH_TOKEN=xxx\n\n    if [ -f \"$HOME/.zshrc\" ]; then\n        source \"$HOME/.zshrc\"\n    fi\n    \n    # Check if SENTRY_AUTH_TOKEN is set\n    if [ -z \"$SENTRY_AUTH_TOKEN\" ]; then\n        echo \"warning: $CONFIGURATION model - SENTRY_AUTH_TOKEN is not set. Please add it to your environment variables (e.g., in .zshrc or .bashrc).\"\n        \n        exit 0\n    fi\n\n    # Attempt to upload debug files\n    ERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\n    if [ ! $? -eq 0 ]; then\n        echo \"warning: sentry-cli - $ERROR\"\n    fi\nfi\n";
+			shellScript = "# This script uploads debug symbols and source context to Sentry.\n\nLOG_FILE=\"${SCRIPT_OUTPUT_FILE_0:-$BUILT_PRODUCTS_DIR/sentry-upload-debug-symbols.log}\"\n: > \"$LOG_FILE\"\n\nlog_message() {\n    printf '%s\\n' \"$1\"\n    printf '%s\\n' \"$1\" >> \"$LOG_FILE\"\n}\n\nappend_log() {\n    printf '%s\\n' \"$1\" >> \"$LOG_FILE\"\n}\n\nif [ \"$(uname -m)\" = \"arm64\" ]; then\n    PATH=\"/opt/homebrew/bin:$PATH\"\n    export PATH\nfi\n\n# Only run this script in Release configuration.\nif [ \"$CONFIGURATION\" != \"Release\" ]; then\n    log_message \"Skipping Sentry debug symbol upload for $CONFIGURATION configuration.\"\n    exit 0\nfi\n\nif ! command -v sentry-cli >/dev/null 2>&1; then\n    log_message \"warning: sentry-cli not found. Skipping Sentry debug symbol upload.\"\n    exit 0\nfi\n\nexport SENTRY_ORG=izual\nexport SENTRY_PROJECT=easydict\n\nSENTRY_CONFIG_FILE=\"$PROJECT_DIR/.sentryclirc\"\nif [ -z \"$SENTRY_AUTH_TOKEN\" ] && [ ! -f \"$SENTRY_CONFIG_FILE\" ]; then\n    log_message \"warning: Release mode - SENTRY_AUTH_TOKEN is not set and $SENTRY_CONFIG_FILE was not found. Skipping Sentry debug symbol upload.\"\n    exit 0\nfi\n\nAPP_DSYM_PATH=\"$DWARF_DSYM_FOLDER_PATH/$DWARF_DSYM_FILE_NAME\"\nif [ ! -d \"$APP_DSYM_PATH\" ]; then\n    log_message \"warning: App dSYM not found at $APP_DSYM_PATH. Skipping Sentry debug symbol upload.\"\n    exit 0\nfi\n\nattempt=1\nmax_attempts=3\nUPLOAD_STATUS=1\nwhile [ $attempt -le $max_attempts ]; do\n    append_log \"sentry-cli upload attempt $attempt/$max_attempts for $APP_DSYM_PATH\"\n    UPLOAD_OUTPUT=$(sentry-cli debug-files upload --include-sources \"$APP_DSYM_PATH\" 2>&1)\n    UPLOAD_STATUS=$?\n    if [ -n \"$UPLOAD_OUTPUT\" ]; then\n        append_log \"$UPLOAD_OUTPUT\"\n    fi\n    if [ $UPLOAD_STATUS -eq 0 ]; then\n        break\n    fi\n    attempt=$((attempt + 1))\n    if [ $attempt -le $max_attempts ]; then\n        sleep 2\n    fi\ndone\n\nif [ $UPLOAD_STATUS -ne 0 ]; then\n    log_message \"warning: Sentry debug symbol upload failed after $max_attempts attempts. See $LOG_FILE for details.\"\n    exit 0\nfi\n\nlog_message \"Uploaded debug symbols to Sentry from $APP_DSYM_PATH.\"\n";
 		};
 		124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -4545,7 +4547,7 @@
 			baseConfigurationReference = 06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Easydict-26";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				AUTOMATION_APPLE_EVENTS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -4554,7 +4556,7 @@
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 60;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
@@ -4573,7 +4575,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.18.0;
+				MARKETING_VERSION = 2.18.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "Easydict-debug";
@@ -4592,7 +4594,7 @@
 			baseConfigurationReference = 91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Easydict-26";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				AUTOMATION_APPLE_EVENTS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -4601,7 +4603,7 @@
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 60;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
@@ -4620,7 +4622,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.18.0;
+				MARKETING_VERSION = 2.18.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
