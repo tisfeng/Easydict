@@ -271,72 +271,16 @@ public final class ClaudeService: StreamService {
         from textBuffer: inout String,
         continuation: AsyncThrowingStream<String, Error>.Continuation
     ) throws {
-        // Normalize CRLF to LF so the "\n\n" separator works for all line endings.
-        textBuffer = textBuffer.replacingOccurrences(of: "\r\n", with: "\n")
-            .replacingOccurrences(of: "\r", with: "\n")
+        // A trailing standalone `\r` may still pair with the next chunk's leading `\n`,
+        // so only normalize completed line endings before splitting SSE events.
+        let extractedEvents = ClaudeSSEParser.extractCompleteEvents(from: textBuffer)
+        textBuffer = extractedEvents.remainingBuffer
 
-        let eventSeparator = "\n\n"
-        guard textBuffer.contains(eventSeparator) else { return }
-
-        let parts = textBuffer.split(separator: eventSeparator, omittingEmptySubsequences: false)
-        textBuffer = String(parts.last ?? "")
-
-        for event in parts.dropLast() where !event.isEmpty {
-            if let content = try parseSSEEvent(String(event)) {
+        for event in extractedEvents.events {
+            if let content = try ClaudeSSEParser.parseEvent(event, jsonDecoder: jsonDecoder) {
                 continuation.yield(content)
             }
         }
-    }
-
-    /// Parses a single SSE event and extracts delta text content.
-    ///
-    /// Anthropic SSE format:
-    /// ```
-    /// event: content_block_delta
-    /// data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello"}}
-    /// ```
-    private func parseSSEEvent(_ event: String) throws -> String? {
-        let eventPrefix = "event:"
-        let dataPrefix = "data:"
-
-        var eventType: String?
-        var jsonDataString: String?
-
-        for line in event.split(separator: "\n") {
-            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-            if trimmedLine.starts(with: eventPrefix) {
-                eventType = trimmedLine
-                    .dropFirst(eventPrefix.count)
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-            } else if trimmedLine.starts(with: dataPrefix) {
-                jsonDataString = trimmedLine
-                    .dropFirst(dataPrefix.count)
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-        }
-
-        // Handle stream-level errors by throwing to terminate the stream immediately.
-        if eventType == "error",
-           let dataString = jsonDataString,
-           let data = dataString.data(using: .utf8),
-           let streamError = try? jsonDecoder.decode(ClaudeStreamError.self, from: data) {
-            throw QueryError(type: .api, errorDataMessage: streamError.error.message)
-        }
-
-        // Extract text delta from content_block_delta events.
-        guard eventType == "content_block_delta",
-              let dataString = jsonDataString,
-              let data = dataString.data(using: .utf8)
-        else {
-            return nil
-        }
-
-        guard let streamDelta = try? jsonDecoder.decode(ClaudeStreamDelta.self, from: data) else {
-            logError("Failed to decode Claude SSE data (\(data.count) bytes)")
-            return nil
-        }
-
-        return streamDelta.delta?.text
     }
 }
 
