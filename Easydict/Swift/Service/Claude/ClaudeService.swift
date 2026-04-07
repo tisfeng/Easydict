@@ -127,8 +127,6 @@ public final class ClaudeService: StreamService {
 
     private var currentTask: Task<(), Never>?
 
-    private let jsonDecoder = JSONDecoder()
-
     // MARK: - Message Construction
 
     /// Separates system messages from user/assistant messages.
@@ -223,7 +221,7 @@ public final class ClaudeService: StreamService {
         let errorData = try await asyncBytes.prefix(4096).reduce(into: Data()) { $0.append($1) }
 
         var errorMessage = "Claude API error: HTTP \(httpResponse.statusCode)"
-        if let errorBody = try? jsonDecoder.decode(ClaudeStreamError.self, from: errorData) {
+        if let errorBody = try? JSONDecoder().decode(ClaudeStreamError.self, from: errorData) {
             errorMessage = errorBody.error.message
         } else if let bodyString = String(data: errorData, encoding: .utf8), !bodyString.isEmpty {
             errorMessage = bodyString
@@ -277,7 +275,7 @@ public final class ClaudeService: StreamService {
         textBuffer = extractedEvents.remainingBuffer
 
         for event in extractedEvents.events {
-            if let content = try ClaudeSSEParser.parseEvent(event, jsonDecoder: jsonDecoder) {
+            if let content = try ClaudeSSEParser.parseEvent(event) {
                 continuation.yield(content)
             }
         }

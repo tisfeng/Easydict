@@ -81,7 +81,7 @@ struct ClaudeSSEParserTests {
         #expect(extracted.remainingBuffer.isEmpty)
 
         do {
-            _ = try ClaudeSSEParser.parseEvent(extracted.events[0], jsonDecoder: JSONDecoder())
+            _ = try ClaudeSSEParser.parseEvent(extracted.events[0])
             Issue.record("Expected Claude SSE error event to throw QueryError.")
         } catch let error as QueryError {
             #expect(error.type == .api)

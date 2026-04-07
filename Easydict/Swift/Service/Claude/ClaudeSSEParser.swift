@@ -10,6 +10,8 @@ import Foundation
 
 /// Parser utilities for Claude SSE event normalization and payload extraction.
 enum ClaudeSSEParser {
+    // MARK: Internal
+
     /// Extracts complete Claude SSE events from a text buffer while preserving a trailing carriage return.
     ///
     /// SSE frames may use either LF or CRLF line endings. A trailing standalone `\r` cannot be normalized
@@ -49,12 +51,10 @@ enum ClaudeSSEParser {
 
     /// Parses a single Claude SSE event and extracts delta text content.
     ///
-    /// - Parameters:
-    ///   - event: A normalized SSE event string.
-    ///   - jsonDecoder: The decoder used to parse SSE payloads.
+    /// - Parameter event: A normalized SSE event string.
     /// - Returns: The text delta for `content_block_delta` events, or `nil` for non-content events.
     /// - Throws: `QueryError` when the event represents an Anthropic stream error.
-    static func parseEvent(_ event: String, jsonDecoder: JSONDecoder) throws -> String? {
+    static func parseEvent(_ event: String) throws -> String? {
         let eventPrefix = "event:"
         let dataPrefix = "data:"
 
@@ -77,7 +77,7 @@ enum ClaudeSSEParser {
         if eventType == "error",
            let dataString = jsonDataString,
            let data = dataString.data(using: .utf8),
-           let streamError = try? jsonDecoder.decode(ClaudeStreamError.self, from: data) {
+           let streamError = decodePayload(ClaudeStreamError.self, from: data) {
             throw QueryError(type: .api, errorDataMessage: streamError.error.message)
         }
 
@@ -88,11 +88,27 @@ enum ClaudeSSEParser {
             return nil
         }
 
-        guard let streamDelta = try? jsonDecoder.decode(ClaudeStreamDelta.self, from: data) else {
+        guard let streamDelta = decodePayload(ClaudeStreamDelta.self, from: data) else {
             logError("Failed to decode Claude SSE data (\(data.count) bytes)")
             return nil
         }
 
         return streamDelta.delta?.text
+    }
+
+    // MARK: Private
+
+    /// Decodes a Claude SSE payload into the requested model type.
+    ///
+    /// - Parameters:
+    ///   - type: The target model type to decode.
+    ///   - data: The raw event payload bytes.
+    /// - Returns: The decoded payload, or `nil` if decoding fails.
+    private static func decodePayload<Payload: Decodable>(
+        _ type: Payload.Type,
+        from data: Data
+    )
+        -> Payload? {
+        try? JSONDecoder().decode(type, from: data)
     }
 }
