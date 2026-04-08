@@ -155,7 +155,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ali Translate"
+            "value": "Traductor Ali"
           }
         }
       }
@@ -708,7 +708,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apple Translate"
+            "value": "Traductor de Apple"
           }
         }
       }
@@ -1064,7 +1064,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Baidu Translate"
+            "value": "Traductor Baidu"
           }
         }
       }
@@ -1104,7 +1104,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bing Translate"
+            "value": "Traductor Bing"
           }
         }
       }
@@ -1139,7 +1139,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Buffer Too Small"
+            "value": "Búfer demasiado pequeño"
           }
         }
       }
@@ -1535,7 +1535,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limpiar input when translating"
+            "value": "Limpiar entrada al traducir"
           }
         }
       }
@@ -1967,7 +1967,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Decode Error"
+            "value": "Error de decodificación"
           }
         }
       }
@@ -2007,7 +2007,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "DeepL Translate"
+            "value": "Traductor DeepL"
           }
         }
       }
@@ -2048,7 +2048,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "DeepSeek Translate"
+            "value": "Traductor DeepSeek"
           }
         }
       }
@@ -2211,7 +2211,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Doubao Translate"
+            "value": "Traductor Doubao"
           }
         }
       }
@@ -2680,7 +2680,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Export Log"
+            "value": "Exportar registro"
           }
         }
       }
@@ -2715,7 +2715,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Failed to allocate memory"
+            "value": "No se pudo asignar memoria"
           }
         }
       }
@@ -3191,7 +3191,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Function not implemented for the current algorithm"
+            "value": "Función no implementada para el algoritmo actual"
           }
         }
       }
@@ -3232,7 +3232,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemini Translate"
+            "value": "Traductor Gemini"
           }
         }
       }
@@ -3272,7 +3272,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "GitHub Models"
+            "value": "Modelos de GitHub"
           }
         }
       }
@@ -3353,7 +3353,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Google Translate"
+            "value": "Traductor de Google"
           }
         }
       }
@@ -3393,7 +3393,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Groq Translate"
+            "value": "Traductor de Groq"
           }
         }
       }
@@ -3427,7 +3427,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Help"
+            "value": "Ayuda"
           }
         }
       }
@@ -3507,7 +3507,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar Menu Bar Icon"
+            "value": "Ocultar icono de la barra de menús"
           }
         }
       }
@@ -3783,7 +3783,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Illegal parameter supplied to encryption/decryption algorithm"
+            "value": "Parámetro ilegal proporcionado al algoritmo de cifrado/descifrado"
           }
         }
       }
@@ -3818,7 +3818,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Input data did not decode or decrypt correctly"
+            "value": "Los datos de entrada no se decodificaron o descifraron correctamente"
           }
         }
       }
@@ -3853,7 +3853,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Input size to encryption algorithm was not aligned correctly"
+            "value": "El tamaño de entrada al algoritmo de cifrado no estaba alineado correctamente"
           }
         }
       }
@@ -3888,7 +3888,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Insufficient buffer provided for specified operation"
+            "value": "Búfer insuficiente proporcionado para la operación especificada"
           }
         }
       }
@@ -4367,7 +4367,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Log Directory"
+            "value": "Directorio de registros"
           }
         }
       }
@@ -4510,7 +4510,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Memory Failure"
+            "value": "Fallo de memoria"
           }
         }
       }
@@ -5001,7 +5001,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Traducir and Replace"
+            "value": "Traducir y reemplazar"
           }
         }
       }
@@ -5121,7 +5121,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "MiniMax Translate"
+            "value": "Traductor de MiniMax"
           }
         }
       }
@@ -5396,7 +5396,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "none_window"
+            "value": "Sin ventana"
           }
         }
       }
@@ -5516,7 +5516,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ollama Translate"
+            "value": "Traductor de Ollama"
           }
         }
       }
@@ -5597,7 +5597,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir in Apple Dictionary"
+            "value": "Abrir en el Diccionario de Apple"
           }
         }
       }
@@ -5637,7 +5637,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir in Eudic"
+            "value": "Abrir en Eudic"
           }
         }
       }
@@ -5677,7 +5677,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir in Google"
+            "value": "Abrir en Google"
           }
         }
       }
@@ -5717,7 +5717,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configuración de Open System"
+            "value": "Abrir configuración del sistema"
           }
         }
       }
@@ -5757,7 +5757,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir Web Link"
+            "value": "Abrir enlace web"
           }
         }
       }
@@ -5797,7 +5797,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenAI Translate"
+            "value": "Traductor de OpenAI"
           }
         }
       }
@@ -5832,7 +5832,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Parameter Error"
+            "value": "Error de parámetro"
           }
         }
       }
@@ -9791,7 +9791,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Habilitar Custom Prompt"
+            "value": "Habilitar prompt personalizado"
           }
         }
       }
@@ -10391,7 +10391,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Traducir the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+            "value": "Traducir el siguiente texto de ${{queryFromLanguage}} a ${{queryTargetLanguage}}: ${{queryText}}"
           }
         }
       }
@@ -11351,7 +11351,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auto Mostrar query icon after selecting text"
+            "value": "Mostrar automáticamente el icono de consulta tras seleccionar texto"
           }
         }
       }
@@ -11391,7 +11391,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar the query icon only when the selected text language differs and the character count reaches this value."
+            "value": "Mostrar el icono de consulta solo cuando el idioma del texto seleccionado sea diferente y la cantidad de caracteres alcance este valor."
           }
         }
       }
@@ -11431,7 +11431,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar only when selected text language is not"
+            "value": "Mostrar solo cuando el idioma del texto seleccionado no sea"
           }
         }
       }
@@ -11752,7 +11752,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Habilitar Beta features"
+            "value": "Habilitar funciones beta"
           }
         }
       }
@@ -11872,7 +11872,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Habilitar Force Get Selected Text"
+            "value": "Habilitar obtención forzada de texto seleccionado"
           }
         }
       }
@@ -11952,7 +11952,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Habilitar HTTP Server"
+            "value": "Habilitar servidor HTTP"
           }
         }
       }
@@ -11992,7 +11992,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Habilitar OCR Text Format Optimization"
+            "value": "Habilitar optimización de formato de texto OCR"
           }
         }
       }
@@ -12552,7 +12552,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar main window at startup"
+            "value": "Ocultar ventana principal al iniciar"
           }
         }
       }
@@ -12592,7 +12592,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar Screenshot Tips"
+            "value": "Ocultar consejos de captura de pantalla"
           }
         }
       }
@@ -12632,7 +12632,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar the tip view when starting screenshot capture."
+            "value": "Ocultar la vista de consejos al iniciar la captura de pantalla."
           }
         }
       }
@@ -13020,7 +13020,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar OCR Menu Items"
+            "value": "Mostrar elementos del menú OCR"
           }
         }
       }
@@ -13060,7 +13060,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar OCR-related menu items (Screenshot OCR, Pasteboard OCR, OCR Window) in the menu bar."
+            "value": "Mostrar los elementos del menú relacionados con OCR (OCR de captura de pantalla, OCR del portapapeles, Ventana OCR) en la barra de menús."
           }
         }
       }
@@ -13381,7 +13381,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configuración de App"
+            "value": "Configuración de la App"
           }
         }
       }
@@ -14485,7 +14485,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar Input Text Field"
+            "value": "Mostrar campo de entrada de texto"
           }
         }
       }
@@ -14525,7 +14525,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar Select Language Bar"
+            "value": "Mostrar barra de selección de idioma"
           }
         }
       }
@@ -14793,7 +14793,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Settings..."
+            "value": "Ajustes..."
           }
         }
       }
@@ -14944,7 +14944,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limpiar All"
+            "value": "Limpiar todo"
           }
         }
       }
@@ -14985,7 +14985,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limpiar Input"
+            "value": "Limpiar entrada"
           }
         }
       }
@@ -15231,7 +15231,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Copiar first translated text"
+            "value": "Copiar el primer texto traducido"
           }
         }
       }
@@ -15510,7 +15510,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar Apple Dictionary quick link icon"
+            "value": "Mostrar icono de enlace rápido del Diccionario de Apple"
           }
         }
       }
@@ -15550,7 +15550,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar Eudic quick link icon"
+            "value": "Mostrar icono de enlace rápido de Eudic"
           }
         }
       }
@@ -15590,7 +15590,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar Google quick link icon"
+            "value": "Mostrar icono de enlace rápido de Google"
           }
         }
       }
@@ -15630,7 +15630,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar Setting quick link icon"
+            "value": "Mostrar icono de enlace rápido de configuración"
           }
         }
       }
@@ -15908,7 +15908,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Success"
+            "value": "Éxito"
           }
         }
       }
@@ -16071,7 +16071,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tencent Translate"
+            "value": "Traductor Tencent"
           }
         }
       }
@@ -16559,7 +16559,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "RU"
+            "value": "UK"
           }
         }
       }
@@ -16594,7 +16594,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unimplemented Function"
+            "value": "Función no implementada"
           }
         }
       }
@@ -16629,7 +16629,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unknown Error"
+            "value": "Error desconocido"
           }
         }
       }
@@ -16703,7 +16703,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "unknown_option"
+            "value": "Opción desconocida"
           }
         }
       }
@@ -16903,7 +16903,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "EE.UU."
+            "value": "US"
           }
         }
       }
@@ -16944,7 +16944,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Volcano Translate"
+            "value": "Traductor Volcano"
           }
         }
       }
@@ -17019,7 +17019,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Youdao Dictionary"
+            "value": "Diccionario Youdao"
           }
         }
       }
@@ -17059,7 +17059,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zhipu Translate"
+            "value": "Traductor Zhipu"
           }
         }
       }
