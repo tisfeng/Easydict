@@ -10,7 +10,7 @@ Puedes instalar Xcode desde la [Mac App Store](https://apps.apple.com/app/xcode/
 
 1. Usa git para clonar el proyecto desde GitHub a tu Mac. Puedes hacerlo usando la [herramienta de línea de comandos git](https://docs.github.com/en/get-started/getting-started-with-git) o [GitHub Desktop](https://desktop.github.com).
 2. Asegúrate de basar tus cambios en la rama [dev](https://github.com/tisfeng/Easydict/tree/dev); aquí es donde tiene lugar el trabajo de localización.
-3. Abre el proyecto y complílalo. Puedes encontrar instrucciones detalladas sobre cómo compilar el proyecto [aquí](/README_EN.md#developer-build).
+3. Abre el proyecto y complílalo. Puedes encontrar instrucciones detalladas sobre cómo compilar el proyecto [aquí](./readme-es.md#compilación-para-desarrolladores).
 
 ### Agregar tu idioma al Catálogo de Cadenas
 

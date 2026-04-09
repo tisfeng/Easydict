@@ -15,7 +15,7 @@
 </p>
 
 <div align="center">
-<a href="./README_ZH.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README.md">English</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README_ES.md">Español</a>
+<a href="./README_ZH.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README.md">English</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./readme-es.md">Español</a>
 </div>
 
 ## Easydict
@@ -24,7 +24,7 @@
 
 Easydict está listo para usar desde el primer momento, puede reconocer automáticamente el idioma del texto de entrada, soporta traducción por entrada de texto, traducción por selección y traducción por captura de pantalla OCR, y puede consultar resultados de múltiples servicios de traducción al mismo tiempo.
 
-**Servicios de traducción soportados:** [**🍎 Diccionario Apple**](./docs/es/How-to-use-macOS-system-dictionary-in-Easydict.md), [🍎 **Traducción Apple**](./docs/es/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) y [Doubao](https://www.volcengine.com/docs/82379/1820188).
+**Servicios de traducción soportados:** [**🍎 Diccionario Apple**](./docs/es/how-to-use-macos-system-dictionary-in-easydict.md), [🍎 **Traducción Apple**](./docs/es/how-to-use-macos-system-translation-in-easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) y [Doubao](https://www.volcengine.com/docs/82379/1820188).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,7 +41,7 @@ Easydict está listo para usar desde el primer momento, puede reconocer automát
 - 🖱️ Selección automática con ratón y atajos de teclado
 - 📸 Traducción por captura de pantalla OCR y OCR silencioso
 - 🔊 Múltiples servicios de voz TTS
-- 📚 Soporta 🍎 [Diccionario del Sistema Apple](./docs/es/How-to-use-macOS-system-dictionary-in-Easydict.md) y [Traducción del Sistema](./docs/es/How-to-use-macOS-system-translation-in-Easydict.md)
+- 📚 Soporta 🍎 [Diccionario del Sistema Apple](./docs/es/how-to-use-macos-system-dictionary-in-easydict.md) y [Traducción del Sistema](./docs/es/how-to-use-macos-system-translation-in-easydict.md)
 - 🌐 Soporta más de 20 servicios de traducción (OpenAI, Gemini, DeepL, Google, Ollama, Groq, etc.)
 - 🗣️ Soporte para 48 idiomas
 
@@ -54,7 +54,7 @@ Si estás interesado en este proyecto, agradecemos tus contribuciones. Nuestro d
 - **Rama dev**: Código de desarrollo más reciente, puede contener funciones en progreso
 - **Rama main**: Código de lanzamiento estable, se fusiona regularmente desde la rama dev
 
-Por favor envía correcciones de errores y funciones a la rama dev; para funciones nuevas importantes o cambios de UI, por favor abre un issue primero para discutir. Consulta la [guía completa de contribución](./docs/es/GUIDE.md#guía-del-colaborador).
+Por favor envía correcciones de errores y funciones a la rama dev; para funciones nuevas importantes o cambios de UI, por favor abre un issue primero para discutir. Consulta la [guía completa de contribución](./docs/es/guide.md#guía-del-colaborador).
 
 ### Programación con IA
 
@@ -94,23 +94,23 @@ brew install --cask easydict
 
 ## Uso
 
-| Forma                        | Descripción                                                                                                                                  | Vista Previa                                                                                                                                  |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Traducción por entrada texto | Presiona el atajo de entrada (por defecto `⌥ + A`), ingresa el texto a traducir y presiona `Enter` para traducir                 | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
-| Traducción selección ratón   | El ícono de consulta se muestra automáticamente después de seleccionar la palabra, y al pasar el ratón consulta                            | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
-| Traducción selección atajo   | Después de seleccionar el texto a traducir, presiona el atajo (por defecto `⌥ + D`)                                                          | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
-| Traducción captura pantalla  | Presiona el atajo de captura de pantalla (por defecto `⌥ + S`) para capturar el área a traducir                                            | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
-| OCR captura silenciosa       | Presiona el atajo de captura silenciosa (por defecto `⌥ + ⇧ + S`) para capturar el área, los resultados OCR se copiarán directamente al portapapeles | ![屏幕录制 2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                     |
+| Forma                        | Descripción                                                                                                                                          | Vista Previa                                                                                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Traducción por entrada texto | Presiona el atajo de entrada (por defecto `⌥ + A`), ingresa el texto a traducir y presiona `Enter` para traducir                                     | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
+| Traducción selección ratón   | El ícono de consulta se muestra automáticamente después de seleccionar la palabra, y al pasar el ratón consulta                                      | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| Traducción selección atajo   | Después de seleccionar el texto a traducir, presiona el atajo (por defecto `⌥ + D`)                                                                  | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
+| Traducción captura pantalla  | Presiona el atajo de captura de pantalla (por defecto `⌥ + S`) para capturar el área a traducir                                                      | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
+| OCR captura silenciosa       | Presiona el atajo de captura silenciosa (por defecto `⌥ + ⇧ + S`) para capturar el área, los resultados OCR se copiarán directamente al portapapeles | ![屏幕录制 2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                   |
 
 ---
 
 ## Documentación
 
-- 📖 [Guía Completa de Uso](./docs/es/GUIDE.md) - Funciones detalladas, configuración y consejos
-- 🔧 [Guía de Compilación para Desarrolladores](./docs/es/GUIDE.md#compilación-para-desarrolladores) - Compila y ejecuta desde el código fuente
-- 🍎 [Cómo usar el Diccionario del Sistema macOS](./docs/es/How-to-use-macOS-system-dictionary-in-Easydict.md)
-- 🍎 [Cómo usar la Traducción del Sistema macOS](./docs/es/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌍 [Cómo traducir Easydict](./docs/es/How-to-translate-Easydict.md)
+- 📖 [Guía Completa de Uso](./docs/es/guide.md) - Funciones detalladas, configuración y consejos
+- 🔧 [Guía de Compilación para Desarrolladores](./docs/es/guide.md#compilación-para-desarrolladores) - Compila y ejecuta desde el código fuente
+- 🍎 [Cómo usar el Diccionario del Sistema macOS](./docs/es/how-to-use-macos-system-dictionary-in-easydict.md)
+- 🍎 [Cómo usar la Traducción del Sistema macOS](./docs/es/how-to-use-macos-system-translation-in-easydict.md)
+- 🌍 [Cómo traducir Easydict](./docs/es/how-to-translate-easydict.md)
 
 ---
 
@@ -136,7 +136,7 @@ Gracias a [@CanglongCl](https://github.com/CanglongCl) por proporcionar la cuent
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-Gracias a todos los patrocinadores por su generoso apoyo. Para más detalles, consulta la [Lista de Patrocinadores](./docs/es/SPONSOR_LIST.md).
+Gracias a todos los patrocinadores por su generoso apoyo. Para más detalles, consulta la [Lista de Patrocinadores](./docs/es/sponsor-list.md).
 
 ---
 

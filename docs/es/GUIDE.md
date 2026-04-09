@@ -58,8 +58,8 @@
 - [x] Soporte para modo de consulta inteligente.
 - [x] Soporte para traducción por captura de pantalla del sistema OCR y OCR de captura silenciosa.
 - [x] Soporte para TTS del sistema, junto con servicios en línea de Bing, Google, Youdao y Baidu Cloud.
-- [x] Soporte para [🍎 Diccionario del Sistema Apple](./How-to-use-macOS-system-dictionary-in-Easydict.md), soporte para diccionarios de terceros con importación manual de diccionarios mdict.
-- [x] Soporte para traducción del sistema macOS. (_Consulta [Cómo usar la traducción del sistema 🍎 macOS en Easydict](./How-to-use-macOS-system-translation-in-Easydict.md)_)
+- [x] Soporte para [🍎 Diccionario del Sistema Apple](./how-to-use-macos-system-dictionary-in-easydict.md), soporte para diccionarios de terceros con importación manual de diccionarios mdict.
+- [x] Soporte para traducción del sistema macOS. (_Consulta [Cómo usar la traducción del sistema 🍎 macOS en Easydict](./how-to-use-macos-system-translation-in-easydict.md)_)
 - [x] Soporte para Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali, Volcano y Doubao Translate.
 - [x] Soporte para 48 idiomas.
 
@@ -187,7 +187,7 @@ Easydict se integra perfectamente con los diccionarios disponibles en la aplicac
 
 Además, el Diccionario de Apple ofrece soporte para diccionarios personalizados, lo que te permite importar opciones de terceros como el Diccionario Conciso Inglés-Chino, el Longman Dictionary of Contemporary Advanced English y más. Estos se pueden agregar a tu sistema importando diccionarios en formato .dictionary.
 
-Para información detallada, consulta [Cómo usar el diccionario del sistema macOS en Easydict](./How-to-use-macOS-system-dictionary-in-Easydict.md)
+Para información detallada, consulta [Cómo usar el diccionario del sistema macOS en Easydict](./how-to-use-macos-system-dictionary-in-easydict.md)
 
 <table>
  		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">

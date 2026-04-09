@@ -4133,6 +4133,12 @@
             "state": "translated",
             "value": "Usar detección de idioma de Google para optimizar"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Claude"
+          }
         }
       }
     },
