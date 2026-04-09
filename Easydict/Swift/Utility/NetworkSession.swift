@@ -31,23 +31,43 @@ final class NetworkSession {
     /// Current Alamofire Session. Updated automatically when the proxy setting changes.
     private(set) var session: Alamofire.Session = .default
 
+    /// Current URLSession. Updated automatically when the proxy setting changes.
+    private(set) var urlSession: URLSession = .shared
+
     // MARK: Private
 
     private var cancellables: Set<AnyCancellable> = []
+
+    /// Builds a proxy-configured `URLSessionConfiguration`, or returns `nil` when the URL
+    /// is empty or cannot be parsed.
+    private static func makeProxyConfiguration(proxyURL: String) -> URLSessionConfiguration? {
+        let trimmed = proxyURL.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, let proxyDict = proxyDictionary(for: trimmed) else {
+            return nil
+        }
+        let config = URLSessionConfiguration.default
+        config.connectionProxyDictionary = proxyDict
+        return config
+    }
 
     /// Creates an Alamofire Session configured with the given proxy URL string.
     ///
     /// Returns `Session.default` when the URL is empty or cannot be parsed.
     private static func makeSession(proxyURL: String) -> Alamofire.Session {
-        let trimmed = proxyURL.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty,
-              let proxyDict = proxyDictionary(for: trimmed)
-        else {
+        guard let config = makeProxyConfiguration(proxyURL: proxyURL) else {
             return .default
         }
-        let config = URLSessionConfiguration.default
-        config.connectionProxyDictionary = proxyDict
         return Alamofire.Session(configuration: config)
+    }
+
+    /// Creates a URLSession configured with the given proxy URL string.
+    ///
+    /// Returns `URLSession.shared` when the URL is empty or cannot be parsed.
+    private static func makeURLSession(proxyURL: String) -> URLSession {
+        guard let config = makeProxyConfiguration(proxyURL: proxyURL) else {
+            return .shared
+        }
+        return URLSession(configuration: config)
     }
 
     /// Parses a proxy URL string into a `connectionProxyDictionary` for `URLSessionConfiguration`.
@@ -94,6 +114,7 @@ final class NetworkSession {
         Defaults.publisher(.httpProxyURL, options: [.initial])
             .sink { [weak self] change in
                 self?.session = NetworkSession.makeSession(proxyURL: change.newValue)
+                self?.urlSession = NetworkSession.makeURLSession(proxyURL: change.newValue)
             }
             .store(in: &cancellables)
     }
@@ -106,3 +127,9 @@ final class NetworkSession {
 /// Use `EAF` instead of Alamofire's global `AF` so that requests automatically
 /// route through the user-configured local HTTP/SOCKS proxy when one is set.
 var EAF: Alamofire.Session { NetworkSession.shared.session }
+
+/// A proxy-aware URLSession for making streaming HTTP requests throughout the app.
+///
+/// Use `EURLSession` instead of `URLSession.shared` so that streaming requests
+/// route through the user-configured local HTTP/SOCKS proxy when one is set.
+var EURLSession: URLSession { NetworkSession.shared.urlSession }
