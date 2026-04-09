@@ -76,7 +76,7 @@ class OllamaService: BaseOpenAIService {
         }
 
         let modelsURL = trueBaseURL.appendingPathComponent("api/tags")
-        let dataTask = AF.request(modelsURL).serializingDecodable(OllamaModels.self)
+        let dataTask = EAF.request(modelsURL).serializingDecodable(OllamaModels.self)
         return try await dataTask.value
     }
 }

@@ -314,7 +314,7 @@ final class BaiduService: QueryService {
         let url = "\(kBaiduTranslateURL)/langdetect"
 
         do {
-            let response = try await AF.request(
+            let response = try await EAF.request(
                 url,
                 method: .post,
                 parameters: ["query": queryString],

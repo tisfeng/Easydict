@@ -85,7 +85,7 @@ extension DeepLService {
 
         let startTime = CFAbsoluteTimeGetCurrent()
 
-        let dataRequest = AF.request(request)
+        let dataRequest = EAF.request(request)
             .validate(statusCode: 200 ..< 300)
 
         dataRequest.responseData { [weak self] response in
@@ -196,7 +196,7 @@ extension DeepLService {
 
         let authorization = "DeepL-Auth-Key \(authKey)"
         let startTime = CFAbsoluteTimeGetCurrent()
-        let request = AF.request(
+        let request = EAF.request(
             url,
             method: .post,
             parameters: params,

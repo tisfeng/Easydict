@@ -53,7 +53,7 @@ extension BaiduService {
         let url = "\(kBaiduTranslateURL)/getocr"
 
         do {
-            let response = try await AF.upload(
+            let response = try await EAF.upload(
                 multipartFormData: { formData in
                     formData.append(imageData, withName: "image", fileName: "blob", mimeType: "image/png")
                     formData.append(Data((fromLang ?? "").utf8), withName: "from")

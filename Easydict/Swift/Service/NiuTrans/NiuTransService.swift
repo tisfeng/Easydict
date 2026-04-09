@@ -182,7 +182,7 @@ extension NiuTransService {
             "source": "Easydict",
         ]
 
-        let request = AF.request(
+        let request = EAF.request(
             kNiuTransAPIURL,
             method: .post,
             parameters: params,

@@ -147,6 +147,11 @@ extension Defaults.Keys {
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
 
+    /// Local HTTP/SOCKS proxy URL used for all translation service requests.
+    /// Supports formats: `http://host:port`, `socks5://host:port`, or `host:port`.
+    /// Leave empty to use system default networking (no custom proxy).
+    static var httpProxyURL = Key<String>("httpProxyURL", default: "")
+
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
     )

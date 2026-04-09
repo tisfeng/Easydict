@@ -79,7 +79,7 @@ public final class CaiyunService: QueryService {
             result = currentResult
         }
 
-        let request = AF.request(
+        let request = EAF.request(
             apiEndPoint,
             method: .post,
             parameters: parameters,

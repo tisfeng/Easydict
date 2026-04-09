@@ -48,7 +48,7 @@ extension YoudaoService {
 
         do {
             // Get the raw data
-            let responseData = try await AF.request(
+            let responseData = try await EAF.request(
                 url,
                 method: .post,
                 parameters: parameters
@@ -128,7 +128,7 @@ extension YoudaoService {
 
         do {
             // Get the raw data
-            let responseData = try await AF.request(
+            let responseData = try await EAF.request(
                 url,
                 method: .get,
                 parameters: parameters

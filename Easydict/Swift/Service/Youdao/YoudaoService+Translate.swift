@@ -80,7 +80,7 @@ extension YoudaoService {
             ], uniquingKeysWith: { _, new in new }
         )
 
-        let data = try await AF.request(
+        let data = try await EAF.request(
             "\(kYoudaoDictURL)/webtranslate",
             method: .post,
             parameters: parameters,
@@ -121,7 +121,7 @@ extension YoudaoService {
             ], uniquingKeysWith: { _, new in new }
         )
 
-        return try await AF.request(
+        return try await EAF.request(
             "\(kYoudaoDictURL)/webtranslate/key",
             method: .get,
             parameters: parameters,
