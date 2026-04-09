@@ -1093,6 +1093,12 @@
             "state" : "translated",
             "value" : "Claude 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Claude"
+          }
         }
       }
     },
