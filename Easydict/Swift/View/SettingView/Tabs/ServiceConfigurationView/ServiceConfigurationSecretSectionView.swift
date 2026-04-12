@@ -110,7 +110,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                 guard viewModel.isValidating else { return }
 
                 viewModel.alertTitle = "service.configuration.validation_success"
-                viewModel.errorMessage = result.errorMessage ?? ""
+                viewModel.errorMessage = result.validationMessage ?? result.errorMessage ?? ""
 
             } catch {
                 viewModel.alertTitle = "service.configuration.validation_fail"
