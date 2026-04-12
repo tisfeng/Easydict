@@ -274,6 +274,10 @@
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
 		03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846B2F12000100D5C0DE /* Task+Timeout.swift */; };
 		03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */; };
+		03A884702F13000100D5C0DE /* AppleScriptExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846F2F13000100D5C0DE /* AppleScriptExecutor.swift */; };
+		03A884722F13000100D5C0DE /* AppleScriptProcessExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */; };
+		03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */; };
+		03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -883,6 +887,11 @@
 		03A5E0912D3C020200FF7D95 /* StreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamService.swift; sourceTree = "<group>"; };
 		03A8846B2F12000100D5C0DE /* Task+Timeout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Timeout.swift"; sourceTree = "<group>"; };
 		03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimeoutTests.swift; sourceTree = "<group>"; };
+		03A8846F2F13000100D5C0DE /* AppleScriptExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutor.swift; sourceTree = "<group>"; };
+		03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutor.swift; sourceTree = "<group>"; };
+		03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutorTests.swift; sourceTree = "<group>"; };
+		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
+		03A884752F13000100D5C0DE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -1641,7 +1650,10 @@
 		0340D3972C91D4A3004C9910 /* AppleScript */ = {
 			isa = PBXGroup;
 			children = (
+				03A884752F13000100D5C0DE /* README.md */,
 				0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */,
+				03A8846F2F13000100D5C0DE /* AppleScriptExecutor.swift */,
+				03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */,
 				0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */,
 				0340D3982C91D4B6004C9910 /* AppleScriptTask+System.swift */,
 			);
@@ -2126,6 +2138,15 @@
 				03A1B2C42F70000100A1B2C3 /* MiniMaxService.swift */,
 			);
 			path = MiniMax;
+			sourceTree = "<group>";
+		};
+		03A884762F13000100D5C0DE /* AppleScript */ = {
+			isa = PBXGroup;
+			children = (
+				03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */,
+				03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */,
+			);
+			path = AppleScript;
 			sourceTree = "<group>";
 		};
 		03ADCACA2DA7C2B700ACB756 /* Models */ = {
@@ -3074,6 +3095,7 @@
 		141F5505BB90A4CC1D55C12A /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03A884762F13000100D5C0DE /* AppleScript */,
 				031153402EDB0BA20083521F /* String */,
 				03D486512E3F211C009313B3 /* Regex */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
@@ -3931,6 +3953,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
+				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
+				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
 				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
@@ -4132,6 +4156,8 @@
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03779F132BB256B5008D3C42 /* APIKey.swift in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
+				03A884702F13000100D5C0DE /* AppleScriptExecutor.swift in Sources */,
+				03A884722F13000100D5C0DE /* AppleScriptProcessExecutor.swift in Sources */,
 				03916D712E68154F007E50D7 /* Task+Sleep.swift in Sources */,
 				03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
