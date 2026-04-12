@@ -10,7 +10,7 @@ import Foundation
 // MARK: - AppleScriptExecutor
 
 /// Executes business AppleScript through `NSAppleScript` and keeps that backend isolated from the
-/// facade type. It centralizes timeout control, main-thread execution, and `QueryError` mapping so
+/// facade type. It centralizes timeout control, background execution, and `QueryError` mapping so
 /// browser automation, system integrations, and Apple Translation fallback all share one runtime
 /// behavior. This is the preferred AppleScript backend for production Easydict features.
 struct AppleScriptExecutor {
@@ -27,9 +27,7 @@ struct AppleScriptExecutor {
     func run(_ appleScript: String, timeout: TimeInterval = 10) async throws -> String? {
         do {
             return try await Task.withTimeout(seconds: timeout) {
-                try await MainActor.run {
-                    try executeOnMainActor(appleScript)
-                }
+                try await executeOnBackgroundQueue(appleScript)
             }
         } catch is TaskTimeoutError {
             throw makeAppleScriptError(
@@ -41,34 +39,44 @@ struct AppleScriptExecutor {
 
     // MARK: Private
 
-    /// Executes `NSAppleScript` on the main actor and returns the script string result.
+    /// Executes `NSAppleScript` on a background queue and returns the script string result.
     ///
-    /// Apple lists `NSAppleScript` under Foundation classes that must be used only from the main
-    /// thread. This helper keeps the main-thread requirement local to the `NSAppleScript` backend.
+    /// This backend intentionally runs work off the main thread to avoid blocking UI-sensitive
+    /// AppleScript call sites such as browser text insertion and selection. Timeout remains
+    /// best-effort only, because a running script cannot be interrupted once started.
     ///
     /// - Parameter appleScript: The AppleScript source string to execute.
     /// - Returns: The script's optional string result.
     /// - Throws: `QueryError` when script creation or execution fails.
     @discardableResult
-    @MainActor
-    private func executeOnMainActor(_ appleScript: String) throws -> String? {
-        guard let script = NSAppleScript(source: appleScript) else {
-            throw makeAppleScriptError(
-                "Failed to create AppleScript instance",
-                appleScript: appleScript
-            )
+    private func executeOnBackgroundQueue(_ appleScript: String) async throws -> String? {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global().async {
+                guard let script = NSAppleScript(source: appleScript) else {
+                    continuation.resume(
+                        throwing: makeAppleScriptError(
+                            "Failed to create AppleScript instance",
+                            appleScript: appleScript
+                        )
+                    )
+                    return
+                }
+
+                var errorInfo: NSDictionary?
+                let output = script.executeAndReturnError(&errorInfo)
+
+                if let errorInfo {
+                    let errorMessage =
+                        errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+                    continuation.resume(
+                        throwing: makeAppleScriptError(errorMessage, appleScript: appleScript)
+                    )
+                    return
+                }
+
+                continuation.resume(returning: output.stringValue)
+            }
         }
-
-        var errorInfo: NSDictionary?
-        let output = script.executeAndReturnError(&errorInfo)
-
-        guard errorInfo == nil else {
-            let errorMessage =
-                errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-            throw makeAppleScriptError(errorMessage, appleScript: appleScript)
-        }
-
-        return output.stringValue
     }
 
     /// Creates a standardized AppleScript query error with the script content attached.
