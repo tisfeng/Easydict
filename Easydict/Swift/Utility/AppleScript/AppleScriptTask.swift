@@ -55,14 +55,7 @@ class AppleScriptTask: NSObject {
         let appleScript = appleScript(
             of: SharedConstants.easydictTranslateShortcutName, parameters: parameters
         )
-        return try await asyncRunAppleScript(appleScript)
-    }
-
-    @discardableResult
-    static func asyncRunAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws -> String? {
-        try await Task { () -> String? in
-            try runAppleScript(appleScript, timeout: timeout)
-        }.value
+        return try await runAppleScript(appleScript)
     }
 
     /// Run AppleScript with timeout control
@@ -71,71 +64,37 @@ class AppleScriptTask: NSObject {
     ///   - timeout: Maximum execution time in seconds, defaults to 10
     /// - Returns: Optional string result from the AppleScript execution
     /// - Throws: QueryError if execution fails or times out
+    /// - Important: Apple documents `NSAppleScript` as a main-thread-only class, so execution is always
+    ///   marshaled through `MainActor.run`. Reference:
+    ///   https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html
+    /// - Note: Timeout is best-effort only and cannot forcibly interrupt a running `NSAppleScript`.
     @discardableResult
-    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) throws -> String? {
-        func makeError(_ message: String) -> QueryError {
-            .init(type: .appleScript, message: message, errorDataMessage: appleScript)
-        }
-
-        guard let script = NSAppleScript(source: appleScript) else {
-            throw makeError("Failed to create AppleScript instance")
-        }
-
-        var errorInfo: NSDictionary?
-        var result: String?
-        var executionError: Error?
-
-        // NSAppleScript requires main thread for thread safety.
-        // If already on main thread, execute directly to avoid deadlock.
-        if Thread.isMainThread {
-            let output = script.executeAndReturnError(&errorInfo)
-            if let errorInfo {
-                let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                throw makeError(message)
+    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws
+        -> String? {
+        try await withThrowingTaskGroup(of: String?.self) { group in
+            group.addTask {
+                try await MainActor.run {
+                    try runAppleScriptOnMainActor(appleScript)
+                }
             }
-            return output.stringValue
-        }
 
-        let semaphore = DispatchSemaphore(value: 0)
-
-        DispatchQueue.main.async {
-            let output = script.executeAndReturnError(&errorInfo)
-            if let errorInfo {
-                let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                executionError = makeError(message)
-            } else {
-                result = output.stringValue
+            group.addTask {
+                let timeoutInNanoseconds = UInt64(max(timeout, 0) * 1_000_000_000)
+                try await Task.sleep(nanoseconds: timeoutInNanoseconds)
+                throw makeAppleScriptError(
+                    "AppleScript execution timed out after \(timeout) seconds",
+                    appleScript: appleScript
+                )
             }
-            semaphore.signal()
-        }
 
-        let timeoutResult = semaphore.wait(timeout: .now() + timeout)
-        if timeoutResult == .timedOut {
-            throw makeError("AppleScript execution timed out after \(timeout) seconds")
-        }
-
-        if let error = executionError {
-            throw error
-        }
-
-        return result
-    }
-
-    /// Run AppleScript with `NSAppleScript`, faster than `Process`, but requires AppleEvent permission.
-    @discardableResult
-    static func runAppleScriptWithDescriptor(_ appleScript: String) async throws
-        -> NSAppleEventDescriptor {
-        try await MainActor.run {
-            let script = NSAppleScript(source: appleScript)
-            var errorInfo: NSDictionary?
-            let output = script?.executeAndReturnError(&errorInfo)
-
-            guard let output, errorInfo == nil else {
-                let errorMessage =
-                    errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                throw QueryError(type: .appleScript, message: errorMessage)
+            defer {
+                group.cancelAll()
             }
-            return output
+
+            guard let result = try await group.next() else {
+                throw makeAppleScriptError("AppleScript execution failed", appleScript: appleScript)
+            }
+            return result
         }
     }
 
@@ -172,6 +131,36 @@ class AppleScriptTask: NSObject {
 
     private let outputPipe: Pipe
     private let errorPipe: Pipe
+
+    /// Executes `NSAppleScript` on the main actor and returns the script string result.
+    ///
+    /// Apple lists `NSAppleScript` under Foundation classes that must be used only from the main thread.
+    /// This helper centralizes that requirement for all `NSAppleScript` execution in the app.
+    ///
+    /// Reference:
+    /// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html
+    @discardableResult
+    @MainActor
+    private static func runAppleScriptOnMainActor(_ appleScript: String) throws -> String? {
+        guard let script = NSAppleScript(source: appleScript) else {
+            throw makeAppleScriptError("Failed to create AppleScript instance", appleScript: appleScript)
+        }
+
+        var errorInfo: NSDictionary?
+        let output = script.executeAndReturnError(&errorInfo)
+
+        guard errorInfo == nil else {
+            let errorMessage =
+                errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+            throw makeAppleScriptError(errorMessage, appleScript: appleScript)
+        }
+        return output.stringValue
+    }
+
+    /// Creates a standardized AppleScript query error with the script content attached.
+    private static func makeAppleScriptError(_ message: String, appleScript: String) -> QueryError {
+        .init(type: .appleScript, message: message, errorDataMessage: appleScript)
+    }
 }
 
 func appleScript(of shortcutName: String, inputText: String) -> String {
