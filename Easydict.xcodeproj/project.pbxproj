@@ -278,6 +278,7 @@
 		03A884722F13000100D5C0DE /* AppleScriptProcessExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */; };
 		03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */; };
 		03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */; };
+		03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884792F14000100D5C0DE /* BingServiceTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -891,6 +892,7 @@
 		03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutor.swift; sourceTree = "<group>"; };
 		03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutorTests.swift; sourceTree = "<group>"; };
 		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
+		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
 		03A884752F13000100D5C0DE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
@@ -2675,6 +2677,7 @@
 			isa = PBXGroup;
 			children = (
 				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
+				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
@@ -3955,6 +3958,7 @@
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
+				03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */,
 				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
