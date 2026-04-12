@@ -239,7 +239,7 @@
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		038F1F8F2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */; };
-		03916D712E68154F007E50D7 /* Task+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03916D702E68154F007E50D7 /* Task+Extension.swift */; };
+		03916D712E68154F007E50D7 /* Task+Sleep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03916D702E68154F007E50D7 /* Task+Sleep.swift */; };
 		039223BC2E4B41950052F695 /* OCRDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223B92E4B41950052F695 /* OCRDebugView.swift */; };
 		039223BD2E4B41950052F695 /* OCRWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BA2E4B41950052F695 /* OCRWindowManager.swift */; };
 		039223BE2E4B41950052F695 /* OCRBandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039223BB2E4B41950052F695 /* OCRBandView.swift */; };
@@ -272,6 +272,8 @@
 		03A5B4BF2E0AB23900BA8F2E /* String+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
+		03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846B2F12000100D5C0DE /* Task+Timeout.swift */; };
+		03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -837,7 +839,7 @@
 		038A9BCA2E59B4EC00D08B57 /* ocr-en-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-poetry-8.png"; sourceTree = "<group>"; };
 		038A9BCC2E59B62C00D08B57 /* ocr-en-text-list-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-3.png"; sourceTree = "<group>"; };
 		038F1F8E2BAD838F00CD2F65 /* NSMenu+PopUpBelowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMenu+PopUpBelowView.swift"; sourceTree = "<group>"; };
-		03916D702E68154F007E50D7 /* Task+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Extension.swift"; sourceTree = "<group>"; };
+		03916D702E68154F007E50D7 /* Task+Sleep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Sleep.swift"; sourceTree = "<group>"; };
 		039223B92E4B41950052F695 /* OCRDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRDebugView.swift; sourceTree = "<group>"; };
 		039223BA2E4B41950052F695 /* OCRWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRWindowManager.swift; sourceTree = "<group>"; };
 		039223BB2E4B41950052F695 /* OCRBandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRBandView.swift; sourceTree = "<group>"; };
@@ -879,6 +881,8 @@
 		03A3E1542BEBDB2000E7E210 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+OCR.swift"; sourceTree = "<group>"; };
 		03A5E0912D3C020200FF7D95 /* StreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamService.swift; sourceTree = "<group>"; };
+		03A8846B2F12000100D5C0DE /* Task+Timeout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Timeout.swift"; sourceTree = "<group>"; };
+		03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimeoutTests.swift; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -2031,7 +2035,8 @@
 		03916D6F2E68153F007E50D7 /* Task */ = {
 			isa = PBXGroup;
 			children = (
-				03916D702E68154F007E50D7 /* Task+Extension.swift */,
+				03916D702E68154F007E50D7 /* Task+Sleep.swift */,
+				03A8846B2F12000100D5C0DE /* Task+Timeout.swift */,
 			);
 			path = Task;
 			sourceTree = "<group>";
@@ -3072,6 +3077,7 @@
 				031153402EDB0BA20083521F /* String */,
 				03D486512E3F211C009313B3 /* Regex */,
 				8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */,
+				03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */,
 				A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */,
 				003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */,
 			);
@@ -3931,6 +3937,7 @@
 				A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */,
 				03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
+				03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */,
 				A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
@@ -4125,7 +4132,8 @@
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03779F132BB256B5008D3C42 /* APIKey.swift in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
-				03916D712E68154F007E50D7 /* Task+Extension.swift in Sources */,
+				03916D712E68154F007E50D7 /* Task+Sleep.swift in Sources */,
+				03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
 				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,

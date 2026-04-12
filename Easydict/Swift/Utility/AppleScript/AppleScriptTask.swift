@@ -71,30 +71,17 @@ class AppleScriptTask: NSObject {
     @discardableResult
     static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws
         -> String? {
-        try await withThrowingTaskGroup(of: String?.self) { group in
-            group.addTask {
+        do {
+            return try await Task.withTimeout(seconds: timeout) {
                 try await MainActor.run {
                     try runAppleScriptOnMainActor(appleScript)
                 }
             }
-
-            group.addTask {
-                let timeoutInNanoseconds = UInt64(max(timeout, 0) * 1_000_000_000)
-                try await Task.sleep(nanoseconds: timeoutInNanoseconds)
-                throw makeAppleScriptError(
-                    "AppleScript execution timed out after \(timeout) seconds",
-                    appleScript: appleScript
-                )
-            }
-
-            defer {
-                group.cancelAll()
-            }
-
-            guard let result = try await group.next() else {
-                throw makeAppleScriptError("AppleScript execution failed", appleScript: appleScript)
-            }
-            return result
+        } catch is TaskTimeoutError {
+            throw makeAppleScriptError(
+                "AppleScript execution timed out after \(timeout) seconds",
+                appleScript: appleScript
+            )
         }
     }
 
