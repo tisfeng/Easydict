@@ -2,7 +2,7 @@
 //  Task+Timeout.swift
 //  Easydict
 //
-//  Created by Codex on 2026/4/12.
+//  Created by tisfeng on 2026/4/12.
 //
 
 import Foundation

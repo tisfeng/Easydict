@@ -2,7 +2,7 @@
 //  MiniMaxService.swift
 //  Easydict
 //
-//  Created by Codex on 2026/2/20.
+//  Created by tisfeng on 2026/2/20.
 //  Copyright © 2026 izual. All rights reserved.
 //
 
