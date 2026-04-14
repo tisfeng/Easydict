@@ -54,6 +54,7 @@ public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendabl
         case timeout
         case unsupportedQueryType // If query dict type but the service does not support it
         case unsupportedServiceType // HTTP request serviceType not supported
+        case contentTypeMismatch // Response Content-Type is not text/event-stream
 
         // MARK: Public
 
@@ -79,6 +80,8 @@ public class QueryError: NSError, LocalizedError, AbortError, @unchecked Sendabl
                 String(localized: "unsupported_query_type_error")
             case .unsupportedServiceType:
                 String(localized: "unsupported_service_type_error")
+            case .contentTypeMismatch:
+                String(localized: "content_type_mismatch_error")
             }
         }
     }

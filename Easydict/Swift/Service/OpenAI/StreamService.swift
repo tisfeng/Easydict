@@ -39,6 +39,11 @@ public class StreamService: QueryService {
 
     // MARK: Public
 
+    /// Whether the service should be treated as stream-capable by higher layers.
+    ///
+    /// This describes service capability, not the concrete transport of the current request.
+    /// UI code uses this semantic to decide behaviors such as showing the stop button and
+    /// delaying auto-copy until the stream finishes.
     public override func isStream() -> Bool {
         true
     }
@@ -138,6 +143,15 @@ public class StreamService: QueryService {
                         continuation.yield(result)
                     }
                     continuation.finish()
+                } catch is CancellationError {
+                    let cancellationResult = self.result ?? QueryResult()
+                    if self.result == nil {
+                        self.result = cancellationResult
+                    }
+                    cancellationResult.isStreamFinished = true
+                    cancellationResult.error = nil
+                    continuation.yield(cancellationResult)
+                    continuation.finish()
                 } catch {
                     if !didYieldError {
                         let errorResult = self.result ?? QueryResult()
@@ -173,6 +187,14 @@ public class StreamService: QueryService {
     var cancellables: Set<AnyCancellable> = []
 
     var hideThinkTagContent: Bool = true
+
+    /// Whether requests currently use streaming transport over the network.
+    ///
+    /// This is intentionally narrower than `isStream()`: a service may remain stream-capable
+    /// while temporarily using a non-streaming transport, such as Custom OpenAI fallback mode.
+    var usesStreamingTransport: Bool {
+        enableStreaming
+    }
 
     var model: String {
         get {
@@ -331,6 +353,15 @@ public class StreamService: QueryService {
 
     var temperature: Double {
         Defaults[temperatureKey]
+    }
+
+    var enableStreamingKey: Defaults.Key<Bool> {
+        boolDefaultsKey(.enableStreaming, defaultValue: true)
+    }
+
+    var enableStreaming: Bool {
+        get { Defaults[enableStreamingKey] }
+        set { Defaults[enableStreamingKey] = newValue }
     }
 
     func validModels(from supportedModels: String) -> [String] {
