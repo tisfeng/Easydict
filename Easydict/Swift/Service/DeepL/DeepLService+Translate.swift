@@ -89,13 +89,18 @@ extension DeepLService {
             .validate(statusCode: 200 ..< 300)
 
         dataRequest.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
 
             if queryModel.isServiceStopped(serviceType().rawValue) {
+                completion(result, CancellationError())
                 return
             }
 
             if let nsError = response.error as? NSError, nsError.code == NSURLErrorCancelled {
+                completion(result, CancellationError())
                 return
             }
 
@@ -211,14 +216,19 @@ extension DeepLService {
         .validate(statusCode: 200 ..< 300)
 
         request.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
 
             if queryModel.isServiceStopped(serviceType().rawValue) {
+                completion(result, CancellationError())
                 return
             }
 
             if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
+                    completion(result, CancellationError())
                     return
                 }
 

@@ -31,7 +31,11 @@ func routes(_ app: Application) throws {
             appleDictionary.appleDictionaryNames = appleDictionaryNames
         }
 
-        if service.isStream() {
+        // Reject `/translate` only when the current transport is actually streaming.
+        // A stream-capable service may still route this request through a non-streaming
+        // transport, so capability and transport must not be conflated here.
+        if let streamService = service as? StreamService,
+           streamService.usesStreamingTransport {
             let message =
                 "\(request.serviceType) is stream service, which does not support 'translate'. Please use 'streamTranslate instead."
             throw QueryError(type: .api, message: message)

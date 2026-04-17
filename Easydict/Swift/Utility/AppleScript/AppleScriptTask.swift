@@ -7,62 +7,29 @@
 
 import Foundation
 
-/// AppleScript to get all shortcuts, can be used to apply for automation permission.
-let testShortcutScript = """
-tell application "Shortcuts Events" to get the name of every shortcut
-"""
-
 // MARK: - AppleScriptTask
 
+/// Provides the app-facing AppleScript facade used by browser automation, system integrations,
+/// and Apple Translation fallback. Business code depends on this type instead of selecting an
+/// execution backend directly, so the preferred `NSAppleScript` path stays centralized while still
+/// avoiding UI-thread blocking. The same facade is also bridged into Objective-C through Swift async
+/// completion-handler generation.
 @objcMembers
 class AppleScriptTask: NSObject {
-    // MARK: Lifecycle
-
-    init(script: String) {
-        self.task = Process()
-        self.outputPipe = Pipe()
-        self.errorPipe = Pipe()
-
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
-        task.arguments = ["-e", script]
-        task.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-    }
-
-    // MARK: Internal
-
-    let task: Process
-
-    @discardableResult
-    static func runShortcut(_ shortcutName: String, parameters: [String: String]) async throws
-        -> String? {
-        let appleScript = appleScript(of: shortcutName, parameters: parameters)
-        return try await runAppleScriptWithProcess(appleScript)
-    }
-
-    @discardableResult
-    static func runShortcut(_ shortcutName: String, inputText: String) async throws -> String? {
-        let appleScript = appleScript(of: shortcutName, inputText: inputText)
-        return try await runAppleScriptWithProcess(appleScript)
-    }
-
-    @discardableResult
-    static func runAppleScriptWithProcess(_ appleScript: String) async throws -> String? {
-        try await AppleScriptTask(script: appleScript).runAppleScriptWithProcess()
-    }
-
+    /// Runs the Apple Translation shortcut through the unified `NSAppleScript` backend.
+    ///
+    /// The script template targets `Shortcuts Events`, but execution still goes through the
+    /// shared business runner so Objective-C and Swift callers observe the same timeout and
+    /// error behavior.
+    ///
+    /// - Parameter parameters: Shortcut input parameters encoded as key-value pairs.
+    /// - Returns: The translated text returned by the shortcut, if any.
+    /// - Throws: `QueryError` when script execution fails.
     static func runTranslateShortcut(parameters: [String: String]) async throws -> String? {
         let appleScript = appleScript(
             of: SharedConstants.easydictTranslateShortcutName, parameters: parameters
         )
-        return try await asyncRunAppleScript(appleScript)
-    }
-
-    @discardableResult
-    static func asyncRunAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws -> String? {
-        try await Task { () -> String? in
-            try runAppleScript(appleScript, timeout: timeout)
-        }.value
+        return try await runAppleScript(appleScript)
     }
 
     /// Run AppleScript with timeout control
@@ -71,106 +38,21 @@ class AppleScriptTask: NSObject {
     ///   - timeout: Maximum execution time in seconds, defaults to 10
     /// - Returns: Optional string result from the AppleScript execution
     /// - Throws: QueryError if execution fails or times out
+    /// - Note: Execution is dispatched to a background queue so AppleScript work does not occupy the
+    ///   UI thread. Timeout is best-effort only and cannot forcibly interrupt a running script.
     @discardableResult
-    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) throws -> String? {
-        func makeError(_ message: String) -> QueryError {
-            .init(type: .appleScript, message: message, errorDataMessage: appleScript)
-        }
-
-        guard let script = NSAppleScript(source: appleScript) else {
-            throw makeError("Failed to create AppleScript instance")
-        }
-
-        var errorInfo: NSDictionary?
-
-        // Create semaphore for timeout control
-        let semaphore = DispatchSemaphore(value: 0)
-        var result: String?
-        var executionError: Error?
-
-        // Execute AppleScript in background queue
-        DispatchQueue.global().async {
-            let output = script.executeAndReturnError(&errorInfo)
-            if let errorInfo {
-                let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                executionError = makeError(message)
-            } else {
-                result = output.stringValue
-            }
-            semaphore.signal()
-        }
-
-        // Wait for completion or timeout
-        let timeoutResult = semaphore.wait(timeout: .now() + timeout)
-        if timeoutResult == .timedOut {
-            throw makeError("AppleScript execution timed out after \(timeout) seconds")
-        }
-
-        if let error = executionError {
-            throw error
-        }
-
-        return result
+    static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws
+        -> String? {
+        try await AppleScriptExecutor().run(appleScript, timeout: timeout)
     }
-
-    /// Run AppleScript with `NSAppleScript`, faster than `Process`, but requires AppleEvent permission.
-    @discardableResult
-    static func runAppleScriptWithDescriptor(_ appleScript: String) async throws
-        -> NSAppleEventDescriptor {
-        try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global().async {
-                let appleScript = NSAppleScript(source: appleScript)
-                var errorInfo: NSDictionary?
-                let output = appleScript?.executeAndReturnError(&errorInfo)
-
-                guard let output, errorInfo == nil else {
-                    let errorMessage =
-                        errorInfo?[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
-                    continuation.resume(
-                        throwing: QueryError(type: .appleScript, message: errorMessage)
-                    )
-                    return
-                }
-                continuation.resume(returning: output)
-            }
-        }
-    }
-
-    /// Run AppleScript with `Process`, slower than `NSAppleScript`
-    func runAppleScriptWithProcess() async throws -> String? {
-        try task.run()
-
-        return try await withCheckedThrowingContinuation { continuation in
-            task.terminationHandler = { _ in
-                do {
-                    let outputData = try self.outputPipe.fileHandleForReading.readToEnd()
-                    let errorData = try self.errorPipe.fileHandleForReading.readToEnd()
-
-                    if let error = errorData?.stringValue {
-                        continuation.resume(
-                            throwing: QueryError(type: .appleScript, message: error)
-                        )
-
-                    } else {
-                        continuation.resume(returning: outputData?.stringValue)
-                    }
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
-    func terminate() {
-        task.terminate()
-    }
-
-    // MARK: Private
-
-    private let outputPipe: Pipe
-    private let errorPipe: Pipe
 }
 
+/// Builds the `Shortcuts Events` AppleScript used to run a shortcut with plain-text input.
+///
+/// - Parameters:
+///   - shortcutName: The shortcut name exposed by the Shortcuts app.
+///   - inputText: The raw text passed into the shortcut.
+/// - Returns: A complete AppleScript source string for `Shortcuts Events`.
 func appleScript(of shortcutName: String, inputText: String) -> String {
     // inputText may contain ", we need to escape it
     let escapedInputText = inputText.replacingOccurrences(of: "\"", with: "\\\"")
@@ -184,6 +66,12 @@ func appleScript(of shortcutName: String, inputText: String) -> String {
     return appleScript
 }
 
+/// Builds the `Shortcuts Events` AppleScript used to run a shortcut from query parameters.
+///
+/// - Parameters:
+///   - shortcutName: The shortcut name exposed by the Shortcuts app.
+///   - parameters: Shortcut input values that will be encoded into the query string format.
+/// - Returns: A complete AppleScript source string for `Shortcuts Events`.
 func appleScript(of shortcutName: String, parameters: [String: Any]) -> String {
     let queryString = parameters.queryString
     return appleScript(of: shortcutName, inputText: queryString)

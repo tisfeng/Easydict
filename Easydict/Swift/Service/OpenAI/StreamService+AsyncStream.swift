@@ -52,8 +52,23 @@ extension StreamService {
                     updateResultText(resultText, queryType: queryType, error: nil) { result in
                         continuation.yield(result)
                     }
+                } catch is CancellationError {
+                    // User canceled the request; still emit a terminal state so UI can stop loading.
+                    result.isStreamFinished = true
+                    result.error = nil
+                    if !resultText.isEmpty {
+                        updateResultText(resultText, queryType: queryType, error: nil) { result in
+                            continuation.yield(result)
+                        }
+                        continuation.finish()
+                    } else {
+                        // The outer pipeline only forwards results with translated text, so an
+                        // empty terminal result would be dropped before UI consumers see it.
+                        continuation.finish(throwing: CancellationError())
+                    }
+                    return
                 } catch {
-                    // Handle the error and notify the user
+                    // Handle non-cancellation errors and notify the user.
                     result.isStreamFinished = true
                     updateResultText(resultText, queryType: queryType, error: error) { result in
                         continuation.yield(result)

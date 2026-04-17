@@ -298,6 +298,34 @@
         }
       }
     },
+    "content_type_mismatch_error" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content-Type Mismatch"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nezhoda Content-Type"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "响应格式不匹配"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回應格式不符"
+          }
+        }
+      }
+    },
     "app_shortcut_setting" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -871,6 +899,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "靈雲"
+          }
+        }
+      }
+    },
+    "claude_translate" : {
+      "comment" : "The name of Claude Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Translate"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 翻譯"
           }
         }
       }
@@ -5011,6 +5068,258 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "支援的模型"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.enable_streaming.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Streaming"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povoliť streamovanie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用流式传输"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用串流傳輸"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.enable_streaming.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable if the endpoint does not support streaming responses."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypnite, ak koncový bod nepodporuje streamované odpovede."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果端点不支持流式响应，请关闭此选项。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果端點不支援串流回應，請關閉此選項。"
+          }
+        }
+      }
+    },
+    "service.configuration.validation_success.streaming_disabled" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streaming is not supported by this endpoint and has been auto-disabled."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento koncový bod nepodporuje streamovanie a bolo automaticky vypnuté."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该端点不支持流式传输，已自动关闭。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該端點不支援串流傳輸，已自動關閉。"
+          }
+        }
+      }
+    },
+    "error.content_type.html" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endpoint returned an HTML page"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koncový bod vrátil HTML stránku"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端点返回了 HTML 页面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端點回傳了 HTML 頁面"
+          }
+        }
+      }
+    },
+    "error.content_type.html.suggestion" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please check that the endpoint URL is correct and includes the full API path."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolujte, či je URL koncového bodu správna a obsahuje úplnú cestu API."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请检查端点 URL 是否正确，是否包含完整的 API 路径。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請檢查端點 URL 是否正確，是否包含完整的 API 路徑。"
+          }
+        }
+      }
+    },
+    "error.content_type.json" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endpoint returned JSON instead of a stream"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koncový bod vrátil JSON namiesto streamu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端点返回了 JSON 而非流式响应"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端點回傳了 JSON 而非串流回應"
+          }
+        }
+      }
+    },
+    "error.content_type.json.suggestion" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try disabling \"Enable Streaming\" in the service settings."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skúste vypnúť \"Povoliť streamovanie\" v nastaveniach služby."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请尝试在服务设置中关闭「启用流式传输」。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請嘗試在服務設定中關閉「啟用串流傳輸」。"
+          }
+        }
+      }
+    },
+    "error.content_type.unknown" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected response format"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neočakávaný formát odpovede"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "响应格式不符合预期"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回應格式不符合預期"
+          }
+        }
+      }
+    },
+    "error.content_type.unknown.suggestion" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The endpoint may not be fully OpenAI-compatible. Check the endpoint URL and API documentation."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koncový bod nemusí byť plne kompatibilný s OpenAI. Skontrolujte URL a dokumentáciu API."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该端点可能不完全兼容 OpenAI 接口，请检查端点 URL 和 API 文档。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該端點可能不完全相容 OpenAI 介面，請檢查端點 URL 和 API 文件。"
           }
         }
       }
