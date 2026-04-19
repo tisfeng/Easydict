@@ -470,7 +470,9 @@
 		0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */; };
 		0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */; };
 		0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */; };
+		1A2B3C4D5E6F7A8B9C0D1E2F /* ClaudeCodeLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */; };
 		24832952EE17407C852B2258 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24832951EE17407C852B2258 /* String+Convenience.swift */; };
+		24D3321DBBE84C798A32C595 /* ClaudeCodeServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
 		2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746AEC02AF95138005FE0A1 /* CaiyunService.swift */; };
 		276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276742042B3DC230002A2C75 /* PrivacyTab.swift */; };
@@ -481,7 +483,11 @@
 		27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE95262B3DC55F000AD654 /* EasydictApp.swift */; };
 		27FE98092B3DD536000AD654 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE98082B3DD536000AD654 /* SettingView.swift */; };
 		27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */; };
+		29519C9FFC6C41828386F089 /* ClaudeCodeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */; };
+		2A2FFF4289154137B673F7FA /* ClaudeCodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */; };
+		3C4D5E6F7A8B9C0D1E2F3A4B /* ClaudeCodeEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */; };
 		40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */; };
+		513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */; };
 		59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */; };
 		5A3A753C59BD5443FA91764C /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
 		5C5B3D6F80CB486E9D615E07 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA77A6C61B54C27803F5D7D /* Sentry */; };
@@ -517,6 +523,8 @@
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */; };
 		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
+		A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */; };
+		A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */; };
 		A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */; };
 		A1C1A10430ABCDEF00112233 /* ClaudeSSEParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */; };
 		A1D1807B2F8D100100B1C0D1 /* ThrottleGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */; };
@@ -560,6 +568,7 @@
 		EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */; };
 		EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */; };
 		EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */; };
+		F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
 		FDDF871B2B055572E5C1013F /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */; };
@@ -1150,10 +1159,13 @@
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
-		129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
-		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
+			0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
+			129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+			14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+			223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
+			23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+			A7C0F3B12D4E56A7890BCDEF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+			24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingTests.swift; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
 		276742042B3DC230002A2C75 /* PrivacyTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyTab.swift; sourceTree = "<group>"; };
@@ -1168,11 +1180,15 @@
 		27FE95282B3DC666000AD654 /* entry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = entry.h; sourceTree = "<group>"; };
 		27FE98082B3DD536000AD654 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
+		2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeLogger.swift; sourceTree = "<group>"; };
 		357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.release.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.release.xcconfig"; sourceTree = "<group>"; };
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceFactory.swift; sourceTree = "<group>"; };
 		40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
 		416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSuites.swift; sourceTree = "<group>"; };
+		471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeError.swift; sourceTree = "<group>"; };
+		4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeEventParser.swift; sourceTree = "<group>"; };
+		5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeServiceConfigurationView.swift; sourceTree = "<group>"; };
 		62E2BF472B4082BA00E42D38 /* AliService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliService.swift; sourceTree = "<group>"; };
 		62E2BF482B4082BA00E42D38 /* AliResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliResponse.swift; sourceTree = "<group>"; };
 		62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliTranslateType.swift; sourceTree = "<group>"; };
@@ -1208,15 +1224,16 @@
 		96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoInfoHelper.swift; sourceTree = "<group>"; };
 		96DFEB812B82588000F5C7EF /* EZTableTipsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableTipsCell.h; sourceTree = "<group>"; };
 		96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableTipsCell.m; sourceTree = "<group>"; };
-		9E1AD8C1D1A356A3F910E5C8 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParserTests.swift; sourceTree = "<group>"; };
 		A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParser.swift; sourceTree = "<group>"; };
 		A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGate.swift; sourceTree = "<group>"; };
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
-		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
-		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
-		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
-		C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+			A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
+			A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
+			AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
+			AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
+			B1D2E3F40516273849A5B6C7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+			C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		C43B566B2C693F6200EF26FD /* VolcanoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoService.swift; sourceTree = "<group>"; };
 		C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoTranslateType.swift; sourceTree = "<group>"; };
 		C43B566F2C693FE000EF26FD /* VolcanoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoResponse.swift; sourceTree = "<group>"; };
@@ -1230,6 +1247,7 @@
 		C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentResponse.swift; sourceTree = "<group>"; };
 		C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentTranslateType.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
+		C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeServiceTests.swift; sourceTree = "<group>"; };
 		C99EEB182385796700FEE666 /* Easydict-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA9CF8A22D2E6CE6000C1860 /* good_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = good_v4.json; sourceTree = "<group>"; };
 		CA9CF8A42D2E6D13000C1860 /* 美_v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "美_v4.json"; sourceTree = "<group>"; };
@@ -1238,6 +1256,7 @@
 		CA9CF8AA2D2E6EB7000C1860 /* YoudaoDictResponseV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoDictResponseV4.swift; sourceTree = "<group>"; };
 		CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiTranslate.swift; sourceTree = "<group>"; };
 		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
+		CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeDebugWindow.swift; sourceTree = "<group>"; };
 		DC46DF7F2B4417B900DEAE3E /* MyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyConfiguration.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
 		E34250B52E681A3100CEC295 /* Easydict-26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Easydict-26.icon"; sourceTree = "<group>"; };
@@ -1888,6 +1907,7 @@
 				036D627F2BCAB5C6002C95C7 /* BuiltInAI */,
 				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
 				C415C0AB2B450C4500A9D231 /* Gemini */,
+				ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */,
 				03792EA02C3830E60074A145 /* Ollama */,
 				C4D1ADE12C3F340500A19D02 /* AITool */,
 				C4DD01E72B12B3B00025EE8E /* Tencent */,
@@ -2682,6 +2702,7 @@
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
+				179EFB3D68574DE5817C8AB9 /* ClaudeCode */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -3117,6 +3138,16 @@
 			path = DeviceInfo;
 			sourceTree = "<group>";
 		};
+			179EFB3D68574DE5817C8AB9 /* ClaudeCode */ = {
+				isa = PBXGroup;
+				children = (
+					AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */,
+					C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */,
+					B1D2E3F40516273849A5B6C7 /* README.md */,
+				);
+				path = ClaudeCode;
+				sourceTree = "<group>";
+		};
 		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
 			isa = PBXGroup;
 			children = (
@@ -3532,14 +3563,28 @@
 				0357B9592C04387D00A48CB0 /* TextEditorCell.swift */,
 				035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */,
 				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
+				5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */,
 			);
 			path = ServiceConfigurationView;
 			sourceTree = "<group>";
 		};
+			ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */ = {
+				isa = PBXGroup;
+				children = (
+					471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */,
+					4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */,
+					2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */,
+					223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */,
+					0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */,
+					CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */,
+					A7C0F3B12D4E56A7890BCDEF /* README.md */,
+				);
+				path = ClaudeCode;
+				sourceTree = "<group>";
+		};
 		F85ED7C3B686A1F75E052D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9E1AD8C1D1A356A3F910E5C8 /* Pods_Easydict.framework */,
 				129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */,
 			);
 			name = Frameworks;
@@ -3986,6 +4031,8 @@
 				030732D22F24862A0001382A /* OCRTestSample+Other.swift in Sources */,
 				030732D32F24862A0001382A /* OCRTestSample+English.swift in Sources */,
 				034080A22F6B1C75005C8508 /* AppleSpeechServiceTests.swift in Sources */,
+				A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */,
+				513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */,
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
 			);
@@ -4214,6 +4261,13 @@
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */,
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
+				29519C9FFC6C41828386F089 /* ClaudeCodeError.swift in Sources */,
+				3C4D5E6F7A8B9C0D1E2F3A4B /* ClaudeCodeEventParser.swift in Sources */,
+				1A2B3C4D5E6F7A8B9C0D1E2F /* ClaudeCodeLogger.swift in Sources */,
+				F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */,
+				2A2FFF4289154137B673F7FA /* ClaudeCodeService.swift in Sources */,
+				A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */,
+				24D3321DBBE84C798A32C595 /* ClaudeCodeServiceConfigurationView.swift in Sources */,
 				0333D4C02E5C6EBE00CD4613 /* ShortcutManager.swift in Sources */,
 				0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */,
 				0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */,
@@ -4627,7 +4681,7 @@
 				PRODUCT_NAME = "Easydict-debug";
 				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
 				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG AGENT_CLI_DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
