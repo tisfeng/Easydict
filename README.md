@@ -56,7 +56,14 @@ If you're interested in this project, we welcome your contributions. Our develop
 
 Please submit bug fixes and features to dev branch; for major new features or UI changes, please open an issue for discussion first. See [full contribution guide](./docs/en/GUIDE.md#contributor-guide).
 
-### AI Commit Helper
+### AI Coding
+
+We recommend using `Codex` for AI-assisted development in Easydict, especially for codebase exploration, issue diagnosis, patch generation, and refactoring.
+
+- Prefer the latest available GPT models, such as `GPT-5.4`.
+- Review AI-generated changes carefully before opening a PR, and make sure the result matches this repository's contribution workflow and coding standards.
+
+#### AI Commit Helper
 
 This repository supports `Codex` and `Claude` for automatic commit message generation.
 

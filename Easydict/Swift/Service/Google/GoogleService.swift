@@ -6,7 +6,6 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
-import AFNetworking
 import Foundation
 import JavaScriptCore
 
@@ -33,42 +32,6 @@ class GoogleService: QueryService {
 
     lazy var windowObject: JSValue = {
         jsContext.objectForKeyedSubscript("window")
-    }()
-
-    // MARK: - HTTP Session Managers
-
-    lazy var htmlSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-
-        let requestSerializer = AFHTTPRequestSerializer()
-        requestSerializer.setValue(
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36",
-            forHTTPHeaderField: "User-Agent"
-        )
-        session.requestSerializer = requestSerializer
-
-        let responseSerializer = AFHTTPResponseSerializer()
-        responseSerializer.acceptableContentTypes = ["text/html"]
-        session.responseSerializer = responseSerializer
-
-        return session
-    }()
-
-    lazy var jsonSession: AFHTTPSessionManager = {
-        let session = AFHTTPSessionManager()
-
-        let requestSerializer = AFHTTPRequestSerializer()
-        requestSerializer.setValue(
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36",
-            forHTTPHeaderField: "User-Agent"
-        )
-        session.requestSerializer = requestSerializer
-
-        let responseSerializer = AFJSONResponseSerializer()
-        responseSerializer.acceptableContentTypes = ["application/json"]
-        session.responseSerializer = responseSerializer
-
-        return session
     }()
 
     // MARK: - QueryService Override

@@ -11,7 +11,6 @@
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
-#import <KVOController/KVOController.h>
 #import "EZCoordinateUtils.h"
 #import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
@@ -72,8 +71,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 
-@property (nonatomic, strong) FBKVOController *kvo;
-
 @property (nonatomic, assign) BOOL lockResizeWindow;
 @property (nonatomic, assign) BOOL isUpdatingWindowFrameInternally;
 
@@ -90,6 +87,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, assign) NSInteger tipsCellIndex;           // 0 or 1 or 2
 
 @property (nonatomic, strong) MyConfiguration *config;
+@property (nonatomic, strong) id fontSizeObserver;
 
 @end
 
@@ -201,7 +199,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
 
-    [defaultCenter addObserverForName:NSNotification.didChangeFontSize
+    self.fontSizeObserver = [defaultCenter addObserverForName:NSNotification.didChangeFontSize
                                object:nil
                                 queue:NSOperationQueue.mainQueue
                            usingBlock:^(NSNotification *_Nonnull notification) {
@@ -303,6 +301,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"dealloc: %@", self);
 
     [NSNotificationCenter.defaultCenter removeObserver:self];
+    if (_fontSizeObserver) {
+        [NSNotificationCenter.defaultCenter removeObserver:_fontSizeObserver];
+    }
 }
 
 #pragma mark - NSNotificationCenter

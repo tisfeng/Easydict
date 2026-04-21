@@ -137,8 +137,8 @@ extension StreamService {
 
         let isContentTypeError =
             lowercasedErrorContext.contains("incorrectcontenttype(")
-            || lowercasedErrorContext.contains("incorrect content-type:")
-            || lowercasedErrorContext.contains("unacceptable content-type:")
+                || lowercasedErrorContext.contains("incorrect content-type:")
+                || lowercasedErrorContext.contains("unacceptable content-type:")
         let isTextPlainMIME = lowercasedErrorContext.contains("text/plain")
         let shouldSuppress = isContentTypeError && isTextPlainMIME
 
@@ -177,8 +177,7 @@ extension StreamService {
             }
 
             if let responseData = nsError.userInfo["com.alamofire.serialization.response.error.data"] as? Data,
-               let responseText = String(data: responseData, encoding: .utf8)
-            {
+               let responseText = String(data: responseData, encoding: .utf8) {
                 parts.insert(responseText)
             }
 

@@ -146,7 +146,7 @@ typedef void (^EZURLSessionTaskCompletionHandler)(NSURLResponse *_Nonnull respon
 @property (readwrite, nonatomic, strong) NSLock *lock;
 @property (nonatomic, copy) HTTPDNSCookieFilter cookieFilter;
 
-@property (nonatomic, strong) AFURLSessionManager *urlSession;
+@property (nonatomic, strong) NSURLSession *monitorSession;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, EZURLSessionTaskCompletionHandler> *monitorDictionary;
 
 @end
@@ -164,8 +164,6 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         Method swizzledMethod = class_getClassMethod([self class], @selector(ez_handlesURLScheme:));
         method_exchangeImplementations(originalMethod, swizzledMethod);
     });
-    
-    [AFHTTPRequestSerializer serializer].timeoutInterval = EZNetWorkTimeoutInterval;
 }
 
 + (BOOL)ez_handlesURLScheme:(NSString *)urlScheme {
@@ -197,25 +195,24 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 - (void)dealloc {
+    [self.monitorSession invalidateAndCancel];
+    [self.session invalidateAndCancel];
     MMLogInfo(@"dealloc: %@", self);
 }
 
-- (AFURLSessionManager *)urlSession {
-    if (!_urlSession) {
-        AFURLSessionManager *sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-        
-        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
-        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", nil];
-        sessionManager.responseSerializer = responseSerializer;
-        
-        _urlSession = sessionManager;
+- (NSURLSession *)monitorSession {
+    if (!_monitorSession) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        config.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+        _monitorSession = [NSURLSession sessionWithConfiguration:config];
     }
-    return _urlSession;
+    return _monitorSession;
 }
 
 - (NSURLSession *)session {
     if (!_session) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        config.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
         // !!!: The session object keeps a strong reference to the delegate.
         _session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:self.operationQueue];
     }
@@ -280,8 +277,14 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 //            }
 //        }
         
-        NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
-        [task resume];
+        NSURLSessionDataTask *monitorTask = [self.monitorSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSURLResponse *safeResponse = response;
+            if (safeResponse == nil) {
+                safeResponse = [[NSURLResponse alloc] initWithURL:request.URL MIMEType:nil expectedContentLength:0 textEncodingName:nil];
+            }
+            completionHandler(safeResponse, data, error);
+        }];
+        [monitorTask resume];
         
         NSString *monitorURL = [self monitorURLForURL:URL];
         if (monitorURL) {
