@@ -77,7 +77,7 @@ extension AppleScriptTask {
             return nil
         }
 
-        let result = try await asyncRunAppleScript(script, timeout: timeout ?? 5.0)
+        let result = try await runAppleScript(script, timeout: timeout ?? 5.0)
         logInfo("\(logMessage): \(result ?? "")")
         return result
     }

@@ -173,6 +173,22 @@ private struct ServiceItems: View {
                         .font(.headline)
                 }
             }
+
+            // CLI translation services section
+            if !cliServices.isEmpty {
+                Section {
+                    ForEach(cliServicesWithID, id: \.1) { service, _ in
+                        ServiceItemView(service: service, viewModel: viewModel)
+                            .tag(service)
+                    }
+                    .onMove { source, destination in
+                        handleMove(source: source, destination: destination, inSection: cliServices)
+                    }
+                } header: {
+                    Text("setting.service.section.agent_cli")
+                        .font(.headline)
+                }
+            }
         }
     }
 
@@ -181,11 +197,17 @@ private struct ServiceItems: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
     private var freeServices: [QueryService] {
-        viewModel.services.filter { !$0.apiKeyRequirement().needsUserProvidedKey }
+        viewModel.services.filter {
+            !$0.apiKeyRequirement().needsUserProvidedKey && $0.apiKeyRequirement() != .agentCLI
+        }
     }
 
     private var proServices: [QueryService] {
         viewModel.services.filter { $0.apiKeyRequirement().needsUserProvidedKey }
+    }
+
+    private var cliServices: [QueryService] {
+        viewModel.services.filter { $0.apiKeyRequirement() == .agentCLI }
     }
 
     private var freeServicesWithID: [(QueryService, String)] {
@@ -196,6 +218,12 @@ private struct ServiceItems: View {
 
     private var proServicesWithID: [(QueryService, String)] {
         proServices.map { service in
+            (service, service.serviceTypeWithUniqueIdentifier())
+        }
+    }
+
+    private var cliServicesWithID: [(QueryService, String)] {
+        cliServices.map { service in
             (service, service.serviceTypeWithUniqueIdentifier())
         }
     }
@@ -221,8 +249,19 @@ private struct ServiceItems: View {
             }
         }
 
-        // Find destination index in full services array
-        let actualDestination = sectionToFullIndexMap[destination] ?? destination
+        // Find destination index in full services array.
+        // When destination == sectionServices.count the user is dropping at the end of the section.
+        // There is no map entry for that index, so derive it from the last section item's full
+        // index + 1 instead of falling back to the raw section-relative value.
+        let actualDestination: Int
+        if let mapped = sectionToFullIndexMap[destination] {
+            actualDestination = mapped
+        } else if destination == sectionServices.count,
+                  let lastFullIndex = sectionToFullIndexMap[destination - 1] {
+            actualDestination = lastFullIndex + 1
+        } else {
+            actualDestination = destination
+        }
 
         viewModel.onServiceItemMove(fromOffsets: actualSourceIndices, toOffset: actualDestination)
     }
@@ -284,6 +323,7 @@ private class ServiceItemViewModel: ObservableObject {
     @Published var name = ""
 
     @Published var showErrorAlert = false
+    @Published var showClaudeCodeRiskAlert = false
     @Published var error: (any Error)?
 
     unowned var viewModel: ServiceTabViewModel
@@ -295,7 +335,11 @@ private class ServiceItemViewModel: ObservableObject {
         set {
             // turn on service
             if newValue {
-                tryEnableService()
+                if service.serviceType() == .claudeCode {
+                    showClaudeCodeRiskAlert = true
+                } else {
+                    tryEnableService()
+                }
             } else {
                 // turn off service
                 updateServiceStatus(enabled: false)
@@ -387,6 +431,20 @@ private struct ServiceItemView: View {
             }
         } message: {
             Text(serviceItemViewModel.error?.localizedDescription ?? "unknown_error")
+        }
+        .alert(
+            "service.claude_code.enable_risk_alert.title",
+            isPresented: $serviceItemViewModel.showClaudeCodeRiskAlert
+        ) {
+            Button("cancel", role: .cancel) {
+                serviceItemViewModel.showClaudeCodeRiskAlert = false
+            }
+            Button("ok") {
+                serviceItemViewModel.showClaudeCodeRiskAlert = false
+                serviceItemViewModel.tryEnableService()
+            }
+        } message: {
+            Text("service.claude_code.enable_risk_alert.message")
         }
     }
 

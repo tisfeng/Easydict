@@ -39,10 +39,17 @@ extension StreamService {
         }
     }
 
+    /// Update the result text and optionally mark the stream as finished in one atomic operation.
+    ///
+    /// - Parameter markStreamFinished: When `true`, sets `result.isStreamFinished = true` inside
+    ///   the lock before updating `translatedResults`. This prevents a race where a throttled
+    ///   delivery of an earlier accumulated snapshot overwrites the final value after
+    ///   `isStreamFinished` has been set outside the lock.
     func updateResultText(
         _ resultText: String?,
         queryType: EZQueryTextType,
         error: Error?,
+        markStreamFinished: Bool = false,
         completion: @escaping (QueryResult) -> ()
     ) {
         // Acquire the lock before accessing/modifying the shared 'result' state
@@ -61,7 +68,7 @@ extension StreamService {
                 } else if shouldIgnoreCompletionError(error, resultText: resultText) {
                     logInfo("Ignore stream completion error with existing content: \(error)")
                 } else {
-                    queryError = .queryError(from: error)
+                    queryError = classifiedQueryError(from: error)
                 }
             } else if resultText?.isEmpty ?? true {
                 // If error is nil but result text is also empty, we should report error.
@@ -72,8 +79,9 @@ extension StreamService {
             return
         }
 
-        // If error is not nil, means stream is finished.
-        result.isStreamFinished = error != nil
+        // Mark the stream as finished atomically inside the lock so that concurrent
+        // throttle deliveries of stale snapshots cannot overwrite the final value.
+        result.isStreamFinished = markStreamFinished || (error != nil)
 
         var finalText = resultText?.trim() ?? ""
 
@@ -81,11 +89,20 @@ extension StreamService {
             finalText = finalText.filterThinkTagContent().trim()
         }
 
+        // When this call is the one that marks the stream as finished (markStreamFinished: true),
+        // apply the same empty-result check that the already-finished guard (above) applies.
+        // Without this, a stream that completes with no output and no error would surface as
+        // success with translatedResults = [""] instead of a .noResult failure.
+        var completionError: Error? = error
+        if markStreamFinished, finalText.isEmpty, error == nil {
+            completionError = QueryError(type: .noResult)
+        }
+
         let updateCompletion = { [weak result] in
             guard let result else { return }
 
             result.translatedResults = [finalText]
-            completeWithResult(result, error: error)
+            completeWithResult(result, error: completionError)
         }
 
         switch queryType {
@@ -135,12 +152,10 @@ extension StreamService {
         // from the error itself, NSError metadata, and nested underlying errors.
         let lowercasedErrorContext = errorContextString(error).lowercased()
 
-        let isContentTypeError =
-            lowercasedErrorContext.contains("incorrectcontenttype(")
-                || lowercasedErrorContext.contains("incorrect content-type:")
-                || lowercasedErrorContext.contains("unacceptable content-type:")
-        let isTextPlainMIME = lowercasedErrorContext.contains("text/plain")
-        let shouldSuppress = isContentTypeError && isTextPlainMIME
+        let isContentTypeError = isContentTypeMismatchContext(lowercasedErrorContext)
+        let isKnownMIME = lowercasedErrorContext.contains("text/plain")
+            || lowercasedErrorContext.contains("application/json")
+        let shouldSuppress = isContentTypeError && isKnownMIME
 
         if shouldSuppress {
             logInfo(
@@ -150,6 +165,43 @@ extension StreamService {
         }
 
         return shouldSuppress
+    }
+
+    /// Build a user-friendly QueryError by classifying the Content-Type of the response.
+    private func classifiedQueryError(from error: Error) -> QueryError {
+        let context = errorContextString(error).lowercased()
+
+        if isContentTypeMismatchContext(context) {
+            if context.contains("text/html") {
+                return QueryError(
+                    type: .contentTypeMismatch,
+                    message: String(localized: "error.content_type.html"),
+                    errorDataMessage: String(localized: "error.content_type.html.suggestion")
+                )
+            }
+            if context.contains("application/json") {
+                return QueryError(
+                    type: .contentTypeMismatch,
+                    message: String(localized: "error.content_type.json"),
+                    errorDataMessage: String(localized: "error.content_type.json.suggestion")
+                )
+            }
+            return QueryError(
+                type: .contentTypeMismatch,
+                message: String(localized: "error.content_type.unknown"),
+                errorDataMessage: String(localized: "error.content_type.unknown.suggestion")
+            )
+        }
+
+        // queryError(from:) returns non-nil for a non-nil error; the fallback is defensive only.
+        return QueryError.queryError(from: error) ?? QueryError(type: .api)
+    }
+
+    /// Shared check for Content-Type mismatch patterns across error detection paths.
+    private func isContentTypeMismatchContext(_ context: String) -> Bool {
+        context.contains("incorrectcontenttype(")
+            || context.contains("incorrect content-type:")
+            || context.contains("unacceptable content-type:")
     }
 
     private func errorContextString(_ error: Error) -> String {

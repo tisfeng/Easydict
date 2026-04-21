@@ -51,11 +51,17 @@ class BingRequest {
         self.text = text
         self.completion = completion
 
-        fetchBingHost { [weak self] in
-            guard let self = self else { return }
+        fetchBingHost(callback: { [weak self] in
+            guard let self = self else {
+                completion(nil, nil, CancellationError(), nil)
+                return
+            }
 
             fetchBingConfig { [weak self] in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completion(nil, nil, CancellationError(), nil)
+                    return
+                }
 
                 let parameters: [String: Any] = [
                     "text": text,
@@ -79,6 +85,8 @@ class BingRequest {
 
                     if let error = response.error {
                         if isCancelledError(error) {
+                            translateError = CancellationError()
+                            executeCallback()
                             return
                         }
 
@@ -124,6 +132,8 @@ class BingRequest {
 
                     if let error = response.error {
                         if isCancelledError(error) {
+                            lookupError = CancellationError()
+                            executeCallback()
                             return
                         }
 
@@ -145,7 +155,9 @@ class BingRequest {
             } failure: { error in
                 completion(nil, nil, error, nil)
             }
-        }
+        }, failure: { error in
+            completion(nil, nil, error, nil)
+        })
     }
 
     func fetchTextToAudio(
@@ -154,11 +166,17 @@ class BingRequest {
         accent: String?,
         completion: @escaping (Data?, Error?) -> ()
     ) {
-        fetchBingHost { [weak self] in
-            guard let self = self else { return }
+        fetchBingHost(callback: { [weak self] in
+            guard let self = self else {
+                completion(nil, CancellationError())
+                return
+            }
 
             fetchBingConfig { [weak self] in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completion(nil, CancellationError())
+                    return
+                }
 
                 let ssml = generateSSML(text: text, language: from, accent: accent)
                 let parameters: [String: Any] = [
@@ -172,11 +190,15 @@ class BingRequest {
                     parameters: parameters
                 )
                 request.responseData { [weak self] response in
-                    guard let self = self else { return }
+                    guard let self = self else {
+                        completion(nil, CancellationError())
+                        return
+                    }
                     untrackRequest(request)
 
                     if let error = response.error {
                         if isCancelledError(error) {
+                            completion(nil, CancellationError())
                             return
                         }
                         completion(nil, error)
@@ -203,26 +225,35 @@ class BingRequest {
             } failure: { error in
                 completion(nil, error)
             }
-        }
+        }, failure: { error in
+            completion(nil, error)
+        })
     }
 
     func translateTextFromDict(
         text: String,
         completion: @escaping ([String: Any]?, Error?) -> ()
     ) {
-        fetchBingHost { [weak self] in
-            guard let self = self else { return }
+        fetchBingHost(callback: { [weak self] in
+            guard let self = self else {
+                completion(nil, CancellationError())
+                return
+            }
 
             let request = makeDictTranslateRequest(
                 url: bingConfig.dictTranslateURLString,
                 parameters: ["q": text]
             )
             request.responseData { [weak self] response in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completion(nil, CancellationError())
+                    return
+                }
                 untrackRequest(request)
 
                 if let error = response.error {
                     if isCancelledError(error) {
+                        completion(nil, CancellationError())
                         return
                     }
                     completion(nil, error)
@@ -238,7 +269,9 @@ class BingRequest {
 
                 completion(dict, nil)
             }
-        }
+        }, failure: { error in
+            completion(nil, error)
+        })
     }
 
     func reset() {
@@ -304,7 +337,7 @@ class BingRequest {
         }
     }
 
-    private func fetchBingHost(callback: @escaping () -> ()) {
+    private func fetchBingHost(callback: @escaping () -> (), failure: @escaping (Error) -> ()) {
         if bingConfig.host != nil {
             callback()
             return
@@ -315,11 +348,15 @@ class BingRequest {
 
         let request = makeTranslateRequest(url: webBingURLString)
         request.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                failure(CancellationError())
+                return
+            }
             untrackRequest(request)
 
             if let error = response.error {
                 if isCancelledError(error) {
+                    failure(CancellationError())
                     return
                 }
 
@@ -346,11 +383,15 @@ class BingRequest {
         let url = bingConfig.translatorURLString
         let request = makeHTMLRequest(url: url)
         request.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                failure(CancellationError())
+                return
+            }
             untrackRequest(request)
 
             if let error = response.error {
                 if isCancelledError(error) {
+                    failure(CancellationError())
                     return
                 }
                 failure(error)

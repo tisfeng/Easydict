@@ -47,14 +47,38 @@ extension StreamService {
                         }
                     }
 
-                    result.isStreamFinished = true
                     resultText = getFinalResultText(resultText)
-                    updateResultText(resultText, queryType: queryType, error: nil) { result in
+                    // Pass markStreamFinished: true so that isStreamFinished is set atomically
+                    // with the translatedResults update inside the lock. Setting it outside the
+                    // lock first would allow a concurrent throttle delivery of an earlier
+                    // snapshot to overwrite the final value before the lock is re-acquired.
+                    updateResultText(
+                        resultText,
+                        queryType: queryType,
+                        error: nil,
+                        markStreamFinished: true
+                    ) { result in
                         continuation.yield(result)
                     }
-                } catch {
-                    // Handle the error and notify the user
+                } catch is CancellationError {
+                    // User canceled the request; still emit a terminal state so UI can stop loading.
                     result.isStreamFinished = true
+                    result.error = nil
+                    if !resultText.isEmpty {
+                        updateResultText(resultText, queryType: queryType, error: nil) { result in
+                            continuation.yield(result)
+                        }
+                        continuation.finish()
+                    } else {
+                        // The outer pipeline only forwards results with translated text, so an
+                        // empty terminal result would be dropped before UI consumers see it.
+                        continuation.finish(throwing: CancellationError())
+                    }
+                    return
+                } catch {
+                    // Handle the error and notify the user.
+                    // error != nil causes updateResultText to set isStreamFinished = true
+                    // inside the lock, so no separate outside-lock assignment is needed.
                     updateResultText(resultText, queryType: queryType, error: error) { result in
                         continuation.yield(result)
                     }

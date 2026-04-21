@@ -114,7 +114,7 @@ public final class DoubaoService: StreamService {
                     continuation.finish()
                 } catch is CancellationError {
                     logInfo("Doubao task was cancelled.")
-                    continuation.finish()
+                    continuation.finish(throwing: CancellationError())
                 } catch {
                     continuation.finish(throwing: error)
                 }

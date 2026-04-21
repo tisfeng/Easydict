@@ -1,0 +1,42 @@
+{
+  "name": "@yizhiyanhua-ai/fireworks-tech-graph",
+  "version": "1.0.4",
+  "description": "Generate production-quality SVG technical diagrams (architecture, flowchart, UML, ER, sequence, etc.) with 7 built-in styles. Export as SVG+PNG via rsvg-convert.",
+  "main": "SKILL.md",
+  "keywords": [
+    "claude-code",
+    "skill",
+    "diagram",
+    "svg",
+    "architecture",
+    "flowchart",
+    "uml",
+    "sequence-diagram",
+    "er-diagram",
+    "visualization"
+  ],
+  "author": "yizhiyanhua-ai",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yizhiyanhua-ai/fireworks-tech-graph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yizhiyanhua-ai/fireworks-tech-graph/issues"
+  },
+  "homepage": "https://github.com/yizhiyanhua-ai/fireworks-tech-graph#readme",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "README.zh.md",
+    "LICENSE",
+    "references/",
+    "scripts/",
+    "fixtures/",
+    "templates/",
+    "assets/"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -1,14 +1,10 @@
 # AGENTS.md
 
-This file provides guidance to Claude Code, Codex, and other AI agents when working with code in this repository.
+Guidance for AI agents working in this repository.
 
 ## Project Overview
 
 **Easydict** is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation.
-
-The project is currently **actively migrating from Objective-C to Swift + SwiftUI**.
-
-**Requirements:** Xcode 15+ (for String Catalog support), macOS 13.0+ (minimum supported).
 
 **Note:** All new development should prefer modern Swift and SwiftUI APIs available on macOS 13.0+ to ensure cleaner, safer, and future‑proof code.
 
@@ -39,35 +35,45 @@ Translation services inherit from a base query service. Each service lives in it
 ### Key Patterns
 
 - Swift Package Manager for almost all Swift dependencies (Alamofire, Defaults, etc.)
-- CocoaPods for dependency management (AFNetworking, ReactiveObjC, etc.)
+- CocoaPods for dependency management (Masonry, ReactiveObjC, etc.)
 - Bridging header at `Easydict/App/Easydict-Bridging-Header.h`
 - PCH file at `Easydict/App/PrefixHeader.pch`
 - String localization uses Xcode String Catalogs (`Localizable.xcstrings` files)
 
 ## Build Commands
 
-Run `xcodebuild` only when either of the following is true:
+Run `xcodebuild` only when:
 
-- The total number of changed lines is greater than 100.
+- The substantive code changes exceed 100 lines. Documentation comment-only edits do not
+  count toward this threshold.
 - The user explicitly asks for a build or test run.
 - The task runs `/code-simplifier`.
 
 Do not run `xcodebuild build`, `build-for-testing`, or `test` concurrently against the same workspace and DerivedData location.
 
-Be aware that `xcodebuild` may take several minutes to finish. If the project contains many source files or dependencies, wait patiently for the command to complete.
+`xcodebuild` may take several minutes. Wait for it to finish.
 
-When adding or moving Swift files, also update `Easydict.xcodeproj/project.pbxproj`.
+When adding or moving files that should appear in Xcode's navigator, also update `Easydict.xcodeproj/project.pbxproj`.
+
+- Keep developer-facing Markdown documents, including `README.md`, visible in Xcode by
+  adding a `PBXFileReference` under the correct `PBXGroup` when needed.
+- Do not add documentation files to build phases such as `Resources` unless the file is
+  intentionally shipped at runtime.
 
 Common build and test commands:
 
 ```bash
-# Open workspace in Xcode (NOT the .xcodeproj)
-open Easydict.xcworkspace
 
 # Build
 xcodebuild build \
   -workspace Easydict.xcworkspace \
   -scheme Easydict | xcbeautify
+
+# Test (builds and runs a test in one command)
+xcodebuild test \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 
 # Build for testing
 xcodebuild build-for-testing \
@@ -91,53 +97,117 @@ Recommended usage:
 
 - `build`: default validation after code changes.
 - `test`: simplest one-shot test run; builds and runs tests in one command.
-- `build-for-testing` + `test-without-building`: preferred when rerunning the same tests repeatedly.
-- `test-without-building` requires a compatible prior `build-for-testing` with the same workspace, scheme, destination, configuration, and DerivedData location.
-- If code or build settings changed, rerun `build-for-testing` before `test-without-building`.
+- `build-for-testing` + `test-without-building`: preferred when rerunning the same tests
+  repeatedly.
+- `test-without-building` requires a compatible prior `build-for-testing` with the same
+  workspace, scheme, destination, configuration, and DerivedData location.
+- If code or build settings changed, rerun `build-for-testing` before
+  `test-without-building`.
 - Prefer `-only-testing:` when debugging a specific test class or method.
 
 ## Coding Standards
 
 ### Core Rules
 
-- Add English documentation comments for every class, struct, and function.
-- Add inline comments for key functions or complex logic when the reasoning is not obvious.
-- Write new code in Swift/SwiftUI only. Legacy Objective-C may receive bug fixes, but no new features.
+- Write new code in Swift/SwiftUI only. Legacy Objective-C may receive bug fixes, but no
+  new features.
 - Prefer modern Swift and SwiftUI APIs available on macOS 13.0+.
-- Keep source files ideally under 300 lines and never over 500 without strong justification.
+- Keep source files ideally under 300 lines and never over 500 without strong
+  justification.
 - Avoid single-letter variable names except trivial loop indices.
-- Avoid `static` functions and variables unless type-level semantics clearly require them. Utility types may use `static`.
+- Avoid `static` functions and variables unless type-level semantics clearly require them.
+  Utility types may use `static`.
 - Prefer `for … where` over `for` plus inline `if` filtering.
 - Prefer async/await over callback-based completion handlers for new async work.
 
+### Documentation Rules
+
+- Add a type-level comment immediately before every class, struct, enum, protocol, and
+  actor.
+- For core types, keep the comment between 220 and 320 English characters, usually in 3
+  short sentences and never more than 4.
+- For simple private helper types, use 1-2 short sentences and keep the comment under 180
+  English characters.
+- Keep each comment line within 80 characters, avoid repeating obvious details from the
+  type name or stored properties, and update the comment whenever the type's
+  responsibilities or behavior change.
+- For Markdown lists, keep each list item line within 90 characters. Only list items may
+  be hard-wrapped for width limits, and continuation lines must preserve the list
+  structure indentation.
+- For non-comment Markdown documentation, keep normal prose as natural paragraphs. Do not
+  reflow standalone prose for width, even when it appears next to lists, and only add line
+  breaks where Markdown structure requires them, such as lists, tables, or code blocks.
+- Add English documentation comments for every function, plus inline comments for key
+  functions or complex logic when the reasoning is not obvious.
+- When creating or updating source file header comments, always use the current Git
+  username from `git config user.name` in the `Created by ...` line. Do not use agent
+  names such as `Codex`, `Claude`, or `AI Assistant` as the author name.
+- Every directory must include a Chinese `README.md`, regardless of file count. When
+  creating a new directory, add its `README.md` in the same change.
+- When files in a directory are added, removed, renamed, or their behavior changes, update
+  that directory's `README.md` in the same change. Explain responsibilities, key
+  components, main flows, and debugging entry points instead of writing a method-by-method
+  API index.
+
 ### Naming Rules
 
-- Use `UpperCamelCase` for directories and files that are compiled by Xcode, including Swift, Objective-C, and test source files.
-- Use `kebab-case` for directories and files that are not compiled by Xcode, including runtime-managed disk paths, scripts, and exported artifacts.
-- Treat `AppPathManager` runtime directories under `Application Support/<bundle>` as non-compiled filesystem artifacts, so every path component defined there must use `kebab-case`.
+- Use `UpperCamelCase` for directories and files that are compiled by Xcode, including
+  Swift, Objective-C, and test source files.
+- Use `kebab-case` for directories and files that are not compiled by Xcode, including
+  runtime-managed disk paths, scripts, and exported artifacts.
+- Treat `AppPathManager` runtime directories under `Application Support/<bundle>` as
+  non-compiled filesystem artifacts, so every path component defined there must use
+  `kebab-case`.
+- For new or renamed classes, structs, enums, protocols, actors, properties, parameters,
+  and local variables, prefer names that are clear and concise and usually keep them
+  within 25 characters.
+- Remove repeated context already expressed by the surrounding directory, module, or type
+  before adding extra words to a name.
+- If a longer name is required by a system API, external protocol, or an unavoidable
+  domain term, keep it as short as possible and treat it as an exception rather than the
+  default.
 
 ### Testing Rules
 
-- Each test source file may declare at most one `@Suite` type. Move shared fixtures, mocks, and helper functions into separate support files without `@Suite`.
+- Each test source file may declare at most one `@Suite` type.
+- Add or update unit tests for non-UI functional or logic-heavy behavior changes, and
+  ensure the relevant tests pass.
+- For changes primarily focused on UI design, layout, styling, or visual presentation, do
+  not add unit tests unless the user explicitly asks for them.
+- Do not add test-only protocols, mock services, or dependency injection seams unless they
+  verify real user-visible behavior or protect a critical correctness boundary that cannot
+  be tested more directly.
+- Prefer concrete production code and meaningful behavior tests over fake call-recording
+  tests that only assert an implementation detail such as whether one helper was invoked.
 
 ### Libraries and API Usage
 
 - Use **SFSafeSymbols** type-safe APIs instead of hard-coded SF Symbol strings.
 - Prefer `Image(systemSymbol: .chevronRight)` over `Image(systemName: "chevron.right")`.
-- Prefer `Label("MyText", systemSymbol: .cCircle)` over `Label("MyText", systemImage: "c.circle")`.
-- In SwiftUI, use `foregroundStyle<S>(_ style: S)` instead of deprecated `foregroundColor(_:)`.
-- In SwiftUI, use `background(alignment:content:)` or trailing-closure `background { ... }` for background views instead of deprecated `background(_:alignment:)`. Keep `Color` and material `ShapeStyle` backgrounds on their dedicated overloads.
+- Prefer `Label("MyText", systemSymbol: .cCircle)` over `Label("MyText", systemImage:
+  "c.circle")`.
+- In SwiftUI, use `foregroundStyle<S>(_ style: S)` instead of deprecated
+  `foregroundColor(_:)`.
+- In SwiftUI, use `background(alignment:content:)` or trailing-closure `background { ...
+  }` for background views instead of deprecated `background(_:alignment:)`. Keep `Color`
+  and material `ShapeStyle` backgrounds on their dedicated overloads.
 - Use `Alamofire` async/await APIs for network requests.
-- Use `Defaults` for user preferences and settings; avoid introducing new direct `UserDefaults` usage.
+- Use `Defaults` for user preferences and settings; avoid introducing new direct
+  `UserDefaults` usage.
 
 ## Localization
 
 ### Core Rules
 
-- All user-facing UI text must be localized. Do not hard-code visible strings in SwiftUI or AppKit.
-- UI strings must use String Catalog keys directly, for example `Text("setting.general.appearance.light_dark_appearance")`. The same rule applies to `Button`, `Toggle`, and similar APIs.
-- Use `Text("<key>")` in SwiftUI and `String(localized: "<key>")` when a `String` is required.
-- Do not build localization keys dynamically. For interpolated values, use a dedicated localized format string and pass arguments via `String(localized:)`.
+- All user-facing UI text must be localized. Do not hard-code visible strings in SwiftUI
+  or AppKit.
+- UI strings must use String Catalog keys directly, for example
+  `Text("setting.general.appearance.light_dark_appearance")`. The same rule applies to
+  `Button`, `Toggle`, and similar APIs.
+- Use `Text("<key>")` in SwiftUI and `String(localized: "<key>")` when a `String` is
+  required.
+- Do not build localization keys dynamically. For interpolated values, use a dedicated
+  localized format string and pass arguments via `String(localized:)`.
 
 ### Key Naming
 
@@ -149,11 +219,14 @@ Recommended usage:
   - `setting.general.language`
   - `setting.general.appearance.light_dark_appearance`
   - `setting.general.startup_and_update.header`
-- Use the first level for the feature scope such as `common`, `setting`, or `ocr`, middle levels for UI hierarchy, and the last level for the exact element or semantic meaning.
+- Use the first level for the feature scope such as `common`, `setting`, or `ocr`, middle
+  levels for UI hierarchy, and the last level for the exact element or semantic meaning.
 
 ### Source of Truth
 
-- `Easydict/App/Localizable.xcstrings` is the single source of truth for all keys and translations. Every new localization key must be added there with translations for all supported languages.
+- `Easydict/App/Localizable.xcstrings` is the single source of truth for all keys and
+  translations. Every new localization key must be added there with translations for all
+  supported languages.
 
 ## Git Commit Messages
 

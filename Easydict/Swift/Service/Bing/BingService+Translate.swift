@@ -8,8 +8,6 @@
 
 import Foundation
 
-// MARK: - BingService + Translate
-
 extension BingService {
     // MARK: - Bing Translate
 
@@ -27,10 +25,15 @@ extension BingService {
 
         if useDictQuery {
             bingRequest.translateTextFromDict(text: text) { [weak self] json, error in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completion(QueryResult(), CancellationError())
+                    return
+                }
 
                 parseBingDictTranslate(json, word: text) { dictResult, dictError in
-                    if error != nil || dictError != nil {
+                    if error is CancellationError || dictError is CancellationError {
+                        completion(QueryResult(), CancellationError())
+                    } else if error != nil || dictError != nil {
                         self.bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
                     } else {
                         self.isDictQueryResult = true
@@ -50,44 +53,53 @@ extension BingService {
             from: fromCode,
             to: toCode
         ) { [weak self] translateData, lookupData, translateError, lookupError in
-            guard let self = self else { return }
-
-            do {
-                if let translateError = translateError {
-                    result.error = QueryError(type: .api, message: translateError.localizedDescription)
-                    logError("bing translate error: \(translateError)")
-                } else {
-                    var needRetry = false
-                    let error = processTranslateResult(
-                        translateData,
-                        text: trimmedText,
-                        from: from,
-                        to: to,
-                        needRetry: &needRetry
-                    )
-
-                    // canRetry is used to avoid recursive calls, code 205 only retry once.
-                    if canRetry, needRetry {
-                        canRetry = false
-                        bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
-                        return
-                    }
-                    canRetry = true
-
-                    if let error = error {
-                        result.error = QueryError(type: .api, message: error.localizedDescription)
-                        completion(result, error)
-                        return
-                    }
-
-                    if let lookupError = lookupError {
-                        logError("bing lookup error: \(lookupError)")
-                    } else {
-                        processWordSimpleWordAndPart(lookupData)
-                    }
-                }
-                completion(result, translateError)
+            guard let self = self else {
+                completion(QueryResult(), CancellationError())
+                return
             }
+
+            if let translateError = translateError {
+                result.error = QueryError(type: .api, message: translateError.localizedDescription)
+                logError("bing translate error: \(translateError)")
+                completion(result, translateError)
+                return
+            }
+
+            var needRetry = false
+            let error = processTranslateResult(
+                translateData,
+                text: trimmedText,
+                from: from,
+                to: to,
+                needRetry: &needRetry
+            )
+
+            // canRetry is used to avoid recursive calls, code 205 only retry once.
+            if canRetry, needRetry {
+                canRetry = false
+                bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
+                return
+            }
+            canRetry = true
+
+            if let error = error {
+                result.error = QueryError(type: .api, message: error.localizedDescription)
+                completion(result, error)
+                return
+            }
+
+            if lookupError is CancellationError {
+                completion(QueryResult(), CancellationError())
+                return
+            }
+
+            if let lookupError = lookupError {
+                logError("bing lookup error: \(lookupError)")
+            } else {
+                processWordSimpleWordAndPart(lookupData)
+            }
+
+            completion(result, nil)
         }
     }
 

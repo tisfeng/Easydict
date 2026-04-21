@@ -77,6 +77,7 @@ final class QueryServiceFactory: NSObject {
         (.miniMax, MiniMaxService.self),
         (.gitHub, GitHubService.self),
         (.builtInAI, BuiltInAIService.self),
+        (.claudeCode, ClaudeCodeService.self),
         (.gemini, GeminiService.self),
         (.claude, ClaudeService.self),
         (.ollama, OllamaService.self),

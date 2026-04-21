@@ -430,7 +430,9 @@ If you think there is room for improvement in the project, or if you have new id
 
 - **Bug fixes and feature implementations**: Please submit to the dev branch
 - **New features or major UI changes**: It is recommended to open an issue for discussion first to avoid duplicate or conflicting features
-- **Branch naming**: Use `feat/xxx` for new features, and `fix/xxx` for bug fixes
+- **Branch naming**: Use the `type/short-description` format for branch names. Use
+  `feat/` for new features and `fix/` for bug fixes. Keep the description in
+  kebab-case, for example `feat/openai-translation` and `fix/ocr-window-focus`
 - **Do not commit on `dev` or `main` directly**: Please create a new branch from the corresponding base branch, then submit a PR
 
 ### Participate in Swift Migration

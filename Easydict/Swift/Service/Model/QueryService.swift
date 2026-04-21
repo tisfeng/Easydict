@@ -15,12 +15,15 @@ public enum ServiceAPIKeyRequirement {
     case none
     case builtIn
     case userProvided
+    /// Service invoked via an AI agent CLI tool (e.g. Claude Code, Codex CLI, Gemini CLI).
+    /// The CLI manages its own credentials; no API key is configured in the app.
+    case agentCLI
 
     // MARK: Internal
 
     /// Whether this service requires an API key for requests.
     var requiresKeyForRequest: Bool {
-        self != .none
+        self != .none && self != .agentCLI
     }
 
     /// Whether this service needs the user to provide an API key.
@@ -245,6 +248,8 @@ open class QueryService: NSObject {
                         completionHandler(result, result.error)
                     }
                 }
+            } catch is CancellationError {
+                // Task was cancelled, nothing to report.
             } catch {
                 if !didYieldError {
                     let errorResult = ensureResult()
@@ -306,6 +311,8 @@ open class QueryService: NSObject {
                         continuation.yield(result)
                     }
 
+                    continuation.finish()
+                } catch is CancellationError {
                     continuation.finish()
                 } catch {
                     if !didYieldError {
@@ -389,6 +396,8 @@ open class QueryService: NSObject {
                 do {
                     let result = try await self.translate(text, from: from, to: to)
                     continuation.yield(result)
+                    continuation.finish()
+                } catch is CancellationError {
                     continuation.finish()
                 } catch {
                     let errorResult = self.ensureResult()
