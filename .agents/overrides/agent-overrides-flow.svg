@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Agent override loading flow</title>
+  <desc id="desc">AGENTS.md selects a skill, loads the repo overlay, and produces checked SVG and PNG outputs.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#059669"/>
+    </marker>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#soft-shadow); }
+      .accent { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+      .overlay { fill: #ecfdf5; stroke: #059669; stroke-width: 2; }
+      .output { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; }
+      .note { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .title { font: 700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .label { font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .body { font: 400 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .small { font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748b; }
+      .arrow-label { font: 600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #334155; }
+      .arrow-bg { fill: #f8fafc; opacity: 0.96; }
+      .arrow-blue { fill: none; stroke: #2563eb; stroke-width: 2.2; marker-end: url(#arrow-blue); }
+      .arrow-green { fill: none; stroke: #059669; stroke-width: 2.2; marker-end: url(#arrow-green); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="960" height="560"/>
+  <text class="title" x="480" y="56" text-anchor="middle">Agent Override Loading Flow</text>
+  <text class="small" x="480" y="80" text-anchor="middle">Repo-local rules stay outside upstream skill mirrors</text>
+
+  <rect class="accent" x="60" y="120" width="210" height="96" rx="10"/>
+  <text class="label" x="165" y="154" text-anchor="middle">AGENTS.md</text>
+  <text class="body" x="165" y="178" text-anchor="middle">Declares repo policy</text>
+  <text class="body" x="165" y="198" text-anchor="middle">and overlay paths</text>
+
+  <rect class="card" x="380" y="120" width="220" height="96" rx="10"/>
+  <text class="label" x="490" y="154" text-anchor="middle">Upstream Skill</text>
+  <text class="body" x="490" y="178" text-anchor="middle">fireworks-tech-graph</text>
+  <text class="body" x="490" y="198" text-anchor="middle">default workflow</text>
+
+  <rect class="overlay" x="710" y="120" width="210" height="96" rx="10"/>
+  <text class="label" x="815" y="154" text-anchor="middle">Repo Overlay</text>
+  <text class="body" x="815" y="178" text-anchor="middle">layout and rendered</text>
+  <text class="body" x="815" y="198" text-anchor="middle">review rules</text>
+
+  <rect class="output" x="340" y="350" width="280" height="104" rx="10"/>
+  <text class="label" x="480" y="384" text-anchor="middle">Checked Outputs</text>
+  <text class="body" x="480" y="408" text-anchor="middle">README-aligned SVG</text>
+  <text class="body" x="480" y="428" text-anchor="middle">and rendered PNG</text>
+
+  <rect class="note" x="60" y="350" width="220" height="104" rx="10"/>
+  <text class="label" x="170" y="384" text-anchor="middle">Update Safety</text>
+  <text class="body" x="170" y="408" text-anchor="middle">Skill mirrors can be</text>
+  <text class="body" x="170" y="428" text-anchor="middle">refreshed with force</text>
+
+  <path class="arrow-blue" d="M 270 168 L 380 168"/>
+  <rect class="arrow-bg" x="288" y="154" width="74" height="24" rx="5"/>
+  <text class="arrow-label" x="325" y="170" text-anchor="middle">requires</text>
+
+  <path class="arrow-blue" d="M 600 168 L 710 168"/>
+  <rect class="arrow-bg" x="612" y="154" width="86" height="24" rx="5"/>
+  <text class="arrow-label" x="655" y="170" text-anchor="middle">then loads</text>
+
+  <path class="arrow-blue" d="M 490 216 L 490 350"/>
+  <rect class="arrow-bg" x="446" y="271" width="88" height="24" rx="5"/>
+  <text class="arrow-label" x="490" y="287" text-anchor="middle">base rules</text>
+
+  <path class="arrow-green" d="M 815 216 L 815 402 L 620 402"/>
+  <rect class="arrow-bg" x="670" y="390" width="98" height="24" rx="5"/>
+  <text class="arrow-label" x="719" y="406" text-anchor="middle">repo overlay</text>
+
+  <text class="small" x="480" y="506" text-anchor="middle">When rules conflict, use the stricter repo overlay rule.</text>
+</svg>
