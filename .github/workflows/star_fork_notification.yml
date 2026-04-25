@@ -16,10 +16,12 @@ jobs:
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
           echo "event_name=forked 🍴" >> $GITHUB_ENV
+          echo "event_title=New Fork" >> $GITHUB_ENV
       - if: ${{ github.event_name == 'watch' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
           echo "event_name=starred ✨" >> $GITHUB_ENV
+          echo "event_title=New Star" >> $GITHUB_ENV
 
       - name: Get repository information
         run: |
@@ -56,42 +58,26 @@ jobs:
           echo "commit_count=$commit_count" >> $GITHUB_ENV
           echo "follower_count=$follower_count" >> $GITHUB_ENV
 
-          # Define threshold values for VIP-tiered notification filtering
-          # Tier 1: Elite developers (any single condition triggers notification)
-          ELITE_STARS=100       # Elite: User's repos have earned 100+ stars
-          ELITE_COMMITS=5000    # Elite: User has made 5000+ commits
-          ELITE_FOLLOWERS=500   # Elite: User has 500+ followers
+          # Define stricter notification thresholds.
+          MIN_STARS=300
+          MIN_FOLLOWERS=300
+          MIN_COMMITS=5000
+          SUPPORTING_STARS=50
+          SUPPORTING_FOLLOWERS=50
 
-          # Tier 2: Quality developers (must meet 2 conditions to trigger notification)
-          QUALITY_STARS=20      # Quality: User's repos have earned 20+ stars
-          QUALITY_COMMITS=1000  # Quality: User has made 1000+ commits
-          QUALITY_FOLLOWERS=100 # Quality: User has 100+ followers
-
-          # Check if user meets notification criteria using VIP-tiered system
+          # Check if user meets the shared notification criteria for fork/star events.
           user_conditions_met=false
           notification_reason=""
 
-          # Tier 1: Elite developers - single condition is enough
-          if [[ $earn_star_count -ge $ELITE_STARS ]]; then
+          if [[ $earn_star_count -ge $MIN_STARS ]]; then
             user_conditions_met=true
-            notification_reason="Elite developer: Stars ($earn_star_count) >= $ELITE_STARS"
-          elif [[ $commit_count -gt $ELITE_COMMITS ]]; then
+            notification_reason="High-impact user: Stars ($earn_star_count) >= $MIN_STARS"
+          elif [[ $follower_count -ge $MIN_FOLLOWERS ]]; then
             user_conditions_met=true
-            notification_reason="Elite developer: Commits ($commit_count) > $ELITE_COMMITS"
-          elif [[ $follower_count -ge $ELITE_FOLLOWERS ]]; then
+            notification_reason="High-impact user: Followers ($follower_count) >= $MIN_FOLLOWERS"
+          elif [[ $commit_count -ge $MIN_COMMITS && ( $earn_star_count -ge $SUPPORTING_STARS || $follower_count -ge $SUPPORTING_FOLLOWERS ) ]]; then
             user_conditions_met=true
-            notification_reason="Elite developer: Followers ($follower_count) >= $ELITE_FOLLOWERS"
-
-          # Tier 2: Quality developers - must meet 2 out of 3 conditions
-          elif [[ $earn_star_count -ge $QUALITY_STARS && $follower_count -ge $QUALITY_FOLLOWERS ]]; then
-            user_conditions_met=true
-            notification_reason="Quality developer: Stars ($earn_star_count) >= $QUALITY_STARS AND Followers ($follower_count) >= $QUALITY_FOLLOWERS"
-          elif [[ $earn_star_count -ge $QUALITY_STARS && $commit_count -gt $QUALITY_COMMITS ]]; then
-            user_conditions_met=true
-            notification_reason="Quality developer: Stars ($earn_star_count) >= $QUALITY_STARS AND Commits ($commit_count) > $QUALITY_COMMITS"
-          elif [[ $follower_count -ge $QUALITY_FOLLOWERS && $commit_count -gt $QUALITY_COMMITS ]]; then
-            user_conditions_met=true
-            notification_reason="Quality developer: Followers ($follower_count) >= $QUALITY_FOLLOWERS AND Commits ($commit_count) > $QUALITY_COMMITS"
+            notification_reason="Active developer: Commits ($commit_count) >= $MIN_COMMITS with Stars ($earn_star_count) >= $SUPPORTING_STARS or Followers ($follower_count) >= $SUPPORTING_FOLLOWERS"
           fi
 
           # Output result
@@ -110,7 +96,7 @@ jobs:
       - name: Convert body to HTML
         run: |
           html_body=""
-          html_body+="<h3>🎉 New Stargazer</h3>"
+          html_body+="<h3>🎉 ${{ env.event_title }}</h3>"
           html_body+="User: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b><br><br>"
 
           html_body+="<h4>👤 User Statistics:</h4>"
