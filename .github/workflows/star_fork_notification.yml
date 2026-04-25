@@ -12,18 +12,20 @@ jobs:
   bot:
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.event_name == 'fork' }}
+      - name: Set event labels
+        id: event_labels
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=forked 🍴" >> $GITHUB_ENV
-          echo "event_title=New Fork" >> $GITHUB_ENV
-      - if: ${{ github.event_name == 'watch' }}
-        run: |
-          echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=starred ✨" >> $GITHUB_ENV
-          echo "event_title=New Star" >> $GITHUB_ENV
+          if [[ "${{ github.event_name }}" == "fork" ]]; then
+            echo "event_name=forked 🍴" >> $GITHUB_OUTPUT
+            echo "event_title=New Fork" >> $GITHUB_OUTPUT
+          else
+            echo "event_name=starred ✨" >> $GITHUB_OUTPUT
+            echo "event_title=New Star" >> $GITHUB_OUTPUT
+          fi
 
       - name: Get repository information
+        id: repo_info
         run: |
           result=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
           stars=$(echo $result | jq '.stargazers_count')
@@ -32,16 +34,16 @@ jobs:
           echo "Number of stars: $stars"
           echo "Number of forks: $forks"
 
-          # Save the value to env
-          echo "repo_stars=$stars" >> $GITHUB_ENV
-          echo "repo_forks=$forks" >> $GITHUB_ENV
-          echo "repo_name=$repo_name" >> $GITHUB_ENV
+          echo "repo_stars=$stars" >> $GITHUB_OUTPUT
+          echo "repo_forks=$forks" >> $GITHUB_OUTPUT
+          echo "repo_name=$repo_name" >> $GITHUB_OUTPUT
 
       - name: Get repo download count
+        id: release_stats
         run: |
           download_count=$(curl -s -H  "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[].assets[].download_count' | awk '{sum += $1} END {print sum}')
           echo "Number of downloads: $download_count"
-          echo "download_count=$download_count" >> $GITHUB_ENV
+          echo "download_count=$download_count" >> $GITHUB_OUTPUT
 
       - name: Get user information
         id: check_conditions
@@ -54,9 +56,9 @@ jobs:
           echo "Star count: $earn_star_count"
           echo "Commit count: $commit_count"
           echo "Follower count: $follower_count"
-          echo "earn_star_count=$earn_star_count" >> $GITHUB_ENV
-          echo "commit_count=$commit_count" >> $GITHUB_ENV
-          echo "follower_count=$follower_count" >> $GITHUB_ENV
+          echo "earn_star_count=$earn_star_count" >> $GITHUB_OUTPUT
+          echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
+          echo "follower_count=$follower_count" >> $GITHUB_OUTPUT
 
           # Define stricter notification thresholds.
           MIN_STARS=300
@@ -84,54 +86,64 @@ jobs:
           if [[ $user_conditions_met == true ]]; then
             echo "✅ User meets notification criteria"
             echo "📊 Reason: $notification_reason"
-            echo "user_conditions_met=true" >> $GITHUB_ENV
-            echo "notification_reason=$notification_reason" >> $GITHUB_ENV
+            echo "user_conditions_met=true" >> $GITHUB_OUTPUT
+            echo "notification_reason=$notification_reason" >> $GITHUB_OUTPUT
           else
             echo "❌ User does not meet notification criteria"
             echo "📊 Stats: Stars=$earn_star_count, Commits=$commit_count, Followers=$follower_count"
-            echo "user_conditions_met=false" >> $GITHUB_ENV
-            echo "notification_reason=Does not meet criteria" >> $GITHUB_ENV
+            echo "user_conditions_met=false" >> $GITHUB_OUTPUT
+            echo "notification_reason=Does not meet criteria" >> $GITHUB_OUTPUT
           fi
 
       - name: Convert body to HTML
+        id: build_email
+        env:
+          EVENT_TITLE: ${{ steps.event_labels.outputs.event_title }}
+          EARN_STAR_COUNT: ${{ steps.check_conditions.outputs.earn_star_count }}
+          COMMIT_COUNT: ${{ steps.check_conditions.outputs.commit_count }}
+          FOLLOWER_COUNT: ${{ steps.check_conditions.outputs.follower_count }}
+          NOTIFICATION_REASON: ${{ steps.check_conditions.outputs.notification_reason }}
+          REPO_STARS: ${{ steps.repo_info.outputs.repo_stars }}
+          REPO_FORKS: ${{ steps.repo_info.outputs.repo_forks }}
+          DOWNLOAD_COUNT: ${{ steps.release_stats.outputs.download_count }}
         run: |
           html_body=""
-          html_body+="<h3>🎉 ${{ env.event_title }}</h3>"
-          html_body+="User: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b><br><br>"
+          html_body+="<h3>🎉 $EVENT_TITLE</h3>"
+          html_body+="User: <b><a href='$GITHUB_SERVER_URL/$GITHUB_ACTOR'>$GITHUB_ACTOR</a></b><br><br>"
 
           html_body+="<h4>👤 User Statistics:</h4>"
-          html_body+="⭐ Earned Stars: <b>${{ env.earn_star_count }}</b><br>"
-          html_body+="💻 Commits: <b>${{ env.commit_count }}</b><br>"
-          html_body+="👥 Followers: <b>${{ env.follower_count }}</b><br><br>"
+          html_body+="⭐ Earned Stars: <b>$EARN_STAR_COUNT</b><br>"
+          html_body+="💻 Commits: <b>$COMMIT_COUNT</b><br>"
+          html_body+="👥 Followers: <b>$FOLLOWER_COUNT</b><br><br>"
 
           html_body+="<h4>✅ Notification Reason:</h4>"
-          html_body+="<span style='color: green; font-weight: bold;'>${{ env.notification_reason }}</span><br><br>"
+          html_body+="<span style='color: green; font-weight: bold;'>$NOTIFICATION_REASON</span><br><br>"
 
           html_body+="<h4>📊 Repository Statistics:</h4>"
-          html_body+="⭐ Stars: <b>${{ env.repo_stars }}</b><br>"
-          html_body+="🍴 Forks: <b>${{ env.repo_forks }}</b><br>"
-          html_body+="📥 Downloads: <b>${{ env.download_count }}</b><br><br>"
+          html_body+="⭐ Stars: <b>$REPO_STARS</b><br>"
+          html_body+="🍴 Forks: <b>$REPO_FORKS</b><br>"
+          html_body+="📥 Downloads: <b>$DOWNLOAD_COUNT</b><br><br>"
 
           html_body+="<h4>🔗 Links:</h4>"
-          html_body+="Repo: <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a><br>"
-          html_body+="Stargazers: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a><br><br>"
+          html_body+="Repo: <a href='$GITHUB_SERVER_URL/$GITHUB_REPOSITORY'>$GITHUB_REPOSITORY</a><br>"
+          html_body+="Stargazers: <a href='$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/stargazers'>$GITHUB_REPOSITORY/stargazers</a><br><br>"
 
           html_body+="<h4>📈 User GitHub Stats:</h4>"
-          html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=${{ github.actor }}&layout=normal&theme=algolia"><br>'
-          html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api?username=${{ github.actor }}&theme=algolia&show_icons=true"><br>'
+          html_body+="<img align=\"center\" src=\"https://github-readme-stats.vercel.app/api/top-langs/?username=$GITHUB_ACTOR&layout=normal&theme=algolia\"><br>"
+          html_body+="<img align=\"center\" src=\"https://github-readme-stats.vercel.app/api?username=$GITHUB_ACTOR&theme=algolia&show_icons=true\"><br>"
 
-          echo "html_body=$html_body" >> $GITHUB_ENV
+          echo "html_body=$html_body" >> $GITHUB_OUTPUT
 
       - name: "Send mail"
-        if: env.user_conditions_met == 'true'
+        if: steps.check_conditions.outputs.user_conditions_met == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           username: ${{ secrets.GMAIL_BOT_USERNAME }}
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
-          subject: ${{ github.actor }} ${{ env.event_name }} ${{ env.repo_name }}
+          subject: ${{ github.actor }} ${{ steps.event_labels.outputs.event_name }} ${{ steps.repo_info.outputs.repo_name }}
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
-          html_body: ${{ env.html_body }}
+          html_body: ${{ steps.build_email.outputs.html_body }}
           to: ${{ secrets.RECEIVER_EMAIL }}
           from: GitHub Actions
