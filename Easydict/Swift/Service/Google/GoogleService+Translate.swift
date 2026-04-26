@@ -75,7 +75,10 @@ extension GoogleService {
         }
 
         sendWebAppTranslate(text, from: from, to: to) { [weak self] responseObject, signText, _, error in
-            guard let self, let result = result else { return }
+            guard let self, let result = result else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
 
             if let error = error {
                 completion(result, error)
@@ -248,13 +251,18 @@ extension GoogleService {
         )
 
         request.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(nil, nil, nil, CancellationError())
+                return
+            }
             if queryModel.isServiceStopped(serviceType().rawValue) == true {
+                completion(nil, nil, nil, CancellationError())
                 return
             }
 
             if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
+                    completion(nil, nil, nil, CancellationError())
                     return
                 }
                 completion(nil, nil, nil, QueryError(type: .api, message: nil))
@@ -281,10 +289,14 @@ extension GoogleService {
         let url = kGoogleTranslateURL
 
         googleHTMLRequest(url: url).responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(nil, CancellationError())
+                return
+            }
 
             if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
+                    completion(nil, CancellationError())
                     return
                 }
                 completion(nil, QueryError(type: .api, message: "谷歌翻译获取 tkk 失败"))
@@ -339,7 +351,10 @@ extension GoogleService {
         }
 
         sendGetWebAppTKKRequest { [weak self] tkk, error in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(CancellationError())
+                return
+            }
             if let tkk = tkk {
                 windowObject.setObject(
                     tkk, forKeyedSubscript: "TKK" as NSCopying & NSObjectProtocol
@@ -397,13 +412,18 @@ extension GoogleService {
         )
 
         request.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(nil, nil, nil, CancellationError())
+                return
+            }
             if queryModel.isServiceStopped(serviceType().rawValue) == true {
+                completion(nil, nil, nil, CancellationError())
                 return
             }
 
             if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
+                    completion(nil, nil, nil, CancellationError())
                     return
                 }
                 completion(nil, nil, nil, QueryError(type: .api, message: nil))
@@ -438,7 +458,10 @@ extension GoogleService {
         }
 
         sendGTXTranslate(text, from: from, to: to) { [weak self] responseObject, signText, _, error in
-            guard let self, let result = result else { return }
+            guard let self, let result = result else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
 
             if let error = error {
                 completion(result, error)

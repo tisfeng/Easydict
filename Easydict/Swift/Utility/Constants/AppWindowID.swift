@@ -2,7 +2,7 @@
 //  AppWindowID.swift
 //  Easydict
 //
-//  Created by Codex on 2025/12/24.
+//  Created by tisfeng on 2025/12/24.
 //  Copyright © 2025 izual. All rights reserved.
 //
 

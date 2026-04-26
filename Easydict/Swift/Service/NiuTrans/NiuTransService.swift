@@ -194,14 +194,19 @@ extension NiuTransService {
         .validate(statusCode: 200 ..< 300)
 
         request.responseData { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
 
             if queryModel.isServiceStopped(serviceType().rawValue) {
+                completion(result, CancellationError())
                 return
             }
 
             if let error = response.error {
                 if (error as NSError).code == NSURLErrorCancelled {
+                    completion(result, CancellationError())
                     return
                 }
 

@@ -67,7 +67,7 @@ We recommend using `Codex` for AI-assisted development in Easydict, especially f
 
 This repository supports `Codex` and `Claude` for automatic commit message generation.
 
-- Stage your changes first, then run `/git-commit`.
+- Stage your changes first, then run `$git-commit`.
 - The command drafts an Angular-style English commit message from the staged diff and provides a Simplified Chinese preview.
 - No commit is created until you explicitly approve the generated message.
 

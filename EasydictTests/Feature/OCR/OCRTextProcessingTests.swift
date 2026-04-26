@@ -2,7 +2,7 @@
 //  OCRTextProcessingTests.swift
 //  EasydictSwiftTests
 //
-//  Created by AI Assistant on 2025/7/3.
+//  Created by tisfeng on 2025/7/3.
 //  Copyright © 2025 izual. All rights reserved.
 //
 

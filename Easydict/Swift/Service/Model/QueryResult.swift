@@ -211,6 +211,9 @@ public class QueryResult: NSObject {
 
     var showReplaceButton: Bool = false
 
+    /// Optional message set during validation to provide extra context (e.g. streaming auto-disabled).
+    var validationMessage: String?
+
     var translatedResults: [String]? {
         get {
             translatedResultsLock.lock()
@@ -273,6 +276,7 @@ public class QueryResult: NSObject {
         translatedResults = nil
         wordResult = nil
         error = nil
+        validationMessage = nil
         serviceTypeWithUniqueIdentifier = ServiceType.youdao.rawValue
         service?.audioPlayer.stop()
         service = nil

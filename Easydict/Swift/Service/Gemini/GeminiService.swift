@@ -131,7 +131,7 @@ public final class GeminiService: StreamService {
                     continuation.finish()
                 } catch is CancellationError {
                     logInfo("Gemini task was cancelled.")
-                    continuation.finish()
+                    continuation.finish(throwing: CancellationError())
                 } catch {
                     /**
                      https://github.com/google/generative-ai-swift/issues/89
