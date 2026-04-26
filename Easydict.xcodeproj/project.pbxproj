@@ -1151,7 +1151,6 @@
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
 		0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
-		129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
 		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -3370,16 +3369,6 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
-		C4A40A9B2AC0168400B8E6EF /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				6372B33DFF803C7096A82250 /* Pods_Easydict.framework */,
-				03B63ABE2A86967800E155ED /* CoreServices.framework */,
-				378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		C4D1ADE12C3F340500A19D02 /* AITool */ = {
 			isa = PBXGroup;
 			children = (
@@ -3410,7 +3399,6 @@
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
 				9CB57B9B45EC322A11ED8865 /* Pods */,
-				C4A40A9B2AC0168400B8E6EF /* Recovered References */,
 				F85ED7C3B686A1F75E052D1A /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -3563,7 +3551,9 @@
 		F85ED7C3B686A1F75E052D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */,
+				03B63ABE2A86967800E155ED /* CoreServices.framework */,
+				6372B33DFF803C7096A82250 /* Pods_Easydict.framework */,
+				378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
