@@ -169,27 +169,6 @@ extension NSImage {
         return NSImage(cgImage: tintedCGImage, size: pointSize)
     }
 
-    // MARK: - Image Manipulation
-
-    /// Create a new image with the specified tint color.
-    ///
-    /// - Parameter tintColor: The color to apply as a tint.
-    /// - Returns: A new tinted image.
-    func imageWithTintColor(_ tintColor: NSColor) -> NSImage? {
-        guard let image = copy() as? NSImage else {
-            logInfo("Failed to copy image for tinting")
-            return nil
-        }
-
-        image.lockFocus()
-        tintColor.set()
-        let imageRect = NSRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        imageRect.fill(using: .sourceAtop)
-        image.unlockFocus()
-
-        return image
-    }
-
     // MARK: - Graphics Context Creation
 
     /// Create an image by drawing into a graphics context.
