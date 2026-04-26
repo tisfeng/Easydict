@@ -143,8 +143,14 @@ Recommended usage:
   `AI Assistant`.
 - Every directory must include a Chinese `README.md`. When creating a new directory, add
   its `README.md` and matching SVG technical diagram in the same change.
+
+### SVG Diagram Rules
+
 - Generate each `README.md`'s SVG technical diagram from the README content with the
   `fireworks-tech-graph` skill, choosing the diagram type that best fits the content.
+- When generating Easydict technical diagrams with `fireworks-tech-graph`, read
+  `.agents/overrides/fireworks-tech-graph-layout-rules.md` after the skill and apply the
+  stricter repo-local layout, connector, label, export, and rendered-review rules.
 - When files in a directory are added, removed, renamed, or their behavior changes, update
   that directory's `README.md` and matching SVG technical diagram in the same change.
   Explain responsibilities, key components, main flows, and debugging entry points instead
