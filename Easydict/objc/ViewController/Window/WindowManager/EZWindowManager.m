@@ -944,16 +944,6 @@ static EZWindowManager *_instance;
 
         MMLogInfo(@"Screenshot captured: %@", image);
 
-        static NSString *_imagePath = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
-        });
-
-        [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
-        [image mm_writeToFileAsPNG:_imagePath];
-        MMLogInfo(@"Saved image: %@", _imagePath);
-
         if (imageHandler) {
             imageHandler(image);
         }

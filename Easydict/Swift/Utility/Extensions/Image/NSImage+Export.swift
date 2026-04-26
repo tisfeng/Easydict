@@ -47,13 +47,9 @@ extension NSImage {
     /// ```swift
     /// let success = image.mm_writeToFileAsPNG("/path/to/image.png")
     /// ```
-    @objc(mm_writeToFileAsPNG:)
     @discardableResult
     func mm_writeToFileAsPNG(_ path: String) -> Bool {
-        guard let url = URL(string: path) else {
-            return false
-        }
-
+        let url = URL(fileURLWithPath: path)
         return write(to: url, using: .png)
     }
 
@@ -68,41 +64,9 @@ extension NSImage {
     /// ```swift
     /// let success = image.mm_writeToFileAsJPEG("/path/to/image.jpg")
     /// ```
-    @objc(mm_writeToFileAsJPEG:)
     func mm_writeToFileAsJPEG(_ path: String) -> Bool {
-        guard let url = URL(string: path) else {
-            return false
-        }
-
+        let url = URL(fileURLWithPath: path)
         return write(to: url, using: .jpeg)
-    }
-
-    /// Apply tint color to the image (modern API).
-    ///
-    /// - Parameter tintColor: Color to apply to the image
-    /// - Returns: New image with tint color applied
-    ///
-    /// - Example:
-    /// ```swift
-    /// let tintedImage = originalImage.withTintColor(.red)
-    /// ```
-    func withTintColor(_ tintColor: NSColor) -> NSImage {
-        let newImage = copy() as! NSImage
-        newImage.lockFocus()
-        tintColor.set()
-        let imageRect = NSRect(origin: .zero, size: newImage.size)
-        imageRect.fill(using: .sourceAtop)
-        newImage.unlockFocus()
-        return newImage
-    }
-
-    /// Apply tint color to the image (legacy API for Objective-C compatibility).
-    ///
-    /// - Parameter tintColor: Color to apply to the image
-    /// - Returns: New image with tint color applied
-    @objc(imageWithTintColor:)
-    func image(withTintColor tintColor: NSColor) -> NSImage {
-        withTintColor(tintColor)
     }
 
     /// Create an image by drawing in a graphics context (modern API).
