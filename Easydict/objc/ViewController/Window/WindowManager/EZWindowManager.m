@@ -951,8 +951,12 @@ static EZWindowManager *_instance;
         });
 
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
-        [image mm_writeToFileAsPNG:_imagePath];
-        MMLogInfo(@"Saved image: %@", _imagePath);
+        BOOL savedImage = [image mm_writeToFileAsPNG:_imagePath];
+        if (savedImage) {
+            MMLogInfo(@"Saved image: %@", _imagePath);
+        } else {
+            MMLogWarn(@"Failed to save image: %@", _imagePath);
+        }
 
         if (imageHandler) {
             imageHandler(image);

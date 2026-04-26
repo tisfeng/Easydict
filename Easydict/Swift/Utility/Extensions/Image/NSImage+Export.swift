@@ -50,10 +50,7 @@ extension NSImage {
     @objc(mm_writeToFileAsPNG:)
     @discardableResult
     func mm_writeToFileAsPNG(_ path: String) -> Bool {
-        guard let url = URL(string: path) else {
-            return false
-        }
-
+        let url = URL(fileURLWithPath: path)
         return write(to: url, using: .png)
     }
 
@@ -70,10 +67,7 @@ extension NSImage {
     /// ```
     @objc(mm_writeToFileAsJPEG:)
     func mm_writeToFileAsJPEG(_ path: String) -> Bool {
-        guard let url = URL(string: path) else {
-            return false
-        }
-
+        let url = URL(fileURLWithPath: path)
         return write(to: url, using: .jpeg)
     }
 
