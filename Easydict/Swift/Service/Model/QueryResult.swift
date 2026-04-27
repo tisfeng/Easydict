@@ -172,7 +172,6 @@ public class QueryResult: NSObject {
     var queryModel: QueryModel = .init()
 
     var serviceTypeWithUniqueIdentifier: String = ServiceType.youdao.rawValue
-    weak var service: QueryService?
 
     var isShowing: Bool = false
     var viewHeight: CGFloat = 0
@@ -267,7 +266,7 @@ public class QueryResult: NSObject {
 
     /// Returns property names that should be ignored by MJExtension.
     class func mj_ignoredPropertyNames() -> [String] {
-        ["service"]
+        []
     }
 
     /// Resets the result to its initial state.
@@ -278,8 +277,6 @@ public class QueryResult: NSObject {
         error = nil
         validationMessage = nil
         serviceTypeWithUniqueIdentifier = ServiceType.youdao.rawValue
-        service?.audioPlayer.stop()
-        service = nil
         isShowing = false
         isLoading = false
         viewHeight = 0

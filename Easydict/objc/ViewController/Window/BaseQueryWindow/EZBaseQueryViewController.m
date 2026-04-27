@@ -1320,7 +1320,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceTypeWithUniqueIdentifier];
+    NSInteger index = [self.serviceTypeIds indexOfObject:result.serviceTypeWithUniqueIdentifier];
     if (index != NSNotFound) {
         NSInteger row = index + [self resultCellOffset];
         EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
@@ -1527,6 +1527,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     EZQueryResult *result = service.result;
+    resultCell.service = service;
     resultCell.result = result;
     [self setupResultCell:resultCell];
 
@@ -1555,7 +1556,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)setupResultCell:(EZResultView *)resultView {
     EZQueryResult *result = resultView.result;
-    EZQueryService *service = result.service;
+    EZQueryService *service = [self serviceWithType:result.serviceTypeWithUniqueIdentifier];
+    if (!service) {
+        return;
+    }
 
     mm_weakify(self);
     [resultView setQueryTextBlock:^(NSString *_Nonnull word) {
@@ -1573,7 +1577,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         mm_strongify(self);
         BOOL isShowing = newResult.isShowing;
         if (!isShowing) {
-            [newResult.service.audioPlayer stop];
+            [service.audioPlayer stop];
         }
 
         service.enabledQuery = isShowing;
