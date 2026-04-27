@@ -31,11 +31,20 @@ extension StreamService {
         _ textStream: AsyncThrowingStream<String, Error>,
         queryType: EZQueryTextType,
         error: Error?,
+        targetResult: QueryResult? = nil,
+        targetGeneration: UInt? = nil,
         interval: TimeInterval = 0.3,
         completion: @escaping (QueryResult) -> ()
     ) async throws {
         for try await text in textStream._throttle(for: .seconds(interval)) {
-            updateResultText(text, queryType: queryType, error: error, completion: completion)
+            updateResultText(
+                text,
+                queryType: queryType,
+                error: error,
+                targetResult: targetResult,
+                targetGeneration: targetGeneration,
+                completion: completion
+            )
         }
     }
 
@@ -50,13 +59,35 @@ extension StreamService {
         queryType: EZQueryTextType,
         error: Error?,
         markStreamFinished: Bool = false,
+        targetResult: QueryResult? = nil,
+        targetGeneration: UInt? = nil,
         completion: @escaping (QueryResult) -> ()
     ) {
         // Acquire the lock before accessing/modifying the shared 'result' state
         updateResultLock.lock()
         defer { updateResultLock.unlock() }
 
-        if result.isStreamFinished {
+        // Stream chunks can arrive after the service has been reset for a new
+        // query. Generation guards prevent old chunks from updating the new UI.
+        if let targetGeneration, targetGeneration != resultGeneration {
+            return
+        }
+
+        let resultToUpdate: QueryResult
+        if let targetResult {
+            guard let currentResult = result, currentResult === targetResult else {
+                return
+            }
+            resultToUpdate = targetResult
+        } else {
+            let currentResult = result ?? QueryResult()
+            if result == nil {
+                result = currentResult
+            }
+            resultToUpdate = currentResult
+        }
+
+        if resultToUpdate.isStreamFinished {
             cancelStream()
 
             var queryError: QueryError?
@@ -75,13 +106,13 @@ extension StreamService {
                 queryError = .init(type: .noResult)
             }
 
-            completeWithResult(result, error: queryError)
+            completeWithResult(resultToUpdate, error: queryError)
             return
         }
 
         // Mark the stream as finished atomically inside the lock so that concurrent
         // throttle deliveries of stale snapshots cannot overwrite the final value.
-        result.isStreamFinished = markStreamFinished || (error != nil)
+        resultToUpdate.isStreamFinished = markStreamFinished || (error != nil)
 
         var finalText = resultText?.trim() ?? ""
 
@@ -98,24 +129,22 @@ extension StreamService {
             completionError = QueryError(type: .noResult)
         }
 
-        let updateCompletion = { [weak result] in
-            guard let result else { return }
-
-            result.translatedResults = [finalText]
-            completeWithResult(result, error: completionError)
+        let updateCompletion = {
+            resultToUpdate.translatedResults = [finalText]
+            completeWithResult(resultToUpdate, error: completionError)
         }
 
         switch queryType {
         case .dictionary:
             if error != nil {
-                result.showBigWord = false
-                result.translateResultsTopInset = 0
+                resultToUpdate.showBigWord = false
+                resultToUpdate.translateResultsTopInset = 0
                 updateCompletion()
                 return
             }
 
-            result.showBigWord = true
-            result.translateResultsTopInset = 6
+            resultToUpdate.showBigWord = true
+            resultToUpdate.translateResultsTopInset = 6
             updateCompletion()
 
         default:

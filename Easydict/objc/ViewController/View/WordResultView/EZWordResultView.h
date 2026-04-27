@@ -10,6 +10,7 @@
 #import <WebKit/WebKit.h>
 
 @class EZQueryResult;
+@class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly) CGFloat viewHeight;
 @property (nonatomic, strong, readonly) EZQueryResult *result;
+@property (nonatomic, strong) EZQueryService *service;
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong, readonly) NSButton *replaceTextButton;
 

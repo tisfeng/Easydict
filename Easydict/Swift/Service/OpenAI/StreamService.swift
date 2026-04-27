@@ -119,7 +119,20 @@ public class StreamService: QueryService {
         to: Language
     )
         -> AsyncThrowingStream<QueryResult, Error> {
-        let queryResultStream = streamTranslate(text: text, from: from, to: to)
+        let activeResult = result ?? QueryResult()
+        if result == nil {
+            result = activeResult
+        }
+        // Capture the current result generation with the result object. Later
+        // chunks are ignored if a reset starts a newer query on this service.
+        let activeGeneration = resultGeneration
+        let queryResultStream = streamTranslate(
+            text: text,
+            from: from,
+            to: to,
+            targetResult: activeResult,
+            targetGeneration: activeGeneration
+        )
         let textStream = queryResultStreamToTextStream(queryResultStream)
 
         return AsyncThrowingStream { [weak self] continuation in
@@ -135,7 +148,9 @@ public class StreamService: QueryService {
                     try await self.throttleUpdateResultText(
                         textStream,
                         queryType: self.supportedQueryType(),
-                        error: nil
+                        error: nil,
+                        targetResult: activeResult,
+                        targetGeneration: activeGeneration
                     ) { result in
                         if result.error != nil {
                             didYieldError = true
