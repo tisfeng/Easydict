@@ -5,12 +5,14 @@ on:
     types: [created]
   issues:
     types: [opened]
+  pull_request_review_comment:
+    types: [created]
 
 jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      - uses: dromara/issues-translate-action@v2.7
+      - uses: tisfeng/issues-translate-action@v2.8
         with:
           IS_MODIFY_TITLE: false
           CUSTOM_BOT_NOTE: Bot detected this issue is not in English and translated it automatically.
