@@ -2,17 +2,18 @@ name: issue-translator
 
 on:
   issue_comment:
-    types: [created]
+    types: [ created ]
   issues:
-    types: [opened]
+    types: [ opened ]
   pull_request_review_comment:
-    types: [created]
+    types: [ created ]
 
 jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      - uses: tisfeng/issues-translate-action@v2.8
+      - uses: tisfeng/issues-translate-action@v2.8.1
         with:
           IS_MODIFY_TITLE: false
-          CUSTOM_BOT_NOTE: Bot detected this issue is not in English and translated it automatically.
+          CUSTOM_BOT_NOTE: Bot detected this issue is not in English and translated it
+            automatically.
