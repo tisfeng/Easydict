@@ -269,16 +269,18 @@
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
     
-    EZServiceType serviceType = result.service.serviceType;
+    EZQueryService *service = self.service;
+    EZServiceType serviceType = service.serviceType ?: result.serviceTypeWithUniqueIdentifier;
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
     
-    self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
+    NSString *serviceName = service.name ?: result.serviceTypeWithUniqueIdentifier;
+    self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:serviceName font:[NSFont systemFontOfSize:13]];
     
     mm_weakify(self);
     
-    if ([self isLLLStreamService:result.service]) {
-        EZStreamService *service = (EZStreamService *)result.service;
-        NSString *model = service.model;
+    if ([self isLLLStreamService:service]) {
+        EZStreamService *streamService = (EZStreamService *)service;
+        NSString *model = streamService.model;
         self.serviceModelButton.title = model;
         // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
         self.serviceModelButton.hoverTitle = model;
@@ -289,8 +291,15 @@
             mm_strongify(self);
             [self showModelSelectionMenu:button];
         }];
+    } else {
+        self.serviceModelButton.title = @"";
+        self.serviceModelButton.hoverTitle = @"";
+        self.serviceModelButton.highlightTitle = @"";
+        self.serviceModelButton.toolTip = nil;
+        self.serviceModelButton.clickBlock = nil;
     }
     
+    self.wordResultView.service = service;
     [self.wordResultView refreshWithResult:result];
     
     [self.wordResultView setUpdateViewHeightBlock:^(CGFloat wordResultViewHeight) {
@@ -324,7 +333,7 @@
     }];
     
     CGFloat modelButtonWidth = 0;
-    if ([self isLLLStreamService:self.result.service]) {
+    if ([self isLLLStreamService:self.service]) {
         [self.serviceModelButton sizeToFit];
         // 120 is fit for model name `llama-3.1-70b-versatile`
         modelButtonWidth = MIN(self.serviceModelButton.width, 120 * [self windowWidthRatio]);
@@ -399,7 +408,7 @@
     BOOL warningType = (
         type == EZQueryErrorTypeUnsupportedLanguage ||
         type == EZQueryErrorTypeUnsupportedQueryType ||
-        (type == EZQueryErrorTypeNoResult && !self.result.service.isStream)
+        (type == EZQueryErrorTypeNoResult && !self.service.isStream)
     );
 
     BOOL showWarningImage = !self.result.hasTranslatedResult && warningType;
@@ -423,7 +432,7 @@
 - (void)updateStopButton {
     BOOL showStopButton = NO;
     
-    if (self.result.service.isStream) {
+    if (self.service.isStream) {
         showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
     }
     
@@ -441,7 +450,11 @@
 }
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
-    EZStreamService *service = (EZStreamService *)self.result.service;
+    EZStreamService *service = (EZStreamService *)self.service;
+    if (![self isLLLStreamService:service]) {
+        return;
+    }
+
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.validModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
@@ -452,7 +465,11 @@
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
-    EZStreamService *service = (EZStreamService *)self.result.service;
+    EZStreamService *service = (EZStreamService *)self.service;
+    if (![self isLLLStreamService:service]) {
+        return;
+    }
+
     if (![service.model isEqualToString:sender.title]) {
         service.model = sender.title;
         self.serviceModelButton.title = service.model;
