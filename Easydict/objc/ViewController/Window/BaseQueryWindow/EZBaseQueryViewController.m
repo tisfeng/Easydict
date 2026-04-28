@@ -1685,7 +1685,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
 
-    CGRect screenVisibleFrame = EZLayoutManager.shared.screenVisibleFrame;
+    // Use the window's current screen. The cached one only refreshes on clicks,
+    // so on multi-monitor setups it can yank the window back to the old display.
+    // window.screen picks the display with the largest overlap, which handles
+    // cross-screen drags better than our own first-intersect lookup.
+    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
+    CGRect screenVisibleFrame = currentScreen.visibleFrame;
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
     if (ez_frame_equal_with_tolerance(window.frame, safeFrame, 0.5)) {
