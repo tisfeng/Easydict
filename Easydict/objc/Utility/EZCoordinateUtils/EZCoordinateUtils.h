@@ -41,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSScreen *)screenForPoint:(CGPoint)point;
 
++ (NSScreen *)screenForRect:(CGRect)rect;
+
 + (NSScreen *)screenOfMousePosition;
 
 @end

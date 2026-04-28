@@ -1320,7 +1320,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
-    NSInteger index = [self.serviceTypeIds indexOfObject:result.service.serviceTypeWithUniqueIdentifier];
+    NSInteger index = [self.serviceTypeIds indexOfObject:result.serviceTypeWithUniqueIdentifier];
     if (index != NSNotFound) {
         NSInteger row = index + [self resultCellOffset];
         EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
@@ -1527,6 +1527,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     EZQueryResult *result = service.result;
+    resultCell.service = service;
     resultCell.result = result;
     [self setupResultCell:resultCell];
 
@@ -1555,7 +1556,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)setupResultCell:(EZResultView *)resultView {
     EZQueryResult *result = resultView.result;
-    EZQueryService *service = result.service;
+    EZQueryService *service = [self serviceWithType:result.serviceTypeWithUniqueIdentifier];
+    if (!service) {
+        return;
+    }
 
     mm_weakify(self);
     [resultView setQueryTextBlock:^(NSString *_Nonnull word) {
@@ -1573,7 +1577,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         mm_strongify(self);
         BOOL isShowing = newResult.isShowing;
         if (!isShowing) {
-            [newResult.service.audioPlayer stop];
+            [service.audioPlayer stop];
         }
 
         service.enabledQuery = isShowing;
@@ -1681,7 +1685,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
 
-    CGRect screenVisibleFrame = EZLayoutManager.shared.screenVisibleFrame;
+    // Use the window's current screen. The cached one only refreshes on clicks,
+    // so on multi-monitor setups it can yank the window back to the old display.
+    // window.screen picks the display with the largest overlap, which handles
+    // cross-screen drags better than our own first-intersect lookup.
+    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
+    CGRect screenVisibleFrame = currentScreen.visibleFrame;
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
     if (ez_frame_equal_with_tolerance(window.frame, safeFrame, 0.5)) {
