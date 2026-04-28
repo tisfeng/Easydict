@@ -14,6 +14,16 @@ void EZPatchWindowServerCornerMask(void) {
     SEL sel = sel_registerName("_cornerMask");
     Class nsWindowClass = [NSWindow class];
 
+    // Use NSWindow's IMP as a deterministic baseline. objc_copyClassList
+    // returns classes in unspecified order, so taking the IMP from each
+    // class's immediate superclass would let a child patched before its
+    // parent inherit the parent's still-custom IMP and keep bypassing
+    // AppKit's shared cache path.
+    Method baselineMethod = class_getInstanceMethod(nsWindowClass, sel);
+    if (!baselineMethod) return;
+    IMP baselineIMP = method_getImplementation(baselineMethod);
+    if (!baselineIMP) return;
+
     unsigned int totalClasses = 0;
     // Use plain C pointer — avoids Swift's AutoreleasingUnsafeMutablePointer bridging
     // which incorrectly autoreleases class objects during subscript access.
@@ -43,12 +53,10 @@ void EZPatchWindowServerCornerMask(void) {
         free(methods);
         if (!hasDirectOverride) continue;
 
-        Class superCls = class_getSuperclass(cls);
-        Method superMethod = class_getInstanceMethod(superCls, sel);
         Method method = class_getInstanceMethod(cls, sel);
-        if (!superMethod || !method) continue;
+        if (!method) continue;
 
-        method_setImplementation(method, method_getImplementation(superMethod));
+        method_setImplementation(method, baselineIMP);
         NSLog(@"[WindowServer patch] Patched %s._cornerMask", class_getName(cls));
     }
 
