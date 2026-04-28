@@ -27,14 +27,30 @@ extension StreamService {
     func streamTranslate(
         text: String,
         from: Language,
-        to: Language
+        to: Language,
+        targetResult: QueryResult,
+        targetGeneration: UInt
     )
         -> AsyncThrowingStream<QueryResult, Error> {
         AsyncThrowingStream { continuation in
             Task {
+                let isActiveStream = updateResultLock.withLock {
+                    // The stream may start after the result has already been
+                    // reset by a new query. Do not revive stale result state.
+                    let isActiveStream = targetGeneration == resultGeneration
+                    if isActiveStream {
+                        targetResult.isStreamFinished = false
+                    }
+                    return isActiveStream
+                }
+
+                guard isActiveStream else {
+                    continuation.finish()
+                    return
+                }
+
                 var resultText = ""
                 let queryType = queryType(text: text, from: from, to: to)
-                result.isStreamFinished = false
 
                 do {
                     let contentStream = contentStreamTranslate(text, from: from, to: to)
@@ -42,7 +58,13 @@ extension StreamService {
                         try Task.checkCancellation()
 
                         resultText += content
-                        updateResultText(resultText, queryType: queryType, error: nil) { result in
+                        updateResultText(
+                            resultText,
+                            queryType: queryType,
+                            error: nil,
+                            targetResult: targetResult,
+                            targetGeneration: targetGeneration
+                        ) { result in
                             continuation.yield(result)
                         }
                     }
@@ -56,16 +78,36 @@ extension StreamService {
                         resultText,
                         queryType: queryType,
                         error: nil,
-                        markStreamFinished: true
+                        markStreamFinished: true,
+                        targetResult: targetResult,
+                        targetGeneration: targetGeneration
                     ) { result in
                         continuation.yield(result)
                     }
                 } catch is CancellationError {
                     // User canceled the request; still emit a terminal state so UI can stop loading.
-                    result.isStreamFinished = true
-                    result.error = nil
+                    let isActiveStream = updateResultLock.withLock {
+                        // Only the currently active stream should clear loading state.
+                        let isActiveStream = targetGeneration == resultGeneration
+                        if isActiveStream {
+                            targetResult.isStreamFinished = true
+                            targetResult.error = nil
+                        }
+                        return isActiveStream
+                    }
+
+                    guard isActiveStream else {
+                        continuation.finish()
+                        return
+                    }
                     if !resultText.isEmpty {
-                        updateResultText(resultText, queryType: queryType, error: nil) { result in
+                        updateResultText(
+                            resultText,
+                            queryType: queryType,
+                            error: nil,
+                            targetResult: targetResult,
+                            targetGeneration: targetGeneration
+                        ) { result in
                             continuation.yield(result)
                         }
                         continuation.finish()
@@ -79,7 +121,13 @@ extension StreamService {
                     // Handle the error and notify the user.
                     // error != nil causes updateResultText to set isStreamFinished = true
                     // inside the lock, so no separate outside-lock assignment is needed.
-                    updateResultText(resultText, queryType: queryType, error: error) { result in
+                    updateResultText(
+                        resultText,
+                        queryType: queryType,
+                        error: error,
+                        targetResult: targetResult,
+                        targetGeneration: targetGeneration
+                    ) { result in
                         continuation.yield(result)
                     }
                     continuation.finish(throwing: error)

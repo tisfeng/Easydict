@@ -322,7 +322,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             EZAudioPlayer *audioPlayer = [[EZAudioPlayer alloc] init];
             audioButton.audioPlayer = audioPlayer;
             [audioButton setPlayAudioBlock:^{
-                [audioPlayer playWordPhonetic:obj designatedService:result.service];
+                [audioPlayer playWordPhonetic:obj designatedService:self.service];
             }];
 
             [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -777,7 +777,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     BOOL hasTranslatedText = result.translatedText.length > 0;
     audioButton.enabled = hasTranslatedText;
 
-    audioButton.audioPlayer = self.result.service.audioPlayer;
+    audioButton.audioPlayer = self.service.audioPlayer;
 
     [audioButton setPlayStatus:^(BOOL isPlaying, EZAudioButton *audioButton) {
         NSString *action = isPlaying ? NSLocalizedString(@"stop_play_audio", nil) : NSLocalizedString(@"play_audio", nil);
@@ -807,11 +807,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             }
         }
 
-        [result.service.audioPlayer playTextAudio:text
-                                         language:language
-                                           accent:accentToUse // Use determined accent
-                                         audioURL:nil
-                                designatedService:defaultTTSService];
+        [self.service.audioPlayer playTextAudio:text
+                                       language:language
+                                         accent:accentToUse // Use determined accent
+                                       audioURL:nil
+                              designatedService:defaultTTSService];
     }];
 
     audioButton.mas_key = @"result_audioButton";
@@ -866,7 +866,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
     linkButton.toolTip = toolTip;
 
-    linkButton.link = [result.service wordLink:result.queryModel];
+    linkButton.link = [self.service wordLink:result.queryModel];
 
     [linkButton executeLight:^(NSButton *linkButton) {
         linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];

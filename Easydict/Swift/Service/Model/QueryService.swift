@@ -64,7 +64,6 @@ open class QueryService: NSObject {
         didSet {
             guard let result else { return }
 
-            result.service = self
             result.serviceTypeWithUniqueIdentifier = serviceTypeWithUniqueIdentifier()
             result.queryModel = queryModel
             resultDidUpdate(result)
@@ -186,6 +185,9 @@ open class QueryService: NSObject {
     @discardableResult
     open func resetServiceResult() -> QueryResult {
         let currentResult = result ?? QueryResult()
+        storedAudioPlayer?.stop()
+        // Invalidate any in-flight stream before reusing the same result object.
+        resultGeneration += 1
         currentResult.reset()
 
         let enabledReplaceTypes: [ActionType] = [
@@ -521,6 +523,15 @@ open class QueryService: NSObject {
         -> (EZOCRResult?, QueryResult?) {
         fatalError("You must override \(#function) in a subclass.")
     }
+
+    // MARK: Internal
+
+    /// Monotonic token used to drop stale stream chunks after result reset.
+    ///
+    /// `resetServiceResult()` may reuse the same `QueryResult` instance, so
+    /// identity checks alone cannot tell whether an async stream still belongs
+    /// to the active query.
+    var resultGeneration: UInt = 0
 
     // MARK: Private
 

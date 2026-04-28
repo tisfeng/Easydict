@@ -8,6 +8,7 @@
 
 import AppKit
 
+@objc
 extension NSImage {
     /// Reads the pixel color at a specific global point on a given screen.
     ///
@@ -88,5 +89,19 @@ extension NSImage {
         ).usingColorSpace(.sRGB)
 
         return color
+    }
+
+    /// Apply tint color to the image.
+    ///
+    /// - Parameter tintColor: Color to apply to the image.
+    /// - Returns: New image with tint color applied.
+    func imageWithTintColor(_ tintColor: NSColor) -> NSImage {
+        let image = copy() as! NSImage
+        image.lockFocus()
+        tintColor.set()
+        let imageRect = NSRect(origin: .zero, size: image.size)
+        imageRect.fill(using: .sourceAtop)
+        image.unlockFocus()
+        return image
     }
 }

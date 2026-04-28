@@ -572,7 +572,6 @@
 		F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
-		FDDF871B2B055572E5C1013F /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -712,7 +711,6 @@
 		0338979D2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-9.png"; sourceTree = "<group>"; };
 		0338979E2E38B5E700CCFF99 /* ocr-zh-classical-lyrics-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-10.png"; sourceTree = "<group>"; };
 		033897A92E38BAF300CCFF99 /* ocr-zh-classical-lyrics-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-5.png"; sourceTree = "<group>"; };
-		033897B12E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+ClassicalChinese.swift"; sourceTree = "<group>"; };
 		033897B32E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-1.png"; sourceTree = "<group>"; };
 		033897B42E38D07F00CCFF99 /* ocr-zh-classical-poetry-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-2.png"; sourceTree = "<group>"; };
 		033897B52E38D07F00CCFF99 /* ocr-zh-classical-poetry-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-poetry-3.png"; sourceTree = "<group>"; };
@@ -749,10 +747,6 @@
 		034227D42E36379900325B47 /* ocr-zh-poetry-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-5.png"; sourceTree = "<group>"; };
 		034227D52E36379900325B47 /* ocr-zh-poetry-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-6.png"; sourceTree = "<group>"; };
 		034227DE2E366EA400325B47 /* ocr-zh-poetry-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-8.png"; sourceTree = "<group>"; };
-		034227E42E36747A00325B47 /* OCRTestSample+Chinese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+Chinese.swift"; sourceTree = "<group>"; };
-		034227E52E36747A00325B47 /* OCRTestSample+English.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+English.swift"; sourceTree = "<group>"; };
-		034227E62E36747A00325B47 /* OCRTestSample+Japanese.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+Japanese.swift"; sourceTree = "<group>"; };
-		034227E72E36747A00325B47 /* OCRTestSample+Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTestSample+Other.swift"; sourceTree = "<group>"; };
 		034227ED2E367B5100325B47 /* ocr-zh-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-3.png"; sourceTree = "<group>"; };
 		034227F12E36891A00325B47 /* ocr-zh-poetry-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-10.png"; sourceTree = "<group>"; };
 		034227F32E37144200325B47 /* ocr-zh-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-11.png"; sourceTree = "<group>"; };
@@ -846,7 +840,6 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingChineseTests.swift; sourceTree = "<group>"; };
 		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		038A9BC42E599D9100D08B57 /* ocr-zh-poetry-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-2.png"; sourceTree = "<group>"; };
 		038A9BC62E59A4E300D08B57 /* ocr-zh-poetry-12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-12.png"; sourceTree = "<group>"; };
@@ -882,7 +875,6 @@
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
 		039B694E2A9D9F370063709D /* EZWebViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewManager.m; sourceTree = "<group>"; };
 		039CBE862D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseGenreAnalyzer.swift; sourceTree = "<group>"; };
-		039CC6352E1F518A0046DC16 /* OCRTestSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTestSample.swift; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
@@ -901,9 +893,9 @@
 		03A8846F2F13000100D5C0DE /* AppleScriptExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutor.swift; sourceTree = "<group>"; };
 		03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutor.swift; sourceTree = "<group>"; };
 		03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutorTests.swift; sourceTree = "<group>"; };
+		03A884752F13000100D5C0DE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
-		03A884752F13000100D5C0DE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -1026,7 +1018,6 @@
 		03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cyan-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@3x.png"; sourceTree = "<group>"; };
-		03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageTests.swift; sourceTree = "<group>"; };
 		03C3A59B2E1BFE4900B59152 /* ocr-en-text-letter-338.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-letter-338.png"; sourceTree = "<group>"; };
 		03C3A59C2E1BFE4900B59152 /* ocr-en-text-list-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-list-1.png"; sourceTree = "<group>"; };
 		03C3A59D2E1BFE4900B59152 /* ocr-en-text-two-columns-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-1.png"; sourceTree = "<group>"; };
@@ -1160,14 +1151,11 @@
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
-			0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
-			129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-			14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
-			223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
-			23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-			A7C0F3B12D4E56A7890BCDEF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-			24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
-		25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingTests.swift; sourceTree = "<group>"; };
+		0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
+		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
+		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
 		276742042B3DC230002A2C75 /* PrivacyTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyTab.swift; sourceTree = "<group>"; };
 		276742052B3DC230002A2C75 /* AboutTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutTab.swift; sourceTree = "<group>"; };
@@ -1202,7 +1190,6 @@
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
 		6C3F84B513D845C38F346217 /* ClaudeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeResponse.swift; sourceTree = "<group>"; };
 		7F35C93D0925433FA0AD6066 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
-		8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRPunctuationTests.swift; sourceTree = "<group>"; };
 		8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtilitiesTests.swift; sourceTree = "<group>"; };
 		8049F3632F0376B000DD454F /* NSImage+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Color.swift"; sourceTree = "<group>"; };
 		8049F3642F0376B000DD454F /* NSImage+Export.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Export.swift"; sourceTree = "<group>"; };
@@ -1230,12 +1217,13 @@
 		A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGate.swift; sourceTree = "<group>"; };
 		A1D1807F2F8D000100B1C0D1 /* NetworkSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSession.swift; sourceTree = "<group>"; };
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
-			A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
-			A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
-			AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
-			AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
-			B1D2E3F40516273849A5B6C7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-			C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
+		A7C0F3B12D4E56A7890BCDEF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
+		AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
+		B1D2E3F40516273849A5B6C7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		C43B566B2C693F6200EF26FD /* VolcanoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoService.swift; sourceTree = "<group>"; };
 		C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoTranslateType.swift; sourceTree = "<group>"; };
 		C43B566F2C693FE000EF26FD /* VolcanoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoResponse.swift; sourceTree = "<group>"; };
@@ -1280,7 +1268,6 @@
 			files = (
 				03A220072D42414C00788927 /* (null) in Frameworks */,
 				5A3A753C59BD5443FA91764C /* Pods_EasydictTests.framework in Frameworks */,
-				FDDF871B2B055572E5C1013F /* Pods_EasydictTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3140,15 +3127,15 @@
 			path = DeviceInfo;
 			sourceTree = "<group>";
 		};
-			179EFB3D68574DE5817C8AB9 /* ClaudeCode */ = {
-				isa = PBXGroup;
-				children = (
-					AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */,
-					C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */,
-					B1D2E3F40516273849A5B6C7 /* README.md */,
-				);
-				path = ClaudeCode;
-				sourceTree = "<group>";
+		179EFB3D68574DE5817C8AB9 /* ClaudeCode */ = {
+			isa = PBXGroup;
+			children = (
+				AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */,
+				C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */,
+				B1D2E3F40516273849A5B6C7 /* README.md */,
+			);
+			path = ClaudeCode;
+			sourceTree = "<group>";
 		};
 		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
 			isa = PBXGroup;
@@ -3384,26 +3371,6 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
-		C4A40A9B2AC0168400B8E6EF /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				6372B33DFF803C7096A82250 /* Pods_Easydict.framework */,
-				03B63ABE2A86967800E155ED /* CoreServices.framework */,
-				25D2F49ECBAC45D5BB1BA5D8 /* OCRTextProcessingTests.swift */,
-				03C3A5992E1BC8C600B59152 /* OCRImageTests.swift */,
-				8017365D051A4D058D10CB78 /* OCRPunctuationTests.swift */,
-				039CC6352E1F518A0046DC16 /* OCRTestSample.swift */,
-				038842742E166EE900EF18DE /* OCRTextProcessingChineseTests.swift */,
-				033897B12E38CD8700CCFF99 /* OCRTestSample+ClassicalChinese.swift */,
-				034227E52E36747A00325B47 /* OCRTestSample+English.swift */,
-				034227E62E36747A00325B47 /* OCRTestSample+Japanese.swift */,
-				034227E42E36747A00325B47 /* OCRTestSample+Chinese.swift */,
-				034227E72E36747A00325B47 /* OCRTestSample+Other.swift */,
-				378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		C4D1ADE12C3F340500A19D02 /* AITool */ = {
 			isa = PBXGroup;
 			children = (
@@ -3434,7 +3401,6 @@
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
 				9CB57B9B45EC322A11ED8865 /* Pods */,
-				C4A40A9B2AC0168400B8E6EF /* Recovered References */,
 				F85ED7C3B686A1F75E052D1A /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -3571,24 +3537,26 @@
 			path = ServiceConfigurationView;
 			sourceTree = "<group>";
 		};
-			ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */ = {
-				isa = PBXGroup;
-				children = (
-					471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */,
-					4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */,
-					2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */,
-					223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */,
-					0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */,
-					CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */,
-					A7C0F3B12D4E56A7890BCDEF /* README.md */,
-				);
-				path = ClaudeCode;
-				sourceTree = "<group>";
+		ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */ = {
+			isa = PBXGroup;
+			children = (
+				471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */,
+				4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */,
+				2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */,
+				223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */,
+				0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */,
+				CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */,
+				A7C0F3B12D4E56A7890BCDEF /* README.md */,
+			);
+			path = ClaudeCode;
+			sourceTree = "<group>";
 		};
 		F85ED7C3B686A1F75E052D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				129FCEA7DB7E3B27B58B8690 /* Pods_EasydictTests.framework */,
+				03B63ABE2A86967800E155ED /* CoreServices.framework */,
+				6372B33DFF803C7096A82250 /* Pods_Easydict.framework */,
+				378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
