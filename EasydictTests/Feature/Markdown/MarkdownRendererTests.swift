@@ -127,6 +127,22 @@ struct MarkdownRendererTests {
         #expect(result.string.contains("bold without close"))
     }
 
+    @Test("In-word underscores stay literal so identifiers survive")
+    func inWordUnderscoreStaysLiteral() {
+        let result = renderer.render("path is foo_bar_baz today")
+        #expect(result.string.contains("foo_bar_baz"))
+    }
+
+    @Test("Underscore italics still apply at word boundaries")
+    func underscoreItalicsAtWordBoundaries() {
+        let result = renderer.render("see _italic_ here")
+        let range = (result.string as NSString).range(of: "italic")
+        #expect(range.location != NSNotFound)
+        let font = result.attribute(.font, at: range.location, effectiveRange: nil) as? NSFont
+        #expect(font?.fontDescriptor.symbolicTraits.contains(.italic) == true)
+        #expect(!result.string.contains("_italic_"))
+    }
+
     @Test("Mixed block content keeps each block readable")
     func mixedContent() {
         let source = """
