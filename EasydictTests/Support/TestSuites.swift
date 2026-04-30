@@ -86,6 +86,9 @@ extension Tag {
     /// Screenshot functionality (截图功能)
     @Tag static var screenshot: Self
 
+    /// Markdown rendering pipeline (Markdown 渲染功能)
+    @Tag static var markdown: Self
+
     // MARK: - Test Type Tags (测试类型标签)
 
     /// Unit tests: test individual functions/methods, fast, no external dependencies

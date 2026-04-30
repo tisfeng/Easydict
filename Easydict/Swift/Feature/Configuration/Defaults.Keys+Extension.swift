@@ -180,6 +180,14 @@ extension Defaults.Keys {
         default: true
     )
 
+    /// Whether AI/streaming service results should render Markdown formatting
+    /// (headings, bold, lists, blockquotes, code) in the result label.
+    /// Plain-text services (Google, Bing, DeepL, etc.) ignore this setting.
+    static let enableMarkdownRendering = Key<Bool>(
+        "EZConfiguration_kEnableMarkdownRendering",
+        default: true
+    )
+
     static let autoSelectAllTextFieldText = Key<Bool>(
         "EZConfiguration_kAutoSelectAllTextFieldText",
         default: true
