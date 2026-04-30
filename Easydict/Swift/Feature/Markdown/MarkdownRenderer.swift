@@ -250,8 +250,10 @@ struct MarkdownRenderer {
             }
 
             if char == "*" || char == "_",
+               canOpenItalic(char, scalars: scalars, at: index),
                let close = findClose(of: String(char), in: scalars, after: index + 1),
-               close > index + 1 {
+               close > index + 1,
+               canCloseItalic(char, scalars: scalars, at: close) {
                 let inner = String(scalars[(index + 1) ..< close])
                 let italicFont = NSFontManager.shared.convert(
                     base[.font] as? NSFont ?? baseFont,
@@ -331,6 +333,29 @@ struct MarkdownRenderer {
     }
 
     // MARK: Inline helpers
+
+    /// Decide whether `marker` at `index` can open an italic run. `*` is always
+    /// permitted, but `_` requires that the preceding character is not part of
+    /// a word so identifiers like `foo_bar_baz` keep their literal underscores.
+    private func canOpenItalic(_ marker: Character, scalars: [Character], at index: Int) -> Bool {
+        guard marker == "_" else { return true }
+        guard index > 0 else { return true }
+        return !isWordCharacter(scalars[index - 1])
+    }
+
+    /// Decide whether `marker` at `closeIndex` can close an italic run.
+    /// Mirrors ``canOpenItalic`` so `_` only closes when the next character is
+    /// outside a word; `*` always closes.
+    private func canCloseItalic(_ marker: Character, scalars: [Character], at closeIndex: Int) -> Bool {
+        guard marker == "_" else { return true }
+        let next = closeIndex + 1
+        guard next < scalars.count else { return true }
+        return !isWordCharacter(scalars[next])
+    }
+
+    private func isWordCharacter(_ char: Character) -> Bool {
+        char.isLetter || char.isNumber || char == "_"
+    }
 
     private func findClose(of marker: String, in scalars: [Character], after start: Int) -> Int? {
         let markerChars = Array(marker)

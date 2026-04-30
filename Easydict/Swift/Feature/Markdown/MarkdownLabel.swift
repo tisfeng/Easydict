@@ -31,7 +31,11 @@ final class MarkdownLabel: EZLabel {
             return
         }
 
-        let source = text
+        // `text` is `nullable` because EZLabel triggers `updateDisplayedText`
+        // from the font / line-spacing setters during super init, before
+        // `setText:` has run. Coalesce so an early invocation renders nothing
+        // instead of crashing.
+        let source = text ?? ""
         guard !source.isEmpty else {
             textStorage?.setAttributedString(NSAttributedString())
             return
