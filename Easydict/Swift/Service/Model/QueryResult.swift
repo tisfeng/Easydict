@@ -7,6 +7,7 @@
 //
 
 import CoreGraphics
+import Defaults
 import Foundation
 
 /// Converts a part-of-speech string to its abbreviated form.
@@ -213,6 +214,12 @@ public class QueryResult: NSObject {
     /// Optional message set during validation to provide extra context (e.g. streaming auto-disabled).
     var validationMessage: String?
 
+    /// Per-result override for Markdown rendering. `nil` defers to the global
+    /// `Defaults[.enableMarkdownRendering]` value; a non-nil value reflects an
+    /// explicit toggle on the inline button next to this card. Reset on each
+    /// new query so a fresh result tracks the global setting again.
+    var markdownRenderingOverride: Bool?
+
     var translatedResults: [String]? {
         get {
             translatedResultsLock.lock()
@@ -229,6 +236,13 @@ public class QueryResult: NSObject {
     var translatedText: String? {
         guard let translatedResults else { return nil }
         return translatedResults.joined(separator: "\n")
+    }
+
+    /// Effective Markdown rendering decision for this result. The per-result
+    /// override (set via the inline toggle button) wins; otherwise the global
+    /// `Defaults[.enableMarkdownRendering]` value is used.
+    var isMarkdownRenderingEnabled: Bool {
+        markdownRenderingOverride ?? Defaults[.enableMarkdownRendering]
     }
 
     var hasShowingResult: Bool {
@@ -269,6 +283,12 @@ public class QueryResult: NSObject {
         []
     }
 
+    /// Flips the Markdown rendering decision for this result, overriding the
+    /// global setting until the result is reset by a new query.
+    func toggleMarkdownRendering() {
+        markdownRenderingOverride = !isMarkdownRenderingEnabled
+    }
+
     /// Resets the result to its initial state.
     func reset() {
         queryModel = QueryModel()
@@ -297,6 +317,7 @@ public class QueryResult: NSObject {
         didFinishLoadingHTMLBlock = nil
         webViewManager.reset()
         showReplaceButton = false
+        markdownRenderingOverride = nil
     }
 
     /// Converts translated results to Traditional Chinese.

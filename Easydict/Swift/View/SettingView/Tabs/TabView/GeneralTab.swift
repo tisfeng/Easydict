@@ -8,6 +8,7 @@
 
 import Defaults
 import LaunchAtLogin
+import SFSafeSymbols
 import SwiftUI
 
 // MARK: - GeneralTab
@@ -102,6 +103,20 @@ struct GeneralTab: View {
                 Toggle("show_setting_quick_link", isOn: $showQuickActionButton)
             } header: {
                 Text("setting.general.quick_link.header")
+            }
+
+            Section {
+                Toggle(isOn: $enableMarkdownRendering) {
+                    Label(
+                        "setting.general.display.enable_markdown_rendering",
+                        systemSymbol: .docRichtext
+                    )
+                }
+            } header: {
+                Text("setting.general.display.header")
+            } footer: {
+                Text("setting.general.display.enable_markdown_rendering.description")
+                    .font(.footnote)
             }
 
             Section {
@@ -286,6 +301,7 @@ struct GeneralTab: View {
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
+    @Default(.enableMarkdownRendering) private var enableMarkdownRendering
 
     @Default(.includeBetaUpdates) private var includeBetaUpdates
 

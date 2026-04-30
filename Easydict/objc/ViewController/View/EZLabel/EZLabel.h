@@ -15,13 +15,18 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZLabel : EZQueryMenuTextView
 
 @property (nonatomic, copy) NSString *text;
-@property (nonatomic, strong) NSColor *textForegroundColor;
+@property (nonatomic, strong, nullable) NSColor *textForegroundColor;
 
 @property (nonatomic, assign) CGFloat lineSpacing; // default 4
 
 @property (nonatomic, assign) CGFloat paragraphSpacing; // default 0
 
 - (CGSize)oneLineSize;
+
+/// Builds the attributed string from `text` and pushes it into `textStorage`.
+/// Exposed so subclasses (e.g. MarkdownLabel) can substitute their own
+/// attribute pipeline while reusing the rest of EZLabel's setup.
+- (void)updateDisplayedText;
 
 @end
 
