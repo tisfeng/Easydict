@@ -691,6 +691,7 @@ extension MDictReader {
         return destination
     }
 
+#if DEBUG
     /// Compress `source` with raw deflate. Used only in tests.
     static func zlibCompress(_ source: Data) throws -> Data {
         var outputSize = compressBound(uLong(source.count))
@@ -710,6 +711,7 @@ extension MDictReader {
         output.count = Int(outputSize)
         return output
     }
+#endif
 
     /// Decrypt the key block info section for MDict files with `Encrypted="2"`.
     ///
