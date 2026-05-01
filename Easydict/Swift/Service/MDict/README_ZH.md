@@ -102,6 +102,9 @@ WKWebView 渲染 + mdict-entry 查词路由
 - **查词未命中**：检查 `MDictReader.keyIndex` 是否包含目标词（注意大小写策略）。
 - **加密词典**：支持 `Encrypted="2"` 的 key index 加密；`Encrypted="1"` 仍会抛出
   `MDictError.encrypted`，因为它需要注册信息。
+- **沙盒权限**：当前 Easydict entitlements 未启用 App Sandbox，因此持久化普通文件路径
+  在重启后仍可访问。若后续启用 App Sandbox，导入的 MDX/MDD 文件必须改为保存
+  security-scoped bookmark。
 
 ## 格式版本差异
 

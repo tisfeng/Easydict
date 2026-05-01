@@ -107,6 +107,9 @@ WKWebView Rendering + mdict-entry lookup routing
 - **Lookup Miss**: Check if `MDictReader.keyIndex` contains the target word (mind the case policy).
 - **Encrypted Dicts**: `Encrypted="2"` key-index encryption is supported. `Encrypted="1"`
   still throws `MDictError.encrypted` because it requires registration data.
+- **Sandboxing**: Current Easydict entitlements do not enable App Sandbox, so persisted
+  plain file paths remain accessible after relaunch. If App Sandbox is enabled later,
+  imported MDX/MDD files must be persisted as security-scoped bookmarks.
 
 ## Format Version Differences
 
