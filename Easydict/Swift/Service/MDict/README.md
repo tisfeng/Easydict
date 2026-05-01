@@ -9,7 +9,7 @@ This directory implements importing, parsing, and querying of MDict files, integ
 
 ```
 MDict/
-├── MDictReader.swift          # MDict binary format parser (Header, Key blocks, Record blocks, zlib)
+├── MDictReader.swift          # MDict binary parser (Header, Key blocks, Record blocks, libz)
 ├── MDictDictionary.swift      # High-level dictionary wrapper (Lookup, MDD resource resolution, links)
 ├── MDictManager.swift         # Dictionary lifecycle management (Import, Persistence, Toggle, Sort)
 ├── MDictService.swift         # QueryService subclass, HTML rendering and framework integration
@@ -22,10 +22,15 @@ MDict/
 
 Low-level parsing of MDict v1.x / v2.x binary format:
 
-- **Header Parsing**: Reads UTF-16LE encoded XML header to extract version, encoding, format, title, etc.
-- **Key Block Parsing**: Reads key info (v2 has separate compressed key info), decompresses to build an in-memory index of `word → recordOffset` (`[String: Int]`).
+- **Header Parsing**: Reads UTF-16LE encoded XML header to extract version, encoding,
+  format, title, etc. MDD resource files with an empty `Encoding` attribute fall back
+  to UTF-16LE, matching common `Library_Data` files.
+- **Key Block Parsing**: Reads key info (v2 has separate compressed key info), decrypts
+  `Encrypted="2"` key indexes, and builds an in-memory index of
+  `word → recordOffset` (`[String: Int]`).
 - **Record Block Reading**: Decompresses target record blocks on-demand and extracts definition data from offsets.
-- **Compression Support**: Supports zlib (type `0x02`) and no compression (type `0x00`). LZO will throw an error with a hint.
+- **Compression Support**: Supports zlib (type `0x02`) through system `libz` and no
+  compression (type `0x00`). LZO will throw an error with a hint.
 
 ### MDictDictionary
 
@@ -84,7 +89,8 @@ WKWebView Rendering
 - **Parsing Failure**: `MDictError` carries detailed info like format version and compression type, output via `logError`.
 - **Loading Error**: `MDictManager.loadErrors` dictionary records errors for each path, viewable in the config view.
 - **Lookup Miss**: Check if `MDictReader.keyIndex` contains the target word (mind the case policy).
-- **Encrypted Dicts**: Throws `MDictError.encrypted` directly (not currently supported).
+- **Encrypted Dicts**: `Encrypted="2"` key-index encryption is supported. `Encrypted="1"`
+  still throws `MDictError.encrypted` because it requires registration data.
 
 ## Format Version Differences
 
@@ -94,3 +100,4 @@ WKWebView Rendering
 | Key Info Compression | None | zlib |
 | Checksum | None | adler32 |
 | Offset Width | 4 bytes | 8 bytes |
+| Key Info Encryption | Not used | `Encrypted="2"` supported |

@@ -9,7 +9,7 @@ MDict（`.mdx` / `.mdd`）是一种广泛使用的离线词典格式，支持 HT
 
 ```
 MDict/
-├── MDictReader.swift          # MDict 二进制格式解析器（头部、键块、记录块、zlib 解压）
+├── MDictReader.swift          # MDict 二进制格式解析器（头部、键块、记录块、libz 解压）
 ├── MDictDictionary.swift      # 高层词典封装（查词、MDD 资源解析、链接转义）
 ├── MDictManager.swift         # 词典生命周期管理（导入、持久化、启用/禁用、排序）
 ├── MDictService.swift         # QueryService 子类，HTML 渲染并接入主框架
@@ -23,10 +23,13 @@ MDict/
 实现 MDict v1.x / v2.x 二进制格式的低层解析：
 
 - **头部解析**：读取 UTF-16LE 编码的 XML 头部，提取版本、编码、格式、标题等属性。
-- **键块解析**：读取键块信息区（v2 有独立的压缩键块信息），解压后构建
+  对 `Encoding` 为空的 MDD 资源库（`Library_Data`）按 UTF-16LE 解析，兼容常见资源包。
+- **键块解析**：读取键块信息区（v2 有独立的压缩键块信息），支持解密
+  `Encrypted="2"` 的 key index，解压后构建
   `word → recordOffset` 的内存索引（`[String: Int]`）。
 - **记录块读取**：按需解压目标记录块，从偏移量提取单条释义数据。
-- **压缩支持**：支持 zlib（类型 `0x02`）与无压缩（类型 `0x00`），LZO 会抛出有提示的错误。
+- **压缩支持**：通过系统 `libz` 支持 zlib（类型 `0x02`），同时支持无压缩
+  （类型 `0x00`）；LZO 会抛出有提示的错误。
 
 ### MDictDictionary
 
@@ -86,7 +89,8 @@ WKWebView 渲染
 - **解析失败**：`MDictError` 携带格式版本、压缩类型等详细信息，通过 `logError` 输出。
 - **加载错误**：`MDictManager.loadErrors` 字典记录每个词典路径对应的错误，可在配置视图中展示。
 - **查词未命中**：检查 `MDictReader.keyIndex` 是否包含目标词（注意大小写策略）。
-- **加密词典**：直接抛出 `MDictError.encrypted`，暂不支持。
+- **加密词典**：支持 `Encrypted="2"` 的 key index 加密；`Encrypted="1"` 仍会抛出
+  `MDictError.encrypted`，因为它需要注册信息。
 
 ## 格式版本差异
 
@@ -96,3 +100,4 @@ WKWebView 渲染
 | 键块信息压缩 | 无 | zlib |
 | 校验和 | 无 | adler32 |
 | 偏移量宽度 | 4 字节 | 8 字节 |
+| 键块信息加密 | 不使用 | 支持 `Encrypted="2"` |

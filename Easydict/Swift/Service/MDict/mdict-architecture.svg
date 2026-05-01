@@ -30,7 +30,7 @@
   <text x="376" y="80" font-size="11" fill="#94a3b8" font-weight="500">Core Processing Pipeline</text>
   <rect x="28" y="185" width="258" height="255" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="5,3" stroke-width="1.2"/>
   <text x="40" y="202" font-size="11" fill="#94a3b8" font-weight="500">Config &amp; Localization</text>
-  <rect x="688" y="185" width="250" height="255" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="5,3" stroke-width="1.2"/>
+  <rect x="688" y="185" width="250" height="330" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="5,3" stroke-width="1.2"/>
   <text x="700" y="202" font-size="11" fill="#94a3b8" font-weight="500">Storage &amp; Resources</text>
 
   <rect x="382" y="91" width="216" height="48" rx="8" fill="#3b82f6"/>
@@ -47,7 +47,7 @@
   <text x="490" y="522" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">lookup() / MDD Resource Parsing</text>
   <rect x="382" y="611" width="216" height="58" rx="8" fill="#6366f1"/>
   <text x="490" y="635" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictReader</text>
-  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Header Parsing · Key Index · Decompression</text>
+  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Header · Encrypted Keys · libz</text>
   <rect x="382" y="726" width="216" height="48" rx="8" fill="#8b5cf6"/>
   <text x="490" y="745" text-anchor="middle" font-size="13" font-weight="600" fill="white">QueryResult</text>
   <text x="490" y="762" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">htmlString → Result Panel</text>
@@ -63,6 +63,9 @@
   <rect x="723" y="356" width="175" height="48" rx="6" fill="#059669" opacity="0.92"/>
   <text x="810" y="375" text-anchor="middle" font-size="12" font-weight="600" fill="white">Defaults</text>
   <text x="810" y="391" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">UserDefaults Persistence</text>
+  <rect x="723" y="436" width="175" height="48" rx="6" fill="#0f766e" opacity="0.92"/>
+  <text x="810" y="455" text-anchor="middle" font-size="12" font-weight="600" fill="white">libz.tbd</text>
+  <text x="810" y="471" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Full zlib Streams</text>
   <rect x="723" y="726" width="175" height="48" rx="6" fill="#8b5cf6" opacity="0.92"/>
   <text x="810" y="745" text-anchor="middle" font-size="12" font-weight="600" fill="white">WKWebView</text>
   <text x="810" y="761" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">HTML Rendering Engine</text>
@@ -99,6 +102,9 @@
   <line x1="718" y1="388" x2="598" y2="388" stroke="#059669" stroke-width="1.8" marker-end="url(#a-green)"/>
   <rect x="639" y="372" width="38" height="16" rx="3" fill="white" opacity="0.96"/>
   <text x="658" y="385" text-anchor="middle" font-size="10" fill="#475569">Persistence</text>
+  <path d="M 598,640 C 662,640 662,460 721,460" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#a-green)"/>
+  <rect x="638" y="544" width="45" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="660" y="557" text-anchor="middle" font-size="10" fill="#475569">inflate</text>
   <path d="M 374,244 C 272,244 272,347 157,349" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#a-gray)" stroke-dasharray="5,3"/>
   <rect x="225" y="274" width="91" height="16" rx="3" fill="white" opacity="0.96"/>
   <text x="270" y="287" text-anchor="middle" font-size="10" fill="#475569">configItems</text>
