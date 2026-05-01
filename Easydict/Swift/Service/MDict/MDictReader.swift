@@ -484,6 +484,8 @@ extension MDictReader {
         // num_entries
         try ensureAvailable(data, at: cursor, count: intSize, context: "record entry count")
         cursor += intSize
+        // These aggregate sizes are advisory; each block range is bounds-checked
+        // when read, so we only advance past them here.
         // record_block_info_size
         _ = try readInt(data, cursor)
         cursor += intSize
