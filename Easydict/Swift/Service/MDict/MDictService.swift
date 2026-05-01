@@ -77,9 +77,16 @@ class MDictService: QueryService, @unchecked Sendable {
         var sections: [DictionaryHTMLSection] = []
 
         for dict in dicts {
-            guard let definition = try dict.lookup(text),
-                  !definition.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            else { continue }
+            let definition: String
+            do {
+                guard let lookupResult = try dict.lookup(text),
+                      !lookupResult.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                else { continue }
+                definition = lookupResult
+            } catch {
+                logError("MDictService: lookup failed in \(dict.title): \(error)")
+                continue
+            }
 
             let content = dict.isHTML ? definition : plainTextToHTML(definition)
             let styledContent = wrapWithStyle(content)
