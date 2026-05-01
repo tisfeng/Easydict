@@ -20,7 +20,14 @@ final class MDictDictionary {
     init(mdxURL: URL, mddURLs: [URL] = []) throws {
         self.mdxURL = mdxURL
         self.mdxReader = try MDictReader(url: mdxURL)
-        self.mddReaders = try mddURLs.map { try MDictReader(url: $0) }
+        self.mddReaders = mddURLs.compactMap { url in
+            do {
+                return try MDictReader(url: url)
+            } catch {
+                logError("MDictDictionary: failed to load MDD \(url.path): \(error)")
+                return nil
+            }
+        }
         self.title = mdxReader.header.title.isEmpty
             ? mdxURL.deletingPathExtension().lastPathComponent
             : mdxReader.header.title
