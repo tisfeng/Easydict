@@ -82,9 +82,6 @@ final class MDictDictionary {
 
     // MARK: Private
 
-    private let mdxReader: MDictReader
-    private let mddReaders: [MDictReader]
-
     private static let soundLinkRegex = makeRegex("(?i)sound://([^\"'\\s)<>]+)")
     private static let resourceAttributeRegex = makeRegex("(?i)((?:src|poster)\\s*=\\s*[\"'])([^\"']+)([\"'])")
     private static let sourceSetRegex = makeRegex("(?i)(srcset\\s*=\\s*[\"'])([^\"']+)([\"'])")
@@ -96,6 +93,9 @@ final class MDictDictionary {
     )
     private static let cssURLRegex = makeRegex("(?i)(url\\([\"']?)([^\"')]+)([\"']?\\))")
     private static let audioConstructorRegex = makeRegex("(?i)new\\s+Audio\\((.*?)\\)")
+
+    private let mdxReader: MDictReader
+    private let mddReaders: [MDictReader]
 
     private static func javaScriptStringLiteral(_ value: String) -> String {
         let escaped = value
@@ -117,6 +117,14 @@ final class MDictDictionary {
             text.removeFirst()
         }
         return text
+    }
+
+    private static func makeRegex(_ pattern: String) -> NSRegularExpression {
+        do {
+            return try NSRegularExpression(pattern: pattern)
+        } catch {
+            preconditionFailure("Invalid MDict regex: \(pattern)")
+        }
     }
 
     private func resourceKeyCandidates(for key: String) -> [String] {
@@ -290,14 +298,6 @@ final class MDictDictionary {
             result.replaceSubrange(fullRange, with: replacementText)
         }
         return result
-    }
-
-    private static func makeRegex(_ pattern: String) -> NSRegularExpression {
-        do {
-            return try NSRegularExpression(pattern: pattern)
-        } catch {
-            preconditionFailure("Invalid MDict regex: \(pattern)")
-        }
     }
 
     private func shouldResolveResource(_ key: String) -> Bool {

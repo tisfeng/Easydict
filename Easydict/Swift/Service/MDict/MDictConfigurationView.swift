@@ -68,14 +68,14 @@ struct MDictConfigurationView: View {
 
     // MARK: Private
 
+    private static let importableContentTypes = ["mdx", "mdd"].compactMap {
+        UTType(filenameExtension: $0)
+    }
+
     @ObservedObject private var manager = MDictManager.shared
     @State private var isImporting = false
     @State private var showError = false
     @State private var importError: String?
-
-    private static let importableContentTypes = ["mdx", "mdd"].compactMap {
-        UTType(filenameExtension: $0)
-    }
 
     private func handleImport(_ result: Result<[URL], Error>) {
         switch result {
