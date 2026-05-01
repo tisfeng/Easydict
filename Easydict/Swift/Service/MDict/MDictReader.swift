@@ -47,6 +47,8 @@ struct MDictHeader {
     let encoding: String.Encoding
     let format: String
     let keyCaseSensitive: Bool
+    /// Raw value of the `Encrypted` attribute: 0 = none, 1 = key header (RegCode required), 2 = key index.
+    let encrypted: Int
 
     var isHTML: Bool { format.lowercased().contains("html") }
 
@@ -87,11 +89,8 @@ final class MDictReader {
         var cursor = 0
         self.header = try Self.parseHeader(data, cursor: &cursor)
 
-        if header.version >= 2.0 {
-            let encrypted = Self.readAttribute("Encrypted", from: data)
-            if encrypted == "1" || encrypted == "2" {
-                throw MDictError.encrypted
-            }
+        if header.encrypted == 1 {
+            throw MDictError.encrypted
         }
 
         self.keyEntries = try Self.parseKeyBlocks(
@@ -173,6 +172,8 @@ extension MDictReader {
         let formatStr = extractAttribute("Format", from: headerText) ?? "Html"
         let caseSensitive = extractAttribute("KeyCaseSensitive", from: headerText) ?? "No"
         let encodingStr = extractAttribute("Encoding", from: headerText) ?? "utf-8"
+        let encryptedStr = extractAttribute("Encrypted", from: headerText) ?? "0"
+        let encrypted = Int(encryptedStr) ?? 0
 
         let encoding: String.Encoding
         switch encodingStr.lowercased() {
@@ -198,7 +199,8 @@ extension MDictReader {
             description: description,
             encoding: encoding,
             format: formatStr,
-            keyCaseSensitive: caseSensitive.lowercased() == "yes"
+            keyCaseSensitive: caseSensitive.lowercased() == "yes",
+            encrypted: encrypted
         )
     }
 
@@ -263,9 +265,12 @@ extension MDictReader {
 
         let keyBlockInfoBytes: Data
         if isV2, keyBlockInfoSize > 0 {
-            let compressed = data.subdata(
+            var compressed = data.subdata(
                 in: cursor ..< cursor + Int(keyBlockInfoSize)
             )
+            if header.encrypted == 2 {
+                compressed = decryptKeyBlockInfo(compressed)
+            }
             keyBlockInfoBytes = try decompressBlock(
                 compressed,
                 decompressedSize: Int(keyBlockInfoDecompSize)
@@ -526,6 +531,119 @@ extension MDictReader {
         output.count = result
         return output
     }
+
+    /// Decrypt the key block info section for MDict files with `Encrypted="2"`.
+    ///
+    /// Uses a nibble-swap XOR cipher keyed on `ripemd128(adler32 || 0x95360000)`,
+    /// where adler32 is the last 4 bytes of the compressed key block info.
+    static func decryptKeyBlockInfo(_ data: Data) -> Data {
+        guard data.count >= 4 else { return data }
+        let checksum = data.subdata(in: (data.count - 4) ..< data.count)
+        let keyInput = checksum + Data([0x95, 0x36, 0x00, 0x00])
+        let key = ripemd128(keyInput)
+
+        var result = Data(count: data.count)
+        var prev: UInt8 = 0
+        for i in 0 ..< data.count {
+            let k = key[i % 16]
+            let x = data[i] ^ UInt8(i & 0xFF) ^ k ^ prev
+            let swapped = (x << 4) | (x >> 4)
+            result[i] = swapped
+            prev = swapped
+        }
+        return result
+    }
+}
+
+// MARK: - RIPEMD-128
+
+/// Pure-Swift RIPEMD-128 used for `Encrypted="2"` key derivation.
+///
+/// Implements the reference specification from https://homes.esat.kuleuven.be/~cosicart/pdf/AB-9601/AB-9601.pdf
+private func ripemd128(_ data: Data) -> [UInt8] {
+    // Initial hash values
+    var h0: UInt32 = 0x6745_2301
+    var h1: UInt32 = 0xEFCD_AB89
+    var h2: UInt32 = 0x98BA_DCFE
+    var h3: UInt32 = 0x1032_5476
+
+    // Padding
+    var msg = [UInt8](data)
+    let bitLength = UInt64(data.count) * 8
+    msg.append(0x80)
+    while msg.count % 64 != 56 { msg.append(0) }
+    for i in 0 ..< 8 { msg.append(UInt8((bitLength >> (i * 8)) & 0xFF)) }
+
+    // Process 512-bit (64-byte) blocks
+    for blockStart in stride(from: 0, to: msg.count, by: 64) {
+        var x = [UInt32](repeating: 0, count: 16)
+        for i in 0 ..< 16 {
+            let o = blockStart + i * 4
+            x[i] = UInt32(msg[o]) | UInt32(msg[o + 1]) << 8
+                | UInt32(msg[o + 2]) << 16 | UInt32(msg[o + 3]) << 24
+        }
+
+        var (a, b, c, d) = (h0, h1, h2, h3)
+        var (aa, bb, cc, dd) = (h0, h1, h2, h3)
+
+        let rol: (UInt32, UInt32) -> UInt32 = { v, s in (v << s) | (v >> (32 - s)) }
+        let f: (UInt32, UInt32, UInt32) -> UInt32 = { x, y, z in x ^ y ^ z }
+        let g: (UInt32, UInt32, UInt32) -> UInt32 = { x, y, z in (x & y) | (~x & z) }
+        let h: (UInt32, UInt32, UInt32) -> UInt32 = { x, y, z in (x | ~y) ^ z }
+        let i: (UInt32, UInt32, UInt32) -> UInt32 = { x, y, z in (x & z) | (y & ~z) }
+
+        let rIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                    7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
+                    3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
+                    1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2]
+        let rIdxP = [5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
+                     6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
+                     15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
+                     8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14]
+        let sLeft: [UInt32] = [11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
+                               7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
+                               11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
+                               11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12]
+        let sRight: [UInt32] = [8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
+                                9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
+                                9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
+                                15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8]
+        let kLeft: [UInt32] = [0x0000_0000, 0x5A82_7999, 0x6ED9_EBA1, 0x8F1B_BCDC]
+        let kRight: [UInt32] = [0x50A2_8BE6, 0x5C4D_D124, 0x6D70_3EF3, 0x0000_0000]
+        let fns = [f, g, h, i]
+        let fnOrder = [0, 1, 2, 3]
+        let fnOrderP = [3, 2, 1, 0]
+
+        for round in 0 ..< 4 {
+            let fn = fns[fnOrder[round]]
+            let fnP = fns[fnOrderP[round]]
+            let k = kLeft[round]
+            let kP = kRight[round]
+            for j in 0 ..< 16 {
+                let idx = round * 16 + j
+                let tmp = rol(a &+ fn(b, c, d) &+ x[rIdx[idx]] &+ k, sLeft[idx])
+                a = d; d = c; c = b; b = tmp
+
+                let tmpP = rol(aa &+ fnP(bb, cc, dd) &+ x[rIdxP[idx]] &+ kP, sRight[idx])
+                aa = dd; dd = cc; cc = bb; bb = tmpP
+            }
+        }
+
+        let t = h1 &+ c &+ dd
+        h1 = h2 &+ d &+ aa
+        h2 = h3 &+ a &+ bb
+        h3 = h0 &+ b &+ cc
+        h0 = t
+    }
+
+    var digest = [UInt8](repeating: 0, count: 16)
+    for (i, val) in [h0, h1, h2, h3].enumerated() {
+        digest[i * 4] = UInt8(val & 0xFF)
+        digest[i * 4 + 1] = UInt8((val >> 8) & 0xFF)
+        digest[i * 4 + 2] = UInt8((val >> 16) & 0xFF)
+        digest[i * 4 + 3] = UInt8((val >> 24) & 0xFF)
+    }
+    return digest
 }
 
 // MARK: - Key Index
