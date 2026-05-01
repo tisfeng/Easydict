@@ -74,7 +74,7 @@ struct MDictConfigurationView: View {
 
     private func handleImport(_ result: Result<[URL], Error>) {
         switch result {
-        case .success(let urls):
+        case let .success(urls):
             guard let url = urls.first else { return }
             let accessed = url.startAccessingSecurityScopedResource()
             defer { if accessed { url.stopAccessingSecurityScopedResource() } }
@@ -84,7 +84,7 @@ struct MDictConfigurationView: View {
                 importError = error.localizedDescription
                 showError = true
             }
-        case .failure(let error):
+        case let .failure(error):
             importError = error.localizedDescription
             showError = true
         }
@@ -95,9 +95,9 @@ struct MDictConfigurationView: View {
 
 /// A single row in the MDict dictionary list showing title and enable toggle.
 private struct DictionaryRow: View {
-    let record: MDictDictionaryRecord
+    // MARK: Internal
 
-    @ObservedObject private var manager = MDictManager.shared
+    let record: MDictDictionaryRecord
 
     var body: some View {
         HStack {
@@ -120,4 +120,8 @@ private struct DictionaryRow: View {
         }
         .padding(.vertical, 2)
     }
+
+    // MARK: Private
+
+    @ObservedObject private var manager = MDictManager.shared
 }

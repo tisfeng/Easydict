@@ -18,10 +18,12 @@ import Foundation
 @objc(EZMDictService)
 @objcMembers
 class MDictService: QueryService, @unchecked Sendable {
+    // MARK: Internal
+
     // MARK: - QueryService overrides
 
     override func serviceType() -> ServiceType {
-        .mdict
+        ServiceType(rawValue: "MDict")
     }
 
     override func name() -> String {
@@ -59,7 +61,8 @@ class MDictService: QueryService, @unchecked Sendable {
         _ text: String,
         from: Language,
         to: Language
-    ) async throws -> QueryResult {
+    ) async throws
+        -> QueryResult {
         let dicts = await MDictManager.shared.enabledDictionaries
         guard !dicts.isEmpty else {
             throw QueryError.error(

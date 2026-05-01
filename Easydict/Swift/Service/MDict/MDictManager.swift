@@ -13,11 +13,12 @@ import Foundation
 
 /// A persisted reference to an imported MDict dictionary.
 struct MDictDictionaryRecord: Codable, Defaults.Serializable, Hashable, Identifiable {
-    var id: String { mdxPath }
     let mdxPath: String
     var mddPaths: [String]
     var enabled: Bool
     var title: String
+
+    var id: String { mdxPath }
 
     var mdxURL: URL { URL(fileURLWithPath: mdxPath) }
     var mddURLs: [URL] { mddPaths.map { URL(fileURLWithPath: $0) } }
@@ -44,7 +45,7 @@ final class MDictManager: ObservableObject {
     // MARK: Lifecycle
 
     private init() {
-        records = Defaults[.mdictDictionaries]
+        self.records = Defaults[.mdictDictionaries]
         loadDictionaries()
     }
 

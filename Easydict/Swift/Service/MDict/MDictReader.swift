@@ -23,9 +23,9 @@ enum MDictError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidFormat(let detail):
+        case let .invalidFormat(detail):
             return "Invalid MDict format: \(detail)"
-        case .unsupportedCompression(let type):
+        case let .unsupportedCompression(type):
             return "Unsupported compression type \(type); only zlib (2) and none (0) are supported"
         case .decompressionFailed:
             return "Failed to decompress data block"
@@ -180,7 +180,7 @@ extension MDictReader {
             encoding = .utf16LittleEndian
         case "utf-16be":
             encoding = .utf16BigEndian
-        case "gbk", "gb2312", "gb18030":
+        case "gb2312", "gb18030", "gbk":
             encoding = .init(rawValue: CFStringConvertEncodingToNSStringEncoding(
                 CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)
             ))
@@ -233,7 +233,8 @@ extension MDictReader {
         _ data: Data,
         cursor: inout Int,
         header: MDictHeader
-    ) throws -> [MDictKeyEntry] {
+    ) throws
+        -> [MDictKeyEntry] {
         let isV2 = header.version >= 2.0
         let intSize = isV2 ? 8 : 4
         let readInt: (Data, Int) -> UInt64 = isV2
@@ -354,7 +355,8 @@ extension MDictReader {
         _ data: Data,
         cursor: inout Int,
         header: MDictHeader
-    ) throws -> ([RecordBlockInfo], Int) {
+    ) throws
+        -> ([RecordBlockInfo], Int) {
         let isV2 = header.version >= 2.0
         let intSize = isV2 ? 8 : 4
         let readInt: (Data, Int) -> UInt64 = isV2
@@ -440,7 +442,8 @@ extension MDictReader {
         _ data: Data,
         from offset: Int,
         terminatorSize: Int
-    ) -> Int {
+    )
+        -> Int {
         var pos = offset
         if terminatorSize == 2 {
             while pos + 1 < data.count {
@@ -459,7 +462,8 @@ extension MDictReader {
     static func decompressBlock(
         _ compressed: Data,
         decompressedSize: Int
-    ) throws -> Data {
+    ) throws
+        -> Data {
         guard compressed.count >= 8 else {
             throw MDictError.invalidFormat("Compressed block too small")
         }
@@ -480,15 +484,17 @@ extension MDictReader {
     private static func zlibDecompress(
         _ source: Data,
         decompressedSize: Int
-    ) throws -> Data {
+    ) throws
+        -> Data {
         var destination = Data(count: decompressedSize)
+        let sourceCount = source.count
         let result = source.withUnsafeBytes { srcPtr in
             destination.withUnsafeMutableBytes { dstPtr in
                 compression_decode_buffer(
                     dstPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
                     decompressedSize,
                     srcPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    source.count,
+                    sourceCount,
                     nil,
                     COMPRESSION_ZLIB
                 )
@@ -502,13 +508,15 @@ extension MDictReader {
     /// Compress `source` with raw deflate. Used only in tests.
     static func zlibCompress(_ source: Data) throws -> Data {
         var output = Data(count: source.count + 64)
+        let sourceCount = source.count
+        let outputCount = output.count
         let result = source.withUnsafeBytes { srcPtr in
             output.withUnsafeMutableBytes { dstPtr in
                 compression_encode_buffer(
                     dstPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    output.count,
+                    outputCount,
                     srcPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    source.count,
+                    sourceCount,
                     nil,
                     COMPRESSION_ZLIB
                 )
@@ -526,7 +534,8 @@ extension MDictReader {
     fileprivate static func buildKeyIndex(
         _ entries: [MDictKeyEntry],
         caseSensitive: Bool
-    ) -> [String: Int] {
+    )
+        -> [String: Int] {
         var index: [String: Int] = [:]
         index.reserveCapacity(entries.count)
         for (i, entry) in entries.enumerated() {

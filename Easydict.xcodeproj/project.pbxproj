@@ -3731,11 +3731,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
-				CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */,
-				5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */,
-				F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */,
-				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				03C3A5B62E1BFE4900B59152 /* ocr-en-paper-9.png in Resources */,
 				03C3A5B72E1BFE4900B59152 /* ocr-en-paper-2.png in Resources */,
 				033897B62E38D07F00CCFF99 /* ocr-zh-classical-poetry-1.png in Resources */,
@@ -4042,6 +4037,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
+				CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */,
+				5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */,
+				F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */,
+				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
 				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,
 				03715A282E6D24F60067259C /* SystemUtility.swift in Sources */,

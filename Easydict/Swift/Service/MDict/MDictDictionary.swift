@@ -89,7 +89,7 @@ final class MDictDictionary {
     }
 }
 
-// MARK: - Equatable
+// MARK: Equatable
 
 extension MDictDictionary: Equatable {
     static func == (lhs: MDictDictionary, rhs: MDictDictionary) -> Bool {
@@ -97,7 +97,7 @@ extension MDictDictionary: Equatable {
     }
 }
 
-// MARK: - Identifiable
+// MARK: Identifiable
 
 extension MDictDictionary: Identifiable {
     var id: URL { mdxURL }
