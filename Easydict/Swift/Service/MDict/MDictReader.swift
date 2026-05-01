@@ -305,6 +305,14 @@ extension MDictReader {
         cursor += intSize
         _ = try readInt(data, cursor)
         cursor += intSize
+        let keyBlockInfoSizeInt = try checkedInt(
+            keyBlockInfoSize,
+            context: "key block info size"
+        )
+        let keyBlockInfoDecompSizeInt = try checkedInt(
+            keyBlockInfoDecompSize,
+            context: "key block info decompressed size"
+        )
 
         if isV2 {
             try ensureAvailable(data, at: cursor, count: 4, context: "key block checksum")
@@ -313,29 +321,22 @@ extension MDictReader {
 
         let keyBlockInfoBytes: Data
         if isV2, keyBlockInfoSize > 0 {
-            let keyBlockInfoSizeInt = try checkedInt(
-                keyBlockInfoSize,
-                context: "key block info size"
-            )
             var compressed = try checkedSubdata(data, at: cursor, count: keyBlockInfoSizeInt)
             if header.encrypted & 2 != 0 {
                 compressed = decryptKeyBlockInfo(compressed)
             }
             keyBlockInfoBytes = try decompressBlock(
                 compressed,
-                decompressedSize: try checkedInt(
-                    keyBlockInfoDecompSize,
-                    context: "key block info decompressed size"
-                )
+                decompressedSize: keyBlockInfoDecompSizeInt
             )
         } else {
             keyBlockInfoBytes = try checkedSubdata(
                 data,
                 at: cursor,
-                count: try checkedInt(keyBlockInfoSize, context: "key block info size")
+                count: keyBlockInfoSizeInt
             )
         }
-        cursor += try checkedInt(keyBlockInfoSize, context: "key block info size")
+        cursor += keyBlockInfoSizeInt
 
         var blockSizes: [(compressed: Int, decompressed: Int)] = []
         var infoOffset = 0
