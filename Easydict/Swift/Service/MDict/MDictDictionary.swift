@@ -85,6 +85,18 @@ final class MDictDictionary {
     private let mdxReader: MDictReader
     private let mddReaders: [MDictReader]
 
+    private static let soundLinkRegex = makeRegex("(?i)sound://([^\"'\\s)<>]+)")
+    private static let resourceAttributeRegex = makeRegex("(?i)((?:src|poster)\\s*=\\s*[\"'])([^\"']+)([\"'])")
+    private static let sourceSetRegex = makeRegex("(?i)(srcset\\s*=\\s*[\"'])([^\"']+)([\"'])")
+    private static let stylesheetLinkRegex = makeRegex(
+        "(?is)<link\\b(?=[^>]*\\brel\\s*=\\s*[\"']?stylesheet[\"']?)[^>]*\\bhref\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>"
+    )
+    private static let scriptLinkRegex = makeRegex(
+        "(?is)<script\\b[^>]*\\bsrc\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>\\s*</script>"
+    )
+    private static let cssURLRegex = makeRegex("(?i)(url\\([\"']?)([^\"')]+)([\"']?\\))")
+    private static let audioConstructorRegex = makeRegex("(?i)new\\s+Audio\\((.*?)\\)")
+
     private static func javaScriptStringLiteral(_ value: String) -> String {
         let escaped = value
             .replacingOccurrences(of: "\\", with: "\\\\")
@@ -136,7 +148,7 @@ final class MDictDictionary {
     private func replaceSoundLinks(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?i)sound://([^\"'\\s)<>]+)"
+            regex: Self.soundLinkRegex
         ) { match, source in
             guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
             return dataURI(for: String(source[keyRange]))
@@ -146,7 +158,7 @@ final class MDictDictionary {
     private func replaceResourceAttributes(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?i)((?:src|poster)\\s*=\\s*[\"'])([^\"']+)([\"'])"
+            regex: Self.resourceAttributeRegex
         ) { match, source in
             guard let prefixRange = Range(match.range(at: 1), in: source),
                   let keyRange = Range(match.range(at: 2), in: source),
@@ -165,7 +177,7 @@ final class MDictDictionary {
     private func replaceSourceSets(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?i)(srcset\\s*=\\s*[\"'])([^\"']+)([\"'])"
+            regex: Self.sourceSetRegex
         ) { match, source in
             guard let prefixRange = Range(match.range(at: 1), in: source),
                   let valueRange = Range(match.range(at: 2), in: source),
@@ -192,7 +204,7 @@ final class MDictDictionary {
     private func replaceStylesheetLinks(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?is)<link\\b(?=[^>]*\\brel\\s*=\\s*[\"']?stylesheet[\"']?)[^>]*\\bhref\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>"
+            regex: Self.stylesheetLinkRegex
         ) { match, source in
             guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
             let key = String(source[keyRange])
@@ -207,7 +219,7 @@ final class MDictDictionary {
     private func replaceScriptLinks(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?is)<script\\b[^>]*\\bsrc\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>\\s*</script>"
+            regex: Self.scriptLinkRegex
         ) { match, source in
             guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
             let key = String(source[keyRange])
@@ -222,7 +234,7 @@ final class MDictDictionary {
     private func replaceCSSResources(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?i)(url\\([\"']?)([^\"')]+)([\"']?\\))"
+            regex: Self.cssURLRegex
         ) { match, source in
             guard let prefixRange = Range(match.range(at: 1), in: source),
                   let keyRange = Range(match.range(at: 2), in: source),
@@ -241,7 +253,7 @@ final class MDictDictionary {
     private func replaceAudioConstructors(in html: String) -> String {
         replaceMatches(
             in: html,
-            pattern: "(?i)new\\s+Audio\\((.*?)\\)"
+            regex: Self.audioConstructorRegex
         ) { match, source in
             guard let argumentRange = Range(match.range(at: 1), in: source) else { return nil }
             let rawArgument = String(source[argumentRange])
@@ -258,12 +270,10 @@ final class MDictDictionary {
 
     private func replaceMatches(
         in html: String,
-        pattern: String,
+        regex: NSRegularExpression,
         replacement: (NSTextCheckingResult, String) -> String?
     )
         -> String {
-        guard let regex = try? NSRegularExpression(pattern: pattern) else { return html }
-
         var result = html
         let matches = regex.matches(
             in: result,
@@ -276,6 +286,14 @@ final class MDictDictionary {
             result.replaceSubrange(fullRange, with: replacementText)
         }
         return result
+    }
+
+    private static func makeRegex(_ pattern: String) -> NSRegularExpression {
+        do {
+            return try NSRegularExpression(pattern: pattern)
+        } catch {
+            preconditionFailure("Invalid MDict regex: \(pattern)")
+        }
     }
 
     private func shouldResolveResource(_ key: String) -> Bool {
