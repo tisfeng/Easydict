@@ -38,6 +38,8 @@ enum MDictError: LocalizedError {
 }
 
 private let maxMDictDecompressedBlockSize = 256 * 1024 * 1024
+private let maxMDictCachedRecordBlockCount = 8
+private let maxMDictCachedRecordBlockBytes = 50 * 1024 * 1024
 
 // MARK: - MDictHeader
 
@@ -75,6 +77,23 @@ struct RecordBlockInfo {
     let decompressedSize: UInt64
 }
 
+// MARK: - RecordBlockRange
+
+/// Precomputed byte ranges for a decompressed record block.
+///
+/// Keeping cumulative compressed and decompressed offsets avoids rescanning all
+/// preceding blocks for every lookup. The reader uses this table to binary
+/// search the containing block and read the matching compressed bytes directly.
+private struct RecordBlockRange {
+    let info: RecordBlockInfo
+    let compressedStart: Int
+    let decompressedStart: UInt64
+
+    var decompressedEnd: UInt64 {
+        decompressedStart + info.decompressedSize
+    }
+}
+
 // MARK: - MDictReader
 
 /// Reads and parses MDict binary files (MDX for definitions, MDD for resources).
@@ -102,8 +121,10 @@ final class MDictReader {
         let (infos, blocksStart) = try Self.parseRecordBlockInfo(
             data, cursor: &cursor, header: header
         )
-        self.recordBlockInfos = infos
-        self.recordBlocksStart = blocksStart
+        self.recordBlockRanges = try Self.buildRecordBlockRanges(
+            infos,
+            blocksStart: blocksStart
+        )
 
         self.keyIndex = Self.buildKeyIndex(keyEntries, caseSensitive: header.keyCaseSensitive)
     }
@@ -151,12 +172,39 @@ final class MDictReader {
     // MARK: Private
 
     private let data: Data
-    private let recordBlockInfos: [RecordBlockInfo]
-    private let recordBlocksStart: Int
+    private let recordBlockRanges: [RecordBlockRange]
     private let keyIndex: [String: [Int]]
+    private var decompressedBlockCache: [Int: Data] = [:]
+    private var decompressedBlockCacheOrder: [Int] = []
+    private var decompressedBlockCacheBytes = 0
 
     private var totalDecompressedRecordSize: UInt64 {
-        recordBlockInfos.reduce(0) { $0 + $1.decompressedSize }
+        recordBlockRanges.last?.decompressedEnd ?? 0
+    }
+
+    private static func buildRecordBlockRanges(
+        _ infos: [RecordBlockInfo],
+        blocksStart: Int
+    ) throws
+        -> [RecordBlockRange] {
+        var compressedStart = blocksStart
+        var decompressedStart: UInt64 = 0
+        var ranges: [RecordBlockRange] = []
+        ranges.reserveCapacity(infos.count)
+
+        for info in infos {
+            ranges.append(RecordBlockRange(
+                info: info,
+                compressedStart: compressedStart,
+                decompressedStart: decompressedStart
+            ))
+            compressedStart += try checkedInt(
+                info.compressedSize,
+                context: "record block compressed size"
+            )
+            decompressedStart += info.decompressedSize
+        }
+        return ranges
     }
 
     private func decodeTextRecord(_ data: Data) -> String? {
@@ -512,48 +560,103 @@ extension MDictReader {
     private func readRecord(at offset: UInt64, size: Int) throws -> Data {
         guard size > 0 else { return Data() }
 
-        var cumulativeOffset: UInt64 = 0
-        var blockDataStart = recordBlocksStart
         var remainingSize = size
         var readOffset = offset
         var record = Data()
 
-        for info in recordBlockInfos {
-            let blockEnd = cumulativeOffset + info.decompressedSize
-            if readOffset >= cumulativeOffset, readOffset < blockEnd {
-                let compressed = try Self.checkedSubdata(
-                    data,
-                    at: blockDataStart,
-                    count: Self.checkedInt(info.compressedSize, context: "record block compressed size")
-                )
-                let decompressed = try Self.decompressBlock(
-                    compressed,
-                    decompressedSize: Self.checkedInt(
-                        info.decompressedSize,
-                        context: "record block decompressed size"
-                    )
-                )
-
-                let localOffset = Int(readOffset - cumulativeOffset)
-                guard localOffset <= decompressed.count else {
-                    throw MDictError.invalidFormat("Record local offset \(localOffset) out of range")
-                }
-                let actualSize = min(remainingSize, decompressed.count - localOffset)
-                if actualSize > 0 {
-                    record.append(decompressed.subdata(in: localOffset ..< localOffset + actualSize))
-                    remainingSize -= actualSize
-                    readOffset += UInt64(actualSize)
-                    if remainingSize == 0 { return record }
-                }
+        while remainingSize > 0,
+              let blockIndex = recordBlockIndex(containing: readOffset) {
+            let range = recordBlockRanges[blockIndex]
+            let decompressed = try decompressedRecordBlock(at: blockIndex)
+            let localOffset = Int(readOffset - range.decompressedStart)
+            guard localOffset <= decompressed.count else {
+                throw MDictError.invalidFormat("Record local offset \(localOffset) out of range")
             }
-            cumulativeOffset = blockEnd
-            blockDataStart += try Self.checkedInt(info.compressedSize, context: "record block compressed size")
+            let actualSize = min(remainingSize, decompressed.count - localOffset)
+            guard actualSize > 0 else { break }
+
+            record.append(decompressed.subdata(in: localOffset ..< localOffset + actualSize))
+            remainingSize -= actualSize
+            readOffset += UInt64(actualSize)
+            if readOffset == range.decompressedEnd, remainingSize > 0 {
+                continue
+            }
         }
 
+        if remainingSize == 0 {
+            return record
+        }
         if !record.isEmpty {
             throw MDictError.invalidFormat("Record at offset \(offset) exceeds record blocks")
         }
         throw MDictError.invalidFormat("Record offset \(offset) out of range")
+    }
+
+    private func recordBlockIndex(containing offset: UInt64) -> Int? {
+        var lower = 0
+        var upper = recordBlockRanges.count
+
+        while lower < upper {
+            let mid = (lower + upper) / 2
+            let range = recordBlockRanges[mid]
+            if offset < range.decompressedStart {
+                upper = mid
+            } else if offset >= range.decompressedEnd {
+                lower = mid + 1
+            } else {
+                return mid
+            }
+        }
+        return nil
+    }
+
+    private func decompressedRecordBlock(at index: Int) throws -> Data {
+        if let cached = decompressedBlockCache[index] {
+            markRecordBlockCacheHit(index)
+            return cached
+        }
+
+        let range = recordBlockRanges[index]
+        let compressed = try Self.checkedSubdata(
+            data,
+            at: range.compressedStart,
+            count: Self.checkedInt(
+                range.info.compressedSize,
+                context: "record block compressed size"
+            )
+        )
+        let decompressed = try Self.decompressBlock(
+            compressed,
+            decompressedSize: Self.checkedInt(
+                range.info.decompressedSize,
+                context: "record block decompressed size"
+            )
+        )
+        cacheDecompressedRecordBlock(decompressed, at: index)
+        return decompressed
+    }
+
+    private func markRecordBlockCacheHit(_ index: Int) {
+        decompressedBlockCacheOrder.removeAll { $0 == index }
+        decompressedBlockCacheOrder.append(index)
+    }
+
+    private func cacheDecompressedRecordBlock(_ block: Data, at index: Int) {
+        if let oldBlock = decompressedBlockCache[index] {
+            decompressedBlockCacheBytes -= oldBlock.count
+        }
+        decompressedBlockCache[index] = block
+        decompressedBlockCacheBytes += block.count
+        markRecordBlockCacheHit(index)
+
+        while (decompressedBlockCacheOrder.count > maxMDictCachedRecordBlockCount
+            || decompressedBlockCacheBytes > maxMDictCachedRecordBlockBytes),
+              let evicted = decompressedBlockCacheOrder.first {
+            decompressedBlockCacheOrder.removeFirst()
+            if let evictedBlock = decompressedBlockCache.removeValue(forKey: evicted) {
+                decompressedBlockCacheBytes -= evictedBlock.count
+            }
+        }
     }
 }
 
