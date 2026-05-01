@@ -37,6 +37,8 @@ enum MDictError: LocalizedError {
     }
 }
 
+private let maxMDictDecompressedBlockSize = 256 * 1024 * 1024
+
 // MARK: - MDictHeader
 
 /// Parsed metadata from the MDict file header XML.
@@ -643,6 +645,9 @@ extension MDictReader {
         -> Data {
         guard compressed.count >= 8 else {
             throw MDictError.invalidFormat("Compressed block too small")
+        }
+        guard decompressedSize <= maxMDictDecompressedBlockSize else {
+            throw MDictError.invalidFormat("Decompressed block size exceeds safety limit")
         }
 
         let compressionType = readUInt32BE(compressed, at: 0)
