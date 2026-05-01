@@ -65,6 +65,15 @@ struct MDictReaderTests {
         }
     }
 
+    @Test("Encrypted key block info keeps compression header")
+    func testEncryptedKeyBlockInfoKeepsCompressionHeader() {
+        var block = Data([0x02, 0x00, 0x00, 0x00, 0xE9, 0x04, 0x8C, 0xE8])
+        block.append(Data([0xAA, 0xBB, 0xCC, 0xDD]))
+
+        let decrypted = MDictReader.decryptKeyBlockInfo(block)
+        #expect(decrypted.prefix(8) == block.prefix(8))
+    }
+
     // MARK: - Binary reading
 
     @Test("ReadUInt32BE interprets big-endian bytes correctly")

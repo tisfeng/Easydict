@@ -268,7 +268,7 @@ extension MDictReader {
             var compressed = data.subdata(
                 in: cursor ..< cursor + Int(keyBlockInfoSize)
             )
-            if header.encrypted == 2 {
+            if header.encrypted & 2 != 0 {
                 compressed = decryptKeyBlockInfo(compressed)
             }
             keyBlockInfoBytes = try decompressBlock(
@@ -534,24 +534,28 @@ extension MDictReader {
 
     /// Decrypt the key block info section for MDict files with `Encrypted="2"`.
     ///
-    /// Uses a nibble-swap XOR cipher keyed on `ripemd128(adler32 || 0x95360000)`,
-    /// where adler32 is the last 4 bytes of the compressed key block info.
+    /// Uses a nibble-swap XOR cipher keyed on `ripemd128(adler32 || 0x95360000)`.
+    /// The compression type and checksum header remain unencrypted.
     static func decryptKeyBlockInfo(_ data: Data) -> Data {
-        guard data.count >= 4 else { return data }
-        let checksum = data.subdata(in: (data.count - 4) ..< data.count)
+        guard data.count > 8 else { return data }
+        let checksum = data.subdata(in: 4 ..< 8)
         let keyInput = checksum + Data([0x95, 0x36, 0x00, 0x00])
         let key = ripemd128(keyInput)
 
-        var result = Data(count: data.count)
-        var prev: UInt8 = 0
-        for i in 0 ..< data.count {
-            let k = key[i % 16]
-            let x = data[i] ^ UInt8(i & 0xFF) ^ k ^ prev
-            let swapped = (x << 4) | (x >> 4)
-            result[i] = swapped
-            prev = swapped
+        var result = data
+        var previous: UInt8 = 0x36
+        for i in 8 ..< data.count {
+            let keyIndex = (i - 8) % 16
+            let offset = UInt8((i - 8) & 0xFF)
+            let encrypted = data[i]
+            result[i] = swapNibble(encrypted) ^ offset ^ key[keyIndex] ^ previous
+            previous = encrypted
         }
         return result
+    }
+
+    private static func swapNibble(_ byte: UInt8) -> UInt8 {
+        (byte >> 4) | (byte << 4)
     }
 }
 
@@ -592,22 +596,270 @@ private func ripemd128(_ data: Data) -> [UInt8] {
         let h: (UInt32, UInt32, UInt32) -> UInt32 = { x, y, z in (x | ~y) ^ z }
         let i: (UInt32, UInt32, UInt32) -> UInt32 = { x, y, z in (x & z) | (y & ~z) }
 
-        let rIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                    7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
-                    3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
-                    1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2]
-        let rIdxP = [5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
-                     6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
-                     15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
-                     8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14]
-        let sLeft: [UInt32] = [11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
-                               7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
-                               11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
-                               11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12]
-        let sRight: [UInt32] = [8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
-                                9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
-                                9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
-                                15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8]
+        let rIdx = [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            7,
+            4,
+            13,
+            1,
+            10,
+            6,
+            15,
+            3,
+            12,
+            0,
+            9,
+            5,
+            2,
+            14,
+            11,
+            8,
+            3,
+            10,
+            14,
+            4,
+            9,
+            15,
+            8,
+            1,
+            2,
+            7,
+            0,
+            6,
+            13,
+            11,
+            5,
+            12,
+            1,
+            9,
+            11,
+            10,
+            0,
+            8,
+            12,
+            4,
+            13,
+            3,
+            7,
+            15,
+            14,
+            5,
+            6,
+            2,
+        ]
+        let rIdxP = [
+            5,
+            14,
+            7,
+            0,
+            9,
+            2,
+            11,
+            4,
+            13,
+            6,
+            15,
+            8,
+            1,
+            10,
+            3,
+            12,
+            6,
+            11,
+            3,
+            7,
+            0,
+            13,
+            5,
+            10,
+            14,
+            15,
+            8,
+            12,
+            4,
+            9,
+            1,
+            2,
+            15,
+            5,
+            1,
+            3,
+            7,
+            14,
+            6,
+            9,
+            11,
+            8,
+            12,
+            2,
+            10,
+            0,
+            4,
+            13,
+            8,
+            6,
+            4,
+            1,
+            3,
+            11,
+            15,
+            0,
+            5,
+            12,
+            2,
+            13,
+            9,
+            7,
+            10,
+            14,
+        ]
+        let sLeft: [UInt32] = [
+            11,
+            14,
+            15,
+            12,
+            5,
+            8,
+            7,
+            9,
+            11,
+            13,
+            14,
+            15,
+            6,
+            7,
+            9,
+            8,
+            7,
+            6,
+            8,
+            13,
+            11,
+            9,
+            7,
+            15,
+            7,
+            12,
+            15,
+            9,
+            11,
+            7,
+            13,
+            12,
+            11,
+            13,
+            6,
+            7,
+            14,
+            9,
+            13,
+            15,
+            14,
+            8,
+            13,
+            6,
+            5,
+            12,
+            7,
+            5,
+            11,
+            12,
+            14,
+            15,
+            14,
+            15,
+            9,
+            8,
+            9,
+            14,
+            5,
+            6,
+            8,
+            6,
+            5,
+            12,
+        ]
+        let sRight: [UInt32] = [
+            8,
+            9,
+            9,
+            11,
+            13,
+            15,
+            15,
+            5,
+            7,
+            7,
+            8,
+            11,
+            14,
+            14,
+            12,
+            6,
+            9,
+            13,
+            15,
+            7,
+            12,
+            8,
+            9,
+            11,
+            7,
+            7,
+            12,
+            7,
+            6,
+            15,
+            13,
+            11,
+            9,
+            7,
+            15,
+            11,
+            8,
+            6,
+            6,
+            14,
+            12,
+            13,
+            5,
+            14,
+            13,
+            13,
+            7,
+            5,
+            15,
+            5,
+            8,
+            11,
+            14,
+            14,
+            6,
+            14,
+            6,
+            9,
+            12,
+            9,
+            12,
+            5,
+            15,
+            8,
+        ]
         let kLeft: [UInt32] = [0x0000_0000, 0x5A82_7999, 0x6ED9_EBA1, 0x8F1B_BCDC]
         let kRight: [UInt32] = [0x50A2_8BE6, 0x5C4D_D124, 0x6D70_3EF3, 0x0000_0000]
         let fns = [f, g, h, i]
