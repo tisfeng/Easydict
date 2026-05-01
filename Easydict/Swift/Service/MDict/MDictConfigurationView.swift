@@ -50,10 +50,7 @@ struct MDictConfigurationView: View {
         }
         .fileImporter(
             isPresented: $isImporting,
-            allowedContentTypes: [
-                .init(filenameExtension: "mdx")!,
-                .init(filenameExtension: "mdd")!,
-            ],
+            allowedContentTypes: Self.importableContentTypes,
             allowsMultipleSelection: false
         ) { result in
             handleImport(result)
@@ -74,6 +71,10 @@ struct MDictConfigurationView: View {
     @State private var isImporting = false
     @State private var showError = false
     @State private var importError: String?
+
+    private static let importableContentTypes = ["mdx", "mdd"].compactMap {
+        UTType(filenameExtension: $0)
+    }
 
     private func handleImport(_ result: Result<[URL], Error>) {
         switch result {
