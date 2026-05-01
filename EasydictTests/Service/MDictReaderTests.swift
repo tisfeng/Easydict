@@ -6,7 +6,6 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
-import Compression
 import Foundation
 import Testing
 
@@ -17,6 +16,8 @@ import Testing
 /// Tests for the MDict binary format parser utilities (decompression, binary reading, key index).
 @Suite("MDict Reader", .tags(.unit))
 struct MDictReaderTests {
+    // MARK: Internal
+
     // MARK: - Header attribute extraction
 
     @Test("Extract attribute from XML-like header text")
@@ -74,6 +75,13 @@ struct MDictReaderTests {
         #expect(decrypted.prefix(8) == block.prefix(8))
     }
 
+    @Test("RIPEMD-128 matches standard test vectors")
+    func testRIPEMD128Digest() {
+        #expect(hex(MDictReader.ripemd128Digest(Data())) == "cdf26213a150dc3ecb610f18f6b38b46")
+        #expect(hex(MDictReader.ripemd128Digest(Data("a".utf8))) == "86be7afa339d0fc7cfc785e72f578d33")
+        #expect(hex(MDictReader.ripemd128Digest(Data("abc".utf8))) == "c14a12199c66e4ba84636b0f69144c77")
+    }
+
     @Test("Truncated MDX throws instead of crashing")
     func testTruncatedMDXThrows() throws {
         let header = """
@@ -125,5 +133,11 @@ struct MDictReaderTests {
     func testFindNullTerminatorDoubleByte() {
         let data = Data([0x41, 0x00, 0x42, 0x00, 0x00, 0x00])
         #expect(MDictReader.findNullTerminator(data, from: 0, terminatorSize: 2) == 4)
+    }
+
+    // MARK: Private
+
+    private func hex(_ bytes: [UInt8]) -> String {
+        bytes.map { String(format: "%02x", $0) }.joined()
     }
 }

@@ -6,8 +6,8 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
-import Compression
 import Foundation
+import zlib
 
 // MARK: - MDictError
 
@@ -179,7 +179,8 @@ extension MDictReader {
         let encrypted = Int(encryptedStr) ?? 0
 
         let encoding: String.Encoding
-        switch encodingStr.lowercased() {
+        let normalizedEncoding = encodingStr.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        switch normalizedEncoding {
         case "utf-16", "utf-16le":
             encoding = .utf16LittleEndian
         case "utf-16be":
@@ -192,6 +193,8 @@ extension MDictReader {
             encoding = .init(rawValue: CFStringConvertEncodingToNSStringEncoding(
                 CFStringEncoding(CFStringEncodings.big5.rawValue)
             ))
+        case "" where headerText.contains("<Library_Data"):
+            encoding = .utf16LittleEndian
         default:
             encoding = .utf8
         }
@@ -307,45 +310,49 @@ extension MDictReader {
             if isV2 {
                 let wordSize = Int(try checkedReadUInt16BE(keyBlockInfoBytes, at: infoOffset))
                 infoOffset += 2
+                let firstKeySize = keyBlockTextSize(wordSize, header: header, isV2: isV2)
                 try ensureAvailable(
                     keyBlockInfoBytes,
                     at: infoOffset,
-                    count: wordSize + header.nullTerminatorSize,
+                    count: firstKeySize,
                     context: "key block first key"
                 )
-                infoOffset += wordSize + header.nullTerminatorSize
+                infoOffset += firstKeySize
 
                 let lastSize = Int(try checkedReadUInt16BE(keyBlockInfoBytes, at: infoOffset))
                 infoOffset += 2
+                let lastKeySize = keyBlockTextSize(lastSize, header: header, isV2: isV2)
                 try ensureAvailable(
                     keyBlockInfoBytes,
                     at: infoOffset,
-                    count: lastSize + header.nullTerminatorSize,
+                    count: lastKeySize,
                     context: "key block last key"
                 )
-                infoOffset += lastSize + header.nullTerminatorSize
+                infoOffset += lastKeySize
             } else {
                 try ensureAvailable(keyBlockInfoBytes, at: infoOffset, count: 1, context: "key block first key size")
                 let wordSize = Int(keyBlockInfoBytes[infoOffset])
                 infoOffset += 1
+                let firstKeySize = keyBlockTextSize(wordSize, header: header, isV2: isV2)
                 try ensureAvailable(
                     keyBlockInfoBytes,
                     at: infoOffset,
-                    count: wordSize + header.nullTerminatorSize,
+                    count: firstKeySize,
                     context: "key block first key"
                 )
-                infoOffset += wordSize + header.nullTerminatorSize
+                infoOffset += firstKeySize
 
                 try ensureAvailable(keyBlockInfoBytes, at: infoOffset, count: 1, context: "key block last key size")
                 let lastSize = Int(keyBlockInfoBytes[infoOffset])
                 infoOffset += 1
+                let lastKeySize = keyBlockTextSize(lastSize, header: header, isV2: isV2)
                 try ensureAvailable(
                     keyBlockInfoBytes,
                     at: infoOffset,
-                    count: lastSize + header.nullTerminatorSize,
+                    count: lastKeySize,
                     context: "key block last key"
                 )
-                infoOffset += lastSize + header.nullTerminatorSize
+                infoOffset += lastKeySize
             }
 
             let compSize = try checkedInt(
@@ -403,6 +410,20 @@ extension MDictReader {
         }
 
         return entries
+    }
+
+    private static func keyBlockTextSize(
+        _ codeUnitCount: Int,
+        header: MDictHeader,
+        isV2: Bool
+    )
+        -> Int {
+        let terminatorUnits = isV2 ? 1 : 0
+        let units = codeUnitCount + terminatorUnits
+        if header.encoding == .utf16LittleEndian || header.encoding == .utf16BigEndian {
+            return units * 2
+        }
+        return units
     }
 }
 
@@ -583,6 +604,9 @@ extension MDictReader {
 
         switch compressionType {
         case 0x0000_0000:
+            guard payload.count == decompressedSize else {
+                throw MDictError.decompressionFailed
+            }
             return payload
         case 0x0200_0000:
             return try zlibDecompress(payload, decompressedSize: decompressedSize)
@@ -596,44 +620,42 @@ extension MDictReader {
         decompressedSize: Int
     ) throws
         -> Data {
+        guard decompressedSize >= 0 else { throw MDictError.decompressionFailed }
         var destination = Data(count: decompressedSize)
-        let sourceCount = source.count
-        let result = source.withUnsafeBytes { srcPtr in
+        var destinationSize = uLongf(decompressedSize)
+        let status = source.withUnsafeBytes { srcPtr in
             destination.withUnsafeMutableBytes { dstPtr in
-                compression_decode_buffer(
-                    dstPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    decompressedSize,
-                    srcPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    sourceCount,
-                    nil,
-                    COMPRESSION_ZLIB
+                uncompress(
+                    dstPtr.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    &destinationSize,
+                    srcPtr.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    uLong(source.count)
                 )
             }
         }
-        guard result > 0 else { throw MDictError.decompressionFailed }
-        destination.count = result
+        guard status == Z_OK, destinationSize == decompressedSize else {
+            throw MDictError.decompressionFailed
+        }
         return destination
     }
 
     /// Compress `source` with raw deflate. Used only in tests.
     static func zlibCompress(_ source: Data) throws -> Data {
-        var output = Data(count: source.count + 64)
-        let sourceCount = source.count
-        let outputCount = output.count
-        let result = source.withUnsafeBytes { srcPtr in
+        var outputSize = compressBound(uLong(source.count))
+        var output = Data(count: Int(outputSize))
+        let status = source.withUnsafeBytes { srcPtr in
             output.withUnsafeMutableBytes { dstPtr in
-                compression_encode_buffer(
-                    dstPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    outputCount,
-                    srcPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                    sourceCount,
-                    nil,
-                    COMPRESSION_ZLIB
+                compress2(
+                    dstPtr.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    &outputSize,
+                    srcPtr.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    uLong(source.count),
+                    Z_DEFAULT_COMPRESSION
                 )
             }
         }
-        guard result > 0 else { throw MDictError.decompressionFailed }
-        output.count = result
+        guard status == Z_OK else { throw MDictError.decompressionFailed }
+        output.count = Int(outputSize)
         return output
     }
 
@@ -657,6 +679,10 @@ extension MDictReader {
             previous = encrypted
         }
         return result
+    }
+
+    static func ripemd128Digest(_ data: Data) -> [UInt8] {
+        ripemd128(data)
     }
 
     private static func swapNibble(_ byte: UInt8) -> UInt8 {

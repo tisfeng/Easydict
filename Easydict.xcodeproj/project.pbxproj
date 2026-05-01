@@ -316,6 +316,7 @@
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
 		03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B63ABE2A86967800E155ED /* CoreServices.framework */; };
+		04D7C0A22F00000100D1C7A1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D7C0A12F00000100D1C7A1 /* libz.tbd */; };
 		03B73F7B2D9C51580051CB74 /* ChineseDetection+Poetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B73F7A2D9C51580051CB74 /* ChineseDetection+Poetry.swift */; };
 		03B73F7D2D9C51700051CB74 /* ChineseDetection+Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B73F7C2D9C51700051CB74 /* ChineseDetection+Lyrics.swift */; };
 		03B877562EF9A51F00B5ED68 /* QueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B877552EF9A51F00B5ED68 /* QueryModel.swift */; };
@@ -968,6 +969,7 @@
 		03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonViewController.h; sourceTree = "<group>"; };
 		03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonViewController.m; sourceTree = "<group>"; };
 		03B63ABE2A86967800E155ED /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		04D7C0A12F00000100D1C7A1 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		03B73F7A2D9C51580051CB74 /* ChineseDetection+Poetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Poetry.swift"; sourceTree = "<group>"; };
 		03B73F7C2D9C51700051CB74 /* ChineseDetection+Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChineseDetection+Lyrics.swift"; sourceTree = "<group>"; };
 		03B877552EF9A51F00B5ED68 /* QueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryModel.swift; sourceTree = "<group>"; };
@@ -1306,6 +1308,7 @@
 				967712EA2B5B913600105E0F /* KeyHolder in Frameworks */,
 				036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
+				04D7C0A22F00000100D1C7A1 /* libz.tbd in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
 				03E534BC2CE0D38C00B37264 /* AcknowList in Frameworks */,
@@ -3578,6 +3581,7 @@
 			isa = PBXGroup;
 			children = (
 				03B63ABE2A86967800E155ED /* CoreServices.framework */,
+				04D7C0A12F00000100D1C7A1 /* libz.tbd */,
 				6372B33DFF803C7096A82250 /* Pods_Easydict.framework */,
 				378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */,
 			);
