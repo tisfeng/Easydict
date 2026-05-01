@@ -104,6 +104,12 @@ class MDictService: QueryService, @unchecked Sendable {
     // MARK: Private
 
     private func wrapWithStyle(_ html: String) -> String {
+        let scriptNonce = "easydict-mdict"
+        let contentSecurityPolicy = """
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; \
+        img-src data: blob:; media-src data: blob:; font-src data:; \
+        style-src 'unsafe-inline'; script-src 'nonce-\(scriptNonce)';">
+        """
         let extraCSS = """
         img,svg{max-width:100%;height:auto;}\
         a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]{\
@@ -123,7 +129,7 @@ class MDictService: QueryService, @unchecked Sendable {
         """
         let style = DictionaryHTMLRenderer.entryStyle(bodyMargin: 8, extraCSS: extraCSS)
         let script = """
-        <script>\
+        <script nonce="\(scriptNonce)">\
         document.addEventListener('click',function(event){\
         var link=event.target&&event.target.closest?event.target.closest('a[href]'):null;\
         if(!link){return;}\
@@ -148,7 +154,7 @@ class MDictService: QueryService, @unchecked Sendable {
         }\
         </script>
         """
-        return style + script + html
+        return contentSecurityPolicy + style + script + html
     }
 
     private func plainTextToHTML(_ text: String) -> String {
