@@ -42,14 +42,17 @@ final class MDictDictionary {
         let trimmed = word.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 
-        var definition = try mdxReader.lookup(trimmed)
+        var definitions = try mdxReader.lookupAll(trimmed)
 
-        if definition == nil, !mdxReader.header.keyCaseSensitive {
-            definition = try mdxReader.lookup(trimmed.lowercased())
-                ?? mdxReader.lookup(trimmed.capitalized)
+        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
+            definitions = try mdxReader.lookupAll(trimmed.lowercased())
+            if definitions.isEmpty {
+                definitions = try mdxReader.lookupAll(trimmed.capitalized)
+            }
         }
 
-        guard let raw = definition else { return nil }
+        guard !definitions.isEmpty else { return nil }
+        let raw = definitions.joined(separator: "\n")
 
         if isHTML {
             return resolveLinks(in: raw)
@@ -76,7 +79,9 @@ final class MDictDictionary {
     private let mddReaders: [MDictReader]
 
     private func resourceKeyCandidates(for key: String) -> [String] {
-        let decoded = key.removingPercentEncoding ?? key
+        let decoded = (key.removingPercentEncoding ?? key)
+            .components(separatedBy: CharacterSet(charactersIn: "?#"))
+            .first ?? key
         let normalized = decoded.replacingOccurrences(of: "/", with: "\\")
         let withoutSlash = normalized.hasPrefix("\\")
             ? String(normalized.dropFirst())
@@ -94,7 +99,9 @@ final class MDictDictionary {
             with: "mdict-entry://"
         )
         result = replaceSoundLinks(in: result)
+        result = replaceStylesheetLinks(in: result)
         result = replaceResourceAttributes(in: result)
+        result = replaceSourceSets(in: result)
         result = replaceCSSResources(in: result)
         result = replaceAudioConstructors(in: result)
         return result
@@ -126,6 +133,48 @@ final class MDictDictionary {
             else { return nil }
 
             return "\(source[prefixRange])\(dataURI)\(source[suffixRange])"
+        }
+    }
+
+    private func replaceSourceSets(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            pattern: "(?i)(srcset\\s*=\\s*[\"'])([^\"']+)([\"'])"
+        ) { match, source in
+            guard let prefixRange = Range(match.range(at: 1), in: source),
+                  let valueRange = Range(match.range(at: 2), in: source),
+                  let suffixRange = Range(match.range(at: 3), in: source)
+            else { return nil }
+
+            let rewritten = source[valueRange]
+                .split(separator: ",")
+                .map { candidate -> String in
+                    let parts = candidate.split(separator: " ", omittingEmptySubsequences: true)
+                    guard let key = parts.first,
+                          shouldResolveResource(String(key)),
+                          let dataURI = dataURI(for: String(key))
+                    else { return String(candidate) }
+
+                    let descriptor = parts.dropFirst().joined(separator: " ")
+                    return descriptor.isEmpty ? dataURI : "\(dataURI) \(descriptor)"
+                }
+                .joined(separator: ", ")
+            return "\(source[prefixRange])\(rewritten)\(source[suffixRange])"
+        }
+    }
+
+    private func replaceStylesheetLinks(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            pattern: "(?is)<link\\b(?=[^>]*\\brel\\s*=\\s*[\"']?stylesheet[\"']?)[^>]*\\bhref\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>"
+        ) { match, source in
+            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
+            let key = String(source[keyRange])
+            guard shouldResolveResource(key),
+                  let css = stylesheetText(for: key)
+            else { return nil }
+
+            return "<style>\(css)</style>"
         }
     }
 
@@ -205,6 +254,14 @@ final class MDictDictionary {
         return "data:\(mimeType(for: key));base64,\(data.base64EncodedString())"
     }
 
+    private func stylesheetText(for key: String) -> String? {
+        guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
+        let css = String(data: data, encoding: .utf8)
+            ?? String(data: data, encoding: .utf16LittleEndian)
+            ?? String(data: data, encoding: .utf16BigEndian)
+        return css.map { replaceCSSResources(in: $0) }
+    }
+
     private func mimeType(for key: String) -> String {
         let path = (key.removingPercentEncoding ?? key)
             .components(separatedBy: CharacterSet(charactersIn: "?#"))
@@ -216,7 +273,7 @@ final class MDictDictionary {
             return "image/avif"
         case "gif":
             return "image/gif"
-        case "jpg", "jpeg":
+        case "jpeg", "jpg":
             return "image/jpeg"
         case "png":
             return "image/png"

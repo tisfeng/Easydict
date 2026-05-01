@@ -117,10 +117,50 @@ final class MDictReader {
         return String(data: data, encoding: header.encoding)
     }
 
+    /// Look up all text definitions for a word (MDX files).
+    func lookupAll(_ word: String) throws -> [String] {
+        let records = try lookupAllData(for: word)
+        return records.compactMap { String(data: $0, encoding: header.encoding) }
+    }
+
     /// Look up raw binary data by key (MDD files).
     func lookupData(for key: String) throws -> Data? {
         let normalizedKey = header.keyCaseSensitive ? key : key.lowercased()
-        guard let index = keyIndex[normalizedKey] else { return nil }
+        guard let index = keyIndex[normalizedKey]?.first else { return nil }
+
+        return try lookupData(at: index)
+    }
+
+    /// Look up all raw binary records by key.
+    func lookupAllData(for key: String) throws -> [Data] {
+        let normalizedKey = header.keyCaseSensitive ? key : key.lowercased()
+        guard let indexes = keyIndex[normalizedKey] else { return [] }
+
+        var records: [Data] = []
+        var seen = Set<Data>()
+        for index in indexes {
+            let record = try lookupData(at: index)
+            guard seen.insert(record).inserted else { continue }
+            records.append(record)
+        }
+        return records
+    }
+
+    // MARK: Private
+
+    private let data: Data
+    private let recordBlockInfos: [RecordBlockInfo]
+    private let recordBlocksStart: Int
+    private let keyIndex: [String: [Int]]
+
+    private var totalDecompressedRecordSize: UInt64 {
+        recordBlockInfos.reduce(0) { $0 + $1.decompressedSize }
+    }
+
+    private func lookupData(at index: Int) throws -> Data {
+        guard keyEntries.indices.contains(index) else {
+            throw MDictError.invalidFormat("Key index \(index) out of range")
+        }
 
         let entry = keyEntries[index]
         let nextOffset: UInt64
@@ -134,17 +174,6 @@ final class MDictReader {
         }
         let recordSize = Int(nextOffset - entry.recordOffset)
         return try readRecord(at: entry.recordOffset, size: recordSize)
-    }
-
-    // MARK: Private
-
-    private let data: Data
-    private let recordBlockInfos: [RecordBlockInfo]
-    private let recordBlocksStart: Int
-    private let keyIndex: [String: Int]
-
-    private var totalDecompressedRecordSize: UInt64 {
-        recordBlockInfos.reduce(0) { $0 + $1.decompressedSize }
     }
 }
 
@@ -1036,14 +1065,12 @@ extension MDictReader {
         _ entries: [MDictKeyEntry],
         caseSensitive: Bool
     )
-        -> [String: Int] {
-        var index: [String: Int] = [:]
+        -> [String: [Int]] {
+        var index: [String: [Int]] = [:]
         index.reserveCapacity(entries.count)
         for (i, entry) in entries.enumerated() {
             let key = caseSensitive ? entry.word : entry.word.lowercased()
-            if index[key] == nil {
-                index[key] = i
-            }
+            index[key, default: []].append(i)
         }
         return index
     }
