@@ -83,7 +83,7 @@ final class MDictReader {
     // MARK: Lifecycle
 
     init(url: URL) throws {
-        let data = try Data(contentsOf: url)
+        let data = try Data(contentsOf: url, options: [.mappedIfSafe])
         self.data = data
 
         var cursor = 0

@@ -34,6 +34,7 @@ static const CGFloat kVerticalPadding_6 = 6;
 static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
+static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
 @interface EZWordResultView () <NSTextViewDelegate>
 
@@ -1097,6 +1098,19 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
 
         //        [[NSWorkspace sharedWorkspace] openURL:navigationActionURL];
+
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
+
+    if ([navigationActionURL.scheme isEqualToString:kMDictEntryURIScheme]) {
+        NSString *hrefText = [navigationActionURL.absoluteString ns_decode];
+
+        [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
+            if (self.queryTextBlock && text.length) {
+                self.queryTextBlock([text ns_trim]);
+            }
+        }];
 
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
