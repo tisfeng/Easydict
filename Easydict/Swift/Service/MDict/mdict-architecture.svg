@@ -41,13 +41,13 @@
   <text x="490" y="252" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">translate() / iframe rendering</text>
   <rect x="382" y="351" width="216" height="58" rx="8" fill="#10b981"/>
   <text x="490" y="375" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictManager</text>
-  <text x="490" y="392" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Import · Persistence · Lifecycle</text>
+  <text x="490" y="392" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Import · Migration · Lifecycle</text>
   <rect x="382" y="481" width="216" height="58" rx="8" fill="#6366f1"/>
   <text x="490" y="505" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictDictionary</text>
-  <text x="490" y="522" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">lookup() / MDD Resource Parsing</text>
+  <text x="490" y="522" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">inline CSS / data URLs</text>
   <rect x="382" y="611" width="216" height="58" rx="8" fill="#6366f1"/>
   <text x="490" y="635" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictReader</text>
-  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Header · Encrypted Keys · libz</text>
+  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Mapped Data · Encrypted Keys · libz</text>
   <rect x="382" y="726" width="216" height="48" rx="8" fill="#8b5cf6"/>
   <text x="490" y="745" text-anchor="middle" font-size="13" font-weight="600" fill="white">QueryResult</text>
   <text x="490" y="762" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">htmlString → Result Panel</text>
@@ -68,7 +68,7 @@
   <text x="810" y="471" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Full zlib Streams</text>
   <rect x="723" y="726" width="175" height="48" rx="6" fill="#8b5cf6" opacity="0.92"/>
   <text x="810" y="745" text-anchor="middle" font-size="12" font-weight="600" fill="white">WKWebView</text>
-  <text x="810" y="761" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">HTML Rendering Engine</text>
+  <text x="810" y="761" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">Render + Entry Routing</text>
 
   <!-- arrows -->
   <line x1="490" y1="139" x2="490" y2="209" stroke="#2563eb" stroke-width="1.8" marker-end="url(#a-blue)"/>

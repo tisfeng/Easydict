@@ -41,13 +41,13 @@
   <text x="490" y="252" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">translate() / iframe渲染</text>
   <rect x="382" y="351" width="216" height="58" rx="8" fill="#10b981"/>
   <text x="490" y="375" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictManager</text>
-  <text x="490" y="392" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">导入 · 持久化 · 启停管理</text>
+  <text x="490" y="392" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">导入 · 迁移 · 启停管理</text>
   <rect x="382" y="481" width="216" height="58" rx="8" fill="#6366f1"/>
   <text x="490" y="505" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictDictionary</text>
-  <text x="490" y="522" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">lookup() / MDD资源解析</text>
+  <text x="490" y="522" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">内联 CSS / data URL</text>
   <rect x="382" y="611" width="216" height="58" rx="8" fill="#6366f1"/>
   <text x="490" y="635" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictReader</text>
-  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">头部 · 加密键索引 · libz</text>
+  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">映射读取 · 加密键索引 · libz</text>
   <rect x="382" y="726" width="216" height="48" rx="8" fill="#8b5cf6"/>
   <text x="490" y="745" text-anchor="middle" font-size="13" font-weight="600" fill="white">QueryResult</text>
   <text x="490" y="762" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">htmlString → 结果面板</text>
@@ -68,7 +68,7 @@
   <text x="810" y="471" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">完整 zlib 流</text>
   <rect x="723" y="726" width="175" height="48" rx="6" fill="#8b5cf6" opacity="0.92"/>
   <text x="810" y="745" text-anchor="middle" font-size="12" font-weight="600" fill="white">WKWebView</text>
-  <text x="810" y="761" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">HTML渲染引擎</text>
+  <text x="810" y="761" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">渲染 + 查词路由</text>
 
   <!-- arrows -->
   <line x1="490" y1="139" x2="490" y2="209" stroke="#2563eb" stroke-width="1.8" marker-end="url(#a-blue)"/>

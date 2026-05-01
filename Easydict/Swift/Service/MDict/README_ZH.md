@@ -27,7 +27,8 @@ MDict/
 - **键块解析**：读取键块信息区（v2 有独立的压缩键块信息），支持解密
   `Encrypted="2"` 的 key index，解压后构建
   `word → recordOffset` 的内存索引（`[String: Int]`）。
-- **记录块读取**：按需解压目标记录块，从偏移量提取单条释义数据。
+- **记录块读取**：尽可能以内存映射方式读取词典文件，按需解压目标记录块，
+  再从偏移量提取单条释义数据。
 - **压缩支持**：通过系统 `libz` 支持 zlib（类型 `0x02`），同时支持无压缩
   （类型 `0x00`）；LZO 会抛出有提示的错误。
 
@@ -35,9 +36,13 @@ MDict/
 
 封装一个 MDX 文件及其配套 MDD 文件：
 
-- `lookup(_:)` — 查词并返回 HTML/文本释义，对大小写不敏感词典自动尝试首字母大写形式。
-- `lookupResource(_:)` — 从 MDD 文件中读取图片、音频等二进制资源（供 WKWebView 拦截器使用）。
-- 对 `entry://` 和 `sound://` 链接做前缀替换，避免 WKWebView 导航跳转。
+- `lookup(_:)` — 对查词文本先去除首尾空白，再按原始顺序返回所有匹配的 HTML/文本释义，
+  让同一词头的多条记录堆叠展示；对大小写不敏感词典自动尝试小写和首字母大写形式。
+- `lookupResource(_:)` — 从 MDD 文件中读取 CSS、图片、音频等二进制资源，会同时尝试
+  原始路径、前导反斜杠、斜杠转反斜杠和去前导反斜杠形式，并在查找时忽略查询串和片段。
+- 将 `entry://` 链接改写为应用内查词链接，内联样式表链接，并把 MDD 图片/音频
+  资源（包括 `srcset` 候选项）转换成 `data:` URL，让 WKWebView 不依赖自定义 scheme
+  handler 也能渲染。
 
 ### MDictManager
 
@@ -45,6 +50,8 @@ MDict/
 
 - 通过 `Defaults`（`UserDefaults` 封装）保存已导入词典的路径列表。
 - 导入时自动发现同目录下同名 MDD 文件（支持多个 MDD 分卷）。
+- 同时接受 `.mdx` 词典文件和 `.mdd` 资源文件导入。MDD 会合并到同名 MDX 记录，
+  历史设置里的独立 MDD 记录会迁移成资源路径。
 - 提供启用/禁用、重排序、删除等操作，变更后发送 `MDictManagerDidChange` 通知。
 
 ### MDictService
@@ -55,13 +62,17 @@ MDict/
 - `translate(_:from:to:)` 遍历所有已启用词典，将 HTML 释义包裹在 `<iframe>` 中，
   复用 `apple-dictionary.html` 框架模板进行渲染。
 - 纯文本词典条目自动转换为 HTML 段落。
+- 内嵌媒体与图标资源会在渲染前做尺寸归一化，确保发音按钮在结果面板内保持紧凑。
+- 音频链接会在当前位置播放，页内锚点会在当前条目内滚动，不再离开或重新加载 iframe。
+- MDict 结果 HTML 由结果面板的 WKWebView 直接加载，`mdict-entry://` 导航会回到
+  Easydict 查词流程。
 
 ### MDictConfigurationView
 
 SwiftUI `Section`，通过 `service.configurationListItems()` 注入设置面板：
 
 - 列表显示已导入词典的标题与文件名，支持开关、拖拽排序、滑动删除。
-- 右上角 `+` 按钮触发文件选择器（仅显示 `.mdx` 文件）。
+- 右上角 `+` 按钮触发文件选择器，可选择 `.mdx` 和 `.mdd` 文件。
 - 导入失败时弹出 Alert 展示错误信息。
 
 ## 主要数据流
@@ -81,7 +92,7 @@ decompressBlock / readRecord      ← 按需解压记录块
     ↓
 HTML 包裹 → QueryResult.htmlString
     ↓
-WKWebView 渲染
+WKWebView 渲染 + mdict-entry 查词路由
 ```
 
 ## 调试入口
