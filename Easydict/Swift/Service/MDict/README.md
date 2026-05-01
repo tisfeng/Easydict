@@ -11,9 +11,9 @@ This directory implements importing, parsing, and querying of MDict files, integ
 MDict/
 ├── MDictReader.swift          # MDict binary parser (Header, Key blocks, Record blocks, libz)
 ├── MDictDictionary.swift      # High-level dictionary wrapper (Lookup, MDD resource resolution, links)
-├── MDictManager.swift         # Dictionary lifecycle management (Import, Persistence, Toggle, Sort)
+├── MDictManager.swift         # Dictionary lifecycle management (Import, Persistence, Toggle, Sort, Delete)
 ├── MDictService.swift         # QueryService subclass, HTML rendering and framework integration
-└── MDictConfigurationView.swift  # SwiftUI settings panel (Import, List, Toggle, Sort)
+└── MDictConfigurationView.swift  # SwiftUI settings panel (Import, List, Toggle, Sort, Delete)
 ```
 
 ## Core Components
@@ -75,7 +75,8 @@ Inherits from `QueryService`, implementing standard query interfaces:
 
 SwiftUI `Section` injected into the settings panel via `service.configurationListItems()`:
 
-- Displays titles and filenames of imported dictionaries, supporting toggles, drag-to-sort, and swipe-to-delete.
+- Displays titles and filenames of imported dictionaries, supporting toggles,
+  drag-to-sort, explicit trash-button deletion, and swipe-to-delete.
 - `+` button in the top right triggers a file picker for `.mdx` and `.mdd` files.
 - Shows an Alert with error details if import fails.
 

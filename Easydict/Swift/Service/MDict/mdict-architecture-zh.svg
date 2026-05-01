@@ -56,7 +56,7 @@
   <text x="155" y="261" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">本地化字符串</text>
   <rect x="55" y="351" width="200" height="58" rx="6" fill="#f97316" opacity="0.92"/>
   <text x="155" y="375" text-anchor="middle" font-size="12" font-weight="600" fill="white">MDictConfigurationView</text>
-  <text x="155" y="391" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">导入/列表/开关/排序</text>
+  <text x="155" y="391" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">导入/列表/开关/删除</text>
   <rect x="713" y="226" width="195" height="48" rx="6" fill="#64748b" opacity="0.92"/>
   <text x="810" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="white">apple-dictionary.html</text>
   <text x="810" y="261" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">HTML基础模板</text>

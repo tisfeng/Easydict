@@ -11,9 +11,9 @@ MDict（`.mdx` / `.mdd`）是一种广泛使用的离线词典格式，支持 HT
 MDict/
 ├── MDictReader.swift          # MDict 二进制格式解析器（头部、键块、记录块、libz 解压）
 ├── MDictDictionary.swift      # 高层词典封装（查词、MDD 资源解析、链接转义）
-├── MDictManager.swift         # 词典生命周期管理（导入、持久化、启用/禁用、排序）
+├── MDictManager.swift         # 词典生命周期管理（导入、持久化、启用/禁用、排序、删除）
 ├── MDictService.swift         # QueryService 子类，HTML 渲染并接入主框架
-└── MDictConfigurationView.swift  # SwiftUI 设置面板（导入、列表、开关、排序）
+└── MDictConfigurationView.swift  # SwiftUI 设置面板（导入、列表、开关、排序、删除）
 ```
 
 ## 核心组件
@@ -71,7 +71,7 @@ MDict/
 
 SwiftUI `Section`，通过 `service.configurationListItems()` 注入设置面板：
 
-- 列表显示已导入词典的标题与文件名，支持开关、拖拽排序、滑动删除。
+- 列表显示已导入词典的标题与文件名，支持开关、拖拽排序、显式垃圾桶按钮删除和滑动删除。
 - 右上角 `+` 按钮触发文件选择器，可选择 `.mdx` 和 `.mdd` 文件。
 - 导入失败时弹出 Alert 展示错误信息。
 
