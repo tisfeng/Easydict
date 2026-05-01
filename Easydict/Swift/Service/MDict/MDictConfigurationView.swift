@@ -8,6 +8,7 @@
 
 import SFSafeSymbols
 import SwiftUI
+import UniformTypeIdentifiers
 
 // MARK: - MDictConfigurationView
 
