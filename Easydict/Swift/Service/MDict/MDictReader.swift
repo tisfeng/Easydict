@@ -628,6 +628,8 @@ extension MDictReader {
         -> Int {
         var pos = offset
         if terminatorSize == 2 {
+            // MDict key text starts at an aligned UTF-16 boundary after the
+            // fixed-width record offset, so stepping by code unit is safe.
             while pos + 1 < data.count {
                 if data[pos] == 0, data[pos + 1] == 0 { return pos }
                 pos += 2
