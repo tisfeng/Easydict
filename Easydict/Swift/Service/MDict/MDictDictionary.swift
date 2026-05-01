@@ -85,6 +85,24 @@ final class MDictDictionary {
     private let mdxReader: MDictReader
     private let mddReaders: [MDictReader]
 
+    private static func javaScriptStringLiteral(_ value: String) -> String {
+        let escaped = value
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "'", with: "\\'")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\r", with: "\\r")
+            .replacingOccurrences(of: "\u{2028}", with: "\\u2028")
+            .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
+        return "'\(escaped)'"
+    }
+
+    private static func decodeResourceText(_ data: Data) -> String? {
+        (String(data: data, encoding: .utf8)
+            ?? String(data: data, encoding: .utf16LittleEndian)
+            ?? String(data: data, encoding: .utf16BigEndian))?
+            .trimmingPrefix("\u{FEFF}")
+    }
+
     private func resourceKeyCandidates(for key: String) -> [String] {
         let decoded = (key.removingPercentEncoding ?? key)
             .components(separatedBy: CharacterSet(charactersIn: "?#"))
@@ -238,17 +256,6 @@ final class MDictDictionary {
         }
     }
 
-    private static func javaScriptStringLiteral(_ value: String) -> String {
-        let escaped = value
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "'", with: "\\'")
-            .replacingOccurrences(of: "\n", with: "\\n")
-            .replacingOccurrences(of: "\r", with: "\\r")
-            .replacingOccurrences(of: "\u{2028}", with: "\\u2028")
-            .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
-        return "'\(escaped)'"
-    }
-
     private func replaceMatches(
         in html: String,
         pattern: String,
@@ -290,17 +297,13 @@ final class MDictDictionary {
 
     private func stylesheetText(for key: String) -> String? {
         guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
-        let css = String(data: data, encoding: .utf8)
-            ?? String(data: data, encoding: .utf16LittleEndian)
-            ?? String(data: data, encoding: .utf16BigEndian)
+        let css = Self.decodeResourceText(data)
         return css.map { replaceCSSResources(in: $0) }
     }
 
     private func scriptText(for key: String) -> String? {
         guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
-        return String(data: data, encoding: .utf8)
-            ?? String(data: data, encoding: .utf16LittleEndian)
-            ?? String(data: data, encoding: .utf16BigEndian)
+        return Self.decodeResourceText(data)
     }
 
     private func mimeType(for key: String) -> String {
