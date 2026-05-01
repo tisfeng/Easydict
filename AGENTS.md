@@ -63,6 +63,14 @@ Do not run multiple `xcodebuild` commands concurrently against the same workspac
 
 `xcodebuild` may take several minutes. Wait for it to finish.
 
+If the default Xcode DerivedData location fails because of permission, cache, or
+runner state, use an external DerivedData directory instead of a repo-local one:
+
+`-derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Codex`
+
+After the build or test completes, remove that DerivedData directory before
+finishing the task.
+
 Common build and test commands:
 
 ```bash
@@ -143,18 +151,22 @@ Recommended usage:
   `AI Assistant`.
 - Every directory must include a Chinese `README.md`. When creating a new directory, add
   its `README.md` and matching SVG technical diagram in the same change.
-
-### SVG Diagram Rules
-
 - Generate each `README.md`'s SVG technical diagram from the README content with the
   `fireworks-tech-graph` skill, choosing the diagram type that best fits the content.
-- When generating Easydict technical diagrams with `fireworks-tech-graph`, read
-  `.agents/overrides/fireworks-tech-graph-layout-rules.md` after the skill and apply the
-  stricter repo-local layout, connector, label, export, and rendered-review rules.
 - When files in a directory are added, removed, renamed, or their behavior changes, update
   that directory's `README.md` and matching SVG technical diagram in the same change.
   Explain responsibilities, key components, main flows, and debugging entry points instead
   of writing a method-by-method API index.
+
+### Skill Overlay Rules
+
+- `.agents/overrides/` stores repo-level agent rules that are not bundled into runtime
+  skills. Runtime skill-specific overlays should live inside the target skill directory.
+- When using `fireworks-tech-graph`, read
+  `.agents/overrides/fireworks-tech-graph-layout-rules.md` after the skill and apply the
+  stricter project-level layout, connector, label, export, and rendered-review rules.
+- If the base skill conflicts with its overlay, keep the stricter project-level overlay
+  rule instead of editing only the upstream skill mirror.
 
 ### Naming Rules
 
