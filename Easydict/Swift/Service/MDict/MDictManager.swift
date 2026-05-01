@@ -227,11 +227,20 @@ final class MDictManager: ObservableObject {
         return contents
             .filter {
                 $0.pathExtension.lowercased() == "mdd"
-                    && $0.deletingPathExtension().lastPathComponent
-                    .lowercased()
-                    .hasPrefix(baseName.lowercased())
+                    && isCompanionMDDName(
+                        $0.deletingPathExtension().lastPathComponent,
+                        for: baseName
+                    )
             }
             .sorted { $0.path < $1.path }
+    }
+
+    private func isCompanionMDDName(_ resourceName: String, for baseName: String) -> Bool {
+        let escapedBaseName = NSRegularExpression.escapedPattern(for: baseName)
+        return resourceName.range(
+            of: #"^\#(escapedBaseName)(?:\.\d+)?$"#,
+            options: [.regularExpression, .caseInsensitive]
+        ) != nil
     }
 
     private func matchingMDXURLs(for mddURL: URL) -> [URL] {
