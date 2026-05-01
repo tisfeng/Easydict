@@ -23,7 +23,7 @@ class MDictService: QueryService, @unchecked Sendable {
     // MARK: - QueryService overrides
 
     override func serviceType() -> ServiceType {
-        ServiceType(rawValue: "MDict")
+        .mDict
     }
 
     override func name() -> String {
