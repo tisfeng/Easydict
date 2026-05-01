@@ -49,6 +49,7 @@
 		031C66D12ED9EB290025D190 /* BingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C52ED9EB290025D190 /* BingLanguageVoice.swift */; };
 		031C66D22ED9EB290025D190 /* BingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66C42ED9EB290025D190 /* BingConfig.swift */; };
 		031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D32ED9F9E30025D190 /* AppleDictionary.swift */; };
+		031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66E12EDB00010025D190 /* DictionaryHTMLRenderer.swift */; };
 		635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */; };
 		CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30215FF66EE44A0F932E70CF /* MDictDictionary.swift */; };
 		5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FFFD863EBF442CB4FCE765 /* MDictManager.swift */; };
@@ -649,6 +650,7 @@
 		031C66C92ED9EB290025D190 /* BingService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BingService+Translate.swift"; sourceTree = "<group>"; };
 		031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTranslateResponse.swift; sourceTree = "<group>"; };
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
+		031C66E12EDB00010025D190 /* DictionaryHTMLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryHTMLRenderer.swift; sourceTree = "<group>"; };
 		897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReader.swift; sourceTree = "<group>"; };
 		30215FF66EE44A0F932E70CF /* MDictDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictDictionary.swift; sourceTree = "<group>"; };
 		26FFFD863EBF442CB4FCE765 /* MDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictManager.swift; sourceTree = "<group>"; };
@@ -1909,6 +1911,7 @@
 		03779F0A2BB25688008D3C42 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				031C66E12EDB00010025D190 /* DictionaryHTMLRenderer.swift */,
 				3A6EB576721647E4A13E445C /* MDict */,
 				54A84CEDD3AD444B860067F8 /* Model */,
 				03D0F0202F00000100ABCDEF /* Baidu */,
@@ -4045,6 +4048,7 @@
 				CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */,
 				5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */,
 				F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */,
+				031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */,
 				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
 				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,

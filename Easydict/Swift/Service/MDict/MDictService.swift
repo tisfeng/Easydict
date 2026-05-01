@@ -74,10 +74,7 @@ class MDictService: QueryService, @unchecked Sendable {
             )
         }
 
-        var iframesHTML = ""
-        var bigWordHTML = "<h2 class=\"big-word-title\">\(text)</h2>"
-
-        let baseHTML = loadBaseHTML()
+        var sections: [DictionaryHTMLSection] = []
 
         for dict in dicts {
             guard let definition = try dict.lookup(text),
@@ -86,39 +83,21 @@ class MDictService: QueryService, @unchecked Sendable {
 
             let content = dict.isHTML ? definition : plainTextToHTML(definition)
             let styledContent = wrapWithStyle(content)
-            let escaped = styledContent.escapedXMLString()
-            let iframe = "<iframe class=\"custom-iframe-container\" srcdoc=\"\(escaped)\"></iframe>"
-            let details = "\(bigWordHTML)<details open><summary>\(dict.title)</summary>\(iframe)</details>"
-            bigWordHTML = ""
-            iframesHTML += details
+            sections.append(DictionaryHTMLSection(title: dict.title, html: styledContent))
         }
 
-        guard !iframesHTML.isEmpty else {
+        guard let renderResult = DictionaryHTMLRenderer.render(word: text, sections: sections) else {
             throw QueryError(type: .noResult)
         }
 
-        let full = (baseHTML ?? "<html><body></body></html>")
-            .replacingOccurrences(of: "</body>", with: "\(iframesHTML)</body>")
-
-        result?.htmlString = full
+        result?.htmlString = renderResult.htmlString
         return result ?? QueryResult()
     }
 
     // MARK: Private
 
-    private func loadBaseHTML() -> String? {
-        Bundle.main.path(forResource: "apple-dictionary", ofType: "html")
-            .flatMap { try? String(contentsOfFile: $0, encoding: .utf8) }
-    }
-
     private func wrapWithStyle(_ html: String) -> String {
-        let lightText = NSColor.mm_hexString(from: NSColor.ez_resultTextLight())
-        let lightBG = NSColor.mm_hexString(from: NSColor.ez_resultViewBgLight())
-        let darkBG = NSColor.mm_hexString(from: NSColor.ez_resultViewBgDark())
-
-        let style = """
-        <style>\
-        body{margin:8px;color:\(lightText);background-color:\(lightBG);font-family:'system-ui';}\
+        let extraCSS = """
         img,svg{max-width:100%;height:auto;}\
         a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]{\
         display:inline-flex!important;align-items:center;justify-content:center;\
@@ -133,11 +112,9 @@ class MDictService: QueryService, @unchecked Sendable {
         [class*="sound" i] img,[class*="audio" i] img,[class*="speaker" i] img,\
         [class*="sound" i] svg,[class*="audio" i] svg,[class*="speaker" i] svg{\
         width:24px!important;height:24px!important;max-width:24px!important;max-height:24px!important;}\
-        @media(prefers-color-scheme:dark){body{background-color:\(darkBG);\
-        filter:invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);}}\
-        a[href^="mdict-entry://"]{cursor:pointer;}\
-        </style>
+        a[href^="mdict-entry://"]{cursor:pointer;}
         """
+        let style = DictionaryHTMLRenderer.entryStyle(bodyMargin: 8, extraCSS: extraCSS)
         let script = """
         <script>\
         document.addEventListener('click',function(event){\
