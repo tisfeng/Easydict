@@ -270,7 +270,10 @@
       var iframes = document.querySelectorAll("iframe");
       for (var i = 0; i < iframes.length; i++) {
         var iframe = iframes[i];
-        var iframeDocument = iframe.contentWindow.document;
+        var iframeDocument = getIframeDocument(iframe);
+        if (!iframeDocument || !iframeDocument.body || !iframeDocument.documentElement) {
+          continue;
+        }
 
         // modify iframe body margin
         var body = iframeDocument.querySelector("body");
@@ -354,7 +357,10 @@
       var iframes = document.querySelectorAll("iframe");
       for (var i = 0; i < iframes.length; i++) {
         var iframe = iframes[i];
-        var iframeDocument = iframe.contentWindow.document;
+        var iframeDocument = getIframeDocument(iframe);
+        if (!iframeDocument || !iframeDocument.documentElement) {
+          continue;
+        }
         var documentElementScrollHeight =
           iframeDocument.documentElement.scrollHeight;
         heights.push(documentElementScrollHeight);
@@ -471,14 +477,28 @@
       var iframes = document.getElementsByTagName('iframe');
       for (var i = 0; i < iframes.length; i++) {
         var iframe = iframes[i];
-        var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+        var frameDoc = getIframeDocument(iframe);
+        if (!frameDoc || !frameDoc.body) {
+          continue;
+        }
 
         // 修改 iframe 中 body 的字体大小
         frameDoc.body.style.fontSize = percentFontSize;
       }
     }
 
+    function getIframeDocument(iframe) {
+      try {
+        return iframe.contentDocument || iframe.contentWindow.document;
+      } catch (error) {
+        return null;
+      }
+    }
+
     function changeElementFontSize(element, originalFontSize, fontSizeRatio) {
+      if (!element) {
+        return;
+      }
       // console.log(`originalFontSize: ${originalFontSize}`);
       var newFontSize = parseFloat(originalFontSize) * fontSizeRatio;
       // console.log(`newFontSize: ${newFontSize}`);

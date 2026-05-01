@@ -119,12 +119,52 @@ class MDictService: QueryService, @unchecked Sendable {
         let style = """
         <style>\
         body{margin:8px;color:\(lightText);background-color:\(lightBG);font-family:'system-ui';}\
+        img,svg{max-width:100%;height:auto;}\
+        a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]{\
+        display:inline-flex!important;align-items:center;justify-content:center;\
+        width:24px!important;height:24px!important;line-height:24px!important;\
+        vertical-align:middle;overflow:hidden;}\
+        [class*="sound" i],[class*="audio" i],[class*="speaker" i]{font-size:16px;}\
+        a[href^="data:audio"] img,a[href^="data:audio"] svg,\
+        a[href^="mdict-sound://"] img,a[href^="mdict-sound://"] svg,\
+        a[href^="sound://"] img,a[href^="sound://"] svg,\
+        input[type="image"][class*="sound" i],input[type="image"][class*="audio" i],\
+        input[type="image"][class*="speaker" i],\
+        [class*="sound" i] img,[class*="audio" i] img,[class*="speaker" i] img,\
+        [class*="sound" i] svg,[class*="audio" i] svg,[class*="speaker" i] svg{\
+        width:24px!important;height:24px!important;max-width:24px!important;max-height:24px!important;}\
         @media(prefers-color-scheme:dark){body{background-color:\(darkBG);\
         filter:invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);}}\
         a[href^="mdict-entry://"]{cursor:pointer;}\
         </style>
         """
-        return style + html
+        let script = """
+        <script>\
+        document.addEventListener('click',function(event){\
+        var link=event.target&&event.target.closest?event.target.closest('a[href]'):null;\
+        if(!link){return;}\
+        var href=link.getAttribute('href')||'';\
+        if(handleAnchorLink(href)){event.preventDefault();return;}\
+        var target=link.matches('a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]')?link:null;\
+        if(!target){return;}\
+        event.preventDefault();\
+        var source=target.getAttribute('href');\
+        if(!source){return;}\
+        window.__mdictAudio=new Audio(source);\
+        window.__mdictAudio.play();\
+        },true);\
+        function handleAnchorLink(href){\
+        var hash=href.charAt(0)==='#'?href:(href.indexOf('#')>=0?href.slice(href.indexOf('#')):'');\
+        if(!hash||hash.length<2){return false;}\
+        var id=decodeURIComponent(hash.slice(1));\
+        var target=document.getElementById(id)||document.getElementsByName(id)[0];\
+        if(!target){return false;}\
+        target.scrollIntoView({block:'start'});\
+        return true;\
+        }\
+        </script>
+        """
+        return style + script + html
     }
 
     private func plainTextToHTML(_ text: String) -> String {

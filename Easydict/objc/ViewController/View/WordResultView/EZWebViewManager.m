@@ -62,7 +62,8 @@ static NSString *kMethod = @"method";
     CGFloat fontSize = MyConfiguration.shared.fontSizeRatio; // 1.4 --> 140%
     NSString *script = [NSString stringWithFormat:@"changeIframeBodyFontSize(%.1f); updateAllIframeStyle();", fontSize];
     [self.webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-        if (!error) {
+        if (error) {
+            MMLogError(@"updateAllIframe failed: %@", error);
         }
     }];
 }
@@ -71,6 +72,7 @@ static NSString *kMethod = @"method";
     self.wordResultViewHeight = 0;
     self.isLoaded = NO;
     self.needUpdateIframeHeight = NO;
+    self.loadedHTMLString = nil;
     self.didFinishUpdatingIframeHeightBlock = nil;
     [self teardownWebView];
 }
@@ -82,7 +84,7 @@ static NSString *kMethod = @"method";
 #pragma mark - MJExtension
 
 + (NSArray *)mj_ignoredPropertyNames {
-    return @[ @"webView" ];
+    return @[ @"webView", @"loadedHTMLString" ];
 }
 
 - (void)teardownWebView {
