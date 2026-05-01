@@ -94,6 +94,17 @@ private struct RecordBlockRange {
     }
 }
 
+// MARK: - RecordSpan
+
+/// Offset and length for a single dictionary record.
+///
+/// This value is cheap to hash, letting duplicate headword records be filtered
+/// before reading and hashing large definition payloads.
+private struct RecordSpan: Hashable {
+    let offset: UInt64
+    let size: Int
+}
+
 // MARK: - MDictReader
 
 /// Reads and parses MDict binary files (MDX for definitions, MDD for resources).
@@ -160,11 +171,11 @@ final class MDictReader {
         guard let indexes = keyIndex[normalizedKey] else { return [] }
 
         var records: [Data] = []
-        var seen = Set<Data>()
+        var seen = Set<RecordSpan>()
         for index in indexes {
-            let record = try lookupData(at: index)
-            guard seen.insert(record).inserted else { continue }
-            records.append(record)
+            let span = try recordSpan(at: index)
+            guard seen.insert(span).inserted else { continue }
+            records.append(try readRecord(at: span.offset, size: span.size))
         }
         return records
     }
@@ -213,6 +224,11 @@ final class MDictReader {
     }
 
     private func lookupData(at index: Int) throws -> Data {
+        let span = try recordSpan(at: index)
+        return try readRecord(at: span.offset, size: span.size)
+    }
+
+    private func recordSpan(at index: Int) throws -> RecordSpan {
         guard keyEntries.indices.contains(index) else {
             throw MDictError.invalidFormat("Key index \(index) out of range")
         }
@@ -228,7 +244,7 @@ final class MDictReader {
             throw MDictError.invalidFormat("Record offsets are not sorted")
         }
         let recordSize = Int(nextOffset - entry.recordOffset)
-        return try readRecord(at: entry.recordOffset, size: recordSize)
+        return RecordSpan(offset: entry.recordOffset, size: recordSize)
     }
 }
 
@@ -649,9 +665,9 @@ extension MDictReader {
         decompressedBlockCacheBytes += block.count
         markRecordBlockCacheHit(index)
 
-        while (decompressedBlockCacheOrder.count > maxMDictCachedRecordBlockCount
-            || decompressedBlockCacheBytes > maxMDictCachedRecordBlockBytes),
-              let evicted = decompressedBlockCacheOrder.first {
+        while decompressedBlockCacheOrder.count > maxMDictCachedRecordBlockCount
+            || decompressedBlockCacheBytes > maxMDictCachedRecordBlockBytes,
+            let evicted = decompressedBlockCacheOrder.first {
             decompressedBlockCacheOrder.removeFirst()
             if let evictedBlock = decompressedBlockCache.removeValue(forKey: evicted) {
                 decompressedBlockCacheBytes -= evictedBlock.count
