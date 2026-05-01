@@ -13,7 +13,7 @@ import SwiftUI
 
 /// SwiftUI configuration panel for the MDict service.
 ///
-/// Lists imported dictionaries, allows toggling, reordering, removing them,
+/// Lists imported dictionaries, allows toggling, reordering, explicit removal,
 /// and importing new MDX files via a file picker.
 struct MDictConfigurationView: View {
     // MARK: Internal
@@ -120,6 +120,15 @@ private struct DictionaryRow: View {
             .toggleStyle(.switch)
             .controlSize(.small)
             .labelsHidden()
+
+            Button(role: .destructive) {
+                manager.removeDictionary(record)
+            } label: {
+                Label("common.delete", systemSymbol: .trash)
+                    .labelStyle(.iconOnly)
+            }
+            .buttonStyle(.borderless)
+            .controlSize(.small)
         }
         .padding(.vertical, 2)
     }

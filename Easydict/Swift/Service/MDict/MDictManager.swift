@@ -89,6 +89,11 @@ final class MDictManager: ObservableObject {
         persist()
     }
 
+    func removeDictionary(_ record: MDictDictionaryRecord) {
+        guard let index = records.firstIndex(where: { $0.id == record.id }) else { return }
+        removeDictionary(at: IndexSet(integer: index))
+    }
+
     // MARK: - Enable / Disable
 
     func setEnabled(_ enabled: Bool, for record: MDictDictionaryRecord) {
