@@ -129,6 +129,9 @@ final class MDictReader {
         } else {
             nextOffset = totalDecompressedRecordSize
         }
+        guard nextOffset >= entry.recordOffset else {
+            throw MDictError.invalidFormat("Record offsets are not sorted")
+        }
         let recordSize = Int(nextOffset - entry.recordOffset)
         return try readRecord(at: entry.recordOffset, size: recordSize)
     }
@@ -239,96 +242,143 @@ extension MDictReader {
         -> [MDictKeyEntry] {
         let isV2 = header.version >= 2.0
         let intSize = isV2 ? 8 : 4
-        let readInt: (Data, Int) -> UInt64 = isV2
-            ? { d, o in readUInt64BE(d, at: o) }
-            : { d, o in UInt64(readUInt32BE(d, at: o)) }
+        let readInt: (Data, Int) throws -> UInt64 = isV2
+            ? { d, o in try checkedReadUInt64BE(d, at: o) }
+            : { d, o in UInt64(try checkedReadUInt32BE(d, at: o)) }
 
-        let numKeyBlocks = readInt(data, cursor)
+        let numKeyBlocks = try readInt(data, cursor)
         cursor += intSize
-        let numEntries = readInt(data, cursor)
+        let numEntries = try readInt(data, cursor)
         cursor += intSize
+        guard let numKeyBlocksInt = Int(exactly: numKeyBlocks),
+              let numEntriesInt = Int(exactly: numEntries)
+        else {
+            throw MDictError.invalidFormat("Key block count exceeds supported size")
+        }
 
         var keyBlockInfoDecompSize: UInt64 = 0
         if isV2 {
-            keyBlockInfoDecompSize = readInt(data, cursor)
+            keyBlockInfoDecompSize = try readInt(data, cursor)
             cursor += intSize
         }
 
-        let keyBlockInfoSize = readInt(data, cursor)
+        let keyBlockInfoSize = try readInt(data, cursor)
         cursor += intSize
-        let keyBlocksSize = readInt(data, cursor)
+        _ = try readInt(data, cursor)
         cursor += intSize
 
         if isV2 {
+            try ensureAvailable(data, at: cursor, count: 4, context: "key block checksum")
             cursor += 4
         }
 
         let keyBlockInfoBytes: Data
         if isV2, keyBlockInfoSize > 0 {
-            var compressed = data.subdata(
-                in: cursor ..< cursor + Int(keyBlockInfoSize)
+            let keyBlockInfoSizeInt = try checkedInt(
+                keyBlockInfoSize,
+                context: "key block info size"
             )
+            var compressed = try checkedSubdata(data, at: cursor, count: keyBlockInfoSizeInt)
             if header.encrypted & 2 != 0 {
                 compressed = decryptKeyBlockInfo(compressed)
             }
             keyBlockInfoBytes = try decompressBlock(
                 compressed,
-                decompressedSize: Int(keyBlockInfoDecompSize)
+                decompressedSize: try checkedInt(
+                    keyBlockInfoDecompSize,
+                    context: "key block info decompressed size"
+                )
             )
         } else {
-            keyBlockInfoBytes = data.subdata(
-                in: cursor ..< cursor + Int(keyBlockInfoSize)
+            keyBlockInfoBytes = try checkedSubdata(
+                data,
+                at: cursor,
+                count: try checkedInt(keyBlockInfoSize, context: "key block info size")
             )
         }
-        cursor += Int(keyBlockInfoSize)
+        cursor += try checkedInt(keyBlockInfoSize, context: "key block info size")
 
         var blockSizes: [(compressed: Int, decompressed: Int)] = []
         var infoOffset = 0
-        for _ in 0 ..< numKeyBlocks {
+        for _ in 0 ..< numKeyBlocksInt {
+            try ensureAvailable(keyBlockInfoBytes, at: infoOffset, count: intSize, context: "key block entry count")
             infoOffset += intSize
 
             if isV2 {
-                let wordSize = Int(readUInt16BE(keyBlockInfoBytes, at: infoOffset))
+                let wordSize = Int(try checkedReadUInt16BE(keyBlockInfoBytes, at: infoOffset))
                 infoOffset += 2
+                try ensureAvailable(
+                    keyBlockInfoBytes,
+                    at: infoOffset,
+                    count: wordSize + header.nullTerminatorSize,
+                    context: "key block first key"
+                )
                 infoOffset += wordSize + header.nullTerminatorSize
 
-                let lastSize = Int(readUInt16BE(keyBlockInfoBytes, at: infoOffset))
+                let lastSize = Int(try checkedReadUInt16BE(keyBlockInfoBytes, at: infoOffset))
                 infoOffset += 2
+                try ensureAvailable(
+                    keyBlockInfoBytes,
+                    at: infoOffset,
+                    count: lastSize + header.nullTerminatorSize,
+                    context: "key block last key"
+                )
                 infoOffset += lastSize + header.nullTerminatorSize
             } else {
+                try ensureAvailable(keyBlockInfoBytes, at: infoOffset, count: 1, context: "key block first key size")
                 let wordSize = Int(keyBlockInfoBytes[infoOffset])
                 infoOffset += 1
+                try ensureAvailable(
+                    keyBlockInfoBytes,
+                    at: infoOffset,
+                    count: wordSize + header.nullTerminatorSize,
+                    context: "key block first key"
+                )
                 infoOffset += wordSize + header.nullTerminatorSize
 
+                try ensureAvailable(keyBlockInfoBytes, at: infoOffset, count: 1, context: "key block last key size")
                 let lastSize = Int(keyBlockInfoBytes[infoOffset])
                 infoOffset += 1
+                try ensureAvailable(
+                    keyBlockInfoBytes,
+                    at: infoOffset,
+                    count: lastSize + header.nullTerminatorSize,
+                    context: "key block last key"
+                )
                 infoOffset += lastSize + header.nullTerminatorSize
             }
 
-            let compSize = Int(readInt(keyBlockInfoBytes, infoOffset))
+            let compSize = try checkedInt(
+                try readInt(keyBlockInfoBytes, infoOffset),
+                context: "key block compressed size"
+            )
             infoOffset += intSize
-            let decompSize = Int(readInt(keyBlockInfoBytes, infoOffset))
+            let decompSize = try checkedInt(
+                try readInt(keyBlockInfoBytes, infoOffset),
+                context: "key block decompressed size"
+            )
             infoOffset += intSize
 
             blockSizes.append((compSize, decompSize))
         }
 
         var entries: [MDictKeyEntry] = []
-        entries.reserveCapacity(Int(numEntries))
+        entries.reserveCapacity(numEntriesInt)
         let offsetWidth = isV2 ? 8 : 4
 
         for blockSize in blockSizes {
             let blockData: Data
             if blockSize.compressed == blockSize.decompressed {
-                blockData = data.subdata(in: cursor ..< cursor + blockSize.compressed)
+                blockData = try checkedSubdata(data, at: cursor, count: blockSize.compressed)
             } else {
-                let compressed = data.subdata(in: cursor ..< cursor + blockSize.compressed)
+                let compressed = try checkedSubdata(data, at: cursor, count: blockSize.compressed)
                 blockData = try decompressBlock(compressed, decompressedSize: blockSize.decompressed)
             }
             cursor += blockSize.compressed
 
             var pos = 0
             while pos < blockData.count {
+                try ensureAvailable(blockData, at: pos, count: offsetWidth, context: "key entry record offset")
                 let recordOffset: UInt64
                 if isV2 {
                     recordOffset = readUInt64BE(blockData, at: pos)
@@ -340,6 +390,9 @@ extension MDictReader {
                 let wordEnd = findNullTerminator(
                     blockData, from: pos, terminatorSize: header.nullTerminatorSize
                 )
+                guard wordEnd < blockData.count else {
+                    throw MDictError.invalidFormat("Key entry is missing a null terminator")
+                }
                 let wordBytes = blockData.subdata(in: pos ..< wordEnd)
                 pos = wordEnd + header.nullTerminatorSize
 
@@ -364,26 +417,31 @@ extension MDictReader {
         -> ([RecordBlockInfo], Int) {
         let isV2 = header.version >= 2.0
         let intSize = isV2 ? 8 : 4
-        let readInt: (Data, Int) -> UInt64 = isV2
-            ? { d, o in readUInt64BE(d, at: o) }
-            : { d, o in UInt64(readUInt32BE(d, at: o)) }
+        let readInt: (Data, Int) throws -> UInt64 = isV2
+            ? { d, o in try checkedReadUInt64BE(d, at: o) }
+            : { d, o in UInt64(try checkedReadUInt32BE(d, at: o)) }
 
-        let numRecordBlocks = readInt(data, cursor)
+        let numRecordBlocks = try readInt(data, cursor)
         cursor += intSize
         // num_entries
+        try ensureAvailable(data, at: cursor, count: intSize, context: "record entry count")
         cursor += intSize
         // record_block_info_size
-        let recordBlockInfoSize = readInt(data, cursor)
+        _ = try readInt(data, cursor)
         cursor += intSize
         // record_blocks_size
+        try ensureAvailable(data, at: cursor, count: intSize, context: "record blocks size")
         cursor += intSize
 
         var infos: [RecordBlockInfo] = []
-        infos.reserveCapacity(Int(numRecordBlocks))
-        for _ in 0 ..< numRecordBlocks {
-            let compSize = readInt(data, cursor)
+        guard let numRecordBlocksInt = Int(exactly: numRecordBlocks) else {
+            throw MDictError.invalidFormat("Record block count exceeds supported size")
+        }
+        infos.reserveCapacity(numRecordBlocksInt)
+        for _ in 0 ..< numRecordBlocksInt {
+            let compSize = try readInt(data, cursor)
             cursor += intSize
-            let decompSize = readInt(data, cursor)
+            let decompSize = try readInt(data, cursor)
             cursor += intSize
             infos.append(RecordBlockInfo(compressedSize: compSize, decompressedSize: decompSize))
         }
@@ -398,20 +456,29 @@ extension MDictReader {
         for info in recordBlockInfos {
             let blockEnd = cumulativeOffset + info.decompressedSize
             if offset >= cumulativeOffset, offset < blockEnd {
-                let compressed = data.subdata(
-                    in: blockDataStart ..< blockDataStart + Int(info.compressedSize)
+                let compressed = try Self.checkedSubdata(
+                    data,
+                    at: blockDataStart,
+                    count: Self.checkedInt(info.compressedSize, context: "record block compressed size")
                 )
                 let decompressed = try Self.decompressBlock(
-                    compressed, decompressedSize: Int(info.decompressedSize)
+                    compressed,
+                    decompressedSize: Self.checkedInt(
+                        info.decompressedSize,
+                        context: "record block decompressed size"
+                    )
                 )
 
                 let localOffset = Int(offset - cumulativeOffset)
+                guard localOffset <= decompressed.count else {
+                    throw MDictError.invalidFormat("Record local offset \(localOffset) out of range")
+                }
                 let actualSize = min(size, decompressed.count - localOffset)
                 guard actualSize > 0 else { return Data() }
                 return decompressed.subdata(in: localOffset ..< localOffset + actualSize)
             }
             cumulativeOffset = blockEnd
-            blockDataStart += Int(info.compressedSize)
+            blockDataStart += try Self.checkedInt(info.compressedSize, context: "record block compressed size")
         }
 
         throw MDictError.invalidFormat("Record offset \(offset) out of range")
@@ -421,6 +488,44 @@ extension MDictReader {
 // MARK: - Binary Utilities
 
 extension MDictReader {
+    private static func ensureAvailable(
+        _ data: Data,
+        at offset: Int,
+        count: Int,
+        context: String
+    ) throws {
+        guard offset >= 0, count >= 0, offset <= data.count, count <= data.count - offset else {
+            throw MDictError.invalidFormat("\(context) exceeds file bounds")
+        }
+    }
+
+    private static func checkedSubdata(_ data: Data, at offset: Int, count: Int) throws -> Data {
+        try ensureAvailable(data, at: offset, count: count, context: "Data range")
+        return data.subdata(in: offset ..< offset + count)
+    }
+
+    private static func checkedInt(_ value: UInt64, context: String) throws -> Int {
+        guard let result = Int(exactly: value) else {
+            throw MDictError.invalidFormat("\(context) exceeds supported size")
+        }
+        return result
+    }
+
+    private static func checkedReadUInt16BE(_ data: Data, at offset: Int) throws -> UInt16 {
+        try ensureAvailable(data, at: offset, count: 2, context: "UInt16")
+        return readUInt16BE(data, at: offset)
+    }
+
+    private static func checkedReadUInt32BE(_ data: Data, at offset: Int) throws -> UInt32 {
+        try ensureAvailable(data, at: offset, count: 4, context: "UInt32")
+        return readUInt32BE(data, at: offset)
+    }
+
+    private static func checkedReadUInt64BE(_ data: Data, at offset: Int) throws -> UInt64 {
+        try ensureAvailable(data, at: offset, count: 8, context: "UInt64")
+        return readUInt64BE(data, at: offset)
+    }
+
     static func readUInt16BE(_ data: Data, at offset: Int) -> UInt16 {
         UInt16(data[offset]) << 8 | UInt16(data[offset + 1])
     }

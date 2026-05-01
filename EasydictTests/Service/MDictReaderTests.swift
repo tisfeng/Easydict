@@ -74,6 +74,33 @@ struct MDictReaderTests {
         #expect(decrypted.prefix(8) == block.prefix(8))
     }
 
+    @Test("Truncated MDX throws instead of crashing")
+    func testTruncatedMDXThrows() throws {
+        let header = """
+        <Dictionary GeneratedByEngineVersion="2.0" Format="Html" Encoding="utf-8" />
+        """
+        let headerData = header.data(using: .utf16LittleEndian)!
+        var data = Data([
+            UInt8((headerData.count >> 24) & 0xFF),
+            UInt8((headerData.count >> 16) & 0xFF),
+            UInt8((headerData.count >> 8) & 0xFF),
+            UInt8(headerData.count & 0xFF),
+        ])
+        data.append(headerData)
+        data.append(Data([0x00, 0x00, 0x00, 0x00]))
+        data.append(Data([0x00, 0x01]))
+
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("mdx")
+        try data.write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        #expect(throws: MDictError.self) {
+            try MDictReader(url: url)
+        }
+    }
+
     // MARK: - Binary reading
 
     @Test("ReadUInt32BE interprets big-endian bytes correctly")
