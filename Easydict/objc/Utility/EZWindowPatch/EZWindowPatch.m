@@ -11,6 +11,8 @@
 #import <objc/runtime.h>
 
 void EZPatchWindowServerCornerMask(void) {
+    // Register the private selector by name only. We do not call it here;
+    // the patch only compares and rewrites Objective-C method entries.
     SEL sel = sel_registerName("_cornerMask");
     Class nsWindowClass = [NSWindow class];
 
@@ -25,8 +27,11 @@ void EZPatchWindowServerCornerMask(void) {
     if (!baselineIMP) return;
 
     unsigned int totalClasses = 0;
-    // Use plain C pointer — avoids Swift's AutoreleasingUnsafeMutablePointer bridging
-    // which incorrectly autoreleases class objects during subscript access.
+    // This returns a snapshot of classes already registered in this process.
+    // Classes loaded later by a framework or bundle are not included here.
+    //
+    // Use a plain C pointer to avoid Swift's autoreleasing pointer bridging,
+    // which can incorrectly autorelease class objects during subscript access.
     Class *classList = objc_copyClassList(&totalClasses);
     if (!classList) return;
 
@@ -34,10 +39,15 @@ void EZPatchWindowServerCornerMask(void) {
         Class cls = classList[i];
         if (cls == nsWindowClass) continue;
 
+        // Walk the superclass chain manually so private AppKit, SwiftUI,
+        // QuickLook, and ImageKit window subclasses are covered too.
         BOOL isWindowSubclass = NO;
         Class ancestor = class_getSuperclass(cls);
         while (ancestor) {
-            if (ancestor == nsWindowClass) { isWindowSubclass = YES; break; }
+            if (ancestor == nsWindowClass) {
+                isWindowSubclass = YES;
+                break;
+            }
             ancestor = class_getSuperclass(ancestor);
         }
         if (!isWindowSubclass) continue;
@@ -46,9 +56,16 @@ void EZPatchWindowServerCornerMask(void) {
         Method *methods = class_copyMethodList(cls, &methodCount);
         if (!methods) continue;
 
+        // class_copyMethodList only returns methods declared on cls itself.
+        // That lets us distinguish a direct override from an inherited method.
         BOOL hasDirectOverride = NO;
         for (unsigned int j = 0; j < methodCount; j++) {
-            if (method_getName(methods[j]) == sel) { hasDirectOverride = YES; break; }
+            // Selectors are uniqued by the Objective-C runtime, so pointer
+            // equality is the correct comparison here.
+            if (method_getName(methods[j]) == sel) {
+                hasDirectOverride = YES;
+                break;
+            }
         }
         free(methods);
         if (!hasDirectOverride) continue;
@@ -56,6 +73,8 @@ void EZPatchWindowServerCornerMask(void) {
         Method method = class_getInstanceMethod(cls, sel);
         if (!method) continue;
 
+        // Replacing the IMP changes dispatch for all instances of this class,
+        // including windows created after this startup patch runs.
         method_setImplementation(method, baselineIMP);
         NSLog(@"[WindowServer patch] Patched %s._cornerMask", class_getName(cls));
     }
