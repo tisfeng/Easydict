@@ -41,6 +41,8 @@ struct DictionaryHTMLRenderResult {
 /// result colors, and details summary layout. Individual services still provide
 /// already-resolved entry HTML and any service-specific CSS or JavaScript.
 enum DictionaryHTMLRenderer {
+    // MARK: Internal
+
     static func entryStyle(bodyMargin: CGFloat, extraCSS: String = "") -> String {
         let lightText = NSColor.mm_hexString(from: NSColor.ez_resultTextLight())
         let lightBG = NSColor.mm_hexString(from: NSColor.ez_resultViewBgLight())
@@ -82,6 +84,8 @@ enum DictionaryHTMLRenderer {
             .replacingOccurrences(of: "</body>", with: "\(iframesHTML)</body>")
         return DictionaryHTMLRenderResult(htmlString: htmlString, sections: visibleSections)
     }
+
+    // MARK: Private
 
     private static func loadBaseHTML() -> String? {
         Bundle.main.path(forResource: "apple-dictionary", ofType: "html")

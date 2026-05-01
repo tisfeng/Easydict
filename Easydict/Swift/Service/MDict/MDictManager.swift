@@ -136,8 +136,10 @@ final class MDictManager: ObservableObject {
     }
 
     private func importMDD(_ mddURL: URL) throws {
-        let mdxURL = matchingMDXURL(for: mddURL)
-        if let index = records.firstIndex(where: { $0.mdxPath == mdxURL.path }) {
+        let mdxCandidates = matchingMDXURLs(for: mddURL)
+        if let index = records.firstIndex(where: { record in
+            mdxCandidates.contains { $0.path == record.mdxPath }
+        }) {
             records[index].mddPaths = mergedMDDPaths(
                 records[index].mddPaths,
                 with: [mddURL]
@@ -146,7 +148,7 @@ final class MDictManager: ObservableObject {
             return
         }
 
-        guard FileManager.default.fileExists(atPath: mdxURL.path) else {
+        guard let mdxURL = mdxCandidates.first(where: { FileManager.default.fileExists(atPath: $0.path) }) else {
             throw MDictError.invalidFormat("Please import the matching MDX file first")
         }
         try importMDX(mdxURL)
@@ -160,9 +162,10 @@ final class MDictManager: ObservableObject {
             enabledResourceBasePaths.insert(record.mdxURL.deletingPathExtension().path)
         }
         for record in records where record.mdxURL.pathExtension.lowercased() != "mdx" {
-            let basePath = record.mdxURL.deletingPathExtension().path
-            resourcesByBasePath[basePath, default: []].insert(record.mdxPath)
-            resourcesByBasePath[basePath, default: []].formUnion(record.mddPaths)
+            for basePath in basePathCandidates(for: record.mdxURL) {
+                resourcesByBasePath[basePath, default: []].insert(record.mdxPath)
+                resourcesByBasePath[basePath, default: []].formUnion(record.mddPaths)
+            }
         }
 
         var normalized: [MDictDictionaryRecord] = []
@@ -231,8 +234,26 @@ final class MDictManager: ObservableObject {
             .sorted { $0.path < $1.path }
     }
 
-    private func matchingMDXURL(for mddURL: URL) -> URL {
-        mddURL.deletingPathExtension().appendingPathExtension("mdx")
+    private func matchingMDXURLs(for mddURL: URL) -> [URL] {
+        basePathCandidates(for: mddURL)
+            .map { URL(fileURLWithPath: $0).appendingPathExtension("mdx") }
+    }
+
+    private func basePathCandidates(for url: URL) -> [String] {
+        let exactURL = url.deletingPathExtension()
+        var candidates = [exactURL.path]
+
+        let name = exactURL.lastPathComponent
+        if let range = name.range(of: #"\.\d+$"#, options: .regularExpression) {
+            let strippedName = String(name[..<range.lowerBound])
+            let strippedURL = exactURL
+                .deletingLastPathComponent()
+                .appendingPathComponent(strippedName)
+            candidates.append(strippedURL.path)
+        }
+
+        var seen = Set<String>()
+        return candidates.filter { seen.insert($0).inserted }
     }
 
     private func mergedMDDPaths(_ paths: [String], with urls: [URL]) -> [String] {

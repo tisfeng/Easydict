@@ -53,7 +53,7 @@ struct MDictHeader {
     var isHTML: Bool { format.lowercased().contains("html") }
 
     var nullTerminatorSize: Int {
-        encoding == .utf16LittleEndian ? 2 : 1
+        encoding == .utf16LittleEndian || encoding == .utf16BigEndian ? 2 : 1
     }
 }
 
@@ -505,12 +505,17 @@ extension MDictReader {
     }
 
     private func readRecord(at offset: UInt64, size: Int) throws -> Data {
+        guard size > 0 else { return Data() }
+
         var cumulativeOffset: UInt64 = 0
         var blockDataStart = recordBlocksStart
+        var remainingSize = size
+        var readOffset = offset
+        var record = Data()
 
         for info in recordBlockInfos {
             let blockEnd = cumulativeOffset + info.decompressedSize
-            if offset >= cumulativeOffset, offset < blockEnd {
+            if readOffset >= cumulativeOffset, readOffset < blockEnd {
                 let compressed = try Self.checkedSubdata(
                     data,
                     at: blockDataStart,
@@ -524,18 +529,25 @@ extension MDictReader {
                     )
                 )
 
-                let localOffset = Int(offset - cumulativeOffset)
+                let localOffset = Int(readOffset - cumulativeOffset)
                 guard localOffset <= decompressed.count else {
                     throw MDictError.invalidFormat("Record local offset \(localOffset) out of range")
                 }
-                let actualSize = min(size, decompressed.count - localOffset)
-                guard actualSize > 0 else { return Data() }
-                return decompressed.subdata(in: localOffset ..< localOffset + actualSize)
+                let actualSize = min(remainingSize, decompressed.count - localOffset)
+                if actualSize > 0 {
+                    record.append(decompressed.subdata(in: localOffset ..< localOffset + actualSize))
+                    remainingSize -= actualSize
+                    readOffset += UInt64(actualSize)
+                    if remainingSize == 0 { return record }
+                }
             }
             cumulativeOffset = blockEnd
             blockDataStart += try Self.checkedInt(info.compressedSize, context: "record block compressed size")
         }
 
+        if !record.isEmpty {
+            throw MDictError.invalidFormat("Record at offset \(offset) exceeds record blocks")
+        }
         throw MDictError.invalidFormat("Record offset \(offset) out of range")
     }
 }
