@@ -202,7 +202,7 @@ extension MDictReader {
         )
     }
 
-    private static func extractAttribute(_ name: String, from text: String) -> String? {
+    static func extractAttribute(_ name: String, from text: String) -> String? {
         let pattern = "\(name)=\"([^\"]*)\""
         guard let regex = try? NSRegularExpression(pattern: pattern),
               let match = regex.firstMatch(
@@ -414,18 +414,18 @@ extension MDictReader {
 // MARK: - Binary Utilities
 
 extension MDictReader {
-    fileprivate static func readUInt16BE(_ data: Data, at offset: Int) -> UInt16 {
+    static func readUInt16BE(_ data: Data, at offset: Int) -> UInt16 {
         UInt16(data[offset]) << 8 | UInt16(data[offset + 1])
     }
 
-    fileprivate static func readUInt32BE(_ data: Data, at offset: Int) -> UInt32 {
+    static func readUInt32BE(_ data: Data, at offset: Int) -> UInt32 {
         UInt32(data[offset]) << 24
             | UInt32(data[offset + 1]) << 16
             | UInt32(data[offset + 2]) << 8
             | UInt32(data[offset + 3])
     }
 
-    fileprivate static func readUInt64BE(_ data: Data, at offset: Int) -> UInt64 {
+    static func readUInt64BE(_ data: Data, at offset: Int) -> UInt64 {
         UInt64(data[offset]) << 56
             | UInt64(data[offset + 1]) << 48
             | UInt64(data[offset + 2]) << 40
@@ -436,7 +436,7 @@ extension MDictReader {
             | UInt64(data[offset + 7])
     }
 
-    fileprivate static func findNullTerminator(
+    static func findNullTerminator(
         _ data: Data,
         from offset: Int,
         terminatorSize: Int
@@ -456,7 +456,7 @@ extension MDictReader {
         return data.count
     }
 
-    fileprivate static func decompressBlock(
+    static func decompressBlock(
         _ compressed: Data,
         decompressedSize: Int
     ) throws -> Data {
@@ -497,6 +497,26 @@ extension MDictReader {
         guard result > 0 else { throw MDictError.decompressionFailed }
         destination.count = result
         return destination
+    }
+
+    /// Compress `source` with raw deflate. Used only in tests.
+    static func zlibCompress(_ source: Data) throws -> Data {
+        var output = Data(count: source.count + 64)
+        let result = source.withUnsafeBytes { srcPtr in
+            output.withUnsafeMutableBytes { dstPtr in
+                compression_encode_buffer(
+                    dstPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                    output.count,
+                    srcPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                    source.count,
+                    nil,
+                    COMPRESSION_ZLIB
+                )
+            }
+        }
+        guard result > 0 else { throw MDictError.decompressionFailed }
+        output.count = result
+        return output
     }
 }
 
