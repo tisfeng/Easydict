@@ -109,10 +109,14 @@ final class MDictDictionary {
     }
 
     private static func decodeResourceText(_ data: Data) -> String? {
-        (String(data: data, encoding: .utf8)
+        guard var text = String(data: data, encoding: .utf8)
             ?? String(data: data, encoding: .utf16LittleEndian)
-            ?? String(data: data, encoding: .utf16BigEndian))?
-            .trimmingPrefix("\u{FEFF}")
+            ?? String(data: data, encoding: .utf16BigEndian)
+        else { return nil }
+        if text.hasPrefix("\u{FEFF}") {
+            text.removeFirst()
+        }
+        return text
     }
 
     private func resourceKeyCandidates(for key: String) -> [String] {
