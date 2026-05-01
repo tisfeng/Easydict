@@ -50,7 +50,10 @@ struct MDictConfigurationView: View {
         }
         .fileImporter(
             isPresented: $isImporting,
-            allowedContentTypes: [.init(filenameExtension: "mdx")!],
+            allowedContentTypes: [
+                .init(filenameExtension: "mdx")!,
+                .init(filenameExtension: "mdd")!,
+            ],
             allowsMultipleSelection: false
         ) { result in
             handleImport(result)
