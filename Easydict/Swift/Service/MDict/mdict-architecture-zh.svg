@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 820"
+     font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif">
+  <rect width="960" height="820" fill="#ffffff"/>
+  <text x="480" y="25" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">MDict 服务架构</text>
+
+  <defs>
+    <marker id="a-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="a-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#ea580c"/>
+    </marker>
+    <marker id="a-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#059669"/>
+    </marker>
+    <marker id="a-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/>
+    </marker>
+    <marker id="a-indigo" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#6366f1"/>
+    </marker>
+    <marker id="a-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#8b5cf6"/>
+    </marker>
+  </defs>
+
+  <!-- section bg -->
+  <rect x="364" y="63" width="252" height="730" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="5,3" stroke-width="1.2"/>
+  <text x="376" y="80" font-size="11" fill="#94a3b8" font-weight="500">核心处理管道</text>
+  <rect x="28" y="185" width="258" height="255" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="5,3" stroke-width="1.2"/>
+  <text x="40" y="202" font-size="11" fill="#94a3b8" font-weight="500">配置 &amp; 本地化</text>
+  <rect x="688" y="185" width="250" height="255" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="5,3" stroke-width="1.2"/>
+  <text x="700" y="202" font-size="11" fill="#94a3b8" font-weight="500">存储 &amp; 资源</text>
+
+  <rect x="382" y="91" width="216" height="48" rx="8" fill="#3b82f6"/>
+  <text x="490" y="110" text-anchor="middle" font-size="13" font-weight="600" fill="white">QueryServiceFactory</text>
+  <text x="490" y="127" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">服务工厂注册表</text>
+  <rect x="382" y="211" width="216" height="58" rx="8" fill="#2563eb"/>
+  <text x="490" y="235" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictService</text>
+  <text x="490" y="252" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">translate() / iframe渲染</text>
+  <rect x="382" y="351" width="216" height="58" rx="8" fill="#10b981"/>
+  <text x="490" y="375" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictManager</text>
+  <text x="490" y="392" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">导入 · 持久化 · 启停管理</text>
+  <rect x="382" y="481" width="216" height="58" rx="8" fill="#6366f1"/>
+  <text x="490" y="505" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictDictionary</text>
+  <text x="490" y="522" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">lookup() / MDD资源解析</text>
+  <rect x="382" y="611" width="216" height="58" rx="8" fill="#6366f1"/>
+  <text x="490" y="635" text-anchor="middle" font-size="13" font-weight="600" fill="white">MDictReader</text>
+  <text x="490" y="652" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">头部解析 · 键索引 · 解压</text>
+  <rect x="382" y="726" width="216" height="48" rx="8" fill="#8b5cf6"/>
+  <text x="490" y="745" text-anchor="middle" font-size="13" font-weight="600" fill="white">QueryResult</text>
+  <text x="490" y="762" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">htmlString → 结果面板</text>
+  <rect x="55" y="226" width="200" height="48" rx="6" fill="#64748b" opacity="0.92"/>
+  <text x="155" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="white">Localizable.xcstrings</text>
+  <text x="155" y="261" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">本地化字符串</text>
+  <rect x="55" y="351" width="200" height="58" rx="6" fill="#f97316" opacity="0.92"/>
+  <text x="155" y="375" text-anchor="middle" font-size="12" font-weight="600" fill="white">MDictConfigurationView</text>
+  <text x="155" y="391" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">导入/列表/开关/排序</text>
+  <rect x="713" y="226" width="195" height="48" rx="6" fill="#64748b" opacity="0.92"/>
+  <text x="810" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="white">apple-dictionary.html</text>
+  <text x="810" y="261" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">HTML基础模板</text>
+  <rect x="723" y="356" width="175" height="48" rx="6" fill="#059669" opacity="0.92"/>
+  <text x="810" y="375" text-anchor="middle" font-size="12" font-weight="600" fill="white">Defaults</text>
+  <text x="810" y="391" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">UserDefaults持久化</text>
+  <rect x="723" y="726" width="175" height="48" rx="6" fill="#8b5cf6" opacity="0.92"/>
+  <text x="810" y="745" text-anchor="middle" font-size="12" font-weight="600" fill="white">WKWebView</text>
+  <text x="810" y="761" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.9)">HTML渲染引擎</text>
+
+  <!-- arrows -->
+  <line x1="490" y1="139" x2="490" y2="209" stroke="#2563eb" stroke-width="1.8" marker-end="url(#a-blue)"/>
+  <rect x="471" y="166" width="38" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="490" y="179" text-anchor="middle" font-size="10" fill="#475569">注册</text>
+  <line x1="490" y1="269" x2="490" y2="349" stroke="#2563eb" stroke-width="1.8" marker-end="url(#a-blue)"/>
+  <rect x="453" y="301" width="98" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="502" y="314" text-anchor="middle" font-size="10" fill="#475569">enabledDicts</text>
+  <line x1="490" y1="409" x2="490" y2="479" stroke="#2563eb" stroke-width="1.8" marker-end="url(#a-blue)"/>
+  <rect x="453" y="436" width="98" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="502" y="449" text-anchor="middle" font-size="10" fill="#475569">enabledDicts</text>
+  <line x1="490" y1="539" x2="490" y2="609" stroke="#6366f1" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+  <rect x="453" y="566" width="98" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="502" y="579" text-anchor="middle" font-size="10" fill="#475569">lookupData()</text>
+  <line x1="490" y1="669" x2="490" y2="724" stroke="#8b5cf6" stroke-width="1.8" marker-end="url(#a-purple)"/>
+  <rect x="460" y="688" width="84" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="502" y="701" text-anchor="middle" font-size="10" fill="#475569">htmlString</text>
+  <line x1="598" y1="750" x2="720" y2="750" stroke="#8b5cf6" stroke-width="1.8" marker-end="url(#a-purple)"/>
+  <rect x="640" y="729" width="38" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="659" y="742" text-anchor="middle" font-size="10" fill="#475569">渲染</text>
+  <line x1="711" y1="248" x2="598" y2="248" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#a-gray)" stroke-dasharray="5,3"/>
+  <rect x="635" y="253" width="38" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="654" y="266" text-anchor="middle" font-size="10" fill="#475569">模板</text>
+  <line x1="155" y1="274" x2="155" y2="349" stroke="#64748b" stroke-width="1.8" marker-end="url(#a-gray)"/>
+  <rect x="146" y="303" width="38" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="165" y="316" text-anchor="middle" font-size="10" fill="#475569">本地化</text>
+  <line x1="257" y1="380" x2="380" y2="380" stroke="#ea580c" stroke-width="1.8" marker-end="url(#a-orange)"/>
+  <rect x="266" y="358" width="105" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="318" y="371" text-anchor="middle" font-size="10" fill="#475569">import/enable</text>
+  <line x1="598" y1="372" x2="718" y2="372" stroke="#059669" stroke-width="1.8" marker-end="url(#a-green)"/>
+  <line x1="718" y1="388" x2="598" y2="388" stroke="#059669" stroke-width="1.8" marker-end="url(#a-green)"/>
+  <rect x="639" y="372" width="38" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="658" y="385" text-anchor="middle" font-size="10" fill="#475569">持久化</text>
+  <path d="M 374,244 C 272,244 272,347 157,349" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#a-gray)" stroke-dasharray="5,3"/>
+  <rect x="225" y="274" width="91" height="16" rx="3" fill="white" opacity="0.96"/>
+  <text x="270" y="287" text-anchor="middle" font-size="10" fill="#475569">configItems</text>
+
+  <!-- legend -->
+  <rect x="26" y="466" width="222" height="130" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="38" y="484" font-size="11" font-weight="600" fill="#475569">图例</text>
+  <line x1="38" y1="498" x2="68" y2="498" stroke="#2563eb" stroke-width="1.8" marker-end="url(#a-blue)"/>
+  <text x="76" y="502" font-size="10" fill="#475569">主数据流</text>
+  <line x1="38" y1="515" x2="68" y2="515" stroke="#ea580c" stroke-width="1.8" marker-end="url(#a-orange)"/>
+  <text x="76" y="519" font-size="10" fill="#475569">配置操作</text>
+  <line x1="38" y1="532" x2="68" y2="532" stroke="#059669" stroke-width="1.8" marker-end="url(#a-green)"/>
+  <text x="76" y="536" font-size="10" fill="#475569">持久化(双向)</text>
+  <line x1="38" y1="549" x2="68" y2="549" stroke="#6366f1" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+  <text x="76" y="553" font-size="10" fill="#475569">解析器调用</text>
+  <line x1="38" y1="566" x2="68" y2="566" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4,2" marker-end="url(#a-gray)"/>
+  <text x="76" y="570" font-size="10" fill="#475569">资源引用(虚线)</text>
+  <line x1="38" y1="583" x2="68" y2="583" stroke="#8b5cf6" stroke-width="1.8" marker-end="url(#a-purple)"/>
+  <text x="76" y="587" font-size="10" fill="#475569">HTML输出</text>
+
+</svg>
