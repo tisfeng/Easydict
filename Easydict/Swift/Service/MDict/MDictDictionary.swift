@@ -100,6 +100,7 @@ final class MDictDictionary {
         )
         result = replaceSoundLinks(in: result)
         result = replaceStylesheetLinks(in: result)
+        result = replaceScriptLinks(in: result)
         result = replaceResourceAttributes(in: result)
         result = replaceSourceSets(in: result)
         result = replaceCSSResources(in: result)
@@ -175,6 +176,21 @@ final class MDictDictionary {
             else { return nil }
 
             return "<style>\(css)</style>"
+        }
+    }
+
+    private func replaceScriptLinks(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            pattern: "(?is)<script\\b[^>]*\\bsrc\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>\\s*</script>"
+        ) { match, source in
+            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
+            let key = String(source[keyRange])
+            guard shouldResolveResource(key),
+                  let script = scriptText(for: key)
+            else { return nil }
+
+            return "<script>\(script)</script>"
         }
     }
 
@@ -260,6 +276,13 @@ final class MDictDictionary {
             ?? String(data: data, encoding: .utf16LittleEndian)
             ?? String(data: data, encoding: .utf16BigEndian)
         return css.map { replaceCSSResources(in: $0) }
+    }
+
+    private func scriptText(for key: String) -> String? {
+        guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
+        return String(data: data, encoding: .utf8)
+            ?? String(data: data, encoding: .utf16LittleEndian)
+            ?? String(data: data, encoding: .utf16BigEndian)
     }
 
     private func mimeType(for key: String) -> String {

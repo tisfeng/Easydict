@@ -114,13 +114,13 @@ final class MDictReader {
     /// Look up a text definition by word (MDX files).
     func lookup(_ word: String) throws -> String? {
         guard let data = try lookupData(for: word) else { return nil }
-        return String(data: data, encoding: header.encoding)
+        return decodeTextRecord(data)
     }
 
     /// Look up all text definitions for a word (MDX files).
     func lookupAll(_ word: String) throws -> [String] {
         let records = try lookupAllData(for: word)
-        return records.compactMap { String(data: $0, encoding: header.encoding) }
+        return records.compactMap(decodeTextRecord)
     }
 
     /// Look up raw binary data by key (MDD files).
@@ -155,6 +155,11 @@ final class MDictReader {
 
     private var totalDecompressedRecordSize: UInt64 {
         recordBlockInfos.reduce(0) { $0 + $1.decompressedSize }
+    }
+
+    private func decodeTextRecord(_ data: Data) -> String? {
+        String(data: data, encoding: header.encoding)?
+            .replacingOccurrences(of: "\0", with: "")
     }
 
     private func lookupData(at index: Int) throws -> Data {
