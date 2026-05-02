@@ -51,6 +51,12 @@
 		031C66D42ED9F9E30025D190 /* AppleDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66D32ED9F9E30025D190 /* AppleDictionary.swift */; };
 		031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C66E12EDB00010025D190 /* DictionaryHTMLRenderer.swift */; };
 		635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */; };
+		A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */; };
+		A9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */; };
+		A9F10003B3C24D5E8A000003 /* MDictRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10003B3C24D5E8A000003 /* MDictRecords.swift */; };
+		A9F10004B3C24D5E8A000004 /* MDictBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10004B3C24D5E8A000004 /* MDictBinary.swift */; };
+		A9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */; };
+		A9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */; };
 		CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30215FF66EE44A0F932E70CF /* MDictDictionary.swift */; };
 		5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FFFD863EBF442CB4FCE765 /* MDictManager.swift */; };
 		F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983925DCBA81465EAE22415B /* MDictService.swift */; };
@@ -653,6 +659,12 @@
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
 		031C66E12EDB00010025D190 /* DictionaryHTMLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryHTMLRenderer.swift; sourceTree = "<group>"; };
 		897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReader.swift; sourceTree = "<group>"; };
+		B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MDictHeaderParser.swift"; sourceTree = "<group>"; };
+		B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MDictKeyBlocks.swift"; sourceTree = "<group>"; };
+		B9F10003B3C24D5E8A000003 /* MDictRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MDictRecords.swift"; sourceTree = "<group>"; };
+		B9F10004B3C24D5E8A000004 /* MDictBinary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MDictBinary.swift"; sourceTree = "<group>"; };
+		B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MDictRIPEMD128.swift"; sourceTree = "<group>"; };
+		B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MDictKeyIndex.swift"; sourceTree = "<group>"; };
 		30215FF66EE44A0F932E70CF /* MDictDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictDictionary.swift; sourceTree = "<group>"; };
 		26FFFD863EBF442CB4FCE765 /* MDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictManager.swift; sourceTree = "<group>"; };
 		983925DCBA81465EAE22415B /* MDictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictService.swift; sourceTree = "<group>"; };
@@ -1538,6 +1550,12 @@
 			isa = PBXGroup;
 			children = (
 				897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */,
+				B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */,
+				B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */,
+				B9F10003B3C24D5E8A000003 /* MDictRecords.swift */,
+				B9F10004B3C24D5E8A000004 /* MDictBinary.swift */,
+				B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */,
+				B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */,
 				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
 				26FFFD863EBF442CB4FCE765 /* MDictManager.swift */,
 				983925DCBA81465EAE22415B /* MDictService.swift */,
@@ -4058,6 +4076,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
+				A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */,
+				A9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift in Sources */,
+				A9F10003B3C24D5E8A000003 /* MDictRecords.swift in Sources */,
+				A9F10004B3C24D5E8A000004 /* MDictBinary.swift in Sources */,
+				A9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift in Sources */,
+				A9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift in Sources */,
 				CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */,
 				5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */,
 				F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */,

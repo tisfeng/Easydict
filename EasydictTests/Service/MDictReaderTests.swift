@@ -36,7 +36,7 @@ struct MDictReaderTests {
 
     @Test("Zlib decompression round-trip")
     func testZlibDecompression() throws {
-        let original = "Hello, MDict decompression test!".data(using: .utf8)!
+        let original = Data("Hello, MDict decompression test!".utf8)
         let compressed = try MDictReader.zlibCompress(original)
 
         var block = Data([0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
@@ -48,7 +48,7 @@ struct MDictReaderTests {
 
     @Test("Uncompressed block passthrough")
     func testUncompressedBlock() throws {
-        let payload = "raw data".data(using: .utf8)!
+        let payload = Data("raw data".utf8)
         var block = Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         block.append(payload)
 
@@ -59,7 +59,7 @@ struct MDictReaderTests {
     @Test("Unsupported compression type throws MDictError")
     func testUnsupportedCompression() {
         var block = Data([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
-        block.append("data".data(using: .utf8)!)
+        block.append(Data("data".utf8))
 
         #expect(throws: MDictError.self) {
             try MDictReader.decompressBlock(block, decompressedSize: 4)
@@ -87,7 +87,7 @@ struct MDictReaderTests {
         let header = """
         <Dictionary GeneratedByEngineVersion="2.0" Format="Html" Encoding="utf-8" />
         """
-        let headerData = header.data(using: .utf16LittleEndian)!
+        let headerData = Data(header.utf16LittleEndianBytes)
         var data = Data([
             UInt8((headerData.count >> 24) & 0xFF),
             UInt8((headerData.count >> 16) & 0xFF),
@@ -139,5 +139,13 @@ struct MDictReaderTests {
 
     private func hex(_ bytes: [UInt8]) -> String {
         bytes.map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+extension String {
+    fileprivate var utf16LittleEndianBytes: [UInt8] {
+        utf16.flatMap { unit in
+            [UInt8(unit & 0xFF), UInt8(unit >> 8)]
+        }
     }
 }
