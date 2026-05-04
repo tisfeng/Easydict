@@ -63,7 +63,7 @@ class MDictService: QueryService, @unchecked Sendable {
         to: Language
     ) async throws
         -> QueryResult {
-        let dicts = await MDictManager.shared.enabledDictionaries
+        let dicts = await MDictManager.shared.dictionariesForLookup()
         guard !dicts.isEmpty else {
             throw QueryError.error(
                 type: .noResult,
@@ -74,24 +74,7 @@ class MDictService: QueryService, @unchecked Sendable {
             )
         }
 
-        var sections: [DictionaryHTMLSection] = []
-
-        for dict in dicts {
-            let definition: String
-            do {
-                guard let lookupResult = try dict.lookup(text),
-                      !lookupResult.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                else { continue }
-                definition = lookupResult
-            } catch {
-                logError("MDictService: lookup failed in \(dict.title): \(error)")
-                continue
-            }
-
-            let content = dict.isHTML ? definition : plainTextToHTML(definition)
-            let styledContent = wrapWithStyle(content)
-            sections.append(DictionaryHTMLSection(title: dict.title, html: styledContent))
-        }
+        let sections = await Self.lookupSections(text, in: dicts)
 
         guard let renderResult = DictionaryHTMLRenderer.render(word: text, sections: sections) else {
             throw QueryError(type: .noResult)
@@ -103,7 +86,36 @@ class MDictService: QueryService, @unchecked Sendable {
 
     // MARK: Private
 
-    private func wrapWithStyle(_ html: String) -> String {
+    private static func lookupSections(
+        _ text: String,
+        in dictionaries: [MDictDictionary]
+    ) async
+        -> [DictionaryHTMLSection] {
+        await Task.detached(priority: .userInitiated) {
+            var sections: [DictionaryHTMLSection] = []
+
+            for dict in dictionaries {
+                let definition: String
+                do {
+                    guard let lookupResult = try dict.lookup(text),
+                          !lookupResult.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    else { continue }
+                    definition = lookupResult
+                } catch {
+                    logError("MDictService: lookup failed in \(dict.title): \(error)")
+                    continue
+                }
+
+                let content = dict.isHTML ? definition : Self.plainTextToHTML(definition)
+                let styledContent = Self.wrapWithStyle(content)
+                sections.append(DictionaryHTMLSection(title: dict.title, html: styledContent))
+            }
+
+            return sections
+        }.value
+    }
+
+    private static func wrapWithStyle(_ html: String) -> String {
         let scriptNonce = "easydict-mdict"
         let contentSecurityPolicy = """
         <meta http-equiv="Content-Security-Policy" content="default-src 'none'; \
@@ -157,7 +169,7 @@ class MDictService: QueryService, @unchecked Sendable {
         return contentSecurityPolicy + style + script + html
     }
 
-    private func plainTextToHTML(_ text: String) -> String {
+    private static func plainTextToHTML(_ text: String) -> String {
         let escaped = text
             .replacingOccurrences(of: "&", with: "&amp;")
             .replacingOccurrences(of: "<", with: "&lt;")

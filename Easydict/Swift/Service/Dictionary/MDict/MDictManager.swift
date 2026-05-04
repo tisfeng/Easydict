@@ -12,7 +12,7 @@ import Foundation
 // MARK: - MDictDictionaryRecord
 
 /// A persisted reference to an imported MDict dictionary.
-struct MDictDictionaryRecord: Codable, Defaults.Serializable, Hashable, Identifiable {
+struct MDictDictionaryRecord: Codable, Defaults.Serializable, Hashable, Identifiable, Sendable {
     let mdxPath: String
     var mddPaths: [String]
     var enabled: Bool
@@ -47,7 +47,6 @@ final class MDictManager: ObservableObject {
     private init() {
         self.records = Defaults[.mdictDictionaries]
         normalizePersistedRecords()
-        loadDictionaries()
     }
 
     // MARK: Internal
@@ -62,6 +61,19 @@ final class MDictManager: ObservableObject {
 
     var enabledDictionaries: [MDictDictionary] {
         let enabledPaths = Set(records.filter(\.enabled).map(\.mdxPath))
+        return loadedDictionaries.filter { enabledPaths.contains($0.mdxURL.path) }
+    }
+
+    func dictionariesForLookup() async -> [MDictDictionary] {
+        let enabledRecords = records.filter(\.enabled)
+        let enabledPaths = Set(enabledRecords.map(\.mdxPath))
+        let loaded = loadedDictionaries.filter { enabledPaths.contains($0.mdxURL.path) }
+        let loadedPaths = Set(loaded.map(\.mdxURL.path))
+        let missingRecords = enabledRecords.filter { !loadedPaths.contains($0.mdxPath) }
+        guard !missingRecords.isEmpty else { return loaded }
+
+        let (loadedMissing, errors) = await Self.loadDictionaries(from: missingRecords)
+        mergeLoadedDictionaries(loadedMissing, errors: errors)
         return loadedDictionaries.filter { enabledPaths.contains($0.mdxURL.path) }
     }
 
@@ -111,6 +123,29 @@ final class MDictManager: ObservableObject {
 
     // MARK: Private
 
+    private static func loadDictionaries(
+        from records: [MDictDictionaryRecord]
+    ) async
+        -> ([MDictDictionary], [String: Error]) {
+        await Task.detached(priority: .userInitiated) {
+            var dictionaries: [MDictDictionary] = []
+            var errors: [String: Error] = [:]
+            for record in records {
+                do {
+                    let dict = try MDictDictionary(
+                        mdxURL: record.mdxURL,
+                        mddURLs: record.mddURLs
+                    )
+                    dictionaries.append(dict)
+                } catch {
+                    errors[record.mdxPath] = error
+                    logError("MDictManager: failed to load \(record.mdxPath): \(error)")
+                }
+            }
+            return (dictionaries, errors)
+        }.value
+    }
+
     private func importMDX(_ mdxURL: URL) throws {
         let path = mdxURL.path
         let mddURLs = discoverMDDFiles(for: mdxURL)
@@ -119,7 +154,9 @@ final class MDictManager: ObservableObject {
                 records[index].mddPaths,
                 with: mddURLs
             )
-            persistAndReload()
+            loadedDictionaries.removeAll { $0.mdxURL.path == path }
+            loadErrors.removeValue(forKey: path)
+            persist()
             return
         }
 
@@ -144,7 +181,9 @@ final class MDictManager: ObservableObject {
                 records[index].mddPaths,
                 with: [mddURL]
             )
-            persistAndReload()
+            loadedDictionaries.removeAll { $0.mdxURL.path == records[index].mdxPath }
+            loadErrors.removeValue(forKey: records[index].mdxPath)
+            persist()
             return
         }
 
@@ -187,26 +226,15 @@ final class MDictManager: ObservableObject {
         Defaults[.mdictDictionaries] = records
     }
 
-    private func persistAndReload() {
-        persist()
-        loadDictionaries()
-    }
-
-    private func loadDictionaries() {
-        loadedDictionaries = []
-        loadErrors = [:]
-        for record in records {
-            do {
-                let dict = try MDictDictionary(
-                    mdxURL: record.mdxURL,
-                    mddURLs: record.mddURLs
-                )
-                loadedDictionaries.append(dict)
-            } catch {
-                loadErrors[record.mdxPath] = error
-                logError("MDictManager: failed to load \(record.mdxPath): \(error)")
-            }
-        }
+    private func mergeLoadedDictionaries(
+        _ dictionaries: [MDictDictionary],
+        errors: [String: Error]
+    ) {
+        let replacementPaths = Set(dictionaries.map(\.mdxURL.path)).union(errors.keys)
+        loadedDictionaries.removeAll { replacementPaths.contains($0.mdxURL.path) }
+        for path in replacementPaths { loadErrors.removeValue(forKey: path) }
+        loadedDictionaries.append(contentsOf: dictionaries)
+        loadErrors.merge(errors) { _, new in new }
     }
 
     private func persist() {

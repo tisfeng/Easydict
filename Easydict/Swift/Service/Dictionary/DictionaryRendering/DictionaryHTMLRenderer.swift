@@ -16,7 +16,7 @@ import Foundation
 /// Services keep ownership of lookup and resource resolution, then hand this
 /// value to the shared renderer so Apple Dictionary and MDict use the same
 /// result shell, details layout, and iframe escaping behavior.
-struct DictionaryHTMLSection {
+struct DictionaryHTMLSection: Sendable {
     let title: String
     let html: String
 }

@@ -24,27 +24,28 @@ MDict/
   `DictionaryHTMLRenderer` 生成结果面板 HTML。
 - `MDictConfigurationView` 是设置页 UI，负责触发 MDX/MDD 导入，并把启用、排序和删除操作
   转发给 `MDictManager`。
-- `MDictManager` 保存导入记录到 `Defaults`，维护已加载的 `MDictDictionary` 实例，并在记录
-  变化时发出通知。
+- `MDictManager` 保存导入记录到 `Defaults`，查询时按需在后台加载启用的
+  `MDictDictionary` 实例，并在记录变化时发出通知。
 - `MDictDictionary` 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、
-  CSS 和脚本资源重写为 WebKit 可加载的形式。
+  CSS 和脚本资源重写为 WebKit 可加载的形式；MDD reader 会在首次资源查询时懒加载。
 - `MDictReader/` 子目录只处理 MDX/MDD 二进制格式，不处理 UI、服务配置或结果面板样式。
 
 ## 主要流程
 
 导入流程从 `MDictConfigurationView` 的文件选择器开始，`MDictManager` 根据扩展名导入 MDX
-或匹配 MDD，合并同名资源文件，保存 `MDictDictionaryRecord`，再加载 `MDictDictionary`。
-每个词典实例会创建 MDX reader，并为可用的 MDD 资源文件创建 resource reader。
+或匹配 MDD，合并同名资源文件并保存 `MDictDictionaryRecord`。首次查询启用词典时，
+`MDictManager` 在后台创建缺失的 `MDictDictionary`，避免启动或首查期间阻塞主线程。
 
 查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，逐本调用
 `lookup`，词典内部通过 `MDictReader` 查找 key entry 和 record block，再把 HTML 中的本地资源
-链接改写为 data URI 或内部锚点。最终服务把每本词典的 HTML section 交给
+链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD 资源时，词典才会创建对应的
+resource reader。最终服务把每本词典的 HTML section 交给
 `DictionaryHTMLRenderer`，由共享词典结果模板渲染。
 
 ## 调试入口
 
 - 导入失败时，先检查文件扩展名、MDX/MDD 同名匹配，以及 `MDictManager.loadErrors`。
-- 查询无结果时，检查 `MDictManager.enabledDictionaries`、词典大小写设置和 key index。
+- 查询无结果时，检查 `MDictManager.dictionariesForLookup()`、词典大小写设置和 key index。
 - 图片、音频或样式缺失时，优先检查 `MDictDictionary` 的 resource key candidates 和资源重写。
 - 解析、解压或加密相关错误，从 `MDictReader/` 子目录里的 `MDictReader`、`MDictBinary`、
   `MDictKeyBlocks` 和 `MDictRecords` 开始定位。

@@ -1,8 +1,8 @@
 # MDictReader
 
-`MDictReader` 目录承载 MDX/MDD 二进制格式读取层。它把文件 header、key block、
-record block、压缩块和加密 key index 等细节隔离在 reader 内部，向上只暴露按 key 查询文本
-或二进制资源的能力。
+`MDictReader` 目录承载 MDX/MDD 二进制格式读取层。它把文件 header、key block、record
+block、压缩块和加密 key index 等细节隔离在 reader 内部，向上只暴露按 key 查询文本或二进制
+资源的能力；上层负责决定何时在后台创建 reader。
 
 ![MDictReader 架构](./mdict-reader-architecture.svg)
 
@@ -37,7 +37,8 @@ MDictReader/
 
 初始化时，`MDictReader` 读取文件数据并解析 header。随后 reader 解析 key blocks 得到
 `MDictKeyEntry` 列表，读取 record block metadata 生成 `RecordBlockRange`，最后按大小写规则
-建立 key index。
+建立 key index。这个阶段可能需要读取和解压大量 key block，因此调用方应在后台执行，并让
+MDD 资源 reader 保持按需创建。
 
 查询文本时，`lookup` 或 `lookupAll` 先通过 key index 找到 entry，再根据相邻 entry 计算
 record span。reader 会定位包含该 offset 的 record block，按需解压并读取 record bytes，最后

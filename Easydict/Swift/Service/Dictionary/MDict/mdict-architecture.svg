@@ -43,16 +43,16 @@
   <rect x="356" y="204" width="184" height="88" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="448" y="235" text-anchor="middle" class="box-title">MDictManager</text>
   <text x="448" y="260" text-anchor="middle" class="box-text">Defaults records</text>
-  <text x="448" y="280" text-anchor="middle" class="box-text">加载启用词典</text>
+  <text x="448" y="280" text-anchor="middle" class="box-text">后台按需加载</text>
 
   <rect x="624" y="216" width="218" height="64" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
   <text x="733" y="241" text-anchor="middle" class="box-title">MDictDictionary</text>
-  <text x="733" y="263" text-anchor="middle" class="box-text">MDX 词典 + MDD 资源集合</text>
+  <text x="733" y="263" text-anchor="middle" class="box-text">MDX reader + 懒加载 MDD</text>
 
   <path d="M266 248 H356" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
   <text x="311" y="236" text-anchor="middle" class="label">MDX / MDD</text>
   <path d="M540 248 H624" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
-  <text x="582" y="236" text-anchor="middle" class="label">load</text>
+  <text x="582" y="236" text-anchor="middle" class="label">async load</text>
 
   <rect x="66" y="344" width="828" height="164" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
   <text x="88" y="371" class="lane-title">查询与渲染</text>
@@ -81,7 +81,7 @@
   <text x="480" y="590" text-anchor="middle" class="box-text">reader、parser、record cache 与 binary helpers</text>
 
   <path d="M733 280 C733 330 480 330 480 390" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
-  <text x="608" y="324" text-anchor="middle" class="label">初始化 reader</text>
+  <text x="608" y="324" text-anchor="middle" class="label">初始化 MDX reader</text>
   <path d="M448 486 V538" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
   <text x="468" y="516" class="label">lookup</text>
 

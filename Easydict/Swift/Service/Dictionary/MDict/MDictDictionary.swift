@@ -14,20 +14,13 @@ import Foundation
 ///
 /// Provides word lookup returning raw HTML/text definitions, and resource resolution
 /// for multimedia links found inside MDX definitions.
-final class MDictDictionary {
+final class MDictDictionary: @unchecked Sendable {
     // MARK: Lifecycle
 
     init(mdxURL: URL, mddURLs: [URL] = []) throws {
         self.mdxURL = mdxURL
         self.mdxReader = try MDictReader(url: mdxURL)
-        self.mddReaders = mddURLs.compactMap { url in
-            do {
-                return try MDictReader(url: url)
-            } catch {
-                logError("MDictDictionary: failed to load MDD \(url.path): \(error)")
-                return nil
-            }
-        }
+        self.mddURLs = mddURLs
         self.title = mdxReader.header.title.isEmpty
             ? mdxURL.deletingPathExtension().lastPathComponent
             : mdxReader.header.title
@@ -46,6 +39,9 @@ final class MDictDictionary {
 
     /// Returns the definition HTML/text for a word, or `nil` if not found.
     func lookup(_ word: String) throws -> String? {
+        lookupLock.lock()
+        defer { lookupLock.unlock() }
+
         let trimmed = word.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 
@@ -69,8 +65,11 @@ final class MDictDictionary {
 
     /// Returns raw binary data for a resource key (used by MDD files).
     func lookupResource(_ key: String) throws -> Data? {
+        lookupLock.lock()
+        defer { lookupLock.unlock() }
+
         let candidates = resourceKeyCandidates(for: key)
-        for reader in mddReaders {
+        for reader in loadedMDDReaders() {
             for candidate in candidates {
                 if let data = try reader.lookupData(for: candidate) {
                     return data
@@ -95,7 +94,9 @@ final class MDictDictionary {
     private static let audioConstructorRegex = makeRegex("(?i)new\\s+Audio\\((.*?)\\)")
 
     private let mdxReader: MDictReader
-    private let mddReaders: [MDictReader]
+    private let mddURLs: [URL]
+    private let lookupLock = NSRecursiveLock()
+    private var cachedMDDReaders: [MDictReader]?
 
     private static func javaScriptStringLiteral(_ value: String) -> String {
         let escaped = value
@@ -125,6 +126,23 @@ final class MDictDictionary {
         } catch {
             preconditionFailure("Invalid MDict regex: \(pattern)")
         }
+    }
+
+    private func loadedMDDReaders() -> [MDictReader] {
+        if let cachedMDDReaders {
+            return cachedMDDReaders
+        }
+
+        let readers = mddURLs.compactMap { url in
+            do {
+                return try MDictReader(url: url)
+            } catch {
+                logError("MDictDictionary: failed to load MDD \(url.path): \(error)")
+                return nil
+            }
+        }
+        cachedMDDReaders = readers
+        return readers
     }
 
     private func resourceKeyCandidates(for key: String) -> [String] {

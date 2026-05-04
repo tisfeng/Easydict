@@ -28,13 +28,13 @@
   <rect width="960" height="680" fill="#ffffff"/>
 
   <text x="48" y="48" class="title">MDictReader 二进制读取层</text>
-  <text x="48" y="72" class="subtitle">解析 MDX/MDD header、key block 与 record block，按 key 返回文本定义或资源 Data。</text>
+  <text x="48" y="72" class="subtitle">后台解析 MDX/MDD header、key block 与 record block，按 key 返回文本定义或资源 Data。</text>
 
   <rect x="40" y="104" width="880" height="492" rx="10" ry="10" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="62" y="134" class="group-title">Easydict/Swift/Service/Dictionary/MDict/MDictReader</text>
 
   <rect x="66" y="164" width="828" height="146" rx="8" ry="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
-  <text x="88" y="191" class="lane-title">初始化解析</text>
+  <text x="88" y="191" class="lane-title">后台初始化解析</text>
 
   <rect x="92" y="216" width="142" height="64" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="163" y="241" text-anchor="middle" class="box-title">MDX / MDD</text>
@@ -102,7 +102,7 @@
 
   <g transform="translate(66, 632)">
     <line x1="0" y1="8" x2="32" y2="8" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
-    <text x="44" y="12" class="label">初始化解析</text>
+    <text x="44" y="12" class="label">后台初始化解析</text>
     <line x1="154" y1="8" x2="186" y2="8" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
     <text x="198" y="12" class="label">查询读取</text>
     <line x1="322" y1="8" x2="354" y2="8" stroke="#9333ea" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
