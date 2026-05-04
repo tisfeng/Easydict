@@ -7,11 +7,11 @@
 //
 
 #import "EZWebViewManager.h"
+#import "EZConst.h"
 #import <math.h>
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
-static const CGFloat kHeightChangeTolerance = 0.5;
 
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
@@ -55,7 +55,8 @@ static const CGFloat kHeightChangeTolerance = 0.5;
         if ([body[kMethod] isEqualToString:@"noteToUpdateScrollHeight"]) {
             CGFloat scrollHeight = [body[@"scrollHeight"] floatValue];
             BOOL heightChanged = self.lastScrollHeight <= 0 ||
-                                 fabs(scrollHeight - self.lastScrollHeight) >= kHeightChangeTolerance;
+                                 fabs(scrollHeight - self.lastScrollHeight) >=
+                                 EZLayoutGeometryTolerance_0_5;
             BOOL shouldNotifyHeight = heightChanged || self.forceNextScrollHeightCallback;
             if (shouldNotifyHeight) {
                 self.lastScrollHeight = scrollHeight;

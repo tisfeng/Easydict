@@ -33,7 +33,6 @@ static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
 static const CGFloat kVerticalPadding_6 = 6;
 static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
-static const CGFloat kHeightChangeTolerance = 0.5;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
@@ -1136,7 +1135,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     CGFloat viewHeight = self.bottomViewHeight + webViewHeight;
     CGFloat previousViewHeight = self.result.webViewManager.wordResultViewHeight;
     if (previousViewHeight > 0 &&
-        fabs(viewHeight - previousViewHeight) < kHeightChangeTolerance) {
+        fabs(viewHeight - previousViewHeight) < EZLayoutGeometryTolerance_0_5) {
         return;
     }
 
