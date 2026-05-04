@@ -51,8 +51,8 @@
   <text x="580" y="280" text-anchor="middle" class="box-text">key entries</text>
 
   <rect x="712" y="216" width="142" height="64" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
-  <text x="783" y="241" text-anchor="middle" class="box-title">KeyIndex</text>
-  <text x="783" y="263" text-anchor="middle" class="box-text">key 到 entry index</text>
+  <text x="783" y="241" text-anchor="middle" class="box-title">KeyBlockRanges</text>
+  <text x="783" y="263" text-anchor="middle" class="box-text">首尾 key 与块偏移</text>
 
   <path d="M234 248 H288" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
   <text x="261" y="236" text-anchor="middle" class="label">header</text>
@@ -91,7 +91,7 @@
 
   <path d="M783 280 C783 330 178 330 178 402" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
   <rect x="392" y="315" width="192" height="24" rx="4" ry="4" fill="#f9fafb"/>
-  <text x="488" y="332" text-anchor="middle" class="label">key index 查询 entry</text>
+  <text x="488" y="332" text-anchor="middle" class="label">二分定位候选 block</text>
 
   <rect x="328" y="522" width="304" height="58" rx="8" ry="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
   <text x="480" y="546" text-anchor="middle" class="box-title">加密索引支持</text>

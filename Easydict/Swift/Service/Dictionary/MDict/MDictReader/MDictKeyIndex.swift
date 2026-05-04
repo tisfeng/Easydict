@@ -11,17 +11,52 @@ import Foundation
 // MARK: - Key Index
 
 extension MDictReader {
-    static func buildKeyIndex(
-        _ entries: [MDictKeyEntry],
-        caseSensitive: Bool
-    )
-        -> [String: [Int]] {
-        var index: [String: [Int]] = [:]
-        index.reserveCapacity(entries.count)
-        for (i, entry) in entries.enumerated() {
-            let key = caseSensitive ? entry.word : entry.word.lowercased()
-            index[key, default: []].append(i)
+    func matchingKeyBlockIndexes(for normalizedKey: String) -> [Int] {
+        guard !keyBlockRanges.isEmpty else { return [] }
+
+        var lower = 0
+        var upper = keyBlockRanges.count
+        while lower < upper {
+            let mid = (lower + upper) / 2
+            let range = keyBlockRanges[mid]
+            if normalizedKey > self.normalizedKey(range.lastKey) {
+                lower = mid + 1
+            } else {
+                upper = mid
+            }
         }
-        return index
+
+        var indexes: [Int] = []
+        var index = lower
+        while index < keyBlockRanges.count {
+            let range = keyBlockRanges[index]
+            let firstKey = self.normalizedKey(range.firstKey)
+            let lastKey = self.normalizedKey(range.lastKey)
+            if normalizedKey < firstKey { break }
+            if normalizedKey <= lastKey {
+                indexes.append(index)
+            }
+            if normalizedKey < lastKey { break }
+            index += 1
+        }
+        return indexes
+    }
+
+    func keyBlockIndex(containingEntry entryIndex: Int) -> Int? {
+        var lower = 0
+        var upper = keyBlockRanges.count
+
+        while lower < upper {
+            let mid = (lower + upper) / 2
+            let range = keyBlockRanges[mid]
+            if entryIndex < range.entryStartIndex {
+                upper = mid
+            } else if entryIndex >= range.entryEndIndex {
+                lower = mid + 1
+            } else {
+                return mid
+            }
+        }
+        return nil
     }
 }

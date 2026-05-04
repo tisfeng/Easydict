@@ -19,15 +19,26 @@ private struct KeyBlockMetadata {
     let infoDecompressedSize: Int
 }
 
+// MARK: - KeyBlockInfo
+
+/// One row from key block info before it becomes an absolute file range.
+private struct KeyBlockInfo {
+    let entryCount: Int
+    let firstKey: String
+    let lastKey: String
+    let compressedSize: Int
+    let decompressedSize: Int
+}
+
 // MARK: - Key Block Parsing
 
 extension MDictReader {
-    static func parseKeyBlocks(
+    static func parseKeyBlockRanges(
         _ data: Data,
         cursor: inout Int,
         header: MDictHeader
     ) throws
-        -> [MDictKeyEntry] {
+        -> ([MDictKeyBlockRange], Int) {
         let metadata = try readKeyBlockMetadata(data, cursor: &cursor, header: header)
         let infoBytes = try readKeyBlockInfoBytes(
             data,
@@ -35,19 +46,95 @@ extension MDictReader {
             metadata: metadata,
             header: header
         )
-        let blockSizes = try parseKeyBlockSizes(
+        let blockInfos = try parseKeyBlockInfos(
             infoBytes,
             blockCount: metadata.blockCount,
             header: header
         )
 
-        return try parseKeyEntries(
+        let keyBlocksStart = cursor
+        var compressedStart = keyBlocksStart
+        var entryStartIndex = 0
+        var ranges: [MDictKeyBlockRange] = []
+        ranges.reserveCapacity(metadata.blockCount)
+
+        for info in blockInfos {
+            ranges.append(MDictKeyBlockRange(
+                firstKey: info.firstKey,
+                lastKey: info.lastKey,
+                compressedStart: compressedStart,
+                compressedSize: info.compressedSize,
+                decompressedSize: info.decompressedSize,
+                entryStartIndex: entryStartIndex,
+                entryCount: info.entryCount
+            ))
+            compressedStart += info.compressedSize
+            entryStartIndex += info.entryCount
+        }
+
+        guard entryStartIndex == metadata.entryCount else {
+            throw MDictError.invalidFormat("Key block entry count mismatch")
+        }
+
+        cursor = compressedStart
+        return (ranges, compressedStart)
+    }
+
+    func matchingEntries(for key: String) throws -> [MDictKeyEntry] {
+        let normalized = normalizedKey(key)
+        let blockIndexes = matchingKeyBlockIndexes(for: normalized)
+        guard !blockIndexes.isEmpty else { return [] }
+
+        var matches: [MDictKeyEntry] = []
+        for blockIndex in blockIndexes {
+            let entries = try keyEntries(in: blockIndex)
+            matches.append(contentsOf: entries.filter {
+                normalizedKey($0.word) == normalized
+            })
+        }
+        return matches
+    }
+
+    func nextRecordOffset(after entry: MDictKeyEntry) throws -> UInt64 {
+        guard entry.globalIndex + 1 < entryCount else {
+            return totalDecompressedRecordSize
+        }
+        let nextIndex = entry.globalIndex + 1
+        guard let nextBlockIndex = keyBlockIndex(containingEntry: nextIndex) else {
+            throw MDictError.invalidFormat("Next key index \(nextIndex) out of range")
+        }
+        let nextBlock = try keyEntries(in: nextBlockIndex)
+        let localIndex = nextIndex - keyBlockRanges[nextBlockIndex].entryStartIndex
+        guard nextBlock.indices.contains(localIndex) else {
+            throw MDictError.invalidFormat("Next key entry \(nextIndex) out of range")
+        }
+        return nextBlock[localIndex].recordOffset
+    }
+
+    private func keyEntries(in blockIndex: Int) throws -> [MDictKeyEntry] {
+        if let cached = keyBlockCache[blockIndex] {
+            markKeyBlockCacheHit(blockIndex)
+            return cached
+        }
+
+        guard keyBlockRanges.indices.contains(blockIndex) else {
+            throw MDictError.invalidFormat("Key block index \(blockIndex) out of range")
+        }
+        let range = keyBlockRanges[blockIndex]
+        let blockData = try Self.readKeyBlockData(
             data,
-            cursor: &cursor,
-            blockSizes: blockSizes,
-            entryCount: metadata.entryCount,
+            cursor: range.compressedStart,
+            compressedSize: range.compressedSize,
+            decompressedSize: range.decompressedSize
+        )
+        let entries = try Self.parseKeyEntries(
+            blockData,
+            entryStartIndex: range.entryStartIndex,
+            expectedCount: range.entryCount,
             header: header
         )
+        cacheKeyEntries(entries, at: blockIndex)
+        return entries
     }
 
     private static func readKeyBlockMetadata(
@@ -129,28 +216,32 @@ extension MDictReader {
         return keyBlockInfoBytes
     }
 
-    private static func parseKeyBlockSizes(
+    private static func parseKeyBlockInfos(
         _ keyBlockInfoBytes: Data,
         blockCount: Int,
         header: MDictHeader
     ) throws
-        -> [(compressed: Int, decompressed: Int)] {
+        -> [KeyBlockInfo] {
         let isV2 = header.version >= 2.0
         let intSize = isV2 ? 8 : 4
         let readInt = integerReader(isV2: isV2)
-        var blockSizes: [(compressed: Int, decompressed: Int)] = []
+        var blockInfos: [KeyBlockInfo] = []
         var infoOffset = 0
         for _ in 0 ..< blockCount {
             try ensureAvailable(keyBlockInfoBytes, at: infoOffset, count: intSize, context: "key block entry count")
+            let entryCount = try checkedInt(
+                try readInt(keyBlockInfoBytes, infoOffset),
+                context: "key block entry count"
+            )
             infoOffset += intSize
 
-            try skipKeyBlockBoundaryText(
+            let firstKey = try readKeyBlockBoundaryText(
                 keyBlockInfoBytes,
                 offset: &infoOffset,
                 context: "key block first key",
                 header: header
             )
-            try skipKeyBlockBoundaryText(
+            let lastKey = try readKeyBlockBoundaryText(
                 keyBlockInfoBytes,
                 offset: &infoOffset,
                 context: "key block last key",
@@ -168,85 +259,112 @@ extension MDictReader {
             )
             infoOffset += intSize
 
-            blockSizes.append((compSize, decompSize))
+            blockInfos.append(KeyBlockInfo(
+                entryCount: entryCount,
+                firstKey: firstKey,
+                lastKey: lastKey,
+                compressedSize: compSize,
+                decompressedSize: decompSize
+            ))
         }
-        return blockSizes
+        return blockInfos
     }
 
     private static func parseKeyEntries(
-        _ data: Data,
-        cursor: inout Int,
-        blockSizes: [(compressed: Int, decompressed: Int)],
-        entryCount: Int,
+        _ blockData: Data,
+        entryStartIndex: Int,
+        expectedCount: Int,
         header: MDictHeader
     ) throws
         -> [MDictKeyEntry] {
         let isV2 = header.version >= 2.0
         let offsetWidth = isV2 ? 8 : 4
         var entries: [MDictKeyEntry] = []
-        entries.reserveCapacity(entryCount)
+        entries.reserveCapacity(expectedCount)
 
-        for blockSize in blockSizes {
-            let blockData = try readKeyBlockData(
-                data,
-                cursor: cursor,
-                blockSize: blockSize
+        var pos = 0
+        while pos < blockData.count {
+            try ensureAvailable(blockData, at: pos, count: offsetWidth, context: "key entry record offset")
+            let recordOffset: UInt64
+            if isV2 {
+                recordOffset = readUInt64BE(blockData, at: pos)
+            } else {
+                recordOffset = UInt64(readUInt32BE(blockData, at: pos))
+            }
+            pos += offsetWidth
+
+            let wordEnd = findNullTerminator(
+                blockData, from: pos, terminatorSize: header.nullTerminatorSize
             )
-            cursor += blockSize.compressed
+            guard wordEnd < blockData.count else {
+                throw MDictError.invalidFormat("Key entry is missing a null terminator")
+            }
+            let wordBytes = blockData.subdata(in: pos ..< wordEnd)
+            pos = wordEnd + header.nullTerminatorSize
 
-            var pos = 0
-            while pos < blockData.count {
-                try ensureAvailable(blockData, at: pos, count: offsetWidth, context: "key entry record offset")
-                let recordOffset: UInt64
-                if isV2 {
-                    recordOffset = readUInt64BE(blockData, at: pos)
-                } else {
-                    recordOffset = UInt64(readUInt32BE(blockData, at: pos))
-                }
-                pos += offsetWidth
-
-                let wordEnd = findNullTerminator(
-                    blockData, from: pos, terminatorSize: header.nullTerminatorSize
-                )
-                guard wordEnd < blockData.count else {
-                    throw MDictError.invalidFormat("Key entry is missing a null terminator")
-                }
-                let wordBytes = blockData.subdata(in: pos ..< wordEnd)
-                pos = wordEnd + header.nullTerminatorSize
-
-                if let word = String(data: wordBytes, encoding: header.encoding) {
-                    entries.append(MDictKeyEntry(word: word, recordOffset: recordOffset))
-                }
+            if let word = String(data: wordBytes, encoding: header.encoding) {
+                entries.append(MDictKeyEntry(
+                    word: word,
+                    recordOffset: recordOffset,
+                    globalIndex: entryStartIndex + entries.count
+                ))
             }
         }
 
+        guard entries.count == expectedCount else {
+            throw MDictError.invalidFormat("Key block parsed entry count mismatch")
+        }
         return entries
     }
 
     private static func readKeyBlockData(
         _ data: Data,
         cursor: Int,
-        blockSize: (compressed: Int, decompressed: Int)
+        compressedSize: Int,
+        decompressedSize: Int
     ) throws
         -> Data {
-        if blockSize.compressed == blockSize.decompressed {
-            return try checkedSubdata(data, at: cursor, count: blockSize.compressed)
+        if compressedSize == decompressedSize {
+            return try checkedSubdata(data, at: cursor, count: compressedSize)
         }
-        let compressed = try checkedSubdata(data, at: cursor, count: blockSize.compressed)
-        return try decompressBlock(compressed, decompressedSize: blockSize.decompressed)
+        let compressed = try checkedSubdata(data, at: cursor, count: compressedSize)
+        return try decompressBlock(compressed, decompressedSize: decompressedSize)
     }
 
-    private static func skipKeyBlockBoundaryText(
+    private static func readKeyBlockBoundaryText(
         _ data: Data,
         offset: inout Int,
         context: String,
         header: MDictHeader
-    ) throws {
+    ) throws
+        -> String {
         let isV2 = header.version >= 2.0
         let wordSize = try readKeyBlockTextUnitCount(data, offset: &offset, isV2: isV2)
         let textSize = keyBlockTextSize(wordSize, header: header, isV2: isV2)
         try ensureAvailable(data, at: offset, count: textSize, context: context)
+        let textEnd = offset + textSize - (isV2 ? header.nullTerminatorSize : 0)
+        let textBytes = data.subdata(in: offset ..< textEnd)
         offset += textSize
+        guard let text = String(data: textBytes, encoding: header.encoding) else {
+            throw MDictError.encodingError
+        }
+        return text
+    }
+
+    private func markKeyBlockCacheHit(_ index: Int) {
+        keyBlockCacheOrder.removeAll { $0 == index }
+        keyBlockCacheOrder.append(index)
+    }
+
+    private func cacheKeyEntries(_ entries: [MDictKeyEntry], at index: Int) {
+        keyBlockCache[index] = entries
+        markKeyBlockCacheHit(index)
+
+        while keyBlockCacheOrder.count > maxMDictCachedKeyBlockCount,
+              let evicted = keyBlockCacheOrder.first {
+            keyBlockCacheOrder.removeFirst()
+            keyBlockCache.removeValue(forKey: evicted)
+        }
     }
 
     private static func readKeyBlockTextUnitCount(

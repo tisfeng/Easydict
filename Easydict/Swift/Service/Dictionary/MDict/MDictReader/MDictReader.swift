@@ -37,6 +37,7 @@ enum MDictError: LocalizedError {
 }
 
 let maxMDictDecompressedBlockSize = 256 * 1024 * 1024
+let maxMDictCachedKeyBlockCount = 16
 let maxMDictCachedRecordBlockCount = 8
 let maxMDictCachedRecordBlockBytes = 50 * 1024 * 1024
 
@@ -66,6 +67,28 @@ struct MDictHeader {
 struct MDictKeyEntry {
     let word: String
     let recordOffset: UInt64
+    let globalIndex: Int
+}
+
+// MARK: - MDictKeyBlockRange
+
+/// Metadata for one compressed key block.
+///
+/// MDict stores the first and last key in key block info. Keeping those
+/// boundaries lets lookup skip full key parsing until a query lands in a
+/// candidate block.
+struct MDictKeyBlockRange {
+    let firstKey: String
+    let lastKey: String
+    let compressedStart: Int
+    let compressedSize: Int
+    let decompressedSize: Int
+    let entryStartIndex: Int
+    let entryCount: Int
+
+    var entryEndIndex: Int {
+        entryStartIndex + entryCount
+    }
 }
 
 // MARK: - RecordBlockInfo
@@ -109,7 +132,8 @@ struct RecordSpan: Hashable {
 /// Reads and parses MDict binary files (MDX for definitions, MDD for resources).
 ///
 /// Supports format versions 1.x and 2.x with zlib or uncompressed data blocks.
-/// Builds an in-memory key index on init and decompresses record blocks on demand.
+/// Keeps key block boundaries on init, then parses matching key blocks and
+/// decompresses record blocks on demand.
 final class MDictReader {
     // MARK: Lifecycle
 
@@ -124,9 +148,11 @@ final class MDictReader {
             throw MDictError.encrypted
         }
 
-        self.keyEntries = try Self.parseKeyBlocks(
+        let (keyBlockRanges, recordBlockCursor) = try Self.parseKeyBlockRanges(
             data, cursor: &cursor, header: header
         )
+        self.keyBlockRanges = keyBlockRanges
+        cursor = recordBlockCursor
 
         let (infos, blocksStart) = try Self.parseRecordBlockInfo(
             data, cursor: &cursor, header: header
@@ -136,17 +162,19 @@ final class MDictReader {
             blocksStart: blocksStart
         )
 
-        self.keyIndex = Self.buildKeyIndex(keyEntries, caseSensitive: header.keyCaseSensitive)
+        self.entryCount = keyBlockRanges.last?.entryEndIndex ?? 0
     }
 
     // MARK: Internal
 
     let header: MDictHeader
-    let keyEntries: [MDictKeyEntry]
+    let keyBlockRanges: [MDictKeyBlockRange]
+    let entryCount: Int
 
     let data: Data
     let recordBlockRanges: [RecordBlockRange]
-    let keyIndex: [String: [Int]]
+    var keyBlockCache: [Int: [MDictKeyEntry]] = [:]
+    var keyBlockCacheOrder: [Int] = []
     var decompressedBlockCache: [Int: Data] = [:]
     var decompressedBlockCacheOrder: [Int] = []
     var decompressedBlockCacheBytes = 0
@@ -194,21 +222,17 @@ final class MDictReader {
 
     /// Look up raw binary data by key (MDD files).
     func lookupData(for key: String) throws -> Data? {
-        let normalizedKey = header.keyCaseSensitive ? key : key.lowercased()
-        guard let index = keyIndex[normalizedKey]?.first else { return nil }
-
-        return try lookupData(at: index)
+        guard let entry = try matchingEntries(for: key).first else { return nil }
+        let span = try recordSpan(for: entry)
+        return try readRecord(at: span.offset, size: span.size)
     }
 
     /// Look up all raw binary records by key.
     func lookupAllData(for key: String) throws -> [Data] {
-        let normalizedKey = header.keyCaseSensitive ? key : key.lowercased()
-        guard let indexes = keyIndex[normalizedKey] else { return [] }
-
         var records: [Data] = []
         var seen = Set<RecordSpan>()
-        for index in indexes {
-            let span = try recordSpan(at: index)
+        for entry in try matchingEntries(for: key) {
+            let span = try recordSpan(for: entry)
             guard seen.insert(span).inserted else { continue }
             records.append(try readRecord(at: span.offset, size: span.size))
         }
@@ -220,27 +244,16 @@ final class MDictReader {
             .replacingOccurrences(of: "\0", with: "")
     }
 
-    func lookupData(at index: Int) throws -> Data {
-        let span = try recordSpan(at: index)
-        return try readRecord(at: span.offset, size: span.size)
-    }
-
-    func recordSpan(at index: Int) throws -> RecordSpan {
-        guard keyEntries.indices.contains(index) else {
-            throw MDictError.invalidFormat("Key index \(index) out of range")
-        }
-
-        let entry = keyEntries[index]
-        let nextOffset: UInt64
-        if index + 1 < keyEntries.count {
-            nextOffset = keyEntries[index + 1].recordOffset
-        } else {
-            nextOffset = totalDecompressedRecordSize
-        }
+    func recordSpan(for entry: MDictKeyEntry) throws -> RecordSpan {
+        let nextOffset = try nextRecordOffset(after: entry)
         guard nextOffset >= entry.recordOffset else {
             throw MDictError.invalidFormat("Record offsets are not sorted")
         }
         let recordSize = Int(nextOffset - entry.recordOffset)
         return RecordSpan(offset: entry.recordOffset, size: recordSize)
+    }
+
+    func normalizedKey(_ key: String) -> String {
+        header.keyCaseSensitive ? key : key.lowercased()
     }
 }

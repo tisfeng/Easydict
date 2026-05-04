@@ -45,7 +45,8 @@ resource reader。最终服务把每本词典的 HTML section 交给
 ## 调试入口
 
 - 导入失败时，先检查文件扩展名、MDX/MDD 同名匹配，以及 `MDictManager.loadErrors`。
-- 查询无结果时，检查 `MDictManager.dictionariesForLookup()`、词典大小写设置和 key index。
+- 查询无结果时，检查 `MDictManager.dictionariesForLookup()`、词典大小写设置和 key block
+  边界。
 - 图片、音频或样式缺失时，优先检查 `MDictDictionary` 的 resource key candidates 和资源重写。
 - 解析、解压或加密相关错误，从 `MDictReader/` 子目录里的 `MDictReader`、`MDictBinary`、
   `MDictKeyBlocks` 和 `MDictRecords` 开始定位。
