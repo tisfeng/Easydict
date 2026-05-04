@@ -37,8 +37,8 @@ struct DictionaryHTMLRenderResult {
 
 /// Shared HTML renderer for dictionary-style services.
 ///
-/// It owns the common `apple-dictionary.html` wrapper, entry iframe framing,
-/// result colors, and details summary layout. Individual services still provide
+/// It owns the common dictionary result wrapper, entry iframe framing, result
+/// colors, and details summary layout. Individual services still provide
 /// already-resolved entry HTML and any service-specific CSS or JavaScript.
 enum DictionaryHTMLRenderer {
     // MARK: Internal
@@ -88,7 +88,7 @@ enum DictionaryHTMLRenderer {
     // MARK: Private
 
     private static func loadBaseHTML() -> String? {
-        Bundle.main.path(forResource: "apple-dictionary", ofType: "html")
+        Bundle.main.path(forResource: "dictionary-result", ofType: "html")
             .flatMap { try? String(contentsOfFile: $0, encoding: .utf8) }
     }
 }

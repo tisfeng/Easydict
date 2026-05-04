@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">词典服务架构</title>
+  <desc id="desc">展示 Dictionary 目录下 AppleDictionary、MDict 和 DictionaryRendering 的职责与数据流。</desc>
+  <style>
+    text {
+      font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 15px; font-weight: 600; }
+    .box-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .box-text { fill: #4b5563; font-size: 12px; }
+    .label { fill: #6b7280; font-size: 12px; }
+    .note-title { fill: #374151; font-size: 13px; font-weight: 600; }
+    .note-text { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="600" fill="#ffffff"/>
+
+  <text x="48" y="48" class="title">词典服务族目录</text>
+  <text x="48" y="72" class="subtitle">Service/Dictionary 聚合系统词典、MDict 离线词典和共享 HTML 渲染层。</text>
+
+  <rect x="38" y="98" width="884" height="362" rx="10" ry="10" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="60" y="128" class="group-title">Easydict/Swift/Service/Dictionary</text>
+
+  <rect x="70" y="184" width="166" height="86" rx="8" ry="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="153" y="216" text-anchor="middle" class="box-title">查询入口</text>
+  <text x="153" y="239" text-anchor="middle" class="box-text">词典类 QueryService</text>
+
+  <rect x="292" y="142" width="210" height="104" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="397" y="173" text-anchor="middle" class="box-title">AppleDictionary</text>
+  <text x="397" y="198" text-anchor="middle" class="box-text">调用系统 Dictionary Services</text>
+  <text x="397" y="218" text-anchor="middle" class="box-text">产出系统词典条目 HTML</text>
+
+  <rect x="292" y="300" width="210" height="104" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="397" y="331" text-anchor="middle" class="box-title">MDict</text>
+  <text x="397" y="356" text-anchor="middle" class="box-text">解析 MDX/MDD 离线词典</text>
+  <text x="397" y="376" text-anchor="middle" class="box-text">处理资源、索引和记录块</text>
+
+  <rect x="626" y="204" width="248" height="132" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="750" y="238" text-anchor="middle" class="box-title">DictionaryRendering</text>
+  <text x="750" y="263" text-anchor="middle" class="box-text">共享 HTML shell 与 iframe 布局</text>
+  <text x="750" y="283" text-anchor="middle" class="box-text">读取 dictionary-result.html</text>
+  <text x="750" y="303" text-anchor="middle" class="box-text">组装 DictionaryHTMLSection</text>
+
+  <rect x="626" y="384" width="248" height="52" rx="8" ry="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="750" y="416" text-anchor="middle" class="box-title">结果面板 WKWebView</text>
+
+  <path d="M236 212 H292" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M236 244 C258 244 264 352 292 352" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+
+  <path d="M502 194 H584 C604 194 604 247 626 247" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="556" y="183" text-anchor="middle" class="label">系统词典 section</text>
+
+  <path d="M502 352 H584 C604 352 604 293 626 293" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="556" y="374" text-anchor="middle" class="label">MDict section</text>
+
+  <path d="M750 336 V384" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
+  <text x="770" y="363" class="label">完整 HTML</text>
+
+  <rect x="48" y="494" width="864" height="70" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="70" y="523" class="note-title">Service/Apple 保留平台能力</text>
+  <text x="70" y="546" class="note-text">Apple Translation、OCR、Speech、Language Detector 与 AppleService 不移动到词典服务族。</text>
+
+  <line x1="60" y1="582" x2="96" y2="582" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="108" y="586" class="label">查询分发</text>
+  <line x1="204" y1="582" x2="240" y2="582" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+  <text x="252" y="586" class="label">词典 HTML section</text>
+  <line x1="408" y1="582" x2="444" y2="582" stroke="#9333ea" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <text x="456" y="586" class="label">结果 HTML</text>
+</svg>
