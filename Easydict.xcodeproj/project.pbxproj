@@ -667,6 +667,8 @@
 		031C66E62EDB00200025D190 /* dictionary-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dictionary-architecture.svg"; sourceTree = "<group>"; };
 		031C66EA2EDB01000025D190 /* mdict-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "mdict-overview.md"; sourceTree = "<group>"; };
 		031C66EB2EDB01000025D190 /* mdict-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "mdict-architecture.svg"; sourceTree = "<group>"; };
+		031C66ED2EDB02000025D190 /* mdict-reader-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "mdict-reader-overview.md"; sourceTree = "<group>"; };
+		031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "mdict-reader-architecture.svg"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
 		032041192E43BEB50065A05B /* ocr-en-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-4.png"; sourceTree = "<group>"; };
@@ -3263,6 +3265,19 @@
 				031C66EA2EDB01000025D190 /* mdict-overview.md */,
 				031C66EB2EDB01000025D190 /* mdict-architecture.svg */,
 				983925DCBA81465EAE22415B /* MDictService.swift */,
+				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
+				26FFFD863EBF442CB4FCE765 /* MDictManager.swift */,
+				C9AB6CC6A83844F992CD49D6 /* MDictConfigurationView.swift */,
+				031C66EC2EDB02000025D190 /* MDictReader */,
+			);
+			path = MDict;
+			sourceTree = "<group>";
+		};
+		031C66EC2EDB02000025D190 /* MDictReader */ = {
+			isa = PBXGroup;
+			children = (
+				031C66ED2EDB02000025D190 /* mdict-reader-overview.md */,
+				031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */,
 				897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */,
 				B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */,
 				B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */,
@@ -3270,11 +3285,8 @@
 				B9F10004B3C24D5E8A000004 /* MDictBinary.swift */,
 				B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */,
 				B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */,
-				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
-				26FFFD863EBF442CB4FCE765 /* MDictManager.swift */,
-				C9AB6CC6A83844F992CD49D6 /* MDictConfigurationView.swift */,
 			);
-			path = MDict;
+			path = MDictReader;
 			sourceTree = "<group>";
 		};
 		40F5D52A2D65B1A200EDB997 /* DeepSeek */ = {

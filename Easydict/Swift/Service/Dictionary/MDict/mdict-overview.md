@@ -13,13 +13,7 @@ MDict/
 ├── MDictConfigurationView.swift       # 设置页导入、启用、排序和删除 UI
 ├── MDictManager.swift                 # 导入记录持久化、加载和生命周期管理
 ├── MDictDictionary.swift              # 单本词典查询、MDD 资源解析和链接重写
-├── MDictReader.swift                  # MDX/MDD 二进制读取入口和共享状态
-├── MDictHeaderParser.swift            # header XML 解析
-├── MDictKeyBlocks.swift               # key block metadata 和 key entry 解析
-├── MDictKeyIndex.swift                # 查询 key 的内存索引
-├── MDictRecords.swift                 # record block 信息、范围和内容读取
-├── MDictBinary.swift                  # big-endian 读取、zlib 解压和校验工具
-├── MDictRIPEMD128.swift               # Encrypted=2 key index 解密用 RIPEMD-128
+├── MDictReader/                       # MDX/MDD 二进制 reader、parser 和底层工具
 ├── mdict-overview.md                  # 本目录说明
 └── mdict-architecture.svg
 ```
@@ -34,8 +28,7 @@ MDict/
   变化时发出通知。
 - `MDictDictionary` 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、
   CSS 和脚本资源重写为 WebKit 可加载的形式。
-- `MDictReader` 及其 parser/helper 文件只处理 MDX/MDD 二进制格式，不处理 UI、服务配置或
-  结果面板样式。
+- `MDictReader/` 子目录只处理 MDX/MDD 二进制格式，不处理 UI、服务配置或结果面板样式。
 
 ## 主要流程
 
@@ -53,6 +46,6 @@ MDict/
 - 导入失败时，先检查文件扩展名、MDX/MDD 同名匹配，以及 `MDictManager.loadErrors`。
 - 查询无结果时，检查 `MDictManager.enabledDictionaries`、词典大小写设置和 key index。
 - 图片、音频或样式缺失时，优先检查 `MDictDictionary` 的 resource key candidates 和资源重写。
-- 解析、解压或加密相关错误，从 `MDictReader`、`MDictBinary`、`MDictKeyBlocks` 和
-  `MDictRecords` 开始定位。
+- 解析、解压或加密相关错误，从 `MDictReader/` 子目录里的 `MDictReader`、`MDictBinary`、
+  `MDictKeyBlocks` 和 `MDictRecords` 开始定位。
 - 结果面板样式或高度异常，回到 `MDictService.wrapWithStyle` 与 `DictionaryHTMLRenderer` 排查。

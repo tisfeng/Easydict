@@ -77,8 +77,8 @@
   <text x="582" y="426" text-anchor="middle" class="label">HTML section</text>
 
   <rect x="290" y="538" width="380" height="70" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="480" y="567" text-anchor="middle" class="box-title">MDictReader 与 parser</text>
-  <text x="480" y="590" text-anchor="middle" class="box-text">Header / KeyBlocks / Records / Binary / RIPEMD-128</text>
+  <text x="480" y="567" text-anchor="middle" class="box-title">MDictReader/</text>
+  <text x="480" y="590" text-anchor="middle" class="box-text">reader、parser、record cache 与 binary helpers</text>
 
   <path d="M733 280 C733 330 480 330 480 390" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
   <text x="608" y="324" text-anchor="middle" class="label">初始化 reader</text>
