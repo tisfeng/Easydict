@@ -644,6 +644,8 @@
 		031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTranslateResponse.swift; sourceTree = "<group>"; };
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
 		031C66D52ED9F9E40025D190 /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
+		03F6A0012F00000100D1A001 /* apple-dictionary-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "apple-dictionary-overview.md"; sourceTree = "<group>"; };
+		03F6A0022F00000100D1A002 /* apple-dictionary-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-dictionary-architecture.svg"; sourceTree = "<group>"; };
 		031C66D92EDA14E90025D190 /* String+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Split.swift"; sourceTree = "<group>"; };
 		031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HandleInputText.swift"; sourceTree = "<group>"; };
 		031CBA632CD76F1500364437 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
@@ -874,6 +876,8 @@
 		0399C6B729A9F4B800B4AFCC /* EZSchemeParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSchemeParser.m; sourceTree = "<group>"; };
 		039B694D2A9D9F370063709D /* EZWebViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewManager.h; sourceTree = "<group>"; };
 		039B694E2A9D9F370063709D /* EZWebViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewManager.m; sourceTree = "<group>"; };
+		03F6B0012F00000100D1B001 /* word-result-view-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "word-result-view-overview.md"; sourceTree = "<group>"; };
+		03F6B0022F00000100D1B002 /* word-result-view-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "word-result-view-architecture.svg"; sourceTree = "<group>"; };
 		039CBE862D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseGenreAnalyzer.swift; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
@@ -1513,6 +1517,8 @@
 			children = (
 				031C66D32ED9F9E30025D190 /* AppleDictionary.swift */,
 				031C66D52ED9F9E40025D190 /* apple-dictionary.html */,
+				03F6A0012F00000100D1A001 /* apple-dictionary-overview.md */,
+				03F6A0022F00000100D1A002 /* apple-dictionary-architecture.svg */,
 			);
 			path = AppleDictionary;
 			sourceTree = "<group>";
@@ -2277,6 +2283,8 @@
 				03B0225F29231FA6001C7E63 /* EZWordResultView.m */,
 				039B694D2A9D9F370063709D /* EZWebViewManager.h */,
 				039B694E2A9D9F370063709D /* EZWebViewManager.m */,
+				03F6B0012F00000100D1B001 /* word-result-view-overview.md */,
+				03F6B0022F00000100D1B002 /* word-result-view-architecture.svg */,
 			);
 			path = WordResultView;
 			sourceTree = "<group>";

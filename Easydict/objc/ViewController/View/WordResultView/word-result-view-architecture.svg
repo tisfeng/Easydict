@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
+  <style>
+    text {
+      font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      fill: #111827;
+    }
+    .title { font-size: 22px; font-weight: 600; }
+    .node-title { font-size: 15px; font-weight: 600; }
+    .node-text { font-size: 12px; fill: #6b7280; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="600" fill="#ffffff"/>
+  <text x="40" y="52" class="title">WordResultView 高度更新架构</text>
+  <text x="40" y="78" class="node-text">Apple 词典内容先在 WebView 内稳定测量，再把真实高度变化传到表格和窗口。</text>
+
+  <rect x="40" y="120" width="210" height="92" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="62" y="150" class="node-title">EZResultView</text>
+  <text x="62" y="174" class="node-text">绑定 result/service</text>
+  <text x="62" y="194" class="node-text">接收 word 高度回调</text>
+
+  <rect x="300" y="120" width="220" height="92" rx="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="322" y="150" class="node-title">EZWordResultView</text>
+  <text x="322" y="174" class="node-text">刷新文本与按钮布局</text>
+  <text x="322" y="194" class="node-text">安装 WebView 高度回调</text>
+
+  <rect x="570" y="120" width="220" height="92" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
+  <text x="592" y="150" class="node-title">WKWebView</text>
+  <text x="592" y="174" class="node-text">加载 Apple 词典 HTML</text>
+  <text x="592" y="194" class="node-text">触发 iframe 重测脚本</text>
+
+  <rect x="570" y="300" width="220" height="100" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="592" y="330" class="node-title">EZWebViewManager</text>
+  <text x="592" y="354" class="node-text">in-flight 防重入</text>
+  <text x="592" y="374" class="node-text">scrollHeight 去重</text>
+
+  <rect x="300" y="300" width="220" height="100" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="322" y="330" class="node-title">Height Guards</text>
+  <text x="322" y="354" class="node-text">WebView 约束更新</text>
+  <text x="322" y="374" class="node-text">wordResultViewHeight 去重</text>
+
+  <rect x="40" y="300" width="210" height="100" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="62" y="330" class="node-title">EZBaseQueryViewController</text>
+  <text x="62" y="354" class="node-text">noteHeightOfRows</text>
+  <text x="62" y="374" class="node-text">updateWindowHeight</text>
+
+  <rect x="40" y="460" width="210" height="82" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="62" y="490" class="node-title">Window Frame</text>
+  <text x="62" y="514" class="node-text">仅真实变化时调整</text>
+  <text x="62" y="532" class="node-text">相同 frame 直接结束</text>
+
+  <line x1="250" y1="166" x2="300" y2="166" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <line x1="520" y1="166" x2="570" y2="166" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <line x1="680" y1="212" x2="680" y2="300" stroke="#9333ea" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <line x1="570" y1="350" x2="520" y2="350" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+  <line x1="300" y1="350" x2="250" y2="350" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+  <line x1="145" y1="400" x2="145" y2="460" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+
+  <g transform="translate(40 565)">
+    <line x1="0" y1="0" x2="30" y2="0" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+    <text x="42" y="4" class="node-text">视图绑定</text>
+    <line x1="130" y1="0" x2="160" y2="0" stroke="#9333ea" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+    <text x="172" y="4" class="node-text">WebView 测量</text>
+    <line x1="290" y1="0" x2="320" y2="0" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+    <text x="332" y="4" class="node-text">高度传播</text>
+  </g>
+</svg>
