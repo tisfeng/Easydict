@@ -45,8 +45,8 @@ Translation services inherit from a base query service. Each service lives in it
 Unless the user explicitly says otherwise, when adding or moving files, also update `Easydict.xcodeproj/project.pbxproj` so the files appear in Xcode's navigator.
 
 - By default, every newly added project file, including developer-facing
-  Markdown documents such as `README.md`, must have a matching
-  `PBXFileReference` under the correct `PBXGroup`.
+  Markdown documentation, must have a matching `PBXFileReference` under the
+  correct `PBXGroup`.
 - Do not add documentation files to build phases such as `Resources` unless the file is
   intentionally shipped at runtime.
 
@@ -149,14 +149,22 @@ Recommended usage:
 - When creating or updating source file header comments, use the current Git username in
   the `Created by ...` line. Do not use agent names such as `Codex`, `Claude`, or
   `AI Assistant`.
-- Every directory must include a Chinese `README.md`. When creating a new directory, add
-  its `README.md` and matching SVG technical diagram in the same change.
-- Generate each `README.md`'s SVG technical diagram from the README content with the
-  `fireworks-tech-graph` skill, choosing the diagram type that best fits the content.
+- Every project directory must include a Chinese overview document and a same-prefix SVG
+  technical diagram. Use the directory name converted to kebab-case as the shared prefix:
+  `<directory-kebab>-overview.md` and `<directory-kebab>-<diagram-type>.svg`.
+- Convert `UpperCamelCase` names to kebab-case, convert spaces to hyphens, and keep names
+  that are already kebab-case unchanged. For example, `DictionaryRendering/` uses
+  `dictionary-rendering-overview.md` and `dictionary-rendering-architecture.svg`, while
+  `GitHub Models/` uses `github-models-overview.md` and `github-models-architecture.svg`.
+- Use a kebab-case diagram type that reflects the SVG content, such as `architecture`,
+  `flow`, or `sequence`. Reuse the same directory prefix for the Markdown document
+  and its SVG so related files stay adjacent in search and Xcode.
+- Generate each directory document's SVG technical diagram from the Markdown content with
+  the `fireworks-tech-graph` skill, choosing the diagram type that best fits the content.
 - When files in a directory are added, removed, renamed, or their behavior changes, update
-  that directory's `README.md` and matching SVG technical diagram in the same change.
-  Explain responsibilities, key components, main flows, and debugging entry points instead
-  of writing a method-by-method API index.
+  that directory's Markdown document and same-prefix SVG technical diagram in the same
+  change. Explain responsibilities, key components, main flows, and debugging entry
+  points instead of writing a method-by-method API index.
 
 ### Skill Overlay Rules
 

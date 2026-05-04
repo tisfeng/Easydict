@@ -12,7 +12,7 @@
 DictionaryRendering/
 ├── DictionaryHTMLRenderer.swift        # 组装词典结果 HTML、iframe 和共享样式
 ├── dictionary-result.html              # WKWebView 加载的结果面板外层模板
-├── README.md                           # 本目录说明
+├── dictionary-rendering-overview.md    # 本目录说明
 └── dictionary-rendering-architecture.svg
 ```
 

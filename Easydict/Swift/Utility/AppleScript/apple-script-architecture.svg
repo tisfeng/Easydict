@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">AppleScript 能力架构</title>
+  <desc id="desc">展示 AppleScriptTask facade、脚本模板与两个执行后端的关系。</desc>
+  <style>
+    text {
+      font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 15px; font-weight: 600; }
+    .box-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .box-text { fill: #4b5563; font-size: 12px; }
+    .label { fill: #6b7280; font-size: 12px; }
+    .note-title { fill: #374151; font-size: 13px; font-weight: 600; }
+    .note-text { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="600" fill="#ffffff"/>
+
+  <text x="48" y="48" class="title">AppleScript 能力</text>
+  <text x="48" y="72" class="subtitle">统一封装浏览器、系统和快捷指令脚本模板，并默认使用 NSAppleScript 后端。</text>
+
+  <rect x="42" y="104" width="876" height="380" rx="10" ry="10" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="64" y="134" class="group-title">Easydict/Swift/Utility/AppleScript</text>
+
+  <rect x="70" y="160" width="186" height="76" rx="8" ry="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="163" y="190" text-anchor="middle" class="box-title">业务调用方</text>
+  <text x="163" y="213" text-anchor="middle" class="box-text">浏览器、系统、翻译 fallback</text>
+
+  <rect x="70" y="304" width="186" height="112" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="163" y="336" text-anchor="middle" class="box-title">脚本模板</text>
+  <text x="163" y="361" text-anchor="middle" class="box-text">AppleScriptTask+Browser</text>
+  <text x="163" y="381" text-anchor="middle" class="box-text">AppleScriptTask+System</text>
+
+  <rect x="348" y="220" width="220" height="112" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="458" y="252" text-anchor="middle" class="box-title">AppleScriptTask</text>
+  <text x="458" y="277" text-anchor="middle" class="box-text">统一 facade</text>
+  <text x="458" y="297" text-anchor="middle" class="box-text">调用方不直接选择后端</text>
+
+  <rect x="672" y="158" width="210" height="96" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="777" y="190" text-anchor="middle" class="box-title">AppleScriptExecutor</text>
+  <text x="777" y="215" text-anchor="middle" class="box-text">NSAppleScript 默认后端</text>
+  <text x="777" y="235" text-anchor="middle" class="box-text">主线程执行、超时、错误映射</text>
+
+  <rect x="672" y="328" width="210" height="96" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="777" y="360" text-anchor="middle" class="box-title">Process Executor</text>
+  <text x="777" y="385" text-anchor="middle" class="box-text">osascript 兼容后端</text>
+  <text x="777" y="405" text-anchor="middle" class="box-text">仅在明确需要时使用</text>
+
+  <path d="M256 198 H348 C334 198 334 250 348 250" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="304" y="186" text-anchor="middle" class="label">统一入口</text>
+
+  <path d="M256 360 H300 C324 360 324 302 348 302" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="304" y="382" text-anchor="middle" class="label">脚本内容</text>
+
+  <path d="M568 260 H620 C646 260 646 206 672 206" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="620" y="242" text-anchor="middle" class="label">默认执行</text>
+
+  <path d="M568 296 H620 C646 296 646 376 672 376" stroke="#9333ea" stroke-width="1.8" fill="none" stroke-dasharray="7 5" marker-end="url(#arrow-purple)"/>
+  <text x="620" y="326" text-anchor="middle" class="label">兼容路径</text>
+
+  <rect x="74" y="512" width="812" height="54" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="96" y="542" class="note-title">调试入口</text>
+  <text x="178" y="542" class="note-text">优先检查脚本模板、主线程执行、timeout 和 QueryError 映射；osascript 问题再看子进程 stdout/stderr。</text>
+</svg>

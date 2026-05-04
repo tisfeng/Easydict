@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">ClaudeCode 服务架构</title>
+  <desc id="desc">展示 Claude Code 翻译服务如何通过本地 claude CLI 接入 StreamService。</desc>
+  <style>
+    text {
+      font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 15px; font-weight: 600; }
+    .box-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .box-text { fill: #4b5563; font-size: 12px; }
+    .label { fill: #6b7280; font-size: 12px; }
+    .note-title { fill: #374151; font-size: 13px; font-weight: 600; }
+    .note-text { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="600" fill="#ffffff"/>
+
+  <text x="48" y="48" class="title">ClaudeCode 服务</text>
+  <text x="48" y="72" class="subtitle">通过本地 claude CLI 接入 StreamService，并限制额外工具上下文。</text>
+
+  <rect x="42" y="104" width="876" height="358" rx="10" ry="10" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="64" y="134" class="group-title">Easydict/Swift/Service/ClaudeCode</text>
+
+  <rect x="70" y="192" width="148" height="82" rx="8" ry="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="144" y="224" text-anchor="middle" class="box-title">翻译请求</text>
+  <text x="144" y="247" text-anchor="middle" class="box-text">StreamService 链路</text>
+
+  <rect x="274" y="154" width="218" height="112" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="383" y="186" text-anchor="middle" class="box-title">ClaudeCodeService</text>
+  <text x="383" y="211" text-anchor="middle" class="box-text">组装翻译 prompt</text>
+  <text x="383" y="231" text-anchor="middle" class="box-text">管理 runner 生命周期</text>
+
+  <rect x="596" y="154" width="246" height="112" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="719" y="186" text-anchor="middle" class="box-title">ClaudeCodeRunner</text>
+  <text x="719" y="211" text-anchor="middle" class="box-text">定位 claude 可执行文件</text>
+  <text x="719" y="231" text-anchor="middle" class="box-text">注入 settings env 并启动进程</text>
+
+  <rect x="596" y="332" width="246" height="82" rx="8" ry="8" fill="#111827" stroke="#374151" stroke-width="1.5"/>
+  <text x="719" y="364" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="600">claude CLI</text>
+  <text x="719" y="388" text-anchor="middle" fill="#d1d5db" font-size="12">--output-format stream-json</text>
+
+  <rect x="274" y="318" width="218" height="110" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="383" y="350" text-anchor="middle" class="box-title">ClaudeCodeEventParser</text>
+  <text x="383" y="375" text-anchor="middle" class="box-text">解析文本增量</text>
+  <text x="383" y="395" text-anchor="middle" class="box-text">映射登录、额度和通用错误</text>
+
+  <rect x="70" y="346" width="148" height="68" rx="8" ry="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="144" y="374" text-anchor="middle" class="box-title">翻译输出</text>
+  <text x="144" y="396" text-anchor="middle" class="box-text">增量结果或错误</text>
+
+  <path d="M218 233 H274" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M492 210 H596" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="544" y="198" text-anchor="middle" class="label">prompt</text>
+
+  <path d="M719 266 V332" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="740" y="304" class="label">启动进程</text>
+
+  <path d="M596 373 H492" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="544" y="361" text-anchor="middle" class="label">stream-json</text>
+
+  <path d="M274 381 H218" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
+
+  <rect x="72" y="492" width="392" height="66" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="94" y="520" class="note-title">配置来源</text>
+  <text x="94" y="543" class="note-text">读取 ~/.claude/settings.json 的 env，保留本地认证与代理能力。</text>
+
+  <rect x="496" y="492" width="392" height="66" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="518" y="520" class="note-title">调试入口</text>
+  <text x="518" y="543" class="note-text">AGENT_CLI_DEBUG 写入日志，并由 DebugWindow 查看原始事件。</text>
+</svg>
