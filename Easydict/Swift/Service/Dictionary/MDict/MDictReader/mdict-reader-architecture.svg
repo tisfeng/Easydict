@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" width="960" height="680" role="img" aria-labelledby="title desc">
   <title id="title">MDictReader 架构</title>
-  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、校验 metadata cache schema、二分定位词条、解压 LZO/zlib 记录块到返回查询结果的数据流。</desc>
+  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、校验 metadata cache schema、定位候选 key block、过滤词条、解压 LZO/zlib 记录块到返回查询结果的数据流。</desc>
   <style>
     text {
       font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -28,7 +28,7 @@
   <rect width="960" height="680" fill="#ffffff"/>
 
   <text x="48" y="48" class="title">MDictReader 二进制读取层</text>
-  <text x="48" y="72" class="subtitle">复用持久化 metadata cache，按需解压 key/record block，并用二分查找返回文本定义或资源 Data。</text>
+  <text x="48" y="72" class="subtitle">复用持久化 metadata cache，按需解压 key/record block，并在候选 block 内精确过滤返回文本定义或资源 Data。</text>
 
   <rect x="40" y="104" width="880" height="492" rx="10" ry="10" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="62" y="134" class="group-title">Easydict/Swift/Service/Dictionary/MDict/MDictReader</text>
@@ -92,7 +92,7 @@
 
   <path d="M783 292 C783 330 178 330 178 402" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
   <rect x="364" y="315" width="248" height="24" rx="4" ry="4" fill="#f9fafb"/>
-  <text x="488" y="332" text-anchor="middle" class="label">二分定位 block，必要时扫描边界兜底</text>
+  <text x="488" y="332" text-anchor="middle" class="label">二分定位 block，块内精确过滤</text>
 
   <rect x="328" y="522" width="304" height="58" rx="8" ry="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
   <text x="480" y="546" text-anchor="middle" class="box-title">加密索引支持</text>

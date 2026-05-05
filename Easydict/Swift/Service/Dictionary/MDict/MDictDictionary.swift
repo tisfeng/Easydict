@@ -10,6 +10,8 @@ import Foundation
 
 private let maxMDictCachedDataURIBytes = 32 * 1024 * 1024
 private let maxMDictCachedSingleDataURIBytes = 8 * 1024 * 1024
+private let maxMDictResolvedDataURIBytesPerLookup = 1536 * 1024
+private let maxMDictResolvedDataURICountPerLookup = 96
 private let maxMDictCachedCSSBytes = 4 * 1024 * 1024
 private let maxMDictCachedCSSEntryBytes = 2 * 1024 * 1024
 private let maxMDictMissingResourceCount = 512
@@ -105,6 +107,10 @@ final class MDictDictionary: @unchecked Sendable {
     private var missingResourceKeys = Set<String>()
     private var missingResourceOrder: [String] = []
     private var searchIndex: MDictSearchIndex?
+    private var resolvedDataURIBytes = 0
+    private var resolvedDataURICount = 0
+    private var cachedLocalStylesheet: String?
+    private var didLoadLocalStylesheet = false
 
     private static func javaScriptStringLiteral(_ value: String) -> String {
         let escaped = value
@@ -201,18 +207,24 @@ final class MDictDictionary: @unchecked Sendable {
 
     /// Rewrites MDict links so WebKit can render local resources without a scheme handler.
     private func resolveLinks(in html: String) -> String {
+        resolvedDataURIBytes = 0
+        resolvedDataURICount = 0
+
         var result = html
         result = result.replacingOccurrences(
             of: "entry://",
             with: "mdict-entry://"
         )
-        result = replaceSoundLinks(in: result)
-        result = replaceStylesheetLinks(in: result)
         result = replaceScriptLinks(in: result)
+        result = replaceStylesheetLinks(in: result)
         result = replaceResourceAttributes(in: result)
         result = replaceSourceSets(in: result)
         result = replaceCSSResources(in: result)
         result = replaceAudioConstructors(in: result)
+        result = replaceSoundLinks(in: result)
+        if let localStylesheet = localStylesheetText() {
+            result = "<style>\(localStylesheet)</style>\(result)"
+        }
         return result
     }
 
@@ -374,6 +386,7 @@ final class MDictDictionary: @unchecked Sendable {
     private func dataURI(for key: String) -> String? {
         let cacheKey = resourceCacheKey(for: key)
         if let cached = cachedDataURIs[cacheKey] {
+            guard reserveDataURIBudget(bytes: cached.utf8.count) else { return nil }
             markDataURICacheHit(cacheKey)
             return cached
         }
@@ -385,9 +398,29 @@ final class MDictDictionary: @unchecked Sendable {
             return nil
         }
 
-        let dataURI = "data:\(mimeType(for: key));base64,\(data.base64EncodedString())"
+        let mimeType = mimeType(for: key)
+        let bytes = dataURIByteCount(dataByteCount: data.count, mimeType: mimeType)
+        guard reserveDataURIBudget(bytes: bytes) else { return nil }
+
+        let dataURI = "data:\(mimeType);base64,\(data.base64EncodedString())"
         cacheDataURI(dataURI, for: cacheKey)
         return dataURI
+    }
+
+    private func reserveDataURIBudget(bytes: Int) -> Bool {
+        guard bytes <= maxMDictCachedSingleDataURIBytes,
+              resolvedDataURICount < maxMDictResolvedDataURICountPerLookup,
+              resolvedDataURIBytes + bytes <= maxMDictResolvedDataURIBytesPerLookup
+        else { return false }
+
+        resolvedDataURICount += 1
+        resolvedDataURIBytes += bytes
+        return true
+    }
+
+    private func dataURIByteCount(dataByteCount: Int, mimeType: String) -> Int {
+        let base64ByteCount = ((dataByteCount + 2) / 3) * 4
+        return "data:\(mimeType);base64,".utf8.count + base64ByteCount
     }
 
     private func stylesheetText(for key: String) -> String? {
@@ -408,6 +441,22 @@ final class MDictDictionary: @unchecked Sendable {
         let resolvedCSS = replaceCSSResources(in: css)
         cacheStylesheet(resolvedCSS, for: cacheKey)
         return resolvedCSS
+    }
+
+    private func localStylesheetText() -> String? {
+        if didLoadLocalStylesheet {
+            return cachedLocalStylesheet
+        }
+        didLoadLocalStylesheet = true
+
+        let cssURL = mdxURL.deletingPathExtension().appendingPathExtension("css")
+        guard FileManager.default.fileExists(atPath: cssURL.path),
+              let data = try? Data(contentsOf: cssURL),
+              let css = Self.decodeResourceText(data)
+        else { return nil }
+
+        cachedLocalStylesheet = replaceCSSResources(in: css)
+        return cachedLocalStylesheet
     }
 
     private func scriptText(for key: String) -> String? {

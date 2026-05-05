@@ -48,6 +48,8 @@ MDict/
 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。最终服务把每本词典
 的 HTML section 交给
 `DictionaryHTMLRenderer`，由共享词典结果模板渲染。
+资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；单次查询有 data URI
+数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
 
 ## 调试入口
 
