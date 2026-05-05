@@ -29,7 +29,7 @@ MDict/
   `MDictDictionary` 实例，并在记录变化时发出通知。
 - `MDictDictionary` 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、
   CSS 和脚本资源重写为 WebKit 可加载的形式；MDD reader 会在首次资源查询时懒加载，并缓存
-  常用 data URI、解析后的 CSS 和资源缺失结果。
+  常用 data URI、解析后的 CSS、MDX 同目录同名 CSS 文件和资源缺失结果。
 - `MDictSearchIndex` 在精确查词失败后按需建立轻量 headword 索引，提供变形词、前缀、词头
   substring 和小编辑距离 fuzzy fallback，不索引正文 HTML。
 - `MDictReader/` 子目录只处理 MDX/MDD 二进制格式，不处理 UI、服务配置或结果面板样式。
@@ -48,6 +48,9 @@ MDict/
 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。最终服务把每本词典
 的 HTML section 交给
 `DictionaryHTMLRenderer`，由共享词典结果模板渲染。
+如果 MDX 文件旁边存在同名 `.css`，例如 `concise-enhanced.mdx` 对应
+`concise-enhanced.css`，`MDictDictionary` 会在首次命中 HTML 查询时读取并缓存该样式，然后
+注入到词条内容前面，适配 MDict 词库常见的外置样式优化文件。
 资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；单次查询有 data URI
 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
 
@@ -56,8 +59,8 @@ MDict/
 - 导入失败时，先检查文件扩展名、MDX/MDD 同名匹配，以及 `MDictManager.loadErrors`。
 - 查询无结果时，检查 `MDictManager.dictionariesForLookup()`、词典大小写设置、key block
   边界和 `MDictSearchIndex` fallback candidates。
-- 图片、音频或样式缺失时，优先检查 `MDictDictionary` 的 resource key candidates、资源重写
-  和 data URI/CSS cache 命中。
+- 图片、音频或样式缺失时，优先检查 `MDictDictionary` 的 resource key candidates、同名
+  `.css` 文件路径、资源重写和 data URI/CSS cache 命中。
 - 解析、解压或加密相关错误，从 `MDictReader/` 子目录里的 `MDictReader`、`MDictBinary`、
   `MDictKeyBlocks` 和 `MDictRecords` 开始定位。
 - 结果面板样式或高度异常，回到 `MDictService.wrapWithStyle` 与 `DictionaryHTMLRenderer` 排查。
