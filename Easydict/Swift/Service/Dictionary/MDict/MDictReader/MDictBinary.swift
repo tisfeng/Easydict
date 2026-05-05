@@ -118,6 +118,8 @@ extension MDictReader {
             return payload
         case 0x0200_0000:
             return try zlibDecompress(payload, decompressedSize: decompressedSize)
+        case 0x0100_0000:
+            return try lzoDecompress(payload, decompressedSize: decompressedSize)
         default:
             throw MDictError.unsupportedCompression(compressionType)
         }
@@ -145,6 +147,202 @@ extension MDictReader {
             throw MDictError.decompressionFailed
         }
         return destination
+    }
+
+    private static func lzoDecompress(
+        _ source: Data,
+        decompressedSize: Int
+    ) throws
+        -> Data {
+        guard decompressedSize >= 0, !source.isEmpty else {
+            throw MDictError.decompressionFailed
+        }
+
+        let input = [UInt8](source)
+        var output = [UInt8](repeating: 0, count: decompressedSize)
+        var inputOffset = 0
+        var outputOffset = 0
+        var state = 0
+        var instruction = try readLZOByte(input, offset: &inputOffset)
+
+        if instruction >= 22 {
+            try copyLZOLiterals(
+                input,
+                inputOffset: &inputOffset,
+                output: &output,
+                outputOffset: &outputOffset,
+                count: Int(instruction) - 17
+            )
+            state = 4
+        } else if instruction >= 18 {
+            let literalCount = Int(instruction) - 17
+            try copyLZOLiterals(
+                input,
+                inputOffset: &inputOffset,
+                output: &output,
+                outputOffset: &outputOffset,
+                count: literalCount
+            )
+            state = literalCount
+        }
+
+        while true {
+            if inputOffset > 1 || state > 0 {
+                instruction = try readLZOByte(input, offset: &inputOffset)
+            }
+
+            let match: (distance: Int, length: Int, nextState: Int)?
+            if instruction >= 64 {
+                let tail = try readLZOByte(input, offset: &inputOffset)
+                let distance = (Int(tail) << 3) + ((Int(instruction) >> 2) & 0x7) + 1
+                match = (distance, (Int(instruction) >> 5) + 1, Int(instruction) & 0x03)
+            } else if instruction >= 32 {
+                var length = Int(instruction & 0x1F) + 2
+                if length == 2 {
+                    length += try readLZOExtendedLength(input, offset: &inputOffset, base: 31)
+                }
+                let distanceState = try readLZOUInt16LE(input, offset: &inputOffset)
+                match = (Int(distanceState >> 2) + 1, length, Int(distanceState & 0x03))
+            } else if instruction >= 16 {
+                var length = Int(instruction & 0x07) + 2
+                if length == 2 {
+                    length += try readLZOExtendedLength(input, offset: &inputOffset, base: 7)
+                }
+                let distanceState = try readLZOUInt16LE(input, offset: &inputOffset)
+                let baseDistance = ((Int(instruction) & 0x08) << 11)
+                    + Int(distanceState >> 2)
+                if baseDistance == 0 {
+                    guard length == 3, outputOffset == decompressedSize else {
+                        throw MDictError.decompressionFailed
+                    }
+                    return Data(output)
+                }
+                match = (baseDistance + 0x4000, length, Int(distanceState & 0x03))
+            } else if state == 0 {
+                var literalCount = Int(instruction) + 3
+                if literalCount == 3 {
+                    literalCount += try readLZOExtendedLength(
+                        input,
+                        offset: &inputOffset,
+                        base: 15
+                    )
+                }
+                try copyLZOLiterals(
+                    input,
+                    inputOffset: &inputOffset,
+                    output: &output,
+                    outputOffset: &outputOffset,
+                    count: literalCount
+                )
+                guard inputOffset < input.count else {
+                    throw MDictError.decompressionFailed
+                }
+                state = 4
+                continue
+            } else {
+                let tail = try readLZOByte(input, offset: &inputOffset)
+                let distance: Int
+                let length: Int
+                if state == 4 {
+                    distance = 0x0800 + 1 + (Int(instruction) >> 2) + (Int(tail) << 2)
+                    length = 3
+                } else {
+                    distance = (Int(instruction) >> 2) + (Int(tail) << 2) + 1
+                    length = 2
+                }
+                match = (distance, length, Int(instruction) & 0x03)
+            }
+
+            guard let match else { throw MDictError.decompressionFailed }
+            try copyLZOBackReference(
+                output: &output,
+                outputOffset: outputOffset,
+                distance: match.distance,
+                length: match.length
+            )
+            outputOffset += match.length
+
+            if match.nextState > 0 {
+                try copyLZOLiterals(
+                    input,
+                    inputOffset: &inputOffset,
+                    output: &output,
+                    outputOffset: &outputOffset,
+                    count: match.nextState
+                )
+            }
+            state = match.nextState
+        }
+    }
+
+    private static func readLZOByte(_ input: [UInt8], offset: inout Int) throws -> UInt8 {
+        guard offset < input.count else { throw MDictError.decompressionFailed }
+        let byte = input[offset]
+        offset += 1
+        return byte
+    }
+
+    private static func readLZOUInt16LE(_ input: [UInt8], offset: inout Int) throws -> UInt16 {
+        guard offset + 1 < input.count else { throw MDictError.decompressionFailed }
+        let value = UInt16(input[offset]) | (UInt16(input[offset + 1]) << 8)
+        offset += 2
+        return value
+    }
+
+    private static func readLZOExtendedLength(
+        _ input: [UInt8],
+        offset: inout Int,
+        base: Int
+    ) throws
+        -> Int {
+        var zeroCount = 0
+        while offset < input.count, input[offset] == 0 {
+            zeroCount += 1
+            offset += 1
+        }
+        let tail = try readLZOByte(input, offset: &offset)
+        return zeroCount * 255 + base + Int(tail)
+    }
+
+    private static func copyLZOLiterals(
+        _ input: [UInt8],
+        inputOffset: inout Int,
+        output: inout [UInt8],
+        outputOffset: inout Int,
+        count: Int
+    ) throws {
+        guard count >= 0,
+              inputOffset + count <= input.count,
+              outputOffset + count <= output.count
+        else {
+            throw MDictError.decompressionFailed
+        }
+        guard count > 0 else { return }
+
+        output[outputOffset ..< outputOffset + count] =
+            input[inputOffset ..< inputOffset + count]
+        inputOffset += count
+        outputOffset += count
+    }
+
+    private static func copyLZOBackReference(
+        output: inout [UInt8],
+        outputOffset: Int,
+        distance: Int,
+        length: Int
+    ) throws {
+        let matchOffset = outputOffset - distance
+        guard distance > 0,
+              length >= 0,
+              matchOffset >= 0,
+              outputOffset + length <= output.count
+        else {
+            throw MDictError.decompressionFailed
+        }
+
+        for index in 0 ..< length {
+            output[outputOffset + index] = output[matchOffset + index]
+        }
     }
 
     #if DEBUG

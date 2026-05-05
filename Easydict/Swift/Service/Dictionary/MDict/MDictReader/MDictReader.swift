@@ -25,7 +25,7 @@ enum MDictError: LocalizedError {
         case let .invalidFormat(detail):
             return "Invalid MDict format: \(detail)"
         case let .unsupportedCompression(type):
-            return "Unsupported compression type \(type); only zlib (2) and none (0) are supported"
+            return "Unsupported compression type \(type); only LZO (1), zlib (2), and none (0) are supported"
         case .decompressionFailed:
             return "Failed to decompress data block"
         case .encodingError:
@@ -186,7 +186,7 @@ struct RecordSpan: Hashable {
 
 /// Reads and parses MDict binary files (MDX for definitions, MDD for resources).
 ///
-/// Supports format versions 1.x and 2.x with zlib or uncompressed data blocks.
+/// Supports format versions 1.x and 2.x with LZO, zlib, or uncompressed data blocks.
 /// Keeps key block boundaries on init, then parses matching key blocks and
 /// decompresses record blocks on demand.
 final class MDictReader {

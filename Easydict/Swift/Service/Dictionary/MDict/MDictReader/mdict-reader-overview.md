@@ -17,7 +17,7 @@ MDictReader/
 ├── MDictKeyBlocks.swift               # key block metadata、边界 key 和按需 entry 解析
 ├── MDictKeyIndex.swift                # key block 边界二分、block 内二分和 entry index 定位
 ├── MDictRecords.swift                 # record block metadata、范围、缓存和内容读取
-├── MDictBinary.swift                  # big-endian 读取、范围校验、zlib 解压和 key info 解密
+├── MDictBinary.swift                  # big-endian 读取、范围校验、LZO/zlib 解压和 key info 解密
 ├── MDictRIPEMD128.swift               # Encrypted=2 key index 解密用 RIPEMD-128
 ├── mdict-reader-overview.md           # 本目录说明
 └── mdict-reader-architecture.svg
@@ -34,8 +34,8 @@ MDictReader/
 - `MDictKeyBlocks` 负责解析 key block info，并在查询命中某个 block 时按需解压和解析 key
   entries；必要时解密 Encrypted=2 的 key block info。
 - `MDictRecords` 负责根据 record offset 定位 record block，按需解压并缓存 record block。
-- `MDictBinary` 和 `MDictRIPEMD128` 是底层工具，不处理词典导入、资源链接重写、UI 或 HTML
-  渲染。
+- `MDictBinary` 和 `MDictRIPEMD128` 是底层工具，支持无压缩、LZO 与 zlib block，不处理词典
+  导入、资源链接重写、UI 或 HTML 渲染。
 
 ## 主要流程
 
@@ -55,5 +55,6 @@ MDictReader/
 - 查词无结果时，检查 `MDictKeyIndex` 的边界定位、block 内二分、大小写敏感配置和按需 key
   entry 解析。
 - record 内容错位时，检查 `MDictRecords.recordSpan`、`RecordBlockRange` 和 block 边界。
-- 解压失败或文件越界时，优先看 `MDictBinary.decompressBlock`、`ensureAvailable` 和大小限制。
+- 解压失败或文件越界时，优先看 `MDictBinary.decompressBlock`、LZO/zlib 分支、
+  `ensureAvailable` 和大小限制。
 - Encrypted=2 文件异常时，检查 `decryptKeyBlockInfo` 与 `MDictRIPEMD128` 的 key 派生逻辑。

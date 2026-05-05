@@ -56,9 +56,40 @@ struct MDictReaderTests {
         #expect(result == payload)
     }
 
+    @Test("LZO decompression supports literal stream")
+    func testLZOLiteralDecompression() throws {
+        let payload = Data("Hello, LZO!".utf8)
+        var compressed = Data([UInt8(payload.count + 17)])
+        compressed.append(payload)
+        compressed.append(Data([0x11, 0x00, 0x00]))
+
+        var block = Data([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        block.append(compressed)
+
+        let result = try MDictReader.decompressBlock(block, decompressedSize: payload.count)
+        #expect(result == payload)
+    }
+
+    @Test("LZO decompression supports short back references")
+    func testLZOBackReferenceDecompression() throws {
+        let payload = Data("abcabcabc".utf8)
+        let compressed = Data([
+            0x14, 0x61, 0x62, 0x63,
+            0x09, 0x00, 0x63,
+            0x09, 0x00, 0x63,
+            0x11, 0x00, 0x00,
+        ])
+
+        var block = Data([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        block.append(compressed)
+
+        let result = try MDictReader.decompressBlock(block, decompressedSize: payload.count)
+        #expect(result == payload)
+    }
+
     @Test("Unsupported compression type throws MDictError")
     func testUnsupportedCompression() {
-        var block = Data([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        var block = Data([0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         block.append(Data("data".utf8))
 
         #expect(throws: MDictError.self) {

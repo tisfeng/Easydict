@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" width="960" height="680" role="img" aria-labelledby="title desc">
   <title id="title">MDictReader 架构</title>
-  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、复用 metadata cache、二分定位词条、读取记录块到返回查询结果的数据流。</desc>
+  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、复用 metadata cache、二分定位词条、解压 LZO/zlib 记录块到返回查询结果的数据流。</desc>
   <style>
     text {
       font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -77,7 +77,7 @@
   <rect x="586" y="390" width="142" height="94" rx="8" ry="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
   <text x="657" y="421" text-anchor="middle" class="box-title">Binary 工具</text>
   <text x="657" y="446" text-anchor="middle" class="box-text">边界校验</text>
-  <text x="657" y="466" text-anchor="middle" class="box-text">zlib 解压</text>
+  <text x="657" y="466" text-anchor="middle" class="box-text">LZO / zlib 解压</text>
 
   <rect x="776" y="402" width="92" height="70" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="822" y="430" text-anchor="middle" class="box-title">结果</text>
