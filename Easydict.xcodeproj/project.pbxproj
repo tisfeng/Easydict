@@ -660,8 +660,6 @@
 		031C66CA2ED9EB290025D190 /* BingTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTranslateResponse.swift; sourceTree = "<group>"; };
 		031C66D32ED9F9E30025D190 /* AppleDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionary.swift; sourceTree = "<group>"; };
 		031C66D52ED9F9E40025D190 /* dictionary-result.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "dictionary-result.html"; sourceTree = "<group>"; };
-		03F6A0012F00000100D1A001 /* apple-dictionary-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "apple-dictionary-overview.md"; sourceTree = "<group>"; };
-		03F6A0022F00000100D1A002 /* apple-dictionary-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-dictionary-architecture.svg"; sourceTree = "<group>"; };
 		031C66D92EDA14E90025D190 /* String+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Split.swift"; sourceTree = "<group>"; };
 		031C66DE2EDA1A400025D190 /* String+HandleInputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HandleInputText.swift"; sourceTree = "<group>"; };
 		031C66E12EDB00010025D190 /* DictionaryHTMLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryHTMLRenderer.swift; sourceTree = "<group>"; };
@@ -921,9 +919,9 @@
 		03A884712F13000100D5C0DE /* AppleScriptProcessExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutor.swift; sourceTree = "<group>"; };
 		03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutorTests.swift; sourceTree = "<group>"; };
 		03A884752F13000100D5C0DE /* apple-script-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "apple-script-overview.md"; sourceTree = "<group>"; };
-		03A8847B2F15000100D5C0DE /* apple-script-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-script-architecture.svg"; sourceTree = "<group>"; };
 		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
+		03A8847B2F15000100D5C0DE /* apple-script-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-script-architecture.svg"; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -1155,8 +1153,6 @@
 		03F5A1002F5B3A0100AA0001 /* NSStringEasydictBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSStringEasydictBridge.swift; sourceTree = "<group>"; };
 		03F60B4F2F4C123400123456 /* QueryServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceConfiguration.swift; sourceTree = "<group>"; };
 		03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-11.png"; sourceTree = "<group>"; };
-		03F6A0012F00000100D1A001 /* apple-dictionary-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "apple-dictionary-overview.md"; sourceTree = "<group>"; };
-		03F6A0022F00000100D1A002 /* apple-dictionary-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-dictionary-architecture.svg"; sourceTree = "<group>"; };
 		03F6B0012F00000100D1B001 /* word-result-view-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "word-result-view-overview.md"; sourceTree = "<group>"; };
 		03F6B0022F00000100D1B002 /* word-result-view-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "word-result-view-architecture.svg"; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
@@ -1205,7 +1201,6 @@
 		27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemView.swift; sourceTree = "<group>"; };
 		2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeLogger.swift; sourceTree = "<group>"; };
 		30215FF66EE44A0F932E70CF /* MDictDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictDictionary.swift; sourceTree = "<group>"; };
-		5F8B9C002F1D4E5A9C730401 /* MDictSearchIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictSearchIndex.swift; sourceTree = "<group>"; };
 		357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.release.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.release.xcconfig"; sourceTree = "<group>"; };
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceFactory.swift; sourceTree = "<group>"; };
@@ -1214,18 +1209,19 @@
 		471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeError.swift; sourceTree = "<group>"; };
 		4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeEventParser.swift; sourceTree = "<group>"; };
 		5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeServiceConfigurationView.swift; sourceTree = "<group>"; };
+		5F8B9C002F1D4E5A9C730401 /* MDictSearchIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictSearchIndex.swift; sourceTree = "<group>"; };
 		62E2BF472B4082BA00E42D38 /* AliService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliService.swift; sourceTree = "<group>"; };
 		62E2BF482B4082BA00E42D38 /* AliResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliResponse.swift; sourceTree = "<group>"; };
 		62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliTranslateType.swift; sourceTree = "<group>"; };
 		62ED29A02B15F1F500901F51 /* EZWrapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWrapView.h; sourceTree = "<group>"; };
 		62ED29A12B15F1F500901F51 /* EZWrapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWrapView.m; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictMetadataCache.swift; sourceTree = "<group>"; };
 		6A8C988C2BAC88B500DB835A /* LanguageState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageState.swift; sourceTree = "<group>"; };
 		6A8C988D2BAC88B500DB835A /* I18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = I18nHelper.swift; sourceTree = "<group>"; };
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
 		6C3F84B513D845C38F346217 /* ClaudeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeResponse.swift; sourceTree = "<group>"; };
-		63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictMetadataCache.swift; sourceTree = "<group>"; };
 		7F35C93D0925433FA0AD6066 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
 		8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtilitiesTests.swift; sourceTree = "<group>"; };
 		8049F3632F0376B000DD454F /* NSImage+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Color.swift"; sourceTree = "<group>"; };
@@ -1561,8 +1557,6 @@
 			isa = PBXGroup;
 			children = (
 				031C66D32ED9F9E30025D190 /* AppleDictionary.swift */,
-				03F6A0012F00000100D1A001 /* apple-dictionary-overview.md */,
-				03F6A0022F00000100D1A002 /* apple-dictionary-architecture.svg */,
 			);
 			path = AppleDictionary;
 			sourceTree = "<group>";
@@ -1588,6 +1582,23 @@
 				031C66E62EDB00200025D190 /* dictionary-architecture.svg */,
 			);
 			path = Dictionary;
+			sourceTree = "<group>";
+		};
+		031C66EC2EDB02000025D190 /* MDictReader */ = {
+			isa = PBXGroup;
+			children = (
+				031C66ED2EDB02000025D190 /* mdict-reader-overview.md */,
+				031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */,
+				897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */,
+				63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */,
+				B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */,
+				B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */,
+				B9F10003B3C24D5E8A000003 /* MDictRecords.swift */,
+				B9F10004B3C24D5E8A000004 /* MDictBinary.swift */,
+				B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */,
+				B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */,
+			);
+			path = MDictReader;
 			sourceTree = "<group>";
 		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
@@ -3286,23 +3297,6 @@
 				031C66EC2EDB02000025D190 /* MDictReader */,
 			);
 			path = MDict;
-			sourceTree = "<group>";
-		};
-		031C66EC2EDB02000025D190 /* MDictReader */ = {
-			isa = PBXGroup;
-			children = (
-				031C66ED2EDB02000025D190 /* mdict-reader-overview.md */,
-				031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */,
-				897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */,
-				63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */,
-				B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */,
-				B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */,
-				B9F10003B3C24D5E8A000003 /* MDictRecords.swift */,
-				B9F10004B3C24D5E8A000004 /* MDictBinary.swift */,
-				B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */,
-				B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */,
-			);
-			path = MDictReader;
 			sourceTree = "<group>";
 		};
 		40F5D52A2D65B1A200EDB997 /* DeepSeek */ = {
