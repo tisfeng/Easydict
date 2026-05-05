@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" width="960" height="700" role="img" aria-labelledby="title desc">
   <title id="title">MDict 架构</title>
-  <desc id="desc">展示 MDict 导入、加载、查询、资源缓存和 HTML 渲染的主要组件与数据流。</desc>
+  <desc id="desc">展示 MDict 导入、加载、搜索 fallback、资源缓存和 HTML 渲染的主要组件与数据流。</desc>
   <style>
     text {
       font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -63,8 +63,8 @@
 
   <rect x="356" y="390" width="184" height="96" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="448" y="421" text-anchor="middle" class="box-title">MDictDictionary</text>
-  <text x="448" y="446" text-anchor="middle" class="box-text">查词与资源重写</text>
-  <text x="448" y="466" text-anchor="middle" class="box-text">data URI / CSS cache</text>
+  <text x="448" y="446" text-anchor="middle" class="box-text">精确查词与资源重写</text>
+  <text x="448" y="466" text-anchor="middle" class="box-text">search fallback + cache</text>
 
   <rect x="624" y="390" width="218" height="96" rx="8" ry="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
   <text x="733" y="421" text-anchor="middle" class="box-title">DictionaryHTMLRenderer</text>
@@ -78,7 +78,7 @@
 
   <rect x="290" y="538" width="380" height="70" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="480" y="567" text-anchor="middle" class="box-title">MDictReader/</text>
-  <text x="480" y="590" text-anchor="middle" class="box-text">reader、parser、record cache 与 binary helpers</text>
+  <text x="480" y="590" text-anchor="middle" class="box-text">reader、parser、search index 与 binary helpers</text>
 
   <path d="M733 280 C733 330 480 330 480 390" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
   <text x="608" y="324" text-anchor="middle" class="label">初始化 MDX reader</text>

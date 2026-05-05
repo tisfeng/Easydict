@@ -51,14 +51,7 @@ final class MDictDictionary: @unchecked Sendable {
         let trimmed = word.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 
-        var definitions = try mdxReader.lookupAll(trimmed)
-
-        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
-            definitions = try mdxReader.lookupAll(trimmed.lowercased())
-            if definitions.isEmpty {
-                definitions = try mdxReader.lookupAll(trimmed.capitalized)
-            }
-        }
+        let definitions = try lookupDefinitions(for: trimmed)
 
         guard !definitions.isEmpty else { return nil }
         let raw = definitions.joined(separator: "\n")
@@ -111,6 +104,7 @@ final class MDictDictionary: @unchecked Sendable {
     private var stylesheetCacheBytes = 0
     private var missingResourceKeys = Set<String>()
     private var missingResourceOrder: [String] = []
+    private var searchIndex: MDictSearchIndex?
 
     private static func javaScriptStringLiteral(_ value: String) -> String {
         let escaped = value
@@ -157,6 +151,39 @@ final class MDictDictionary: @unchecked Sendable {
         }
         cachedMDDReaders = readers
         return readers
+    }
+
+    private func lookupDefinitions(for word: String) throws -> [String] {
+        var definitions = try mdxReader.lookupAll(word)
+
+        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
+            definitions = try mdxReader.lookupAll(word.lowercased())
+            if definitions.isEmpty {
+                definitions = try mdxReader.lookupAll(word.capitalized)
+            }
+        }
+        if !definitions.isEmpty { return definitions }
+
+        for candidate in MDictInflection.candidates(for: word) {
+            definitions = try mdxReader.lookupAll(candidate)
+            if !definitions.isEmpty { return definitions }
+        }
+
+        for candidate in try fallbackSearchCandidates(for: word) {
+            definitions = try mdxReader.lookupAll(candidate)
+            if !definitions.isEmpty { return definitions }
+        }
+        return []
+    }
+
+    private func fallbackSearchCandidates(for word: String) throws -> [String] {
+        if searchIndex == nil {
+            searchIndex = try MDictSearchIndex(
+                entries: mdxReader.allKeyEntries(),
+                caseSensitive: mdxReader.header.keyCaseSensitive
+            )
+        }
+        return searchIndex?.candidates(for: word) ?? []
     }
 
     private func resourceKeyCandidates(for key: String) -> [String] {

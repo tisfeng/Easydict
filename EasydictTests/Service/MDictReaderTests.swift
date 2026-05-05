@@ -82,6 +82,25 @@ struct MDictReaderTests {
         #expect(hex(MDictReader.ripemd128Digest(Data("abc".utf8))) == "c14a12199c66e4ba84636b0f69144c77")
     }
 
+    @Test("Search index finds prefix substring and fuzzy candidates")
+    func testSearchIndexCandidates() {
+        let entries = ["apple", "application", "pineapple", "banana"].enumerated().map {
+            MDictKeyEntry(word: $0.element, recordOffset: UInt64($0.offset), globalIndex: $0.offset)
+        }
+        let index = MDictSearchIndex(entries: entries, caseSensitive: false)
+
+        #expect(Array(index.candidates(for: "app", limit: 3).prefix(2)) == ["apple", "application"])
+        #expect(index.candidates(for: "eap", limit: 3).first == "pineapple")
+        #expect(index.candidates(for: "applf", limit: 3).contains("apple"))
+    }
+
+    @Test("Inflection candidates include common base forms")
+    func testInflectionCandidates() {
+        #expect(MDictInflection.candidates(for: "studies").contains("study"))
+        #expect(MDictInflection.candidates(for: "running").contains("run"))
+        #expect(MDictInflection.candidates(for: "larger").contains("large"))
+    }
+
     @Test("Truncated MDX throws instead of crashing")
     func testTruncatedMDXThrows() throws {
         let header = """

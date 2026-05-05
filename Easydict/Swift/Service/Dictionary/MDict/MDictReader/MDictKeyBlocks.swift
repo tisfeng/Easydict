@@ -93,6 +93,15 @@ extension MDictReader {
         return matches
     }
 
+    func allKeyEntries() throws -> [MDictKeyEntry] {
+        var entries: [MDictKeyEntry] = []
+        entries.reserveCapacity(entryCount)
+        for blockIndex in keyBlockRanges.indices {
+            entries.append(contentsOf: try keyEntries(in: blockIndex))
+        }
+        return entries
+    }
+
     func nextRecordOffset(after entry: MDictKeyEntry) throws -> UInt64 {
         guard entry.globalIndex + 1 < entryCount else {
             return totalDecompressedRecordSize
