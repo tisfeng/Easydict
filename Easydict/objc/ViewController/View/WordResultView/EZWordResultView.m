@@ -27,6 +27,7 @@
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
 #import "NSObject+EZDarkMode.h"
+#import <math.h>
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -104,15 +105,16 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     if (result.htmlString.length) {
         [self addSubview:self.webView];
 
-        if (result.webViewManager.isLoaded) {
-            [result.webViewManager updateAllIframe];
-        }
-
         [result.webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
             mm_strongify(self);
 
             [self updateWebViewHeight:scrollHeight];
         }];
+
+        if (result.webViewManager.isLoaded &&
+            result.webViewManager.needUpdateIframeHeight) {
+            [result.webViewManager updateAllIframe];
+        }
 
         [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat topOffset = 0;
@@ -1136,12 +1138,20 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     EZBaseQueryWindow *floatingWindow = EZWindowManager.shared.floatingWindow;
     EZBaseQueryViewController *queryViewController = floatingWindow.queryViewController;
     if (queryViewController.services.count == 1) {
-        maxHeight = visibleFrameHeight - floatingWindow.height - self.bottomViewHeight;
+        CGSize maximumWindowSize =
+            [EZLayoutManager.shared maximumWindowSize:queryViewController.windowType];
+        maxHeight = MAX(maxHeight,
+                        maximumWindowSize.height - self.bottomViewHeight);
     }
 
     // Fix strange white line
     CGFloat webViewHeight = ceil(MIN(maxHeight, scrollHeight));
     CGFloat viewHeight = self.bottomViewHeight + webViewHeight;
+    CGFloat previousViewHeight = self.result.webViewManager.wordResultViewHeight;
+    if (previousViewHeight > 0 &&
+        fabs(viewHeight - previousViewHeight) < EZLayoutGeometryTolerance_0_5) {
+        return;
+    }
 
     /**
      Improve scrollable height:
@@ -1181,22 +1191,24 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         self.updateViewHeightBlock(viewHeight);
     }
 
-
     // Notify tableView to update cell height.
     [queryViewController updateCellWithResult:self.result reloadData:NO];
 
-    [self fetchWebViewAllIframeText:^(NSString *text) {
-        self.result.copiedText = text;
-        self.result.translatedResults = @[ text ];
+    // Extract iframe text only once; later height callbacks are layout-only.
+    if (self.result.copiedText.length == 0) {
+        [self fetchWebViewAllIframeText:^(NSString *text) {
+            self.result.copiedText = text;
+            self.result.translatedResults = @[ text ];
 
-        if (self.didFinishLoadingHTMLBlock) {
-            self.didFinishLoadingHTMLBlock();
-        }
+            if (self.didFinishLoadingHTMLBlock) {
+                self.didFinishLoadingHTMLBlock();
+            }
 
-        if (self.result.didFinishLoadingHTMLBlock) {
-            self.result.didFinishLoadingHTMLBlock();
-        }
-    }];
+            if (self.result.didFinishLoadingHTMLBlock) {
+                self.result.didFinishLoadingHTMLBlock();
+            }
+        }];
+    }
 }
 
 - (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {
