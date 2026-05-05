@@ -28,7 +28,7 @@ MDictReader/
 - `MDictReader` 是 MDX/MDD 文件读取入口，初始化时复用或生成 header、key block 边界和
   record block metadata，不再展开整本词典的 key entries。
 - `MDictMetadataCache` 将轻量结构索引持久化到 Application Support，并用文件路径、大小、
-  修改时间和 schema version 失效。
+  修改时间和 schema version 失效；schema 提升时旧 cache 会被直接忽略并重建。
 - `MDictHeaderParser` 只负责从 header XML 中提取版本、标题、编码、格式、大小写敏感和加密
   标记。
 - `MDictKeyBlocks` 负责解析 key block info，并在查询命中某个 block 时按需解压和解析 key
@@ -39,9 +39,10 @@ MDictReader/
 
 ## 主要流程
 
-初始化时，`MDictReader` 读取文件数据并解析 header。随后 reader 只解析 key block info 中的
-首尾 key、entry 数量和压缩尺寸，读取 record block metadata 生成 `RecordBlockRange`。这个阶段
-不会解压全部 key block，也不会为整本词典建立全量 key index。
+初始化时，`MDictReader` 会先尝试复用同 schema 的 metadata cache；cache miss 或 schema 变化
+时才重新读取文件数据并解析 header。随后 reader 只解析 key block info 中的首尾 key、entry
+数量和压缩尺寸，读取 record block metadata 生成 `RecordBlockRange`。这个阶段不会解压全部 key
+block，也不会为整本词典建立全量 key index。
 
 查询文本时，`lookup` 或 `lookupAll` 先用 key block 边界二分出候选 block，只解压这些 block，
 再在 block 内对已排序 entries 做 lower/upper bound，直接取得匹配词条范围。随后 reader 根据

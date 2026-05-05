@@ -31,7 +31,8 @@ MDict/
   CSS 和脚本资源重写为 WebKit 可加载的形式；MDD reader 会在首次资源查询时懒加载，并缓存
   常用 data URI、解析后的 CSS 和资源缺失结果。
 - `MDictSearchIndex` 在精确查词失败后按需建立轻量 headword 索引，提供变形词、前缀、词头
-  substring 和小编辑距离 fuzzy fallback，不索引正文 HTML。
+  substring 和小编辑距离 fuzzy fallback，不索引正文 HTML；大型词典会跳过同步 fallback index，
+  避免首个 miss 触发全量 key block 解压。
 - `MDictReader/` 子目录只处理 MDX/MDD 二进制格式，不处理 UI、服务配置或结果面板样式。
 
 ## 主要流程
@@ -42,8 +43,9 @@ MDict/
 
 查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，逐本调用
 `lookup`，词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再
-尝试常见英文变形词，并按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy fallback。
-命中后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
+尝试常见英文变形词；较小词典会按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy
+fallback，大型词典则保持精确查找快路径，避免同步扫描所有词头。命中后再把 HTML 中的本地
+资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI 会按 LRU
 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。最终服务把每本词典
 的 HTML section 交给

@@ -53,6 +53,7 @@ final class MDictMetadataCache {
         let cacheURL = cacheURL(for: fileURL)
         guard let data = try? Data(contentsOf: cacheURL),
               let entry = try? decoder.decode(CacheEntry.self, from: data),
+              entry.schemaVersion == Self.schemaVersion,
               entry.signature == signature
         else { return nil }
 
@@ -93,7 +94,7 @@ final class MDictMetadataCache {
         let modificationTime: TimeInterval
     }
 
-    private static let schemaVersion = 1
+    private static let schemaVersion = 2
 
     private let fileManager = FileManager.default
     private let cacheDirectory: URL

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" width="960" height="680" role="img" aria-labelledby="title desc">
   <title id="title">MDictReader 架构</title>
-  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、复用 metadata cache、二分定位词条、解压 LZO/zlib 记录块到返回查询结果的数据流。</desc>
+  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、校验 metadata cache schema、二分定位词条、解压 LZO/zlib 记录块到返回查询结果的数据流。</desc>
   <style>
     text {
       font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -53,7 +53,7 @@
   <rect x="712" y="204" width="142" height="88" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
   <text x="783" y="241" text-anchor="middle" class="box-title">KeyBlockRanges</text>
   <text x="783" y="263" text-anchor="middle" class="box-text">首尾 key 与块偏移</text>
-  <text x="783" y="283" text-anchor="middle" class="box-text">磁盘 metadata cache</text>
+  <text x="783" y="283" text-anchor="middle" class="box-text">schema metadata cache</text>
 
   <path d="M234 248 H288" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
   <text x="261" y="236" text-anchor="middle" class="label">header</text>
