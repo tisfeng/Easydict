@@ -60,6 +60,14 @@ extension MDictReader {
         return nil
     }
 
+    func scannedKeyBlockIndexes(for normalizedKey: String) -> [Int] {
+        keyBlockRanges.indices.filter { index in
+            let range = keyBlockRanges[index]
+            return normalizedKey >= self.normalizedKey(range.firstKey)
+                && normalizedKey <= self.normalizedKey(range.lastKey)
+        }
+    }
+
     func matchingEntries(
         in entries: [MDictKeyEntry],
         for normalizedKey: String

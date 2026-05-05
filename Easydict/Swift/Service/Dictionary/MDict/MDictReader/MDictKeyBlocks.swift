@@ -83,12 +83,20 @@ extension MDictReader {
     func matchingEntries(for key: String) throws -> [MDictKeyEntry] {
         let normalized = normalizedKey(key)
         let blockIndexes = matchingKeyBlockIndexes(for: normalized)
-        guard !blockIndexes.isEmpty else { return [] }
 
         var matches: [MDictKeyEntry] = []
         for blockIndex in blockIndexes {
             let entries = try keyEntries(in: blockIndex)
             matches.append(contentsOf: matchingEntries(in: entries, for: normalized))
+        }
+        if !matches.isEmpty { return matches }
+
+        let scannedIndexes = scannedKeyBlockIndexes(for: normalized)
+            .filter { !blockIndexes.contains($0) }
+        for blockIndex in scannedIndexes {
+            let entries = try keyEntries(in: blockIndex)
+            matches.append(contentsOf: matchingEntries(in: entries, for: normalized))
+            if !matches.isEmpty { break }
         }
         return matches
     }

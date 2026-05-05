@@ -45,16 +45,17 @@ MDictReader/
 block，也不会为整本词典建立全量 key index。
 
 查询文本时，`lookup` 或 `lookupAll` 先用 key block 边界二分出候选 block，只解压这些 block，
-再在 block 内对已排序 entries 做 lower/upper bound，直接取得匹配词条范围。随后 reader 根据
-相邻 entry 计算 record span，定位包含该 offset 的 record block，按需解压并读取 record bytes，
-最后按 header encoding 解码为字符串。查询 MDD 资源时，`lookupData` 走同一套 key 和 record
-读取流程，但直接返回原始 `Data`。
+再在 block 内对已排序 entries 做 lower/upper bound，直接取得匹配词条范围。如果二分候选没有
+命中，reader 会线性扫描轻量的 key block 边界，只解压边界覆盖目标词的少量 block，避免直接
+退回全量 key index。随后 reader 根据相邻 entry 计算 record span，定位包含该 offset 的 record
+block，按需解压并读取 record bytes，最后按 header encoding 解码为字符串。查询 MDD 资源时，
+`lookupData` 走同一套 key 和 record 读取流程，但直接返回原始 `Data`。
 
 ## 调试入口
 
 - header 或编码异常时，从 `MDictHeaderParser.parseHeader` 和 `readAttribute` 开始排查。
-- 查词无结果时，检查 `MDictKeyIndex` 的边界定位、block 内二分、大小写敏感配置和按需 key
-  entry 解析。
+- 查词无结果时，检查 `MDictKeyIndex` 的边界定位、边界扫描兜底、block 内二分、大小写敏感
+  配置和按需 key entry 解析。
 - record 内容错位时，检查 `MDictRecords.recordSpan`、`RecordBlockRange` 和 block 边界。
 - 解压失败或文件越界时，优先看 `MDictBinary.decompressBlock`、LZO/zlib 分支、
   `ensureAvailable` 和大小限制。
