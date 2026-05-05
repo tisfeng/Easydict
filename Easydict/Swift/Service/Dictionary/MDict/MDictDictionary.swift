@@ -8,6 +8,12 @@
 
 import Foundation
 
+private let maxMDictCachedDataURIBytes = 32 * 1024 * 1024
+private let maxMDictCachedSingleDataURIBytes = 8 * 1024 * 1024
+private let maxMDictCachedCSSBytes = 4 * 1024 * 1024
+private let maxMDictCachedCSSEntryBytes = 2 * 1024 * 1024
+private let maxMDictMissingResourceCount = 512
+
 // MARK: - MDictDictionary
 
 /// A loaded MDict dictionary backed by one MDX file and optional MDD resource files.
@@ -97,6 +103,14 @@ final class MDictDictionary: @unchecked Sendable {
     private let mddURLs: [URL]
     private let lookupLock = NSRecursiveLock()
     private var cachedMDDReaders: [MDictReader]?
+    private var cachedDataURIs: [String: String] = [:]
+    private var dataURICacheOrder: [String] = []
+    private var dataURICacheBytes = 0
+    private var cachedStylesheets: [String: String] = [:]
+    private var stylesheetCacheOrder: [String] = []
+    private var stylesheetCacheBytes = 0
+    private var missingResourceKeys = Set<String>()
+    private var missingResourceOrder: [String] = []
 
     private static func javaScriptStringLiteral(_ value: String) -> String {
         let escaped = value
@@ -331,14 +345,42 @@ final class MDictDictionary: @unchecked Sendable {
     }
 
     private func dataURI(for key: String) -> String? {
-        guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
-        return "data:\(mimeType(for: key));base64,\(data.base64EncodedString())"
+        let cacheKey = resourceCacheKey(for: key)
+        if let cached = cachedDataURIs[cacheKey] {
+            markDataURICacheHit(cacheKey)
+            return cached
+        }
+        guard !missingResourceKeys.contains(cacheKey),
+              let data = try? lookupResource(key),
+              !data.isEmpty
+        else {
+            markMissingResource(cacheKey)
+            return nil
+        }
+
+        let dataURI = "data:\(mimeType(for: key));base64,\(data.base64EncodedString())"
+        cacheDataURI(dataURI, for: cacheKey)
+        return dataURI
     }
 
     private func stylesheetText(for key: String) -> String? {
-        guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
-        let css = Self.decodeResourceText(data)
-        return css.map { replaceCSSResources(in: $0) }
+        let cacheKey = resourceCacheKey(for: key)
+        if let cached = cachedStylesheets[cacheKey] {
+            markStylesheetCacheHit(cacheKey)
+            return cached
+        }
+        guard !missingResourceKeys.contains(cacheKey),
+              let data = try? lookupResource(key),
+              !data.isEmpty,
+              let css = Self.decodeResourceText(data)
+        else {
+            markMissingResource(cacheKey)
+            return nil
+        }
+
+        let resolvedCSS = replaceCSSResources(in: css)
+        cacheStylesheet(resolvedCSS, for: cacheKey)
+        return resolvedCSS
     }
 
     private func scriptText(for key: String) -> String? {
@@ -377,6 +419,72 @@ final class MDictDictionary: @unchecked Sendable {
             return "audio/wav"
         default:
             return "application/octet-stream"
+        }
+    }
+
+    private func resourceCacheKey(for key: String) -> String {
+        (key.removingPercentEncoding ?? key)
+            .components(separatedBy: CharacterSet(charactersIn: "?#"))
+            .first?
+            .replacingOccurrences(of: "/", with: "\\") ?? key
+    }
+
+    private func cacheDataURI(_ dataURI: String, for key: String) {
+        let bytes = dataURI.utf8.count
+        guard bytes <= maxMDictCachedSingleDataURIBytes else { return }
+
+        if let oldValue = cachedDataURIs[key] {
+            dataURICacheBytes -= oldValue.utf8.count
+        }
+        cachedDataURIs[key] = dataURI
+        dataURICacheBytes += bytes
+        markDataURICacheHit(key)
+
+        while dataURICacheBytes > maxMDictCachedDataURIBytes,
+              let evictedKey = dataURICacheOrder.first {
+            dataURICacheOrder.removeFirst()
+            if let evicted = cachedDataURIs.removeValue(forKey: evictedKey) {
+                dataURICacheBytes -= evicted.utf8.count
+            }
+        }
+    }
+
+    private func cacheStylesheet(_ css: String, for key: String) {
+        let bytes = css.utf8.count
+        guard bytes <= maxMDictCachedCSSEntryBytes else { return }
+        if let oldValue = cachedStylesheets[key] {
+            stylesheetCacheBytes -= oldValue.utf8.count
+        }
+        cachedStylesheets[key] = css
+        stylesheetCacheBytes += bytes
+        markStylesheetCacheHit(key)
+
+        while stylesheetCacheBytes > maxMDictCachedCSSBytes,
+              let evictedKey = stylesheetCacheOrder.first {
+            stylesheetCacheOrder.removeFirst()
+            if let evicted = cachedStylesheets.removeValue(forKey: evictedKey) {
+                stylesheetCacheBytes -= evicted.utf8.count
+            }
+        }
+    }
+
+    private func markDataURICacheHit(_ key: String) {
+        dataURICacheOrder.removeAll { $0 == key }
+        dataURICacheOrder.append(key)
+    }
+
+    private func markStylesheetCacheHit(_ key: String) {
+        stylesheetCacheOrder.removeAll { $0 == key }
+        stylesheetCacheOrder.append(key)
+    }
+
+    private func markMissingResource(_ key: String) {
+        guard missingResourceKeys.insert(key).inserted else { return }
+        missingResourceOrder.append(key)
+        while missingResourceOrder.count > maxMDictMissingResourceCount,
+              let evicted = missingResourceOrder.first {
+            missingResourceOrder.removeFirst()
+            missingResourceKeys.remove(evicted)
         }
     }
 }
