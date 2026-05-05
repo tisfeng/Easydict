@@ -141,53 +141,13 @@ private struct ServiceItems: View {
     // MARK: Internal
 
     var body: some View {
-        Group {
-            // Free services section
-            if !freeServices.isEmpty {
-                Section {
-                    ForEach(freeServicesWithID, id: \.1) { service, _ in
-                        ServiceItemView(service: service, viewModel: viewModel)
-                            .tag(service)
-                    }
-                    .onMove { source, destination in
-                        handleMove(source: source, destination: destination, inSection: freeServices)
-                    }
-                } header: {
-                    Text("setting.service.section.free")
-                        .font(.headline)
-                }
+        Section {
+            ForEach(servicesWithID, id: \.1) { service, _ in
+                ServiceItemView(service: service, viewModel: viewModel)
+                    .tag(service)
             }
-
-            // Pro services section (require API key)
-            if !proServices.isEmpty {
-                Section {
-                    ForEach(proServicesWithID, id: \.1) { service, _ in
-                        ServiceItemView(service: service, viewModel: viewModel)
-                            .tag(service)
-                    }
-                    .onMove { source, destination in
-                        handleMove(source: source, destination: destination, inSection: proServices)
-                    }
-                } header: {
-                    Text("setting.service.section.pro")
-                        .font(.headline)
-                }
-            }
-
-            // CLI translation services section
-            if !cliServices.isEmpty {
-                Section {
-                    ForEach(cliServicesWithID, id: \.1) { service, _ in
-                        ServiceItemView(service: service, viewModel: viewModel)
-                            .tag(service)
-                    }
-                    .onMove { source, destination in
-                        handleMove(source: source, destination: destination, inSection: cliServices)
-                    }
-                } header: {
-                    Text("setting.service.section.agent_cli")
-                        .font(.headline)
-                }
+            .onMove { source, destination in
+                viewModel.onServiceItemMove(fromOffsets: source, toOffset: destination)
             }
         }
     }
@@ -196,74 +156,10 @@ private struct ServiceItems: View {
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    private var freeServices: [QueryService] {
-        viewModel.services.filter {
-            !$0.apiKeyRequirement().needsUserProvidedKey && $0.apiKeyRequirement() != .agentCLI
-        }
-    }
-
-    private var proServices: [QueryService] {
-        viewModel.services.filter { $0.apiKeyRequirement().needsUserProvidedKey }
-    }
-
-    private var cliServices: [QueryService] {
-        viewModel.services.filter { $0.apiKeyRequirement() == .agentCLI }
-    }
-
-    private var freeServicesWithID: [(QueryService, String)] {
-        freeServices.map { service in
+    private var servicesWithID: [(QueryService, String)] {
+        viewModel.services.map { service in
             (service, service.serviceTypeWithUniqueIdentifier())
         }
-    }
-
-    private var proServicesWithID: [(QueryService, String)] {
-        proServices.map { service in
-            (service, service.serviceTypeWithUniqueIdentifier())
-        }
-    }
-
-    private var cliServicesWithID: [(QueryService, String)] {
-        cliServices.map { service in
-            (service, service.serviceTypeWithUniqueIdentifier())
-        }
-    }
-
-    /// Handles move operation within a specific section.
-    private func handleMove(source: IndexSet, destination: Int, inSection sectionServices: [QueryService]) {
-        // Create a mapping of section services to their indices in the full services array
-        var sectionToFullIndexMap: [Int: Int] = [:]
-        var sectionIndex = 0
-
-        for (fullIndex, service) in viewModel.services.enumerated() where sectionServices
-            .contains(where: { $0.serviceTypeWithUniqueIdentifier() == service.serviceTypeWithUniqueIdentifier()
-            }) {
-            sectionToFullIndexMap[sectionIndex] = fullIndex
-            sectionIndex += 1
-        }
-
-        // Convert section source indices to full array indices
-        var actualSourceIndices = IndexSet()
-        for sectionIdx in source {
-            if let fullIdx = sectionToFullIndexMap[sectionIdx] {
-                actualSourceIndices.insert(fullIdx)
-            }
-        }
-
-        // Find destination index in full services array.
-        // When destination == sectionServices.count the user is dropping at the end of the section.
-        // There is no map entry for that index, so derive it from the last section item's full
-        // index + 1 instead of falling back to the raw section-relative value.
-        let actualDestination: Int
-        if let mapped = sectionToFullIndexMap[destination] {
-            actualDestination = mapped
-        } else if destination == sectionServices.count,
-                  let lastFullIndex = sectionToFullIndexMap[destination - 1] {
-            actualDestination = lastFullIndex + 1
-        } else {
-            actualDestination = destination
-        }
-
-        viewModel.onServiceItemMove(fromOffsets: actualSourceIndices, toOffset: actualDestination)
     }
 }
 
@@ -390,16 +286,22 @@ private struct ServiceItemView: View {
 
     var body: some View {
         Group {
-            HStack {
+            HStack(spacing: 8) {
                 HStack {
                     Image(service.serviceType().rawValue)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20.0, height: 20.0)
-                    Text(service.name())
+                    Text(verbatim: serviceItemViewModel.name)
                         .lineLimit(1)
+                        .truncationMode(.tail)
                 }
-                Spacer()
+                .layoutPriority(1)
+
+                Spacer(minLength: 8)
+                
+                ServiceRequirementBadge(requirement: service.apiKeyRequirement())
+                
                 // Use a fixed width container for both controls, to make sure they are center aligned.
                 ZStack {
                     if serviceItemViewModel.isValidating {
@@ -453,6 +355,69 @@ private struct ServiceItemView: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
     @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
+}
+
+// MARK: - ServiceRequirementBadge
+
+/// Renders the short API credential category shown beside each service row.
+private struct ServiceRequirementBadge: View {
+    // MARK: Internal
+
+    let requirement: ServiceAPIKeyRequirement
+
+    var body: some View {
+        Text(verbatim: title)
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(foregroundColor)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background {
+                Capsule()
+                    .fill(backgroundColor)
+            }
+            .overlay {
+                Capsule()
+                    .stroke(borderColor, lineWidth: 0.5)
+            }
+    }
+
+    // MARK: Private
+
+    private var title: String {
+        switch requirement {
+        case .none:
+            "no-key"
+        case .builtIn:
+            "built-in"
+        case .userProvided:
+            "key"
+        case .agentCLI:
+            "cli"
+        }
+    }
+
+    private var foregroundColor: Color {
+        switch requirement {
+        case .none:
+            .secondary
+        case .builtIn:
+            .green
+        case .userProvided:
+            .orange
+        case .agentCLI:
+            .blue
+        }
+    }
+
+    private var backgroundColor: Color {
+        foregroundColor.opacity(0.12)
+    }
+
+    private var borderColor: Color {
+        foregroundColor.opacity(0.28)
+    }
 }
 
 // MARK: - WindowTypePicker
