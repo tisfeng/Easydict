@@ -64,7 +64,7 @@
   <rect x="356" y="390" width="184" height="96" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="448" y="421" text-anchor="middle" class="box-title">MDictDictionary</text>
   <text x="448" y="446" text-anchor="middle" class="box-text">精确查词与资源重写</text>
-  <text x="448" y="466" text-anchor="middle" class="box-text">同名 CSS + data URI 预算</text>
+  <text x="448" y="466" text-anchor="middle" class="box-text">限量 fallback + data URI 预算</text>
 
   <rect x="624" y="390" width="218" height="96" rx="8" ry="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
   <text x="733" y="421" text-anchor="middle" class="box-title">DictionaryHTMLRenderer</text>

@@ -294,9 +294,12 @@ final class MDictReader {
 
     /// Look up raw binary data by key (MDD files).
     func lookupData(for key: String) throws -> Data? {
-        guard let entry = try matchingEntries(for: key).first else { return nil }
-        let span = try recordSpan(for: entry)
-        return try readRecord(at: span.offset, size: span.size)
+        for entry in try matchingEntries(for: key) {
+            let span = try recordSpan(for: entry)
+            guard span.size > 0 else { continue }
+            return try readRecord(at: span.offset, size: span.size)
+        }
+        return nil
     }
 
     /// Look up all raw binary records by key.
@@ -305,7 +308,9 @@ final class MDictReader {
         var seen = Set<RecordSpan>()
         for entry in try matchingEntries(for: key) {
             let span = try recordSpan(for: entry)
-            guard seen.insert(span).inserted else { continue }
+            guard span.size > 0,
+                  seen.insert(span).inserted
+            else { continue }
             records.append(try readRecord(at: span.offset, size: span.size))
         }
         return records

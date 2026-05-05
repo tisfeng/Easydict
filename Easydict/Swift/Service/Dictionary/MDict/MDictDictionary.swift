@@ -15,6 +15,7 @@ private let maxMDictResolvedDataURICountPerLookup = 96
 private let maxMDictCachedCSSBytes = 4 * 1024 * 1024
 private let maxMDictCachedCSSEntryBytes = 2 * 1024 * 1024
 private let maxMDictMissingResourceCount = 512
+private let maxMDictSearchIndexEntryCount = 200_000
 
 // MARK: - MDictDictionary
 
@@ -183,6 +184,9 @@ final class MDictDictionary: @unchecked Sendable {
     }
 
     private func fallbackSearchCandidates(for word: String) throws -> [String] {
+        guard mdxReader.entryCount <= maxMDictSearchIndexEntryCount else {
+            return []
+        }
         if searchIndex == nil {
             searchIndex = try MDictSearchIndex(
                 entries: mdxReader.allKeyEntries(),
