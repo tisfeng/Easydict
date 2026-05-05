@@ -129,19 +129,22 @@ struct MDictSearchIndex {
     }
 
     private func editDistance(_ lhs: String, _ rhs: String, maxDistance: Int) -> Int {
-        let a = Array(lhs)
-        let b = Array(rhs)
-        if abs(a.count - b.count) > maxDistance { return maxDistance + 1 }
-        if b.isEmpty { return a.count }
+        let leftChars = Array(lhs)
+        let rightChars = Array(rhs)
+        if abs(leftChars.count - rightChars.count) > maxDistance {
+            return maxDistance + 1
+        }
+        if rightChars.isEmpty { return leftChars.count }
 
-        var previous = Array(0 ... b.count)
-        var current = Array(repeating: 0, count: b.count + 1)
+        var previous = Array(0 ... rightChars.count)
+        var current = Array(repeating: 0, count: rightChars.count + 1)
 
-        for i in 1 ... a.count {
+        for i in 1 ... leftChars.count {
             current[0] = i
             var rowMinimum = current[0]
-            for j in 1 ... b.count {
-                let substitution = previous[j - 1] + (a[i - 1] == b[j - 1] ? 0 : 1)
+            for j in 1 ... rightChars.count {
+                let substitution = previous[j - 1] +
+                    (leftChars[i - 1] == rightChars[j - 1] ? 0 : 1)
                 current[j] = min(previous[j] + 1, current[j - 1] + 1, substitution)
                 rowMinimum = min(rowMinimum, current[j])
             }
@@ -149,7 +152,7 @@ struct MDictSearchIndex {
             swap(&previous, &current)
         }
 
-        return previous[b.count]
+        return previous[rightChars.count]
     }
 }
 
