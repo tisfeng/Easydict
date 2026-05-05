@@ -500,6 +500,7 @@
 		62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */; };
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
 		635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */; };
+		63D2A8E12F1C4B2E8C9A7101 /* MDictMetadataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */; };
 		6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988C2BAC88B500DB835A /* LanguageState.swift */; };
 		6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988D2BAC88B500DB835A /* I18nHelper.swift */; };
 		6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C98942BAE841600DB835A /* LocalizedBundle.swift */; };
@@ -1216,6 +1217,7 @@
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
 		6C3F84B513D845C38F346217 /* ClaudeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeResponse.swift; sourceTree = "<group>"; };
+		63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictMetadataCache.swift; sourceTree = "<group>"; };
 		7F35C93D0925433FA0AD6066 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
 		8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtilitiesTests.swift; sourceTree = "<group>"; };
 		8049F3632F0376B000DD454F /* NSImage+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Color.swift"; sourceTree = "<group>"; };
@@ -3279,6 +3281,7 @@
 				031C66ED2EDB02000025D190 /* mdict-reader-overview.md */,
 				031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */,
 				897BF162A7D34D6F84F0E5C7 /* MDictReader.swift */,
+				63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */,
 				B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */,
 				B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */,
 				B9F10003B3C24D5E8A000003 /* MDictRecords.swift */,
@@ -4120,6 +4123,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
+				63D2A8E12F1C4B2E8C9A7101 /* MDictMetadataCache.swift in Sources */,
 				A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */,
 				A9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift in Sources */,
 				A9F10003B3C24D5E8A000003 /* MDictRecords.swift in Sources */,

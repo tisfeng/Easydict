@@ -44,7 +44,51 @@ let maxMDictCachedRecordBlockBytes = 50 * 1024 * 1024
 // MARK: - MDictHeader
 
 /// Parsed metadata from the MDict file header XML.
-struct MDictHeader {
+struct MDictHeader: Codable {
+    // MARK: Lifecycle
+
+    init(
+        version: Double,
+        title: String,
+        description: String,
+        encoding: String.Encoding,
+        format: String,
+        keyCaseSensitive: Bool,
+        encrypted: Int
+    ) {
+        self.version = version
+        self.title = title
+        self.description = description
+        self.encoding = encoding
+        self.format = format
+        self.keyCaseSensitive = keyCaseSensitive
+        self.encrypted = encrypted
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.version = try container.decode(Double.self, forKey: .version)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.description = try container.decode(String.self, forKey: .description)
+        let encodingRawValue = try container.decode(UInt.self, forKey: .encodingRawValue)
+        self.encoding = String.Encoding(rawValue: encodingRawValue)
+        self.format = try container.decode(String.self, forKey: .format)
+        self.keyCaseSensitive = try container.decode(Bool.self, forKey: .keyCaseSensitive)
+        self.encrypted = try container.decode(Int.self, forKey: .encrypted)
+    }
+
+    // MARK: Internal
+
+    enum CodingKeys: CodingKey {
+        case version
+        case title
+        case description
+        case encodingRawValue
+        case format
+        case keyCaseSensitive
+        case encrypted
+    }
+
     let version: Double
     let title: String
     let description: String
@@ -58,6 +102,17 @@ struct MDictHeader {
 
     var nullTerminatorSize: Int {
         encoding == .utf16LittleEndian || encoding == .utf16BigEndian ? 2 : 1
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(version, forKey: .version)
+        try container.encode(title, forKey: .title)
+        try container.encode(description, forKey: .description)
+        try container.encode(encoding.rawValue, forKey: .encodingRawValue)
+        try container.encode(format, forKey: .format)
+        try container.encode(keyCaseSensitive, forKey: .keyCaseSensitive)
+        try container.encode(encrypted, forKey: .encrypted)
     }
 }
 
@@ -77,7 +132,7 @@ struct MDictKeyEntry {
 /// MDict stores the first and last key in key block info. Keeping those
 /// boundaries lets lookup skip full key parsing until a query lands in a
 /// candidate block.
-struct MDictKeyBlockRange {
+struct MDictKeyBlockRange: Codable {
     let firstKey: String
     let lastKey: String
     let compressedStart: Int
@@ -94,7 +149,7 @@ struct MDictKeyBlockRange {
 // MARK: - RecordBlockInfo
 
 /// Compressed and decompressed sizes for one record block.
-struct RecordBlockInfo {
+struct RecordBlockInfo: Codable {
     let compressedSize: UInt64
     let decompressedSize: UInt64
 }
@@ -106,7 +161,7 @@ struct RecordBlockInfo {
 /// Keeping cumulative compressed and decompressed offsets avoids rescanning all
 /// preceding blocks for every lookup. The reader uses this table to binary
 /// search the containing block and read the matching compressed bytes directly.
-struct RecordBlockRange {
+struct RecordBlockRange: Codable {
     let info: RecordBlockInfo
     let compressedStart: Int
     let decompressedStart: UInt64
@@ -141,6 +196,14 @@ final class MDictReader {
         let data = try Data(contentsOf: url, options: [.mappedIfSafe])
         self.data = data
 
+        if let metadata = MDictMetadataCache.shared.load(for: url) {
+            self.header = metadata.header
+            self.keyBlockRanges = metadata.keyBlockRanges
+            self.recordBlockRanges = metadata.recordBlockRanges
+            self.entryCount = metadata.entryCount
+            return
+        }
+
         var cursor = 0
         self.header = try Self.parseHeader(data, cursor: &cursor)
 
@@ -163,6 +226,15 @@ final class MDictReader {
         )
 
         self.entryCount = keyBlockRanges.last?.entryEndIndex ?? 0
+        MDictMetadataCache.shared.save(
+            MDictCachedMetadata(
+                header: header,
+                keyBlockRanges: keyBlockRanges,
+                recordBlockRanges: recordBlockRanges,
+                entryCount: entryCount
+            ),
+            for: url
+        )
     }
 
     // MARK: Internal
