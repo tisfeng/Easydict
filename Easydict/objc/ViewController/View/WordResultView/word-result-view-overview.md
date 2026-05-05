@@ -1,6 +1,6 @@
 # WordResultView 目录概览
 
-WordResultView 负责在结果卡片内部展示词典、翻译、按钮和 Apple 词典 WebView
+WordResultView 负责在结果卡片内部展示词典、翻译、按钮和词典 HTML WebView
 内容。该目录仍属于 Objective-C 视图层，主要维护既有 AppKit/Masonry 布局和
 WKWebView 高度桥接。
 
@@ -8,15 +8,15 @@ WKWebView 高度桥接。
 
 - `EZWordResultView` 组装词条文本、音标、释义、复制/链接/替换按钮，并把计算
   后的内容高度回传给结果卡片。
-- `EZWebViewManager` 持有 Apple 词典专用 WKWebView，记录 HTML 加载状态、
+- `EZWebViewManager` 持有 Apple Dictionary 和 MDict 共用的词典 WKWebView，记录 HTML 加载状态、
   iframe 重测标记和上一次内容高度。
 - `EZResultView` 通过 `updateViewHeightBlock` 接收 word result 高度，再更新
   `EZQueryResult.viewHeight`，供表格和窗口重新计算。
 
 ## 主流程
 
-普通词典结果由 Objective-C 直接按文本内容计算高度。Apple 词典结果先加载
-HTML 文件，WebView 模板完成 iframe 测量后回传 `scrollHeight`，随后
+普通词典结果由 Objective-C 直接按文本内容计算高度。Apple Dictionary 和 MDict 词典 HTML
+结果先加载 HTML 文件，WebView 模板完成 iframe 测量后回传 `scrollHeight`，随后
 `EZWordResultView` 更新 WebView 约束、result 高度和表格行高。
 
 ## 高度更新约束

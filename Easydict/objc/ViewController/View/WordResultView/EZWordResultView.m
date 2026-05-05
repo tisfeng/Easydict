@@ -37,6 +37,11 @@ static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
+static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
+    return [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeAppleDictionary] ||
+           [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeMDict];
+}
+
 @interface EZWordResultView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
@@ -905,7 +910,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     }];
 
     // webView height need time to calculate, and the value will be called back later.
-    if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
+    if (EZResultNeedsDictionaryHTMLHeight(result)) {
         BOOL hasHTML = result.htmlString.length > 0;
         linkButton.enabled = hasHTML;
 
