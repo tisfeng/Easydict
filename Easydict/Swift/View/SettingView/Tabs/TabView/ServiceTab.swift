@@ -18,15 +18,17 @@ struct ServiceTab: View {
         HStack(alignment: .top, spacing: 0) {
             VStack {
                 WindowTypePicker(windowType: $viewModel.windowType)
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.vertical, 6)
+
                 List(selection: $viewModel.selectedService) {
                     ServiceItems()
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.never)
                 .borderedCard()
-                .padding(.bottom)
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 12)
                 .frame(minWidth: 260)
                 .onReceive(serviceHasUpdatedNotification) { _ in
                     Task { @MainActor in
@@ -286,22 +288,22 @@ private struct ServiceItemView: View {
 
     var body: some View {
         Group {
-            HStack(spacing: 8) {
+            HStack(spacing: 4) {
                 HStack {
                     Image(service.serviceType().rawValue)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20.0, height: 20.0)
+                        .frame(width: 18, height: 18)
                     Text(verbatim: serviceItemViewModel.name)
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
                 .layoutPriority(1)
 
-                Spacer(minLength: 8)
-                
+                Spacer(minLength: 4)
+
                 ServiceRequirementBadge(requirement: service.apiKeyRequirement())
-                
+
                 // Use a fixed width container for both controls, to make sure they are center aligned.
                 ZStack {
                     if serviceItemViewModel.isValidating {
@@ -314,16 +316,15 @@ private struct ServiceItemView: View {
                         )
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .controlSize(.small) // size: 32*18
+                        .controlSize(.mini)
                     }
                 }
-                .frame(width: 32)
+                .frame(width: 40, alignment: .center)
             }
         }
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
-        .padding(.horizontal, 8)
-        .padding(.vertical, 12)
+        .padding(.vertical, 8)
         .alert(
             "setting.service.failed_to_enable_service \(serviceItemViewModel.service.name())",
             isPresented: $serviceItemViewModel.showErrorAlert
