@@ -59,4 +59,57 @@ extension MDictReader {
         }
         return nil
     }
+
+    func matchingEntries(
+        in entries: [MDictKeyEntry],
+        for normalizedKey: String
+    )
+        -> ArraySlice<MDictKeyEntry> {
+        guard !entries.isEmpty else { return [] }
+
+        let start = lowerBound(in: entries, for: normalizedKey)
+        guard start < entries.count,
+              self.normalizedKey(entries[start].word) == normalizedKey
+        else { return [] }
+
+        let end = upperBound(in: entries, for: normalizedKey, startingAt: start)
+        return entries[start ..< end]
+    }
+
+    private func lowerBound(
+        in entries: [MDictKeyEntry],
+        for normalizedKey: String
+    )
+        -> Int {
+        var lower = 0
+        var upper = entries.count
+        while lower < upper {
+            let mid = (lower + upper) / 2
+            if self.normalizedKey(entries[mid].word) < normalizedKey {
+                lower = mid + 1
+            } else {
+                upper = mid
+            }
+        }
+        return lower
+    }
+
+    private func upperBound(
+        in entries: [MDictKeyEntry],
+        for normalizedKey: String,
+        startingAt start: Int
+    )
+        -> Int {
+        var lower = start
+        var upper = entries.count
+        while lower < upper {
+            let mid = (lower + upper) / 2
+            if self.normalizedKey(entries[mid].word) <= normalizedKey {
+                lower = mid + 1
+            } else {
+                upper = mid
+            }
+        }
+        return lower
+    }
 }

@@ -88,9 +88,7 @@ extension MDictReader {
         var matches: [MDictKeyEntry] = []
         for blockIndex in blockIndexes {
             let entries = try keyEntries(in: blockIndex)
-            matches.append(contentsOf: entries.filter {
-                normalizedKey($0.word) == normalized
-            })
+            matches.append(contentsOf: matchingEntries(in: entries, for: normalized))
         }
         return matches
     }
