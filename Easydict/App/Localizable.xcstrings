@@ -9063,6 +9063,7 @@
       }
     },
     "setting.service.back" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9198,6 +9199,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示語言選擇欄"
+          }
+        }
+      }
+    },
+    "setting.service.window_configuration" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window Configuration"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenie okna"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口配置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視窗配置"
           }
         }
       }

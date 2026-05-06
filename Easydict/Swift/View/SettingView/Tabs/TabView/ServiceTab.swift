@@ -15,13 +15,16 @@ struct ServiceTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            VStack {
+        HSplitView {
+            VStack(spacing: 16) {
                 WindowTypePicker(windowType: $viewModel.windowType)
-                    .padding(.horizontal)
-                    .padding(.vertical, 6)
+                    .padding(.horizontal, 12)
+                    .padding(.top)
 
-                List(selection: $viewModel.selectedService) {
+                List(selection: $viewModel.selectedItem) {
+                    WindowConfigurationItem()
+                        .tag(ServiceTabSelection.windowConfiguration)
+
                     ServiceItems()
                 }
                 .listStyle(.plain)
@@ -29,42 +32,16 @@ struct ServiceTab: View {
                 .borderedCard()
                 .padding(.horizontal, 12)
                 .padding(.bottom, 12)
-                .frame(minWidth: 260)
                 .onReceive(serviceHasUpdatedNotification) { _ in
                     Task { @MainActor in
                         viewModel.updateServices()
                     }
                 }
             }
+            .frame(minWidth: 270, maxWidth: 320, maxHeight: .infinity)
 
-            Group {
-                if let service = viewModel.selectedService {
-                    VStack(alignment: .leading) {
-                        Button("setting.service.back") {
-                            viewModel.selectedService = nil
-                        }
-                        .padding()
-
-                        if let view = service.configurationListItems() as? (any View) {
-                            Form {
-                                AnyView(view)
-                            }
-                            .formStyle(.grouped)
-                        } else {
-                            Spacer()
-                            HStack {
-                                Spacer()
-                                Text("setting.service.detail.no_configuration \(service.name())")
-                                Spacer()
-                            }
-                            Spacer()
-                        }
-                    }
-                } else {
-                    WindowConfigurationView(windowType: viewModel.windowType)
-                }
-            }
-            .layoutPriority(1)
+            ServiceDetailView()
+                .layoutPriority(1)
         }
         .environmentObject(viewModel)
         .onChange(of: viewModel.windowType) { _ in
@@ -82,6 +59,16 @@ struct ServiceTab: View {
         .publisher(for: .serviceHasUpdated)
 }
 
+// MARK: - ServiceTabSelection
+
+/// Identifies the active item in the service settings split view.
+/// Service cases store stable service identifiers instead of object references
+/// so selection survives list refreshes as long as the service still exists.
+private enum ServiceTabSelection: Hashable {
+    case windowConfiguration
+    case service(String)
+}
+
 // MARK: - ServiceTabViewModel
 
 @MainActor
@@ -95,29 +82,36 @@ private class ServiceTabViewModel: ObservableObject {
 
     // MARK: Internal
 
-    @Published var selectedService: QueryService?
+    @Published var selectedItem: ServiceTabSelection? = .windowConfiguration
 
     @Published private(set) var services: [QueryService]
 
     @Published var windowType: EZWindowType
 
+    var selectedService: QueryService? {
+        guard case let .service(serviceID) = selectedItem else { return nil }
+
+        return services.first {
+            $0.serviceTypeWithUniqueIdentifier() == serviceID
+        }
+    }
+
     /// Refresh services when the window type changes.
     func handleWindowTypeChange() {
-        selectedService = nil
+        selectedItem = .windowConfiguration
         updateServices()
     }
 
     func updateServices() {
         services = LocalStorage.shared().allServices(windowType)
 
-        let isSelectedExist =
-            services
-                .contains {
-                    $0.serviceTypeWithUniqueIdentifier()
-                        == selectedService?.serviceTypeWithUniqueIdentifier()
-                }
-        if !isSelectedExist {
-            selectedService = nil
+        guard case let .service(selectedServiceID) = selectedItem else { return }
+
+        let isSelectedServiceAvailable = services.contains {
+            $0.serviceTypeWithUniqueIdentifier() == selectedServiceID
+        }
+        if !isSelectedServiceAvailable {
+            selectedItem = .windowConfiguration
         }
     }
 
@@ -137,20 +131,35 @@ private class ServiceTabViewModel: ObservableObject {
     }
 }
 
+// MARK: - WindowConfigurationItem
+
+/// Row that opens the shared window configuration detail.
+/// It stays outside the movable service list so service ordering remains scoped
+/// to translation services only.
+private struct WindowConfigurationItem: View {
+    var body: some View {
+        Text("setting.service.window_configuration")
+            .lineLimit(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 8)
+            .contentShape(Rectangle())
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init())
+    }
+}
+
 // MARK: - ServiceItems
 
 private struct ServiceItems: View {
     // MARK: Internal
 
     var body: some View {
-        Section {
-            ForEach(servicesWithID, id: \.1) { service, _ in
-                ServiceItemView(service: service, viewModel: viewModel)
-                    .tag(service)
-            }
-            .onMove { source, destination in
-                viewModel.onServiceItemMove(fromOffsets: source, toOffset: destination)
-            }
+        ForEach(servicesWithID, id: \.1) { service, serviceID in
+            ServiceItemView(service: service, viewModel: viewModel)
+                .tag(ServiceTabSelection.service(serviceID))
+        }
+        .onMove { source, destination in
+            viewModel.onServiceItemMove(fromOffsets: source, toOffset: destination)
         }
     }
 
@@ -163,6 +172,43 @@ private struct ServiceItems: View {
             (service, service.serviceTypeWithUniqueIdentifier())
         }
     }
+}
+
+// MARK: - ServiceDetailView
+
+/// Detail pane for the service settings split view.
+/// The pane shows window-level configuration until a concrete service row is
+/// selected, then switches to that service's own configuration form.
+private struct ServiceDetailView: View {
+    // MARK: Internal
+
+    var body: some View {
+        Group {
+            if let service = viewModel.selectedService {
+                if let view = service.configurationListItems() as? (any View) {
+                    Form {
+                        AnyView(view)
+                    }
+                    .formStyle(.grouped)
+                } else {
+                    VStack {
+                        Spacer()
+
+                        Text("setting.service.detail.no_configuration \(service.name())")
+
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            } else {
+                WindowConfigurationView(windowType: viewModel.windowType)
+            }
+        }
+    }
+
+    // MARK: Private
+
+    @EnvironmentObject private var viewModel: ServiceTabViewModel
 }
 
 // MARK: - ServiceItemViewModel

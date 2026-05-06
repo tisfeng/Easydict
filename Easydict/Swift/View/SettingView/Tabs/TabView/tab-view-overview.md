@@ -7,9 +7,11 @@
 
 ## 主要组件
 
-`ServiceTab` 管理翻译服务列表、窗口类型切换和服务配置详情。服务列表
-使用单个 section 展示完整排序，行内通过 `no-key`、`built-in`、`key`
-和 `cli` 标签标记 API Key 类型，避免分组破坏跨类型拖拽排序。
+`ServiceTab` 使用嵌入式 `HSplitView` 管理窗口配置、翻译服务列表和服务
+配置详情，避免影响设置窗口外层 `TabView`。左栏宽度可在当前窗口会话中
+手动拖拽调整，顶部提供窗口配置入口；服务列表使用完整排序，行内通过
+`no-key`、`built-in`、`key` 和 `cli` 标签标记 API Key 类型，避免分组
+破坏跨类型拖拽排序。
 
 `GeneralTab`、`AdvancedTab`、`ShortcutTab`、`PrivacyTab`、`FavoritesTab`、
 `DisabledAppTab` 和 `AboutTab` 分别承载通用设置、高级设置、快捷键、
@@ -19,23 +21,27 @@
 ## 关键流程
 
 服务页打开时，`ServiceTabViewModel` 按当前窗口类型从 `LocalStorage`
-读取服务数组。用户切换 Fixed、Mini 或 Main 窗口类型后，view model
-清空当前选中服务并重新加载对应窗口的服务配置。
+读取服务数组，并默认选中窗口配置。用户切换 Fixed、Mini 或 Main 窗口
+类型后，view model 重新回到窗口配置并加载对应窗口的服务配置。
 
 服务列表拖拽排序直接作用于完整服务数组。`onServiceItemMove` 将新的
 `serviceTypeWithUniqueIdentifier` 顺序写回 `LocalStorage`，随后发送
 服务更新通知并刷新列表，因此 `key`、`no-key`、`built-in` 和 `cli`
 服务可以互相穿插排序。
 
-点击服务行会打开右侧配置详情。若服务提供 `configurationListItems()`，
-详情区用 grouped form 展示该服务的配置；否则显示无配置提示。开关服务
-时，普通服务直接写入启用状态，流式服务会先执行校验，Claude Code 会
-先展示风险确认弹窗。
+点击左栏窗口配置入口会在右栏显示 `WindowConfigurationView`。点击服务
+行会打开右侧服务配置详情；若服务提供 `configurationListItems()`，详情
+区用 grouped form 展示该服务的配置，否则显示无配置提示。开关服务时，
+普通服务直接写入启用状态，流式服务会先执行校验，Claude Code 会先展示
+风险确认弹窗。
 
 ## 调试入口
 
-服务排序或标签显示异常时，先检查 `ServiceItems` 的 `ForEach` 是否仍然
-遍历完整 `viewModel.services`，再检查 `ServiceRequirementBadge` 对
+布局异常时，先确认服务页仍使用嵌入式 `HSplitView`，没有把
+`NavigationSplitView` 放回设置 `TabView` 内。选择状态异常时，检查
+`ServiceTabSelection` 是否正确区分窗口配置和服务 id。服务排序或标签
+显示异常时，检查 `ServiceItems` 的 `ForEach` 是否仍然遍历完整
+`viewModel.services`，再检查 `ServiceRequirementBadge` 对
 `ServiceAPIKeyRequirement` 的映射。
 
 服务启用状态异常时，从 `ServiceItemViewModel.updateServiceStatus` 进入，

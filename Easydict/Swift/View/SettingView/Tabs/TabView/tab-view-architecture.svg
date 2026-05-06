@@ -1,9 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" width="960" height="680">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" width="960" height="760">
   <style>
     text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
     .title { fill: #111827; font-size: 22px; font-weight: 600; }
     .box-title { fill: #111827; font-size: 15px; font-weight: 600; }
-    .label { fill: #374151; font-size: 13px; }
     .small { fill: #6b7280; font-size: 12px; }
     .tag { fill: #111827; font-size: 12px; font-weight: 600; }
   </style>
@@ -19,74 +18,74 @@
     </marker>
   </defs>
 
-  <rect width="960" height="680" fill="#ffffff"/>
+  <rect width="960" height="760" fill="#ffffff"/>
   <text x="480" y="38" text-anchor="middle" class="title">Setting TabView 架构</text>
-  <text x="480" y="62" text-anchor="middle" class="small">服务页使用单 section 列表，并用英文标签保留分类信息</text>
+  <text x="480" y="62" text-anchor="middle" class="small">服务页使用嵌入式 HSplitView，保持设置 TabView 的窗口级结构</text>
 
   <rect x="310" y="90" width="340" height="64" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
   <text x="480" y="118" text-anchor="middle" class="box-title">SettingView</text>
   <text x="480" y="140" text-anchor="middle" class="small">承载 General / Service / Shortcut 等设置标签页</text>
 
-  <rect x="60" y="205" width="380" height="290" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="250" y="234" text-anchor="middle" class="box-title">ServiceTab 左侧服务列表</text>
-  <text x="250" y="256" text-anchor="middle" class="small">窗口类型选择 + 单 section 服务排序</text>
+  <rect x="60" y="205" width="380" height="340" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="250" y="234" text-anchor="middle" class="box-title">HSplitView Left Pane</text>
+  <text x="250" y="256" text-anchor="middle" class="small">左栏：可拖拽宽度、窗口类型、服务列表</text>
 
   <rect x="100" y="285" width="300" height="52" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
   <text x="250" y="307" text-anchor="middle" class="box-title">WindowTypePicker</text>
   <text x="250" y="326" text-anchor="middle" class="small">Fixed / Mini / Main 切换</text>
 
-  <rect x="100" y="360" width="300" height="88" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
-  <text x="250" y="384" text-anchor="middle" class="box-title">ServiceItems</text>
-  <text x="250" y="406" text-anchor="middle" class="small">ForEach(viewModel.services)</text>
-  <text x="250" y="427" text-anchor="middle" class="small">onMove 直接写回全局顺序</text>
+  <rect x="100" y="360" width="300" height="52" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <text x="250" y="382" text-anchor="middle" class="box-title">Window Configuration Row</text>
+  <text x="250" y="402" text-anchor="middle" class="small">tag: .windowConfiguration</text>
 
-  <rect x="128" y="460" width="54" height="24" rx="12" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="155" y="477" text-anchor="middle" class="tag">no-key</text>
-  <rect x="196" y="460" width="64" height="24" rx="12" fill="#dcfce7" stroke="#86efac"/>
-  <text x="228" y="477" text-anchor="middle" class="tag">built-in</text>
-  <rect x="274" y="460" width="40" height="24" rx="12" fill="#fed7aa" stroke="#fdba74"/>
-  <text x="294" y="477" text-anchor="middle" class="tag">key</text>
-  <rect x="328" y="460" width="36" height="24" rx="12" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="346" y="477" text-anchor="middle" class="tag">cli</text>
+  <rect x="100" y="435" width="300" height="58" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="250" y="458" text-anchor="middle" class="box-title">ServiceItems</text>
+  <text x="250" y="478" text-anchor="middle" class="small">tag: .service(id), onMove 写回服务顺序</text>
 
-  <rect x="520" y="205" width="380" height="290" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="710" y="234" text-anchor="middle" class="box-title">ServiceTab 右侧详情面板</text>
-  <text x="710" y="256" text-anchor="middle" class="small">根据是否选中服务切换配置内容</text>
+  <rect x="122" y="505" width="54" height="24" rx="12" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="149" y="522" text-anchor="middle" class="tag">no-key</text>
+  <rect x="190" y="505" width="64" height="24" rx="12" fill="#dcfce7" stroke="#86efac"/>
+  <text x="222" y="522" text-anchor="middle" class="tag">built-in</text>
+  <rect x="268" y="505" width="40" height="24" rx="12" fill="#fed7aa" stroke="#fdba74"/>
+  <text x="288" y="522" text-anchor="middle" class="tag">key</text>
+  <rect x="322" y="505" width="36" height="24" rx="12" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="340" y="522" text-anchor="middle" class="tag">cli</text>
 
-  <rect x="560" y="290" width="300" height="58" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
-  <text x="710" y="315" text-anchor="middle" class="box-title">WindowConfigurationView</text>
-  <text x="710" y="336" text-anchor="middle" class="small">未选中服务时展示窗口通用配置</text>
+  <rect x="520" y="205" width="380" height="340" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="710" y="234" text-anchor="middle" class="box-title">HSplitView Right Pane</text>
+  <text x="710" y="256" text-anchor="middle" class="small">右栏：根据 ServiceTabSelection 切换内容</text>
 
-  <rect x="560" y="385" width="300" height="74" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
-  <text x="710" y="411" text-anchor="middle" class="box-title">Service Configuration Form</text>
-  <text x="710" y="433" text-anchor="middle" class="small">选中服务时展示 configurationListItems()</text>
+  <rect x="560" y="300" width="300" height="68" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <text x="710" y="326" text-anchor="middle" class="box-title">WindowConfigurationView</text>
+  <text x="710" y="348" text-anchor="middle" class="small">默认选择或点击窗口配置入口时展示</text>
 
-  <rect x="95" y="555" width="770" height="84" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="480" y="582" text-anchor="middle" class="box-title">ServiceTabViewModel + LocalStorage + NotificationCenter</text>
-  <text x="480" y="607" text-anchor="middle" class="small">读取当前窗口服务数组，持久化服务顺序和启用状态，并响应 serviceHasUpdated 通知刷新 UI</text>
+  <rect x="560" y="405" width="300" height="78" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="710" y="432" text-anchor="middle" class="box-title">ServiceDetailView</text>
+  <text x="710" y="454" text-anchor="middle" class="small">选中服务时展示 configurationListItems()</text>
+
+  <rect x="95" y="595" width="770" height="84" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="480" y="622" text-anchor="middle" class="box-title">ServiceTabViewModel + LocalStorage + NotificationCenter</text>
+  <text x="480" y="647" text-anchor="middle" class="small">维护 selectedItem、服务数组和窗口类型，持久化排序并响应 serviceHasUpdated 刷新 UI</text>
 
   <path d="M480 154 L480 178 L250 178 L250 205" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
   <path d="M480 154 L480 178 L710 178 L710 205" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <text x="480" y="173" text-anchor="middle" class="small">tab selection</text>
+  <text x="480" y="173" text-anchor="middle" class="small">Service tab</text>
 
-  <path d="M250 337 L250 360" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <text x="303" y="354" class="small">切换窗口类型</text>
+  <path d="M400 386 L520 330" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
+  <text x="462" y="345" text-anchor="middle" class="small">选择窗口配置</text>
 
-  <path d="M400 404 L520 404" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <text x="460" y="394" text-anchor="middle" class="small">选择服务</text>
+  <path d="M400 464 L520 444" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
+  <text x="465" y="443" text-anchor="middle" class="small">选择服务</text>
 
-  <path d="M250 495 L250 535 L480 535 L480 555" fill="none" stroke="#16a34a" stroke-width="1.7" marker-end="url(#arrow-green)"/>
-  <text x="358" y="527" text-anchor="middle" class="small">拖拽排序 / 开关服务</text>
+  <path d="M250 545 L250 575 L420 575 L420 595" fill="none" stroke="#16a34a" stroke-width="1.7" marker-end="url(#arrow-green)"/>
+  <text x="335" y="568" text-anchor="middle" class="small">拖拽排序 / 开关服务</text>
 
-  <path d="M710 495 L710 535 L480 535 L480 555" fill="none" stroke="#9333ea" stroke-width="1.7" marker-end="url(#arrow-purple)"/>
-  <text x="603" y="527" text-anchor="middle" class="small">配置变更</text>
+  <path d="M710 545 L710 575 L540 575 L540 595" fill="none" stroke="#9333ea" stroke-width="1.7" marker-end="url(#arrow-purple)"/>
+  <text x="625" y="568" text-anchor="middle" class="small">配置变更</text>
 
-  <path d="M480 555 L480 520 L250 520 L250 495" fill="none" stroke="#16a34a" stroke-width="1.7" marker-end="url(#arrow-green)"/>
-  <text x="345" y="512" text-anchor="middle" class="small">刷新 services</text>
-
-  <g transform="translate(42, 650)">
+  <g transform="translate(42, 722)">
     <line x1="0" y1="0" x2="28" y2="0" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-    <text x="36" y="4" class="small">导航与选择</text>
+    <text x="36" y="4" class="small">选择导航</text>
     <line x1="126" y1="0" x2="154" y2="0" stroke="#16a34a" stroke-width="1.7" marker-end="url(#arrow-green)"/>
     <text x="162" y="4" class="small">持久化与刷新</text>
     <line x1="276" y1="0" x2="304" y2="0" stroke="#9333ea" stroke-width="1.7" marker-end="url(#arrow-purple)"/>
