@@ -38,7 +38,8 @@ MDict/
 ## 主要流程
 
 导入流程从 `MDictConfigurationView` 的文件选择器开始，`MDictManager` 根据扩展名导入 MDX
-或匹配 MDD，合并同名资源文件并保存 `MDictDictionaryRecord`。首次查询启用词典时，
+或匹配 MDD，合并同名资源文件并保存 `MDictDictionaryRecord`。MDD 匹配保留精确同名优先，
+只把短数字后缀当作 multipart 资源后缀处理，避免年份等普通文件名误挂到无关 MDX。首次查询启用词典时，
 `MDictManager` 在后台创建缺失的 `MDictDictionary`，避免启动或首查期间阻塞主线程。
 
 查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，逐本调用
@@ -47,14 +48,16 @@ MDict/
 超大词库只走精确查词和变形词路径，避免一次查询 miss 阻塞 UI。
 命中后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI 会按 LRU
-缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。最终服务把每本词典
+缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。资源 key 查询会先尝试
+词条原始路径，再生成反斜杠和前导斜杠变体，兼容不同 MDD 生成器的路径风格。最终服务把每本词典
 的 HTML section 交给
 `DictionaryHTMLRenderer`，由共享词典结果模板渲染。
 如果 MDX 文件旁边存在同名 `.css`，例如 `concise-enhanced.mdx` 对应
 `concise-enhanced.css`，`MDictDictionary` 会在首次命中 HTML 查询时读取并缓存该样式，然后
 注入到词条内容前面，适配 MDict 词库常见的外置样式优化文件。
-资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；单次查询有 data URI
-数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
+资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；`javascript:new Audio(...)`
+中的本地音频会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
+单次查询有 data URI 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
 
 ## 调试入口
 
