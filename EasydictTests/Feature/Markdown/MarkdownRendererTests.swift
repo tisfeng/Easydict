@@ -143,6 +143,18 @@ struct MarkdownRendererTests {
         #expect(!result.string.contains("_italic_"))
     }
 
+    @Test("Triple asterisk renders bold and italic together")
+    func tripleAsteriskBoldItalic() {
+        let result = renderer.render("This is ***super important*** here.")
+        let range = (result.string as NSString).range(of: "super important")
+        #expect(range.location != NSNotFound)
+        let font = result.attribute(.font, at: range.location, effectiveRange: nil) as? NSFont
+        let traits = font?.fontDescriptor.symbolicTraits
+        #expect(traits?.contains(.bold) == true)
+        #expect(traits?.contains(.italic) == true)
+        #expect(!result.string.contains("***"))
+    }
+
     @Test("Mixed block content keeps each block readable")
     func mixedContent() {
         let source = """
