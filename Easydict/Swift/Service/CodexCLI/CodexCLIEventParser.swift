@@ -67,9 +67,9 @@ private func isCodexQuotaMessage(_ message: String) -> Bool {
 /// Extracts a human-readable message from a decoded CLI event line.
 private func errorMessage(from line: CodexCLIStreamLine) -> String? {
     let candidates: [String?] = [
-        line.error,
+        line.error?.message,
         line.message,
-        line.item?.error,
+        line.item?.error?.message,
         line.item?.message,
         line.item?.text,
     ]
@@ -220,8 +220,10 @@ private struct CodexCLIStreamLine: Decodable {
     let item: CodexCLIItem?
     /// Set on `turn.completed` events.
     let usage: CodexCLIRawUsage?
-    /// Set on top-level `error` / `turn.failed` events when present.
-    let error: String?
+    /// Set on top-level `error` / `turn.failed` events. Codex emits this field
+    /// either as a string or as a structured object such as
+    /// `{"message":"...","code":"..."}`, so a flexible decoder is required.
+    let error: CodexCLIErrorField?
     /// Free-form message field that some failure events carry at the top level.
     let message: String?
 }
@@ -235,10 +237,59 @@ private struct CodexCLIItem: Decodable {
     let type: String
     /// Set on `agent_message` items.
     let text: String?
-    /// Set on `error` items when present.
-    let error: String?
+    /// Set on `error` items. Same flexible string-or-object shape as the
+    /// top-level `error` field.
+    let error: CodexCLIErrorField?
     /// Free-form message field used by some item kinds.
     let message: String?
+}
+
+// MARK: - CodexCLIErrorField
+
+/// Decodes the polymorphic `error` field that Codex emits on failure events.
+///
+/// Codex 0.128.x writes the field either as a plain string
+/// (`"error":"Not signed in"`) or as a structured object
+/// (`"error":{"message":"…","code":"…","type":"…"}`). Strict `String?`
+/// decoding silently drops the structured form and loses the only actionable
+/// failure information on stdout, so this wrapper accepts both shapes and
+/// extracts a best-effort `message`.
+private struct CodexCLIErrorField: Decodable {
+    // MARK: Lifecycle
+
+    init(from decoder: Decoder) throws {
+        // 1) Plain string form: `"error":"text"`.
+        let single = try decoder.singleValueContainer()
+        if let asString = try? single.decode(String.self) {
+            self.message = asString
+            return
+        }
+
+        // 2) Structured object form: try common message-bearing keys.
+        if let keyed = try? decoder.container(keyedBy: ObjectKey.self) {
+            let candidateKeys: [ObjectKey] = [.message, .error, .description, .detail]
+            for key in candidateKeys {
+                if let value = try? keyed.decode(String.self, forKey: key),
+                   !value.isEmpty {
+                    self.message = value
+                    return
+                }
+            }
+        }
+
+        // 3) Anything else (number, array, null) — fail soft.
+        self.message = nil
+    }
+
+    // MARK: Internal
+
+    let message: String?
+
+    // MARK: Private
+
+    private enum ObjectKey: String, CodingKey {
+        case message, error, description, detail
+    }
 }
 
 // MARK: - CodexCLIRawUsage

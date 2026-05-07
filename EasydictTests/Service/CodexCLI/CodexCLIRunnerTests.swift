@@ -94,10 +94,18 @@ struct CodexCLIRunnerTests {
 
     // MARK: - parseCodexError (stdout JSONL)
 
-    @Test("parseCodexError detects auth failure in turn.failed event")
+    @Test("parseCodexError detects auth failure in turn.failed event (string error)")
     func parseErrorAuthFromTurnFailed() {
         let line =
             #"{"type":"turn.failed","error":"Not signed in. Please run codex login."}"#
+        let error = parseCodexError(fromStdout: line, stderr: "")
+        #expect(error == .notLoggedIn)
+    }
+
+    @Test("parseCodexError detects auth failure when error is an object payload")
+    func parseErrorAuthFromTurnFailedObject() {
+        let line =
+            #"{"type":"turn.failed","error":{"message":"Not signed in. Please run codex login.","code":"unauthorized"}}"#
         let error = parseCodexError(fromStdout: line, stderr: "")
         #expect(error == .notLoggedIn)
     }
@@ -110,10 +118,26 @@ struct CodexCLIRunnerTests {
         #expect(error == .quotaExceeded(message: "Rate limit exceeded for requests"))
     }
 
+    @Test("parseCodexError detects quota when error is an object payload")
+    func parseErrorQuotaFromTurnFailedObject() {
+        let line =
+            #"{"type":"turn.failed","error":{"message":"Rate limit exceeded for requests","type":"rate_limit_error"}}"#
+        let error = parseCodexError(fromStdout: line, stderr: "")
+        #expect(error == .quotaExceeded(message: "Rate limit exceeded for requests"))
+    }
+
     @Test("parseCodexError returns cliError for generic turn.failed event")
     func parseErrorGenericFromTurnFailed() {
         let line =
             #"{"type":"turn.failed","error":"Something failed upstream"}"#
+        let error = parseCodexError(fromStdout: line, stderr: "")
+        #expect(error == .cliError(message: "Something failed upstream"))
+    }
+
+    @Test("parseCodexError returns cliError carrying the object's message field")
+    func parseErrorGenericFromTurnFailedObject() {
+        let line =
+            #"{"type":"turn.failed","error":{"message":"Something failed upstream","code":"unknown"}}"#
         let error = parseCodexError(fromStdout: line, stderr: "")
         #expect(error == .cliError(message: "Something failed upstream"))
     }
