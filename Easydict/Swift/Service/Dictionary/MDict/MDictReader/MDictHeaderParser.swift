@@ -36,7 +36,7 @@ extension MDictReader {
         let caseSensitive = extractAttribute("KeyCaseSensitive", from: headerText) ?? "No"
         let encodingStr = extractAttribute("Encoding", from: headerText) ?? "utf-8"
         let encryptedStr = extractAttribute("Encrypted", from: headerText) ?? "0"
-        let encrypted = Int(encryptedStr) ?? 0
+        let encrypted = parseEncryptedValue(encryptedStr)
 
         let encoding: String.Encoding
         let normalizedEncoding = encodingStr.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -82,6 +82,19 @@ extension MDictReader {
             return nil
         }
         return String(text[range])
+    }
+
+    static func parseEncryptedValue(_ value: String) -> Int {
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if let encrypted = Int(normalized) {
+            return encrypted
+        }
+        switch normalized {
+        case "", "0", "false", "no", "none":
+            return 0
+        default:
+            return 1
+        }
     }
 
     static func readAttribute(_ name: String, from data: Data) -> String? {

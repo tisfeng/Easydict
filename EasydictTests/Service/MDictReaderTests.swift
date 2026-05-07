@@ -32,6 +32,39 @@ struct MDictReaderTests {
         #expect(MDictReader.extractAttribute("Missing", from: header) == nil)
     }
 
+    @Test("Encrypted header value supports legacy strings")
+    func testParseEncryptedValue() {
+        #expect(MDictReader.parseEncryptedValue("0") == 0)
+        #expect(MDictReader.parseEncryptedValue("No") == 0)
+        #expect(MDictReader.parseEncryptedValue("2") == 2)
+        #expect(MDictReader.parseEncryptedValue("Yes") == 1)
+    }
+
+    @Test("External MDX and MDD lookup flow")
+    func testExternalMDictLookupFlow() throws {
+        let environment = ProcessInfo.processInfo.environment
+        guard let mdxPath = environment["EASYDICT_MDICT_INTEGRATION_MDX"],
+              let mddPath = environment["EASYDICT_MDICT_INTEGRATION_MDD"]
+        else { return }
+
+        let mdxURL = URL(fileURLWithPath: mdxPath)
+        let mddURL = URL(fileURLWithPath: mddPath)
+        let reader = try MDictReader(url: mdxURL)
+        let words = ["hello", "apple", "good", "test", "dictionary"]
+        let definitions = try words.compactMap { try reader.lookup($0) }
+
+        #expect(!definitions.isEmpty)
+        #expect(definitions.contains { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
+        guard let resourceKey = definitions.compactMap(Self.firstResourceKey(in:)).first else {
+            Issue.record("Expected at least one local resource reference")
+            return
+        }
+
+        let dictionary = try MDictDictionary(mdxURL: mdxURL, mddURLs: [mddURL])
+        let resource = try dictionary.lookupResource(resourceKey)
+        #expect(resource?.isEmpty == false)
+    }
+
     // MARK: - Decompression
 
     @Test("Zlib decompression round-trip")
@@ -186,6 +219,31 @@ struct MDictReaderTests {
     }
 
     // MARK: Private
+
+    private static func firstResourceKey(in html: String) -> String? {
+        let patterns = [
+            #"(?i)(?:src|href|poster)\s*=\s*["']([^"']+\.(?:css|js|png|jpg|jpeg|gif|svg|webp|mp3|wav|ogg))["']"#,
+            #"(?i)sound://([^"'\s)<>]+)"#,
+        ]
+        for pattern in patterns {
+            guard let regex = try? NSRegularExpression(pattern: pattern),
+                  let match = regex.firstMatch(
+                      in: html,
+                      range: NSRange(html.startIndex..., in: html)
+                  ),
+                  let range = Range(match.range(at: 1), in: html)
+            else { continue }
+            let key = String(html[range])
+            let lowercased = key.lowercased()
+            guard !lowercased.hasPrefix("http://"),
+                  !lowercased.hasPrefix("https://"),
+                  !lowercased.hasPrefix("data:"),
+                  !lowercased.hasPrefix("#")
+            else { continue }
+            return key
+        }
+        return nil
+    }
 
     private func hex(_ bytes: [UInt8]) -> String {
         bytes.map { String(format: "%02x", $0) }.joined()
