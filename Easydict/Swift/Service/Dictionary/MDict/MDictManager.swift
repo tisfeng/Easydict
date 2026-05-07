@@ -266,7 +266,7 @@ final class MDictManager: ObservableObject {
     private func isCompanionMDDName(_ resourceName: String, for baseName: String) -> Bool {
         let escapedBaseName = NSRegularExpression.escapedPattern(for: baseName)
         return resourceName.range(
-            of: #"^\#(escapedBaseName)(?:\.\d+)?$"#,
+            of: #"^\#(escapedBaseName)(?:\.\d{1,3})?$"#,
             options: [.regularExpression, .caseInsensitive]
         ) != nil
     }
@@ -281,7 +281,7 @@ final class MDictManager: ObservableObject {
         var candidates = [exactURL.path]
 
         let name = exactURL.lastPathComponent
-        if let range = name.range(of: #"\.\d+$"#, options: .regularExpression) {
+        if let range = name.range(of: #"\.\d{1,3}$"#, options: .regularExpression) {
             let strippedName = String(name[..<range.lowerBound])
             let strippedURL = exactURL
                 .deletingLastPathComponent()

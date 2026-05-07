@@ -206,7 +206,7 @@ final class MDictDictionary: @unchecked Sendable {
             : normalized
         let withSlash = normalized.hasPrefix("\\") ? normalized : "\\\(normalized)"
         var seen = Set<String>()
-        return [normalized, withSlash, withoutSlash].filter { seen.insert($0).inserted }
+        return [decoded, normalized, withSlash, withoutSlash].filter { seen.insert($0).inserted }
     }
 
     /// Rewrites MDict links so WebKit can render local resources without a scheme handler.
