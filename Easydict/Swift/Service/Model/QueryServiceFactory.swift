@@ -78,6 +78,7 @@ final class QueryServiceFactory: NSObject {
         (.gitHub, GitHubService.self),
         (.builtInAI, BuiltInAIService.self),
         (.claudeCode, ClaudeCodeService.self),
+        (.codexCLI, CodexCLIService.self),
         (.gemini, GeminiService.self),
         (.claude, ClaudeService.self),
         (.ollama, OllamaService.self),
