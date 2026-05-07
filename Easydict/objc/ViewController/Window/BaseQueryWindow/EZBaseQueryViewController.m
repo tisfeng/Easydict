@@ -1693,7 +1693,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGRect screenVisibleFrame = currentScreen.visibleFrame;
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
-    if (ez_frame_equal_with_tolerance(window.frame, safeFrame, 0.5)) {
+    if (ez_frame_equal_with_tolerance(window.frame,
+                                      safeFrame,
+                                      EZLayoutGeometryTolerance_0_5)) {
         self.tableView.height = tableViewHeight;
         self.lockResizeWindow = NO;
         MMLogInfo(@"Equal frame, no need to update window frame");

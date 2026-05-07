@@ -336,15 +336,15 @@
         // console.log(`${i}: frame totalHeight: ${totalHeight}`);
 
 
-        var scrollHeight = getScrollHeight();
+      }
 
-        if (window.webkit && window.webkit.messageHandlers) {
-          // 调用 objc 方法
-          window.webkit.messageHandlers.objcHandler.postMessage({
-            method: "noteToUpdateScrollHeight",
-            scrollHeight: scrollHeight,
-          });
-        }
+      var scrollHeight = getScrollHeight();
+      if (window.webkit && window.webkit.messageHandlers) {
+        // 调用 objc 方法
+        window.webkit.messageHandlers.objcHandler.postMessage({
+          method: "noteToUpdateScrollHeight",
+          scrollHeight: scrollHeight,
+        });
       }
     }
 

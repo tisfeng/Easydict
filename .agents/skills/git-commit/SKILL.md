@@ -17,25 +17,31 @@ Follow this sequence exactly:
      `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
    - `git branch --show-current`
    - `git log --oneline -10`
-2. Stop immediately if there are no staged changes. Ask the user to stage files first.
-3. Analyze the staged diff precisely:
+2. If there are no staged changes, run `git add .` once, then collect
+   `git status` and the staged raw patch command again before continuing.
+3. If there were already staged changes in step 1, do not run `git add`. Keep
+   the workflow limited to the current staged scope.
+4. Stop immediately if there are still no staged changes after the single
+   allowed `git add .`. Ask the user to stage files first.
+5. Analyze the staged diff precisely:
    - Treat the raw patch command above as the only source of truth for staged
      scope. Do not rely on external diff, textconv, or pager formatting.
    - If you need to inspect a single staged path, reuse the same command shape
      and append `-- <path>` instead of falling back to bare `git diff --staged`.
    - Identify additions, deletions, and behavior impact.
    - Infer the most accurate `type(scope): subject`.
-4. Draft the commit message in English using the format rules below.
-5. Prepare a Simplified Chinese preview that fully matches the English message.
-6. Present the result using the output rules below and wait for explicit approval.
-7. After approval, execute the commit in three separate steps:
+6. Draft the commit message in English using the format rules below.
+7. Prepare a Simplified Chinese preview that fully matches the English message.
+8. Present the result using the output rules below and wait for explicit approval.
+9. After approval, execute the commit in three separate steps:
    - Write only the English commit message to `commit_message.txt`
    - Run `git commit -F commit_message.txt`
    - Remove `commit_message.txt`
 
 ## Hard Rules
 
-- Do not run `git add`.
+- Run `git add .` only when the initial staged diff is empty, and only once.
+- Do not run `git add` when staged changes already exist.
 - Do not run `git push`.
 - Do not commit without explicit user authorization.
 - Do not include Chinese text in the actual commit message file.
