@@ -40,6 +40,16 @@ struct MDictReaderTests {
         #expect(MDictReader.parseEncryptedValue("Yes") == 1)
     }
 
+    @Test("Resource text decoder uses preferred header encoding")
+    func testDecodeResourceTextUsesPreferredEncoding() throws {
+        let encoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(
+            CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)
+        ))
+        let data = try #require("发音样式".data(using: encoding))
+
+        #expect(MDictDictionary.decodeResourceText(data, preferredEncoding: encoding) == "发音样式")
+    }
+
     @Test("External MDX and MDD lookup flow")
     func testExternalMDictLookupFlow() throws {
         let environment = ProcessInfo.processInfo.environment

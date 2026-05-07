@@ -44,6 +44,24 @@ final class MDictDictionary: @unchecked Sendable {
 
     var description: String { mdxReader.header.description }
 
+    static func decodeResourceText(_ data: Data, preferredEncoding: String.Encoding) -> String? {
+        let encodings: [String.Encoding] = [
+            preferredEncoding,
+            .utf8,
+            .utf16LittleEndian,
+            .utf16BigEndian,
+        ]
+        var seen = Set<UInt>()
+        for encoding in encodings where seen.insert(encoding.rawValue).inserted {
+            guard var text = String(data: data, encoding: encoding) else { continue }
+            if text.hasPrefix("\u{FEFF}") {
+                text.removeFirst()
+            }
+            return text
+        }
+        return nil
+    }
+
     // MARK: - Lookup
 
     /// Returns the definition HTML/text for a word, or `nil` if not found.
@@ -122,17 +140,6 @@ final class MDictDictionary: @unchecked Sendable {
             .replacingOccurrences(of: "\u{2028}", with: "\\u2028")
             .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
         return "'\(escaped)'"
-    }
-
-    private static func decodeResourceText(_ data: Data) -> String? {
-        guard var text = String(data: data, encoding: .utf8)
-            ?? String(data: data, encoding: .utf16LittleEndian)
-            ?? String(data: data, encoding: .utf16BigEndian)
-        else { return nil }
-        if text.hasPrefix("\u{FEFF}") {
-            text.removeFirst()
-        }
-        return text
     }
 
     private static func makeRegex(_ pattern: String) -> NSRegularExpression {
@@ -436,7 +443,7 @@ final class MDictDictionary: @unchecked Sendable {
         guard !missingResourceKeys.contains(cacheKey),
               let data = try? lookupResource(key),
               !data.isEmpty,
-              let css = Self.decodeResourceText(data)
+              let css = Self.decodeResourceText(data, preferredEncoding: mdxReader.header.encoding)
         else {
             markMissingResource(cacheKey)
             return nil
@@ -456,7 +463,7 @@ final class MDictDictionary: @unchecked Sendable {
         let cssURL = mdxURL.deletingPathExtension().appendingPathExtension("css")
         guard FileManager.default.fileExists(atPath: cssURL.path),
               let data = try? Data(contentsOf: cssURL),
-              let css = Self.decodeResourceText(data)
+              let css = Self.decodeResourceText(data, preferredEncoding: mdxReader.header.encoding)
         else { return nil }
 
         cachedLocalStylesheet = replaceCSSResources(in: css)
@@ -465,7 +472,7 @@ final class MDictDictionary: @unchecked Sendable {
 
     private func scriptText(for key: String) -> String? {
         guard let data = try? lookupResource(key), !data.isEmpty else { return nil }
-        return Self.decodeResourceText(data)
+        return Self.decodeResourceText(data, preferredEncoding: mdxReader.header.encoding)
     }
 
     private func mimeType(for key: String) -> String {
