@@ -146,15 +146,20 @@ class MDictService: QueryService, @unchecked Sendable {
         var link=event.target&&event.target.closest?event.target.closest('a[href]'):null;\
         if(!link){return;}\
         var href=link.getAttribute('href')||'';\
+        var source=audioSource(link,href);\
+        if(source){event.preventDefault();playAudio(source);return;}\
         if(handleAnchorLink(href)){event.preventDefault();return;}\
-        var target=link.matches('a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]')?link:null;\
-        if(!target){return;}\
-        event.preventDefault();\
-        var source=target.getAttribute('href');\
+        },true);\
+        function audioSource(link,href){\
+        if(link.matches('a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]')){return href;}\
+        var match=href.match(/^\\s*javascript:\\s*new\\s+Audio\\s*\\(\\s*(['"])(data:[^'"]+)\\1\\s*\\)/i);\
+        return match?match[2]:null;\
+        }\
+        function playAudio(source){\
         if(!source){return;}\
         window.__mdictAudio=new Audio(source);\
         window.__mdictAudio.play();\
-        },true);\
+        }\
         function handleAnchorLink(href){\
         var hash=href.charAt(0)==='#'?href:(href.indexOf('#')>=0?href.slice(href.indexOf('#')):'');\
         if(!hash||hash.length<2){return false;}\
