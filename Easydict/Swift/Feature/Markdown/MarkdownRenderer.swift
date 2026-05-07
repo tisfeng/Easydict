@@ -237,6 +237,22 @@ struct MarkdownRenderer {
                 continue
             }
 
+            // ***bold+italic*** must be tried before **bold**, otherwise the
+            // outer pair of stars binds first and one star leaks as literal.
+            if char == "*", index + 2 < scalars.count,
+               scalars[index + 1] == "*", scalars[index + 2] == "*",
+               let close = findClose(of: "***", in: scalars, after: index + 3) {
+                let inner = String(scalars[(index + 3) ..< close])
+                let baseFontValue = base[.font] as? NSFont ?? baseFont
+                let boldItalic = NSFontManager.shared.convert(
+                    NSFontManager.shared.convert(baseFontValue, toHaveTrait: .boldFontMask),
+                    toHaveTrait: .italicFontMask
+                )
+                result.append(renderInline(inner, base: merge(base, with: [.font: boldItalic])))
+                index = close + 3
+                continue
+            }
+
             if char == "*", index + 1 < scalars.count, scalars[index + 1] == "*",
                let close = findClose(of: "**", in: scalars, after: index + 2) {
                 let inner = String(scalars[(index + 2) ..< close])
